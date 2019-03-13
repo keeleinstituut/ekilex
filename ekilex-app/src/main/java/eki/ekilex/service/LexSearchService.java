@@ -303,7 +303,8 @@ public class LexSearchService implements SystemConstant {
 				|| CollectionUtils.isNotEmpty(lexemeDerivs)
 				|| CollectionUtils.isNotEmpty(lexemeRegisters)
 				|| CollectionUtils.isNotEmpty(meaningDomains)
-				|| CollectionUtils.isNotEmpty(lexemeGrammars);
+				|| CollectionUtils.isNotEmpty(lexemeGrammars)
+				|| CollectionUtils.isNotEmpty(lexeme.getLexemeFrequencies());
 		lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
 	}
 

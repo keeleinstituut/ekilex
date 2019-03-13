@@ -14,7 +14,7 @@ td {
 .lbl {
 	font-variant: small-caps;
 	font-weight: bold;
-	color: #666;
+	color: rgba(102, 102, 102, 0.6);
 }
 
 .ttl {
@@ -40,20 +40,24 @@ td {
 	overflow-y: auto;
 }
 
-.hidden-buttons .badge {
+.hidden-buttons .badge,
+.invisible-buttons .show-on-mouseover,
+.invisible-buttons .badge.hidden {
 	display: none;
 }
 
-.hidden-buttons:hover .badge {
+.hidden-buttons:hover .badge,
+.invisible-buttons:hover .show-on-mouseover,
+.invisible-buttons:hover .badge.hidden {
 	display: inline-block;
 }
 
-.hidden-buttons .show-on-mouseover {
-	display: none;
+.invisible-buttons .badge {
+	visibility: hidden;
 }
 
-.hidden-buttons:hover .show-on-mouseover {
-	display: inline-block;
+.invisible-buttons:hover .badge {
+	visibility: visible;
 }
 
 .switch {
@@ -149,7 +153,7 @@ input:checked+.slider:before {
 	border-radius: 1rem;
 	margin-top: -14px;
 	margin-right: -14px;
-	padding: 0px 2px;
+	padding: 0 2px;
 }
 
 .btn-toggle i {
@@ -159,4 +163,73 @@ input:checked+.slider:before {
 .table-condensed th,
 .table-condensed td {
 	padding: 0.25rem;
+}
+
+.compacted .card-body {
+	padding: 0.5rem;
+}
+
+.compacted .btn-toggle {
+	margin-top: -6px;
+	margin-right: -6px;
+}
+
+.compacted th, .compacted td {
+	padding: initial;
+}
+
+.with-horizontal-padding tr th, .with-horizontal-padding tr td {
+	padding: 0 3px;
+}
+
+.compacted hr {
+	margin-bottom: 0.2rem;
+	margin-top: 0.2rem;
+}
+
+.col-w13rem {
+	flex: 0 0 13rem;
+	max-width: 13rem;
+}
+
+.col-w7rem {
+	flex: 0 0 7rem;
+	max-width: 7rem;
+}
+
+.row > hr {
+	margin-left: 15px;
+	margin-right: 15px;
+	width: 100%;
+}
+
+.btn-xs {
+	padding: 0;
+	border: 0;
+	vertical-align: initial;
+}
+
+.action-buttons-anchor {
+	position: relative;
+	display: inline-block;
+}
+
+.action-buttons-2 {
+	position: absolute;
+	top: -1px;
+	right: -3.5rem;
+	background: white;
+	border-radius: 3px;
+	padding: 0 3px;
+	z-index: 9;
+}
+
+.action-buttons-3 {
+	position: absolute;
+	top: 0;
+	right: -5.2rem;
+	background: white;
+	border-radius: 3px;
+	padding: 0 2px;
+	z-index: 9;
 }

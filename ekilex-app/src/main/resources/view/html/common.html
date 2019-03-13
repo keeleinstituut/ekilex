@@ -246,6 +246,12 @@
     </select>
   </div>
 </div>
+
+<div class="form-group row value-group" data-id="government" th:fragment="government_input">
+  <div class="col-md-12">
+    <input type="text" class="form-control value-select">
+  </div>
+</div>
 <!-- END select fragments -->
 
 <div id="lexemeClassifiersDlg" class="modal" role="dialog">
@@ -268,6 +274,15 @@
                 <option value="lexeme_deriv">Tuletuskood</option>
                 <option value="lexeme_register">Register</option>
                 <option value="lexeme_grammar">Grammatika</option>
+                <option value="government">Rektsioon</option>
+                <option disabled>-----------------</option>
+                <option value="#addNewDefinition">Mõiste seletus</option>
+                <option value="#addNewSourceLink">Allikaviide</option>
+                <option value="#addNewLearnerComment">Õppekomentaar</option>
+                <option value="#addNewMeaningRelation">Tähenduse seos</option>
+                <option value="#addNewUsage">Kasutusnäide</option>
+                <option value="#addNewPublicNote">Märkus</option>
+                <option value="#addNewLexemeRelation">Ilmiku seoas</option>
               </select>
             </div>
           </div>
@@ -279,6 +294,7 @@
           <div th:replace=":: lexeme_deriv_select"></div>
           <div th:replace=":: lexeme_register_select"></div>
           <div th:replace=":: lexeme_grammar_input"></div>
+          <div th:replace=":: government_input"></div>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Lisa</button>
@@ -362,6 +378,11 @@
                 <option value="lexeme_pos">Sõnaliik</option>
                 <option value="lexeme_deriv">Tuletuskood</option>
                 <option value="lexeme_register">Register</option>
+                <option disabled>-----------------</option>
+                <option value="#addNewSourceLink">Allikaviide</option>
+                <option value="#addNewUsage">Kasutusnäide</option>
+                <option value="#addNewLexemeRelation">Ilmiku seos</option>
+                <option value="#addNewPublicNote">Märkus</option>
               </select>
             </div>
           </div>
