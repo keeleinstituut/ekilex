@@ -1,7 +1,7 @@
 // Common javascript methods
 
 function selectDatasets(selection) {
-    $('#dataset_select').find(':checkbox').prop('checked', selection)
+    $('#datasetSelectDlg').find(':checkbox').prop('checked', selection)
 }
 
 function displayDetailConditionButtons() {
@@ -48,6 +48,10 @@ function toggleSearch() {
 
 function initaliseSearchForm() {
     $('#searchModeBtn').on('click', toggleSearch);
+    let datasetDlg = $('#datasetSelectDlg');
+    datasetDlg.on('shown.bs.modal', () => {
+        datasetDlg.find('.btn').first().focus();
+    })
 }
 
 function initialiseDeatailSearch() {

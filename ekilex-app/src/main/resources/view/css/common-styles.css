@@ -233,3 +233,22 @@ input:checked+.slider:before {
 	padding: 0 2px;
 	z-index: 9;
 }
+
+table.orderable .action-column {
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0s 1s, opacity 1s ease-in;
+}
+
+table.orderable:hover .action-column {
+	visibility: visible;
+	opacity: 1;
+	transition: visibility 0s 0s;
+}
+
+.action-column {
+	display: flex;
+	position: absolute;
+	right: 100%;
+	margin-top: 0.15rem;
+}

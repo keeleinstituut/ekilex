@@ -88,6 +88,7 @@ public class LexSearchController extends AbstractSearchController {
 
 		if (!searchUriData.isValid()) {
 			initSearchForms(model);
+			model.addAttribute("noResults", true);
 			return LEX_SEARCH_PAGE;
 		}
 

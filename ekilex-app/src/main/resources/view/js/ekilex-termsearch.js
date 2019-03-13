@@ -69,6 +69,10 @@ function initialise() {
 		}
 	});
 
+	$(document).on('change', '#resultLang', function() {
+		$(this).closest('form').submit();
+	});
+
 	$(document).on('show.bs.modal', '#meaningLifecycleLogDlg', function(e) {
 		var dlg = $(this);
 		var link = $(e.relatedTarget);
