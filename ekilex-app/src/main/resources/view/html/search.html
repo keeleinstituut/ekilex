@@ -207,15 +207,27 @@
 </th:block>
 
 <th:block th:fragment="dataset_select">
-  <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#dataset_select" aria-expanded="false" aria-controls="dataset_select">
+  <button class="btn btn-sm btn-secondary" type="button" data-toggle="modal" data-target="#datasetSelectDlg" aria-expanded="false" aria-controls="dataset_select">
     Sõnastiku valik
   </button>
-  <div id="dataset_select" class="collapse">
-    <button class="btn btn-primary btn-sm mt-2" type="button" onclick="selectDatasets(true)">Vali kõik</button>
-    <button class="btn btn-primary btn-sm mt-2" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
-    <div class="form-check mt-2" th:each="dataset : ${allDatasets}">
-      <input class="form-check-input" type="checkbox" th:value="${dataset.code}" th:name="selectedDatasets" th:checked="${#lists.contains(sessionBean.selectedDatasets, dataset.code)}">
-      <label class="form-check-label" th:text="${dataset.name}">Default checkbox</label>
+  <div id="datasetSelectDlg" class="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-body">
+            <button class="btn btn-secondary btn-sm" type="button" onclick="selectDatasets(true)">Vali kõik</button>
+            <button class="btn btn-secondary btn-sm" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
+            <div class="mt-3" style="max-height: calc(100vh - 14rem); overflow-y: auto;">
+              <div class="form-check mt-1" th:each="dataset : ${allDatasets}">
+                <input class="form-check-input" type="checkbox" th:value="${dataset.code}" th:name="selectedDatasets" th:checked="${#lists.contains(sessionBean.selectedDatasets, dataset.code)}">
+                <label class="form-check-label" th:text="${dataset.name}">Default checkbox</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Vali</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+      </div>
     </div>
   </div>
 </th:block>

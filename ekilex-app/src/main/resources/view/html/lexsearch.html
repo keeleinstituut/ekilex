@@ -23,7 +23,7 @@
       <div th:text="#{lex.not.found}">Not found.</div>
     </div>
 
-    <div class="row no-gutters mt-2">
+    <div class="row no-gutters mt-2" th:unless="${noResults}">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
         <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
           <div class="card-body p-2">
