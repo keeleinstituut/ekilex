@@ -78,6 +78,7 @@ public class UserService {
 		return StringUtils.length(password) >= MIN_PASSWORD_LENGTH && StringUtils.equals(password, password2);
 	}
 
+	@Transactional
 	public void submitUserApplication(List<String> datasets, String comment) {
 		Long userId = userContext.getUser().getId();
 		String[] datasetArr = null;

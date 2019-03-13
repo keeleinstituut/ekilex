@@ -1,6 +1,6 @@
 package eki.ekilex.data;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
@@ -19,7 +19,9 @@ public class EkiUserApplication extends AbstractDataObject {
 
 	private Boolean approved;
 
-	private Date created;
+	private Timestamp created;
+
+	private boolean basicApplication;
 
 	public Long getUserId() {
 		return userId;
@@ -61,12 +63,20 @@ public class EkiUserApplication extends AbstractDataObject {
 		this.approved = approved;
 	}
 
-	public Date getCreated() {
+	public Timestamp getCreated() {
 		return created;
 	}
 
-	public void setCreated(Date created) {
+	public void setCreated(Timestamp created) {
 		this.created = created;
+	}
+
+	public boolean isBasicApplication() {
+		return basicApplication;
+	}
+
+	public void setBasicApplication(boolean basicApplication) {
+		this.basicApplication = basicApplication;
 	}
 
 }

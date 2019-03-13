@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record8;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.service.db.AbstractDbService;
@@ -33,8 +35,8 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER.EMAIL,
 						EKI_USER.PASSWORD,
 						EKI_USER.ACTIVATION_KEY,
-						EKI_USER.IS_ENABLED,
-						EKI_USER.IS_ADMIN,
+						EKI_USER.IS_ENABLED.as("enabled"),
+						EKI_USER.IS_ADMIN.as("admin"),
 						EKI_USER.IS_APPROVED.as("approved")
 						)
 				.from(EKI_USER)
@@ -77,16 +79,22 @@ public class UserDbService extends AbstractDbService {
 
 	public List<EkiUserApplication> getUserApplications(Long userId) {
 
+		Field<Boolean> basicApplicationField = DSL.field(
+				EKI_USER_APPLICATION.DATASETS.isNull()
+				.and(DSL.or(EKI_USER_APPLICATION.COMMENT.isNull(), EKI_USER_APPLICATION.COMMENT.eq(""))));
+
 		return create
 				.select(
 						EKI_USER_APPLICATION.USER_ID,
 						EKI_USER_APPLICATION.DATASETS.as("dataset_codes"),
 						EKI_USER_APPLICATION.COMMENT,
 						EKI_USER_APPLICATION.IS_APPROVED.as("approved"),
-						EKI_USER_APPLICATION.CREATED
+						EKI_USER_APPLICATION.CREATED,
+						basicApplicationField.as("basic_application")
 						)
 				.from(EKI_USER_APPLICATION)
 				.where(EKI_USER_APPLICATION.USER_ID.eq(userId))
 				.fetchInto(EkiUserApplication.class);
 	}
+
 }

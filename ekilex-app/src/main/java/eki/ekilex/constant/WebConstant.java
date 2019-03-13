@@ -20,6 +20,10 @@ public interface WebConstant {
 
 	String APPLY_URI = "/apply";
 
+	String PERMISSIONS_PAGE = "permissions";
+
+	String PERMISSIONS_URI = "/permissions";
+
 	String REST_SERVICES_URI = "/data";
 
 	String VIEW_RESOURCES_URI = "/view";

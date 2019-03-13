@@ -3,17 +3,24 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.Tables.EKI_USER;
+import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.FreeformType;
+import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUserPermData;
 
 @Component
 public class PermissionDbService {
@@ -22,6 +29,49 @@ public class PermissionDbService {
 
 	public PermissionDbService(DSLContext context) {
 		create = context;
+	}
+
+	public List<EkiUserPermData> getUsers() {
+
+		Field<Boolean> approvingPendingField = DSL.field(
+				EKI_USER.IS_APPROVED.isNull()
+				.andExists(DSL
+						.select(EKI_USER_APPLICATION.ID)
+						.from(EKI_USER_APPLICATION)
+						.where(EKI_USER_APPLICATION.USER_ID.eq(EKI_USER.ID))));
+
+		return create
+				.select(
+						EKI_USER.ID,
+						EKI_USER.NAME,
+						EKI_USER.EMAIL,
+						EKI_USER.IS_ENABLED.as("enabled"),
+						EKI_USER.IS_ADMIN.as("admin"),
+						EKI_USER.IS_APPROVED.as("approved"),
+						approvingPendingField.as("approving_pending")
+						)
+				.from(EKI_USER)
+				.orderBy(EKI_USER.ID)
+				.fetchInto(EkiUserPermData.class);
+	}
+
+	public List<DatasetPermission> getUserDatasetPermissions(Long userId) {
+
+		return create
+				.select(
+						DATASET_PERMISSION.DATASET_CODE,
+						DATASET_PERMISSION.AUTH_OPERATION,
+						DATASET_PERMISSION.AUTH_ITEM,
+						DATASET_PERMISSION.AUTH_LANG
+						)
+				.from(DATASET_PERMISSION)
+				.where(DATASET_PERMISSION.USER_ID.eq(userId))
+				.orderBy(
+						DATASET_PERMISSION.DATASET_CODE,
+						DATASET_PERMISSION.AUTH_OPERATION,
+						DATASET_PERMISSION.AUTH_ITEM,
+						DATASET_PERMISSION.AUTH_LANG)
+				.fetchInto(DatasetPermission.class);
 	}
 
 	public boolean isGrantedForLexeme(Long userId, Long lexemeId, AuthorityOperation authOp, AuthorityItem authItem) {

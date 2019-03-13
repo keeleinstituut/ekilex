@@ -94,10 +94,6 @@ public class EkiUser implements Principal, Serializable {
 		this.approved = approved;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	@Override
 	public boolean equals(Object object) {
 		return EqualsBuilder.reflectionEquals(this, object, HIDDEN_FIELD_NAMES);
