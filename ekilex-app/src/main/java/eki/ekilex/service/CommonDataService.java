@@ -29,7 +29,7 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Dataset> getDatasets() {
-		return commonDataDbService.getDatasets().into(Dataset.class);
+		return commonDataDbService.getDatasets();
 	}
 
 	@Transactional

@@ -12,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.EkiUser;
@@ -35,30 +34,24 @@ public class EkilexAuthenticationManager implements AuthenticationManager {
 		String providedEmail = authentication.getPrincipal().toString();
 		String providedPassword = authentication.getCredentials().toString();
 
-		EkiUser user;
-		try {
-			user = userService.getUserByEmail(providedEmail);
-			if (!userService.isActiveUser(user)) {
-				user = null;
-			}
-		} catch (Exception e) {
-			logger.error("Error at finding the user", e);
-			return null;
-		}
+		EkiUser user = userService.getUserByEmail(providedEmail);
 		if (user == null) {
-			logger.info("No such user \"{}\"", providedEmail);
+			logger.info("No such user: \"{}\"", providedEmail);
 			throw new BadCredentialsException("No such user exists");
+		}
+		if (!userService.isActiveUser(user)) {
+			logger.info("User not activated: \"{}\"", providedEmail);
+			throw new BadCredentialsException("User not activated");
 		}
 		String existingPassword = user.getPassword();
 		boolean isPasswordMatch = passwordEncoder.matches(providedPassword, existingPassword);
 		if (isPasswordMatch) {
-			logger.info("Successful authentication for user \"{}\"", providedEmail);
-			//Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(user.getRoles());
-			Collection<GrantedAuthority> authorities = CollectionUtils.emptyCollection();
+			logger.info("Successful authentication for user: \"{}\"", providedEmail);
+			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, existingPassword, authorities);
 			return authenticationToken;
 		}
-		logger.info("Incorrect password for user \"{}\"", providedEmail);
+		logger.info("Incorrect password for user: \"{}\"", providedEmail);
 		throw new BadCredentialsException("Incorrect credentials");
 	}
 

@@ -1,16 +1,18 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.EKI_USER;
-import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
+import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.jooq.DSLContext;
-import org.jooq.Record5;
+import org.jooq.Record8;
 import org.springframework.stereotype.Component;
 
 import eki.common.service.db.AbstractDbService;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
 
 @Component
@@ -24,13 +26,17 @@ public class UserDbService extends AbstractDbService {
 
 	public EkiUser getUserByEmail(String email) {
 
-		Optional<Record5<Long,String,String,String,String>> optionalResult = create
+		Optional<Record8<Long, String, String, String, String, Boolean, Boolean, Boolean>> optionalResult = create
 				.select(
 						EKI_USER.ID,
 						EKI_USER.NAME,
 						EKI_USER.EMAIL,
 						EKI_USER.PASSWORD,
-						EKI_USER.ACTIVATION_KEY)
+						EKI_USER.ACTIVATION_KEY,
+						EKI_USER.IS_ENABLED,
+						EKI_USER.IS_ADMIN,
+						EKI_USER.IS_APPROVED.as("approved")
+						)
 				.from(EKI_USER)
 				.where(EKI_USER.EMAIL.eq(email))
 				.fetchOptional();
@@ -61,4 +67,26 @@ public class UserDbService extends AbstractDbService {
 		}
 	}
 
+	public void createUserApplication(Long userId, String[] datasets, String comment) {
+
+		create
+			.insertInto(EKI_USER_APPLICATION, EKI_USER_APPLICATION.USER_ID, EKI_USER_APPLICATION.DATASETS, EKI_USER_APPLICATION.COMMENT)
+			.values(userId, datasets, comment)
+			.execute();
+	}
+
+	public List<EkiUserApplication> getUserApplications(Long userId) {
+
+		return create
+				.select(
+						EKI_USER_APPLICATION.USER_ID,
+						EKI_USER_APPLICATION.DATASETS.as("dataset_codes"),
+						EKI_USER_APPLICATION.COMMENT,
+						EKI_USER_APPLICATION.IS_APPROVED.as("approved"),
+						EKI_USER_APPLICATION.CREATED
+						)
+				.from(EKI_USER_APPLICATION)
+				.where(EKI_USER_APPLICATION.USER_ID.eq(userId))
+				.fetchInto(EkiUserApplication.class);
+	}
 }

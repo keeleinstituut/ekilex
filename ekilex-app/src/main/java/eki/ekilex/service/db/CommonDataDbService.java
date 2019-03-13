@@ -41,12 +41,12 @@ import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record18;
-import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Record5;
@@ -64,6 +64,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.DbConstant;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
@@ -81,8 +82,8 @@ public class CommonDataDbService implements DbConstant {
 		return create.select().from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
-	public Result<Record2<String, String>> getDatasets() {
-		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).orderBy(DATASET.ORDER_BY).fetch();
+	public List<Dataset> getDatasets() {
+		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
 	}
 
 	public Result<Record3<String,String,String>> getLanguages(String classifierLabelLang, String classifierLabelTypeCode) {

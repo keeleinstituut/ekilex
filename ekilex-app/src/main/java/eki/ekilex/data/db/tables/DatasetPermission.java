@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
 
-    private static final long serialVersionUID = -574759374;
+    private static final long serialVersionUID = 1446955327;
 
     /**
      * The reference instance of <code>public.dataset_permission</code>
@@ -56,6 +57,11 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
     }
 
     /**
+     * The column <code>public.dataset_permission.id</code>.
+     */
+    public final TableField<DatasetPermissionRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('dataset_permission_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
      * The column <code>public.dataset_permission.dataset_code</code>.
      */
     public final TableField<DatasetPermissionRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
@@ -63,7 +69,7 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
     /**
      * The column <code>public.dataset_permission.user_id</code>.
      */
-    public final TableField<DatasetPermissionRecord, Long> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<DatasetPermissionRecord, Long> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.dataset_permission.auth_operation</code>.
@@ -126,7 +132,23 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DATASET_PERM_DATASET_CODE_IDX, Indexes.DATASET_PERM_USER_ID_IDX, Indexes.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY);
+        return Arrays.<Index>asList(Indexes.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY, Indexes.DATASET_PERMISSION_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<DatasetPermissionRecord, Long> getIdentity() {
+        return Keys.IDENTITY_DATASET_PERMISSION;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<DatasetPermissionRecord> getPrimaryKey() {
+        return Keys.DATASET_PERMISSION_PKEY;
     }
 
     /**
@@ -134,7 +156,7 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
      */
     @Override
     public List<UniqueKey<DatasetPermissionRecord>> getKeys() {
-        return Arrays.<UniqueKey<DatasetPermissionRecord>>asList(Keys.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY);
+        return Arrays.<UniqueKey<DatasetPermissionRecord>>asList(Keys.DATASET_PERMISSION_PKEY, Keys.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY);
     }
 
     /**
@@ -142,15 +164,11 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
      */
     @Override
     public List<ForeignKey<DatasetPermissionRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DatasetPermissionRecord, ?>>asList(Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY, Keys.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY, Keys.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY);
+        return Arrays.<ForeignKey<DatasetPermissionRecord, ?>>asList(Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY, Keys.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY);
     }
 
     public Dataset dataset() {
         return new Dataset(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY);
-    }
-
-    public EkiUser ekiUser() {
-        return new EkiUser(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY);
     }
 
     public Language language() {

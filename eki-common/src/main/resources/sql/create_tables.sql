@@ -4,11 +4,25 @@ create table eki_user
   name text not null,
   email text not null,
   password text not null,
-  created timestamp not null default statement_timestamp(),
   activation_key varchar(60),
+  is_enabled boolean default false,
+  is_admin boolean default false,
+  is_approved boolean,
+  created timestamp not null default statement_timestamp(),
   unique(email)
 );
 alter sequence eki_user_id_seq restart with 10000;
+
+create table eki_user_application
+(
+  id bigserial primary key,
+  user_id bigint references eki_user(id) on delete cascade not null,
+  datasets varchar(10) array null,
+  comment text null,
+  is_approved boolean,
+  created timestamp not null default statement_timestamp()
+);
+alter sequence eki_user_application_id_seq restart with 10000;
 
 ---------------------------------
 -- klassifitseeritud andmestik --
@@ -370,13 +384,15 @@ create table dataset
 
 create table dataset_permission
 (
+  id bigserial primary key,
   dataset_code varchar(10) references dataset(code) on delete cascade not null,
-  user_id bigint references eki_user(id) on delete cascade null,
+  user_id bigint references eki_user(id) on delete cascade not null,
   auth_operation varchar(100) not null,
   auth_item varchar(100) not null,
   auth_lang char(3) references language(code) null,
-  unique(dataset_code, user_id, auth_operation, auth_item)
+  unique(dataset_code, user_id, auth_operation, auth_item, auth_lang)
 );
+alter sequence dataset_permission_id_seq restart with 10000;
 
 -- vabavorm
 create table freeform

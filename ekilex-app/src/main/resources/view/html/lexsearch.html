@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{lex.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
@@ -65,7 +65,8 @@
       <button id="refresh-details" hidden th:data-id="${wordId}" name="detailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
-          <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}">
+          <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}"
+               th:with="isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''auth:MAIN'')')}">
 
             <div class="card-body" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}" data-lexeme-title>
               <button type="button" class="btn badge badge-secondary float-right btn-toggle"
@@ -185,7 +186,8 @@
                           th:data-id="${lexeme.meaningId}"
                           onclick="openEkiEditorAddDlg(this)"
                           data-btn-id="#addNewDefinition"
-                          data-toggle="modal" data-target="#addNewDefinitionDlg">
+                          data-toggle="modal" data-target="#addNewDefinitionDlg"
+                          sec:authorize="{#vars.isLexemeCrudGranted}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -206,12 +208,14 @@
                             <button type="button" class="btn badge badge-primary"
                                     th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
                                     onclick="openEkiEditorDlg(this)"
-                                    data-toggle="modal" data-target="#ekiEditorDlg">
+                                    data-toggle="modal" data-target="#ekiEditorDlg"
+                                    sec:authorize="{#vars.isLexemeCrudGranted}">
                               <i class="fa fa-edit" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="btn badge badge-warning"
                                     th:data-target-elem="${definition.id} + '_definition'"
-                                    data-toggle="delete-confirmation" data-placement="right">
+                                    data-toggle="delete-confirmation" data-placement="right"
+                                    sec:authorize="{#vars.isLexemeCrudGranted}">
                               <i class="fa fa-remove" aria-hidden="true"></i>
                             </button>
                           </div>

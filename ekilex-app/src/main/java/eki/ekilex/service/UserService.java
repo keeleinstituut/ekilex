@@ -1,15 +1,23 @@
 package eki.ekilex.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.util.CodeGenerator;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserApplication;
+import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.UserDbService;
+import eki.ekilex.web.util.UserContext;
 
 @Component
 public class UserService {
@@ -18,10 +26,16 @@ public class UserService {
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
 
+	private UserContext userContext;
+
 	private UserDbService userDbService;
 
-	public UserService(UserDbService userDbService) {
+	private CommonDataDbService commonDataDbService;
+
+	public UserService(UserContext userContext, UserDbService userDbService, CommonDataDbService commonDataDbService) {
+		this.userContext = userContext;
 		this.userDbService = userDbService;
+		this.commonDataDbService = commonDataDbService;
 	}
 
 	@Transactional
@@ -64,4 +78,32 @@ public class UserService {
 		return StringUtils.length(password) >= MIN_PASSWORD_LENGTH && StringUtils.equals(password, password2);
 	}
 
+	public void submitUserApplication(List<String> datasets, String comment) {
+		Long userId = userContext.getUser().getId();
+		String[] datasetArr = null;
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetArr = datasets.toArray(new String[datasets.size()]);
+		}
+		userDbService.createUserApplication(userId, datasetArr, comment);
+	}
+
+	@Transactional
+	public List<EkiUserApplication> getUserApplications() {
+		Long userId = userContext.getUser().getId();
+		List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);
+		List<Dataset> allDatasets = commonDataDbService.getDatasets();
+		for (EkiUserApplication userApplication : userApplications) {
+			List<String> userApplicationDatasetCodes = userApplication.getDatasetCodes();
+			if (CollectionUtils.isNotEmpty(userApplicationDatasetCodes)) {
+				List<Dataset> userApplicationDatasets = new ArrayList<>();
+				userApplication.setDatasets(userApplicationDatasets);
+				for (Dataset dataset : allDatasets) {
+					if (userApplicationDatasetCodes.contains(dataset.getCode())) {
+						userApplicationDatasets.add(dataset);
+					}
+				}
+			}
+		}
+		return userApplications;
+	}
 }

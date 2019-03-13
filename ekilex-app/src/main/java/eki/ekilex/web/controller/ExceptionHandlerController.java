@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,8 +34,13 @@ public class ExceptionHandlerController implements WebConstant {
 			throw exception;
 		}
 
-		String errorId = "ERR-ID:" + CodeGenerator.generateUniqueId();
-		logger.error(errorId, exception);
+		String errorId = "ERR-ID: " + CodeGenerator.generateUniqueId();
+
+		if (exception instanceof AccessDeniedException) {
+			logger.error(errorId + " ({})", exception.getMessage());
+		} else {
+			logger.error(errorId, exception);
+		}
 
 		modelAndView = new ModelAndView();
 		modelAndView.addObject("errorName", exception.getMessage());

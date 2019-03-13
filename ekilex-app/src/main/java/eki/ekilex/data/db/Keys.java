@@ -21,6 +21,7 @@ import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
+import eki.ekilex.data.db.tables.EkiUserApplication;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
@@ -105,6 +106,7 @@ import eki.ekilex.data.db.tables.records.DisplayMorphLabelRecord;
 import eki.ekilex.data.db.tables.records.DisplayMorphRecord;
 import eki.ekilex.data.db.tables.records.DomainLabelRecord;
 import eki.ekilex.data.db.tables.records.DomainRecord;
+import eki.ekilex.data.db.tables.records.EkiUserApplicationRecord;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
 import eki.ekilex.data.db.tables.records.EtymologyTypeRecord;
 import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
@@ -205,6 +207,7 @@ public class Keys {
     public static final Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Identities0.IDENTITY_COLLOCATION;
     public static final Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Identities0.IDENTITY_COLLOCATION_FREEFORM;
     public static final Identity<DatasetRecord, Long> IDENTITY_DATASET = Identities0.IDENTITY_DATASET;
+    public static final Identity<DatasetPermissionRecord, Long> IDENTITY_DATASET_PERMISSION = Identities0.IDENTITY_DATASET_PERMISSION;
     public static final Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Identities0.IDENTITY_DEFINITION;
     public static final Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Identities0.IDENTITY_DEFINITION_FREEFORM;
     public static final Identity<DefinitionSourceLinkRecord, Long> IDENTITY_DEFINITION_SOURCE_LINK = Identities0.IDENTITY_DEFINITION_SOURCE_LINK;
@@ -212,6 +215,7 @@ public class Keys {
     public static final Identity<DisplayMorphRecord, Long> IDENTITY_DISPLAY_MORPH = Identities0.IDENTITY_DISPLAY_MORPH;
     public static final Identity<DomainRecord, Long> IDENTITY_DOMAIN = Identities0.IDENTITY_DOMAIN;
     public static final Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Identities0.IDENTITY_EKI_USER;
+    public static final Identity<EkiUserApplicationRecord, Long> IDENTITY_EKI_USER_APPLICATION = Identities0.IDENTITY_EKI_USER_APPLICATION;
     public static final Identity<EtymologyTypeRecord, Long> IDENTITY_ETYMOLOGY_TYPE = Identities0.IDENTITY_ETYMOLOGY_TYPE;
     public static final Identity<FeedbackLogRecord, Long> IDENTITY_FEEDBACK_LOG = Identities0.IDENTITY_FEEDBACK_LOG;
     public static final Identity<FeedbackLogCommentRecord, Long> IDENTITY_FEEDBACK_LOG_COMMENT = Identities0.IDENTITY_FEEDBACK_LOG_COMMENT;
@@ -277,6 +281,7 @@ public class Keys {
     public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_PKEY = UniqueKeys0.COLLOCATION_FREEFORM_PKEY;
     public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = UniqueKeys0.COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<DatasetRecord> DATASET_PKEY = UniqueKeys0.DATASET_PKEY;
+    public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_PKEY = UniqueKeys0.DATASET_PERMISSION_PKEY;
     public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = UniqueKeys0.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY;
     public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = UniqueKeys0.DEFINITION_PKEY;
     public static final UniqueKey<DefinitionDatasetRecord> DEFINITION_DATASET_PKEY = UniqueKeys0.DEFINITION_DATASET_PKEY;
@@ -291,6 +296,7 @@ public class Keys {
     public static final UniqueKey<DomainLabelRecord> DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = UniqueKeys0.DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY;
     public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = UniqueKeys0.EKI_USER_PKEY;
     public static final UniqueKey<EkiUserRecord> EKI_USER_EMAIL_KEY = UniqueKeys0.EKI_USER_EMAIL_KEY;
+    public static final UniqueKey<EkiUserApplicationRecord> EKI_USER_APPLICATION_PKEY = UniqueKeys0.EKI_USER_APPLICATION_PKEY;
     public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = UniqueKeys0.ETYMOLOGY_TYPE_PKEY;
     public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = UniqueKeys0.FEEDBACK_LOG_PKEY;
     public static final UniqueKey<FeedbackLogCommentRecord> FEEDBACK_LOG_COMMENT_PKEY = UniqueKeys0.FEEDBACK_LOG_COMMENT_PKEY;
@@ -389,7 +395,6 @@ public class Keys {
     public static final ForeignKey<CollocationFreeformRecord, CollocationRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY = ForeignKeys0.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY;
     public static final ForeignKey<CollocationFreeformRecord, FreeformRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY;
     public static final ForeignKey<DatasetPermissionRecord, DatasetRecord> DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY = ForeignKeys0.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY;
-    public static final ForeignKey<DatasetPermissionRecord, EkiUserRecord> DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY = ForeignKeys0.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY;
     public static final ForeignKey<DatasetPermissionRecord, LanguageRecord> DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY = ForeignKeys0.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY;
     public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = ForeignKeys0.DEFINITION__DEFINITION_MEANING_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, LanguageRecord> DEFINITION__DEFINITION_LANG_FKEY = ForeignKeys0.DEFINITION__DEFINITION_LANG_FKEY;
@@ -411,6 +416,7 @@ public class Keys {
     public static final ForeignKey<DomainLabelRecord, DomainRecord> DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY;
     public static final ForeignKey<DomainLabelRecord, LanguageRecord> DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY;
     public static final ForeignKey<DomainLabelRecord, LabelTypeRecord> DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY;
+    public static final ForeignKey<EkiUserApplicationRecord, EkiUserRecord> EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY = ForeignKeys0.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY;
     public static final ForeignKey<FeedbackLogCommentRecord, FeedbackLogRecord> FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY = ForeignKeys0.FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY;
     public static final ForeignKey<FormRecord, ParadigmRecord> FORM__FORM_PARADIGM_ID_FKEY = ForeignKeys0.FORM__FORM_PARADIGM_ID_FKEY;
     public static final ForeignKey<FormRecord, MorphRecord> FORM__FORM_MORPH_CODE_FKEY = ForeignKeys0.FORM__FORM_MORPH_CODE_FKEY;
@@ -545,6 +551,7 @@ public class Keys {
         public static Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Internal.createIdentity(Collocation.COLLOCATION, Collocation.COLLOCATION.ID);
         public static Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Internal.createIdentity(CollocationFreeform.COLLOCATION_FREEFORM, CollocationFreeform.COLLOCATION_FREEFORM.ID);
         public static Identity<DatasetRecord, Long> IDENTITY_DATASET = Internal.createIdentity(Dataset.DATASET, Dataset.DATASET.ORDER_BY);
+        public static Identity<DatasetPermissionRecord, Long> IDENTITY_DATASET_PERMISSION = Internal.createIdentity(DatasetPermission.DATASET_PERMISSION, DatasetPermission.DATASET_PERMISSION.ID);
         public static Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Internal.createIdentity(Definition.DEFINITION, Definition.DEFINITION.ID);
         public static Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Internal.createIdentity(DefinitionFreeform.DEFINITION_FREEFORM, DefinitionFreeform.DEFINITION_FREEFORM.ID);
         public static Identity<DefinitionSourceLinkRecord, Long> IDENTITY_DEFINITION_SOURCE_LINK = Internal.createIdentity(DefinitionSourceLink.DEFINITION_SOURCE_LINK, DefinitionSourceLink.DEFINITION_SOURCE_LINK.ID);
@@ -552,6 +559,7 @@ public class Keys {
         public static Identity<DisplayMorphRecord, Long> IDENTITY_DISPLAY_MORPH = Internal.createIdentity(DisplayMorph.DISPLAY_MORPH, DisplayMorph.DISPLAY_MORPH.ORDER_BY);
         public static Identity<DomainRecord, Long> IDENTITY_DOMAIN = Internal.createIdentity(Domain.DOMAIN, Domain.DOMAIN.ORDER_BY);
         public static Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Internal.createIdentity(EkiUser.EKI_USER, EkiUser.EKI_USER.ID);
+        public static Identity<EkiUserApplicationRecord, Long> IDENTITY_EKI_USER_APPLICATION = Internal.createIdentity(EkiUserApplication.EKI_USER_APPLICATION, EkiUserApplication.EKI_USER_APPLICATION.ID);
         public static Identity<EtymologyTypeRecord, Long> IDENTITY_ETYMOLOGY_TYPE = Internal.createIdentity(EtymologyType.ETYMOLOGY_TYPE, EtymologyType.ETYMOLOGY_TYPE.ORDER_BY);
         public static Identity<FeedbackLogRecord, Long> IDENTITY_FEEDBACK_LOG = Internal.createIdentity(FeedbackLog.FEEDBACK_LOG, FeedbackLog.FEEDBACK_LOG.ID);
         public static Identity<FeedbackLogCommentRecord, Long> IDENTITY_FEEDBACK_LOG_COMMENT = Internal.createIdentity(FeedbackLogComment.FEEDBACK_LOG_COMMENT, FeedbackLogComment.FEEDBACK_LOG_COMMENT.ID);
@@ -615,7 +623,8 @@ public class Keys {
         public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_PKEY = Internal.createUniqueKey(CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_pkey", CollocationFreeform.COLLOCATION_FREEFORM.ID);
         public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_collocation_id_freeform_id_key", CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID, CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID);
         public static final UniqueKey<DatasetRecord> DATASET_PKEY = Internal.createUniqueKey(Dataset.DATASET, "dataset_pkey", Dataset.DATASET.CODE);
-        public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Internal.createUniqueKey(DatasetPermission.DATASET_PERMISSION, "dataset_permission_dataset_code_user_id_auth_operation_auth_key", DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM);
+        public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_PKEY = Internal.createUniqueKey(DatasetPermission.DATASET_PERMISSION, "dataset_permission_pkey", DatasetPermission.DATASET_PERMISSION.ID);
+        public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Internal.createUniqueKey(DatasetPermission.DATASET_PERMISSION, "dataset_permission_dataset_code_user_id_auth_operation_auth_key", DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM, DatasetPermission.DATASET_PERMISSION.AUTH_LANG);
         public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = Internal.createUniqueKey(Definition.DEFINITION, "definition_pkey", Definition.DEFINITION.ID);
         public static final UniqueKey<DefinitionDatasetRecord> DEFINITION_DATASET_PKEY = Internal.createUniqueKey(DefinitionDataset.DEFINITION_DATASET, "definition_dataset_pkey", DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID, DefinitionDataset.DEFINITION_DATASET.DATASET_CODE);
         public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_PKEY = Internal.createUniqueKey(DefinitionFreeform.DEFINITION_FREEFORM, "definition_freeform_pkey", DefinitionFreeform.DEFINITION_FREEFORM.ID);
@@ -629,6 +638,7 @@ public class Keys {
         public static final UniqueKey<DomainLabelRecord> DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Internal.createUniqueKey(DomainLabel.DOMAIN_LABEL, "domain_label_code_origin_lang_type_key", DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN, DomainLabel.DOMAIN_LABEL.LANG, DomainLabel.DOMAIN_LABEL.TYPE);
         public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_pkey", EkiUser.EKI_USER.ID);
         public static final UniqueKey<EkiUserRecord> EKI_USER_EMAIL_KEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_email_key", EkiUser.EKI_USER.EMAIL);
+        public static final UniqueKey<EkiUserApplicationRecord> EKI_USER_APPLICATION_PKEY = Internal.createUniqueKey(EkiUserApplication.EKI_USER_APPLICATION, "eki_user_application_pkey", EkiUserApplication.EKI_USER_APPLICATION.ID);
         public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = Internal.createUniqueKey(EtymologyType.ETYMOLOGY_TYPE, "etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE.CODE);
         public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = Internal.createUniqueKey(FeedbackLog.FEEDBACK_LOG, "feedback_log_pkey", FeedbackLog.FEEDBACK_LOG.ID);
         public static final UniqueKey<FeedbackLogCommentRecord> FEEDBACK_LOG_COMMENT_PKEY = Internal.createUniqueKey(FeedbackLogComment.FEEDBACK_LOG_COMMENT, "feedback_log_comment_pkey", FeedbackLogComment.FEEDBACK_LOG_COMMENT.ID);
@@ -725,7 +735,6 @@ public class Keys {
         public static final ForeignKey<CollocationFreeformRecord, CollocationRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_PKEY, CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform__collocation_freeform_collocation_id_fkey", CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID);
         public static final ForeignKey<CollocationFreeformRecord, FreeformRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform__collocation_freeform_freeform_id_fkey", CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID);
         public static final ForeignKey<DatasetPermissionRecord, DatasetRecord> DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DATASET_PKEY, DatasetPermission.DATASET_PERMISSION, "dataset_permission__dataset_permission_dataset_code_fkey", DatasetPermission.DATASET_PERMISSION.DATASET_CODE);
-        public static final ForeignKey<DatasetPermissionRecord, EkiUserRecord> DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.EKI_USER_PKEY, DatasetPermission.DATASET_PERMISSION, "dataset_permission__dataset_permission_user_id_fkey", DatasetPermission.DATASET_PERMISSION.USER_ID);
         public static final ForeignKey<DatasetPermissionRecord, LanguageRecord> DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, DatasetPermission.DATASET_PERMISSION, "dataset_permission__dataset_permission_auth_lang_fkey", DatasetPermission.DATASET_PERMISSION.AUTH_LANG);
         public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MEANING_PKEY, Definition.DEFINITION, "definition__definition_meaning_id_fkey", Definition.DEFINITION.MEANING_ID);
         public static final ForeignKey<DefinitionRecord, LanguageRecord> DEFINITION__DEFINITION_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, Definition.DEFINITION, "definition__definition_lang_fkey", Definition.DEFINITION.LANG);
@@ -747,6 +756,7 @@ public class Keys {
         public static final ForeignKey<DomainLabelRecord, DomainRecord> DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DOMAIN_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_code_fkey", DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN);
         public static final ForeignKey<DomainLabelRecord, LanguageRecord> DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_lang_fkey", DomainLabel.DOMAIN_LABEL.LANG);
         public static final ForeignKey<DomainLabelRecord, LabelTypeRecord> DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_type_fkey", DomainLabel.DOMAIN_LABEL.TYPE);
+        public static final ForeignKey<EkiUserApplicationRecord, EkiUserRecord> EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.EKI_USER_PKEY, EkiUserApplication.EKI_USER_APPLICATION, "eki_user_application__eki_user_application_user_id_fkey", EkiUserApplication.EKI_USER_APPLICATION.USER_ID);
         public static final ForeignKey<FeedbackLogCommentRecord, FeedbackLogRecord> FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FEEDBACK_LOG_PKEY, FeedbackLogComment.FEEDBACK_LOG_COMMENT, "feedback_log_comment__feedback_log_comment_feedback_log_id_fkey", FeedbackLogComment.FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID);
         public static final ForeignKey<FormRecord, ParadigmRecord> FORM__FORM_PARADIGM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PARADIGM_PKEY, Form.FORM, "form__form_paradigm_id_fkey", Form.FORM.PARADIGM_ID);
         public static final ForeignKey<FormRecord, MorphRecord> FORM__FORM_MORPH_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MORPH_PKEY, Form.FORM, "form__form_morph_code_fkey", Form.FORM.MORPH_CODE);

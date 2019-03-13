@@ -15,6 +15,7 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.service.db.LexSearchDbService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import eki.common.constant.LifecycleEntity;
@@ -48,6 +49,7 @@ public class UpdateService {
 
 	// --- UPDATE ---
 
+	@PreAuthorize("hasPermission(#id, 'USAGE', 'auth:MAIN')")
 	@Transactional
 	public void updateUsageValue(Long id, String valuePrese) {
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
@@ -81,6 +83,7 @@ public class UpdateService {
 		updateDbService.updateFreeformTextValue(id, value, null);
 	}
 
+	@PreAuthorize("hasPermission(#id, 'DEFINITION', 'auth:MAIN')")
 	@Transactional
 	public void updateDefinitionValue(Long id, String valuePrese) {
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
@@ -245,36 +248,42 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
 	}
 
+	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:MAIN')")
 	@Transactional
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Long lexemePosId = updateDbService.addLexemePos(lexemeId, posCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
 	}
 
+	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:MAIN')")
 	@Transactional
 	public void addLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = updateDbService.addLexemeDeriv(lexemeId, derivCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
 	}
 
+	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:MAIN')")
 	@Transactional
 	public void addLexemeRegister(Long lexemeId, String registerCode) {
 		Long lexemeRegisterId = updateDbService.addLexemeRegister(lexemeId, registerCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
 	}
 
+	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:MAIN')")
 	@Transactional
 	public void addGovernment(Long lexemeId, String government) {
 		Long governmentId = updateDbService.addGovernment(lexemeId, government);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, government);
 	}
 
+	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:MAIN')")
 	@Transactional
 	public void addLexemeGrammar(Long lexemeId, String value) {
 		Long grammarId = updateDbService.addLexemeGrammar(lexemeId, value);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, value);
 	}
 
+	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:MAIN;lang:#languageCode')")
 	@Transactional
 	public void addUsage(Long lexemeId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
@@ -296,12 +305,14 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
+	@PreAuthorize("hasPermission(#meaningId, 'MEANING', 'auth:MAIN')")
 	@Transactional
 	public void addMeaningDomain(Long meaningId, Classifier domain) {
 		Long meaningDomainId = updateDbService.addMeaningDomain(meaningId, domain);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
 	}
 
+	@PreAuthorize("hasPermission(#meaningId, 'MEANING', 'auth:MAIN;lang:#languageCode')")
 	@Transactional
 	public void addDefinition(Long meaningId, String valuePrese, String languageCode) {
 		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);

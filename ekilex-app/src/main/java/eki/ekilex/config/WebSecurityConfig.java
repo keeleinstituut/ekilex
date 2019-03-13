@@ -36,12 +36,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 				.loginPage(LOGIN_PAGE_URI)
 				.loginProcessingUrl(LOGIN_URI)
 				.usernameParameter("email")
-				.defaultSuccessUrl("/")
+				.defaultSuccessUrl(HOME_URI)
 				.failureUrl(LOGIN_ERROR_URI)
 				.and()
 				.logout()
 				.logoutUrl(LOGOUT_URI)
-				.logoutSuccessUrl("/")
+				.logoutSuccessUrl(HOME_URI)
 				.and()
 				.csrf().disable();
 	}

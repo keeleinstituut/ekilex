@@ -21,6 +21,7 @@ import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
+import eki.ekilex.data.db.tables.EkiUserApplication;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
@@ -139,7 +140,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 526071270;
+    private static final long serialVersionUID = -1674350408;
 
     /**
      * The reference instance of <code>public</code>
@@ -230,6 +231,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.eki_user</code>.
      */
     public final EkiUser EKI_USER = eki.ekilex.data.db.tables.EkiUser.EKI_USER;
+
+    /**
+     * The table <code>public.eki_user_application</code>.
+     */
+    public final EkiUserApplication EKI_USER_APPLICATION = eki.ekilex.data.db.tables.EkiUserApplication.EKI_USER_APPLICATION;
 
     /**
      * The table <code>public.etymology_type</code>.
@@ -670,6 +676,7 @@ public class Public extends SchemaImpl {
             Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
             Sequences.DATASET_ORDER_BY_SEQ,
+            Sequences.DATASET_PERMISSION_ID_SEQ,
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
             Sequences.DEFINITION_ORDER_BY_SEQ,
@@ -678,6 +685,7 @@ public class Public extends SchemaImpl {
             Sequences.DERIV_ORDER_BY_SEQ,
             Sequences.DISPLAY_MORPH_ORDER_BY_SEQ,
             Sequences.DOMAIN_ORDER_BY_SEQ,
+            Sequences.EKI_USER_APPLICATION_ID_SEQ,
             Sequences.EKI_USER_ID_SEQ,
             Sequences.ETYMOLOGY_TYPE_ORDER_BY_SEQ,
             Sequences.FEEDBACK_LOG_COMMENT_ID_SEQ,
@@ -777,6 +785,7 @@ public class Public extends SchemaImpl {
             Domain.DOMAIN,
             DomainLabel.DOMAIN_LABEL,
             EkiUser.EKI_USER,
+            EkiUserApplication.EKI_USER_APPLICATION,
             EtymologyType.ETYMOLOGY_TYPE,
             FeedbackLog.FEEDBACK_LOG,
             FeedbackLogComment.FEEDBACK_LOG_COMMENT,
