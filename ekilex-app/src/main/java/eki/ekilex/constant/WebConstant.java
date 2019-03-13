@@ -12,9 +12,13 @@ public interface WebConstant {
 
 	String LOGIN_PAGE = "login";
 
-	String MAIN_PAGE = "index";
+	String HOME_PAGE = "home";
 
-	String MAIN_URI = "/index";
+	String HOME_URI = "/";
+
+	String APPLY_PAGE = "apply";
+
+	String APPLY_URI = "/apply";
 
 	String REST_SERVICES_URI = "/data";
 
@@ -58,7 +62,7 @@ public interface WebConstant {
 
 	String REGISTER_PAGE = "register";
 
-	String ACTIVATION_PAGE_URI = "/register/activate";
+	String ACTIVATE_PAGE_URI = "/activate";
 
 	String COMPONENTS_PAGE = "components";
 
@@ -85,4 +89,6 @@ public interface WebConstant {
 	String USER_KEY = "user";
 
 	String SEARCH_WORD_KEY = "searchWord";
+
+	String REQUEST_START_TIME_KEY = "request_start_time";
 }

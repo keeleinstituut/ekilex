@@ -44,6 +44,11 @@ public class Sequences {
     public static final Sequence<Long> DATASET_ORDER_BY_SEQ = new SequenceImpl<Long>("dataset_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.dataset_permission_id_seq</code>
+     */
+    public static final Sequence<Long> DATASET_PERMISSION_ID_SEQ = new SequenceImpl<Long>("dataset_permission_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.definition_freeform_id_seq</code>
      */
     public static final Sequence<Long> DEFINITION_FREEFORM_ID_SEQ = new SequenceImpl<Long>("definition_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -82,6 +87,11 @@ public class Sequences {
      * The sequence <code>public.domain_order_by_seq</code>
      */
     public static final Sequence<Long> DOMAIN_ORDER_BY_SEQ = new SequenceImpl<Long>("domain_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.eki_user_application_id_seq</code>
+     */
+    public static final Sequence<Long> EKI_USER_APPLICATION_ID_SEQ = new SequenceImpl<Long>("eki_user_application_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.eki_user_id_seq</code>

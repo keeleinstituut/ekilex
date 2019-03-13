@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(_,_)">
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">
+          Teretulemast
+          <span th:text="${#authentication.name}"></span>!
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info" role="alert" th:if="${applicationNotSubmitted}">
+          <div>See on EKI sõnastikesüsteem Ekilex. Siin saad esiteda taotluse Ekilex kasutamiseks. Kui vaja, vali vastavad sõnakogud, millele soovid muutmisõigust</div>
+        </div>
+        <div class="alert alert-info" role="alert" th:if="${applicationReviewPending}">
+          <div>Sinu Ekilex kasutamise taotlus on vastu võetud ning ootab rahuldamist</div>
+        </div>
+        <div class="alert alert-warning" role="alert" th:if="${applicationDenied}">
+          <div>Sinu Ekilex kasutamise taotlus lükati tagasi</div>
+        </div>
+        <div class="container float-left w-50" th:if="${applicationNotSubmitted}">
+          <form th:action="@{/apply}" method="post">
+            <div class="row no-gutters">
+              <span class="col-10 mt-3 ml-5">
+                <a class="btn btn-outline-secondary" data-toggle="collapse" href="#datasetsSelection" role="button" aria-expanded="false" aria-controls="datasetsSelection">
+                  <span>Soovin sõnakogude muutmisõigust</span>
+                </a>
+              </span>
+            </div>
+            <div class="mt-3 collapse" id="datasetsSelection">
+              <th:block th:each="dataset : ${datasets}">
+                <div class="row no-gutters">
+                  <span class="col-1 text-right">
+                    <input type="checkbox" name="selectedDatasets" th:value="${dataset.code}" />
+                  </span>
+                  <span th:text="${dataset.code}" class="col-1 text-center"></span>
+                  <span th:text="${dataset.name}" class="col-10"></span>
+                </div>
+              </th:block>
+            </div>
+            <div class="row no-gutters">
+              <span class="col-10 mt-3 ml-5">
+                <a class="btn btn-outline-secondary" data-toggle="collapse" href="#commentSelection" role="button" aria-expanded="false" aria-controls="commentSelection">
+                  <span>Soovin põhjendada taotlust</span>
+                </a>
+              </span>
+            </div>
+            <div class="row collapse" id="commentSelection">
+              <div class="col-8 mt-3 ml-5">
+                <textarea class="form-control md-textarea" rows="3" name="applicationComment"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col mt-3 ml-5">
+                <button type="submit" class="btn btn-primary">Saada taotlus</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="container float-left w-50" th:if="${applicationReviewPending && not #lists.isEmpty(userApplications)}">
+          <div>
+            <b>Sinu sõnakogude muutmisõiguse taotlused</b>
+          </div>
+          <th:block th:each="userApplication,userApplicationIter : ${userApplications}">
+            <div class="row no-gutters mt-3">
+              <div class="col-8">
+                <th:block th:each="dataset : ${userApplication.datasets}">
+                  <div class="row no-gutters">
+                    <span th:text="${dataset.code}" class="col-1"></span>
+                    <span th:text="${dataset.name}" class="col-10"></span>
+                  </div>
+                </th:block>
+              </div>
+              <div class="col-3">
+                <span th:if="${userApplication.approved == null}" class="alert alert-info">Ootel</span>
+                <span th:if="${userApplication.approved != null}">
+                  <span th:if="${userApplication.approved == false}" class="alert alert-warning">Tagasi lükatud</span>
+                  <span th:if="${userApplication.approved == true}" class="alert alert-info">Vastuvõetud</span>
+                </span>
+              </div>
+            </div>
+            <hr class="mt-3" th:unless="${userApplicationIter.last}" />
+          </th:block>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

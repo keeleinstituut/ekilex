@@ -2,10 +2,9 @@ package eki.common.constant;
 
 public enum AuthorityItem {
 
-	WLM,
+	MAIN,
 	COMMENT,
-	COMMAND,
+	RECOMMENDATION,
 	COLLOCATION,
-	SYNONYM,
-	LANG_MATCH
+	SYNONYM
 }

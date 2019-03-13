@@ -37,6 +37,15 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	private MarkdownRenderer markdownRenderer;
 
 	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+
+		long startTime = System.currentTimeMillis();
+		request.setAttribute(REQUEST_START_TIME_KEY, startTime);
+
+		return true;
+	}
+
+	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
 		if (request.getAttribute("javax.servlet.error.status_code") != null) {
@@ -48,9 +57,6 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		if (isTraditionalMicrosoftUser(request, modelAndView)) {
 			return;
 		}
-
-		String servletPath = request.getServletPath();
-		logger.debug("Requested path: \"{}\"", servletPath);
 
 		ModelMap modelMap = modelAndView.getModelMap();
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
@@ -69,7 +75,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 			modelMap.addAttribute(MARKDOWN_RENDERER_KEY, markdownRenderer);
 		}
 
-		// add model attributes here...
+		logRequestProcessTime(request);
 	}
 
 	private boolean isTraditionalMicrosoftUser(HttpServletRequest request, ModelAndView modelAndView) {
@@ -82,5 +88,19 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 			return true;
 		}
 		return false;
+	}
+
+	private void logRequestProcessTime(HttpServletRequest request) {
+
+		String servletPath = request.getServletPath();
+		if (StringUtils.equals(servletPath, "/")) {
+			return;
+		}
+		Object requestStartTimeObj = request.getAttribute(REQUEST_START_TIME_KEY);
+		long startTime = Long.valueOf(requestStartTimeObj.toString());
+		long endTime = System.currentTimeMillis();
+		long requestTime = endTime - startTime;
+
+		logger.info("Request process time for \"{}\" - {} ms", servletPath, requestTime);
 	}
 }

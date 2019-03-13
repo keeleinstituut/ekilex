@@ -24,6 +24,12 @@ public class EkiUser implements Principal, Serializable {
 
 	private String activationKey;
 
+	private boolean enabled;
+
+	private boolean admin;
+
+	private Boolean approved;
+
 	public Long getId() {
 		return id;
 	}
@@ -62,6 +68,34 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setActivationKey(String activationKey) {
 		this.activationKey = activationKey;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
+
+	public Boolean getApproved() {
+		return approved;
+	}
+
+	public void setApproved(Boolean approved) {
+		this.approved = approved;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override

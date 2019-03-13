@@ -79,7 +79,7 @@ public class RegisterController implements WebConstant {
 		if (userService.isValidUser(email)) {
 			String encodedPassword = passwordEncoder.encode(password);
 			String activationKey = userService.generateActivationKey();
-			String activationLink = ekilexAppUrl + ACTIVATION_PAGE_URI + "/" + activationKey;
+			String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 			userService.createUser(email, name, encodedPassword, activationKey);
 			// FIXME : remove after email service is properly configured
 			if (emailService.isEnabled()) {
@@ -100,7 +100,7 @@ public class RegisterController implements WebConstant {
 		}
 	}
 
-	@GetMapping(ACTIVATION_PAGE_URI + "/{activationKey}")
+	@GetMapping(REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/{activationKey}")
 	public String activate(@PathVariable(name = "activationKey") String activationKey, Model model, RedirectAttributes attributes) {
 		EkiUser ekiUser = userService.activateUser(activationKey);
 		if (ekiUser == null) {

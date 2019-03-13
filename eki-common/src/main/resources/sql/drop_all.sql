@@ -109,7 +109,7 @@ drop table if exists language_label;
 drop table if exists language;
 drop table if exists label_type;
 drop table if exists lifecycle_log;
+drop table if exists eki_user_application;
 drop table if exists eki_user;
 
-drop type if exists type_authority;
 

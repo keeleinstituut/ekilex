@@ -1,6 +1,6 @@
 package eki.common.constant;
 
-public enum AuthorityOpration {
+public enum AuthorityOperation {
 
 	VIEW,
 	CRUD
