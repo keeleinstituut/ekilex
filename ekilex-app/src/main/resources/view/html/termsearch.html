@@ -186,12 +186,24 @@
                 <th:block th:if="${definitionLangGroup.selected}" th:each="definition : ${definitionLangGroup.definitions}">
                   <div class="ml-4" style="position: relative">
                     <div style="display: list-item; position: absolute"></div>
-                    <div class="hidden-buttons action-buttons-anchor">
+                    <div class="invisible-buttons action-buttons-anchor">
                       <div th:name="${definition.id} + '_definition'"
                             th:data-id="${definition.id}"
                             th:data-op-code="definition"
                             th:data-value="${definition.value}"
-                            th:utext="${definition.value}"></div>
+                            th:utext="${definition.value}"
+                           class="d-inline-block"></div>
+                      <div th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover">
+                        [
+                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                                th:data-id="${definition.id}"
+                                th:data-op-code="def_source_link"
+                                onclick="openAddSourceLinkDlg(this)"
+                                data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                          <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                        ]
+                      </div>
                       <div class="action-buttons-2">
                         <button type="button" class="btn badge badge-primary"
                                 th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
@@ -207,7 +219,6 @@
                       </div>
                     </div>
                     <div class="hidden-buttons">
-                      <span th:unless="${not #lists.isEmpty(definition.sourceLinks)}">[]</span>
                       <span th:each="sourceLink : ${definition.sourceLinks}" th:if="${not #lists.isEmpty(definition.sourceLinks)}">
                         [
                         <a th:href="@{'/def_source_link:' + ${sourceLink.id}}"
@@ -470,9 +481,9 @@
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.usages)}" class="col pl-0">
                     <th:block th:each="usage : ${lexeme.usages}">
-                      <div class="hidden-buttons action-buttons-anchor">
+                      <div class="invisible-buttons action-buttons-anchor">
                         <div style="display: list-item; position: absolute"></div>
-                        <div>
+                        <div class="d-inline-block">
                           <span th:name="${usage.id} + '_usage'"
                                 th:data-id="${usage.id}"
                                 th:data-op-code="usage"
@@ -498,6 +509,19 @@
                             )
                           </span>
                         </div>
+                        <div class="show-on-mouseover" th:if="${#lists.isEmpty(usage.sourceLinks)}">
+                          <span>
+                            [
+                            <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                                    th:data-id="${usage.id}"
+                                    th:data-op-code="ff_source_link"
+                                    onclick="openAddSourceLinkDlg(this)"
+                                    data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                              <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            ]
+                          </span>
+                        </div>
                         <div class="action-buttons-2">
                           <button type="button" class="btn badge badge-primary"
                                   th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
@@ -513,7 +537,6 @@
                         </div>
                       </div>
                       <div class="hidden-buttons">
-                        <span th:if="${#lists.isEmpty(usage.sourceLinks)}">[]</span>
                         <span th:each="sourceLink : ${usage.sourceLinks}">
                           [
                           <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"

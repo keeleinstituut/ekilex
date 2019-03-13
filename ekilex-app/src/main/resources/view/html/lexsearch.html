@@ -442,13 +442,13 @@
                         <table th:each="usage,usageIter : ${lexeme.usages}" class="border">
                           <tr>
                             <td class="invisible-buttons">
-                              <div style="display: inline-block"
+                              <div class="d-inline-block"
                                 th:name="${usage.id} + '_usage'"
                                    th:data-id="${usage.id}"
                                    th:data-op-code="usage"
                                    th:data-value="${usage.value}"
                                    th:utext="${usage.value}"></div>
-                              <div style="display: inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
+                              <div class="d-inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
                               <div th:if="${#lists.isEmpty(usage.authors)}" class="show-on-mouseover">
                                 (
                                 <button type="button" class="btn badge badge-success hidden" title="Lisa autor/tõlkija"
@@ -459,7 +459,7 @@
                                 </button>
                                 )
                               </div>
-                              <div style="display: inline-block" th:if="${not #lists.isEmpty(usage.authors)}">
+                              <div class="d-inline-block" th:if="${not #lists.isEmpty(usage.authors)}">
                                 (
                                 <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
                                   <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
@@ -485,7 +485,7 @@
                                 </button>
                                 )
                               </div>
-                              <div style="display: inline-block" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                              <div class="d-inline-block" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
                                 [
                                 <span th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}">
                                   <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
