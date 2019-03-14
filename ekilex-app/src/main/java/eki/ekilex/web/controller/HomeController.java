@@ -1,8 +1,15 @@
 package eki.ekilex.web.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Dataset;
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserApplication;
+import eki.ekilex.data.StatData;
+import eki.ekilex.data.StatDataRow;
+import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.StatDataService;
+import eki.ekilex.service.UserService;
+import eki.ekilex.web.util.UserContext;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Dataset;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.EkiUserApplication;
-import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.UserService;
-import eki.ekilex.web.util.UserContext;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ConditionalOnWebApplication
 @Controller
@@ -40,11 +42,15 @@ public class HomeController implements WebConstant {
 	@Autowired
 	private UserContext userContext;
 
+	@Autowired
+	private StatDataService statDataService;
+
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
 		EkiUser user = userContext.getUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
-			return HOME_PAGE;			
+			populateStatData(model);
+			return HOME_PAGE;
 		}
 		populateUserApplicationData(user, model);
 		return APPLY_PAGE;
@@ -73,6 +79,7 @@ public class HomeController implements WebConstant {
 
 		EkiUser user = userContext.getUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
+			populateStatData(model);
 			return HOME_PAGE;			
 		}
 		userService.submitUserApplication(selectedDatasets, applicationComment);
@@ -95,6 +102,19 @@ public class HomeController implements WebConstant {
 		model.addAttribute("applicationReviewPending", applicationReviewPending);
 		model.addAttribute("applicationDenied", applicationDenied);
 		model.addAttribute("userApplications", userApplications);
+	}
+
+	private void populateStatData(Model model) {
+
+		StatData mainEntityStatData = statDataService.getMainEntityStatData();
+		List<StatDataRow> freeformStatData = statDataService.getFreeformStatData();
+		List<StatDataRow> lexemeDatasetStatData = statDataService.getLexemeDatasetStatData();
+		List<StatDataRow> lifecycleUserStatData = statDataService.getLifecycleUserStatData();
+
+		model.addAttribute("mainEntityStatData", mainEntityStatData);
+		model.addAttribute("freeformStatData", freeformStatData);
+		model.addAttribute("lexemeDatasetStatData", lexemeDatasetStatData);
+		model.addAttribute("lifecycleUserStatData", lifecycleUserStatData);
 	}
 
 	@GetMapping("/loginerror")

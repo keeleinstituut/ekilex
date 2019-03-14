@@ -8,6 +8,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.nio.charset.StandardCharsets;
@@ -15,6 +16,7 @@ import java.time.Duration;
 
 @SpringBootApplication(scanBasePackages = {"eki.common", "eki.ekilex"})
 @EnableTransactionManagement
+@EnableScheduling
 public class EkilexApplication {
 
 	@Value("${tomcat.ajp.port:0}")

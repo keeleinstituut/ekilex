@@ -28,5 +28,124 @@
       </div>
     </div>
   </div>
+
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <button class="btn btn-secondary" data-toggle="collapse" data-target="#statData">Statistika</button>
+      </div>
+      <div id="statData" class="collapse">
+        <div class="card-body">
+          <table class="table table-striped table-condensed">
+            <tr>
+              <th>Sõnakogusid</th>
+              <th>Keelendeid</th>
+              <th>Ilmikuid</th>
+              <th>Mõisteid</th>
+              <th>Definitsioone</th>
+              <th>Paradigmasid</th>
+              <th>Vorme</th>
+              <th>Kollokatsioone</th>
+              <th>Allikaid</th>
+            </tr>
+            <tr>
+              <td th:text="${mainEntityStatData.datasetCount}"></td>
+              <td th:text="${mainEntityStatData.wordCount}"></td>
+              <td th:text="${mainEntityStatData.lexemeCount}"></td>
+              <td th:text="${mainEntityStatData.meaningCount}"></td>
+              <td th:text="${mainEntityStatData.definitionCount}"></td>
+              <td th:text="${mainEntityStatData.paradigmCount}"></td>
+              <td th:text="${mainEntityStatData.formCount}"></td>
+              <td th:text="${mainEntityStatData.collocationCount}"></td>
+              <td th:text="${mainEntityStatData.sourceCount}"></td>
+            </tr>
+            <tr>
+              <th>Keeli</th>
+              <th>Valdkondi</th>
+              <th>Sõnaliike</th>
+              <th>Vormi märgendeid</th>
+              <th>Registreid</th>
+              <th>Aspekte</th>
+              <th>Tuletuskoode</th>
+              <th>Sugusid</th>
+            </tr>
+            <tr>
+              <td th:text="${mainEntityStatData.languageCount}"></td>
+              <td th:text="${mainEntityStatData.domainCount}"></td>
+              <td th:text="${mainEntityStatData.posCount}"></td>
+              <td th:text="${mainEntityStatData.morphCount}"></td>
+              <td th:text="${mainEntityStatData.registerCount}"></td>
+              <td th:text="${mainEntityStatData.aspectCount}"></td>
+              <td th:text="${mainEntityStatData.derivCount}"></td>
+              <td th:text="${mainEntityStatData.genderCount}"></td>
+            </tr>
+          </table>
+
+          <div class="card-body">
+            <table th:with="columns=${6}" class="table table-striped table-condensed">
+              <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(freeformStatData) - 1, columns)}">
+                <tr>
+                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                    <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}"
+                        th:text="#{|enum.freeform.type.${freeformStatData[firstRowItemIndex + rowItemCount].name}|}">
+                    </th>
+                  </th:block>
+                </tr>
+                <tr>
+                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                    <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}"
+                        th:text="${freeformStatData[firstRowItemIndex + rowItemCount].rowCount}">
+                    </td>
+                  </th:block>
+                </tr>
+              </th:block>
+            </table>
+          </div>
+
+          <div class="card-body">
+            <table th:with="columns=${15}" class="table table-striped table-condensed">
+              <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(lexemeDatasetStatData) - 1, columns)}">
+                <tr>
+                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                    <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lexemeDatasetStatData)}"
+                        th:text="${lexemeDatasetStatData[firstRowItemIndex + rowItemCount].name}">
+                    </th>
+                  </th:block>
+                </tr>
+                <tr>
+                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                    <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lexemeDatasetStatData)}"
+                        th:text="${lexemeDatasetStatData[firstRowItemIndex + rowItemCount].rowCount}">
+                    </td>
+                  </th:block>
+                </tr>
+              </th:block>
+            </table>
+          </div>
+
+          <div class="card-body">
+            <table th:with="columns=${15}" class="table table-striped table-condensed">
+              <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(lifecycleUserStatData) - 1, columns)}">
+                <tr>
+                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                    <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lifecycleUserStatData)}"
+                        th:text="${lifecycleUserStatData[firstRowItemIndex + rowItemCount].name}">
+                    </th>
+                  </th:block>
+                </tr>
+                <tr>
+                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                    <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lifecycleUserStatData)}"
+                        th:text="${lifecycleUserStatData[firstRowItemIndex + rowItemCount].rowCount}">
+                    </td>
+                  </th:block>
+                </tr>
+              </th:block>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
