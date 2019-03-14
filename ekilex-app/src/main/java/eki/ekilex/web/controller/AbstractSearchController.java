@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.SearchKey;
-import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.Dataset;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
@@ -28,7 +26,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
-public abstract class AbstractSearchController implements WebConstant {
+public abstract class AbstractSearchController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractSearchController.class);
 
@@ -37,16 +35,6 @@ public abstract class AbstractSearchController implements WebConstant {
 
 	@Autowired
 	protected SearchHelper searchHelper;
-
-	@ModelAttribute("allDatasets")
-	public List<Dataset> getAllDatasets() {
-		return commonDataService.getDatasets();
-	}
-
-	@ModelAttribute("allLanguages")
-	public List<Classifier> getAllLanguages() {
-		return commonDataService.getLanguages();
-	}
 
 	@ModelAttribute("domains")
 	public Map<String,List<Classifier>> getDomainsInUse() {

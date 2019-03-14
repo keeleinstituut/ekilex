@@ -37,5 +37,5 @@ $(document).on("click", ":input[name='userAdminCheck']", function() {
 function openAddDatasetPermissionDlg(elem) {
 	var userId = $(elem).data('id');
 	var addDlg = $($(elem).data('target'));
-    //addDlg.find('[name=user-id]').val(userId);
+	$("#datasetPermUserId").val(userId);
 }

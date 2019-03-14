@@ -62,13 +62,14 @@
                     </td>
                     <td class="m-1 p-1">
                       <th:block th:each="datasetPerm,datasetPermIter : ${userPerm.datasetPermissions}">
-                        <span th:text="${datasetPerm.datasetCode}"></span>
-                        <span th:text="${datasetPerm.authOperation}"></span>
-                        <span th:text="${datasetPerm.authItem}"></span>
-                        <span th:if="${datasetPerm.authLang != null}">
-                          <span th:text="${datasetPerm.authLang}"></span>
-                        </span>
-                        <span th:unless="${datasetPermIter.last}">,</span>
+                        <div>
+                          <span th:text="${datasetPerm.datasetCode}"></span>
+                          <span th:text="${datasetPerm.authOperation}"></span>
+                          <span th:text="${datasetPerm.authItem}"></span>
+                          <span th:if="${datasetPerm.authLang != null}">
+                            <span th:text="${datasetPerm.authLang}"></span>
+                          </span>
+                        </div>
                       </th:block>
                     </td>
                   </tr>
@@ -81,11 +82,57 @@
     </div>
   </div>
   <div id="addDatasetPermissionDlg" class="modal" role="dialog">
-    <div class="modal-dialog" role="document" style="max-width: 600px;">
+    <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-body">
-          <h2>Oota veel ei saa...</h2>
-        </div>
+        <form th:action="@{/permissions/adddatasetperm}" method="post">
+          <input type="hidden" id="datasetPermUserId" name="userId"/>
+          <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-10">
+                <select class="form-control" name="datasetCode">
+                  <option value="" disabled selected>Vali</option>
+                  <option th:each="dataset : ${allDatasets}"
+                          th:value="${dataset.code}"
+                          th:text="${dataset.name}">name</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-5">
+                <select class="form-control" name="authItem">
+                  <option value="" disabled selected>Vali</option>
+                  <option th:each="authItem : ${T(eki.common.constant.AuthorityItem).values()}"
+                          th:value="${authItem}" 
+                          th:text="${authItem}">
+                  </option>
+                </select>
+              </div>
+              <div class="col-5">
+                <select class="form-control" name="authOp">
+                  <option value="" disabled selected>Vali</option>
+                  <option th:each="authOp : ${T(eki.common.constant.AuthorityOperation).values()}"
+                          th:value="${authOp}"
+                          th:text="${authOp}">
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-10">
+                <select class="form-control" name="authLang">
+                  <option value="" disabled selected>Vali</option>
+                  <option th:each="language : ${allLanguages}"
+                          th:value="${language.code}"
+                          th:text="${language.value}">language</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Lisa</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

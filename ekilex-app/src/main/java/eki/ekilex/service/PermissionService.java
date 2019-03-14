@@ -4,9 +4,13 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.AuthorityItem;
+import eki.common.constant.AuthorityOperation;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserPermData;
@@ -36,4 +40,19 @@ public class PermissionService {
 		return users;
 	}
 
+	@PreAuthorize("principal.admin")
+	@Transactional
+	public void createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
+
+		if (StringUtils.isBlank(datasetCode)) {
+			return;
+		}
+		if (authItem == null) {
+			return;
+		}
+		if (authOp == null) {
+			return;
+		}
+		permissionDbService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
+	}
 }

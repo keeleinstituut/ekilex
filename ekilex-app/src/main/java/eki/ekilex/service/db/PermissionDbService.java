@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
@@ -13,6 +14,8 @@ import java.util.List;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record5;
+import org.jooq.SelectSelectStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -63,14 +66,50 @@ public class PermissionDbService {
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG
 						)
-				.from(DATASET_PERMISSION)
-				.where(DATASET_PERMISSION.USER_ID.eq(userId))
+				.from(DATASET_PERMISSION, DATASET)
+				.where(
+						DATASET_PERMISSION.USER_ID.eq(userId)
+						.and(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE)))
 				.orderBy(
-						DATASET_PERMISSION.DATASET_CODE,
+						DATASET.ORDER_BY,
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG)
 				.fetchInto(DatasetPermission.class);
+	}
+
+	public void createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
+
+		eki.ekilex.data.db.tables.DatasetPermission edp = DATASET_PERMISSION.as("edp");
+		SelectSelectStep<Record5<Long, String, String, String, String>> select = DSL.select(
+				DSL.field(DSL.val(userId)),
+				DSL.field(DSL.val(datasetCode)),
+				DSL.field(DSL.val(authItem.name())),
+				DSL.field(DSL.val(authOp.name())),
+				DSL.field(DSL.val(authLang)));
+
+		create
+			.insertInto(
+				DATASET_PERMISSION,
+				DATASET_PERMISSION.USER_ID,
+				DATASET_PERMISSION.DATASET_CODE,
+				DATASET_PERMISSION.AUTH_ITEM,
+				DATASET_PERMISSION.AUTH_OPERATION,
+				DATASET_PERMISSION.AUTH_LANG)
+			.select(
+					select
+					.whereNotExists(DSL
+							.select(edp.ID)
+							.from(edp)
+							.where(
+									edp.USER_ID.eq(userId)
+									.and(edp.DATASET_CODE.eq(datasetCode))
+									.and(edp.AUTH_ITEM.eq(authItem.name()))
+									.and(edp.AUTH_OPERATION.eq(authOp.name()))
+									)
+							)
+					)
+			.execute();
 	}
 
 	public boolean isGrantedForLexeme(Long userId, Long lexemeId, AuthorityOperation authOp, AuthorityItem authItem) {

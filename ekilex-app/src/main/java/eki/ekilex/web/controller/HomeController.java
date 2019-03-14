@@ -1,15 +1,8 @@
 package eki.ekilex.web.controller;
 
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Dataset;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.EkiUserApplication;
-import eki.ekilex.data.StatData;
-import eki.ekilex.data.StatDataRow;
-import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.StatDataService;
-import eki.ekilex.service.UserService;
-import eki.ekilex.web.util.UserContext;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +16,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserApplication;
+import eki.ekilex.data.StatData;
+import eki.ekilex.data.StatDataRow;
+import eki.ekilex.service.StatDataService;
+import eki.ekilex.service.UserService;
+import eki.ekilex.web.util.UserContext;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class HomeController implements WebConstant {
+public class HomeController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
-	@Autowired
-	private CommonDataService commonDataService;
 
 	@Autowired
 	private UserService userService;
@@ -89,7 +85,6 @@ public class HomeController implements WebConstant {
 
 	private void populateUserApplicationData(EkiUser user, Model model) {
 
-		List<Dataset> datasets = commonDataService.getDatasets();
 		List<EkiUserApplication> userApplications = userService.getUserApplications();
 		boolean applicationNotSubmitted = (user.getEnabled() == null) && CollectionUtils.isEmpty(userApplications);
 		boolean applicationReviewPending = (user.getEnabled() == null) && CollectionUtils.isNotEmpty(userApplications);
@@ -97,7 +92,6 @@ public class HomeController implements WebConstant {
 
 		userApplications = userApplications.stream().filter(application -> CollectionUtils.isNotEmpty(application.getDatasetCodes())).collect(Collectors.toList());
 
-		model.addAttribute("datasets", datasets);
 		model.addAttribute("applicationNotSubmitted", applicationNotSubmitted);
 		model.addAttribute("applicationReviewPending", applicationReviewPending);
 		model.addAttribute("applicationDenied", applicationDenied);

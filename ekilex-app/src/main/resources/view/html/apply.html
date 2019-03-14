@@ -32,7 +32,7 @@
               </span>
             </div>
             <div class="mt-3 collapse" id="datasetsSelection">
-              <th:block th:each="dataset : ${datasets}">
+              <th:block th:each="dataset : ${allDatasets}">
                 <div class="row no-gutters">
                   <span class="col-1 text-right">
                     <input type="checkbox" name="selectedDatasets" th:value="${dataset.code}" />
