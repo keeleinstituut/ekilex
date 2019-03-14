@@ -36,6 +36,7 @@
       </div>
       <div id="statData" class="collapse">
         <div class="card-body">
+          <h3>Olemite arvud</h3>
           <table class="table table-striped table-condensed">
             <tr>
               <th>Sõnakogusid</th>
@@ -80,69 +81,65 @@
               <td th:text="${mainEntityStatData.genderCount}"></td>
             </tr>
           </table>
-
-          <div class="card-body">
-            <table th:with="columns=${6}" class="table table-striped table-condensed">
-              <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(freeformStatData) - 1, columns)}">
-                <tr>
-                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                    <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}"
-                        th:text="#{|enum.freeform.type.${freeformStatData[firstRowItemIndex + rowItemCount].name}|}">
-                    </th>
-                  </th:block>
-                </tr>
-                <tr>
-                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                    <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}"
-                        th:text="${freeformStatData[firstRowItemIndex + rowItemCount].rowCount}">
-                    </td>
-                  </th:block>
-                </tr>
-              </th:block>
-            </table>
-          </div>
-
-          <div class="card-body">
-            <table th:with="columns=${15}" class="table table-striped table-condensed">
-              <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(lexemeDatasetStatData) - 1, columns)}">
-                <tr>
-                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                    <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lexemeDatasetStatData)}"
-                        th:text="${lexemeDatasetStatData[firstRowItemIndex + rowItemCount].name}">
-                    </th>
-                  </th:block>
-                </tr>
-                <tr>
-                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                    <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lexemeDatasetStatData)}"
-                        th:text="${lexemeDatasetStatData[firstRowItemIndex + rowItemCount].rowCount}">
-                    </td>
-                  </th:block>
-                </tr>
-              </th:block>
-            </table>
-          </div>
-
-          <div class="card-body">
-            <table th:with="columns=${15}" class="table table-striped table-condensed">
-              <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(lifecycleUserStatData) - 1, columns)}">
-                <tr>
-                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                    <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lifecycleUserStatData)}"
-                        th:text="${lifecycleUserStatData[firstRowItemIndex + rowItemCount].name}">
-                    </th>
-                  </th:block>
-                </tr>
-                <tr>
-                  <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                    <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lifecycleUserStatData)}"
-                        th:text="${lifecycleUserStatData[firstRowItemIndex + rowItemCount].rowCount}">
-                    </td>
-                  </th:block>
-                </tr>
-              </th:block>
-            </table>
-          </div>
+          <hr/>
+          <table th:with="columns=${6}" class="table table-striped table-condensed">
+            <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(freeformStatData) - 1, columns)}">
+              <tr>
+                <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}"
+                      th:text="#{|enum.freeform.type.${freeformStatData[firstRowItemIndex + rowItemCount].name}|}">
+                  </th>
+                </th:block>
+              </tr>
+              <tr>
+                <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                  <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}"
+                      th:text="${freeformStatData[firstRowItemIndex + rowItemCount].rowCount}">
+                  </td>
+                </th:block>
+              </tr>
+            </th:block>
+          </table>
+          <hr/>
+          <h3>Sõnakogu lekseemide arvud</h3>
+          <table th:with="columns=${15}" class="table table-striped table-condensed">
+            <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(lexemeDatasetStatData) - 1, columns)}">
+              <tr>
+                <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lexemeDatasetStatData)}"
+                      th:text="${lexemeDatasetStatData[firstRowItemIndex + rowItemCount].name}">
+                  </th>
+                </th:block>
+              </tr>
+              <tr>
+                <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                  <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lexemeDatasetStatData)}"
+                      th:text="${lexemeDatasetStatData[firstRowItemIndex + rowItemCount].rowCount}">
+                  </td>
+                </th:block>
+              </tr>
+            </th:block>
+          </table>
+          <hr/>
+          <h3>Viimase 30 päeva tegevused</h3>
+          <table th:with="columns=${15}" class="table table-striped table-condensed">
+            <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(lifecycleUserStatData) - 1, columns)}">
+              <tr>
+                <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lifecycleUserStatData)}"
+                      th:text="${lifecycleUserStatData[firstRowItemIndex + rowItemCount].name}">
+                  </th>
+                </th:block>
+              </tr>
+              <tr>
+                <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                  <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lifecycleUserStatData)}"
+                      th:text="${lifecycleUserStatData[firstRowItemIndex + rowItemCount].rowCount}">
+                  </td>
+                </th:block>
+              </tr>
+            </th:block>
+          </table>
         </div>
       </div>
     </div>
