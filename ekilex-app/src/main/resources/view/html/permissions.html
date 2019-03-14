@@ -25,7 +25,7 @@
                   <th class="m-1 p-1 text-center">Admin</th>
                   <th class="m-1 p-1 text-center">Lubatud</th>
                   <th class="m-1 p-1">Avaldused</th>
-                  <th class="m-1 p-1">Load</th>
+                  <th class="m-1 p-1" colspan="2">Load</th>
                 </tr>
                 <th:block th:each="userPerm : ${ekiUserPermissions}">
                   <tr>
@@ -39,10 +39,10 @@
                       <span th:text="${userPerm.email}"></span>
                     </td>
                     <td class="m-1 p-1 text-center">
-                      <input type="checkbox" th:checked="${userPerm.admin}" />
+                      <input type="checkbox" th:data-id="${userPerm.id}" name="userAdminCheck" th:checked="${userPerm.admin}" th:disabled="${#authentication.principal.id == userPerm.id}"/>
                     </td>
                     <td class="m-1 p-1 text-center">
-                      <input type="checkbox" th:data-id="${userPerm.id}" name="userEnableCheck" th:checked="${userPerm.enabled}" />
+                      <input type="checkbox" th:data-id="${userPerm.id}" name="userEnableCheck" th:checked="${userPerm.enabled}" th:disabled="${#authentication.principal.id == userPerm.id}"/>
                     </td>
                     <td class="m-1 p-1">
                       <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
@@ -51,6 +51,14 @@
                         <span th:if="${userApplication.datasetCodes != null}" th:text="${userApplication.datasetCodes}"></span>
                         <span th:if="${!#strings.isEmpty(userApplication.comment)}" th:text="${userApplication.comment}"></span>
                       </th:block>
+                    </td>
+                    <td class="m-1 p-1">
+                      <button type="button" class="btn badge badge-success" title="Lisa luba"
+                              th:data-id="${userPerm.id}"
+                              onclick="openAddDatasetPermissionDlg(this)"
+                              data-toggle="modal" data-target="#addDatasetPermissionDlg">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
                     </td>
                     <td class="m-1 p-1">
                       <th:block th:each="datasetPerm,datasetPermIter : ${userPerm.datasetPermissions}">
@@ -68,6 +76,15 @@
               </table>
             </div>
           </th:block>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="addDatasetPermissionDlg" class="modal" role="dialog">
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h2>Oota veel ei saa...</h2>
         </div>
       </div>
     </div>

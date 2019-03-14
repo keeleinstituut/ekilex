@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,26 +41,40 @@ public class PermissionsController implements WebConstant {
 		if (!user.isAdmin()) {
 			return "redirect:" + HOME_URI;
 		}
-		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions();
-		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
+		populateModel(model);
 		return PERMISSIONS_PAGE;
 	}
 
-	@PreAuthorize("principal.admin")
 	@GetMapping(PERMISSIONS_URI + "/enable/{userId}")
 	public String enable(@PathVariable("userId") Long userId, Model model) {
 		userService.enableUser(userId, true);
-		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions();
-		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
+		populateModel(model);
 		return PERMISSIONS_PAGE + " :: permissions";
 	}
 
-	@PreAuthorize("principal.admin")
 	@GetMapping(PERMISSIONS_URI + "/disable/{userId}")
 	public String disable(@PathVariable("userId") Long userId, Model model) {
 		userService.enableUser(userId, false);
+		populateModel(model);
+		return PERMISSIONS_PAGE + " :: permissions";
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/setadmin/{userId}")
+	public String setAdmin(@PathVariable("userId") Long userId, Model model) {
+		userService.setAdmin(userId, true);
+		populateModel(model);
+		return PERMISSIONS_PAGE + " :: permissions";
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/remadmin/{userId}")
+	public String remAdmin(@PathVariable("userId") Long userId, Model model) {
+		userService.setAdmin(userId, false);
+		populateModel(model);
+		return PERMISSIONS_PAGE + " :: permissions";
+	}
+
+	private void populateModel(Model model) {
 		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions();
 		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
-		return PERMISSIONS_PAGE + " :: permissions";
 	}
 }

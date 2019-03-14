@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import eki.common.util.CodeGenerator;
@@ -66,6 +67,13 @@ public class UserService {
 		return user;
 	}
 
+	@PreAuthorize("principal.admin")
+	@Transactional
+	public void setAdmin(Long userId, boolean isAdmin) {
+		userDbService.setAdmin(userId, isAdmin);
+	}
+
+	@PreAuthorize("principal.admin")
 	@Transactional
 	public void enableUser(Long userId, boolean enable) {
 		userDbService.enableUser(userId, enable);
