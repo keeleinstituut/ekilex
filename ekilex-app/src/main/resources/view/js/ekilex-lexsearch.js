@@ -159,3 +159,7 @@ function toggleLexeme(e) {
     elementToClose.addClass('d-none');
     elementToShow.removeClass('d-none');
 }
+
+function doNewSearch() {
+    $('#simple_search_filter').find('button[type=submit]').trigger('click');
+}

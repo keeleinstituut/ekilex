@@ -107,6 +107,7 @@
             <div class="card-body d-none" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}"
                  th:data-id="${lexeme.lexemeId}"
                  th:data-op-code="lexeme"
+                 data-callback="doNewSearch"
                  th:name="${lexeme.lexemeId} + '_lexeme'">
               <button type="button" class="btn badge badge-secondary float-right btn-toggle"
                       th:data-toggle-target="${'lexTitle_' + lexeme.lexemeId}">

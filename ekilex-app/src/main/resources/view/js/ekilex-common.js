@@ -226,7 +226,7 @@ function performDelete() {
     let currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     let removeUrl = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
     let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id');
-    let callbackFunc = $.noop;
+    let callbackFunc = () => $('#refresh-details').trigger('click');
     let callbackName = targetElement.data('callback');
     if (callbackName !== undefined) {
         callbackFunc = () => eval(callbackName)($(this))
@@ -252,7 +252,6 @@ function performDelete() {
 
 function doPostDelete(removeUrl, callbackFunc) {
     $.post(removeUrl).done(function() {
-        $('#refresh-details').trigger('click');
         callbackFunc();
     }).fail(function(data) {
         openAlertDlg("Andmete eemaldamine ebaõnnestus.");
