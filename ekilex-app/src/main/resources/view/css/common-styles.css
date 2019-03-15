@@ -253,3 +253,13 @@ table.orderable:hover .action-column {
 	margin-top: 0.15rem;
 	margin-right: 0.25rem;
 }
+
+.position-right {
+	position: absolute;
+	right: 6px;
+	z-index: 99;
+}
+
+.w-90 {
+	width: 90%;
+}
