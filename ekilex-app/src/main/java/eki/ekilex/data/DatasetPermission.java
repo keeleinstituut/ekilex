@@ -8,6 +8,8 @@ public class DatasetPermission extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
+
 	private String datasetCode;
 
 	private AuthorityOperation authOperation;
@@ -15,6 +17,14 @@ public class DatasetPermission extends AbstractDataObject {
 	private AuthorityItem authItem;
 
 	private String authLang;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getDatasetCode() {
 		return datasetCode;

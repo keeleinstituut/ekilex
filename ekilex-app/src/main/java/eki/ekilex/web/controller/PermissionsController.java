@@ -83,12 +83,19 @@ public class PermissionsController extends AbstractPageController {
 			@RequestParam(value = "datasetCode", required = false) String datasetCode,
 			@RequestParam(value = "authItem", required = false) AuthorityItem authItem,
 			@RequestParam(value = "authOp", required = false) AuthorityOperation authOp,
-			@RequestParam(value = "lang", required = false) String authLang,
+			@RequestParam(value = "authLang", required = false) String authLang,
 			Model model) {
 
 		permissionService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
 
 		return "redirect:" + PERMISSIONS_URI;
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/deletedatasetperm/{datasetPermissionId}")
+	public String deleteDatasetPerm(@PathVariable("datasetPermissionId") Long datasetPermissionId, Model model) {
+		permissionService.deleteDatasetPermission(datasetPermissionId);
+		populateModel(model);
+		return PERMISSIONS_PAGE + " :: permissions";
 	}
 
 	private void populateModel(Model model) {

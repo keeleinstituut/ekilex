@@ -61,6 +61,7 @@ public class PermissionDbService {
 
 		return create
 				.select(
+						DATASET_PERMISSION.ID,
 						DATASET_PERMISSION.DATASET_CODE,
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
@@ -110,6 +111,11 @@ public class PermissionDbService {
 							)
 					)
 			.execute();
+	}
+
+	public void deleteDatasetPermission(Long datasetPermissionId) {
+
+		create.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.ID.eq(datasetPermissionId)).execute();
 	}
 
 	public boolean isGrantedForLexeme(Long userId, Long lexemeId, AuthorityOperation authOp, AuthorityItem authItem) {

@@ -4,16 +4,19 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
 import eki.ekilex.service.db.StatDataDbService;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 @Component
-public class StatDataService implements SystemConstant {
+public class StatDataService implements InitializingBean, SystemConstant {
 
 	private static final int LIFECYCLE_USER_STAT_DATA_LAST_DAYS_COUNT = 30;
 
@@ -29,6 +32,14 @@ public class StatDataService implements SystemConstant {
 
 	public StatDataService(StatDataDbService statDataDbService) {
 		this.statDataDbService = statDataDbService;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		mainEntityStatData = new StatData();
+		freeformStatData = Collections.emptyList();
+		lexemeDatasetStatData = Collections.emptyList();
+		lifecycleUserStatData = Collections.emptyList();
 	}
 
 	@Scheduled(fixedDelay = UPDATE_STAT_DATA_DELAY, initialDelay = 5000)

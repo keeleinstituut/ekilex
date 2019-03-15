@@ -39,10 +39,20 @@
                       <span th:text="${userPerm.email}"></span>
                     </td>
                     <td class="m-1 p-1 text-center">
-                      <input type="checkbox" th:data-id="${userPerm.id}" name="userAdminCheck" th:checked="${userPerm.admin}" th:disabled="${#authentication.principal.id == userPerm.id}"/>
+                      <input type="checkbox"
+                             class="form-check-input"
+                             th:data-id="${userPerm.id}"
+                             name="userAdminCheck"
+                             th:checked="${userPerm.admin}"
+                             th:disabled="${#authentication.principal.id == userPerm.id}"/>
                     </td>
                     <td class="m-1 p-1 text-center">
-                      <input type="checkbox" th:data-id="${userPerm.id}" name="userEnableCheck" th:checked="${userPerm.enabled}" th:disabled="${#authentication.principal.id == userPerm.id}"/>
+                      <input type="checkbox"
+                             class="form-check-input"
+                             th:data-id="${userPerm.id}"
+                             name="userEnableCheck"
+                             th:checked="${userPerm.enabled}"
+                             th:disabled="${#authentication.principal.id == userPerm.id}"/>
                     </td>
                     <td class="m-1 p-1">
                       <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
@@ -56,7 +66,8 @@
                       <button type="button" class="btn badge badge-success" title="Lisa luba"
                               th:data-id="${userPerm.id}"
                               onclick="openAddDatasetPermissionDlg(this)"
-                              data-toggle="modal" data-target="#addDatasetPermissionDlg">
+                              data-toggle="modal"
+                              data-target="#addDatasetPermissionDlg">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </td>
@@ -69,6 +80,13 @@
                           <span th:if="${datasetPerm.authLang != null}">
                             <span th:text="${datasetPerm.authLang}"></span>
                           </span>
+                          <button class="btn badge badge-warning"
+                                  th:data-id="${datasetPerm.id}"
+                                  name="deleteDatasetPermBtn"
+                                  data-toggle="delete-confirmation"
+                                  data-placement="right">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
                         </div>
                       </th:block>
                     </td>
@@ -76,6 +94,17 @@
                 </th:block>
               </table>
             </div>
+            <script type="text/javascript">
+				$('[data-toggle=delete-confirmation]').confirmation({
+					btnOkLabel : 'Jah',
+					btnCancelLabel : 'Ei',
+					title : 'Palun kinnita õiguse kustutamine',
+					onConfirm : function() {
+						var datasetPermId = $(this).data('id');
+						deleteDatasetPermission(datasetPermId);
+					}
+				});
+			</script>
           </th:block>
         </div>
       </div>

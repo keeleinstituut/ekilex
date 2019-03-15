@@ -55,4 +55,11 @@ public class PermissionService {
 		}
 		permissionDbService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
 	}
+
+	@PreAuthorize("principal.admin")
+	@Transactional
+	public void deleteDatasetPermission(Long datasetPermissionId) {
+
+		permissionDbService.deleteDatasetPermission(datasetPermissionId);
+	}
 }
