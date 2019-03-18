@@ -1,8 +1,14 @@
 package eki.ekilex.runner;
 
-import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
-import eki.ekilex.service.ReportComposer;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -11,46 +17,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Meaning;
+import eki.ekilex.service.ReportComposer;
 
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class MilitermLoaderRunner extends AbstractLoaderRunner {
+public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(MilitermLoaderRunner.class);
 
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
-
-	private final String languageGrpExp = "languageGrp";
-	private final String languageExp = "language";
-	private final String termGrpExp = "termGrp";
-	private final String termExp = "term";
-
-	private final String createdByExp = "transacGrp/transac[@type='origination']";
-	private final String createdOnExp = "transacGrp[transac/@type='origination']/date";
-	private final String modifiedByExp = "transacGrp/transac[@type='modification']";
-	private final String modifiedOnExp = "transacGrp[transac/@type='modification']/date";
-
-	private final String ltbSourceExp = "descripGrp/descrip[@type='Päritolu']";
-	private final String noteExp = "descripGrp/descrip[@type='Märkus']";
-	private final String privateNoteExp = "descripGrp/descrip[@type='Sisemärkus']";
-	private final String listExp = "descripGrp/descrip[@type='Loend']";
-	private final String imageExp = "descripGrp/descrip[@type='Joonis']";
-	private final String meaningDomainExp = "descripGrp/descrip[@type='Valdkonnakood']";
-	private final String sourceExp = "descripGrp/descrip[@type='Allikaviide']";
-	private final String definitionExp = "descripGrp/descrip[@type='Definitsioon']";
-	private final String coincidentExp = "descripGrp/descrip[@type='Kattuvus']";
-	private final String regionExp = "descripGrp/descrip[@type='Kasutus']";
-	private final String usageExp = "descripGrp/descrip[@type='Kontekst']";
-	private final String meaningRelationExp = "descripGrp/descrip[@type='Seotud']";
-	private final String explanationExp = "descripGrp/descrip[@type='Selgitus']";
 
 	private ReportComposer reportComposer;
 
@@ -122,7 +100,7 @@ public class MilitermLoaderRunner extends AbstractLoaderRunner {
 
 		Meaning meaning = new Meaning();
 
-		extractAndApplyMeaningProperties(conceptGroupNode, meaning);
+		extractAndApplyMeaningProperties(conceptGroupNode, meaning, defaultDateFormat);
 		Long meaningId = createMeaning(meaning);
 		extractAndApplyMeaningFreeforms(meaningId, conceptGroupNode);
 
@@ -132,13 +110,13 @@ public class MilitermLoaderRunner extends AbstractLoaderRunner {
 			// TODO meaning domain
 		}
 
-		List<Node> langGroupNodes = conceptGroupNode.selectNodes(languageGrpExp);
+		List<Node> langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 		for (Node langGroupNode : langGroupNodes) {
 
-			Element languageNode = (Element) langGroupNode.selectSingleNode(languageExp);
+			Element languageNode = (Element) langGroupNode.selectSingleNode(langExp);
 			// TODO word.lang või definition.lang - pistab, et militerm-aap sees on keeled ja militerm-yld sees valdkonnad
 
-			List<Node> termGroupNodes = langGroupNode.selectNodes(termGrpExp);
+			List<Node> termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
 			for (Node termGroupNode : termGroupNodes) {
 
@@ -164,15 +142,15 @@ public class MilitermLoaderRunner extends AbstractLoaderRunner {
 					// saveDefinitionsAndSourceLinks(meaningId, definitions, concept, term);
 				}
 
-				Element coincidentValueNode = (Element) termGroupNode.selectSingleNode(coincidentExp);
+				Element coincidentValueNode = (Element) termGroupNode.selectSingleNode(overlapExp);
 				if (coincidentValueNode != null) {
 					String coincidentValue = coincidentValueNode.getTextTrim();
 					// TODO lexeme freeform private_note
 				}
 
-				List<Node> usageValueNodes1 = termGroupNode.selectNodes(regionExp); // rename
-				for (Node usageValueNode : usageValueNodes1) {
-					String usageValue = ((Element) usageValueNode).getTextTrim();
+				List<Node> regionValueNodes = termGroupNode.selectNodes(regionExp);
+				for (Node regionValueNode : regionValueNodes) {
+					String regionValue = ((Element) regionValueNode).getTextTrim();
 					// TODO word.region
 				}
 
@@ -210,42 +188,6 @@ public class MilitermLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-	}
-
-	private void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaning) throws ParseException {
-
-		Element valueNode;
-		String valueStr;
-		long valueLong;
-		Timestamp valueTs;
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(createdByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			meaning.setCreatedBy(valueStr);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(createdOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			meaning.setCreatedOn(valueTs);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			meaning.setModifiedBy(valueStr);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(modifiedOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			meaning.setModifiedOn(valueTs);
-		}
 	}
 
 	private void extractAndApplyLexemeProperties(Node termGroupNode, Lexeme lexeme) throws ParseException {

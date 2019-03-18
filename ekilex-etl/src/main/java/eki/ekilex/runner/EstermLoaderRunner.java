@@ -31,7 +31,6 @@ import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
-import eki.ekilex.constant.EstermLoaderConstant;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Word;
@@ -40,7 +39,7 @@ import eki.ekilex.runner.util.EstermReportHelper;
 import eki.ekilex.service.ReportComposer;
 
 @Component
-public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLoaderConstant {
+public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(EstermLoaderRunner.class);
 
@@ -170,7 +169,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 			// meaning
 			meaningObj = new Meaning();
-			extractAndApplyMeaningProperties(conceptGroupNode, meaningObj);
+			extractAndApplyMeaningProperties(conceptGroupNode, meaningObj, defaultDateFormat);
 			meaningId = createMeaning(meaningObj);
 			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode);
 
@@ -372,42 +371,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			}
 		}
 		return wordType;
-	}
-
-	private void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj) throws Exception {
-
-		Element valueNode;
-		String valueStr;
-		long valueLong;
-		Timestamp valueTs;
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(createdByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			meaningObj.setCreatedBy(valueStr);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(createdOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			meaningObj.setCreatedOn(valueTs);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			meaningObj.setModifiedBy(valueStr);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(modifiedOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			meaningObj.setModifiedOn(valueTs);
-		}
 	}
 
 	private void extractAndSaveMeaningFreeforms(Long meaningId, Node conceptGroupNode) throws Exception {
