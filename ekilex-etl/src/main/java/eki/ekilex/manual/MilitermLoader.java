@@ -21,15 +21,17 @@ public class MilitermLoader extends AbstractLoader {
 			boolean doReports = doReports();
 			boolean isFullReload = isFullReload();
 
-			String milFilePath = getMandatoryConfProperty("mil.data.file");
+			String milFilePath1 = getMandatoryConfProperty("mil.data.file.1");
+			String milFilePath2 = getMandatoryConfProperty("mil.data.file.2");
 			if (!isFullReload) {
 				datasetRunner.deleteDatasetData();
 			}
-			datasetRunner.execute(milFilePath, doReports);
+			datasetRunner.execute(milFilePath1, milFilePath2, doReports);
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
 			shutdown();
 		}
 	}
+
 }
