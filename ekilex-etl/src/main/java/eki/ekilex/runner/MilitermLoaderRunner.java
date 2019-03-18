@@ -86,7 +86,7 @@ public class MilitermLoaderRunner extends AbstractLoaderRunner {
 		String[] dataXmlFilePaths = new String[] {milFilePath1, milFilePath2};
 		Document dataDoc;
 		Element rootElement;
-		List<Node> allConceptGroupNodes = new ArrayList<>(); // võibolla mitte teha üks suur list vaid käivitada 2 korda jätjest?
+		List<Node> allConceptGroupNodes = new ArrayList<>();
 		List<Node> conceptGroupNodes;
 
 		for (String dataXmlFilePath : dataXmlFilePaths) {
@@ -98,11 +98,20 @@ public class MilitermLoaderRunner extends AbstractLoaderRunner {
 			allConceptGroupNodes.addAll(conceptGroupNodes);
 		}
 
-		long conceptGroupCount = allConceptGroupNodes.size();
+		int conceptGroupCount = allConceptGroupNodes.size();
 		logger.debug("{} concept groups found", conceptGroupCount);
+
+		int conceptGroupCounter = 0;
+		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
 
 		for (Node conceptGroupNode : allConceptGroupNodes) {
 			processConceptGroup(conceptGroupNode);
+
+			conceptGroupCounter++;
+			if (conceptGroupCounter % progressIndicator == 0) {
+				int progressPercent = conceptGroupCounter / progressIndicator;
+				logger.debug("{}% - {} concept groups iterated", progressPercent, conceptGroupCounter);
+			}
 		}
 
 		end();
