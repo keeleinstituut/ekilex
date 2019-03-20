@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EstermLoaderHelper {
+public class TermLoaderHelper {
 
 	private static final String NUMBERED_BULLET_SEPARATOR = ".";
 

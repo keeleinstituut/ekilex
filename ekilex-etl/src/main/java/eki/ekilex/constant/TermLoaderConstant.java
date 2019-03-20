@@ -37,6 +37,8 @@ public interface TermLoaderConstant extends TableName {
 
 	String REPORT_MISSING_VALUE = "missing_value";
 
+	String REPORT_ILLEGAL_SOURCE = "illegal_source";
+
 	String conceptGroupExp = "/mtf/conceptGrp";
 	String langGroupExp = "languageGrp";
 	String langExp = "language";
@@ -92,4 +94,5 @@ public interface TermLoaderConstant extends TableName {
 	String originLtb = "ltb";
 
 	char listingsDelimiter = '|';
+	char meaningDomainDelimiter = ';';
 }

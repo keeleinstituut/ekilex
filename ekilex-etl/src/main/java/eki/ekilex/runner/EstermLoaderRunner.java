@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,24 +16,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
-import org.dom4j.tree.DefaultElement;
-import org.dom4j.tree.DefaultText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
-import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
-import eki.common.exception.DataLoadingException;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Word;
-import eki.ekilex.runner.util.EstermLoaderHelper;
 import eki.ekilex.runner.util.EstermReportHelper;
 import eki.ekilex.service.ReportComposer;
 
@@ -50,12 +43,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 	private static final String REVIEW_TIMESTAMP_PATTERN = "yy/MM/dd";
 
 	@Autowired
-	private EstermLoaderHelper loaderHelper;
-
-	@Autowired
 	private EstermReportHelper reportHelper;
-
-	private ReportComposer reportComposer;
 
 	private DateFormat defaultDateFormat;
 
@@ -126,7 +114,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS,
 					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH,
-					REPORT_MISSING_VALUE);
+					REPORT_MISSING_VALUE, REPORT_ILLEGAL_SOURCE);
 			reportHelper.setup(reportComposer, meaningAndLexemeProcessStateCodes, lexemeValueStateCodes);
 		}
 		start();
@@ -149,6 +137,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		Meaning meaningObj;
 		Lexeme lexemeObj;
 
+		illegalSourceValueCount = new Count();
 		Count dataErrorCount = new Count();
 		Count definitionsWithSameNotesCount = new Count();
 		Count processStateConflictCount = new Count();
@@ -296,23 +285,9 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		logger.debug("Found {} definitions with same notes", definitionsWithSameNotesCount.getValue());
 		logger.debug("Found {} conflicting process state settings", processStateConflictCount.getValue());
 		logger.debug("Found {} conflicting word type settings", wordTypeConflictCount.getValue());
+		logger.debug("Found {} illegal source values", illegalSourceValueCount.getValue());
 
 		end();
-	}
-
-	private boolean isLanguageTypeConcept(Node conceptGroupNode) {
-
-		String valueStr;
-		List<Node> valueNodes = conceptGroupNode.selectNodes(langGroupExp + "/" + langExp);
-		for (Node langNode : valueNodes) {
-			valueStr = ((Element)langNode).attributeValue(langTypeAttr);
-			boolean isLang = isLang(valueStr);
-			if (isLang) {
-				continue;
-			}
-			return false;
-		}
-		return true;
 	}
 
 	private String extractProcessState(Node conceptGroupNode, Count processStateConflictCount) {
@@ -544,103 +519,6 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			//TODO log
 			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.EN_ET_REVIEWED, valueStr1, valueTs);
 		}
-	}
-
-	private List<Content> extractContentAndRefs(Node rootContentNode, String lang, String term, boolean logWarrnings) throws Exception {
-
-		List<Content> contentList = new ArrayList<>();
-		Iterator<Node> contentNodeIter = ((Element)rootContentNode).nodeIterator();
-		DefaultText textContentNode;
-		DefaultElement elemContentNode;
-		String valueStr;
-		Content contentObj = null;
-		Ref refObj = null;
-		boolean isRefOn = false;
-
-		while (contentNodeIter.hasNext()) {
-			Node contentNode = contentNodeIter.next();
-			if (contentNode instanceof DefaultText) {
-				textContentNode = (DefaultText) contentNode;
-				valueStr = textContentNode.getText();
-				valueStr = StringUtils.replaceChars(valueStr, '\n', ' ');
-				valueStr = StringUtils.trim(valueStr);
-				boolean isListing = loaderHelper.isListing(valueStr);
-				boolean isRefEnd = loaderHelper.isRefEnd(valueStr);
-				boolean isValued = StringUtils.isNotEmpty(valueStr);
-				String content = loaderHelper.getContent(valueStr);
-				boolean contentExists = StringUtils.isNotBlank(content);
-				if (isListing) {
-					continue;
-				}
-				if (!isRefOn && isRefEnd && logWarrnings) {
-					logger.warn("Illegal ref end notation @ \"{}\" : {}", term, rootContentNode.asXML());
-				}
-				if (isRefOn && isValued) {
-					String minorRef;
-					if (isRefEnd) {
-						minorRef = loaderHelper.collectMinorRef(valueStr);
-					} else {
-						minorRef = loaderHelper.cleanupResidue(valueStr);
-					}
-					if (StringUtils.isNotBlank(minorRef)) {
-						refObj.setMinorRef(minorRef);
-					}
-				}
-				if (contentExists) {
-					if (contentObj == null) {
-						contentObj = newContent(lang, content);
-						contentList.add(contentObj);						
-					} else if (!isRefOn) {
-						content = contentObj.getValue() + '\n' + content;
-						contentObj.setValue(content);
-					} else {
-						contentObj = newContent(lang, content);
-						contentList.add(contentObj);
-					}
-				}
-				isRefOn = false;
-			} else if (contentNode instanceof DefaultElement) {
-				elemContentNode = (DefaultElement) contentNode;
-				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
-					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
-					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
-						String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
-						if (contentObj == null) {
-							contentObj = newContent(lang, "-");
-							contentList.add(contentObj);
-							if (logWarrnings) {
-								logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceName);
-							}
-						}
-						isRefOn = true;
-						ReferenceType refType;
-						if (StringUtils.equalsIgnoreCase(refTypeExpert, sourceName)) {
-							refType = ReferenceType.EXPERT;
-						} else if (StringUtils.equalsIgnoreCase(refTypeQuery, sourceName)) {
-							refType = ReferenceType.QUERY;
-						} else {
-							refType = ReferenceType.ANY;
-						}
-						refObj = new Ref();
-						refObj.setMajorRef(sourceName);
-						refObj.setType(refType);
-						contentObj.getRefs().add(refObj);
-					} else {
-						throw new DataLoadingException("Handling of " + tlinkAttrValue + " not supported!");
-					}
-				}
-			}
-		}
-		return contentList;
-	}
-
-	private Content newContent(String lang, String content) {
-		Content contentObj;
-		contentObj = new Content();
-		contentObj.setValue(content);
-		contentObj.setLang(lang);
-		contentObj.setRefs(new ArrayList<>());
-		return contentObj;
 	}
 
 	private void saveLexemeSourceLinks(Long lexemeId, List<Content> sources, String concept, String term) throws Exception {
@@ -941,167 +819,5 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		} else {
 			logger.warn("Incorrect domain reference @ concept \"{}\" - \"{}\"", concept, domainCode);
 		}
-	}
-
-	private boolean domainExists(String domainCode, String domainOrigin) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("origin", domainOrigin);
-		tableRowParamMap.put("code", domainCode);
-		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN, tableRowParamMap);
-		boolean domainExists = ((Long) tableRowValueMap.get("cnt")) > 0;
-		return domainExists;
-	}
-
-	//TODO should be replaced by separate ref links handling later
-	private String handleFreeformRefLinks(Node mixedContentNode, Long ownerId) throws Exception {
-
-		Iterator<Node> contentNodeIter = ((Element)mixedContentNode).nodeIterator();
-		StringBuffer contentBuf = new StringBuffer();
-		DefaultText textContentNode;
-		DefaultElement elemContentNode;
-		String valueStr;
-
-		while (contentNodeIter.hasNext()) {
-			Node contentNode = contentNodeIter.next();
-			if (contentNode instanceof DefaultText) {
-				textContentNode = (DefaultText) contentNode;
-				valueStr = textContentNode.getText();
-				contentBuf.append(valueStr);
-			} else if (contentNode instanceof DefaultElement) {
-				elemContentNode = (DefaultElement) contentNode;
-				valueStr = elemContentNode.getTextTrim();
-				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
-					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
-					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
-						String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
-						Long sourceId = getSource(sourceName);
-						if (sourceId == null) {
-							contentBuf.append(valueStr);
-						} else {
-							Long refLinkId = createFreeformSourceLink(ownerId, ReferenceType.ANY, sourceId, null, null);
-							//simulating markdown link syntax
-							contentBuf.append("[");
-							contentBuf.append(valueStr);
-							contentBuf.append("]");
-							contentBuf.append("(");
-							contentBuf.append(ContentKey.FREEFORM_SOURCE_LINK);
-							contentBuf.append(":");
-							contentBuf.append(refLinkId);
-							contentBuf.append(")");
-						}
-					} else {
-						// unknown ref type
-						contentBuf.append(valueStr);
-					}
-				} else {
-					throw new DataLoadingException("Unsupported mixed content node name: " + contentNode.getName());
-				}
-			} else {
-				throw new DataLoadingException("Unsupported mixed content node type: " + contentNode.getClass());
-			}
-		}
-		valueStr = contentBuf.toString();
-		return valueStr;
-	}
-
-	private Long getSource(String sourceName) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("sourceName", sourceName);
-		List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_NAME, tableRowParamMap);
-		if (CollectionUtils.isEmpty(results)) {
-			return null;
-		}
-		if (results.size() > 1) {
-			logger.warn("Several sources match the \"{}\"", sourceName);
-		}
-		Map<String, Object> result = results.get(0);
-		Long sourceId = Long.valueOf(result.get("id").toString());
-		return sourceId;
-	}
-
-	class Content extends AbstractDataObject {
-
-		private static final long serialVersionUID = 1L;
-
-		private Long id;
-
-		private String value;
-
-		private String lang;
-
-		private List<Ref> refs;
-
-		public Long getId() {
-			return id;
-		}
-
-		public void setId(Long id) {
-			this.id = id;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
-
-		public String getLang() {
-			return lang;
-		}
-
-		public void setLang(String lang) {
-			this.lang = lang;
-		}
-
-		public List<Ref> getRefs() {
-			return refs;
-		}
-
-		public void setRefs(List<Ref> refs) {
-			this.refs = refs;
-		}
-	}
-
-	class Ref extends AbstractDataObject {
-
-		private static final long serialVersionUID = 1L;
-
-		private String minorRef;
-
-		private String majorRef;
-
-		private ReferenceType type;
-
-		public String getMinorRef() {
-			return minorRef;
-		}
-
-		public void setMinorRef(String minorRef) {
-			this.minorRef = minorRef;
-		}
-
-		public String getMajorRef() {
-			return majorRef;
-		}
-
-		public void setMajorRef(String majorRef) {
-			this.majorRef = majorRef;
-		}
-
-		public ReferenceType getType() {
-			return type;
-		}
-
-		public void setType(ReferenceType type) {
-			this.type = type;
-		}
-	}
-
-	enum SourceOwner {
-		LEXEME, DEFINITION, USAGE
 	}
 }

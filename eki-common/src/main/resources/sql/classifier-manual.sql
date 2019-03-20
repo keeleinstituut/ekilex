@@ -7,16 +7,17 @@ insert into label_type (code, value) values ('full', 'full');
 insert into label_type (code, value) values ('wordweb', 'wordweb');
 
 -- lex
-insert into dataset (code, name, is_public) values ('ss1', 'Eesti keele sõnaraamat 2019', true);
-insert into dataset (code, name, is_public) values ('psv', 'Eesti keele põhisõnavara sõnastik 2019', true);
+insert into dataset (code, name, is_public) values ('ss1',  'Eesti keele sõnaraamat 2019', true);
+insert into dataset (code, name, is_public) values ('psv',  'Eesti keele põhisõnavara sõnastik 2019', true);
 insert into dataset (code, name, is_public) values ('ety',	'Etümoloogia', true);
-insert into dataset (code, name, is_public) values ('qq2', 'Eesti-vene õpilase ÕS 2019', true);
+insert into dataset (code, name, is_public) values ('qq2',  'Eesti-vene õpilase ÕS 2019', true);
 insert into dataset (code, name, is_public) values ('ev2',	'Eesti-vene sõnaraamat 2019', true);
 insert into dataset (code, name, is_public) values ('kol',	'Eesti keele naabersõnad 2019', true);
-insert into dataset (code, name, is_public) values ('mab', 'Eesti keele morfoloogia', false);
+insert into dataset (code, name, is_public) values ('mab',  'Eesti keele morfoloogia', false);
 
 -- term
-insert into dataset (code, name, is_public) values ('est', 'Esterm', true);
+insert into dataset (code, name, is_public) values ('est',  'Esterm', true);
+insert into dataset (code, name, is_public) values ('mil',  'Militerm', true);
 insert into dataset (code, name, is_public) values ('aia',	'Aiandus (aiandusterminoloogia sõnastik)', true);
 insert into dataset (code, name, is_public) values ('ait',	'Aianduse terminibaas (2017)', true);
 insert into dataset (code, name, is_public) values ('avt',	'Akadeemilise väljendusoskuse terminid', true);
