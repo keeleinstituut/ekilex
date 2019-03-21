@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-  <title th:text="#{lexeme.join.title}">EKILEX sõna valik</title>
-  <th:block th:fragment="links">
-  </th:block>
+<title th:text="#{lexeme.join.title}">EKILEX sõna valik</title>
+<th:block th:fragment="links">
+</th:block>
 </head>
 <body class="body-with-navbar">
-
   <th:block th:replace="common :: nav_bar"></th:block>
-
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
@@ -16,25 +14,24 @@
         <a class="btn btn-sm btn-secondary text-light" th:if="${returnPage == 'term_search'}" th:href="@{/termsearch}">Tagasi</a>
       </p>
     </div>
-
     <div class="card mt-4 shadow">
       <div class="card-header">
         <h5 class="card-title">Olemasoleva sõna valik</h5>
       </div>
-
       <div class="card-body">
         <form th:action="@{/add_homonym}" method="post">
-          <input hidden name="dataset" th:value="${dataset}">
-          <input hidden name="language" th:value="${language}">
-          <input hidden name="morphCode" th:value="${morphCode}">
-          <input hidden name="wordValue" th:value="${wordValue}">
-          <input hidden name="meaningId" th:value="${meaningId}">
-          <input hidden name="returnPage" th:value="${returnPage}">
-
+          <input type="hidden" name="dataset" th:value="${dataset}">
+          <input type="hidden" name="language" th:value="${language}">
+          <input type="hidden" name="morphCode" th:value="${morphCode}">
+          <input type="hidden" name="wordValue" th:value="${wordValue}">
+          <input type="hidden" name="meaningId" th:value="${meaningId}">
+          <input type="hidden" name="returnPage" th:value="${returnPage}">
           <div style="width: 95%" class="border rounded p-2 mb-2">
             <span th:text="${wordValue}" class="ttl"></span>
             <button type="submit" class="btn btn-primary ml-4">Lisa uus homonüüm</button>
-            <span class="float-right"><b th:text="${dataset}"></b></span>
+            <span class="float-right">
+              <b th:text="${dataset}"></b>
+            </span>
           </div>
         </form>
       </div>
@@ -54,13 +51,12 @@
           <hr />
           <div>
             <span th:each="lexeme, lexemeIter : ${details.get(word.getWordId()).getLexemes()}">
-              <th:block th:unless="${lexeme.meaningWords.isEmpty()}">
-                <b th:unless="${lexemeIter.first}">,</b>
+              <th:block th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
                 <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                  <b th:text="${meaningWord.value}"></b>
-                  <b th:text="${meaningWord.homonymNumber}"></b>
-                  <b th:text="${'( ' + meaningWord.language + ' )'}"></b>
-                  <b th:unless="${meaningWordIter.last}">,</b>
+                  <span th:text="${meaningWord.value}"></span>
+                  <span th:text="${meaningWord.homonymNumber}"></span>
+                  <span th:text="${'(' + meaningWord.language + ')'}"></span>
+                  <span th:unless="${meaningWordIter.last}">,</span>
                 </span>
               </th:block>
             </span>
@@ -73,9 +69,7 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
-
 </body>
 </html>

@@ -379,11 +379,15 @@ function toggleValueGroup(dlg, groupName) {
 }
 
 function initMultiValueAddDlg(theDlg) {
-    theDlg.find('[name=opCode]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
+    theDlg.find('[name=opCode]').off('change').on('change', function(e) {
+    	toggleValueGroup(theDlg, $(e.target).val());
+    });
     theDlg.find('.value-select').off('change').on('change', function(e) {
         theDlg.find('[name=value]').val($(this).val());
     });
-    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
+    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+    	submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.');
+    });
     theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         theDlg.find('.form-control').each(function (indx, item) {
             $(item).val(null);
@@ -422,6 +426,27 @@ function initNewWordDlg() {
         }
         let meaningId = $(e.relatedTarget).data('meaning-id');
         $('[name=meaningId]').val(meaningId);
+    });
+    $(document).on("click", "#addWordSubmitBtn", function() {
+    	var addWordForm = $("#addWordForm");
+    	var formVal;
+    	formVal = addWordForm.find("select[name='dataset']").val();
+    	if (formVal == '') {
+    		return;
+    	}
+    	formVal = addWordForm.find("select[name='language']").val();
+    	if (formVal == '') {
+    		return;
+    	}
+    	formVal = addWordForm.find("select[name='morphCode']").val();
+    	if (formVal == '') {
+    		return;
+    	}
+    	formVal = addWordForm.find("input[name='value']").val();
+    	if (formVal == '') {
+    		return;
+    	}
+    	addWordForm.submit();
     });
 }
 

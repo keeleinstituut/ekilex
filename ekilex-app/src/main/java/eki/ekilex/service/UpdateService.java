@@ -10,21 +10,20 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import eki.common.constant.WordRelationGroupType;
-import eki.common.service.TextDecorationService;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
-import eki.ekilex.service.db.LexSearchDbService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
+import eki.common.constant.WordRelationGroupType;
+import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.UpdateDbService;
 
@@ -41,7 +40,7 @@ public class UpdateService {
 
 	public UpdateService(UpdateDbService updateDbService, TextDecorationService textDecorationService, LifecycleLogDbService lifecycleLogDbService,
 			LexSearchDbService lexSearchDbService) {
-		this.updateDbService  = updateDbService;
+		this.updateDbService = updateDbService;
 		this.textDecorationService = textDecorationService;
 		this.lifecycleLogDbService = lifecycleLogDbService;
 		this.lexSearchDbService = lexSearchDbService;
@@ -49,7 +48,6 @@ public class UpdateService {
 
 	// --- UPDATE ---
 
-	@PreAuthorize("hasPermission(#id, 'USAGE', 'auth:DATASET')")
 	@Transactional
 	public void updateUsageValue(Long id, String valuePrese) {
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
@@ -83,7 +81,6 @@ public class UpdateService {
 		updateDbService.updateFreeformTextValue(id, value, null);
 	}
 
-	@PreAuthorize("hasPermission(#id, 'DEFINITION', 'auth:DATASET')")
 	@Transactional
 	public void updateDefinitionValue(Long id, String valuePrese) {
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
@@ -119,7 +116,7 @@ public class UpdateService {
 	public void updateWordRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
 			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.ORDER_BY, item);
-			updateDbService.updateWordRelationOrderby(item);			
+			updateDbService.updateWordRelationOrderby(item);
 		}
 	}
 
@@ -127,7 +124,7 @@ public class UpdateService {
 	public void updateWordEtymologyOrdering(List<ListData> items) {
 		for (ListData item : items) {
 			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ORDER_BY, item);
-			updateDbService.updateWordEtymologyOrderby(item);			
+			updateDbService.updateWordEtymologyOrderby(item);
 		}
 	}
 
@@ -142,11 +139,13 @@ public class UpdateService {
 	@Transactional
 	public void updateLexemeLevels(Long lexemeId, String action) {
 
-		if (lexemeId == null) return;
+		if (lexemeId == null) {
+			return;
+		}
 
 		List<WordLexeme> lexemes = updateDbService.findWordLexemes(lexemeId).into(WordLexeme.class);
 		recalculateLevels(lexemeId, lexemes, action);
-		for (WordLexeme lexeme: lexemes) {
+		for (WordLexeme lexeme : lexemes) {
 			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
 			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
 			updateDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
@@ -248,42 +247,36 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
 	}
 
-	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:DATASET')")
 	@Transactional
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Long lexemePosId = updateDbService.addLexemePos(lexemeId, posCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
 	}
 
-	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:DATASET')")
 	@Transactional
 	public void addLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = updateDbService.addLexemeDeriv(lexemeId, derivCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
 	}
 
-	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:DATASET')")
 	@Transactional
 	public void addLexemeRegister(Long lexemeId, String registerCode) {
 		Long lexemeRegisterId = updateDbService.addLexemeRegister(lexemeId, registerCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
 	}
 
-	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:DATASET')")
 	@Transactional
 	public void addGovernment(Long lexemeId, String government) {
 		Long governmentId = updateDbService.addGovernment(lexemeId, government);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, government);
 	}
 
-	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:DATASET')")
 	@Transactional
 	public void addLexemeGrammar(Long lexemeId, String value) {
 		Long grammarId = updateDbService.addLexemeGrammar(lexemeId, value);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, value);
 	}
 
-	@PreAuthorize("hasPermission(#lexemeId, 'LEXEME', 'auth:DATASET;lang:#languageCode')")
 	@Transactional
 	public void addUsage(Long lexemeId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
@@ -305,14 +298,12 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
-	@PreAuthorize("hasPermission(#meaningId, 'MEANING', 'auth:DATASET')")
 	@Transactional
 	public void addMeaningDomain(Long meaningId, Classifier domain) {
 		Long meaningDomainId = updateDbService.addMeaningDomain(meaningId, domain);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
 	}
 
-	@PreAuthorize("hasPermission(#meaningId, 'MEANING', 'auth:DATASET;lang:#languageCode')")
 	@Transactional
 	public void addDefinition(Long meaningId, String valuePrese, String languageCode) {
 		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
@@ -417,7 +408,7 @@ public class UpdateService {
 		LexemeRecord lexeme = updateDbService.getLexeme(lexemeId);
 		LexemeRecord lexeme2 = updateDbService.getLexeme(lexemeId2);
 		if (lexeme.getDatasetCode().equals(lexeme2.getDatasetCode()) && lexeme.getWordId().equals(lexeme2.getWordId())) {
-			updateLexemeLevels(lexemeId2,"delete");
+			updateLexemeLevels(lexemeId2, "delete");
 			String logEntrySource = StringUtils.joinWith(".", lexeme2.getLevel1(), lexeme2.getLevel2(), lexeme2.getLevel3());
 			String logEntryTarget = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
 			lifecycleLogDbService.addLog(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, logEntrySource, logEntryTarget);
@@ -548,7 +539,7 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void deleteMeaningDomain(Long meaningId,  Classifier domain) {
+	public void deleteMeaningDomain(Long meaningId, Classifier domain) {
 		if (domain != null) {
 			Long meaningDomainId = updateDbService.findMeaningDomainId(meaningId, domain);
 			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
@@ -569,8 +560,8 @@ public class UpdateService {
 			String logValue = null;
 			if (wordRelationGroupMembers.size() > 2) {
 				logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream()
-					.filter(m -> !relationId.equals(m.get("id")))
-					.map(m -> m.get("value").toString()).collect(Collectors.joining(","));
+						.filter(m -> !relationId.equals(m.get("id")))
+						.map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 			}
 			for (Map<String, Object> member : wordRelationGroupMembers) {
 				lifecycleLogDbService.addLog(
@@ -611,7 +602,7 @@ public class UpdateService {
 			wordId = lexSearchDbService.findLexeme(lexemeId).into(WordLexeme.class).getWordId();
 		}
 		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
-		updateLexemeLevels(lexemeId,"delete");
+		updateLexemeLevels(lexemeId, "delete");
 		updateDbService.deleteLexeme(lexemeId);
 		if (isLastLexeme) {
 			deleteWord(wordId);
@@ -646,19 +637,19 @@ public class UpdateService {
 		int lexemePos = lexemes.indexOf(lexemeToMove);
 		int levelToChange = getLevelToChange(lexemes, lexemeToMove);
 		switch (action) {
-		case "up" :
+		case "up":
 			if (lexemePos != 0) {
 				WordLexeme targetLexeme = lexemes.get(lexemePos - 1);
 				moveUpDown(lexemes, lexemeToMove, targetLexeme);
 			}
 			break;
-		case "down" :
+		case "down":
 			if (lexemePos != lexemes.size() - 1) {
 				WordLexeme targetLexeme = lexemes.get(lexemePos + 1);
 				moveUpDown(lexemes, lexemeToMove, targetLexeme);
 			}
 			break;
-		case "pop" :
+		case "pop":
 			if (levelToChange > 1) {
 				if (levelToChange == 2) {
 					Integer maxLevel1 = lexemes.stream().map(WordLexeme::getLevel1).max(Comparator.comparingInt(Integer::valueOf)).get();
@@ -696,7 +687,7 @@ public class UpdateService {
 				}
 			}
 			break;
-		case "push" :
+		case "push":
 			if (levelToChange < 3 && lexemes.size() > 1) {
 				if (levelToChange == 1) {
 					WordLexeme targetLexeme = lexemes.get(lexemePos == 0 ? lexemePos + 1 : lexemePos - 1);
@@ -765,15 +756,13 @@ public class UpdateService {
 					&& lexemeToMove.getLevel2().equals(targetLexeme.getLevel2())
 					&& previousLexLevel != currentLexLevel) {
 				lexemes.stream()
-						.filter(l ->
-								l.getLevel1().equals(lexemeToMove.getLevel1()) &&
+						.filter(l -> l.getLevel1().equals(lexemeToMove.getLevel1()) &&
 								l.getLevel2().equals(lexemeToMove.getLevel2()) &&
 								l.getLevel3().equals(currentLexLevel))
 						.forEach(l -> l.setLevel3(999));
-				lexemes.stream().filter(l ->
-								l.getLevel1().equals(targetLexeme.getLevel1()) &&
-								l.getLevel2().equals(targetLexeme.getLevel2()) &&
-								l.getLevel3().equals(previousLexLevel))
+				lexemes.stream().filter(l -> l.getLevel1().equals(targetLexeme.getLevel1()) &&
+						l.getLevel2().equals(targetLexeme.getLevel2()) &&
+						l.getLevel3().equals(previousLexLevel))
 						.forEach(l -> l.setLevel3(currentLexLevel));
 				lexemes.stream().filter(l -> l.getLevel3().equals(999)).forEach(l -> l.setLevel3(previousLexLevel));
 			}
@@ -792,9 +781,12 @@ public class UpdateService {
 
 	private int numberAtLevel(int level, WordLexeme lex) {
 		switch (level) {
-			case 1 : return lex.getLevel1();
-			case 2 : return lex.getLevel2();
-			case 3 : return lex.getLevel3();
+		case 1:
+			return lex.getLevel1();
+		case 2:
+			return lex.getLevel2();
+		case 3:
+			return lex.getLevel3();
 		}
 		return 0;
 	}

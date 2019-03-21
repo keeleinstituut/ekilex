@@ -9,7 +9,14 @@ import eki.ekilex.data.EkiUser;
 public class UserContext {
 
 	public EkiUser getUser() {
-		EkiUser user = (EkiUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		EkiUser user;
+		if (principal instanceof EkiUser) {
+			user = (EkiUser) principal;
+		} else {
+			user = new EkiUser();
+			user.setName(principal.toString());
+		}
 		return user;
 	}
 }

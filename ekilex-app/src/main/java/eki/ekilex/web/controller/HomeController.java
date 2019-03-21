@@ -23,7 +23,6 @@ import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserService;
-import eki.ekilex.web.util.UserContext;
 
 @ConditionalOnWebApplication
 @Controller
@@ -34,9 +33,6 @@ public class HomeController extends AbstractPageController {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private UserContext userContext;
 
 	@Autowired
 	private StatDataService statDataService;
@@ -78,14 +74,14 @@ public class HomeController extends AbstractPageController {
 			populateStatData(model);
 			return HOME_PAGE;			
 		}
-		userService.submitUserApplication(selectedDatasets, applicationComment);
+		userService.submitUserApplication(user.getId(), selectedDatasets, applicationComment);
 		populateUserApplicationData(user, model);
 		return APPLY_PAGE;
 	}
 
 	private void populateUserApplicationData(EkiUser user, Model model) {
 
-		List<EkiUserApplication> userApplications = userService.getUserApplications();
+		List<EkiUserApplication> userApplications = userService.getUserApplications(user.getId());
 		boolean applicationNotSubmitted = (user.getEnabled() == null) && CollectionUtils.isEmpty(userApplications);
 		boolean applicationReviewPending = (user.getEnabled() == null) && CollectionUtils.isNotEmpty(userApplications);
 		boolean applicationDenied = Boolean.FALSE.equals(user.getEnabled());

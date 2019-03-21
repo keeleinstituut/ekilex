@@ -81,6 +81,9 @@ public class LexSearchController extends AbstractSearchController {
 	@GetMapping(value = LEX_SEARCH_URI + "/**")
 	public String lexSearch(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model, HttpServletRequest request) {
 
+		// if redirect from login arrives
+		initSearchForms(model);
+
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), LEX_SEARCH_URI);
 		logger.debug(searchUri);
 

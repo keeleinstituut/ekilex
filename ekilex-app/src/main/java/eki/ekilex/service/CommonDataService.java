@@ -12,17 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.db.CommonDataDbService;
 
 @Component
-public class CommonDataService {
-
-	private final static String classifierLabelLangEst = "est";
-	private final static String classifierLabelTypeDescrip = "descrip";
-	private final static String classifierLabelTypeFull = "full";
+public class CommonDataService implements SystemConstant {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
@@ -40,7 +37,7 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Classifier> getLanguages() {
-		return commonDataDbService.getLanguages(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
@@ -67,57 +64,57 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Classifier> getMorphs() {
-		return commonDataDbService.getMorphs(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getMorphs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getGenders() {
-		return commonDataDbService.getGenders(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getGenders(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getWordTypes() {
-		return commonDataDbService.getWordTypes(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getWordTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getAspects() {
-		return commonDataDbService.getAspects(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getAspects(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getWordRelationTypes() {
-		return commonDataDbService.getWordRelationTypes(classifierLabelLangEst, classifierLabelTypeFull).into(Classifier.class);
+		return commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getLexemeRelationTypes() {
-		return commonDataDbService.getLexemeRelationTypes(classifierLabelLangEst, classifierLabelTypeFull).into(Classifier.class);
+		return commonDataDbService.getLexemeRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getMeaningRelationTypes() {
-		return commonDataDbService.getMeaningRelationTypes(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getMeaningRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getPoses() {
-		return commonDataDbService.getPoses(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getPoses(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getRegisters() {
-		return commonDataDbService.getRegisters(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getRegisters(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getDerivs() {
-		return commonDataDbService.getDerivs(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getDerivs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getValueStates() {
-		return commonDataDbService.getValueStates(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getValueStates(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
 
 	@Transactional

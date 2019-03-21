@@ -29,6 +29,7 @@
   <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-component.js}"></script>
 </th:block>
 
 <!-- Bootstrap core CSS -->
@@ -622,14 +623,15 @@
 <div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/add_word}" method="post">
+      <form id="addWordForm" th:action="@{/add_word}" method="post">
         <div class="modal-body">
-          <input hidden name="returnPage" th:value="${returnPage}">
-          <input hidden name="meaningId">
+          <input type="hidden" name="returnPage" th:value="${returnPage}">
+          <input type="hidden" name="meaningId">
           <div class="form-group row">
             <div class="col-md-12">
               <select class="form-control" name="dataset">
-                <option th:each="dataset : ${allDatasets}"
+                <option value=""></option>
+                <option th:each="dataset : ${userPermDatasets}"
                         th:value="${dataset.code}"
                         th:selected="${dataset.code == sessionBean.newWordSelectedDataset}"
                         th:text="${dataset.name}">name</option>
@@ -638,17 +640,21 @@
           </div>
           <div class="form-group row">
             <div class="col-md-8">
-              <select class="form-control" name="language">
-                <option th:each="language : ${allLanguages}"
-                        th:value="${language.code}"
-                        th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
-                        th:text="${language.value}">language</option>
-              </select>
+              <th:block th:fragment="permLanguageSelect">
+                <select id="permLanguageSelect" class="form-control" name="language">
+                  <option value=""></option>
+                  <option th:each="language : ${userPermLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                          th:text="${language.value}">language</option>
+                </select>
+              </th:block>
             </div>
           </div>
           <div class="form-group row">
             <div class="col-md-8">
               <select class="form-control" name="morphCode">
+                <option value=""></option>
                 <option th:each="morphCode : ${wordMorphCodes}"
                         th:value="${morphCode.code}"
                         th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
@@ -663,7 +669,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button id="addWordSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </form>

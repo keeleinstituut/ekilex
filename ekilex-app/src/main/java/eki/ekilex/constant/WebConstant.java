@@ -24,6 +24,8 @@ public interface WebConstant {
 
 	String PERMISSIONS_URI = "/permissions";
 
+	String COMPONENT_URI = "/comp";
+
 	String REST_SERVICES_URI = "/data";
 
 	String VIEW_RESOURCES_URI = "/view";

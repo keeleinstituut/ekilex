@@ -7,21 +7,29 @@ import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.LANGUAGE;
+import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD;
 
 import java.util.List;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.Record5;
 import org.jooq.SelectSelectStep;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
+import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserPermData;
 
@@ -57,7 +65,7 @@ public class PermissionDbService {
 				.fetchInto(EkiUserPermData.class);
 	}
 
-	public List<DatasetPermission> getUserDatasetPermissions(Long userId) {
+	public List<DatasetPermission> getDatasetPermissions(Long userId) {
 
 		return create
 				.select(
@@ -77,6 +85,49 @@ public class PermissionDbService {
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG)
 				.fetchInto(DatasetPermission.class);
+	}
+
+	public List<Dataset> getUserDatasets(Long userId) {
+		return create
+				.select(DATASET.CODE, DATASET.NAME)
+				.from(DATASET)
+				.where(
+						DATASET.IS_PUBLIC.isTrue()
+						.andExists(DSL
+								.select(DATASET_PERMISSION.ID)
+								.from(DATASET_PERMISSION)
+								.where(
+										DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE)
+										.and(DATASET_PERMISSION.USER_ID.eq(userId)))
+								)
+						)
+				.orderBy(DATASET.ORDER_BY)
+				.fetchInto(Dataset.class);
+	}
+
+	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(
+						DSL.field(DSL.value(ClassifierName.LANGUAGE.name())).as("name"),
+						LANGUAGE_LABEL.CODE,
+						LANGUAGE_LABEL.VALUE)
+				.from(LANGUAGE, LANGUAGE_LABEL)
+				.where(
+						LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
+						.and(LANGUAGE_LABEL.LANG.eq(classifierLabelLang))
+						.and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode))
+						.andExists(DSL
+								.select(DATASET_PERMISSION.ID)
+								.from(DATASET_PERMISSION)
+								.where(
+										DATASET_PERMISSION.USER_ID.eq(userId)
+										.and(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode))
+										.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(LANGUAGE.CODE)))
+										)
+								)
+						)
+				.orderBy(LANGUAGE.ORDER_BY)
+				.fetchInto(Classifier.class);
 	}
 
 	public void createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
@@ -118,10 +169,48 @@ public class PermissionDbService {
 		create.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.ID.eq(datasetPermissionId)).execute();
 	}
 
-	public boolean isGrantedForLexeme(Long userId, Long lexemeId, AuthorityOperation authOp, AuthorityItem authItem) {
+	public boolean isGrantedForWord(Long userId, Long wordId, String authItem, List<String> authOps) {
+
+		Table<Record1<Integer>> lp = DSL
+			.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+			.from(WORD, LEXEME)
+			.where(
+					WORD.ID.eq(wordId)
+					.and(LEXEME.WORD_ID.eq(WORD.ID))
+					.andExists(DSL
+							.select(DATASET_PERMISSION.ID)
+							.from(DATASET_PERMISSION)
+							.where(
+									DATASET_PERMISSION.USER_ID.eq(userId)
+									.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
+									.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
+									.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
+									.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG)))
+									)
+							)
+					)
+			.groupBy(WORD.ID)
+			.asTable("lp");
+
+		lp = DSL.select(DSL.field(DSL.count(lp.field("lex_count", Integer.class))).as("lex_count")).from(lp).asTable("lp");
+
+		Table<Record1<Integer>> la = DSL
+			.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+			.from(LEXEME)
+			.where(LEXEME.WORD_ID.eq(wordId))
+			.groupBy(LEXEME.WORD_ID)
+			.asTable("la");
 
 		return create
-				.select(DSL.field((DSL.count(LEXEME.ID).gt(0))).as("is_granted"))
+				.select(DSL.field(lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class))).as("is_granted"))
+				.from(lp, la)
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String authItem, List<String> authOps) {
+
+		return create
+				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(LEXEME)
 				.where(
 						LEXEME.ID.eq(lexemeId)
@@ -130,8 +219,8 @@ public class PermissionDbService {
 								.from(DATASET_PERMISSION)
 								.where(
 										DATASET_PERMISSION.USER_ID.eq(userId)
-										.and(DATASET_PERMISSION.AUTH_OPERATION.eq(authOp.name()))
-										.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem.name()))
+										.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
+										.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
 										.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
 										)
 								)
@@ -139,7 +228,8 @@ public class PermissionDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForLexeme(Long userId, Long lexemeId, AuthorityOperation authOp, AuthorityItem authItem, String authLang) {
+	//TODO remove if not used
+	public boolean isGrantedForLexeme(Long userId, Long lexemeId, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
 
 		return create
 				.select(DSL.field((DSL.count(LEXEME.ID).gt(0))).as("is_granted"))
@@ -161,7 +251,8 @@ public class PermissionDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForDefinition(Long userId, Long definitionId, AuthorityOperation authOp, AuthorityItem authItem) {
+	//TODO remove if not used
+	public boolean isGrantedForDefinition(Long userId, Long definitionId, AuthorityItem authItem, AuthorityOperation authOp) {
 
 		return create
 				.select(DSL.field((DSL.count(DEFINITION.ID).gt(0))).as("is_granted"))
@@ -190,7 +281,8 @@ public class PermissionDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForUsage(Long userId, Long usageId, AuthorityOperation authOp, AuthorityItem authItem) {
+	//TODO remove if not used
+	public boolean isGrantedForUsage(Long userId, Long usageId, AuthorityItem authItem, AuthorityOperation authOp) {
 
 		return create
 				.select(DSL.field((DSL.count(FREEFORM.ID).gt(0))).as("is_granted"))
@@ -220,4 +312,5 @@ public class PermissionDbService {
 						)
 				.fetchSingleInto(Boolean.class);
 	}
+
 }

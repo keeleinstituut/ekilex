@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
+import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserPermData;
@@ -18,7 +21,7 @@ import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
 
 @Component
-public class PermissionService {
+public class PermissionService implements SystemConstant {
 
 	@Autowired
 	private UserDbService userDbService;
@@ -33,11 +36,21 @@ public class PermissionService {
 		for (EkiUserPermData user : users) {
 			Long userId = user.getId();
 			List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);
-			List<DatasetPermission> datasetPermissions = permissionDbService.getUserDatasetPermissions(userId);
+			List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
 			user.setApplications(userApplications);
 			user.setDatasetPermissions(datasetPermissions);
 		}
 		return users;
+	}
+
+	@Transactional
+	public List<Dataset> getUserDatasets(Long userId) {
+		return permissionDbService.getUserDatasets(userId);
+	}
+
+	@Transactional
+	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode) {
+		return permissionDbService.getUserDatasetLanguages(userId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@PreAuthorize("principal.admin")
@@ -62,4 +75,5 @@ public class PermissionService {
 
 		permissionDbService.deleteDatasetPermission(datasetPermissionId);
 	}
+
 }

@@ -506,6 +506,7 @@ public class ModifyController implements WebConstant {
 		return null;
 	}
 
+	//TODO omg what is going on here?! implement optimal data aggregation
 	@GetMapping(WORD_SELECT_URI)
 	public String listSelectableWords(
 			@ModelAttribute(name = "dataset") String dataset,

@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -27,6 +28,10 @@ public class EkiUser implements Principal, Serializable {
 	private boolean admin;
 
 	private Boolean enabled;
+
+	private List<DatasetPermission> datasetPermissions;
+
+	private boolean datasetPermissionsExist;
 
 	public Long getId() {
 		return id;
@@ -82,6 +87,22 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public List<DatasetPermission> getDatasetPermissions() {
+		return datasetPermissions;
+	}
+
+	public void setDatasetPermissions(List<DatasetPermission> datasetPermissions) {
+		this.datasetPermissions = datasetPermissions;
+	}
+
+	public boolean isDatasetPermissionsExist() {
+		return datasetPermissionsExist;
+	}
+
+	public void setDatasetPermissionsExist(boolean datasetPermissionsExist) {
+		this.datasetPermissionsExist = datasetPermissionsExist;
 	}
 
 	@Override

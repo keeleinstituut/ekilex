@@ -14,11 +14,12 @@ import org.springframework.stereotype.Component;
 
 import eki.common.util.CodeGenerator;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.service.db.CommonDataDbService;
+import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
-import eki.ekilex.web.util.UserContext;
 
 @Component
 public class UserService {
@@ -27,21 +28,31 @@ public class UserService {
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
 
-	private UserContext userContext;
-
 	private UserDbService userDbService;
+
+	private PermissionDbService permissionDbService;
 
 	private CommonDataDbService commonDataDbService;
 
-	public UserService(UserContext userContext, UserDbService userDbService, CommonDataDbService commonDataDbService) {
-		this.userContext = userContext;
+	public UserService(
+			UserDbService userDbService,
+			PermissionDbService permissionDbService,
+			CommonDataDbService commonDataDbService) {
 		this.userDbService = userDbService;
+		this.permissionDbService = permissionDbService;
 		this.commonDataDbService = commonDataDbService;
 	}
 
 	@Transactional
 	public EkiUser getUserByEmail(String email) {
 		EkiUser user = userDbService.getUserByEmail(email);
+		if (user != null) {
+			Long userId = user.getId();
+			List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+			boolean datasetPermissionsExist = CollectionUtils.isNotEmpty(datasetPermissions);
+			user.setDatasetPermissions(datasetPermissions);
+			user.setDatasetPermissionsExist(datasetPermissionsExist);
+		}
 		return user;
 	}
 
@@ -92,8 +103,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void submitUserApplication(List<String> datasets, String comment) {
-		Long userId = userContext.getUser().getId();
+	public void submitUserApplication(Long userId, List<String> datasets, String comment) {
 		String[] datasetArr = null;
 		if (CollectionUtils.isNotEmpty(datasets)) {
 			datasetArr = datasets.toArray(new String[datasets.size()]);
@@ -102,8 +112,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public List<EkiUserApplication> getUserApplications() {
-		Long userId = userContext.getUser().getId();
+	public List<EkiUserApplication> getUserApplications(Long userId) {
 		List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);
 		List<Dataset> allDatasets = commonDataDbService.getDatasets();
 		for (EkiUserApplication userApplication : userApplications) {

@@ -1,6 +1,10 @@
 package eki.ekilex.security;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.LifecycleEntity;
+import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.db.PermissionDbService;
 
@@ -22,8 +27,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 	private static Logger logger = LoggerFactory.getLogger(EkilexPermissionEvaluator.class);
 
 	private static final char PERM_KEY_VALUE_SEPARATOR = ':';
-
-	private static final char PERM_SEPARATOR = ';';
 
 	@Autowired
 	private PermissionDbService permissionDbService;
@@ -45,6 +48,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 	}
 
 	//hasPermission(#id, 'Foo', 'write')
+	@Transactional
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
 
@@ -58,48 +62,53 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\"", userId, targetId, targetType, permission);
 
 		Long entityId = Long.valueOf(targetId.toString());
-		LifecycleEntity entity = LifecycleEntity.valueOf(targetType);
-		AuthorityOperation authOp = AuthorityOperation.CRUD;
-		AuthorityItem authItem = null;
-		String authLang = null;
+		RequiredAuthority requiredAuthority = parse(permission);
+		String authItem = requiredAuthority.getItem();
+		List<String> authOps = requiredAuthority.getOps();
 
-		String permSentence = permission.toString();
-		String[] perms = StringUtils.split(permSentence, PERM_SEPARATOR);
-		for (String perm : perms) {
-			String[] permKeyValue = StringUtils.split(perm, PERM_KEY_VALUE_SEPARATOR);
-			String permKey = permKeyValue[0];
-			String permValue = permKeyValue[1];
-			if (StringUtils.equals(permKey, "auth")) {
-				authItem = AuthorityItem.valueOf(permValue);
-			} else if (StringUtils.equals(permKey, "lang")) {
-				authLang = permValue;
-			}
+		if (StringUtils.equals(LifecycleEntity.WORD.name(), targetType)) {
+			return permissionDbService.isGrantedForWord(userId, entityId, authItem, authOps);
+		} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
+			return permissionDbService.isGrantedForLexeme(userId, entityId, authItem, authOps);
 		}
-
-		if (LifecycleEntity.MEANING.equals(entity)) {
-			if (StringUtils.isEmpty(authLang)) {
-				//TODO implement
-			} else {
-				//TODO implement
-			}
-		} else if (LifecycleEntity.LEXEME.equals(entity)) {
-			if (StringUtils.isEmpty(authLang)) {
-				return permissionDbService.isGrantedForLexeme(userId, entityId, authOp, authItem);
-			} else {
-				return permissionDbService.isGrantedForLexeme(userId, entityId, authOp, authItem, authLang);
-			}
-		} else if (LifecycleEntity.USAGE.equals(entity)) {
-			return permissionDbService.isGrantedForUsage(userId, entityId, authOp, authItem);
-		} else if (LifecycleEntity.USAGE_DEFINITION.equals(entity)) {
-			//TODO implement
-		} else if (LifecycleEntity.USAGE_TRANSLATION.equals(entity)) {
-			//TODO implement
-		} else if (LifecycleEntity.DEFINITION.equals(entity)) {
-			return permissionDbService.isGrantedForDefinition(userId, entityId, authOp, authItem);
-		}
-		// other data types to be added
 
 		return false;
 	}
 
+	private RequiredAuthority parse(Object permission) {
+		String permSentence = permission.toString();
+		String[] perms = StringUtils.split(permSentence, PERM_KEY_VALUE_SEPARATOR);
+		AuthorityItem permAuthItem = AuthorityItem.valueOf(perms[0]);
+		AuthorityOperation permAuthOp = AuthorityOperation.valueOf(perms[1]);
+		String item = permAuthItem.name();
+		List<String> ops = new ArrayList<>();
+		ops.add(permAuthOp.name());
+		// if crud is required, owner is also pass
+		if (AuthorityItem.DATASET.equals(permAuthItem) && AuthorityOperation.CRUD.equals(permAuthOp)) {
+			ops.add(AuthorityOperation.OWN.name());
+		}
+		return new RequiredAuthority(item, ops);
+	}
+
+	public class RequiredAuthority extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private String item;
+
+		private List<String> ops;
+
+		public RequiredAuthority(String item, List<String> ops) {
+			this.item = item;
+			this.ops = ops;
+		}
+
+		public String getItem() {
+			return item;
+		}
+
+		public List<String> getOps() {
+			return ops;
+		}
+	}
 }

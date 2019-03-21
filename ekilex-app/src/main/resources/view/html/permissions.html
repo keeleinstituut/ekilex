@@ -62,7 +62,7 @@
                         <span th:if="${!#strings.isEmpty(userApplication.comment)}" th:text="${userApplication.comment}"></span>
                       </th:block>
                     </td>
-                    <td class="m-1 p-1">
+                    <td class="m-1 p-1 text-center">
                       <button type="button" class="btn badge badge-success" title="Lisa luba"
                               th:data-id="${userPerm.id}"
                               onclick="openAddDatasetPermissionDlg(this)"
@@ -73,7 +73,7 @@
                     </td>
                     <td class="m-1 p-1">
                       <th:block th:each="datasetPerm,datasetPermIter : ${userPerm.datasetPermissions}">
-                        <div>
+                        <div class="invisible-buttons">
                           <span th:text="${datasetPerm.datasetCode}"></span>
                           <span th:text="${datasetPerm.authOperation}"></span>
                           <span th:text="${datasetPerm.authItem}"></span>
