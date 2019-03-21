@@ -3,7 +3,7 @@ package eki.ekilex.constant;
 import eki.common.constant.FreeformType;
 import eki.common.constant.TableName;
 
-public interface EstermLoaderConstant extends TableName {
+public interface TermLoaderConstant extends TableName {
 
 	String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
 
@@ -37,6 +37,8 @@ public interface EstermLoaderConstant extends TableName {
 
 	String REPORT_MISSING_VALUE = "missing_value";
 
+	String REPORT_ILLEGAL_SOURCE = "illegal_source";
+
 	String conceptGroupExp = "/mtf/conceptGrp";
 	String langGroupExp = "languageGrp";
 	String langExp = "language";
@@ -60,6 +62,13 @@ public interface EstermLoaderConstant extends TableName {
 	String ltbSourceExp = "descripGrp/descrip[@type='Päritolu']";
 	String noteExp = "descripGrp/descrip[@type='Märkus']";
 	String privateNoteExp = "descripGrp/descrip[@type='Sisemärkus']";
+	String listExp = "descripGrp/descrip[@type='Loend']";
+	String imageExp = "descripGrp/descrip[@type='Joonis']";
+	String meaningDomainExp = "descripGrp/descrip[@type='Valdkonnakood']";
+	String overlapExp = "descripGrp/descrip[@type='Kattuvus']";
+	String regionExp = "descripGrp/descrip[@type='Kasutus']";
+	String meaningRelationExp = "descripGrp/descrip[@type='Seotud']";
+	String explanationExp = "descripGrp/descrip[@type='Selgitus']";
 	String unclassifiedExp = "descripGrp/descrip[@type='Tunnus']";
 	String worksheetExp = "descripGrp/descrip[@type='Tööleht']";
 	String ltbCreatedByExp = "descripGrp/descrip[@type='Sisestaja']";//concept
@@ -85,4 +94,5 @@ public interface EstermLoaderConstant extends TableName {
 	String originLtb = "ltb";
 
 	char listingsDelimiter = '|';
+	char meaningDomainDelimiter = ';';
 }
