@@ -51,12 +51,14 @@
             <span th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
             <a th:href="${'https://kn.eki.ee/?Q=' + searchWord}" th:aria-label="|#{label.find.from.kn.eki}, #{aria.new.window}|"
                 th:text="#{label.find.from.kn.eki}" target="_blank">e-keelenõust</a>
+            <button name="feedback-btn" value="feedback" class="btn btn-secondary ml-5" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
           </th:block>
         </th:block>
         <th:block th:if="${sessionBean.sourceLang == 'rus'}">
           <span th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
           <a th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + searchWord}" th:aria-label="|#{label.find.from.eki.rus}, #{aria.new.window}|"
              th:text="#{label.find.from.eki.rus}" target="_blank">vene-eesti sõnaraamatus</a>
+          <button name="feedback-btn" value="feedback" class="btn btn-secondary ml-5" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
         </th:block>
       </div>
     </div>
