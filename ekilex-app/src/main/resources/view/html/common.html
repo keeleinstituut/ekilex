@@ -629,6 +629,11 @@
           <input type="hidden" name="meaningId">
           <div class="form-group row">
             <div class="col-md-12">
+              <input class="form-control" name="value" placeholder="uus keelend">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-12">
               <select class="form-control" name="dataset">
                 <option value=""></option>
                 <option th:each="dataset : ${userPermDatasets}"
@@ -660,11 +665,6 @@
                         th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
                         th:text="${morphCode.value}">morphCode</option>
               </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-12">
-              <input class="form-control" name="value">
             </div>
           </div>
         </div>
