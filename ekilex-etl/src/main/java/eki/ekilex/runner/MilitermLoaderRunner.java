@@ -113,10 +113,14 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		Meaning meaning = new Meaning();
 		String term;
 		String lang;
+		List<String> listValues = extractListValues(conceptGroupNode);
+		List<Node> ltbSourceValueNodes = conceptGroupNode.selectNodes(ltbSourceExp);
 
-		extractAndApplyMeaningProperties(conceptGroupNode, meaning, defaultDateFormat); // TODO lifecycle log või mingi teine log? - logisse tähenduse looja ja loomisaeg
+		// TODO lifecycle log või mingi teine log? - logisse tähenduse looja ja loomisaeg
+		extractAndApplyMeaningProperties(conceptGroupNode, meaning, defaultDateFormat);
 		Long meaningId = createMeaning(meaning);
 		extractAndApplyMeaningFreeforms(meaningId, conceptGroupNode);
+		extractListValues(conceptGroupNode);
 
 		List<Node> langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 		for (Node langGroupNode : langGroupNodes) {
@@ -151,6 +155,13 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				// processStateCode pole vist vaja, sest excelis pole märgitud?
 				Long lexemeId = createLexeme(lexeme, getDataset());
 
+				saveListValueFreeforms(lang, listValues, lexemeId);
+
+				for (Node ltbSourceValueNode : ltbSourceValueNodes) {
+					List<Content> sources = extractContentAndRefs(ltbSourceValueNode, lang, term, false);
+					saveLexemeSourceLinks(lexemeId, sources, term);
+				}
+
 				extractAndApplyLexemeProperties(termGroupNode, lexeme); // TODO kas see sobib?
 
 				// estermis on selliseid kasutatud, kas siin on ka vaja?
@@ -180,18 +191,18 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				List<Node> regionValueNodes = termGroupNode.selectNodes(regionExp);
 				for (Node regionValueNode : regionValueNodes) {
 					String regionValue = ((Element) regionValueNode).getTextTrim();
-					// TODO word.region - uus klassifikaator sõna juurde
+					// TODO word.region - uus klassifikaator ilmiku juurde
 				}
 
 				List<Node> usageValueNodes = termGroupNode.selectNodes(usageExp);
 				if (CollectionUtils.isNotEmpty(usageValueNodes)) {
 					for (Node usageValueNode : usageValueNodes) {
 						List<Content> sources = extractContentAndRefs(usageValueNode, lang, term, true);
-						saveUsagesAndSourceLinks(meaningId, sources, term);
+						saveUsagesAndSourceLinks(lexemeId, sources, term);
 					}
 				}
 
-				List<Node> noteValueNodes = conceptGroupNode.selectNodes(noteExp);
+				List<Node> noteValueNodes = termGroupNode.selectNodes(noteExp);
 				for (Node noteValueNode : noteValueNodes) {
 					String noteValue = ((Element) noteValueNode).getTextTrim();
 					Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, noteValue, lang);
@@ -206,7 +217,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					createMeaningRelations(meaningRelationValueNode, meaningId);
 				}
 
-				List<Node> explanationValueNodes = conceptGroupNode.selectNodes(explanationExp);
+				List<Node> explanationValueNodes = termGroupNode.selectNodes(explanationExp);
 				for (Node explanationValueNode : explanationValueNodes) {
 					// TODO sisaldab nurksulgudes allikaviiteid nagu esterm; kõik selles conceptGrpis sisalduvad defid lähevad kokku sama tähenduse juurde.
 					//  type on uus klassifikaator defi juures, defil on 1 type
@@ -246,6 +257,32 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					for (String separateDomainCode : separateDomainCodes) {
 						handleDomain(meaningId, separateDomainCode, "TODO domainOrigin");
 					}
+				}
+			}
+		}
+	}
+
+	private List<String> extractListValues(Node conceptGroupNode) {
+
+		List<String> listValues = new ArrayList<>();
+		List<Node> listValueNodes = conceptGroupNode.selectNodes(listExp);
+		for (Node listValueNode : listValueNodes) {
+			String listValue = ((Element) listValueNode).getTextTrim();
+			listValues.add(listValue);
+		}
+		return listValues;
+	}
+
+	private void saveListValueFreeforms(String lang, List<String> listValues, Long lexemeId) throws Exception {
+
+		for (String listValue : listValues) {
+			int domainDelimCount = StringUtils.countMatches(listValue, listingsDelimiter);
+			if (domainDelimCount == 0) {
+				createLexemeFreeform(lexemeId, FreeformType.BOOKMARK, listValue, lang);
+			} else {
+				String[] separateDomainCodes = StringUtils.split(listValue, listingsDelimiter);
+				for (String separateDomainCode : separateDomainCodes) {
+					createLexemeFreeform(lexemeId, FreeformType.BOOKMARK, separateDomainCode, lang);
 				}
 			}
 		}
@@ -303,20 +340,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		List<Node> valueNodes;
 		Element valueNode;
 		String valueStr;
-		long valueLong;
-		Timestamp valueTs;
-
-		valueNodes = conceptGroupNode.selectNodes(ltbSourceExp);
-		for (Node ltbSourceValueNode : valueNodes) {
-			// TODO päritolu node sees on erinevad väärtused, tuleb vaadata, millist vaja
-			// TODO arvatavasti saab kasutada sarnast lahendust nagu allikaviite korral
-
-			// TODO allikas kõigi selle tähenduse ilmikute juurde
-			// erinevalt estermist ei ole see siin keelega seotud
-			// extract refs
-
-			// createMeaningFreeform(meaningId, FreeformType.LTB_SOURCE, "TODO");
-		}
 
 		valueNodes = conceptGroupNode.selectNodes(noteExp);
 		for (Node publicNoteValueNode : valueNodes) {
@@ -336,14 +359,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				valueStr = handleFreeformRefLinks(valueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
-		}
-
-		valueNodes = conceptGroupNode.selectNodes(listExp);
-		for (Node listValueNode : valueNodes) {
-			// TODO väärtused võivad olla püstkriipsuga | eraldatud, kas seda on vaja kuidagi töödelda?
-			valueStr = ((Element) listValueNode).getTextTrim();
-			// TODO meaningule uus freeformitüüp "LIST"
-			createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
 		}
 
 		valueNodes = conceptGroupNode.selectNodes(imageExp);
@@ -369,7 +384,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			if (contentNode instanceof DefaultText) {
 				textContentNode = (DefaultText) contentNode;
 				valueStr = textContentNode.getText();
-				logger.debug(valueStr);
 			} else if (contentNode instanceof DefaultElement) {
 				elemContentNode = (DefaultElement) contentNode;
 			}
@@ -414,7 +428,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	// TODO refactor? - EstermLoaderRunner has similar method (but has concept value)
 	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String term) throws Exception {
 
 		String minorRef = ref.getMinorRef();

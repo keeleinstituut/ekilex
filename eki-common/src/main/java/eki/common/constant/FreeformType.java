@@ -43,5 +43,6 @@ public enum FreeformType {
 	GENUS,
 	FAMILY,
 	DESCRIBER,
-	DESCRIBING_YEAR
+	DESCRIBING_YEAR,
+	BOOKMARK
 }
