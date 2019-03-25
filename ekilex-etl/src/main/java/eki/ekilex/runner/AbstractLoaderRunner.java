@@ -1200,8 +1200,14 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return sourceId;
 	}
 
-	protected void createLifecycleLog(
-			LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String entry) throws Exception {
+	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity,
+			LifecycleProperty property, Long entityId, String entry) throws Exception {
+
+		createLifecycleLog(logOwner, ownerId, eventType, entity, property, entityId, entry, null);
+	}
+
+	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity,
+			LifecycleProperty property, Long entityId, String entry, Timestamp timestamp) throws Exception {
 
 		String eventBy = "Ekileks " + getDataset() + "-laadur";
 
@@ -1212,6 +1218,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("event_type", eventType.name());
 		tableRowParamMap.put("event_by", eventBy);
 		tableRowParamMap.put("entry", entry);
+		if (timestamp != null) {
+			tableRowParamMap.put("event_on", timestamp);
+		}
 		Long lifecycleLogId = basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
 
 		if (LifecycleLogOwner.LEXEME.equals(logOwner)) {

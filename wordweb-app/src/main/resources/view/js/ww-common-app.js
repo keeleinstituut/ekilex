@@ -21,13 +21,6 @@ $(document).ready(function() {
 	$('[autofocus]:not(:focus)').eq(0).focus();
 	$('.home-page #search').focus();
 
-	// Focus trap modal
-	$('#feedbackModal .btn:last-of-type').on('focus', function(e) {
-		if ($("#feedbackModal").val() == "") {
-			$("#feedbackModal .icon-close").focus();
-		}
-	});
-
 	// Focus trap sidebar
 	$('.header-links .menu-item:last-of-type').on('focus', function(e) {
 		if ($("#langDropdownMenuButton").val() == "") {
@@ -72,9 +65,12 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 	if (!isValidFeedbackForm(feedbackForm)) {
 		return;
 	}
-	var okMessageElement = feedbackForm.find('[name=ok_message]');
+	var dataDiv = $('#feedbackModal').find('[name=dataDiv]');
+	var responseDiv = $('#feedbackModal').find('[name=responseDiv]');
+	var okMessageElement = responseDiv.find('[name=ok_message]');
 	var errorMessageElement = feedbackForm.find('[name=error_message]');
-	var acceptPrivacyStatement = feedbackForm.find('.modal-check');
+	var okMessage = feedbackForm.find('[name=ok_message]').text();
+    var acceptPrivacyStatement = feedbackForm.find('.modal-check');
 	$.ajax({
 		url : feedbackServiceUrl,
 		data : feedbackForm.serialize(),
@@ -82,13 +78,19 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 	}).done(function(data) {
 		var answer = JSON.parse(data);
 		if (answer.status === 'ok') {
+			dataDiv.attr('hidden', true);
+			responseDiv.attr('hidden', false);
+			okMessageElement.text(okMessage);
 			okMessageElement.attr('hidden', false);
 			acceptPrivacyStatement.trigger('click');
 		} else {
 			errorMessageElement.attr('hidden', false);
 		}
 	}).fail(function(data) {
-		feedbackForm.find('.has-error').show();
+		dataDiv.attr('hidden', true);
+		responseDiv.attr('hidden', false);
+		responseDiv.find('.has-error').show();
+        acceptPrivacyStatement.trigger('click');
 	});
 });
 
@@ -98,7 +100,6 @@ $(document).on("click", ".modal-check", function() {
 
 function clearMessages(modalDlg) {
 	modalDlg.find('.alert').removeClass('error-show');
-	modalDlg.find('[name=ok_message]').attr('hidden', true);
 	modalDlg.find('[name=error_message]').attr('hidden', true);
 }
 
@@ -115,10 +116,12 @@ $(document).on("click", "#feedbackCommentRadio", function() {
 });
 
 $(document).on('show.bs.modal', '#feedbackModal', function() {
-	clearMessages($(this));
-
-	$('#feedbackModal').modal('toggle');
-	$('#feedbackModal').on('shown.bs.modal', function() {
-		$('#feedbackModal .close').focus()
+	var fbModal = $(this);
+	clearMessages(fbModal);
+	fbModal.find('[name=dataDiv]').attr('hidden', false);
+	fbModal.find('[name=responseDiv]').attr('hidden', true);
+	fbModal.modal('toggle');
+	fbModal.off('shown.bs.modal').on('shown.bs.modal', function() {
+		fbModal.find('.close').focus()
 	});
 });

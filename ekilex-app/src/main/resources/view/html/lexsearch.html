@@ -80,7 +80,7 @@
             <div th:replace="lexdialog :: add_lexeme_relation_dlg"></div>
 
             <div class="card-body" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}" data-lexeme-title>
-              <button type="button" class="btn badge badge-secondary float-right btn-toggle"
+              <button type="button" class="btn badge badge-secondary float-right btn-toggle" title="Näita detaile"
                       th:data-toggle-target="${'lexBody_' + lexeme.lexemeId}">
                 <i class="fa fa-angle-down" aria-hidden="true"></i>
               </button>
@@ -122,7 +122,7 @@
                  th:data-op-code="lexeme"
                  data-callback="doNewSearch"
                  th:name="${lexeme.lexemeId} + '_lexeme'">
-              <button type="button" class="btn badge badge-secondary float-right btn-toggle"
+              <button type="button" class="btn badge badge-secondary float-right btn-toggle" title="Peida detailid"
                       th:data-toggle-target="${'lexTitle_' + lexeme.lexemeId}">
                 <i class="fa fa-angle-up" aria-hidden="true"></i>
               </button>
@@ -151,6 +151,7 @@
                 </div>
                 <div>
                   <a class="btn btn-sm btn-primary"
+                     title="Ühenda ilmikud"
                      th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}"
                      sec:authorize="{#vars.isLexemeCrudGranted}">Ühenda</a>
                   <a class="btn btn-sm btn-primary"
@@ -166,6 +167,7 @@
                           th:data-meaning-id="${lexeme.meaningId}"
                           sec:authorize="${#authentication.principal.datasetPermissionsExist}">Lisa uus keelend</button>
                   <button id="lexemeCopyBtn" class="btn btn-sm btn-primary"
+                          title="Tee duplikaat ilmikust ja temaga seotud elementidest"
                           th:data-lexeme-id="${lexeme.lexemeId}"
                           sec:authorize="{#vars.isLexemeCrudGranted}">Duplikaat</button>
                   <button class="btn btn-warning font-weight-bold btn-sm" type="button"
@@ -211,7 +213,7 @@
                   </button>
                 </div>
                 <div class="col pl-0">
-                  <table class="orderable" th:data-op-code="definition">
+                  <table class="orderable" data-op-code="definition">
                     <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                       <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>

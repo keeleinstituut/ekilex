@@ -65,6 +65,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String WORD_RELATION_COMPARATIVE = "komp";
 	private final static String WORD_RELATION_POSITIVE = "posit";
 	private final static String WORD_RELATION_UNION = "ühend";
+	private final static String WORD_RELATION_DERIVATIVE = "deriv";
+	private final static String WORD_RELATION_DERIVATIVE_BASE = "deriv_base";
 
 	private final static String LEXEME_RELATION_COMPOUND_FORM = "pyh";
 	private final static String LEXEME_RELATION_SINGLE_FORM = "yvr";
@@ -178,6 +180,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processCompoundForms(context);
 		processWordComparatives(context);
 		processWordSuperlatives(context);
+		processWordDerivatives(context);
 
 		logger.debug("Found {} ss words", context.ssWordCount.getValue());
 		logger.debug("Found {} word duplicates", context.reusedWordCount.getValue());
@@ -204,6 +207,27 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String articleGuidExp = "x:G";
 		Element guidNode = (Element) node.selectSingleNode(articleGuidExp);
 		return guidNode != null ? StringUtils.lowerCase(guidNode.getTextTrim()) : null;
+	}
+
+	private void processWordDerivatives(Context context) throws Exception {
+		logger.debug("Starting word derivatives processing.");
+		writeToLogFile("Tuletiste töötlus <x:dta>", "", "");
+
+		long count = 0;
+		List<WordData> words = new ArrayList<>();
+		words.addAll(context.importedWords.stream().filter(wd -> !wd.derivatives.isEmpty()).collect(Collectors.toList()));
+
+		for (WordData wordData : words) {
+			for (String derivative : wordData.derivatives) {
+				count++;
+				Optional<Long> derivativeId = findExactMatch(context, derivative);
+				if (derivativeId.isPresent()) {
+					createWordRelation(wordData.id, derivativeId.get(), WORD_RELATION_DERIVATIVE_BASE);
+					createWordRelation(derivativeId.get(), wordData.id, WORD_RELATION_DERIVATIVE);
+				}
+			}
+		}
+		logger.debug("Word derivatives processing done, {}.", count);
 	}
 
 	private void processWordSuperlatives(Context context) throws Exception {
@@ -261,6 +285,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			wordId = existingWords.get(0).id;
 		}
 		return wordId;
+	}
+
+	private Optional<Long> findExactMatch(Context context, String wordValue) {
+		List<WordData> existingWords = context.importedWords.stream()
+				.filter(w -> wordValue.equals(w.value))
+				.collect(Collectors.toList());
+		return existingWords.size() == 1 ? Optional.of(existingWords.get(0).id) : Optional.empty();
 	}
 
 	private void processCompoundForms(Context context) throws Exception {
@@ -1180,6 +1211,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordFrequencyGroupExp = "x:sag";
 		final String wordComparativeExp = "x:mfp/x:kmpg/x:kmp";
 		final String wordSuperlativeExp = "x:mfp/x:kmpg/x:suprl";
+		final String wordDerivativeExp = "x:dta";
 		final String basicWordExp = "x:ps";
 
 		List<Node> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
@@ -1218,6 +1250,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			List<Node> wordSuperlativeNodes = wordGroupNode.selectNodes(wordSuperlativeExp);
 			wordData.superlatives = wordSuperlativeNodes.stream()
+					.map(n -> {
+						String value = nodeCleanValue(n);
+						value = StringUtils.replaceChars(value, formStrCleanupChars, "");
+						return value;
+						})
+					.collect(Collectors.toList());
+
+			List<Node> wordDerivateNodes = wordGroupNode.selectNodes(wordDerivativeExp);
+			wordData.derivatives = wordDerivateNodes.stream()
 					.map(n -> {
 						String value = nodeCleanValue(n);
 						value = StringUtils.replaceChars(value, formStrCleanupChars, "");
@@ -1416,6 +1457,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<String> wordTypeCodes = new ArrayList<>();
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
+		List<String> derivatives = new ArrayList<>();
 		int level1 = 1;
 	}
 

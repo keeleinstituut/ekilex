@@ -182,12 +182,12 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 id="feedbackModal" class="modal-title" th:text="#{feedback.title}">Tagasiside</h5>
+            <h5 class="modal-title" th:text="#{feedback.title}">Tagasiside</h5>
             <a href="#" class="close" data-dismiss="modal" tabindex="0" aria-label="Close">
               <span class="icon icon-close"></span>
             </a>
           </div>
-          <div class="modal-body">
+          <div name="dataDiv" class="modal-body">
             <div class="modal-radio" id="feedbackMaterial">
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="feedbackWordRadio" checked name="feedbackRadio" class="custom-control-input">
@@ -198,12 +198,26 @@
                 <label class="custom-control-label" for="feedbackCommentRadio" th:text="#{label.fb.comment}">Kommentaar</label>
               </div>
             </div>
-            <div class="has-error mt-2" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
             <div id="feedWord" class="formarea show-section">
               <th:block th:insert="common-app :: feedback_new_word"></th:block>
             </div>
             <div id="feedComment" class="formarea">
               <th:block th:insert="common-app :: feedback_comment"></th:block>
+            </div>
+          </div>
+          <div name="responseDiv" class="modal-body" hidden>
+            <div class="form-row">
+              <div class="form-group col-12">
+                <div class="has-error mt-2" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+                <label class="positive-feedback" name="ok_message"></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-12 p-0 mt-2">
+                <div class="text-right">
+                  <a role="button" href="#" class="mr-3" data-dismiss="modal" th:text="#{button.fb.close}">Sulge</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
