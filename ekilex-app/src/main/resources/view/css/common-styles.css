@@ -263,3 +263,7 @@ input:checked+.slider:before {
 .mw-90 {
 	max-width: 90%;
 }
+
+select:invalid {
+    color: #6c757d;
+}

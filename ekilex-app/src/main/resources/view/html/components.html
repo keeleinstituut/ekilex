@@ -349,7 +349,8 @@
             <input type="hidden" name="id2">
               <div class="form-group row">
                 <div class="col-md-6">
-                  <select class="form-control" name="value">
+                  <select required class="form-control" name="value">
+                    <option value="" hidden disabled selected>vali seose tüüp...</option>
                     <option th:each="item : ${wordRelationTypes}"
                             th:value="${item.code}"
                             th:text="${item.value}">value</option>
@@ -427,7 +428,8 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select class="form-control" name="value">
+                <select required class="form-control" name="value">
+                  <option value="" hidden disabled selected>vali seose tüüp...</option>
                   <option th:each="item : ${lexemeRelationTypes}"
                           th:value="${item.code}"
                           th:text="${item.value}">value</option>
@@ -507,7 +509,8 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select class="form-control" name="value">
+                <select required class="form-control" name="value">
+                  <option value="" hidden disabled selected>vali seose tüüp...</option>
                   <option th:each="item : ${meaningRelationTypes}"
                           th:value="${item.code}"
                           th:text="${item.value}">value</option>
@@ -583,7 +586,8 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select class="form-control" name="itemType">
+                <select required class="form-control" name="itemType">
+                  <option value="" hidden disabled selected>vali tüüp...</option>
                   <option th:value="AUTHOR" th:text="#{enum.reference.type.AUTHOR}"></option>
                   <option th:value="TRANSLATOR" th:text="#{enum.reference.type.TRANSLATOR}"></option>
                 </select>

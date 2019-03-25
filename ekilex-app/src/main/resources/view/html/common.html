@@ -142,7 +142,8 @@
 <!-- select fragments for classifier dialogs -->
 <div class="form-group row value-group" data-id="lexeme_frequency_group" th:fragment="lexeme_frequency_select">
   <div class="col-md-2">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="freqGroup : ${lexemeFrequencyGroups}"
               th:value="${freqGroup.code}"
               th:text="${freqGroup.value}">freqGroup</option>
@@ -152,7 +153,8 @@
 
 <div class="form-group row value-group" data-id="lexeme_pos" th:fragment="lexeme_pos_select">
   <div class="col-md-8">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="pos : ${allLexemePos}"
               th:value="${pos.code}"
               th:text="${pos.value}">pos</option>
@@ -162,7 +164,8 @@
 
 <div class="form-group row value-group" data-id="meaning_domain" th:fragment="meaning_domain_select">
   <div class="col-md-12">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
         <option th:each="domain : ${origin.getValue()}"
                 th:value="${domain.toIdString()}"
@@ -174,7 +177,8 @@
 
 <div class="form-group row value-group" data-id="lexeme_deriv" th:fragment="lexeme_deriv_select">
   <div class="col-md-8">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="deriv : ${allLexemeDerivs}"
               th:value="${deriv.code}"
               th:text="${deriv.value}">deriv</option>
@@ -184,7 +188,8 @@
 
 <div class="form-group row value-group" data-id="lexeme_register" th:fragment="lexeme_register_select">
   <div class="col-md-8">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="register : ${allLexemeRegisters}"
               th:value="${register.code}"
               th:text="${register.value}">register</option>
@@ -200,7 +205,8 @@
 
 <div class="form-group row value-group" data-id="word_gender" th:fragment="word_gender_select">
   <div class="col-md-4">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="gender : ${wordGenders}"
               th:value="${gender.code}"
               th:text="${gender.value}">gender</option>
@@ -210,7 +216,8 @@
 
 <div class="form-group row value-group" data-id="word_type" th:fragment="word_type_select">
   <div class="col-md-8">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="item : ${wordTypes}"
               th:value="${item.code}"
               th:text="${item.value}">value</option>
@@ -220,7 +227,8 @@
 
 <div class="form-group row value-group" data-id="word_aspect" th:fragment="word_aspect_select">
   <div class="col-md-8">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="item : ${wordAspects}"
               th:value="${item.code}"
               th:text="${item.value}">value</option>
@@ -230,7 +238,8 @@
 
 <div class="form-group row value-group" data-id="lexeme_value_state" th:fragment="lexeme_value_state_select">
   <div class="col-md-4">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="item : ${lexemeValueStates}"
               th:value="${item.code}"
               th:text="${item.value}">value</option>
@@ -240,7 +249,8 @@
 
 <div class="form-group row value-group" data-id="lexeme_process_state" th:fragment="lexeme_process_state_select">
   <div class="col-md-6">
-    <select class="form-control value-select">
+    <select required class="form-control value-select">
+      <option value="" hidden disabled selected>vali väärtus...</option>
       <option th:each="item : ${processStates}"
               th:value="${item.code}"
               th:text="${item.value}">value</option>
@@ -634,8 +644,8 @@
           </div>
           <div class="form-group row">
             <div class="col-md-12">
-              <select class="form-control" name="dataset">
-                <option value=""></option>
+              <select required class="form-control" name="dataset">
+                <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedDataset)}">vali sõnastik...</option>
                 <option th:each="dataset : ${userPermDatasets}"
                         th:value="${dataset.code}"
                         th:selected="${dataset.code == sessionBean.newWordSelectedDataset}"
@@ -646,8 +656,8 @@
           <div class="form-group row">
             <div class="col-md-8">
               <th:block th:fragment="permLanguageSelect">
-                <select id="permLanguageSelect" class="form-control" name="language">
-                  <option value=""></option>
+                <select required id="permLanguageSelect" class="form-control" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                   <option th:each="language : ${userPermLanguages}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
@@ -658,8 +668,8 @@
           </div>
           <div class="form-group row">
             <div class="col-md-8">
-              <select class="form-control" name="morphCode">
-                <option value=""></option>
+              <select required class="form-control" name="morphCode">
+                <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
                 <option th:each="morphCode : ${wordMorphCodes}"
                         th:value="${morphCode.code}"
                         th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
