@@ -109,6 +109,9 @@
       <div class="card mb-2 shadow" style="border-style: dotted; border-width: 4px; border-color: #aaa">
         <div class="card-body">
           <div class="row">
+            <div class="col">
+              <b th:text="${meaningId}"></b>
+            </div>
             <div class="col-auto ml-auto">
               <a class="btn btn-primary btn-sm" th:href="@{'/meaningjoin/' + ${meaningId}}">Ühenda</a>
               <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${meaningId}">Lisa uus keelend</button>
@@ -183,10 +186,16 @@
                     <i th:class="${definitionLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
                   </button>
                 </div>
-                <th:block th:if="${definitionLangGroup.selected}" th:each="definition : ${definitionLangGroup.definitions}">
-                  <div class="ml-4" style="position: relative">
+                <div th:if="${definitionLangGroup.selected}" class="orderable" data-op-code="definition">
+                  <div class="ml-4" style="position: relative"
+                       th:each="definition, itemStat: ${definitionLangGroup.definitions}"
+                       th:data-id="${definition.id}"
+                       th:data-orderby="${definition.orderBy}">
                     <div style="display: list-item; position: absolute"></div>
-                    <div class="invisible-buttons action-buttons-anchor  w-90">
+                    <div class="action-column">
+                      <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                    </div>
+                    <div class="invisible-buttons action-buttons-anchor  mw-90">
                       <span th:name="${definition.id} + '_definition'"
                             th:data-id="${definition.id}"
                             th:data-op-code="definition"
@@ -246,7 +255,7 @@
                       </button>
                     </div>
                   </div>
-                </th:block>
+                </div>
               </th:block>
             </div>
           </div>
@@ -265,7 +274,7 @@
             <div class="col pl-0">
               <table>
                 <tr th:each="learnerComment : ${meaning.learnerComments}">
-                  <td class="hidden-buttons action-buttons-anchor w-90">
+                  <td class="hidden-buttons action-buttons-anchor mw-90">
                     <div th:name="${learnerComment.id} + '_learner_comment'"
                           th:data-id="${learnerComment.id}"
                           th:data-op-code="learner_comment"
@@ -480,7 +489,7 @@
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.usages)}" class="col pl-0">
                     <th:block th:each="usage : ${lexeme.usages}">
-                      <div class="invisible-buttons action-buttons-anchor w-90">
+                      <div class="invisible-buttons action-buttons-anchor mw-90">
                         <div style="display: list-item; position: absolute"></div>
                         <span th:name="${usage.id} + '_usage'"
                               th:data-id="${usage.id}"
@@ -626,7 +635,7 @@
                 <div class="col pl-0">
                   <table>
                     <tr th:each="publicNote : ${lexeme.publicNotes}">
-                      <td class="hidden-buttons action-buttons-anchor w-90">
+                      <td class="hidden-buttons action-buttons-anchor mw-90">
                         <div th:name="${publicNote.id} + '_public_note'"
                               th:data-id="${publicNote.id}"
                               th:data-op-code="public_note"

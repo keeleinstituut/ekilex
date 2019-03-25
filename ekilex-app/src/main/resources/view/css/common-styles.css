@@ -234,13 +234,13 @@ input:checked+.slider:before {
 	z-index: 9;
 }
 
-table.orderable .action-column {
+.orderable .action-column {
 	visibility: hidden;
 	opacity: 0;
 	transition: visibility 0s 1s, opacity 1s ease-in;
 }
 
-table.orderable:hover .action-column {
+.orderable:hover .action-column {
 	visibility: visible;
 	opacity: 1;
 	transition: visibility 0s 0s;
@@ -260,6 +260,6 @@ table.orderable:hover .action-column {
 	z-index: 99;
 }
 
-.w-90 {
-	width: 90%;
+.mw-90 {
+	max-width: 90%;
 }

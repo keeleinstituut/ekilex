@@ -212,7 +212,7 @@
                   </button>
                 </div>
                 <div class="col pl-0">
-                  <table class="orderable" th:data-op-code="definition">
+                  <table class="orderable" data-op-code="definition">
                     <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                       <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
