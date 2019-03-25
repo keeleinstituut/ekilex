@@ -74,6 +74,17 @@ function openEkiEditorDlg(elem) {
     initEkiEditor(ekiEditorElem);
 }
 
+function initEkiEditorDlg(editDlg) {
+	let modifyFld = editDlg.find('[name=editFld]');
+    modifyFld.html(editDlg.find('[name=value]').val());
+    editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        editDlg.find('[name=value]').val(modifyFld.html());
+        submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+    });
+    let ekiEditorElem = editDlg.find('.eki-editor');
+    initEkiEditor(ekiEditorElem);
+}
+
 function initEkiEditor(ekiEditorElem) {
     let editorElem = ekiEditorElem.find('[name=editFld]');
     let menuElement = ekiEditorElem.find('.eki-editor-menu');

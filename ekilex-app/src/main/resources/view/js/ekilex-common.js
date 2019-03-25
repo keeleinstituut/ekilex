@@ -220,6 +220,12 @@ function openEditDlg(elem) {
 	});
 }
 
+function initGenericTextEditDlg(editDlg) {
+	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+	});
+}
+
 function performDelete() {
     let targetName = $(this)[0].getAttribute('data-target-elem');
     let targetElement = targetName === null ? $(this) : $('[name="' + targetName + '"]');
@@ -266,6 +272,19 @@ function removeClosestRow(elem) {
 function openAddDlg(elem) {
     let addDlg = $($(elem).data('target'));
 	addDlg.find('[name=id]').val($(elem).data('id'));
+	addDlg.find('[name=value]').val(null);
+    addDlg.find('select').each(function(indx, item) {
+        $(item).val($(item).find('option').first().val());
+    });
+	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+		submitDialog(e, addDlg, 'Andmete lisamine ebaõnnestus.')
+	});
+	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+		alignAndFocus(e, addDlg)
+	});
+}
+
+function initGenericTextAddDlg(addDlg) {
 	addDlg.find('[name=value]').val(null);
     addDlg.find('select').each(function(indx, item) {
         $(item).val($(item).find('option').first().val());
@@ -400,6 +419,24 @@ function initMultiValueAddDlg(theDlg) {
     });
 }
 
+function initAddMultiDataDlg(theDlg) {
+	theDlg.find('.value-select').off('change').on('change', function(e) {
+        theDlg.find('[name=value]').val($(this).val());
+    });
+    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+    	submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.');
+    });
+    theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        theDlg.find('.form-control').each(function (indx, item) {
+            $(item).val(null);
+        });
+        theDlg.find('select').each(function (indx, item) {
+            $(item).val($(item).find('option').first().val());
+        });
+        alignAndFocus(e, theDlg);
+    });
+}
+
 function decorateSourceLinks() {
 	let detailsDiv = $('#details_div');
 	detailsDiv.find('a').each(function(indx, item) {
@@ -454,6 +491,43 @@ function openAddSourceLinkDlg(elem) {
     let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('[name=opCode]').val($(elem).data('op-code'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=sourceLinkDlgContent]').html(null);
+
+    addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        e.preventDefault();
+        let button = $(this);
+        let content = button.html();
+        button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+        let theForm = $(this).closest('form');
+        let url = theForm.attr('action') + '?' + theForm.serialize();
+        $.get(url).done(function(data) {
+            addDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
+            addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
+                e.preventDefault();
+                let button = $(e.target);
+                let sourceName = button.closest('.form-group').find('.form-control').val();
+                addDlg.find('[name=id2]').val(button.data('source-id'));
+                addDlg.find('[name=value]').val(sourceName);
+                let theForm = button.closest('form');
+                submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+                    addDlg.modal('hide');
+                });
+            });
+        }).fail(function(data) {
+            console.log(data);
+            alert(failMessage);
+        }).always(function () {
+            button.html(content);
+        });
+    });
+
+    addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        addDlg.find('.form-control').first().focus();
+    });
+}
+
+function initAddSourceLinkDlg(addDlg) {
     addDlg.find('.form-control').val(null);
     addDlg.find('[data-name=sourceLinkDlgContent]').html(null);
 
@@ -552,10 +626,26 @@ function openAddNewMeaningRelationDlg(elem) {
     initRelationDialogLogic(addDlg, 'meaning-id');
 }
 
+function initAddMeaningRelationDlg(addDlg) {
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    let selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+    initRelationDialogLogic(addDlg, 'meaning-id');
+}
+
 function openAddNewLexemeRelationDlg(elem) {
     let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('[name=lexemeId]').val($(elem).data('id'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    let selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+    initRelationDialogLogic(addDlg, 'lexeme-id');
+}
+
+function initAddLexemeRelationDlg(addDlg) {
     addDlg.find('.form-control').val(null);
     addDlg.find('[data-name=dialogContent]').html(null);
     let selectElem = addDlg.find('select');

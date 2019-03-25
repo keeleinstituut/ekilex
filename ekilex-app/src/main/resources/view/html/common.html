@@ -29,7 +29,6 @@
   <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-component.js}"></script>
 </th:block>
 
 <!-- Bootstrap core CSS -->
@@ -254,57 +253,6 @@
   </div>
 </div>
 <!-- END select fragments -->
-
-<div id="lexemeClassifiersDlg" class="modal" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/add_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="id2">
-          <input type="hidden" name="id3">
-          <input type="hidden" name="value">
-          <div class="form-group row">
-            <div class="col-md-6">
-              <select class="form-control" name="opCode">
-                <option value="lexeme_process_state">Haldusolek</option>
-                <option value="lexeme_value_state">Väärtusolek</option>
-                <option value="lexeme_frequency_group">Sagedusrühm</option>
-                <option value="lexeme_pos">Sõnaliik</option>
-                <option value="meaning_domain">Valdkond</option>
-                <option value="lexeme_deriv">Tuletuskood</option>
-                <option value="lexeme_register">Register</option>
-                <option value="lexeme_grammar">Grammatika</option>
-                <option value="government">Rektsioon</option>
-                <option disabled>-----------------</option>
-                <option value="#addNewDefinition">Mõiste seletus</option>
-                <option value="#addNewSourceLink">Allikaviide</option>
-                <option value="#addNewLearnerComment">Õppekomentaar</option>
-                <option value="#addNewMeaningRelation">Tähenduse seos</option>
-                <option value="#addNewUsage">Kasutusnäide</option>
-                <option value="#addNewPublicNote">Märkus</option>
-                <option value="#addNewLexemeRelation">Ilmiku seoas</option>
-              </select>
-            </div>
-          </div>
-          <div th:replace=":: lexeme_process_state_select"></div>
-          <div th:replace=":: lexeme_value_state_select"></div>
-          <div th:replace=":: lexeme_frequency_select"></div>
-          <div th:replace=":: lexeme_pos_select"></div>
-          <div th:replace=":: meaning_domain_select"></div>
-          <div th:replace=":: lexeme_deriv_select"></div>
-          <div th:replace=":: lexeme_register_select"></div>
-          <div th:replace=":: lexeme_grammar_input"></div>
-          <div th:replace=":: government_input"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 
 <div id="wordClassifiersDlg" class="modal" role="dialog">
   <div class="modal-dialog" role="document">

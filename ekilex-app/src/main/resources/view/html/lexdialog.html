@@ -1,0 +1,668 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+  <div th:id="${'addLexemeDataDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_data_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="id2" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="id3" th:value="${wordId}">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control lex-data-select" name="opCode">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="lexeme_process_state" sec:authorize="{#vars.isLexemeCrudGranted}">Haldusolek</option>
+                  <option value="lexeme_value_state" sec:authorize="{#vars.isLexemeCrudGranted}">Väärtusolek</option>
+                  <option value="lexeme_frequency_group" sec:authorize="{#vars.isLexemeCrudGranted}">Sagedusrühm</option>
+                  <option value="lexeme_pos" sec:authorize="{#vars.isLexemeCrudGranted}">Sõnaliik</option>
+                  <option value="lexeme_deriv" sec:authorize="{#vars.isLexemeCrudGranted}">Tuletuskood</option>
+                  <option value="lexeme_register" sec:authorize="{#vars.isLexemeCrudGranted}">Register</option>
+                  <option value="lexeme_grammar" sec:authorize="{#vars.isLexemeCrudGranted}">Grammatika</option>
+                  <option value="government" sec:authorize="{#vars.isLexemeCrudGranted}">Rektsioon</option>
+                  <option value="meaning_domain">Valdkond</option>
+                  <!-- TODO perms -->
+                  <option disabled>-----------------</option>
+                  <option value="addDefinitionDlg">Mõiste seletus</option>
+                  <option value="addSourceLinkDlg">Allikaviide</option>
+                  <option value="addLearnerCommentDlg">Õppekomentaar</option>
+                  <option value="addMeaningRelationDlg">Tähenduse seos</option>
+                  <option value="addUsageDlg">Kasutusnäide</option>
+                  <option value="addPublicNoteDlg">Märkus</option>
+                  <option value="addLexemeRelationDlg">Ilmiku seos</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_process_state_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-6">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_value_state_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-4">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_frequency_group_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-2">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="freqGroup : ${lexemeFrequencyGroups}" th:value="${freqGroup.code}" th:text="${freqGroup.value}">freqGroup</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_pos_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="pos : ${allLexemePos}" th:value="${pos.code}" th:text="${pos.value}">pos</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'meaning_domain_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-12">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_deriv_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="deriv : ${allLexemeDerivs}" th:value="${deriv.code}" th:text="${deriv.value}">deriv</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_register_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_grammar_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-12">
+                <input type="text" class="form-control value-select">
+              </div>
+            </div>
+            <div th:id="${'government_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-12">
+                <input type="text" class="form-control value-select">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" name="addLexemeDataBtn">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addDefinitionDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_definition_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="language" value="est">
+            <!-- TODO perm langs -->
+            <input type="hidden" name="opCode" value="definition">
+            <input type="hidden" name="value">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editDefinitionDlg_' + lexeme.lexemeId + '_' + definition.id}" class="modal" role="dialog" th:fragment="edit_definition_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${definition.id}">
+            <input type="hidden" name="language" value="est">
+            <!-- TODO perm langs -->
+            <input type="hidden" name="opCode" value="definition">
+            <input type="hidden" name="value" th:value="${definition.value}">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addSourceLinkDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_source_link_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/sourcesearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-auto col-form-label">Otsing</label>
+                  <div class="col-5">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <form th:action="@{/add_item}" method="post">
+          <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+          <input type="hidden" name="opCode" value="lex_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addLearnerCommentDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_learner_comment_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="language" value="est">
+            <!-- TODO perm langs -->
+            <input type="hidden" name="opCode" value="learner_comment">
+            <input type="hidden" name="value">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLearnerCommentDlg_' + lexeme.lexemeId + '_' + learnerComment.id}" class="modal" role="dialog" th:fragment="edit_learner_comment_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${learnerComment.id}">
+            <input type="hidden" name="language" value="est">
+            <!-- TODO perm langs -->
+            <input type="hidden" name="opCode" value="learner_comment">
+            <input type="hidden" name="value" th:value="${learnerComment.valuePrese}">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningRelationDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_meaning_relation_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/meaningsearchajax}">
+            <input type="hidden" name="meaningId">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/add_item}" method="post">
+            <input type="hidden" name="id" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="opCode" value="meaning_relation">
+            <input type="hidden" name="id2">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control" name="value">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addGovernmentDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_government_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="government">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="1" name="value"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editGovernmentDlg_' + lexeme.lexemeId + '_' + government.id}" class="modal" role="dialog" th:fragment="edit_government_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${government.id}">
+            <input type="hidden" name="opCode" value="government">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="1" name="value" th:text="${government.value}"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addUsageDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_usage_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="language" value="est">
+            <!-- TODO perm langs -->
+            <input type="hidden" name="opCode" value="usage">
+            <input type="hidden" name="value">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addUsageAuthorDlg_' + usage.id}" class="modal" role="dialog" th:fragment="add_usage_author_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/personsearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav nimi">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/add_item}" method="post">
+            <input type="hidden" name="id" th:value="${usage.id}">
+            <input type="hidden" name="opCode" value="usage_author">
+            <input type="hidden" name="id2">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control" name="itemType">
+                  <option value="" hidden disabled selected>vali tüüp...</option>
+                  <option th:value="AUTHOR" th:text="#{enum.reference.type.AUTHOR}"></option>
+                  <option th:value="TRANSLATOR" th:text="#{enum.reference.type.TRANSLATOR}"></option>
+                </select>
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}" class="modal" role="dialog" th:fragment="edit_usage_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${usage.id}">
+            <input type="hidden" name="language" value="est">
+            <!-- TODO perm langs -->
+            <input type="hidden" name="opCode" value="usage">
+            <input type="hidden" name="value" th:value="${usage.value}">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}" class="modal" role="dialog" th:fragment="add_usage_member_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${usage.id}">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control" name="opCode">
+                  <option value="usage_translation">Kasutusnäite tõlge</option>
+                  <option value="usage_definition">Kasutusnäite seletus</option>
+                </select>
+              </div>
+            </div>
+            <div class="value-group" data-id="usage_translation">
+              <div class="form-group row">
+                <div class="col-md-4">
+                  <select required class="form-control" name="language">
+                    <!-- TODO perm langs -->
+                    <option value="" hidden disabled selected>vali väärtus...</option>
+                    <option th:each="language : ${allLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
+                  </select>
+                </div>
+              </div>
+              <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            </div>
+            <div class="value-group" data-id="usage_definition">
+              <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editUsageTranslationDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageTranslation.id}" class="modal" role="dialog" th:fragment="edit_usage_translation_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${usageTranslation.id}">
+            <input type="hidden" name="opCode" value="usage_translation">
+            <input type="hidden" name="value" th:value="${usageTranslation.value}">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageDefinition.id}" class="modal" role="dialog" th:fragment="edit_usage_definition_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${usageDefinition.id}">
+            <input type="hidden" name="opCode" value="usage_definition">
+            <input type="hidden" name="value" th:value="${usageDefinition.value}">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addPublicNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="language" value="est">
+            <!-- TODO perm langs -->
+            <input type="hidden" name="opCode" value="public_note">
+            <input type="hidden" name="value">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editPublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="edit_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${publicNote.id}">
+            <input type="hidden" name="language" value="est">
+            <!-- TODO perm langs -->
+            <input type="hidden" name="opCode" value="public_note">
+            <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
+            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addLexemeRelationDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_relation_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/lexemesearchajax}">
+            <input type="hidden" name="lexemeId" th:value="${lexeme.lexemeId}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/add_item}" method="post">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_relation">
+            <input type="hidden" name="id2">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control" name="value">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${lexemeRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addWordDataDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_data_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="id2">
+            <input type="hidden" name="id3">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control word-data-select" name="opCode">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="word_gender">Sugu</option>
+                  <option value="word_type">Sõna tüüp</option>
+                  <option value="word_aspect">Aspekt</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'word_gender_' + wordId}" class="form-group row value-group" data-id="word_gender" th:fragment="word_gender_select" style="display: none">
+              <div class="col-md-4">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="gender : ${wordGenders}" th:value="${gender.code}" th:text="${gender.value}">gender</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'word_type_' + wordId}" class="form-group row value-group" data-id="word_type" th:fragment="word_type_select" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${wordTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'word_aspect_' + wordId}" class="form-group row value-group" data-id="word_aspect" th:fragment="word_aspect_select" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${wordAspects}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addWordRelationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_relation_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/wordsearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/add_item}" method="post">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_relation">
+            <input type="hidden" name="id2">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control" name="value">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${wordRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordGenderDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_gender_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_gender">
+            <select required class="form-control" name="value">
+              <option th:each="item : ${wordGenders}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.wordGenderCode}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordAspectDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_aspect_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_aspect">
+            <select required class="form-control" name="value">
+              <option th:each="item : ${wordAspects}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.wordAspectCode}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

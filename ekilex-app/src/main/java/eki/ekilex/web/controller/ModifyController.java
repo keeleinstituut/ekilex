@@ -234,7 +234,7 @@ public class ModifyController implements WebConstant {
 
 	@ResponseBody
 	@PostMapping("/remove_item")
-	public String removeElement(
+	public String removeItem(
 			@RequestParam("opCode") String opCode,
 			@RequestParam("id") Long id,
 			@RequestParam(value = "value", required = false) String valueToRemove) {
@@ -380,13 +380,13 @@ public class ModifyController implements WebConstant {
 			updateService.addLexemeRegister(itemData.getId(), itemData.getValue());
 			break;
 		case "word_gender" :
-			updateService.updateWordGender(itemData.getId3(), itemData.getValue());
+			updateService.updateWordGender(itemData.getId(), itemData.getValue());
 			break;
 		case "word_type" :
-			updateService.addWordType(itemData.getId3(), itemData.getValue());
+			updateService.addWordType(itemData.getId(), itemData.getValue());
 			break;
 		case "word_aspect" :
-			updateService.updateWordAspect(itemData.getId3(), itemData.getValue());
+			updateService.updateWordAspect(itemData.getId(), itemData.getValue());
 			break;
 		case "lexeme_grammar" :
 			updateService.addLexemeGrammar(itemData.getId(), itemData.getValue());

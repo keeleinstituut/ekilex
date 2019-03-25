@@ -96,7 +96,6 @@ function initialise() {
     initSelectDlg($('#meaningDomainDlg'));
     initSelectDlg($('#lexemeValueStateCodeDlg'));
     initSelectDlg($('#lexemeProcessStateCodeDlg'));
-    initMultiValueAddDlg($('#lexemeClassifiersDlg'));
     initMultiValueAddDlg($('#wordClassifiersDlg'));
     initUsageMemberDlg($('#addNewUsageMemberDlg'));
     initNewWordDlg();
@@ -134,10 +133,26 @@ function openAddNewWordRelationDlg(elem) {
     initRelationDialogLogic(addDlg, 'word-id');
 }
 
+function initAddWordRelationDlg(addDlg) {
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    let selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+    initRelationDialogLogic(addDlg, 'word-id');
+}
+
 function openUsageAuthorDlg(elem) {
     let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    let selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+    initRelationDialogLogic(addDlg, 'source-id');
+}
+
+function initUsageAuthorDlg(addDlg) {
+	addDlg.find('.form-control').val(null);
     addDlg.find('[data-name=dialogContent]').html(null);
     let selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
