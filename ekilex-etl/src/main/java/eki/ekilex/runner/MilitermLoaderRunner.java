@@ -1,5 +1,7 @@
 package eki.ekilex.runner;
 
+import static java.util.stream.Collectors.toList;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,14 +24,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
-
-import static java.util.stream.Collectors.toList;
 
 @Component
 public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
@@ -116,9 +120,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		List<String> listValues = extractListValues(conceptGroupNode);
 		List<Node> ltbSourceValueNodes = conceptGroupNode.selectNodes(ltbSourceExp);
 
-		// TODO lifecycle log või mingi teine log? - logisse tähenduse looja ja loomisaeg
 		extractAndApplyMeaningProperties(conceptGroupNode, meaning, defaultDateFormat);
 		Long meaningId = createMeaning(meaning);
+
+		// TODO - logisse tähenduse looja ja loomisaeg - need vaja üle vaadata:
+		// tegevuste logi kuvamises on vaja vastav tekst messages.properties faili panna
+		// kas meaningId-d on vaja 2 korda kasutada?
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+				meaning.getCreatedBy(), meaning.getCreatedOn());
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+				meaning.getModifiedBy(), meaning.getModifiedOn());
+
 		extractAndApplyMeaningFreeforms(meaningId, conceptGroupNode);
 		extractListValues(conceptGroupNode);
 
@@ -162,7 +174,14 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					saveLexemeSourceLinks(lexemeId, sources, term);
 				}
 
-				extractAndApplyLexemeProperties(termGroupNode, lexeme); // TODO kas see sobib?
+				extractAndApplyLexemeProperties(termGroupNode, lexeme);
+
+				// TODO - logisse ilmiku looja ja loomisaeg - need vaja üle vaadata:
+				// tegevuste logi kuvamises on vaja vastav tekst messages.properties faili panna
+				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
+						lexeme.getCreatedBy(), lexeme.getCreatedOn());
+				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
+						lexeme.getModifiedBy(), lexeme.getModifiedOn());
 
 				// estermis on selliseid kasutatud, kas siin on ka vaja?
 				// extractAndSaveLexemeFreeforms(lexemeId, termGroupNode);
@@ -290,13 +309,13 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private void handleDomain(Long meaningId, String domainCode, String domainOrigin) throws Exception {
 		// TODO domainOrigin on hetkel puudu
-		boolean domainExists = domainExists(domainCode, domainOrigin);
-		if (domainExists) {
-			createMeaningDomain(meaningId, domainCode, domainOrigin);
-			// domainCodes.add(domainCode); - kas kasutada seda ka?
-		} else {
-			logger.warn("Incorrect domain reference \"{}\"", domainCode);
-		}
+		// boolean domainExists = domainExists(domainCode, domainOrigin);
+		// if (domainExists) {
+		// 	createMeaningDomain(meaningId, domainCode, domainOrigin);
+		// 	// domainCodes.add(domainCode); - kas kasutada seda ka?
+		// } else {
+		// 	logger.warn("Incorrect domain reference \"{}\"", domainCode);
+		// }
 	}
 
 	private void extractAndApplyLexemeProperties(Node termGroupNode, Lexeme lexeme) throws ParseException {
@@ -437,14 +456,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		if (sourceId == null) {
 			appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, term, majorRef);
 			return;
-		}
-		if (StringUtils.equalsIgnoreCase(refTypeExpert, majorRef)) {
-			majorRef = minorRef;
-			minorRef = null;
-		}
-		if (StringUtils.equalsIgnoreCase(refTypeQuery, majorRef)) {
-			majorRef = minorRef;
-			minorRef = null;
 		}
 		if (StringUtils.isBlank(majorRef)) {
 			majorRef = "?";
