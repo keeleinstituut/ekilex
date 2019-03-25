@@ -31,7 +31,7 @@
                   </select>
                 </div>
                 <div class="col-auto">
-                  <label class="switch mb-0">
+                  <label class="switch mb-0" title="Näita mõiste muid termineid">
                     <input id="meaning-other-words-visible-check" type="checkbox" checked="checked"/>
                     <span class="slider round"></span>
                   </label>
@@ -113,9 +113,9 @@
               <b th:text="${meaningId}"></b>
             </div>
             <div class="col-auto ml-auto">
-              <a class="btn btn-primary btn-sm" th:href="@{'/meaningjoin/' + ${meaningId}}">Ühenda</a>
+              <a class="btn btn-primary btn-sm" th:href="@{'/meaningjoin/' + ${meaningId}}" title="Tähenduste ühendamine">Ühenda</a>
               <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${meaningId}">Lisa uus keelend</button>
-              <button id="meaningCopyBtn" class="btn btn-primary btn-sm" th:data-meaning-id="${meaningId}">Duplikaat</button>
+              <button id="meaningCopyBtn" class="btn btn-primary btn-sm" th:data-meaning-id="${meaningId}" title="Tee duplikaat mõistest ja kõigist tema ilmikutest">Duplikaat</button>
               <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
                  data-toggle="modal"
                  data-target="#meaningLifecycleLogDlg"
@@ -182,7 +182,9 @@
               <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
                 <div>
                   <span th:text="${definitionLangGroup.lang}" class="mr-2"></span>
-                  <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle" th:data-lang="${definitionLangGroup.lang}">
+                  <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
+                          th:data-lang="${definitionLangGroup.lang}"
+                          th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
                     <i th:class="${definitionLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -215,7 +217,7 @@
                       </span>
                       <div class="action-buttons-2">
                         <button type="button" class="btn badge badge-primary"
-                                th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
+                                title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
                                 onclick="openEkiEditorDlg(this)"
                                 data-toggle="modal" data-target="#ekiEditorDlg">
                           <i class="fa fa-edit" aria-hidden="true"></i>
@@ -373,7 +375,9 @@
       <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
         <div class="ml-2 mt-2 mb-2">
           <span th:text="${lexemeLangGroup.lang}" class="mr-2"></span>
-          <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle" th:data-lang="${lexemeLangGroup.lang}">
+          <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
+                  th:data-lang="${lexemeLangGroup.lang}"
+                  th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
             <i th:class="${lexemeLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
           </button>
         </div>

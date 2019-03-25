@@ -64,10 +64,10 @@
               </select>
             </div>
           <div class="col-4 pl-0">
-            <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailGroupBtn">
+            <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailGroupBtn" title="Lisa uus otsitav">
               <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
-            <button type="button" class="btn btn-danger btn-sm mt-1" name="removeDetailGroupBtn">
+            <button type="button" class="btn btn-danger btn-sm mt-1" name="removeDetailGroupBtn" title="Eemalda">
               <i class="fa fa-minus" aria-hidden="true"></i>
             </button>
           </div>
@@ -125,10 +125,10 @@
               <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
             </div>
             <div class="col-2">
-              <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailConditionBtn">
+              <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
-              <button type="button" class="btn btn-danger btn-sm mt-1" name="removeDetailConditionBtn">
+              <button type="button" class="btn btn-danger btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda">
                 <i class="fa fa-minus" aria-hidden="true"></i>
               </button>
             </div>

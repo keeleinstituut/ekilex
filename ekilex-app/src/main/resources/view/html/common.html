@@ -86,10 +86,10 @@
 </div>
 
 <th:block th:fragment="ordering_buttons(itemStat)">
-  <button type="button" th:hidden="${itemStat.first}" class="btn badge badge-secondary order-up float-left">
+  <button type="button" th:hidden="${itemStat.first}" class="btn badge badge-secondary order-up float-left" title="Muuda järjestust">
     <i class="fa fa-arrow-up" aria-hidden="true"></i>
   </button>
-  <button type="button" th:hidden="${itemStat.last}" class="btn badge badge-secondary order-down float-right">
+  <button type="button" th:hidden="${itemStat.last}" class="btn badge badge-secondary order-down float-right" title="Muuda järjestust">
     <i class="fa fa-arrow-down" aria-hidden="true"></i>
   </button>
 </th:block>
