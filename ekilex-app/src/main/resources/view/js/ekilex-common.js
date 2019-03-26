@@ -256,6 +256,45 @@ function performDelete() {
     });
 }
 
+function executeValidateDelete() {
+	var opCode = $(this).attr("data-op-code");
+	var id = $(this).attr("data-id");
+	var callback = $(this).attr("data-callback");
+	let callbackFunc = () => eval(callback)($(this))
+	let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + opCode + '&id=' + id;
+	let removeUrl = applicationUrl + 'remove_item?opCode=' + opCode + '&id=' + id;
+    $.post(validateUrl).done(function(data) {
+        let response = JSON.parse(data);
+        console.log("---> " + data);
+        if (response.status === 'ok') {
+            doPostDelete(removeUrl, callbackFunc);
+        } else if (response.status === 'confirm') {
+            openConfirmDlg(response.question, function () {
+                doPostDelete(removeUrl, callbackFunc)
+            });
+        } else if (response.status === 'invalid') {
+            openAlertDlg(response.message);
+        } else {
+            openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+        }
+    }).fail(function(data) {
+        openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+        console.log(data);
+    });
+}
+
+function executeDelete() {
+	var opCode = $(this).attr("data-op-code");
+	var id = $(this).attr("data-id");
+	var value = $(this).attr("data-value");
+	let callbackFunc = () => $('#refresh-details').trigger('click');
+	let removeUrl = applicationUrl + 'remove_item?opCode=' + opCode + '&id=' + id;
+	if (value !== undefined) {
+		removeUrl = removeUrl + '&value=' + encodeURIComponent(value);
+	}
+	doPostDelete(removeUrl, callbackFunc);
+}
+
 function doPostDelete(removeUrl, callbackFunc) {
     $.post(removeUrl).done(function() {
         callbackFunc();

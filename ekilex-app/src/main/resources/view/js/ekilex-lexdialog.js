@@ -128,3 +128,38 @@ $(document).on("show.bs.modal", "[id^=editWordAspectDlg_]", function() {
 	initSelectDlg($(this));
 });
 
+$(document).on("show.bs.modal", "[id^=editLexemeProcessStateDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editLexemeValueStateCodeDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editLexemeGrammarDlg_]", function() {
+	initGenericTextEditDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editLexemeFrequencyGroupDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editLexemePosDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editLexemeDerivDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editLexemeRegisterDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editMeaningDomainDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editLexemeLevelsDlg_]", function() {
+	initLexemeLevelsDlg($(this));
+});

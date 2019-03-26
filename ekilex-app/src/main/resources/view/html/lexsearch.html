@@ -78,6 +78,10 @@
             <div th:replace="lexdialog :: add_usage_dlg"></div>
             <div th:replace="lexdialog :: add_public_note_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_relation_dlg"></div>
+            <div th:replace="lexdialog :: edit_lexeme_process_state_dlg"></div>
+            <div th:replace="lexdialog :: edit_lexeme_value_state_dlg"></div>
+            <div th:replace="lexdialog :: edit_lexeme_frequency_group_dlg"></div>
+            <div th:replace="lexdialog :: edit_lexeme_levels_dlg"></div>
 
             <div class="card-body" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}" data-lexeme-title>
               <button type="button" class="btn badge badge-secondary float-right btn-toggle" title="Näita detaile"
@@ -115,13 +119,7 @@
               </div>
             </div>
 
-            <div class="card-body d-none"
-                 th:id="${'lexeme_details_area_' + lexeme.lexemeId}"
-                 th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}"
-                 th:data-id="${lexeme.lexemeId}"
-                 th:data-op-code="lexeme"
-                 data-callback="doNewSearch"
-                 th:name="${lexeme.lexemeId} + '_lexeme'">
+            <div class="card-body d-none" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}" th:data-id="${lexeme.lexemeId}">
               <button type="button" class="btn badge badge-secondary float-right btn-toggle" title="Peida detailid"
                       th:data-toggle-target="${'lexTitle_' + lexeme.lexemeId}">
                 <i class="fa fa-angle-up" aria-hidden="true"></i>
@@ -144,7 +142,9 @@
                         th:data-level1="${lexeme.level1}"
                         th:data-level2="${lexeme.level2}"
                         th:data-level3="${lexeme.level3}"
-                        class="btn pl-0" onclick="openLexemeLevelDlg(this)" data-toggle="modal" data-target="#editLexemeLevelsDlg">
+                        class="btn pl-0"
+                        data-toggle="modal"
+                        th:data-target="${'#editLexemeLevelsDlg_' + lexeme.lexemeId}">
                     <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
                   </span>
                   <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
@@ -165,14 +165,16 @@
                           data-toggle="modal" 
                           data-target="#newWordDlg" 
                           th:data-meaning-id="${lexeme.meaningId}"
-                          sec:authorize="${#authentication.principal.datasetPermissionsExist}">Lisa uus keelend</button>
-                  <button id="lexemeCopyBtn" class="btn btn-sm btn-primary"
+                          sec:authorize="${#authorization.expression('hasPermission('''', ''DATASET:ANY'')')}">Lisa uus keelend</button>
+                  <button th:id="${'lexemeCopyBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
                           title="Tee duplikaat ilmikust ja temaga seotud elementidest"
                           th:data-lexeme-id="${lexeme.lexemeId}"
                           sec:authorize="{#vars.isLexemeCrudGranted}">Duplikaat</button>
                   <button class="btn btn-warning font-weight-bold btn-sm" type="button"
-                          th:data-target-elem="${lexeme.lexemeId} + '_lexeme'"
-                          data-toggle="delete-confirmation"
+                          th:data-id="${lexeme.lexemeId}"
+                          th:data-op-code="lexeme"
+                          data-callback="doNewSearch"
+                          data-toggle="validate-delete-confirm"
                           sec:authorize="{#vars.isLexemeCrudGranted}">Eemalda</button>
                 </div>
                 <div class="ml-auto">
@@ -220,11 +222,7 @@
                       </td>
                       <td class="hidden-buttons">
                         <div class="action-buttons-anchor">
-                          <span th:name="${definition.id} + '_definition'"
-                                th:data-id="${definition.id}"
-                                th:data-op-code="definition"
-                                th:data-value="${definition.value}"
-                          		th:utext="${definition.value}"></span>
+                          <span th:utext="${definition.value}"></span>
                           <div class="action-buttons-2">
                             <!-- TODO perms -->
                             <button type="button" class="btn badge badge-primary" title="Muuda"
@@ -234,8 +232,10 @@
                             </button>
                             <!-- TODO perms -->
                             <button type="button" class="btn badge badge-warning"
-                                    th:data-target-elem="${definition.id} + '_definition'"
-                                    data-toggle="delete-confirmation" data-placement="right">
+                                    data-op-code="definition"
+                                    th:data-id="${definition.id}"
+                                    data-toggle="delete-confirm"
+                                    data-placement="right">
                               <i class="fa fa-remove" aria-hidden="true"></i>
                             </button>
                           </div>
@@ -260,18 +260,14 @@
                 <div class="col pl-0">
                   <span th:each="sourceLink : ${lexeme.sourceLinks}" class="hidden-buttons">
                     [
-                    <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}"
-                       th:name="${sourceLink.id} + '_lex_source_link'"
-                       th:data-id="${sourceLink.id}"
-                       th:data-op-code="lex_source_link"
-                       th:text="${sourceLink.value}"
-                    ></a>
+                    <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
                     <span th:if="${sourceLink.name != null}">
                       <span th:text="${sourceLink.name}"></span>
                     </span>
                     <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${sourceLink.id} + '_lex_source_link'"
-                            data-toggle="delete-confirmation"
+                            data-op-code="lex_source_link"
+                            th:data-id="${sourceLink.id}"
+                            data-toggle="delete-confirm"
                             data-placement="right"
                             sec:authorize="{#vars.isLexemeCrudGranted}">
                       <i class="fa fa-remove" aria-hidden="true"></i>
@@ -298,11 +294,7 @@
                     <tr th:each="learnerComment : ${lexeme.meaningLearnerComments}">
                       <td class="hidden-buttons">
                         <div class="action-buttons-anchor">
-                          <span th:name="${learnerComment.id} + '_learner_comment'"
-                                th:data-id="${learnerComment.id}"
-                                th:data-op-code="learner_comment"
-                                th:data-value="${learnerComment.valuePrese}"
-                          		th:utext="${learnerComment.valuePrese}"></span>
+                          <span th:utext="${learnerComment.valuePrese}"></span>
                           <div class="action-buttons-2">
                             <!-- TODO perms -->
                             <button type="button" class="btn badge badge-primary" title="Muuda"
@@ -312,8 +304,10 @@
                             </button>
                             <!-- TODO perms -->
                             <button type="button" class="btn badge badge-warning"
-                                    th:data-target-elem="${learnerComment.id} + '_learner_comment'"
-                                    data-toggle="delete-confirmation" data-placement="right">
+                                    th:data-id="${learnerComment.id}"
+                                    data-op-code="learner_comment"
+                                    data-toggle="delete-confirm"
+                                    data-placement="right">
                               <i class="fa fa-remove" aria-hidden="true"></i>
                             </button>
                           </div>
@@ -360,11 +354,7 @@
                 </div>
                 <div class="col pl-0">
                   <table>
-                    <tr th:each="relations : ${lexeme.groupedMeaningRelations}"
-                        th:data-id="${relations.get(0).id}"
-                        th:data-op-code="meaning_relation"
-                        th:name="${relations.get(0).id} + '_meaning_relation'"
-                        class="hidden-buttons">
+                    <tr th:each="relations : ${lexeme.groupedMeaningRelations}" class="hidden-buttons">
                       <td class="pr-3">
                         <th:block th:each="relation, iter : ${relations}">
                           <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
@@ -377,8 +367,9 @@
                         <span th:text="${relations.get(0).relationTypeLabel}"></span>
                         <!-- TODO perms -->
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${relations.get(0).id} + '_meaning_relation'"
-                                data-toggle="delete-confirmation" data-placement="right">
+                                th:data-id="${relations.get(0).id}"
+                                data-op-code="meaning_relation"
+                                data-toggle="delete-confirm" data-placement="right">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </td>
@@ -402,11 +393,7 @@
                   <table>
                     <tr th:each="government : ${lexeme.governments}">
                       <td class="hidden-buttons">
-                        <span th:name="${government.id} + '_government'"
-                              th:data-id="${government.id}"
-                              th:data-op-code="government"
-                              th:data-value="${government.value}"
-                        	  th:text="${government.value}"></span>
+                        <span th:text="${government.value}"></span>
                         <button type="button" class="btn badge badge-primary ml-2"
                                 th:title="Muuda"
                                 data-toggle="modal"
@@ -415,8 +402,9 @@
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${government.id} + '_government'"
-                                data-toggle="delete-confirmation"
+                                th:data-id="${government.id}"
+                                th:data-op-code="government"
+                                data-toggle="delete-confirm"
                                 data-placement="right"
                                 sec:authorize="{#vars.isLexemeCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
@@ -448,12 +436,7 @@
                             <td class="invisible-buttons">
                               <div th:replace="lexdialog :: edit_usage_dlg"></div>
                               <div th:replace="lexdialog :: add_usage_member_dlg"></div>
-                              <div class="d-inline-block"
-                                   th:name="${usage.id} + '_usage'"
-                                   th:data-id="${usage.id}"
-                                   th:data-op-code="usage"
-                                   th:data-value="${usage.value}"
-                                   th:utext="${usage.value}"></div>
+                              <div class="d-inline-block" th:utext="${usage.value}"></div>
                               <div class="d-inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
                               <div th:replace="lexdialog :: add_usage_author_dlg"></div>
                               <div th:if="${#lists.isEmpty(usage.authors)}" class="show-on-mouseover" sec:authorize="{#vars.isLexemeCrudGranted}">
@@ -470,16 +453,11 @@
                                 (
                                 <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
                                   <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
-                                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
-                                     th:name="${sourceLink.id} + '_ff_source_link'"
-                                     th:data-id="${sourceLink.id}"
-                                     th:data-op-code="ff_source_link"
-                                     th:text="${sourceLink.value}"
-                                     th:if="${sourceLink.value != null}"
-                                  ></a>
+                                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></a>
                                   <button type="button" class="btn badge badge-warning hidden"
-                                          th:data-target-elem="${sourceLink.id} + '_ff_source_link'"
-                                          data-toggle="delete-confirmation"
+                                          th:data-id="${sourceLink.id}"
+                                          data-op-code="ff_source_link"
+                                          data-toggle="delete-confirm"
                                           data-placement="right"
                                           sec:authorize="{#vars.isLexemeCrudGranted}">
                                     <i class="fa fa-remove" aria-hidden="true"></i>
@@ -520,8 +498,9 @@
                               </button>
                               <!-- TODO perms lang -->
                               <button type="button" class="btn badge badge-warning"
-                                      th:data-target-elem="${usage.id} + '_usage'"
-                                      data-toggle="delete-confirmation"
+                                      th:data-id="${usage.id}"
+                                      data-op-code="usage"
+                                      data-toggle="delete-confirm"
                                       data-placement="right"
                                       sec:authorize="{#vars.isLexemeCrudGranted}">
                                 <i class="fa fa-remove" aria-hidden="true"></i>
@@ -539,10 +518,7 @@
                             <td class="hidden-buttons">
                               <div th:replace="lexdialog :: edit_usage_translation_dlg"></div>
                               <div class="action-buttons-anchor">
-                                <span th:name="${usageTranslation.id} + '_usage_translation'" 
-                                      th:data-id="${usageTranslation.id}"
-                                      th:data-op-code="usage_translation"
-                                      th:utext="${usageTranslation.value}"></span>
+                                <span th:utext="${usageTranslation.value}"></span>
                                 <div class="action-buttons-3">
                                   <!-- TODO perms lang -->
                                   <button type="button" class="btn badge badge-primary" title="Muuda"
@@ -553,8 +529,9 @@
                                   </button>
                                   <!-- TODO perms lang -->
                                   <button type="button" class="btn badge badge-warning"
-                                          th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                          data-toggle="delete-confirmation"
+                                          th:data-id="${usageTranslation.id}"
+                                          data-op-code="usage_translation"
+                                          data-toggle="delete-confirm"
                                           data-placement="right"
                                           sec:authorize="{#vars.isLexemeCrudGranted}">
                                     <i class="fa fa-remove" aria-hidden="true"></i>
@@ -574,11 +551,7 @@
                             <td class="hidden-buttons">
                               <div th:replace="lexdialog :: edit_usage_definition_dlg"></div>
                               <div class="action-buttons-anchor">
-                                <span th:name="${usageDefinition.id} + '_usage_definition'"
-                                      th:data-id="${usageDefinition.id}"
-                                      th:data-op-code="usage_definition"
-                                      th:data-value="${usageDefinition.value}"
-                                      th:utext="${usageDefinition.value}"></span>
+                                <span th:utext="${usageDefinition.value}"></span>
                                 <div class="action-buttons-3">
                                   <!-- TODO perms lang -->
                                   <button type="button" class="btn badge badge-primary" title="Muuda"
@@ -589,8 +562,9 @@
                                   </button>
                                   <!-- TODO perms lang -->
                                   <button type="button" class="btn badge badge-warning"
-                                          th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                          data-toggle="delete-confirmation"
+                                          th:data-id="${usageDefinition.id}"
+                                          data-op-code="usage_definition"
+                                          data-toggle="delete-confirm"
                                           data-placement="right"
                                           sec:authorize="{#vars.isLexemeCrudGranted}">
                                     <i class="fa fa-remove" aria-hidden="true"></i>
@@ -630,11 +604,7 @@
                       <td class="hidden-buttons">
                         <div th:replace="lexdialog :: edit_public_note_dlg"></div>
                         <div class="action-buttons-anchor">
-                          <span th:name="${publicNote.id} + '_public_note'"
-                                th:data-id="${publicNote.id}"
-                                th:data-op-code="public_note"
-                                th:data-value="${publicNote.valuePrese}"
-                          		th:utext="${publicNote.valuePrese}"></span>
+                          <span th:utext="${publicNote.valuePrese}"></span>
                           <div class="action-buttons-2">
                             <button type="button" class="btn badge badge-primary" title="Muuda"
                                     data-toggle="modal"
@@ -643,8 +613,9 @@
                               <i class="fa fa-edit" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="btn badge badge-warning"
-                                    th:data-target-elem="${publicNote.id} + '_public_note'"
-                                    data-toggle="delete-confirmation"
+                                    th:data-id="${publicNote.id}"
+                                    data-op-code="public_note"
+                                    data-toggle="delete-confirm"
                                     data-placement="right"
                                     sec:authorize="{#vars.isLexemeCrudGranted}">
                               <i class="fa fa-remove" aria-hidden="true"></i>
@@ -688,11 +659,7 @@
                 </div>
                 <div class="col pl-0">
                   <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
-                    <tr th:each="relation, itemStat : ${lexeme.lexemeRelations}"
-                        th:data-id="${relation.id}"
-                        th:data-op-code="lexeme_relation"
-                        th:name="${relation.id} + '_lexeme_relation'"
-                        th:data-orderby="${relation.orderBy}">
+                    <tr th:each="relation, itemStat : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                       <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                       </td>
@@ -701,8 +668,9 @@
                           <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${relation.id} + '_lexeme_relation'"
-                                data-toggle="delete-confirmation"
+                                th:data-id="${relation.id}"
+                                data-op-code="lexeme_relation"
+                                data-toggle="delete-confirm"
                                 data-placement="left"
                                 sec:authorize="{#vars.isLexemeCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
@@ -845,19 +813,17 @@
                   <span class="lbl">Sugu</span>
                 </div>
                 <div class="col pl-0">
-                  <span th:name="word_gender"
-                        th:data-id="${wordId}"
-                        th:data-op-code="word_gender"
-                        th:data-value="${details.wordGenderCode}"
-                        th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordGenderCode, wordGenders)}"></span>
+                  <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordGenderCode, wordGenders)}"></span>
                   <button type="button" class="btn badge badge-primary" title="Muuda"
                           data-toggle="modal"
                           th:data-target="${'#editWordGenderDlg_' + wordId}">
                     <i class="fa fa-caret-down" aria-hidden="true"></i>
                   </button>
                   <button type="button" class="btn badge badge-warning"
-                          th:data-target-elem="word_gender"
-                          data-toggle="delete-confirmation" data-placement="right">
+                          th:data-id="${wordId}"
+                          th:data-op-code="word_gender"
+                          data-toggle="delete-confirm"
+                          data-placement="right">
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -868,19 +834,17 @@
                 </div>
                 <div class="col pl-0">
                   <span th:each="classif,classifIter : ${details.wordTypes}" class="hidden-buttons">
-                    <span
-                      th:data-id="${wordId}"
-                      th:data-op-code="word_type"
-                      th:data-value="${classif.code}"
-                      th:name="${wordId} + '_' + ${classifIter.index} + '_word_type'"
-                      th:text="${classif.code}"></span>
+                    <span th:text="${classif.code}"></span>
                     <th:block th:unless="${classif.code == classif.value}">
                       -
                       <span th:text="${classif.value}"></span>
                     </th:block>
                     <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${wordId} + '_' + ${classifIter.index} + '_word_type'"
-                            data-toggle="delete-confirmation" data-placement="right">
+                            th:data-id="${wordId}"
+                            data-op-code="word_type"
+                            th:data-value="${classif.code}"
+                            data-toggle="delete-confirm"
+                            data-placement="right">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                     <span th:unless="${classifIter.last}">,</span>
@@ -892,19 +856,17 @@
                   <span class="lbl">Aspekt</span>
                 </div>
                 <div class="col pl-0">
-                  <span th:name="word_aspect"
-                        th:data-id="${wordId}"
-                        th:data-op-code="word_aspect"
-                        th:data-value="${details.wordAspectCode}"
-                        th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordAspectCode, wordAspects)}"></span>
+                  <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordAspectCode, wordAspects)}"></span>
                   <button type="button" class="btn badge badge-primary" title="Muuda"
                           data-toggle="modal"
                           th:data-target="${'#editWordAspectDlg_' + wordId}">
                     <i class="fa fa-caret-down" aria-hidden="true"></i>
                   </button>
                   <button type="button" class="btn badge badge-warning"
-                          th:data-target-elem="word_aspect"
-                          data-toggle="delete-confirmation" data-placement="right">
+                          th:data-id="${wordId}"
+                          data-op-code="word_aspect"
+                          data-toggle="delete-confirm"
+                          data-placement="right">
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -920,11 +882,7 @@
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
               <table class="orderable" th:data-op-code="word_relation" th:if="${not #lists.isEmpty(details.wordRelations)}">
-                <tr th:each="relation, itemStat : ${details.wordRelations}"
-                    th:data-id="${relation.id}"
-                    th:data-orderby="${relation.orderBy}"
-                    th:data-op-code="word_relation"
-                    th:name="${relation.id} + '_word_relation'">
+                <tr th:each="relation, itemStat : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                   <td class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
@@ -933,8 +891,9 @@
                       <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
                     </button>
                     <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${relation.id} + '_word_relation'"
-                            data-toggle="delete-confirmation"
+                            th:data-id="${relation.id}"
+                            data-op-code="word_relation"
+                            data-toggle="delete-confirm"
                             data-placement="left"
                             sec:authorize="{#vars.isWordCrudGranted}">
                       <i class="fa fa-remove" aria-hidden="true"></i>
@@ -948,17 +907,15 @@
               <table th:if="${not #lists.isEmpty(details.wordGroups)}">
                 <tr th:each="wordGroup : ${details.wordGroups}">
                   <td class="align-text-top pr-1 pt-0 pb-0 invisible-buttons">
-                    <span th:each="relation, itemStat : ${wordGroup.members}"
-                         th:data-id="${relation.id}"
-                         th:data-op-code="word_relation"
-                         th:name="${relation.id} + '_word_relation_member'">
+                    <span th:each="relation, itemStat : ${wordGroup.members}">
                       <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
                         <span th:text="${relation.word}"></span>
                       </button>
                       <!-- TODO perms -->
                       <button type="button" class="btn badge badge-warning"
-                              th:data-target-elem="${relation.id} + '_word_relation_member'"
-                              data-toggle="delete-confirmation"
+                              th:data-id="${relation.id}"
+                              data-op-code="word_relation"
+                              data-toggle="delete-confirm"
                               data-placement="left"
                               sec:authorize="{#vars.isWordCrudGranted}">
                         <i class="fa fa-remove" aria-hidden="true"></i>
@@ -1048,50 +1005,27 @@
       </div>
     </div>
     <script th:inline="javascript">
-      $('[data-toggle=confirmation]').confirmation(
-          {
-              btnOkLabel: 'Jah',
-              btnCancelLabel: 'Ei'
-          }
-      );
-      $('[data-toggle=delete-confirmation]').confirmation(
-          {
-              btnOkLabel: 'Jah',
-              btnCancelLabel: 'Ei',
-              title: 'Kinnita kustutamine',
-              onConfirm: performDelete
-          }
-      );
-      decorateSourceLinks();
-    </script>
+		$('[data-toggle=confirmation]').confirmation({
+			btnOkLabel : 'Jah',
+			btnCancelLabel : 'Ei'
+		});
+		$('[data-toggle=validate-delete-confirm]').confirmation({
+			btnOkLabel : 'Jah',
+			btnCancelLabel : 'Ei',
+			title : 'Kinnita kustutamine',
+			onConfirm : executeValidateDelete
+		});
+		$('[data-toggle=delete-confirm]').confirmation({
+			btnOkLabel : 'Jah',
+			btnCancelLabel : 'Ei',
+			title : 'Kinnita kustutamine',
+			onConfirm : executeDelete
+		});
+		decorateSourceLinks();
+	</script>
   </th:block>
 
-  <div th:replace="common :: #editDlg"></div>
-  <div th:replace="common :: #editLexemeLevelsDlg"></div>
-  <div th:replace="ekilex_editor :: #addNewDefinitionDlg"></div>
-  <div th:replace="ekilex_editor :: #addNewUsageDlg"></div>
-  <div th:replace="common :: #lexemeFrequencyDlg"></div>
-  <div th:replace="common :: #lexemePosDlg"></div>
-  <div th:replace="common :: #meaningDomainDlg"></div>
-  <div th:replace="common :: #addNewGovernmentDlg"></div>
   <div th:replace="common :: newWordDlg('lex_search')"></div>
-  <div th:replace="ekilex_editor :: #addNewUsageMemberDlg"></div>
-  <div th:replace="common :: #detailsDlg"></div>
-  <div th:replace="common :: #lexemeDerivDlg"></div>
-  <div th:replace="common :: #lexemeRegisterDlg"></div>
-  <div th:replace="common :: #lexemeValueStateCodeDlg"></div>
-  <div th:replace="common :: #lexemeProcessStateCodeDlg"></div>
-  <div th:replace="common :: #wordGenderDlg"></div>
-  <div th:replace="common :: #wordTypeDlg"></div>
-  <div th:replace="common :: #wordAspectDlg"></div>
-  <div th:replace="common :: #addNewSourceLinkDlg"></div>
-  <div th:replace="components :: #addNewWordRelationDlg"></div>
-  <div th:replace="components :: #addNewLexemeRelationDlg"></div>
-  <div th:replace="components :: #addNewMeaningRelationDlg"></div>
-  <div th:replace="components :: #addNewUsageAuthorDlg"></div>
-  <div th:replace="ekilex_editor :: #ekiEditorDlg"></div>
-  <div th:replace="ekilex_editor :: #addNewLearnerCommentDlg"></div>
-  <div th:replace="ekilex_editor :: #addNewPublicNoteDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #confirmDlg"></div>
 

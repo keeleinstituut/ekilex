@@ -15,6 +15,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 
 import java.util.List;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
@@ -88,24 +89,40 @@ public class PermissionDbService {
 	}
 
 	public List<Dataset> getUserDatasets(Long userId) {
+		Condition userIsAdminCond = DSL
+				.exists(DSL
+						.select(EKI_USER.ID)
+						.from(EKI_USER)
+						.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_ADMIN.isTrue())));
+		Condition datasetPermCond = DSL
+				.exists(DSL
+						.select(DATASET_PERMISSION.ID)
+						.from(DATASET_PERMISSION)
+						.where(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE).and(DATASET_PERMISSION.USER_ID.eq(userId))));
 		return create
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
-				.where(
-						DATASET.IS_PUBLIC.isTrue()
-						.andExists(DSL
-								.select(DATASET_PERMISSION.ID)
-								.from(DATASET_PERMISSION)
-								.where(
-										DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE)
-										.and(DATASET_PERMISSION.USER_ID.eq(userId)))
-								)
-						)
+				.where(DATASET.IS_PUBLIC.isTrue().and(DSL.or(userIsAdminCond, datasetPermCond)))
 				.orderBy(DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);
 	}
 
 	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
+		Condition userIsAdminCond = DSL
+				.exists(DSL
+						.select(EKI_USER.ID)
+						.from(EKI_USER)
+						.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_ADMIN.isTrue())));
+		Condition datasetPermCond = DSL
+				.exists(DSL
+						.select(DATASET_PERMISSION.ID)
+						.from(DATASET_PERMISSION)
+						.where(
+								DATASET_PERMISSION.USER_ID.eq(userId)
+								.and(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode))
+								.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(LANGUAGE.CODE)))
+								)
+						);
 		return create
 				.select(
 						DSL.field(DSL.value(ClassifierName.LANGUAGE.name())).as("name"),
@@ -116,15 +133,7 @@ public class PermissionDbService {
 						LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
 						.and(LANGUAGE_LABEL.LANG.eq(classifierLabelLang))
 						.and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode))
-						.andExists(DSL
-								.select(DATASET_PERMISSION.ID)
-								.from(DATASET_PERMISSION)
-								.where(
-										DATASET_PERMISSION.USER_ID.eq(userId)
-										.and(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode))
-										.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(LANGUAGE.CODE)))
-										)
-								)
+						.and(DSL.or(userIsAdminCond, datasetPermCond))
 						)
 				.orderBy(LANGUAGE.ORDER_BY)
 				.fetchInto(Classifier.class);

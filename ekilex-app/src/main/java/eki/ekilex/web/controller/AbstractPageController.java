@@ -39,6 +39,11 @@ public abstract class AbstractPageController implements WebConstant {
 		return permissionService.getUserDatasets(userId);
 	}
 
+	@ModelAttribute("allLanguages")
+	public List<Classifier> getAllLanguages() {
+		return commonDataService.getLanguages();
+	}
+
 	@ModelAttribute("userPermLanguages")
 	public List<Classifier> getUserPermLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 		String newWordSelectedDataset = sessionBean.getNewWordSelectedDataset();
@@ -50,10 +55,4 @@ public abstract class AbstractPageController implements WebConstant {
 		}
 		return Collections.emptyList();
 	}
-
-	@ModelAttribute("allLanguages")
-	public List<Classifier> getAllLanguages() {
-		return commonDataService.getLanguages();
-	}
-
 }

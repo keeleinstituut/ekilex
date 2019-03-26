@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 
 	private static final char PERM_KEY_VALUE_SEPARATOR = ':';
 
+	private static final String PERM_ANY = "ANY";
+
 	@Autowired
 	private PermissionDbService permissionDbService;
 
@@ -43,6 +46,19 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		}
 
 		logger.debug("userId: \"{}\" targetObj: \"{}\" permission: \"{}\"", userId, targetDomainObject, permission);
+
+		String permSentence = permission.toString();
+		String[] perms = StringUtils.split(permSentence, PERM_KEY_VALUE_SEPARATOR);
+		AuthorityItem permAuthItem = AuthorityItem.valueOf(perms[0]);
+
+		if (StringUtils.equals(PERM_ANY, perms[1])) {
+			if (AuthorityItem.DATASET.equals(permAuthItem)) {
+				return CollectionUtils.isNotEmpty(user.getDatasetPermissions());
+			}
+		} else {
+			AuthorityOperation permAuthOp = AuthorityOperation.valueOf(perms[1]);
+			//...
+		}
 
 		return false;
 	}

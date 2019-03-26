@@ -56,8 +56,9 @@ function initialise() {
 		});
 	});
 
-    $(document).on('click', '#lexemeCopyBtn', function() {
-        let url = applicationUrl + 'lexemecopy/' +  $(this).data('lexeme-id');
+    $(document).on('click', '[id^=lexemeCopyBtn_]', function() {
+    	var lexemeId = $(this).data('lexeme-id');
+        let url = applicationUrl + 'lexemecopy/' +  lexemeId;
         $.post(url).done(function(data) {
             let response = JSON.parse(data);
             if (response.status === 'ok') {
@@ -76,28 +77,6 @@ function initialise() {
         detailButtons.trigger('click');
     }
 
-    let editDlg = $('#editDlg');
-    editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        alignAndFocus(e, editDlg)
-    });
-
-    let editLexemeDlg = $('#editLexemeLevelsDlg');
-    editLexemeDlg.on('shown.bs.modal', function() {
-        editLexemeDlg.find('[name=level1]').focus();
-    });
-
-    initSelectDlg($('#lexemeFrequencyDlg'));
-    initSelectDlg($('#lexemePosDlg'));
-    initSelectDlg($('#lexemeDerivDlg'));
-    initSelectDlg($('#lexemeRegisterDlg'));
-    initSelectDlg($('#wordGenderDlg'));
-    initSelectDlg($('#wordTypeDlg'));
-    initSelectDlg($('#wordAspectDlg'));
-    initSelectDlg($('#meaningDomainDlg'));
-    initSelectDlg($('#lexemeValueStateCodeDlg'));
-    initSelectDlg($('#lexemeProcessStateCodeDlg'));
-    initMultiValueAddDlg($('#wordClassifiersDlg'));
-    initUsageMemberDlg($('#addNewUsageMemberDlg'));
     initNewWordDlg();
 }
 
@@ -106,6 +85,24 @@ function openLexemeLevelDlg(elem) {
     let editDlg = $('#editLexemeLevelsDlg');
     editDlg.find('[name="id"]').val(targetElement.data('id'));
 
+    editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        e.preventDefault();
+        let editForm = editDlg.find('form');
+        editDlg.find('[name="action"]').val($(this).data('action'));
+        let url = editForm.attr('action') + '?' + editForm.serialize();
+        $.post(url).done(function(data) {
+            let id = $('#details_div').data('id');
+            let detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
+            detailsButton.trigger('click');
+            editDlg.find('button.close').trigger('click');
+        }).fail(function(data) {
+            alert("Andmete muutmine ebaõnnestus.");
+            console.log(data);
+        });
+    });
+}
+
+function initLexemeLevelsDlg(editDlg) {
     editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         e.preventDefault();
         let editForm = editDlg.find('form');
