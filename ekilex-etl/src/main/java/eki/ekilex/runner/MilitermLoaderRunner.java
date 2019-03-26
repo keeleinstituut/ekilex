@@ -123,13 +123,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		extractAndApplyMeaningProperties(conceptGroupNode, meaning, defaultDateFormat);
 		Long meaningId = createMeaning(meaning);
 
-		// TODO - logisse tähenduse looja ja loomisaeg - need vaja üle vaadata:
-		// tegevuste logi kuvamises on vaja vastav tekst messages.properties faili panna
-		// kas meaningId-d on vaja 2 korda kasutada?
 		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-				meaning.getCreatedBy(), meaning.getCreatedOn());
-		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-				meaning.getModifiedBy(), meaning.getModifiedOn());
+				String.valueOf(meaningId), meaning.getCreatedOn(), meaning.getCreatedBy());
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+				String.valueOf(meaningId), meaning.getModifiedOn(), meaning.getModifiedBy());
 
 		extractAndApplyMeaningFreeforms(meaningId, conceptGroupNode);
 		extractListValues(conceptGroupNode);
@@ -176,12 +173,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				extractAndApplyLexemeProperties(termGroupNode, lexeme);
 
-				// TODO - logisse ilmiku looja ja loomisaeg - need vaja üle vaadata:
-				// tegevuste logi kuvamises on vaja vastav tekst messages.properties faili panna
 				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
-						lexeme.getCreatedBy(), lexeme.getCreatedOn());
-				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
-						lexeme.getModifiedBy(), lexeme.getModifiedOn());
+						term, lexeme.getCreatedOn(), lexeme.getCreatedBy());
+				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
+						term, lexeme.getModifiedOn(), lexeme.getModifiedBy());
 
 				// estermis on selliseid kasutatud, kas siin on ka vaja?
 				// extractAndSaveLexemeFreeforms(lexemeId, termGroupNode);
@@ -238,7 +233,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				List<Node> explanationValueNodes = termGroupNode.selectNodes(explanationExp);
 				for (Node explanationValueNode : explanationValueNodes) {
-					// TODO sisaldab nurksulgudes allikaviiteid nagu esterm; kõik selles conceptGrpis sisalduvad defid lähevad kokku sama tähenduse juurde.
+					// TODO sisaldab nurksulgudes allikaviiteid nagu esterm (siin on segamini korrektseid allikaviiteid ja selliseid, kus teksti lõpus on [AAP-6 tõlge]
+					//  kõik selles conceptGrpis sisalduvad defid lähevad kokku sama tähenduse juurde.
 					//  type on uus klassifikaator defi juures, defil on 1 type
 					List<Content> sources = extractContentAndRefs(explanationValueNode, lang, term, true);
 					saveDefinitionsAndSourceLinks(meaningId, sources, term);

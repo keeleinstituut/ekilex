@@ -1203,13 +1203,15 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity,
 			LifecycleProperty property, Long entityId, String entry) throws Exception {
 
-		createLifecycleLog(logOwner, ownerId, eventType, entity, property, entityId, entry, null);
+		createLifecycleLog(logOwner, ownerId, eventType, entity, property, entityId, entry, null, null);
 	}
 
 	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity,
-			LifecycleProperty property, Long entityId, String entry, Timestamp timestamp) throws Exception {
+			LifecycleProperty property, Long entityId, String entry, Timestamp eventOn, String eventBy) throws Exception {
 
-		String eventBy = "Ekileks " + getDataset() + "-laadur";
+		if (eventBy == null) {
+			eventBy = "Ekileks " + getDataset() + "-laadur";
+		}
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("entity_id", entityId);
@@ -1218,8 +1220,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("event_type", eventType.name());
 		tableRowParamMap.put("event_by", eventBy);
 		tableRowParamMap.put("entry", entry);
-		if (timestamp != null) {
-			tableRowParamMap.put("event_on", timestamp);
+		if (eventOn != null) {
+			tableRowParamMap.put("event_on", eventOn);
 		}
 		Long lifecycleLogId = basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
 
