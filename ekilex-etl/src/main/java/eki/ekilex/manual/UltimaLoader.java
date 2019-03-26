@@ -23,6 +23,7 @@ import eki.ekilex.runner.FrequencyUpdateRunner;
 import eki.ekilex.runner.GameDataLoaderRunner;
 import eki.ekilex.runner.MabLoaderRunner;
 import eki.ekilex.runner.MilitermLoaderRunner;
+import eki.ekilex.runner.MilitermSourceLoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
@@ -66,6 +67,7 @@ public class UltimaLoader extends AbstractLoader {
 			EtymologyLoaderRunner etyRunner = getComponent(EtymologyLoaderRunner.class);
 			EstermSourceLoaderRunner estSrcRunner = getComponent(EstermSourceLoaderRunner.class);
 			EstermLoaderRunner estRunner = getComponent(EstermLoaderRunner.class);
+			MilitermSourceLoaderRunner milSrcRunner = getComponent(MilitermSourceLoaderRunner.class);
 			MilitermLoaderRunner milRunner = getComponent(MilitermLoaderRunner.class);
 			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
 			FrequencyUpdateRunner freqUpdateRunner = getComponent(FrequencyUpdateRunner.class);
@@ -196,7 +198,7 @@ public class UltimaLoader extends AbstractLoader {
 				}
 			}
 
-			// militerm
+			// militerm src + militerm
 			dataset = milRunner.getDataset();
 			if (doLoad(dataset, acquiredDatasets)) {
 				dataFilePath = getConfProperty("mil.data.file.1");
@@ -205,6 +207,7 @@ public class UltimaLoader extends AbstractLoader {
 					if (!isFullReload) {
 						milRunner.deleteDatasetData();
 					}
+					milSrcRunner.execute(dataFilePath, dataFilePath2, doReports);
 					milRunner.execute(dataFilePath, dataFilePath2, doReports);
 					successfullyLoadedDatasets.add(dataset);
 				}

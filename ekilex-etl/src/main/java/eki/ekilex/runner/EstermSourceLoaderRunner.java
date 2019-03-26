@@ -1,14 +1,12 @@
 package eki.ekilex.runner;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -21,42 +19,11 @@ import eki.common.constant.SourceType;
 import eki.ekilex.data.transform.Source;
 
 @Component
-public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
+public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(EstermSourceLoaderRunner.class);
 
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
-
-	private final String sourceConceptGroupExp = "/mtf/conceptGrp[languageGrp/language/@type='Allikas']";
-	private final String conceptExp = "concept";
-	private final String entryClassExp = "system[@type='entryClass']";
-	private final String createdByExp = "transacGrp/transac[@type='origination']";
-	private final String createdOnExp = "transacGrp[transac/@type='origination']/date";
-	private final String modifiedByExp = "transacGrp/transac[@type='modification']";
-	private final String modifiedOnExp = "transacGrp[transac/@type='modification']/date";
-	/*
-	 * Such field has never been found.
-	 * Instead, source type is set programmatically.
-	 * If the field will be valued in the future, some sort of mapping must be implemented.
-	 */
-	@Deprecated
-	private final String sourceTypeExp = "descripGrp/descrip[@type='Tüüp']";
-	private final String termGroupExp = "languageGrp/termGrp";
-	private final String termValueExp = "term";
-	private final String sourceLtbSourceExp = "descripGrp/descrip[@type='Päritolu']";
-	private final String sourceRtExp = "descripGrp/descrip[@type='RT']";
-	private final String sourceCelexExp = "descripGrp/descrip[@type='CELEX']";
-	private final String sourceWwwExp = "descripGrp/descrip[@type='WWW']";
-	private final String sourceAuthorExp = "descripGrp/descrip[@type='Autor']";
-	private final String sourceIsbnExp = "descripGrp/descrip[@type='ISBN']";
-	private final String sourceIssnExp = "descripGrp/descrip[@type='ISSN']";
-	private final String sourcePublisherExp = "descripGrp/descrip[@type='Kirjastus']";
-	private final String sourcePublicationYearExp = "descripGrp/descrip[@type='Ilmumisaasta']";
-	private final String sourcePublicationPlaceExp = "descripGrp/descrip[@type='Ilmumiskoht']";
-	private final String sourcePublicationNameExp = "descripGrp/descrip[@type='Väljaande nimi, nr']";
-	private final String sourceNoteExp = "descripGrp/descrip[@type='Märkus']";
-
-	private DateFormat defaultDateFormat;
 
 	@Override
 	public String getDataset() {
@@ -215,26 +182,4 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		return sourceObj;
 	}
 
-	private void extractAndSaveFreeforms(Long sourceId, Node termGroupNode, FreeformType freeformType, String sourceTermPropertyExp) throws Exception {
-
-		List<Node> sourceTermPropertyNodes = termGroupNode.selectNodes(sourceTermPropertyExp);
-		String valueStr;
-		long valueLong;
-		Timestamp valueTs;
-
-		for (Node sourceTermPropertyNode : sourceTermPropertyNodes) {
-			valueStr = ((Element)sourceTermPropertyNode).getTextTrim();
-			if (StringUtils.isBlank(valueStr)) {
-				continue;
-			}
-			if (FreeformType.CREATED_ON.equals(freeformType)
-					|| FreeformType.MODIFIED_ON.equals(freeformType)) {
-				valueLong = defaultDateFormat.parse(valueStr).getTime();
-				valueTs = new Timestamp(valueLong);
-				createSourceFreeform(sourceId, freeformType, valueTs);
-			} else {
-				createSourceFreeform(sourceId, freeformType, valueStr);
-			}
-		}
-	}
 }
