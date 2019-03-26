@@ -340,6 +340,7 @@
                         <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
                       </td>
                       <td th:if="${freeform.type.toString() == 'IMAGE_FILE'}">
+                        <div th:text="${freeform.valueText}"></div>
                         <img class="w-100" th:src="@{'/files/images/' + ${freeform.valueText}}">
                       </td>
                     </tr>
