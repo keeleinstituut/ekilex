@@ -46,7 +46,7 @@
     <div class="navbar-nav" th:if="${activeItem}">
       <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</span></a>
       <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-      <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#" sec:authorize="${#authorization.expression('hasPermission('''', ''DATASET:ANY'')')}">
+      <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#" sec:authorize="${#authentication.principal.datasetPermissionsExist}">
         Lisa uus keelend
       </a>
     </div>

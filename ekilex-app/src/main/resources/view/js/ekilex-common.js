@@ -265,7 +265,6 @@ function executeValidateDelete() {
 	let removeUrl = applicationUrl + 'remove_item?opCode=' + opCode + '&id=' + id;
     $.post(validateUrl).done(function(data) {
         let response = JSON.parse(data);
-        console.log("---> " + data);
         if (response.status === 'ok') {
             doPostDelete(removeUrl, callbackFunc);
         } else if (response.status === 'confirm') {
@@ -354,38 +353,40 @@ function openSelectDlg(elem) {
 }
 
 function initSelectDlg(selectDlg) {
-    let selectControl = selectDlg.find('select');
-    let maxItemLength = 0;
-    selectControl.find('option').each(function(indx, item) {
-        let itemLenght = $(item).text().length;
-        if (itemLenght > maxItemLength) {
-            maxItemLength = itemLenght;
-        }
-    });
-    let dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
-    let numberOfOptins = selectControl.find('option').length;
-    selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
+	let selectControl = selectDlg.find('select');
+	let maxItemLength = 0;
+	selectControl.find('option').each(function(indx, item) {
+		let itemLenght = $(item).text().length;
+		if (itemLenght > maxItemLength) {
+			maxItemLength = itemLenght;
+		}
+	});
+	let dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
+	let numberOfOptins = selectControl.find('option').length;
+	selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
 
-    selectControl.off('click').on('click', function(e) {submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
-    selectControl.off('keydown').on('keydown', function(e) {
-        if (e.key === "Enter") {
-            submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
-        }
-    });
-    selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        let dlgTop =  $(e.relatedTarget).offset().top;
-        let dlgLeft =  $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
-        let modalContent = selectDlg.find('.modal-content');
-        modalContent.css('top', dlgTop - 30);
-        modalContent.css('left', dlgLeft);
-        modalContent.css('width', dlgWidth);
-        let overTheEdge = (modalContent.offset().left + modalContent.width()) - window.innerWidth;
-        if (overTheEdge > 0) {
-            modalContent.css('left', dlgLeft - modalContent.width());
-        }
-        selectDlg.find('.form-control').first().focus();
-        $('.modal-backdrop').css('opacity', 0);
-    });
+	selectControl.off('click').on('click', function(e) {
+		submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+	});
+	selectControl.off('keydown').on('keydown', function(e) {
+		if (e.key === "Enter") {
+			submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+		}
+	});
+	selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+		let dlgTop = $(e.relatedTarget).offset().top;
+		let dlgLeft = $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
+		let modalContent = selectDlg.find('.modal-content');
+		modalContent.css('top', dlgTop - 30);
+		modalContent.css('left', dlgLeft);
+		modalContent.css('width', dlgWidth);
+		let overTheEdge = (modalContent.offset().left + modalContent.width()) - window.innerWidth;
+		if (overTheEdge > 0) {
+			modalContent.css('left', dlgLeft - modalContent.width());
+		}
+		selectDlg.find('.form-control').first().focus();
+		$('.modal-backdrop').css('opacity', 0);
+	});
 }
 
 function submitDialog(e, dlg, failMessage, callback = $.noop) {
@@ -398,9 +399,10 @@ function submitDialog(e, dlg, failMessage, callback = $.noop) {
 }
 
 function submitForm(theForm, failMessage, callback = $.noop) {
+	var data = JSON.stringify(theForm.serializeJSON());
     return $.ajax({
         url: theForm.attr('action'),
-        data: JSON.stringify(theForm.serializeJSON()),
+        data: data,
         method: 'POST',
         dataType: 'json',
         contentType: 'application/json'

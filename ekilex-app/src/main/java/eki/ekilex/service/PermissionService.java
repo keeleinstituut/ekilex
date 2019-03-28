@@ -44,8 +44,13 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<Dataset> getUserDatasets(Long userId) {
-		return permissionDbService.getUserDatasets(userId);
+	public List<Dataset> getUserPermDatasets(Long userId) {
+		return permissionDbService.getUserPermDatasets(userId);
+	}
+
+	@Transactional
+	public List<Dataset> getUserOwnedDatasets(Long userId) {
+		return permissionDbService.getUserOwnedDatasets(userId);
 	}
 
 	@Transactional

@@ -33,6 +33,8 @@ public class EkiUser implements Principal, Serializable {
 
 	private boolean datasetPermissionsExist;
 
+	private boolean datasetOwnershipExist;
+
 	public Long getId() {
 		return id;
 	}
@@ -103,6 +105,14 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setDatasetPermissionsExist(boolean datasetPermissionsExist) {
 		this.datasetPermissionsExist = datasetPermissionsExist;
+	}
+
+	public boolean isDatasetOwnershipExist() {
+		return datasetOwnershipExist;
+	}
+
+	public void setDatasetOwnershipExist(boolean datasetOwnershipExist) {
+		this.datasetOwnershipExist = datasetOwnershipExist;
 	}
 
 	@Override

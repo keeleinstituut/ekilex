@@ -36,7 +36,14 @@ public abstract class AbstractPageController implements WebConstant {
 	public List<Dataset> getUserPermDatasets() {
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
-		return permissionService.getUserDatasets(userId);
+		return permissionService.getUserPermDatasets(userId);
+	}
+
+	@ModelAttribute("userOwnedDatasets")
+	public List<Dataset> getUserOwnedDatasets() {
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		return permissionService.getUserOwnedDatasets(userId);
 	}
 
 	@ModelAttribute("allLanguages")
@@ -44,6 +51,7 @@ public abstract class AbstractPageController implements WebConstant {
 		return commonDataService.getLanguages();
 	}
 
+	//TODO handle with or wo dataset
 	@ModelAttribute("userPermLanguages")
 	public List<Classifier> getUserPermLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 		String newWordSelectedDataset = sessionBean.getNewWordSelectedDataset();

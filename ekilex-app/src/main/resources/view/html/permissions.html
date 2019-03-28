@@ -44,7 +44,7 @@
                              th:data-id="${userPerm.id}"
                              name="userAdminCheck"
                              th:checked="${userPerm.admin}"
-                             th:disabled="${#authentication.principal.id == userPerm.id}"/>
+                             th:disabled="${(#authentication.principal.id == userPerm.id) || (!#authentication.principal.admin)}"/>
                     </td>
                     <td class="m-1 p-1 text-center">
                       <input type="checkbox"
@@ -52,7 +52,7 @@
                              th:data-id="${userPerm.id}"
                              name="userEnableCheck"
                              th:checked="${userPerm.enabled}"
-                             th:disabled="${#authentication.principal.id == userPerm.id}"/>
+                             th:disabled="${(#authentication.principal.id == userPerm.id) || (!#authentication.principal.admin)}"/>
                     </td>
                     <td class="m-1 p-1">
                       <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
@@ -67,7 +67,8 @@
                               th:data-id="${userPerm.id}"
                               onclick="openAddDatasetPermissionDlg(this)"
                               data-toggle="modal"
-                              data-target="#addDatasetPermissionDlg">
+                              data-target="#addDatasetPermissionDlg"
+                              sec:authorize="${#authentication.principal.datasetOwnershipExist}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </td>
@@ -84,7 +85,8 @@
                                   th:data-id="${datasetPerm.id}"
                                   name="deleteDatasetPermBtn"
                                   data-toggle="delete-confirmation"
-                                  data-placement="right">
+                                  data-placement="right"
+                                  sec:authorize="${#authentication.principal.datasetOwnershipExist}">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                         </div>
@@ -120,7 +122,7 @@
               <div class="col-10">
                 <select class="form-control" name="datasetCode">
                   <option value="" disabled selected>Vali</option>
-                  <option th:each="dataset : ${allDatasets}"
+                  <option th:each="dataset : ${userOwnedDatasets}"
                           th:value="${dataset.code}"
                           th:text="${dataset.name}">name</option>
                 </select>

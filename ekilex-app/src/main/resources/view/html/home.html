@@ -22,7 +22,7 @@
         <p>
           <a th:href="@{/ww_feedback}">Sõnaveebi tagasiside</a>
         </p>
-        <p sec:authorize="${#authentication.principal.admin}">
+        <p sec:authorize="${#authentication.principal.datasetOwnershipExist}">
           <a th:href="@{/permissions}">Õiguste haldus</a>
         </p>
       </div>
