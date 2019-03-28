@@ -74,6 +74,11 @@ public class Sequences {
     public static final Sequence<Long> DEFINITION_SOURCE_LINK_ORDER_BY_SEQ = new SequenceImpl<Long>("definition_source_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.definition_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> DEFINITION_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("definition_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.deriv_order_by_seq</code>
      */
     public static final Sequence<Long> DERIV_ORDER_BY_SEQ = new SequenceImpl<Long>("deriv_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

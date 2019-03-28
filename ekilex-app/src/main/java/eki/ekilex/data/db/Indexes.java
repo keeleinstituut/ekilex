@@ -14,6 +14,8 @@ import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.DefinitionType;
+import eki.ekilex.data.db.tables.DefinitionTypeLabel;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.DisplayMorph;
@@ -135,6 +137,8 @@ public class Indexes {
     public static final Index DEFINITION_SOURCE_LINK_DEFINITION_ID_IDX = Indexes0.DEFINITION_SOURCE_LINK_DEFINITION_ID_IDX;
     public static final Index DEFINITION_SOURCE_LINK_PKEY = Indexes0.DEFINITION_SOURCE_LINK_PKEY;
     public static final Index DEFINITION_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.DEFINITION_SOURCE_LINK_SOURCE_ID_IDX;
+    public static final Index DEFINITION_TYPE_PKEY = Indexes0.DEFINITION_TYPE_PKEY;
+    public static final Index DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index DERIV_PKEY = Indexes0.DERIV_PKEY;
     public static final Index DERIV_LABEL_CODE_LANG_TYPE_KEY = Indexes0.DERIV_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index DISPLAY_MORPH_PKEY = Indexes0.DISPLAY_MORPH_PKEY;
@@ -325,6 +329,8 @@ public class Indexes {
         public static Index DEFINITION_SOURCE_LINK_DEFINITION_ID_IDX = Internal.createIndex("definition_source_link_definition_id_idx", DefinitionSourceLink.DEFINITION_SOURCE_LINK, new OrderField[] { DefinitionSourceLink.DEFINITION_SOURCE_LINK.DEFINITION_ID }, false);
         public static Index DEFINITION_SOURCE_LINK_PKEY = Internal.createIndex("definition_source_link_pkey", DefinitionSourceLink.DEFINITION_SOURCE_LINK, new OrderField[] { DefinitionSourceLink.DEFINITION_SOURCE_LINK.ID }, true);
         public static Index DEFINITION_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("definition_source_link_source_id_idx", DefinitionSourceLink.DEFINITION_SOURCE_LINK, new OrderField[] { DefinitionSourceLink.DEFINITION_SOURCE_LINK.SOURCE_ID }, false);
+        public static Index DEFINITION_TYPE_PKEY = Internal.createIndex("definition_type_pkey", DefinitionType.DEFINITION_TYPE, new OrderField[] { DefinitionType.DEFINITION_TYPE.CODE }, true);
+        public static Index DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("definition_type_label_code_lang_type_key", DefinitionTypeLabel.DEFINITION_TYPE_LABEL, new OrderField[] { DefinitionTypeLabel.DEFINITION_TYPE_LABEL.CODE, DefinitionTypeLabel.DEFINITION_TYPE_LABEL.LANG, DefinitionTypeLabel.DEFINITION_TYPE_LABEL.TYPE }, true);
         public static Index DERIV_PKEY = Internal.createIndex("deriv_pkey", Deriv.DERIV, new OrderField[] { Deriv.DERIV.CODE }, true);
         public static Index DERIV_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("deriv_label_code_lang_type_key", DerivLabel.DERIV_LABEL, new OrderField[] { DerivLabel.DERIV_LABEL.CODE, DerivLabel.DERIV_LABEL.LANG, DerivLabel.DERIV_LABEL.TYPE }, true);
         public static Index DISPLAY_MORPH_PKEY = Internal.createIndex("display_morph_pkey", DisplayMorph.DISPLAY_MORPH, new OrderField[] { DisplayMorph.DISPLAY_MORPH.CODE }, true);

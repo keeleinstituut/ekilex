@@ -14,6 +14,8 @@ import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.DefinitionType;
+import eki.ekilex.data.db.tables.DefinitionTypeLabel;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.DisplayMorph;
@@ -100,6 +102,8 @@ import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
+import eki.ekilex.data.db.tables.records.DefinitionTypeLabelRecord;
+import eki.ekilex.data.db.tables.records.DefinitionTypeRecord;
 import eki.ekilex.data.db.tables.records.DerivLabelRecord;
 import eki.ekilex.data.db.tables.records.DerivRecord;
 import eki.ekilex.data.db.tables.records.DisplayMorphLabelRecord;
@@ -211,6 +215,7 @@ public class Keys {
     public static final Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Identities0.IDENTITY_DEFINITION;
     public static final Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Identities0.IDENTITY_DEFINITION_FREEFORM;
     public static final Identity<DefinitionSourceLinkRecord, Long> IDENTITY_DEFINITION_SOURCE_LINK = Identities0.IDENTITY_DEFINITION_SOURCE_LINK;
+    public static final Identity<DefinitionTypeRecord, Long> IDENTITY_DEFINITION_TYPE = Identities0.IDENTITY_DEFINITION_TYPE;
     public static final Identity<DerivRecord, Long> IDENTITY_DERIV = Identities0.IDENTITY_DERIV;
     public static final Identity<DisplayMorphRecord, Long> IDENTITY_DISPLAY_MORPH = Identities0.IDENTITY_DISPLAY_MORPH;
     public static final Identity<DomainRecord, Long> IDENTITY_DOMAIN = Identities0.IDENTITY_DOMAIN;
@@ -288,6 +293,8 @@ public class Keys {
     public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_PKEY = UniqueKeys0.DEFINITION_FREEFORM_PKEY;
     public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_DEFINITION_ID_FREEFORM_ID_KEY = UniqueKeys0.DEFINITION_FREEFORM_DEFINITION_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<DefinitionSourceLinkRecord> DEFINITION_SOURCE_LINK_PKEY = UniqueKeys0.DEFINITION_SOURCE_LINK_PKEY;
+    public static final UniqueKey<DefinitionTypeRecord> DEFINITION_TYPE_PKEY = UniqueKeys0.DEFINITION_TYPE_PKEY;
+    public static final UniqueKey<DefinitionTypeLabelRecord> DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<DerivRecord> DERIV_PKEY = UniqueKeys0.DERIV_PKEY;
     public static final UniqueKey<DerivLabelRecord> DERIV_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.DERIV_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<DisplayMorphRecord> DISPLAY_MORPH_PKEY = UniqueKeys0.DISPLAY_MORPH_PKEY;
@@ -400,6 +407,7 @@ public class Keys {
     public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = ForeignKeys0.DEFINITION__DEFINITION_MEANING_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, LanguageRecord> DEFINITION__DEFINITION_LANG_FKEY = ForeignKeys0.DEFINITION__DEFINITION_LANG_FKEY;
     public static final ForeignKey<DefinitionRecord, ProcessStateRecord> DEFINITION__DEFINITION_PROCESS_STATE_CODE_FKEY = ForeignKeys0.DEFINITION__DEFINITION_PROCESS_STATE_CODE_FKEY;
+    public static final ForeignKey<DefinitionRecord, DefinitionTypeRecord> DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY = ForeignKeys0.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY;
     public static final ForeignKey<DefinitionDatasetRecord, DefinitionRecord> DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY = ForeignKeys0.DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY;
     public static final ForeignKey<DefinitionDatasetRecord, DatasetRecord> DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY = ForeignKeys0.DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY;
     public static final ForeignKey<DefinitionFreeformRecord, DefinitionRecord> DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY = ForeignKeys0.DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY;
@@ -407,6 +415,9 @@ public class Keys {
     public static final ForeignKey<DefinitionSourceLinkRecord, DefinitionRecord> DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_DEFINITION_ID_FKEY = ForeignKeys0.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_DEFINITION_ID_FKEY;
     public static final ForeignKey<DefinitionSourceLinkRecord, SourceRecord> DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY = ForeignKeys0.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY;
     public static final ForeignKey<DefinitionSourceLinkRecord, ProcessStateRecord> DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_PROCESS_STATE_CODE_FKEY = ForeignKeys0.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_PROCESS_STATE_CODE_FKEY;
+    public static final ForeignKey<DefinitionTypeLabelRecord, DefinitionTypeRecord> DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_CODE_FKEY = ForeignKeys0.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_CODE_FKEY;
+    public static final ForeignKey<DefinitionTypeLabelRecord, LanguageRecord> DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_LANG_FKEY = ForeignKeys0.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_LANG_FKEY;
+    public static final ForeignKey<DefinitionTypeLabelRecord, LabelTypeRecord> DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_TYPE_FKEY;
     public static final ForeignKey<DerivLabelRecord, DerivRecord> DERIV_LABEL__DERIV_LABEL_CODE_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_CODE_FKEY;
     public static final ForeignKey<DerivLabelRecord, LanguageRecord> DERIV_LABEL__DERIV_LABEL_LANG_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_LANG_FKEY;
     public static final ForeignKey<DerivLabelRecord, LabelTypeRecord> DERIV_LABEL__DERIV_LABEL_TYPE_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_TYPE_FKEY;
@@ -556,6 +567,7 @@ public class Keys {
         public static Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Internal.createIdentity(Definition.DEFINITION, Definition.DEFINITION.ID);
         public static Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Internal.createIdentity(DefinitionFreeform.DEFINITION_FREEFORM, DefinitionFreeform.DEFINITION_FREEFORM.ID);
         public static Identity<DefinitionSourceLinkRecord, Long> IDENTITY_DEFINITION_SOURCE_LINK = Internal.createIdentity(DefinitionSourceLink.DEFINITION_SOURCE_LINK, DefinitionSourceLink.DEFINITION_SOURCE_LINK.ID);
+        public static Identity<DefinitionTypeRecord, Long> IDENTITY_DEFINITION_TYPE = Internal.createIdentity(DefinitionType.DEFINITION_TYPE, DefinitionType.DEFINITION_TYPE.ORDER_BY);
         public static Identity<DerivRecord, Long> IDENTITY_DERIV = Internal.createIdentity(Deriv.DERIV, Deriv.DERIV.ORDER_BY);
         public static Identity<DisplayMorphRecord, Long> IDENTITY_DISPLAY_MORPH = Internal.createIdentity(DisplayMorph.DISPLAY_MORPH, DisplayMorph.DISPLAY_MORPH.ORDER_BY);
         public static Identity<DomainRecord, Long> IDENTITY_DOMAIN = Internal.createIdentity(Domain.DOMAIN, Domain.DOMAIN.ORDER_BY);
@@ -631,6 +643,8 @@ public class Keys {
         public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_PKEY = Internal.createUniqueKey(DefinitionFreeform.DEFINITION_FREEFORM, "definition_freeform_pkey", DefinitionFreeform.DEFINITION_FREEFORM.ID);
         public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_DEFINITION_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(DefinitionFreeform.DEFINITION_FREEFORM, "definition_freeform_definition_id_freeform_id_key", DefinitionFreeform.DEFINITION_FREEFORM.DEFINITION_ID, DefinitionFreeform.DEFINITION_FREEFORM.FREEFORM_ID);
         public static final UniqueKey<DefinitionSourceLinkRecord> DEFINITION_SOURCE_LINK_PKEY = Internal.createUniqueKey(DefinitionSourceLink.DEFINITION_SOURCE_LINK, "definition_source_link_pkey", DefinitionSourceLink.DEFINITION_SOURCE_LINK.ID);
+        public static final UniqueKey<DefinitionTypeRecord> DEFINITION_TYPE_PKEY = Internal.createUniqueKey(DefinitionType.DEFINITION_TYPE, "definition_type_pkey", DefinitionType.DEFINITION_TYPE.CODE);
+        public static final UniqueKey<DefinitionTypeLabelRecord> DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(DefinitionTypeLabel.DEFINITION_TYPE_LABEL, "definition_type_label_code_lang_type_key", DefinitionTypeLabel.DEFINITION_TYPE_LABEL.CODE, DefinitionTypeLabel.DEFINITION_TYPE_LABEL.LANG, DefinitionTypeLabel.DEFINITION_TYPE_LABEL.TYPE);
         public static final UniqueKey<DerivRecord> DERIV_PKEY = Internal.createUniqueKey(Deriv.DERIV, "deriv_pkey", Deriv.DERIV.CODE);
         public static final UniqueKey<DerivLabelRecord> DERIV_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(DerivLabel.DERIV_LABEL, "deriv_label_code_lang_type_key", DerivLabel.DERIV_LABEL.CODE, DerivLabel.DERIV_LABEL.LANG, DerivLabel.DERIV_LABEL.TYPE);
         public static final UniqueKey<DisplayMorphRecord> DISPLAY_MORPH_PKEY = Internal.createUniqueKey(DisplayMorph.DISPLAY_MORPH, "display_morph_pkey", DisplayMorph.DISPLAY_MORPH.CODE);
@@ -741,6 +755,7 @@ public class Keys {
         public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MEANING_PKEY, Definition.DEFINITION, "definition__definition_meaning_id_fkey", Definition.DEFINITION.MEANING_ID);
         public static final ForeignKey<DefinitionRecord, LanguageRecord> DEFINITION__DEFINITION_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, Definition.DEFINITION, "definition__definition_lang_fkey", Definition.DEFINITION.LANG);
         public static final ForeignKey<DefinitionRecord, ProcessStateRecord> DEFINITION__DEFINITION_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PROCESS_STATE_PKEY, Definition.DEFINITION, "definition__definition_process_state_code_fkey", Definition.DEFINITION.PROCESS_STATE_CODE);
+        public static final ForeignKey<DefinitionRecord, DefinitionTypeRecord> DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_TYPE_PKEY, Definition.DEFINITION, "definition__definition_definition_type_code_fkey", Definition.DEFINITION.DEFINITION_TYPE_CODE);
         public static final ForeignKey<DefinitionDatasetRecord, DefinitionRecord> DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_PKEY, DefinitionDataset.DEFINITION_DATASET, "definition_dataset__definition_dataset_definition_id_fkey", DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID);
         public static final ForeignKey<DefinitionDatasetRecord, DatasetRecord> DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DATASET_PKEY, DefinitionDataset.DEFINITION_DATASET, "definition_dataset__definition_dataset_dataset_code_fkey", DefinitionDataset.DEFINITION_DATASET.DATASET_CODE);
         public static final ForeignKey<DefinitionFreeformRecord, DefinitionRecord> DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_PKEY, DefinitionFreeform.DEFINITION_FREEFORM, "definition_freeform__definition_freeform_definition_id_fkey", DefinitionFreeform.DEFINITION_FREEFORM.DEFINITION_ID);
@@ -748,6 +763,9 @@ public class Keys {
         public static final ForeignKey<DefinitionSourceLinkRecord, DefinitionRecord> DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_DEFINITION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_PKEY, DefinitionSourceLink.DEFINITION_SOURCE_LINK, "definition_source_link__definition_source_link_definition_id_fkey", DefinitionSourceLink.DEFINITION_SOURCE_LINK.DEFINITION_ID);
         public static final ForeignKey<DefinitionSourceLinkRecord, SourceRecord> DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.SOURCE_PKEY, DefinitionSourceLink.DEFINITION_SOURCE_LINK, "definition_source_link__definition_source_link_source_id_fkey", DefinitionSourceLink.DEFINITION_SOURCE_LINK.SOURCE_ID);
         public static final ForeignKey<DefinitionSourceLinkRecord, ProcessStateRecord> DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PROCESS_STATE_PKEY, DefinitionSourceLink.DEFINITION_SOURCE_LINK, "definition_source_link__definition_source_link_process_state_code_fkey", DefinitionSourceLink.DEFINITION_SOURCE_LINK.PROCESS_STATE_CODE);
+        public static final ForeignKey<DefinitionTypeLabelRecord, DefinitionTypeRecord> DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_TYPE_PKEY, DefinitionTypeLabel.DEFINITION_TYPE_LABEL, "definition_type_label__definition_type_label_code_fkey", DefinitionTypeLabel.DEFINITION_TYPE_LABEL.CODE);
+        public static final ForeignKey<DefinitionTypeLabelRecord, LanguageRecord> DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, DefinitionTypeLabel.DEFINITION_TYPE_LABEL, "definition_type_label__definition_type_label_lang_fkey", DefinitionTypeLabel.DEFINITION_TYPE_LABEL.LANG);
+        public static final ForeignKey<DefinitionTypeLabelRecord, LabelTypeRecord> DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, DefinitionTypeLabel.DEFINITION_TYPE_LABEL, "definition_type_label__definition_type_label_type_fkey", DefinitionTypeLabel.DEFINITION_TYPE_LABEL.TYPE);
         public static final ForeignKey<DerivLabelRecord, DerivRecord> DERIV_LABEL__DERIV_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DERIV_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_code_fkey", DerivLabel.DERIV_LABEL.CODE);
         public static final ForeignKey<DerivLabelRecord, LanguageRecord> DERIV_LABEL__DERIV_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_lang_fkey", DerivLabel.DERIV_LABEL.LANG);
         public static final ForeignKey<DerivLabelRecord, LabelTypeRecord> DERIV_LABEL__DERIV_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_type_fkey", DerivLabel.DERIV_LABEL.TYPE);

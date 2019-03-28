@@ -101,6 +101,8 @@ drop table if exists register;
 drop table if exists frequency_group;
 drop table if exists domain_label;
 drop table if exists domain;
+drop table if exists definition_type_label;
+drop table if exists definition_type;
 drop table if exists government_type_label;
 drop table if exists government_type;
 drop table if exists value_state_label;

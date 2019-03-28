@@ -14,6 +14,8 @@ import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.DefinitionType;
+import eki.ekilex.data.db.tables.DefinitionTypeLabel;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.DisplayMorph;
@@ -140,7 +142,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1674350408;
+    private static final long serialVersionUID = -1991111383;
 
     /**
      * The reference instance of <code>public</code>
@@ -196,6 +198,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.definition_source_link</code>.
      */
     public final DefinitionSourceLink DEFINITION_SOURCE_LINK = eki.ekilex.data.db.tables.DefinitionSourceLink.DEFINITION_SOURCE_LINK;
+
+    /**
+     * The table <code>public.definition_type</code>.
+     */
+    public final DefinitionType DEFINITION_TYPE = eki.ekilex.data.db.tables.DefinitionType.DEFINITION_TYPE;
+
+    /**
+     * The table <code>public.definition_type_label</code>.
+     */
+    public final DefinitionTypeLabel DEFINITION_TYPE_LABEL = eki.ekilex.data.db.tables.DefinitionTypeLabel.DEFINITION_TYPE_LABEL;
 
     /**
      * The table <code>public.deriv</code>.
@@ -682,6 +694,7 @@ public class Public extends SchemaImpl {
             Sequences.DEFINITION_ORDER_BY_SEQ,
             Sequences.DEFINITION_SOURCE_LINK_ID_SEQ,
             Sequences.DEFINITION_SOURCE_LINK_ORDER_BY_SEQ,
+            Sequences.DEFINITION_TYPE_ORDER_BY_SEQ,
             Sequences.DERIV_ORDER_BY_SEQ,
             Sequences.DISPLAY_MORPH_ORDER_BY_SEQ,
             Sequences.DOMAIN_ORDER_BY_SEQ,
@@ -778,6 +791,8 @@ public class Public extends SchemaImpl {
             DefinitionDataset.DEFINITION_DATASET,
             DefinitionFreeform.DEFINITION_FREEFORM,
             DefinitionSourceLink.DEFINITION_SOURCE_LINK,
+            DefinitionType.DEFINITION_TYPE,
+            DefinitionTypeLabel.DEFINITION_TYPE_LABEL,
             Deriv.DERIV,
             DerivLabel.DERIV_LABEL,
             DisplayMorph.DISPLAY_MORPH,
