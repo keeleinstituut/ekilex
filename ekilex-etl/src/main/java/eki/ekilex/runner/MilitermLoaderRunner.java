@@ -67,7 +67,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 		this.doReports = doReports;
 		if (doReports) {
-			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_ILLEGAL_SOURCE, REPORT_MISSING_SOURCE_REFS);
+			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_ILLEGAL_SOURCE_REF, REPORT_MISSING_SOURCE_REFS);
 		}
 		start();
 
@@ -86,7 +86,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			allConceptGroupNodes.addAll(conceptGroupNodes);
 		}
 
-		illegalSourceValueCount = new Count();
+		illegalSourceReferenceValueCount = new Count();
 		int conceptGroupCount = allConceptGroupNodes.size();
 		logger.debug("{} concept groups found", conceptGroupCount);
 
@@ -107,7 +107,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			}
 		}
 
-		logger.debug("Found {} illegal source values", illegalSourceValueCount.getValue());
+		logger.debug("Found {} illegal source reference values", illegalSourceReferenceValueCount.getValue());
 
 		end();
 	}
@@ -190,10 +190,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				List<Node> definitionValueNodes = termGroupNode.selectNodes(definitionExp);
 				for (Node definitionValueNode : definitionValueNodes) {
-					// TODO sisaldab nurksulgudes allikaviiteid nagu esterm; kõik selles conceptGrpis sisalduvad defid lähevad kokku sama tähenduse juurde.
-					//  type on uus klassifikaator defi juures, defil on 1 type
 					List<Content> sources = extractContentAndRefs(definitionValueNode, lang, term, true);
-					saveDefinitionsAndSourceLinks(meaningId, sources, term);
+					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeDefinition);
 				}
 
 				Element coincidentValueNode = (Element) termGroupNode.selectSingleNode(overlapExp);
@@ -216,13 +214,12 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					}
 				}
 
+				// TODO märkuse juures allikaviite kuvamine vaja teha
 				List<Node> noteValueNodes = termGroupNode.selectNodes(noteExp);
-				for (Node noteValueNode : noteValueNodes) {
-					String noteValue = ((Element) noteValueNode).getTextTrim();
-					Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, noteValue, lang);
-					if (((Element) noteValueNode).hasMixedContent()) {
-						String value = handleFreeformRefLinks(noteValueNode, freeformId);
-						updateFreeformText(freeformId, value);
+				if (CollectionUtils.isNotEmpty(noteValueNodes)) {
+					for (Node noteValueNode : noteValueNodes) {
+						List<Content> sources = extractContentAndRefs(noteValueNode, lang, term, true);
+						savePublicNotesAndSourceLinks(lexemeId, sources, term);
 					}
 				}
 
@@ -233,47 +230,44 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				List<Node> explanationValueNodes = termGroupNode.selectNodes(explanationExp);
 				for (Node explanationValueNode : explanationValueNodes) {
-					// TODO sisaldab nurksulgudes allikaviiteid nagu esterm (siin on segamini korrektseid allikaviiteid ja selliseid, kus teksti lõpus on [AAP-6 tõlge]
-					//  kõik selles conceptGrpis sisalduvad defid lähevad kokku sama tähenduse juurde.
-					//  type on uus klassifikaator defi juures, defil on 1 type
 					List<Content> sources = extractContentAndRefs(explanationValueNode, lang, term, true);
-					saveDefinitionsAndSourceLinks(meaningId, sources, term);
+					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeExplanation);
 				}
-
 			}
 		}
 
 		Element meaningDomainValueNode = (Element) conceptGroupNode.selectSingleNode(meaningDomainExp);
 		if (meaningDomainValueNode != null) {
+			// TODO domainOrigin on hetkel puudu
 			//  sellel on erinevad variandid, võib sisaldada Tlinki (mixedContent) või on koodi väärtused semikooloniga eraldatud
-			Iterator<Node> iter = meaningDomainValueNode.nodeIterator();
-			DefaultText textContentNode;
-			DefaultElement elemContentNode;
-			StringBuilder valuesB = new StringBuilder();
-
-			while (iter.hasNext()) {
-				Node contentNode = iter.next();
-				if (contentNode instanceof DefaultText) {
-					textContentNode = (DefaultText) contentNode;
-					valuesB.append(textContentNode.getText());
-				} else if (contentNode instanceof DefaultElement) {
-					elemContentNode = (DefaultElement) contentNode;
-					valuesB.append(elemContentNode.getTextTrim());
-				}
-			}
-
-			if (valuesB.length() > 0) {
-				String values = valuesB.toString();
-				int domainDelimCount = StringUtils.countMatches(values, meaningDomainDelimiter);
-				if (domainDelimCount == 0) {
-					handleDomain(meaningId, values, "TODO domainOrigin");
-				} else {
-					String[] separateDomainCodes = values.split(meaningDomainDelimiter + "\\s*");
-					for (String separateDomainCode : separateDomainCodes) {
-						handleDomain(meaningId, separateDomainCode, "TODO domainOrigin");
-					}
-				}
-			}
+			// Iterator<Node> iter = meaningDomainValueNode.nodeIterator();
+			// DefaultText textContentNode;
+			// DefaultElement elemContentNode;
+			// StringBuilder valuesB = new StringBuilder();
+			//
+			// while (iter.hasNext()) {
+			// 	Node contentNode = iter.next();
+			// 	if (contentNode instanceof DefaultText) {
+			// 		textContentNode = (DefaultText) contentNode;
+			// 		valuesB.append(textContentNode.getText());
+			// 	} else if (contentNode instanceof DefaultElement) {
+			// 		elemContentNode = (DefaultElement) contentNode;
+			// 		valuesB.append(elemContentNode.getTextTrim());
+			// 	}
+			// }
+			//
+			// if (valuesB.length() > 0) {
+			// 	String values = valuesB.toString();
+			// 	int domainDelimCount = StringUtils.countMatches(values, meaningDomainDelimiter);
+			// 	if (domainDelimCount == 0) {
+			// 		handleDomain(meaningId, values, "TODO domainOrigin");
+			// 	} else {
+			// 		String[] separateDomainCodes = values.split(meaningDomainDelimiter + "\\s*");
+			// 		for (String separateDomainCode : separateDomainCodes) {
+			// 			handleDomain(meaningId, separateDomainCode, "TODO domainOrigin");
+			// 		}
+			// 	}
+			// }
 		}
 	}
 
@@ -415,13 +409,13 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void saveDefinitionsAndSourceLinks(Long meaningId, List<Content> definitions, String term) throws Exception {
+	private void saveDefinitionsAndSourceLinks(Long meaningId, List<Content> definitions, String term, String definitionTypeCode) throws Exception {
 
 		for (Content definitionObj : definitions) {
 			String definition = definitionObj.getValue();
 			String lang = definitionObj.getLang();
 			List<Ref> refs = definitionObj.getRefs();
-			Long definitionId = createOrSelectDefinition(meaningId, definition, lang, getDataset());
+			Long definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang, getDataset());
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
 				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, term);
@@ -443,6 +437,20 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
+	private void savePublicNotesAndSourceLinks(Long lexemeId, List<Content> publicNotes, String term) throws Exception {
+
+		for (Content publicNoteObj : publicNotes) {
+			String publicNote = publicNoteObj.getValue();
+			String lang = publicNoteObj.getLang();
+			List<Ref> refs = publicNoteObj.getRefs();
+			Long publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
+			publicNoteObj.setId(publicNoteId);
+			for (Ref ref : refs) {
+				createSourceLink(SourceOwner.PUBLIC_NOTE, publicNoteId, ref, term);
+			}
+		}
+	}
+
 	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String term) throws Exception {
 
 		String minorRef = ref.getMinorRef();
@@ -460,7 +468,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			createLexemeSourceLink(ownerId, refType, sourceId, minorRef, majorRef);
 		} else if (SourceOwner.DEFINITION.equals(sourceOwner)) {
 			createDefinitionSourceLink(ownerId, refType, sourceId, minorRef, majorRef);
-		} else if (SourceOwner.USAGE.equals(sourceOwner)) {
+		} else if (SourceOwner.USAGE.equals(sourceOwner) || SourceOwner.PUBLIC_NOTE.equals(sourceOwner)) {
 			createFreeformSourceLink(ownerId, refType, sourceId, minorRef, majorRef);
 		}
 	}

@@ -33,8 +33,9 @@ public class TestEnvInitialiser {
 		final String scriptFilePath4 = "sql/classifier-manual.sql";
 		final String scriptFilePath5 = "sql/classifier-main.sql";
 		final String scriptFilePath6 = "sql/classifier-domain.sql";
+		final String scriptFilePath7 = "sql/migration.sql";
 		final String[] scriptFilePaths = new String[] {
-				scriptFilePath1, scriptFilePath2, scriptFilePath3, scriptFilePath4, scriptFilePath5, scriptFilePath6
+				scriptFilePath1, scriptFilePath2, scriptFilePath3, scriptFilePath4, scriptFilePath5, scriptFilePath6, scriptFilePath7
 		};
 
 		for (String scriptFilePath : scriptFilePaths) {

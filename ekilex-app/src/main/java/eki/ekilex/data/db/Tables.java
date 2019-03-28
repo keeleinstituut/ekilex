@@ -14,6 +14,8 @@ import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.DefinitionType;
+import eki.ekilex.data.db.tables.DefinitionTypeLabel;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.DisplayMorph;
@@ -170,6 +172,16 @@ public class Tables {
      * The table <code>public.definition_source_link</code>.
      */
     public static final DefinitionSourceLink DEFINITION_SOURCE_LINK = eki.ekilex.data.db.tables.DefinitionSourceLink.DEFINITION_SOURCE_LINK;
+
+    /**
+     * The table <code>public.definition_type</code>.
+     */
+    public static final DefinitionType DEFINITION_TYPE = eki.ekilex.data.db.tables.DefinitionType.DEFINITION_TYPE;
+
+    /**
+     * The table <code>public.definition_type_label</code>.
+     */
+    public static final DefinitionTypeLabel DEFINITION_TYPE_LABEL = eki.ekilex.data.db.tables.DefinitionTypeLabel.DEFINITION_TYPE_LABEL;
 
     /**
      * The table <code>public.deriv</code>.

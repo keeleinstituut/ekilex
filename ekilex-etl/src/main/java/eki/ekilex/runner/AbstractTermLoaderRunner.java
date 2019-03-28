@@ -37,7 +37,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 
 	ReportComposer reportComposer;
 
-	Count illegalSourceValueCount;
+	Count illegalSourceReferenceValueCount;
 
 	void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj, DateFormat dateFormat) throws Exception {
 
@@ -155,8 +155,8 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 						refObj.setType(refType);
 						contentObj.getRefs().add(refObj);
 					} else {
-						appendToReport(doReports, REPORT_ILLEGAL_SOURCE, term, "Allikaviitel on sobimatu väärtus: " + tlinkAttrValue);
-						illegalSourceValueCount.increment();
+						appendToReport(doReports, REPORT_ILLEGAL_SOURCE_REF, term, "Allikaviitel on sobimatu väärtus: " + tlinkAttrValue);
+						illegalSourceReferenceValueCount.increment();
 					}
 				}
 			}
@@ -357,6 +357,6 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 	}
 
 	enum SourceOwner {
-		LEXEME, DEFINITION, USAGE
+		LEXEME, DEFINITION, USAGE, PUBLIC_NOTE
 	}
 }

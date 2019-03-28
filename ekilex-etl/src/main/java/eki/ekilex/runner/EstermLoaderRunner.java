@@ -114,7 +114,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS,
 					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH,
-					REPORT_MISSING_VALUE, REPORT_ILLEGAL_SOURCE);
+					REPORT_MISSING_VALUE, REPORT_ILLEGAL_SOURCE_REF);
 			reportHelper.setup(reportComposer, meaningAndLexemeProcessStateCodes, lexemeValueStateCodes);
 		}
 		start();
@@ -137,7 +137,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		Meaning meaningObj;
 		Lexeme lexemeObj;
 
-		illegalSourceValueCount = new Count();
+		illegalSourceReferenceValueCount = new Count();
 		Count dataErrorCount = new Count();
 		Count definitionsWithSameNotesCount = new Count();
 		Count processStateConflictCount = new Count();
@@ -285,7 +285,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		logger.debug("Found {} definitions with same notes", definitionsWithSameNotesCount.getValue());
 		logger.debug("Found {} conflicting process state settings", processStateConflictCount.getValue());
 		logger.debug("Found {} conflicting word type settings", wordTypeConflictCount.getValue());
-		logger.debug("Found {} illegal source values", illegalSourceValueCount.getValue());
+		logger.debug("Found {} illegal source reference values", illegalSourceReferenceValueCount.getValue());
 
 		end();
 	}

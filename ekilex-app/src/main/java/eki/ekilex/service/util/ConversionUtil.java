@@ -417,11 +417,13 @@ public class ConversionUtil {
 				String definitionValue = definitionRefTuple.getDefinitionValue();
 				String definitionLang = definitionRefTuple.getDefinitionLang();
 				Long definitionOrderBy = definitionRefTuple.getDefinitionOrderBy();
+				String definitionTypeCode = definitionRefTuple.getDefinitionTypeCode();
 				definition = new Definition();
 				definition.setId(definitionId);
 				definition.setValue(definitionValue);
 				definition.setLang(definitionLang);
 				definition.setOrderBy(definitionOrderBy);
+				definition.setTypeCode(definitionTypeCode);
 				definition.setSourceLinks(new ArrayList<>());
 				definitionMap.put(definitionId, definition);
 				definitions.add(definition);

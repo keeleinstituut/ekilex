@@ -350,6 +350,22 @@ create table etymology_type
   order_by bigserial
 );
 
+create table definition_type
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null,
+  order_by bigserial
+);
+
+create table definition_type_label
+(
+  code varchar(100) references definition_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references language(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -643,6 +659,7 @@ create table definition
   value text not null,
   value_prese text not null,
   lang char(3) references language(code) not null,
+  definition_type_code varchar(100) references definition_type(code) not null,
   process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );

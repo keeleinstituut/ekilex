@@ -357,7 +357,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record8<Long,String,String,Long,Long,String,String,String>> findMeaningDefinitionRefTuples(Long meaningId) {
+	public Result<Record9<Long,String,String,Long,String,Long,String,String,String>> findMeaningDefinitionRefTuples(Long meaningId) {
 	
 		return create
 				.select(
@@ -365,6 +365,7 @@ public class CommonDataDbService implements DbConstant {
 						DEFINITION.VALUE_PRESE.as("definition_value"),
 						DEFINITION.LANG.as("definition_lang"),
 						DEFINITION.ORDER_BY.as("definition_order_by"),
+						DEFINITION.DEFINITION_TYPE_CODE.as("definition_type_code"),
 						DEFINITION_SOURCE_LINK.ID.as("source_link_id"),
 						DEFINITION_SOURCE_LINK.TYPE.as("source_link_type"),
 						DEFINITION_SOURCE_LINK.NAME.as("source_link_name"),

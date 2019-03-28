@@ -65,6 +65,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private static final String REPORT_GUID_MISMATCH = "guid_mismatch";
 	private static final String REPORT_GUID_MAPPING_MISSING = "guid_mapping_missing";
 
+	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
+
 	protected static final String GUID_OWNER_DATASET_CODE = "ss1";
 	protected static final String COLLOC_OWNER_DATASET_CODE = "kol";
 	protected static final String ETYMOLOGY_OWNER_DATASET_CODE = "ety";
@@ -740,11 +742,18 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createOrSelectDefinition(Long meaningId, String value, String lang, String dataset) throws Exception {
 
+		Long definitionId = createOrSelectDefinition(meaningId, value, DEFAULT_DEFINITION_TYPE_CODE, lang, dataset);
+		return definitionId;
+	}
+
+	protected Long createOrSelectDefinition(Long meaningId, String value, String definitionTypeCode, String lang, String dataset) throws Exception {
+
 		String valueClean = cleanEkiEntityMarkup(value);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("value", valueClean);
+		tableRowParamMap.put("definition_type_code", definitionTypeCode);
 		Map<String, Object> definition = basicDbService.select(DEFINITION, tableRowParamMap);
 		Long definitionId = null;
 		if (MapUtils.isEmpty(definition)) {
@@ -754,6 +763,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			tableRowParamMap.put("value", valueClean);
 			tableRowParamMap.put("value_prese", valuePrese);
 			tableRowParamMap.put("lang", lang);
+			tableRowParamMap.put("definition_type_code", definitionTypeCode);
 			definitionId = basicDbService.create(DEFINITION, tableRowParamMap);
 			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, value);
 		} else {

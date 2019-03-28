@@ -16,6 +16,8 @@ public class Definition extends AbstractDataObject {
 
 	private Long orderBy;
 
+	private String typeCode;
+
 	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
@@ -48,6 +50,14 @@ public class Definition extends AbstractDataObject {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public String getTypeCode() {
+		return typeCode;
+	}
+
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
 	}
 
 	public List<SourceLink> getSourceLinks() {

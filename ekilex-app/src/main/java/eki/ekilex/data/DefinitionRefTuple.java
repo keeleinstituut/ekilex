@@ -21,6 +21,9 @@ public class DefinitionRefTuple extends AbstractDataObject {
 	@Column(name = "definition_order_by")
 	private Long definitionOrderBy;
 
+	@Column(name = "definition_type_code")
+	private String definitionTypeCode;
+
 	@Column(name = "source_link_id")
 	private Long sourceLinkId;
 
@@ -63,6 +66,14 @@ public class DefinitionRefTuple extends AbstractDataObject {
 
 	public void setDefinitionOrderBy(Long definitionOrderBy) {
 		this.definitionOrderBy = definitionOrderBy;
+	}
+
+	public String getDefinitionTypeCode() {
+		return definitionTypeCode;
+	}
+
+	public void setDefinitionTypeCode(String definitionTypeCode) {
+		this.definitionTypeCode = definitionTypeCode;
 	}
 
 	public Long getSourceLinkId() {
