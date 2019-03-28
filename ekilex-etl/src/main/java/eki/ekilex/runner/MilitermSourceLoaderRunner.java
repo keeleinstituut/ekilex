@@ -157,7 +157,7 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 			if (processStateCodes.containsKey(valueStr)) {
 				source.setProcessStateCode(valueStr);
 			} else {
-				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu entryClass väärtus: " + valueStr);
+				appendToReport(REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu entryClass väärtus: " + valueStr);
 			}
 		}
 
@@ -192,7 +192,7 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 		return source;
 	}
 
-	private void appendToReport(boolean doReports, String reportName, String... reportCells) throws Exception {
+	private void appendToReport(String reportName, String... reportCells) throws Exception {
 		if (!doReports) {
 			return;
 		}
