@@ -675,10 +675,10 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
-	public Long addDefinition(Long meaningId, String value, String valuePrese, String languageCode) {
+	public Long addDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode) {
 		return create
-				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE, DEFINITION.VALUE_PRESE)
-				.values(meaningId, languageCode, value, valuePrese)
+				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.DEFINITION_TYPE_CODE)
+				.values(meaningId, languageCode, value, valuePrese, definitionTypeCode)
 				.returning(DEFINITION.ID)
 				.fetchOne()
 				.getId();
@@ -926,8 +926,8 @@ public class UpdateDbService implements DbConstant {
 		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(lexemeMeaningId)).fetch();
 		definitions.forEach(d -> {
 			create
-				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG)
-				.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang())
+				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG, DEFINITION.DEFINITION_TYPE_CODE)
+				.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang(), d.getDefinitionTypeCode())
 				.execute();
 		});
 	}

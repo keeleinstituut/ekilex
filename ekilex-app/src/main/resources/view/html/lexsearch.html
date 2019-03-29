@@ -201,7 +201,9 @@
                 <button type="button" class="btn badge badge-success position-right"
                         title="Lisa andmeid"
                         data-toggle="modal"
-                        th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}">
+                        th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}"
+                        sec:authorize="${#vars.isLexemeCrudGranted}"
+                        >
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
                 <th:block th:replace="lexcomp :: lexeme_process_state"></th:block>
@@ -529,7 +531,7 @@
                             </td>
                           </tr>
                           <tr th:each="usageTranslation : ${usage.translations}">
-                            <td class="hidden-buttons">
+                            <td>
                               <div th:replace="lexdialog :: edit_usage_translation_dlg"></div>
                               <div class="action-buttons-anchor">
                                 <span th:utext="${usageTranslation.value}"></span>

@@ -30,6 +30,8 @@ import eki.ekilex.service.db.UpdateDbService;
 @Service
 public class UpdateService {
 
+	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
+
 	private final UpdateDbService updateDbService;
 
 	private final TextDecorationService textDecorationService;
@@ -307,7 +309,7 @@ public class UpdateService {
 	@Transactional
 	public void addDefinition(Long meaningId, String valuePrese, String languageCode) {
 		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
-		Long definitionId = updateDbService.addDefinition(meaningId, value, valuePrese, languageCode);
+		Long definitionId = updateDbService.addDefinition(meaningId, value, valuePrese, languageCode, DEFAULT_DEFINITION_TYPE_CODE);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
 	}
 
