@@ -299,29 +299,6 @@ public class PermissionDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	//TODO remove if not used
-	public boolean isGrantedForLexeme(Long userId, Long lexemeId, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
-
-		return create
-				.select(DSL.field((DSL.count(LEXEME.ID).gt(0))).as("is_granted"))
-				.from(LEXEME)
-				.where(
-						LEXEME.ID.eq(lexemeId)
-						.andExists(DSL
-								.select(DATASET_PERMISSION.ID)
-								.from(DATASET_PERMISSION)
-								.where(
-										DATASET_PERMISSION.USER_ID.eq(userId)
-										.and(DATASET_PERMISSION.AUTH_OPERATION.eq(authOp.name()))
-										.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem.name()))
-										.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
-										.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(authLang)))
-										)
-								)
-						)
-				.fetchSingleInto(Boolean.class);
-	}
-
 	public boolean isGrantedForDefinition(Long userId, Long definitionId, String authItem, List<String> authOps) {
 
 		return create

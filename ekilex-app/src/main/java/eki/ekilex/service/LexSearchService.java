@@ -133,7 +133,7 @@ public class LexSearchService implements SystemConstant {
 		List<Relation> wordGroupMembers = lexSearchDbService.findWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
 
-		lexemes.forEach(lexeme -> populateLexeme(selectedDatasets, datasetNameMap, lexeme));
+		lexemes.forEach(lexeme -> populateLexeme(lexeme, selectedDatasets, datasetNameMap));
 		combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
@@ -156,7 +156,7 @@ public class LexSearchService implements SystemConstant {
 		WordLexeme lexeme = lexSearchDbService.findLexeme(lexemeId).into(WordLexeme.class);
 		if (lexeme != null) {
 			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-			populateLexeme(singletonList(lexeme.getDatasetCode()), datasetNameMap, lexeme);
+			populateLexeme(lexeme, singletonList(lexeme.getDatasetCode()), datasetNameMap);
 		}
 		return lexeme;
 	}
@@ -234,7 +234,7 @@ public class LexSearchService implements SystemConstant {
 		return lexSearchDbService.isTheOnlyLexemeForMeaning(lexemeId);
 	}
 
-	private void populateLexeme(List<String> selectedDatasets, Map<String, String> datasetNameMap, WordLexeme lexeme) {
+	private void populateLexeme(WordLexeme lexeme, List<String> selectedDatasets, Map<String, String> datasetNameMap) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};

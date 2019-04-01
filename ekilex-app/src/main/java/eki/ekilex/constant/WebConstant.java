@@ -90,6 +90,8 @@ public interface WebConstant {
 
 	String APP_DATA_MODEL_KEY = "appData";
 
+	String PERM_DATA_UTIL_KEY = "permDataUtil";
+
 	String MARKDOWN_RENDERER_KEY = "markdown";
 
 	String USER_KEY = "user";

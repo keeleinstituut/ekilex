@@ -20,6 +20,8 @@ public class AddItemRequest extends AbstractDataObject {
 
 	private String value;
 
+	private String dataset;
+
 	public String getOpCode() {
 		return opCode;
 	}
@@ -42,6 +44,14 @@ public class AddItemRequest extends AbstractDataObject {
 
 	public void setId2(Long id2) {
 		this.id2 = id2;
+	}
+
+	public Long getId3() {
+		return id3;
+	}
+
+	public void setId3(Long id3) {
+		this.id3 = id3;
 	}
 
 	public String getItemType() {
@@ -68,11 +78,12 @@ public class AddItemRequest extends AbstractDataObject {
 		this.value = value;
 	}
 
-	public Long getId3() {
-		return id3;
+	public String getDataset() {
+		return dataset;
 	}
 
-	public void setId3(Long id3) {
-		this.id3 = id3;
+	public void setDataset(String dataset) {
+		this.dataset = dataset;
 	}
+
 }

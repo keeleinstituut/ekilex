@@ -19,6 +19,7 @@ import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.web.util.PermDataUtil;
 
 @ConditionalOnWebApplication
 @Component
@@ -28,6 +29,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 
 	@Autowired
 	private AppDataHolder appDataHolder;
+
+	@Autowired
+	private PermDataUtil permDataUtil;
 
 	@Autowired
 	private MarkdownRenderer markdownRenderer;
@@ -58,6 +62,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
 			AppData appData = appDataHolder.getAppData();
 			modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
+		}
+		if (!modelMap.containsKey(PERM_DATA_UTIL_KEY)) {
+			modelMap.addAttribute(PERM_DATA_UTIL_KEY, permDataUtil);
 		}
 		if (!modelMap.containsKey(MARKDOWN_RENDERER_KEY)) {
 			modelMap.addAttribute(MARKDOWN_RENDERER_KEY, markdownRenderer);

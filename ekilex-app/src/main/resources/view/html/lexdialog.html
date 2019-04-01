@@ -23,16 +23,14 @@
                   <option value="lexeme_register" sec:authorize="{#vars.isLexemeCrudGranted}">Register</option>
                   <option value="lexeme_grammar" sec:authorize="{#vars.isLexemeCrudGranted}">Grammatika</option>
                   <option value="government" sec:authorize="{#vars.isLexemeCrudGranted}">Rektsioon</option>
-                  <option value="meaning_domain">Valdkond</option>
-                  <!-- TODO perms -->
-                  <option disabled>-----------------</option>
-                  <option value="addDefinitionDlg">Mõiste seletus</option>
-                  <option value="addSourceLinkDlg">Allikaviide</option>
-                  <option value="addLearnerCommentDlg">Õppekomentaar</option>
-                  <option value="addMeaningRelationDlg">Tähenduse seos</option>
-                  <option value="addUsageDlg">Kasutusnäide</option>
-                  <option value="addPublicNoteDlg">Märkus</option>
-                  <option value="addLexemeRelationDlg">Ilmiku seos</option>
+                  <option value="meaning_domain" sec:authorize="{#vars.isMeaningCrudGranted}">Valdkond</option>
+                  <option value="addDefinitionDlg" sec:authorize="${#authentication.principal.datasetPermissionsExist}">Mõiste seletus</option>
+                  <option value="addSourceLinkDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Allikaviide</option>
+                  <option value="addLearnerCommentDlg" sec:authorize="{#vars.isMeaningCrudGranted}">Õppekomentaar</option>
+                  <option value="addMeaningRelationDlg" sec:authorize="{#vars.isMeaningCrudGranted}">Tähenduse seos</option>
+                  <option value="addUsageDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Kasutusnäide</option>
+                  <option value="addPublicNoteDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Märkus</option>
+                  <option value="addLexemeRelationDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Ilmiku seos</option>
                 </select>
               </div>
             </div>
@@ -113,17 +111,78 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addWordDataDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_data_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="id2">
+            <input type="hidden" name="id3">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control word-data-select" name="opCode">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="word_gender">Sugu</option>
+                  <option value="word_type">Sõna tüüp</option>
+                  <option value="word_aspect">Aspekt</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'word_gender_' + wordId}" class="form-group row value-group" data-id="word_gender" th:fragment="word_gender_select" style="display: none">
+              <div class="col-md-4">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="gender : ${wordGenders}" th:value="${gender.code}" th:text="${gender.value}">gender</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'word_type_' + wordId}" class="form-group row value-group" data-id="word_type" th:fragment="word_type_select" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${wordTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'word_aspect_' + wordId}" class="form-group row value-group" data-id="word_aspect" th:fragment="word_aspect_select" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${wordAspects}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addDefinitionDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_definition_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/add_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
-            <input type="hidden" name="language" value="est">
-            <!-- TODO perm langs -->
             <input type="hidden" name="opCode" value="definition">
+            <input type="hidden" name="dataset" th:value="${lexeme.datasetCode}">
             <input type="hidden" name="value">
             <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control" name="language">
+                  <option value="" hidden disabled selected>vali keel...</option>
+                  <option th:each="language : ${permDataUtil.getUserPermLanguages(lexeme.datasetCode)}"
+                          th:value="${language.code}"
+                          th:text="${language.value}">language</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -139,8 +198,6 @@
         <form th:action="@{/modify_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${definition.id}">
-            <input type="hidden" name="language" value="est">
-            <!-- TODO perm langs -->
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.value}">
             <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
@@ -192,8 +249,7 @@
         <form th:action="@{/add_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
-            <input type="hidden" name="language" value="est">
-            <!-- TODO perm langs -->
+            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="learner_comment">
             <input type="hidden" name="value">
             <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
@@ -212,8 +268,6 @@
         <form th:action="@{/modify_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${learnerComment.id}">
-            <input type="hidden" name="language" value="est">
-            <!-- TODO perm langs -->
             <input type="hidden" name="opCode" value="learner_comment">
             <input type="hidden" name="value" th:value="${learnerComment.valuePrese}">
             <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
@@ -314,8 +368,7 @@
         <form th:action="@{/add_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="language" value="est">
-            <!-- TODO perm langs -->
+            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
             <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
@@ -374,8 +427,6 @@
         <form th:action="@{/modify_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${usage.id}">
-            <input type="hidden" name="language" value="est">
-            <!-- TODO perm langs -->
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.value}">
             <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
@@ -407,9 +458,9 @@
               <div class="form-group row">
                 <div class="col-md-4">
                   <select required class="form-control" name="language">
-                    <!-- TODO perm langs -->
                     <option value="" hidden disabled selected>vali väärtus...</option>
-                    <option th:each="language : ${allLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
+                    <option th:each="language : ${permDataUtil.getUserPermLanguages(lexeme.datasetCode)}"
+                            th:value="${language.code}" th:text="${language.value}">language</option>
                   </select>
                 </div>
               </div>
@@ -469,8 +520,7 @@
         <form th:action="@{/add_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="language" value="est">
-            <!-- TODO perm langs -->
+            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="public_note">
             <input type="hidden" name="value">
             <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
@@ -489,8 +539,6 @@
         <form th:action="@{/modify_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${publicNote.id}">
-            <input type="hidden" name="language" value="est">
-            <!-- TODO perm langs -->
             <input type="hidden" name="opCode" value="public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
             <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
@@ -540,58 +588,6 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'addWordDataDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_data_dlg">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${wordId}">
-            <input type="hidden" name="id2">
-            <input type="hidden" name="id3">
-            <input type="hidden" name="value">
-            <div class="form-group row">
-              <div class="col-md-6">
-                <select required class="form-control word-data-select" name="opCode">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option value="word_gender">Sugu</option>
-                  <option value="word_type">Sõna tüüp</option>
-                  <option value="word_aspect">Aspekt</option>
-                </select>
-              </div>
-            </div>
-            <div th:id="${'word_gender_' + wordId}" class="form-group row value-group" data-id="word_gender" th:fragment="word_gender_select" style="display: none">
-              <div class="col-md-4">
-                <select required class="form-control value-select">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option th:each="gender : ${wordGenders}" th:value="${gender.code}" th:text="${gender.value}">gender</option>
-                </select>
-              </div>
-            </div>
-            <div th:id="${'word_type_' + wordId}" class="form-group row value-group" data-id="word_type" th:fragment="word_type_select" style="display: none">
-              <div class="col-md-8">
-                <select required class="form-control value-select">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option th:each="item : ${wordTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
-                </select>
-              </div>
-            </div>
-            <div th:id="${'word_aspect_' + wordId}" class="form-group row value-group" data-id="word_aspect" th:fragment="word_aspect_select" style="display: none">
-              <div class="col-md-8">
-                <select required class="form-control value-select">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option th:each="item : ${wordAspects}" th:value="${item.code}" th:text="${item.value}">value</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>

@@ -59,26 +59,27 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 			return true;
 		}
 
-		logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\"", userId, targetId, targetType, permission);
-
 		Long entityId = Long.valueOf(targetId.toString());
 		RequiredAuthority requiredAuthority = parse(permission);
 		String authItem = requiredAuthority.getItem();
 		List<String> authOps = requiredAuthority.getOps();
+		boolean isPermGranted = false;
 
 		if (StringUtils.equals(LifecycleEntity.WORD.name(), targetType)) {
-			return permissionDbService.isGrantedForWord(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForWord(userId, entityId, authItem, authOps);
 		} else if (StringUtils.equals(LifecycleEntity.MEANING.name(), targetType)) {
-			return permissionDbService.isGrantedForMeaning(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, authItem, authOps);
 		} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
-			return permissionDbService.isGrantedForLexeme(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, authItem, authOps);
 		} else if (StringUtils.equals(LifecycleEntity.DEFINITION.name(), targetType)) {
-			return permissionDbService.isGrantedForDefinition(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForDefinition(userId, entityId, authItem, authOps);
 		} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
-			return permissionDbService.isGrantedForUsage(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, authItem, authOps);
 		}
 
-		return false;
+		logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\" granted: {}", userId, targetId, targetType, permission, isPermGranted);
+
+		return isPermGranted;
 	}
 
 	private RequiredAuthority parse(Object permission) {

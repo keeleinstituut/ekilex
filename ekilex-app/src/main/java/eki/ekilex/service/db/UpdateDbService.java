@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FEEDBACK_LOG;
 import static eki.ekilex.data.db.Tables.FEEDBACK_LOG_COMMENT;
@@ -682,6 +683,12 @@ public class UpdateDbService implements DbConstant {
 				.returning(DEFINITION.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public void addDefinitionDataset(Long definitionId, String datasetCode) {
+		create.insertInto(DEFINITION_DATASET, DEFINITION_DATASET.DEFINITION_ID, DEFINITION_DATASET.DATASET_CODE)
+				.values(definitionId, datasetCode)
+				.execute();
 	}
 
 	public Long addUsage(Long lexemeId, String value, String valuePrese, String languageCode) {

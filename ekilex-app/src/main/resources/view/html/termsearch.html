@@ -156,12 +156,12 @@
                 </div>
                 <div th:if="${definitionLangGroup.selected}" class="orderable" data-op-code="definition">
                   <div class="ml-4" style="position: relative"
-                       th:each="definition, itemStat: ${definitionLangGroup.definitions}"
+                       th:each="definition, itemIter: ${definitionLangGroup.definitions}"
                        th:data-id="${definition.id}"
                        th:data-orderby="${definition.orderBy}">
                     <div style="display: list-item; position: absolute"></div>
                     <div class="action-column">
-                      <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                      <th:block th:replace="common :: ordering_buttons(${itemIter})"></th:block>
                     </div>
                     <div class="invisible-buttons action-buttons-anchor  mw-90">
                       <span th:name="${definition.id} + '_definition'"
@@ -350,7 +350,7 @@
           </button>
         </div>
         <div class="orderable" data-op-code="lexeme">
-          <div class="card mb-2 shadow" th:each="lexeme,lexemeIter : ${lexemeLangGroup.lexemes}" th:if="${lexemeLangGroup.selected}"
+          <div class="card mb-2 shadow" th:each="lexeme,itemIter : ${lexemeLangGroup.lexemes}" th:if="${lexemeLangGroup.selected}"
                th:data-id="${lexeme.lexemeId}"
                th:data-op-code="lexeme"
                th:name="${lexeme.lexemeId} + '_lexeme'"
@@ -377,7 +377,7 @@
                   <b th:text="${lexeme.dataset}"></b>
                 </div>
                 <div class="ml-2">
-                  <th:block th:replace="common :: ordering_buttons(${lexemeIter})"></th:block>
+                  <th:block th:replace="common :: ordering_buttons(${itemIter})"></th:block>
                 </div>
               </div>
               <div>
@@ -562,13 +562,13 @@
                 </div>
                 <div class="col pl-0">
                   <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
-                    <tr th:each="relation, itemStat : ${lexeme.lexemeRelations}"
+                    <tr th:each="relation, itemIter : ${lexeme.lexemeRelations}"
                         th:data-id="${relation.id}"
                         th:data-op-code="lexeme_relation"
                         th:name="${relation.id} + '_lexeme_relation'"
                         th:data-orderby="${relation.orderBy}">
                       <td class="action-column">
-                        <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                        <th:block th:replace="common :: ordering_buttons(${itemIter})"></th:block>
                       </td>
                       <td class="invisible-buttons pr-3 pl-1">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
