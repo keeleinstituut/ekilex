@@ -24,6 +24,8 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
+import eki.ekilex.data.PublicNote;
+import eki.ekilex.data.LexemePublicNoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
@@ -158,8 +160,9 @@ public class TermSearchService implements SystemConstant {
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 					commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 							.into(UsageTranslationDefinitionTuple.class);
-			List<FreeForm> lexemePublicNotes = commonDataDbService.findLexemePublicNotes(lexemeId).into(FreeForm.class);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
+			List<LexemePublicNoteSourceTuple> publicNoteRefTuples = commonDataDbService.findPublicNoteRefTuples(lexemeId);
+			List<PublicNote> publicNotes = conversionUtil.composePublicNotes(publicNoteRefTuples);
 			List<FreeForm> lexemeGrammars = commonDataDbService.findGrammars(lexemeId).into(FreeForm.class);
 			List<SourceLink> lexemeRefLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
 			List<Relation> lexemeRelations = commonDataDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
@@ -186,7 +189,7 @@ public class TermSearchService implements SystemConstant {
 			lexeme.setDerivs(lexemeDerivs);
 			lexeme.setRegisters(lexemeRegisters);
 			lexeme.setFreeforms(lexemeFreeforms);
-			lexeme.setPublicNotes(lexemePublicNotes);
+			lexeme.setPublicNotes(publicNotes);
 			lexeme.setUsages(usages);
 			lexeme.setGrammars(lexemeGrammars);
 			lexeme.setClassifiersExist(classifiersExist);

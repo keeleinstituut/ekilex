@@ -35,6 +35,8 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
+import eki.ekilex.data.PublicNote;
+import eki.ekilex.data.LexemePublicNoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermMeaning;
@@ -367,6 +369,44 @@ public class ConversionUtil {
 			}
 		}
 		return usages;
+	}
+
+	public List<PublicNote> composePublicNotes(List<LexemePublicNoteSourceTuple> publicNoteRefTuples) {
+
+		List<PublicNote> publicNotes = new ArrayList<>();
+
+		Map<Long, PublicNote> publicNoteMap = new HashMap<>();
+		List<SourceLink> sourceLinks;
+
+		for (LexemePublicNoteSourceTuple tuple : publicNoteRefTuples) {
+
+			Long publicNoteId = tuple.getFreeformId();
+			Long sourceLinkId = tuple.getSourceLinkId();
+
+			PublicNote publicNote = publicNoteMap.get(publicNoteId);
+			if (publicNote == null) {
+				publicNote = new PublicNote();
+				sourceLinks = new ArrayList<>();
+				publicNote.setSourceLinks(sourceLinks);
+				publicNote.setId(publicNoteId);
+				publicNote.setValueText(tuple.getValueText());
+				publicNote.setValuePrese(tuple.getValuePrese());
+				publicNoteMap.put(publicNoteId, publicNote);
+				publicNotes.add(publicNote);
+			} else {
+				sourceLinks = publicNote.getSourceLinks();
+			}
+			if (sourceLinkId != null) {
+				SourceLink sourceLink = new SourceLink();
+				sourceLink.setId(sourceLinkId);
+				sourceLink.setType(tuple.getSourceLinkType());
+				sourceLink.setName(tuple.getSourceLinkName());
+				sourceLink.setValue(tuple.getSourceLinkValue());
+				sourceLinks.add(sourceLink);
+			}
+		}
+
+		return publicNotes;
 	}
 
 	public List<LexemeLangGroup> composeLexemeLangGroups(List<Lexeme> lexemes, List<ClassifierSelect> languagesOrder) {

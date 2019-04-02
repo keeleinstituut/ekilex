@@ -65,6 +65,7 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.DbConstant;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.LexemePublicNoteSourceTuple;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
@@ -550,6 +551,29 @@ public class CommonDataDbService implements DbConstant {
 			.where(ulff.LEXEME_ID.eq(lexemeId))
 			.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, srcl.ORDER_BY)
 			.fetch();
+	}
+
+
+	public List<LexemePublicNoteSourceTuple> findPublicNoteRefTuples(Long lexemeId) {
+
+		return create
+				.select(
+					FREEFORM.ID.as("freeform_id"),
+					FREEFORM.VALUE_TEXT.as("freeform_value_text"),
+					FREEFORM.VALUE_PRESE.as("freeform_value_prese"),
+					FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
+					FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
+					FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
+					FREEFORM_SOURCE_LINK.VALUE.as("source_link_value")
+				)
+				.from(LEXEME_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
+						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
+				.where(
+						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
+						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(LexemePublicNoteSourceTuple.class);
 	}
 
 	public Result<Record3<String,String,String>> findLexemePos(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
