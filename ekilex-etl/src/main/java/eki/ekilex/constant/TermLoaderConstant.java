@@ -94,11 +94,12 @@ public interface TermLoaderConstant extends TableName {
 
 	String originLenoch = "lenoch";
 	String originLtb = "ltb";
+	String originMiliterm = "militerm";
 
 	String definitionTypeCodeDefinition = "definitsioon";
 	String definitionTypeCodeExplanation = "selgitus";
 
 	char listingsDelimiter = '|';
-	char meaningDomainDelimiter = ';';
+	char meaningDelimiter = ';';
 	char tlinkDelimiter = ':';
 }

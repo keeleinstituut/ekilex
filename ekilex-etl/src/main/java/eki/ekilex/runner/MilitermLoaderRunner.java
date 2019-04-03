@@ -244,38 +244,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 
 		Element meaningDomainValueNode = (Element) conceptGroupNode.selectSingleNode(meaningDomainExp);
-		if (meaningDomainValueNode != null) {
-			// TODO domainOrigin on hetkel puudu
-			//  sellel on erinevad variandid, võib sisaldada Tlinki (mixedContent) või on koodi väärtused semikooloniga eraldatud
-			// Iterator<Node> iter = meaningDomainValueNode.nodeIterator();
-			// DefaultText textContentNode;
-			// DefaultElement elemContentNode;
-			// StringBuilder valuesB = new StringBuilder();
-			//
-			// while (iter.hasNext()) {
-			// 	Node contentNode = iter.next();
-			// 	if (contentNode instanceof DefaultText) {
-			// 		textContentNode = (DefaultText) contentNode;
-			// 		valuesB.append(textContentNode.getText());
-			// 	} else if (contentNode instanceof DefaultElement) {
-			// 		elemContentNode = (DefaultElement) contentNode;
-			// 		valuesB.append(elemContentNode.getTextTrim());
-			// 	}
-			// }
-			//
-			// if (valuesB.length() > 0) {
-			// 	String values = valuesB.toString();
-			// 	int domainDelimCount = StringUtils.countMatches(values, meaningDomainDelimiter);
-			// 	if (domainDelimCount == 0) {
-			// 		handleDomain(meaningId, values, "TODO domainOrigin");
-			// 	} else {
-			// 		String[] separateDomainCodes = values.split(meaningDomainDelimiter + "\\s*");
-			// 		for (String separateDomainCode : separateDomainCodes) {
-			// 			handleDomain(meaningId, separateDomainCode, "TODO domainOrigin");
-			// 		}
-			// 	}
-			// }
-		}
+		saveDomains(meaningId, meaningDomainValueNode);
 	}
 
 	private List<String> extractListValues(Node conceptGroupNode) {
@@ -304,15 +273,51 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void handleDomain(Long meaningId, String domainCode, String domainOrigin) throws Exception {
-		// TODO domainOrigin on hetkel puudu
-		// boolean domainExists = domainExists(domainCode, domainOrigin);
-		// if (domainExists) {
-		// 	createMeaningDomain(meaningId, domainCode, domainOrigin);
-		// 	// domainCodes.add(domainCode); - kas kasutada seda ka?
-		// } else {
-		// 	logger.warn("Incorrect domain reference \"{}\"", domainCode);
-		// }
+	private void saveDomains(Long meaningId, Element meaningDomainValueNode) throws Exception {
+
+		if (meaningDomainValueNode != null) {
+			Iterator<Node> iter = meaningDomainValueNode.nodeIterator();
+			List<String> domainCodes = new ArrayList<>();
+			DefaultText textContentNode;
+			DefaultElement elemContentNode;
+			String valueStr;
+
+			while (iter.hasNext()) {
+				Node contentNode = iter.next();
+				if (contentNode instanceof DefaultText) {
+					textContentNode = (DefaultText) contentNode;
+					valueStr = textContentNode.getText();
+					boolean separated = StringUtils.countMatches(valueStr, meaningDelimiter) > 0;
+					if (separated) {
+						String[] separateDomainCodes = valueStr.split(meaningDelimiter + "\\s*");
+						for (String separateDomainCode : separateDomainCodes) {
+							handleDomain(meaningId, separateDomainCode, domainCodes);
+						}
+					} else {
+						handleDomain(meaningId, valueStr, domainCodes);
+					}
+				} else if (contentNode instanceof DefaultElement) {
+					elemContentNode = (DefaultElement) contentNode;
+					valueStr = elemContentNode.getTextTrim();
+					handleDomain(meaningId, valueStr, domainCodes);
+				}
+			}
+		}
+	}
+
+	private void handleDomain(Long meaningId, String domainCode, List<String> domainCodes) throws Exception {
+
+		if (domainCodes.contains(domainCode)) {
+			logger.warn("Duplicate domain code - {}, meaningId - {}", domainCode, meaningId);
+			return;
+		}
+		boolean domainExists = domainExists(domainCode, originMiliterm);
+		if (domainExists) {
+			createMeaningDomain(meaningId, domainCode, originMiliterm);
+			domainCodes.add(domainCode);
+		} else {
+			logger.warn("Incorrect domain reference \"{}\"", domainCode);
+		}
 	}
 
 	private void extractAndApplyLexemeProperties(Node termGroupNode, Lexeme lexeme) throws ParseException {
@@ -397,9 +402,9 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			if (contentNode instanceof DefaultText) {
 				textContentNode = (DefaultText) contentNode;
 				valueStr = textContentNode.getText();
-				boolean separated = StringUtils.countMatches(valueStr, meaningDomainDelimiter) > 0;
+				boolean separated = StringUtils.countMatches(valueStr, meaningDelimiter) > 0;
 				if (separated) {
-					String[] separateTerms = valueStr.split(meaningDomainDelimiter + "\\s*");
+					String[] separateTerms = valueStr.split(meaningDelimiter + "\\s*");
 					for (String term : separateTerms) {
 						termsAndLangMap.putIfAbsent(term, null);
 					}
