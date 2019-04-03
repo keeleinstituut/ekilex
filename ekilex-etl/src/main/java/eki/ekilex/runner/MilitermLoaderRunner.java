@@ -497,8 +497,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					}
 				} else {
 					illegalMeaningRelationReferenceValueCount.increment();
-					appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viidatud termin kordub:",
-							possibleRelatedTerm);
+					appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId),
+							"Viidatud termin kordub, keel ei ole määratud:", possibleRelatedTerm);
 				}
 			}
 		}
