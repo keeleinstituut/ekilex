@@ -20,6 +20,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
 	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
 	private static final String SQL_SELECT_FLOATING_WORD_IDS = "sql/select_floating_word_ids.sql";
+	private static final String SQL_SELECT_MEANING_IDS_AND_WORD_LANGS = "sql/select_meaning_ids_and_word_langs.sql";
 	private static final String SQL_DELETE_DEFINITIONS_FOR_DATASET = "sql/delete_definitions_for_dataset.sql";
 	private static final String SQL_DELETE_DEFINITION_FF_FOR_DATASET = "sql/delete_definition_freeforms_for_dataset.sql";
 	private static final String SQL_DELETE_MEANING_FF_FOR_DATASET = "sql/delete_meaning_freeforms_for_dataset.sql";
@@ -38,6 +39,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlSelectSourceByTypeAndName;
 	private String sqlSelectWordGroupWithMembers;
 	private String sqlSelectFloatingWordIds;
+	private String sqlSelectMeaningIdsAndWordLangs;
 	private String sqlDeleteDefinitionsForDataset;
 	private String sqlDeleteDefinitionFreeformsForDataset;
 	private String sqlDeleteMeaningFreeformsForDataset;
@@ -85,6 +87,9 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_FLOATING_WORD_IDS);
 		sqlSelectFloatingWordIds = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_IDS_AND_WORD_LANGS);
+		sqlSelectMeaningIdsAndWordLangs = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITIONS_FOR_DATASET);
 		sqlDeleteDefinitionsForDataset = getContent(resourceFileInputStream);
@@ -148,6 +153,10 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	public String getSqlSelectFloatingWordIds() {
 		return sqlSelectFloatingWordIds;
+	}
+
+	public String getSqlSelectMeaningIdsAndWordLangs() {
+		return sqlSelectMeaningIdsAndWordLangs;
 	}
 
 	public String getSqlDeleteDefinitionsForDataset() {

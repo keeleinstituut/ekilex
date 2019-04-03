@@ -39,6 +39,8 @@ public interface TermLoaderConstant extends TableName {
 
 	String REPORT_ILLEGAL_SOURCE_REF = "illegal_source_ref";
 
+	String REPORT_ILLEGAL_MEANING_RELATION_REF = "illegal_meaning_relation_ref";
+
 	String conceptGroupExp = "/mtf/conceptGrp";
 	String langGroupExp = "languageGrp";
 	String langExp = "language";
@@ -98,4 +100,5 @@ public interface TermLoaderConstant extends TableName {
 
 	char listingsDelimiter = '|';
 	char meaningDomainDelimiter = ';';
+	char tlinkDelimiter = ':';
 }

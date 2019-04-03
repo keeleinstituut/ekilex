@@ -7,8 +7,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -32,6 +34,7 @@ import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
+import eki.ekilex.data.transform.RelationPart;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
 
@@ -43,6 +46,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
 	private DateFormat defaultDateFormat;
+
+	private Map<Long, List<RelationPart>> meaningRelationPartsMap;
+
+	private Count illegalMeaningRelationReferenceValueCount;
 
 	@Override
 	public String getDataset() {
@@ -67,7 +74,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 		this.doReports = doReports;
 		if (doReports) {
-			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_ILLEGAL_SOURCE_REF, REPORT_MISSING_SOURCE_REFS);
+			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_ILLEGAL_SOURCE_REF, REPORT_MISSING_SOURCE_REFS,
+					REPORT_ILLEGAL_MEANING_RELATION_REF);
 		}
 		start();
 
@@ -86,7 +94,9 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			allConceptGroupNodes.addAll(conceptGroupNodes);
 		}
 
+		meaningRelationPartsMap = new HashMap<>();
 		illegalSourceReferenceValueCount = new Count();
+		illegalMeaningRelationReferenceValueCount = new Count();
 		int conceptGroupCount = allConceptGroupNodes.size();
 		logger.debug("{} concept groups found", conceptGroupCount);
 
@@ -107,7 +117,14 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			}
 		}
 
+		for (Map.Entry<Long, List<RelationPart>> meaningRelationPart : meaningRelationPartsMap.entrySet()) {
+
+			List<RelationPart> initiatorRelationParts = meaningRelationPart.getValue();
+			findSecondRelationPartAndCreateRelations(initiatorRelationParts);
+		}
+
 		logger.debug("Found {} illegal source reference values", illegalSourceReferenceValueCount.getValue());
+		logger.debug("Found {} illegal meaning relation reference values", illegalMeaningRelationReferenceValueCount.getValue());
 
 		end();
 	}
@@ -140,7 +157,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			if (!isLang) {
 				continue;
 			}
-			// TODO word.lang või definition.lang - kas sellega on siin vaja veel midagi teha?
 			lang = unifyLang(langTypeValue);
 
 			List<Node> termGroupNodes = langGroupNode.selectNodes(termGroupExp);
@@ -150,9 +166,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				Element termValueNode = (Element) termGroupNode.selectSingleNode(termExp);
 				term = termValueNode.getTextTrim();
 
-				// form+paradigm+word+lexeme
-				// form ja paradigm - kas nendega tuleb kuidagi tegeleda või on korras?
-				// mõistetüüpi (nagu estermis on extractWordType()) pole vist vaja, sest excelis pole märgitud?
 				int homonymNr = getWordMaxHomonymNr(term, lang);
 				homonymNr++;
 				Word word = new Word(term, lang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
@@ -161,7 +174,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				Lexeme lexeme = new Lexeme();
 				lexeme.setWordId(wordId);
 				lexeme.setMeaningId(meaningId);
-				// processStateCode pole vist vaja, sest excelis pole märgitud?
 				Long lexemeId = createLexeme(lexeme, getDataset());
 
 				saveListValueFreeforms(lang, listValues, lexemeId);
@@ -177,10 +189,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 						term, lexeme.getCreatedOn(), lexeme.getCreatedBy());
 				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
 						term, lexeme.getModifiedOn(), lexeme.getModifiedBy());
-
-				// estermis on selliseid kasutatud, kas siin on ka vaja?
-				// extractAndSaveLexemeFreeforms(lexemeId, termGroupNode);
-				// extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
 
 				List<Node> sourceValueNodes = termGroupNode.selectNodes(sourceExp);
 				for (Node sourceValueNode : sourceValueNodes) {
@@ -214,7 +222,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					}
 				}
 
-				// TODO märkuse juures allikaviite kuvamine vaja teha
 				List<Node> noteValueNodes = termGroupNode.selectNodes(noteExp);
 				if (CollectionUtils.isNotEmpty(noteValueNodes)) {
 					for (Node noteValueNode : noteValueNodes) {
@@ -225,7 +232,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				List<Node> meaningRelationValueNodes = termGroupNode.selectNodes(meaningRelationExp);
 				for (Node meaningRelationValueNode : meaningRelationValueNodes) {
-					createMeaningRelations(meaningRelationValueNode, meaningId);
+					addPartialRelationToMap(meaningRelationValueNode, meaningId);
 				}
 
 				List<Node> explanationValueNodes = termGroupNode.selectNodes(explanationExp);
@@ -377,15 +384,12 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void createMeaningRelations(Node rootContentNode, Long meaningId) {
-		// TODO tekita seos, kui näidatud keelend on ühene. kui on mitmene või puudub, siis logi
-		// kui Tlink sisaldab keelt, siis kasutada seda. Kui ei sisalda, siis proovida ilma selleta
+	private void addPartialRelationToMap(Node rootContentNode, Long meaningId) {
 
-		// pooleli...
-		List<String> words = new ArrayList<>();
 		Iterator<Node> contentNodeIter = ((Element) rootContentNode).nodeIterator();
 		DefaultText textContentNode;
 		DefaultElement elemContentNode;
+		Map<String, String> termsAndLangMap = new HashMap<>();
 		String valueStr;
 
 		while (contentNodeIter.hasNext()) {
@@ -393,8 +397,104 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			if (contentNode instanceof DefaultText) {
 				textContentNode = (DefaultText) contentNode;
 				valueStr = textContentNode.getText();
+				boolean separated = StringUtils.countMatches(valueStr, meaningDomainDelimiter) > 0;
+				if (separated) {
+					String[] separateTerms = valueStr.split(meaningDomainDelimiter + "\\s*");
+					for (String term : separateTerms) {
+						termsAndLangMap.putIfAbsent(term, null);
+					}
+				} else {
+					termsAndLangMap.putIfAbsent(valueStr, null);
+				}
 			} else if (contentNode instanceof DefaultElement) {
 				elemContentNode = (DefaultElement) contentNode;
+				valueStr = elemContentNode.getTextTrim();
+				termsAndLangMap.putIfAbsent(valueStr, null);
+				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
+					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
+					boolean separated = StringUtils.countMatches(tlinkAttrValue, tlinkDelimiter) > 0;
+					if (separated) {
+						String[] separatedTlinkValues = StringUtils.split(tlinkAttrValue, tlinkDelimiter);
+						String lang = separatedTlinkValues[0];
+						if (isLang(lang)) {
+							lang = unifyLang(lang);
+						} else {
+							lang = null;
+						}
+						String term = separatedTlinkValues[1];
+						termsAndLangMap.put(term, lang);
+					} else {
+						termsAndLangMap.putIfAbsent(tlinkAttrValue, null);
+					}
+				}
+			}
+		}
+
+		List<RelationPart> meaningRelationParts = meaningRelationPartsMap.get(meaningId);
+		if (meaningRelationParts == null) {
+			meaningRelationParts = new ArrayList<>();
+		}
+		for (Map.Entry<String, String> termAndLang : termsAndLangMap.entrySet()) {
+			String term = termAndLang.getKey();
+			String lang = termAndLang.getValue();
+
+			boolean relationPartExists = false;
+			for (RelationPart meaningRelationPart : meaningRelationParts) {
+				if (term.equals(meaningRelationPart.getRelatedTerm())) {
+					if (lang != null && meaningRelationPart.getLang() == null) {
+						meaningRelationPart.setLang(lang);
+					}
+					relationPartExists = true;
+					break;
+				}
+			}
+			if (!relationPartExists) {
+				RelationPart relationPart = new RelationPart();
+				relationPart.setMeaningId(meaningId);
+				relationPart.setRelatedTerm(term);
+				relationPart.setLang(lang);
+				meaningRelationParts.add(relationPart);
+			}
+		}
+		meaningRelationPartsMap.put(meaningId, meaningRelationParts);
+	}
+
+	private void findSecondRelationPartAndCreateRelations(List<RelationPart> initiatorRelationParts) throws Exception {
+
+		for (RelationPart initiatorRelationPart : initiatorRelationParts) {
+			String possibleRelatedTerm = initiatorRelationPart.getRelatedTerm();
+			Long initialMeaningId = initiatorRelationPart.getMeaningId();
+			List<RelationPart> possibleRelationParts = getMeaningRelationParts(possibleRelatedTerm);
+
+			if (possibleRelationParts.isEmpty()) {
+				illegalMeaningRelationReferenceValueCount.increment();
+				appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viide tundmatule terminile:",
+						possibleRelatedTerm);
+			} else if (possibleRelationParts.size() == 1) {
+				Long secondMeaningId = possibleRelationParts.get(0).getMeaningId();
+				createMeaningRelation(initialMeaningId, secondMeaningId, "ant"); // TODO relationType
+			} else {
+				String initiatorLang = initiatorRelationPart.getLang();
+				if (initiatorLang != null) {
+					List<RelationPart> sameLangRelationParts = new ArrayList<>();
+					for (RelationPart possibleRelationPart : possibleRelationParts) {
+						if (initiatorLang.equals(possibleRelationPart.getLang())) {
+							sameLangRelationParts.add(possibleRelationPart);
+						}
+					}
+					if (sameLangRelationParts.size() == 1) {
+						Long secondMeaningId = sameLangRelationParts.get(0).getMeaningId();
+						createMeaningRelation(initialMeaningId, secondMeaningId, "ant"); // TODO relationType
+					} else {
+						illegalMeaningRelationReferenceValueCount.increment();
+						appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viidatud termin kordub:",
+								possibleRelatedTerm);
+					}
+				} else {
+					illegalMeaningRelationReferenceValueCount.increment();
+					appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viidatud termin kordub:",
+							possibleRelatedTerm);
+				}
 			}
 		}
 	}
