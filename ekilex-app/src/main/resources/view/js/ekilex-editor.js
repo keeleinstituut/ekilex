@@ -78,7 +78,9 @@ function initEkiEditorDlg(editDlg) {
 	let modifyFld = editDlg.find('[name=editFld]');
     modifyFld.html(editDlg.find('[name=value]').val());
     editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-        editDlg.find('[name=value]').val(modifyFld.html());
+    	//TODO why there is always <br> at the end??
+    	var content = modifyFld.html().replace("<br>","");
+        editDlg.find('[name=value]').val(content);
         submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
     });
     let ekiEditorElem = editDlg.find('.eki-editor');

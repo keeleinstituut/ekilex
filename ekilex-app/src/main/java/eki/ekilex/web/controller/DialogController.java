@@ -18,15 +18,26 @@ import eki.ekilex.data.EkiUser;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class DialogController extends AbstractPageController {
 
-	@GetMapping(COMPONENT_URI + "/langselect/{datasetCode}")
-	public String getPermittedLanguageSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
+	@GetMapping(COMPONENT_URI + "/commonwordlangselect/{datasetCode}")
+	public String getCommonWordLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
 
+		populateUserPermLanguagesModel(datasetCode, model);
+
+		return "common :: word_perm_lang_select";
+	}
+
+	@GetMapping(COMPONENT_URI + "/termdeflangselect/{datasetCode}")
+	public String getTermDefLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
+
+		populateUserPermLanguagesModel(datasetCode, model);
+
+		return "termdialog :: definition_perm_lang_select";
+	}
+
+	private void populateUserPermLanguagesModel(String datasetCode, Model model) {
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
-
 		model.addAttribute("userPermLanguages", userPermLanguages);
-
-		return "common :: permLanguageSelect";
 	}
 }

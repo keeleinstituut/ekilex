@@ -8,7 +8,8 @@
     </div>
     <div class="col pl-0">
       <span th:text="${lexeme.lexemeProcessStateCode}"></span>
-      <button type="button" class="btn badge badge-primary" title="Muuda"
+      <button type="button" class="btn badge badge-primary"
+              title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editLexemeProcessStateDlg_' + lexeme.lexemeId}"
               sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -30,7 +31,8 @@
     </div>
     <div class="col pl-0">
       <span th:text="${lexeme.lexemeValueStateCode}"></span>
-      <button type="button" class="btn badge badge-primary" title="Muuda"
+      <button type="button" class="btn badge badge-primary"
+              title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editLexemeValueStateCodeDlg_' + lexeme.lexemeId}"
               sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -54,7 +56,8 @@
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
         <span th:replace="lexdialog :: edit_lexeme_grammar_dlg"></span>
         <span th:text="${grammar.valueText}"></span>
-        <button type="button" class="btn badge badge-primary" title="Muuda"
+        <button type="button" class="btn badge badge-primary"
+                title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -80,7 +83,8 @@
       <span th:text="${lexeme.lexemeFrequencies}"></span>
       <span th:if="${lexeme.lexemeFrequencyGroupCode != null}" class="hidden-buttons">
         <span th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
-        <button type="button" class="btn badge badge-primary" title="Muuda"
+        <button type="button" class="btn badge badge-primary"
+                title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemeFrequencyGroupDlg_' + lexeme.lexemeId}"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -109,7 +113,8 @@
           -
           <span th:text="${classif.value}"></span>
         </th:block>
-        <button type="button" class="btn badge badge-primary" title="Muuda"
+        <button type="button" class="btn badge badge-primary"
+                title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -140,7 +145,8 @@
           -
           <span th:text="${classif.value}"></span>
         </th:block>
-        <button type="button" class="btn badge badge-primary" title="Muuda"
+        <button type="button" class="btn badge badge-primary"
+                title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -171,7 +177,8 @@
           -
           <span th:text="${classif.value}"></span>
         </th:block>
-        <button type="button" class="btn badge badge-primary" title="Muuda"
+        <button type="button" class="btn badge badge-primary"
+                title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -202,7 +209,8 @@
           -
           <span th:text="${classif.value}"></span>
         </th:block>
-        <button type="button" class="btn badge badge-primary" title="Muuda"
+        <button type="button" class="btn badge badge-primary"
+                title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
                 sec:authorize="${#vars.isMeaningCrudGranted}">
@@ -227,7 +235,8 @@
     </div>
     <div class="col pl-0">
       <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordGenderCode, wordGenders)}"></span>
-      <button type="button" class="btn badge badge-primary" title="Muuda"
+      <button type="button" class="btn badge badge-primary"
+              title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editWordGenderDlg_' + wordId}"
               sec:authorize="${#vars.isWordCrudGranted}">
@@ -274,7 +283,8 @@
     </div>
     <div class="col pl-0">
       <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordAspectCode, wordAspects)}"></span>
-      <button type="button" class="btn badge badge-primary" title="Muuda"
+      <button type="button" class="btn badge badge-primary"
+              title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editWordAspectDlg_' + wordId}"
               sec:authorize="${#vars.isWordCrudGranted}">

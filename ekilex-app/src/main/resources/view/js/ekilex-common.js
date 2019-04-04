@@ -1,5 +1,21 @@
 // Common javascript methods
 
+$(document).on("change", "select.common-word-dataset-select[name='dataset']", function() {
+	var datasetCode = $(this).val();
+	var permLanguageSelect = $("#wordPermLanguageSelect");
+	if (datasetCode) {
+		var getLanguageSelectUrl = applicationUrl + "comp/commonwordlangselect/" + datasetCode;
+		$.get(getLanguageSelectUrl).done(function(data) {
+			permLanguageSelect.replaceWith(data);
+		}).fail(function(data) {
+			console.log(data);
+			alert('Viga!');
+		});
+	} else {
+		permLanguageSelect.empty();
+	}
+});
+
 function selectDatasets(selection) {
     $('#datasetSelectDlg').find(':checkbox').prop('checked', selection)
 }
@@ -483,13 +499,25 @@ function decorateSourceLinks() {
 	detailsDiv.find('a').each(function(indx, item) {
 		let theLink = $(item);
 		if (theLink.attr('href').includes('_source_link:')) {
-			theLink.attr('data-target', '#detailsDlg');
+			theLink.attr('data-target', '#sourceDetailsDlg');
 			theLink.attr('data-toggle', 'modal');
 			theLink.on('click', function(e) {
-				openDetailsDiv(e.target);
+				openSourceDetails(e.target);
 			});
 		}
 	});
+}
+
+function openSourceDetails(elem) {
+    let dlg = $($(elem).data('target'));
+    let url = $(elem).attr('href');
+    dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        dlg.find('.close').focus();
+        dlg.find('.modal-body').html(null);
+        $.get(url).done(function(data) {
+            dlg.find('.modal-body').html(data);
+        });
+    });
 }
 
 function initNewWordDlg() {
@@ -602,18 +630,6 @@ function initAddSourceLinkDlg(addDlg) {
 
     addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         addDlg.find('.form-control').first().focus();
-    });
-}
-
-function openDetailsDiv(elem) {
-    let dlg = $($(elem).data('target'));
-    let url = $(elem).attr('href');
-    dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        dlg.find('.close').focus();
-        dlg.find('.modal-body').html(null);
-        $.get(url).done(function(data) {
-            dlg.find('.modal-body').html(data);
-        });
     });
 }
 

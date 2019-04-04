@@ -1,21 +1,5 @@
 //component based interaction logic
 
-$(document).on("change", "select[name='dataset']", function() {
-	var datasetCode = $(this).val();
-	if (datasetCode) {
-		var getLanguageSelectUrl = applicationUrl + 'comp/langselect/' + datasetCode;
-		$.get(getLanguageSelectUrl).done(function(data) {
-			var permLanguageSelectArea = $('#permLanguageSelect');
-			permLanguageSelectArea.replaceWith(data);
-		}).fail(function(data) {
-			console.log(data);
-			alert('Viga!');
-		});
-	} else {
-		$("#permLanguageSelect").empty();
-	}
-});
-
 //addLexemeDataDlg_ select
 $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	var opCode = $(this).val();
@@ -52,7 +36,7 @@ $(document).on("show.bs.modal", "[id^=editDefinitionDlg_]", function() {
 	initEkiEditorDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addSourceLinkDlg_]", function() {
+$(document).on("show.bs.modal", "[id^=addLexemeSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 });
 
@@ -80,12 +64,12 @@ $(document).on("show.bs.modal", "[id^=addUsageDlg_]", function() {
 	initEkiEditorDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addUsageAuthorDlg_]", function() {
-	initUsageAuthorDlg($(this));
-});
-
 $(document).on("show.bs.modal", "[id^=editUsageDlg_]", function() {
 	initEkiEditorDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addUsageAuthorDlg_]", function() {
+	initUsageAuthorDlg($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addUsageMemberDlg_]", function() {
@@ -100,11 +84,11 @@ $(document).on("show.bs.modal", "[id^=editUsageDefinitionDlg_]", function() {
 	initEkiEditorDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addPublicNoteDlg_]", function() {
+$(document).on("show.bs.modal", "[id^=addLexemePublicNoteDlg_]", function() {
 	initEkiEditorDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=editPublicNoteDlg_]", function() {
+$(document).on("show.bs.modal", "[id^=editLexemePublicNoteDlg_]", function() {
 	initEkiEditorDlg($(this));
 });
 

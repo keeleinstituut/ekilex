@@ -79,7 +79,7 @@ public class ModifyController implements WebConstant {
 	@PostMapping("/add_item")
 	public String addItem(@RequestBody AddItemRequest itemData) {
 
-		logger.debug("Add new item : {}", itemData.getOpCode());
+		logger.debug("Add new item : {}", itemData);
 		switch (itemData.getOpCode()) {
 		case "definition":
 			updateService.addDefinition(itemData.getId(), itemData.getValue(), itemData.getLanguage(), itemData.getDataset());
@@ -128,13 +128,13 @@ public class ModifyController implements WebConstant {
 			updateService.addLexemeRegister(itemData.getId(), itemData.getValue());
 			break;
 		case "word_gender":
-			updateService.updateWordGender(itemData.getId(), itemData.getValue());
+			updateService.updateWordGender(itemData.getId3(), itemData.getValue());
 			break;
 		case "word_type":
-			updateService.addWordType(itemData.getId(), itemData.getValue());
+			updateService.addWordType(itemData.getId3(), itemData.getValue());
 			break;
 		case "word_aspect":
-			updateService.updateWordAspect(itemData.getId(), itemData.getValue());
+			updateService.updateWordAspect(itemData.getId3(), itemData.getValue());
 			break;
 		case "lexeme_grammar":
 			updateService.addLexemeGrammar(itemData.getId(), itemData.getValue());

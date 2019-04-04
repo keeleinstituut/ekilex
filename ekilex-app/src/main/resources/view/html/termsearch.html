@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{term.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
@@ -107,6 +107,9 @@
   <th:block th:fragment="details" th:if="${meaning != null}">
 
     <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
+    <div th:replace="termdialog :: add_definition_dlg"></div>
+    <div th:replace="termdialog :: add_learner_comment_dlg"></div>
+    <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
 
     <div th:data-id="${meaningId}" id="details_div">
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
@@ -159,39 +162,37 @@
                        th:each="definition, itemIter: ${definitionLangGroup.definitions}"
                        th:data-id="${definition.id}"
                        th:data-orderby="${definition.orderBy}">
+                    <div th:replace="termdialog :: edit_definition_dlg"></div>
+                    <div th:replace="termdialog :: add_definition_source_link_dlg"></div>
                     <div style="display: list-item; position: absolute"></div>
                     <div class="action-column">
                       <th:block th:replace="common :: ordering_buttons(${itemIter})"></th:block>
                     </div>
                     <div class="invisible-buttons action-buttons-anchor  mw-90">
-                      <span th:name="${definition.id} + '_definition'"
-                            th:data-id="${definition.id}"
-                            th:data-op-code="definition"
-                            th:data-value="${definition.value}"
-                            th:utext="${definition.value}">
-                      </span>
+                      <span th:utext="${definition.value}"></span>
                       <span class="font-italic text-info" th:text="${definition.typeCode}"></span>
                       <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover">
                         [
-                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                                th:data-id="${definition.id}"
-                                th:data-op-code="def_source_link"
-                                onclick="openAddSourceLinkDlg(this)"
-                                data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                        <button type="button" class="btn badge badge-success"
+                                title="Lisa allikaviide"
+                                data-toggle="modal"
+                                th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}">
                           <i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
                         ]
                       </span>
                       <div class="action-buttons-2">
                         <button type="button" class="btn badge badge-primary"
-                                title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
-                                onclick="openEkiEditorDlg(this)"
-                                data-toggle="modal" data-target="#ekiEditorDlg">
+                                title="Muuda"
+                                data-toggle="modal"
+                                th:data-target="${'#editDefinitionDlg_' + definition.id}">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${definition.id} + '_definition'"
-                                data-toggle="delete-confirmation" data-placement="right">
+                                data-op-code="definition"
+                                th:data-id="${definition.id}"
+                                data-toggle="delete-confirm"
+                                data-placement="right">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </div>
@@ -199,27 +200,23 @@
                     <div class="hidden-buttons">
                       <span th:each="sourceLink : ${definition.sourceLinks}" th:if="${not #lists.isEmpty(definition.sourceLinks)}">
                         [
-                        <a th:href="@{'/def_source_link:' + ${sourceLink.id}}"
-                           th:name="${sourceLink.id} + '_def_source_link'"
-                           th:data-id="${sourceLink.id}"
-                           th:data-op-code="def_source_link"
-                           th:text="${sourceLink.value}"
-                        ></a>
+                        <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
                         <span th:if="${sourceLink.name != null}">
                           <span th:text="${sourceLink.name}"></span>
                         </span>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${sourceLink.id} + '_def_source_link'"
-                                data-toggle="delete-confirmation" data-placement="right">
+                                data-op-code="def_source_link"
+                                th:data-id="${sourceLink.id}"
+                                data-toggle="delete-confirm"
+                                data-placement="right">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                         ]
                       </span>
-                      <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                              th:data-id="${definition.id}"
-                              th:data-op-code="def_source_link"
-                              onclick="openAddSourceLinkDlg(this)"
-                              data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                      <button type="button" class="btn badge badge-success"
+                              title="Lisa allikaviide"
+                              data-toggle="modal"
+                              th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
@@ -232,39 +229,40 @@
             <hr />
             <div class="col pr-0 col-w13rem">
               <span class="lbl">Õppekommentaarid
-                <button type="button" class="btn badge badge-success" title="Lisa uus"
-                        th:data-id="${meaningId}"
-                        onclick="openEkiEditorAddDlg(this)"
-                        data-toggle="modal" data-target="#addNewLearnerCommentDlg">
+                <button type="button" class="btn badge badge-success"
+                        title="Lisa uus"
+                        data-toggle="modal"
+                        th:data-target="${'#addLearnerCommentDlg_' + meaningId}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </span>
             </div>
             <div class="col pl-0">
-              <table>
-                <tr th:each="learnerComment : ${meaning.learnerComments}">
-                  <td class="hidden-buttons action-buttons-anchor mw-90">
-                    <div th:name="${learnerComment.id} + '_learner_comment'"
-                          th:data-id="${learnerComment.id}"
-                          th:data-op-code="learner_comment"
-                          th:data-value="${learnerComment.valuePrese}"
-                          th:utext="${learnerComment.valuePrese}"></div>
-                    <div class="action-buttons-2">
-                      <button type="button" class="btn badge badge-primary"
-                              th:title="Muuda" th:data-target-elem="${learnerComment.id} + '_learner_comment'"
-                              onclick="openEkiEditorDlg(this)"
-                              data-toggle="modal" data-target="#ekiEditorDlg">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-warning"
-                              th:data-target-elem="${learnerComment.id} + '_learner_comment'"
-                              data-toggle="delete-confirmation" data-placement="right">
-                        <i class="fa fa-remove" aria-hidden="true"></i>
-                      </button>
+              <th:block th:each="learnerComment : ${meaning.learnerComments}">
+                <div th:replace="termdialog :: edit_learner_comment_dlg"></div>
+                <div class="row">
+                  <div class="col hidden-buttons">
+                    <div class="action-buttons-anchor">
+                      <span th:utext="${learnerComment.valuePrese}"></span>
+                      <div class="action-buttons-2">
+                        <button type="button" class="btn badge badge-primary"
+                                title="Muuda"
+                                data-toggle="modal"
+                                th:data-target="${'#editLearnerCommentDlg_' + meaningId + '_' + learnerComment.id}">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${learnerComment.id}"
+                                data-op-code="learner_comment"
+                                data-toggle="delete-confirm"
+                                data-placement="right">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </div>
                     </div>
-                  </td>
-                </tr>
-              </table>
+                  </div>
+                </div>
+              </th:block>
             </div>
           </div>
           <div class="row" th:if="${not #lists.isEmpty(meaning.freeforms)}">
@@ -294,20 +292,16 @@
             <hr />
             <div class="col pr-0 col-w13rem">
               <span class="lbl">Tähenduse seosed</span>
-              <button type="button" class="btn badge badge-success" title="Lisa seos"
-                      th:data-id="${meaning.meaningId}"
-                      onclick="openAddNewMeaningRelationDlg(this)"
-                      data-toggle="modal" data-target="#addNewMeaningRelationDlg">
+              <button type="button" class="btn badge badge-success"
+                      title="Lisa seos"
+                      data-toggle="modal"
+                      th:data-target="${'#addMeaningRelationDlg_' + meaningId}">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </div>
             <div class="col pl-0">
               <table th:if="${not #lists.isEmpty(meaning.groupedRelations)}">
-                <tr th:each="relations : ${meaning.groupedRelations}"
-                    th:data-id="${relations.get(0).id}"
-                    th:data-op-code="meaning_relation"
-                    th:name="${relations.get(0).id} + '_meaning_relation'"
-                    class="hidden-buttons">
+                <tr th:each="relations : ${meaning.groupedRelations}" class="hidden-buttons">
                   <td class="pr-3">
                     <th:block th:each="relation, iter : ${relations}">
                       <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
@@ -319,8 +313,10 @@
                   <td>
                     <span th:text="${relations.get(0).relationTypeLabel}"></span>
                     <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${relations.get(0).id} + '_meaning_relation'"
-                            data-toggle="delete-confirmation" data-placement="right">
+                            data-placement="right"
+                            th:data-id="${relations.get(0).id}"
+                            data-op-code="meaning_relation"
+                            data-toggle="delete-confirm">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                   </td>
@@ -345,17 +341,22 @@
           <span th:text="${lexemeLangGroup.lang}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${lexemeLangGroup.lang}"
-                  th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}">
             <i th:class="${lexemeLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
           </button>
         </div>
         <div class="orderable" data-op-code="lexeme">
-          <div class="card mb-2 shadow" th:each="lexeme,itemIter : ${lexemeLangGroup.lexemes}" th:if="${lexemeLangGroup.selected}"
+          <div th:each="lexeme,itemIter : ${lexemeLangGroup.lexemes}"
+               th:if="${lexemeLangGroup.selected}"
                th:data-id="${lexeme.lexemeId}"
-               th:data-op-code="lexeme"
-               th:name="${lexeme.lexemeId} + '_lexeme'"
-               th:data-orderby="${lexeme.orderBy}">
+               th:data-orderby="${lexeme.orderBy}"
+               class="card mb-2 shadow">
 
+            <div th:replace="termdialog :: add_lexeme_data_dlg"></div>
+            <div th:replace="termdialog :: add_lexeme_source_link_dlg"></div>
+            <div th:replace="termdialog :: add_usage_dlg"></div>
+            <div th:replace="termdialog :: add_lexeme_relation_dlg"></div>
+            <div th:replace="termdialog :: add_lexeme_public_note_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_process_state_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_frequency_group_dlg"></div>
@@ -369,9 +370,21 @@
                   <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}" class="pl-1"></span>
                 </div>
                 <div class="ml-auto">
-                  <button class="btn btn-warning font-weight-bold btn-sm" type="button"
-                          th:data-target-elem="${lexeme.lexemeId} + '_lexeme'"
-                          data-toggle="delete-confirmation">Eemalda</button>
+                  <button type="button" class="btn badge badge-success float-right"
+                          title="Lisa klassifikaator"
+                          data-toggle="modal"
+                          th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="ml-2">
+                  <button type="button"
+                          class="btn btn-warning font-weight-bold btn-sm"
+                          th:data-id="${lexeme.lexemeId}"
+                          data-op-code="lexeme"
+                          data-toggle="delete-confirm">
+                    Eemalda
+                  </button>
                 </div>
                 <div class="ml-2">
                   <b th:text="${lexeme.dataset}"></b>
@@ -383,14 +396,6 @@
               <div>
                 <hr />
                 <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
-                <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
-                        th:data-lexeme-id="${lexeme.lexemeId}"
-                        th:data-meaning-id="${lexeme.meaningId}"
-                        th:data-word-id="${lexeme.wordId}"
-                        onclick="openClassifiersDlg(this)"
-                        data-toggle="modal" data-target="#termLexemeClassifiersDlg">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
                 <div th:replace="termcomp :: lexeme_process_state"></div>
                 <div th:replace="termcomp :: lexeme_value_state"></div>
                 <div th:replace="termcomp :: word_gender"></div>
@@ -401,241 +406,193 @@
                 <div th:replace="termcomp :: lexeme_derivative"></div>
                 <div th:replace="termcomp :: lexeme_register"></div>
               </div>
-              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.sourceLinks)}"
-                      th:data-id="${lexeme.lexemeId}"
-                      data-op-code="lex_source_link"
-                      onclick="openAddSourceLinkDlg(this)"
-                      data-btn-id="#addNewSourceLink"
-                      data-toggle="modal" data-target="#addNewSourceLinkDlg">
-              </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Allikaviide</span>
-                  <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                          th:data-id="${lexeme.lexemeId}"
-                          ata-op-code="lex_source_link"
-                          onclick="openAddSourceLinkDlg(this)"
-                          data-btn-id="#addNewSourceLink"
-                          data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                  <button type="button" class="btn badge badge-success"
+                          title="Lisa allikaviide"
+                          data-toggle="modal"
+                          th:data-target="${'#addLexemeSourceLinkDlg_' + lexeme.lexemeId}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
                 <div class="col pl-0">
                   <span th:each="sourceLink : ${lexeme.sourceLinks}" class="hidden-buttons">
                     [
-                    <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}"
-                       th:name="${sourceLink.id} + '_lex_source_link'"
-                       th:data-id="${sourceLink.id}"
-                       th:data-op-code="lex_source_link"
-                       th:text="${sourceLink.value}"
-                    ></a>
+                    <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
                     <span th:if="${sourceLink.name != null}">
                       <span th:text="${sourceLink.name}"></span>
                     </span>
                     <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${sourceLink.id} + '_lex_source_link'"
-                            data-toggle="delete-confirmation" data-placement="right">
+                            data-placement="right"
+                            th:data-id="${sourceLink.id}"
+                            data-op-code="lex_source_link"
+                            data-toggle="delete-confirm">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                     ]
                   </span>
                 </div>
               </div>
-              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.usages)}"
-                      th:data-id="${lexeme.lexemeId}"
-                      onclick="openEkiEditorAddDlg(this)"
-                      data-btn-id="#addNewUsage"
-                      data-toggle="modal" data-target="#addNewUsageDlg">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Kasutusnäited</span>
-                  <button type="button" class="btn badge badge-success" title="Lisa uus"
-                          th:data-id="${lexeme.lexemeId}"
-                          onclick="openEkiEditorAddDlg(this)"
-                          data-btn-id="#addNewUsage"
-                          data-toggle="modal" data-target="#addNewUsageDlg">
+                  <button type="button" class="btn badge badge-success"
+                          title="Lisa uus"
+                          data-toggle="modal"
+                          th:data-target="${'#addUsageDlg_' + lexeme.lexemeId}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.usages)}" class="col pl-0">
-                    <th:block th:each="usage : ${lexeme.usages}">
-                      <div class="invisible-buttons action-buttons-anchor mw-90">
-                        <div style="display: list-item; position: absolute"></div>
-                        <span th:name="${usage.id} + '_usage'"
-                              th:data-id="${usage.id}"
-                              th:data-op-code="usage"
-                              th:data-value="${usage.value}"
-                              th:utext="${usage.value}"></span>
-                        <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
-                        <span th:if="${not #lists.isEmpty(usage.authors)}">
-                          (
-                          <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
-                            <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
-                            <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
-                               th:name="${sourceLink.id} + '_ff_source_link'"
-                               th:data-id="${sourceLink.id}"
-                               th:data-op-code="ff_source_link"
-                               th:text="${sourceLink.value}"
-                               th:if="${sourceLink.value != null}"
-                            ></a>
-                            <span th:if="${sourceLink.name != null}">
-                              <span th:text="${sourceLink.name}"></span>
-                            </span>
-                            <span th:unless="${sourceLinkIter.last}">, </span>
-                          </span>
-                          )
-                        </span>
-                        <span class="show-on-mouseover" th:if="${#lists.isEmpty(usage.sourceLinks)}">
-                          [
-                          <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                                  th:data-id="${usage.id}"
-                                  th:data-op-code="ff_source_link"
-                                  onclick="openAddSourceLinkDlg(this)"
-                                  data-toggle="modal" data-target="#addNewSourceLinkDlg">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                          </button>
-                          ]
-                        </span>
-                        <div class="action-buttons-2">
-                          <button type="button" class="btn badge badge-primary"
-                                  th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
-                                  onclick="openEkiEditorDlg(this)"
-                                  data-toggle="modal" data-target="#ekiEditorDlg">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:data-target-elem="${usage.id} + '_usage'"
-                                  data-toggle="delete-confirmation" data-placement="right">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </div>
-                      <div class="hidden-buttons">
-                        <span th:each="sourceLink : ${usage.sourceLinks}">
-                          [
-                          <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
-                             th:name="${sourceLink.id} + '_ff_source_link'"
-                             th:data-id="${sourceLink.id}"
-                             th:data-op-code="ff_source_link"
-                             th:text="${sourceLink.value}"
-                          ></a>
+                  <th:block th:each="usage : ${lexeme.usages}">
+                    <div th:replace="termdialog :: edit_usage_dlg"></div>
+                    <div th:replace="termdialog :: add_usage_source_link_dlg"></div>
+                    <div class="invisible-buttons action-buttons-anchor mw-90">
+                      <div style="display: list-item; position: absolute"></div>
+                      <span th:utext="${usage.value}"></span>
+                      <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
+                      <span th:if="${not #lists.isEmpty(usage.authors)}">
+                        (
+                        <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
+                          <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
+                          <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></a>
                           <span th:if="${sourceLink.name != null}">
                             <span th:text="${sourceLink.name}"></span>
                           </span>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:data-target-elem="${sourceLink.id} + '_ff_source_link'"
-                                  data-toggle="delete-confirmation" data-placement="right">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                          ]
+                          <span th:unless="${sourceLinkIter.last}">, </span>
                         </span>
-                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                                th:data-id="${usage.id}"
-                                th:data-op-code="ff_source_link"
-                                onclick="openAddSourceLinkDlg(this)"
-                                data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                        )
+                      </span>
+                      <span class="show-on-mouseover" th:if="${#lists.isEmpty(usage.sourceLinks)}">
+                        [
+                        <button type="button" class="btn badge badge-success"
+                                title="Lisa allikaviide"
+                                data-toggle="modal"
+                                th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}">
                           <i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
+                        ]
+                      </span>
+                      <div class="action-buttons-2">
+                        <button type="button" class="btn badge badge-primary"
+                                title="Muuda"
+                                data-toggle="modal"
+                                th:data-target="${'#editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${usage.id}"
+                                data-op-code="usage"
+                                data-toggle="delete-confirm"
+                                data-placement="right">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
                       </div>
-                    </th:block>
+                    </div>
+                    <div class="hidden-buttons" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                      <span th:each="sourceLink : ${usage.sourceLinks}">
+                        [
+                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                        <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${sourceLink.id}"
+                                data-op-code="ff_source_link"
+                                data-toggle="delete-confirm" 
+                                data-placement="right">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                        ]
+                      </span>
+                      <button type="button" class="btn badge badge-success"
+                              title="Lisa allikaviide"
+                              data-toggle="modal"
+                              th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </th:block>
                 </div>
               </div>
-              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.lexemeRelations)}"
-                      th:data-id="${lexeme.lexemeId}"
-                      onclick="openAddNewLexemeRelationDlg(this)"
-                      data-toggle="modal" data-target="#addNewLexemeRelationDlg">
-              </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Ilmiku seosed</span>
-                  <button type="button" class="btn badge badge-success" title="Lisa seos"
-                          th:data-id="${lexeme.lexemeId}"
-                          onclick="openAddNewLexemeRelationDlg(this)"
-                          data-toggle="modal" data-target="#addNewLexemeRelationDlg">
+                  <button type="button" class="btn badge badge-success"
+                          title="Lisa seos"
+                          data-toggle="modal"
+                          th:data-target="${'#addLexemeRelationDlg_' + lexeme.lexemeId}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
                 <div class="col pl-0">
                   <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
-                    <tr th:each="relation, itemIter : ${lexeme.lexemeRelations}"
-                        th:data-id="${relation.id}"
-                        th:data-op-code="lexeme_relation"
-                        th:name="${relation.id} + '_lexeme_relation'"
-                        th:data-orderby="${relation.orderBy}">
+                    <tr th:each="relation, itemIter : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                       <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemIter})"></th:block>
                       </td>
-                      <td class="invisible-buttons pr-3 pl-1">
+                      <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
                           <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${relation.id} + '_lexeme_relation'"
-                                data-toggle="delete-confirmation" data-placement="left">
+                                th:data-id="${relation.id}"
+                                data-op-code="lexeme_relation"
+                                data-toggle="delete-confirm"
+                                data-placement="left">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </td>
-                      <td>
+                      <td class="invisible-buttons">
                         <span th:text="${relation.relationTypeLabel}"></span>
                       </td>
                     </tr>
                   </table>
                 </div>
               </div>
-              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.publicNotes)}"
-                      th:data-id="${lexeme.lexemeId}"
-                      onclick="openEkiEditorAddDlg(this)"
-                      data-btn-id="#addNewPublicNote"
-                      data-toggle="modal" data-target="#addNewPublicNoteDlg">
-              </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Märkused
-                    <button type="button" class="btn badge badge-success" title="Lisa uus"
-                            th:data-id="${lexeme.lexemeId}"
-                            onclick="openEkiEditorAddDlg(this)"
-                            data-btn-id="#addNewPublicNote"
-                            data-toggle="modal" data-target="#addNewPublicNoteDlg">
+                    <button type="button" class="btn badge badge-success"
+                            title="Lisa uus"
+                            data-toggle="modal"
+                            th:data-target="${'#addLexemePublicNoteDlg_' + lexeme.lexemeId}">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
                   </span>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.publicNotes)}" class="col pl-0">
                   <th:block th:each="publicNote : ${lexeme.publicNotes}">
+                    <div th:replace="termdialog :: edit_lexeme_public_note_dlg"></div>
+                    <div th:replace="termdialog :: add_public_note_source_link_dlg"></div>
                     <div class="invisible-buttons action-buttons-anchor mw-90">
                       <div style="display: list-item; position: absolute"></div>
-                      <span th:name="${publicNote.id} + '_public_note'"
-                            th:data-id="${publicNote.id}"
-                            th:data-op-code="public_note"
-                            th:data-value="${publicNote.valuePrese}"
-                            th:utext="${publicNote.valuePrese}"></span>
+                      <span th:utext="${publicNote.valuePrese}"></span>
                         <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
                           [
-                          <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                                  th:data-id="${publicNote.id}"
-                                  th:data-op-code="ff_source_link"
-                                  onclick="openAddSourceLinkDlg(this)"
-                                  data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                          <button type="button" class="btn badge badge-success"
+                                  title="Lisa allikaviide"
+                                  data-toggle="modal"
+                                  th:data-target="${'#addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
                           ]
                         </span>
                       <div class="action-buttons-2">
                         <button type="button" class="btn badge badge-primary"
-                                th:title="Muuda" th:data-target-elem="${publicNote.id} + '_public_note'"
-                                onclick="openEkiEditorDlg(this)"
-                                data-toggle="modal" data-target="#ekiEditorDlg">
+                                th:title="Muuda"
+                                data-toggle="modal"
+                                th:data-target="${'#editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${publicNote.id} + '_public_note'"
-                                data-toggle="delete-confirmation" data-placement="right">
+                                th:data-id="${publicNote.id}"
+                                data-op-code="public_note"
+                                data-toggle="delete-confirm"
+                                data-placement="right">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </div>
@@ -643,27 +600,23 @@
                     <div class="hidden-buttons">
                       <span th:each="sourceLink : ${publicNote.sourceLinks}">
                         [
-                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
-                           th:name="${sourceLink.id} + '_ff_source_link'"
-                           th:data-id="${sourceLink.id}"
-                           th:data-op-code="ff_source_link"
-                           th:text="${sourceLink.value}"
-                        ></a>
+                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
                         <span th:if="${sourceLink.name != null}">
                           <span th:text="${sourceLink.name}"></span>
                         </span>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${sourceLink.id} + '_ff_source_link'"
-                                data-toggle="delete-confirmation" data-placement="right">
+                                th:data-id="${sourceLink.id}"
+                                data-op-code="ff_source_link"
+                                data-toggle="delete-confirm" 
+                                data-placement="right">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                         ]
                       </span>
-                      <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                              th:data-id="${publicNote.id}"
-                              th:data-op-code="ff_source_link"
-                              onclick="openAddSourceLinkDlg(this)"
-                              data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                      <button type="button" class="btn badge badge-success"
+                              title="Lisa allikaviide"
+                              data-toggle="modal"
+                              th:data-target="${'#addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
@@ -701,14 +654,6 @@
                 btnCancelLabel: 'Ei'
             }
         );
-        $('[data-toggle=delete-confirmation]').confirmation(
-            {
-                btnOkLabel: 'Jah',
-                btnCancelLabel: 'Ei',
-                title: 'Kas olete kindel, et soovite eemaldada ?',
-                onConfirm: performDelete
-            }
-        );
         $('[data-toggle=delete-confirm]').confirmation({
 			btnOkLabel : 'Jah',
 			btnCancelLabel : 'Ei',
@@ -719,27 +664,8 @@
     </script>
   </th:block>
 
-  <div th:replace="ekilex_editor :: #addNewDefinitionDlg"></div>
-  <div th:replace="ekilex_editor :: #addNewUsageDlg"></div>
   <div th:replace="common :: newWordDlg('term_search')"></div>
-  <div th:replace="common :: #addNewSourceLinkDlg"></div>
-  <div th:replace="common :: #detailsDlg"></div>
-  <div th:replace="common :: #meaningDomainDlg"></div>
-  <div th:replace="common :: #termMeaningClassifiersDlg"></div>
-  <div th:replace="common :: #lexemeFrequencyDlg"></div>
-  <div th:replace="common :: #lexemePosDlg"></div>
-  <div th:replace="common :: #lexemeDerivDlg"></div>
-  <div th:replace="common :: #lexemeRegisterDlg"></div>
-  <div th:replace="common :: #lexemeValueStateCodeDlg"></div>
-  <div th:replace="common :: #lexemeProcessStateCodeDlg"></div>
-  <div th:replace="common :: #wordGenderDlg"></div>
-  <div th:replace="common :: #wordTypeDlg"></div>
-  <div th:replace="common :: #termLexemeClassifiersDlg"></div>
-  <div th:replace="components :: #addNewMeaningRelationDlg"></div>
-  <div th:replace="components :: #addNewLexemeRelationDlg"></div>
-  <div th:replace="ekilex_editor :: #ekiEditorDlg"></div>
-  <div th:replace="ekilex_editor :: #addNewLearnerCommentDlg"></div>
-  <div th:replace="ekilex_editor :: #addNewPublicNoteDlg"></div>
+  <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #confirmDlg"></div>
 
