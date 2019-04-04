@@ -2,6 +2,8 @@ LEX nimi	LEX kood	LEX väärtus	LEX keel	LEX väärtuse liik
 aspect	сов.	совершенный	est	descrip
 aspect	несов.	несовершенный	est	descrip
 aspect	сов. и несов.	совершенный и несовершенный	est	descrip
+definition_type	definitsioon	-	-	-
+definition_type	selgitus	-	-	-
 deriv	adv	adverb (-lt)	est	descrip
 deriv	dem	KE/KENE	est	ekimorfo
 deriv	dem	diminutive	eng	descrip
@@ -924,6 +926,8 @@ meaning_rel_type	ant	antonüüm	est	descrip
 meaning_rel_type	cohyponym	kaashüponüüm	est	descrip
 meaning_rel_type	cohyponym	võrdle	est	wordweb
 meaning_rel_type	ant	vastand	est	wordweb
+meaning_rel_type	unspecified	seotud	est	descrip
+meaning_rel_type	unspecified	seotud	est	wordweb
 morph	ID	muutumatu	est	descrip2
 morph	SgN	ainsuse nimetav	est	descrip2
 morph	SgN	SgN	eng	descrip2
@@ -1383,6 +1387,12 @@ process_state	arhiveeritud	-	-	-
 process_state	töös	-	-	-
 process_state	läbi vaatamata	-	-	-
 process_state	kustutatud	-	-	-
+region	CA	-	-	-
+region	EU	-	-	-
+region	NATO	-	-	-
+region	UK	-	-	-
+region	UN	-	-	-
+region	US	-	-	-
 register	eevn	eestivene	est	descrip
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
