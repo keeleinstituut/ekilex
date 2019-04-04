@@ -45,6 +45,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
+	private final static String MEANING_RELATION_UNSPECIFIED = "määramata";
+
 	private DateFormat defaultDateFormat;
 
 	private Map<Long, List<RelationPart>> meaningRelationPartsMap;
@@ -377,7 +379,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleFreeformRefLinks(valueNode, freeformId);
+				valueStr = handleFreeformRefLinks(valueNode, freeformId); // TODO handleFreeformRefLinks on aegunud
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -477,7 +479,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 						possibleRelatedTerm);
 			} else if (possibleRelationParts.size() == 1) {
 				Long secondMeaningId = possibleRelationParts.get(0).getMeaningId();
-				createMeaningRelation(initialMeaningId, secondMeaningId, "ant"); // TODO relationType
+				createMeaningRelation(initialMeaningId, secondMeaningId, MEANING_RELATION_UNSPECIFIED);
 			} else {
 				String initiatorLang = initiatorRelationPart.getLang();
 				if (initiatorLang != null) {
@@ -489,7 +491,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					}
 					if (sameLangRelationParts.size() == 1) {
 						Long secondMeaningId = sameLangRelationParts.get(0).getMeaningId();
-						createMeaningRelation(initialMeaningId, secondMeaningId, "ant"); // TODO relationType
+						createMeaningRelation(initialMeaningId, secondMeaningId, MEANING_RELATION_UNSPECIFIED);
 					} else {
 						illegalMeaningRelationReferenceValueCount.increment();
 						appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viidatud termin kordub:",
