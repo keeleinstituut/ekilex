@@ -64,8 +64,9 @@ public class LexSearchController extends AbstractSearchController {
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
+
+		SessionBean sessionBean = getSessionBean(model);
 
 		formDataCleanup(selectedDatasets, simpleSearchFilter, detailSearchFilter, null, sessionBean, model);
 
@@ -79,7 +80,7 @@ public class LexSearchController extends AbstractSearchController {
 	}
 
 	@GetMapping(value = LEX_SEARCH_URI + "/**")
-	public String lexSearch(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model, HttpServletRequest request) {
+	public String lexSearch(Model model, HttpServletRequest request) {
 
 		// if redirect from login arrives
 		initSearchForms(model);
@@ -91,6 +92,7 @@ public class LexSearchController extends AbstractSearchController {
 
 		if (!searchUriData.isValid()) {
 			initSearchForms(model);
+			model.addAttribute("wordsResult", new WordsResult());
 			model.addAttribute("noResults", true);
 			return LEX_SEARCH_PAGE;
 		}

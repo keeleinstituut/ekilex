@@ -1,821 +1,293 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <head th:fragment="common_header(title,links)">
-  <title th:replace="${title}" th:text="#{general.title}">EKILEX</title>
-  <!-- Common styles and scripts -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <!--<link rel="shortcut icon" th:href="@{/favicon.ico}">-->
-
-  <th:block th:replace=" :: css"></th:block>
-  <th:block th:replace=" :: js"></th:block>
-
-  <!--/* Per-page placeholder for additional links */-->
-  <th:block th:replace="${links}"/>
-
-  <script th:inline="javascript">
-      var applicationUrl = /*[[@{/}]]*/'/';
-  </script>
+<title th:replace="${title}" th:text="#{general.title}">EKILEX</title>
+<!-- Common styles and scripts -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!--<link rel="shortcut icon" th:href="@{/favicon.ico}">-->
+<th:block th:replace=" :: css"></th:block>
+<th:block th:replace=" :: js"></th:block>
+<!--/* Per-page placeholder for additional links */-->
+<th:block th:replace="${links}" />
+<script th:inline="javascript">
+	var applicationUrl = /*[[@{/}]]*/'/';
+</script>
 </head>
-
 <body>
-<!-- Bootstrap core JS -->
-<th:block th:fragment="js">
-  <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
-</th:block>
-
-<!-- Bootstrap core CSS -->
-<th:block th:fragment="css">
-  <link rel="stylesheet" th:href="@{/view/css/bootstrap.css}"/>
-  <link rel="stylesheet" th:href="@{/view/css/font-awesome.css}"/>
-  <link rel="stylesheet" th:href="@{/view/css/common-styles.css}"/>
-  <link rel="stylesheet" th:href="@{/view/css/ekilex-editor.css}"/>
-  <link rel="stylesheet" th:href="@{/view/css/eki-markup.css}"/>
-</th:block>
-
-<th:block th:fragment="nav_bar">
-  <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
-    <a class="navbar-brand" th:href="@{/}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
-    <div class="navbar-nav" th:if="${activeItem}">
-      <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</span></a>
-      <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-      <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#" sec:authorize="${#authentication.principal.datasetPermissionsExist}">
-        Lisa uus keelend
-      </a>
-    </div>
-    <div class="navbar-nav ml-auto">
-      <form th:action="@{/dologout}" method="post" sec:authorize="isAuthenticated()">
-        <button type="submit" class="btn btn-info">
-          <span th:text="${#authentication.name}">Kusti Tähetark</span>
-        </button>
-      </form>
-    </div>
-  </nav>
-</th:block>
-
-<!-- debugging aid -->
-<div th:fragment="dump_vars" class="m-4">
-  <h4>Dump of all variables in Thymeleaf context</h4>
-  <hr/>
-  <table>
-    <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
-      <td th:text="${var}"></td>
-      <td th:text="${#vars.getVariable(var)}"></td>
-    </tr>
-    <tr>
-      <td>param</td>
-      <td th:text="${#vars.getVariable('param')}"></td>
-    </tr>
-    <tr>
-      <td>session</td>
-      <td th:text="${#vars.getVariable('session')}"></td>
-    </tr>
-    <tr>
-      <td>application</td>
-      <td th:text="${#vars.getVariable('application')}"></td>
-    </tr>
-  </table>
-</div>
-
-<th:block th:fragment="ordering_buttons(itemIter)">
-  <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left" title="Muuda järjestust">
-    <i class="fa fa-arrow-up" aria-hidden="true"></i>
-  </button>
-  <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right" title="Muuda järjestust">
-    <i class="fa fa-arrow-down" aria-hidden="true"></i>
-  </button>
-</th:block>
-
-<div id="editDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="opCode">
-          <div class="form-group row">
-            <div class="col-md-12">
-              <textarea class="form-control" rows="2" name="value"></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Salvesta</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="editLexemeLevelsDlg" class="modal" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title"></h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <!-- Bootstrap core JS -->
+  <th:block th:fragment="js">
+    <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
+  </th:block>
+  <!-- Bootstrap core CSS -->
+  <th:block th:fragment="css">
+    <link rel="stylesheet" th:href="@{/view/css/bootstrap.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/font-awesome.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/common-styles.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/ekilex-editor.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/eki-markup.css}" />
+  </th:block>
+  <th:block th:fragment="nav_bar">
+    <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
+      <a class="navbar-brand" th:href="@{/}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
+      <div class="navbar-nav" th:if="${activeItem}">
+        <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">
+          Leksikograafid
+          </span>
+        </a>
+        <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
+        <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#"
+           sec:authorize="${#authentication.principal.datasetPermissionsExist}"> Lisa uus keelend </a>
       </div>
-      <div class="modal-body">
-      <form th:action="@{/modify_levels}" method="post" class="form-inline">
-        <input type="hidden" name="id">
-        <input type="hidden" name="action">
-        <button type="submit" class="btn btn-primary mr-1" data-action="pop"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
-        <div class="col-1 mr-3 pl-2">
-          <button type="submit" class="btn btn-primary loat-left mb-5" data-action="up"><i class="fa fa-chevron-up" aria-hidden="true"></i></button>
-          <button type="submit" class="btn btn-primary float-left" data-action="down"><i class="fa fa-chevron-down" aria-hidden="true"></i></button>
-        </div>
-        <button type="submit" class="btn btn-primary" data-action="push"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-      </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- select fragments for classifier dialogs -->
-<div class="form-group row value-group" data-id="lexeme_frequency_group" th:fragment="lexeme_frequency_select">
-  <div class="col-md-2">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="freqGroup : ${lexemeFrequencyGroups}"
-              th:value="${freqGroup.code}"
-              th:text="${freqGroup.value}">freqGroup</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="lexeme_pos" th:fragment="lexeme_pos_select">
-  <div class="col-md-8">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="pos : ${allLexemePos}"
-              th:value="${pos.code}"
-              th:text="${pos.value}">pos</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="meaning_domain" th:fragment="meaning_domain_select">
-  <div class="col-md-12">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
-        <option th:each="domain : ${origin.getValue()}"
-                th:value="${domain.toIdString()}"
-                th:text="${domain.origin + ' - ' + domain.value}">domain</option>
-      </optgroup>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="lexeme_deriv" th:fragment="lexeme_deriv_select">
-  <div class="col-md-8">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="deriv : ${allLexemeDerivs}"
-              th:value="${deriv.code}"
-              th:text="${deriv.value}">deriv</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="lexeme_register" th:fragment="lexeme_register_select">
-  <div class="col-md-8">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="register : ${allLexemeRegisters}"
-              th:value="${register.code}"
-              th:text="${register.value}">register</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="lexeme_grammar" th:fragment="lexeme_grammar_input">
-  <div class="col-md-12">
-    <input type="text" class="form-control value-select">
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="word_gender" th:fragment="word_gender_select">
-  <div class="col-md-4">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="gender : ${wordGenders}"
-              th:value="${gender.code}"
-              th:text="${gender.value}">gender</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="word_type" th:fragment="word_type_select">
-  <div class="col-md-8">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="item : ${wordTypes}"
-              th:value="${item.code}"
-              th:text="${item.value}">value</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="word_aspect" th:fragment="word_aspect_select">
-  <div class="col-md-8">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="item : ${wordAspects}"
-              th:value="${item.code}"
-              th:text="${item.value}">value</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="lexeme_value_state" th:fragment="lexeme_value_state_select">
-  <div class="col-md-4">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="item : ${lexemeValueStates}"
-              th:value="${item.code}"
-              th:text="${item.value}">value</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="lexeme_process_state" th:fragment="lexeme_process_state_select">
-  <div class="col-md-6">
-    <select required class="form-control value-select">
-      <option value="" hidden disabled selected>vali väärtus...</option>
-      <option th:each="item : ${processStates}"
-              th:value="${item.code}"
-              th:text="${item.value}">value</option>
-    </select>
-  </div>
-</div>
-
-<div class="form-group row value-group" data-id="government" th:fragment="government_input">
-  <div class="col-md-12">
-    <input type="text" class="form-control value-select">
-  </div>
-</div>
-<!-- END select fragments -->
-
-<div id="wordClassifiersDlg" class="modal" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/add_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="id2">
-          <input type="hidden" name="id3">
-          <input type="hidden" name="value">
-          <div class="form-group row">
-            <div class="col-md-6">
-              <select class="form-control" name="opCode">
-                <option value="word_gender">Sugu</option>
-                <option value="word_type">Sõna tüüp</option>
-                <option value="word_aspect">Aspekt</option>
-              </select>
-            </div>
-          </div>
-          <div th:replace=":: word_gender_select"></div>
-          <div th:replace=":: word_type_select"></div>
-          <div th:replace=":: word_aspect_select"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="termMeaningClassifiersDlg" class="modal" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/add_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="id2">
-          <input type="hidden" name="id3">
-          <input type="hidden" name="value">
-          <input type="hidden" name="opCode" value="meaning_domain">
-          <div th:replace=":: meaning_domain_select"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="termLexemeClassifiersDlg" class="modal" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/add_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="id2">
-          <input type="hidden" name="id3">
-          <input type="hidden" name="value">
-          <div class="form-group row">
-            <div class="col-md-6">
-              <select class="form-control" name="opCode">
-                <option value="lexeme_process_state">Haldusolek</option>
-                <option value="lexeme_value_state">Väärtusolek</option>
-                <option value="word_gender">Sugu</option>
-                <option value="word_type">Sõna tüüp</option>
-                <option value="lexeme_frequency_group">Sagedusrühm</option>
-                <option value="lexeme_grammar">Grammatika</option>
-                <option value="lexeme_pos">Sõnaliik</option>
-                <option value="lexeme_deriv">Tuletuskood</option>
-                <option value="lexeme_register">Register</option>
-                <option disabled>-----------------</option>
-                <option value="#addNewSourceLink">Allikaviide</option>
-                <option value="#addNewUsage">Kasutusnäide</option>
-                <option value="#addNewLexemeRelation">Ilmiku seos</option>
-                <option value="#addNewPublicNote">Märkus</option>
-              </select>
-            </div>
-          </div>
-          <div th:replace=":: lexeme_process_state_select"></div>
-          <div th:replace=":: lexeme_value_state_select"></div>
-          <div th:replace=":: word_gender_select"></div>
-          <div th:replace=":: word_type_select"></div>
-          <div th:replace=":: lexeme_frequency_select"></div>
-          <div th:replace=":: lexeme_pos_select"></div>
-          <div th:replace=":: lexeme_deriv_select"></div>
-          <div th:replace=":: lexeme_register_select"></div>
-          <div th:replace=":: lexeme_grammar_input"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="lexemeFrequencyDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="lexeme_frequency_group">
-          <select class="form-control" name="value">
-            <option th:each="freqGroup : ${lexemeFrequencyGroups}"
-                    th:value="${freqGroup.code}"
-                    th:text="${freqGroup.value}">freqGroup</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="lexemePosDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="lexeme_pos">
-          <select class="form-control" name="value">
-            <option th:each="pos : ${allLexemePos}"
-                    th:value="${pos.code}"
-                    th:text="${pos.value}">lexeme pos</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="meaningDomainDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="meaning_domain">
-          <select class="form-control" name="value">
-            <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
-              <option th:each="domain : ${origin.getValue()}"
-                      th:value="${domain.toIdString()}"
-                      th:text="${domain.origin + ' - ' + domain.value}">domain</option>
-            </optgroup>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="lexemeDerivDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="lexeme_deriv">
-          <select class="form-control" name="value">
-            <option th:each="item : ${allLexemeDerivs}"
-                    th:value="${item.code}"
-                    th:text="${item.value}">value</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="lexemeRegisterDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="lexeme_register">
-          <select class="form-control" name="value">
-            <option th:each="item : ${allLexemeRegisters}"
-                    th:value="${item.code}"
-                    th:text="${item.value}">value</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="wordGenderDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="word_gender">
-          <select class="form-control" name="value">
-            <option th:each="item : ${wordGenders}"
-                    th:value="${item.code}"
-                    th:text="${item.value}">value</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="wordTypeDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="word_type">
-          <select class="form-control" name="value">
-            <option th:each="item : ${wordTypes}"
-                    th:value="${item.code}"
-                    th:text="${item.value}">value</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="wordAspectDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="word_aspect">
-          <select class="form-control" name="value">
-            <option th:each="item : ${wordAspects}"
-                    th:value="${item.code}"
-                    th:text="${item.value}">value</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="lexemeValueStateCodeDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="lexeme_value_state">
-          <select class="form-control" name="value">
-            <option th:each="item : ${lexemeValueStates}"
-                    th:value="${item.code}"
-                    th:text="${item.value}">value</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="lexemeProcessStateCodeDlg" class="modal select-dlg" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/modify_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="lexeme_process_state">
-          <select class="form-control" name="value">
-            <option th:each="item : ${processStates}"
-                    th:value="${item.code}"
-                    th:text="${item.value}">value</option>
-          </select>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="addNewGovernmentDlg" class="modal" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/add_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="opCode" value="government">
-          <div class="form-group row">
-            <div class="col-md-12">
-              <textarea class="form-control" rows="1" name="value"></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form id="addWordForm" th:action="@{/add_word}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="returnPage" th:value="${returnPage}">
-          <input type="hidden" name="meaningId">
-          <div class="form-group row">
-            <div class="col-md-12">
-              <input class="form-control" name="value" placeholder="uus keelend">
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-12">
-              <select required class="form-control common-word-dataset-select" name="dataset">
-                <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedDataset)}">vali sõnastik...</option>
-                <option th:each="dataset : ${userPermDatasets}"
-                        th:value="${dataset.code}"
-                        th:selected="${dataset.code == sessionBean.newWordSelectedDataset}"
-                        th:text="${dataset.name}">name</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-8">
-              <th:block th:fragment="word_perm_lang_select">
-                <select required id="wordPermLanguageSelect" class="form-control" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
-                  <option th:each="language : ${userPermLanguages}"
-                          th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
-                          th:text="${language.value}">language</option>
-                </select>
-              </th:block>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-8">
-              <select required class="form-control" name="morphCode">
-                <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
-                <option th:each="morphCode : ${wordMorphCodes}"
-                        th:value="${morphCode.code}"
-                        th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
-                        th:text="${morphCode.value}">morphCode</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button id="addWordSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="addNewSourceLinkDlg" class="modal" role="dialog">
-  <div class="modal-dialog" role="document" style="max-width: 1000px;">
-    <div class="modal-content">
-      <div class="modal-body">
-        <form th:action="@{/sourcesearchajax}">
-          <div class="form-row">
-            <div class="col-12">
-              <div class="form-group row">
-                <label class="col-auto col-form-label">Otsing</label>
-                <div class="col-5">
-                  <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                </div>
-                <div class="col-2">
-                  <button type="submit" class="btn btn-primary">Otsi</button>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="navbar-nav ml-auto">
+        <form th:action="@{/dologout}" method="post" sec:authorize="isAuthenticated()">
+          <button type="submit" class="btn btn-info">
+            <span th:text="${#authentication.name}">Kusti Tähetark</span>
+          </button>
         </form>
       </div>
-      <form th:action="@{/add_item}" method="post">
-        <input type="hidden" name="id">
-        <input type="hidden" name="opCode">
-        <input type="hidden" name="id2">
-        <input type="hidden" name="value">
-        <div class="modal-body" data-name="sourceLinkDlgContent"></div>
-      </form>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="sourceLinkDlgContent">
-  <div th:text="#{source.serach.not.found}" th:if="${#lists.isEmpty(sources)}">Nothing found</div>
-  <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden;" th:if="${not #lists.isEmpty(sources)}">
-    <table class="w-100 border mb-2" th:each="source,sourceIter : ${sources}">
+    </nav>
+  </th:block>
+  <!-- debugging aid -->
+  <div th:fragment="dump_vars" class="m-4">
+    <h4>Dump of all variables in Thymeleaf context</h4>
+    <hr />
+    <table>
+      <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
+        <td th:text="${var}"></td>
+        <td th:text="${#vars.getVariable(var)}"></td>
+      </tr>
       <tr>
-        <td style="width: 50px; text-align: center; vertical-align: top; background-color: #fafafa">
-          <b>
-            <span th:text="${sourceIter.count + '.'}"></span>
-          </b>
-        </td>
-        <td>
-          <table class="w-100">
-            <tr>
-              <td style="width: 30%">
-                <table class="w-100">
-                  <tr>
-                    <th>source id</th>
-                    <td th:text="${source.sourceId}"></td>
-                  </tr>
-                  <tr>
-                    <th>external source id</th>
-                    <td th:text="${source.extSourceId}"></td>
-                  </tr>
-                  <tr>
-                    <th>created on</th>
-                    <td th:text="${#dates.format(source.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
-                  </tr>
-                  <tr>
-                    <th>created by</th>
-                    <td th:text="${source.createdBy}"></td>
-                  </tr>
-                  <tr>
-                    <th>modified on</th>
-                    <td th:text="${#dates.format(source.modifiedOn, 'dd.MM.yyyy HH:mm')}"></td>
-                  </tr>
-                  <tr>
-                    <th>modified by</th>
-                    <td th:text="${source.modifiedBy}"></td>
-                  </tr>
-                  <tr>
-                    <th>process state</th>
-                    <td th:text="${source.processStateCode}"></td>
-                  </tr>
-                  <tr>
-                    <th>type</th>
-                    <td th:text="${source.type}"></td>
-                  </tr>
-                </table>
-              </td>
-              <td>
-                <th:block th:each="sourceProperty : ${source.sourceProperties}">
-                  <p>
-                    <span th:text="${sourceProperty.type}"></span>
-                    -
-                    <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                    <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
-                  </p>
-                </th:block>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <div class="form-row">
-                  <div class="col-12">
-                    <div class="form-group row">
-                      <label class="col-auto col-form-label">Siseviide</label>
-                      <div class="col-8">
-                        <input type="text" class="form-control">
-                      </div>
-                      <div class="col-2">
-                        <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </td>
+        <td>param</td>
+        <td th:text="${#vars.getVariable('param')}"></td>
+      </tr>
+      <tr>
+        <td>session</td>
+        <td th:text="${#vars.getVariable('session')}"></td>
+      </tr>
+      <tr>
+        <td>application</td>
+        <td th:text="${#vars.getVariable('application')}"></td>
       </tr>
     </table>
   </div>
-</div>
-
-<div id="detailsDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
+  <th:block th:fragment="ordering_buttons(itemIter)">
+    <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left" title="Muuda järjestust">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </button>
+    <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right" title="Muuda järjestust">
+      <i class="fa fa-arrow-down" aria-hidden="true"></i>
+    </button>
+  </th:block>
+  <div id="editDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id">
+            <input type="hidden" name="opCode">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="2" name="value"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-</div>
-
-<div id="sourceDetailsDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
+  <!-- TODO continue here >>> -->
+  <div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="addWordForm" th:action="@{/add_word}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="returnPage" th:value="${returnPage}">
+            <input type="hidden" name="meaningId">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input class="form-control" name="value" placeholder="uus keelend">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <select required class="form-control common-word-dataset-select" name="dataset">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedDataset)}">vali sõnastik...</option>
+                  <option th:each="dataset : ${userPermDatasets}" th:value="${dataset.code}"
+                          th:selected="${dataset.code == sessionBean.newWordSelectedDataset}" th:text="${dataset.name}">name</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-8">
+                <th:block th:fragment="word_perm_lang_select">
+                  <select required id="wordPermLanguageSelect" class="form-control" name="language">
+                    <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
+                    <option th:each="language : ${userPermLanguages}" th:value="${language.code}"
+                            th:selected="${language.code == sessionBean.newWordSelectedLanguage}" th:text="${language.value}">language</option>
+                  </select>
+                </th:block>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control" name="morphCode">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
+                  <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}"
+                          th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}" th:text="${morphCode.value}">morphCode</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="addWordSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-</div>
-
-<div id="alertDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-warning" role="alert">
-          <span name="alert_message"></span>
+  <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="source_link_dlg">
+    <div th:text="#{source.serach.not.found}" th:if="${#lists.isEmpty(sources)}">Nothing found</div>
+    <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden;" th:if="${not #lists.isEmpty(sources)}">
+      <table class="w-100 border mb-2" th:each="source,sourceIter : ${sources}">
+        <tr>
+          <td style="width: 50px; text-align: center; vertical-align: top; background-color: #fafafa">
+            <b> <span th:text="${sourceIter.count + '.'}"></span>
+            </b>
+          </td>
+          <td>
+            <table class="w-100">
+              <tr>
+                <td style="width: 30%">
+                  <table class="w-100">
+                    <tr>
+                      <th>source id</th>
+                      <td th:text="${source.sourceId}"></td>
+                    </tr>
+                    <tr>
+                      <th>external source id</th>
+                      <td th:text="${source.extSourceId}"></td>
+                    </tr>
+                    <tr>
+                      <th>created on</th>
+                      <td th:text="${#dates.format(source.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
+                    </tr>
+                    <tr>
+                      <th>created by</th>
+                      <td th:text="${source.createdBy}"></td>
+                    </tr>
+                    <tr>
+                      <th>modified on</th>
+                      <td th:text="${#dates.format(source.modifiedOn, 'dd.MM.yyyy HH:mm')}"></td>
+                    </tr>
+                    <tr>
+                      <th>modified by</th>
+                      <td th:text="${source.modifiedBy}"></td>
+                    </tr>
+                    <tr>
+                      <th>process state</th>
+                      <td th:text="${source.processStateCode}"></td>
+                    </tr>
+                    <tr>
+                      <th>type</th>
+                      <td th:text="${source.type}"></td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <th:block th:each="sourceProperty : ${source.sourceProperties}">
+                    <p>
+                      <span th:text="${sourceProperty.type}"></span>
+                      -
+                      <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"
+                            th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+                      <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}"
+                            th:if="${sourceProperty.valueDate != null}"></span>
+                    </p>
+                  </th:block>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <div class="form-row">
+                    <div class="col-12">
+                      <div class="form-group row">
+                        <label class="col-auto col-form-label">Siseviide</label>
+                        <div class="col-8">
+                          <input type="text" class="form-control">
+                        </div>
+                        <div class="col-2">
+                          <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div id="sourceDetailsDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        <div class="alert alert-success" role="alert">
-          <span name="alert_message"></span>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
+        <div class="modal-body"></div>
       </div>
     </div>
   </div>
-</div>
-
-<div id="confirmDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-primary" role="alert">
-          <span name="confirm_question"></span>
+  <div id="alertDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok">Jah</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel">Ei</button>
+        <div class="modal-body">
+          <div class="alert alert-warning" role="alert">
+            <span name="alert_message"></span>
+          </div>
+          <div class="alert alert-success" role="alert">
+            <span name="alert_message"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
+  <div id="confirmDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-primary" role="alert">
+            <span name="confirm_question"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok">Jah</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel">Ei</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

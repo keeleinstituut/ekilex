@@ -246,7 +246,14 @@
             <input type="hidden" name="id2" th:value="${meaningId}">
             <input type="hidden" name="value">
             <input type="hidden" name="opCode" value="meaning_domain">
-            <div th:replace="common :: meaning_domain_select"></div>
+            <div class="col-md-12">
+              <select required class="form-control value-select">
+                <option value="" hidden disabled selected>vali väärtus...</option>
+                <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+                  <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+                </optgroup>
+              </select>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -352,7 +359,7 @@
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
-            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -370,7 +377,7 @@
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.value}">
-            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -429,7 +436,7 @@
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="public_note">
             <input type="hidden" name="value">
-            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -447,7 +454,7 @@
             <input type="hidden" name="id" th:value="${publicNote.id}">
             <input type="hidden" name="opCode" value="public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
-            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -499,7 +506,7 @@
             <input type="hidden" name="language" value="est">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value">
-            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control term-def-dataset-select" name="dataset">
@@ -541,7 +548,7 @@
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.value}">
-            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -593,7 +600,7 @@
             <input type="hidden" name="language" value="est"><!-- FIXME what lang? -->
             <input type="hidden" name="opCode" value="learner_comment">
             <input type="hidden" name="value">
-            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -611,7 +618,7 @@
             <input type="hidden" name="id" th:value="${learnerComment.id}">
             <input type="hidden" name="opCode" value="learner_comment">
             <input type="hidden" name="value" th:value="${learnerComment.valuePrese}">
-            <div th:replace="ekilex_editor :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>

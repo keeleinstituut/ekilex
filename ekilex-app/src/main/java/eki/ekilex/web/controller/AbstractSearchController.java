@@ -111,13 +111,18 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return commonDataService.getProcessStates();
 	}
 
-	protected void initSearchForms(Model model) {
-
+	protected SessionBean getSessionBean(Model model) {
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
 		if (sessionBean == null) {
 			sessionBean = new SessionBean();
 			model.addAttribute(SESSION_BEAN, sessionBean);
 		}
+		return sessionBean;
+	}
+
+	protected void initSearchForms(Model model) {
+
+		SessionBean sessionBean = getSessionBean(model);
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			List<String> allDatasetCodes = commonDataService.getDatasetCodes();

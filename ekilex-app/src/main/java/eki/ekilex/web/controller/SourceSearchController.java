@@ -56,7 +56,7 @@ public class SourceSearchController {
 		model.addAttribute("sources", sources);
 		model.addAttribute("sourceCount", sources.size());
 
-		return "common :: sourceLinkDlgContent";
+		return "common :: source_link_dlg";
 	}
 
 }

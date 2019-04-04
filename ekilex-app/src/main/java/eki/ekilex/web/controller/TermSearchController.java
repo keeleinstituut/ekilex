@@ -59,8 +59,9 @@ public class TermSearchController extends AbstractSearchController {
 			@RequestParam(name = "resultLang", required = false) String resultLang,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
+
+		SessionBean sessionBean = getSessionBean(model);
 
 		formDataCleanup(selectedDatasets, simpleSearchFilter, detailSearchFilter, resultLang, sessionBean, model);
 
@@ -74,7 +75,10 @@ public class TermSearchController extends AbstractSearchController {
 	}
 
 	@GetMapping(value = TERM_SEARCH_URI + "/**")
-	public String termSearch(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model, HttpServletRequest request) throws Exception {
+	public String termSearch(Model model, HttpServletRequest request) throws Exception {
+
+		// if redirect from login arrives
+		initSearchForms(model);
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), TERM_SEARCH_URI);
 		logger.debug(searchUri);
@@ -88,6 +92,7 @@ public class TermSearchController extends AbstractSearchController {
 			return TERM_SEARCH_PAGE;
 		}
 
+		SessionBean sessionBean = getSessionBean(model);
 		String resultLang = sessionBean.getResultLang();
 		String searchMode = searchUriData.getSearchMode();
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();

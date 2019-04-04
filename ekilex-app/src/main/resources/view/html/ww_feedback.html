@@ -37,8 +37,8 @@
               <td th:text="${fbItem.word}"></td>
               <td>
                 <div class="row ml-1" th:if="${fbItem.definition != null}">
-                    <span class="lbl pr-2">Tähendus</span>
-                    <span th:text="${fbItem.definition}"></span>
+                  <span class="lbl pr-2">Tähendus</span>
+                  <span th:text="${fbItem.definition}"></span>
                 </div>
                 <div class="row ml-1" th:if="${fbItem.usages != null}">
                   <span class="lbl pr-2">Kasutusnäited</span>
@@ -55,11 +55,8 @@
               </td>
               <td th:text="${fbItem.lastSearch}"></td>
               <td style="max-width: 40vw;">
-                <button type="button" class="btn badge badge-success" title="Lisa uus"
-                        onclick="openEkiEditorAddDlg(this, () => loadEkiComments(this))"
-                        th:data-id="${fbItem.id}"
-                        data-toggle="modal"
-                        data-target="#addFeedbackCommentDlg">
+                <button type="button" class="btn badge badge-success" title="Lisa uus" onclick="openEkiEditorAddDlg(this, () => loadEkiComments(this))" th:data-id="${fbItem.id}" data-toggle="modal"
+                  data-target="#addFeedbackCommentDlg">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
                 <table th:fragment="eki_comments">
@@ -71,12 +68,8 @@
                 </table>
               </td>
               <td>
-                <button type="button" class="btn badge badge-warning"
-                        th:data-id="${fbItem.id}"
-                        th:data-op-code="feedback"
-                        data-callback="removeClosestRow"
-                        data-toggle="delete-confirmation"
-                        data-placement="left">
+                <button type="button" class="btn badge badge-warning" th:data-id="${fbItem.id}" th:data-op-code="feedback" data-callback="removeClosestRow" data-toggle="delete-confirmation"
+                  data-placement="left">
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
               </td>
@@ -86,28 +79,76 @@
       </div>
     </div>
   </div>
-
+  <div id="addFeedbackCommentDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id">
+            <input type="hidden" name="language" value="est">
+            <input type="hidden" name="opCode" th:value="feedback_comment">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem(false)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:replace="common :: #alertDlg"></div>
-  <div th:replace="ekilex_editor :: #addFeedbackCommentDlg"></div>
-
   <script th:inline="javascript">
-      $('[data-toggle=delete-confirmation]').confirmation(
-          {
-              btnOkLabel: 'Jah',
-              btnCancelLabel: 'Ei',
-              title: 'Kas olete kindel, et soovite eemaldada ?',
-              onConfirm: performDelete
-          }
-      );
+	$('[data-toggle=delete-confirmation]').confirmation({
+		btnOkLabel: 'Jah',
+		btnCancelLabel: 'Ei',
+		title: 'Kas olete kindel, et soovite eemaldada ?',
+		onConfirm: performDelete
+	});
 
-      function loadEkiComments(elem) {
-          let feedbackId = $(elem).data('id');
-          let tableElement = $(elem).closest('td').find('table');
-          let url = applicationUrl + 'ww_feedback/comments/' + feedbackId;
-          $.get(url).done(function(data) {
-              tableElement.replaceWith(data);
-          });
-      }
+	function performDelete() {
+		let targetName = $(this)[0].getAttribute('data-target-elem');
+		let targetElement = targetName === null ? $(this) : $('[name="' + targetName + '"]');
+		let currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
+		let removeUrl = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
+		let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id');
+		let callbackFunc = () => $('#refresh-details').trigger('click');
+		let callbackName = targetElement.data('callback');
+		if (callbackName !== undefined) {
+			callbackFunc = () => eval(callbackName)($(this))
+		}
+		$.post(validateUrl).done(function(data) {
+			let response = JSON.parse(data);
+			if (response.status === 'ok') {
+				doPostDelete(removeUrl, callbackFunc);
+			} else if (response.status === 'confirm') {
+				openConfirmDlg(response.question, function() {
+					doPostDelete(removeUrl, callbackFunc)
+				});
+			} else if (response.status === 'invalid') {
+				openAlertDlg(response.message);
+			} else {
+				openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+			}
+		}).fail(function(data) {
+			openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+			console.log(data);
+		});
+	}
+
+	function removeClosestRow(elem) {
+		elem.closest('tr').remove();
+	}
+
+	function loadEkiComments(elem) {
+		let feedbackId = $(elem).data('id');
+		let tableElement = $(elem).closest('td').find('table');
+		let url = applicationUrl + 'ww_feedback/comments/' + feedbackId;
+		$.get(url).done(function(data) {
+			tableElement.replaceWith(data);
+		});
+	}
   </script>
 </body>
 </html>

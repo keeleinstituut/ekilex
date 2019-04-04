@@ -80,28 +80,6 @@ function initialise() {
     initNewWordDlg();
 }
 
-function openLexemeLevelDlg(elem) {
-    let targetElement = $(elem);
-    let editDlg = $('#editLexemeLevelsDlg');
-    editDlg.find('[name="id"]').val(targetElement.data('id'));
-
-    editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-        e.preventDefault();
-        let editForm = editDlg.find('form');
-        editDlg.find('[name="action"]').val($(this).data('action'));
-        let url = editForm.attr('action') + '?' + editForm.serialize();
-        $.post(url).done(function(data) {
-            let id = $('#details_div').data('id');
-            let detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
-            detailsButton.trigger('click');
-            editDlg.find('button.close').trigger('click');
-        }).fail(function(data) {
-            alert("Andmete muutmine ebaõnnestus.");
-            console.log(data);
-        });
-    });
-}
-
 function initLexemeLevelsDlg(editDlg) {
     editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         e.preventDefault();
@@ -120,32 +98,12 @@ function initLexemeLevelsDlg(editDlg) {
     });
 }
 
-function openAddNewWordRelationDlg(elem) {
-    let addDlg = $($(elem).data('target'));
-    addDlg.find('[name=id]').val($(elem).data('id'));
-    addDlg.find('.form-control').val(null);
-    addDlg.find('[data-name=dialogContent]').html(null);
-    let selectElem = addDlg.find('select');
-    selectElem.val(selectElem.find('option').first().val());
-    initRelationDialogLogic(addDlg, 'word-id');
-}
-
 function initAddWordRelationDlg(addDlg) {
     addDlg.find('.form-control').val(null);
     addDlg.find('[data-name=dialogContent]').html(null);
     let selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'word-id');
-}
-
-function openUsageAuthorDlg(elem) {
-    let addDlg = $($(elem).data('target'));
-    addDlg.find('[name=id]').val($(elem).data('id'));
-    addDlg.find('.form-control').val(null);
-    addDlg.find('[data-name=dialogContent]').html(null);
-    let selectElem = addDlg.find('select');
-    selectElem.val(selectElem.find('option').first().val());
-    initRelationDialogLogic(addDlg, 'source-id');
 }
 
 function initUsageAuthorDlg(addDlg) {
