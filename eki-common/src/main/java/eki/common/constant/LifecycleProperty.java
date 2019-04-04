@@ -8,6 +8,7 @@ public enum LifecycleProperty {
 	POS,
 	DERIV,
 	REGISTER,
+	REGION,
 	GENDER,
 	DOMAIN,
 	ORDER_BY,
