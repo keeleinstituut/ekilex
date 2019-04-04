@@ -89,28 +89,7 @@ function initialise() {
 		detailsButtons.trigger('click');
 	}
 
-    var editDlg = $('#editDlg');
-	editDlg.find('[name=value]').attr("rows", 4);
-    editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        alignAndFocus(e, editDlg)
-    });
-
-    $('#ekiEditorDlg').find('[name=editFld]').removeClass('edit-area-sm').addClass('edit-area-lg');
-    $('#addNewDefinitionDlg').find('[name=editFld]').removeClass('edit-area-sm').addClass('edit-area-lg');
-    $('#addNewUsageDlg').find('[name=editFld]').removeClass('edit-area-sm').addClass('edit-area-lg');
-    $('#addNewGovernmentUsageDlg').find('[name=value]').attr("rows", 4);
     initNewWordDlg();
-    initSelectDlg($('#meaningDomainDlg'));
-    initMultiValueAddDlg($('#termMeaningClassifiersDlg'));
-    initMultiValueAddDlg($('#termLexemeClassifiersDlg'));
-	initSelectDlg($('#lexemeFrequencyDlg'));
-	initSelectDlg($('#lexemePosDlg'));
-	initSelectDlg($('#lexemeDerivDlg'));
-	initSelectDlg($('#lexemeRegisterDlg'));
-	initSelectDlg($('#wordGenderDlg'));
-	initSelectDlg($('#wordTypeDlg'));
-	initSelectDlg($('#lexemeValueStateCodeDlg'));
-	initSelectDlg($('#lexemeProcessStateCodeDlg'));
 }
 
 function updateTermUserLangWrapup(clickable) {

@@ -433,11 +433,13 @@ function submitForm(theForm, failMessage, callback = $.noop) {
 
 function alignAndFocus(e, dlg) {
     dlg.find('.form-control').first().focus();
-    let dlgTop =  $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
-    if (dlgTop < 0 ) {
-        dlgTop = 0;
+    if (e.relatedTarget) {
+        let dlgTop =  $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
+        if (dlgTop < 0 ) {
+            dlgTop = 0;
+        }
+        dlg.find('.modal-content').css('top', dlgTop);
     }
-    dlg.find('.modal-content').css('top', dlgTop);
 }
 
 function toggleValueGroup(dlg, groupName) {
