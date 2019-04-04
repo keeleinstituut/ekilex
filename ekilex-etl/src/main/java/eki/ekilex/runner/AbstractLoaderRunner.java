@@ -1138,6 +1138,18 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 	}
 
+	protected void createLexemeRegion(Long lexemeId, String regionCode) throws Exception {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("lexeme_id", lexemeId);
+		params.put("region_code", regionCode);
+		Long lexemeRegionId = basicDbService.createIfNotExists(LEXEME_REGION, params);
+
+		if (lexemeRegionId != null) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode);
+		}
+	}
+
 	protected Long createSource(Source source) throws Exception {
 
 		String concept = source.getExtSourceId();

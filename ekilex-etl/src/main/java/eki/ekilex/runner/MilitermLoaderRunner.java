@@ -65,7 +65,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 	}
 
 	@Override
-	public void initialise() throws Exception {
+	public void initialise() {
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
 	}
 
@@ -213,7 +213,15 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				List<Node> regionValueNodes = termGroupNode.selectNodes(regionExp);
 				for (Node regionValueNode : regionValueNodes) {
 					String regionValue = ((Element) regionValueNode).getTextTrim();
-					// TODO word.region - uus klassifikaator ilmiku juurde
+					boolean valuesSeparated = StringUtils.countMatches(regionValue, listingsDelimiter) > 0;
+					if (valuesSeparated) {
+						String[] separateRegionValues = StringUtils.split(regionValue, listingsDelimiter);
+						for (String region : separateRegionValues) {
+							saveLexemeRegion(lexemeId, region);
+						}
+					} else {
+						saveLexemeRegion(lexemeId, regionValue);
+					}
 				}
 
 				List<Node> usageValueNodes = termGroupNode.selectNodes(usageExp);
@@ -263,14 +271,14 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 	private void saveListValueFreeforms(String lang, List<String> listValues, Long lexemeId) throws Exception {
 
 		for (String listValue : listValues) {
-			int domainDelimCount = StringUtils.countMatches(listValue, listingsDelimiter);
-			if (domainDelimCount == 0) {
-				createLexemeFreeform(lexemeId, FreeformType.BOOKMARK, listValue, lang);
-			} else {
+			boolean valuesSeparated = StringUtils.countMatches(listValue, listingsDelimiter) > 0;
+			if (valuesSeparated) {
 				String[] separateDomainCodes = StringUtils.split(listValue, listingsDelimiter);
 				for (String separateDomainCode : separateDomainCodes) {
 					createLexemeFreeform(lexemeId, FreeformType.BOOKMARK, separateDomainCode, lang);
 				}
+			} else {
+				createLexemeFreeform(lexemeId, FreeformType.BOOKMARK, listValue, lang);
 			}
 		}
 	}
@@ -289,8 +297,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				if (contentNode instanceof DefaultText) {
 					textContentNode = (DefaultText) contentNode;
 					valueStr = textContentNode.getText();
-					boolean separated = StringUtils.countMatches(valueStr, meaningDelimiter) > 0;
-					if (separated) {
+					boolean valuesSeparated = StringUtils.countMatches(valueStr, meaningDelimiter) > 0;
+					if (valuesSeparated) {
 						String[] separateDomainCodes = valueStr.split(meaningDelimiter + "\\s*");
 						for (String separateDomainCode : separateDomainCodes) {
 							handleDomain(meaningId, separateDomainCode, domainCodes);
@@ -369,7 +377,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = ((Element) publicNoteValueNode).getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
 			if (((Element) publicNoteValueNode).hasMixedContent()) {
-				valueStr = handleFreeformRefLinks(publicNoteValueNode, freeformId); // TODO handleFreeformRefLinks on aegunud
+				valueStr = handleFreeformRefLinks(publicNoteValueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -379,7 +387,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleFreeformRefLinks(valueNode, freeformId); // TODO handleFreeformRefLinks on aegunud
+				valueStr = handleFreeformRefLinks(valueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -404,8 +412,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			if (contentNode instanceof DefaultText) {
 				textContentNode = (DefaultText) contentNode;
 				valueStr = textContentNode.getText();
-				boolean separated = StringUtils.countMatches(valueStr, meaningDelimiter) > 0;
-				if (separated) {
+				boolean valuesSeparated = StringUtils.countMatches(valueStr, meaningDelimiter) > 0;
+				if (valuesSeparated) {
 					String[] separateTerms = valueStr.split(meaningDelimiter + "\\s*");
 					for (String term : separateTerms) {
 						termsAndLangMap.putIfAbsent(term, null);
@@ -419,8 +427,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				termsAndLangMap.putIfAbsent(valueStr, null);
 				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
 					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
-					boolean separated = StringUtils.countMatches(tlinkAttrValue, tlinkDelimiter) > 0;
-					if (separated) {
+					boolean valuesSeparated = StringUtils.countMatches(tlinkAttrValue, tlinkDelimiter) > 0;
+					if (valuesSeparated) {
 						String[] separatedTlinkValues = StringUtils.split(tlinkAttrValue, tlinkDelimiter);
 						String lang = separatedTlinkValues[0];
 						if (isLang(lang)) {
@@ -578,5 +586,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		} else if (SourceOwner.USAGE.equals(sourceOwner) || SourceOwner.PUBLIC_NOTE.equals(sourceOwner)) {
 			createFreeformSourceLink(ownerId, refType, sourceId, minorRef, majorRef);
 		}
+	}
+
+	private void saveLexemeRegion(Long lexemeId, String regionCode) throws Exception {
+
+		createLexemeRegion(lexemeId, regionCode);
 	}
 }

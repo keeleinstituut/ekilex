@@ -165,6 +165,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 	}
 
 	//TODO should be replaced by separate ref links handling later
+	@Deprecated
 	String handleFreeformRefLinks(Node mixedContentNode, Long ownerId) throws Exception {
 
 		Iterator<Node> contentNodeIter = ((Element) mixedContentNode).nodeIterator();
