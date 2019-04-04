@@ -254,6 +254,11 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_POS_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_pos_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.lexeme_region_id_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_REGION_ID_SEQ = new SequenceImpl<Long>("lexeme_region_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.lexeme_register_id_seq</code>
      */
     public static final Sequence<Long> LEXEME_REGISTER_ID_SEQ = new SequenceImpl<Long>("lexeme_register_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -347,6 +352,11 @@ public class Sequences {
      * The sequence <code>public.process_state_order_by_seq</code>
      */
     public static final Sequence<Long> PROCESS_STATE_ORDER_BY_SEQ = new SequenceImpl<Long>("process_state_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.region_order_by_seq</code>
+     */
+    public static final Sequence<Long> REGION_ORDER_BY_SEQ = new SequenceImpl<Long>("region_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.register_order_by_seq</code>

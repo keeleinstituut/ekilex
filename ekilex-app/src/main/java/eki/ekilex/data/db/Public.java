@@ -52,6 +52,7 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LifecycleLog;
@@ -71,6 +72,7 @@ import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.ProcessState;
+import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
@@ -142,7 +144,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1991111383;
+    private static final long serialVersionUID = 1589864743;
 
     /**
      * The reference instance of <code>public</code>
@@ -390,6 +392,11 @@ public class Public extends SchemaImpl {
     public final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
 
     /**
+     * The table <code>public.lexeme_region</code>.
+     */
+    public final LexemeRegion LEXEME_REGION = eki.ekilex.data.db.tables.LexemeRegion.LEXEME_REGION;
+
+    /**
      * The table <code>public.lexeme_register</code>.
      */
     public final LexemeRegister LEXEME_REGISTER = eki.ekilex.data.db.tables.LexemeRegister.LEXEME_REGISTER;
@@ -483,6 +490,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.process_state</code>.
      */
     public final ProcessState PROCESS_STATE = eki.ekilex.data.db.tables.ProcessState.PROCESS_STATE;
+
+    /**
+     * The table <code>public.region</code>.
+     */
+    public final Region REGION = eki.ekilex.data.db.tables.Region.REGION;
 
     /**
      * The table <code>public.register</code>.
@@ -730,6 +742,7 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_ORDER_BY_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
             Sequences.LEXEME_POS_ORDER_BY_SEQ,
+            Sequences.LEXEME_REGION_ID_SEQ,
             Sequences.LEXEME_REGISTER_ID_SEQ,
             Sequences.LEXEME_REGISTER_ORDER_BY_SEQ,
             Sequences.LEXEME_SOURCE_LINK_ID_SEQ,
@@ -749,6 +762,7 @@ public class Public extends SchemaImpl {
             Sequences.POS_GROUP_ORDER_BY_SEQ,
             Sequences.POS_ORDER_BY_SEQ,
             Sequences.PROCESS_STATE_ORDER_BY_SEQ,
+            Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
@@ -829,6 +843,7 @@ public class Public extends SchemaImpl {
             LexemeFrequency.LEXEME_FREQUENCY,
             LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG,
             LexemePos.LEXEME_POS,
+            LexemeRegion.LEXEME_REGION,
             LexemeRegister.LEXEME_REGISTER,
             LexemeSourceLink.LEXEME_SOURCE_LINK,
             LifecycleLog.LIFECYCLE_LOG,
@@ -848,6 +863,7 @@ public class Public extends SchemaImpl {
             PosGroupLabel.POS_GROUP_LABEL,
             PosLabel.POS_LABEL,
             ProcessState.PROCESS_STATE,
+            Region.REGION,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
             Source.SOURCE,

@@ -39,6 +39,7 @@ import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.RelationPart;
 import eki.ekilex.data.transform.Source;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
@@ -1208,6 +1209,29 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Map<String, Object> sourceRecord = sources.get(0);
 		Long sourceId = (Long) sourceRecord.get("id");
 		return sourceId;
+	}
+
+	protected List<RelationPart> getMeaningRelationParts(String word) {
+
+		List<RelationPart> relationParts = new ArrayList<>();
+		String dataset = getDataset();
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("dataset", dataset);
+		tableRowParamMap.put("word", word);
+		List<Map<String, Object>> queryResults = basicDbService.queryList(sqls.getSqlSelectMeaningIdsAndWordLangs(), tableRowParamMap);
+
+		if (CollectionUtils.isNotEmpty(queryResults)) {
+			for (Map<String, Object> queryResult : queryResults) {
+				Long meaningId = (Long) queryResult.get("id");
+				String lang = (String) queryResult.get("lang");
+
+				RelationPart relationPart = new RelationPart();
+				relationPart.setMeaningId(meaningId);
+				relationPart.setLang(lang);
+				relationParts.add(relationPart);
+			}
+		}
+		return relationParts;
 	}
 
 	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity,

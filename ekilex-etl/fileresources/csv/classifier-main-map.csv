@@ -375,6 +375,12 @@ gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-
 gkn_tyyp	gkn_tyyp	pl	mitmus	et	-	-
 gkn_tyyp	gkn_tyyp	lv	lisavorm	et	-	-
 gkn_tyyp	gkn_tyyp	ev	erandvorm	et	-	-
+kasutus	kasutus	CA	CA	en	region	CA
+kasutus	kasutus	EU	EU	en	region	EU
+kasutus	kasutus	NATO	NATO	en	region	NATO
+kasutus	kasutus	UK	UK	en	region	UK
+kasutus	kasutus	UN	UN	en	region	UN
+kasutus	kasutus	US	US	en	region	US
 keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	value_state	eelistermin
 keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	value_state	rööptermin
 keelenditüüp	keelenditüüp	variant	variant	et	value_state	variant

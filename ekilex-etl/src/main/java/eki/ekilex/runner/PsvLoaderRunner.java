@@ -75,7 +75,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String LEXEME_RELATION_MEANING_REFERENCE = "tvt";
 	private final static String LEXEME_RELATION_COMPOUND_WORD = "comp";
 
-	private final static String MEANING_RELATION_ANTONYM = "ant";
+	private final static String MEANING_RELATION_ANTONYM = "antonüüm";
 
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 

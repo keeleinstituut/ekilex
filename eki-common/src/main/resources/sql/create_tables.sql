@@ -366,6 +366,13 @@ create table definition_type_label
   unique(code, lang, type)
 );
 
+create table region
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null,
+  order_by bigserial
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -772,6 +779,16 @@ create table lexeme_deriv
 );
 alter sequence lexeme_deriv_id_seq restart with 10000;
 
+create table lexeme_region
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  region_code varchar(100) references region(code) not null,
+  process_state_code varchar(100) references process_state(code) null,
+  unique(lexeme_id, region_code)
+);
+alter sequence lexeme_region_id_seq restart with 10000;
+
 -- ilmiku vabavorm
 create table lexeme_freeform
 (
@@ -999,6 +1016,7 @@ create index lexeme_register_lexeme_id_idx on lexeme_register(lexeme_id);
 create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
 create index lexeme_pos_pos_code_idx on lexeme_pos(pos_code);
 create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
+create index lexeme_region_lexeme_id_idx on lexeme_region(lexeme_id);
 create index meaning_domain_lexeme_id_idx on meaning_domain(meaning_id);
 create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
 create index word_lifecycle_log_log_id_idx on word_lifecycle_log(lifecycle_log_id);

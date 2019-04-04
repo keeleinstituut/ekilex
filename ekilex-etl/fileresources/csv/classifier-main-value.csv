@@ -2,6 +2,9 @@ LEX nimi	LEX kood	LEX väärtus	LEX keel	LEX väärtuse liik
 aspect	сов.	совершенный	est	descrip
 aspect	несов.	несовершенный	est	descrip
 aspect	сов. и несов.	совершенный и несовершенный	est	descrip
+definition_type	määramata	-	-	-
+definition_type	definitsioon	-	-	-
+definition_type	selgitus	-	-	-
 deriv	adv	adverb (-lt)	est	descrip
 deriv	dem	KE/KENE	est	ekimorfo
 deriv	dem	diminutive	eng	descrip
@@ -197,7 +200,7 @@ language	qad	baltisaksa murre	est	descrip
 language	qad	baltisaksa murre	est	full
 language	qad	baltisaksa murre	est	wordweb
 language	bam	bambara (Malis)	est	descrip
-language	bam	bambara (Malis)	est	wordweb
+language	bam	bambara	est	wordweb
 language	bam	bambara keel (Malis)	est	full
 language	qbl	bantu keeled	est	descrip
 language	qbl	bantu keeled	est	full
@@ -263,7 +266,7 @@ language	heb	heebrea	est	descrip
 language	heb	heebrea	est	wordweb
 language	heb	heebrea keel	est	full
 language	qah	hiliskreeka (2.-7. saj)	est	descrip
-language	qah	hiliskreeka (2.-7. saj)	est	wordweb
+language	qah	hiliskreeka	est	wordweb
 language	qah	hiliskreeka keel (2.-7. saj)	est	full
 language	qai	hilisladina	est	descrip
 language	qai	hilisladina	est	wordweb
@@ -338,7 +341,7 @@ language	qam	kirikuladina	est	descrip
 language	qam	kirikuladina	est	wordweb
 language	qam	kirikuladina (keel)	est	full
 language	chu	kirikusalaavi (vanaslaavi)	est	descrip
-language	chu	kirikusalaavi (vanaslaavi)	est	wordweb
+language	chu	kirikusalaavi	est	wordweb
 language	chu	kirikusalaavi (vanaslaavi) keel	est	full
 language	sms	koltasaami	est	descrip
 language	sms	koltasaami	est	wordweb
@@ -428,7 +431,7 @@ language	nah	nahua	est	descrip
 language	nah	nahua	est	wordweb
 language	nah	nahua keel	est	full
 language	naq	nama (endise nimega hotentoti)	est	descrip
-language	naq	nama (endise nimega hotentoti)	est	wordweb
+language	naq	nama	est	wordweb
 language	naq	nama (endise nimega hotentoti) keel	est	full
 language	yrk	neenetsi	est	descrip
 language	yrk	neenetsi	est	wordweb
@@ -527,7 +530,7 @@ language	ton	tonga	est	descrip
 language	ton	tonga	est	wordweb
 language	ton	tonga keel	est	full
 language	chg	tšagatai (vanausbeki)	est	descrip
-language	chg	tšagatai (vanausbeki)	est	wordweb
+language	chg	tšagatai	est	wordweb
 language	chg	tšagatai (vanausbeki) keel	est	full
 language	ces	tšehhi	est	descrip
 language	ces	tšehhi	est	wordweb
@@ -920,10 +923,12 @@ frequency_group	4	*	est	wordweb
 frequency_group	L2	*****	est	wordweb
 frequency_group	L3	****	est	wordweb
 frequency_group	L4	*****	est	wordweb
-meaning_rel_type	ant	antonüüm	est	descrip
-meaning_rel_type	cohyponym	kaashüponüüm	est	descrip
-meaning_rel_type	cohyponym	võrdle	est	wordweb
-meaning_rel_type	ant	vastand	est	wordweb
+meaning_rel_type	antonüüm	antonüüm	est	descrip
+meaning_rel_type	kaashüponüüm	kaashüponüüm	est	descrip
+meaning_rel_type	kaashüponüüm	võrdle	est	wordweb
+meaning_rel_type	antonüüm	vastand	est	wordweb
+meaning_rel_type	määramata	seotud	est	descrip
+meaning_rel_type	määramata	seotud	est	wordweb
 morph	ID	muutumatu	est	descrip2
 morph	SgN	ainsuse nimetav	est	descrip2
 morph	SgN	SgN	eng	descrip2
@@ -1383,6 +1388,12 @@ process_state	arhiveeritud	-	-	-
 process_state	töös	-	-	-
 process_state	läbi vaatamata	-	-	-
 process_state	kustutatud	-	-	-
+region	CA	-	-	-
+region	EU	-	-	-
+region	NATO	-	-	-
+region	UK	-	-	-
+region	UN	-	-	-
+region	US	-	-	-
 register	eevn	eestivene	est	descrip
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
