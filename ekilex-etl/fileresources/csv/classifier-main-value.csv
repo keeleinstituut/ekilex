@@ -923,12 +923,12 @@ frequency_group	4	*	est	wordweb
 frequency_group	L2	*****	est	wordweb
 frequency_group	L3	****	est	wordweb
 frequency_group	L4	*****	est	wordweb
-meaning_rel_type	ant	antonüüm	est	descrip
-meaning_rel_type	cohyponym	kaashüponüüm	est	descrip
-meaning_rel_type	cohyponym	võrdle	est	wordweb
-meaning_rel_type	ant	vastand	est	wordweb
-meaning_rel_type	unspecified	seotud	est	descrip
-meaning_rel_type	unspecified	seotud	est	wordweb
+meaning_rel_type	antonüüm	antonüüm	est	descrip
+meaning_rel_type	kaashüponüüm	kaashüponüüm	est	descrip
+meaning_rel_type	kaashüponüüm	võrdle	est	wordweb
+meaning_rel_type	antonüüm	vastand	est	wordweb
+meaning_rel_type	määramata	seotud	est	descrip
+meaning_rel_type	määramata	seotud	est	wordweb
 morph	ID	muutumatu	est	descrip2
 morph	SgN	ainsuse nimetav	est	descrip2
 morph	SgN	SgN	eng	descrip2

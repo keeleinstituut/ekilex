@@ -43,8 +43,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private final static String POS_TYPE_DERIVATIVE = "adjga";
 
-	private final static String MEANING_RELATION_ANTONYM = "ant";
-	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
+	private final static String MEANING_RELATION_ANTONYM = "antonüüm";
+	private final static String MEANING_RELATION_COHYPONYM = "kaashüponüüm";
 
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
 	private final static String SUBWORDS_REPORT_NAME = "subkeywords";
