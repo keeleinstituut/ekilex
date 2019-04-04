@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = 915229454;
+    private static final long serialVersionUID = 1007428068;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -82,6 +82,11 @@ public class Definition extends TableImpl<DefinitionRecord> {
     public final TableField<DefinitionRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
+     * The column <code>public.definition.definition_type_code</code>.
+     */
+    public final TableField<DefinitionRecord, String> DEFINITION_TYPE_CODE = createField("definition_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
      * The column <code>public.definition.process_state_code</code>.
      */
     public final TableField<DefinitionRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
@@ -90,11 +95,6 @@ public class Definition extends TableImpl<DefinitionRecord> {
      * The column <code>public.definition.order_by</code>.
      */
     public final TableField<DefinitionRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
-
-    /**
-     * The column <code>public.definition.definition_type_code</code>.
-     */
-    public final TableField<DefinitionRecord, String> DEFINITION_TYPE_CODE = createField("definition_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * Create a <code>public.definition</code> table reference
@@ -174,7 +174,7 @@ public class Definition extends TableImpl<DefinitionRecord> {
      */
     @Override
     public List<ForeignKey<DefinitionRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY, Keys.DEFINITION__DEFINITION_LANG_FKEY, Keys.DEFINITION__DEFINITION_PROCESS_STATE_CODE_FKEY, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY);
+        return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY, Keys.DEFINITION__DEFINITION_LANG_FKEY, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY, Keys.DEFINITION__DEFINITION_PROCESS_STATE_CODE_FKEY);
     }
 
     public Meaning meaning() {
@@ -185,12 +185,12 @@ public class Definition extends TableImpl<DefinitionRecord> {
         return new Language(this, Keys.DEFINITION__DEFINITION_LANG_FKEY);
     }
 
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.DEFINITION__DEFINITION_PROCESS_STATE_CODE_FKEY);
-    }
-
     public DefinitionType definitionType() {
         return new DefinitionType(this, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY);
+    }
+
+    public ProcessState processState() {
+        return new ProcessState(this, Keys.DEFINITION__DEFINITION_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

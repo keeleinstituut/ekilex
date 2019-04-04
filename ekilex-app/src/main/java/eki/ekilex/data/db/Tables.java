@@ -52,6 +52,7 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LifecycleLog;
@@ -71,6 +72,7 @@ import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.ProcessState;
+import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
@@ -364,6 +366,11 @@ public class Tables {
     public static final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
 
     /**
+     * The table <code>public.lexeme_region</code>.
+     */
+    public static final LexemeRegion LEXEME_REGION = eki.ekilex.data.db.tables.LexemeRegion.LEXEME_REGION;
+
+    /**
      * The table <code>public.lexeme_register</code>.
      */
     public static final LexemeRegister LEXEME_REGISTER = eki.ekilex.data.db.tables.LexemeRegister.LEXEME_REGISTER;
@@ -457,6 +464,11 @@ public class Tables {
      * The table <code>public.process_state</code>.
      */
     public static final ProcessState PROCESS_STATE = eki.ekilex.data.db.tables.ProcessState.PROCESS_STATE;
+
+    /**
+     * The table <code>public.region</code>.
+     */
+    public static final Region REGION = eki.ekilex.data.db.tables.Region.REGION;
 
     /**
      * The table <code>public.register</code>.
