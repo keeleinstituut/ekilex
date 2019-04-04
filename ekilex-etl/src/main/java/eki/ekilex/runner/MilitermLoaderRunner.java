@@ -212,15 +212,22 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				List<Node> regionValueNodes = termGroupNode.selectNodes(regionExp);
 				for (Node regionValueNode : regionValueNodes) {
-					String regionValue = ((Element) regionValueNode).getTextTrim();
-					boolean valuesSeparated = StringUtils.countMatches(regionValue, listingsDelimiter) > 0;
-					if (valuesSeparated) {
-						String[] separateRegionValues = StringUtils.split(regionValue, listingsDelimiter);
-						for (String region : separateRegionValues) {
-							saveLexemeRegion(lexemeId, region);
+					Iterator<Node> regionNodeIter = ((Element) regionValueNode).nodeIterator();
+					while (regionNodeIter.hasNext()) {
+						Node regionNode = regionNodeIter.next();
+						if (regionNode instanceof DefaultText) {
+							DefaultText textNode = (DefaultText) regionNode;
+							String regionValue = textNode.getText();
+							boolean valuesSeparated = StringUtils.countMatches(regionValue, listingsDelimiter) > 0;
+							if (valuesSeparated) {
+								String[] separateRegionValues = StringUtils.split(regionValue, listingsDelimiter);
+								for (String region : separateRegionValues) {
+									saveLexemeRegion(lexemeId, region);
+								}
+							} else {
+								saveLexemeRegion(lexemeId, regionValue);
+							}
 						}
-					} else {
-						saveLexemeRegion(lexemeId, regionValue);
 					}
 				}
 
