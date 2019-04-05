@@ -156,6 +156,7 @@ public class TermSearchService implements SystemConstant {
 			List<Classifier> lexemePos = commonDataDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+			List<Classifier> lexemeRegions = commonDataDbService.findLexemeRegions(lexemeId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes).into(FreeForm.class);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 					commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
@@ -188,6 +189,7 @@ public class TermSearchService implements SystemConstant {
 			lexeme.setPos(lexemePos);
 			lexeme.setDerivs(lexemeDerivs);
 			lexeme.setRegisters(lexemeRegisters);
+			lexeme.setRegions(lexemeRegions);
 			lexeme.setFreeforms(lexemeFreeforms);
 			lexeme.setPublicNotes(publicNotes);
 			lexeme.setUsages(usages);

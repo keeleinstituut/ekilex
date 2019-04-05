@@ -226,10 +226,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 							if (valuesSeparated) {
 								String[] separateRegionValues = StringUtils.split(regionValue, listingsDelimiter);
 								for (String region : separateRegionValues) {
-									saveLexemeRegion(lexemeId, region);
+									createLexemeRegion(lexemeId, region);
 								}
 							} else {
-								saveLexemeRegion(lexemeId, regionValue);
+								createLexemeRegion(lexemeId, regionValue);
 							}
 						}
 					}
@@ -599,8 +599,4 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void saveLexemeRegion(Long lexemeId, String regionCode) throws Exception {
-
-		createLexemeRegion(lexemeId, regionCode);
-	}
 }

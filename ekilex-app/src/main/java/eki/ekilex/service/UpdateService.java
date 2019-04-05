@@ -197,6 +197,12 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateLexemeRegion(Long lexemeId, String currentRegion, String newRegion) {
+		Long lexemeRegionId = updateDbService.updateLexemeRegion(lexemeId, currentRegion, newRegion);
+		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, currentRegion, newRegion);
+	}
+
+	@Transactional
 	public void updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
 		Long meaningDomainId = updateDbService.updateMeaningDomain(meaningId, currentDomain, newDomain);
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, currentDomain.getCode(), newDomain.getCode());
@@ -265,6 +271,12 @@ public class UpdateService {
 	public void addLexemeRegister(Long lexemeId, String registerCode) {
 		Long lexemeRegisterId = updateDbService.addLexemeRegister(lexemeId, registerCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
+	}
+
+	@Transactional
+	public void addLexemeRegion(Long lexemeId, String regionCode) {
+		Long lexemeRegionId = updateDbService.addLexemeRegion(lexemeId, regionCode);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode);
 	}
 
 	@Transactional
@@ -538,6 +550,15 @@ public class UpdateService {
 			Long lexemeRegisterId = updateDbService.findLexemeRegisterId(lexemeId, registerCode);
 			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode, null);
 			updateDbService.deleteLexemeRegister(lexemeRegisterId);
+		}
+	}
+
+	@Transactional
+	public void deleteLexemeRegion(Long lexemeId, String regionCode) {
+		if (StringUtils.isNotBlank(regionCode)) {
+			Long lexemeRegionId = updateDbService.findLexemeRegionId(lexemeId, regionCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, regionCode, null);
+			updateDbService.deleteLexemeRegion(lexemeRegionId);
 		}
 	}
 

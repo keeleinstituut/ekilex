@@ -176,6 +176,35 @@
       </span>
     </div>
   </div>
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.regions)}" th:fragment="lexeme_region">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Regioon</span>
+    </div>
+    <div class="col pl-0">
+      <span th:each="classif,classifIter : ${lexeme.regions}" class="hidden-buttons">
+        <span th:replace="termdialog :: edit_lexeme_region_dlg"></span>
+        <span th:text="${classif.code}"></span>
+        <th:block th:unless="${classif.code == classif.value}">
+          -
+          <span th:text="${classif.value}"></span>
+        </th:block>
+        <button type="button" class="btn badge badge-primary" title="Muuda"
+                data-toggle="modal"
+                th:data-target="${'#editLexemeRegionDlg_' + lexeme.lexemeId + '_' + classifIter.index}">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-id="${lexeme.lexemeId}"
+                data-op-code="lexeme_region"
+                th:data-value="${classif.code}"
+                data-toggle="delete-confirm"
+                data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <span th:unless="${classifIter.last}">,</span>
+      </span>
+    </div>
+  </div>
   <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}" th:fragment="meaning_domain">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Valdkonnad</span>

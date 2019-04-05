@@ -108,6 +108,11 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<Classifier> getRegions() {
+		return commonDataDbService.getRegions();
+	}
+
+	@Transactional
 	public List<Classifier> getDerivs() {
 		return commonDataDbService.getDerivs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
 	}
@@ -158,6 +163,9 @@ public class CommonDataService implements SystemConstant {
 		}
 		if (ClassifierName.REGISTER.equals(classifierName)) {
 			return getRegisters();
+		}
+		if (ClassifierName.REGION.equals(classifierName)) {
+			return getRegions();
 		}
 		if (ClassifierName.DERIV.equals(classifierName)) {
 			return getDerivs();

@@ -13,6 +13,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
@@ -58,6 +59,7 @@ import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
@@ -246,6 +248,17 @@ public class UpdateDbService implements DbConstant {
 		return lexemeRegisterId;
 	}
 
+	public Long updateLexemeRegion(Long lexemeId, String currentRegion, String newRegion) {
+		Long lexemeRegionId = create
+				.update(LEXEME_REGION)
+				.set(LEXEME_REGION.REGION_CODE, newRegion)
+				.where(LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(currentRegion)))
+				.returning(LEXEME_REGION.ID)
+				.fetchOne()
+				.getId();
+		return lexemeRegionId;
+	}
+
 	public Long updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
 		Long meaningDomainId = create
 				.update(MEANING_DOMAIN)
@@ -322,6 +335,27 @@ public class UpdateDbService implements DbConstant {
 			lexemeRegisterId = lexemeRegister.into(Long.class);
 		}
 		return lexemeRegisterId;
+	}
+
+	public Long addLexemeRegion(Long lexemeId, String regionCode) {
+		Record1<Long> lexemeRegion = create
+				.select(LEXEME_REGION.ID).from(LEXEME_REGION)
+				.where(LEXEME_REGION.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_REGION.REGION_CODE.eq(regionCode))
+						.and(LEXEME_REGION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.fetchOne();
+		Long lexemeRegionId;
+		if (lexemeRegion == null) {
+			lexemeRegionId = create
+					.insertInto(LEXEME_REGION, LEXEME_REGION.LEXEME_ID, LEXEME_REGION.REGION_CODE)
+					.values(lexemeId, regionCode)
+					.returning(LEXEME_REGION.ID)
+					.fetchOne()
+					.getId();
+		} else {
+			lexemeRegionId = lexemeRegion.into(Long.class);
+		}
+		return lexemeRegionId;
 	}
 
 	public Long addMeaningDomain(Long meaningId, Classifier domain) {
@@ -591,6 +625,18 @@ public class UpdateDbService implements DbConstant {
 		LexemeRegisterRecord lexemeRegisterRecord = create.fetchOne(LEXEME_REGISTER,
 				LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)));
 		return lexemeRegisterRecord.getId();
+	}
+
+	public void deleteLexemeRegion(Long lexemeRegionId) {
+		create.delete(LEXEME_REGION)
+				.where(LEXEME_REGION.ID.eq(lexemeRegionId))
+				.execute();
+	}
+
+	public Long findLexemeRegionId(Long lexemeId, String regionCode) {
+		LexemeRegionRecord lexemeRegionRecord = create.fetchOne(LEXEME_REGION,
+				LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(regionCode)));
+		return lexemeRegionRecord.getId();
 	}
 
 	public void deleteMeaningDomain(Long meaningDomainId) {
