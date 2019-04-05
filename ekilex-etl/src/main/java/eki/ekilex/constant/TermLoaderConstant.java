@@ -7,17 +7,20 @@ public interface TermLoaderConstant extends TableName {
 
 	String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
 
-	String SQL_SELECT_SOURCE_BY_NAME =
-			"select "
-			+ "s.id "
-			+ "from " + SOURCE + " s, " + SOURCE_FREEFORM + " sff "
-			+ "where sff.source_id = s.id and exists ("
-			+ "select sp.id "
-			+ "from " + FREEFORM + " sp "
-			+ "where "
-			+ "sff.freeform_id = sp.id "
-			+ "and sp.type = '" + FreeformType.SOURCE_NAME.name() + "' "
-			+ "and sp.value_text = :sourceName)";
+	String SQL_SELECT_SOURCE_BY_NAME_AND_FILE_NAME =
+			"select sff1.source_id "
+			+ "from "
+			+ SOURCE_FREEFORM + " sff1, "
+			+ FREEFORM +  " ff1, "
+			+ SOURCE_FREEFORM + " sff2, "
+			+ FREEFORM + " ff2 "
+			+ "where sff1.source_id = sff2.source_id "
+			+ "and   sff1.freeform_id = ff1.id "
+			+ "and   sff2.freeform_id = ff2.id "
+			+ "and   ff1.type = '" + FreeformType.SOURCE_FILE.name() +"' "
+			+ "and   ff1.value_text = :sourceFileName "
+			+ "and   ff2.type = '" + FreeformType.SOURCE_NAME.name() +"' "
+			+ "and   ff2.value_text = :sourceName";
 
 	String REPORT_DEFINITIONS_NOTES_MESS = "definitions_notes_mess";
 

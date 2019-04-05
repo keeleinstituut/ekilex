@@ -2,12 +2,12 @@ package eki.ekilex.runner;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -41,7 +41,7 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 	}
 
 	@Override
-	public void deleteDatasetData() throws Exception {
+	public void deleteDatasetData() {
 	}
 
 	@Override
@@ -63,38 +63,41 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 
 		String[] dataXmlFilePaths = new String[] {milFilePath1, milFilePath2};
 		Document dataDoc;
-		List<Node> allConceptGroupNodes = new ArrayList<>();
 		List<Node> conceptGroupNodes;
 
+		int fileCounter = 1;
 		for (String dataXmlFilePath : dataXmlFilePaths) {
 
-			logger.debug("Loading \"{}\"", dataXmlFilePath);
+			int totalFiles = dataXmlFilePaths.length;
+			String fileName = FilenameUtils.getName(dataXmlFilePath);
+			logger.debug("Loading {} file of {} files. File name: \"{}\"", fileCounter, totalFiles, fileName);
+
 			dataDoc = xmlReader.readDocument(dataXmlFilePath);
 			conceptGroupNodes = dataDoc.selectNodes(sourceConceptGroupExp);
-			allConceptGroupNodes.addAll(conceptGroupNodes);
-		}
+			int conceptGroupCount = conceptGroupNodes.size();
+			logger.debug("{} concept groups found", conceptGroupCount);
 
-		int conceptGroupCount = allConceptGroupNodes.size();
-		logger.debug("{} concept groups found", conceptGroupCount);
+			int conceptGroupCounter = 0;
+			int lastProgressPercent = 0;
+			for (Node conceptGroupNode : conceptGroupNodes) {
 
-		int conceptGroupCounter = 0;
-		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
+				processConceptGroup(conceptGroupNode, fileName);
 
-		for (Node conceptGroupNode : allConceptGroupNodes) {
-
-			processConceptGroup(conceptGroupNode);
-
-			conceptGroupCounter++;
-			if (conceptGroupCounter % progressIndicator == 0) {
-				int progressPercent = conceptGroupCounter / progressIndicator;
-				logger.debug("{}% - {} concept groups iterated", progressPercent, conceptGroupCounter);
+				conceptGroupCounter++;
+				double progressPercent = ((double) conceptGroupCounter / conceptGroupCount) * 100;
+				int progressPercentRounded = (int) Math.round(progressPercent);
+				if (progressPercentRounded != lastProgressPercent) {
+					lastProgressPercent = progressPercentRounded;
+					logger.debug("File {}/{}. {}% - {} concept groups iterated", fileCounter, totalFiles, progressPercentRounded, conceptGroupCounter);
+				}
 			}
+			fileCounter++;
 		}
 
 		end();
 	}
 
-	private void processConceptGroup(Node conceptGroupNode) throws Exception {
+	private void processConceptGroup(Node conceptGroupNode, String fileName) throws Exception {
 
 		Long sourceId;
 
@@ -112,8 +115,9 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 			Source source = extractAndApplySourceProperties(conceptGroupNode, extSourceId);
 			sourceId = createSource(source);
 
-			List<Node> termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
+			createSourceFreeform(sourceId, FreeformType.SOURCE_FILE, fileName);
 
+			List<Node> termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
 			for (Node termGroupNode : termGroupNodes) {
 
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_NAME, termValueExp);

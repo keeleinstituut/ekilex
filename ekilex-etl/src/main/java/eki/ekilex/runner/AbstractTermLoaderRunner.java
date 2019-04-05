@@ -39,6 +39,8 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 
 	Count illegalSourceReferenceValueCount;
 
+	String sourceFileName;
+
 	void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj, DateFormat dateFormat) throws Exception {
 
 		Element valueNode;
@@ -244,9 +246,13 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 
 	Long getSource(String sourceName) {
 
+		if (sourceFileName == null) {
+			throw new RuntimeException("sourceFileName is not initialized");
+		}
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("sourceName", sourceName);
-		List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_NAME, tableRowParamMap);
+		tableRowParamMap.put("sourceFileName", sourceFileName);
+		List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_NAME_AND_FILE_NAME, tableRowParamMap);
 		if (CollectionUtils.isEmpty(results)) {
 			return null;
 		}
@@ -254,7 +260,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 			logger.warn("Several sources match the \"{}\"", sourceName);
 		}
 		Map<String, Object> result = results.get(0);
-		Long sourceId = Long.valueOf(result.get("id").toString());
+		Long sourceId = Long.valueOf(result.get("source_id").toString());
 		return sourceId;
 	}
 
