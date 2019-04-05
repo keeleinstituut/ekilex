@@ -21,7 +21,7 @@ import eki.ekilex.service.SourceService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SourceLinkController {
+public class SourceLinkController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceLinkController.class);
 
@@ -68,6 +68,6 @@ public class SourceLinkController {
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 
-		return "sourceview :: details";
+		return SOURCEVIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 }

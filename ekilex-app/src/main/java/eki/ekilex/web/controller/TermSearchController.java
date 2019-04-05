@@ -130,6 +130,6 @@ public class TermSearchController extends AbstractSearchController {
 		model.addAttribute("meaning", meaning);
 		model.addAttribute("meaningId", meaningId);
 
-		return TERM_SEARCH_PAGE + " :: details";
+		return TERM_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 }

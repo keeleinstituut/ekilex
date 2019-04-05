@@ -19,7 +19,7 @@ import eki.ekilex.service.LifecycleLogService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LifecycleLogController {
+public class LifecycleLogController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(LifecycleLogController.class);
 
@@ -34,7 +34,7 @@ public class LifecycleLogController {
 		List<LifecycleLog> lifecycleLog = lifecycleLogService.getLogForWord(wordId);
 		model.addAttribute("lifecycleLog", lifecycleLog);
 
-		return "lifecyclelogview :: details";
+		return LIFECYCLELOGVIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
 	@GetMapping("/meaninglifecyclelog:{meaningId}")
@@ -45,6 +45,6 @@ public class LifecycleLogController {
 		List<LifecycleLog> lifecycleLog = lifecycleLogService.getLogForMeaning(meaningId);
 		model.addAttribute("lifecycleLog", lifecycleLog);
 
-		return "lifecyclelogview :: details";
+		return LIFECYCLELOGVIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 }

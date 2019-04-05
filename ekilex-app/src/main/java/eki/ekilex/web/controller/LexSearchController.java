@@ -130,7 +130,7 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
-		return COMPONENTS_PAGE + " :: word_search_result";
+		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "word_search_result";
 	}
 
 	@GetMapping("/lexemesearchajax")
@@ -145,7 +145,7 @@ public class LexSearchController extends AbstractSearchController {
 		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithDefinitionsData(searchFilter, datasets);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
-		return COMPONENTS_PAGE + " :: lexeme_search_result";
+		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_search_result";
 	}
 
 	@GetMapping("/meaningsearchajax")
@@ -166,7 +166,7 @@ public class LexSearchController extends AbstractSearchController {
 		}
 		model.addAttribute("lexemesFoundBySearch", lexemesFileterdByMeaning);
 
-		return COMPONENTS_PAGE + " :: meaning_search_result";
+		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_search_result";
 	}
 
 	@GetMapping("/personsearchajax")
@@ -179,7 +179,7 @@ public class LexSearchController extends AbstractSearchController {
 		List<Source> sources = sourceService.findSourcesByNameAndType(searchFilter, SourceType.PERSON);
 		model.addAttribute("sourcesFoundBySearch", sources);
 
-		return COMPONENTS_PAGE + " :: source_search_result";
+		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
@@ -195,7 +195,7 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
-		return LEX_SEARCH_PAGE + " :: details";
+		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
 }

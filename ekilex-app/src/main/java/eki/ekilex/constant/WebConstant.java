@@ -72,7 +72,17 @@ public interface WebConstant {
 
 	String COMPONENTS_PAGE = "components";
 
+	String COMMON_PAGE = "common";
+
+	String TERMDIALOG_PAGE = "termdialog";
+
+	String LIFECYCLELOGVIEW_PAGE = "lifecyclelogview";
+
+	String SOURCEVIEW_PAGE = "sourceview";
+
 	String ERROR_PAGE = "error";
+
+	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	// mode flags
 

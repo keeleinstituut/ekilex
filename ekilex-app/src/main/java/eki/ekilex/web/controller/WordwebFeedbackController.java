@@ -61,7 +61,7 @@ public class WordwebFeedbackController implements WebConstant {
 		Feedback feedback = new Feedback();
 		feedback.setFeedbackComments(comments);
 		model.addAttribute("fbItem", feedback);
-		return WW_FEEDBACK_PAGE + " :: eki_comments";
+		return WW_FEEDBACK_PAGE + PAGE_FRAGMENT_ELEM + "eki_comments";
 	}
 
 }

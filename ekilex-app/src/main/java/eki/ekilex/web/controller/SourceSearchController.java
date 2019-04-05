@@ -20,7 +20,7 @@ import eki.ekilex.service.SourceService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SourceSearchController {
+public class SourceSearchController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceSearchController.class);
 
@@ -56,7 +56,7 @@ public class SourceSearchController {
 		model.addAttribute("sources", sources);
 		model.addAttribute("sourceCount", sources.size());
 
-		return "common :: source_link_dlg";
+		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "source_link_dlg";
 	}
 
 }

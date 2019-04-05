@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserPermData;
 import eki.ekilex.service.PermissionService;
@@ -45,36 +46,36 @@ public class PermissionsController extends AbstractPageController {
 		if (!user.isDatasetOwnershipExist()) {
 			return "redirect:" + HOME_URI;
 		}
-		populateModel(model);
+		populateUserPermDataModel(model);
 		return PERMISSIONS_PAGE;
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/enable/{userId}")
 	public String enable(@PathVariable("userId") Long userId, Model model) {
 		userService.enableUser(userId, true);
-		populateModel(model);
-		return PERMISSIONS_PAGE + " :: permissions";
+		populateUserPermDataModel(model);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/disable/{userId}")
 	public String disable(@PathVariable("userId") Long userId, Model model) {
 		userService.enableUser(userId, false);
-		populateModel(model);
-		return PERMISSIONS_PAGE + " :: permissions";
+		populateUserPermDataModel(model);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/setadmin/{userId}")
 	public String setAdmin(@PathVariable("userId") Long userId, Model model) {
 		userService.setAdmin(userId, true);
-		populateModel(model);
-		return PERMISSIONS_PAGE + " :: permissions";
+		populateUserPermDataModel(model);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/remadmin/{userId}")
 	public String remAdmin(@PathVariable("userId") Long userId, Model model) {
 		userService.setAdmin(userId, false);
-		populateModel(model);
-		return PERMISSIONS_PAGE + " :: permissions";
+		populateUserPermDataModel(model);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@PostMapping(PERMISSIONS_URI + "/adddatasetperm")
@@ -94,12 +95,35 @@ public class PermissionsController extends AbstractPageController {
 	@GetMapping(PERMISSIONS_URI + "/deletedatasetperm/{datasetPermissionId}")
 	public String deleteDatasetPerm(@PathVariable("datasetPermissionId") Long datasetPermissionId, Model model) {
 		permissionService.deleteDatasetPermission(datasetPermissionId);
-		populateModel(model);
-		return PERMISSIONS_PAGE + " :: permissions";
+		populateUserPermDataModel(model);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	private void populateModel(Model model) {
+	private void populateUserPermDataModel(Model model) {
 		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions();
 		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
+	}
+
+	@GetMapping(COMPONENT_URI + "/commonwordlangselect/{datasetCode}")
+	public String getCommonWordLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
+
+		populateUserPermLanguagesModel(datasetCode, model);
+
+		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "word_perm_lang_select";
+	}
+
+	@GetMapping(COMPONENT_URI + "/termdeflangselect/{datasetCode}")
+	public String getTermDefLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
+
+		populateUserPermLanguagesModel(datasetCode, model);
+
+		return TERMDIALOG_PAGE + PAGE_FRAGMENT_ELEM + "definition_perm_lang_select";
+	}
+
+	private void populateUserPermLanguagesModel(String datasetCode, Model model) {
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
+		model.addAttribute("userPermLanguages", userPermLanguages);
 	}
 }

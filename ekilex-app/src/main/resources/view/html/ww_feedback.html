@@ -55,7 +55,10 @@
               </td>
               <td th:text="${fbItem.lastSearch}"></td>
               <td style="max-width: 40vw;">
-                <button type="button" class="btn badge badge-success" title="Lisa uus" onclick="openEkiEditorAddDlg(this, () => loadEkiComments(this))" th:data-id="${fbItem.id}" data-toggle="modal"
+                <button type="button" class="btn badge badge-success" title="Lisa uus"
+                  onclick="openEkiEditorAddDlg(this, () => loadEkiComments(this))"
+                  th:data-id="${fbItem.id}"
+                  data-toggle="modal"
                   data-target="#addFeedbackCommentDlg">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
@@ -68,7 +71,11 @@
                 </table>
               </td>
               <td>
-                <button type="button" class="btn badge badge-warning" th:data-id="${fbItem.id}" th:data-op-code="feedback" data-callback="removeClosestRow" data-toggle="delete-confirmation"
+                <button type="button" class="btn badge badge-warning" 
+                  th:data-id="${fbItem.id}"
+                  th:data-op-code="feedback"
+                  data-callback="removeClosestRow"
+                  data-toggle="delete-confirmation"
                   data-placement="left">
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
