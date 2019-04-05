@@ -4,8 +4,8 @@ function initialise() {
 		var id = $(this).data('id');
 		var isRestoreScrollPos = this.hasAttribute('data-refresh');
 		$("[id^='meaning_select_point_']").hide();
-        $("[id^='meaning_select_wait_']").hide();
-        $("#meaning_select_wait_" + id).show();
+		$("[id^='meaning_select_wait_']").hide();
+		$("#meaning_select_wait_" + id).show();
 		$.get(applicationUrl + 'meaningdetails/' + id).done(function(data) {
 			var scrollPos = $('#details_div').scrollTop();
 			$('#details_div').replaceWith(data);
@@ -13,7 +13,7 @@ function initialise() {
 				$('#details_div').scrollTop(scrollPos);
 			}
 			$("#meaning_select_wait_" + id).hide();
-            $("#meaning_select_point_" + id).show();
+			$("#meaning_select_point_" + id).show();
 		}).fail(function(data) {
 			console.log(data);
 			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
@@ -38,16 +38,16 @@ function initialise() {
 	$(document).on('click', '[name="lang-collapse-btn"]', function() {
 		var lang = $(this).attr("data-lang");
 		var itemData = {
-			opCode : "term_user_lang",
-			code : lang
+			opCode: "term_user_lang",
+			code: lang
 		};
 		postJson(applicationUrl + 'modify_item', itemData).done(function(data) {
 			refreshDetails();
-        });
+		});
 	});
 
 	$(document).on('click', '#meaningCopyBtn', function() {
-		let url = applicationUrl + 'meaningcopy/' +  $(this).data('meaning-id');
+		let url = applicationUrl + 'meaningcopy/' + $(this).data('meaning-id');
 		$.post(url).done(function(data) {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {
@@ -89,10 +89,10 @@ function initialise() {
 		detailsButtons.trigger('click');
 	}
 
-    initNewWordDlg();
+	initNewWordDlg();
 }
 
 function refreshDetails() {
 	var refreshButton = $('#refresh-details');
-    refreshButton.trigger('click');
+	refreshButton.trigger('click');
 }

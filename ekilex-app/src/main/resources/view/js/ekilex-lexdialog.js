@@ -9,7 +9,7 @@ $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	var dlgElemId = "#" + opCode + '_' + lexemeId;
 	if (opCode.endsWith('Dlg')) {
 		$(dlgElemId).modal("show");
-        $("#addLexemeDataDlg_" + lexemeId).modal("hide");
+		$("#addLexemeDataDlg_" + lexemeId).modal("hide");
 	} else {
 		$(dlgElemId).show();
 	}

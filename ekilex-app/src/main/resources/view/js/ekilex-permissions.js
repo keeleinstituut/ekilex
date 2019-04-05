@@ -34,20 +34,6 @@ $(document).on("click", ":input[name='userAdminCheck']", function() {
 	});
 });
 
-$(document).on("click", ":button[name='deleteDatasetPermBtn']", function() {
-	/*
-	var datasetPermId = $(this).data('id');
-	var deleteDatasetPermUrl = applicationUrl + 'permissions/deletedatasetperm/' + datasetPermId;
-	$.get(deleteDatasetPermUrl).done(function(data) {
-		var permissionsArea = $('#permissionsArea');
-		permissionsArea.replaceWith(data);
-	}).fail(function(data) {
-		console.log(data);
-		alert('Viga!');
-	});
-	*/
-});
-
 function deleteDatasetPermission(datasetPermId) {
 	var deleteDatasetPermUrl = applicationUrl + 'permissions/deletedatasetperm/' + datasetPermId;
 	$.get(deleteDatasetPermUrl).done(function(data) {

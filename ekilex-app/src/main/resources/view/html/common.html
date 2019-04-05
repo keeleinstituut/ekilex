@@ -106,7 +106,6 @@
       </div>
     </div>
   </div>
-  <!-- TODO continue here >>> -->
   <div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -241,6 +240,25 @@
       </table>
     </div>
   </div>
+  <script th:inline="javascript" th:fragment="confirmations">
+    $('[data-toggle=confirmation]').confirmation({
+      btnOkLabel : 'Jah',
+      btnCancelLabel : 'Ei'
+    });
+    $('[data-toggle=validate-delete-confirm]').confirmation({
+      btnOkLabel : 'Jah',
+      btnCancelLabel : 'Ei',
+      title : 'Kinnita kustutamine',
+      onConfirm : executeValidateDelete
+    });
+    $('[data-toggle=delete-confirm]').confirmation({
+      btnOkLabel : 'Jah',
+      btnCancelLabel : 'Ei',
+      title : 'Kinnita kustutamine',
+      onConfirm : executeDelete
+    });
+    decorateSourceLinks();
+  </script>
   <div id="sourceDetailsDlg" class="modal" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">

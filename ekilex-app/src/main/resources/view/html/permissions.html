@@ -83,8 +83,7 @@
                           </span>
                           <button class="btn badge badge-warning"
                                   th:data-id="${datasetPerm.id}"
-                                  name="deleteDatasetPermBtn"
-                                  data-toggle="delete-confirmation"
+                                  data-toggle="delete-confirm"
                                   data-placement="right"
                                   sec:authorize="${#authentication.principal.datasetOwnershipExist}">
                             <i class="fa fa-remove" aria-hidden="true"></i>
@@ -97,7 +96,7 @@
               </table>
             </div>
             <script type="text/javascript">
-				$('[data-toggle=delete-confirmation]').confirmation({
+				$('[data-toggle=delete-confirm]').confirmation({
 					btnOkLabel : 'Jah',
 					btnCancelLabel : 'Ei',
 					title : 'Palun kinnita õiguse kustutamine',

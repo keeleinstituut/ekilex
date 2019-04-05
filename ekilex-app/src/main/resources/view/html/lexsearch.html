@@ -973,25 +973,7 @@
         </div>
       </div>
     </div>
-    <script th:inline="javascript">
-		$('[data-toggle=confirmation]').confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei'
-		});
-		$('[data-toggle=validate-delete-confirm]').confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei',
-			title : 'Kinnita kustutamine',
-			onConfirm : executeValidateDelete
-		});
-		$('[data-toggle=delete-confirm]').confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei',
-			title : 'Kinnita kustutamine',
-			onConfirm : executeDelete
-		});
-		decorateSourceLinks();
-	</script>
+    <script th:replace="common :: confirmations"></script>
   </th:block>
 
   <div th:replace="common :: newWordDlg('lex_search')"></div>

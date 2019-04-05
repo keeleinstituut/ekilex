@@ -648,21 +648,7 @@
         </div>
       </th:block>
     </div>
-    <script th:inline="javascript">
-        $('[data-toggle=confirmation]').confirmation(
-            {
-                btnOkLabel: 'Jah',
-                btnCancelLabel: 'Ei'
-            }
-        );
-        $('[data-toggle=delete-confirm]').confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei',
-			title : 'Kinnita kustutamine',
-			onConfirm : executeDelete
-		});
-        decorateSourceLinks();
-    </script>
+    <script th:replace="common :: confirmations"></script>
   </th:block>
 
   <div th:replace="common :: newWordDlg('term_search')"></div>
