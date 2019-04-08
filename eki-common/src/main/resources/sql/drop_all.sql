@@ -40,6 +40,7 @@ drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
+drop table if exists lexeme_region;
 drop table if exists lexeme;
 drop table if exists collocation_freeform;
 drop table if exists collocation;
