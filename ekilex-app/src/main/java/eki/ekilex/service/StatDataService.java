@@ -42,7 +42,7 @@ public class StatDataService implements InitializingBean, SystemConstant {
 		lifecycleUserStatData = Collections.emptyList();
 	}
 
-	@Scheduled(fixedDelay = UPDATE_STAT_DATA_DELAY, initialDelay = 5000)
+	@Scheduled(fixedDelay = UPDATE_STAT_DATA_DELAY, initialDelay = 60000)
 	@Transactional
 	public void updateStatData() {
 

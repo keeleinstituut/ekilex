@@ -17,12 +17,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.UpdateService;
+import eki.ekilex.test.AbstractTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
 @Transactional
-public class UpdateServiceTest {
+public class UpdateServiceTest extends AbstractTest {
 
 	@Autowired
 	private TestEnvInitialiser testEnvInitialiser;
@@ -34,6 +36,7 @@ public class UpdateServiceTest {
 	public void beforeTest() throws Exception {
 
 		testEnvInitialiser.initDatabase();
+		initSecurity();
 	}
 
 	@Test
