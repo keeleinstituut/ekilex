@@ -15,11 +15,12 @@ $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	}
 });
 
+//addWordDataDlg_ select
 $(document).on("change", "select.word-data-select[name='opCode']", function() {
 	var opCode = $(this).val();
 	var localForm = $(this).closest("form");
 	localForm.find(".value-group").hide();
-	var wordId = localForm.find("[name=id]").val();
+	var wordId = localForm.find("[name=id3]").val();
 	var dlgElemId = "#" + opCode + '_' + wordId;
 	$(dlgElemId).show();
 });
@@ -119,6 +120,10 @@ $(document).on("show.bs.modal", "[id^=editWordGenderDlg_]", function() {
 });
 
 $(document).on("show.bs.modal", "[id^=editWordAspectDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editWordTypeDlg_]", function() {
 	initSelectDlg($(this));
 });
 

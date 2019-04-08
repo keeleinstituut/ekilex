@@ -106,13 +106,15 @@
   </div>
 
   <th:block th:fragment="details" th:if="${meaning != null}">
+    <div th:data-id="${meaningId}" id="details_div"
+         th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
 
-    <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
-    <div th:replace="termdialog :: add_definition_dlg"></div>
-    <div th:replace="termdialog :: add_learner_comment_dlg"></div>
-    <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
+        <div th:replace="termdialog :: add_meaning_data_dlg"></div>
+        <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
+        <div th:replace="termdialog :: add_definition_dlg"></div>
+        <div th:replace="termdialog :: add_learner_comment_dlg"></div>
+        <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
 
-    <div th:data-id="${meaningId}" id="details_div">
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
       <div class="card mb-2 shadow" style="border-style: dotted; border-width: 4px; border-color: #aaa">
         <div class="card-body">
@@ -120,10 +122,27 @@
             <div class="col">
               <b th:text="${meaningId}"></b>
             </div>
+            <div class="col-auto form-inline">
+              <button type="button" class="btn badge badge-success position-right"
+                      title="Lisa andmeid"
+                      data-toggle="modal"
+                      th:data-target="${'#addMeaningDataDlg_' + meaningId}"
+                      sec:authorize="${#vars.isMeaningCrudGranted}">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
             <div class="col-auto ml-auto">
               <a class="btn btn-primary btn-sm" th:href="@{'/meaningjoin/' + ${meaningId}}" title="Tähenduste ühendamine">Ühenda</a>
-              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${meaningId}">Lisa uus keelend</button>
-              <button id="meaningCopyBtn" class="btn btn-primary btn-sm" th:data-meaning-id="${meaningId}" title="Tee duplikaat mõistest ja kõigist tema ilmikutest">Duplikaat</button>
+              <button class="btn btn-primary btn-sm"
+                      data-toggle="modal"
+                      data-target="#newWordDlg"
+                      th:data-meaning-id="${meaningId}"
+                      sec:authorize="${#authentication.principal.datasetPermissionsExist}">Lisa uus keelend</button>
+              <button id="meaningCopyBtn" 
+                      title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
+                      class="btn btn-primary btn-sm"
+                      th:data-meaning-id="${meaningId}"
+                      sec:authorize="${#vars.isMeaningCrudGranted}">Duplikaat</button>
               <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
                  data-toggle="modal"
                  data-target="#meaningLifecycleLogDlg"
@@ -144,7 +163,8 @@
               <span class="lbl">Seletused</span>
               <button type="button" class="btn badge badge-success" title="Lisa uus"
                       data-toggle="modal"
-                      th:data-target="${'#addDefinitionDlg_' + meaningId}">
+                      th:data-target="${'#addDefinitionDlg_' + meaningId}"
+                      sec:authorize="${#authentication.principal.datasetPermissionsExist}">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </div>
@@ -161,13 +181,14 @@
                 <div th:if="${definitionLangGroup.selected}" class="orderable" data-op-code="definition">
                   <div class="ml-4" style="position: relative"
                        th:each="definition, itemIter: ${definitionLangGroup.definitions}"
+                       th:with="isDefinitionCrudGranted=${#authorization.expression('hasPermission(#vars.definition.id, ''DEFINITION'', ''DATASET:CRUD'')')}"
                        th:data-id="${definition.id}"
                        th:data-orderby="${definition.orderBy}">
                     <div th:replace="termdialog :: edit_definition_dlg"></div>
                     <div th:replace="termdialog :: add_definition_source_link_dlg"></div>
                     <div style="display: list-item; position: absolute"></div>
                     <div class="action-column">
-                      <th:block th:replace="common :: ordering_buttons(${itemIter})"></th:block>
+                      <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isMeaningCrudGranted}"></th:block>
                     </div>
                     <div class="invisible-buttons action-buttons-anchor  mw-90">
                       <span th:utext="${definition.value}"></span>
@@ -177,7 +198,8 @@
                         <button type="button" class="btn badge badge-success"
                                 title="Lisa allikaviide"
                                 data-toggle="modal"
-                                th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}">
+                                th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}"
+                                sec:authorize="${#vars.isDefinitionCrudGranted}">
                           <i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
                         ]
@@ -186,14 +208,16 @@
                         <button type="button" class="btn badge badge-primary"
                                 title="Muuda"
                                 data-toggle="modal"
-                                th:data-target="${'#editDefinitionDlg_' + definition.id}">
+                                th:data-target="${'#editDefinitionDlg_' + definition.id}"
+                                sec:authorize="${#vars.isDefinitionCrudGranted}">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 data-op-code="definition"
                                 th:data-id="${definition.id}"
                                 data-toggle="delete-confirm"
-                                data-placement="right">
+                                data-placement="right"
+                                sec:authorize="${#vars.isDefinitionCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </div>
@@ -209,7 +233,8 @@
                                 data-op-code="def_source_link"
                                 th:data-id="${sourceLink.id}"
                                 data-toggle="delete-confirm"
-                                data-placement="right">
+                                data-placement="right"
+                                sec:authorize="${#vars.isDefinitionCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                         ]
@@ -217,7 +242,8 @@
                       <button type="button" class="btn badge badge-success"
                               title="Lisa allikaviide"
                               data-toggle="modal"
-                              th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}">
+                              th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}"
+                              sec:authorize="${#vars.isDefinitionCrudGranted}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
@@ -233,7 +259,8 @@
                 <button type="button" class="btn badge badge-success"
                         title="Lisa uus"
                         data-toggle="modal"
-                        th:data-target="${'#addLearnerCommentDlg_' + meaningId}">
+                        th:data-target="${'#addLearnerCommentDlg_' + meaningId}"
+                        sec:authorize="${#vars.isMeaningCrudGranted}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </span>
@@ -249,14 +276,16 @@
                         <button type="button" class="btn badge badge-primary"
                                 title="Muuda"
                                 data-toggle="modal"
-                                th:data-target="${'#editLearnerCommentDlg_' + meaningId + '_' + learnerComment.id}">
+                                th:data-target="${'#editLearnerCommentDlg_' + meaningId + '_' + learnerComment.id}"
+                                sec:authorize="${#vars.isMeaningCrudGranted}">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${learnerComment.id}"
                                 data-op-code="learner_comment"
                                 data-toggle="delete-confirm"
-                                data-placement="right">
+                                data-placement="right"
+                                sec:authorize="${#vars.isMeaningCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </div>
@@ -296,7 +325,8 @@
               <button type="button" class="btn badge badge-success"
                       title="Lisa seos"
                       data-toggle="modal"
-                      th:data-target="${'#addMeaningRelationDlg_' + meaningId}">
+                      th:data-target="${'#addMeaningRelationDlg_' + meaningId}"
+                      sec:authorize="${#vars.isMeaningCrudGranted}">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </div>
@@ -317,7 +347,8 @@
                             data-placement="right"
                             th:data-id="${relations.get(0).id}"
                             data-op-code="meaning_relation"
-                            data-toggle="delete-confirm">
+                            data-toggle="delete-confirm"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                   </td>
@@ -351,7 +382,11 @@
                th:if="${lexemeLangGroup.selected}"
                th:data-id="${lexeme.lexemeId}"
                th:data-orderby="${lexeme.orderBy}"
-               class="card mb-2 shadow">
+               class="card mb-2 shadow"
+               th:with="
+                  isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
+                  isWordCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.wordId, ''WORD'', ''DATASET:CRUD'')')}
+                  ">
 
             <div th:replace="termdialog :: add_lexeme_data_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_source_link_dlg"></div>
@@ -372,9 +407,10 @@
                 </div>
                 <div class="ml-auto">
                   <button type="button" class="btn badge badge-success float-right"
-                          title="Lisa klassifikaator"
+                          title="Lisa andmeid"
                           data-toggle="modal"
-                          th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}">
+                          th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}"
+                          sec:authorize="${#vars.isLexemeCrudGranted}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -383,7 +419,8 @@
                           class="btn btn-warning font-weight-bold btn-sm"
                           th:data-id="${lexeme.lexemeId}"
                           data-op-code="lexeme"
-                          data-toggle="delete-confirm">
+                          data-toggle="delete-confirm"
+                          sec:authorize="${#vars.isLexemeCrudGranted}">
                     Eemalda
                   </button>
                 </div>
@@ -391,7 +428,7 @@
                   <b th:text="${lexeme.dataset}"></b>
                 </div>
                 <div class="ml-2">
-                  <th:block th:replace="common :: ordering_buttons(${itemIter})"></th:block>
+                  <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isMeaningCrudGranted}"></th:block>
                 </div>
               </div>
               <div>
@@ -414,7 +451,8 @@
                   <button type="button" class="btn badge badge-success"
                           title="Lisa allikaviide"
                           data-toggle="modal"
-                          th:data-target="${'#addLexemeSourceLinkDlg_' + lexeme.lexemeId}">
+                          th:data-target="${'#addLexemeSourceLinkDlg_' + lexeme.lexemeId}"
+                          sec:authorize="${#vars.isLexemeCrudGranted}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -429,7 +467,8 @@
                             data-placement="right"
                             th:data-id="${sourceLink.id}"
                             data-op-code="lex_source_link"
-                            data-toggle="delete-confirm">
+                            data-toggle="delete-confirm"
+                            sec:authorize="${#vars.isLexemeCrudGranted}">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                     ]
@@ -443,12 +482,14 @@
                   <button type="button" class="btn badge badge-success"
                           title="Lisa uus"
                           data-toggle="modal"
-                          th:data-target="${'#addUsageDlg_' + lexeme.lexemeId}">
+                          th:data-target="${'#addUsageDlg_' + lexeme.lexemeId}"
+                          sec:authorize="${#vars.isLexemeCrudGranted}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.usages)}" class="col pl-0">
-                  <th:block th:each="usage : ${lexeme.usages}">
+                  <th:block th:each="usage : ${lexeme.usages}"
+                            th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
                     <div th:replace="termdialog :: edit_usage_dlg"></div>
                     <div th:replace="termdialog :: add_usage_source_link_dlg"></div>
                     <div class="invisible-buttons action-buttons-anchor mw-90">
@@ -472,7 +513,8 @@
                         <button type="button" class="btn badge badge-success"
                                 title="Lisa allikaviide"
                                 data-toggle="modal"
-                                th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}">
+                                th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}"
+                                sec:authorize="${#vars.isUsageCrudGranted}">
                           <i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
                         ]
@@ -481,14 +523,16 @@
                         <button type="button" class="btn badge badge-primary"
                                 title="Muuda"
                                 data-toggle="modal"
-                                th:data-target="${'#editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}">
+                                th:data-target="${'#editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}"
+                                sec:authorize="${#vars.isUsageCrudGranted}">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${usage.id}"
                                 data-op-code="usage"
                                 data-toggle="delete-confirm"
-                                data-placement="right">
+                                data-placement="right"
+                                sec:authorize="${#vars.isUsageCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </div>
@@ -502,7 +546,8 @@
                                 th:data-id="${sourceLink.id}"
                                 data-op-code="ff_source_link"
                                 data-toggle="delete-confirm" 
-                                data-placement="right">
+                                data-placement="right"
+                                sec:authorize="${#vars.isUsageCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                         ]
@@ -510,7 +555,8 @@
                       <button type="button" class="btn badge badge-success"
                               title="Lisa allikaviide"
                               data-toggle="modal"
-                              th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}">
+                              th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}"
+                              sec:authorize="${#vars.isUsageCrudGranted}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
@@ -524,7 +570,8 @@
                   <button type="button" class="btn badge badge-success"
                           title="Lisa seos"
                           data-toggle="modal"
-                          th:data-target="${'#addLexemeRelationDlg_' + lexeme.lexemeId}">
+                          th:data-target="${'#addLexemeRelationDlg_' + lexeme.lexemeId}"
+                          sec:authorize="${#vars.isLexemeCrudGranted}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -532,7 +579,7 @@
                   <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                     <tr th:each="relation, itemIter : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                       <td class="action-column">
-                        <th:block th:replace="common :: ordering_buttons(${itemIter})"></th:block>
+                        <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isLexemeCrudGranted}"></th:block>
                       </td>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
@@ -542,7 +589,8 @@
                                 th:data-id="${relation.id}"
                                 data-op-code="lexeme_relation"
                                 data-toggle="delete-confirm"
-                                data-placement="left">
+                                data-placement="left"
+                                sec:authorize="${#vars.isLexemeCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </td>
@@ -560,7 +608,8 @@
                     <button type="button" class="btn badge badge-success"
                             title="Lisa uus"
                             data-toggle="modal"
-                            th:data-target="${'#addLexemePublicNoteDlg_' + lexeme.lexemeId}">
+                            th:data-target="${'#addLexemePublicNoteDlg_' + lexeme.lexemeId}"
+                            sec:authorize="${#vars.isLexemeCrudGranted}">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
                   </span>
@@ -577,7 +626,8 @@
                           <button type="button" class="btn badge badge-success"
                                   title="Lisa allikaviide"
                                   data-toggle="modal"
-                                  th:data-target="${'#addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}">
+                                  th:data-target="${'#addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                                  sec:authorize="${#vars.isLexemeCrudGranted}">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
                           ]
@@ -586,14 +636,16 @@
                         <button type="button" class="btn badge badge-primary"
                                 th:title="Muuda"
                                 data-toggle="modal"
-                                th:data-target="${'#editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}">
+                                th:data-target="${'#editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                                sec:authorize="${#vars.isLexemeCrudGranted}">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${publicNote.id}"
                                 data-op-code="public_note"
                                 data-toggle="delete-confirm"
-                                data-placement="right">
+                                data-placement="right"
+                                sec:authorize="${#vars.isLexemeCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </div>
@@ -609,7 +661,8 @@
                                 th:data-id="${sourceLink.id}"
                                 data-op-code="ff_source_link"
                                 data-toggle="delete-confirm" 
-                                data-placement="right">
+                                data-placement="right"
+                                sec:authorize="${#vars.isLexemeCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                         ]
@@ -617,7 +670,8 @@
                       <button type="button" class="btn badge badge-success"
                               title="Lisa allikaviide"
                               data-toggle="modal"
-                              th:data-target="${'#addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}">
+                              th:data-target="${'#addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                              sec:authorize="${#vars.isLexemeCrudGranted}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>

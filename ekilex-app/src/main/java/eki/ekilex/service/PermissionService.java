@@ -6,7 +6,6 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
@@ -58,7 +57,6 @@ public class PermissionService implements SystemConstant {
 		return permissionDbService.getUserDatasetLanguages(userId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
-	@PreAuthorize("principal.admin")
 	@Transactional
 	public void createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
 
@@ -74,7 +72,6 @@ public class PermissionService implements SystemConstant {
 		permissionDbService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
 	}
 
-	@PreAuthorize("principal.admin")
 	@Transactional
 	public void deleteDatasetPermission(Long datasetPermissionId) {
 

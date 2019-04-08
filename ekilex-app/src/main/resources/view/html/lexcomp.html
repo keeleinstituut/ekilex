@@ -258,12 +258,17 @@
     </div>
     <div class="col pl-0">
       <span th:each="classif,classifIter : ${details.wordTypes}" class="hidden-buttons">
+        <span th:replace="lexdialog :: edit_word_type_dlg"></span>
         <span th:text="${classif.code}"></span>
         <th:block th:unless="${classif.code == classif.value}">
           -
           <span th:text="${classif.value}"></span>
         </th:block>
-        <!-- TODO Muuda -->
+        <button type="button" class="btn badge badge-primary" title="Muuda"
+                data-toggle="modal"
+                th:data-target="${'#editWordTypeDlg_' + wordId + '_' + classifIter.index}">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
         <button type="button" class="btn badge badge-warning"
                 th:data-id="${wordId}"
                 data-op-code="word_type"

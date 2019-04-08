@@ -10,14 +10,16 @@
       <span th:text="${lexeme.lexemeProcessStateCode}"></span>
       <button type="button" class="btn badge badge-primary" title="Muuda"
               data-toggle="modal"
-              th:data-target="${'#editLexemeProcessStateDlg_' + lexeme.lexemeId}">
+              th:data-target="${'#editLexemeProcessStateDlg_' + lexeme.lexemeId}"
+              sec:authorize="${#vars.isLexemeCrudGranted}">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn badge badge-warning"
               th:data-id="${lexeme.lexemeId}"
               data-op-code="lexeme_process_state"
               data-toggle="delete-confirm"
-              data-placement="right">
+              data-placement="right"
+              sec:authorize="${#vars.isLexemeCrudGranted}">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
     </div>
@@ -30,14 +32,16 @@
       <span th:text="${lexeme.lexemeValueStateCode}"></span>
       <button type="button" class="btn badge badge-primary" title="Muuda"
               data-toggle="modal"
-              th:data-target="${'#editLexemeValueStateCodeDlg_' + lexeme.lexemeId}">
+              th:data-target="${'#editLexemeValueStateCodeDlg_' + lexeme.lexemeId}"
+              sec:authorize="${#vars.isLexemeCrudGranted}">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn badge badge-warning"
               th:data-id="${lexeme.lexemeId}"
               data-op-code="lexeme_value_state"
               data-toggle="delete-confirm"
-              data-placement="right">
+              data-placement="right"
+              sec:authorize="${#vars.isLexemeCrudGranted}">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
     </div>
@@ -52,14 +56,16 @@
         <span th:text="${grammar.valueText}"></span>
         <button type="button" class="btn badge badge-primary" title="Muuda"
                 data-toggle="modal"
-                th:data-target="${'#editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}">
+                th:data-target="${'#editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
                 th:data-id="${grammar.id}"
                 data-op-code="lexeme_grammar"
                 data-toggle="delete-confirm"
-                data-placement="right">
+                data-placement="right"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${grammarIter.last}">,&nbsp;</span>
@@ -76,14 +82,16 @@
         <span th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
         <button type="button" class="btn badge badge-primary" title="Muuda"
                 data-toggle="modal"
-                th:data-target="${'#editLexemeFrequencyGroupDlg_' + lexeme.lexemeId}">
+                th:data-target="${'#editLexemeFrequencyGroupDlg_' + lexeme.lexemeId}"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
                 th:data-id="${lexeme.lexemeId}"
                 data-op-code="lexeme_frequency_group"
                 data-toggle="delete-confirm"
-                data-placement="right">
+                data-placement="right"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
       </span>
@@ -103,7 +111,8 @@
         </th:block>
         <button type="button" class="btn badge badge-primary" title="Muuda"
                 data-toggle="modal"
-                th:data-target="${'#editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}">
+                th:data-target="${'#editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -111,7 +120,8 @@
                 data-op-code="lexeme_pos"
                 th:data-value="${classif.code}"
                 data-toggle="delete-confirm"
-                data-placement="right">
+                data-placement="right"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
@@ -132,7 +142,8 @@
         </th:block>
         <button type="button" class="btn badge badge-primary" title="Muuda"
                 data-toggle="modal"
-                th:data-target="${'#editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}">
+                th:data-target="${'#editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -140,7 +151,8 @@
                 data-op-code="lexeme_deriv"
                 th:data-value="${classif.code}"
                 data-toggle="delete-confirm"
-                data-placement="right">
+                data-placement="right"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
@@ -161,7 +173,8 @@
         </th:block>
         <button type="button" class="btn badge badge-primary" title="Muuda"
                 data-toggle="modal"
-                th:data-target="${'#editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}">
+                th:data-target="${'#editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -169,7 +182,8 @@
                 data-op-code="lexeme_register"
                 th:data-value="${classif.code}"
                 data-toggle="delete-confirm"
-                data-placement="right">
+                data-placement="right"
+                sec:authorize="${#vars.isLexemeCrudGranted}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
@@ -181,7 +195,8 @@
       <span class="lbl">Valdkonnad</span>
       <button type="button" class="btn badge badge-success" title="Lisa uus"
               data-toggle="modal"
-              th:data-target="${'#addMeaningDomainDlg_' + meaningId}">
+              th:data-target="${'#addMeaningDomainDlg_' + meaningId}"
+              sec:authorize="${#vars.isMeaningCrudGranted}">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -195,7 +210,8 @@
         </th:block>
         <button type="button" class="btn badge badge-primary" title="Muuda"
                 data-toggle="modal"
-                th:data-target="${'#editMeaningDomainDlg_' + meaningId + '_' + classifIter.index}">
+                th:data-target="${'#editMeaningDomainDlg_' + meaningId + '_' + classifIter.index}"
+                sec:authorize="${#vars.isMeaningCrudGranted}">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -203,7 +219,8 @@
                 data-op-code="meaning_domain"
                 th:data-value="${classif.toIdString()}"
                 data-toggle="delete-confirm"
-                data-placement="right">
+                data-placement="right"
+                sec:authorize="${#vars.isMeaningCrudGranted}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
@@ -225,7 +242,8 @@
               th:data-id="${lexeme.wordId}"
               th:data-op-code="word_gender"
               data-toggle="delete-confirm"
-              data-placement="right">
+              data-placement="right"
+              sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
     </div>
@@ -236,17 +254,24 @@
     </div>
     <div class="col pl-0">
       <span th:each="classif,classifIter : ${lexeme.wordTypes}" class="hidden-buttons">
+        <span th:replace="termdialog :: edit_word_type_dlg"></span>
         <span th:text="${classif.code}"></span>
         <th:block th:unless="${classif.code == classif.value}">
           -
           <span th:text="${classif.value}"></span>
         </th:block>
+        <button type="button" class="btn badge badge-primary" title="Muuda"
+                data-toggle="modal"
+                th:data-target="${'#editWordTypeDlg_' + lexeme.lexemeId + '_' + lexeme.wordId + '_' + classifIter.index}">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
         <button type="button" class="btn badge badge-warning"
                 th:data-id="${lexeme.wordId}"
                 data-op-code="word_type"
                 th:data-value="${classif.code}"
                 data-toggle="delete-confirm"
-                data-placement="right">
+                data-placement="right"
+                sec:authorize="${#vars.isWordCrudGranted}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>

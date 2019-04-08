@@ -63,7 +63,8 @@
   </div>
 
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${wordId}" id="details_div" th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')}">
+    <div th:data-id="${wordId}" id="details_div"
+         th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="detailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
@@ -162,7 +163,8 @@
                   <a class="btn btn-sm btn-primary"
                      th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}" 
                      th:if="${!#lists.isEmpty(lexeme.meaningWords)}"
-                     data-toggle="confirmation" data-placement="right" 
+                     data-toggle="confirmation"
+                     data-placement="right" 
                      data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
                      sec:authorize="${#vars.isLexemeCrudGranted}"
                     >Lahuta</a>
@@ -222,16 +224,16 @@
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addDefinitionDlg_' + lexeme.lexemeId}"
-                          sec:authorize="${#vars.isLexemeCrudGranted}">
+                          sec:authorize="${#authentication.principal.datasetPermissionsExist}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
                 <div class="col pl-0">
                   <div class="orderable" data-op-code="definition">
                     <th:block th:each="definition, itemIter : ${lexeme.definitions}"
-                        th:with="isDefinitionCrudGranted=${#authorization.expression('hasPermission(#vars.definition.id, ''DEFINITION'', ''DATASET:CRUD'')')}"
-                        th:data-id="${definition.id}"
-                        th:data-orderby="${definition.orderBy}">
+                              th:with="isDefinitionCrudGranted=${#authorization.expression('hasPermission(#vars.definition.id, ''DEFINITION'', ''DATASET:CRUD'')')}"
+                              th:data-id="${definition.id}"
+                              th:data-orderby="${definition.orderBy}">
                       <div th:replace="lexdialog :: edit_definition_dlg"></div>
                       <div class="row">
                         <div class="action-column">

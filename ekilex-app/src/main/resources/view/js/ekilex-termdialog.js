@@ -14,6 +14,7 @@ $(document).on("change", "select.term-def-dataset-select[name='dataset']", funct
 	}
 });
 
+//addLexemeDataDlg_ select
 $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	var opCode = $(this).val();
 	var localForm = $(this).closest("form");
@@ -28,7 +29,26 @@ $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	}
 });
 
+//addMeaningDataDlg_ select
+$(document).on("change", "select.meaning-data-select[name='opCode']", function() {
+	var opCode = $(this).val();
+	var localForm = $(this).closest("form");
+	localForm.find(".value-group").hide();
+	var meaningId = localForm.find("[name=id2]").val();
+	var dlgElemId = "#" + opCode + '_' + meaningId;
+	if (opCode.endsWith('Dlg')) {
+		$(dlgElemId).modal("show");
+		$("#addMeaningDataDlg_" + meaningId).modal("hide");
+	} else {
+		$(dlgElemId).show();
+	}
+});
+
 $(document).on("show.bs.modal", "[id^=addLexemeDataDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addMeaningDataDlg_]", function() {
 	initAddMultiDataDlg($(this));
 });
 
@@ -108,6 +128,10 @@ $(document).on("show.bs.modal", "[id^=editWordGenderDlg_]", function() {
 	initSelectDlg($(this));
 });
 
+$(document).on("show.bs.modal", "[id^=editWordTypeDlg_]", function() {
+	initSelectDlg($(this));
+});
+
 $(document).on("show.bs.modal", "[id^=editLexemeProcessStateDlg_]", function() {
 	initSelectDlg($(this));
 });
@@ -139,3 +163,4 @@ $(document).on("show.bs.modal", "[id^=editLexemeRegisterDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editMeaningDomainDlg_]", function() {
 	initSelectDlg($(this));
 });
+

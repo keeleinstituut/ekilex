@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -174,6 +175,13 @@ public class PermissionDbService {
 				DSL.field(DSL.val(authOp.name())),
 				DSL.field(DSL.val(authLang)));
 
+		Condition authLangCond;
+		if (StringUtils.isBlank(authLang)) {
+			authLangCond = edp.AUTH_LANG.isNull();
+		} else {
+			authLangCond = edp.AUTH_LANG.eq(authLang);
+		}
+
 		create
 			.insertInto(
 				DATASET_PERMISSION,
@@ -192,6 +200,7 @@ public class PermissionDbService {
 									.and(edp.DATASET_CODE.eq(datasetCode))
 									.and(edp.AUTH_ITEM.eq(authItem.name()))
 									.and(edp.AUTH_OPERATION.eq(authOp.name()))
+									.and(authLangCond)
 									)
 							)
 					)
@@ -207,10 +216,8 @@ public class PermissionDbService {
 
 		Table<Record1<Integer>> lp = DSL
 			.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
-			.from(WORD, LEXEME)
-			.where(
-					WORD.ID.eq(wordId)
-					.and(LEXEME.WORD_ID.eq(WORD.ID))
+			.from(WORD.leftOuterJoin(LEXEME).on(
+					LEXEME.WORD_ID.eq(WORD.ID)
 					.andExists(DSL
 							.select(DATASET_PERMISSION.ID)
 							.from(DATASET_PERMISSION)
@@ -223,6 +230,8 @@ public class PermissionDbService {
 									)
 							)
 					)
+			)
+			.where(WORD.ID.eq(wordId))
 			.groupBy(WORD.ID)
 			.asTable("lp");
 
@@ -245,10 +254,8 @@ public class PermissionDbService {
 
 		Table<Record1<Integer>> lp = DSL
 			.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
-			.from(MEANING, LEXEME)
-			.where(
-					MEANING.ID.eq(meaningId)
-					.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+			.from(MEANING.leftOuterJoin(LEXEME).on(
+					LEXEME.MEANING_ID.eq(MEANING.ID)
 					.andExists(DSL
 							.select(DATASET_PERMISSION.ID)
 							.from(DATASET_PERMISSION)
@@ -260,10 +267,10 @@ public class PermissionDbService {
 									)
 							)
 					)
+			)
+			.where(MEANING.ID.eq(meaningId))
 			.groupBy(MEANING.ID)
 			.asTable("lp");
-
-		lp = DSL.select(DSL.field(DSL.count(lp.field("lex_count", Integer.class))).as("lex_count")).from(lp).asTable("lp");
 
 		Table<Record1<Integer>> la = DSL
 			.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
