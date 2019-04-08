@@ -77,7 +77,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<FreeForm> freeforms;
 
-	private List<PublicNote> publicNotes;
+	private List<Note> publicNotes;
 
 	private List<FreeForm> grammars;
 
@@ -279,11 +279,11 @@ public class Lexeme extends AbstractDataObject {
 		this.freeforms = freeforms;
 	}
 
-	public List<PublicNote> getPublicNotes() {
+	public List<Note> getPublicNotes() {
 		return publicNotes;
 	}
 
-	public void setPublicNotes(List<PublicNote> publicNotes) {
+	public void setPublicNotes(List<Note> publicNotes) {
 		this.publicNotes = publicNotes;
 	}
 

@@ -113,6 +113,8 @@
         <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
         <div th:replace="termdialog :: add_definition_dlg"></div>
         <div th:replace="termdialog :: add_learner_comment_dlg"></div>
+        <div th:replace="termdialog :: add_meaning_public_note_dlg"></div>
+        <div th:replace="termdialog :: add_meaning_private_note_dlg"></div>
         <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
 
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
@@ -138,7 +140,7 @@
                       data-target="#newWordDlg"
                       th:data-meaning-id="${meaningId}"
                       sec:authorize="${#authentication.principal.datasetPermissionsExist}">Lisa uus keelend</button>
-              <button id="meaningCopyBtn" 
+              <button id="meaningCopyBtn"
                       title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
                       class="btn btn-primary btn-sm"
                       th:data-meaning-id="${meaningId}"
@@ -291,6 +293,160 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </th:block>
+            </div>
+          </div>
+          <div class="row">
+            <hr />
+            <div class="col pr-0 col-w13rem">
+                  <span class="lbl">Märkused
+                    <button type="button" class="btn badge badge-success"
+                            title="Lisa uus"
+                            data-toggle="modal"
+                            th:data-target="${'#addMeaningPublicNoteDlg_' + meaningId}"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </span>
+            </div>
+            <div th:if="${not #lists.isEmpty(meaning.publicNotes)}" class="col pl-0">
+              <th:block th:each="publicNote : ${meaning.publicNotes}">
+                <div th:replace="termdialog :: edit_meaning_public_note_dlg"></div>
+                <div th:replace="termdialog :: add_meaning_public_note_source_link_dlg"></div>
+                <div class="invisible-buttons action-buttons-anchor mw-90">
+                  <div style="display: list-item; position: absolute"></div>
+                  <span th:utext="${publicNote.valuePrese}"></span>
+                  <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
+                          [
+                          <button type="button" class="btn badge badge-success"
+                                  title="Lisa allikaviide"
+                                  data-toggle="modal"
+                                  th:data-target="${'#addMeaningPublicNoteSourceLinkDlg_' + meaningId + '_' + publicNote.id}"
+                                  sec:authorize="${#vars.isMeaningCrudGranted}">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                          </button>
+                          ]
+                        </span>
+                  <div class="action-buttons-2">
+                    <button type="button" class="btn badge badge-primary"
+                            th:title="Muuda"
+                            data-toggle="modal"
+                            th:data-target="${'#editMeaningPublicNoteDlg_' + meaningId + '_' + publicNote.id}"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning"
+                            th:data-id="${publicNote.id}"
+                            data-op-code="meaning_public_note"
+                            data-toggle="delete-confirm"
+                            data-placement="right"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="hidden-buttons">
+                      <span th:each="sourceLink : ${publicNote.sourceLinks}">
+                        [
+                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                        <span th:if="${sourceLink.name != null}">
+                          <span th:text="${sourceLink.name}"></span>
+                        </span>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${sourceLink.id}"
+                                data-op-code="ff_source_link"
+                                data-toggle="delete-confirm"
+                                data-placement="right"
+                                sec:authorize="${#vars.isMeaningCrudGranted}">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                        ]
+                      </span>
+                  <button type="button" class="btn badge badge-success"
+                          title="Lisa allikaviide"
+                          data-toggle="modal"
+                          th:data-target="${'#addMeaningPublicNoteSourceLinkDlg_' + meaningId + '_' + publicNote.id}"
+                          sec:authorize="${#vars.isMeaningCrudGranted}">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </th:block>
+            </div>
+          </div>
+          <div class="row">
+            <hr />
+            <div class="col pr-0 col-w13rem">
+                  <span class="lbl">Sisemärkused
+                    <button type="button" class="btn badge badge-success"
+                            title="Lisa uus"
+                            data-toggle="modal"
+                            th:data-target="${'#addMeaningPrivateNoteDlg_' + meaningId}"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </span>
+            </div>
+            <div th:if="${not #lists.isEmpty(meaning.privateNotes)}" class="col pl-0">
+              <th:block th:each="privateNote : ${meaning.privateNotes}">
+                <div th:replace="termdialog :: edit_meaning_private_note_dlg"></div>
+                <div th:replace="termdialog :: add_meaning_private_note_source_link_dlg"></div>
+                <div class="invisible-buttons action-buttons-anchor mw-90">
+                  <div style="display: list-item; position: absolute"></div>
+                  <span th:utext="${privateNote.valuePrese}"></span>
+                  <span class="show-on-mouseover" th:if="${#lists.isEmpty(privateNote.sourceLinks)}">
+                          [
+                          <button type="button" class="btn badge badge-success"
+                                  title="Lisa allikaviide"
+                                  data-toggle="modal"
+                                  th:data-target="${'#addMeaningPrivateNoteSourceLinkDlg_' + meaningId + '_' + privateNote.id}"
+                                  sec:authorize="${#vars.isMeaningCrudGranted}">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                          </button>
+                          ]
+                        </span>
+                  <div class="action-buttons-2">
+                    <button type="button" class="btn badge badge-primary"
+                            th:title="Muuda"
+                            data-toggle="modal"
+                            th:data-target="${'#editMeaningPrivateNoteDlg_' + meaningId + '_' + privateNote.id}"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning"
+                            th:data-id="${privateNote.id}"
+                            data-op-code="meaning_private_note"
+                            data-toggle="delete-confirm"
+                            data-placement="right"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="hidden-buttons">
+                      <span th:each="sourceLink : ${privateNote.sourceLinks}">
+                        [
+                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                        <span th:if="${sourceLink.name != null}">
+                          <span th:text="${sourceLink.name}"></span>
+                        </span>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${sourceLink.id}"
+                                data-op-code="ff_source_link"
+                                data-toggle="delete-confirm"
+                                data-placement="right"
+                                sec:authorize="${#vars.isMeaningCrudGranted}">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                        ]
+                      </span>
+                  <button type="button" class="btn badge badge-success"
+                          title="Lisa allikaviide"
+                          data-toggle="modal"
+                          th:data-target="${'#addMeaningPrivateNoteSourceLinkDlg_' + meaningId + '_' + privateNote.id}"
+                          sec:authorize="${#vars.isMeaningCrudGranted}">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
                 </div>
               </th:block>
             </div>
@@ -618,7 +774,7 @@
                 <div th:if="${not #lists.isEmpty(lexeme.publicNotes)}" class="col pl-0">
                   <th:block th:each="publicNote : ${lexeme.publicNotes}">
                     <div th:replace="termdialog :: edit_lexeme_public_note_dlg"></div>
-                    <div th:replace="termdialog :: add_public_note_source_link_dlg"></div>
+                    <div th:replace="termdialog :: add_lexeme_public_note_source_link_dlg"></div>
                     <div class="invisible-buttons action-buttons-anchor mw-90">
                       <div style="display: list-item; position: absolute"></div>
                       <span th:utext="${publicNote.valuePrese}"></span>
@@ -627,7 +783,7 @@
                           <button type="button" class="btn badge badge-success"
                                   title="Lisa allikaviide"
                                   data-toggle="modal"
-                                  th:data-target="${'#addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                                  th:data-target="${'#addLexemePublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
                                   sec:authorize="${#vars.isLexemeCrudGranted}">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
@@ -643,7 +799,7 @@
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${publicNote.id}"
-                                data-op-code="public_note"
+                                data-op-code="lexeme_public_note"
                                 data-toggle="delete-confirm"
                                 data-placement="right"
                                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -671,7 +827,7 @@
                       <button type="button" class="btn badge badge-success"
                               title="Lisa allikaviide"
                               data-toggle="modal"
-                              th:data-target="${'#addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                              th:data-target="${'#addLexemePublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
                               sec:authorize="${#vars.isLexemeCrudGranted}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>

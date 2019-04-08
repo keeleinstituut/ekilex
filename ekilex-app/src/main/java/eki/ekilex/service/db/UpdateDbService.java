@@ -853,7 +853,7 @@ public class UpdateDbService implements DbConstant {
 		return freeform.getId();
 	}
 
-	public Long addPublicNote(Long lexemeId, String value, String valuePrese, String languageCode) {
+	public Long addLexemePublicNote(Long lexemeId, String value, String valuePrese, String languageCode) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
@@ -865,6 +865,38 @@ public class UpdateDbService implements DbConstant {
 		lexemeFreeform.setLexemeId(lexemeId);
 		lexemeFreeform.setFreeformId(freeform.getId());
 		lexemeFreeform.store();
+
+		return freeform.getId();
+	}
+
+	public Long addMeaningPublicNote(Long meaningId, String value, String valuePrese, String languageCode) {
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.PUBLIC_NOTE.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.setLang(languageCode);
+		freeform.store();
+
+		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
+		meaningFreeform.setMeaningId(meaningId);
+		meaningFreeform.setFreeformId(freeform.getId());
+		meaningFreeform.store();
+
+		return freeform.getId();
+	}
+
+	public Long addMeaningPrivateNote(Long meaningId, String value, String valuePrese, String languageCode) {
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.PRIVATE_NOTE.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.setLang(languageCode);
+		freeform.store();
+
+		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
+		meaningFreeform.setMeaningId(meaningId);
+		meaningFreeform.setFreeformId(freeform.getId());
+		meaningFreeform.store();
 
 		return freeform.getId();
 	}
