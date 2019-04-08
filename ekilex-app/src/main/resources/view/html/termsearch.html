@@ -226,9 +226,7 @@
                       <span th:each="sourceLink : ${definition.sourceLinks}" th:if="${not #lists.isEmpty(definition.sourceLinks)}">
                         [
                         <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                        <span th:if="${sourceLink.name != null}">
-                          <span th:text="${sourceLink.name}"></span>
-                        </span>
+                        <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
                         <button type="button" class="btn badge badge-warning"
                                 data-op-code="def_source_link"
                                 th:data-id="${sourceLink.id}"

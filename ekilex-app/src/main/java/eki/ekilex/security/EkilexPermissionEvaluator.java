@@ -47,7 +47,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		return false;
 	}
 
-	//hasPermission(#id, 'Foo', 'write')
+	//hasPermission(#id, 'USAGE', 'DATASET:CRUD')
 	@Transactional
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
@@ -77,7 +77,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 			isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, authItem, authOps);
 		}
 
-		logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\" granted: {}", userId, targetId, targetType, permission, isPermGranted);
+		//logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\" granted: {}", userId, targetId, targetType, permission, isPermGranted);
 
 		return isPermGranted;
 	}

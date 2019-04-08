@@ -68,7 +68,8 @@
                               onclick="openAddDatasetPermissionDlg(this)"
                               data-toggle="modal"
                               data-target="#addDatasetPermissionDlg"
-                              sec:authorize="${#authentication.principal.datasetOwnershipExist}">
+                              sec:authorize="${#authentication.principal.datasetOwnershipExist}"
+                              th:disabled="${#authentication.principal.id == userPerm.id}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </td>
@@ -85,7 +86,8 @@
                                   th:data-id="${datasetPerm.id}"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
-                                  sec:authorize="${#authentication.principal.datasetOwnershipExist}">
+                                  sec:authorize="${#authentication.principal.datasetOwnershipExist}"
+                                  th:disabled="${#authentication.principal.id == userPerm.id}">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                         </div>

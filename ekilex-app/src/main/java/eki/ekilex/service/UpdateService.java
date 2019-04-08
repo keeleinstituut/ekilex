@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -27,7 +28,8 @@ import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.UpdateDbService;
 
-@Service
+@PreAuthorize("authentication.principal.datasetPermissionsExist")
+@Component
 public class UpdateService {
 
 	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
@@ -50,6 +52,7 @@ public class UpdateService {
 
 	// --- UPDATE ---
 
+	//@PreAuthorize("hasPermission(#id, 'USAGE', 'DATASET:CRUD')")
 	@Transactional
 	public void updateUsageValue(Long id, String valuePrese) {
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
