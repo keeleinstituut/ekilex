@@ -5,7 +5,7 @@ import javax.persistence.Column;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
-public class LexemePublicNoteSourceTuple extends AbstractDataObject {
+public class NoteSourceTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

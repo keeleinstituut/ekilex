@@ -193,7 +193,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 						if (sourceId == null) {
 							contentBuf.append(valueStr);
 						} else {
-							Long refLinkId = createFreeformSourceLink(ownerId, ReferenceType.ANY, sourceId, null, null);
+							Long refLinkId = createFreeformSourceLink(ownerId, ReferenceType.ANY, sourceId, null, valueStr);
 							//simulating markdown link syntax
 							contentBuf.append("[");
 							contentBuf.append(valueStr);

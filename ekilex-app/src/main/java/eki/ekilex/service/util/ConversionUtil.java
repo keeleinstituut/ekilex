@@ -33,10 +33,10 @@ import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
+import eki.ekilex.data.Note;
+import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
-import eki.ekilex.data.PublicNote;
-import eki.ekilex.data.LexemePublicNoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermMeaning;
@@ -371,30 +371,30 @@ public class ConversionUtil {
 		return usages;
 	}
 
-	public List<PublicNote> composePublicNotes(List<LexemePublicNoteSourceTuple> publicNoteRefTuples) {
+	public List<Note> composeNotes(List<NoteSourceTuple> noteSourceTuples) {
 
-		List<PublicNote> publicNotes = new ArrayList<>();
+		List<Note> notes = new ArrayList<>();
 
-		Map<Long, PublicNote> publicNoteMap = new HashMap<>();
+		Map<Long, Note> noteMap = new HashMap<>();
 		List<SourceLink> sourceLinks;
 
-		for (LexemePublicNoteSourceTuple tuple : publicNoteRefTuples) {
+		for (NoteSourceTuple tuple : noteSourceTuples) {
 
-			Long publicNoteId = tuple.getFreeformId();
+			Long noteId = tuple.getFreeformId();
 			Long sourceLinkId = tuple.getSourceLinkId();
 
-			PublicNote publicNote = publicNoteMap.get(publicNoteId);
-			if (publicNote == null) {
-				publicNote = new PublicNote();
+			Note note = noteMap.get(noteId);
+			if (note == null) {
+				note = new Note();
 				sourceLinks = new ArrayList<>();
-				publicNote.setSourceLinks(sourceLinks);
-				publicNote.setId(publicNoteId);
-				publicNote.setValueText(tuple.getValueText());
-				publicNote.setValuePrese(tuple.getValuePrese());
-				publicNoteMap.put(publicNoteId, publicNote);
-				publicNotes.add(publicNote);
+				note.setSourceLinks(sourceLinks);
+				note.setId(noteId);
+				note.setValueText(tuple.getValueText());
+				note.setValuePrese(tuple.getValuePrese());
+				noteMap.put(noteId, note);
+				notes.add(note);
 			} else {
-				sourceLinks = publicNote.getSourceLinks();
+				sourceLinks = note.getSourceLinks();
 			}
 			if (sourceLinkId != null) {
 				SourceLink sourceLink = new SourceLink();
@@ -406,7 +406,7 @@ public class ConversionUtil {
 			}
 		}
 
-		return publicNotes;
+		return notes;
 	}
 
 	public List<LexemeLangGroup> composeLexemeLangGroups(List<Lexeme> lexemes, List<ClassifierSelect> languagesOrder) {

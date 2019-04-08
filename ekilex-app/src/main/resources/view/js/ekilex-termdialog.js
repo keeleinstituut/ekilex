@@ -94,6 +94,26 @@ $(document).on("show.bs.modal", "[id^=editLexemePublicNoteDlg_]", function(e) {
 	alignAndFocus(e, $(this));
 });
 
+$(document).on("show.bs.modal", "[id^=addMeaningPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editMeaningPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addMeaningPrivateNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editMeaningPrivateNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
 $(document).on("show.bs.modal", "[id^=addMeaningDomainDlg_]", function() {
 	initAddMultiDataDlg($(this));
 });
@@ -120,7 +140,15 @@ $(document).on("show.bs.modal", "[id^=addMeaningRelationDlg_]", function() {
 	initAddMeaningRelationDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addPublicNoteSourceLinkDlg_]", function() {
+$(document).on("show.bs.modal", "[id^=addLexemePublicNoteSourceLinkDlg_]", function() {
+	initAddSourceLinkDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addMeaningPublicNoteSourceLinkDlg_]", function() {
+	initAddSourceLinkDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addMeaningPrivateNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 });
 

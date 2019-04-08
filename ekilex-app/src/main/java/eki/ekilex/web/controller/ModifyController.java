@@ -165,8 +165,14 @@ public class ModifyController implements WebConstant {
 		case "learner_comment":
 			updateService.addLearnerComment(itemData.getId(), itemData.getValue(), itemData.getLanguage());
 			break;
-		case "public_note":
-			updateService.addPublicNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+		case "lexeme_public_note":
+			updateService.addLexemePublicNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			break;
+		case "meaning_public_note":
+			updateService.addMeaningPublicNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			break;
+		case "meaning_private_note":
+			updateService.addMeaningPrivateNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
 			break;
 		case "feedback_comment":
 			updateService.addFeedbackComment(itemData.getId(), itemData.getValue());
@@ -240,8 +246,14 @@ public class ModifyController implements WebConstant {
 		case "learner_comment":
 			updateService.updateLearnerComment(itemData.getId(), itemData.getValue());
 			break;
-		case "public_note":
-			updateService.updatePublicNote(itemData.getId(), itemData.getValue());
+		case "lexeme_public_note":
+			updateService.updateLexemePublicNote(itemData.getId(), itemData.getValue());
+			break;
+		case "meaning_public_note":
+			updateService.updateMeaningPublicNote(itemData.getId(), itemData.getValue());
+			break;
+		case "meaning_private_note":
+			updateService.updateMeaningPrivateNote(itemData.getId(), itemData.getValue());
 			break;
 		}
 
@@ -408,8 +420,14 @@ public class ModifyController implements WebConstant {
 		case "learner_comment":
 			updateService.deleteLearnerComment(id);
 			break;
-		case "public_note":
-			updateService.deletePublicNote(id);
+		case "lexeme_public_note":
+			updateService.deleteLexemePublicNote(id);
+			break;
+		case "meaning_public_note":
+			updateService.deleteMeaningPublicNote(id);
+			break;
+		case "meaning_private_note":
+			updateService.deleteMeaningPrivateNote(id);
 			break;
 		case "feedback":
 			updateService.deleteFeedback(id);

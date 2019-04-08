@@ -498,7 +498,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
-            <input type="hidden" name="opCode" value="public_note">
+            <input type="hidden" name="opCode" value="lexeme_public_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
@@ -516,7 +516,7 @@
         <form th:action="@{/modify_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${publicNote.id}">
-            <input type="hidden" name="opCode" value="public_note">
+            <input type="hidden" name="opCode" value="lexeme_public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
@@ -528,7 +528,7 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="add_public_note_source_link_dlg">
+  <div th:id="${'addLexemePublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="add_lexeme_public_note_source_link_dlg">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -550,6 +550,146 @@
         </div>
         <form th:action="@{/add_item}" method="post">
           <input type="hidden" name="id" th:value="${publicNote.id}">
+          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningPublicNoteDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${meaningId}">
+            <input type="hidden" name="language" value="est"><!-- FIXME what lang? -->
+            <input type="hidden" name="opCode" value="meaning_public_note">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningPublicNoteDlg_' + meaningId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="edit_meaning_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${publicNote.id}">
+            <input type="hidden" name="opCode" value="meaning_public_note">
+            <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningPublicNoteSourceLinkDlg_' + meaningId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="add_meaning_public_note_source_link_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/sourcesearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-auto col-form-label">Otsing</label>
+                  <div class="col-5">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <form th:action="@{/add_item}" method="post">
+          <input type="hidden" name="id" th:value="${publicNote.id}">
+          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningPrivateNoteDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_private_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${meaningId}">
+            <input type="hidden" name="language" value="est"><!-- FIXME what lang? -->
+            <input type="hidden" name="opCode" value="meaning_private_note">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningPrivateNoteDlg_' + meaningId + '_' + privateNote.id}" class="modal" role="dialog" th:fragment="edit_meaning_private_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${privateNote.id}">
+            <input type="hidden" name="opCode" value="meaning_private_note">
+            <input type="hidden" name="value" th:value="${privateNote.valuePrese}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningPrivateNoteSourceLinkDlg_' + meaningId + '_' + privateNote.id}" class="modal" role="dialog" th:fragment="add_meaning_private_note_source_link_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/sourcesearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-auto col-form-label">Otsing</label>
+                  <div class="col-5">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <form th:action="@{/add_item}" method="post">
+          <input type="hidden" name="id" th:value="${privateNote.id}">
           <input type="hidden" name="opCode" value="ff_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">

@@ -24,8 +24,8 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
-import eki.ekilex.data.PublicNote;
-import eki.ekilex.data.LexemePublicNoteSourceTuple;
+import eki.ekilex.data.Note;
+import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
@@ -128,7 +128,7 @@ public class TermSearchService implements SystemConstant {
 	@Transactional
 	public Meaning getMeaning(Long meaningId, List<String> selectedDatasets, List<ClassifierSelect> languagesOrder) {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name()};
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
 
 		final String classifierLabelLang = "est";
@@ -143,6 +143,10 @@ public class TermSearchService implements SystemConstant {
 		List<Classifier> domains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
 		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId, excludeMeaningAttributeTypes).into(FreeForm.class);
 		List<FreeForm> learnerComments = commonDataDbService.findMeaningLearnerComments(meaningId).into(FreeForm.class);
+		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.findMeaningNoteSourceTuples(FreeformType.PUBLIC_NOTE, meaningId);
+		List<Note> meaningPublicNotes = conversionUtil.composeNotes(meaningPublicNoteSourceTuples);
+		List<NoteSourceTuple> meaningPrivateNoteSourceTuples = commonDataDbService.findMeaningNoteSourceTuples(FreeformType.PRIVATE_NOTE, meaningId);
+		List<Note> meaningPrivateNotes = conversionUtil.composeNotes(meaningPrivateNoteSourceTuples);
 		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);
 
@@ -162,8 +166,8 @@ public class TermSearchService implements SystemConstant {
 					commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 							.into(UsageTranslationDefinitionTuple.class);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-			List<LexemePublicNoteSourceTuple> publicNoteRefTuples = commonDataDbService.findPublicNoteRefTuples(lexemeId);
-			List<PublicNote> publicNotes = conversionUtil.composePublicNotes(publicNoteRefTuples);
+			List<NoteSourceTuple> lexemePublicNoteSourceTuples = commonDataDbService.findLexemePublicNoteSourceTuples(lexemeId);
+			List<Note> lexemePublicNotes = conversionUtil.composeNotes(lexemePublicNoteSourceTuples);
 			List<FreeForm> lexemeGrammars = commonDataDbService.findGrammars(lexemeId).into(FreeForm.class);
 			List<SourceLink> lexemeRefLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
 			List<Relation> lexemeRelations = commonDataDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
@@ -191,7 +195,7 @@ public class TermSearchService implements SystemConstant {
 			lexeme.setRegisters(lexemeRegisters);
 			lexeme.setRegions(lexemeRegions);
 			lexeme.setFreeforms(lexemeFreeforms);
-			lexeme.setPublicNotes(publicNotes);
+			lexeme.setPublicNotes(lexemePublicNotes);
 			lexeme.setUsages(usages);
 			lexeme.setGrammars(lexemeGrammars);
 			lexeme.setClassifiersExist(classifiersExist);
@@ -214,6 +218,8 @@ public class TermSearchService implements SystemConstant {
 		meaning.setDomains(domains);
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setLearnerComments(learnerComments);
+		meaning.setPublicNotes(meaningPublicNotes);
+		meaning.setPrivateNotes(meaningPrivateNotes);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
 		meaning.setContentExists(contentExists);
