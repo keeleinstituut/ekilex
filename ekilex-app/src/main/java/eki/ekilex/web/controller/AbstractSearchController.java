@@ -96,6 +96,11 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return commonDataService.getRegisters();
 	}
 
+	@ModelAttribute("allLexemeRegions")
+	public List<Classifier> getLexemeRegions() {
+		return commonDataService.getRegions();
+	}
+
 	@ModelAttribute("allLexemeDerivs")
 	public List<Classifier> getLexemeDerivs() {
 		return commonDataService.getDerivs();

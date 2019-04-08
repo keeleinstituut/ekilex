@@ -127,6 +127,9 @@ public class ModifyController implements WebConstant {
 		case "lexeme_register":
 			updateService.addLexemeRegister(itemData.getId(), itemData.getValue());
 			break;
+		case "lexeme_region":
+			updateService.addLexemeRegion(itemData.getId(), itemData.getValue());
+			break;
 		case "word_gender":
 			updateService.updateWordGender(itemData.getId3(), itemData.getValue());
 			break;
@@ -212,6 +215,9 @@ public class ModifyController implements WebConstant {
 			break;
 		case "lexeme_register":
 			updateService.updateLexemeRegister(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+			break;
+		case "lexeme_region":
+			updateService.updateLexemeRegion(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
 			break;
 		case "word_gender":
 			updateService.updateWordGender(itemData.getId(), itemData.getValue());
@@ -362,6 +368,9 @@ public class ModifyController implements WebConstant {
 			break;
 		case "lexeme_register":
 			updateService.deleteLexemeRegister(id, valueToRemove);
+			break;
+		case "lexeme_region":
+			updateService.deleteLexemeRegion(id, valueToRemove);
 			break;
 		case "word_gender":
 			updateService.updateWordGender(id, null);

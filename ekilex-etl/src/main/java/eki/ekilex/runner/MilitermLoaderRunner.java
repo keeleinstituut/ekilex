@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -84,39 +85,42 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		String[] dataXmlFilePaths = new String[] {milFilePath1, milFilePath2};
 		Document dataDoc;
 		Element rootElement;
-		List<Node> allConceptGroupNodes = new ArrayList<>();
 		List<Node> conceptGroupNodes;
-
-		for (String dataXmlFilePath : dataXmlFilePaths) {
-
-			logger.debug("Loading \"{}\"", dataXmlFilePath);
-			dataDoc = xmlReader.readDocument(dataXmlFilePath);
-			rootElement = dataDoc.getRootElement();
-			conceptGroupNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
-			allConceptGroupNodes.addAll(conceptGroupNodes);
-		}
-
 		meaningRelationPartsMap = new HashMap<>();
 		illegalSourceReferenceValueCount = new Count();
 		illegalMeaningRelationReferenceValueCount = new Count();
-		int conceptGroupCount = allConceptGroupNodes.size();
-		logger.debug("{} concept groups found", conceptGroupCount);
 
-		int conceptGroupCounter = 0;
-		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
+		int fileCounter = 1;
+		for (String dataXmlFilePath : dataXmlFilePaths) {
 
-		for (Node conceptGroupNode : allConceptGroupNodes) {
+			int totalFiles = dataXmlFilePaths.length;
+			sourceFileName = FilenameUtils.getName(dataXmlFilePath);
+			logger.debug("Loading {} file of {} files. File name: \"{}\"", fileCounter, totalFiles, sourceFileName);
 
-			boolean isLanguageTypeConcept = isLanguageTypeConcept(conceptGroupNode);
-			if (isLanguageTypeConcept) {
-				processConceptGroup(conceptGroupNode);
+			dataDoc = xmlReader.readDocument(dataXmlFilePath);
+			rootElement = dataDoc.getRootElement();
+			conceptGroupNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+			int conceptGroupCount = conceptGroupNodes.size();
+			logger.debug("{} concept groups found", conceptGroupCount);
+
+			int conceptGroupCounter = 0;
+			int lastProgressPercent = 0;
+			for (Node conceptGroupNode : conceptGroupNodes) {
+
+				boolean isLanguageTypeConcept = isLanguageTypeConcept(conceptGroupNode);
+				if (isLanguageTypeConcept) {
+					processConceptGroup(conceptGroupNode);
+				}
+
+				conceptGroupCounter++;
+				double progressPercent = ((double) conceptGroupCounter / conceptGroupCount) * 100;
+				int progressPercentRounded = (int) Math.round(progressPercent);
+				if (progressPercentRounded != lastProgressPercent) {
+					lastProgressPercent = progressPercentRounded;
+					logger.debug("File {}/{}. {}% - {} concept groups iterated", fileCounter, totalFiles, progressPercentRounded, conceptGroupCounter);
+				}
 			}
-
-			conceptGroupCounter++;
-			if (conceptGroupCounter % progressIndicator == 0) {
-				int progressPercent = conceptGroupCounter / progressIndicator;
-				logger.debug("{}% - {} concept groups iterated", progressPercent, conceptGroupCounter);
-			}
+			fileCounter++;
 		}
 
 		for (Map.Entry<Long, List<RelationPart>> meaningRelationPart : meaningRelationPartsMap.entrySet()) {
@@ -222,10 +226,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 							if (valuesSeparated) {
 								String[] separateRegionValues = StringUtils.split(regionValue, listingsDelimiter);
 								for (String region : separateRegionValues) {
-									saveLexemeRegion(lexemeId, region);
+									createLexemeRegion(lexemeId, region);
 								}
 							} else {
-								saveLexemeRegion(lexemeId, regionValue);
+								createLexemeRegion(lexemeId, regionValue);
 							}
 						}
 					}
@@ -595,8 +599,4 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void saveLexemeRegion(Long lexemeId, String regionCode) throws Exception {
-
-		createLexemeRegion(lexemeId, regionCode);
-	}
 }

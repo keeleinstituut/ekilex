@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.FilenameUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -50,6 +51,7 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 		t1 = System.currentTimeMillis();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
+		String fileName = FilenameUtils.getName(dataXmlFilePath);
 
 		List<Node> conceptGroupNodes = dataDoc.selectNodes(sourceConceptGroupExp);
 		int conceptGroupCount = conceptGroupNodes.size();
@@ -78,8 +80,9 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 				sourceObj = extractAndApplySourceProperties(conceptGroupNode);
 				sourceId = createSource(sourceObj);
 
-				termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
+				createSourceFreeform(sourceId, FreeformType.SOURCE_FILE, fileName);
 
+				termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
 				for (Node termGroupNode : termGroupNodes) {
 
 					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_NAME, termValueExp);

@@ -21,6 +21,7 @@
                   <option value="lexeme_pos">Sõnaliik</option>
                   <option value="lexeme_deriv">Tuletuskood</option>
                   <option value="lexeme_register">Register</option>
+                  <option value="lexeme_region">Regioon</option>
                   <option value="lexeme_grammar">Grammatika</option>
                   <option value="word_gender">Sugu</option>
                   <option value="word_type">Sõna tüüp</option>
@@ -76,6 +77,14 @@
                 <select required class="form-control value-select">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_region_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="region : ${allLexemeRegions}" th:value="${region.code}" th:text="${region.value}">region</option>
                 </select>
               </div>
             </div>
@@ -256,6 +265,22 @@
             <input type="hidden" name="currentValue" th:value="${classif.code}">
             <select class="form-control" name="value">
               <option th:each="item : ${allLexemeRegisters}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeRegionDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_region_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/modify_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_region">
+            <input type="hidden" name="currentValue" th:value="${classif.code}">
+            <select class="form-control" name="value">
+              <option th:each="item : ${allLexemeRegions}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">value</option>
             </select>
           </div>
         </form>

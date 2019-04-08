@@ -71,6 +71,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Classifier> registers;
 
+	private List<Classifier> regions;
+
 	private List<Usage> usages;
 
 	private List<FreeForm> freeforms;
@@ -251,6 +253,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setRegisters(List<Classifier> registers) {
 		this.registers = registers;
+	}
+
+	public List<Classifier> getRegions() {
+		return regions;
+	}
+
+	public void setRegions(List<Classifier> regions) {
+		this.regions = regions;
 	}
 
 	public List<Usage> getUsages() {

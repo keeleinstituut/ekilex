@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -120,6 +121,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		start();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
+		sourceFileName = FilenameUtils.getName(dataXmlFilePath);
 
 		List<Node> conceptGroupNodes = dataDoc.selectNodes(conceptGroupExp);
 		int conceptGroupCount = conceptGroupNodes.size();
