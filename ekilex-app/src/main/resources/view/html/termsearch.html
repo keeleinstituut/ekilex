@@ -252,7 +252,7 @@
               </th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row" th:if="${not #lists.isEmpty(meaning.learnerComments)}">
             <hr />
             <div class="col pr-0 col-w13rem">
               <span class="lbl">Õppekommentaarid
@@ -295,7 +295,7 @@
               </th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row" th:if="${not #lists.isEmpty(meaning.publicNotes)}">
             <hr />
             <div class="col pr-0 col-w13rem">
                   <span class="lbl">Märkused
@@ -372,7 +372,7 @@
               </th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row" th:if="${not #lists.isEmpty(meaning.privateNotes)}">
             <hr />
             <div class="col pr-0 col-w13rem">
                   <span class="lbl">Sisemärkused
@@ -472,7 +472,7 @@
               </table>
             </div>
           </div>
-          <div class="row">
+          <div class="row" th:if="${not #lists.isEmpty(meaning.groupedRelations)}">
             <hr />
             <div class="col pr-0 col-w13rem">
               <span class="lbl">Tähenduse seosed</span>
