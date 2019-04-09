@@ -1,14 +1,22 @@
 package eki.common.constant;
 
+import eki.common.data.CodeValue;
+
 public interface TextDecoration {
 
-	String EKI_ELEMENT_1 = "eki-elem-1";
+	CodeValue FOREIGN = new CodeValue("eki-foreign", "Tsitaatsõna");
 
-	String EKI_ELEMENT_2 = "eki-elem-2";
+	CodeValue HIGHLIGHT = new CodeValue("eki-highlight", "Esiletsõtetud märksõna");
 
-	String EKI_ELEMENT_3 = "eki-elem-3";
+	CodeValue SUB = new CodeValue("eki-sub", "Alaindeks");
 
-	String EKI_ELEMENT_4 = "eki-elem-4";
+	CodeValue SUP = new CodeValue("eki-sup", "Ülaindeks");
 
-	String EKI_ELEMENT_5 = "eki-elem-5";
+	CodeValue META = new CodeValue("eki-meta", "Metatähistus");
+
+	CodeValue LINK = new CodeValue("eki-link", "Viide");
+
+	CodeValue[] EKI_MARKUP_ELEMENTS = new CodeValue[] {
+			FOREIGN, HIGHLIGHT, SUB, SUP, META, LINK
+	};
 }

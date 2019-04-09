@@ -135,7 +135,7 @@ function initEkiEditor(ekiEditorElem) {
 }
 
 function removeTags(editorElem) {
-	let cleanedHtml = editorElem.html().replace(/<\/?eki-elem-(.*?)>/g, '');
+	let cleanedHtml = editorElem.html().replace(/<\/?eki-(.*?)>/g, '');
 	editorElem.html(cleanedHtml);
 	editorElem.focus();
 }
@@ -162,6 +162,7 @@ function addNode(ekiTag) {
 	}
 }
 
+//TODO not working
 function removeEkiTag(editorElem) {
 	let sel = window.getSelection();
 	if (sel.rangeCount) {

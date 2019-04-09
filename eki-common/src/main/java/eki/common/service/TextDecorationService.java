@@ -46,38 +46,38 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		TextDecorationDescriptor textDecorationDescriptor;
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_1);
-		preDecoration = "<" + EKI_ELEMENT_1 + ">";
-		postDecoration = "</" + EKI_ELEMENT_1 + ">";
+		preDecoration = "<" + FOREIGN.getCode() + ">";
+		postDecoration = "</" + FOREIGN.getCode() + ">";
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_2);
-		preDecoration = "<" + EKI_ELEMENT_2 + ">";
-		postDecoration = "</" + EKI_ELEMENT_2 + ">";
+		preDecoration = "<" + HIGHLIGHT.getCode() + ">";
+		postDecoration = "</" + HIGHLIGHT.getCode() + ">";
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_3);
-		preDecoration = "<" + EKI_ELEMENT_3 + ">";
-		postDecoration = "</" + EKI_ELEMENT_3 + ">";
+		preDecoration = "<" + SUB.getCode() + ">";
+		postDecoration = "</" + SUB.getCode() + ">";
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_4);
-		preDecoration = "<" + EKI_ELEMENT_4 + ">";
-		postDecoration = "</" + EKI_ELEMENT_4 + ">";
+		preDecoration = "<" + SUP.getCode() + ">";
+		postDecoration = "</" + SUP.getCode() + ">";
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
 		ekiEntityPatternV = entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_V);
-		preDecoration = "<" + EKI_ELEMENT_5 + ">~</" + EKI_ELEMENT_5 + ">";
+		preDecoration = "<" + META.getCode() + ">~</" + META.getCode() + ">";
 		postDecoration = null;
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
 		ekiEntityPatternEtc = entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_ETC);
-		preDecoration = "<" + EKI_ELEMENT_5 + ">";
-		postDecoration = "</" + EKI_ELEMENT_5 + ">";
+		preDecoration = "<" + META.getCode() + ">";
+		postDecoration = "</" + META.getCode() + ">";
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 	}
@@ -117,6 +117,24 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 			convertedText = applyPattern(pattern, convertedText, preDecoration, postDecoration, null);
 		}
 		return convertedText;
+	}
+
+	public String composeLinkMarkup(String linkType, String linkId, String linkValue) {
+		StringBuffer markupBuf = new StringBuffer();
+		markupBuf.append("<");
+		markupBuf.append(LINK.getCode());
+		markupBuf.append(" link-type='");
+		markupBuf.append(linkType);
+		markupBuf.append("'");
+		markupBuf.append(" link-id='");
+		markupBuf.append(linkId);
+		markupBuf.append("'");
+		markupBuf.append(">");
+		markupBuf.append(linkValue);
+		markupBuf.append("</");
+		markupBuf.append(LINK.getCode());
+		markupBuf.append(">");
+		return markupBuf.toString();
 	}
 
 	private String applyPattern(Pattern pattern, String text, String preDecoration, String postDecoration, String matchReplacement) {

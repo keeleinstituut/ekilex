@@ -35,13 +35,13 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 	@Autowired
 	private TermLoaderHelper loaderHelper;
 
-	ReportComposer reportComposer;
+	protected ReportComposer reportComposer;
 
-	Count illegalSourceReferenceValueCount;
+	protected Count illegalSourceReferenceValueCount;
 
-	String sourceFileName;
+	protected String sourceFileName;
 
-	void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj, DateFormat dateFormat) throws Exception {
+	protected void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj, DateFormat dateFormat) throws Exception {
 
 		Element valueNode;
 		String valueStr;
@@ -77,7 +77,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 		}
 	}
 
-	List<Content> extractContentAndRefs(Node rootContentNode, String lang, String term, boolean logWarrnings) throws Exception {
+	protected List<Content> extractContentAndRefs(Node rootContentNode, String lang, String term, boolean logWarrnings) throws Exception {
 
 		List<Content> contentList = new ArrayList<>();
 		Iterator<Node> contentNodeIter = ((Element) rootContentNode).nodeIterator();
@@ -166,9 +166,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 		return contentList;
 	}
 
-	//TODO should be replaced by separate ref links handling later
-	@Deprecated
-	String handleFreeformRefLinks(Node mixedContentNode, Long ownerId) throws Exception {
+	protected String handleFreeformTextSourceLinks(Node mixedContentNode, Long freeformId) throws Exception {
 
 		Iterator<Node> contentNodeIter = ((Element) mixedContentNode).nodeIterator();
 		StringBuffer contentBuf = new StringBuffer();
@@ -193,16 +191,9 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 						if (sourceId == null) {
 							contentBuf.append(valueStr);
 						} else {
-							Long refLinkId = createFreeformSourceLink(ownerId, ReferenceType.ANY, sourceId, null, valueStr);
-							//simulating markdown link syntax
-							contentBuf.append("[");
-							contentBuf.append(valueStr);
-							contentBuf.append("]");
-							contentBuf.append("(");
-							contentBuf.append(ContentKey.FREEFORM_SOURCE_LINK);
-							contentBuf.append(":");
-							contentBuf.append(refLinkId);
-							contentBuf.append(")");
+							Long sourceLinkId = createFreeformSourceLink(freeformId, ReferenceType.ANY, sourceId, null, valueStr);
+							String sourceLinkMarkup = composeLinkMarkup(ContentKey.FREEFORM_SOURCE_LINK, sourceLinkId.toString(), valueStr);
+							contentBuf.append(sourceLinkMarkup);
 						}
 					} else {
 						// unknown ref type
@@ -219,7 +210,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 		return valueStr;
 	}
 
-	boolean isLanguageTypeConcept(Node conceptGroupNode) {
+	protected boolean isLanguageTypeConcept(Node conceptGroupNode) {
 
 		String valueStr;
 		List<Node> valueNodes = conceptGroupNode.selectNodes(langGroupExp + "/" + langExp);
@@ -234,7 +225,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 		return true;
 	}
 
-	boolean domainExists(String domainCode, String domainOrigin) throws Exception {
+	protected boolean domainExists(String domainCode, String domainOrigin) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("origin", domainOrigin);
@@ -244,7 +235,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 		return domainExists;
 	}
 
-	Long getSource(String sourceName) {
+	protected Long getSource(String sourceName) {
 
 		if (sourceFileName == null) {
 			throw new RuntimeException("sourceFileName is not initialized");
@@ -274,7 +265,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 		return contentObj;
 	}
 
-	void appendToReport(boolean doReports, String reportName, String... reportCells) throws Exception {
+	protected void appendToReport(boolean doReports, String reportName, String... reportCells) throws Exception {
 
 		if (!doReports) {
 			return;

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import eki.common.constant.TextDecoration;
+import eki.common.data.CodeValue;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -46,5 +48,10 @@ public abstract class AbstractPageController implements WebConstant {
 	@ModelAttribute("allLanguages")
 	public List<Classifier> getAllLanguages() {
 		return commonDataService.getLanguages();
+	}
+
+	@ModelAttribute("ekiMarkupElements")
+	public CodeValue[] getEkiMarkupElements() {
+		return TextDecoration.EKI_MARKUP_ELEMENTS;
 	}
 }

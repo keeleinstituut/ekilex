@@ -388,7 +388,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = ((Element) publicNoteValueNode).getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
 			if (((Element) publicNoteValueNode).hasMixedContent()) {
-				valueStr = handleFreeformRefLinks(publicNoteValueNode, freeformId);
+				valueStr = handleFreeformTextSourceLinks(publicNoteValueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -398,7 +398,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleFreeformRefLinks(valueNode, freeformId);
+				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}

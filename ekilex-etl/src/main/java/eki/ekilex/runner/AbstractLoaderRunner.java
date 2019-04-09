@@ -184,6 +184,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return textDecorationService.convertEkiEntityMarkup(originalText);
 	}
 
+	protected String composeLinkMarkup(String linkType, String linkId, String linkValue) {
+		return textDecorationService.composeLinkMarkup(linkType, linkId, linkValue);
+	}
+
 	protected String removeAccents(String value, String lang) {
 		if (StringUtils.isBlank(value)) {
 			return null;
