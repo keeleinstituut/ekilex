@@ -178,10 +178,6 @@ public class LifecycleLogDbService {
 		return results;
 	}
 
-	public void addLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String entry) {
-		addLog(userName, eventType, entity, property, entityId, null, entry);
-	}
-
 	public void addLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String recent, String entry) {
 		if (LifecycleEntity.USAGE.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {

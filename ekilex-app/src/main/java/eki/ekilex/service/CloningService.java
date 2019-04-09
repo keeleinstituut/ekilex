@@ -76,6 +76,7 @@ public class CloningService {
 				LifecycleEntity.MEANING,
 				LifecycleProperty.VALUE,
 				duplicateMeaningId,
+				null,
 				definitionDbService.getCombinedMeaningDefinitions(duplicateMeaningId));
 		return duplicateMeaningId;
 	}
