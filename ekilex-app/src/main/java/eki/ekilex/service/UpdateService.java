@@ -42,12 +42,15 @@ public class UpdateService {
 
 	private final LexSearchDbService lexSearchDbService;
 
+	private final UserService userService;
+
 	public UpdateService(UpdateDbService updateDbService, TextDecorationService textDecorationService, LifecycleLogDbService lifecycleLogDbService,
-			LexSearchDbService lexSearchDbService) {
+			LexSearchDbService lexSearchDbService, UserService userService) {
 		this.updateDbService = updateDbService;
 		this.textDecorationService = textDecorationService;
 		this.lifecycleLogDbService = lifecycleLogDbService;
 		this.lexSearchDbService = lexSearchDbService;
+		this.userService = userService;
 	}
 
 	// --- UPDATE ---
@@ -55,40 +58,40 @@ public class UpdateService {
 	//@PreAuthorize("hasPermission(#id, 'USAGE', 'DATASET:CRUD')")
 	@Transactional
 	public void updateUsageValue(Long id, String valuePrese) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		updateDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateUsageTranslationValue(Long id, String valuePrese) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, valuePrese);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		updateDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateUsageDefinitionValue(Long id, String valuePrese) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		updateDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateGovernment(Long id, String value) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, value);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, value);
 		updateDbService.updateFreeformTextValue(id, value, null);
 	}
 
 	@Transactional
 	public void updateGrammar(Long id, String value) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, value);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, value);
 		updateDbService.updateFreeformTextValue(id, value, null);
 	}
 
 	@Transactional
 	public void updateDefinitionValue(Long id, String valuePrese) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		updateDbService.updateDefinitionValue(id, value, valuePrese);
 	}
@@ -96,7 +99,7 @@ public class UpdateService {
 	@Transactional
 	public void updateDefinitionOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.ORDER_BY, item);
+			addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.ORDER_BY, item);
 			updateDbService.updateDefinitionOrderby(item);
 		}
 	}
@@ -104,7 +107,7 @@ public class UpdateService {
 	@Transactional
 	public void updateLexemeRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.ORDER_BY, item);
+			addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.ORDER_BY, item);
 			updateDbService.updateLexemeRelationOrderby(item);
 		}
 	}
@@ -112,7 +115,7 @@ public class UpdateService {
 	@Transactional
 	public void updateMeaningRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.ORDER_BY, item);
+			addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.ORDER_BY, item);
 			updateDbService.updateMeaningRelationOrderby(item);
 		}
 	}
@@ -120,7 +123,7 @@ public class UpdateService {
 	@Transactional
 	public void updateWordRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.ORDER_BY, item);
+			addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.ORDER_BY, item);
 			updateDbService.updateWordRelationOrderby(item);
 		}
 	}
@@ -128,7 +131,7 @@ public class UpdateService {
 	@Transactional
 	public void updateWordEtymologyOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ORDER_BY, item);
+			addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ORDER_BY, item);
 			updateDbService.updateWordEtymologyOrderby(item);
 		}
 	}
@@ -136,7 +139,7 @@ public class UpdateService {
 	@Transactional
 	public void updateLexemeOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.ORDER_BY, item);
+			addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.ORDER_BY, item);
 			updateDbService.updateLexemeOrderby(item);
 		}
 	}
@@ -152,101 +155,101 @@ public class UpdateService {
 		recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
-			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
+			addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
 			updateDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
 		}
 	}
 
 	@Transactional
 	public void updateWordGender(Long wordId, String genderCode) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.GENDER, wordId, genderCode);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.GENDER, wordId, genderCode);
 		updateDbService.updateWordGender(wordId, genderCode);
 	}
 
 	@Transactional
 	public void updateWordType(Long wordId, String currentTypeCode, String newTypeCode) {
 		Long wordWordTypeId = updateDbService.updateWordType(wordId, currentTypeCode, newTypeCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, currentTypeCode, newTypeCode);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, currentTypeCode, newTypeCode);
 	}
 
 	@Transactional
 	public void updateWordAspect(Long wordId, String typeCode) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.ASPECT, wordId, typeCode);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.ASPECT, wordId, typeCode);
 		updateDbService.updateWordAspect(wordId, typeCode);
 	}
 
 	@Transactional
 	public void updateLexemeFrequencyGroup(Long lexemeId, String freqGroupCode) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.FREQUENCY_GROUP, lexemeId, freqGroupCode);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.FREQUENCY_GROUP, lexemeId, freqGroupCode);
 		updateDbService.updateLexemeFrequencyGroup(lexemeId, freqGroupCode);
 	}
 
 	@Transactional
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		Long lexemePosId = updateDbService.updateLexemePos(lexemeId, currentPos, newPos);
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, currentPos, newPos);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, currentPos, newPos);
 	}
 
 	@Transactional
 	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) {
 		Long lexemeDerivid = updateDbService.updateLexemeDeriv(lexemeId, currentDeriv, newDeriv);
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivid, currentDeriv, newDeriv);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivid, currentDeriv, newDeriv);
 	}
 
 	@Transactional
 	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) {
 		Long lexemeRegisterId = updateDbService.updateLexemeRegister(lexemeId, currentRegister, newRegister);
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, currentRegister, newRegister);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, currentRegister, newRegister);
 	}
 
 	@Transactional
 	public void updateLexemeRegion(Long lexemeId, String currentRegion, String newRegion) {
 		Long lexemeRegionId = updateDbService.updateLexemeRegion(lexemeId, currentRegion, newRegion);
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, currentRegion, newRegion);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, currentRegion, newRegion);
 	}
 
 	@Transactional
 	public void updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
 		Long meaningDomainId = updateDbService.updateMeaningDomain(meaningId, currentDomain, newDomain);
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, currentDomain.getCode(), newDomain.getCode());
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, currentDomain.getCode(), newDomain.getCode());
 	}
 
 	@Transactional
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE_STATE, lexemeId, valueStateCode);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE_STATE, lexemeId, valueStateCode);
 		updateDbService.updateLexemeValueState(lexemeId, valueStateCode);
 	}
 
 	@Transactional
 	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, lexemeId, processStateCode);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, lexemeId, processStateCode);
 		updateDbService.updateLexemeProcessState(lexemeId, processStateCode);
 	}
 
 	@Transactional
 	public void updateLearnerComment(Long id, String valuePrese) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id, valuePrese);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		updateDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateLexemePublicNote(Long id, String valuePrese) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		updateDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateMeaningPublicNote(Long id, String valuePrese) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		updateDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateMeaningPrivateNote(Long id, String valuePrese) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		addLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		updateDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
@@ -257,82 +260,82 @@ public class UpdateService {
 	public void addWord(String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long wordId = updateDbService.addWord(value, valuePrese, datasetCode, language, morphCode, meaningId);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
 	}
 
 	@Transactional
 	public void addWordToDataset(Long wordId, String datasetCode, Long meaningId) {
 		Long lexemeId = updateDbService.addWordToDataset(wordId, datasetCode, meaningId);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
 	}
 
 	@Transactional
 	public void addWordType(Long wordId, String typeCode) {
 		Long lexemePosId = updateDbService.addWordType(wordId, typeCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
 	}
 
 	@Transactional
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Long lexemePosId = updateDbService.addLexemePos(lexemeId, posCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
 	}
 
 	@Transactional
 	public void addLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = updateDbService.addLexemeDeriv(lexemeId, derivCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
 	}
 
 	@Transactional
 	public void addLexemeRegister(Long lexemeId, String registerCode) {
 		Long lexemeRegisterId = updateDbService.addLexemeRegister(lexemeId, registerCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
 	}
 
 	@Transactional
 	public void addLexemeRegion(Long lexemeId, String regionCode) {
 		Long lexemeRegionId = updateDbService.addLexemeRegion(lexemeId, regionCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode);
 	}
 
 	@Transactional
 	public void addGovernment(Long lexemeId, String government) {
 		Long governmentId = updateDbService.addGovernment(lexemeId, government);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, government);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, government);
 	}
 
 	@Transactional
 	public void addLexemeGrammar(Long lexemeId, String value) {
 		Long grammarId = updateDbService.addLexemeGrammar(lexemeId, value);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, value);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, value);
 	}
 
 	@Transactional
 	public void addUsage(Long lexemeId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageId = updateDbService.addUsage(lexemeId, value, valuePrese, languageCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
 	}
 
 	@Transactional
 	public void addUsageTranslation(Long usageId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageTranslationId = updateDbService.addUsageTranslation(usageId, value, valuePrese, languageCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, valuePrese);
 	}
 
 	@Transactional
 	public void addUsageDefinition(Long usageId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = updateDbService.addUsageDefinition(usageId, value, valuePrese, languageCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
 	@Transactional
 	public void addMeaningDomain(Long meaningId, Classifier domain) {
 		Long meaningDomainId = updateDbService.addMeaningDomain(meaningId, domain);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
 	}
 
 	@Transactional
@@ -340,13 +343,13 @@ public class UpdateService {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long definitionId = updateDbService.addDefinition(meaningId, value, valuePrese, languageCode, DEFAULT_DEFINITION_TYPE_CODE);
 		updateDbService.addDefinitionDataset(definitionId, datasetCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
 	}
 
 	@Transactional
 	public void addFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
 		Long sourceLinkId = updateDbService.addFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
 	}
 
 	@Transactional
@@ -354,7 +357,7 @@ public class UpdateService {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = updateDbService.addLexemeSourceLink(lexemeId, sourceId, refType, sourceValue, sourceName);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
 	}
 
 	@Transactional
@@ -362,7 +365,7 @@ public class UpdateService {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = updateDbService.addDefinitionSourceLink(definitionId, sourceId, refType, sourceValue, sourceName);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
 	}
 
 	@Transactional
@@ -389,7 +392,7 @@ public class UpdateService {
 				List<Map<String, Object>> wordRelationGroupMembers = updateDbService.findWordRelationGroupMembers(groupId);
 				String logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 				for (Map<String, Object> member : wordRelationGroupMembers) {
-					lifecycleLogDbService.addLog(
+					addLifecycleLog(
 							LifecycleEventType.CREATE,
 							LifecycleEntity.WORD_RELATION_GROUP_MEMBER,
 							LifecycleProperty.VALUE,
@@ -400,53 +403,54 @@ public class UpdateService {
 			}
 		} else {
 			Long relationId = updateDbService.addWordRelation(wordId, targetWordId, relationTypeCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+			addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
 		}
 	}
 
 	@Transactional
 	public void addLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) {
 		Long lexemeRelationId = updateDbService.addLexemeRelation(lexemeId1, lexemeId2, relationType);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
 	}
 
 	@Transactional
 	public void addMeaningRelation(Long meaningId1, Long meaningId2, String relationType) {
 		Long meaningRelationId = updateDbService.addMeaningRelation(meaningId1, meaningId2, relationType);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
 	}
 
 	@Transactional
 	public void addLearnerComment(Long meaningId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = updateDbService.addLearnerComment(meaningId, value, valuePrese, languageCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
 	@Transactional
 	public void addLexemePublicNote(Long lexemeId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = updateDbService.addLexemePublicNote(lexemeId, value, valuePrese, languageCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
 	@Transactional
 	public void addMeaningPublicNote(Long meaningId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = updateDbService.addMeaningPublicNote(meaningId, value, valuePrese, languageCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
 	@Transactional
 	public void addMeaningPrivateNote(Long meaningId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = updateDbService.addMeaningPrivateNote(meaningId, value, valuePrese, languageCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		addLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
 	@Transactional
 	public void addFeedbackComment(Long feedbackId, String comment) {
-		updateDbService.addFeedbackComment(feedbackId, comment, lifecycleLogDbService.getUserName());
+		String userName = userService.getLoggedInUser().getName();
+		updateDbService.addFeedbackComment(feedbackId, comment, userName);
 	}
 
 	@Transactional
@@ -457,11 +461,11 @@ public class UpdateService {
 			updateLexemeLevels(lexemeId2, "delete");
 			String logEntrySource = StringUtils.joinWith(".", lexeme2.getLevel1(), lexeme2.getLevel2(), lexeme2.getLevel3());
 			String logEntryTarget = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
-			lifecycleLogDbService.addLog(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, logEntrySource, logEntryTarget);
+			addLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, logEntrySource, logEntryTarget);
 		}
 		String logEntrySource = updateDbService.getFirstDefinitionOfMeaning(lexeme2.getMeaningId());
 		String logEntryTarget = updateDbService.getFirstDefinitionOfMeaning(lexeme.getMeaningId());
-		lifecycleLogDbService.addLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, lexeme.getMeaningId(), logEntrySource, logEntryTarget);
+		addLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, lexeme.getMeaningId(), logEntrySource, logEntryTarget);
 		updateDbService.joinLexemeMeanings(lexemeId, lexemeId2);
 	}
 
@@ -488,7 +492,7 @@ public class UpdateService {
 	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
 		String logEntrySource = updateDbService.getFirstDefinitionOfMeaning(meaningId);
 		String logEntryTarget = updateDbService.getFirstDefinitionOfMeaning(sourceMeaningId);
-		lifecycleLogDbService.addLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, logEntrySource, logEntryTarget);
+		addLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, logEntrySource, logEntryTarget);
 		updateDbService.joinMeanings(meaningId, sourceMeaningId);
 	}
 
@@ -498,62 +502,62 @@ public class UpdateService {
 	public void deleteWordType(Long wordId, String typeCode) {
 		if (StringUtils.isNotBlank(typeCode)) {
 			Long wordWordTypeId = updateDbService.findWordWordTypeId(wordId, typeCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, typeCode, null);
+			addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, typeCode, null);
 			updateDbService.deleteWordWordType(wordWordTypeId);
 		}
 	}
 
 	@Transactional
 	public void deleteUsage(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteUsageTranslation(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteUsageDefinition(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteGovernment(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteGrammar(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteDefinition(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteDefinition(id);
 	}
 
 	@Transactional
 	public void deleteDefinitionSourceLink(Long sourceLinkId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
 		updateDbService.deleteDefinitionRefLink(sourceLinkId);
 	}
 
 	@Transactional
 	public void deleteFreeformSourceLink(Long sourceLinkId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
 		updateDbService.deleteFreeformRefLink(sourceLinkId);
 	}
 
 	@Transactional
 	public void deleteLexemeSourceLink(Long sourceLinkId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
 		updateDbService.deleteLexemeRefLink(sourceLinkId);
 	}
 
@@ -561,7 +565,7 @@ public class UpdateService {
 	public void deleteLexemePos(Long lexemeId, String posCode) {
 		if (StringUtils.isNotBlank(posCode)) {
 			Long lexemePosId = updateDbService.findLexemePosId(lexemeId, posCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
+			addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
 			updateDbService.deleteLexemePos(lexemePosId);
 		}
 	}
@@ -570,7 +574,7 @@ public class UpdateService {
 	public void deleteLexemeDeriv(Long lexemeId, String derivCode) {
 		if (StringUtils.isNotBlank(derivCode)) {
 			Long lexemeDerivId = updateDbService.findLexemeDerivId(lexemeId, derivCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode, null);
+			addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode, null);
 			updateDbService.deleteLexemeDeriv(lexemeDerivId);
 		}
 	}
@@ -579,7 +583,7 @@ public class UpdateService {
 	public void deleteLexemeRegister(Long lexemeId, String registerCode) {
 		if (StringUtils.isNotBlank(registerCode)) {
 			Long lexemeRegisterId = updateDbService.findLexemeRegisterId(lexemeId, registerCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode, null);
+			addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode, null);
 			updateDbService.deleteLexemeRegister(lexemeRegisterId);
 		}
 	}
@@ -588,7 +592,7 @@ public class UpdateService {
 	public void deleteLexemeRegion(Long lexemeId, String regionCode) {
 		if (StringUtils.isNotBlank(regionCode)) {
 			Long lexemeRegionId = updateDbService.findLexemeRegionId(lexemeId, regionCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, regionCode, null);
+			addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, regionCode, null);
 			updateDbService.deleteLexemeRegion(lexemeRegionId);
 		}
 	}
@@ -597,7 +601,7 @@ public class UpdateService {
 	public void deleteMeaningDomain(Long meaningId, Classifier domain) {
 		if (domain != null) {
 			Long meaningDomainId = updateDbService.findMeaningDomainId(meaningId, domain);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
+			addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
 			updateDbService.deleteMeaningDomain(meaningDomainId);
 		}
 	}
@@ -606,7 +610,7 @@ public class UpdateService {
 	public void deleteWordRelation(Long relationId) {
 		Long groupId = updateDbService.findWordRelationGroupId(relationId);
 		if (groupId == null) {
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+			addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
 			updateDbService.deleteWordRelation(relationId);
 		} else {
 			List<Map<String, Object>> wordRelationGroupMembers = updateDbService.findWordRelationGroupMembers(groupId);
@@ -619,7 +623,7 @@ public class UpdateService {
 						.map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 			}
 			for (Map<String, Object> member : wordRelationGroupMembers) {
-				lifecycleLogDbService.addLog(
+				addLifecycleLog(
 						LifecycleEventType.DELETE,
 						LifecycleEntity.WORD_RELATION_GROUP_MEMBER,
 						LifecycleProperty.VALUE,
@@ -636,13 +640,13 @@ public class UpdateService {
 
 	@Transactional
 	public void deleteLexemeRelation(Long relationId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId);
 		updateDbService.deleteLexemeRelation(relationId);
 	}
 
 	@Transactional
 	public void deleteMeaningRelation(Long relationId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId);
 		updateDbService.deleteMeaningRelation(relationId);
 	}
 
@@ -656,7 +660,7 @@ public class UpdateService {
 		if (isLastLexeme) {
 			wordId = lexSearchDbService.findLexeme(lexemeId).into(WordLexeme.class).getWordId();
 		}
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
 		updateLexemeLevels(lexemeId, "delete");
 		updateDbService.deleteLexeme(lexemeId);
 		if (isLastLexeme) {
@@ -666,31 +670,31 @@ public class UpdateService {
 
 	@Transactional
 	public void deleteWord(Long wordId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId);
 		updateDbService.deleteWord(wordId);
 	}
 
 	@Transactional
 	public void deleteLearnerComment(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteLexemePublicNote(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteMeaningPublicNote(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteMeaningPrivateNote(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, id);
+		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, id);
 		updateDbService.deleteFreeform(id);
 	}
 
@@ -858,4 +862,21 @@ public class UpdateService {
 		return 0;
 	}
 
+	private void addLifecycleLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId) {
+		addLifecycleLog(eventType, entity, property, entityId, null, null);
+	}
+
+	private void addLifecycleLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String entry) {
+		addLifecycleLog(eventType, entity, property, entityId, null, entry);
+	}
+
+	private void addLifecycleLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String recent, String entry) {
+		String userName = userService.getLoggedInUser().getName();
+		lifecycleLogDbService.addLog(userName, eventType, entity, property, entityId, recent, entry);
+	}
+
+	private void addLifecycleLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, ListData item) {
+		String userName = userService.getLoggedInUser().getName();
+		lifecycleLogDbService.addLog(userName, eventType, entity, property, item);
+	}
 }

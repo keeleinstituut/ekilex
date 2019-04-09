@@ -39,7 +39,7 @@ public class HomeController extends AbstractPageController {
 
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getLoggedInUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			populateStatData(model);
 			return HOME_PAGE;
@@ -55,7 +55,7 @@ public class HomeController extends AbstractPageController {
 
 	@GetMapping(APPLY_URI)
 	public String apply(Model model) {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getLoggedInUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			return "redirect:" + HOME_URI;			
 		}
@@ -69,7 +69,7 @@ public class HomeController extends AbstractPageController {
 			@RequestParam(value = "applicationComment", required = false) String applicationComment,
 			Model model) {
 
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getLoggedInUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			populateStatData(model);
 			return HOME_PAGE;			

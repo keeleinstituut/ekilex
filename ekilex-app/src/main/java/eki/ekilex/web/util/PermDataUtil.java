@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.UserService;
 
 @Component
 public class PermDataUtil {
@@ -16,10 +17,10 @@ public class PermDataUtil {
 	protected PermissionService permissionService;
 
 	@Autowired
-	private UserContext userContext;
+	private UserService userService;
 
 	public List<Classifier> getUserPermLanguages(String datasetCode) {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getLoggedInUser();
 		Long userId = user.getId();
 		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
 		return userPermLanguages;

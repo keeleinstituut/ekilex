@@ -22,7 +22,6 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserPermData;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
-import eki.ekilex.web.util.UserContext;
 
 @ConditionalOnWebApplication
 @Controller
@@ -37,12 +36,9 @@ public class PermissionsController extends AbstractPageController {
 	@Autowired
 	private PermissionService permissionService;
 
-	@Autowired
-	private UserContext userContext;
-
 	@GetMapping(PERMISSIONS_URI)
 	public String permissions(Model model) {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getLoggedInUser();
 		if (!user.isDatasetOwnershipExist()) {
 			return "redirect:" + HOME_URI;
 		}
@@ -121,7 +117,7 @@ public class PermissionsController extends AbstractPageController {
 	}
 
 	private void populateUserPermLanguagesModel(String datasetCode, Model model) {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getLoggedInUser();
 		Long userId = user.getId();
 		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
 		model.addAttribute("userPermLanguages", userPermLanguages);

@@ -13,12 +13,12 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
-import eki.ekilex.web.util.UserContext;
+import eki.ekilex.service.UserService;
 
 public abstract class AbstractPageController implements WebConstant {
 
 	@Autowired
-	protected UserContext userContext;
+	protected UserService userService;
 
 	@Autowired
 	protected CommonDataService commonDataService;
@@ -33,14 +33,14 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@ModelAttribute("userPermDatasets")
 	public List<Dataset> getUserPermDatasets() {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getLoggedInUser();
 		Long userId = user.getId();
 		return permissionService.getUserPermDatasets(userId);
 	}
 
 	@ModelAttribute("userOwnedDatasets")
 	public List<Dataset> getUserOwnedDatasets() {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getLoggedInUser();
 		Long userId = user.getId();
 		return permissionService.getUserOwnedDatasets(userId);
 	}
