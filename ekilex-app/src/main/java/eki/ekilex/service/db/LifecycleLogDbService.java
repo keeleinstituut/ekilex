@@ -178,16 +178,7 @@ public class LifecycleLogDbService {
 		return results;
 	}
 
-	public void addLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId) {
-		addLog(eventType, entity, property, entityId, null, null);
-	}
-
-	public void addLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String entry) {
-		addLog(eventType, entity, property, entityId, null, entry);
-	}
-
-	public void addLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String recent, String entry) {
-		String userName = getUserName();
+	public void addLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String recent, String entry) {
 		if (LifecycleEntity.USAGE.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.USAGE);
@@ -541,8 +532,7 @@ public class LifecycleLogDbService {
 		return LifecycleEventType.UPDATE.equals(eventType);
 	}
 
-	public void addLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, ListData item) {
-		String userName = getUserName();
+	public void addLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, ListData item) {
 		Long entityId = item.getId();
 		Long newOrderby = item.getOrderby();
 		if (LifecycleEntity.DEFINITION.equals(entity)) {
@@ -618,18 +608,6 @@ public class LifecycleLogDbService {
 
 	private String lexemeLogString(Map<String, Object> entityData) {
 		return entityData.get("value") + " [" + entityData.get("level1") + "." + entityData.get("level2") + "." + entityData.get("level3") + "]";
-	}
-
-	public String getUserName() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String userName;
-		if (authentication != null) {
-			EkiUser user = (EkiUser) authentication.getPrincipal();
-			userName = user.getName();
-		} else {
-			userName = "N/A";
-		}
-		return userName;
 	}
 
 	private Long createLifecycleLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String recent, String entry) {

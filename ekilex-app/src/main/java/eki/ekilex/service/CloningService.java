@@ -30,15 +30,19 @@ public class CloningService {
 
 	private final LexemeDbService lexemeDbService;
 
+	private final UserService userService;
+
 	public CloningService(
 			LifecycleLogDbService lifecycleLogDbService,
 			MeaningDbService meaningDbService,
 			DefinitionDbService definitionDbService,
-			LexemeDbService lexemeDbService) {
+			LexemeDbService lexemeDbService,
+			UserService userService) {
 		this.lifecycleLogDbService = lifecycleLogDbService;
 		this.meaningDbService = meaningDbService;
 		this.definitionDbService = definitionDbService;
 		this.lexemeDbService = lexemeDbService;
+		this.userService = userService;
 	}
 
 	@Transactional
@@ -65,11 +69,14 @@ public class CloningService {
 		meaningDbService.cloneMeaningRelations(meaningId, duplicateMeaningId);
 		meaningDbService.cloneMeaningFreeforms(meaningId, duplicateMeaningId);
 		duplicateMeaningDefinitions(meaningId, duplicateMeaningId);
+		String userName = userService.getAuthenticatedUser().getName();
 		lifecycleLogDbService.addLog(
+				userName,
 				LifecycleEventType.CLONE,
 				LifecycleEntity.MEANING,
 				LifecycleProperty.VALUE,
 				duplicateMeaningId,
+				null,
 				definitionDbService.getCombinedMeaningDefinitions(duplicateMeaningId));
 		return duplicateMeaningId;
 	}
@@ -90,7 +97,9 @@ public class CloningService {
 		lexemeDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
 		lexemeDbService.cloneLexemeSoureLinks(lexemeId, duplicateLexemeId);
 		lexemeDbService.cloneLexemeRelations(lexemeId, duplicateLexemeId);
+		String userName = userService.getAuthenticatedUser().getName();
 		lifecycleLogDbService.addLog(
+				userName,
 				LifecycleEventType.CLONE,
 				LifecycleEntity.LEXEME,
 				LifecycleProperty.VALUE,

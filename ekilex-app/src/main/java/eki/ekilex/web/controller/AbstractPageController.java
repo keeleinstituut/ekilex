@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.common.constant.TextDecoration;
@@ -16,13 +15,13 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
-import eki.ekilex.web.util.UserContext;
 
 public abstract class AbstractPageController implements WebConstant {
 
 	@Autowired
-	protected UserContext userContext;
+	protected UserService userService;
 
 	@Autowired
 	protected CommonDataService commonDataService;
@@ -37,7 +36,7 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@ModelAttribute("userPermDatasets")
 	public List<Dataset> getUserPermDatasets() {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
 		return permissionService.getUserPermDatasets(userId);
 	}
@@ -47,7 +46,7 @@ public abstract class AbstractPageController implements WebConstant {
 	public List<Classifier> getUserPermLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 		String newWordSelectedDataset = sessionBean.getNewWordSelectedDataset();
 		if (StringUtils.isNotBlank(newWordSelectedDataset)) {
-			EkiUser user = userContext.getUser();
+			EkiUser user = userService.getAuthenticatedUser();
 			Long userId = user.getId();
 			return permissionService.getUserDatasetLanguages(userId, newWordSelectedDataset);
 		}
@@ -56,7 +55,7 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@ModelAttribute("userOwnedDatasets")
 	public List<Dataset> getUserOwnedDatasets() {
-		EkiUser user = userContext.getUser();
+		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
 		return permissionService.getUserOwnedDatasets(userId);
 	}
