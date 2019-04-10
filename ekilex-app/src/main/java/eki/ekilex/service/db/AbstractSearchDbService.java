@@ -8,6 +8,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -22,11 +23,31 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 
 public abstract class AbstractSearchDbService implements SystemConstant, DbConstant {
+
+	protected Condition applyDatasetRestrictions(Lexeme lexeme, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes, Condition where) {
+
+		/*
+		 * TODO under construction
+		 * 
+		if (CollectionUtils.isNotEmpty(filteringDatasetCodes)) {
+			where = where.and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
+		}
+		if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
+			if (userPermDatasetCodes != null) {
+				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
+			}
+		} else {
+			where = where.and(lexeme.DATASET_CODE.in(userPermDatasetCodes));
+		}
+		*/
+		return where;
+	}
 
 	protected Condition applyValueFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition) {
 

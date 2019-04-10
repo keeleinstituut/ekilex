@@ -27,6 +27,7 @@ import static eki.ekilex.data.db.tables.WordGroupMember.WORD_GROUP_MEMBER;
 import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -86,28 +87,28 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public Result<Record11<Long,String,Integer,String,String,String,String,String[],String[],Boolean,Boolean>> findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
+	public List<eki.ekilex.data.Word> findWords(SearchFilter searchFilter, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes, boolean fetchAll) {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
-		Condition wordCondition = createCondition(w1, searchCriteriaGroups, datasets);
+		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, filteringDatasetCodes, userPermDatasetCodes);
 
-		return execute(w1, p, wordCondition, datasets, fetchAll);
+		return execute(w1, p, wordCondition, fetchAll);
 	}
 
-	public int countWords(SearchFilter searchFilter, List<String> datasets) {
+	public int countWords(SearchFilter searchFilter, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
 
 		Word w1 = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
-		Condition wordCondition = createCondition(w1, searchFilter.getCriteriaGroups(), datasets);
+		Condition wordCondition = createSearchCondition(w1, searchFilter.getCriteriaGroups(), filteringDatasetCodes, userPermDatasetCodes);
 
-		return count(w1, p, wordCondition, datasets);
+		return count(w1, p, wordCondition);
 	}
 
-	private Condition createCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, List<String> datasets) {
+	private Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
 
-		Condition wordCondition = DSL.trueCondition();
+		Condition where = createDatasetRestrictions(w1, filteringDatasetCodes, userPermDatasetCodes);
 
 		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
 
@@ -122,22 +123,18 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				Lexeme l1 = Lexeme.LEXEME.as("l1");
 				Paradigm p1 = Paradigm.PARADIGM.as("p1");
 				Form f1 = Form.FORM.as("f1");
-				Condition where1 =
-						l1.WORD_ID.eq(w1.ID)
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(f1.PARADIGM_ID.eq(p1.ID))
 						.and(f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
-
+				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
 
-				wordCondition = wordCondition.and(DSL.exists(DSL.select(l1.ID).from(l1, p1, f1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(l1.ID).from(l1, p1, f1).where(where1)));
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
 
@@ -146,57 +143,47 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				Word w2 = Word.WORD.as("w2");
 				Paradigm p2 = Paradigm.PARADIGM.as("p2");
 				Form f2 = Form.FORM.as("f2");
-				Condition where1 =
-						l1.WORD_ID.eq(w1.ID)
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(l1.MEANING_ID.eq(l2.MEANING_ID))
 						.and(w2.ID.eq(l2.WORD_ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-					where1 = where1.and(l2.DATASET_CODE.in(datasets));
-				}
-
+				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
+				where1 = applyDatasetRestrictions(l2, filteringDatasetCodes, userPermDatasetCodes, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f2.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w2.LANG, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l2.ID, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l2.ID, where1);
 
-				wordCondition = wordCondition.and(DSL.exists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1)));
+				where = where.and(DSL.exists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1)));
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
 				Lexeme l1 = Lexeme.LEXEME.as("l1");
 				Paradigm p1 = Paradigm.PARADIGM.as("p1");
 				Form f1 = Form.FORM.as("f1");
-				Condition where1 =
-						l1.WORD_ID.eq(w1.ID)
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(f1.PARADIGM_ID.eq(p1.ID));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
-
+				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 
-				wordCondition = wordCondition.and(DSL.exists(DSL.select(l1.ID).from(l1, p1, f1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(l1.ID).from(l1, p1, f1).where(where1)));
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
 
 				List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
-						.filter(crit -> 
-								crit.getSearchKey().equals(SearchKey.DOMAIN)
+						.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
 								&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
 								&& (crit.getSearchValue() != null))
 						.collect(toList());
 
 				boolean isNotExistsFilter = searchCriteria.stream()
-						.anyMatch(crit ->
-								crit.getSearchKey().equals(SearchKey.DOMAIN)
+						.anyMatch(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
 								&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
 
 				Lexeme l1 = LEXEME.as("l1");
@@ -204,9 +191,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
 				Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.MEANING_ID.eq(m1.ID));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
+				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
 
 				if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
 					where1 = where1.and(m1d.MEANING_ID.eq(m1.ID));
@@ -214,12 +199,12 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						Classifier domain = (Classifier) criterion.getSearchValue();
 						where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
 					}
-					wordCondition = wordCondition.and(DSL.exists(DSL.select(m1.ID).from(l1, m1, m1d).where(where1)));
+					where = where.and(DSL.exists(DSL.select(m1.ID).from(l1, m1, m1d).where(where1)));
 				}
 
 				if (isNotExistsFilter) {
 					where1 = where1.andNotExists(DSL.select(m1d.ID).from(m1d).where(m1d.MEANING_ID.eq(m1.ID)));
-					wordCondition = wordCondition.and(DSL.exists(DSL.select(m1.ID).from(l1, m1).where(where1)));
+					where = where.and(DSL.exists(DSL.select(m1.ID).from(l1, m1).where(where1)));
 				}
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
@@ -232,16 +217,13 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(d1.MEANING_ID.eq(m1.ID))
 						.and(d1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
-
+				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
 
-				wordCondition = wordCondition.and(DSL.exists(DSL.select(d1.ID).from(l1, m1, d1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(d1.ID).from(l1, m1, d1).where(where1)));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
@@ -249,23 +231,19 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				LexemeFreeform l1ff = LEXEME_FREEFORM.as("l1ff");
 				Freeform u1 = FREEFORM.as("u1");
 
-				Condition where1 =
-						l1.WORD_ID.eq(w1.ID)
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(l1ff.LEXEME_ID.eq(l1.ID))
 						.and(l1ff.FREEFORM_ID.eq(u1.ID))
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()))
 						.and(u1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
-
+				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, where1);
 
-				wordCondition = wordCondition.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
@@ -275,44 +253,41 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				Meaning m1 = MEANING.as("m1");
 				MeaningFreeform m1ff = MEANING_FREEFORM.as("m1ff");
 				Freeform c1 = FREEFORM.as("c1");
-				Condition where1 =
-						l1.WORD_ID.eq(w1.ID)
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(l1.MEANING_ID.eq(m1.ID))
 						.and(m1ff.MEANING_ID.eq(m1.ID))
 						.and(m1ff.FREEFORM_ID.eq(c1.ID))
 						.and(c1.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
-
+				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
 				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1);
 
-				wordCondition = wordCondition.and(DSL.exists(DSL.select(c1.ID).from(l1, m1, m1ff, c1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(c1.ID).from(l1, m1, m1ff, c1).where(where1)));
 			}
 		}
-		return wordCondition;
+		return where;
 	}
 
-	public Result<Record11<Long,String,Integer,String,String,String,String,String[],String[],Boolean,Boolean>> findWords(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {
+	public List<eki.ekilex.data.Word> findWords(
+			String wordWithMetaCharacters, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes, boolean fetchAll) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = createCondition(wordWithMetaCharacters, paradigm);
+		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, filteringDatasetCodes, userPermDatasetCodes);
 
-		return execute(word, paradigm, where, datasets, fetchAll);
+		return execute(word, paradigm, where, fetchAll);
 	}
 
-	public int countWords(String searchFilter, List<String> datasets) {
+	public int countWords(String wordWithMetaCharacters, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = createCondition(searchFilter, paradigm);
+		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, filteringDatasetCodes, userPermDatasetCodes);
 
-		return count(word, paradigm, where, datasets);
+		return count(word, paradigm, where);
 	}
 
-	private Condition createCondition(String wordWithMetaCharacters, Paradigm paradigm) {
+	private Condition createSearchCondition(Word word, Paradigm paradigm, String wordWithMetaCharacters, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
 
 		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
 
@@ -324,39 +299,68 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		} else {
 			where2 = where2.and(form.VALUE.lower().eq(theFilter));
 		}
-		Condition where = DSL.exists(DSL.select(form.ID).from(form).where(where2));
+		Condition where = createDatasetRestrictions(word, filteringDatasetCodes, userPermDatasetCodes);
+		where = where.andExists(DSL.select(form.ID).from(form).where(where2));
 		return where;
 	}
 
-	private Result<Record11<Long,String,Integer,String,String,String,String,String[],String[],Boolean,Boolean>> execute(Word w1, Paradigm p1, Condition where, List<String> datasets, boolean fetchAll) {
+	private Condition createDatasetRestrictions(Word word, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
+
+		Lexeme lfd = LEXEME.as("lfd");
+		Condition dsFiltWhere;
+
+		if (CollectionUtils.isEmpty(filteringDatasetCodes)) {
+			if (userPermDatasetCodes == null) {
+				//no restrictions
+				dsFiltWhere = DSL.trueCondition();
+			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
+				//all ds, only public
+				dsFiltWhere = lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC);
+			} else {
+				//all ds, selected perm
+				dsFiltWhere = DSL.or(
+						lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC),
+						lfd.DATASET_CODE.in(userPermDatasetCodes));
+			}
+		} else {
+			if (userPermDatasetCodes == null) {
+				//selected ds, full perm
+				dsFiltWhere = lfd.DATASET_CODE.in(filteringDatasetCodes);
+			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
+				//selected ds, only public
+				dsFiltWhere = lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lfd.DATASET_CODE.in(filteringDatasetCodes));
+			} else {
+				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
+				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
+					//selected ds, only public
+					dsFiltWhere = lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lfd.DATASET_CODE.in(filteringDatasetCodes));
+				} else {
+					//selected ds, some perm, some public
+					dsFiltWhere = DSL.or(
+							lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lfd.DATASET_CODE.in(filteringDatasetCodes)),
+							lfd.DATASET_CODE.in(filteringPermDatasetCodes));					
+				}
+			}
+		}
+		Condition where = DSL.exists(DSL.select(lfd.ID).from(lfd).where(lfd.WORD_ID.eq(word.ID).and(dsFiltWhere)));
+		return where;
+	}
+
+	private List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, boolean fetchAll) {
 
 		Form f1 = FORM.as("f1");
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
 		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
 
-		if (CollectionUtils.isEmpty(datasets)) {
-			Lexeme ld = LEXEME.as("ld");
-			where = where.andExists(
-						DSL.select(ld.ID).from(ld)
-						.where((ld.WORD_ID.eq(w1.ID))));
-		} else {
-			Lexeme ld = LEXEME.as("ld");
-			where = where.andExists(
-						DSL.select(ld.ID).from(ld)
-						.where((ld.WORD_ID.eq(w1.ID))
-						.and(ld.DATASET_CODE.in(datasets))));
-		}
-		
-		Table<Record7<Long,String,Integer,String,String,String,String>> w = DSL
+		Table<Record7<Long, String, Integer, String, String, String, String>> w = DSL
 				.select(
-					w1.ID.as("word_id"),
-					wf.as("word"),
-					w1.HOMONYM_NR,
-					w1.LANG,
-					w1.WORD_CLASS,
-					w1.GENDER_CODE,
-					w1.ASPECT_CODE
-					)
+						w1.ID.as("word_id"),
+						wf.as("word"),
+						w1.HOMONYM_NR,
+						w1.LANG,
+						w1.WORD_CLASS,
+						w1.GENDER_CODE,
+						w1.ASPECT_CODE)
 				.from(from)
 				.where(where)
 				.groupBy(w1.ID)
@@ -379,64 +383,49 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.from(WORD_WORD_TYPE)
 				.where(
 						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
-						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))));
+								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))));
 
 		Field<Boolean> wtsf = DSL.field(DSL.exists(DSL
 				.select(WORD_WORD_TYPE.ID)
 				.from(WORD_WORD_TYPE)
 				.where(
 						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
-						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))));
+								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))));
 
 		Table<Record11<Long, String, Integer, String, String, String, String, String[], String[], Boolean, Boolean>> ww = DSL
 				.select(
-					w.field("word_id", Long.class),
-					w.field("word", String.class),
-					w.field("homonym_nr", Integer.class),
-					w.field("lang", String.class),
-					w.field("word_class", String.class),
-					w.field("gender_code", String.class),
-					w.field("aspect_code", String.class),
-					dscf.as("dataset_codes"),
-					wtf.as("word_type_codes"),
-					wtpf.as("is_prefixoid"),
-					wtsf.as("is_suffixoid")
-					)
+						w.field("word_id", Long.class),
+						w.field("word", String.class),
+						w.field("homonym_nr", Integer.class),
+						w.field("lang", String.class),
+						w.field("word_class", String.class),
+						w.field("gender_code", String.class),
+						w.field("aspect_code", String.class),
+						dscf.as("dataset_codes"),
+						wtf.as("word_type_codes"),
+						wtpf.as("is_prefixoid"),
+						wtsf.as("is_suffixoid"))
 				.from(w)
 				.orderBy(
-					w.field("word"),
-					w.field("homonym_nr"))
+						w.field("word"),
+						w.field("homonym_nr"))
 				.asTable("ww");
 
 		if (fetchAll) {
-			return create.selectFrom(ww).fetch();
+			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
 		} else {
-			return create.selectFrom(ww).limit(MAX_RESULTS_LIMIT).fetch();
+			return create.selectFrom(ww).limit(MAX_RESULTS_LIMIT).fetchInto(eki.ekilex.data.Word.class);
 		}
 	}
 
-	private int count(Word word, Paradigm paradigm, Condition where, List<String> datasets) {
+	private int count(Word word, Paradigm paradigm, Condition where) {
 
 		Form form = FORM.as("f");
 		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.MODE.eq(FormMode.WORD.name())))).on(paradigm.WORD_ID.eq(word.ID));
 
-		if (CollectionUtils.isEmpty(datasets)) {
-			Lexeme ld = LEXEME.as("ld");
-			where = where.andExists(
-						DSL.select(ld.ID).from(ld)
-						.where((ld.WORD_ID.eq(word.ID))));
-		} else {
-			Lexeme ld = LEXEME.as("ld");
-			where = where.andExists(
-						DSL.select(ld.ID).from(ld)
-						.where((ld.WORD_ID.eq(word.ID))
-						.and(ld.DATASET_CODE.in(datasets))));
-		}
-
 		Table<Record1<Long>> w = create
 				.select(
-					word.ID.as("word_id")
-				)
+						word.ID.as("word_id"))
 				.from(from)
 				.where(where)
 				.groupBy(word.ID)
@@ -444,29 +433,27 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		Table<?> ww = create
 				.select(
-					w.field("word_id")
-				)
+						w.field("word_id"))
 				.from(w)
 				.asTable("ww");
 
 		return create.fetchCount(ww);
 	}
 
-	public Result<Record11<Long,String,Long,String,String,String[],String,String,String,String,String[]>> findParadigmFormTuples(
+	public Result<Record11<Long, String, Long, String, String, String[], String, String, String, String, String[]>> findParadigmFormTuples(
 			Long wordId, String wordValue, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Field<String[]> ffreq = DSL
-			.select(DSL.arrayAgg(DSL.concat(
-					FORM_FREQUENCY.SOURCE_NAME, DSL.val(" - "),
-					FORM_FREQUENCY.RANK, DSL.val(" - "),
-					FORM_FREQUENCY.VALUE)))
-			.from(FORM_FREQUENCY)
-			.where(
-					FORM_FREQUENCY.WORD_VALUE.eq(wordValue)
-					.and(FORM_FREQUENCY.FORM_VALUE.eq(FORM.VALUE))
-					.and(FORM_FREQUENCY.MORPH_CODE.eq(FORM.MORPH_CODE))
-					)
-			.asField();
+				.select(DSL.arrayAgg(DSL.concat(
+						FORM_FREQUENCY.SOURCE_NAME, DSL.val(" - "),
+						FORM_FREQUENCY.RANK, DSL.val(" - "),
+						FORM_FREQUENCY.VALUE)))
+				.from(FORM_FREQUENCY)
+				.where(
+						FORM_FREQUENCY.WORD_VALUE.eq(wordValue)
+								.and(FORM_FREQUENCY.FORM_VALUE.eq(FORM.VALUE))
+								.and(FORM_FREQUENCY.MORPH_CODE.eq(FORM.MORPH_CODE)))
+				.asField();
 
 		return create
 				.select(
@@ -480,16 +467,14 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						FORM.VOCAL_FORM,
 						FORM.MORPH_CODE,
 						MORPH_LABEL.VALUE.as("morph_value"),
-						ffreq.as("form_frequencies")
-						)
+						ffreq.as("form_frequencies"))
 				.from(PARADIGM, FORM, MORPH_LABEL)
 				.where(
 						PARADIGM.WORD_ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(MORPH_LABEL.CODE.eq(FORM.MORPH_CODE))
-						.and(MORPH_LABEL.LANG.eq(classifierLabelLang))
-						.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode))
-						)
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(MORPH_LABEL.CODE.eq(FORM.MORPH_CODE))
+								.and(MORPH_LABEL.LANG.eq(classifierLabelLang))
+								.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.orderBy(PARADIGM.ID, FORM.ORDER_BY)
 				.fetch();
 	}
@@ -507,71 +492,73 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.asField();
 
 		return new Field<?>[] {
-			DSL.arrayAggDistinct(FORM.VALUE).as("words"),
-			DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
-			WORD.LANG.as("word_lang"),
-			WORD.ID.as("word_id"),
-			WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
-			WORD.GENDER_CODE,
-			WORD.ASPECT_CODE.as("word_aspect_code"),
-			LEXEME.ID.as("lexeme_id"),
-			LEXEME.MEANING_ID,
-			LEXEME.DATASET_CODE.as("dataset"),
-			LEXEME.LEVEL1,
-			LEXEME.LEVEL2,
-			LEXEME.LEVEL3,
-			LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-			LEXEME.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
-			lfreq.as("lexeme_frequencies"),
-			LEXEME.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
-			MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
+				DSL.arrayAggDistinct(FORM.VALUE).as("words"),
+				DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
+				WORD.LANG.as("word_lang"),
+				WORD.ID.as("word_id"),
+				WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
+				WORD.GENDER_CODE,
+				WORD.ASPECT_CODE.as("word_aspect_code"),
+				LEXEME.ID.as("lexeme_id"),
+				LEXEME.MEANING_ID,
+				LEXEME.DATASET_CODE.as("dataset"),
+				LEXEME.LEVEL1,
+				LEXEME.LEVEL2,
+				LEXEME.LEVEL3,
+				LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+				LEXEME.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
+				lfreq.as("lexeme_frequencies"),
+				LEXEME.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
+				MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
 		};
 	}
 
-	public Result<Record> findWordLexemes(Long wordId, List<String> datasets) {
+	public Result<Record> findWordLexemes(Long wordId, List<String> datasetCodes) {
 
 		Condition datasetCondition = DSL.trueCondition();
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasetCodes));
 		}
 
 		return create.select(getWordLexemeSelectFields())
-			.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
-			.where(
-					WORD.ID.eq(wordId)
-					.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-					.and(FORM.MODE.eq(FormMode.WORD.name()))
-					.and(PARADIGM.WORD_ID.eq(WORD.ID))
-					.and(LEXEME.WORD_ID.eq(WORD.ID))
-					.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-					.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
-					.and(datasetCondition))
-			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
-			.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
-			.fetch();
+				.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
+				.where(
+						WORD.ID.eq(wordId)
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
+								.and(datasetCondition)
+								//.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC))
+								)
+				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
+				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.fetch();
 	}
 
 	public Record findLexeme(Long lexemeId) {
 
 		return create.select(getWordLexemeSelectFields())
-			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
-			.where(
-					LEXEME.ID.eq(lexemeId)
-					.and(WORD.ID.eq(LEXEME.WORD_ID))
-					.and(PARADIGM.WORD_ID.eq(WORD.ID))
-					.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-					.and(FORM.MODE.eq(FormMode.WORD.name()))
-					.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
-			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
-			.orderBy(WORD.ID)
-			.fetchSingle();
+				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
+				.where(
+						LEXEME.ID.eq(lexemeId)
+								.and(WORD.ID.eq(LEXEME.WORD_ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
+				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
+				.orderBy(WORD.ID)
+				.fetchSingle();
 	}
 
-	public Result<Record4<Long,String,Integer,String>> findMeaningWords(Long sourceWordId, Long meaningId, List<String> datasets) {
+	public Result<Record4<Long, String, Integer, String>> findMeaningWords(Long sourceWordId, Long meaningId, List<String> datasetCodes) {
 
 		Condition datasetCondition = DSL.trueCondition();
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasetCodes));
 		}
 
 		return create
@@ -579,24 +566,22 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						WORD.ID.as("word_id"),
 						FORM.VALUE.as("word"),
 						WORD.HOMONYM_NR,
-						WORD.LANG
-						)
+						WORD.LANG)
 				.from(LEXEME, WORD, PARADIGM, FORM)
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-						.and(FORM.MODE.eq(FormMode.WORD.name()))
-						.and(WORD.ID.ne(sourceWordId))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.MEANING_ID.eq(meaningId))
-						.and(datasetCondition)
-				)
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(WORD.ID.ne(sourceWordId))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(datasetCondition))
 				.groupBy(WORD.ID, FORM.VALUE)
 				.orderBy(FORM.VALUE)
 				.fetch();
 	}
 
-	public Result<Record8<Long,Long,Long,Long,String,String,String,Long>> findWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record8<Long, Long, Long, Long, String, String, String, Long>> findWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordGroupMember wgrm1 = WORD_GROUP_MEMBER.as("wgrm1");
 		WordGroupMember wgrm2 = WORD_GROUP_MEMBER.as("wgrm2");
@@ -615,33 +600,30 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						f2.VALUE.as("word"),
 						w2.LANG.as("word_lang"),
 						wrtl.VALUE.as("rel_type_label"),
-						wgrm2.ORDER_BY.as("order_by")
-				)
+						wgrm2.ORDER_BY.as("order_by"))
 				.from(
 						wgr.leftOuterJoin(wrtl).on(
 								wgr.WORD_REL_TYPE_CODE.eq(wrtl.CODE)
-								.and(wrtl.LANG.eq(classifierLabelLang)
-								.and(wrtl.TYPE.eq(classifierLabelTypeCode)))),
+										.and(wrtl.LANG.eq(classifierLabelLang)
+												.and(wrtl.TYPE.eq(classifierLabelTypeCode)))),
 						wgrm1,
 						wgrm2,
 						w2,
 						p2,
-						f2
-				)
+						f2)
 				.where(
 						wgrm1.WORD_ID.eq(wordId)
-						.and(wgrm1.WORD_GROUP_ID.eq(wgr.ID))
-						.and(wgrm2.WORD_GROUP_ID.eq(wgr.ID))
-						.and(w2.ID.eq(wgrm2.WORD_ID))
-						.and(p2.WORD_ID.eq(w2.ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.MODE.eq(FormMode.WORD.name()))
-				)
+								.and(wgrm1.WORD_GROUP_ID.eq(wgr.ID))
+								.and(wgrm2.WORD_GROUP_ID.eq(wgr.ID))
+								.and(w2.ID.eq(wgrm2.WORD_ID))
+								.and(p2.WORD_ID.eq(w2.ID))
+								.and(f2.PARADIGM_ID.eq(p2.ID))
+								.and(f2.MODE.eq(FormMode.WORD.name())))
 				.orderBy(wgrm2.ORDER_BY)
 				.fetch();
 	}
 
-	public Result<Record6<Long,String,Long,String,String,Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record6<Long, String, Long, String, String, Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.selectDistinct(
@@ -650,29 +632,26 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						WORD.ID.as("word_id"),
 						WORD.LANG.as("word_lang"),
 						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
-						WORD_RELATION.ORDER_BY.as("order_by")
-						)
+						WORD_RELATION.ORDER_BY.as("order_by"))
 				.from(
 						WORD_RELATION.leftOuterJoin(WORD_REL_TYPE_LABEL).on(
 								WORD_RELATION.WORD_REL_TYPE_CODE.eq(WORD_REL_TYPE_LABEL.CODE)
-								.and(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-								.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+										.and(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+												.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
 						WORD,
 						PARADIGM,
-						FORM
-						)
+						FORM)
 				.where(
 						WORD_RELATION.WORD1_ID.eq(wordId)
-						.and(WORD_RELATION.WORD2_ID.eq(WORD.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name()))
-						)
+								.and(WORD_RELATION.WORD2_ID.eq(WORD.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.orderBy(WORD_RELATION.ORDER_BY)
 				.fetch();
 	}
 
-	public Result<Record8<Long,Long,String,String,String[],Boolean,Boolean,Long>> findWordEtymology(Long wordId) {
+	public Result<Record8<Long, Long, String, String, String[], Boolean, Boolean, Long>> findWordEtymology(Long wordId) {
 
 		WordEtymology we = WORD_ETYMOLOGY.as("we");
 		Word w2 = WORD.as("w2");
@@ -688,21 +667,20 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						we.COMMENTS,
 						we.IS_QUESTIONABLE,
 						we.IS_COMPOUND,
-						we.ORDER_BY
-						)
+						we.ORDER_BY)
 				.from(we, w2, p2, f2)
 				.where(
 						we.WORD1_ID.eq(wordId)
-						.and(we.WORD2_ID.eq(w2.ID))
-						.and(p2.WORD_ID.eq(w2.ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.MODE.eq(FormMode.WORD.name()))
-						)
+								.and(we.WORD2_ID.eq(w2.ID))
+								.and(p2.WORD_ID.eq(w2.ID))
+								.and(f2.PARADIGM_ID.eq(p2.ID))
+								.and(f2.MODE.eq(FormMode.WORD.name())))
 				.orderBy(we.ID)
 				.fetch();
 	}
 
-	public Result<Record16<Long,String,Long,String,BigDecimal,BigDecimal,Long,String,String,BigDecimal,BigDecimal,String[],Long,String,String,BigDecimal>> findPrimaryCollocationTuples(Long lexemeId) {
+	public Result<Record16<Long, String, Long, String, BigDecimal, BigDecimal, Long, String, String, BigDecimal, BigDecimal, String[], Long, String, String, BigDecimal>> findPrimaryCollocationTuples(
+			Long lexemeId) {
 
 		LexCollocPosGroup pgr1 = LEX_COLLOC_POS_GROUP.as("pgr1");
 		LexCollocRelGroup rgr1 = LEX_COLLOC_REL_GROUP.as("rgr1");
@@ -730,27 +708,25 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						l2.WORD_ID.as("colloc_member_word_id"),
 						f2.VALUE.as("colloc_member_word"),
 						f2.MODE.as("colloc_member_mode"),
-						lc2.WEIGHT.as("colloc_member_weight")
-						)
+						lc2.WEIGHT.as("colloc_member_weight"))
 				.from(pgr1, rgr1, lc1, lc2, c, l2, p2, f2)
 				.where(
 						pgr1.LEXEME_ID.eq(lexemeId)
-						.and(rgr1.POS_GROUP_ID.eq(pgr1.ID))
-						.and(lc1.REL_GROUP_ID.eq(rgr1.ID))
-						.and(lc1.COLLOCATION_ID.eq(c.ID))
-						.and(lc2.COLLOCATION_ID.eq(c.ID))
-						.and(lc2.LEXEME_ID.eq(l2.ID))
-						.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-						.and(l2.WORD_ID.eq(p2.WORD_ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
-						)
+								.and(rgr1.POS_GROUP_ID.eq(pgr1.ID))
+								.and(lc1.REL_GROUP_ID.eq(rgr1.ID))
+								.and(lc1.COLLOCATION_ID.eq(c.ID))
+								.and(lc2.COLLOCATION_ID.eq(c.ID))
+								.and(lc2.LEXEME_ID.eq(l2.ID))
+								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
+								.and(l2.WORD_ID.eq(p2.WORD_ID))
+								.and(f2.PARADIGM_ID.eq(p2.ID))
+								.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
 				.groupBy(c.ID, pgr1.ID, rgr1.ID, lc1.ID, lc2.ID, l2.ID, f2.VALUE, f2.MODE)
 				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc1.GROUP_ORDER, c.ID, lc2.MEMBER_ORDER)
 				.fetch();
 	}
 
-	public Result<Record10<Long,String,String,BigDecimal,BigDecimal,String[],Long,String,String,BigDecimal>> findSecondaryCollocationTuples(Long lexemeId) {
+	public Result<Record10<Long, String, String, BigDecimal, BigDecimal, String[], Long, String, String, BigDecimal>> findSecondaryCollocationTuples(Long lexemeId) {
 
 		LexColloc lc1 = LEX_COLLOC.as("lc1");
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
@@ -770,20 +746,18 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						l2.WORD_ID.as("colloc_member_word_id"),
 						f2.VALUE.as("colloc_member_word"),
 						f2.MODE.as("colloc_member_mode"),
-						lc2.WEIGHT.as("colloc_member_weight")
-						)
+						lc2.WEIGHT.as("colloc_member_weight"))
 				.from(lc1, lc2, c, l2, p2, f2)
 				.where(
 						lc1.LEXEME_ID.eq(lexemeId)
-						.and(lc1.REL_GROUP_ID.isNull())
-						.and(lc1.COLLOCATION_ID.eq(c.ID))
-						.and(lc2.COLLOCATION_ID.eq(c.ID))
-						.and(lc2.LEXEME_ID.eq(l2.ID))
-						.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-						.and(l2.WORD_ID.eq(p2.WORD_ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
-						)
+								.and(lc1.REL_GROUP_ID.isNull())
+								.and(lc1.COLLOCATION_ID.eq(c.ID))
+								.and(lc2.COLLOCATION_ID.eq(c.ID))
+								.and(lc2.LEXEME_ID.eq(l2.ID))
+								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
+								.and(l2.WORD_ID.eq(p2.WORD_ID))
+								.and(f2.PARADIGM_ID.eq(p2.ID))
+								.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
 				.orderBy(c.ID, lc2.MEMBER_ORDER)
 				.fetch();
 	}

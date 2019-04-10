@@ -461,7 +461,7 @@
                     <span th:text="${freeform.type}"></span>
                   </td>
                   <td th:unless="${freeform.type.toString() == 'IMAGE_FILE'}">
-                    <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
+                    <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
                     <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
                   </td>
                   <td th:if="${freeform.type.toString() == 'IMAGE_FILE'}">
@@ -845,7 +845,7 @@
                         <span th:text="${freeform.type}"></span>
                       </td>
                       <td>
-                        <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
+                        <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
                         <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
                       </td>
                     </tr>

@@ -112,6 +112,14 @@ public class PermissionsController extends AbstractPageController {
 		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "word_perm_lang_select";
 	}
 
+	@GetMapping(COMPONENT_URI + "/lexdeflangselect/{datasetCode}")
+	public String getLexDefLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
+
+		populateUserPermLanguagesModel(datasetCode, model);
+
+		return LEXDIALOG_PAGE + PAGE_FRAGMENT_ELEM + "definition_perm_lang_select";
+	}
+
 	@GetMapping(COMPONENT_URI + "/termdeflangselect/{datasetCode}")
 	public String getTermDefLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
 

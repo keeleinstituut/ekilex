@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.util.CodeGenerator;
 import eki.ekilex.data.Dataset;
@@ -53,7 +54,8 @@ public class UserService {
 			boolean datasetPermissionsExist = CollectionUtils.isNotEmpty(datasetPermissions) || user.isAdmin();
 			boolean datasetOwnershipExist;
 			if (CollectionUtils.isNotEmpty(datasetPermissions)) {
-				datasetOwnershipExist = datasetPermissions.stream().anyMatch(perm -> AuthorityOperation.OWN.equals(perm.getAuthOperation()));
+				datasetOwnershipExist = datasetPermissions.stream().anyMatch(
+						perm -> AuthorityItem.DATASET.equals(perm.getAuthItem()) && AuthorityOperation.OWN.equals(perm.getAuthOperation()));
 			} else {
 				datasetOwnershipExist = false;
 			}

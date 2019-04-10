@@ -174,13 +174,27 @@
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
-              <div class="col-md-4">
-                <select required class="form-control" name="language">
-                  <option value="" hidden disabled selected>vali keel...</option>
-                  <option th:each="language : ${permDataUtil.getUserPermLanguages(lexeme.datasetCode)}"
-                          th:value="${language.code}"
-                          th:text="${language.value}">language</option>
+              <div class="col-md-8">
+                <select required class="form-control lex-def-dataset-select" name="dataset">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedDataset)}">vali sõnastik...</option>
+                  <option th:each="dataset : ${userPermDatasets}"
+                          th:value="${dataset.code}"
+                          th:selected="${dataset.code == sessionBean.newWordSelectedDataset}"
+                          th:text="${dataset.name}">name</option>
                 </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <th:block th:fragment="definition_perm_lang_select">
+                  <select required id="definitionPermLanguageSelect" class="form-control" name="language">
+                    <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
+                    <option th:each="language : ${userPermLanguages}"
+                            th:value="${language.code}"
+                            th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                            th:text="${language.value}">language</option>
+                  </select>
+                </th:block>
               </div>
             </div>
           </div>

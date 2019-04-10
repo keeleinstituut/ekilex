@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record7;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +27,7 @@ public class UserDbService extends AbstractDbService {
 
 	public EkiUser getUserByEmail(String email) {
 
-		Optional<Record7<Long,String,String,String,String,Boolean,Boolean>> optionalResult = create
+		return create
 				.select(
 						EKI_USER.ID,
 						EKI_USER.NAME,
@@ -40,11 +39,8 @@ public class UserDbService extends AbstractDbService {
 						)
 				.from(EKI_USER)
 				.where(EKI_USER.EMAIL.eq(email))
-				.fetchOptional();
-		if (optionalResult.isPresent()) {
-			return optionalResult.get().into(EkiUser.class);
-		}
-		return null;
+				.fetchOptionalInto(EkiUser.class)
+				.orElse(null);
 	}
 
 	public Long createUser(String email, String name, String password, String activationKey) {
@@ -63,9 +59,8 @@ public class UserDbService extends AbstractDbService {
 			ekiUser.get().setActivationKey(null);
 			ekiUser.get().store();
 			return ekiUser.get().into(EkiUser.class);
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	public void setAdmin(Long userId, boolean isAdmin) {

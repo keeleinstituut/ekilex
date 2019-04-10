@@ -52,7 +52,6 @@ import org.jooq.Record18;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Record5;
-import org.jooq.Record7;
 import org.jooq.Record8;
 import org.jooq.Record9;
 import org.jooq.Result;
@@ -69,6 +68,7 @@ import eki.ekilex.constant.DbConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.NoteSourceTuple;
+import eki.ekilex.data.Word;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
@@ -303,7 +303,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Record7<Long,String,Integer,String,String,String,String> getWord(Long wordId) {
+	public Word getWord(Long wordId) {
 		return create.select(
 					WORD.ID.as("word_id"),
 					DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("word"),
@@ -316,9 +316,19 @@ public class CommonDataDbService implements DbConstant {
 				.where(WORD.ID.eq(wordId)
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
+						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
+						.andExists(DSL
+								.select(LEXEME.ID)
+								.from(LEXEME)
+								.where(
+										LEXEME.WORD_ID.eq(WORD.ID)
+										//.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC))
+										)
+								)
+						)
 				.groupBy(WORD.ID)
-				.fetchOne();
+				.fetchOptionalInto(Word.class)
+				.orElse(null);
 	}
 
 	public Result<Record5<Long,String,String,String,Timestamp>> findMeaningFreeforms(Long meaningId, String ... excludeTypes) {

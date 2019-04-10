@@ -10,12 +10,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import eki.common.constant.FreeformType;
@@ -24,8 +27,10 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Paradigm;
@@ -43,6 +48,7 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
+import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Service
@@ -59,29 +65,49 @@ public class LexSearchService implements SystemConstant {
 	private CommonDataDbService commonDataDbService;
 
 	@Autowired
+	private PermissionDbService permissionDbService;
+
+	@Autowired
 	private ConversionUtil conversionUtil;
 
+	//TODO use unified service
+	private Long getUserId() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null) {
+			EkiUser user = (EkiUser) authentication.getPrincipal();
+			return user.getId();
+		}
+		return null;
+	}
+
 	@Transactional
-	public WordsResult findWords(String searchFilter, List<String> datasets, boolean fetchAll) {
+	public WordsResult findWords(String searchFilter, List<String> datasetCodes, boolean fetchAll) {
 
 		List<Word> words;
-		List<String> filteringDatasets;
+		List<String> filteringDatasetCodes;
 		int wordCount;
 		if (StringUtils.isBlank(searchFilter)) {
 			words = Collections.emptyList();
 			wordCount = 0;
 		} else {
 			int availableDatasetsCount = commonDataDbService.getDatasets().size();
-			int selectedDatasetsCount = datasets.size();
-			if (availableDatasetsCount == selectedDatasetsCount) {
-				filteringDatasets = null;
+			int selectedDatasetsCount = datasetCodes.size();
+			if (selectedDatasetsCount == availableDatasetsCount) {
+				filteringDatasetCodes = null;
 			} else {
-				filteringDatasets = new ArrayList<>(datasets);
+				filteringDatasetCodes = new ArrayList<>(datasetCodes);
 			}
-			words = lexSearchDbService.findWords(searchFilter, filteringDatasets, fetchAll).into(Word.class);
+			Long userId = getUserId();
+			List<Dataset> userPermDatasets = permissionDbService.getUserPermDatasets(userId);
+			List<String> userPermDatasetCodes = userPermDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+			int userPermDatasetsCount = userPermDatasetCodes.size();
+			if (userPermDatasetsCount == availableDatasetsCount) {
+				userPermDatasetCodes = null;
+			}
+			words = lexSearchDbService.findWords(searchFilter, filteringDatasetCodes, userPermDatasetCodes, fetchAll);
 			wordCount = words.size();
 			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
-				wordCount = lexSearchDbService.countWords(searchFilter, filteringDatasets);
+				wordCount = lexSearchDbService.countWords(searchFilter, filteringDatasetCodes, userPermDatasetCodes);
 			}
 		}
 		WordsResult result = new WordsResult();
@@ -107,10 +133,17 @@ public class LexSearchService implements SystemConstant {
 			} else {
 				filteringDatasets = new ArrayList<>(datasets);
 			}
-			words = lexSearchDbService.findWords(searchFilter, filteringDatasets, fetchAll).into(Word.class);
+			Long userId = getUserId();
+			List<Dataset> userPermDatasets = permissionDbService.getUserPermDatasets(userId);
+			List<String> userPermDatasetCodes = userPermDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+			int userPermDatasetsCount = userPermDatasetCodes.size();
+			if (userPermDatasetsCount == availableDatasetsCount) {
+				userPermDatasetCodes = null;
+			}
+			words = lexSearchDbService.findWords(searchFilter, filteringDatasets, userPermDatasetCodes, fetchAll);
 			wordCount = words.size();
 			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
-				wordCount = lexSearchDbService.countWords(searchFilter, filteringDatasets);
+				wordCount = lexSearchDbService.countWords(searchFilter, filteringDatasets, userPermDatasetCodes);
 			}
 		}
 		WordsResult result = new WordsResult();
@@ -123,7 +156,7 @@ public class LexSearchService implements SystemConstant {
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {
 
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-		Word word = commonDataDbService.getWord(wordId).into(Word.class);
+		Word word = commonDataDbService.getWord(wordId);
 		List<Classifier> wordTypes = commonDataDbService.findWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 		List<WordLexeme> lexemes = lexSearchDbService.findWordLexemes(wordId, selectedDatasets).into(WordLexeme.class);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, word.getValue(), classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);

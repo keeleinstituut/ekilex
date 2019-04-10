@@ -235,8 +235,6 @@ public class PermissionDbService {
 			.groupBy(WORD.ID)
 			.asTable("lp");
 
-		lp = DSL.select(DSL.field(DSL.count(lp.field("lex_count", Integer.class))).as("lex_count")).from(lp).asTable("lp");
-
 		Table<Record1<Integer>> la = DSL
 			.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
 			.from(LEXEME)

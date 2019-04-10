@@ -33,9 +33,6 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	@Autowired
 	private PermDataUtil permDataUtil;
 
-	@Autowired
-	private MarkdownRenderer markdownRenderer;
-
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
@@ -65,9 +62,6 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 		if (!modelMap.containsKey(PERM_DATA_UTIL_KEY)) {
 			modelMap.addAttribute(PERM_DATA_UTIL_KEY, permDataUtil);
-		}
-		if (!modelMap.containsKey(MARKDOWN_RENDERER_KEY)) {
-			modelMap.addAttribute(MARKDOWN_RENDERER_KEY, markdownRenderer);
 		}
 
 		logRequestProcessTime(request);

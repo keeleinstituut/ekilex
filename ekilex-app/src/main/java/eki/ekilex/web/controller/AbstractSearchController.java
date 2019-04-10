@@ -168,6 +168,8 @@ public abstract class AbstractSearchController extends AbstractPageController {
 			if (CollectionUtils.isEmpty(selectedDatasets)) {
 				sessionBean.setSelectedDatasets(allDatasetCodes);
 			}
+		} else {
+			sessionBean.setSelectedDatasets(selectedDatasets);
 		}
 		sessionBean.setResultLang(resultLang);
 

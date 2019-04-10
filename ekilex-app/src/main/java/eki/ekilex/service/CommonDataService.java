@@ -181,6 +181,6 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public Word getWord(Long wordId) {
-		return commonDataDbService.getWord(wordId).into(Word.class);
+		return commonDataDbService.getWord(wordId);
 	}
 }

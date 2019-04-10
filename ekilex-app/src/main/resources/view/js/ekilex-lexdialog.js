@@ -1,4 +1,18 @@
-//component based interaction logic
+$(document).on("change", "select.lex-def-dataset-select[name='dataset']", function() {
+	var datasetCode = $(this).val();
+	var permLanguageSelect = $("#definitionPermLanguageSelect");
+	if (datasetCode) {
+		var getLanguageSelectUrl = applicationUrl + "comp/lexdeflangselect/" + datasetCode;
+		$.get(getLanguageSelectUrl).done(function(data) {
+			permLanguageSelect.replaceWith(data);
+		}).fail(function(data) {
+			console.log(data);
+			alert('Viga!');
+		});
+	} else {
+		permLanguageSelect.empty();
+	}
+});
 
 //addLexemeDataDlg_ select
 $(document).on("change", "select.lex-data-select[name='opCode']", function() {
