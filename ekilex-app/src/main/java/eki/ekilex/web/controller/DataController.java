@@ -169,6 +169,8 @@ public class DataController implements SystemConstant, WebConstant {
 		if (StringUtils.isNotBlank(datasetsStr)) {
 			String[] datasetsArr = StringUtils.split(datasetsStr, ',');
 			datasets = Arrays.asList(datasetsArr);
+		} else {
+			datasets = commonDataService.getDatasetCodes();
 		}
 		return datasets;
 	}
