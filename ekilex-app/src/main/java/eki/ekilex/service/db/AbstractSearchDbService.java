@@ -6,6 +6,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -20,6 +21,7 @@ import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
@@ -30,22 +32,92 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 
 public abstract class AbstractSearchDbService implements SystemConstant, DbConstant {
 
-	protected Condition applyDatasetRestrictions(Lexeme lexeme, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes, Condition where) {
+	protected Condition composeLexemeDatasetsCondition(Lexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		/*
-		 * TODO under construction
-		 * 
-		if (CollectionUtils.isNotEmpty(filteringDatasetCodes)) {
-			where = where.and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
-		}
-		if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-			if (userPermDatasetCodes != null) {
-				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
+		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
+		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
+		boolean noDatasetsFiltering = searchDatasetsRestriction.isNoDatasetsFiltering();
+		boolean allDatasetsPermissions = searchDatasetsRestriction.isAllDatasetsPermissions();
+
+		Condition dsFiltWhere;
+
+		if (noDatasetsFiltering) {
+			if (allDatasetsPermissions) {
+				//no restrictions
+				dsFiltWhere = DSL.trueCondition();
+			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
+				//all ds, only public
+				dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC);
+			} else {
+				//all ds, selected perm
+				dsFiltWhere = DSL.or(
+						lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC),
+						lexeme.DATASET_CODE.in(userPermDatasetCodes));
 			}
 		} else {
-			where = where.and(lexeme.DATASET_CODE.in(userPermDatasetCodes));
+			if (allDatasetsPermissions) {
+				//selected ds, full perm
+				dsFiltWhere = lexeme.DATASET_CODE.in(filteringDatasetCodes);
+			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
+				//selected ds, only public
+				dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
+			} else {
+				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
+				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
+					//selected ds, only public
+					dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
+				} else {
+					//selected ds, some perm, some public
+					dsFiltWhere = DSL.or(
+							lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)),
+							lexeme.DATASET_CODE.in(filteringPermDatasetCodes));
+				}
+			}
 		}
-		*/
+		return dsFiltWhere;
+	}
+
+	protected Condition applyDatasetRestrictions(Lexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction, Condition where) {
+
+		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
+		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
+		boolean noDatasetsFiltering = searchDatasetsRestriction.isNoDatasetsFiltering();
+		boolean allDatasetsPermissions = searchDatasetsRestriction.isAllDatasetsPermissions();
+
+		if (noDatasetsFiltering) {
+			if (allDatasetsPermissions) {
+				//no restrictions
+			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
+				//all ds, only public
+				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
+			} else {
+				//all ds, selected perm
+				where = where.and(DSL.or(
+							lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC),
+							lexeme.DATASET_CODE.in(userPermDatasetCodes))
+						);
+			}
+		} else {
+			if (allDatasetsPermissions) {
+				//selected ds, full perm
+				where = where.and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
+			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
+				//selected ds, only public
+				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)));
+			} else {
+				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
+				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
+					//selected ds, only public
+					where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)));
+				} else {
+					//selected ds, some perm, some public
+					where = where.and(DSL.or(
+								lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)),
+								lexeme.DATASET_CODE.in(filteringPermDatasetCodes))
+							);
+				}
+			}
+		}
 		return where;
 	}
 

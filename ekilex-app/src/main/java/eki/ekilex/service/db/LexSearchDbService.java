@@ -27,7 +27,6 @@ import static eki.ekilex.data.db.tables.WordGroupMember.WORD_GROUP_MEMBER;
 import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -58,6 +57,7 @@ import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
+import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Definition;
@@ -87,28 +87,28 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public List<eki.ekilex.data.Word> findWords(SearchFilter searchFilter, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes, boolean fetchAll) {
+	public List<eki.ekilex.data.Word> findWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
-		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, filteringDatasetCodes, userPermDatasetCodes);
+		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
 		return execute(w1, p, wordCondition, fetchAll);
 	}
 
-	public int countWords(SearchFilter searchFilter, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
+	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Word w1 = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
-		Condition wordCondition = createSearchCondition(w1, searchFilter.getCriteriaGroups(), filteringDatasetCodes, userPermDatasetCodes);
+		Condition wordCondition = createSearchCondition(w1, searchFilter.getCriteriaGroups(), searchDatasetsRestriction);
 
 		return count(w1, p, wordCondition);
 	}
 
-	private Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
+	private Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition where = createDatasetRestrictions(w1, filteringDatasetCodes, userPermDatasetCodes);
+		Condition where = composeWordDatasetsCondition(w1, searchDatasetsRestriction);
 
 		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
 
@@ -128,7 +128,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f1.PARADIGM_ID.eq(p1.ID))
 						.and(f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
-				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
@@ -150,8 +150,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
-				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
-				where1 = applyDatasetRestrictions(l2, filteringDatasetCodes, userPermDatasetCodes, where1);
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f2.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w2.LANG, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l2.ID, where1);
@@ -168,7 +168,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(f1.PARADIGM_ID.eq(p1.ID));
 
-				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 
@@ -191,7 +191,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
 				Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.MEANING_ID.eq(m1.ID));
 
-				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 
 				if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
 					where1 = where1.and(m1d.MEANING_ID.eq(m1.ID));
@@ -217,7 +217,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(d1.MEANING_ID.eq(m1.ID))
 						.and(d1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
-				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
@@ -237,7 +237,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()))
 						.and(u1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
-				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
@@ -259,7 +259,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(m1ff.FREEFORM_ID.eq(c1.ID))
 						.and(c1.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
-				where1 = applyDatasetRestrictions(l1, filteringDatasetCodes, userPermDatasetCodes, where1);
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1);
 
 				where = where.and(DSL.exists(DSL.select(c1.ID).from(l1, m1, m1ff, c1).where(where1)));
@@ -268,80 +268,45 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return where;
 	}
 
-	public List<eki.ekilex.data.Word> findWords(
-			String wordWithMetaCharacters, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes, boolean fetchAll) {
+	public List<eki.ekilex.data.Word> findWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, filteringDatasetCodes, userPermDatasetCodes);
+		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
 		return execute(word, paradigm, where, fetchAll);
 	}
 
-	public int countWords(String wordWithMetaCharacters, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
+	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, filteringDatasetCodes, userPermDatasetCodes);
+		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
 		return count(word, paradigm, where);
 	}
 
-	private Condition createSearchCondition(Word word, Paradigm paradigm, String wordWithMetaCharacters, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
+	private Condition createSearchCondition(Word word, Paradigm paradigm, String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
 
 		Form form = FORM.as("f2");
-		Condition where2 = form.PARADIGM_ID.eq(paradigm.ID);
-		where2 = where2.and(form.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
+		Condition where1 = form.PARADIGM_ID.eq(paradigm.ID);
+		where1 = where1.and(form.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 		if (StringUtils.containsAny(theFilter, '%', '_')) {
-			where2 = where2.and(form.VALUE.lower().like(theFilter));
+			where1 = where1.and(form.VALUE.lower().like(theFilter));
 		} else {
-			where2 = where2.and(form.VALUE.lower().eq(theFilter));
+			where1 = where1.and(form.VALUE.lower().eq(theFilter));
 		}
-		Condition where = createDatasetRestrictions(word, filteringDatasetCodes, userPermDatasetCodes);
-		where = where.andExists(DSL.select(form.ID).from(form).where(where2));
+		Condition where = composeWordDatasetsCondition(word, searchDatasetsRestriction);
+		where = where.andExists(DSL.select(form.ID).from(form).where(where1));
 		return where;
 	}
 
-	private Condition createDatasetRestrictions(Word word, List<String> filteringDatasetCodes, List<String> userPermDatasetCodes) {
+	private Condition composeWordDatasetsCondition(Word word, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Lexeme lfd = LEXEME.as("lfd");
-		Condition dsFiltWhere;
-
-		if (CollectionUtils.isEmpty(filteringDatasetCodes)) {
-			if (userPermDatasetCodes == null) {
-				//no restrictions
-				dsFiltWhere = DSL.trueCondition();
-			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-				//all ds, only public
-				dsFiltWhere = lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC);
-			} else {
-				//all ds, selected perm
-				dsFiltWhere = DSL.or(
-						lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC),
-						lfd.DATASET_CODE.in(userPermDatasetCodes));
-			}
-		} else {
-			if (userPermDatasetCodes == null) {
-				//selected ds, full perm
-				dsFiltWhere = lfd.DATASET_CODE.in(filteringDatasetCodes);
-			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-				//selected ds, only public
-				dsFiltWhere = lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lfd.DATASET_CODE.in(filteringDatasetCodes));
-			} else {
-				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
-				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
-					//selected ds, only public
-					dsFiltWhere = lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lfd.DATASET_CODE.in(filteringDatasetCodes));
-				} else {
-					//selected ds, some perm, some public
-					dsFiltWhere = DSL.or(
-							lfd.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lfd.DATASET_CODE.in(filteringDatasetCodes)),
-							lfd.DATASET_CODE.in(filteringPermDatasetCodes));					
-				}
-			}
-		}
+		Condition dsFiltWhere = composeLexemeDatasetsCondition(lfd, searchDatasetsRestriction);
 		Condition where = DSL.exists(DSL.select(lfd.ID).from(lfd).where(lfd.WORD_ID.eq(word.ID).and(dsFiltWhere)));
 		return where;
 	}
@@ -513,12 +478,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		};
 	}
 
-	public Result<Record> findWordLexemes(Long wordId, List<String> datasetCodes) {
+	public Result<Record> findWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition datasetCondition = DSL.trueCondition();
-		if (CollectionUtils.isNotEmpty(datasetCodes)) {
-			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasetCodes));
-		}
+		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create.select(getWordLexemeSelectFields())
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
@@ -530,9 +492,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
-								.and(datasetCondition)
-								//.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC))
-								)
+								.and(dsWhere)
+				)
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
 				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
@@ -554,12 +515,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchSingle();
 	}
 
-	public Result<Record4<Long, String, Integer, String>> findMeaningWords(Long sourceWordId, Long meaningId, List<String> datasetCodes) {
+	public Result<Record4<Long, String, Integer, String>> findMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition datasetCondition = DSL.trueCondition();
-		if (CollectionUtils.isNotEmpty(datasetCodes)) {
-			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasetCodes));
-		}
+		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create
 				.select(
@@ -575,7 +533,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(datasetCondition))
+								.and(dsWhere))
 				.groupBy(WORD.ID, FORM.VALUE)
 				.orderBy(FORM.VALUE)
 				.fetch();

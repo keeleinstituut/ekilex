@@ -23,7 +23,6 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record13;
-import org.jooq.Record15;
 import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -43,6 +42,7 @@ import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
+import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.db.tables.Definition;
@@ -68,28 +68,28 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// simple search
 
-	public List<TermMeaningWordTuple> findMeanings(String searchFilter, List<String> datasets, String resultLang, boolean fetchAll) {
+	public List<TermMeaningWordTuple> findMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll) {
 
 		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
 		return executeFetch(m1, meaningCondition, resultLang, fetchAll);
 	}
 
-	public int countMeanings(String searchFilter, List<String> datasets) {
+	public int countMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
 		return executeCountMeanings(m1, meaningCondition);
 	}
 
-	public int countWords(String searchFilter, List<String> datasets, String resultLang) {
+	public int countWords(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
 
 		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
 		return executeCountWords(m1, meaningCondition, resultLang);
 	}
 
-	private Condition composeMeaningCondition(Meaning m1, String searchFilter, List<String> datasets) {
+	private Condition composeMeaningCondition(Meaning m1, String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_").toLowerCase();
 
@@ -110,50 +110,41 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.asTable("f1");
 
 		Condition where2 = f1.field("paradigm_id", Long.class).eq(p1.ID).and(p1.WORD_ID.eq(w1.ID)).and(l1.WORD_ID.eq(w1.ID)).and(l1.MEANING_ID.eq(m1.ID));
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			where2 = where2.and(l1.DATASET_CODE.in(datasets));
-		}
-
-		Condition meaningCondition = DSL.exists(DSL.select(l1.ID).from(f1, p1, w1, l1).where(where2));
-
-		return meaningCondition;
+		Condition where3 = composeLexemeDatasetsCondition(l1, searchDatasetsRestriction);
+		Condition where = DSL.exists(DSL.select(l1.ID).from(f1, p1, w1, l1).where(where2.and(where3)));
+		return where;
 	}
 
 	// detail search
 
-	public List<TermMeaningWordTuple> findMeanings(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
+	public List<TermMeaningWordTuple> findMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll) throws Exception {
 
 		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
 		return executeFetch(m1, meaningCondition, resultLang, fetchAll);
 	}
 
-	public int countMeanings(SearchFilter searchFilter, List<String> datasets) throws Exception {
+	public int countMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
 		return executeCountMeanings(m1, meaningCondition);
 	}
 
-	public int countWords(SearchFilter searchFilter, List<String> datasets, String resultLang) throws Exception {
+	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) throws Exception {
 
 		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
 		return executeCountWords(m1, meaningCondition, resultLang);
 	}
 
-	private Condition composeMeaningCondition(Meaning m1, SearchFilter searchFilter, List<String> datasets) throws Exception {
+	private Condition composeMeaningCondition(Meaning m1, SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		List<SearchCriterionGroup> criteriaGroups = searchFilter.getCriteriaGroups();
 
-		Condition meaningCondition;
-		if (CollectionUtils.isEmpty(datasets)) {
-			meaningCondition = DSL.trueCondition();
-		} else {
-			// could be optimised - create condition only if no criteria uses lexemes
-			Lexeme m1ds = LEXEME.as("m1ds");
-			meaningCondition = DSL.exists(DSL.select(m1ds.ID).from(m1ds).where(m1ds.MEANING_ID.eq(m1.ID).and(m1ds.DATASET_CODE.in(datasets))));
-		}
+		Lexeme m1ds = LEXEME.as("m1ds");
+		Condition dsFiltWhere = composeLexemeDatasetsCondition(m1ds, searchDatasetsRestriction);
+		Condition meaningCondition = DSL.exists(DSL.select(m1ds.ID).from(m1ds).where(m1ds.MEANING_ID.eq(m1.ID).and(dsFiltWhere)));
 
 		for (SearchCriterionGroup searchCriterionGroup : criteriaGroups) {
 
@@ -175,10 +166,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(l1.WORD_ID.eq(w1.ID))
 						.and(l1.MEANING_ID.eq(m1.ID));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
-
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
@@ -199,9 +187,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(l1.WORD_ID.eq(w1.ID))
 						.and(l1.MEANING_ID.eq(m1.ID));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 
@@ -245,9 +231,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(l1.MEANING_ID.eq(m1.ID))
 						.and(d1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
@@ -267,9 +251,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()))
 						.and(u1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
@@ -339,7 +321,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				DefinitionFreeform dff1 = DEFINITION_FREEFORM.as("dff1");
 				LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
 				Freeform ff1 = FREEFORM.as("ff1");
-				Condition where1, where2;
+				Condition where1, where2, whereDs;
 
 				// word select
 				where2 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
@@ -349,17 +331,14 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				where2 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where2);
 
 				where1 = DSL.exists(DSL.select(w1.ID).from(f1, p1, w1).where(where2)); 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				SelectHavingStep<Record1<Long>> selectWord = DSL.select(l1.MEANING_ID).from(l1).where(where1).groupBy(l1.MEANING_ID);
 
 				// definition select
 				where1 = DSL.trueCondition();
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(d1.MEANING_ID).and(lds.DATASET_CODE.in(datasets))));
-				}
+				whereDs = composeLexemeDatasetsCondition(lds, searchDatasetsRestriction);
+				where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(d1.MEANING_ID).and(whereDs)));
 				SelectHavingStep<Record1<Long>> selectDefinition = DSL.select(d1.MEANING_ID).from(d1).where(where1).groupBy(d1.MEANING_ID);
 
 				// meaning ff select
@@ -367,17 +346,15 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name(), FreeformType.CONCEPT_ID.name(), FreeformType.LEARNER_COMMENT.name()};
 				where1 = ff1.TYPE.in(meaningFreeformTypes).and(mff1.FREEFORM_ID.eq(ff1.ID));
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(mff1.MEANING_ID).and(lds.DATASET_CODE.in(datasets))));
-				}
+				whereDs = composeLexemeDatasetsCondition(lds, searchDatasetsRestriction);
+				where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(mff1.MEANING_ID).and(whereDs)));
 				SelectHavingStep<Record1<Long>> selectMeaningFreeforms = DSL.select(mff1.MEANING_ID).from(mff1, ff1).where(where1).groupBy(mff1.MEANING_ID);
 
 				// definition ff select
 				where1 = ff1.TYPE.eq(FreeformType.PUBLIC_NOTE.name()).and(dff1.FREEFORM_ID.eq(ff1.ID)).and(dff1.DEFINITION_ID.eq(d1.ID));
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(d1.MEANING_ID).and(lds.DATASET_CODE.in(datasets))));
-				}
+				whereDs = composeLexemeDatasetsCondition(lds, searchDatasetsRestriction);
+				where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(d1.MEANING_ID).and(whereDs)));
 				SelectHavingStep<Record1<Long>> selectDefinitionFreeforms = DSL.select(d1.MEANING_ID).from(d1, dff1, ff1).where(where1).groupBy(d1.MEANING_ID);
 
 				// lexeme ff select
@@ -385,18 +362,14 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name(), FreeformType.USAGE.name(), FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
 				where1 = ff1.TYPE.in(lexemeFreeformTypes).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID));
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				SelectHavingStep<Record1<Long>> selectLexemeFreeforms = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.MEANING_ID);
 
 				// lexeme usage translation, definition select
 				String[] lexemeFreeformSubTypes = new String[] {FreeformType.USAGE_TRANSLATION.name(), FreeformType.USAGE_DEFINITION.name()};
 				where1 = ff1.TYPE.in(lexemeFreeformSubTypes).and(lff1.FREEFORM_ID.eq(ff1.PARENT_ID)).and(lff1.LEXEME_ID.eq(l1.ID));
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
-				}
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				SelectHavingStep<Record1<Long>> selectLexemeFreeformSubTypes = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.MEANING_ID);
 
 				// union all
@@ -600,12 +573,9 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// getters
 
-	public Record3<Long, String, Long[]> getMeaning(Long meaningId, List<String> datasets) {
+	public Record3<Long, String, Long[]> getMeaning(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition datasetCondition = DSL.trueCondition();
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
-		}
+		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create
 				.select(
@@ -616,7 +586,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.where(
 						MEANING.ID.eq(meaningId)
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(datasetCondition))
+								.and(dsWhere))
 				.groupBy(MEANING.ID)
 				.fetchSingle();
 	}
@@ -670,43 +640,37 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchSingle();
 	}
 
-	public Record1<String> getMeaningFirstWord(Long meaningId, List<String> datasets) {
+	public Record1<String> getMeaningFirstWord(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition datasetCondition = DSL.trueCondition();
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
-		}
+		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create
 				.select(FORM.VALUE)
 				.from(FORM, PARADIGM, LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(datasetCondition)
 								.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(dsWhere))
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
 				.limit(1)
 				.fetchSingle();
 	}
 
-	public Record1<Long> getMeaningFirstLexemeId(Long meaningId, List<String> datasets) {
+	public Record1<Long> getMeaningFirstLexemeId(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition datasetCondition = DSL.trueCondition();
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
-		}
+		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create
 				.select(LEXEME.ID)
 				.from(FORM, PARADIGM, LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(datasetCondition)
 								.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(dsWhere))
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
 				.limit(1)
 				.fetchSingle();

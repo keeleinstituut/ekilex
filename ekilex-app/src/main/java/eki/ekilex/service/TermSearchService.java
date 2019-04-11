@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Definition;
@@ -27,33 +26,25 @@ import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.TermSearchDbService;
-import eki.ekilex.service.util.ConversionUtil;
 
 @Component
-public class TermSearchService implements SystemConstant {
+public class TermSearchService extends AbstractSearchService {
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
 
-	@Autowired
-	private CommonDataDbService commonDataDbService;
-
-	@Autowired
-	private ConversionUtil conversionUtil;
-
 	@Transactional
-	public MeaningsResult findMeanings(String searchFilter, List<String> datasets, String resultLang, boolean fetchAll) {
+	public MeaningsResult findMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll) {
 
 		List<TermMeaning> termMeanings;
-		List<String> filteringDatasets;
 		int meaningCount;
 		int wordCount;
 		if (StringUtils.isBlank(searchFilter)) {
@@ -61,17 +52,11 @@ public class TermSearchService implements SystemConstant {
 			meaningCount = 0;
 			wordCount = 0;
 		} else {
-			int availableDatasetsCount = commonDataDbService.getDatasets().size();
-			int selectedDatasetsCount = datasets.size();
-			if (availableDatasetsCount == selectedDatasetsCount) {
-				filteringDatasets = null;
-			} else {
-				filteringDatasets = new ArrayList<>(datasets);
-			}
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, filteringDatasets, resultLang, fetchAll);
+			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
-			meaningCount = termSearchDbService.countMeanings(searchFilter, filteringDatasets);
-			wordCount = termSearchDbService.countWords(searchFilter, filteringDatasets, resultLang);
+			meaningCount = termSearchDbService.countMeanings(searchFilter, searchDatasetsRestriction);
+			wordCount = termSearchDbService.countWords(searchFilter, searchDatasetsRestriction, resultLang);
 		}
 		boolean resultExist = meaningCount > 0;
 		MeaningsResult meaningsResult = new MeaningsResult();
@@ -83,10 +68,9 @@ public class TermSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
+	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll) throws Exception {
 
 		List<TermMeaning> termMeanings;
-		List<String> filteringDatasets;
 		int meaningCount;
 		int wordCount;
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
@@ -94,17 +78,11 @@ public class TermSearchService implements SystemConstant {
 			meaningCount = 0;
 			wordCount = 0;
 		} else {
-			int availableDatasetsCount = commonDataDbService.getDatasets().size();
-			int selectedDatasetsCount = datasets.size();
-			if (availableDatasetsCount == selectedDatasetsCount) {
-				filteringDatasets = null;
-			} else {
-				filteringDatasets = new ArrayList<>(datasets);
-			}
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, filteringDatasets, resultLang, fetchAll);
+			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
-			meaningCount = termSearchDbService.countMeanings(searchFilter, filteringDatasets);
-			wordCount = termSearchDbService.countWords(searchFilter, filteringDatasets, resultLang);
+			meaningCount = termSearchDbService.countMeanings(searchFilter, searchDatasetsRestriction);
+			wordCount = termSearchDbService.countWords(searchFilter, searchDatasetsRestriction, resultLang);
 		}
 		boolean resultExist = meaningCount > 0;
 		MeaningsResult meaningsResult = new MeaningsResult();
@@ -116,17 +94,19 @@ public class TermSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public String getMeaningFirstWordValue(Long meaningId, List<String> selectedDatasets) {
-		return termSearchDbService.getMeaningFirstWord(meaningId, selectedDatasets).into(String.class);
+	public String getMeaningFirstWordValue(Long meaningId, List<String> selectedDatasetCodes) {
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+		return termSearchDbService.getMeaningFirstWord(meaningId, searchDatasetsRestriction).into(String.class);
 	}
 
 	@Transactional
-	public Long getMeaningFirstLexemeId(Long meaningId, List<String> selectedDatasets) {
-		return termSearchDbService.getMeaningFirstLexemeId(meaningId, selectedDatasets).into(Long.class);
+	public Long getMeaningFirstLexemeId(Long meaningId, List<String> selectedDatasetCodes) {
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+		return termSearchDbService.getMeaningFirstLexemeId(meaningId, searchDatasetsRestriction).into(Long.class);
 	}
 
 	@Transactional
-	public Meaning getMeaning(Long meaningId, List<String> selectedDatasets, List<ClassifierSelect> languagesOrder) {
+	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
@@ -134,9 +114,10 @@ public class TermSearchService implements SystemConstant {
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
 		final String classifierLabelTypeFull = "full";
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
-		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
+		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction).into(Meaning.class);
 		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);

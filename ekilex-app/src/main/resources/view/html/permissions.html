@@ -135,7 +135,8 @@
                   <option value="" disabled selected>Vali</option>
                   <option th:each="authItem : ${T(eki.common.constant.AuthorityItem).values()}"
                           th:value="${authItem}" 
-                          th:text="${authItem}">
+                          th:text="${authItem}"
+                          th:disabled="${authItem != T(eki.common.constant.AuthorityItem).DATASET}">
                   </option>
                 </select>
               </div>

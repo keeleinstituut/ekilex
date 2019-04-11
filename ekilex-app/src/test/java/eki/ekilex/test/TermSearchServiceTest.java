@@ -16,6 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
+import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.service.db.TermSearchDbService;
 
@@ -40,13 +41,23 @@ public class TermSearchServiceTest {
 	@Test
 	public void testSearchTermMeaningsByWord() throws Exception {
 
+		SearchDatasetsRestriction searchDatasetsRestriction = createDefaultSearchDatasetsRestriction();
+
 		String wordWithMetaCharacters = "hall*";
-		List<String> datasets = new ArrayList<>();
 		String resultLang = null;
 		boolean fetchAll = true;
 
-		List<TermMeaningWordTuple> termMeanings = termSearchDbService.findMeanings(wordWithMetaCharacters, datasets, resultLang, fetchAll);
+		List<TermMeaningWordTuple> termMeanings = termSearchDbService.findMeanings(wordWithMetaCharacters, searchDatasetsRestriction, resultLang, fetchAll);
 
 		assertEquals("Incorrect count of matches", 20, termMeanings.size());
+	}
+
+	private SearchDatasetsRestriction createDefaultSearchDatasetsRestriction() {
+		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
+		searchDatasetsRestriction.setFilteringDatasetCodes(new ArrayList<>());
+		searchDatasetsRestriction.setUserPermDatasetCodes(new ArrayList<>());
+		searchDatasetsRestriction.setNoDatasetsFiltering(true);
+		searchDatasetsRestriction.setAllDatasetsPermissions(true);
+		return searchDatasetsRestriction;
 	}
 }
