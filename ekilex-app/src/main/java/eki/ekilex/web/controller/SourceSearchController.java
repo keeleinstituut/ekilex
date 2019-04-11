@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Source;
@@ -19,7 +18,6 @@ import eki.ekilex.service.SourceService;
 
 @ConditionalOnWebApplication
 @Controller
-@SessionAttributes(WebConstant.SESSION_BEAN)
 public class SourceSearchController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceSearchController.class);
@@ -42,6 +40,7 @@ public class SourceSearchController implements WebConstant {
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sources", sources);
 		model.addAttribute("sourceCount", sources.size());
+		model.addAttribute("sourceTypes", sourceFreeformTypes);
 
 		return "sourcesearch";
 	}

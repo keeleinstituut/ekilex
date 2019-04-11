@@ -15,6 +15,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SourcePropertyTuple;
@@ -113,5 +114,37 @@ public class SourceDbService implements SystemConstant {
 				.orderBy(s.ID, sp.ORDER_BY)
 				.fetch()
 				.into(SourcePropertyTuple.class);
+	}
+
+	public Long addSourceProperty(Long sourceId, FreeformType type, String valueText) {
+
+		Long sourceFreeformId = create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.values(type.name(), valueText)
+				.returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+		create.insertInto(SOURCE_FREEFORM, SOURCE_FREEFORM.SOURCE_ID, SOURCE_FREEFORM.FREEFORM_ID).values(sourceId, sourceFreeformId).execute();
+		return sourceFreeformId;
+	}
+
+	public void updateSourceProperty(Long sourceFreeformId, FreeformType type, String valueText) {
+
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, valueText)
+				.set(FREEFORM.VALUE_PRESE, valueText)
+				.set(FREEFORM.TYPE, type.name())
+				.where(FREEFORM.ID.eq(sourceFreeformId))
+				.execute();
+	}
+
+	public void deleteSourceProperty(Long sourceFreeformId) {
+
+		create.delete(FREEFORM)
+				.where(FREEFORM.ID.eq(sourceFreeformId))
+				.execute();
+		create.delete(SOURCE_FREEFORM)
+				.where(SOURCE_FREEFORM.FREEFORM_ID.eq(sourceFreeformId))
+				.execute();
 	}
 }
