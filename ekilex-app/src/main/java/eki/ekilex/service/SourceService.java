@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
-import eki.common.constant.SourceType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,9 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.SourceType;
 import eki.ekilex.data.Source;
-import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.SourceProperty;
+import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.service.db.SourceDbService;
 
 @Component
@@ -62,6 +62,24 @@ public class SourceService {
 		List<Source> sources = convert(sourcePropertyTuples);
 
 		return sources;
+	}
+
+	@Transactional
+	public void addSourceProperty(Long sourceId, FreeformType type, String valueText) {
+		sourceDbService.addSourceProperty(sourceId, type, valueText);
+		// TODO lifecycleLog - Yogesh
+	}
+
+	@Transactional
+	public void editSourceProperty(Long sourcePropertyId, FreeformType type, String valueText) {
+		sourceDbService.updateSourceProperty(sourcePropertyId, type, valueText);
+		// TODO lifecycleLog - Yogesh
+	}
+
+	@Transactional
+	public void deleteSourceProperty(Long sourcePropertyId) {
+		sourceDbService.deleteSourceProperty(sourcePropertyId);
+		// TODO lifecycleLog - Yogesh
 	}
 
 	private List<Source> convert(List<SourcePropertyTuple> sourcePropertyTuples) {
