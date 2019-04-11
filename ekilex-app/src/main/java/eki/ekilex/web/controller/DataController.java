@@ -1,7 +1,6 @@
 package eki.ekilex.web.controller;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -165,7 +164,7 @@ public class DataController implements SystemConstant, WebConstant {
 
 
 	private List<String> parseDatasets(String datasetsStr) {
-		List<String> datasets = Collections.emptyList();
+		List<String> datasets;
 		if (StringUtils.isNotBlank(datasetsStr)) {
 			String[] datasetsArr = StringUtils.split(datasetsStr, ',');
 			datasets = Arrays.asList(datasetsArr);
