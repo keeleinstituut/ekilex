@@ -49,7 +49,7 @@ function submitForm(theForm, failMessage, callback = $.noop) {
 function alignAndFocus(e, dlg) {
 	dlg.find('.form-control').first().focus();
 	if (e.relatedTarget) {
-		let dlgTop = $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
+		let dlgTop = ($(e.relatedTarget).offset().top - $(window).scrollTop()) - dlg.find('.modal-content').height() - 30;
 		if (dlgTop < 0) {
 			dlgTop = 0;
 		}

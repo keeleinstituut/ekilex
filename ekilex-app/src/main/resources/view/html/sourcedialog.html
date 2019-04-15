@@ -12,14 +12,12 @@
           <input type="hidden" name="searchResultCount" th:value="${count}">
           <div class="form-group row">
             <div class="col-auto">
-              <select required class="form-control" name="type">
-                <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}" th:selected="${type == sourceProperty.type}">value</option>
-              </select>
+              <span th:text="${sourceProperty.type}"></span>
             </div>
           </div>
           <div class="form-group row">
             <div class="col-12">
-              <input type="text" class="form-control" name="valueText" th:value="${sourceProperty.valueText}">
+              <textarea rows="3" class="form-control" name="valueText" th:text="${sourceProperty.valueText}"></textarea>
               <div class="errors">
                 <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
               </div>
@@ -52,7 +50,7 @@
           </div>
           <div class="form-group row">
             <div class="col-12">
-              <input type="text" class="form-control" name="valueText">
+              <textarea rows="3" class="form-control" name="valueText"></textarea>
               <div class="errors">
                 <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
               </div>

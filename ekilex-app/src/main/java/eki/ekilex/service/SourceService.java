@@ -78,8 +78,8 @@ public class SourceService {
 	}
 
 	@Transactional
-	public void editSourceProperty(Long sourcePropertyId, FreeformType type, String valueText) {
-		sourceDbService.updateSourceProperty(sourcePropertyId, type, valueText);
+	public void editSourceProperty(Long sourcePropertyId, String valueText) {
+		sourceDbService.updateSourceProperty(sourcePropertyId, valueText);
 		// TODO lifecycleLog - Yogesh
 	}
 

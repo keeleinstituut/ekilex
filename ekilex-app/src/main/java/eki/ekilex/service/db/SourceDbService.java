@@ -148,12 +148,11 @@ public class SourceDbService implements SystemConstant {
 		return sourceFreeformId;
 	}
 
-	public void updateSourceProperty(Long sourceFreeformId, FreeformType type, String valueText) {
+	public void updateSourceProperty(Long sourceFreeformId, String valueText) {
 
 		create.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, valueText)
 				.set(FREEFORM.VALUE_PRESE, valueText)
-				.set(FREEFORM.TYPE, type.name())
 				.where(FREEFORM.ID.eq(sourceFreeformId))
 				.execute();
 	}

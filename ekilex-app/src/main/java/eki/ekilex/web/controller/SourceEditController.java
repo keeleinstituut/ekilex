@@ -36,12 +36,11 @@ public class SourceEditController extends AbstractPageController {
 
 	@PostMapping("/edit_source_property")
 	public String editSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("sourcePropertyId") Long sourcePropertyId,
-			@RequestParam("type") FreeformType type, @RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count,
-			Model model) {
+			@RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count, Model model) {
 
 		logger.debug("Editing source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		sourceService.editSourceProperty(sourcePropertyId, type, valueText);
+		sourceService.editSourceProperty(sourcePropertyId, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
