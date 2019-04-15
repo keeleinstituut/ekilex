@@ -65,6 +65,13 @@ public class SourceService {
 	}
 
 	@Transactional
+	public Long addSource(SourceType sourceType, String extSourceId, List<SourceProperty> sourceProperties) {
+		Long sourceId = sourceDbService.addSource(sourceType, extSourceId, sourceProperties);
+		// TODO lifecycleLog - Yogesh
+		return sourceId;
+	}
+
+	@Transactional
 	public void addSourceProperty(Long sourceId, FreeformType type, String valueText) {
 		sourceDbService.addSourceProperty(sourceId, type, valueText);
 		// TODO lifecycleLog - Yogesh
@@ -79,6 +86,23 @@ public class SourceService {
 	@Transactional
 	public void deleteSourceProperty(Long sourcePropertyId) {
 		sourceDbService.deleteSourceProperty(sourcePropertyId);
+		// TODO lifecycleLog - Yogesh
+	}
+
+	@Transactional
+	public void editSourceType(Long sourceId, SourceType type) {
+		sourceDbService.editSourceType(sourceId, type);
+		// TODO lifecycleLog - Yogesh
+	}
+
+	@Transactional
+	public boolean isSourceDeletePossible(Long sourceId) {
+		return sourceDbService.isSourceDeletePossible(sourceId);
+	}
+
+	@Transactional
+	public void deleteSource(Long sourceId) {
+		sourceDbService.deleteSource(sourceId);
 		// TODO lifecycleLog - Yogesh
 	}
 
@@ -105,7 +129,7 @@ public class SourceService {
 				Timestamp modifiedOn = tuple.getModifiedOn();
 				String modifiedBy = tuple.getModifiedBy();
 				String processStateCode = tuple.getProcessStateCode();
-				String type = tuple.getType();
+				SourceType type = tuple.getType();
 				source = new Source();
 				source.setSourceId(sourceId);
 				source.setExtSourceId(extSourceId);

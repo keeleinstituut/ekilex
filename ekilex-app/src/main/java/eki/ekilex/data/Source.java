@@ -3,6 +3,7 @@ package eki.ekilex.data;
 import java.sql.Timestamp;
 import java.util.List;
 
+import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 
 public class Source extends AbstractDataObject {
@@ -23,7 +24,7 @@ public class Source extends AbstractDataObject {
 
 	private String processStateCode;
 
-	private String type;
+	private SourceType type;
 
 	private List<String> sourceNames;
 
@@ -85,11 +86,11 @@ public class Source extends AbstractDataObject {
 		this.processStateCode = processStateCode;
 	}
 
-	public String getType() {
+	public SourceType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(SourceType type) {
 		this.type = type;
 	}
 

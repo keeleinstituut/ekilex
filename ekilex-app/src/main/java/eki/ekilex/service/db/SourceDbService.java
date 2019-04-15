@@ -1,8 +1,12 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_SOURCE_LINK;
 
 import java.util.List;
 
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Source;
@@ -116,6 +121,21 @@ public class SourceDbService implements SystemConstant {
 				.into(SourcePropertyTuple.class);
 	}
 
+	public Long addSource(SourceType sourceType, String extSourceId, List<SourceProperty> sourceProperties) {
+
+		Long sourceId =
+				create.insertInto(SOURCE, SOURCE.EXT_SOURCE_ID, SOURCE.TYPE)
+						.values(extSourceId, sourceType.name())
+						.returning(SOURCE.ID)
+						.fetchOne()
+						.getId();
+
+		for (SourceProperty sourceProperty : sourceProperties) {
+			addSourceProperty(sourceId, sourceProperty.getType(), sourceProperty.getValueText());
+		}
+		return sourceId;
+	}
+
 	public Long addSourceProperty(Long sourceId, FreeformType type, String valueText) {
 
 		Long sourceFreeformId = create
@@ -145,6 +165,69 @@ public class SourceDbService implements SystemConstant {
 				.execute();
 		create.delete(SOURCE_FREEFORM)
 				.where(SOURCE_FREEFORM.FREEFORM_ID.eq(sourceFreeformId))
+				.execute();
+	}
+
+	public void editSourceType(Long sourceId, SourceType type) {
+
+		create.update(SOURCE)
+				.set(SOURCE.TYPE, type.name())
+				.where(SOURCE.ID.eq(sourceId))
+				.execute();
+	}
+
+	public boolean isSourceDeletePossible(Long sourceId) {
+
+		return countDefinitionSourceLinksBySourceId(sourceId) == 0
+				&& countFreeformSourceLinksBySourceId(sourceId) == 0
+				&& countLexemeSourceLinksBySourceId(sourceId) == 0
+				&& countWordSourceLinksBySourceId(sourceId) == 0;
+	}
+
+	private int countDefinitionSourceLinksBySourceId(Long sourceId) {
+
+		return create.fetchCount(DSL.select(DEFINITION_SOURCE_LINK.ID)
+		.from(DEFINITION_SOURCE_LINK)
+		.where(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+	}
+
+	private int countFreeformSourceLinksBySourceId(Long sourceId) {
+
+		return create.fetchCount(DSL.select(FREEFORM_SOURCE_LINK.ID)
+				.from(FREEFORM_SOURCE_LINK)
+				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+	}
+
+	private int countLexemeSourceLinksBySourceId(Long sourceId) {
+
+		return create.fetchCount(DSL.select(LEXEME_SOURCE_LINK.ID)
+				.from(LEXEME_SOURCE_LINK)
+				.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+	}
+
+	private int countWordSourceLinksBySourceId(Long sourceId) {
+
+		return create.fetchCount(DSL.select(WORD_SOURCE_LINK.ID)
+				.from(WORD_SOURCE_LINK)
+				.where(WORD_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+	}
+
+	public void deleteSource(Long sourceId) {
+
+		List<Long> freeformIds = create
+				.select(SOURCE_FREEFORM.FREEFORM_ID)
+				.from(SOURCE_FREEFORM)
+				.where(SOURCE_FREEFORM.SOURCE_ID.eq(sourceId))
+				.fetchInto(Long.class);
+
+		for (Long freeformId : freeformIds) {
+			create.delete(FREEFORM)
+					.where(FREEFORM.ID.eq(freeformId))
+					.execute();
+		}
+
+		create.delete(SOURCE)
+				.where(SOURCE.ID.eq(sourceId))
 				.execute();
 	}
 }

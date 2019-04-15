@@ -16,9 +16,8 @@
       <div class="ml-2">
         <button type="button"
                 class="btn btn-warning font-weight-bold btn-sm"
-                th:data-id="123"
-                data-op-code="lexeme"
-                data-toggle="delete-confirm">
+                th:data-source-id="${source.sourceId}"
+                data-toggle="delete-source-confirm">
           Eemalda allikas
         </button>
       </div>
@@ -42,7 +41,18 @@
             </tr>
             <tr>
               <th>type</th>
-              <td th:text="${source.type}"></td>
+              <td>
+                <div class="hidden-buttons">
+                  <div class="col pl-0">
+                    <span th:text="${source.type}"></span>
+                    <button type="button" class="btn badge badge-primary" title="Muuda"
+                            data-toggle="modal"
+                            th:data-target="${'#editSourceTypeDlg_' + source.sourceId}">
+                      <i class="fa fa-caret-down" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </td>
             </tr>
             <tr>
               <th>created on</th>
@@ -70,6 +80,7 @@
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
             <div th:replace="sourcedialog :: add_source_property_dlg"></div>
+            <div th:replace="sourcedialog :: edit_source_type_dlg"></div>
             <div class="invisible-buttons action-buttons-anchor w-90 mb-1 mt-1">
               <div style="display: list-item; position: absolute"></div>
               <span th:text="${sourceProperty.type}"></span>
@@ -99,6 +110,66 @@
       </tr>
     </table>
   </div>
+  <script type="text/javascript">
+	  $('[data-toggle=delete-source-property-confirm]').confirmation({
+		  btnOkLabel: 'Jah',
+		  btnCancelLabel: 'Ei',
+		  title: 'Palun kinnita allika atribuudi kustutamine',
+		  onConfirm: function () {
+			  let sourceId = $(this).data('sourceId');
+		    let sourcePropertyId = $(this).data('sourcePropertyId');
+		    let count = $(this).data('count');
+			  deleteSourceProperty(sourceId, sourcePropertyId, count);
+		  }
+	  });
+	$('[data-toggle=delete-source-confirm]').confirmation({
+		btnOkLabel: 'Jah',
+		btnCancelLabel: 'Ei',
+		title: 'Palun kinnita allika kustutamine',
+		onConfirm: function () {
+			let sourceId = $(this).data('sourceId');
+			executeValidateSourceDelete(sourceId);
+		}
+	});
+  </script>
 </div>
+
+<th:block th:fragment="add_new_source_property">
+  <div class="form-group row" id="source_property_element">
+    <div class="col-md-12">
+      <div class="border rounded" name="sourcePropertyGroup">
+        <div class="form-group row p-2 m-2">
+          <div class="col-auto">
+            <label title="Allika atribuudi nimetus">
+              <select required class="form-control" name="type">
+                <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value
+                </option>
+              </select>
+            </label>
+          </div>
+          <div class="col-4 pl-0">
+            <button type="button" class="btn btn-success btn-sm mt-1" name="addPropertyGroupBtn" title="Lisa uus allika atribuut">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-sm mt-1" name="removePropertyGroupBtn" title="Eemalda">
+              <i class="fa fa-minus" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <div class="form-group row p-2 m-2" name="propertyValue">
+          <div class="col-12">
+            <input type="text" class="form-control" name="valueText">
+            <div class="errors">
+              <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script th:inline="javascript">
+	  initialiseAddNewProperty();
+  </script>
+</th:block>
 </body>
 </html>

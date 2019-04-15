@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import eki.common.constant.FreeformType;
+import eki.common.constant.SourceType;
 import eki.common.constant.TextDecoration;
 import eki.common.data.CodeValue;
 import eki.ekilex.constant.WebConstant;
@@ -68,5 +71,18 @@ public abstract class AbstractPageController implements WebConstant {
 	@ModelAttribute("ekiMarkupElements")
 	public CodeValue[] getEkiMarkupElements() {
 		return TextDecoration.EKI_MARKUP_ELEMENTS;
+	}
+
+	@ModelAttribute("sourceTypes")
+	public List<SourceType> getSourceTypes() {
+		return Arrays.asList(SourceType.class.getEnumConstants());
+	}
+
+	@ModelAttribute("sourcePropertyTypes")
+	public List<FreeformType> getSourcePropertyTypes() {
+
+		return Arrays.asList(FreeformType.SOURCE_AUTHOR, FreeformType.SOURCE_NAME, FreeformType.SOURCE_ISBN, FreeformType.SOURCE_ISSN, FreeformType.SOURCE_WWW,
+				FreeformType.CREATED_BY, FreeformType.MODIFIED_BY, FreeformType.SOURCE_FILE, FreeformType.SOURCE_PUBLISHER,
+				FreeformType.SOURCE_PUBLICATION_PLACE, FreeformType.SOURCE_PUBLICATION_YEAR, FreeformType.PUBLIC_NOTE);
 	}
 }

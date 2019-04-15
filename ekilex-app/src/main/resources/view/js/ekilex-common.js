@@ -183,17 +183,7 @@ function initGenericTextEditDlg(editDlg) {
 
 function initSelectDlg(selectDlg) {
 	let selectControl = selectDlg.find('select');
-	let maxItemLength = 0;
-	selectControl.find('option').each(function(indx, item) {
-		let itemLenght = $(item).text().length;
-		if (itemLenght > maxItemLength) {
-			maxItemLength = itemLenght;
-		}
-	});
-	let dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
-	let numberOfOptins = selectControl.find('option').length;
-	selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
-
+	configureSelectDlg(selectControl, selectDlg);
 	selectControl.off('click').on('click', function(e) {
 		submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
 	});
@@ -202,8 +192,21 @@ function initSelectDlg(selectDlg) {
 			submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
 		}
 	});
-	selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		let dlgTop = $(e.relatedTarget).offset().top;
+}
+
+function configureSelectDlg(selectControl, selectDlg) {
+	let maxItemLength = 0;
+	selectControl.find('option').each(function (indx, item) {
+		let itemLenght = $(item).text().length;
+		if (itemLenght > maxItemLength) {
+			maxItemLength = itemLenght;
+		}
+	});
+	let dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
+	let numberOfOptins = selectControl.find('option').length;
+	selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
+	selectDlg.off('shown.bs.modal').on('shown.bs.modal', function (e) {
+		let dlgTop = $(e.relatedTarget).offset().top - $(window).scrollTop();
 		let dlgLeft = $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
 		let modalContent = selectDlg.find('.modal-content');
 		modalContent.css('top', dlgTop - 30);
