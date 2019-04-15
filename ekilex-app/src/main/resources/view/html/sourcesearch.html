@@ -19,10 +19,10 @@
         <button class="btn btn-primary position-right"
                 title="Lisa uus allikas"
                 data-toggle="modal"
-                th:data-target="${'#addSourceDlg_'}">
+                data-target="#newSourceDialog">
           Lisa uus allikas
         </button>
-        <form th:action="@{/sourcesearch}" method="post">
+        <form id="sourceSearchForm" th:action="@{/sourcesearch}" method="post">
           <div class="form-row">
             <div class="col-12">
               <div class="form-group row">
@@ -44,11 +44,12 @@
         <span>Tulemusi</span>
         <span th:text="${sourceCount}">123</span>
       </div>
-      <div id="tempTestRemoveLater"></div>
       <th:block th:each="source,sourceIter : ${sources}" th:with="count=${sourceIter.count}">
           <th:block th:replace="sourcecomponents :: source_search_result"></th:block>
       </th:block>
     </div>
   </div>
+  <div th:replace="sourcedialog :: new_source_dialog"></div>
+  <div th:replace="common :: #alertDlg"></div>
 </body>
 </html>

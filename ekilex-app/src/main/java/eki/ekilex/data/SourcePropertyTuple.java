@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 
 public class SourcePropertyTuple extends AbstractDataObject {
@@ -33,7 +34,7 @@ public class SourcePropertyTuple extends AbstractDataObject {
 	private String processStateCode;
 
 	@Column(name = "type")
-	private String type;
+	private SourceType type;
 
 	@Column(name = "source_property_id")
 	private Long sourcePropertyId;
@@ -106,11 +107,11 @@ public class SourcePropertyTuple extends AbstractDataObject {
 		this.processStateCode = processStateCode;
 	}
 
-	public String getType() {
+	public SourceType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(SourceType type) {
 		this.type = type;
 	}
 

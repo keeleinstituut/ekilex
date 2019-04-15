@@ -260,10 +260,6 @@ input:checked+.slider:before {
 	z-index: 99;
 }
 
-.w-90 {
-	width: 90%;
-}
-
 .mw-90 {
 	max-width: 90%;
 }

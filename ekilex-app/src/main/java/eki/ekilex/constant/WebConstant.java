@@ -1,11 +1,5 @@
 package eki.ekilex.constant;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import eki.common.constant.FreeformType;
-
 public interface WebConstant {
 
 	String LOGIN_URI = "/dologin";
@@ -117,8 +111,4 @@ public interface WebConstant {
 	String SEARCH_WORD_KEY = "searchWord";
 
 	String REQUEST_START_TIME_KEY = "request_start_time";
-
-	List<FreeformType> sourceFreeformTypes = new ArrayList<>(Arrays.asList(FreeformType.SOURCE_AUTHOR, FreeformType.SOURCE_NAME, FreeformType.SOURCE_ISBN,
-			FreeformType.SOURCE_ISSN, FreeformType.SOURCE_WWW, FreeformType.CREATED_BY, FreeformType.MODIFIED_BY, FreeformType.SOURCE_FILE,
-			FreeformType.SOURCE_PUBLISHER, FreeformType.SOURCE_PUBLICATION_PLACE, FreeformType.SOURCE_PUBLICATION_YEAR));
 }
