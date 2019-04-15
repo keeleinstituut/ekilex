@@ -1,9 +1,4 @@
 // Javascript methods for Ekilex custom editor component and dialogs are using it
-function openUsageMemberDlg(elem) {
-	let theDlg = $($(elem).data('target'));
-	theDlg.find('[name=id]').val($(elem).data('id'));
-}
-
 function toggleGroup(dlg, groupName) {
 	dlg.find('.value-group').hide();
 	dlg.find('[data-id=' + groupName + ']').show();
@@ -36,41 +31,6 @@ function initUsageMemberDlg(theDlg) {
 	theDlg.find('.eki-editor').each(function(indx, item) {
 		initEkiEditor($(item));
 	});
-}
-
-function openEkiEditorAddDlg(elem, callback = $.noop) {
-	let addDlg = $($(elem).data('target'));
-	addDlg.find('[name=id]').val($(elem).data('id'));
-	let modifyFld = addDlg.find('[name=editFld]');
-	modifyFld.html(null);
-	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		addDlg.find('[name=value]').val(modifyFld.html());
-		submitDialog(e, addDlg, 'Andmete lisamine ebaõnnestus.', callback)
-	});
-	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		alignAndFocus(e, addDlg)
-	});
-	let ekiEditorElem = addDlg.find('.eki-editor');
-	initEkiEditor(ekiEditorElem);
-}
-
-function openEkiEditorDlg(elem) {
-	let targetElementName = $(elem).data('target-elem');
-	let targetElement = $('[name="' + targetElementName + '"]');
-	let editDlg = $($(elem).data('target'));
-	let modifyFld = editDlg.find('[name=editFld]');
-	modifyFld.html(targetElement.data('value') === undefined ? targetElement.text() : targetElement.data('value'));
-	editDlg.find('[name=id]').val(targetElement.data('id'));
-	editDlg.find('[name=opCode]').val(targetElement.data('op-code'));
-	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		editDlg.find('[name=value]').val(modifyFld.html());
-		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
-	});
-	editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		alignAndFocus(e, editDlg)
-	});
-	let ekiEditorElem = editDlg.find('.eki-editor');
-	initEkiEditor(ekiEditorElem);
 }
 
 function initEkiEditorDlg(editDlg) {

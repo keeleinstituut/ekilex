@@ -448,12 +448,6 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addFeedbackComment(Long feedbackId, String comment) {
-		String userName = userService.getAuthenticatedUser().getName();
-		updateDbService.addFeedbackComment(feedbackId, comment, userName);
-	}
-
-	@Transactional
 	public void joinLexemes(Long lexemeId, Long lexemeId2) {
 		LexemeRecord lexeme = updateDbService.getLexeme(lexemeId);
 		LexemeRecord lexeme2 = updateDbService.getLexeme(lexemeId2);
@@ -696,11 +690,6 @@ public class UpdateService {
 	public void deleteMeaningPrivateNote(Long id) {
 		addLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, id);
 		updateDbService.deleteFreeform(id);
-	}
-
-	@Transactional
-	public void deleteFeedback(Long id) {
-		updateDbService.deleteFeedback(id);
 	}
 
 	void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {

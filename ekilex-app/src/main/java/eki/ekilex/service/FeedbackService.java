@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eki.ekilex.data.Feedback;
@@ -25,16 +26,16 @@ public class FeedbackService {
 	private static final String FEEDBACK_TYPE_NEW_WORD = "new_word";
 	private static final String FEEDBACK_TYPE_COMMENT = "comment";
 
+	@Autowired
 	private FeedbackDbService feedbackDbService;
 
-	public FeedbackService(FeedbackDbService feedbackDbService) {
-		this.feedbackDbService = feedbackDbService;
-	}
+	@Autowired
+	private UserService userService;
 
 	@Transactional
 	public List<Feedback> findFeedbackLog() {
 		List<Feedback> feedbacks = feedbackDbService.findFeedback().into(Feedback.class);
-		List<FeedbackComment> feedbackComments = feedbackDbService.findFeedbackComments().into(FeedbackComment.class);
+		List<FeedbackComment> feedbackComments = feedbackDbService.findAllFeedbackComments().into(FeedbackComment.class);
 		feedbacks.forEach(fb ->
 				fb.setFeedbackComments(feedbackComments.stream()
 						.filter(fc -> fc.getFeedbackId().equals(fb.getId()))
@@ -49,6 +50,12 @@ public class FeedbackService {
 		return feedbackDbService.getFeedbackComments(feedbackId).into(FeedbackComment.class);
 	}
 
+	@Transactional
+	public void addFeedbackComment(Long feedbackId, String comment) {
+		String userName = userService.getAuthenticatedUser().getName();
+		feedbackDbService.addFeedbackComment(feedbackId, comment, userName);
+	}
+
 	public boolean isValidFeedback(Feedback newFeedback) {
 		return newFeedback != null &&
 				isValidFeedbackType(newFeedback.getFeedbackType()) &&
@@ -57,11 +64,15 @@ public class FeedbackService {
 				isNotBlank(newFeedback.getWord());
 	}
 
+	private boolean isValidFeedbackType(String feedbackType) {
+		return StringUtils.equalsAny(feedbackType, FEEDBACK_TYPE_NEW_WORD, FEEDBACK_TYPE_COMMENT);
+	}
+
 	@Transactional
 	public String addFeedback(Feedback newFeedback) {
 		String retMessage = "ok";
 		try {
-			feedbackDbService.addNewFeedback(newFeedback);
+			feedbackDbService.createFeedback(newFeedback);
 		} catch (DataAccessException e) {
 			logger.error("Add new feedback", e);
 			retMessage = "error";
@@ -69,8 +80,8 @@ public class FeedbackService {
 		return retMessage;
 	}
 
-	private boolean isValidFeedbackType(String feedbackType) {
-		return StringUtils.equalsAny(feedbackType, FEEDBACK_TYPE_NEW_WORD, FEEDBACK_TYPE_COMMENT);
+	@Transactional
+	public void deleteFeedback(Long id) {
+		feedbackDbService.deleteFeedback(id);
 	}
-
 }

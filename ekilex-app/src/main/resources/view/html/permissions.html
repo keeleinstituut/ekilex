@@ -63,11 +63,10 @@
                       </th:block>
                     </td>
                     <td class="m-1 p-1 text-center">
+                      <div th:replace="permdialog :: add_dataset_perm_dlg"></div>
                       <button type="button" class="btn badge badge-success" title="Lisa luba"
-                              th:data-id="${userPerm.id}"
-                              onclick="openAddDatasetPermissionDlg(this)"
                               data-toggle="modal"
-                              data-target="#addDatasetPermissionDlg"
+                              th:data-target="${'#addDatasetPermissionDlg_' + userPerm.id}"
                               sec:authorize="${#authentication.principal.datasetOwnershipExist}"
                               th:disabled="${#authentication.principal.id == userPerm.id}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
@@ -101,7 +100,7 @@
 				$('[data-toggle=delete-confirm]').confirmation({
 					btnOkLabel : 'Jah',
 					btnCancelLabel : 'Ei',
-					title : 'Palun kinnita õiguse kustutamine',
+					title : 'Palun kinnita kustutamine',
 					onConfirm : function() {
 						var datasetPermId = $(this).data('id');
 						deleteDatasetPermission(datasetPermId);
@@ -110,62 +109,6 @@
 			</script>
           </th:block>
         </div>
-      </div>
-    </div>
-  </div>
-  <div id="addDatasetPermissionDlg" class="modal" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/permissions/adddatasetperm}" method="post">
-          <input type="hidden" id="datasetPermUserId" name="userId"/>
-          <div class="modal-body">
-            <div class="form-group row">
-              <div class="col-10">
-                <select class="form-control" name="datasetCode">
-                  <option value="" disabled selected>Vali</option>
-                  <option th:each="dataset : ${userOwnedDatasets}"
-                          th:value="${dataset.code}"
-                          th:text="${dataset.name}">name</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-5">
-                <select class="form-control" name="authItem">
-                  <option value="" disabled selected>Vali</option>
-                  <option th:each="authItem : ${T(eki.common.constant.AuthorityItem).values()}"
-                          th:value="${authItem}" 
-                          th:text="${authItem}"
-                          th:disabled="${authItem != T(eki.common.constant.AuthorityItem).DATASET}">
-                  </option>
-                </select>
-              </div>
-              <div class="col-5">
-                <select class="form-control" name="authOp">
-                  <option value="" disabled selected>Vali</option>
-                  <option th:each="authOp : ${T(eki.common.constant.AuthorityOperation).values()}"
-                          th:value="${authOp}"
-                          th:text="${authOp}">
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-10">
-                <select class="form-control" name="authLang">
-                  <option value="" disabled selected>Vali</option>
-                  <option th:each="language : ${allLanguages}"
-                          th:value="${language.code}"
-                          th:text="${language.value}">language</option>
-                </select>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Lisa</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
   </div>

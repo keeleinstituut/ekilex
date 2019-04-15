@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{feedback.title}">Sõnaveebi tagasiside</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-wwfeedbackdialog.js}"></script>
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar"></th:block>
+  <div class="container-fluid">
+    <div class="card shadow">
+      <div class="card-header">
+        <h5 class="card-title">Sõnaveebi tagasiside</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped table-condensed">
+          <thead class="thead-light">
+            <tr>
+              <th>Saadetud</th>
+              <th>Tagasiside tüüp</th>
+              <th>Saatja</th>
+              <th>E-post</th>
+              <th>Sõna</th>
+              <th>Teade</th>
+              <th>Viimane otsing</th>
+              <th>EKI kommentaarid</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="fbItem : ${feedbackLog}">
+              <td class="text-nowrap" th:text="${#dates.format(fbItem.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
+              <td th:text="${fbItem.feedbackType}"></td>
+              <td th:text="${fbItem.sender}"></td>
+              <td th:text="${fbItem.email}"></td>
+              <td th:text="${fbItem.word}"></td>
+              <td>
+                <div class="row ml-1" th:if="${fbItem.definition != null}">
+                  <span class="lbl pr-2">Tähendus</span>
+                  <span th:text="${fbItem.definition}"></span>
+                </div>
+                <div class="row ml-1" th:if="${fbItem.usages != null}">
+                  <span class="lbl pr-2">Kasutusnäited</span>
+                  <span th:text="${fbItem.usages}"></span>
+                </div>
+                <div class="row ml-1" th:if="${fbItem.comments != null}">
+                  <span class="lbl pr-2">Kommentaar</span>
+                  <span th:text="${fbItem.comments}"></span>
+                </div>
+                <div class="row ml-1" th:if="${fbItem.otherInfo != null}">
+                  <span class="lbl pr-2">Muu info</span>
+                  <span th:text="${fbItem.otherInfo}"></span>
+                </div>
+              </td>
+              <td th:text="${fbItem.lastSearch}"></td>
+              <td>
+                <div th:replace="wwfeedbackdialog :: add_feedback_comment_dlg"></div>
+                <button type="button" class="btn badge badge-success"
+                        title="Lisa uus"
+                        data-toggle="modal"
+                        th:data-target="${'#addFeedbackCommentDlg_' + fbItem.id}"
+                        sec:authorize="${#authentication.principal.datasetPermissionsExist}">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <table th:id="${'ekiCommentsArea_' + fbItem.id}" th:fragment="eki_comments">
+                  <tr th:each="ekiComment : ${fbItem.feedbackComments}">
+                    <td th:text="${#dates.format(ekiComment.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
+                    <td th:text="${ekiComment.userName}"></td>
+                    <td th:utext="${ekiComment.comment}"></td>
+                  </tr>
+                </table>
+              </td>
+              <td>
+                <form th:action="@{/wwfeedback/deletefeedback}">
+                  <input type="hidden" name="feedbackId" th:value="${fbItem.id}"/>
+                  <button type="button" class="btn badge badge-warning" 
+                          data-toggle="delete-confirm"
+                          data-placement="left"
+                          sec:authorize="${#authentication.principal.datasetPermissionsExist}">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div th:replace="common :: #alertDlg"></div>
+  <script type="text/javascript">
+  	$('[data-toggle=delete-confirm]').confirmation({
+  		btnOkLabel : 'Jah',
+  		btnCancelLabel : 'Ei',
+  		title : 'Palun kinnita kustutamine',
+  		onConfirm : function() {
+  			$(this).closest('form').submit();
+  		}
+  	});
+  </script>
+</body>
+</html>

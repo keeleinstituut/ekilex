@@ -77,6 +77,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String UNIFIED_AFIXOID_SYMBOL = "-";
 	protected static final String PREFIXOID_WORD_TYPE_CODE = "pf";
 	protected static final String SUFFIXOID_WORD_TYPE_CODE = "sf";
+	protected static final String DEFAULT_PROCESS_STATE_CODE = "avalik";
 
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
@@ -837,7 +838,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			if (StringUtils.isNotBlank(valueStateCode)) {
 				valueParamMap.put("value_state_code", valueStateCode);
 			}
-			if (StringUtils.isNotBlank(processStateCode)) {
+			if (StringUtils.isBlank(processStateCode)) {
+				valueParamMap.put("process_state_code", DEFAULT_PROCESS_STATE_CODE);
+			} else {
 				valueParamMap.put("process_state_code", processStateCode);
 			}
 			if (corpusFrequency != null) {

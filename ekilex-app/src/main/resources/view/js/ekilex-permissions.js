@@ -44,9 +44,3 @@ function deleteDatasetPermission(datasetPermId) {
 		alert('Viga!');
 	});
 }
-
-function openAddDatasetPermissionDlg(elem) {
-	var userId = $(elem).data('id');
-	var addDlg = $($(elem).data('target'));
-	$("#datasetPermUserId").val(userId);
-}

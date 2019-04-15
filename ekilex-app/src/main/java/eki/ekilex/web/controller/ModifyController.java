@@ -174,9 +174,6 @@ public class ModifyController implements WebConstant {
 		case "meaning_private_note":
 			updateService.addMeaningPrivateNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
 			break;
-		case "feedback_comment":
-			updateService.addFeedbackComment(itemData.getId(), itemData.getValue());
-			break;
 		}
 		return "{}";
 	}
@@ -428,9 +425,6 @@ public class ModifyController implements WebConstant {
 			break;
 		case "meaning_private_note":
 			updateService.deleteMeaningPrivateNote(id);
-			break;
-		case "feedback":
-			updateService.deleteFeedback(id);
 			break;
 		}
 		return "OK";

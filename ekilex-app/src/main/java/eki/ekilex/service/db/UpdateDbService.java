@@ -3,8 +3,6 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FEEDBACK_LOG;
-import static eki.ekilex.data.db.Tables.FEEDBACK_LOG_COMMENT;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
@@ -36,9 +34,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
-import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
-import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record4;
@@ -55,8 +50,10 @@ import eki.ekilex.data.ListData;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
+import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
@@ -716,12 +713,6 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
-	public void deleteFeedback(Long id) {
-		create.delete(FEEDBACK_LOG)
-				.where(FEEDBACK_LOG.ID.eq(id))
-				.execute();
-	}
-
 	public Long addDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.DEFINITION_TYPE_CODE)
@@ -899,15 +890,6 @@ public class UpdateDbService implements DbConstant {
 		meaningFreeform.store();
 
 		return freeform.getId();
-	}
-
-	public Long addFeedbackComment(Long feedbackId, String comment, String userName) {
-		FeedbackLogCommentRecord feedbackComment = create.newRecord(FEEDBACK_LOG_COMMENT);
-		feedbackComment.setFeedbackLogId(feedbackId);
-		feedbackComment.setComment(comment);
-		feedbackComment.setUserName(userName);
-		feedbackComment.store();
-		return feedbackComment.getId();
 	}
 
 	public String getFirstDefinitionOfMeaning(Long meaningId) {

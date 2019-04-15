@@ -60,9 +60,9 @@ public interface WebConstant {
 
 	String SEND_FEEDBACK_URI = "/send_feedback";
 
-	String WW_FEEDBACK_URI = "/ww_feedback";
+	String WW_FEEDBACK_URI = "/wwfeedback";
 
-	String WW_FEEDBACK_PAGE = "ww_feedback";
+	String WW_FEEDBACK_PAGE = "wwfeedback";
 
 	String LEX_JOIN_PAGE = "lexjoin";
 

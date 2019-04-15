@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import eki.ekilex.data.Feedback;
+import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
 import eki.ekilex.data.db.tables.records.FeedbackLogRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -19,6 +20,18 @@ public class FeedbackDbService {
 		create = context;
 	}
 
+	public void createFeedback(Feedback feedback) {
+		FeedbackLogRecord feedbackLogRecord = create.newRecord(FEEDBACK_LOG);
+		feedbackLogRecord.from(feedback);
+		feedbackLogRecord.insert();
+	}
+
+	public void deleteFeedback(Long id) {
+		create.delete(FEEDBACK_LOG)
+				.where(FEEDBACK_LOG.ID.eq(id))
+				.execute();
+	}
+
 	public Result<Record> findFeedback() {
 		return create
 				.select(FEEDBACK_LOG.fields())
@@ -27,17 +40,20 @@ public class FeedbackDbService {
 				.fetch();
 	}
 
-	public Result<Record> findFeedbackComments() {
+	public Long addFeedbackComment(Long feedbackId, String comment, String userName) {
+		FeedbackLogCommentRecord feedbackComment = create.newRecord(FEEDBACK_LOG_COMMENT);
+		feedbackComment.setFeedbackLogId(feedbackId);
+		feedbackComment.setComment(comment);
+		feedbackComment.setUserName(userName);
+		feedbackComment.store();
+		return feedbackComment.getId();
+	}
+
+	public Result<Record> findAllFeedbackComments() {
 		return create
 				.select(FEEDBACK_LOG_COMMENT.fields())
 				.from(FEEDBACK_LOG_COMMENT)
 				.fetch();
-	}
-
-	public void addNewFeedback(Feedback newFeedback) {
-		FeedbackLogRecord feedbackLogRecord = create.newRecord(FEEDBACK_LOG);
-		feedbackLogRecord.from(newFeedback);
-		feedbackLogRecord.insert();
 	}
 
 	public Result<Record> getFeedbackComments(Long feedbackId) {
