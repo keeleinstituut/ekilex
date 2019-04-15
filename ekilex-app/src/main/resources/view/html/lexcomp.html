@@ -266,7 +266,8 @@
         </th:block>
         <button type="button" class="btn badge badge-primary" title="Muuda"
                 data-toggle="modal"
-                th:data-target="${'#editWordTypeDlg_' + wordId + '_' + classifIter.index}">
+                th:data-target="${'#editWordTypeDlg_' + wordId + '_' + classifIter.index}"
+                sec:authorize="${#vars.isWordCrudGranted}">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"

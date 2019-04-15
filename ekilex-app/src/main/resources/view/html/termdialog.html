@@ -15,20 +15,20 @@
               <div class="col-md-6">
                 <select class="form-control lex-data-select" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option value="lexeme_process_state">Haldusolek</option>
-                  <option value="lexeme_value_state">Väärtusolek</option>
-                  <option value="lexeme_frequency_group">Sagedusrühm</option>
-                  <option value="lexeme_pos">Sõnaliik</option>
-                  <option value="lexeme_deriv">Tuletuskood</option>
-                  <option value="lexeme_register">Register</option>
-                  <option value="lexeme_region">Regioon</option>
-                  <option value="lexeme_grammar">Grammatika</option>
-                  <option value="word_gender">Sugu</option>
-                  <option value="word_type">Sõna tüüp</option>
-                  <option value="addLexemeSourceLinkDlg">Allikaviide</option>
-                  <option value="addUsageDlg">Kasutusnäide</option>
-                  <option value="addLexemeRelationDlg">Ilmiku seos</option>
-                  <option value="addLexemePublicNoteDlg">Ilmiku märkus</option>
+                  <option value="lexeme_process_state" sec:authorize="{#vars.isLexemeCrudGranted}">Haldusolek</option>
+                  <option value="lexeme_value_state" sec:authorize="{#vars.isLexemeCrudGranted}">Väärtusolek</option>
+                  <option value="lexeme_frequency_group" sec:authorize="{#vars.isLexemeCrudGranted}">Sagedusrühm</option>
+                  <option value="lexeme_pos" sec:authorize="{#vars.isLexemeCrudGranted}">Sõnaliik</option>
+                  <option value="lexeme_deriv" sec:authorize="{#vars.isLexemeCrudGranted}">Tuletuskood</option>
+                  <option value="lexeme_register" sec:authorize="{#vars.isLexemeCrudGranted}">Register</option>
+                  <option value="lexeme_region" sec:authorize="{#vars.isLexemeCrudGranted}">Regioon</option>
+                  <option value="lexeme_grammar" sec:authorize="{#vars.isLexemeCrudGranted}">Grammatika</option>
+                  <option value="word_gender" sec:authorize="{#vars.isWordCrudGranted}">Sugu</option>
+                  <option value="word_type" sec:authorize="{#vars.isWordCrudGranted}">Sõna tüüp</option>
+                  <option value="addLexemeSourceLinkDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Allikaviide</option>
+                  <option value="addUsageDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Kasutusnäide</option>
+                  <option value="addLexemeRelationDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Ilmiku seos</option>
+                  <option value="addLexemePublicNoteDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Ilmiku märkus</option>
                 </select>
               </div>
             </div>
