@@ -134,7 +134,10 @@
               </button>
             </div>
             <div class="col-auto ml-auto">
-              <a class="btn btn-primary btn-sm" th:href="@{'/meaningjoin/' + ${meaningId}}" title="Tähenduste ühendamine">Ühenda</a>
+              <a class="btn btn-primary btn-sm"
+                 th:href="@{'/meaningjoin/' + ${meaningId}}"
+                 title="Tähenduste ühendamine"
+                 sec:authorize="${#vars.isMeaningCrudGranted}">Ühenda</a>
               <button class="btn btn-primary btn-sm"
                       data-toggle="modal"
                       data-target="#newWordDlg"
@@ -643,8 +646,8 @@
                   </button>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.usages)}" class="col pl-0">
-                  <th:block th:each="usage : ${lexeme.usages}"
-                            th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
+                  <div th:each="usage : ${lexeme.usages}"
+                       th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
                     <div th:replace="termdialog :: edit_usage_dlg"></div>
                     <div th:replace="termdialog :: add_usage_source_link_dlg"></div>
                     <div class="invisible-buttons action-buttons-anchor mw-90">
@@ -715,7 +718,7 @@
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
-                  </th:block>
+                  </div>
                 </div>
               </div>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">

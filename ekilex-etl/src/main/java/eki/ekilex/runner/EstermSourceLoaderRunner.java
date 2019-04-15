@@ -47,8 +47,7 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 
 		logger.debug("Starting loading Esterm sources...");
 
-		long t1, t2;
-		t1 = System.currentTimeMillis();
+		start();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 		String fileName = FilenameUtils.getName(dataXmlFilePath);
@@ -112,8 +111,7 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 			}
 		}
 
-		t2 = System.currentTimeMillis();
-		logger.debug("Done loading in {} ms", (t2 - t1));
+		end();
 	}
 
 	private Source extractAndApplySourceProperties(Node conceptGroupNode) throws ParseException {
