@@ -82,7 +82,7 @@ public abstract class AbstractPageController implements WebConstant {
 	public List<FreeformType> getSourcePropertyTypes() {
 
 		return Arrays.asList(FreeformType.SOURCE_AUTHOR, FreeformType.SOURCE_NAME, FreeformType.SOURCE_ISBN, FreeformType.SOURCE_ISSN, FreeformType.SOURCE_WWW,
-				FreeformType.CREATED_BY, FreeformType.MODIFIED_BY, FreeformType.SOURCE_FILE, FreeformType.SOURCE_PUBLISHER,
-				FreeformType.SOURCE_PUBLICATION_PLACE, FreeformType.SOURCE_PUBLICATION_YEAR, FreeformType.PUBLIC_NOTE);
+				FreeformType.SOURCE_FILE, FreeformType.SOURCE_PUBLISHER, FreeformType.SOURCE_PUBLICATION_PLACE, FreeformType.SOURCE_PUBLICATION_YEAR,
+				FreeformType.PUBLIC_NOTE);
 	}
 }
