@@ -109,7 +109,7 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 		Element sourceNameElement = (Element) sourceNameNode;
 		String sourceName = sourceNameElement.getTextTrim();
 
-		sourceId = getSource(SourceType.UNKNOWN, extSourceId, sourceName);
+		sourceId = getSource(SourceType.UNKNOWN, extSourceId, sourceName, fileName);
 		if (sourceId == null) {
 
 			Source source = extractAndApplySourceProperties(conceptGroupNode, extSourceId);

@@ -39,8 +39,6 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 
 	protected Count illegalSourceReferenceValueCount;
 
-	protected String sourceFileName;
-
 	protected void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj, DateFormat dateFormat) throws Exception {
 
 		Element valueNode;
@@ -166,7 +164,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 		return contentList;
 	}
 
-	protected String handleFreeformTextSourceLinks(Node mixedContentNode, Long freeformId) throws Exception {
+	protected String handleFreeformTextSourceLinks(Node mixedContentNode, Long freeformId, String fileName) throws Exception {
 
 		Iterator<Node> contentNodeIter = ((Element) mixedContentNode).nodeIterator();
 		StringBuffer contentBuf = new StringBuffer();
@@ -187,7 +185,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
 					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
 						String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
-						Long sourceId = getSource(sourceName);
+						Long sourceId = getSource(sourceName, fileName);
 						if (sourceId == null) {
 							contentBuf.append(valueStr);
 						} else {
@@ -235,14 +233,11 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 		return domainExists;
 	}
 
-	protected Long getSource(String sourceName) {
+	protected Long getSource(String sourceName, String fileName) {
 
-		if (sourceFileName == null) {
-			throw new RuntimeException("sourceFileName is not initialized");
-		}
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("sourceName", sourceName);
-		tableRowParamMap.put("sourceFileName", sourceFileName);
+		tableRowParamMap.put("sourceFileName", fileName);
 		List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_NAME_AND_FILE_NAME, tableRowParamMap);
 		if (CollectionUtils.isEmpty(results)) {
 			return null;
