@@ -1,15 +1,6 @@
 package eki.ekilex.service;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Service;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.InputStream;
 import java.util.Collection;
@@ -17,16 +8,27 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static eki.ekilex.constant.SystemConstant.CSV_SEPARATOR;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toMap;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Component;
 
-@Service
+import eki.ekilex.data.transform.DatasetId;
+
+@Component
 @ConditionalOnBean(name = "dataSourceTermeki")
 public class TermekiService implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
+
+	private static final String SQL_SELECT_TERMEKI_TERMBASES = "select * from termeki_termbases where termbase_id=:baseId";
 
 	private static final String SQL_SELECT_TERMS = "sql/select_termeki_terms.sql";
 
@@ -38,15 +40,18 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_COMMENTS = "sql/select_termeki_comments.sql";
 
-	//TODO should read db ids from ultima conf now
-	@Deprecated
-	private static final String TERMBASE_IDS = "csv/termeki-databases.csv";
-
 	private static final String SQL_SELECT_TERM_ATTRIBUTES = "sql/select_termeki_term_attributes.sql";
 
 	private static final String SQL_SELECT_CONCEPT_ATTRIBUTES = "sql/select_termeki_concept_attributes.sql";
 
 	private static final String SQL_SELECT_EXAMPLES = "sql/select_termeki_examples.sql";
+
+	private static final String SQL_SELECT_IMAGES = "select * from termeki_concept_images where concept_id in (select concept_id from termeki_concepts where termbase_id = :baseId)";
+
+	private static final String SQL_SELECT_IMAGE_IDS = "select distinct image_id from termeki_concept_images";
+
+	@Autowired
+	private LoaderConfService loaderConfService;
 
 	private String sqlSelectTerms;
 
@@ -62,15 +67,12 @@ public class TermekiService implements InitializingBean {
 
 	private String sqlSelectConceptAttributes;
 
-	private String sqlSelectImages = "select * from termeki_concept_images where concept_id in (select concept_id from termeki_concepts where termbase_id = :baseId)";
-
-	private static final String sqlSelectImageIds = "select distinct image_id from termeki_concept_images";
-
-	private Map<Integer, String> termbaseIds;
+	private Map<Integer, String> termbaseIdMap;
 
 	private String sqlSelectExamples;
 
-	@Autowired @Qualifier(value = "jdbcTemplateTermeki")
+	@Autowired
+	@Qualifier(value = "jdbcTemplateTermeki")
 	protected NamedParameterJdbcTemplate jdbcTemplate;
 
 	@Override
@@ -84,8 +86,7 @@ public class TermekiService implements InitializingBean {
 		sqlSelectTermAttributes = getContent(SQL_SELECT_TERM_ATTRIBUTES);
 		sqlSelectConceptAttributes = getContent(SQL_SELECT_CONCEPT_ATTRIBUTES);
 		sqlSelectExamples = getContent(SQL_SELECT_EXAMPLES);
-		termbaseIds = readFileLines(TERMBASE_IDS).stream()
-				.collect(toMap(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]), l -> StringUtils.split(l, CSV_SEPARATOR)[1]));
+		termbaseIdMap = null;
 	}
 
 	public List<Map<String, Object>> queryList(String sqlScript, Map<String, ?> paramMap) {
@@ -138,16 +139,21 @@ public class TermekiService implements InitializingBean {
 	public List<Map<String, Object>> getImages(Integer baseId) {
 
 		Map<String, Object> params = constructParameters(baseId);
-		return queryList(sqlSelectImages, params);
+		return queryList(SQL_SELECT_IMAGES, params);
 	}
 
 	public List<Map<String, Object>> getDomainsForLanguage(String language) {
 
+		Map<Integer, String> termbaseIds = getTermbaseIdMap();
 		Map<String, Object> params = new HashMap<>();
 		params.put("lang", language);
 		params.put("termbaseIds", termbaseIds.keySet());
 		List<Map<String, Object>> domains = queryList(sqlSelectDomains, params);
-		domains.forEach(d -> d.put("termbase_code", termbaseIds.get(d.get("termbase_id"))));
+		domains.forEach(domain -> {
+			Integer termBaseId = (Integer) domain.get("termbase_id");
+			String termBaseCode = termbaseIds.get(termBaseId);
+			domain.put("termbase_code", termBaseCode);
+		});
 		return domains;
 	}
 
@@ -165,18 +171,18 @@ public class TermekiService implements InitializingBean {
 		return queryList(sqlSelectConceptAttributes, params);
 	}
 
-	public Collection<String> termbaseCodes() {
-		return termbaseIds.values();
+	public Collection<String> getTermbaseCodes() {
+		return getTermbaseIdMap().values();
 	}
 
 	public Map<String, Object> getTermbase(Integer baseId) {
 		Map<String, Object> params = constructParameters(baseId);
-		List<Map<String, Object>> result = queryList("select * from termeki_termbases where termbase_id=:baseId", params);
+		List<Map<String, Object>> result = queryList(SQL_SELECT_TERMEKI_TERMBASES, params);
 		return result.isEmpty() ? null : result.get(0);
 	}
 
 	public List<Map<String, Object>> getImageIds() {
-		return queryList(sqlSelectImageIds, Collections.emptyMap());
+		return queryList(SQL_SELECT_IMAGE_IDS, Collections.emptyMap());
 	}
 
 	private Map<String, Object> constructParameters(Integer baseId) {
@@ -185,18 +191,19 @@ public class TermekiService implements InitializingBean {
 		return params;
 	}
 
+	private Map<Integer, String> getTermbaseIdMap() {
+		if (termbaseIdMap == null) {
+			List<DatasetId> termekiDatasetIds = loaderConfService.getTermekiDatasetIds();
+			termbaseIdMap = termekiDatasetIds.stream().collect(Collectors.toMap(DatasetId::getId, DatasetId::getDataset));
+		}
+		return termbaseIdMap;
+	}
+
 	private String getContent(String resourcePath) throws Exception {
 
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		try (InputStream resourceInputStream = classLoader.getResourceAsStream(resourcePath)) {
 			return IOUtils.toString(resourceInputStream, UTF_8);
-		}
-	}
-	private List<String> readFileLines(String resourcePath) throws Exception {
-
-		ClassLoader classLoader = this.getClass().getClassLoader();
-		try (InputStream resourceInputStream = classLoader.getResourceAsStream(resourcePath)) {
-			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
 	}
 

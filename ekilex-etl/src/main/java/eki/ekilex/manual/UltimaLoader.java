@@ -27,7 +27,7 @@ import eki.ekilex.runner.MilitermSourceLoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
-import eki.ekilex.runner.TermekiRunner;
+import eki.ekilex.runner.TermekiLoaderRunner;
 import eki.ekilex.runner.VoiceFileUpdaterRunner;
 import eki.ekilex.service.MabService;
 
@@ -69,7 +69,7 @@ public class UltimaLoader extends AbstractLoader {
 			EstermLoaderRunner estRunner = getComponent(EstermLoaderRunner.class);
 			MilitermSourceLoaderRunner milSrcRunner = getComponent(MilitermSourceLoaderRunner.class);
 			MilitermLoaderRunner milRunner = getComponent(MilitermLoaderRunner.class);
-			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
+			TermekiLoaderRunner termekiLoaderRunner = getComponent(TermekiLoaderRunner.class);
 			FrequencyUpdateRunner freqUpdateRunner = getComponent(FrequencyUpdateRunner.class);
 			VoiceFileUpdaterRunner voiceFileUpdaterRunner = getComponent(VoiceFileUpdaterRunner.class);
 			GameDataLoaderRunner gameDataLoaderRunner = getComponent(GameDataLoaderRunner.class);
@@ -78,8 +78,8 @@ public class UltimaLoader extends AbstractLoader {
 			Map<String, List<Guid>> ssGuidMap;
 			Map<String, List<Mnr>> ssMnrMap;
 
-			boolean doReports = doReports();
-			boolean isFullReload = isFullReload();
+			boolean doReports = confService.doReports();
+			boolean isFullReload = confService.isFullReload();
 
 			logger.info("Starting loading datasets from sources specified in ultima-loader.properties file");
 			logger.info("Acquired datasets are: \"{}\"", aquiredDatasetsLog);
@@ -94,7 +94,7 @@ public class UltimaLoader extends AbstractLoader {
 
 			// mab
 			if (isFullReload) {
-				String[] mabDataFilePaths = getMabDataFilePaths();
+				String[] mabDataFilePaths = confService.getMabDataFilePaths();
 				if (ArrayUtils.isNotEmpty(mabDataFilePaths)) {
 					mabRunner.execute(mabDataFilePaths, doReports);
 					successfullyLoadedDatasets.add("mab");
@@ -105,21 +105,21 @@ public class UltimaLoader extends AbstractLoader {
 			// ss1 - only when full reload
 			dataset = ss1Runner.getDataset();
 			if (isFullReload) {
-				dataFilePath = getConfProperty("ss1.data.file");
+				dataFilePath = confService.getConfProperty("ss1.data.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
 					ss1Runner.execute(dataFilePath, doReports);
 					successfullyLoadedDatasets.add(dataset);
 				}
 			}
 
-			ssMnrMap = getSsMnrMap();
+			ssMnrMap = confService.getSsMnrMap();
 
 			// psv
 			dataset = psvRunner.getDataset();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("psv.data.file");
+				dataFilePath = confService.getConfProperty("psv.data.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
-					ssGuidMap = getSsGuidMapFor(dataset);
+					ssGuidMap = confService.getSsGuidMapFor(dataset);
 					if (!isFullReload) {
 						psvRunner.deleteDatasetData();
 					}
@@ -131,9 +131,9 @@ public class UltimaLoader extends AbstractLoader {
 			// kol
 			dataset = kolRunner.getDataset();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("kol.data.file");
+				dataFilePath = confService.getConfProperty("kol.data.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
-					ssGuidMap = getSsGuidMapFor(dataset);
+					ssGuidMap = confService.getSsGuidMapFor(dataset);
 					if (!isFullReload) {
 						kolRunner.deleteDatasetData();
 					}
@@ -145,9 +145,9 @@ public class UltimaLoader extends AbstractLoader {
 			// qq2
 			dataset = qq2Runner.getDataset();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("qq2.data.file");
+				dataFilePath = confService.getConfProperty("qq2.data.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
-					ssGuidMap = getSsGuidMapFor(dataset);
+					ssGuidMap = confService.getSsGuidMapFor(dataset);
 					if (!isFullReload) {
 						qq2Runner.deleteDatasetData();
 					}
@@ -159,10 +159,10 @@ public class UltimaLoader extends AbstractLoader {
 			// ev2
 			dataset = ev2Runner.getDataset();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("ev2.data.file.1");
-				dataFilePath2 = getConfProperty("ev2.data.file.2");
+				dataFilePath = confService.getConfProperty("ev2.data.file.1");
+				dataFilePath2 = confService.getConfProperty("ev2.data.file.2");
 				if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
-					ssGuidMap = getSsGuidMapFor(dataset);
+					ssGuidMap = confService.getSsGuidMapFor(dataset);
 					if (!isFullReload) {
 						ev2Runner.deleteDatasetData();
 					}
@@ -174,7 +174,7 @@ public class UltimaLoader extends AbstractLoader {
 			// ety
 			dataset = etyRunner.getDataset();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("ss1.data.file");
+				dataFilePath = confService.getConfProperty("ss1.data.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
 					if (!isFullReload) {
 						etyRunner.deleteDatasetData();
@@ -187,7 +187,7 @@ public class UltimaLoader extends AbstractLoader {
 			// est src + est
 			dataset = estRunner.getDataset();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("est.data.file");
+				dataFilePath = confService.getConfProperty("est.data.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
 					if (!isFullReload) {
 						estRunner.deleteDatasetData();
@@ -201,8 +201,8 @@ public class UltimaLoader extends AbstractLoader {
 			// militerm src + militerm
 			dataset = milRunner.getDataset();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("mil.data.file.1");
-				dataFilePath2 = getConfProperty("mil.data.file.2");
+				dataFilePath = confService.getConfProperty("mil.data.file.1");
+				dataFilePath2 = confService.getConfProperty("mil.data.file.2");
 				if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
 					if (!isFullReload) {
 						milRunner.deleteDatasetData();
@@ -214,16 +214,16 @@ public class UltimaLoader extends AbstractLoader {
 			}
 
 			// termeki
-			List<DatasetId> termekiIds = getTermekiIds();
+			List<DatasetId> termekiIds = confService.getTermekiDatasetIds();
 			if (CollectionUtils.isNotEmpty(termekiIds)) {
 				for (DatasetId datasetId : termekiIds) {
 					Integer termekiId = datasetId.getId();
 					dataset = datasetId.getDataset();
 					if (doLoad(dataset, acquiredDatasets)) {
 						if (!isFullReload) {
-							termekiRunner.deleteTermekiDatasetData(dataset);
+							termekiLoaderRunner.deleteTermekiDatasetData(dataset);
 						}
-						termekiRunner.execute(termekiId, dataset);
+						termekiLoaderRunner.execute(termekiId, dataset);
 						successfullyLoadedDatasets.add(dataset);
 					}
 				}
@@ -232,7 +232,7 @@ public class UltimaLoader extends AbstractLoader {
 			// form + lexeme corp frequencies
 			dataset = freqUpdateRunner.getLexemeFrequencyModule();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("freq.lex.file");
+				dataFilePath = confService.getConfProperty("freq.lex.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
 					freqUpdateRunner.executeLexemeFrequencyUpdate(dataFilePath);
 				}
@@ -240,14 +240,14 @@ public class UltimaLoader extends AbstractLoader {
 
 			dataset = freqUpdateRunner.getFormFrequencyModule();
 			if (doLoad(dataset, acquiredDatasets)) {
-				dataFilePath = getConfProperty("freq.form.file");
+				dataFilePath = confService.getConfProperty("freq.form.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
 					freqUpdateRunner.executeFormFrequencyUpdate(dataFilePath);
 				}
 			}
 
 			// sound file names updater
-			dataFilePath = getConfProperty("voice.index.file");
+			dataFilePath = confService.getConfProperty("voice.index.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				if (isFullReload) {
 					voiceFileUpdaterRunner.update(dataFilePath);
@@ -255,7 +255,7 @@ public class UltimaLoader extends AbstractLoader {
 			}
 
 			// game data
-			dataFilePath = getConfProperty("games.nonwords.file");
+			dataFilePath = confService.getConfProperty("games.nonwords.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				if (isFullReload) {
 					gameDataLoaderRunner.execute(dataFilePath);

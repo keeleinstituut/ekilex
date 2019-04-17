@@ -20,10 +20,10 @@ public class FrequencyUpdater extends AbstractLoader {
 
 			FrequencyUpdateRunner runner = getComponent(FrequencyUpdateRunner.class);
 
-			String lexemeFrequencyFilePath = getConfProperty("freq.lex.file");
+			String lexemeFrequencyFilePath = confService.getConfProperty("freq.lex.file");
 			runner.executeLexemeFrequencyUpdate(lexemeFrequencyFilePath);
 
-			String formFrequencyFilePath = getConfProperty("freq.form.file");
+			String formFrequencyFilePath = confService.getConfProperty("freq.form.file");
 			runner.executeFormFrequencyUpdate(formFrequencyFilePath);
 
 		} catch (Exception e) {

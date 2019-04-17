@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
@@ -35,9 +36,9 @@ import eki.ekilex.service.TermekiService;
 
 @Component
 @ConditionalOnBean(name = "dataSourceTermeki")
-public class TermekiRunner extends AbstractLoaderRunner {
+public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
-	private static Logger logger = LoggerFactory.getLogger(TermekiRunner.class);
+	private static Logger logger = LoggerFactory.getLogger(TermekiLoaderRunner.class);
 
 	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datasets where code = :code and origin = :origin";
 
@@ -84,17 +85,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		Context context = new Context();
 		context.terms = termekiService.getTerms(baseId);
-		logger.info("Found {} terms.", context.terms.size());
 		context.definitions = termekiService.getDefinitions(baseId);
-		logger.info("Found {} definitions.", context.definitions.size());
 		context.sourceMapping = loadSources(baseId);
-		logger.info("Found {} sources.", context.sourceMapping.size());
 		context.comments = termekiService.getComments(baseId);
-		logger.info("Found {} comments.", context.comments.size());
 		context.examples = termekiService.getExamples(baseId);
-		logger.info("Found {} examples.", context.examples.size());
 		context.images = termekiService.getImages(baseId);
-		logger.info("Found {} images.", context.images.size());
 		context.abbreviations = loadAbbreviations(dataset);
 		context.genuses = loadGenuses(dataset);
 		context.families = loadFamilies(dataset);
@@ -112,7 +107,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private List<Map<String, Object>> loadAbbreviations(String dataset) {
 		if ("ett".equals(dataset)) {
 			List<Map<String, Object>> abbreviations = termekiService.getTermAttributes(38708);
-			logger.info("Found {} abbreviations.", abbreviations.size());
 			return abbreviations;
 		} else {
 			return emptyList();
@@ -123,7 +117,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private List<Map<String, Object>> loadGenuses(String dataset) {
 		if ("iht".equals(dataset)) {
 			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(41152);
-			logger.info("Found {} genuses.", attributes.size());
 			return attributes;
 		} else {
 			return emptyList();
@@ -134,7 +127,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private List<Map<String, Object>> loadFamilies(String dataset) {
 		if ("iht".equals(dataset)) {
 			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(41153);
-			logger.info("Found {} families.", attributes.size());
 			return attributes;
 		} else {
 			return emptyList();
@@ -145,7 +137,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private List<Map<String, Object>> loadDescribers(String dataset) {
 		if ("iht".equals(dataset)) {
 			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(44274);
-			logger.info("Found {} describers.", attributes.size());
 			return attributes;
 		} else {
 			return emptyList();
@@ -156,7 +147,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private List<Map<String, Object>> loadDescribingYears(String dataset) {
 		if ("iht".equals(dataset)) {
 			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(44275);
-			logger.info("Found {} describing years.", attributes.size());
 			return attributes;
 		} else {
 			return emptyList();
@@ -167,7 +157,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private List<Map<String, Object>> loadGeolDomains(String dataset) {
 		if ("get".equals(dataset)) {
 			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(44388);
-			logger.info("Found {} domains.", attributes.size());
 			return attributes;
 		} else {
 			return emptyList();
@@ -178,7 +167,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private List<Map<String, Object>> loadModelHtml(String dataset) {
 		if ("arh".equals(dataset)) {
 			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(57314);
-			logger.info("Found {} models.", attributes.size());
 			return attributes;
 		} else {
 			return emptyList();
@@ -260,7 +248,8 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String dataset) throws Exception {
 
 		Count wordDuplicateCount = new Count();
-		Map<Integer, Long> conceptMeanings = new HashMap<>();
+		Map<Integer, Long> termWordIdMap = new HashMap<>();
+		Map<Integer, Long> conceptMeaningIdMap = new HashMap<>();
 		List<String> existingGenders = getGenders();
 
 		long termCount = context.terms.size();
@@ -269,51 +258,72 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		for (Map<String, Object> term : context.terms) {
 
-			String language = unifyLang((String) term.get("lang"));
-			String wordValue = (String) term.get("term");
-			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
-			Word word = new Word(wordValue, language, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
-			String genderCode = intoGenderCode((String) term.get("gender"));
-			if (StringUtils.isNotBlank(genderCode)) {
-				if (existingGenders.contains(genderCode)) {
-					word.setGenderCode(genderCode);
-				} else {
-					logger.info("Invalid gender code : {}", genderCode);
-				}
-			}
-			Long wordId = createOrSelectWord(word, null, null, wordDuplicateCount);
-
+			Integer termId = (Integer) term.get("term_id");
 			Integer conceptId = (Integer) term.get("concept_id");
-			if (!conceptMeanings.containsKey(conceptId)) {
-				Long meaningId = createMeaning();
-				createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId.toString());
-				conceptMeanings.put(conceptId, meaningId);
-				List<String> domainCodes = domainCodes(term, context, dataset);
-				for (String domainCode : domainCodes) {
-					Map<String, Object> domain = getDomain(domainCode, dataset);
-					if (domain == null) {
-						logger.info("Invalid domain code : {}", domainCode);
+			String wordValue = (String) term.get("term");
+			String language = (String) term.get("lang");
+			language = unifyLang(language);
+			String gender = (String) term.get("gender");
+			String pronunciation = (String) term.get("pronunciation");
+			String wordClass = term.get("word_class").toString();
+			Integer sourceId = (Integer) term.get("source_id");
+
+			Long wordId;
+			if (termWordIdMap.containsKey(termId)) {
+				wordId = termWordIdMap.get(termId);
+			} else {
+				int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
+				Word word = new Word(wordValue, language, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
+				String genderCode = intoGenderCode(gender);
+				if (StringUtils.isNotBlank(genderCode)) {
+					if (existingGenders.contains(genderCode)) {
+						word.setGenderCode(genderCode);
 					} else {
-						createMeaningDomain(meaningId, domainCode, dataset);
-						//						updateDomainDatsetsIfNeeded(domain, dataset);
+						logger.info("Invalid gender code : {}", genderCode);
 					}
 				}
+				wordId = createOrSelectWord(word, null, null, wordDuplicateCount);
+				termWordIdMap.put(termId, wordId);
+			}
+
+			Long meaningId;
+			if (conceptMeaningIdMap.containsKey(conceptId)) {
+				meaningId = conceptMeaningIdMap.get(conceptId);
+			} else {
+				meaningId = createMeaning();
+				conceptMeaningIdMap.put(conceptId, meaningId);
+
+				createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId.toString());
 				addMeaningFreeforms(context, conceptId, meaningId);
 				saveImages(context, conceptId, meaningId);
 			}
 
-			Long meaningId = conceptMeanings.get(conceptId);
+			List<String> domainCodes = domainCodes(term, context, dataset);
+			for (String domainCode : domainCodes) {
+				Map<String, Object> domain = getDomain(domainCode, dataset);
+				if (domain == null) {
+					logger.info("Invalid domain code : {}", domainCode);
+				} else {
+					createMeaningDomain(meaningId, domainCode, dataset);
+					//updateDomainDatsetsIfNeeded(domain, dataset);
+				}
+			}
+
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
 			Long lexemeId = createLexeme(lexeme, dataset);
-			String posCode = StringUtils.isNotBlank((String) term.get("pronunciation")) ? (String) term.get("pronunciation") : term.get("word_class").toString();
+			String posCode;
+			if (StringUtils.isBlank(pronunciation)) {
+				posCode = wordClass;
+			} else {
+				posCode = pronunciation;
+			}
 			savePosCode(lexemeId, posCode);
-			Integer sourceId = (Integer) term.get("source_id");
-			connectSourceToLexeme(sourceId, lexemeId, context.sourceMapping);
-			Integer termId = (Integer) term.get("term_id");
+
+			createLexemeSourceLink(context, sourceId, lexemeId);
 			createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
-			saveUsages(lexemeId, context, termId);
+			saveUsages(context, lexemeId, termId);
 
 			// progress
 			termCounter++;
@@ -322,16 +332,16 @@ public class TermekiRunner extends AbstractLoaderRunner {
 				logger.debug("{}% - {} terms iterated", progressPercent, termCounter);
 			}
 		}
-		logger.info("{} terms imported", context.terms.size());
+		logger.info("{} terms imported", termWordIdMap.size());
 		logger.info("{} duplicate terms found", wordDuplicateCount.getValue());
-		logger.info("{} meanings created", conceptMeanings.size());
+		logger.info("{} meanings created", conceptMeaningIdMap.size());
 
 		int definitionsCount = 0;
 		for (Map<String, Object> definition : context.definitions) {
 			String language = unifyLang((String) definition.get("lang"));
 			Integer conceptId = (Integer) definition.get("concept_id");
-			if (conceptMeanings.containsKey(conceptId)) {
-				Long meaningId = conceptMeanings.get(conceptId);
+			if (conceptMeaningIdMap.containsKey(conceptId)) {
+				Long meaningId = conceptMeaningIdMap.get(conceptId);
 				String definitionValue = (String) definition.get("definition");
 				Long definitionId = createOrSelectDefinition(meaningId, definitionValue, language, dataset);
 				definitionsCount++;
@@ -340,15 +350,15 @@ public class TermekiRunner extends AbstractLoaderRunner {
 					createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, publicNote);
 				}
 				Integer sourceId = (Integer) definition.get("source_id");
-				connectSourceToDefinition(sourceId, definitionId, context.sourceMapping, definitionValue);
+				createDefinitionSourceLink(context, definitionId, sourceId);
 			}
 		}
 		logger.info("{} definitions created", definitionsCount);
 
 		for (Map<String, Object> comment : context.comments) {
 			Integer conceptId = (Integer) comment.get("concept_id");
-			if (conceptMeanings.containsKey(conceptId)) {
-				Long meaningId = conceptMeanings.get(conceptId);
+			if (conceptMeaningIdMap.containsKey(conceptId)) {
+				Long meaningId = conceptMeaningIdMap.get(conceptId);
 				String privateNote = (String) comment.get("content");
 				if (isNotBlank(privateNote)) {
 					createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, privateNote);
@@ -368,7 +378,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveUsages(Long lexemeId, Context context, Integer termId) throws Exception {
+	private void saveUsages(Context context, Long lexemeId, Integer termId) throws Exception {
 
 		List<Map<String, Object>> examples = context.examples.stream().filter(f -> f.get("term_id").equals(termId)).collect(toList());
 		if (examples.isEmpty())
@@ -378,7 +388,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String lang = unifyLang((String) example.get("lang"));
 			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, example.get("example"), lang);
 			Integer sourceId = (Integer) example.get("source_id");
-			connectSourceToUsage(sourceId, usageId, context.sourceMapping);
+			createUsageSourceLink(context, sourceId, usageId);
 		}
 	}
 
@@ -465,8 +475,9 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String dataset,
 			Count wordDuplicateCount) throws Exception {
 
-		if (context.abbreviations.isEmpty())
+		if (CollectionUtils.isEmpty(context.abbreviations)) {
 			return;
+		}
 
 		Optional<Map<String, Object>> abbreviation = context.abbreviations.stream().filter(a -> a.get("term_id").equals(termId)).findFirst();
 		if (abbreviation.isPresent()) {
@@ -482,28 +493,28 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void connectSourceToDefinition(Integer sourceId, Long definitionId, Map<Integer, SourceData> sourceMapping, String definition) throws Exception {
+	private void createDefinitionSourceLink(Context context, Long definitionId, Integer sourceId) throws Exception {
 
-		if (sourceMapping.containsKey(sourceId)) {
-			SourceData ekilexSource = sourceMapping.get(sourceId);
+		if (context.sourceMapping.containsKey(sourceId)) {
+			SourceData ekilexSource = context.sourceMapping.get(sourceId);
 			//TODO define proper ref type
 			createDefinitionSourceLink(definitionId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
 
-	private void connectSourceToLexeme(Integer sourceId, Long lexemeId, Map<Integer, SourceData> sourceMapping) throws Exception {
+	private void createLexemeSourceLink(Context context, Integer sourceId, Long lexemeId) throws Exception {
 
-		if (sourceMapping.containsKey(sourceId)) {
-			SourceData ekilexSource = sourceMapping.get(sourceId);
+		if (context.sourceMapping.containsKey(sourceId)) {
+			SourceData ekilexSource = context.sourceMapping.get(sourceId);
 			//TODO define proper ref type
 			createLexemeSourceLink(lexemeId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
 
-	private void connectSourceToUsage(Integer sourceId, Long usageId, Map<Integer, SourceData> sourceMapping) throws Exception {
+	private void createUsageSourceLink(Context context, Integer sourceId, Long usageId) throws Exception {
 
-		if (sourceMapping.containsKey(sourceId)) {
-			SourceData ekilexSource = sourceMapping.get(sourceId);
+		if (context.sourceMapping.containsKey(sourceId)) {
+			SourceData ekilexSource = context.sourceMapping.get(sourceId);
 			//TODO define proper ref type
 			createFreeformSourceLink(usageId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}

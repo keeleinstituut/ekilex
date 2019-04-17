@@ -22,8 +22,8 @@ public class Ss1Loader extends AbstractLoader {
 
 			Ss1LoaderRunner datasetRunner = getComponent(Ss1LoaderRunner.class);
 			MabService mabService = getComponent(MabService.class);
-			boolean doReports = doReports();
-			boolean isFullReload = isFullReload();
+			boolean doReports = confService.doReports();
+			boolean isFullReload = confService.isFullReload();
 			if (!isFullReload) {
 				throw new DataLoadingException("Replacing SS data is not supported!");
 			}
@@ -32,7 +32,7 @@ public class Ss1Loader extends AbstractLoader {
 			mabService.initialise(); //MAB must be loaded first!
 
 			// ss
-			String ssFilePath = getMandatoryConfProperty("ss1.data.file");
+			String ssFilePath = confService.getMandatoryConfProperty("ss1.data.file");
 			datasetRunner.execute(ssFilePath, doReports);
 
 		} catch (Exception e) {

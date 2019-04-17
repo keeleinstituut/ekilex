@@ -19,9 +19,9 @@ public class VmabLoader extends AbstractLoader {
 			initDefault();
 
 			VmabLoaderRunner datasetRunner = getComponent(VmabLoaderRunner.class);
-			boolean doReports = doReports();
+			boolean doReports = confService.doReports();
 
-			String vmabFilePath = getMandatoryConfProperty("vmab.data.file");
+			String vmabFilePath = confService.getMandatoryConfProperty("vmab.data.file");
 			datasetRunner.execute(vmabFilePath, doReports);
 
 		} catch (Exception e) {

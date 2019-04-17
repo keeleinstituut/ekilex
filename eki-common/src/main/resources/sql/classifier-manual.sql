@@ -52,6 +52,7 @@ insert into dataset (code, name, is_public) values ('mef',	'Meditsiinifüüsika'
 insert into dataset (code, name, is_public) values ('mes',	'Mesindusleksikon', true);
 insert into dataset (code, name, is_public) values ('met',	'MetalliAabits', true);
 insert into dataset (code, name, is_public) values ('mea',	'Metroloogia', true);
+insert into dataset (code, name, is_public) values ('mon',	'Montessori pedagoogika terminivara', true);
 insert into dataset (code, name, is_public) values ('mut',	'Muuseumiterminoloogia', true);
 insert into dataset (code, name, is_public) values ('mte',	'Muusikateraapia seletav sõnastik', true);
 insert into dataset (code, name, is_public) values ('nht',	'Nahkhiirte-alased terminid', true);

@@ -4,6 +4,7 @@ aos	keskaeg	-	keskaeg	et
 aos	avatäited	-	avatäited	et
 aos	militaararhitektuur	-	militaararhitektuur	et
 aos	(uus teema)	-	(uus teema)	et
+aos	(uus teema)	-	(uus teema)	et
 aos	antiik	-	antiik	et
 aos	katus	-	katus	et
 aos	stiil	-	stiil	et
@@ -23,6 +24,7 @@ arh	sõjandus	-	sõjandus	et
 arh	välitööd	-	välitööd	et
 arh	leidude üldisemad nimetused	välitööd	leidude üldisemad nimetused	et
 arh	kunst	-	kunst	et
+arh	sõjamehevarustus	sõjandus	sõjamehevarustus	et
 arh	labor	-	labor	et
 arh	ehted	-	ehted	et
 arh	perioodid	üldmõisted	perioodid	et
@@ -278,10 +280,38 @@ ent	suurliblikad	liblikalised	suurliblikad	et
 ent	pahkvaablased	kiletiivalised	pahkvaablased	et
 ett	snomed ct	-	snomed ct	et
 ett	snomed ct	-	snomed ct	en
-fkm	narratoloogia	-	narratoloogia	et
-fkm	narratoloogia	-	narratology	en
 fkm	stsenaristika	-	stsenaristika	et
 fkm	stsenaristika	-	screenwriting	en
+fkm	heli	-	heli	et
+fkm	heli	-	sound	en
+fkm	teooria	-	teooria	et
+fkm	teooria	-	theory	en
+fkm	montaaž	-	montaaž	et
+fkm	montaaž	-	editing	en
+fkm	režii	-	režii	et
+fkm	režii	-	directing	en
+fkm	tootmine	-	tootmine	et
+fkm	tootmine	-	production	en
+fkm	levi	tootmine	levi	et
+fkm	levi	tootmine	distribution	en
+fkm	stsenaariumi vormistamine	stsenaristika	stsenaariumi vormistamine	et
+fkm	stsenaariumi vormistamine	stsenaristika	screenplay format	en
+fkm	liigid ja žanrid	-	liigid ja žanrid	et
+fkm	liigid ja žanrid	-	genre	en
+fkm	operaatoritöö	-	operaatoritöö	et
+fkm	operaatoritöö	-	cinematography	en
+fkm	kunstnikutöö	-	kunstnikutöö	et
+fkm	kunstnikutöö	-	art department	en
+fkm	ajalugu	-	ajalugu	et
+fkm	ajalugu	-	history	en
+fkm	ametinimetused	-	ametinimetused	et
+fkm	ametinimetused	-	job titles	en
+fkm	üleminekud	stsenaariumi vormistamine	üleminekud	et
+fkm	üleminekud	stsenaariumi vormistamine	transitions	en
+fkm	dramaturgia	stsenaristika	dramaturgia	et
+fkm	dramaturgia	stsenaristika	dramaturgy	en
+fkm	narratoloogia	stsenaristika	narratoloogia	et
+fkm	narratoloogia	stsenaristika	narratology	en
 get	pecol	-	paleoökoloogia	est
 get	ecol	-	ökoloogia	est
 get	gen. gl	-	üldgeoloogia	est
@@ -425,12 +455,14 @@ kto	puidukäsitöö	-	puidukäsitöö	et
 kto	tekstiilikäsitöö	-	tekstiilikäsitöö	et
 kto	kirivöötehnika	tekstiilikäsitöö	kirivöötehnika	et
 kto	niplamine	tekstiilikäsitöö	niplamine	et
-kto	käsitööteadus	-	käsitööteadus	et
+kto	teadus, käsitööteadus	-	teadus, käsitööteadus	et
 kto	kangakudumine	tekstiilikäsitöö	kangakudumine	et
 kto	metallikäsitöö	-	metallikäsitöö	et
 kto	palkehitus	puidukäsitöö	palkehitus	et
+kto	sepistamine	metallikäsitöö	sepistamine	et
 kto	kõlatehnika	tekstiilikäsitöö	kõlatehnika	et
 kto	silmuskudumine	tekstiilikäsitöö	silmuskudumine	et
+kto	käsitöö	-	käsitöö	et
 lenoch	AD	-	Public Administration - Private Administration - Offices	eng
 lenoch	AD1	AD	general aspects of the subject field	eng
 lenoch	AD2	AD	organisations in the subject field	eng
@@ -3562,6 +3594,40 @@ militerm	VE	V	Military Training and Education -> Training Fields	eng
 militerm	VE	V	sõjaline väljaõpe ja haridus -> väljaõppealad	est
 militerm	VF	V	Military Training and Education -> E-Training	eng
 militerm	VF	V	sõjaline väljaõpe ja haridus -> e-väljaõpe	est
+mon	3–6 vanuserühm	-	3–6 vanuserühm	et
+mon	3–6 vanuserühm	-	3–6 age group	en
+mon	vahendid ja harjutused (3–6)	3–6 vanuserühm	vahendid ja harjutused (3–6)	et
+mon	vahendid ja harjutused (3–6)	3–6 vanuserühm	materials and exercises (3–6)	en
+mon	6–12 vanuserühm	-	6–12 vanuserühm	et
+mon	6–12 vanuserühm	-	6–12 age group	en
+mon	emakeel (6–12)	6–12 vanuserühm	emakeel (6–12)	et
+mon	emakeel (6–12)	6–12 vanuserühm	language (6–12)	en
+mon	15–18 vanuserühm	-	15–18 vanuserühm	et
+mon	15–18 vanuserühm	-	15–18 age group	en
+mon	emakeel	vahendid ja harjutused (3–6)	emakeel	et
+mon	emakeel	vahendid ja harjutused (3–6)	language	en
+mon	meeltevahendid	vahendid ja harjutused (3–6)	meeltevahendid	et
+mon	meeltevahendid	vahendid ja harjutused (3–6)	sensorial	en
+mon	0–3 vanuserühm	-	0–3 vanuserühm	et
+mon	0–3 vanuserühm	-	0–3 age group	en
+mon	igapäevaelu	vahendid ja harjutused (3–6)	igapäevaelu	et
+mon	igapäevaelu	vahendid ja harjutused (3–6)	practical life	en
+mon	geomeetria (6–12)	6–12 vanuserühm	geomeetria (6–12)	et
+mon	geomeetria (6–12)	6–12 vanuserühm	geometry (6–12)	en
+mon	kultuur	vahendid ja harjutused (3–6)	kultuur	et
+mon	kultuur	vahendid ja harjutused (3–6)	culture	en
+mon	12–15 vanuserühm	-	12–15 vanuserühm	et
+mon	12–15 vanuserühm	-	12–15 age group	en
+mon	teooria	-	teooria	et
+mon	teooria	-	theory	en
+mon	18–24 vanuserühm	-	18–24 vanuserühm	et
+mon	18–24 vanuserühm	-	18–24 age group	en
+mon	matemaatika	vahendid ja harjutused (3–6)	matemaatika	et
+mon	matemaatika	vahendid ja harjutused (3–6)	mathematics	en
+mon	0–6 vanuserühm	-	0–6 vanuserühm	et
+mon	matemaatika (6–12)	6–12 vanuserühm	matemaatika (6–12)	et
+mon	matemaatika (6–12)	6–12 vanuserühm	mathematics (6–12)	en
+mon	12–18 vanuserühm	-	12–18 vanuserühm	et
 mte	muusikateraapia meetodid ja tehnikad	-	muusikateraapia meetodid ja tehnikad	et
 mte	muusikateraapia meetodid ja tehnikad	-	music therapy methods and techniques	en
 mte	neuroloogiline muusikateraapia	-	neuroloogiline muusikateraapia	et

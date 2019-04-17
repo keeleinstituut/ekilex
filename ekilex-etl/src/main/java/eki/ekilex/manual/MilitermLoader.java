@@ -18,11 +18,11 @@ public class MilitermLoader extends AbstractLoader {
 			initDefault();
 
 			MilitermLoaderRunner datasetRunner = getComponent(MilitermLoaderRunner.class);
-			boolean doReports = doReports();
-			boolean isFullReload = isFullReload();
+			boolean doReports = confService.doReports();
+			boolean isFullReload = confService.isFullReload();
 
-			String milFilePath1 = getMandatoryConfProperty("mil.data.file.1");
-			String milFilePath2 = getMandatoryConfProperty("mil.data.file.2");
+			String milFilePath1 = confService.getMandatoryConfProperty("mil.data.file.1");
+			String milFilePath2 = confService.getMandatoryConfProperty("mil.data.file.2");
 			if (!isFullReload) {
 				datasetRunner.deleteDatasetData();
 			}

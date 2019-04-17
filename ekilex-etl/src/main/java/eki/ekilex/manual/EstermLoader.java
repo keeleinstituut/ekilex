@@ -20,10 +20,10 @@ public class EstermLoader extends AbstractLoader {
 
 			EstermLoaderRunner datasetRunner = getComponent(EstermLoaderRunner.class);
 
-			boolean doReports = doReports();
-			boolean isFullReload = isFullReload();
+			boolean doReports = confService.doReports();
+			boolean isFullReload = confService.isFullReload();
 
-			String estFilePath = getMandatoryConfProperty("est.data.file");
+			String estFilePath = confService.getMandatoryConfProperty("est.data.file");
 			if (!isFullReload) {
 				datasetRunner.deleteDatasetData();
 			}

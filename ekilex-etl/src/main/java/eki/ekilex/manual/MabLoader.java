@@ -20,13 +20,13 @@ public class MabLoader extends AbstractLoader {
 			initDefault();
 
 			MabLoaderRunner datasetRunner = getComponent(MabLoaderRunner.class);
-			boolean doReports = doReports();
-			boolean isFullReload = isFullReload();
+			boolean doReports = confService.doReports();
+			boolean isFullReload = confService.isFullReload();
 			if (!isFullReload) {
 				throw new DataLoadingException("Replacing MAB data is not supported!");
 			}
 
-			String[] mabDataFilePaths = getMabDataFilePaths();
+			String[] mabDataFilePaths = confService.getMabDataFilePaths();
 			datasetRunner.execute(mabDataFilePaths, doReports);
 
 		} catch (Exception e) {

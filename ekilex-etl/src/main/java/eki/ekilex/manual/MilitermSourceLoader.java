@@ -19,9 +19,9 @@ public class MilitermSourceLoader extends AbstractLoader {
 			initDefault();
 
 			MilitermSourceLoaderRunner datasetRunner = getComponent(MilitermSourceLoaderRunner.class);
-			boolean doReports = doReports();
-			String milFilePath1 = getMandatoryConfProperty("mil.data.file.1");
-			String milFilePath2 = getMandatoryConfProperty("mil.data.file.2");
+			boolean doReports = confService.doReports();
+			String milFilePath1 = confService.getMandatoryConfProperty("mil.data.file.1");
+			String milFilePath2 = confService.getMandatoryConfProperty("mil.data.file.2");
 			datasetRunner.execute(milFilePath1, milFilePath2, doReports);
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

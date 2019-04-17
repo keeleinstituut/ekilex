@@ -151,7 +151,8 @@
               <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
                  data-toggle="modal"
                  data-target="#meaningLifecycleLogDlg"
-                 class="btn btn-secondary btn-sm ml-4">Tegevuste logi</a>
+                 class="btn btn-secondary btn-sm ml-4"
+                 sec:authorize="${#vars.isMeaningCrudGranted}">Tegevuste logi</a>
             </div>
           </div>
           <div class="row" th:if="${meaning.processStateCode != null}">
@@ -375,20 +376,20 @@
               </th:block>
             </div>
           </div>
-          <div class="row" th:if="${not #lists.isEmpty(meaning.privateNotes)}">
+          <div class="row">
             <hr />
             <div class="col pr-0 col-w13rem">
-                  <span class="lbl">Sisemärkused
-                    <button type="button" class="btn badge badge-success"
-                            title="Lisa uus"
-                            data-toggle="modal"
-                            th:data-target="${'#addMeaningPrivateNoteDlg_' + meaningId}"
-                            sec:authorize="${#vars.isMeaningCrudGranted}">
-                      <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-                  </span>
+              <span class="lbl">Sisemärkused
+                <button type="button" class="btn badge badge-success"
+                        title="Lisa uus"
+                        data-toggle="modal"
+                        th:data-target="${'#addMeaningPrivateNoteDlg_' + meaningId}"
+                        sec:authorize="${#vars.isMeaningCrudGranted}">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+              </span>
             </div>
-            <div th:if="${not #lists.isEmpty(meaning.privateNotes)}" class="col pl-0">
+            <div th:if="${not #lists.isEmpty(meaning.privateNotes)}" sec:authorize="${#vars.isMeaningCrudGranted}" class="col pl-0">
               <th:block th:each="privateNote : ${meaning.privateNotes}">
                 <div th:replace="termdialog :: edit_meaning_private_note_dlg"></div>
                 <div th:replace="termdialog :: add_meaning_private_note_source_link_dlg"></div>

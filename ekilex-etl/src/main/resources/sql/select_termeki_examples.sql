@@ -1,7 +1,10 @@
-SELECT
-  e.*, t.lang
-FROM
-  termeki_term_examples e
-  LEFT JOIN termeki_terms t ON t.term_id = e.term_id
-WHERE
-  e.term_id IN (SELECT term_id FROM termeki_terms WHERE termbase_id = :baseId)
+select e.*,
+       t1.lang
+from termeki_term_examples e
+  left join termeki_terms t1
+         on t1.term_id = e.term_id
+where exists (select t2.term_id
+              from termeki_terms t2
+              where t2.term_id = e.term_id
+              and   t2.termbase_id = :baseId)
+

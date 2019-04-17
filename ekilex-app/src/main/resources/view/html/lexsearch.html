@@ -959,6 +959,7 @@
                  data-toggle="modal"
                  data-target="#wordLifecycleLogDlg"
                  class="btn btn-secondary btn-sm ml-3"
+                 sec:authorize="${#vars.isWordCrudGranted}"
               >Tegevuste logi</a>
               <div id="wordLifecycleLogDlg" class="modal" role="dialog">
                 <div class="modal-dialog modal-lg" role="document">

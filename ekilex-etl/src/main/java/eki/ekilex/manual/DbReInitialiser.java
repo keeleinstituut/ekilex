@@ -19,7 +19,7 @@ public class DbReInitialiser extends AbstractLoader {
 		try {
 			initDefault();
 
-			boolean isFullReload = isFullReload();
+			boolean isFullReload = confService.isFullReload();
 			if (!isFullReload) {
 				throw new DataLoadingException("Erasing database is prohibited!");
 			}

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.data.transform.DatasetId;
-import eki.ekilex.runner.TermekiRunner;
+import eki.ekilex.runner.TermekiLoaderRunner;
 
 public class TermekiLoader extends AbstractLoader {
 
@@ -23,13 +23,13 @@ public class TermekiLoader extends AbstractLoader {
 		try {
 			initWithTermeki();
 
-			TermekiRunner datasetRunner = getComponent(TermekiRunner.class);
-			boolean isFullReload = isFullReload();
+			TermekiLoaderRunner datasetRunner = getComponent(TermekiLoaderRunner.class);
+			boolean isFullReload = confService.isFullReload();
 
 			boolean doBatchLoad = ConsolePromptUtil.promptBooleanValue("Load all termbases (y) or just single one (n) from TERMEKI ?");
 
 			if (doBatchLoad) {
-				List<DatasetId> termekiIds = getTermekiIds();
+				List<DatasetId> termekiIds = confService.getTermekiDatasetIds();
 				if (CollectionUtils.isNotEmpty(termekiIds)) {
 					for (DatasetId datasetId : termekiIds) {
 						Integer termekiId = datasetId.getId();

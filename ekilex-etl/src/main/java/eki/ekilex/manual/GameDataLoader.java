@@ -20,7 +20,7 @@ public class GameDataLoader extends AbstractLoader {
 
 			GameDataLoaderRunner dataRunner = getComponent(GameDataLoaderRunner.class);
 
-			String nonWordsFilePath = getConfProperty("games.nonwords.file");
+			String nonWordsFilePath = confService.getConfProperty("games.nonwords.file");
 			dataRunner.execute(nonWordsFilePath);
 
 		} catch (Exception e) {

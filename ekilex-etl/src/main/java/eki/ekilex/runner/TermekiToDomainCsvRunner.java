@@ -47,7 +47,7 @@ public class TermekiToDomainCsvRunner extends AbstractDomainRunner {
 
 	private List<ClassifierMapping> removeTermekiClassifiers(List<ClassifierMapping> existingClassifiers) {
 		return existingClassifiers.stream()
-				.filter(c -> !termekiService.termbaseCodes().contains(c.getEkiOrigin()) || c.getEkiOrigin().equals("get"))
+				.filter(c -> !termekiService.getTermbaseCodes().contains(c.getEkiOrigin()) || c.getEkiOrigin().equals("get"))
 				.collect(toList());
 	}
 

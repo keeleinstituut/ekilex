@@ -19,7 +19,7 @@ public class VoiceFileUpdaterLoader extends AbstractLoader {
 			initDefault();
 
 			VoiceFileUpdaterRunner voiceFileUpdaterRunner = getComponent(VoiceFileUpdaterRunner.class);
-			String voiceFilesIndexFilePath = getMandatoryConfProperty("voice.index.file");
+			String voiceFilesIndexFilePath = confService.getMandatoryConfProperty("voice.index.file");
 			voiceFileUpdaterRunner.update(voiceFilesIndexFilePath);
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

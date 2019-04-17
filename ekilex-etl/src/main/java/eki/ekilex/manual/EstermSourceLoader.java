@@ -20,8 +20,8 @@ public class EstermSourceLoader extends AbstractLoader {
 
 			EstermSourceLoaderRunner datasetRunner = getComponent(EstermSourceLoaderRunner.class);
 
-			boolean doReports = doReports();
-			String estFilePath = getMandatoryConfProperty("est.data.file");
+			boolean doReports = confService.doReports();
+			String estFilePath = confService.getMandatoryConfProperty("est.data.file");
 			datasetRunner.execute(estFilePath, doReports);
 
 		} catch (Exception e) {
