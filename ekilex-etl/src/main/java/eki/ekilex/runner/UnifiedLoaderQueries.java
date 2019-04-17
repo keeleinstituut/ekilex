@@ -18,6 +18,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_SELECT_WORD_MAX_HOMON_BY_WORD_LANG = "sql/select_word_max_homon_by_word_lang.sql";
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
+	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME_AND_FILE_NAME = "sql/select_source_by_type_and_name_and_file_name.sql";
 	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
 	private static final String SQL_SELECT_FLOATING_WORD_IDS = "sql/select_floating_word_ids.sql";
 	private static final String SQL_SELECT_MEANING_IDS_AND_WORD_LANGS = "sql/select_meaning_ids_and_word_langs.sql";
@@ -37,6 +38,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlSelectWordMaxHomonByWordLang;
 	private String sqlSelectLexemeFreeform;
 	private String sqlSelectSourceByTypeAndName;
+	private String sqlSelectSourceByTypeAndNameAndFileName;
 	private String sqlSelectWordGroupWithMembers;
 	private String sqlSelectFloatingWordIds;
 	private String sqlSelectMeaningIdsAndWordLangs;
@@ -81,6 +83,9 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_SOURCE_BY_TYPE_AND_NAME);
 		sqlSelectSourceByTypeAndName = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_SOURCE_BY_TYPE_AND_NAME_AND_FILE_NAME);
+		sqlSelectSourceByTypeAndNameAndFileName = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_GROUP_WITH_MEMBERS);
 		sqlSelectWordGroupWithMembers = getContent(resourceFileInputStream);
@@ -145,6 +150,10 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	public String getSqlSelectSourceByTypeAndName() {
 		return sqlSelectSourceByTypeAndName;
+	}
+
+	public String getSqlSelectSourceByTypeAndNameAndFileName() {
+		return sqlSelectSourceByTypeAndNameAndFileName;
 	}
 
 	public String getSqlSelectWordGroupWithMembers() {

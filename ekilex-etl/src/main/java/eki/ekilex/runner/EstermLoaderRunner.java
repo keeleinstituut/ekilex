@@ -121,7 +121,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		start();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
-		sourceFileName = FilenameUtils.getName(dataXmlFilePath);
+		String fileName = FilenameUtils.getName(dataXmlFilePath);
 
 		List<Node> conceptGroupNodes = dataDoc.selectNodes(conceptGroupExp);
 		int conceptGroupCount = conceptGroupNodes.size();
@@ -162,7 +162,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			meaningObj = new Meaning();
 			extractAndApplyMeaningProperties(conceptGroupNode, meaningObj, defaultDateFormat);
 			meaningId = createMeaning(meaningObj);
-			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode);
+			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode, fileName);
 
 			// domains
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
@@ -188,7 +188,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 				lang = unifyLang(valueStr);
 
 				//upper level definitions and notes
-				extractAndSaveDefinitionsAndNotes(meaningId, langGroupNode, lang, concept, definitionsWithSameNotesCount);
+				extractAndSaveDefinitionsAndNotes(meaningId, langGroupNode, lang, concept, definitionsWithSameNotesCount, fileName);
 
 				termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
@@ -229,7 +229,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					lexemeObj.setProcessStateCode(processStateCode);
 					lexemeId = createLexeme(lexemeObj, getDataset());
 
-					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode);
+					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode, fileName);
 
 					extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
 
@@ -237,7 +237,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					valueNodes = termGroupNode.selectNodes(definitionExp);
 					for (Node definitionNode : valueNodes) {
 						definitions = extractContentAndRefs(definitionNode, lang, term, true);
-						saveDefinitionsAndSourceLinks(meaningId, definitions, concept, term);
+						saveDefinitionsAndSourceLinks(meaningId, definitions, concept, term, fileName);
 					}
 
 					// usages
@@ -245,7 +245,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
 						for (Node usageNode : valueNodes) {
 							usages = extractContentAndRefs(usageNode, lang, term, true);
-							saveUsagesAndSourceLinks(lexemeId, usages, concept, term);
+							saveUsagesAndSourceLinks(lexemeId, usages, concept, term, fileName);
 						}
 					}
 
@@ -253,7 +253,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					valueNodes = termGroupNode.selectNodes(sourceExp);
 					for (Node sourceNode : valueNodes) {
 						sources = extractContentAndRefs(sourceNode, lang, term, false);
-						saveLexemeSourceLinks(lexemeId, sources, concept, term);
+						saveLexemeSourceLinks(lexemeId, sources, concept, term, fileName);
 					}
 
 					if (doReports) {
@@ -350,7 +350,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		return wordType;
 	}
 
-	private void extractAndSaveMeaningFreeforms(Long meaningId, Node conceptGroupNode) throws Exception {
+	private void extractAndSaveMeaningFreeforms(Long meaningId, Node conceptGroupNode, String fileName) throws Exception {
 
 		List<Node> valueNodes;
 		Element valueNode, valueNode1, valueNode2;
@@ -381,7 +381,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = ((Element)noteValueNode).getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
 			if (((Element)noteValueNode).hasMixedContent()) {
-				valueStr = handleFreeformTextSourceLinks(noteValueNode, freeformId);
+				valueStr = handleFreeformTextSourceLinks(noteValueNode, freeformId, fileName);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -391,7 +391,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId);
+				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -523,17 +523,17 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void saveLexemeSourceLinks(Long lexemeId, List<Content> sources, String concept, String term) throws Exception {
+	private void saveLexemeSourceLinks(Long lexemeId, List<Content> sources, String concept, String term, String fileName) throws Exception {
 
 		for (Content sourceObj : sources) {
 			List<Ref> refs = sourceObj.getRefs();
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.LEXEME, lexemeId, ref, concept, term);
+				createSourceLink(SourceOwner.LEXEME, lexemeId, ref, concept, term, fileName);
 			}
 		}
 	}
 
-	private void saveDefinitionsAndSourceLinks(Long meaningId, List<Content> definitions, String concept, String term) throws Exception {
+	private void saveDefinitionsAndSourceLinks(Long meaningId, List<Content> definitions, String concept, String term, String fileName) throws Exception {
 
 		for (Content definitionObj : definitions) {
 			String definition = definitionObj.getValue();
@@ -542,12 +542,12 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			Long definitionId = createOrSelectDefinition(meaningId, definition, lang, getDataset());
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, concept, term);
+				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, concept, term, fileName);
 			}
 		}
 	}
 
-	private void saveUsagesAndSourceLinks(Long lexemeId, List<Content> usages, String concept, String term) throws Exception {
+	private void saveUsagesAndSourceLinks(Long lexemeId, List<Content> usages, String concept, String term, String fileName) throws Exception {
 
 		for (Content usageObj : usages) {
 			String usage = usageObj.getValue();
@@ -556,17 +556,17 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usage, lang);
 			usageObj.setId(usageId);
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.USAGE, usageId, ref, concept, term);
+				createSourceLink(SourceOwner.USAGE, usageId, ref, concept, term, fileName);
 			}
 		}
 	}
 
-	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String concept, String term) throws Exception {
+	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String concept, String term, String fileName) throws Exception {
 
 		String minorRef = ref.getMinorRef();
 		String majorRef = ref.getMajorRef();
 		ReferenceType refType = ref.getType();
-		Long sourceId = getSource(majorRef);
+		Long sourceId = getSource(majorRef, fileName);
 		if (sourceId == null) {
 			reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
 			return;
@@ -592,7 +592,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 	}
 
 	private void extractAndSaveDefinitionsAndNotes(
-			Long meaningId, Node langGroupNode, String lang, String concept, Count definitionsWithSameNotesCount) throws Exception {
+			Long meaningId, Node langGroupNode, String lang, String concept, Count definitionsWithSameNotesCount, String fileName) throws Exception {
 
 		List<Node> definitionNodes = langGroupNode.selectNodes(definitionExp);
 		List<Node> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
@@ -601,7 +601,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 
 		for (Node definitionNode : definitionNodes) {
 			definitions = extractContentAndRefs(definitionNode, lang, concept, true);
-			saveDefinitionsAndSourceLinks(meaningId, definitions, concept, "*");
+			saveDefinitionsAndSourceLinks(meaningId, definitions, concept, "*", fileName);
 			totalDefinitionCount += definitions.size();
 			for (Content definitionObj : definitions) {
 				Long definitionId = definitionObj.getId();
@@ -609,7 +609,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					String definitionNote = ((Element)definitionNoteNode).getTextTrim();
 					Long freeformId = createDefinitionFreeform(definitionId, FreeformType.PUBLIC_NOTE, definitionNote);
 					if (((Element)definitionNoteNode).hasMixedContent()) {
-						definitionNote = handleFreeformTextSourceLinks(definitionNoteNode, freeformId);
+						definitionNote = handleFreeformTextSourceLinks(definitionNoteNode, freeformId, fileName);
 						updateFreeformText(freeformId, definitionNote);
 					}
 				}
@@ -678,7 +678,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void extractAndSaveLexemeFreeforms(Long lexemeId, Node termGroupNode) throws Exception {
+	private void extractAndSaveLexemeFreeforms(Long lexemeId, Node termGroupNode, String fileName) throws Exception {
 
 		List<Node> valueNodes;
 		Element valueNode1, valueNode2;
@@ -767,7 +767,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = ((Element)valueNode).getTextTrim();
 			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
 			if (((Element)valueNode).hasMixedContent()) {
-				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId);
+				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}

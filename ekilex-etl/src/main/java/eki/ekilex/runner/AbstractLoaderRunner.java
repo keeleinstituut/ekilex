@@ -1213,7 +1213,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
-	protected Long getSource(SourceType sourceType, String extSourceId, String sourceName) throws Exception {
+	// TODO 3 different getSource methods - 2 here and 1 in AbstractTermLoaderRunner. Possibility for refactoring?
+	protected Long getSource(SourceType sourceType, String extSourceId, String sourceName) {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("sourceType", sourceType.name());
@@ -1221,6 +1222,25 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("sourcePropertyTypeName", FreeformType.SOURCE_NAME.name());
 		tableRowParamMap.put("sourceName", sourceName);
 		List<Map<String, Object>> sources = basicDbService.queryList(sqls.getSqlSelectSourceByTypeAndName(), tableRowParamMap);
+
+		if (CollectionUtils.isEmpty(sources)) {
+			return null;
+		}
+		Map<String, Object> sourceRecord = sources.get(0);
+		Long sourceId = (Long) sourceRecord.get("id");
+		return sourceId;
+	}
+
+	protected Long getSource(SourceType sourceType, String extSourceId, String sourceName, String fileName) {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("sourceType", sourceType.name());
+		tableRowParamMap.put("extSourceId", extSourceId);
+		tableRowParamMap.put("sourcePropertyTypeName", FreeformType.SOURCE_NAME.name());
+		tableRowParamMap.put("sourcePropertyTypeFileName", FreeformType.SOURCE_FILE.name());
+		tableRowParamMap.put("sourceName", sourceName);
+		tableRowParamMap.put("sourceFileName", fileName);
+		List<Map<String, Object>> sources = basicDbService.queryList(sqls.getSqlSelectSourceByTypeAndNameAndFileName(), tableRowParamMap);
 
 		if (CollectionUtils.isEmpty(sources)) {
 			return null;

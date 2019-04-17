@@ -94,8 +94,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		for (String dataXmlFilePath : dataXmlFilePaths) {
 
 			int totalFiles = dataXmlFilePaths.length;
-			sourceFileName = FilenameUtils.getName(dataXmlFilePath);
-			logger.debug("Loading {} file of {} files. File name: \"{}\"", fileCounter, totalFiles, sourceFileName);
+			String fileName = FilenameUtils.getName(dataXmlFilePath);
+			logger.debug("Loading {} file of {} files. File name: \"{}\"", fileCounter, totalFiles, fileName);
 
 			dataDoc = xmlReader.readDocument(dataXmlFilePath);
 			rootElement = dataDoc.getRootElement();
@@ -109,7 +109,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				boolean isLanguageTypeConcept = isLanguageTypeConcept(conceptGroupNode);
 				if (isLanguageTypeConcept) {
-					processConceptGroup(conceptGroupNode);
+					processConceptGroup(conceptGroupNode, fileName);
 				}
 
 				conceptGroupCounter++;
@@ -135,7 +135,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		end();
 	}
 
-	private void processConceptGroup(Node conceptGroupNode) throws Exception {
+	private void processConceptGroup(Node conceptGroupNode, String fileName) throws Exception {
 
 		Meaning meaning = new Meaning();
 		String term;
@@ -151,7 +151,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
 				String.valueOf(meaningId), meaning.getModifiedOn(), meaning.getModifiedBy());
 
-		extractAndApplyMeaningFreeforms(meaningId, conceptGroupNode);
+		extractAndApplyMeaningFreeforms(meaningId, conceptGroupNode, fileName);
 		extractListValues(conceptGroupNode);
 
 		List<Node> langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
@@ -186,7 +186,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				for (Node ltbSourceValueNode : ltbSourceValueNodes) {
 					List<Content> sources = extractContentAndRefs(ltbSourceValueNode, lang, term, false);
-					saveLexemeSourceLinks(lexemeId, sources, term);
+					saveLexemeSourceLinks(lexemeId, sources, term, fileName);
 				}
 
 				extractAndApplyLexemeProperties(termGroupNode, lexeme);
@@ -199,13 +199,13 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				List<Node> sourceValueNodes = termGroupNode.selectNodes(sourceExp);
 				for (Node sourceValueNode : sourceValueNodes) {
 					List<Content> sources = extractContentAndRefs(sourceValueNode, lang, term, false);
-					saveLexemeSourceLinks(lexemeId, sources, term);
+					saveLexemeSourceLinks(lexemeId, sources, term, fileName);
 				}
 
 				List<Node> definitionValueNodes = termGroupNode.selectNodes(definitionExp);
 				for (Node definitionValueNode : definitionValueNodes) {
 					List<Content> sources = extractContentAndRefs(definitionValueNode, lang, term, true);
-					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeDefinition);
+					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeDefinition, fileName);
 				}
 
 				Element coincidentValueNode = (Element) termGroupNode.selectSingleNode(overlapExp);
@@ -239,7 +239,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				if (CollectionUtils.isNotEmpty(usageValueNodes)) {
 					for (Node usageValueNode : usageValueNodes) {
 						List<Content> sources = extractContentAndRefs(usageValueNode, lang, term, true);
-						saveUsagesAndSourceLinks(lexemeId, sources, term);
+						saveUsagesAndSourceLinks(lexemeId, sources, term, fileName);
 					}
 				}
 
@@ -247,7 +247,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				if (CollectionUtils.isNotEmpty(noteValueNodes)) {
 					for (Node noteValueNode : noteValueNodes) {
 						List<Content> sources = extractContentAndRefs(noteValueNode, lang, term, true);
-						savePublicNotesAndSourceLinks(lexemeId, sources, term);
+						savePublicNotesAndSourceLinks(lexemeId, sources, term, fileName);
 					}
 				}
 
@@ -259,7 +259,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				List<Node> explanationValueNodes = termGroupNode.selectNodes(explanationExp);
 				for (Node explanationValueNode : explanationValueNodes) {
 					List<Content> sources = extractContentAndRefs(explanationValueNode, lang, term, true);
-					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeExplanation);
+					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeExplanation, fileName);
 				}
 			}
 		}
@@ -377,7 +377,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void extractAndApplyMeaningFreeforms(Long meaningId, Node conceptGroupNode) throws Exception {
+	private void extractAndApplyMeaningFreeforms(Long meaningId, Node conceptGroupNode, String fileName) throws Exception {
 
 		List<Node> valueNodes;
 		Element valueNode;
@@ -388,7 +388,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = ((Element) publicNoteValueNode).getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
 			if (((Element) publicNoteValueNode).hasMixedContent()) {
-				valueStr = handleFreeformTextSourceLinks(publicNoteValueNode, freeformId);
+				valueStr = handleFreeformTextSourceLinks(publicNoteValueNode, freeformId, fileName);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -398,7 +398,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId);
+				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -525,17 +525,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void saveLexemeSourceLinks(Long lexemeId, List<Content> sources, String term) throws Exception {
+	private void saveLexemeSourceLinks(Long lexemeId, List<Content> sources, String term, String fileName) throws Exception {
 
 		for (Content sourceObj : sources) {
 			List<Ref> refs = sourceObj.getRefs();
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.LEXEME, lexemeId, ref, term);
+				createSourceLink(SourceOwner.LEXEME, lexemeId, ref, term, fileName);
 			}
 		}
 	}
 
-	private void saveDefinitionsAndSourceLinks(Long meaningId, List<Content> definitions, String term, String definitionTypeCode) throws Exception {
+	private void saveDefinitionsAndSourceLinks(Long meaningId, List<Content> definitions, String term, String definitionTypeCode, String fileName) throws Exception {
 
 		for (Content definitionObj : definitions) {
 			String definition = definitionObj.getValue();
@@ -544,12 +544,12 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			Long definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang, getDataset());
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, term);
+				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, term, fileName);
 			}
 		}
 	}
 
-	private void saveUsagesAndSourceLinks(Long lexemeId, List<Content> usages, String term) throws Exception {
+	private void saveUsagesAndSourceLinks(Long lexemeId, List<Content> usages, String term, String fileName) throws Exception {
 
 		for (Content usageObj : usages) {
 			String usage = usageObj.getValue();
@@ -558,12 +558,12 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usage, lang);
 			usageObj.setId(usageId);
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.USAGE, usageId, ref, term);
+				createSourceLink(SourceOwner.USAGE, usageId, ref, term, fileName);
 			}
 		}
 	}
 
-	private void savePublicNotesAndSourceLinks(Long lexemeId, List<Content> publicNotes, String term) throws Exception {
+	private void savePublicNotesAndSourceLinks(Long lexemeId, List<Content> publicNotes, String term, String fileName) throws Exception {
 
 		for (Content publicNoteObj : publicNotes) {
 			String publicNote = publicNoteObj.getValue();
@@ -572,17 +572,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			Long publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
 			publicNoteObj.setId(publicNoteId);
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.PUBLIC_NOTE, publicNoteId, ref, term);
+				createSourceLink(SourceOwner.PUBLIC_NOTE, publicNoteId, ref, term, fileName);
 			}
 		}
 	}
 
-	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String term) throws Exception {
+	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String term, String fileName) throws Exception {
 
 		String minorRef = ref.getMinorRef();
 		String majorRef = ref.getMajorRef();
 		ReferenceType refType = ref.getType();
-		Long sourceId = getSource(majorRef);
+		Long sourceId = getSource(majorRef, fileName);
 		if (sourceId == null) {
 			appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, term, majorRef);
 			return;
