@@ -47,4 +47,14 @@ public class LifecycleLogController implements WebConstant {
 
 		return LIFECYCLELOGVIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
+
+	@GetMapping("/sourcelifecyclelog:{sourceId}")
+	public String sourceLifecycleLogLink(@PathVariable("sourceId") Long sourceId, Model model) {
+
+		logger.debug("Requested lifecycle log for source \"{}\"", sourceId);
+		List<LifecycleLog> lifecycleLog = lifecycleLogService.getLogForSource(sourceId);
+		model.addAttribute("lifecycleLog", lifecycleLog);
+
+		return LIFECYCLELOGVIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
+	}
 }

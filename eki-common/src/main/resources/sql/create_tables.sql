@@ -438,13 +438,7 @@ alter sequence freeform_id_seq restart with 10000;
 create table source
 (
   id bigserial primary key,
-  ext_source_id varchar(100) not null,
-  type varchar(100) not null,
-  created_on timestamp null,
-  created_by varchar(100) null,
-  modified_on timestamp null,
-  modified_by varchar(100) null,
-  process_state_code varchar(100) references process_state(code) null
+  type varchar(100) not null
 );
 alter sequence source_id_seq restart with 10000;
 
@@ -457,6 +451,14 @@ create table source_freeform
   unique(source_id, freeform_id)
 );
 alter sequence source_freeform_id_seq restart with 10000;
+
+create table source_lifecycle_log
+(
+  id bigserial primary key,
+  source_id bigint references source(id) on delete cascade not null,
+  lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
+);
+alter sequence source_lifecycle_log_id_seq restart with 10000;
 
 -- keelend (morfoloogiline homonüüm)
 create table word
@@ -986,7 +988,6 @@ create index word_relation_word2_id_idx on word_relation(word2_id);
 create index freeform_parent_id_idx on freeform(parent_id);
 create index freeform_value_text_idx on freeform(value_text);
 create index freeform_type_idx on freeform(type);
-create index source_ext_source_id_idx on source(ext_source_id);
 create index source_type_idx on source(type);
 create index source_freeform_source_id_idx on source_freeform(source_id);
 create index source_freeform_freeform_id_idx on source_freeform(freeform_id);
@@ -1025,6 +1026,8 @@ create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meani
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
+create index source_lifecycle_log_source_id_idx on source_lifecycle_log(source_id);
+create index source_lifecycle_log_log_id_idx on source_lifecycle_log(lifecycle_log_id);
 create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));

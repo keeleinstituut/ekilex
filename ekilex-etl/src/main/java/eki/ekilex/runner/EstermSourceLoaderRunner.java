@@ -1,7 +1,5 @@
 package eki.ekilex.runner;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -32,12 +30,12 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 	}
 
 	@Override
-	public void deleteDatasetData() throws Exception {
+	public void deleteDatasetData() {
 
 	}
 
 	@Override
-	public void initialise() throws Exception {
+	public void initialise() {
 
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
 	}
@@ -73,12 +71,15 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 			Element sourceNameElement = (Element) sourceNameNode;
 			String sourceName = sourceNameElement.getTextTrim();
 
-			sourceId = getSource(SourceType.UNKNOWN, extSourceId, sourceName, fileName);
+			sourceId = getSource(SourceType.DOCUMENT, extSourceId, sourceName, fileName);
 			if (sourceId == null) {
 
-				sourceObj = extractAndApplySourceProperties(conceptGroupNode);
+				sourceObj = new Source();
+				sourceObj.setType(SourceType.DOCUMENT);
 				sourceId = createSource(sourceObj);
 
+				extractAndCreateSourceLifecycleLog(sourceId, conceptGroupNode);
+				createSourceFreeform(sourceId, FreeformType.EXTERNAL_SOURCE_ID, extSourceId);
 				createSourceFreeform(sourceId, FreeformType.SOURCE_FILE, fileName);
 
 				termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
@@ -97,10 +98,8 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_PLACE, sourcePublicationPlaceExp);
 					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_NAME, sourcePublicationNameExp);
 					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.PUBLIC_NOTE, sourceNoteExp);
-					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.CREATED_BY, createdByExp);
-					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.CREATED_ON, createdOnExp);
-					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.MODIFIED_BY, modifiedByExp);
-					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.MODIFIED_ON, modifiedOnExp);
+
+					extractAndCreateSourceLifecycleLog(sourceId, termGroupNode);
 				}
 			}
 
@@ -112,75 +111,6 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 		}
 
 		end();
-	}
-
-	private Source extractAndApplySourceProperties(Node conceptGroupNode) throws ParseException {
-
-		Source sourceObj = new Source();
-
-		Node valueNode;
-		String valueStr;
-		long valueLong;
-		Timestamp valueTs;
-
-		/*
-		 * TODO missing logic to determine about correct source type.
-		 * Info about source type is in one or many of the nesting term groups
-		 */
-		sourceObj.setType(SourceType.UNKNOWN);
-
-		valueNode = conceptGroupNode.selectSingleNode(conceptExp);
-		if (valueNode != null) {
-			valueStr = ((Element)valueNode).getTextTrim();
-			sourceObj.setExtSourceId(valueStr);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(entryClassExp);
-		if (valueNode != null) {
-			valueStr = ((Element)valueNode).getTextTrim();
-			sourceObj.setProcessStateCode(valueStr);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(createdByExp);
-		if (valueNode != null) {
-			valueStr = ((Element)valueNode).getTextTrim();
-			sourceObj.setCreatedBy(valueStr);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(createdOnExp);
-		if (valueNode != null) {
-			valueStr = ((Element)valueNode).getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			sourceObj.setCreatedOn(valueTs);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(modifiedByExp);
-		if (valueNode != null) {
-			valueStr = ((Element)valueNode).getTextTrim();
-			sourceObj.setModifiedBy(valueStr);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(modifiedOnExp);
-		if (valueNode != null) {
-			valueStr = ((Element)valueNode).getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			sourceObj.setModifiedOn(valueTs);
-		}
-
-		/* 
-		 * Currently suspended
-		 * Type now reserved for other logic
-		 * 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(sourceTypeExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			sourceObj.setType(valueStr);
-		}
-		*/
-
-		return sourceObj;
 	}
 
 }

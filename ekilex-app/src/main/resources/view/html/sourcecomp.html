@@ -21,61 +21,46 @@
           Eemalda allikas
         </button>
       </div>
+      <a th:href="@{'/sourcelifecyclelog:' + ${source.sourceId}}"
+         data-toggle="modal"
+         data-target="#sourceLifecycleLogDlg"
+         class="btn btn-secondary btn-sm ml-4">Tegevuste logi</a>
     </div>
-    <table style="width: 100%">
+    <table class="w-100">
       <tr>
-        <td style="width: 50px; text-align: center; vertical-align: top; background-color: #fafafa">
+        <td style="width: 100px; text-align: left; vertical-align: top;">
           <b>
             <span th:text="${count + '.'}"></span>
           </b>
         </td>
-        <td style="width: 30%">
-          <table>
-            <tr>
-              <th>source id</th>
-              <td th:text="${source.sourceId}"></td>
-            </tr>
-            <tr>
-              <th>external source id</th>
-              <td th:text="${source.extSourceId}"></td>
-            </tr>
-            <tr>
-              <th>type</th>
-              <td>
-                <div class="hidden-buttons">
-                  <div class="col pl-0">
-                    <span th:text="${source.type}"></span>
-                    <button type="button" class="btn badge badge-primary" title="Muuda"
-                            data-toggle="modal"
-                            th:data-target="${'#editSourceTypeDlg_' + source.sourceId}">
-                      <i class="fa fa-caret-down" aria-hidden="true"></i>
-                    </button>
+        <td>
+          <div class="row mb-1">
+            <table style="background-color: #ececec; font-weight: bold">
+              <tr>
+                <td>source id</td>
+                <td th:text="${source.sourceId}"></td>
+              </tr>
+              <tr>
+                <td>type</td>
+                <td>
+                  <div class="hidden-buttons">
+                    <div class="col pl-0">
+                      <span th:text="${source.type}"></span>
+                      <button type="button" class="btn badge badge-primary" title="Muuda"
+                              data-toggle="modal"
+                              th:data-target="${'#editSourceTypeDlg_' + source.sourceId}">
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th>created on</th>
-              <td th:text="${#dates.format(source.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
-            </tr>
-            <tr>
-              <th>created by</th>
-              <td th:text="${source.createdBy}"></td>
-            </tr>
-            <tr>
-              <th>modified on</th>
-              <td th:text="${#dates.format(source.modifiedOn, 'dd.MM.yyyy HH:mm')}"></td>
-            </tr>
-            <tr>
-              <th>modified by</th>
-              <td th:text="${source.modifiedBy}"></td>
-            </tr>
-            <tr>
-              <th>process state</th>
-              <td th:text="${source.processStateCode}"></td>
-            </tr>
-          </table>
+                </td>
+              </tr>
+            </table>
+          </div>
         </td>
+      </tr>
+      <tr>
+        <td style="width: 100px;"></td>
         <td>
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
@@ -98,6 +83,7 @@
                   </button>
                   <button type="button" class="btn badge badge-warning"
                           th:data-source-property-id="${sourceProperty.id}"
+                          th:data-source-property-type="${sourceProperty.type}"
                           th:data-source-id="${source.sourceId}"
                           th:data-count="${count}"
                           data-toggle="delete-source-property-confirm"
@@ -112,6 +98,16 @@
       </tr>
     </table>
   </div>
+  <div id="sourceLifecycleLogDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body"></div>
+      </div>
+    </div>
+  </div>
   <script type="text/javascript">
 	  $('[data-toggle=delete-source-property-confirm]').confirmation({
 		  btnOkLabel: 'Jah',
@@ -119,20 +115,21 @@
 		  title: 'Palun kinnita allika atribuudi kustutamine',
 		  onConfirm: function () {
 			  let sourceId = $(this).data('sourceId');
-		    let sourcePropertyId = $(this).data('sourcePropertyId');
-		    let count = $(this).data('count');
-			  deleteSourceProperty(sourceId, sourcePropertyId, count);
+			  let sourcePropertyId = $(this).data('sourcePropertyId');
+			  let sourcePropertyType = $(this).data('sourcePropertyType');
+			  let count = $(this).data('count');
+			  deleteSourceProperty(sourceId, sourcePropertyId, sourcePropertyType, count);
 		  }
 	  });
-	$('[data-toggle=delete-source-confirm]').confirmation({
-		btnOkLabel: 'Jah',
-		btnCancelLabel: 'Ei',
-		title: 'Palun kinnita allika kustutamine',
-		onConfirm: function () {
-			let sourceId = $(this).data('sourceId');
-			executeValidateSourceDelete(sourceId);
-		}
-	});
+	  $('[data-toggle=delete-source-confirm]').confirmation({
+		  btnOkLabel: 'Jah',
+		  btnCancelLabel: 'Ei',
+		  title: 'Palun kinnita allika kustutamine',
+		  onConfirm: function () {
+			  let sourceId = $(this).data('sourceId');
+			  executeValidateSourceDelete(sourceId);
+		  }
+	  });
   </script>
 </div>
 

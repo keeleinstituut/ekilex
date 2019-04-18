@@ -84,7 +84,7 @@ public interface WebConstant {
 
 	String ERROR_PAGE = "error";
 
-	String SOURCE_COMPONENTS_PAGE = "sourcecomponents";
+	String SOURCE_COMPONENTS_PAGE = "sourcecomp";
 
 	String PAGE_FRAGMENT_ELEM = " :: ";
 

@@ -1,14 +1,11 @@
 package eki.ekilex.runner;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -16,11 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.transform.Source;
-import eki.ekilex.service.ReportComposer;
 
 @Component
 public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
@@ -28,12 +23,6 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(MilitermSourceLoaderRunner.class);
 
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
-
-	private static final String REPORT_ILLEGAL_CLASSIFIERS = "illegal_classifiers";
-
-	private Map<String, String> processStateCodes;
-
-	private ReportComposer reportComposer;
 
 	@Override
 	public String getDataset() {
@@ -45,9 +34,8 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 	}
 
 	@Override
-	public void initialise() throws Exception {
+	public void initialise() {
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
-		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ENTRY_CLASS, ClassifierName.PROCESS_STATE.name());
 	}
 
 	@Transactional
@@ -55,10 +43,6 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 
 		logger.debug("Starting loading Militerm sources...");
 
-		this.doReports = doReports;
-		if (doReports) {
-			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_ILLEGAL_CLASSIFIERS);
-		}
 		start();
 
 		String[] dataXmlFilePaths = new String[] {milFilePath1, milFilePath2};
@@ -99,8 +83,6 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 
 	private void processConceptGroup(Node conceptGroupNode, String fileName) throws Exception {
 
-		Long sourceId;
-
 		Node extSourceIdNode = conceptGroupNode.selectSingleNode(conceptExp);
 		Element extSourceIdElement = (Element) extSourceIdNode;
 		String extSourceId = extSourceIdElement.getTextTrim();
@@ -109,12 +91,15 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 		Element sourceNameElement = (Element) sourceNameNode;
 		String sourceName = sourceNameElement.getTextTrim();
 
-		sourceId = getSource(SourceType.UNKNOWN, extSourceId, sourceName, fileName);
+		Long sourceId = getSource(SourceType.DOCUMENT, extSourceId, sourceName, fileName);
 		if (sourceId == null) {
 
-			Source source = extractAndApplySourceProperties(conceptGroupNode, extSourceId);
+			Source source = new Source();
+			source.setType(SourceType.DOCUMENT);
 			sourceId = createSource(source);
 
+			extractAndCreateSourceLifecycleLog(sourceId, conceptGroupNode);
+			createSourceFreeform(sourceId, FreeformType.EXTERNAL_SOURCE_ID, extSourceId);
 			createSourceFreeform(sourceId, FreeformType.SOURCE_FILE, fileName);
 
 			List<Node> termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
@@ -130,78 +115,10 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_YEAR, sourcePublicationYearExp);
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_PLACE, sourcePublicationPlaceExp);
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.PUBLIC_NOTE, sourceNoteExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.CREATED_BY, createdByExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.CREATED_ON, createdOnExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.MODIFIED_BY, modifiedByExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.MODIFIED_ON, modifiedOnExp);
+
+				extractAndCreateSourceLifecycleLog(sourceId, termGroupNode);
 			}
 		}
-	}
-
-	private Source extractAndApplySourceProperties(Node conceptGroupNode, String concept) throws Exception {
-
-		Source source = new Source();
-
-		Node valueNode;
-		String valueStr;
-		long valueLong;
-		Timestamp valueTs;
-
-		source.setType(SourceType.UNKNOWN);
-
-		valueNode = conceptGroupNode.selectSingleNode(conceptExp);
-		if (valueNode != null) {
-			valueStr = ((Element) valueNode).getTextTrim();
-			source.setExtSourceId(valueStr);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(entryClassExp);
-		if (valueNode != null) {
-			valueStr = ((Element) valueNode).getTextTrim();
-			if (processStateCodes.containsKey(valueStr)) {
-				source.setProcessStateCode(valueStr);
-			} else {
-				appendToReport(REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu entryClass väärtus: " + valueStr);
-			}
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(createdByExp);
-		if (valueNode != null) {
-			valueStr = ((Element) valueNode).getTextTrim();
-			source.setCreatedBy(valueStr);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(createdOnExp);
-		if (valueNode != null) {
-			valueStr = ((Element) valueNode).getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			source.setCreatedOn(valueTs);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(modifiedByExp);
-		if (valueNode != null) {
-			valueStr = ((Element) valueNode).getTextTrim();
-			source.setModifiedBy(valueStr);
-		}
-
-		valueNode = conceptGroupNode.selectSingleNode(modifiedOnExp);
-		if (valueNode != null) {
-			valueStr = ((Element) valueNode).getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			source.setModifiedOn(valueTs);
-		}
-
-		return source;
-	}
-
-	private void appendToReport(String reportName, String... reportCells) throws Exception {
-		if (!doReports) {
-			return;
-		}
-		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
-		reportComposer.append(reportName, logRow);
 	}
 
 }

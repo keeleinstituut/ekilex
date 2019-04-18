@@ -374,6 +374,11 @@ public class Sequences {
     public static final Sequence<Long> SOURCE_ID_SEQ = new SequenceImpl<Long>("source_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.source_lifecycle_log_id_seq</code>
+     */
+    public static final Sequence<Long> SOURCE_LIFECYCLE_LOG_ID_SEQ = new SequenceImpl<Long>("source_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.usage_type_order_by_seq</code>
      */
     public static final Sequence<Long> USAGE_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("usage_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

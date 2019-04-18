@@ -30,21 +30,21 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 }
 
 function isSourcePropertyFormValid(form) {
-	validateRequiredFormField(form, 'valueText');
+	validateRequiredFormField(form, 'input', 'valueText');
 	return form.find(".error-show").length == 0;
 }
 
-function validateRequiredFormField(form, fieldName) {
-	var fieldElement = form.find("input[name=" + fieldName + "]");
-	if (fieldElement.val() == "") {
+function validateRequiredFormField(form, type, fieldName) {
+	var fieldElement = form.find(type + "[name=" + fieldName + "]");
+	if (fieldElement.val() === null || fieldElement.val() == "") {
 		fieldElement.siblings(".errors").find(".alert-danger").addClass("error-show");
 	} else {
 		fieldElement.siblings(".errors").find(".alert-danger").removeClass("error-show");
 	}
 }
 
-function deleteSourceProperty(sourceId, sourcePropertyId, count) {
-	let deleteSourcePropertyUrl = applicationUrl + 'delete_source_property/' + sourceId + '/' + sourcePropertyId + '/' + count;
+function deleteSourceProperty(sourceId, sourcePropertyId, sourcePropertyType, count) {
+	let deleteSourcePropertyUrl = applicationUrl + 'delete_source_property/' + sourceId + '/' + sourcePropertyId + '/' + sourcePropertyType + '/' + count;
 	$.get(deleteSourcePropertyUrl).done(function (data) {
 		$('#sourceSearchResult_' + sourceId).replaceWith(data);
 	}).fail(function (data) {
@@ -111,11 +111,11 @@ function displayButtons() {
 
 function createAndAttachCopyFromLastItem(parentElement) {
 	let copyOfLastElement = parentElement.clone();
-	copyOfLastElement.find('input').val(null);
+	copyOfLastElement.find('textArea').val(null);
 	parentElement.after(copyOfLastElement);
 }
 
-function submitNewSource() {
+$(document).on("click", "#addSourceSubmitBtn", function () {
 	let form = $("#addSourceForm");
 	if (!isNewSourceFormValid(form)) {
 		return;
@@ -127,12 +127,14 @@ function submitNewSource() {
 		data: form.serialize(),
 		method: 'POST',
 	}).done(function (data) {
+		console.log(data);
 		searchSourceByValue(sourceName);
 	}).fail(function (data) {
+		alert("viga");
 		console.log(data);
 		openAlertDlg('Allika lisamine ebaõnnestus');
 	});
-}
+});
 
 function searchSourceByValue(searchValue) {
 	let form = $("#sourceSearchForm");
@@ -141,7 +143,8 @@ function searchSourceByValue(searchValue) {
 }
 
 function isNewSourceFormValid(form) {
-	validateRequiredFormField(form, 'sourceName');
+	validateRequiredFormField(form, 'input', 'sourceName');
+	validateRequiredFormField(form, 'select', 'sourceType');
 	return form.find(".error-show").length == 0;
 }
 
@@ -173,3 +176,14 @@ function deleteSourceAndUpdateSearch(deleteUrl) {
 		console.log(data);
 	});
 }
+
+$(document).on('show.bs.modal', '#sourceLifecycleLogDlg', function(e) {
+	var dlg = $(this);
+	var link = $(e.relatedTarget);
+	var url = link.attr('href');
+	dlg.find('.close').focus();
+	dlg.find('.modal-body').html(null);
+	$.get(url).done(function(data) {
+		dlg.find('.modal-body').html(data);
+	});
+});

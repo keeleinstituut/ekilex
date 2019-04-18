@@ -36,11 +36,12 @@ public class SourceEditController extends AbstractPageController {
 
 	@PostMapping("/edit_source_property")
 	public String editSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("sourcePropertyId") Long sourcePropertyId,
-			@RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count, Model model) {
+			@RequestParam("type") FreeformType type, @RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count,
+			Model model) {
 
 		logger.debug("Editing source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		sourceService.editSourceProperty(sourcePropertyId, valueText);
+		sourceService.editSourceProperty(sourcePropertyId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -62,13 +63,13 @@ public class SourceEditController extends AbstractPageController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";
 	}
 
-	@GetMapping("/delete_source_property/{sourceId}/{sourcePropertyId}/{count}")
+	@GetMapping("/delete_source_property/{sourceId}/{sourcePropertyId}/{sourcePropertyType}/{count}")
 	public String deleteSourceProperty(@PathVariable("sourceId") Long sourceId, @PathVariable("sourcePropertyId") Long sourcePropertyId,
-			@PathVariable("count") String count, Model model) {
+			@PathVariable("sourcePropertyType") FreeformType type, @PathVariable("count") String count, Model model) {
 
 		logger.debug("Deleting source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		sourceService.deleteSourceProperty(sourcePropertyId);
+		sourceService.deleteSourceProperty(sourcePropertyId, type);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -113,8 +114,7 @@ public class SourceEditController extends AbstractPageController {
 			sourceProperties.add(sourceProperty);
 		}
 
-		String extSourceIdNa = "n/a";
-		Long sourceId = sourceService.addSource(sourceType, extSourceIdNa, sourceProperties);
+		Long sourceId = sourceService.addSource(sourceType, sourceProperties);
 
 		return String.valueOf(sourceId);
 	}

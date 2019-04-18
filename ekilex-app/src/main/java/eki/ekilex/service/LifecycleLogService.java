@@ -25,4 +25,9 @@ public class LifecycleLogService {
 	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
 		return lifecycleLogDbService.getLogForMeaning(meaningId);
 	}
+
+	@Transactional
+	public List<LifecycleLog> getLogForSource(Long sourceId) {
+		return lifecycleLogDbService.getLogForSource(sourceId);
+	}
 }

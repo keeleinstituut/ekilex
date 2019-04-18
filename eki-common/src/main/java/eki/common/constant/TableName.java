@@ -21,6 +21,7 @@ public interface TableName {
 	// dynamic
 	String SOURCE = "source";
 	String SOURCE_FREEFORM = "source_freeform";
+	String SOURCE_LIFECYCLE_LOG = "source_lifecycle_log";
 	String WORD = "word";
 	String WORD_GUID = "word_guid";
 	String WORD_WORD_TYPE = "word_word_type";

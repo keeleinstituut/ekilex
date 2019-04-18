@@ -9,7 +9,6 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.SourceRecord;
 
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Source extends TableImpl<SourceRecord> {
 
-    private static final long serialVersionUID = -1313830102;
+    private static final long serialVersionUID = -173173995;
 
     /**
      * The reference instance of <code>public.source</code>
@@ -63,39 +62,9 @@ public class Source extends TableImpl<SourceRecord> {
     public final TableField<SourceRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('source_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.source.ext_source_id</code>.
-     */
-    public final TableField<SourceRecord, String> EXT_SOURCE_ID = createField("ext_source_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
      * The column <code>public.source.type</code>.
      */
     public final TableField<SourceRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.source.created_on</code>.
-     */
-    public final TableField<SourceRecord, Timestamp> CREATED_ON = createField("created_on", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>public.source.created_by</code>.
-     */
-    public final TableField<SourceRecord, String> CREATED_BY = createField("created_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.source.modified_on</code>.
-     */
-    public final TableField<SourceRecord, Timestamp> MODIFIED_ON = createField("modified_on", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>public.source.modified_by</code>.
-     */
-    public final TableField<SourceRecord, String> MODIFIED_BY = createField("modified_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.source.process_state_code</code>.
-     */
-    public final TableField<SourceRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.source</code> table reference
@@ -143,7 +112,7 @@ public class Source extends TableImpl<SourceRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SOURCE_EXT_SOURCE_ID_IDX, Indexes.SOURCE_PKEY, Indexes.SOURCE_TYPE_IDX);
+        return Arrays.<Index>asList(Indexes.SOURCE_PKEY, Indexes.SOURCE_TYPE_IDX);
     }
 
     /**
@@ -168,18 +137,6 @@ public class Source extends TableImpl<SourceRecord> {
     @Override
     public List<UniqueKey<SourceRecord>> getKeys() {
         return Arrays.<UniqueKey<SourceRecord>>asList(Keys.SOURCE_PKEY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ForeignKey<SourceRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<SourceRecord, ?>>asList(Keys.SOURCE__SOURCE_PROCESS_STATE_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.SOURCE__SOURCE_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

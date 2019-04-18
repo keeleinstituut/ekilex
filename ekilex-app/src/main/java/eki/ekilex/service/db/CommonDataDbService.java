@@ -554,7 +554,6 @@ public class CommonDataDbService implements DbConstant {
 			.from(src, srcff, pname)
 			.where(
 					src.TYPE.eq(SourceType.PERSON.name())
-					.and(src.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 					.and(srcff.SOURCE_ID.eq(src.ID))
 					.and(srcff.FREEFORM_ID.eq(pname.ID))
 					.and(pname.TYPE.eq(FreeformType.SOURCE_NAME.name()))
