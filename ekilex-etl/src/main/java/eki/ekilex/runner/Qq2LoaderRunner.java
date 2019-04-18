@@ -323,7 +323,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						lexemeObj = new Lexeme();
 						lexemeObj.setWordId(wordId);
 						lexemeObj.setMeaningId(meaningId);
-						lexemeId = createLexeme(lexemeObj, getDataset());
+						lexemeId = createLexemeIfNotExists(lexemeObj, getDataset());
 
 						if (lexemeId == null) {
 							lexemeDuplicateCount.increment();
@@ -343,7 +343,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						lexemeObj.setMeaningId(meaningId);
 						lexemeObj.setLevel1(lexemeLevel1);
 						lexemeObj.setLevel2(lexemeLevel2);
-						lexemeId = createLexeme(lexemeObj, getDataset());
+						lexemeId = createLexemeIfNotExists(lexemeObj, getDataset());
 
 						governments = wordIdGovernmentMap.get(newWordId);
 

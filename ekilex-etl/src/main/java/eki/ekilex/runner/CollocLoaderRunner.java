@@ -1134,7 +1134,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		lexemeObj.setWordId(wordId);
 		lexemeObj.setMeaningId(meaningId);
 		lexemeObj.setLevel1(level1);
-		Long lexemeId = createLexeme(lexemeObj, getDataset());
+		Long lexemeId = createLexemeIfNotExists(lexemeObj, getDataset());
 		if (StringUtils.isNotBlank(posCode)) {
 			createLexemePos(lexemeId, posCode);
 		}

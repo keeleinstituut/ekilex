@@ -447,7 +447,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (isNotBlank(wordData.definition)) {
 			createOrSelectDefinition(meaningId, wordData.definition, dataLang, getDataset());
 		}
-		createdLexemeData.lexemeId = createLexeme(lexeme, getDataset());
+		createdLexemeData.lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 		return createdLexemeData;
 	}
 
@@ -582,7 +582,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				createLexeme(lexeme, getDataset());
+				createLexemeIfNotExists(lexeme, getDataset());
 			}
 		}
 		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
@@ -695,7 +695,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexeme.setLevel2(lexemeLevel2);
 					lexeme.setLevel3(1);
 					lexeme.setFrequencyGroupCode(newWordData.frequencyGroup);
-					Long lexemeId = createLexeme(lexeme, getDataset());
+					Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 					if (lexemeId == null) {
 						context.lexemeDuplicateCount.increment();
 					} else {
@@ -772,7 +772,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(abbreviation.level1);
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
-		createLexeme(lexeme, getDataset());
+		createLexemeIfNotExists(lexeme, getDataset());
 		abbreviation.level1++;
 	}
 

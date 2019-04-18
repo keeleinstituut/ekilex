@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -25,9 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
+import eki.common.constant.TextDecoration;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.ekilex.data.transform.Lexeme;
@@ -40,11 +45,19 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiLoaderRunner.class);
 
+	private static final String TERMEKI_MARKUP_PATTERN_FOREIGN = "(\\[i\\](.+?)\\[\\/i\\])";
+
+	private static final String TERMEKI_MARKUP_PATTERN_LINK = "(\\[c=(\\d*)\\](.+?)\\[\\/c\\])";
+
 	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datasets where code = :code and origin = :origin";
 
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 	private static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
 	private static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
+
+	private Pattern markupPatternForeign;
+
+	private Pattern markupPatternLink;
 
 	private Map<String, String> posCodes;
 
@@ -70,6 +83,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	void initialise() throws Exception {
+		markupPatternForeign = Pattern.compile(TERMEKI_MARKUP_PATTERN_FOREIGN);
+		markupPatternLink = Pattern.compile(TERMEKI_MARKUP_PATTERN_LINK);
 		posCodes = loadClassifierMappingsFor(TERMEKI_CLASSIFIER_PRONUNCIATION);
 		posCodes.putAll(loadClassifierMappingsFor(TERMEKI_CLASSIFIER_WORD_CLASS));
 	}
@@ -298,7 +313,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				saveImages(context, conceptId, meaningId);
 			}
 
-			List<String> domainCodes = domainCodes(term, context, dataset);
+			List<String> domainCodes = getDomainCodes(term, context, dataset);
 			for (String domainCode : domainCodes) {
 				Map<String, Object> domain = getDomain(domainCode, dataset);
 				if (domain == null) {
@@ -312,18 +327,19 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
-			Long lexemeId = createLexeme(lexeme, dataset);
-			String posCode;
-			if (StringUtils.isBlank(pronunciation)) {
-				posCode = wordClass;
-			} else {
-				posCode = pronunciation;
+			Long lexemeId = createLexemeIfNotExists(lexeme, dataset);
+			if (lexemeId != null) {
+				String posCode;
+				if (StringUtils.isBlank(pronunciation)) {
+					posCode = wordClass;
+				} else {
+					posCode = pronunciation;
+				}
+				savePosCode(lexemeId, posCode);
+				createLexemeSourceLink(context, sourceId, lexemeId);
+				createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
+				saveUsages(context, lexemeId, termId);
 			}
-			savePosCode(lexemeId, posCode);
-
-			createLexemeSourceLink(context, sourceId, lexemeId);
-			createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
-			saveUsages(context, lexemeId, termId);
 
 			// progress
 			termCounter++;
@@ -343,6 +359,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			if (conceptMeaningIdMap.containsKey(conceptId)) {
 				Long meaningId = conceptMeaningIdMap.get(conceptId);
 				String definitionValue = (String) definition.get("definition");
+				definitionValue = applyPattern(markupPatternForeign, definitionValue, TextDecoration.FOREIGN);
+				definitionValue = convertTermekiLinkMarkup(definitionValue, conceptMeaningIdMap);
 				Long definitionId = createOrSelectDefinition(meaningId, definitionValue, language, dataset);
 				definitionsCount++;
 				String publicNote = (String) definition.get("description");
@@ -365,6 +383,51 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private String convertTermekiLinkMarkup(String text, Map<Integer, Long> conceptMeaningIdMap) {
+
+		StringBuffer decorBuf = new StringBuffer();
+		Matcher matcher = markupPatternLink.matcher(text);
+		int textLength = text.length();
+		int textStart = 0;
+		int matchStart;
+		int matchEnd;
+		String cleanTextFragment;
+		String conceptIdStr;
+		Integer conceptId;
+		Long meaningId;
+		String linkId;
+		String linkValue;
+		String decoratedLink;
+		while (matcher.find()) {
+			matchStart = matcher.start();
+			matchEnd = matcher.end();
+			cleanTextFragment = StringUtils.substring(text, textStart, matchStart);
+			decorBuf.append(cleanTextFragment);
+			conceptIdStr = matcher.group(2);
+			linkValue = matcher.group(3);
+			if (StringUtils.isBlank(conceptIdStr)) {
+				//broken link
+				decorBuf.append(linkValue);
+			} else {
+				conceptId = Integer.valueOf(conceptIdStr);
+				meaningId = conceptMeaningIdMap.get(conceptId);
+				linkId = null;
+				if (meaningId != null) {
+					linkId = meaningId.toString();
+				}
+				decoratedLink = composeLinkMarkup(ContentKey.MEANING_LINK, linkId, linkValue);
+				decorBuf.append(decoratedLink);
+			}
+			textStart = matchEnd;
+		}
+		if (textStart < textLength) {
+			cleanTextFragment = StringUtils.substring(text, textStart, textLength);
+			decorBuf.append(cleanTextFragment);
+		}
+		text = decorBuf.toString();
+		return text;
 	}
 
 	private void saveImages(Context context, Integer conceptId, Long meaningId) throws Exception {
@@ -405,7 +468,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private List<String> domainCodes(Map<String, Object> term, Context context, String dataset) {
+	private List<String> getDomainCodes(Map<String, Object> term, Context context, String dataset) {
 
 		List<String> codes = new ArrayList<>();
 		if ("get".equals(dataset)) {
@@ -426,6 +489,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				codes.add(code);
 			}
 		}
+		codes = codes.stream().distinct().collect(Collectors.toList());
 		return codes;
 	}
 
@@ -488,7 +552,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
-			Long abbreviationLexemeId = createLexeme(lexeme, dataset);
+			Long abbreviationLexemeId = createLexemeIfNotExists(lexeme, dataset);
 			createLexemeRelation(abbreviationLexemeId, termLexemeId, LEXEME_RELATION_ABBREVIATION);
 		}
 	}

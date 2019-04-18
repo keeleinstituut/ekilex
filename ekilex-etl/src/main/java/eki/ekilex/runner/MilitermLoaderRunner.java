@@ -180,7 +180,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				Lexeme lexeme = new Lexeme();
 				lexeme.setWordId(wordId);
 				lexeme.setMeaningId(meaningId);
-				Long lexemeId = createLexeme(lexeme, getDataset());
+				Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 
 				saveListValueFreeforms(lang, listValues, lexemeId);
 

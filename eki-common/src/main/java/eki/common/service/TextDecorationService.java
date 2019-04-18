@@ -11,6 +11,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.TextDecoration;
+import eki.common.data.CodeValue;
 import eki.common.data.TextDecorationDescriptor;
 
 @Component
@@ -18,17 +19,17 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 
 	private static final String EKI_MARKUP_GENERIC_PATTERN = "[&]\\w+[;]";
 
-	private static final String EKI_MARKUP_PATTERN_1 = "(&ema;(.+?)&eml;)";
+	private static final String EKI_MARKUP_PATTERN_FOREIGN = "(&ema;(.+?)&eml;)";
 
-	private static final String EKI_MARKUP_PATTERN_2 = "(&ba;(.+?)&bl;)";
+	private static final String EKI_MARKUP_PATTERN_HIGHLIGHT = "(&ba;(.+?)&bl;)";
 
-	private static final String EKI_MARKUP_PATTERN_3 = "(&suba;(.+?)&subl;)";
+	private static final String EKI_MARKUP_PATTERN_SUB = "(&suba;(.+?)&subl;)";
 
-	private static final String EKI_MARKUP_PATTERN_4 = "(&supa;(.+?)&supl;)";
+	private static final String EKI_MARKUP_PATTERN_SUP = "(&supa;(.+?)&supl;)";
 
-	private static final String EKI_MARKUP_PATTERN_V = "(&v;)";
+	private static final String EKI_MARKUP_PATTERN_META_V = "(&v;)";
 
-	private static final String EKI_MARKUP_PATTERN_ETC = "(&(ehk|Hrl|hrl|ja|jne|jt|ka|nt|puudub|vm|vms|vrd|vt|напр.|и др.|и т. п.|г.);)";
+	private static final String EKI_MARKUP_PATTERN_META_ETC = "(&(ehk|Hrl|hrl|ja|jne|jt|ka|nt|puudub|vm|vms|vrd|vt|напр.|и др.|и т. п.|г.);)";
 
 	private List<TextDecorationDescriptor> ekiMarkupDescriptors;
 
@@ -45,39 +46,39 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		String preDecoration, postDecoration;
 		TextDecorationDescriptor textDecorationDescriptor;
 
-		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_1);
-		preDecoration = "<" + FOREIGN.getCode() + ">";
-		postDecoration = "</" + FOREIGN.getCode() + ">";
+		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_FOREIGN);
+		preDecoration = asXmlElemStart(FOREIGN);
+		postDecoration = asXmlElemEnd(FOREIGN);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
-		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_2);
-		preDecoration = "<" + HIGHLIGHT.getCode() + ">";
-		postDecoration = "</" + HIGHLIGHT.getCode() + ">";
+		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_HIGHLIGHT);
+		preDecoration = asXmlElemStart(HIGHLIGHT);
+		postDecoration = asXmlElemEnd(HIGHLIGHT);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
-		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_3);
-		preDecoration = "<" + SUB.getCode() + ">";
-		postDecoration = "</" + SUB.getCode() + ">";
+		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_SUB);
+		preDecoration = asXmlElemStart(SUB);
+		postDecoration = asXmlElemEnd(SUB);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
-		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_4);
-		preDecoration = "<" + SUP.getCode() + ">";
-		postDecoration = "</" + SUP.getCode() + ">";
+		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_SUP);
+		preDecoration = asXmlElemStart(SUP);
+		postDecoration = asXmlElemEnd(SUP);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
-		ekiEntityPatternV = entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_V);
-		preDecoration = "<" + META.getCode() + ">~</" + META.getCode() + ">";
+		ekiEntityPatternV = entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_META_V);
+		preDecoration = asXmlElemStart(META) + "~" + asXmlElemEnd(META);
 		postDecoration = null;
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 
-		ekiEntityPatternEtc = entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_ETC);
-		preDecoration = "<" + META.getCode() + ">";
-		postDecoration = "</" + META.getCode() + ">";
+		ekiEntityPatternEtc = entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_META_ETC);
+		preDecoration = asXmlElemStart(META);
+		postDecoration = asXmlElemEnd(META);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration);
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 	}
@@ -131,10 +132,14 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		markupBuf.append("'");
 		markupBuf.append(">");
 		markupBuf.append(linkValue);
-		markupBuf.append("</");
-		markupBuf.append(LINK.getCode());
-		markupBuf.append(">");
+		markupBuf.append(asXmlElemEnd(LINK));
 		return markupBuf.toString();
+	}
+
+	public String applyPattern(Pattern pattern, String text, CodeValue codeValue) {
+		String preDecoration = asXmlElemStart(codeValue);
+		String postDecoration = asXmlElemEnd(codeValue);
+		return applyPattern(pattern, text, preDecoration, postDecoration, null);
 	}
 
 	private String applyPattern(Pattern pattern, String text, String preDecoration, String postDecoration, String matchReplacement) {
@@ -154,7 +159,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 			decorBuf.append(cleanFragment);
 			if (matchReplacement == null) {
 				if (matcher.groupCount() > 1) {
-					matchFragment = matcher.group(2);
+					matchFragment = matcher.group(matcher.groupCount());
 				} else {
 					matchFragment = null;
 				}
@@ -178,5 +183,13 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		}
 		text = decorBuf.toString();
 		return text;
+	}
+
+	private String asXmlElemStart(CodeValue codeValue) {
+		return "<" + codeValue.getCode() + ">";
+	}
+
+	private String asXmlElemEnd(CodeValue codeValue) {
+		return "</" + codeValue.getCode() + ">";
 	}
 }

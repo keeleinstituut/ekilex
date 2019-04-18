@@ -152,7 +152,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String articleGuidExp = "s:G";
 
 		String guid = extractGuid(articleNode, articleGuidExp);
-		String reportingId = extractReporingId(articleNode);
+		String reportingId = extractReportingId(articleNode);
 		if (articleHasMeanings(articleNode)) {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
@@ -165,7 +165,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			}
 			context.importedWords.addAll(newWords);
 		} else {
-			logger.debug("Article does not have meanings, skipping : {}", reportingId);
+			//logger.debug("Article does not have meanings, skipping : {}", reportingId);
 			writeToLogFile(reportingId, "Artikkel ei sisalda mõisteid", "");
 		}
 	}
@@ -326,7 +326,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			String abbreviationFullWord = context.meanings.stream().filter(m -> m.word.equals(abbreviation.word)).findFirst().get().meaningWord;
 			boolean hasFullWord = context.abbreviationFullWords.stream().anyMatch(a -> a.word.equals(abbreviationFullWord));
 			if (!hasFullWord) {
-				logger.debug("{} : Abbreviation '{}' do not have connected full word, tag <s:lhx> is missing", abbreviation.reportingId, abbreviation.word);
+				//logger.debug("{} : Abbreviation '{}' do not have connected full word, tag <s:lhx> is missing", abbreviation.reportingId, abbreviation.word);
 				writeToLogFile(abbreviation.reportingId, "Lühend ei ole seotud täis nimega, tag <s:lhx> puudub.", abbreviation.word);
 			}
 		}
@@ -392,7 +392,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 						if (lexemeObject.isPresent()) {
 							createMeaningRelation(item.meaningId, (Long) lexemeObject.get().get("meaning_id"), meaningRelationType);
 						} else {
-							logger.debug("Meaning not found for word : {}, lexeme level1 : {}.", item.word, item.lexemeLevel1);
+							//logger.debug("Meaning not found for word : {}, lexeme level1 : {}.", item.word, item.lexemeLevel1);
 							writeToLogFile(item.meaningWord, logMessage, item.word + ", level1 " + item.lexemeLevel1);
 						}
 					} catch (Exception e) {
@@ -411,7 +411,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		for (WordData derivative : context.derivativeWords) {
 			Long derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, context.importedWords, derivative.reportingId);
 			if (derivativeId != null) {
-				logger.debug("derivative found for {} : {}", derivative.reportingId, derivative.value);
+				//logger.debug("derivative found for {} : {}", derivative.reportingId, derivative.value);
 			} else {
 				derivativeId = createWordWithLexeme(context, derivative);
 				newWordsCounter.increment();
@@ -460,7 +460,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		lexeme.setLevel2(level2);
 		lexeme.setLevel3(1);
 		lexeme.setFrequencyGroupCode(wordData.frequencyGroup);
-		Long lexemeId = createLexeme(lexeme, getDataset());
+		Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 		if (!wordData.governments.isEmpty()) {
 			for (String government : wordData.governments) {
 				createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, null);
@@ -624,7 +624,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setLevel2(lexemeLevel2);
 			lexeme.setLevel3(1);
 			lexeme.setFrequencyGroupCode(newWordData.frequencyGroup);
-			Long lexemeId = createLexeme(lexeme, getDataset());
+			Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 			if (lexemeId != null) {
 				createdLexemeIds.add(lexemeId);
 				lexeme.setLexemeId(lexemeId);
@@ -793,7 +793,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				lexemePosCodes.addAll(newWordData.posCodes);
 				if (lexemePosCodes.size() > 1) {
 					String posCodesStr = String.join(",", lexemePosCodes);
-//					logger.debug("Found more than one POS code <s:mg/s:sl> : {} : {}", reportingId, posCodesStr);
+					//logger.debug("Found more than one POS code <s:mg/s:sl> : {} : {}", reportingId, posCodesStr);
 					writeToLogFile(reportingId, "Märksõna juures leiti rohkem kui üks sõnaliik <s:mg/s:sl>", posCodesStr);
 				}
 			} else {

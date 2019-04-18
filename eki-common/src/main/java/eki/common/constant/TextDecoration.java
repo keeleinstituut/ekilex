@@ -6,7 +6,7 @@ public interface TextDecoration {
 
 	CodeValue FOREIGN = new CodeValue("eki-foreign", "Tsitaatsõna");
 
-	CodeValue HIGHLIGHT = new CodeValue("eki-highlight", "Esiletsõtetud märksõna");
+	CodeValue HIGHLIGHT = new CodeValue("eki-highlight", "Esiletõstetud märksõna");
 
 	CodeValue SUB = new CodeValue("eki-sub", "Alaindeks");
 

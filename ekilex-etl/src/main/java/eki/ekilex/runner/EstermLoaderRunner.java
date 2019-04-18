@@ -227,7 +227,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					lexemeObj.setWordId(wordId);
 					lexemeObj.setMeaningId(meaningId);
 					lexemeObj.setProcessStateCode(processStateCode);
-					lexemeId = createLexeme(lexemeObj, getDataset());
+					lexemeId = createLexemeIfNotExists(lexemeObj, getDataset());
 
 					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode, fileName);
 

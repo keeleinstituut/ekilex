@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -31,6 +32,7 @@ import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.constant.WordRelationGroupType;
+import eki.common.data.CodeValue;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.TextDecorationService;
@@ -187,6 +189,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected String composeLinkMarkup(String linkType, String linkId, String linkValue) {
 		return textDecorationService.composeLinkMarkup(linkType, linkId, linkValue);
+	}
+
+	protected String applyPattern(Pattern pattern, String text, CodeValue codeValue) {
+		return textDecorationService.applyPattern(pattern, text, codeValue);
 	}
 
 	protected String removeAccents(String value, String lang) {
@@ -742,8 +748,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("domain_code", domainCode);
 		tableRowParamMap.put("domain_origin", domainOrigin);
-		Long meaningDomainId = basicDbService.create(MEANING_DOMAIN, tableRowParamMap);
-		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domainCode);
+		Long meaningDomainId = basicDbService.createIfNotExists(MEANING_DOMAIN, tableRowParamMap);
+
+		if (meaningDomainId != null) {
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domainCode);
+		}
 	}
 
 	protected Long createOrSelectDefinition(Long meaningId, String value, String lang, String dataset) throws Exception {
@@ -785,7 +794,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return definitionId;
 	}
 
-	protected Long createLexeme(Lexeme lexeme, String dataset) throws Exception {
+	protected Long createLexemeIfNotExists(Lexeme lexeme, String dataset) throws Exception {
 
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();

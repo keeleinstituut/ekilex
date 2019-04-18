@@ -176,7 +176,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String articleBodyExp = "x:S";
 		final String articlePhraseologyExp = "x:F";
 
-		String reportingId = extractReporingId(articleNode);
+		String reportingId = extractReportingId(articleNode);
 		List<WordData> newWords = new ArrayList<>();
 		if (articleHasMeanings(articleNode)) {
 			processArticleHeader(context, articleNode, reportingId, newWords);
@@ -251,7 +251,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				lexeme.setLevel3(1);
 				lexeme.setFrequencyGroupCode(wordData.frequencyGroup);
 				wordData.level1++;
-				Long lexemeId = createLexeme(lexeme, getDataset());
+				Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 				if (lexemeId != null) {
 					saveGovernments(wordData, Collections.emptyList(), lexemeId);
 					savePosAndDeriv(wordData, Collections.emptyList(), Collections.emptyList(), lexemeId, wordData.value);
@@ -294,7 +294,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			List<WordData> referringWords = new ArrayList<>();
 			if (refData.words.isEmpty()) {
 				for(Node articleNode : refData.articleNodes) {
-					String reportingId = extractReporingId(articleNode);
+					String reportingId = extractReportingId(articleNode);
 					processArticleHeader(context, articleNode, reportingId, referringWords);
 				}
 				context.importedWords.addAll(referringWords);
@@ -352,7 +352,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						lexeme.setLevel1(lexemeLevel1);
 						lexeme.setLevel2(1);
 						lexeme.setLevel3(1);
-						lexemeId = createLexeme(lexeme, getDataset());
+						lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 					}
 
 					List<String> definitions = extractCleanValues(meaningGroupNode, definitionsExp);
@@ -382,7 +382,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						russianLexeme.setLevel1(russianWordData.level1);
 						russianLexeme.setLevel2(1);
 						russianLexeme.setLevel3(1);
-						Long russianLexemeId = createLexeme(russianLexeme, getDataset());
+						Long russianLexemeId = createLexemeIfNotExists(russianLexeme, getDataset());
 						russianWordData.level1++;
 						if (russianLexemeId != null) {
 							saveRegisters(russianLexemeId, russianRegisters, reportingId);
@@ -530,7 +530,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
 					lexeme.setLevel3(lexemeLevel3);
-					Long lexemeId = createLexeme(lexeme, getDataset());
+					Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 					if (lexemeId != null) {
 						// FIXME: add usages and subword relations only to first lexeme on the second level
 						// this is temporary solution, till EKI provides better one
@@ -575,7 +575,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setLevel2(1);
 			lexeme.setLevel3(1);
 			lexeme.setCorpusFrequency(russianWordData.corpFrequency);
-			Long lexemeId = createLexeme(lexeme, getDataset());
+			Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 			russianWord.level1++;
 			if (lexemeId != null) {
 				for (String government : russianWordData.governments) {
@@ -668,7 +668,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								lexeme.setLevel3(1);
 								wordData.level1++;
 
-								Long lexemeId = createLexeme(lexeme, getDataset());
+								Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 								List<String> registers = extractCleanValues(meaningGroupNode, registersExp);
 								saveRegisters(lexemeId, registers, reportingId);
 							}
@@ -704,7 +704,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 									russianLexeme.setLevel1(russianWordData.level1);
 									russianLexeme.setLevel2(1);
 									russianLexeme.setLevel3(1);
-									russianLexemeId = createLexeme(russianLexeme, getDataset());
+									russianLexemeId = createLexemeIfNotExists(russianLexeme, getDataset());
 									russianWordData.level1++;
 								}
 								if (russianLexemeId != null) {

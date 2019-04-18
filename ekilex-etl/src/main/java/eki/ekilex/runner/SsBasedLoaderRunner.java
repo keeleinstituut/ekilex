@@ -186,7 +186,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(level1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				createLexeme(lexeme, getDataset());
+				createLexemeIfNotExists(lexeme, getDataset());
 			}
 		}
 		return newWordCount;
@@ -384,7 +384,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return extractCleanValues(node, wordPosCodeExp);
 	}
 
-	protected String extractReporingId(Node node) {
+	protected String extractReportingId(Node node) {
 
 		String reportingIdExp = xpathExpressions().get("reportingId");
 
