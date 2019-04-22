@@ -614,6 +614,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	protected class Context {
 		Count ssWordCount = new Count();
+		Count ssMeaningCount = new Count();
 		Count reusedWordCount = new Count();
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> unionWords = new ArrayList<>();

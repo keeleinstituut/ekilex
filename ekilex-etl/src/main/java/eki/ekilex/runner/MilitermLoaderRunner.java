@@ -144,7 +144,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		List<Node> ltbSourceValueNodes = conceptGroupNode.selectNodes(ltbSourceExp);
 
 		extractAndApplyMeaningProperties(conceptGroupNode, meaning, defaultDateFormat);
-		Long meaningId = createMeaning(meaning);
+		Long meaningId = createMeaning();
 
 		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
 				String.valueOf(meaningId), meaning.getCreatedOn(), meaning.getCreatedBy());

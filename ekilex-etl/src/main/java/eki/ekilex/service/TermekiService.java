@@ -28,7 +28,7 @@ public class TermekiService implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
 
-	private static final String SQL_SELECT_TERMEKI_TERMBASES = "select * from termeki_termbases where termbase_id=:baseId";
+	private static final String SQL_SELECT_TERMEKI_TERMBASES = "select * from termeki_termbases where termbase_id = :baseId";
 
 	private static final String SQL_SELECT_TERMS = "sql/select_termeki_terms.sql";
 

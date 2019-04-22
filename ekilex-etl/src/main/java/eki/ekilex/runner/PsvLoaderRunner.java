@@ -33,7 +33,7 @@ import eki.common.data.Count;
 import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
@@ -84,7 +84,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> posCodes;
 	private Map<String, String> derivCodes;
 	private Map<String, String> wordTypes;
-	private Map<String, String> processStateCodes;
 	private ReportComposer reportComposer;
 	private String wordTypeAbbreviation;
 
@@ -109,13 +108,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		wordTypeAbbreviation = wordTypes.get("l");
 		derivCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_DKTYYP, ClassifierName.DERIV.name());
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
-		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 	}
 
 	@Transactional
 	public void execute(
 			String dataXmlFilePath,
 			Map<String, List<Guid>> ssGuidMap,
+			Map<String, List<Mnr>> ssMnrMap,
 			boolean doReports) throws Exception {
 
 		final String articleHeaderExp = "x:P";
@@ -154,7 +153,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 				Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 				if (contentNode != null) {
-					processArticleContent(reportingId, contentNode, newWords, context);
+					processArticleContent(reportingId, contentNode, newWords, ssMnrMap, context);
 				}
 				context.importedWords.addAll(newWords);
 			} else {
@@ -183,6 +182,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processWordDerivatives(context);
 
 		logger.debug("Found {} ss words", context.ssWordCount.getValue());
+		logger.debug("Found {} ss meanings", context.ssMeaningCount.getValue());
 		logger.debug("Found {} word duplicates", context.reusedWordCount.getValue());
 		logger.debug("Found {} lexeme duplicates", context.lexemeDuplicateCount.getValue());
 
@@ -609,10 +609,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) throws Exception {
+	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Map<String, List<Mnr>> ssMnrMap, Context context) throws Exception {
 
-		final String meaningNumberGroupExp = "x:tp";
+		final String meaningBlockExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
+		final String meaningNrAttr = "tahendusnr";
 		final String meaningGroupExp = "x:tg";
 		final String usageGroupExp = "x:ng";
 		final String commonInfoNodeExp = "x:tyg2";
@@ -620,34 +621,40 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String conceptIdExp = "x:tpid";
 		final String learnerCommentExp = "x:qkom";
 		final String imageNameExp = "x:plp/x:plg/x:plf";
-		final String asTyypAttr = "as";
 
-		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
+		List<Node> meaningBlockNodes = contentNode.selectNodes(meaningBlockExp);
 		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode, reportingId);
 		Element commonInfoNode = (Element) contentNode.selectSingleNode(commonInfoNodeExp);
 		List<LexemeToWordData> articleVormels = extractVormels(commonInfoNode);
 		List<WordData> unionWords = extractUnionWords(contentNode, newWords, reportingId);
 		context.unionWords.addAll(unionWords);
 
-		for (Node meaningNumberGroupNode : meaningNumberGroupNodes) {
-			saveSymbol(meaningNumberGroupNode, context, reportingId);
-			WordData abbreviation = extractAbbreviation(meaningNumberGroupNode, context);
-			String lexemeLevel1Str = ((Element)meaningNumberGroupNode).attributeValue(lexemeLevel1Attr);
-			String processStateCode =  processStateCodes.get(((Element)meaningNumberGroupNode).attributeValue(asTyypAttr));
+		for (Node meaningBlockNode : meaningBlockNodes) {
+
+			Element meaningBlockElem = (Element) meaningBlockNode;
+
+			saveSymbol(meaningBlockNode, context, reportingId);
+			WordData abbreviation = extractAbbreviation(meaningBlockNode, context);
+
+			String lexemeLevel1Str = meaningBlockElem.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
-			List<Node> meaningGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
-			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
-			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode, reportingId);
-			List<LexemeToWordData> vormels = extractVormels(meaningNumberGroupNode);
-			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
-			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode, reportingId);
+			meaningBlockElem.attributeValue(lexemeLevel1Attr);
+
+			String mnr = meaningBlockElem.attributeValue(meaningNrAttr);
+
+			List<Node> meaningGroupNodes = meaningBlockNode.selectNodes(meaningGroupExp);
+			List<String> compoundWords = extractCompoundWords(meaningBlockNode);
+			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningBlockNode, reportingId);
+			List<LexemeToWordData> vormels = extractVormels(meaningBlockNode);
+			List<LexemeToWordData> singleForms = extractSingleForms(meaningBlockNode);
+			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningBlockNode, reportingId);
 			List<Long> newLexemes = new ArrayList<>();
-			List<String> meaningPosCodes = extractPosCodes(meaningNumberGroupNode, lexemePosCodeExp);
-			Element conceptIdNode = (Element) meaningNumberGroupNode.selectSingleNode(conceptIdExp);
+			List<String> meaningPosCodes = extractPosCodes(meaningBlockNode, lexemePosCodeExp);
+			Element conceptIdNode = (Element) meaningBlockNode.selectSingleNode(conceptIdExp);
 			String conceptId = conceptIdNode == null ? null : conceptIdNode.getTextTrim();
-			Element learnerCommentNode = (Element) meaningNumberGroupNode.selectSingleNode(learnerCommentExp);
+			Element learnerCommentNode = (Element) meaningBlockNode.selectSingleNode(learnerCommentExp);
 			String learnerComment = nodeOriginalValue(learnerCommentNode);
-			Element imageNameNode = (Element) meaningNumberGroupNode.selectSingleNode(imageNameExp);
+			Element imageNameNode = (Element) meaningBlockNode.selectSingleNode(imageNameExp);
 			String imageName = imageNameNode == null ? null : imageNameNode.getTextTrim();
 
 			for (Node meaningGroupNode : meaningGroupNodes) {
@@ -657,9 +664,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
 				if (meaningId == null) {
-					Meaning meaning = new Meaning();
-					meaning.setProcessStateCode(processStateCode);
-					meaningId = createMeaning(meaning);
+					meaningId = createOrSelectMeaning(mnr, getDataset(), ssMnrMap, context.ssMeaningCount);
 				} else {
 					logger.debug("synonym meaning found : {}", newWords.get(0).value);
 				}
@@ -700,9 +705,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 						context.lexemeDuplicateCount.increment();
 					} else {
 						createUsages(lexemeId, usages, dataLang);
-						saveGovernmentsAndUsages(meaningNumberGroupNode, lexemeId);
+						saveGovernmentsAndUsages(meaningBlockNode, lexemeId);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
-						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
+						saveGrammars(meaningBlockNode, lexemeId, newWordData);
 						for (String compoundWord : compoundWords) {
 							LexemeToWordData compData = new LexemeToWordData();
 							compData.word = compoundWord;
@@ -1514,6 +1519,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private class Context {
 		Count ssWordCount = new Count();
+		Count ssMeaningCount = new Count();
 		Count reusedWordCount = new Count();
 		Count lexemeDuplicateCount = new Count();
 		List<SynonymData> synonyms = new ArrayList<>();

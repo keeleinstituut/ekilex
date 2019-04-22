@@ -40,6 +40,7 @@ import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.RelationPart;
 import eki.ekilex.data.transform.Source;
@@ -690,6 +691,48 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return basicDbService.queryList(sqls.getSqlSelectWordByDataset(), tableRowParamMap);
 	}
 
+	protected Long createOrSelectMeaning(String mnr, String dataset, Map<String, List<Mnr>> ssMnrMap, Count ssMeaningCount) throws Exception {
+
+		if (MapUtils.isEmpty(ssMnrMap)) {
+			return createMeaning();
+		}
+
+		if (StringUtils.isBlank(mnr)) {
+			return createMeaning();
+		}
+
+		List<Mnr> mappedMnrs = ssMnrMap.get(mnr);
+		if (CollectionUtils.isEmpty(mappedMnrs)) {
+			return createMeaning();
+		}
+
+		for (Mnr ssMnrObj : mappedMnrs) {
+
+			String ssMnr = ssMnrObj.getValue();
+			List<Map<String, Object>> tableRowValueMaps = getMeaning(ssMnr, GUID_OWNER_DATASET_CODE);
+			Map<String, Object> tableRowValueMap = null;
+			if (CollectionUtils.size(tableRowValueMaps) == 1) {
+				tableRowValueMap = tableRowValueMaps.get(0);
+				ssMeaningCount.increment();
+				Long meaningId = (Long) tableRowValueMap.get("id");
+				PgArray mnrDatasetCodesArr = (PgArray) tableRowValueMap.get("mnr_dataset_codes");
+				String[] mnrDatasetCodes = (String[]) mnrDatasetCodesArr.getArray();
+				if (!ArrayUtils.contains(mnrDatasetCodes, dataset)) {
+					createMeaningNr(meaningId, mnr, dataset);
+				}
+				return meaningId;
+			}
+		}
+		return createMeaning();
+	}
+
+	protected Long createMeaning() throws Exception {
+
+		Long meaningId = basicDbService.create(MEANING);
+		return meaningId;
+	}
+
+	@Deprecated
 	protected Long createMeaning(Meaning meaning) throws Exception {
 
 		Map<String, Object> tableRowParamMap;
@@ -725,10 +768,13 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return meaningId;
 	}
 
-	protected Long createMeaning() throws Exception {
+	protected List<Map<String, Object>> getMeaning(String mnr, String dataset) {
 
-		Long meaningId = basicDbService.create(MEANING);
-		return meaningId;
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("mnr", mnr);
+		tableRowParamMap.put("dataset", dataset);
+		List<Map<String, Object>> tableRowValueMaps = basicDbService.queryList(sqls.getSqlSelectMeaningByDatasetAndMnr(), tableRowParamMap);
+		return tableRowValueMaps;
 	}
 
 	protected void createMeaningNr(Long meaningId, String mnr, String dataset) throws Exception {

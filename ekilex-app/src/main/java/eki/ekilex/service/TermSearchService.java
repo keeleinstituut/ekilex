@@ -188,8 +188,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
 
 		boolean contentExists =
-				StringUtils.isNotBlank(meaning.getProcessStateCode())
-				|| CollectionUtils.isNotEmpty(definitions)
+				CollectionUtils.isNotEmpty(definitions)
 				|| CollectionUtils.isNotEmpty(domains)
 				|| CollectionUtils.isNotEmpty(meaningFreeforms)
 				|| CollectionUtils.isNotEmpty(meaningRelations)

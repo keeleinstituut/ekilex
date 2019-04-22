@@ -136,7 +136,6 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		String lang;
 		int homonymNr;
 		Word wordObj;
-		Meaning meaningObj;
 		Lexeme lexemeObj;
 
 		illegalSourceReferenceValueCount = new Count();
@@ -159,9 +158,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			concept = valueNode.getTextTrim();
 
 			// meaning
-			meaningObj = new Meaning();
-			extractAndApplyMeaningProperties(conceptGroupNode, meaningObj, defaultDateFormat);
-			meaningId = createMeaning(meaningObj);
+			meaningId = createMeaning();
 			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode, fileName);
 
 			// domains

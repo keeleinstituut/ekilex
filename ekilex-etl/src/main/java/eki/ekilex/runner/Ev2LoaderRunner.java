@@ -36,6 +36,7 @@ import eki.common.constant.WordRelationGroupType;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
@@ -83,7 +84,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath1, String dataXmlFilePath2, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath1, String dataXmlFilePath2, Map<String, List<Guid>> ssGuidMap, Map<String, List<Mnr>> ssMnrMap, boolean doReports) throws Exception {
 
 		this.doReports = doReports;
 		if (doReports) {
@@ -108,6 +109,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 		Context context = new Context();
 		context.ssGuidMap = ssGuidMap;
+		context.ssMnrMap = ssMnrMap;
+
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 		long articleCounter = 0;
 		for (Node articleNode : allArticleNodes) {
@@ -125,6 +128,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 		logger.debug("Found {} reused words", context.reusedWordCount.getValue());
 		logger.debug("Found {} ss words", context.ssWordCount.getValue());
+		logger.debug("Found {} ss meanings", context.ssMeaningCount.getValue());
+		logger.debug("Found {} multiple meanings in group", context.multipleMeaningsGroupCount.getValue());
 
 		end();
 	}
@@ -167,9 +172,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Abbreviations import done.");
 	}
 
-
-	@Transactional
-	void processArticle(
+	private void processArticle(
 			Node articleNode,
 			Context context) throws Exception {
 
@@ -180,18 +183,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<WordData> newWords = new ArrayList<>();
 		if (articleHasMeanings(articleNode)) {
 			processArticleHeader(context, articleNode, reportingId, newWords);
-			try {
-				Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
-				if (contentNode != null) {
-					processArticleContent(context, contentNode, reportingId, newWords);
-				}
-				Element phraseologyNode = (Element) articleNode.selectSingleNode(articlePhraseologyExp);
-				if (phraseologyNode != null) {
-					processPhraseology(context, phraseologyNode, reportingId, newWords);
-				}
-			} catch (Exception e) {
-				logger.debug("KEYWORD : {}", reportingId);
-				throw e;
+			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+			if (contentNode != null) {
+				processArticleContent(context, contentNode, reportingId, newWords);
+			}
+			Element phraseologyNode = (Element) articleNode.selectSingleNode(articlePhraseologyExp);
+			if (phraseologyNode != null) {
+				processPhraseology(context, phraseologyNode, reportingId, newWords);
 			}
 		} else if (articleHasMeaningReference(articleNode)) {
 			List<WordData> referencedWords = extractMeaningReferences(articleNode);
@@ -223,7 +221,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			context.referencesToMeanings.put(key, new MeaningReferenceData());
 		}
 		context.referencesToMeanings.get(key).words.addAll(targetWords);
-		if(articleNode != null) {
+		if (articleNode != null) {
 			context.referencesToMeanings.get(key).articleNodes.add(articleNode);
 		}
 	}
@@ -266,7 +264,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<WordData> referencedWords = new ArrayList<>();
 		List<Node> referenceNodes = articleNode.selectNodes(meaningRefNodeExp);
 		for (Node refNode : referenceNodes) {
-			Element refElement = (Element)refNode;
+			Element refElement = (Element) refNode;
 			WordData refWord = new WordData();
 			refWord.value = cleanUpWord(refElement.getTextTrim());
 			if (refElement.attributeValue(homonymNrAttr) != null) {
@@ -293,13 +291,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			context.referencesToMeanings.remove(key);
 			List<WordData> referringWords = new ArrayList<>();
 			if (refData.words.isEmpty()) {
-				for(Node articleNode : refData.articleNodes) {
+				for (Node articleNode : refData.articleNodes) {
 					String reportingId = extractReportingId(articleNode);
 					processArticleHeader(context, articleNode, reportingId, referringWords);
 				}
 				context.importedWords.addAll(referringWords);
 			} else {
-				referringWords =  refData.words;
+				referringWords = refData.words;
 			}
 			createLexemesForWords(referringWords, meaningId);
 			for (WordData refWord : referringWords) {
@@ -333,7 +331,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
 				int lexemeLevel1 = 1;
 				List<Node> meaningGroupNodes = groupNode.selectNodes(meaningGroupExp);
-				for (Node meaningGroupNode: meaningGroupNodes) {
+				for (Node meaningGroupNode : meaningGroupNodes) {
 					Optional<Map<String, Object>> existingLexeme = Optional.empty();
 					if (!lexemesForWord.isEmpty()) {
 						int level1 = lexemeLevel1;
@@ -345,7 +343,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						meaningId = (Long) existingLexeme.get().get("meaning_id");
 						lexemeId = (Long) existingLexeme.get().get("id");
 					} else {
-						meaningId = createMeaning(new Meaning());
+						meaningId = createMeaning();
 						Lexeme lexeme = new Lexeme();
 						lexeme.setWordId(wordData.id);
 						lexeme.setMeaningId(meaningId);
@@ -372,7 +370,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					lexemeLevel1++;
 
 					List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
-					for(Node transalationGroupNode : translationGroupNodes) {
+					for (Node transalationGroupNode : translationGroupNodes) {
 						String russianWord = extractAsString(transalationGroupNode, translationValueExp);
 						WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null, null);
 						List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
@@ -454,7 +452,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processArticleContent(Context context, Element contentNode, String reportingId, List<WordData> newWords) throws Exception {
 
-		final String meaningNumberGroupExp = "x:tp";
+		final String meaningBlockExp = "x:tp";
+		final String meaningNrAttr = "tahendusnr";
 		final String meaningPosCodeExp = "x:sl";
 		final String meaningPosCode2Exp = "x:grk/x:sl";
 		final String meaningGroupExp = "x:tg";
@@ -464,21 +463,29 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String abbreviationFullWordExp = "x:dg/x:lhx";
 
 		boolean isVerb = newWords.get(0).posCodes.contains(POS_CODE_VERB);
-		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
+		List<Node> meaningBlockNodes = contentNode.selectNodes(meaningBlockExp);
 		int lexemeLevel1 = 0;
-		for (Node meaningNumberGroupNode : meaningNumberGroupNodes) {
+		for (Node meaningBlockNode : meaningBlockNodes) {
+
 			lexemeLevel1++;
-			List<String> meaningPosCodes = extractPosCodes(meaningNumberGroupNode, meaningPosCodeExp);
-			meaningPosCodes.addAll(extractPosCodes(meaningNumberGroupNode, meaningPosCode2Exp));
-			List<String> meaningGovernments = extractGovernments(meaningNumberGroupNode);
-			List<String> meaningGrammars = extractGrammar(meaningNumberGroupNode);
-			List<Node> meaningGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
-			List<Usage> usages = extractUsages(meaningNumberGroupNode);
+			Element meaningBlockElem = (Element) meaningBlockNode;
+			String mnr = meaningBlockElem.attributeValue(meaningNrAttr);
+			List<String> meaningPosCodes = new ArrayList<>();
+			meaningPosCodes.addAll(extractPosCodes(meaningBlockNode, meaningPosCodeExp));
+			meaningPosCodes.addAll(extractPosCodes(meaningBlockNode, meaningPosCode2Exp));
+			List<String> meaningGovernments = extractGovernments(meaningBlockNode);
+			List<String> meaningGrammars = extractGrammar(meaningBlockNode);
+			List<Usage> usages = extractUsages(meaningBlockNode);
+			List<Node> meaningGroupNodes = meaningBlockNode.selectNodes(meaningGroupExp);
+			boolean isSingleMeaningGroup = CollectionUtils.size(meaningGroupNodes) == 1;
+			if (!isSingleMeaningGroup) {
+				context.multipleMeaningsGroupCount.increment();
+			}
 
 			int lexemeLevel2 = 0;
 			for (Node meaningGroupNode : meaningGroupNodes) {
 				lexemeLevel2++;
-				List<String> lexemePosCodes =  extractPosCodes(meaningGroupNode, meaningPosCodeExp);
+				List<String> lexemePosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 				List<String> lexemeGrammars = extractGrammar(meaningGroupNode);
 				List<String> registers = extractCleanValues(meaningGroupNode, registerExp);
 
@@ -493,14 +500,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				Map<String, List<LexemeToWordData>> russianAbbreviationWords = new HashMap<>();
 				List<LexemeToWordData> meaningRussianWords = extractRussianWords(
 						meaningGroupNode, additionalDomains, aspectGroups, reportingId, isVerb, russianAbbreviationWords);
-				List<LexemeToWordData> connectedWords =
-						Stream.of(
-								meaningLatinTerms.stream(),
-								meaningAbbreviationFullWords.stream()
-						).flatMap(i -> i).collect(toList());
+				List<LexemeToWordData> connectedWords = Stream.of(
+						meaningLatinTerms.stream(),
+						meaningAbbreviationFullWords.stream()).flatMap(i -> i).collect(toList());
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
 				if (meaningData == null) {
-					meaningId = createMeaning(new Meaning());
+					if (isSingleMeaningGroup) {
+						meaningId = createOrSelectMeaning(mnr, getDataset(), context.ssMnrMap, context.ssMeaningCount);
+					} else {
+						meaningId = createMeaning();
+					}
 					definitionsToAdd.addAll(definitions);
 					definitionsToCache.addAll(definitions);
 				} else {
@@ -555,7 +564,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			for (WordData w : newWords) {
 				w.level1 = lexemeLevel1 + 1;
 			}
-			processWordsInUsageGroups(context, meaningNumberGroupNode, reportingId);
+			processWordsInUsageGroups(context, meaningBlockNode, reportingId);
 		}
 	}
 
@@ -629,30 +638,26 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		for (Node usageBlockNode : usageBlockNodes) {
 			List<Node> usageGroupNodes = usageBlockNode.selectNodes(usageGroupExp);
 			for (Node usageGroupNode : usageGroupNodes) {
-				if (isRestricted(usageGroupNode)) continue;
+				if (isRestricted(usageGroupNode)) {
+					continue;
+				}
 				List<String> wordValues = extractCleanValues(usageGroupNode, usageExp);
 				for (String wordValue : wordValues) {
 					String word = cleanUpWord(wordValue);
-					if (!isUsage(word)) {
+					List<Map<String, Object>> wordInSs1 = getWordsInSs1(word);
+					if (!isUsage(word, wordInSs1)) {
 						List<Node> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
 						if (meaningGroupNodes.isEmpty()) {
 							continue;
 						}
-						List<Map<String, Object>> wordInSs1 = getWordsInSs1(word);
 						WordData wordData = findOrCreateWordUsingSs1(context, wordValue, word, wordInSs1);
 						List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
 						int meaningNodeIndex = 1;
-						for (Node meaningGroupNode: meaningGroupNodes) {
+						for (Node meaningGroupNode : meaningGroupNodes) {
 							Long meaningId;
 							boolean useExistingLexeme = false;
-							if (!lexemesForWord.isEmpty()) {
-								int lexemeIndex = lexemesForWord.size() < meaningNodeIndex ? lexemesForWord.size() - 1 : meaningNodeIndex - 1;
-								Map<String, Object> lexemeForWord = lexemesForWord.get(lexemeIndex);
-								meaningNodeIndex++;
-								useExistingLexeme = true;
-								meaningId = (Long)lexemeForWord.get("meaning_id");
-							} else {
-								meaningId = createMeaning(new Meaning());
+							if (CollectionUtils.isEmpty(lexemesForWord)) {
+								meaningId = createMeaning();
 								List<String> domains = extractCleanValues(meaningGroupNode, domainsExp);
 								processDomains(null, meaningId, domains);
 
@@ -671,8 +676,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 								List<String> registers = extractCleanValues(meaningGroupNode, registersExp);
 								saveRegisters(lexemeId, registers, reportingId);
+							} else {
+								int lexemeIndex = lexemesForWord.size() < meaningNodeIndex ? lexemesForWord.size() - 1 : meaningNodeIndex - 1;
+								Map<String, Object> lexemeForWord = lexemesForWord.get(lexemeIndex);
+								meaningNodeIndex++;
+								useExistingLexeme = true;
+								meaningId = (Long) lexemeForWord.get("meaning_id");
 							}
-
 							List<LexemeToWordData> latinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
 							latinTerms.forEach(term -> term.meaningId = meaningId);
 							if (useExistingLexeme) {
@@ -685,7 +695,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							}
 
 							List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
-							for(Node transalationGroupNode : translationGroupNodes) {
+							for (Node transalationGroupNode : translationGroupNodes) {
 								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
 								WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null, null);
 								List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
@@ -723,7 +733,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private WordData findOrCreateWord(Context context, String wordValue, String wordDisplayForm, String wordLanguage, String aspect, String vocalForm) throws Exception {
 		Optional<WordData> word = context.importedWords.stream()
 				.filter(w -> Objects.equals(w.value, wordValue) &&
-						(Objects.equals(w.displayForm, wordDisplayForm) || Objects.equals(wordValue, wordDisplayForm))).findFirst();
+						(Objects.equals(w.displayForm, wordDisplayForm) || Objects.equals(wordValue, wordDisplayForm)))
+				.findFirst();
 		if (word.isPresent()) {
 			return word.get();
 		} else {
@@ -740,8 +751,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private void cacheMeaningRelatedData(
 			Context context, Long meaningId, List<String> definitions, WordData keyword, int level1,
 			List<LexemeToWordData> latinTerms,
-			List<LexemeToWordData> abbreviationFullWords
-	) {
+			List<LexemeToWordData> abbreviationFullWords) {
 		latinTerms.forEach(data -> data.meaningId = meaningId);
 		context.latinTermins.addAll(latinTerms);
 		abbreviationFullWords.forEach(data -> data.meaningId = meaningId);
@@ -749,7 +759,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 		context.meanings.stream()
 				.filter(m -> Objects.equals(m.meaningId, meaningId))
-				.forEach(m -> {m.meaningDefinitions.clear(); m.meaningDefinitions.addAll(definitions);});
+				.forEach(m -> {
+					m.meaningDefinitions.clear();
+					m.meaningDefinitions.addAll(definitions);
+				});
 		List<WordData> words = new ArrayList<>();
 		words.add(keyword);
 		words.forEach(word -> {
@@ -821,16 +834,19 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<Usage> usages = new ArrayList<>();
 		List<Node> usageBlockNodes = node.selectNodes(usageBlockExp);
 		for (Node usageBlockNode : usageBlockNodes) {
-			if (isRestricted(usageBlockNode)) continue;
+			if (isRestricted(usageBlockNode))
+				continue;
 			List<Node> usageGroupNodes = usageBlockNode.selectNodes(usageGroupExp);
 			for (Node usageGroupNode : usageGroupNodes) {
-				if (isRestricted(usageGroupNode)) continue;
+				if (isRestricted(usageGroupNode))
+					continue;
 				List<String> usageOriginalValues = extractOriginalValues(usageGroupNode, usageExp);
 				List<String> usageDefinitionValues = extractOriginalValues(usageGroupNode, usageDefinitionExp);
 				List<UsageTranslation> usageTranslations = extractUsageTranslations(usageGroupNode);
 				for (String usageOriginalValue : usageOriginalValues) {
 					String usageCleanValue = cleanEkiEntityMarkup(usageOriginalValue);
-					if (isUsage(usageCleanValue)) {
+					List<Map<String, Object>> wordInSs1 = getWordsInSs1(usageCleanValue);
+					if (isUsage(usageCleanValue, wordInSs1)) {
 						Usage usage = new Usage();
 						usage.setValue(usageOriginalValue);
 						usage.setDefinitions(usageDefinitionValues);
@@ -843,8 +859,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return usages;
 	}
 
-	private boolean isUsage(String usageValue) {
-		return usageValue.contains(" ") && isNotWordInSs1(usageValue);
+	private boolean isUsage(String usageValue, List<Map<String, Object>> wordsInSs) {
+		return usageValue.contains(" ") && CollectionUtils.isEmpty(wordsInSs);
 	}
 
 	private List<UsageTranslation> extractUsageTranslations(Node node) {
@@ -904,14 +920,15 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			LexemeToWordData wordData = new LexemeToWordData();
 			wordData.word = cleanUpWord(word);
 
-			if (isBlank(wordData.word)) continue;
+			if (isBlank(wordData.word))
+				continue;
 
 			wordData.displayForm = word;
 			wordData.reportingId = reportingId;
 			wordData.vocalForm = vocalForm;
 			wordData.register = extractAsString(wordGroupNode, registerExp);
 			wordData.governments.addAll(extractCleanValues(wordGroupNode, governmentExp));
-			wordData.sources.addAll(extractOriginalValues(wordGroupNode,sourceExp));
+			wordData.sources.addAll(extractOriginalValues(wordGroupNode, sourceExp));
 			wordData.corpFrequency = extractAsFloat(wordGroupNode, corpFrequencyExp);
 			String domainCode = extractAsString(wordGroupNode, domainExp);
 			if (domainCode != null) {
@@ -1012,7 +1029,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	protected class Context extends SsBasedLoaderRunner.Context {
 		Map<String, MeaningReferenceData> referencesToMeanings = new HashMap<>();
 		Map<String, List<Guid>> ssGuidMap;
+		Map<String, List<Mnr>> ssMnrMap;
 		List<LexemeToWordData> abbreviationFullWordsRus = new ArrayList<>();
+		Count multipleMeaningsGroupCount = new Count();
 	}
 
 	protected class MeaningReferenceData {

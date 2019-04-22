@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eki.ekilex.data.transform.Guid;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.runner.CollocLoaderRunner;
 
 public class CollocLoader extends AbstractLoader {
@@ -29,10 +30,11 @@ public class CollocLoader extends AbstractLoader {
 
 			String kolFilePath = confService.getMandatoryConfProperty("kol.data.file");
 			Map<String, List<Guid>> ssGuidMap = confService.getSsGuidMapFor(datasetCode);
+			Map<String, List<Mnr>> ssMnrMap = confService.getSsMnrMap();
 			if (!isFullReload) {
 				datasetRunner.deleteDatasetData();
 			}
-			datasetRunner.execute(kolFilePath, ssGuidMap, doReports);
+			datasetRunner.execute(kolFilePath, ssGuidMap, ssMnrMap, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

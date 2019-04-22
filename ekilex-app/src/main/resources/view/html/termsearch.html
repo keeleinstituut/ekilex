@@ -155,14 +155,6 @@
                  sec:authorize="${#vars.isMeaningCrudGranted}">Tegevuste logi</a>
             </div>
           </div>
-          <div class="row" th:if="${meaning.processStateCode != null}">
-            <div class="col pr-0 col-w13rem">
-              <span class="lbl">Protsessi olek</span>
-            </div>
-            <div class="col pl-0">
-              <span th:text="${meaning.processStateCode}"></span>
-            </div>
-          </div>
           <div th:replace="termcomp :: meaning_domain"></div>
           <div class="row">
             <div class="col pr-0 col-w13rem">

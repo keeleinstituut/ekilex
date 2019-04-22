@@ -123,7 +123,7 @@ public class UltimaLoader extends AbstractLoader {
 					if (!isFullReload) {
 						psvRunner.deleteDatasetData();
 					}
-					psvRunner.execute(dataFilePath, ssGuidMap, doReports);
+					psvRunner.execute(dataFilePath, ssGuidMap, ssMnrMap, doReports);
 					successfullyLoadedDatasets.add(dataset);
 				}
 			}
@@ -137,7 +137,7 @@ public class UltimaLoader extends AbstractLoader {
 					if (!isFullReload) {
 						kolRunner.deleteDatasetData();
 					}
-					kolRunner.execute(dataFilePath, ssGuidMap, doReports);
+					kolRunner.execute(dataFilePath, ssGuidMap, ssMnrMap, doReports);
 					successfullyLoadedDatasets.add(dataset);
 				}
 			}
@@ -151,7 +151,7 @@ public class UltimaLoader extends AbstractLoader {
 					if (!isFullReload) {
 						qq2Runner.deleteDatasetData();
 					}
-					qq2Runner.execute(dataFilePath, ssGuidMap, doReports);
+					qq2Runner.execute(dataFilePath, ssGuidMap, ssMnrMap, doReports);
 					successfullyLoadedDatasets.add(dataset);
 				}
 			}
@@ -166,7 +166,7 @@ public class UltimaLoader extends AbstractLoader {
 					if (!isFullReload) {
 						ev2Runner.deleteDatasetData();
 					}
-					ev2Runner.execute(dataFilePath, dataFilePath2, ssGuidMap, doReports);
+					ev2Runner.execute(dataFilePath, dataFilePath2, ssGuidMap, ssMnrMap, doReports);
 					successfullyLoadedDatasets.add(dataset);
 				}
 			}

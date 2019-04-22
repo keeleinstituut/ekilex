@@ -10,7 +10,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET_BY_LEX = "sql/select_word_ids_for_dataset_by_lexeme.sql";
 	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET_BY_GUID = "sql/select_word_ids_for_dataset_by_guid.sql";
-	private static final String SQL_SELECT_MEANING_IDS_FOR_DATASET = "sql/select_meaning_ids_for_dataset.sql";
 	private static final String SQL_SELECT_WORD_BY_FORM_LANG_HOMON = "sql/select_word_by_form_lang_homon.sql";
 	private static final String SQL_SELECT_WORD_BY_FORM_LANG_HOMON_TYPE = "sql/select_word_by_form_lang_homon_type.sql";
 	private static final String SQL_SELECT_WORD_BY_DATASET = "sql/select_word_by_dataset.sql";
@@ -21,7 +20,9 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME_AND_FILE_NAME = "sql/select_source_by_type_and_name_and_file_name.sql";
 	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
 	private static final String SQL_SELECT_FLOATING_WORD_IDS = "sql/select_floating_word_ids.sql";
+	private static final String SQL_SELECT_MEANING_IDS_FOR_DATASET = "sql/select_meaning_ids_for_dataset.sql";
 	private static final String SQL_SELECT_MEANING_IDS_AND_WORD_LANGS = "sql/select_meaning_ids_and_word_langs.sql";
+	private static final String SQL_SELECT_MEANING_BY_DATASET_AND_MNR = "sql/select_meaning_by_dataset_and_mnr.sql";
 	private static final String SQL_DELETE_DEFINITIONS_FOR_DATASET = "sql/delete_definitions_for_dataset.sql";
 	private static final String SQL_DELETE_DEFINITION_FF_FOR_DATASET = "sql/delete_definition_freeforms_for_dataset.sql";
 	private static final String SQL_DELETE_MEANING_FF_FOR_DATASET = "sql/delete_meaning_freeforms_for_dataset.sql";
@@ -30,7 +31,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	private String sqlSelectWordIdsForDatasetByLexeme;
 	private String sqlSelectWordIdsForDatasetByGuid;
-	private String sqlSelectMeaningIdsForDataset;
 	private String sqlSelectWordByFormLangHomon;
 	private String sqlSelectWordByFormLangHomonType;
 	private String sqlSelectWordByDataset;
@@ -41,7 +41,9 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlSelectSourceByTypeAndNameAndFileName;
 	private String sqlSelectWordGroupWithMembers;
 	private String sqlSelectFloatingWordIds;
+	private String sqlSelectMeaningIdsForDataset;
 	private String sqlSelectMeaningIdsAndWordLangs;
+	private String sqlSelectMeaningByDatasetAndMnr;
 	private String sqlDeleteDefinitionsForDataset;
 	private String sqlDeleteDefinitionFreeformsForDataset;
 	private String sqlDeleteMeaningFreeformsForDataset;
@@ -59,9 +61,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_IDS_FOR_DATASET_BY_GUID);
 		sqlSelectWordIdsForDatasetByGuid = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_IDS_FOR_DATASET);
-		sqlSelectMeaningIdsForDataset = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_LANG_HOMON);
 		sqlSelectWordByFormLangHomon = getContent(resourceFileInputStream);
@@ -93,8 +92,14 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_FLOATING_WORD_IDS);
 		sqlSelectFloatingWordIds = getContent(resourceFileInputStream);
 
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_IDS_FOR_DATASET);
+		sqlSelectMeaningIdsForDataset = getContent(resourceFileInputStream);
+
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_IDS_AND_WORD_LANGS);
 		sqlSelectMeaningIdsAndWordLangs = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_BY_DATASET_AND_MNR);
+		sqlSelectMeaningByDatasetAndMnr = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITIONS_FOR_DATASET);
 		sqlDeleteDefinitionsForDataset = getContent(resourceFileInputStream);
@@ -118,10 +123,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	public String getSqlSelectWordIdsForDatasetByGuid() {
 		return sqlSelectWordIdsForDatasetByGuid;
-	}
-
-	public String getSqlSelectMeaningIdsForDataset() {
-		return sqlSelectMeaningIdsForDataset;
 	}
 
 	public String getSqlSelectWordByFormLangHomon() {
@@ -164,8 +165,16 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 		return sqlSelectFloatingWordIds;
 	}
 
+	public String getSqlSelectMeaningIdsForDataset() {
+		return sqlSelectMeaningIdsForDataset;
+	}
+
 	public String getSqlSelectMeaningIdsAndWordLangs() {
 		return sqlSelectMeaningIdsAndWordLangs;
+	}
+
+	public String getSqlSelectMeaningByDatasetAndMnr() {
+		return sqlSelectMeaningByDatasetAndMnr;
 	}
 
 	public String getSqlDeleteDefinitionsForDataset() {
@@ -187,5 +196,4 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	public String getSqlDeleteLexemeFreeformsForDataset() {
 		return sqlDeleteLexemeFreeformsForDataset;
 	}
-
 }

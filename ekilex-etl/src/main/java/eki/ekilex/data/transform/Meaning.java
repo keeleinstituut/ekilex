@@ -4,9 +4,12 @@ import java.sql.Timestamp;
 
 import eki.common.data.AbstractDataObject;
 
+@Deprecated
 public class Meaning extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private String mnr;
 
 	private Long meaningId;
 
@@ -19,6 +22,14 @@ public class Meaning extends AbstractDataObject {
 	private String modifiedBy;
 
 	private String processStateCode;
+
+	public String getMnr() {
+		return mnr;
+	}
+
+	public void setMnr(String mnr) {
+		this.mnr = mnr;
+	}
 
 	public Long getMeaningId() {
 		return meaningId;

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eki.ekilex.data.transform.Guid;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.service.MabService;
 
@@ -35,10 +36,11 @@ public class Qq2Loader extends AbstractLoader {
 			// qq2
 			String qqFilePath = confService.getMandatoryConfProperty("qq2.data.file");
 			Map<String, List<Guid>> ssGuidMap = confService.getSsGuidMapFor(datasetCode);
+			Map<String, List<Mnr>> ssMnrMap = confService.getSsMnrMap();
 			if (!isFullReload) {
 				datasetRunner.deleteDatasetData();
 			}
-			datasetRunner.execute(qqFilePath, ssGuidMap, doReports);
+			datasetRunner.execute(qqFilePath, ssGuidMap, ssMnrMap, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

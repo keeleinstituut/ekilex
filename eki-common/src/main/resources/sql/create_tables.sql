@@ -595,12 +595,7 @@ alter sequence form_frequency_id_seq restart with 10000;
 -- tähendus
 create table meaning
 (
-  id bigserial primary key,
-  created_on timestamp null,
-  created_by varchar(100) null,
-  modified_on timestamp null,
-  modified_by varchar(100) null,
-  process_state_code varchar(100) references process_state(code) null
+  id bigserial primary key
 );
 alter sequence meaning_id_seq restart with 10000;
 

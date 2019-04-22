@@ -39,6 +39,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 
 	protected Count illegalSourceReferenceValueCount;
 
+	@Deprecated
 	protected void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj, DateFormat dateFormat) throws Exception {
 
 		Element valueNode;

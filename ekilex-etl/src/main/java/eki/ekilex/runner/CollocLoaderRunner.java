@@ -32,6 +32,7 @@ import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
 
@@ -83,6 +84,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private final String wordHomonymNrAttr = "i";
 	private final String lexemeLevelAttr = "tnr";
+	private final String meaningNrAttr = "tahendusnr";
 	private final String collocConjunctAttr = "jv";
 	private final String lemmaDataAttr = "lemposvk";
 
@@ -163,7 +165,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath, Map<String, List<Guid>> ssGuidMap, Map<String, List<Mnr>> ssMnrMap, boolean doReports) throws Exception {
 
 		this.doReports = doReports;
 		if (doReports) {
@@ -209,6 +211,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count updatedCollocMemberCount = new Count();
 		Count reusedWordCount = new Count();
 		Count ssWordCount = new Count();
+		Count ssMeaningCount = new Count();
 
 		Map<String, Count> countersMap = new HashMap<>();
 		countersMap.put("ignoredArticleCount", ignoredArticleCount);
@@ -228,6 +231,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		countersMap.put("updatedCollocMemberCount", updatedCollocMemberCount);
 		countersMap.put("reusedWordCount", reusedWordCount);
 		countersMap.put("ssWordCount", ssWordCount);
+		countersMap.put("ssMeaningCount", ssMeaningCount);
 
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -236,7 +240,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Map<Long, Map<Integer, LexemeMeaning>> meaningMap = new HashMap<>();
 		Map<String, UnknownWord> dummyWordMap = new HashMap<>();
 		Map<String, Boolean> psvAvailabilityResolvedWordMap = new HashMap<>();
-		extractAndSaveWordsLexemesMeanings(articleNodes, wordMap, meaningMap, ssGuidMap, countersMap);
+		extractAndSaveWordsLexemesMeanings(articleNodes, wordMap, meaningMap, ssGuidMap, ssMnrMap, countersMap);
 
 		Map<String, Map<String, CollocRecord>> collocMap = new HashMap<>();
 
@@ -299,7 +303,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 				for (Node colPosGroupNode : collocPosGroupNodes) {
 
-					collocPosGroupCode = ((Element)colPosGroupNode).attributeValue(collocPosAttr);
+					collocPosGroupCode = ((Element) colPosGroupNode).attributeValue(collocPosAttr);
 					Long collocPosGroupId = createCollocPosGroup(lexemeId, collocPosGroupCode);
 
 					collocRelGroupNodes = colPosGroupNode.selectNodes(collocRelGroupExp);//x:relg
@@ -380,6 +384,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} updated collocation members", updatedCollocMemberCount.getValue());
 		logger.debug("Found {} reused words", reusedWordCount.getValue());
 		logger.debug("Found {} ss words", ssWordCount.getValue());
+		logger.debug("Found {} ss meanings", ssMeaningCount.getValue());
 
 		end();
 	}
@@ -389,11 +394,13 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			Map<String, Map<Integer, Word>> wordMap,
 			Map<Long, Map<Integer, LexemeMeaning>> meaningMap,
 			Map<String, List<Guid>> ssGuidMap,
+			Map<String, List<Mnr>> ssMnrMap,
 			Map<String, Count> countersMap) throws Exception {
 
 		Count ignoredArticleCount = countersMap.get("ignoredArticleCount");
 		Count reusedWordCount = countersMap.get("reusedWordCount");
 		Count ssWordCount = countersMap.get("ssWordCount");
+		Count ssMeaningCount = countersMap.get("ssMeaningCount");
 
 		Element contentNode, guidNode, headerNode, wordGroupNode, wordNode, wordPosNode, wordDisplayMorphNode;
 		List<Node> meaningBlockNodes;
@@ -459,13 +466,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			HashMap<Integer, LexemeMeaning> levelMeaningMap = new HashMap<>();
 			meaningMap.put(wordId, levelMeaningMap);
-			
+
 			for (Node meaningBlockNode : meaningBlockNodes) {
 
-				Element meaningBlockElement = (Element)meaningBlockNode;
+				Element meaningBlockElement = (Element) meaningBlockNode;
 				String level1Str = meaningBlockElement.attributeValue(lexemeLevelAttr);
 				Integer level1 = Integer.valueOf(level1Str);
-				LexemeMeaning lexemeMeaning = createLexemeMeaning(wordId, level1, wordPosCode);
+				String mnr = meaningBlockElement.attributeValue(meaningNrAttr);
+				LexemeMeaning lexemeMeaning = createLexemeMeaning(wordId, level1, wordPosCode, mnr, ssMnrMap, ssMeaningCount);
 				levelMeaningMap.put(level1, lexemeMeaning);
 			}
 		}
@@ -474,7 +482,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private void extractAndSaveLexemeRegisters(String newWord, Long lexemeId, Element meaningDefinitionGroupNode) throws Exception {
 		List<Node> lexemeRegisterNodes = meaningDefinitionGroupNode.selectNodes(lexemeRegisterExp);
 		for (Node lexemeRegisterNode : lexemeRegisterNodes) {
-			String lexemeRegister = ((Element)lexemeRegisterNode).getTextTrim();
+			String lexemeRegister = ((Element) lexemeRegisterNode).getTextTrim();
 			if (registerConversionMap.containsKey(lexemeRegister)) {
 				lexemeRegister = registerConversionMap.get(lexemeRegister);
 				createLexemeRegister(lexemeId, lexemeRegister);
@@ -489,7 +497,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Node> meaningDomainNodes = meaningDefinitionGroupNode.selectNodes(meaningDomainExp);
 		List<String> domainCodes = new ArrayList<>();
 		for (Node meaningDomainNode : meaningDomainNodes) {
-			String domainCode = ((Element)meaningDomainNode).getTextTrim();
+			String domainCode = ((Element) meaningDomainNode).getTextTrim();
 			if (domainCodes.contains(domainCode)) {
 				logger.warn("Domain reference duplicate: \"{}\"", domainCode);
 				appendToReport(REPORT_ILLEGAL_DATA, newWord, "?", "?", "x:relg", domainCode, "korduv valdkond");
@@ -503,7 +511,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private void extractAndSaveMeaningDefinitions(Long meaningId, Element meaningDefinitionGroupNode) throws Exception {
 		List<Node> meaningDefinitionNodes = meaningDefinitionGroupNode.selectNodes(meaningDefinitionExp);
 		for (Node meaningDefinitionNode : meaningDefinitionNodes) {
-			String definition = ((Element)meaningDefinitionNode).getTextTrim();
+			String definition = ((Element) meaningDefinitionNode).getTextTrim();
 			createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
 		}
 	}
@@ -511,7 +519,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private void extractAndSaveGrammar(Long lexemeId, Node meaningBlockNode) throws Exception {
 		List<Node> lexemeGrammarNodes = meaningBlockNode.selectNodes(lexemeGrammarExp);
 		for (Node lexemeGrammarNode : lexemeGrammarNodes) {
-			String grammar = ((Element)lexemeGrammarNode).getTextTrim();
+			String grammar = ((Element) lexemeGrammarNode).getTextTrim();
 			grammar = cleanEkiEntityMarkup(grammar);
 			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammar, dataLang);
 		}
@@ -523,7 +531,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		final String[] skippedNodeNames = new String[] {"colloc", "cfr", "csc", "cng", "cd", "s", "v", "rek"};
 
 		List<CollocMember> collocMembers = new ArrayList<>();
-		Iterator<Node> collocGroupNodeIter = ((Element)collocGroupNode).nodeIterator();
+		Iterator<Node> collocGroupNodeIter = ((Element) collocGroupNode).nodeIterator();
 		List<CollocMember> lemmaDataCollocMembers;
 
 		while (collocGroupNodeIter.hasNext()) {
@@ -604,7 +612,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 		List<String> collocUsages = new ArrayList<>();
 		for (Node collocUsageNode : collocUsageNodes) {
-			String collocUsage = ((Element)collocUsageNode).getTextTrim();
+			String collocUsage = ((Element) collocUsageNode).getTextTrim();
 			collocUsage = cleanEkiEntityMarkup(collocUsage);
 			collocUsages.add(collocUsage);
 		}
@@ -733,7 +741,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						collocMember.setWord(word);
 						collocMemberWord = word;
 						homonymWordMap = wordMap.get(word);
-					}					
+					}
 				}
 				if (homonymWordMap == null) {
 					if (collocMemberRefNum == null) {
@@ -1127,9 +1135,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return wordObj;
 	}
 
-	private LexemeMeaning createLexemeMeaning(Long wordId, Integer level1, String posCode) throws Exception {
+	private LexemeMeaning createLexemeMeaning(Long wordId, Integer level1, String posCode, String mnr, Map<String, List<Mnr>> ssMnrMap, Count ssMeaningCount) throws Exception {
 
-		Long meaningId = createMeaning();
+		Long meaningId = createOrSelectMeaning(mnr, getDataset(), ssMnrMap, ssMeaningCount);
 		Lexeme lexemeObj = new Lexeme();
 		lexemeObj.setWordId(wordId);
 		lexemeObj.setMeaningId(meaningId);
@@ -1287,7 +1295,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return lexemeMeanings;
 	}
 
-	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
+	private void appendToReport(String reportName, Object... reportCells) throws Exception {
 		if (!doReports) {
 			return;
 		}

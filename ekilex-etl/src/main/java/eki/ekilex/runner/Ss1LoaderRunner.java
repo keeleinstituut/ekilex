@@ -577,8 +577,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				).flatMap(i -> i).collect(toList());
 		WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
 		if (meaningData == null) {
-			Meaning meaning = new Meaning();
-			meaningId = createMeaning(meaning);
+			meaningId = createMeaning();
 			definitionsToAdd.addAll(definitions);
 			definitionsToCache.addAll(definitions);
 		} else {

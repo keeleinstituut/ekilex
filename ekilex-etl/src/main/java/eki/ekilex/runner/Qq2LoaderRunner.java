@@ -33,6 +33,7 @@ import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Grammar;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
@@ -90,6 +91,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String formsExp = "x:grg/x:vormid";
 
 	private final String langAttr = "lang";
+	private final String meaningNrAttr = "tahendusnr";
 
 	private final int defaultHomonymNr = 1;
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´:_–!°()¤";
@@ -134,7 +136,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath, Map<String, List<Guid>> ssGuidMap, Map<String, List<Mnr>> ssMnrMap, boolean doReports) throws Exception {
 
 		final String pseudoHomonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
@@ -178,9 +180,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		Count reusedWordCount = new Count();
 		Count ssWordCount = new Count();
+		Count ssMeaningCount = new Count();
 		Count lexemeDuplicateCount = new Count();
 		Count missingUsageGroupCount = new Count();
 		Count missingMabIntegrationCaseCount = new Count();
+		Count multipleMeaningsGroupCount = new Count();
 
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -268,8 +272,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 			for (Node meaningGroupNode : meaningGroupNodes) {
 
-				lexemeLevel1Str = ((Element)meaningGroupNode).attributeValue(lexemeLevel1Attr);
+				Element meaningGroupElem = (Element) meaningGroupNode;
+				lexemeLevel1Str = meaningGroupElem.attributeValue(lexemeLevel1Attr);
 				lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
+
+				String mnr = meaningGroupElem.attributeValue(meaningNrAttr);
 
 				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);//x:np/x:ng
 				allUsages = extractUsages(usageGroupNodes);
@@ -287,7 +294,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel2++;
 
 					// meaning
-					meaningId = createMeaning();
+					if (isSingleMeaning) {
+						meaningId = createOrSelectMeaning(mnr, getDataset(), ssMnrMap, ssMeaningCount);
+					} else {
+						meaningId = createMeaning();
+						multipleMeaningsGroupCount.increment();
+					}
 
 					// definitions #1
 					synonymLevel2Nodes = meaningNode.selectNodes(synonymExp);
@@ -299,7 +311,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 					for (Node wordMatchNode : wordMatchNodes) {
 
-						wordMatchLang = ((Element)wordMatchNode).attributeValue(langAttr);
+						wordMatchLang = ((Element) wordMatchNode).attributeValue(langAttr);
 						wordMatchLang = unifyLang(wordMatchLang);
 						wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
 						wordMatch = wordMatchValueNode.getTextTrim();
@@ -377,8 +389,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Found {} reused words", reusedWordCount.getValue());
 		logger.debug("Found {} ss words", ssWordCount.getValue());
+		logger.debug("Found {} ss meanings", ssMeaningCount.getValue());
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount.getValue());
 		logger.debug("Found {} missing usage groups", missingUsageGroupCount.getValue());
+		logger.debug("Found {} multiple meanings in group", multipleMeaningsGroupCount.getValue());
 
 		end();
 	}
@@ -476,7 +490,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				Form compoundForm = copy(mabForm);
 				if (mabForm.getMorphExists()) {
 					String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabForm.getValue();
-					String compoundDisplayForm = StringUtils.join(wordComponents, FORM_COMPONENT_SEPARATOR, 0, wordComponentCount - 1) + FORM_COMPONENT_SEPARATOR + mabForm.getDisplayForm(); 
+					String compoundDisplayForm = StringUtils.join(wordComponents, FORM_COMPONENT_SEPARATOR, 0, wordComponentCount - 1) + FORM_COMPONENT_SEPARATOR + mabForm.getDisplayForm();
 					compoundFormValues.add(compoundFormValue);
 					compoundForm.setValue(compoundFormValue);
 					compoundForm.setDisplayForm(compoundDisplayForm);
@@ -512,7 +526,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return;
 		}
 		for (Node definitionValueNode : definitionValueNodes) {
-			String definition = ((Element)definitionValueNode).getTextTrim();
+			String definition = ((Element) definitionValueNode).getTextTrim();
 			createOrSelectDefinition(meaningId, definition, dataLang, dataset);
 		}
 	}
@@ -523,7 +537,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return;
 		}
 		for (Node governmentNode : governmentNodes) {
-			String government = ((Element)governmentNode).getTextTrim();
+			String government = ((Element) governmentNode).getTextTrim();
 			createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, lang);
 		}
 	}
@@ -537,9 +551,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		for (Node grammarNode : grammarNodes) {
 
-			grammarLang = ((Element)grammarNode).attributeValue("lang");
+			grammarLang = ((Element) grammarNode).attributeValue("lang");
 			grammarLang = unifyLang(grammarLang);
-			grammar = ((Element)grammarNode).getTextTrim();
+			grammar = ((Element) grammarNode).getTextTrim();
 			grammar = cleanEkiEntityMarkup(grammar);
 
 			grammarObjs = wordIdGrammarMap.get(wordId);
@@ -565,7 +579,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			wordIdGovernmentMap.put(wordId, governmentObjs);
 		}
 		for (Node governmentNode : governmentNodes) {
-			String government = ((Element)governmentNode).getTextTrim();
+			String government = ((Element) governmentNode).getTextTrim();
 			Government governmentObj = new Government();
 			governmentObj.setValue(government);
 			governmentObjs.add(governmentObj);
@@ -596,7 +610,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 			usages = new ArrayList<>();
 			for (Node usageNode : usageNodes) {
-				usageValue = ((Element)usageNode).getTextTrim();
+				usageValue = ((Element) usageNode).getTextTrim();
 				newUsage = new Usage();
 				newUsage.setValue(usageValue);
 				usages.add(newUsage);
@@ -604,7 +618,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 			usageTranslations = new ArrayList<>();
 			for (Node usageTranslationNode : usageTranslationNodes) {
-				usageTranslationLang = ((Element)usageTranslationNode).attributeValue(langAttr);
+				usageTranslationLang = ((Element) usageTranslationNode).attributeValue(langAttr);
 				usageTranslationLang = unifyLang(usageTranslationLang);
 				if (StringUtils.equalsIgnoreCase(usageTranslationLang, usageTranslationLangRus)) {
 					usageTranslationValueNode = (Element) usageTranslationNode.selectSingleNode(usageTranslationValueExp);
@@ -736,7 +750,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return false;
 	}
 
-	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
+	private void appendToReport(String reportName, Object... reportCells) throws Exception {
 		if (!doReports) {
 			return;
 		}
