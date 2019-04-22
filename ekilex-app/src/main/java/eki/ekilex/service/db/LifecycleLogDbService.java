@@ -8,6 +8,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -21,15 +22,12 @@ import org.jooq.DSLContext;
 import org.jooq.Record8;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
-import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.LifecycleLog;
 import eki.ekilex.data.ListData;
 import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
@@ -175,6 +173,33 @@ public class LifecycleLogDbService {
 				.from(ll)
 				.orderBy(ll.field("event_on").desc())
 				.fetchInto(LifecycleLog.class);
+		return results;
+	}
+
+	public List<LifecycleLog> getLogForSource(Long sourceId) {
+
+		List<LifecycleLog> results = create
+				.select(
+						LIFECYCLE_LOG.ENTITY_ID,
+						LIFECYCLE_LOG.ENTITY_NAME,
+						LIFECYCLE_LOG.ENTITY_PROP,
+						LIFECYCLE_LOG.EVENT_TYPE,
+						LIFECYCLE_LOG.EVENT_BY,
+						LIFECYCLE_LOG.EVENT_ON,
+						LIFECYCLE_LOG.RECENT,
+						LIFECYCLE_LOG.ENTRY
+				)
+				.from(
+						SOURCE_LIFECYCLE_LOG, LIFECYCLE_LOG)
+				.where(
+						SOURCE_LIFECYCLE_LOG.SOURCE_ID.eq(sourceId)
+						.and(SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
+				)
+				.orderBy(
+						LIFECYCLE_LOG.EVENT_ON.desc()
+				)
+				.fetchInto(LifecycleLog.class);
+
 		return results;
 	}
 
@@ -525,6 +550,28 @@ public class LifecycleLogDbService {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
+		} else if (LifecycleEntity.SOURCE.equals(entity)) {
+			if (LifecycleProperty.SOURCE_TYPE.equals(property)) {
+				if (LifecycleEventType.UPDATE == eventType) {
+					Map<String, Object> entityData = helper.getSourceType(create, entityId);
+					recent = (String) entityData.get("type");
+				}
+			} else if (!LifecycleProperty.VALUE.equals(property)) {
+				if (LifecycleEventType.UPDATE == eventType || LifecycleEventType.DELETE == eventType) {
+					FreeformType freeformType = FreeformType.valueOf(property.name());
+					Map<String, Object> entityData = helper.getSourceFreeformData(create, entityId, freeformType);
+					recent = (String) entityData.get("value_prese");
+					entityId = (Long) entityData.get("source_id");
+					if (StringUtils.equals(recent, entry)) {
+						if (isUpdate(eventType)) {
+							return;
+						}
+						recent = null;
+					}
+				}
+			}
+			Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+			createSourceLifecycleLog(entityId, lifecycleLogId);
 		}
 	}
 
@@ -672,6 +719,17 @@ public class LifecycleLogDbService {
 					)
 			.values(meaningId, lifecycleLogId)
 			.execute();
+	}
+
+	private void createSourceLifecycleLog(Long sourceId, Long lifecycleLogId) {
+		create
+				.insertInto(
+						SOURCE_LIFECYCLE_LOG,
+						SOURCE_LIFECYCLE_LOG.SOURCE_ID,
+						SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID
+				)
+				.values(sourceId, lifecycleLogId)
+				.execute();
 	}
 
 }

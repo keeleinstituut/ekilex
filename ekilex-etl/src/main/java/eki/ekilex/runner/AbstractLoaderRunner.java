@@ -1214,32 +1214,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createSource(Source source) throws Exception {
 
-		String concept = source.getExtSourceId();
 		SourceType type = source.getType();
-
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("ext_source_id", concept);
 		tableRowParamMap.put("type", type.name());
-		Timestamp createdOn = source.getCreatedOn();
-		if (createdOn != null) {
-			tableRowParamMap.put("created_on", createdOn);
-		}
-		String createdBy = source.getCreatedBy();
-		if (StringUtils.isNotBlank(createdBy)) {
-			tableRowParamMap.put("created_by", createdBy);
-		}
-		Timestamp modifiedOn = source.getModifiedOn();
-		if (modifiedOn != null) {
-			tableRowParamMap.put("modified_on", modifiedOn);
-		}
-		String modifiedBy = source.getModifiedBy();
-		if (StringUtils.isNotBlank(modifiedBy)) {
-			tableRowParamMap.put("modified_by", modifiedBy);
-		}
-		String processStateCode = source.getProcessStateCode();
-		if (StringUtils.isNotBlank(processStateCode)) {
-			tableRowParamMap.put("process_state_code", processStateCode);
-		}
 		Long sourceId = basicDbService.create(SOURCE, tableRowParamMap);
 		source.setSourceId(sourceId);
 		return sourceId;
@@ -1249,9 +1226,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		Source source = new Source();
 		source.setType(sourceType);
-		source.setExtSourceId(extSourceId);
 		Long sourceId = createSource(source);
 		createSourceFreeform(sourceId, FreeformType.SOURCE_NAME, sourceName);
+		createSourceFreeform(sourceId, FreeformType.EXTERNAL_SOURCE_ID, extSourceId);
 
 		return sourceId;
 	}
@@ -1273,9 +1250,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("sourceType", sourceType.name());
-		tableRowParamMap.put("extSourceId", extSourceId);
 		tableRowParamMap.put("sourcePropertyTypeName", FreeformType.SOURCE_NAME.name());
 		tableRowParamMap.put("sourceName", sourceName);
+		tableRowParamMap.put("sourcePropertyTypeExtSourceId", FreeformType.EXTERNAL_SOURCE_ID.name());
+		tableRowParamMap.put("extSourceId", extSourceId);
 		List<Map<String, Object>> sources = basicDbService.queryList(sqls.getSqlSelectSourceByTypeAndName(), tableRowParamMap);
 
 		if (CollectionUtils.isEmpty(sources)) {
@@ -1290,11 +1268,12 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("sourceType", sourceType.name());
-		tableRowParamMap.put("extSourceId", extSourceId);
 		tableRowParamMap.put("sourcePropertyTypeName", FreeformType.SOURCE_NAME.name());
 		tableRowParamMap.put("sourcePropertyTypeFileName", FreeformType.SOURCE_FILE.name());
 		tableRowParamMap.put("sourceName", sourceName);
 		tableRowParamMap.put("sourceFileName", fileName);
+		tableRowParamMap.put("sourcePropertyTypeExtSourceId", FreeformType.EXTERNAL_SOURCE_ID.name());
+		tableRowParamMap.put("extSourceId", extSourceId);
 		List<Map<String, Object>> sources = basicDbService.queryList(sqls.getSqlSelectSourceByTypeAndNameAndFileName(), tableRowParamMap);
 
 		if (CollectionUtils.isEmpty(sources)) {

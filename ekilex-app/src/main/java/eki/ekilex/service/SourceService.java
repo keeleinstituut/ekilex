@@ -16,10 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleProperty;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
+import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.SourceDbService;
 
 @Component
@@ -29,6 +33,12 @@ public class SourceService {
 
 	@Autowired
 	private SourceDbService sourceDbService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
 	public Source getSource(Long sourceId) {
@@ -65,34 +75,42 @@ public class SourceService {
 	}
 
 	@Transactional
-	public Long addSource(SourceType sourceType, String extSourceId, List<SourceProperty> sourceProperties) {
-		Long sourceId = sourceDbService.addSource(sourceType, extSourceId, sourceProperties);
-		// TODO lifecycleLog - Yogesh
+	public Long addSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
+		Long sourceId = sourceDbService.addSource(sourceType, sourceProperties);
+		addSourceLifecycleLog(LifecycleEventType.CREATE, LifecycleProperty.VALUE, sourceId, null);
+		addSourceLifecycleLog(LifecycleEventType.CREATE, LifecycleProperty.SOURCE_TYPE, sourceId, sourceType.name());
+		for (SourceProperty sourceProperty : sourceProperties) {
+			LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(sourceProperty.getType().name());
+			addSourceLifecycleLog(LifecycleEventType.CREATE, lifecycleProperty, sourceId, sourceProperty.getValueText());
+		}
 		return sourceId;
 	}
 
 	@Transactional
 	public void addSourceProperty(Long sourceId, FreeformType type, String valueText) {
+		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
+		addSourceLifecycleLog(LifecycleEventType.CREATE, lifecycleProperty, sourceId, valueText);
 		sourceDbService.addSourceProperty(sourceId, type, valueText);
-		// TODO lifecycleLog - Yogesh
 	}
 
 	@Transactional
-	public void editSourceProperty(Long sourcePropertyId, String valueText) {
+	public void editSourceProperty(Long sourcePropertyId, FreeformType type, String valueText) {
+		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
+		addSourceLifecycleLog(LifecycleEventType.UPDATE, lifecycleProperty, sourcePropertyId, valueText);
 		sourceDbService.updateSourceProperty(sourcePropertyId, valueText);
-		// TODO lifecycleLog - Yogesh
 	}
 
 	@Transactional
-	public void deleteSourceProperty(Long sourcePropertyId) {
+	public void deleteSourceProperty(Long sourcePropertyId, FreeformType type) {
+		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
+		addSourceLifecycleLog(LifecycleEventType.DELETE, lifecycleProperty, sourcePropertyId, null);
 		sourceDbService.deleteSourceProperty(sourcePropertyId);
-		// TODO lifecycleLog - Yogesh
 	}
 
 	@Transactional
 	public void editSourceType(Long sourceId, SourceType type) {
+		addSourceLifecycleLog(LifecycleEventType.UPDATE, LifecycleProperty.SOURCE_TYPE, sourceId, type.name());
 		sourceDbService.editSourceType(sourceId, type);
-		// TODO lifecycleLog - Yogesh
 	}
 
 	@Transactional
@@ -102,8 +120,8 @@ public class SourceService {
 
 	@Transactional
 	public void deleteSource(Long sourceId) {
+		addSourceLifecycleLog(LifecycleEventType.DELETE, LifecycleProperty.VALUE, sourceId, null);
 		sourceDbService.deleteSource(sourceId);
-		// TODO lifecycleLog - Yogesh
 	}
 
 	private List<Source> convert(List<SourcePropertyTuple> sourcePropertyTuples) {
@@ -123,21 +141,9 @@ public class SourceService {
 
 			Source source = sourceMap.get(sourceId);
 			if (source == null) {
-				String extSourceId = tuple.getExtSourceId();
-				Timestamp createdOn = tuple.getCreatedOn();
-				String createdBy = tuple.getCreatedBy();
-				Timestamp modifiedOn = tuple.getModifiedOn();
-				String modifiedBy = tuple.getModifiedBy();
-				String processStateCode = tuple.getProcessStateCode();
 				SourceType type = tuple.getType();
 				source = new Source();
 				source.setSourceId(sourceId);
-				source.setExtSourceId(extSourceId);
-				source.setCreatedOn(createdOn);
-				source.setCreatedBy(createdBy);
-				source.setModifiedOn(modifiedOn);
-				source.setModifiedBy(modifiedBy);
-				source.setProcessStateCode(processStateCode);
 				source.setType(type);
 				source.setSourceNames(new ArrayList<>());
 				source.setSourceProperties(new ArrayList<>());
@@ -165,4 +171,10 @@ public class SourceService {
 		}
 		return sources;
 	}
+
+	private void addSourceLifecycleLog(LifecycleEventType eventType, LifecycleProperty property, Long entityId, String entry) {
+		String userName = userService.getAuthenticatedUser().getName();
+		lifecycleLogDbService.addLog(userName, eventType, LifecycleEntity.SOURCE, property, entityId, null, entry);
+	}
+
 }

@@ -77,6 +77,7 @@ import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
+import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -489,6 +490,11 @@ public class Tables {
      * The table <code>public.source_freeform</code>.
      */
     public static final SourceFreeform SOURCE_FREEFORM = eki.ekilex.data.db.tables.SourceFreeform.SOURCE_FREEFORM;
+
+    /**
+     * The table <code>public.source_lifecycle_log</code>.
+     */
+    public static final SourceLifecycleLog SOURCE_LIFECYCLE_LOG = eki.ekilex.data.db.tables.SourceLifecycleLog.SOURCE_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.usage_type</code>.

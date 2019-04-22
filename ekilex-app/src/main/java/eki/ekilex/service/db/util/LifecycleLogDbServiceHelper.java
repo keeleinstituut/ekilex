@@ -13,6 +13,8 @@ import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.SOURCE;
+import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
@@ -32,6 +34,7 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.SourceFreeform;
 
 @Component
 public class LifecycleLogDbServiceHelper {
@@ -89,6 +92,35 @@ public class LifecycleLogDbServiceHelper {
 						mff.FREEFORM_ID.eq(ff1.ID)
 								.and(ff1.ID.eq(entityId))
 								.and(ff1.TYPE.eq(freeformType.name())))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getSourceFreeformData(DSLContext create, Long sourceFreeformId, FreeformType freeformType) {
+		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		Freeform ff1 = FREEFORM.as("ff1");
+		Map<String, Object> result = create
+				.select(
+						sff.SOURCE_ID,
+						ff1.VALUE_TEXT,
+						ff1.VALUE_PRESE
+				)
+				.from(sff, ff1)
+				.where(
+						sff.FREEFORM_ID.eq(ff1.ID)
+								.and(ff1.ID.eq(sourceFreeformId))
+								.and(ff1.TYPE.eq(freeformType.name())))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getSourceType(DSLContext create, Long entityId) {
+		Map<String, Object> result = create
+				.select(
+						SOURCE.TYPE
+				)
+				.from(SOURCE)
+				.where(SOURCE.ID.eq(entityId))
 				.fetchSingleMap();
 		return result;
 	}

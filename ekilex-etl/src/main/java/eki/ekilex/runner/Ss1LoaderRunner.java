@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -157,6 +158,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			processArticleHeader(reportingId, headerNode, newWords, context, guid);
+			extractLogDataAndCreateLifecycleLog(articleNode, newWords);
 			List<CommentData> comments = extractArticleComments(articleNode);
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
@@ -748,6 +750,36 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			comments.add(comment);
 		}
 		return comments;
+	}
+
+	private void extractLogDataAndCreateLifecycleLog(Node articleNode, List<WordData> newWords) throws Exception {
+
+		ArticleLogData logData = extractArticleLogData(articleNode);
+		String dataset = "[" + getDataset() + "]";
+		createLifecycleLog(newWords, logData, dataset);
+	}
+
+	private ArticleLogData extractArticleLogData(Node articleNode) throws ParseException {
+
+		final String createdByExp = "s:K";
+		final String createdOnExp = "s:KA";
+		final String creationEndExp = "s:KL";
+		final String modifiedByExp = "s:T";
+		final String modifiedOnExp = "s:TA";
+		final String modificationEndExp = "s:TL";
+		final String chiefEditedByExp = "s:PT";
+		final String chiefEditedOnExp = "s:PTA";
+
+		ArticleLogData logData = new ArticleLogData();
+		logData.createdBy = getNodeStringValue(articleNode, createdByExp);
+		logData.createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
+		logData.creationEnd = getNodeTimestampValue(articleNode, creationEndExp, dateFormat);
+		logData.modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
+		logData.modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+		logData.modificationEnd = getNodeTimestampValue(articleNode, modificationEndExp, dateFormat);
+		logData.chiefEditedBy = getNodeStringValue(articleNode, chiefEditedByExp);
+		logData.chiefEditedOn = getNodeTimestampValue(articleNode, chiefEditedOnExp, dateFormat);
+		return logData;
 	}
 
 	private List<LexemeToWordData> extractLatinTerms(Node node, String reportingId) throws Exception {

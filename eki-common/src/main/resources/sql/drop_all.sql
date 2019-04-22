@@ -64,6 +64,7 @@ drop table if exists word_group;
 drop table if exists word_relation;
 drop table if exists word_word_type;
 drop table if exists word;
+drop table if exists source_lifecycle_log;
 drop table if exists source_freeform;
 drop table if exists source;
 drop table if exists freeform;

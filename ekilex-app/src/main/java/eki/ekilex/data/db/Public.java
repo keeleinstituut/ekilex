@@ -77,6 +77,7 @@ import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
+import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -144,7 +145,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1589864743;
+    private static final long serialVersionUID = -532693292;
 
     /**
      * The reference instance of <code>public</code>
@@ -517,6 +518,11 @@ public class Public extends SchemaImpl {
     public final SourceFreeform SOURCE_FREEFORM = eki.ekilex.data.db.tables.SourceFreeform.SOURCE_FREEFORM;
 
     /**
+     * The table <code>public.source_lifecycle_log</code>.
+     */
+    public final SourceLifecycleLog SOURCE_LIFECYCLE_LOG = eki.ekilex.data.db.tables.SourceLifecycleLog.SOURCE_LIFECYCLE_LOG;
+
+    /**
      * The table <code>public.usage_type</code>.
      */
     public final UsageType USAGE_TYPE = eki.ekilex.data.db.tables.UsageType.USAGE_TYPE;
@@ -766,6 +772,7 @@ public class Public extends SchemaImpl {
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
+            Sequences.SOURCE_LIFECYCLE_LOG_ID_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
@@ -868,6 +875,7 @@ public class Public extends SchemaImpl {
             RegisterLabel.REGISTER_LABEL,
             Source.SOURCE,
             SourceFreeform.SOURCE_FREEFORM,
+            SourceLifecycleLog.SOURCE_LIFECYCLE_LOG,
             UsageType.USAGE_TYPE,
             UsageTypeLabel.USAGE_TYPE_LABEL,
             ValueState.VALUE_STATE,

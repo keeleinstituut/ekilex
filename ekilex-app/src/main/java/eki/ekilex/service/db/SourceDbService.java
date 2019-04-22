@@ -47,12 +47,6 @@ public class SourceDbService implements SystemConstant {
 		return create
 				.select(
 						s.ID.as("source_id"),
-						s.EXT_SOURCE_ID,
-						s.CREATED_ON,
-						s.CREATED_BY,
-						s.MODIFIED_ON,
-						s.MODIFIED_BY,
-						s.PROCESS_STATE_CODE,
 						s.TYPE,
 						sp.ID.as("source_property_id"),
 						sp.TYPE.as("source_property_type"),
@@ -98,12 +92,6 @@ public class SourceDbService implements SystemConstant {
 		return create
 				.select(
 						s.ID.as("source_id"),
-						s.EXT_SOURCE_ID,
-						s.CREATED_ON,
-						s.CREATED_BY,
-						s.MODIFIED_ON,
-						s.MODIFIED_BY,
-						s.PROCESS_STATE_CODE,
 						s.TYPE,
 						sp.ID.as("source_property_id"),
 						sp.TYPE.as("source_property_type"),
@@ -121,11 +109,11 @@ public class SourceDbService implements SystemConstant {
 				.into(SourcePropertyTuple.class);
 	}
 
-	public Long addSource(SourceType sourceType, String extSourceId, List<SourceProperty> sourceProperties) {
+	public Long addSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
 
 		Long sourceId =
-				create.insertInto(SOURCE, SOURCE.EXT_SOURCE_ID, SOURCE.TYPE)
-						.values(extSourceId, sourceType.name())
+				create.insertInto(SOURCE, SOURCE.TYPE)
+						.values(sourceType.name())
 						.returning(SOURCE.ID)
 						.fetchOne()
 						.getId();

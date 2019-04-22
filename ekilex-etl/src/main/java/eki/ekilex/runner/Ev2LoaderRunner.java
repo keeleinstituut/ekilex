@@ -6,6 +6,9 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +57,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private final static String ASPECT_SOV_NESOV = "сов. и несов.";
 	private final static String POS_CODE_VERB = "v";
 	private final static String meaningRefNodeExp = "x:S/x:tp/x:tvt";
+
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	@Override
 	protected Map<String, String> xpathExpressions() {
@@ -212,6 +217,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				}
 			}
 		}
+		extractLogDataAndCreateLifecycleLog(articleNode, newWords);
 		context.importedWords.addAll(newWords);
 	}
 
@@ -965,6 +971,32 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		return dataList;
+	}
+
+	private void extractLogDataAndCreateLifecycleLog(Node articleNode, List<WordData> newWords) throws Exception {
+
+		ArticleLogData logData = extractArticleLogData(articleNode);
+		String dataset = "[" + getDataset() + "]";
+		createLifecycleLog(newWords, logData, dataset);
+	}
+
+	private ArticleLogData extractArticleLogData(Node articleNode) throws ParseException {
+
+		final String createdByExp = "x:K";
+		final String createdOnExp = "x:KA";
+		final String modifiedByExp = "x:T";
+		final String modifiedOnExp = "x:TA";
+		final String chiefEditedByExp = "x:PT";
+		final String chiefEditedOnExp = "x:PTA";
+
+		ArticleLogData logData = new ArticleLogData();
+		logData.createdBy = getNodeStringValue(articleNode, createdByExp);
+		logData.createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
+		logData.modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
+		logData.modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+		logData.chiefEditedBy = getNodeStringValue(articleNode, chiefEditedByExp);
+		logData.chiefEditedOn = getNodeTimestampValue(articleNode, chiefEditedOnExp, dateFormat);
+		return logData;
 	}
 
 	private Float extractAsFloat(Node node, String xpathExp) {
