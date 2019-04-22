@@ -146,10 +146,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		extractAndApplyMeaningProperties(conceptGroupNode, meaning, defaultDateFormat);
 		Long meaningId = createMeaning(meaning);
 
-		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-				String.valueOf(meaningId), meaning.getCreatedOn(), meaning.getCreatedBy());
-		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-				String.valueOf(meaningId), meaning.getModifiedOn(), meaning.getModifiedBy());
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, null,
+				meaning.getCreatedOn(), meaning.getCreatedBy());
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, null,
+				meaning.getModifiedOn(), meaning.getModifiedBy());
 
 		extractAndApplyMeaningFreeforms(meaningId, conceptGroupNode, fileName);
 		extractListValues(conceptGroupNode);

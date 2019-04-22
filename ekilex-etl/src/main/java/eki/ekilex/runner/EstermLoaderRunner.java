@@ -24,6 +24,10 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
@@ -42,6 +46,18 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 	private static final String LTB_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
 	private static final String REVIEW_TIMESTAMP_PATTERN = "yy/MM/dd";
+
+	private static final String LTB_CREATED = "(LTB sisestamine)";
+
+	private static final String LTB_UPDATED = "(LTB muutmine)";
+
+	private static final String ET_EN_REVIEWED = "(et-en kontrollimine)";
+
+	private static final String EN_ET_REVIEWED = "(en-et kontrollimine)";
+
+	private static final String EOKK_CREATED = "(EÕKK sisestamine)";
+
+	private static final String EOKK_UPDATED = "(EÕKK muutmine)";
 
 	@Autowired
 	private EstermReportHelper reportHelper;
@@ -111,11 +127,9 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 
 		this.doReports = doReports;
 		if (doReports) {
-			reportComposer = new ReportComposer(getDataset() + " loader",
-					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
-					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS,
-					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH,
-					REPORT_MISSING_VALUE, REPORT_ILLEGAL_SOURCE_REF);
+			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
+					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS, REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION,
+					REPORT_DEFINITIONS_NOTES_MISMATCH, REPORT_MISSING_VALUE, REPORT_ILLEGAL_SOURCE_REF);
 			reportHelper.setup(reportComposer, meaningAndLexemeProcessStateCodes, lexemeValueStateCodes);
 		}
 		start();
@@ -229,7 +243,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					lexemeObj.setProcessStateCode(processStateCode);
 					lexemeId = createLexemeIfNotExists(lexemeObj, getDataset());
 
-					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode, fileName);
+					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode, fileName, term);
 
 					extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
 
@@ -423,8 +437,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.CREATE, valueStr1, valueTs);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+					null, valueTs, valueStr1);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
@@ -442,8 +456,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.UPDATE, valueStr1, valueTs);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+					null, valueTs, valueStr1);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(ltbCreatedByExp);
@@ -461,8 +475,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.LTB_CREATED, valueStr1, valueTs);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+					LTB_CREATED, valueTs, valueStr1);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(ltbEõkkModifiedByExp);
@@ -480,8 +494,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.LTB_MODIFIED, valueStr1, valueTs);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+					LTB_UPDATED, valueTs, valueStr1);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(etEnReviewedByExp);
@@ -499,8 +513,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.ET_EN_REVIEWED, valueStr1, valueTs);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+					ET_EN_REVIEWED, valueTs, valueStr1);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(enEtReviewedByExp);
@@ -518,8 +532,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.EN_ET_REVIEWED, valueStr1, valueTs);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+					EN_ET_REVIEWED, valueTs, valueStr1);
 		}
 	}
 
@@ -678,7 +692,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void extractAndSaveLexemeFreeforms(Long lexemeId, Node termGroupNode, String fileName) throws Exception {
+	private void extractAndSaveLexemeFreeforms(Long lexemeId, Node termGroupNode, String fileName, String term) throws Exception {
 
 		List<Node> valueNodes;
 		Element valueNode1, valueNode2;
@@ -701,8 +715,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.CREATE, valueStr1, valueTs);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, term,
+					valueTs, valueStr1);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(modifiedByExp);
@@ -720,8 +734,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.UPDATE, valueStr1, valueTs);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, term,
+					valueTs, valueStr1);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(eõkkCreatedByExp);
@@ -739,8 +753,9 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.EÕKK_CREATED, valueStr1, valueTs);
+			String entry = EOKK_CREATED + " " + term;
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, entry,
+					valueTs, valueStr1);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(ltbEõkkModifiedByExp);
@@ -758,8 +773,9 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			//TODO log
-			//createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.EÕKK_MODIFIED, valueStr1, valueTs);
+			String entry = EOKK_UPDATED + " " + term;
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
+					entry, valueTs, valueStr1);
 		}
 
 		valueNodes = termGroupNode.selectNodes(noteExp);
