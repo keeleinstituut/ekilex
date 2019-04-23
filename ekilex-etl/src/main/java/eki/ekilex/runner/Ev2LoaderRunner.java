@@ -18,11 +18,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
-import eki.common.data.Count;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -36,6 +36,7 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.constant.WordRelationGroupType;
+import eki.common.data.Count;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
@@ -960,7 +961,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 		ArticleLogData logData = extractArticleLogData(articleNode);
 		String dataset = "[" + getDataset() + "]";
-		createLifecycleLog(newWords, logData, dataset);
+		List<Long> wordIds = newWords.stream().map(id -> id.id).collect(Collectors.toList());
+		createWordLifecycleLog(wordIds, logData, dataset);
 	}
 
 	private ArticleLogData extractArticleLogData(Node articleNode) throws ParseException {

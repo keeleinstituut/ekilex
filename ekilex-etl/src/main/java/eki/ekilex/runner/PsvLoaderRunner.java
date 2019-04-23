@@ -4,6 +4,9 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -88,6 +91,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private ReportComposer reportComposer;
 	private String wordTypeAbbreviation;
 
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
 	@Autowired
 	private MabService mabService;
 
@@ -156,6 +161,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				if (contentNode != null) {
 					processArticleContent(reportingId, contentNode, newWords, context);
 				}
+				extractLogDataAndCreateLifecycleLog(articleNode, newWords);
 				context.importedWords.addAll(newWords);
 			} else {
 				logger.debug("Article does not have meanings, skipping : {}", reportingId);
@@ -1443,6 +1449,31 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (reportComposer != null) {
 			reportComposer.setActiveStream(reportName);
 		}
+	}
+
+	private void extractLogDataAndCreateLifecycleLog(Node articleNode, List<WordData> newWords) throws Exception {
+
+		ArticleLogData logData = extractArticleLogData(articleNode);
+		String dataset = "[" + getDataset() + "]";
+		List<Long> wordIds = newWords.stream().map(id -> id.id).collect(Collectors.toList());
+		createWordLifecycleLog(wordIds, logData, dataset);
+	}
+
+	private ArticleLogData extractArticleLogData(Node articleNode) throws ParseException {
+
+		final String createdByExp = "x:K";
+		final String createdOnExp = "x:KA";
+		final String creationEndExp = "x:KL";
+		final String modifiedByExp = "x:T";
+		final String modifiedOnExp = "x:TA";
+
+		ArticleLogData logData = new ArticleLogData();
+		logData.createdBy = getNodeStringValue(articleNode, createdByExp);
+		logData.createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
+		logData.creationEnd = getNodeTimestampValue(articleNode, creationEndExp, dateFormat);
+		logData.modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
+		logData.modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+		return logData;
 	}
 
 	private class WordData {
