@@ -43,7 +43,6 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.RelationPart;
@@ -737,42 +736,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected Long createMeaning() throws Exception {
 
 		Long meaningId = basicDbService.create(MEANING);
-		return meaningId;
-	}
-
-	@Deprecated
-	protected Long createMeaning(Meaning meaning) throws Exception {
-
-		Map<String, Object> tableRowParamMap;
-
-		tableRowParamMap = new HashMap<>();
-		Timestamp createdOn = meaning.getCreatedOn();
-		if (createdOn != null) {
-			tableRowParamMap.put("created_on", createdOn);
-		}
-		String createdBy = meaning.getCreatedBy();
-		if (StringUtils.isNotBlank(createdBy)) {
-			tableRowParamMap.put("created_by", createdBy);
-		}
-		Timestamp modifiedOn = meaning.getModifiedOn();
-		if (modifiedOn != null) {
-			tableRowParamMap.put("modified_on", modifiedOn);
-		}
-		String modifiedBy = meaning.getModifiedBy();
-		if (StringUtils.isNotBlank(modifiedBy)) {
-			tableRowParamMap.put("modified_by", modifiedBy);
-		}
-		String processStateCode = meaning.getProcessStateCode();
-		if (StringUtils.isNotBlank(processStateCode)) {
-			tableRowParamMap.put("process_state_code", processStateCode);
-		}
-		Long meaningId;
-		if (MapUtils.isEmpty(tableRowParamMap)) {
-			meaningId = basicDbService.create(MEANING);
-		} else {
-			meaningId = basicDbService.create(MEANING, tableRowParamMap);
-		}
-		meaning.setMeaningId(meaningId);
 		return meaningId;
 	}
 

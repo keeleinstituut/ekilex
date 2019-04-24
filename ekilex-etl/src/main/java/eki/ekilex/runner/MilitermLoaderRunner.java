@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +33,6 @@ import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.RelationPart;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
@@ -137,21 +135,15 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private void processConceptGroup(Node conceptGroupNode, String fileName) throws Exception {
 
-		Meaning meaning = new Meaning();
 		String term;
 		String lang;
 		List<String> listValues = extractListValues(conceptGroupNode);
 		List<Node> ltbSourceValueNodes = conceptGroupNode.selectNodes(ltbSourceExp);
 
-		extractAndApplyMeaningProperties(conceptGroupNode, meaning, defaultDateFormat);
 		Long meaningId = createMeaning();
+		extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode, fileName);
+		createMeaningLifecycleLog(meaningId, conceptGroupNode);
 
-		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, null,
-				meaning.getCreatedOn(), meaning.getCreatedBy());
-		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, null,
-				meaning.getModifiedOn(), meaning.getModifiedBy());
-
-		extractAndApplyMeaningFreeforms(meaningId, conceptGroupNode, fileName);
 		extractListValues(conceptGroupNode);
 
 		List<Node> langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
@@ -181,6 +173,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				lexeme.setWordId(wordId);
 				lexeme.setMeaningId(meaningId);
 				Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
+				createLexemeLifecycleLog(lexemeId, termGroupNode, term);
 
 				saveListValueFreeforms(lang, listValues, lexemeId);
 
@@ -188,13 +181,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					List<Content> sources = extractContentAndRefs(ltbSourceValueNode, lang, term, false);
 					saveLexemeSourceLinks(lexemeId, sources, term, fileName);
 				}
-
-				extractAndApplyLexemeProperties(termGroupNode, lexeme);
-
-				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
-						term, lexeme.getCreatedOn(), lexeme.getCreatedBy());
-				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
-						term, lexeme.getModifiedOn(), lexeme.getModifiedBy());
 
 				List<Node> sourceValueNodes = termGroupNode.selectNodes(sourceExp);
 				for (Node sourceValueNode : sourceValueNodes) {
@@ -341,43 +327,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void extractAndApplyLexemeProperties(Node termGroupNode, Lexeme lexeme) throws ParseException {
-
-		Element valueNode;
-		String valueStr;
-		long valueLong;
-		Timestamp valueTs;
-
-		valueNode = (Element) termGroupNode.selectSingleNode(createdByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			lexeme.setCreatedBy(valueStr);
-		}
-
-		valueNode = (Element) termGroupNode.selectSingleNode(createdOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			lexeme.setCreatedOn(valueTs);
-		}
-
-		valueNode = (Element) termGroupNode.selectSingleNode(modifiedByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			lexeme.setModifiedBy(valueStr);
-		}
-
-		valueNode = (Element) termGroupNode.selectSingleNode(modifiedOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			lexeme.setModifiedOn(valueTs);
-		}
-	}
-
-	private void extractAndApplyMeaningFreeforms(Long meaningId, Node conceptGroupNode, String fileName) throws Exception {
+	private void extractAndSaveMeaningFreeforms(Long meaningId, Node conceptGroupNode, String fileName) throws Exception {
 
 		List<Node> valueNodes;
 		Element valueNode;
@@ -407,6 +357,102 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		for (Node imageValueNode : valueNodes) {
 			valueStr = ((Element) imageValueNode).getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, valueStr);
+		}
+	}
+
+	private void createMeaningLifecycleLog(Long meaningId, Node conceptGroupNode) throws Exception {
+
+		Element valueNode1;
+		Element valueNode2;
+		String valueStr1;
+		String valueStr2;
+		long valueLong;
+		Timestamp valueTs;
+
+		valueNode1 = (Element) conceptGroupNode.selectSingleNode(createdByExp);
+		valueNode2 = (Element) conceptGroupNode.selectSingleNode(createdOnExp);
+		if (valueNode1 != null) {
+			valueStr1 = valueNode1.getTextTrim();
+		} else {
+			valueStr1 = null;
+		}
+		if (valueNode2 != null) {
+			valueStr2 = valueNode2.getTextTrim();
+			valueLong = defaultDateFormat.parse(valueStr2).getTime();
+			valueTs = new Timestamp(valueLong);
+		} else {
+			valueTs = null;
+		}
+		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+					null, valueTs, valueStr1);
+		}
+
+		valueNode1 = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
+		valueNode2 = (Element) conceptGroupNode.selectSingleNode(modifiedOnExp);
+		if (valueNode1 != null) {
+			valueStr1 = valueNode1.getTextTrim();
+		} else {
+			valueStr1 = null;
+		}
+		if (valueNode2 != null) {
+			valueStr2 = valueNode2.getTextTrim();
+			valueLong = defaultDateFormat.parse(valueStr2).getTime();
+			valueTs = new Timestamp(valueLong);
+		} else {
+			valueTs = null;
+		}
+		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
+					null, valueTs, valueStr1);
+		}
+	}
+
+	private void createLexemeLifecycleLog(Long lexemeId, Node termGroupNode, String term) throws Exception {
+
+		Element valueNode1;
+		Element valueNode2;
+		String valueStr1;
+		String valueStr2;
+		long valueLong;
+		Timestamp valueTs;
+
+		valueNode1 = (Element) termGroupNode.selectSingleNode(createdByExp);
+		valueNode2 = (Element) termGroupNode.selectSingleNode(createdOnExp);
+		if (valueNode1 != null) {
+			valueStr1 = valueNode1.getTextTrim();
+		} else {
+			valueStr1 = null;
+		}
+		if (valueNode2 != null) {
+			valueStr2 = valueNode2.getTextTrim();
+			valueLong = defaultDateFormat.parse(valueStr2).getTime();
+			valueTs = new Timestamp(valueLong);
+		} else {
+			valueTs = null;
+		}
+		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, term,
+					valueTs, valueStr1);
+		}
+
+		valueNode1 = (Element) termGroupNode.selectSingleNode(modifiedByExp);
+		valueNode2 = (Element) termGroupNode.selectSingleNode(modifiedOnExp);
+		if (valueNode1 != null) {
+			valueStr1 = valueNode1.getTextTrim();
+		} else {
+			valueStr1 = null;
+		}
+		if (valueNode2 != null) {
+			valueStr2 = valueNode2.getTextTrim();
+			valueLong = defaultDateFormat.parse(valueStr2).getTime();
+			valueTs = new Timestamp(valueLong);
+		} else {
+			valueTs = null;
+		}
+		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, term,
+					valueTs, valueStr1);
 		}
 	}
 

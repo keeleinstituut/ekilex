@@ -428,6 +428,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		String valueStr2;
 		long valueLong;
 		Timestamp valueTs;
+
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(createdByExp);
 		valueNode2 = (Element) conceptGroupNode.selectSingleNode(createdOnExp);
 		if (valueNode1 != null) {

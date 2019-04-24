@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> {
 
-    private static final long serialVersionUID = -1277330757;
+    private static final long serialVersionUID = 185896969;
 
     /**
      * The reference instance of <code>public.definition_source_link</code>
@@ -85,11 +85,6 @@ public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> 
      * The column <code>public.definition_source_link.value</code>.
      */
     public final TableField<DefinitionSourceLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.definition_source_link.process_state_code</code>.
-     */
-    public final TableField<DefinitionSourceLinkRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.definition_source_link.order_by</code>.
@@ -174,7 +169,7 @@ public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> 
      */
     @Override
     public List<ForeignKey<DefinitionSourceLinkRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DefinitionSourceLinkRecord, ?>>asList(Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_DEFINITION_ID_FKEY, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<DefinitionSourceLinkRecord, ?>>asList(Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_DEFINITION_ID_FKEY, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY);
     }
 
     public Definition definition() {
@@ -183,10 +178,6 @@ public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> 
 
     public Source source() {
         return new Source(this, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

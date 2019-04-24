@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
 
-    private static final long serialVersionUID = -96954548;
+    private static final long serialVersionUID = 2084883283;
 
     /**
      * The reference instance of <code>public.meaning_relation</code>
@@ -75,11 +75,6 @@ public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
      * The column <code>public.meaning_relation.meaning_rel_type_code</code>.
      */
     public final TableField<MeaningRelationRecord, String> MEANING_REL_TYPE_CODE = createField("meaning_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.meaning_relation.process_state_code</code>.
-     */
-    public final TableField<MeaningRelationRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.meaning_relation.order_by</code>.
@@ -164,7 +159,7 @@ public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
      */
     @Override
     public List<ForeignKey<MeaningRelationRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MeaningRelationRecord, ?>>asList(Keys.MEANING_RELATION__MEANING_RELATION_MEANING1_ID_FKEY, Keys.MEANING_RELATION__MEANING_RELATION_MEANING2_ID_FKEY, Keys.MEANING_RELATION__MEANING_RELATION_MEANING_REL_TYPE_CODE_FKEY, Keys.MEANING_RELATION__MEANING_RELATION_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<MeaningRelationRecord, ?>>asList(Keys.MEANING_RELATION__MEANING_RELATION_MEANING1_ID_FKEY, Keys.MEANING_RELATION__MEANING_RELATION_MEANING2_ID_FKEY, Keys.MEANING_RELATION__MEANING_RELATION_MEANING_REL_TYPE_CODE_FKEY);
     }
 
     public Meaning meaningRelation_MeaningRelationMeaning1IdFkey() {
@@ -177,10 +172,6 @@ public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
 
     public MeaningRelType meaningRelType() {
         return new MeaningRelType(this, Keys.MEANING_RELATION__MEANING_RELATION_MEANING_REL_TYPE_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.MEANING_RELATION__MEANING_RELATION_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

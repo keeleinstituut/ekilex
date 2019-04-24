@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeSourceLink extends TableImpl<LexemeSourceLinkRecord> {
 
-    private static final long serialVersionUID = -1419504517;
+    private static final long serialVersionUID = -1850975481;
 
     /**
      * The reference instance of <code>public.lexeme_source_link</code>
@@ -85,11 +85,6 @@ public class LexemeSourceLink extends TableImpl<LexemeSourceLinkRecord> {
      * The column <code>public.lexeme_source_link.value</code>.
      */
     public final TableField<LexemeSourceLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.lexeme_source_link.process_state_code</code>.
-     */
-    public final TableField<LexemeSourceLinkRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme_source_link.order_by</code>.
@@ -174,7 +169,7 @@ public class LexemeSourceLink extends TableImpl<LexemeSourceLinkRecord> {
      */
     @Override
     public List<ForeignKey<LexemeSourceLinkRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeSourceLinkRecord, ?>>asList(Keys.LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_LEXEME_ID_FKEY, Keys.LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_SOURCE_ID_FKEY, Keys.LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeSourceLinkRecord, ?>>asList(Keys.LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_LEXEME_ID_FKEY, Keys.LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_SOURCE_ID_FKEY);
     }
 
     public Lexeme lexeme() {
@@ -183,10 +178,6 @@ public class LexemeSourceLink extends TableImpl<LexemeSourceLinkRecord> {
 
     public Source source() {
         return new Source(this, Keys.LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_SOURCE_ID_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

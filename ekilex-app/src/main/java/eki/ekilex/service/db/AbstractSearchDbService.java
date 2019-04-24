@@ -180,9 +180,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
 
-		Condition sourceCondition =
-				lsl.LEXEME_ID.eq(lexemeIdField)
-				.and(lsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
+		Condition sourceCondition = lsl.LEXEME_ID.eq(lexemeIdField);
 
 		for (SearchCriterion criterion : sourceCriteria) {
 			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition);
@@ -199,7 +197,6 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 
 		Condition sourceCondition =
 				lsl.LEXEME_ID.eq(lexemeIdField)
-				.and(lsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 				.and(lsl.SOURCE_ID.eq(s.ID))
 				.and(sff.SOURCE_ID.eq(s.ID))
 				.and(sff.FREEFORM_ID.eq(ff.ID))
@@ -231,9 +228,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
 
-		Condition sourceCondition =
-				dsl.DEFINITION_ID.eq(definitionIdField)
-				.and(dsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
+		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField);
 
 		for (SearchCriterion criterion : sourceCriteria) {
 			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition);
@@ -250,7 +245,6 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 
 		Condition sourceCondition =
 				dsl.DEFINITION_ID.eq(definitionIdField)
-				.and(dsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 				.and(dsl.SOURCE_ID.eq(s.ID))
 				.and(sff.SOURCE_ID.eq(s.ID))
 				.and(sff.FREEFORM_ID.eq(ff.ID))
@@ -281,9 +275,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 	private Condition applyFreeformSourceRefFilter(List<SearchCriterion> sourceCriteria, Field<Long> freeformIdField, Condition condition) {
 
 		FreeformSourceLink usl = FREEFORM_SOURCE_LINK.as("usl");
-		Condition sourceCondition =
-				usl.FREEFORM_ID.eq(freeformIdField)
-				.and(usl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
+		Condition sourceCondition = usl.FREEFORM_ID.eq(freeformIdField);
 
 		for (SearchCriterion criterion : sourceCriteria) {
 			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), usl.VALUE, sourceCondition);
@@ -300,7 +292,6 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 
 		Condition sourceCondition =
 				usl.FREEFORM_ID.eq(freeformIdField)
-				.and(usl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 				.and(usl.SOURCE_ID.eq(s.ID))
 				.and(sff.SOURCE_ID.eq(s.ID))
 				.and(sff.FREEFORM_ID.eq(ff.ID))

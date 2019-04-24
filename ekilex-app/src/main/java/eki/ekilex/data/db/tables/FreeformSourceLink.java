@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
 
-    private static final long serialVersionUID = -1947667397;
+    private static final long serialVersionUID = 2018083867;
 
     /**
      * The reference instance of <code>public.freeform_source_link</code>
@@ -85,11 +85,6 @@ public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
      * The column <code>public.freeform_source_link.value</code>.
      */
     public final TableField<FreeformSourceLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.freeform_source_link.process_state_code</code>.
-     */
-    public final TableField<FreeformSourceLinkRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.freeform_source_link.order_by</code>.
@@ -174,7 +169,7 @@ public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
      */
     @Override
     public List<ForeignKey<FreeformSourceLinkRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<FreeformSourceLinkRecord, ?>>asList(Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_FREEFORM_ID_FKEY, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_SOURCE_ID_FKEY, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<FreeformSourceLinkRecord, ?>>asList(Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_FREEFORM_ID_FKEY, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_SOURCE_ID_FKEY);
     }
 
     public Freeform freeform() {
@@ -183,10 +178,6 @@ public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
 
     public Source source() {
         return new Source(this, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_SOURCE_ID_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

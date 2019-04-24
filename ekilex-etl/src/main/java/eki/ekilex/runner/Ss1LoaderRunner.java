@@ -32,7 +32,6 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordSourceLink extends TableImpl<WordSourceLinkRecord> {
 
-    private static final long serialVersionUID = 1041585415;
+    private static final long serialVersionUID = 1547539891;
 
     /**
      * The reference instance of <code>public.word_source_link</code>
@@ -85,11 +85,6 @@ public class WordSourceLink extends TableImpl<WordSourceLinkRecord> {
      * The column <code>public.word_source_link.value</code>.
      */
     public final TableField<WordSourceLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.word_source_link.process_state_code</code>.
-     */
-    public final TableField<WordSourceLinkRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word_source_link.order_by</code>.
@@ -174,7 +169,7 @@ public class WordSourceLink extends TableImpl<WordSourceLinkRecord> {
      */
     @Override
     public List<ForeignKey<WordSourceLinkRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordSourceLinkRecord, ?>>asList(Keys.WORD_SOURCE_LINK__WORD_SOURCE_LINK_WORD_ID_FKEY, Keys.WORD_SOURCE_LINK__WORD_SOURCE_LINK_SOURCE_ID_FKEY, Keys.WORD_SOURCE_LINK__WORD_SOURCE_LINK_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<WordSourceLinkRecord, ?>>asList(Keys.WORD_SOURCE_LINK__WORD_SOURCE_LINK_WORD_ID_FKEY, Keys.WORD_SOURCE_LINK__WORD_SOURCE_LINK_SOURCE_ID_FKEY);
     }
 
     public Word word() {
@@ -183,10 +178,6 @@ public class WordSourceLink extends TableImpl<WordSourceLinkRecord> {
 
     public Source source() {
         return new Source(this, Keys.WORD_SOURCE_LINK__WORD_SOURCE_LINK_SOURCE_ID_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.WORD_SOURCE_LINK__WORD_SOURCE_LINK_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

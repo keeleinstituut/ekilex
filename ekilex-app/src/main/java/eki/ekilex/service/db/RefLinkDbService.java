@@ -29,7 +29,7 @@ public class RefLinkDbService implements DbConstant {
 						FREEFORM_SOURCE_LINK.SOURCE_ID
 						)
 				.from(FREEFORM_SOURCE_LINK)
-				.where(FREEFORM_SOURCE_LINK.ID.eq(refLinkId).and(FREEFORM_SOURCE_LINK.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.where(FREEFORM_SOURCE_LINK.ID.eq(refLinkId))
 				.fetchOne();
 	}
 
@@ -42,7 +42,7 @@ public class RefLinkDbService implements DbConstant {
 						DEFINITION_SOURCE_LINK.SOURCE_ID
 						)
 				.from(DEFINITION_SOURCE_LINK)
-				.where(DEFINITION_SOURCE_LINK.ID.eq(refLinkId).and(DEFINITION_SOURCE_LINK.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.where(DEFINITION_SOURCE_LINK.ID.eq(refLinkId))
 				.fetchOne();
 	}
 
@@ -55,7 +55,7 @@ public class RefLinkDbService implements DbConstant {
 						LEXEME_SOURCE_LINK.SOURCE_ID
 						)
 				.from(LEXEME_SOURCE_LINK)
-				.where(LEXEME_SOURCE_LINK.ID.eq(refLinkId).and(LEXEME_SOURCE_LINK.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.where(LEXEME_SOURCE_LINK.ID.eq(refLinkId))
 				.fetchOne();
 	}
 
