@@ -30,6 +30,10 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.constant.TextDecoration;
@@ -282,6 +286,10 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			String pronunciation = (String) term.get("pronunciation");
 			String wordClass = term.get("word_class").toString();
 			Integer sourceId = (Integer) term.get("source_id");
+			Integer createdById = (Integer) term.get("creater_id");
+			Timestamp createdOn = (Timestamp) term.get("create_time");
+			Integer modifiedById = (Integer) term.get("changer_id");
+			Timestamp modifiedOn = (Timestamp) term.get("change_time");
 
 			Long wordId;
 			if (termWordIdMap.containsKey(termId)) {
@@ -299,6 +307,15 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				}
 				wordId = createOrSelectWord(word, null, null, wordDuplicateCount);
 				termWordIdMap.put(termId, wordId);
+			}
+
+			if (createdOn != null && createdById != null) {
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue,
+						createdOn, String.valueOf(createdById));
+			}
+			if (modifiedOn != null && modifiedById != null) {
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue,
+						modifiedOn, String.valueOf(modifiedById));
 			}
 
 			Long meaningId;
@@ -369,6 +386,19 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				}
 				Integer sourceId = (Integer) definition.get("source_id");
 				createDefinitionSourceLink(context, definitionId, sourceId);
+
+				Integer createdById = (Integer) definition.get("creater_id");
+				Timestamp createdOn = (Timestamp) definition.get("create_time");
+				Integer modifiedById = (Integer) definition.get("changer_id");
+				Timestamp modifiedOn = (Timestamp) definition.get("change_time");
+				if (createdOn != null && createdById != null) {
+					createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE,
+							definitionId, definitionValue, createdOn, String.valueOf(createdById));
+				}
+				if (modifiedOn != null && modifiedById != null) {
+					createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE,
+							definitionId, definitionValue, modifiedOn, String.valueOf(modifiedById));
+				}
 			}
 		}
 		logger.info("{} definitions created", definitionsCount);

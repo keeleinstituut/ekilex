@@ -1,5 +1,13 @@
 SELECT
-  d.concept_id, d.lang, d.definition, d.description, d.source_id
+       d.concept_id,
+	   d.lang,
+	   d.definition,
+	   d.description,
+	   d.source_id,
+	   d.create_time,
+	   d.creater_id,
+	   d.change_time,
+	   d.changer_id
 FROM termeki_concepts c,
      termeki_definitions d,
      termeki_termbase_languages l
