@@ -2,6 +2,7 @@ package eki.ekilex.runner;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.runner.util.EstermReportHelper;
 import eki.ekilex.service.ReportComposer;
@@ -174,6 +174,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			// meaning
 			meaningId = createMeaning();
 			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode, fileName);
+			createMeaningLifecycleLog(meaningId, conceptGroupNode);
 
 			// domains
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
@@ -238,9 +239,10 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					lexemeObj.setWordId(wordId);
 					lexemeObj.setMeaningId(meaningId);
 					lexemeObj.setProcessStateCode(processStateCode);
-					lexemeId = createLexemeIfNotExists(lexemeObj, getDataset());
+					lexemeId = createOrSelectLexemeId(lexemeObj, getDataset());
 
 					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode, fileName, term);
+					createLexemeLifecycleLog(lexemeId, term, termGroupNode);
 
 					extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
 
@@ -364,10 +366,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 	private void extractAndSaveMeaningFreeforms(Long meaningId, Node conceptGroupNode, String fileName) throws Exception {
 
 		List<Node> valueNodes;
-		Element valueNode, valueNode1, valueNode2;
-		String valueStr, valueStr1, valueStr2;
-		long valueLong;
-		Timestamp valueTs;
+		Element valueNode;
+		String valueStr;
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(conceptExp);
 		if (valueNode != null) {
@@ -418,7 +418,16 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.WORKSHEET, valueStr);
 		}
+	}
 
+	private void createMeaningLifecycleLog(Long meaningId, Node conceptGroupNode) throws Exception {
+
+		Element valueNode1;
+		Element valueNode2;
+		String valueStr1;
+		String valueStr2;
+		long valueLong;
+		Timestamp valueTs;
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(createdByExp);
 		valueNode2 = (Element) conceptGroupNode.selectSingleNode(createdOnExp);
 		if (valueNode1 != null) {
@@ -692,11 +701,27 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 	private void extractAndSaveLexemeFreeforms(Long lexemeId, Node termGroupNode, String fileName, String term) throws Exception {
 
 		List<Node> valueNodes;
-		Element valueNode1, valueNode2;
-		String valueStr, valueStr1, valueStr2;
+		String valueStr;
+
+		valueNodes = termGroupNode.selectNodes(noteExp);
+		for (Node valueNode : valueNodes) {
+			valueStr = ((Element)valueNode).getTextTrim();
+			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
+			if (((Element)valueNode).hasMixedContent()) {
+				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
+				updateFreeformText(freeformId, valueStr);
+			}
+		}
+	}
+
+	private void createLexemeLifecycleLog(Long lexemeId, String term, Node termGroupNode) throws Exception {
+
+		Element valueNode1;
+		Element valueNode2;
+		String valueStr1;
+		String valueStr2;
 		long valueLong;
 		Timestamp valueTs;
-
 		valueNode1 = (Element) termGroupNode.selectSingleNode(createdByExp);
 		valueNode2 = (Element) termGroupNode.selectSingleNode(createdOnExp);
 		if (valueNode1 != null) {
@@ -773,16 +798,6 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			String entry = EOKK_UPDATED + " " + term;
 			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
 					entry, valueTs, valueStr1);
-		}
-
-		valueNodes = termGroupNode.selectNodes(noteExp);
-		for (Node valueNode : valueNodes) {
-			valueStr = ((Element)valueNode).getTextTrim();
-			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
-			if (((Element)valueNode).hasMixedContent()) {
-				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
-				updateFreeformText(freeformId, valueStr);
-			}
 		}
 	}
 
