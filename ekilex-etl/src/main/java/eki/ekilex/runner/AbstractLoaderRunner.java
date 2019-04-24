@@ -840,21 +840,44 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return definitionId;
 	}
 
+	protected Long createOrSelectLexemeId(Lexeme lexeme, String dataset) throws Exception {
+
+		Long wordId = lexeme.getWordId();
+		Long meaningId = lexeme.getMeaningId();
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("word_id", wordId);
+		criteriaParamMap.put("meaning_id", meaningId);
+		criteriaParamMap.put("dataset_code", dataset);
+		Map<String, Object> lexemeResult = basicDbService.select(LEXEME, criteriaParamMap);
+		Long lexemeId;
+		if (MapUtils.isEmpty(lexemeResult)) {
+			lexemeId = createLexeme(lexeme, dataset);
+			lexeme.setLexemeId(lexemeId);
+		} else {
+			lexemeId = (Long) lexemeResult.get("id");
+		}
+		return lexemeId;
+	}
+
+	protected Long createLexeme(Lexeme lexeme, String dataset) throws Exception {
+
+		Long wordId = lexeme.getWordId();
+		Long meaningId = lexeme.getMeaningId();
+
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("word_id", wordId);
+		valueParamMap.put("meaning_id", meaningId);
+		valueParamMap.put("dataset_code", dataset);
+		populateLexemeValueParamMap(lexeme, valueParamMap);
+		Long lexemeId = basicDbService.create(LEXEME, valueParamMap);
+		return lexemeId;
+	}
+
 	protected Long createLexemeIfNotExists(Lexeme lexeme, String dataset) throws Exception {
 
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
-		String createdBy = lexeme.getCreatedBy();
-		Timestamp createdOn = lexeme.getCreatedOn();
-		String modifiedBy = lexeme.getModifiedBy();
-		Timestamp modifiedOn = lexeme.getModifiedOn();
-		Integer lexemeLevel1 = lexeme.getLevel1();
-		Integer lexemeLevel2 = lexeme.getLevel2();
-		Integer lexemeLevel3 = lexeme.getLevel3();
-		String frequencyGroupCode = lexeme.getFrequencyGroupCode();
-		String valueStateCode = lexeme.getValueStateCode();
-		String processStateCode = lexeme.getProcessStateCode();
-		Float corpusFrequency = lexeme.getCorpusFrequency();
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", wordId);
@@ -866,46 +889,47 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			criteriaParamMap.clear();
 			criteriaParamMap.put("id", lexemeId);
 			Map<String, Object> valueParamMap = new HashMap<>();
-			if (StringUtils.isNotBlank(createdBy)) {
-				valueParamMap.put("created_by", createdBy);
-			}
-			if (createdOn != null) {
-				valueParamMap.put("created_on", createdOn);
-			}
-			if (StringUtils.isNotBlank(modifiedBy)) {
-				valueParamMap.put("modified_by", modifiedBy);
-			}
-			if (modifiedOn != null) {
-				valueParamMap.put("modified_on", modifiedOn);
-			}
-			if (lexemeLevel1 != null) {
-				valueParamMap.put("level1", lexemeLevel1);
-			}
-			if (lexemeLevel2 != null) {
-				valueParamMap.put("level2", lexemeLevel2);
-			}
-			if (lexemeLevel3 != null) {
-				valueParamMap.put("level3", lexemeLevel3);
-			}
-			if (StringUtils.isNotBlank(frequencyGroupCode)) {
-				valueParamMap.put("frequency_group_code", frequencyGroupCode);
-			}
-			if (StringUtils.isNotBlank(valueStateCode)) {
-				valueParamMap.put("value_state_code", valueStateCode);
-			}
-			if (StringUtils.isBlank(processStateCode)) {
-				valueParamMap.put("process_state_code", DEFAULT_PROCESS_STATE_CODE);
-			} else {
-				valueParamMap.put("process_state_code", processStateCode);
-			}
-			if (corpusFrequency != null) {
-				valueParamMap.put("corpus_frequency", corpusFrequency);
-			}
+			populateLexemeValueParamMap(lexeme, valueParamMap);
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
 			}
 		}
 		return lexemeId;
+	}
+
+	private void populateLexemeValueParamMap(Lexeme lexeme, Map<String, Object> valueParamMap) {
+
+		Integer lexemeLevel1 = lexeme.getLevel1();
+		Integer lexemeLevel2 = lexeme.getLevel2();
+		Integer lexemeLevel3 = lexeme.getLevel3();
+		String frequencyGroupCode = lexeme.getFrequencyGroupCode();
+		String valueStateCode = lexeme.getValueStateCode();
+		String processStateCode = lexeme.getProcessStateCode();
+		Float corpusFrequency = lexeme.getCorpusFrequency();
+
+		if (lexemeLevel1 != null) {
+			valueParamMap.put("level1", lexemeLevel1);
+		}
+		if (lexemeLevel2 != null) {
+			valueParamMap.put("level2", lexemeLevel2);
+		}
+		if (lexemeLevel3 != null) {
+			valueParamMap.put("level3", lexemeLevel3);
+		}
+		if (StringUtils.isNotBlank(frequencyGroupCode)) {
+			valueParamMap.put("frequency_group_code", frequencyGroupCode);
+		}
+		if (StringUtils.isNotBlank(valueStateCode)) {
+			valueParamMap.put("value_state_code", valueStateCode);
+		}
+		if (StringUtils.isBlank(processStateCode)) {
+			valueParamMap.put("process_state_code", DEFAULT_PROCESS_STATE_CODE);
+		} else {
+			valueParamMap.put("process_state_code", processStateCode);
+		}
+		if (corpusFrequency != null) {
+			valueParamMap.put("corpus_frequency", corpusFrequency);
+		}
 	}
 
 	protected void createUsages(Long lexemeId, List<Usage> usages, String dataLang) throws Exception {

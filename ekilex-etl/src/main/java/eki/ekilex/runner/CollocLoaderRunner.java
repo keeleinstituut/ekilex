@@ -1142,7 +1142,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		lexemeObj.setWordId(wordId);
 		lexemeObj.setMeaningId(meaningId);
 		lexemeObj.setLevel1(level1);
-		Long lexemeId = createLexemeIfNotExists(lexemeObj, getDataset());
+		Long lexemeId = createOrSelectLexemeId(lexemeObj, getDataset());
 		if (StringUtils.isNotBlank(posCode)) {
 			createLexemePos(lexemeId, posCode);
 		}
@@ -1155,7 +1155,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("pos_code", posCode);
-		basicDbService.create(LEXEME_POS, tableRowParamMap);
+		basicDbService.createIfNotExists(LEXEME_POS, tableRowParamMap);
 	}
 
 	private Long createCollocPosGroup(Long lexemeId, String posGroupCode) throws Exception {

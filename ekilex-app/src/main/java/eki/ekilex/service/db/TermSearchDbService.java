@@ -573,14 +573,13 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// getters
 
-	public Record3<Long, String, Long[]> getMeaning(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public Record2<Long,Long[]> getMeaning(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create
 				.select(
 						MEANING.ID.as("meaning_id"),
-						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
 						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
 				.from(MEANING, LEXEME)
 				.where(

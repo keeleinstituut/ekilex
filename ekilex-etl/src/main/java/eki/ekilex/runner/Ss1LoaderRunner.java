@@ -628,7 +628,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
 			if (lexemeId != null) {
 				createdLexemeIds.add(lexemeId);
-				lexeme.setLexemeId(lexemeId);
 				createUsages(lexemeId, usages, dataLang);
 				saveGovernments(meaningGroupNode, lexemeId, newWordData);
 				savePosCodes(lexemeId, newWordData, meaningPosCodes, reportingId);

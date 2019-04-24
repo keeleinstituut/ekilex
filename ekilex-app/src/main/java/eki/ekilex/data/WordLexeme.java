@@ -59,9 +59,6 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "lexeme_process_state_code")
 	private String lexemeProcessStateCode;
 
-	@Column(name = "meaning_process_state_code")
-	private String meaningProcessStateCode;
-
 	@Column(name = "gender_code")
 	private String genderCode;
 
@@ -244,14 +241,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
 		this.lexemeProcessStateCode = lexemeProcessStateCode;
-	}
-
-	public String getMeaningProcessStateCode() {
-		return meaningProcessStateCode;
-	}
-
-	public void setMeaningProcessStateCode(String meaningProcessStateCode) {
-		this.meaningProcessStateCode = meaningProcessStateCode;
 	}
 
 	public String getGenderCode() {

@@ -9,7 +9,6 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Meaning extends TableImpl<MeaningRecord> {
 
-    private static final long serialVersionUID = -1193429778;
+    private static final long serialVersionUID = 115638601;
 
     /**
      * The reference instance of <code>public.meaning</code>
@@ -61,31 +60,6 @@ public class Meaning extends TableImpl<MeaningRecord> {
      * The column <code>public.meaning.id</code>.
      */
     public final TableField<MeaningRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
-
-    /**
-     * The column <code>public.meaning.created_on</code>.
-     */
-    public final TableField<MeaningRecord, Timestamp> CREATED_ON = createField("created_on", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>public.meaning.created_by</code>.
-     */
-    public final TableField<MeaningRecord, String> CREATED_BY = createField("created_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.meaning.modified_on</code>.
-     */
-    public final TableField<MeaningRecord, Timestamp> MODIFIED_ON = createField("modified_on", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>public.meaning.modified_by</code>.
-     */
-    public final TableField<MeaningRecord, String> MODIFIED_BY = createField("modified_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.meaning.process_state_code</code>.
-     */
-    public final TableField<MeaningRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.meaning</code> table reference
@@ -158,18 +132,6 @@ public class Meaning extends TableImpl<MeaningRecord> {
     @Override
     public List<UniqueKey<MeaningRecord>> getKeys() {
         return Arrays.<UniqueKey<MeaningRecord>>asList(Keys.MEANING_PKEY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ForeignKey<MeaningRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MeaningRecord, ?>>asList(Keys.MEANING__MEANING_PROCESS_STATE_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.MEANING__MEANING_PROCESS_STATE_CODE_FKEY);
     }
 
     /**
