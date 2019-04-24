@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -755,7 +756,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		ArticleLogData logData = extractArticleLogData(articleNode);
 		String dataset = "[" + getDataset() + "]";
-		createLifecycleLog(newWords, logData, dataset);
+		List<Long> wordIds = newWords.stream().map(id -> id.id).collect(Collectors.toList());
+		createWordLifecycleLog(wordIds, logData, dataset);
 	}
 
 	private ArticleLogData extractArticleLogData(Node articleNode) throws ParseException {

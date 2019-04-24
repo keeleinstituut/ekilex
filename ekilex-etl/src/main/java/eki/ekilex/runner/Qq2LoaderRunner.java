@@ -4,6 +4,9 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -98,6 +101,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";
 	private final String usageTranslationLangRus = "rus";
 	private final String dataLang = "est";
+
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	@Override
 	public String getDataset() {
@@ -373,6 +378,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
+			extractLogDataAndCreateLifecycleLog(articleNode, newWords);
 			detectAndReportAtArticle(newWords, missingMabIntegrationCaseCount);
 
 			// progress
@@ -750,7 +756,32 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return false;
 	}
 
-	private void appendToReport(String reportName, Object... reportCells) throws Exception {
+	private void extractLogDataAndCreateLifecycleLog(Node articleNode, List<Word> newWords) throws Exception {
+
+		ArticleLogData logData = extractArticleLogData(articleNode);
+		String dataset = "[" + getDataset() + "]";
+		List<Long> wordIds = newWords.stream().map(Word::getId).collect(Collectors.toList());
+		createWordLifecycleLog(wordIds, logData, dataset);
+	}
+
+	private ArticleLogData extractArticleLogData(Node articleNode) throws ParseException {
+
+		final String createdByExp = "x:K";
+		final String createdOnExp = "x:KA";
+		final String creationEndExp = "x:KL";
+		final String modifiedByExp = "x:T";
+		final String modifiedOnExp = "x:TA";
+
+		ArticleLogData logData = new ArticleLogData();
+		logData.createdBy = getNodeStringValue(articleNode, createdByExp);
+		logData.createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
+		logData.creationEnd = getNodeTimestampValue(articleNode, creationEndExp, dateFormat);
+		logData.modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
+		logData.modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+		return logData;
+	}
+
+	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
 		if (!doReports) {
 			return;
 		}

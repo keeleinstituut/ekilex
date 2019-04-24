@@ -1,6 +1,9 @@
 package eki.ekilex.runner;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -106,6 +109,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final Float inboundPrimaryCollocMemberWeight = 1F;
 	private final Float outboundPrimaryCollocMemberWeight = 0.8F;
 	private final Float outboundSecondaryCollocMemberWeight = 0.5F;
+
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	private ReportComposer reportComposer;
 
@@ -354,6 +359,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					}
 				}
 			}
+
+			extractLogDataAndCreateLifecycleLog(articleNode, wordId);
 
 			// progress
 			articleCounter++;
@@ -1295,7 +1302,37 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return lexemeMeanings;
 	}
 
-	private void appendToReport(String reportName, Object... reportCells) throws Exception {
+	private void extractLogDataAndCreateLifecycleLog(Node articleNode, Long wordId) throws Exception {
+
+		ArticleLogData logData = extractArticleLogData(articleNode);
+		String dataset = "[" + getDataset() + "]";
+		List<Long> wordIds = new ArrayList<>();
+		wordIds.add(wordId);
+		createWordLifecycleLog(wordIds, logData, dataset);
+	}
+
+	private ArticleLogData extractArticleLogData(Node articleNode) throws ParseException {
+
+		final String createdByExp = "x:K";
+		final String createdOnExp = "x:KA";
+		final String creationEndExp = "x:KL";
+		final String modifiedByExp = "x:T";
+		final String modifiedOnExp = "x:TA";
+		final String chiefEditedByExp = "x:PT";
+		final String chiefEditedOnExp = "x:PTA";
+
+		ArticleLogData logData = new ArticleLogData();
+		logData.createdBy = getNodeStringValue(articleNode, createdByExp);
+		logData.createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
+		logData.creationEnd = getNodeTimestampValue(articleNode, creationEndExp, dateFormat);
+		logData.modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
+		logData.modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+		logData.chiefEditedBy = getNodeStringValue(articleNode, chiefEditedByExp);
+		logData.chiefEditedOn = getNodeTimestampValue(articleNode, chiefEditedOnExp, dateFormat);
+		return logData;
+	}
+
+	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
 		if (!doReports) {
 			return;
 		}

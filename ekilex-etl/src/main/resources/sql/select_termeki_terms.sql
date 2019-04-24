@@ -7,7 +7,11 @@ select t.term_id,
        t.gender,
        t.pronunciation,
        t.word_class,
-       t.source_id
+       t.source_id,
+       t.create_time,
+       t.creater_id,
+       t.change_time,
+       t.changer_id
 from termeki_terms t
   left join termeki_concepts c
          on t.concept_id = c.concept_id

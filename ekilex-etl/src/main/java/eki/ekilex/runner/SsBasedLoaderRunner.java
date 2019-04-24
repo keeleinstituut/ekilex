@@ -4,9 +4,6 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,10 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleEventType;
-import eki.common.constant.LifecycleLogOwner;
-import eki.common.constant.LifecycleProperty;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
@@ -59,10 +52,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected final static String WORD_RELATION_DERIVATIVE = "deriv";
 	protected final static String WORD_RELATION_DERIVATIVE_BASE = "deriv_base";
 	protected final static String WORD_RELATION_UNION = "ühend";
-
-	private final static String CREATION_END = "(koostamise lõpp)";
-	private final static String MODIFICATION_END = "(toimetamise lõpp)";
-	private final static String CHIEF_EDITING = "(artikli peatoimetamine)";
 
 	protected ReportComposer reportComposer;
 	protected boolean reportingPaused;
@@ -542,58 +531,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	protected String getNodeStringValue(Node node, String exp) {
-
-		String result = null;
-		Element stringNode = (Element) node.selectSingleNode(exp);
-		if (stringNode != null) {
-			result = stringNode.getTextTrim();
-		}
-		return result;
-	}
-
-	protected Timestamp getNodeTimestampValue(Node node, String exp, DateFormat dateFormat) throws ParseException {
-
-		Timestamp timestamp = null;
-		Element timestampNode = (Element) node.selectSingleNode(exp);
-		if (timestampNode != null) {
-			String timestampStr = timestampNode.getTextTrim();
-			long timestampLong = dateFormat.parse(timestampStr).getTime();
-			timestamp = new Timestamp(timestampLong);
-		}
-		return timestamp;
-	}
-
-	protected void createLifecycleLog(List<WordData> newWords, ArticleLogData logData, String dataset) throws Exception {
-		for (WordData wordData : newWords) {
-			Long wordId = wordData.id;
-
-			if (logData.createdBy != null && logData.createdOn != null) {
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, dataset,
-						logData.createdOn, logData.createdBy);
-			}
-			if (logData.createdBy != null && logData.creationEnd != null) {
-				String message = dataset + " " + CREATION_END;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.creationEnd, logData.createdBy);
-			}
-			if (logData.modifiedBy != null && logData.modifiedOn != null) {
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, dataset,
-						logData.modifiedOn, logData.modifiedBy);
-			}
-			if (logData.modifiedBy != null && logData.modificationEnd != null) {
-				String message = dataset + " " + MODIFICATION_END;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.modificationEnd, logData.modifiedBy);
-			}
-			if (logData.chiefEditedBy != null && logData.chiefEditedOn != null) {
-				String message = dataset + " " + CHIEF_EDITING;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.chiefEditedOn, logData.chiefEditedBy);
-			}
-		}
-	}
-
 	protected class CommentData {
 		String value;
 		String author;
@@ -691,17 +628,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> latinTermins = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
 		List<WordSeries> series = new ArrayList<>();
-	}
-
-	protected class ArticleLogData {
-		String createdBy;
-		Timestamp createdOn;
-		Timestamp creationEnd;
-		String modifiedBy;
-		Timestamp modifiedOn;
-		Timestamp modificationEnd;
-		String chiefEditedBy;
-		Timestamp chiefEditedOn;
 	}
 
 }
