@@ -1437,28 +1437,28 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected void createWordLifecycleLog(List<Long> wordIds, ArticleLogData logData, String dataset) throws Exception {
 
 		for (Long wordId : wordIds) {
-			if (logData.createdBy != null && logData.createdOn != null) {
+			if (logData.getCreatedBy() != null && logData.getCreatedOn() != null) {
 				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, dataset,
-						logData.createdOn, logData.createdBy);
+						logData.getCreatedOn(), logData.getCreatedBy());
 			}
-			if (logData.createdBy != null && logData.creationEnd != null) {
+			if (logData.getCreatedBy() != null && logData.getCreationEnd() != null) {
 				String message = dataset + " " + CREATION_END;
 				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.creationEnd, logData.createdBy);
+						logData.getCreationEnd(), logData.getCreatedBy());
 			}
-			if (logData.modifiedBy != null && logData.modifiedOn != null) {
+			if (logData.getModifiedBy() != null && logData.getModifiedOn() != null) {
 				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, dataset,
-						logData.modifiedOn, logData.modifiedBy);
+						logData.getModifiedOn(), logData.getModifiedBy());
 			}
-			if (logData.modifiedBy != null && logData.modificationEnd != null) {
+			if (logData.getModifiedBy() != null && logData.getModificationEnd() != null) {
 				String message = dataset + " " + MODIFICATION_END;
 				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.modificationEnd, logData.modifiedBy);
+						logData.getModificationEnd(), logData.getModifiedBy());
 			}
-			if (logData.chiefEditedBy != null && logData.chiefEditedOn != null) {
+			if (logData.getChiefEditedBy() != null && logData.getChiefEditedOn() != null) {
 				String message = dataset + " " + CHIEF_EDITING;
 				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.chiefEditedOn, logData.chiefEditedBy);
+						logData.getChiefEditedOn(), logData.getChiefEditedBy());
 			}
 		}
 	}
@@ -1513,14 +1513,86 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	}
 
-	protected class ArticleLogData {
-		String createdBy;
-		Timestamp createdOn;
-		Timestamp creationEnd;
-		String modifiedBy;
-		Timestamp modifiedOn;
-		Timestamp modificationEnd;
-		String chiefEditedBy;
-		Timestamp chiefEditedOn;
+	class ArticleLogData {
+
+		private String createdBy;
+
+		private Timestamp createdOn;
+
+		private Timestamp creationEnd;
+
+		private String modifiedBy;
+
+		private Timestamp modifiedOn;
+
+		private Timestamp modificationEnd;
+
+		private String chiefEditedBy;
+
+		private Timestamp chiefEditedOn;
+
+		public String getCreatedBy() {
+			return createdBy;
+		}
+
+		public void setCreatedBy(String createdBy) {
+			this.createdBy = createdBy;
+		}
+
+		public Timestamp getCreatedOn() {
+			return createdOn;
+		}
+
+		public void setCreatedOn(Timestamp createdOn) {
+			this.createdOn = createdOn;
+		}
+
+		public Timestamp getCreationEnd() {
+			return creationEnd;
+		}
+
+		public void setCreationEnd(Timestamp creationEnd) {
+			this.creationEnd = creationEnd;
+		}
+
+		public String getModifiedBy() {
+			return modifiedBy;
+		}
+
+		public void setModifiedBy(String modifiedBy) {
+			this.modifiedBy = modifiedBy;
+		}
+
+		public Timestamp getModifiedOn() {
+			return modifiedOn;
+		}
+
+		public void setModifiedOn(Timestamp modifiedOn) {
+			this.modifiedOn = modifiedOn;
+		}
+
+		public Timestamp getModificationEnd() {
+			return modificationEnd;
+		}
+
+		public void setModificationEnd(Timestamp modificationEnd) {
+			this.modificationEnd = modificationEnd;
+		}
+
+		public String getChiefEditedBy() {
+			return chiefEditedBy;
+		}
+
+		public void setChiefEditedBy(String chiefEditedBy) {
+			this.chiefEditedBy = chiefEditedBy;
+		}
+
+		public Timestamp getChiefEditedOn() {
+			return chiefEditedOn;
+		}
+
+		public void setChiefEditedOn(Timestamp chiefEditedOn) {
+			this.chiefEditedOn = chiefEditedOn;
+		}
 	}
 }
