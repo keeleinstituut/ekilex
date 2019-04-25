@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
+import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
@@ -75,87 +76,93 @@ public class ModifyController implements WebConstant {
 	@Autowired
 	private SearchHelper searchHelper;
 
+	@Autowired
+	private TextDecorationService textDecorationService;
+
 	@ResponseBody
 	@PostMapping("/add_item")
 	public String addItem(@RequestBody AddItemRequest itemData) {
 
 		logger.debug("Add new item : {}", itemData);
+
+		String valuePrese = textDecorationService.cleanEkiElementHtmlMarkup(itemData.getValue());
+
 		switch (itemData.getOpCode()) {
 		case "definition":
-			updateService.addDefinition(itemData.getId(), itemData.getValue(), itemData.getLanguage(), itemData.getDataset());
+			updateService.addDefinition(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getDataset());
 			break;
 		case "usage":
-			updateService.addUsage(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			updateService.addUsage(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		case "usage_translation":
-			updateService.addUsageTranslation(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			updateService.addUsageTranslation(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		case "usage_definition":
-			updateService.addUsageDefinition(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			updateService.addUsageDefinition(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		case "lexeme_frequency_group":
-			updateService.updateLexemeFrequencyGroup(itemData.getId(), itemData.getValue());
+			updateService.updateLexemeFrequencyGroup(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_pos":
-			updateService.addLexemePos(itemData.getId(), itemData.getValue());
+			updateService.addLexemePos(itemData.getId(), valuePrese);
 			break;
 		case "meaning_domain":
-			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(valuePrese);
 			updateService.addMeaningDomain(itemData.getId2(), meaningDomain);
 			break;
 		case "government":
-			updateService.addGovernment(itemData.getId(), itemData.getValue());
+			updateService.addGovernment(itemData.getId(), valuePrese);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK: {
 			String sourceName = findSourceName(itemData.getId2());
-			updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceName, itemData.getValue());
+			updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceName, valuePrese);
 			break;
 		}
 		case ContentKey.FREEFORM_SOURCE_LINK: {
 			String sourceName = findSourceName(itemData.getId2());
-			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceName, itemData.getValue());
+			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceName, valuePrese);
 			break;
 		}
 		case ContentKey.LEXEME_SOURCE_LINK: {
 			String sourceName = findSourceName(itemData.getId2());
-			updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceName, itemData.getValue());
+			updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceName, valuePrese);
 			break;
 		}
 		case "lexeme_deriv":
-			updateService.addLexemeDeriv(itemData.getId(), itemData.getValue());
+			updateService.addLexemeDeriv(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_register":
-			updateService.addLexemeRegister(itemData.getId(), itemData.getValue());
+			updateService.addLexemeRegister(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_region":
-			updateService.addLexemeRegion(itemData.getId(), itemData.getValue());
+			updateService.addLexemeRegion(itemData.getId(), valuePrese);
 			break;
 		case "word_gender":
-			updateService.updateWordGender(itemData.getId3(), itemData.getValue());
+			updateService.updateWordGender(itemData.getId3(), valuePrese);
 			break;
 		case "word_type":
-			updateService.addWordType(itemData.getId3(), itemData.getValue());
+			updateService.addWordType(itemData.getId3(), valuePrese);
 			break;
 		case "word_aspect":
-			updateService.updateWordAspect(itemData.getId3(), itemData.getValue());
+			updateService.updateWordAspect(itemData.getId3(), valuePrese);
 			break;
 		case "lexeme_grammar":
-			updateService.addLexemeGrammar(itemData.getId(), itemData.getValue());
+			updateService.addLexemeGrammar(itemData.getId(), valuePrese);
 			break;
 		case "word_relation":
-			updateService.addWordRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
+			updateService.addWordRelation(itemData.getId(), itemData.getId2(), valuePrese);
 			break;
 		case "lexeme_relation":
-			updateService.addLexemeRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
+			updateService.addLexemeRelation(itemData.getId(), itemData.getId2(), valuePrese);
 			break;
 		case "meaning_relation":
-			updateService.addMeaningRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
+			updateService.addMeaningRelation(itemData.getId(), itemData.getId2(), valuePrese);
 			break;
 		case "lexeme_value_state":
-			updateService.updateLexemeValueState(itemData.getId(), itemData.getValue());
+			updateService.updateLexemeValueState(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_process_state":
-			updateService.updateLexemeProcessState(itemData.getId(), itemData.getValue());
+			updateService.updateLexemeProcessState(itemData.getId(), valuePrese);
 			break;
 		case "usage_author":
 			String sourceValue = findSourceName(itemData.getId2());
@@ -163,16 +170,16 @@ public class ModifyController implements WebConstant {
 			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), refType, sourceValue, null);
 			break;
 		case "learner_comment":
-			updateService.addLearnerComment(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			updateService.addLearnerComment(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		case "lexeme_public_note":
-			updateService.addLexemePublicNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			updateService.addLexemePublicNote(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		case "meaning_public_note":
-			updateService.addMeaningPublicNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			updateService.addMeaningPublicNote(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		case "meaning_private_note":
-			updateService.addMeaningPrivateNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			updateService.addMeaningPrivateNote(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		}
 		return "{}";
@@ -182,75 +189,77 @@ public class ModifyController implements WebConstant {
 	@PostMapping("/modify_item")
 	public String modifyItem(@RequestBody ModifyItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		String valuePrese = textDecorationService.cleanEkiElementHtmlMarkup(itemData.getValue());
+
 		logger.debug("Update operation for {}", itemData.getOpCode());
 		switch (itemData.getOpCode()) {
 		case "term_user_lang":
 			updateLanguageSelection(itemData, sessionBean);
 			break;
 		case "usage":
-			updateService.updateUsageValue(itemData.getId(), itemData.getValue());
+			updateService.updateUsageValue(itemData.getId(), valuePrese);
 			break;
 		case "usage_translation":
-			updateService.updateUsageTranslationValue(itemData.getId(), itemData.getValue());
+			updateService.updateUsageTranslationValue(itemData.getId(), valuePrese);
 			break;
 		case "usage_definition":
-			updateService.updateUsageDefinitionValue(itemData.getId(), itemData.getValue());
+			updateService.updateUsageDefinitionValue(itemData.getId(), valuePrese);
 			break;
 		case "definition":
-			updateService.updateDefinitionValue(itemData.getId(), itemData.getValue());
+			updateService.updateDefinitionValue(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_frequency_group":
-			updateService.updateLexemeFrequencyGroup(itemData.getId(), itemData.getValue());
+			updateService.updateLexemeFrequencyGroup(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_pos":
-			updateService.updateLexemePos(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+			updateService.updateLexemePos(itemData.getId(), itemData.getCurrentValue(), valuePrese);
 			break;
 		case "meaning_domain":
 			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(itemData.getCurrentValue());
-			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
+			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(valuePrese);
 			updateService.updateMeaningDomain(itemData.getId(), currentMeaningDomain, newMeaningDomain);
 			break;
 		case "government":
-			updateService.updateGovernment(itemData.getId(), itemData.getValue());
+			updateService.updateGovernment(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_deriv":
-			updateService.updateLexemeDeriv(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+			updateService.updateLexemeDeriv(itemData.getId(), itemData.getCurrentValue(), valuePrese);
 			break;
 		case "lexeme_register":
-			updateService.updateLexemeRegister(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+			updateService.updateLexemeRegister(itemData.getId(), itemData.getCurrentValue(), valuePrese);
 			break;
 		case "lexeme_region":
-			updateService.updateLexemeRegion(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+			updateService.updateLexemeRegion(itemData.getId(), itemData.getCurrentValue(), valuePrese);
 			break;
 		case "word_gender":
-			updateService.updateWordGender(itemData.getId(), itemData.getValue());
+			updateService.updateWordGender(itemData.getId(), valuePrese);
 			break;
 		case "word_type":
-			updateService.updateWordType(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+			updateService.updateWordType(itemData.getId(), itemData.getCurrentValue(), valuePrese);
 			break;
 		case "lexeme_grammar":
-			updateService.updateGrammar(itemData.getId(), itemData.getValue());
+			updateService.updateGrammar(itemData.getId(), valuePrese);
 			break;
 		case "word_aspect":
-			updateService.updateWordAspect(itemData.getId(), itemData.getValue());
+			updateService.updateWordAspect(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_value_state":
-			updateService.updateLexemeValueState(itemData.getId(), itemData.getValue());
+			updateService.updateLexemeValueState(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_process_state":
-			updateService.updateLexemeProcessState(itemData.getId(), itemData.getValue());
+			updateService.updateLexemeProcessState(itemData.getId(), valuePrese);
 			break;
 		case "learner_comment":
-			updateService.updateLearnerComment(itemData.getId(), itemData.getValue());
+			updateService.updateLearnerComment(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_public_note":
-			updateService.updateLexemePublicNote(itemData.getId(), itemData.getValue());
+			updateService.updateLexemePublicNote(itemData.getId(), valuePrese);
 			break;
 		case "meaning_public_note":
-			updateService.updateMeaningPublicNote(itemData.getId(), itemData.getValue());
+			updateService.updateMeaningPublicNote(itemData.getId(), valuePrese);
 			break;
 		case "meaning_private_note":
-			updateService.updateMeaningPrivateNote(itemData.getId(), itemData.getValue());
+			updateService.updateMeaningPrivateNote(itemData.getId(), valuePrese);
 			break;
 		}
 
