@@ -35,7 +35,7 @@
   </th:block>
   <th:block th:fragment="nav_bar">
     <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
-      <a class="navbar-brand" th:href="@{/}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
+      <a class="navbar-brand" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
       <div class="navbar-nav" th:if="${activeItem}">
         <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">
           Leksikograafid

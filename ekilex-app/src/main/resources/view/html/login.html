@@ -7,7 +7,7 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{index.title}">Tere</h5>
+        <h5 class="card-title" th:text="#{login.title}">Tere</h5>
       </div>
       <div class="card-body">
         <div class="alert alert-info" role="alert" th:if="${success_message}">
@@ -38,7 +38,6 @@
               <div class="form-group row">
                 <div class="col-sm-4 offset-sm-2">
                   <button type="submit" class="btn btn-primary float-left">Sisene</button>
-                  <a role="button" class="btn btn-info float-right" th:href="@{/register}">Uus kasutaja</a>
                 </div>
               </div>
             </form>

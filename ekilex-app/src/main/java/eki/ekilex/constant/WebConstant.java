@@ -2,6 +2,8 @@ package eki.ekilex.constant;
 
 public interface WebConstant {
 
+	String INDEX_URI = "/";
+
 	String LOGIN_URI = "/dologin";
 
 	String LOGOUT_URI = "/dologout";
@@ -14,7 +16,7 @@ public interface WebConstant {
 
 	String HOME_PAGE = "home";
 
-	String HOME_URI = "/";
+	String HOME_URI = "/home";
 
 	String APPLY_PAGE = "apply";
 
