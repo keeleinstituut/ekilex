@@ -2,7 +2,6 @@ package eki.ekilex.runner;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -244,7 +243,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode, fileName, term);
 					createLexemeLifecycleLog(lexemeId, term, termGroupNode);
 
-					extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
+					extractAndUpdateLexemeValueStateCode(lexemeId, termGroupNode);
 
 					// definitions
 					valueNodes = termGroupNode.selectNodes(definitionExp);
@@ -641,45 +640,15 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void extractAndUpdateLexemeProperties(Long lexemeId, Node termGroupNode) throws Exception {
+	private void extractAndUpdateLexemeValueStateCode(Long lexemeId, Node termGroupNode) throws Exception {
 
 		Element valueNode;
 		String valueStr, mappedValueStr;
-		long valueLong;
-		Timestamp valueTs;
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("id", lexemeId);
 
 		Map<String, Object> valueParamMap = new HashMap<>();
-
-		valueNode = (Element) termGroupNode.selectSingleNode(createdByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueParamMap.put("created_by", valueStr);
-		}
-
-		valueNode = (Element) termGroupNode.selectSingleNode(createdOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			valueParamMap.put("created_on", valueTs);
-		}
-
-		valueNode = (Element) termGroupNode.selectSingleNode(modifiedByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueParamMap.put("modified_by", valueStr);
-		}
-
-		valueNode = (Element) termGroupNode.selectSingleNode(modifiedOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = defaultDateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			valueParamMap.put("modified_on", valueTs);
-		}
 
 		valueNode = (Element) termGroupNode.selectSingleNode(valueStateExp);
 		if (valueNode != null) {
