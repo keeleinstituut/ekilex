@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -39,7 +38,6 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.ModifyItemRequest;
 import eki.ekilex.data.ModifyListRequest;
-import eki.ekilex.data.Source;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
@@ -114,17 +112,17 @@ public class ModifyController implements WebConstant {
 			updateService.addGovernment(itemData.getId(), valuePrese);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK: {
-			String sourceName = findSourceName(itemData.getId2());
+			String sourceName = findSourceName(itemData.getId3());
 			updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceName, valuePrese);
 			break;
 		}
 		case ContentKey.FREEFORM_SOURCE_LINK: {
-			String sourceName = findSourceName(itemData.getId2());
+			String sourceName = findSourceName(itemData.getId3());
 			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceName, valuePrese);
 			break;
 		}
 		case ContentKey.LEXEME_SOURCE_LINK: {
-			String sourceName = findSourceName(itemData.getId2());
+			String sourceName = findSourceName(itemData.getId3());
 			updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceName, valuePrese);
 			break;
 		}
@@ -165,7 +163,7 @@ public class ModifyController implements WebConstant {
 			updateService.updateLexemeProcessState(itemData.getId(), valuePrese);
 			break;
 		case "usage_author":
-			String sourceValue = findSourceName(itemData.getId2());
+			String sourceValue = findSourceName(itemData.getId3());
 			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
 			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), refType, sourceValue, null);
 			break;
@@ -439,16 +437,6 @@ public class ModifyController implements WebConstant {
 		return "OK";
 	}
 
-	private String findSourceName(Long sourceId) {
-		Source source = sourceService.getSource(sourceId);
-		List<String> sourceNames = source.getSourceNames();
-		if (CollectionUtils.isNotEmpty(sourceNames)) {
-			String firstAvailableSourceName = sourceNames.get(0);
-			return firstAvailableSourceName;
-		}
-		return "---";
-	}
-
 	@PostMapping("/add_word")
 	public String addNewWord(
 			@RequestParam("dataset") String dataset,
@@ -576,6 +564,10 @@ public class ModifyController implements WebConstant {
 			return "redirect:" + TERM_SEARCH_URI + searchUri;
 		}
 		return null;
+	}
+
+	private String findSourceName(Long sourcePropertyId) {
+		return sourceService.getSourcePropertyValue(sourcePropertyId);
 	}
 
 }

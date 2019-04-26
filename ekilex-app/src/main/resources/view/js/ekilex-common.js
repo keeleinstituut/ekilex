@@ -274,7 +274,10 @@ function initAddSourceLinkDlg(addDlg) {
 				e.preventDefault();
 				let button = $(e.target);
 				let sourceName = button.closest('.form-group').find('.form-control').val();
-				addDlg.find('[name=id2]').val(button.data('source-id'));
+				let sourceId = button.data('source-id');
+				let selectedSourceNameId = $("[name='source_" + sourceId + "']:checked").val();
+				addDlg.find('[name=id2]').val(sourceId);
+				addDlg.find('[name=id3]').val(selectedSourceNameId);
 				addDlg.find('[name=value]').val(sourceName);
 				let theForm = button.closest('form');
 				submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {

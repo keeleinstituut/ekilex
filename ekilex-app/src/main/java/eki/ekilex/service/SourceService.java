@@ -58,6 +58,11 @@ public class SourceService {
 	}
 
 	@Transactional
+	public String getSourcePropertyValue(Long sourcePropertyId) {
+		return sourceDbService.getSourcePropertyValue(sourcePropertyId);
+	}
+
+	@Transactional
 	public List<Source> findSourcesByName(String searchFilter) {
 		return findSourcesByNameAndType(searchFilter, null);
 	}
@@ -165,9 +170,11 @@ public class SourceService {
 
 			if (FreeformType.SOURCE_NAME.equals(sourcePropertyType)) {
 				source.getSourceNames().add(sourcePropertyValueText);
+				source.getSourceProperties().add(0, sourceProperty);
+			} else {
+				source.getSourceProperties().add(sourceProperty);
 			}
 
-			source.getSourceProperties().add(sourceProperty);
 		}
 		return sources;
 	}
