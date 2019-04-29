@@ -108,7 +108,7 @@
                   <option th:each="domain : ${origin.getValue()}"
                           th:value="${domain.toIdString()}"
                           th:selected="${criteria.searchValue == domain}"
-                          th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+                          th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                 </optgroup>
               </select>
             </div>
@@ -190,7 +190,7 @@
             <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
               <option th:each="domain : ${origin.getValue()}"
                       th:value="${domain.toIdString()}"
-                      th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+                      th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
             </optgroup>
           </select>
         </div>

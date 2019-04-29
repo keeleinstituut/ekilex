@@ -145,7 +145,7 @@
                 <select required class="form-control value-select">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
-                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                   </optgroup>
                 </select>
               </div>
@@ -316,7 +316,7 @@
               <select required class="form-control value-select">
                 <option value="" hidden disabled selected>vali väärtus...</option>
                 <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
-                  <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+                  <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                 </optgroup>
               </select>
             </div>
@@ -341,7 +341,7 @@
               <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
-                        th:text="${domain.origin + ' - ' + domain.value}"
+                        th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
                         th:selected="${domain.toIdString() == classif.toIdString()}">domain</option>
               </optgroup>
             </select>

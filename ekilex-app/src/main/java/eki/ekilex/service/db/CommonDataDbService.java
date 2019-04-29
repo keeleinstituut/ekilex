@@ -210,7 +210,7 @@ public class CommonDataDbService implements DbConstant {
 						DOMAIN_LABEL.CODE,
 						DOMAIN_LABEL.VALUE)
 				.from(DOMAIN_LABEL)
-				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE)
 				.fetch();
 	}
 
@@ -227,7 +227,7 @@ public class CommonDataDbService implements DbConstant {
 						.from(MEANING_DOMAIN)
 						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
 								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))))
-				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE)
 				.fetch();
 	}
 
