@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1472,12 +1473,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String modifiedByExp = "x:T";
 		final String modifiedOnExp = "x:TA";
 
+		String createdBy = getNodeStringValue(articleNode, createdByExp);
+		Timestamp createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
+		Timestamp creationEnd = getNodeTimestampValue(articleNode, creationEndExp, dateFormat);
+		String modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
+		Timestamp modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+
 		ArticleLogData logData = new ArticleLogData();
-		logData.createdBy = getNodeStringValue(articleNode, createdByExp);
-		logData.createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
-		logData.creationEnd = getNodeTimestampValue(articleNode, creationEndExp, dateFormat);
-		logData.modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
-		logData.modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+		logData.setCreatedBy(createdBy);
+		logData.setCreatedOn(createdOn);
+		logData.setCreationEnd(creationEnd);
+		logData.setModifiedBy(modifiedBy);
+		logData.setModifiedOn(modifiedOn);
+
 		return logData;
 	}
 

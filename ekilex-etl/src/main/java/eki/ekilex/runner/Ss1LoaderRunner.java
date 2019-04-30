@@ -32,7 +32,6 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
@@ -771,15 +770,25 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String chiefEditedByExp = "s:PT";
 		final String chiefEditedOnExp = "s:PTA";
 
+		String createdBy = getNodeStringValue(articleNode, createdByExp);
+		Timestamp createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
+		Timestamp creationEnd = getNodeTimestampValue(articleNode, creationEndExp, dateFormat);
+		String modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
+		Timestamp modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+		Timestamp modificationEnd = getNodeTimestampValue(articleNode, modificationEndExp, dateFormat);
+		String chiefEditedBy = getNodeStringValue(articleNode, chiefEditedByExp);
+		Timestamp chiefEditedOn = getNodeTimestampValue(articleNode, chiefEditedOnExp, dateFormat);
+
 		ArticleLogData logData = new ArticleLogData();
-		logData.createdBy = getNodeStringValue(articleNode, createdByExp);
-		logData.createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
-		logData.creationEnd = getNodeTimestampValue(articleNode, creationEndExp, dateFormat);
-		logData.modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
-		logData.modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
-		logData.modificationEnd = getNodeTimestampValue(articleNode, modificationEndExp, dateFormat);
-		logData.chiefEditedBy = getNodeStringValue(articleNode, chiefEditedByExp);
-		logData.chiefEditedOn = getNodeTimestampValue(articleNode, chiefEditedOnExp, dateFormat);
+		logData.setCreatedBy(createdBy);
+		logData.setCreatedOn(createdOn);
+		logData.setCreationEnd(creationEnd);
+		logData.setModifiedBy(modifiedBy);
+		logData.setModifiedOn(modifiedOn);
+		logData.setModificationEnd(modificationEnd);
+		logData.setChiefEditedBy(chiefEditedBy);
+		logData.setChiefEditedOn(chiefEditedOn);
+
 		return logData;
 	}
 

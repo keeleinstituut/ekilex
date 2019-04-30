@@ -275,8 +275,7 @@ public class UpdateDbService implements DbConstant {
 		Record1<Long> lexemePos = create
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_POS.POS_CODE.eq(posCode))
-						.and(LEXEME_POS.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						.and(LEXEME_POS.POS_CODE.eq(posCode)))
 				.fetchOne();
 		Long lexemePosId;
 		if (lexemePos == null) {
@@ -296,8 +295,7 @@ public class UpdateDbService implements DbConstant {
 		Record1<Long> lexemeDeriv = create
 				.select(LEXEME_DERIV.ID).from(LEXEME_DERIV)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode))
-						.and(LEXEME_DERIV.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
 				.fetchOne();
 		Long lexemeDerivId;
 		if (lexemeDeriv == null) {
@@ -317,8 +315,7 @@ public class UpdateDbService implements DbConstant {
 		Record1<Long> lexemeRegister = create
 				.select(LEXEME_REGISTER.ID).from(LEXEME_REGISTER)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode))
-						.and(LEXEME_REGISTER.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
 				.fetchOne();
 		Long lexemeRegisterId;
 		if (lexemeRegister == null) {
@@ -338,8 +335,7 @@ public class UpdateDbService implements DbConstant {
 		Record1<Long> lexemeRegion = create
 				.select(LEXEME_REGION.ID).from(LEXEME_REGION)
 				.where(LEXEME_REGION.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_REGION.REGION_CODE.eq(regionCode))
-						.and(LEXEME_REGION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						.and(LEXEME_REGION.REGION_CODE.eq(regionCode)))
 				.fetchOne();
 		Long lexemeRegionId;
 		if (lexemeRegion == null) {
@@ -360,8 +356,7 @@ public class UpdateDbService implements DbConstant {
 				.select(MEANING_DOMAIN.ID).from(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode()))
-						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
-						.and(MEANING_DOMAIN.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin())))
 				.fetchOne();
 		Long meaningDomainId;
 		if (meaningDomain == null) {

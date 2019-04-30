@@ -210,7 +210,7 @@ public class CommonDataDbService implements DbConstant {
 						DOMAIN_LABEL.CODE,
 						DOMAIN_LABEL.VALUE)
 				.from(DOMAIN_LABEL)
-				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE)
 				.fetch();
 	}
 
@@ -227,7 +227,7 @@ public class CommonDataDbService implements DbConstant {
 						.from(MEANING_DOMAIN)
 						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
 								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))))
-				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE)
 				.fetch();
 	}
 
@@ -399,7 +399,7 @@ public class CommonDataDbService implements DbConstant {
 								.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
 								)
 						)
-				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId).and(MEANING_DOMAIN.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
 				.fetch();
 	}
 
@@ -418,9 +418,8 @@ public class CommonDataDbService implements DbConstant {
 						DEFINITION_SOURCE_LINK.VALUE.as("source_link_value")
 						)
 				.from(DEFINITION.leftOuterJoin(DEFINITION_SOURCE_LINK)
-						.on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
-						.and(DEFINITION_SOURCE_LINK.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-				.where(DEFINITION.MEANING_ID.eq(meaningId).and(DEFINITION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						.on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID)))
+				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.orderBy(DEFINITION.ORDER_BY)
 				.fetch();
 	}
@@ -452,7 +451,6 @@ public class CommonDataDbService implements DbConstant {
 				)
 				.where(
 						MEANING_RELATION.MEANING1_ID.eq(meaningId)
-								.and(MEANING_RELATION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 								.and(MEANING_RELATION.MEANING2_ID.eq(MEANING.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
@@ -493,7 +491,7 @@ public class CommonDataDbService implements DbConstant {
 						LEXEME_SOURCE_LINK.VALUE
 				)
 				.from(LEXEME_SOURCE_LINK)
-				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId).and(LEXEME_SOURCE_LINK.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
 				.fetch();
 	}
@@ -504,8 +502,7 @@ public class CommonDataDbService implements DbConstant {
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name()))
-						.and(FREEFORM.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
 	}
@@ -523,7 +520,7 @@ public class CommonDataDbService implements DbConstant {
 						gt.CLASSIF_CODE.as("type_code")
 						)
 				.from(
-						glff.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())).and(g.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						glff.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())))
 						.leftOuterJoin(gt).on(gt.PARENT_ID.eq(g.ID).and(gt.TYPE.eq(FreeformType.GOVERNMENT_TYPE.name())))
 						)
 				.where(glff.LEXEME_ID.eq(lexemeId))
@@ -557,7 +554,6 @@ public class CommonDataDbService implements DbConstant {
 					.and(srcff.SOURCE_ID.eq(src.ID))
 					.and(srcff.FREEFORM_ID.eq(pname.ID))
 					.and(pname.TYPE.eq(FreeformType.SOURCE_NAME.name()))
-					.and(pname.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 					)
 			.groupBy(src.ID)
 			.asTable("srcn");
@@ -584,12 +580,12 @@ public class CommonDataDbService implements DbConstant {
 					srcn.field("src_name").cast(String.class).as("usage_source_name")
 					)
 			.from(
-					ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())).and(u.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())).and(ut.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())).and(ud.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(srcl).on(srcl.FREEFORM_ID.eq(u.ID).and(srcl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+					ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
+					.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
+					.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
+					.leftOuterJoin(srcl).on(srcl.FREEFORM_ID.eq(u.ID))
 					.leftOuterJoin(srcn).on(srcn.field("id").cast(Long.class).eq(srcl.SOURCE_ID))
-					.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())).and(utype.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+					.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 					.leftOuterJoin(utypelbl).on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode))))
 					)
 			.where(ulff.LEXEME_ID.eq(lexemeId))
@@ -630,7 +626,6 @@ public class CommonDataDbService implements DbConstant {
 				.from(LEXEME_POS, POS_LABEL)
 				.where(
 						LEXEME_POS.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_POS.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(POS_LABEL.CODE.eq(LEXEME_POS.POS_CODE))
 						.and(POS_LABEL.LANG.eq(classifierLabelLang))
 						.and(POS_LABEL.TYPE.eq(classifierLabelTypeCode))
@@ -648,7 +643,6 @@ public class CommonDataDbService implements DbConstant {
 				.from(LEXEME_DERIV, DERIV_LABEL)
 				.where(
 						LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_DERIV.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(DERIV_LABEL.CODE.eq(LEXEME_DERIV.DERIV_CODE))
 						.and(DERIV_LABEL.LANG.eq(classifierLabelLang))
 						.and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode))
@@ -666,7 +660,6 @@ public class CommonDataDbService implements DbConstant {
 				.from(LEXEME_REGISTER, REGISTER_LABEL)
 				.where(
 						LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_REGISTER.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(REGISTER_LABEL.CODE.eq(LEXEME_REGISTER.REGISTER_CODE))
 						.and(REGISTER_LABEL.LANG.eq(classifierLabelLang))
 						.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode))
@@ -684,7 +677,6 @@ public class CommonDataDbService implements DbConstant {
 				.from(LEXEME_REGION, REGION)
 				.where(
 						LEXEME_REGION.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_REGION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(REGION.CODE.eq(LEXEME_REGION.REGION_CODE))
 				)
 				.orderBy(REGION.ORDER_BY)
@@ -715,7 +707,6 @@ public class CommonDataDbService implements DbConstant {
 				)
 				.where(
 						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
-								.and(LEX_RELATION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 								.and(LEX_RELATION.LEXEME2_ID.eq(LEXEME.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))

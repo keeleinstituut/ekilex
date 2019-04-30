@@ -138,3 +138,9 @@ function removeEkiTag(editorElem) {
 	}
 	editorElem.focus();
 }
+
+$(document).on("paste", "[name=editFld]", function(e) {
+	e.preventDefault();
+	let text = e.originalEvent.clipboardData.getData('text/plain');
+	document.execCommand("insertHTML", false, text);
+});

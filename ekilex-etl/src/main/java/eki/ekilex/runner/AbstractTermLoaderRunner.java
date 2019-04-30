@@ -24,7 +24,6 @@ import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
 import eki.ekilex.constant.TermLoaderConstant;
-import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.runner.util.TermLoaderHelper;
 import eki.ekilex.service.ReportComposer;
 
@@ -38,43 +37,6 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 	protected ReportComposer reportComposer;
 
 	protected Count illegalSourceReferenceValueCount;
-
-	@Deprecated
-	protected void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj, DateFormat dateFormat) throws Exception {
-
-		Element valueNode;
-		String valueStr;
-		long valueLong;
-		Timestamp valueTs;
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(createdByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			meaningObj.setCreatedBy(valueStr);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(createdOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = dateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			meaningObj.setCreatedOn(valueTs);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			meaningObj.setModifiedBy(valueStr);
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(modifiedOnExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			valueLong = dateFormat.parse(valueStr).getTime();
-			valueTs = new Timestamp(valueLong);
-			meaningObj.setModifiedOn(valueTs);
-		}
-	}
 
 	protected List<Content> extractContentAndRefs(Node rootContentNode, String lang, String term, boolean logWarrnings) throws Exception {
 

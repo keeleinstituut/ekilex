@@ -63,6 +63,15 @@ public class SourceDbService implements SystemConstant {
 				.into(SourcePropertyTuple.class);
 	}
 
+	public String getSourcePropertyValue(Long sourcePropertyId) {
+
+		return create
+				.select(FREEFORM.VALUE_TEXT)
+				.from(FREEFORM)
+				.where(FREEFORM.ID.eq(sourcePropertyId))
+				.fetchOneInto(String.class);
+	}
+
 	public List<SourcePropertyTuple> findSourcesByNameAndType(String searchFilterWithMetaCharacters, SourceType sourceType) {
 
 		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();

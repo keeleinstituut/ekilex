@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +40,6 @@ import eki.common.constant.WordRelationGroupType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
@@ -991,13 +991,21 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String chiefEditedByExp = "x:PT";
 		final String chiefEditedOnExp = "x:PTA";
 
+		String createdBy = getNodeStringValue(articleNode, createdByExp);
+		Timestamp createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
+		String modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
+		Timestamp modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
+		String chiefEditedBy = getNodeStringValue(articleNode, chiefEditedByExp);
+		Timestamp chiefEditedOn = getNodeTimestampValue(articleNode, chiefEditedOnExp, dateFormat);
+
 		ArticleLogData logData = new ArticleLogData();
-		logData.createdBy = getNodeStringValue(articleNode, createdByExp);
-		logData.createdOn = getNodeTimestampValue(articleNode, createdOnExp, dateFormat);
-		logData.modifiedBy = getNodeStringValue(articleNode, modifiedByExp);
-		logData.modifiedOn = getNodeTimestampValue(articleNode, modifiedOnExp, dateFormat);
-		logData.chiefEditedBy = getNodeStringValue(articleNode, chiefEditedByExp);
-		logData.chiefEditedOn = getNodeTimestampValue(articleNode, chiefEditedOnExp, dateFormat);
+		logData.setCreatedBy(createdBy);
+		logData.setCreatedOn(createdOn);
+		logData.setModifiedBy(modifiedBy);
+		logData.setModifiedOn(modifiedOn);
+		logData.setChiefEditedBy(chiefEditedBy);
+		logData.setChiefEditedOn(chiefEditedOn);
+
 		return logData;
 	}
 

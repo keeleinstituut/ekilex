@@ -35,7 +35,7 @@
   </th:block>
   <th:block th:fragment="nav_bar">
     <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
-      <a class="navbar-brand" th:href="@{/}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
+      <a class="navbar-brand" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
       <div class="navbar-nav" th:if="${activeItem}">
         <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">
           Leksikograafid
@@ -184,10 +184,12 @@
           <tr>
             <td style="width: 70px;"></td>
             <td>
-              <th:block th:each="sourceProperty : ${source.sourceProperties}">
+              <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
                 <div class="row">
                   <div class="mb-1">
                     <div style="display: list-item; position: absolute"></div>
+                    <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}"
+                           th:name="${'source_' + source.sourceId}" th:checked="${sourcePropertyIter.count == 1}">
                     <span th:text="${sourceProperty.type}"></span>
                     -
                     <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"

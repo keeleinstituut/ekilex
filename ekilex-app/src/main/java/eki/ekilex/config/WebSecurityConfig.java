@@ -23,6 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers(
+						INDEX_URI,
 						LOGIN_PAGE_URI,
 						LOGIN_ERROR_URI,
 						REGISTER_PAGE_URI + "/**",
@@ -41,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 				.and()
 				.logout()
 				.logoutUrl(LOGOUT_URI)
-				.logoutSuccessUrl(HOME_URI)
+				.logoutSuccessUrl(INDEX_URI)
 				.and()
 				.csrf().disable();
 	}

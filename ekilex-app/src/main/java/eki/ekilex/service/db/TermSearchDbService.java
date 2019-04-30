@@ -228,8 +228,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Lexeme l1 = LEXEME.as("l1");
 				Definition d1 = DEFINITION.as("d1");
 				Condition where1 = d1.MEANING_ID.eq(m1.ID)
-						.and(l1.MEANING_ID.eq(m1.ID))
-						.and(d1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
+						.and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
@@ -248,8 +247,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Condition where1 = l1.MEANING_ID.eq(m1.ID)
 						.and(l1ff.LEXEME_ID.eq(l1.ID))
 						.and(l1ff.FREEFORM_ID.eq(u1.ID))
-						.and(u1.TYPE.eq(FreeformType.USAGE.name()))
-						.and(u1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
+						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
