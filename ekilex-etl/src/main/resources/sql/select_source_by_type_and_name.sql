@@ -12,5 +12,5 @@ and   exists (select sff1.id
               and   sff2.freeform_id = ff2.id
               and   ff1.type = :sourcePropertyTypeName
               and   ff1.value_text = :sourceName
-			  and   ff2.type = :sourcePropertyTypeExtSourceId
-			  and   ff2.value_text = :extSourceId)
+              and   ff2.type = :sourcePropertyTypeExtSourceId
+              and   ff2.value_text = :extSourceId)

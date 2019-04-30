@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import eki.ekilex.constant.DbConstant;
+import eki.common.constant.DbConstant;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRecord;

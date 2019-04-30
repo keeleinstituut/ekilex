@@ -31,7 +31,6 @@ import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
-import eki.common.data.PgVarcharArray;
 import eki.ekilex.service.ReportComposer;
 
 @Component
@@ -57,7 +56,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 	private final String etymGroupExp = "s:etg";
 	private final String etymWordWrapupExp = "s:etgg/s:ex";
 	private final String etymTypeExp = "s:epl";
-	private final String etymSubGroupExp = "s:etgg[count(s:ex)>0]";
+	private final String etymRelExp = "s:etgg[count(s:ex)>0]";
 	private final String etymLangExp = "s:k";
 	private final String etymWordExp = "s:ex";
 	private final String etymCommentExp = "s:dtx";
@@ -116,12 +115,11 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 
 		final String ssDataset = "ss1";
 
-		List<Map<String, Object>> wordDatas;
-
-		Count etymCount = new Count();
-		Count etymWordSourceAuthorCount = new Count();
-		Count etymWordSourceDocumentCount = new Count();
-		Count missingEtymTypeCount = new Count();
+		Count etymGroupCount = new Count();
+		Count etymRecordCount = new Count();
+		Count etymRelRecordCount = new Count();
+		Count createdWordCount = new Count();
+		Count etymSourceLinkCount = new Count();
 
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -133,142 +131,156 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 				Element guidNode = (Element) articleNode.selectSingleNode(guidExp);
 				String guid = guidNode.getTextTrim();
 				List<Node> wordNodes = articleNode.selectNodes(headWordExp);
-				List<String> words = wordNodes.stream()
+				List<String> headwords = wordNodes.stream()
 						.map(wordNode -> {
-							String rawWord = ((Element)wordNode).getTextTrim();
+							String rawWord = ((Element) wordNode).getTextTrim();
 							String word = cleanUp(rawWord);
+							word = StringUtils.removeEnd(word, UNIFIED_AFIXOID_SYMBOL);
+							word = StringUtils.removeStart(word, UNIFIED_AFIXOID_SYMBOL);
 							return word;
 						})
 						.distinct()
 						.collect(Collectors.toList());
 
-				List<Long> headWordIds = new ArrayList<>();
-				for (String word : words) {
-					wordDatas = getWord(word, guid, ssDataset);
-					for (Map<String, Object> wordData : wordDatas) {
-						Long wordId = (Long) wordData.get("id");
-						headWordIds.add(wordId);
-					}
+				List<Long> headwordIds = new ArrayList<>();
+				Map<String, Long> headwordIdsMap = new HashMap<>();
+				for (String headword : headwords) {
+					List<Map<String, Object>> wordDatas = getWord(headword, guid, ssDataset);
+					Map<String, Object> wordData = wordDatas.get(0);
+					Long wordId = (Long) wordData.get("id");
+					headwordIds.add(wordId);
+					headwordIdsMap.put(headword, wordId);
 				}
 
-				List<Node> etymCommentNodes = etymNode.selectNodes(etymRootCommentExp);
-				List<String> etymRootComments = null;
-				if (CollectionUtils.isNotEmpty(etymCommentNodes)) {
-					etymRootComments = etymCommentNodes
-							.stream()
-							.map(node -> {
-								String etymComment = ((Element) node).getTextTrim();
-								etymComment = cleanEkiEntityMarkup(etymComment);
-								return etymComment;
-							}).collect(Collectors.toList());
+				Element etymCommentNode = (Element) etymNode.selectSingleNode(etymRootCommentExp);
+				String etymComment = null;
+				String etymCommentPrese = null;
+				if (etymCommentNode != null) {
+					String origText = etymCommentNode.getTextTrim();
+					etymComment = cleanEkiEntityMarkup(origText);
+					etymCommentPrese = convertEkiEntityMarkup(origText);
 				}
+
+				List<SourceLink> documentSourceLinks = new ArrayList<>();
+				List<SourceLink> personSourceLinks = new ArrayList<>();
+				String etymYear = null;
 
 				List<Node> headwordEtymGroupNodes = etymNode.selectNodes(headwordEtymGroupExp);
 				if (CollectionUtils.isNotEmpty(headwordEtymGroupNodes)) {
 					if (CollectionUtils.size(headwordEtymGroupNodes) > 1) {
-						logger.debug("Too many etym groups per headword \"{}\"", words);
+						logger.debug("Too many etym groups per headword \"{}\"", headwords);
 					}
 					Element headwordEtymGroupElement = (Element) headwordEtymGroupNodes.get(0);
 					Element headwordEtymSourceElement = (Element) headwordEtymGroupElement.selectSingleNode(etymSourceGroupExp);
 					Element headwordEtymSourceDocumentElement = (Element) headwordEtymSourceElement.selectSingleNode(etymSourceDocumentExp);
 					if (headwordEtymSourceDocumentElement != null) {
 						String document = headwordEtymSourceDocumentElement.getTextTrim();
-						SourceLink sourceLink = getOrCreateSource(document, SourceType.DOCUMENT, etymWordSourceDocumentCount);
-						for (Long headwordId : headWordIds) {
-							createWordSourceLink(headwordId, ReferenceType.ANY, sourceLink.getSourceId(), null, sourceLink.getValue());
-						}
+						SourceLink sourceLink = getOrCreateSource(document, SourceType.DOCUMENT);
+						documentSourceLinks.add(sourceLink);
 					}
 					List<Node> headwordEtymSourceAuthorNodes = headwordEtymSourceElement.selectNodes(etymSourceAuthorExp);
 					if (CollectionUtils.isNotEmpty(headwordEtymSourceAuthorNodes)) {
 						for (Node headwordEtymSourceAuthorNode : headwordEtymSourceAuthorNodes) {
 							Element headwordEtymSourceAuthorElement = (Element) headwordEtymSourceAuthorNode;
 							String author = headwordEtymSourceAuthorElement.getTextTrim();
-							SourceLink sourceLink = getOrCreateSource(author, SourceType.PERSON, etymWordSourceAuthorCount);
-							for (Long headwordId : headWordIds) {
-								createWordSourceLink(headwordId, ReferenceType.AUTHOR, sourceLink.getSourceId(), null, sourceLink.getValue());
-							}
+							SourceLink sourceLink = getOrCreateSource(author, SourceType.PERSON);
+							personSourceLinks.add(sourceLink);
 						}
 					}
 					Element headwordEtymYearElement = (Element) headwordEtymSourceElement.selectSingleNode(etymYearExp);
 					if (headwordEtymYearElement != null) {
-						String etymYear = headwordEtymYearElement.getTextTrim();
-						for (Long headwordId : headWordIds) {
-							updateWordEtymYear(headwordId, etymYear);
-						}
-					}
-				}
-				List<Node> headwordEtymTypeNodes = etymNode.selectNodes(etymGroupExp + "/" + etymTypeExp);
-				if (CollectionUtils.isEmpty(headwordEtymTypeNodes)) {
-					missingEtymTypeCount.increment();
-				} else {
-					if (CollectionUtils.size(headwordEtymTypeNodes) > 1) {
-						logger.debug("Many etym type references per headword \"{}\"", words);
-					}
-					Element headwordEtymTypeElement = (Element) headwordEtymTypeNodes.get(0);
-					String etymTypeCode = headwordEtymTypeElement.getTextTrim();
-					String mappedEtymTypeCode = etymTypes.get(etymTypeCode);
-					if (mappedEtymTypeCode == null) {
-						logger.debug("Unknown etym type \"{}\"", etymTypeCode);
-					} else {
-						for (Long headwordId : headWordIds) {
-							updateWordEtymType(headwordId, mappedEtymTypeCode);
-						}
+						etymYear = headwordEtymYearElement.getTextTrim();
 					}
 				}
 
 				//TODO impl
 				List<Node> etymPrivateNoteNodes = etymNode.selectNodes(etymRootPrivateNoteExp);
 				List<Node> etymGroupNodes = etymNode.selectNodes(etymGroupExp);
-				List<Long> word1Ids = null;
-				List<Long> word2Ids = null;
-				List<String> etymComments = null;
+
+				WordEtym wordEtym;
+				List<WordEtym> wordEtyms1 = null;
+				List<WordEtym> wordEtyms2 = new ArrayList<>();
+
+				WordEtymPeekAhead wordEtymPeekAhead = getWordEtymPeekAhead(etymGroupNodes, 0);
+				for (Long headwordId : headwordIds) {
+
+					wordEtym = new WordEtym();
+					wordEtym.setWordId(headwordId);
+					wordEtym.setEtymTypeCode(wordEtymPeekAhead.getEtymTypeCode());
+					wordEtym.setQuestionable(wordEtymPeekAhead.isQuestionable());
+					wordEtym.setEtymYear(etymYear);
+					wordEtym.setComment(etymComment);
+					wordEtym.setCommentPrese(etymCommentPrese);
+					Long wordEtymId = createWordEtym(wordEtym);
+					etymRecordCount.increment();
+					wordEtyms2.add(wordEtym);
+
+					if (CollectionUtils.isNotEmpty(documentSourceLinks)) {
+						for (SourceLink sourceLink : documentSourceLinks) {
+							createWordEtymSourceLink(wordEtymId, ReferenceType.ANY, sourceLink.getSourceId(), null, sourceLink.getValue());
+							etymSourceLinkCount.increment();
+						}
+					}
+					if (CollectionUtils.isNotEmpty(personSourceLinks)) {
+						for (SourceLink sourceLink : personSourceLinks) {
+							createWordEtymSourceLink(wordEtymId, ReferenceType.AUTHOR, sourceLink.getSourceId(), null, sourceLink.getValue());
+							etymSourceLinkCount.increment();
+						}
+					}
+				}
+
 				String mappedRegisterCode = null;
-				for (Node etymGroupNode : etymGroupNodes) {
-					Element etymGroupElement = (Element) etymGroupNode;
-					List<Node> etymWordsWrapupNodes = etymGroupNode.selectNodes(etymWordWrapupExp);
-					List<String> etymWordsWrapup = etymWordsWrapupNodes.stream().map(node -> ((Element) node).getTextTrim()).collect(Collectors.toList());
-					String etymQuestionable = etymGroupElement.attributeValue(etymQuestionableAttr);
-					boolean isEtymQuestionable = StringUtils.isNotBlank(etymQuestionable);
+				for (int etymGroupNodeIndex = 0; etymGroupNodeIndex < etymGroupNodes.size(); etymGroupNodeIndex++) {//etg
+
+					etymGroupCount.increment();
+					Element etymGroupElement = (Element) etymGroupNodes.get(etymGroupNodeIndex);
 					String etymAlternative = etymGroupElement.attributeValue(etymAlternativeAttr);
 					boolean isEtymAlternative = StringUtils.isNotBlank(etymAlternative);
-					boolean isFirstEtym;
-					if (word1Ids == null) {
-						word1Ids = new ArrayList<>(headWordIds);
-						isFirstEtym = true;
+
+					if (isEtymAlternative && (etymGroupNodeIndex > 0)) {
+						List<Long> wordEtym1WordIds = wordEtyms1.stream().map(WordEtym::getWordId).collect(Collectors.toList());
+						wordEtyms1 = new ArrayList<>();
+						for (Long wordEtym1wordId : wordEtym1WordIds) {
+							wordEtym = new WordEtym();
+							wordEtym.setWordId(wordEtym1wordId);
+							createWordEtym(wordEtym);
+							etymRecordCount.increment();
+							wordEtyms1.add(wordEtym);
+						}
 					} else {
-						if (!isEtymAlternative) {
-							word1Ids = new ArrayList<>(word2Ids);
-						}
-						isFirstEtym = false;
+						wordEtyms1 = new ArrayList<>(wordEtyms2);
 					}
-					word2Ids = new ArrayList<>();
-					// etym subgroup
-					List<Node> etymSubGroupNodes = etymGroupNode.selectNodes(etymSubGroupExp);
-					for (Node etymSubGroupNode : etymSubGroupNodes) {
-						Element etymSubGroupElement = (Element) etymSubGroupNode;
-						etymQuestionable = etymSubGroupElement.attributeValue(etymQuestionableAttr);
-						isEtymQuestionable = (isFirstEtym && isEtymQuestionable) || StringUtils.isNotBlank(etymQuestionable);
-						String etymWordCompound = etymSubGroupElement.attributeValue(etymWordCompoundAttr);
-						boolean isEtymWordCompound = StringUtils.isNotBlank(etymWordCompound);
-						List<Node> etymWordNodes = etymSubGroupNode.selectNodes(etymWordExp);
-						List<Node> etymLangNodes = etymSubGroupNode.selectNodes(etymLangExp);
+					wordEtyms2 = new ArrayList<>();
+
+					// etym relations
+					List<Node> etymWordsWrapupNodes = etymGroupElement.selectNodes(etymWordWrapupExp);
+					List<String> etymWordsWrapup = etymWordsWrapupNodes.stream().map(node -> ((Element) node).getTextTrim()).collect(Collectors.toList());
+					wordEtymPeekAhead = getWordEtymPeekAhead(etymGroupNodes, etymGroupNodeIndex + 1);
+
+					List<Node> etymRelNodes = etymGroupElement.selectNodes(etymRelExp);
+					for (Node etymRelNode : etymRelNodes) {//etgg
+
+						Element etymRelElement = (Element) etymRelNode;
+						String etymRelQuestionable = etymRelElement.attributeValue(etymQuestionableAttr);
+						boolean isEtymRelQuestionable = StringUtils.isNotBlank(etymRelQuestionable);
+						String etymRelWordCompound = etymRelElement.attributeValue(etymWordCompoundAttr);
+						boolean isEtymRelWordCompound = StringUtils.isNotBlank(etymRelWordCompound);
+						List<Node> etymWordNodes = etymRelNode.selectNodes(etymWordExp);
+						List<Node> etymLangNodes = etymRelNode.selectNodes(etymLangExp);
 						if (CollectionUtils.isEmpty(etymLangNodes)) {
-							logger.debug("Missing lang for \"{}\" - \"{}\"", words, etymWordsWrapup);
-							appendToReport(REPORT_MISSING_ETYM_LANG, words, etymWordsWrapup);
+							logger.debug("Missing lang for \"{}\" - \"{}\"", headwords, etymWordsWrapup);
+							appendToReport(REPORT_MISSING_ETYM_LANG, headwords, etymWordsWrapup);
 						}
-						Element etymCommentNode = (Element) etymSubGroupNode.selectSingleNode(etymCommentExp);
-						if (isFirstEtym && CollectionUtils.isNotEmpty(etymRootComments)) {
-							etymComments = new ArrayList<>(etymRootComments);
-						} else {
-							etymComments = new ArrayList<>();
+						Element etymRelCommentNode = (Element) etymRelNode.selectSingleNode(etymCommentExp);
+						String etymRelComment = null;
+						String etymRelCommentPrese = null;
+						if (etymRelCommentNode != null) {
+							String origText = etymRelCommentNode.getTextTrim();
+							etymRelComment = cleanEkiEntityMarkup(origText);
+							etymRelCommentPrese = convertEkiEntityMarkup(origText);
 						}
-						if (etymCommentNode != null) {
-							String etymComment = etymCommentNode.getTextTrim();
-							etymComment = cleanEkiEntityMarkup(etymComment);
-							etymComments.add(etymComment);
-						}
-						Node etymSourceGroupNode = etymSubGroupNode.selectSingleNode(etymSourceGroupExp);
-						String etymYear = null;
+						Node etymSourceGroupNode = etymRelNode.selectSingleNode(etymSourceGroupExp);
+						etymYear = null;
 						List<SourceLink> sourceLinks = new ArrayList<>();
 						if (etymSourceGroupNode != null) {
 							// etym year
@@ -282,64 +294,119 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 								for (Node etymSourceAuthorNode : etymSourceAuthorNodes) {
 									Element etymSourceAuthorElement = (Element) etymSourceAuthorNode;
 									String author = etymSourceAuthorElement.getTextTrim();
-									SourceLink sourceLink = getOrCreateSource(author, SourceType.PERSON, etymWordSourceAuthorCount);
+									SourceLink sourceLink = getOrCreateSource(author, SourceType.PERSON);
 									sourceLinks.add(sourceLink);
 								}
 							}
 						}
-						List<Node> etymRegisterNodes = etymSubGroupNode.selectNodes(etymRegisterExp);
+						List<Node> etymRegisterNodes = etymRelNode.selectNodes(etymRegisterExp);
 						List<String> etymRegisterCodes = new ArrayList<>();
 						for (Node etymRegisterNode : etymRegisterNodes) {
-							String etymRegister = ((Element)etymRegisterNode).getTextTrim();
+							String etymRegister = ((Element) etymRegisterNode).getTextTrim();
 							mappedRegisterCode = registerConversionMap.get(etymRegister);
 							if (mappedRegisterCode == null) {
 								logger.debug("Unknown register \"{}\"", etymRegister);
-								appendToReport(REPORT_UNKNOWN_REGISTER, words, etymWordsWrapup, etymRegister);
+								appendToReport(REPORT_UNKNOWN_REGISTER, headwords, etymWordsWrapup, etymRegister);
 								continue;
 							}
 							etymRegisterCodes.add(mappedRegisterCode);
 						}
+
 						Long meaningId = createMeaning();
 						// foreign etym words
 						for (Node etymWordNode : etymWordNodes) {
+
 							Element etymWordElement = (Element) etymWordNode;
-							String word = etymWordElement.getTextTrim();
-							word = cleanUp(word);
-							for (Node etymLangNode : etymLangNodes) {
-								Element etymLangElement = (Element) etymLangNode;
-								String etymLang = etymLangElement.getTextTrim();
-								String mappedEtymLangCode = languageConversionMap.get(etymLang);
-								int homonymNr = getWordMaxHomonymNr(word, mappedEtymLangCode);
-								homonymNr++;
-								Long word2Id = createWordParadigmForm(word, DEFAULT_WORD_MORPH_CODE, homonymNr, mappedEtymLangCode, etymYear);
-								for (SourceLink sourceLink : sourceLinks) {
-									createWordSourceLink(word2Id, ReferenceType.AUTHOR, sourceLink.getSourceId(), null, sourceLink.getValue());
-								}
-								Long lexemeId = createLexeme(word2Id, meaningId);
-								for (String etymRegisterCode : etymRegisterCodes) {
-									createLexemeRegister(lexemeId, etymRegisterCode);
-								}
-								word2Ids.add(word2Id);
-								for (Long word1Id : word1Ids) {
-									createWordEtymology(word1Id, word2Id, etymComments, isEtymQuestionable, isEtymWordCompound);
-									etymCount.increment();
+							String wordStr = etymWordElement.getTextTrim();
+							List<String> words = new ArrayList<>();
+							String wordVer;
+							if (StringUtils.contains(wordStr, '(')) {
+								wordVer = StringUtils.substringBefore(wordStr, "(");
+								wordVer = cleanUp(wordVer);
+								words.add(wordVer);
+							}
+							wordVer = cleanUp(wordStr);
+							words.add(wordVer); 
+
+							for (String word : words) {
+
+								for (Node etymLangNode : etymLangNodes) {
+	
+									Element etymLangElement = (Element) etymLangNode;
+									String etymLang = etymLangElement.getTextTrim();
+									String mappedEtymLangCode = languageConversionMap.get(etymLang);
+									int homonymNr = getWordMaxHomonymNr(word, mappedEtymLangCode);
+									homonymNr++;
+									Long word2Id = createWordParadigmForm(word, DEFAULT_WORD_MORPH_CODE, homonymNr, mappedEtymLangCode);
+									createdWordCount.increment();
+									Long lexemeId = createLexeme(word2Id, meaningId);
+									for (String etymRegisterCode : etymRegisterCodes) {
+										createLexemeRegister(lexemeId, etymRegisterCode);
+									}
+									wordEtym = new WordEtym();
+									wordEtym.setWordId(word2Id);
+									wordEtym.setEtymTypeCode(wordEtymPeekAhead.getEtymTypeCode());
+									wordEtym.setQuestionable(wordEtymPeekAhead.isQuestionable());
+									wordEtym.setEtymYear(etymYear);
+									Long wordEtymId = createWordEtym(wordEtym);
+									etymRecordCount.increment();
+									wordEtyms2.add(wordEtym);
+	
+									for (SourceLink sourceLink : sourceLinks) {
+										createWordEtymSourceLink(wordEtymId, ReferenceType.AUTHOR, sourceLink.getSourceId(), null, sourceLink.getValue());
+										etymSourceLinkCount.increment();
+									}
+	
+									for (WordEtym wordEtym1 : wordEtyms1) {
+										WordEtymRel wordEtymRel = new WordEtymRel();
+										wordEtymRel.setWordEtymId(wordEtym1.getId());
+										wordEtymRel.setRelatedWordId(word2Id);
+										wordEtymRel.setComment(etymRelComment);
+										wordEtymRel.setCommentPrese(etymRelCommentPrese);
+										wordEtymRel.setQuestionable(isEtymRelQuestionable);
+										wordEtymRel.setCompound(isEtymRelWordCompound);
+										createWordEtymRel(wordEtymRel);
+										etymRelRecordCount.increment();
+									}
 								}
 							}
 						}
 						// est etym words
-						List<Node> etymEstWordNodes = etymSubGroupNode.selectNodes(etymEstWordExp);
+						List<Node> etymEstWordNodes = etymRelNode.selectNodes(etymEstWordExp);
 						if (CollectionUtils.isNotEmpty(etymEstWordNodes)) {
 							for (Node etymEstWordNode : etymEstWordNodes) {
 								Element etymEstWordElement = (Element) etymEstWordNode;
 								String word = etymEstWordElement.getTextTrim();
 								word = cleanUp(word);
-								int homonymNr = getWordMaxHomonymNr(word, langEst);
-								homonymNr++;
-								Long wordId = createWordParadigmForm(word, DEFAULT_WORD_MORPH_CODE, homonymNr, langEst, null);
+								Long wordId = headwordIdsMap.get(word);
+								if (wordId == null) {
+									int homonymNr = getWordMaxHomonymNr(word, langEst);
+									homonymNr++;
+									wordId = createWordParadigmForm(word, DEFAULT_WORD_MORPH_CODE, homonymNr, langEst);
+									createdWordCount.increment();
+								}
 								createLexeme(wordId, meaningId);
+								/* 
+								 * the field contains comma-separated list which should all be separate words
+								 * 
+								String wordValuesStr = etymEstWordElement.getTextTrim();
+								String[] words = StringUtils.split(wordValuesStr, ',');
+								for (String word : words) {
+									word = StringUtils.trim(word);
+									word = cleanUp(word);
+									Long wordId = headwordIdsMap.get(word);
+									if (wordId == null) {
+										int homonymNr = getWordMaxHomonymNr(word, langEst);
+										homonymNr++;
+										wordId = createWordParadigmForm(word, DEFAULT_WORD_MORPH_CODE, homonymNr, langEst);
+										createdWordCount.increment();
+									}
+									createLexeme(wordId, meaningId);
+								}
+								*/
 							}
 						}
-					}
+					} //etgg
 				}
 			}
 
@@ -355,10 +422,11 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 			reportComposer.end();
 		}
 
-		logger.debug("Found {} word etym relations", etymCount.getValue());
-		logger.debug("Found {} word source authors", etymWordSourceAuthorCount.getValue());
-		logger.debug("Found {} word source documents", etymWordSourceDocumentCount.getValue());
-		logger.debug("Found {} etym groups with missing type", missingEtymTypeCount.getValue());
+		logger.debug("{} word etym groups", etymGroupCount.getValue());
+		logger.debug("{} word etym records", etymRecordCount.getValue());
+		logger.debug("{} word etym relation records", etymRelRecordCount.getValue());
+		logger.debug("{} new words created", createdWordCount.getValue());
+		logger.debug("{} word etym source links", etymSourceLinkCount.getValue());
 
 		end();
 	}
@@ -368,49 +436,109 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		return removePattern(cleanedWord, "[&]\\w+[;]");
 	}
 
-	private SourceLink getOrCreateSource(String sourceName, SourceType sourceType, Count sourceCount) throws Exception {
+	private WordEtymPeekAhead getWordEtymPeekAhead(List<Node> etymGroupNodes, int etymGroupNodePeekIndex) {
+		WordEtymPeekAhead wordEtymPeekAhead = new WordEtymPeekAhead();
+		if (CollectionUtils.isEmpty(etymGroupNodes)) {
+			return wordEtymPeekAhead;
+		}
+		int etymGroupNodeCount = etymGroupNodes.size();
+		if (etymGroupNodePeekIndex < etymGroupNodeCount) {
+			Element nextEtymGroupElement = (Element) etymGroupNodes.get(etymGroupNodePeekIndex);
+			Element etymTypeNode = (Element) nextEtymGroupElement.selectSingleNode(etymTypeExp);
+			String etymTypeCode = null;
+			if (etymTypeNode != null) {
+				String sourceEtymTypeCode = etymTypeNode.getTextTrim();
+				etymTypeCode = etymTypes.get(sourceEtymTypeCode);
+				if (etymTypeCode == null) {
+					logger.debug("Unknown etym type \"{}\"", sourceEtymTypeCode);
+				}
+			}
+			String etymQuestionable = nextEtymGroupElement.attributeValue(etymQuestionableAttr);
+			boolean isEtymQuestionable = StringUtils.isNotBlank(etymQuestionable);
+			wordEtymPeekAhead.setEtymTypeCode(etymTypeCode);
+			wordEtymPeekAhead.setQuestionable(isEtymQuestionable);
+		}
+		return wordEtymPeekAhead;
+	}
+
+	private SourceLink getOrCreateSource(String sourceName, SourceType sourceType) throws Exception {
 		Long sourceId = getSource(sourceType, EXT_SOURCE_ID_NA, sourceName);
 		if (sourceId == null) {
 			sourceId = createSource(sourceType, EXT_SOURCE_ID_NA, sourceName);
-			sourceCount.increment();
 		}
 		SourceLink sourceLink = new SourceLink(sourceId, sourceName);
 		return sourceLink;
 	}
 
-	private void updateWordEtymYear(Long wordId, String etymYear) {
+	private Long createWordEtym(WordEtym wordEtym) throws Exception {
 
-		String sql = "update " + WORD + " set etymology_year = :etymYear where id = :wordId";
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("wordId", wordId);
-		tableRowParamMap.put("etymYear", etymYear);
-		basicDbService.executeScript(sql, tableRowParamMap);
-	}
-
-	private void updateWordEtymType(Long wordId, String etymTypeCode) {
-
-		String sql = "update " + WORD + " set etymology_type_code = :etymTypeCode where id = :wordId";
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("wordId", wordId);
-		tableRowParamMap.put("etymTypeCode", etymTypeCode);
-		basicDbService.executeScript(sql, tableRowParamMap);
-	}
-
-	private Long createWordEtymology(Long word1Id, Long word2Id, List<String> comments, boolean isQuestionable, boolean isCompound) throws Exception {
+		Long wordId = wordEtym.getWordId();
+		String etymTypeCode = wordEtym.getEtymTypeCode();
+		String etymYear = wordEtym.getEtymYear();
+		String comment = wordEtym.getComment();
+		String commentPrese = wordEtym.getCommentPrese();
+		boolean isQuestionable = wordEtym.isQuestionable();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word1_id", word1Id);
-		tableRowParamMap.put("word2_id", word2Id);
-		if (CollectionUtils.isNotEmpty(comments)) {
-			tableRowParamMap.put("comments", new PgVarcharArray(comments));
+		tableRowParamMap.put("word_id", wordId);
+		if (StringUtils.isNotBlank(etymTypeCode)) {
+			tableRowParamMap.put("etymology_type_code", etymTypeCode);
+		}
+		if (StringUtils.isNotBlank(etymYear)) {
+			tableRowParamMap.put("etymology_year", etymYear);
+		}
+		if (StringUtils.isNotBlank(comment)) {
+			tableRowParamMap.put("comment", comment);
+		}
+		if (StringUtils.isNotBlank(commentPrese)) {
+			tableRowParamMap.put("comment_prese", commentPrese);
 		}
 		tableRowParamMap.put("is_questionable", isQuestionable);
-		tableRowParamMap.put("is_compound", isCompound);
 		Long wordEtymId = basicDbService.create(WORD_ETYMOLOGY, tableRowParamMap);
+		wordEtym.setId(wordEtymId);
 		return wordEtymId;
 	}
 
-	private Long createWordParadigmForm(String word, String morphCode, int homonymNr, String lang, String etymYear) throws Exception {
+	private void createWordEtymRel(WordEtymRel wordEtymRel) throws Exception {
+
+		Long wordEtymId = wordEtymRel.getWordEtymId();
+		Long relatedWordId = wordEtymRel.getRelatedWordId();
+		String comment = wordEtymRel.getComment();
+		String commentPrese = wordEtymRel.getCommentPrese();
+		boolean isQuestionable = wordEtymRel.isQuestionable();
+		boolean isCompound = wordEtymRel.isCompound();
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_etym_id", wordEtymId);
+		tableRowParamMap.put("related_word_id", relatedWordId);
+		if (StringUtils.isNotBlank(comment)) {
+			tableRowParamMap.put("comment", comment);
+		}
+		if (StringUtils.isNotBlank(commentPrese)) {
+			tableRowParamMap.put("comment_prese", commentPrese);
+		}
+		tableRowParamMap.put("is_questionable", isQuestionable);
+		tableRowParamMap.put("is_compound", isCompound);
+		basicDbService.create(WORD_ETYMOLOGY_RELATION, tableRowParamMap);
+	}
+
+	private Long createWordEtymSourceLink(Long wordEtymId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_etym_id", wordEtymId);
+		tableRowParamMap.put("type", refType.name());
+		tableRowParamMap.put("source_id", sourceId);
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
+		if (StringUtils.isNotBlank(value)) {
+			tableRowParamMap.put("value", value);
+		}
+		Long sourceLinkId = basicDbService.create(WORD_ETYMOLOGY_SOURCE_LINK, tableRowParamMap);
+		return sourceLinkId;
+	}
+
+	private Long createWordParadigmForm(String word, String morphCode, int homonymNr, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap;
 
@@ -418,9 +546,6 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("lang", lang);
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("homonym_nr", homonymNr);
-		if (StringUtils.isNotBlank(etymYear)) {
-			tableRowParamMap.put("etymology_year", etymYear);	
-		}
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
 
 		tableRowParamMap = new HashMap<>();
@@ -449,28 +574,177 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		return lexemeId;
 	}
 
-	private Long createWordSourceLink(Long wordId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word_id", wordId);
-		tableRowParamMap.put("type", refType.name());
-		tableRowParamMap.put("source_id", sourceId);
-		if (StringUtils.isNotBlank(name)) {
-			tableRowParamMap.put("name", name);
-		}
-		if (StringUtils.isNotBlank(value)) {
-			tableRowParamMap.put("value", value);
-		}
-		Long sourceLinkId = basicDbService.create(WORD_SOURCE_LINK, tableRowParamMap);
-		return sourceLinkId;
-	}
-
-	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
+	private void appendToReport(String reportName, Object... reportCells) throws Exception {
 		if (!doReports) {
 			return;
 		}
 		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
 		reportComposer.append(reportName, logRow);
+	}
+
+	class WordEtym extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private Long id;
+
+		private Long wordId;
+
+		private String etymTypeCode;
+
+		private String etymYear;
+
+		private String comment;
+
+		private String commentPrese;
+
+		private boolean questionable;
+
+		public Long getId() {
+			return id;
+		}
+
+		public void setId(Long id) {
+			this.id = id;
+		}
+
+		public Long getWordId() {
+			return wordId;
+		}
+
+		public void setWordId(Long wordId) {
+			this.wordId = wordId;
+		}
+
+		public String getEtymTypeCode() {
+			return etymTypeCode;
+		}
+
+		public void setEtymTypeCode(String etymTypeCode) {
+			this.etymTypeCode = etymTypeCode;
+		}
+
+		public String getEtymYear() {
+			return etymYear;
+		}
+
+		public void setEtymYear(String etymYear) {
+			this.etymYear = etymYear;
+		}
+
+		public String getComment() {
+			return comment;
+		}
+
+		public void setComment(String comment) {
+			this.comment = comment;
+		}
+
+		public String getCommentPrese() {
+			return commentPrese;
+		}
+
+		public void setCommentPrese(String commentPrese) {
+			this.commentPrese = commentPrese;
+		}
+
+		public boolean isQuestionable() {
+			return questionable;
+		}
+
+		public void setQuestionable(boolean questionable) {
+			this.questionable = questionable;
+		}
+	}
+
+	class WordEtymPeekAhead extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private String etymTypeCode;
+
+		private boolean questionable;
+
+		public String getEtymTypeCode() {
+			return etymTypeCode;
+		}
+
+		public void setEtymTypeCode(String etymTypeCode) {
+			this.etymTypeCode = etymTypeCode;
+		}
+
+		public boolean isQuestionable() {
+			return questionable;
+		}
+
+		public void setQuestionable(boolean questionable) {
+			this.questionable = questionable;
+		}
+	}
+
+	class WordEtymRel extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private Long wordEtymId;
+
+		private Long relatedWordId;
+
+		private String comment;
+
+		private String commentPrese;
+
+		private boolean questionable;
+
+		private boolean compound;
+
+		public Long getWordEtymId() {
+			return wordEtymId;
+		}
+
+		public void setWordEtymId(Long wordEtymId) {
+			this.wordEtymId = wordEtymId;
+		}
+
+		public Long getRelatedWordId() {
+			return relatedWordId;
+		}
+
+		public void setRelatedWordId(Long relatedWordId) {
+			this.relatedWordId = relatedWordId;
+		}
+
+		public String getComment() {
+			return comment;
+		}
+
+		public void setComment(String comment) {
+			this.comment = comment;
+		}
+
+		public String getCommentPrese() {
+			return commentPrese;
+		}
+
+		public void setCommentPrese(String commentPrese) {
+			this.commentPrese = commentPrese;
+		}
+
+		public boolean isQuestionable() {
+			return questionable;
+		}
+
+		public void setQuestionable(boolean questionable) {
+			this.questionable = questionable;
+		}
+
+		public boolean isCompound() {
+			return compound;
+		}
+
+		public void setCompound(boolean compound) {
+			this.compound = compound;
+		}
 	}
 
 	class SourceLink extends AbstractDataObject {

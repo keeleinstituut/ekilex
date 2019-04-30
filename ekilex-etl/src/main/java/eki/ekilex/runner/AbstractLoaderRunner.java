@@ -300,9 +300,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		sql = "delete from " + LEXEME + " l where l.dataset_code = :dataset";
 		basicDbService.executeScript(sql, tableRowParamMap);
 
-		// delete word guids
+		// delete word guids and mnrs
 		if (!StringUtils.equals(GUID_OWNER_DATASET_CODE, dataset)) {
 			sql = "delete from " + WORD_GUID + " wg where wg.dataset_code = :dataset";
+			basicDbService.executeScript(sql, tableRowParamMap);
+			sql = "delete from " + MEANING_NR + " mn where mn.dataset_code = :dataset";
 			basicDbService.executeScript(sql, tableRowParamMap);
 		}
 

@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import eki.ekilex.constant.DbConstant;
+import eki.common.constant.DbConstant;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;

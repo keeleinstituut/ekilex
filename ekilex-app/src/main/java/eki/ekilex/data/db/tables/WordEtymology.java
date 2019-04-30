@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordEtymology extends TableImpl<WordEtymologyRecord> {
 
-    private static final long serialVersionUID = 82617738;
+    private static final long serialVersionUID = 1353493150;
 
     /**
      * The reference instance of <code>public.word_etymology</code>
@@ -62,29 +62,34 @@ public class WordEtymology extends TableImpl<WordEtymologyRecord> {
     public final TableField<WordEtymologyRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_etymology_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.word_etymology.word1_id</code>.
+     * The column <code>public.word_etymology.word_id</code>.
      */
-    public final TableField<WordEtymologyRecord, Long> WORD1_ID = createField("word1_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordEtymologyRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.word_etymology.word2_id</code>.
+     * The column <code>public.word_etymology.etymology_type_code</code>.
      */
-    public final TableField<WordEtymologyRecord, Long> WORD2_ID = createField("word2_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordEtymologyRecord, String> ETYMOLOGY_TYPE_CODE = createField("etymology_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.word_etymology.comments</code>.
+     * The column <code>public.word_etymology.etymology_year</code>.
      */
-    public final TableField<WordEtymologyRecord, String[]> COMMENTS = createField("comments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<WordEtymologyRecord, String> ETYMOLOGY_YEAR = createField("etymology_year", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.word_etymology.comment</code>.
+     */
+    public final TableField<WordEtymologyRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.word_etymology.comment_prese</code>.
+     */
+    public final TableField<WordEtymologyRecord, String> COMMENT_PRESE = createField("comment_prese", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_etymology.is_questionable</code>.
      */
     public final TableField<WordEtymologyRecord, Boolean> IS_QUESTIONABLE = createField("is_questionable", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
-
-    /**
-     * The column <code>public.word_etymology.is_compound</code>.
-     */
-    public final TableField<WordEtymologyRecord, Boolean> IS_COMPOUND = createField("is_compound", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.word_etymology.order_by</code>.
@@ -137,7 +142,7 @@ public class WordEtymology extends TableImpl<WordEtymologyRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_ETYM_WORD1_ID_IDX, Indexes.WORD_ETYM_WORD2_ID_IDX, Indexes.WORD_ETYMOLOGY_PKEY, Indexes.WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY);
+        return Arrays.<Index>asList(Indexes.WORD_ETYM_ETYM_TYPE_CODE_IDX, Indexes.WORD_ETYM_WORD_ID_IDX, Indexes.WORD_ETYMOLOGY_PKEY);
     }
 
     /**
@@ -161,7 +166,7 @@ public class WordEtymology extends TableImpl<WordEtymologyRecord> {
      */
     @Override
     public List<UniqueKey<WordEtymologyRecord>> getKeys() {
-        return Arrays.<UniqueKey<WordEtymologyRecord>>asList(Keys.WORD_ETYMOLOGY_PKEY, Keys.WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY);
+        return Arrays.<UniqueKey<WordEtymologyRecord>>asList(Keys.WORD_ETYMOLOGY_PKEY);
     }
 
     /**
@@ -169,15 +174,15 @@ public class WordEtymology extends TableImpl<WordEtymologyRecord> {
      */
     @Override
     public List<ForeignKey<WordEtymologyRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordEtymologyRecord, ?>>asList(Keys.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD1_ID_FKEY, Keys.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD2_ID_FKEY);
+        return Arrays.<ForeignKey<WordEtymologyRecord, ?>>asList(Keys.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD_ID_FKEY, Keys.WORD_ETYMOLOGY__WORD_ETYMOLOGY_ETYMOLOGY_TYPE_CODE_FKEY);
     }
 
-    public Word wordEtymology_WordEtymologyWord1IdFkey() {
-        return new Word(this, Keys.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD1_ID_FKEY);
+    public Word word() {
+        return new Word(this, Keys.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD_ID_FKEY);
     }
 
-    public Word wordEtymology_WordEtymologyWord2IdFkey() {
-        return new Word(this, Keys.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD2_ID_FKEY);
+    public EtymologyType etymologyType() {
+        return new EtymologyType(this, Keys.WORD_ETYMOLOGY__WORD_ETYMOLOGY_ETYMOLOGY_TYPE_CODE_FKEY);
     }
 
     /**

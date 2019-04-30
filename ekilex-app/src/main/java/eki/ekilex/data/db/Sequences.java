@@ -399,6 +399,26 @@ public class Sequences {
     public static final Sequence<Long> WORD_ETYMOLOGY_ORDER_BY_SEQ = new SequenceImpl<Long>("word_etymology_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.word_etymology_relation_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYMOLOGY_RELATION_ID_SEQ = new SequenceImpl<Long>("word_etymology_relation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_etymology_relation_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYMOLOGY_RELATION_ORDER_BY_SEQ = new SequenceImpl<Long>("word_etymology_relation_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_etymology_source_link_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYMOLOGY_SOURCE_LINK_ID_SEQ = new SequenceImpl<Long>("word_etymology_source_link_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_etymology_source_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYMOLOGY_SOURCE_LINK_ORDER_BY_SEQ = new SequenceImpl<Long>("word_etymology_source_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.word_group_id_seq</code>
      */
     public static final Sequence<Long> WORD_GROUP_ID_SEQ = new SequenceImpl<Long>("word_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -442,16 +462,6 @@ public class Sequences {
      * The sequence <code>public.word_relation_order_by_seq</code>
      */
     public static final Sequence<Long> WORD_RELATION_ORDER_BY_SEQ = new SequenceImpl<Long>("word_relation_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.word_source_link_id_seq</code>
-     */
-    public static final Sequence<Long> WORD_SOURCE_LINK_ID_SEQ = new SequenceImpl<Long>("word_source_link_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.word_source_link_order_by_seq</code>
-     */
-    public static final Sequence<Long> WORD_SOURCE_LINK_ORDER_BY_SEQ = new SequenceImpl<Long>("word_source_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.word_type_order_by_seq</code>

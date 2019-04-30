@@ -904,27 +904,32 @@
             </div>
             <div class="card-body pt-0 pb-0" th:if="${not #lists.isEmpty(details.wordEtymology)}">
               <span class="lbl">Keelendi etümoloogia</span>
-              <table class="orderable" th:data-op-code="word_etymology">
-                <tr th:each="wordEtym, itemIter : ${details.wordEtymology}" th:data-id="${wordEtym.wordEtymologyId}" th:data-orderby="${wordEtym.orderBy}">
-                  <td class="action-column">
-                    <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isWordCrudGranted}"></th:block>
-                  </td>
-                  <td class="align-text-top pr-3 pt-0 pb-0">
-                    <button type="button" class="btn btn-link btn-xs" th:data-id="${wordEtym.wordId}" name="detailsBtn">
+              <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">
+                <div>
+                  <div>
+                    <span th:if="${wordEtym.questionable}">?</span>
+                    <span th:if="${wordEtym.etymologyTypeCode != null}" th:text="${wordEtym.etymologyTypeCode}"></span>
+                    <span th:if="${wordEtym.etymologyYear != null}" th:text="${wordEtym.etymologyYear}"></span>
+                  </div>
+                  <div th:each="wordEtymSourceLink : ${wordEtym.wordEtymSourceLinks}">
+                    <span th:text="${wordEtymSourceLink.value}"></span>
+                  </div>
+                  <div th:each="wordEtymRel : ${wordEtym.wordEtymRelations}">
+                    <button type="button" class="btn btn-link btn-xs" th:data-id="${wordEtymRel.relatedWordId}" name="detailsBtn">
                       <span>
-                        <span th:text="${wordEtym.word + ' (' + wordEtym.wordLang + ')'}"></span>
-                        <span th:if="${wordEtym.questionable}">?</span>
-                        <span th:if="${wordEtym.compound}">+</span>
+                        <span th:if="${wordEtymRel.questionable}">?</span>
+                        <span th:if="${wordEtymRel.compound}">+</span>
+                        <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
                       </span>
                     </button>
-                    <div th:if="${not #lists.isEmpty(wordEtym.comments)}">
-                      <div th:each="comment : ${wordEtym.comments}">
-                        <i th:text="${comment}"></i>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </table>
+                    <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
+                  </div>
+                  <div th:if="${wordEtym.comment != null}" th:utext="${wordEtym.comment}"></div>
+                </div>
+                <div th:unless="${itemIter.last}">
+                  <hr />
+                </div>
+              </th:block>
               <hr />
             </div>
             <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">

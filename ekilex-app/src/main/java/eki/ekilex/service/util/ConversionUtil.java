@@ -46,6 +46,9 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.data.WordEtym;
+import eki.ekilex.data.WordEtymRel;
+import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 
 @Component
@@ -59,7 +62,7 @@ public class ConversionUtil {
 	}
 
 	public List<TermMeaning> composeTermMeanings(List<TermMeaningWordTuple> termMeaningWordTuples) {
-		
+
 		List<TermMeaning> termMeanings = new ArrayList<>();
 
 		Map<Long, TermMeaning> termMeaningMap = new HashMap<>();
@@ -130,7 +133,7 @@ public class ConversionUtil {
 
 	public Classifier classifierFromIdString(String idString) {
 		JsonParser jsonParser = JsonParserFactory.getJsonParser();
-		Map<String, Object>  memberMap = jsonParser.parseMap(idString);
+		Map<String, Object> memberMap = jsonParser.parseMap(idString);
 		Classifier classifier = new Classifier();
 		classifier.setName((String) memberMap.get("name"));
 		classifier.setCode((String) memberMap.get("code"));
@@ -193,7 +196,7 @@ public class ConversionUtil {
 			}
 			String inflectionTypeNr = paradigm.getInflectionTypeNr();
 			if (StringUtils.isNotBlank(inflectionTypeNr)) {
-				title = title + " " + inflectionTypeNr;				
+				title = title + " " + inflectionTypeNr;
 			}
 			paradigm.setTitle(title);
 		} else {
@@ -204,7 +207,7 @@ public class ConversionUtil {
 				}
 				String inflectionTypeNr = paradigm.getInflectionTypeNr();
 				if (StringUtils.isNotBlank(inflectionTypeNr)) {
-					title = title + " " + inflectionTypeNr;				
+					title = title + " " + inflectionTypeNr;
 				}
 				paradigm.setTitle(title);
 			}
@@ -333,7 +336,7 @@ public class ConversionUtil {
 					if (StringUtils.isBlank(tuple.getUsageSourceLinkValue())) {
 						usageSource.setValue(tuple.getUsageSourceName());
 					} else {
-						usageSource.setValue(tuple.getUsageSourceLinkValue());						
+						usageSource.setValue(tuple.getUsageSourceLinkValue());
 					}
 					usageSourceMap.put(usageSourceLinkId, usageSource);
 					if (ReferenceType.AUTHOR.equals(tuple.getUsageSourceLinkType())) {
@@ -341,7 +344,7 @@ public class ConversionUtil {
 					} else if (ReferenceType.TRANSLATOR.equals(tuple.getUsageSourceLinkType())) {
 						usage.getAuthors().add(usageSource);
 					} else {
-						usage.getSourceLinks().add(usageSource);						
+						usage.getSourceLinks().add(usageSource);
 					}
 				}
 			}
@@ -531,6 +534,59 @@ public class ConversionUtil {
 		return groups;
 	}
 
+	public List<WordEtym> composeWordEtymology(List<WordEtymTuple> wordEtymTuples) {
+
+		List<WordEtym> wordEtyms = new ArrayList<>();
+		Map<Long, WordEtym> wordEtymMap = new HashMap<>();
+		List<Long> wordEtymSourceLinkIds = new ArrayList<>();
+		List<Long> wordEtymRelIds = new ArrayList<>();
+
+		for (WordEtymTuple tuple : wordEtymTuples) {
+
+			Long wordEtymId = tuple.getWordEtymId();
+			Long wordEtymSourceLinkId = tuple.getWordEtymSourceLinkId();
+			Long wordEtymRelId = tuple.getWordEtymRelId();
+
+			WordEtym wordEtym = wordEtymMap.get(wordEtymId);
+			if (wordEtym == null) {
+				wordEtym = new WordEtym();
+				wordEtym.setWordEtymId(tuple.getWordEtymId());
+				wordEtym.setEtymologyTypeCode(tuple.getEtymologyTypeCode());
+				wordEtym.setEtymologyYear(tuple.getEtymologyYear());
+				wordEtym.setComment(tuple.getWordEtymComment());
+				wordEtym.setQuestionable(tuple.isWordEtymQuestionable());
+				wordEtym.setWordEtymSourceLinks(new ArrayList<>());
+				wordEtym.setWordEtymRelations(new ArrayList<>());
+				wordEtymMap.put(wordEtymId, wordEtym);
+				wordEtyms.add(wordEtym);
+			}
+			if (wordEtymSourceLinkId != null) {
+				if (!wordEtymSourceLinkIds.contains(wordEtymSourceLinkId)) {
+					SourceLink sourceLink = new SourceLink();
+					sourceLink.setId(wordEtymSourceLinkId);
+					sourceLink.setType(tuple.getWordEtymSourceLinkType());
+					sourceLink.setValue(tuple.getWordEtymSourceLinkValue());
+					wordEtym.getWordEtymSourceLinks().add(sourceLink);
+					wordEtymSourceLinkIds.add(wordEtymSourceLinkId);
+				}
+			}
+			if (wordEtymRelId != null) {
+				if (!wordEtymRelIds.contains(wordEtymRelId)) {
+					WordEtymRel wordEtymRel = new WordEtymRel();
+					wordEtymRel.setComment(tuple.getWordEtymRelComment());
+					wordEtymRel.setQuestionable(tuple.isWordEtymRelQuestionable());
+					wordEtymRel.setCompound(tuple.isWordEtymRelCompound());
+					wordEtymRel.setRelatedWordId(tuple.getRelatedWordId());
+					wordEtymRel.setRelatedWord(tuple.getRelatedWord());
+					wordEtymRel.setRelatedWordLang(tuple.getRelatedWordLang());
+					wordEtym.getWordEtymRelations().add(wordEtymRel);
+					wordEtymRelIds.add(wordEtymRelId);
+				}
+			}
+		}
+		return wordEtyms;
+	}
+
 	public List<CollocationPosGroup> composeCollocPosGroups(List<CollocationTuple> collocTuples) {
 
 		List<CollocationPosGroup> collocationPosGroups = new ArrayList<>();
@@ -610,7 +666,7 @@ public class ConversionUtil {
 		collocMember.setWord(collocTuple.getCollocMemberWord());
 		collocMember.setWeight(collocTuple.getCollocMemberWeight());
 		collocMember.setWordModeWord(isWordModeWord);
-		
+
 		collocation.getCollocMembers().add(collocMember);
 	}
 

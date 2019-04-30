@@ -19,11 +19,13 @@ import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.WORD_GROUP;
+import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
-import static eki.ekilex.data.db.tables.WordGroup.WORD_GROUP;
-import static eki.ekilex.data.db.tables.WordGroupMember.WORD_GROUP_MEMBER;
 import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
@@ -59,6 +61,7 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Form;
@@ -74,6 +77,8 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
+import eki.ekilex.data.db.tables.WordEtymologyRelation;
+import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -608,32 +613,42 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record8<Long, Long, String, String, String[], Boolean, Boolean, Long>> findWordEtymology(Long wordId) {
+	public List<WordEtymTuple> findWordEtymology(Long wordId) {
 
 		WordEtymology we = WORD_ETYMOLOGY.as("we");
+		WordEtymologySourceLink wesl = WORD_ETYMOLOGY_SOURCE_LINK.as("wesl");
+		WordEtymologyRelation wer = WORD_ETYMOLOGY_RELATION.as("wer");
 		Word w2 = WORD.as("w2");
 		Paradigm p2 = PARADIGM.as("p2");
 		Form f2 = FORM.as("f2");
 
 		return create
 				.select(
-						we.ID.as("word_etymology_id"),
-						w2.ID.as("word_id"),
-						f2.VALUE.as("word"),
-						w2.LANG.as("word_lang"),
-						we.COMMENTS,
-						we.IS_QUESTIONABLE,
-						we.IS_COMPOUND,
-						we.ORDER_BY)
-				.from(we, w2, p2, f2)
-				.where(
-						we.WORD1_ID.eq(wordId)
-								.and(we.WORD2_ID.eq(w2.ID))
-								.and(p2.WORD_ID.eq(w2.ID))
-								.and(f2.PARADIGM_ID.eq(p2.ID))
-								.and(f2.MODE.eq(FormMode.WORD.name())))
-				.orderBy(we.ID)
-				.fetch();
+						we.ID.as("word_etym_id"),
+						we.ETYMOLOGY_TYPE_CODE,
+						we.ETYMOLOGY_YEAR,
+						we.COMMENT_PRESE.as("word_etym_comment"),
+						we.IS_QUESTIONABLE.as("word_etym_questionable"),
+						wesl.ID.as("word_etym_source_link_id"),
+						wesl.TYPE.as("word_etym_source_link_type"),
+						wesl.VALUE.as("word_etym_source_link_value"),
+						wer.ID.as("word_etym_rel_id"),
+						wer.COMMENT_PRESE.as("word_etym_rel_comment"),
+						wer.IS_QUESTIONABLE.as("word_etym_rel_questionable"),
+						wer.IS_COMPOUND.as("word_etym_rel_compound"),
+						w2.ID.as("related_word_id"),
+						f2.VALUE.as("related_word"),
+						w2.LANG.as("related_word_lang"))
+				.from(we
+						.leftOuterJoin(wesl).on(wesl.WORD_ETYM_ID.eq(we.ID))
+						.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID))
+						.leftOuterJoin(w2).on(w2.ID.eq(wer.RELATED_WORD_ID))
+						.leftOuterJoin(p2).on(p2.WORD_ID.eq(w2.ID))
+						.leftOuterJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
+						)
+				.where(we.WORD_ID.eq(wordId))
+				.orderBy(we.ORDER_BY, wesl.ORDER_BY, wer.ORDER_BY)
+				.fetchInto(WordEtymTuple.class);
 	}
 
 	public Result<Record16<Long, String, Long, String, BigDecimal, BigDecimal, Long, String, String, BigDecimal, BigDecimal, String[], Long, String, String, BigDecimal>> findPrimaryCollocationTuples(

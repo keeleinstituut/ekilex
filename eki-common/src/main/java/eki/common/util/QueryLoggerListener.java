@@ -8,11 +8,15 @@ import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueryLoggerListener extends DefaultExecuteListener {
+import eki.common.constant.DbConstant;
+
+public class QueryLoggerListener extends DefaultExecuteListener implements DbConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(QueryLoggerListener.class);
 
 	private static final long PROLONGED_QUERY_TRESHOLD_MS = 1000;
+
+	private static final long XTRA_PROLONGED_QUERY_TRESHOLD_MS = 6000;
 
 	private static final long serialVersionUID = 1L;
 
@@ -101,13 +105,21 @@ public class QueryLoggerListener extends DefaultExecuteListener {
 
 		} else if (logger.isInfoEnabled()) {
 
-			if (exec > PROLONGED_QUERY_TRESHOLD_MS) {
+			if (exec > XTRA_PROLONGED_QUERY_TRESHOLD_MS) {
+
+				String queryStr = getLogContent(ctx);
+				logger.info("Extra prolonging query \n{}", queryStr);
+				logger.info("Executed in {} ms", exec);
+
+			} else if (exec > PROLONGED_QUERY_TRESHOLD_MS) {
 
 				String queryStr = getLogContent(ctx);
 
-				logger.info("Prolonging query \n{}", queryStr);
-				logger.info("Executed in {} ms", exec);
-
+				boolean isQueryIgnored = queryStr.contains(IGNORE_QUERY_LOG);
+				if (!isQueryIgnored) {
+					logger.info("Prolonging query \n{}", queryStr);
+					logger.info("Executed in {} ms", exec);
+				}
 			}
 		}
 	}

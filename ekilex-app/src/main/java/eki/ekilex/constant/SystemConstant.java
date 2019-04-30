@@ -6,7 +6,7 @@ public interface SystemConstant {
 
 	int MAX_RESULTS_LIMIT = 50;
 
-	long UPDATE_STAT_DATA_DELAY = 60 * 60 * 1000;
+	long UPDATE_STAT_DATA_DELAY = 10 * 60 * 1000;
 
 	String CLASSIF_LABEL_LANG_EST = "est";
 

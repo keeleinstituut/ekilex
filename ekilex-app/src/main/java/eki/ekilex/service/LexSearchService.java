@@ -38,6 +38,7 @@ import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
+import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
@@ -108,7 +109,8 @@ public class LexSearchService extends AbstractSearchService {
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, word.getValue(), classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
 		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
-		List<WordEtym> wordEtymology = lexSearchDbService.findWordEtymology(wordId).into(WordEtym.class);
+		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.findWordEtymology(wordId);
+		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<Relation> wordGroupMembers = lexSearchDbService.findWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
 

@@ -1,4 +1,4 @@
-package eki.ekilex.constant;
+package eki.common.constant;
 
 public interface DbConstant {
 
@@ -9,4 +9,6 @@ public interface DbConstant {
 	String WORD_TYPE_CODE_PREFIXOID = "pf";
 
 	String WORD_TYPE_CODE_SUFFIXOID = "sf";
+
+	String IGNORE_QUERY_LOG = "'ignore query log'";
 }

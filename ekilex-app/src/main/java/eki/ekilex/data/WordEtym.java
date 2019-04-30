@@ -8,84 +8,74 @@ public class WordEtym extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long wordEtymologyId;
+	private Long wordEtymId;
 
-	private Long wordId;
+	private String etymologyTypeCode;
 
-	private String word;
+	private String etymologyYear;
 
-	private String wordLang;
+	private String comment;
 
-	private List<String> comments;
+	private boolean questionable;
 
-	private boolean isQuestionable;
+	private List<SourceLink> wordEtymSourceLinks;
 
-	private boolean isCompound;
+	private List<WordEtymRel> wordEtymRelations;
 
-	private Long orderBy;
-
-	public Long getWordEtymologyId() {
-		return wordEtymologyId;
+	public Long getWordEtymId() {
+		return wordEtymId;
 	}
 
-	public void setWordEtymologyId(Long wordEtymologyId) {
-		this.wordEtymologyId = wordEtymologyId;
+	public void setWordEtymId(Long wordEtymId) {
+		this.wordEtymId = wordEtymId;
 	}
 
-	public Long getWordId() {
-		return wordId;
+	public String getEtymologyTypeCode() {
+		return etymologyTypeCode;
 	}
 
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
+	public void setEtymologyTypeCode(String etymologyTypeCode) {
+		this.etymologyTypeCode = etymologyTypeCode;
 	}
 
-	public String getWord() {
-		return word;
+	public String getEtymologyYear() {
+		return etymologyYear;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setEtymologyYear(String etymologyYear) {
+		this.etymologyYear = etymologyYear;
 	}
 
-	public String getWordLang() {
-		return wordLang;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setWordLang(String wordLang) {
-		this.wordLang = wordLang;
-	}
-
-	public List<String> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<String> comments) {
-		this.comments = comments;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	public boolean isQuestionable() {
-		return isQuestionable;
+		return questionable;
 	}
 
-	public void setQuestionable(boolean isQuestionable) {
-		this.isQuestionable = isQuestionable;
+	public void setQuestionable(boolean questionable) {
+		this.questionable = questionable;
 	}
 
-	public boolean isCompound() {
-		return isCompound;
+	public List<SourceLink> getWordEtymSourceLinks() {
+		return wordEtymSourceLinks;
 	}
 
-	public void setCompound(boolean isCompound) {
-		this.isCompound = isCompound;
+	public void setWordEtymSourceLinks(List<SourceLink> wordEtymSourceLinks) {
+		this.wordEtymSourceLinks = wordEtymSourceLinks;
 	}
 
-	public Long getOrderBy() {
-		return orderBy;
+	public List<WordEtymRel> getWordEtymRelations() {
+		return wordEtymRelations;
 	}
 
-	public void setOrderBy(Long orderBy) {
-		this.orderBy = orderBy;
+	public void setWordEtymRelations(List<WordEtymRel> wordEtymRelations) {
+		this.wordEtymRelations = wordEtymRelations;
 	}
 
 }

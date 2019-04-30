@@ -1,17 +1,5 @@
 package eki.ekilex.service.db;
 
-import eki.ekilex.data.StatData;
-import eki.ekilex.data.StatDataRow;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record1;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Component;
-
-import java.sql.Timestamp;
-import java.util.List;
-
 import static eki.ekilex.data.db.Tables.ASPECT;
 import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DATASET;
@@ -32,8 +20,22 @@ import static eki.ekilex.data.db.Tables.REGISTER;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.WORD;
 
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Component;
+
+import eki.common.constant.DbConstant;
+import eki.ekilex.data.StatData;
+import eki.ekilex.data.StatDataRow;
+
 @Component
-public class StatDataDbService {
+public class StatDataDbService implements DbConstant {
 
 	final private DSLContext create;
 
@@ -63,6 +65,7 @@ public class StatDataDbService {
 
 		return create
 				.select(
+					DSL.field(IGNORE_QUERY_LOG).as("comment"),
 					wc.field("word_count", long.class),
 					lc.field("lexeme_count", long.class),
 					pc.field("paradigm_count", long.class),
@@ -88,7 +91,10 @@ public class StatDataDbService {
 
 		Field<Integer> rowCount = DSL.field((DSL.count(FREEFORM.ID)).as("row_count"));
 		return create
-				.select(DSL.field(FREEFORM.TYPE).as("name"), rowCount)
+				.select(
+						DSL.field(IGNORE_QUERY_LOG).as("comment"),
+						DSL.field(FREEFORM.TYPE).as("name"),
+						rowCount)
 				.from(FREEFORM)
 				.groupBy(FREEFORM.TYPE)
 				.orderBy(rowCount.desc())
@@ -99,7 +105,10 @@ public class StatDataDbService {
 
 		Field<Integer> rowCount = DSL.field((DSL.count(LEXEME.ID)).as("row_count"));
 		return create
-				.select(DSL.field(LEXEME.DATASET_CODE).as("name"), rowCount)
+				.select(
+						DSL.field(IGNORE_QUERY_LOG).as("comment"),
+						DSL.field(LEXEME.DATASET_CODE).as("name"),
+						rowCount)
 				.from(LEXEME)
 				.groupBy(LEXEME.DATASET_CODE)
 				.orderBy(rowCount.desc())
@@ -110,7 +119,10 @@ public class StatDataDbService {
 
 		Field<Integer> rowCount = DSL.field((DSL.count(LIFECYCLE_LOG.ID)).as("row_count"));
 		return create
-				.select(DSL.field(LIFECYCLE_LOG.EVENT_BY).as("name"), rowCount)
+				.select(
+						DSL.field(IGNORE_QUERY_LOG).as("comment"),
+						DSL.field(LIFECYCLE_LOG.EVENT_BY).as("name"),
+						rowCount)
 				.from(LIFECYCLE_LOG)
 				.where(DSL.field(LIFECYCLE_LOG.EVENT_ON).gt(from))
 				.groupBy(LIFECYCLE_LOG.EVENT_BY)

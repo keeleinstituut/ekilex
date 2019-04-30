@@ -15,8 +15,8 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
+import eki.common.constant.DbConstant;
 import eki.common.constant.FreeformType;
-import eki.ekilex.constant.DbConstant;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SystemConstant;

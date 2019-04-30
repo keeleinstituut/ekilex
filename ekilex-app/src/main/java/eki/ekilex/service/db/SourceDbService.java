@@ -6,7 +6,7 @@ import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.List;
 
@@ -194,9 +194,9 @@ public class SourceDbService implements SystemConstant {
 
 	private int countWordSourceLinksBySourceId(Long sourceId) {
 
-		return create.fetchCount(DSL.select(WORD_SOURCE_LINK.ID)
-				.from(WORD_SOURCE_LINK)
-				.where(WORD_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+		return create.fetchCount(DSL.select(WORD_ETYMOLOGY_SOURCE_LINK.ID)
+				.from(WORD_ETYMOLOGY_SOURCE_LINK)
+				.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
 	}
 
 	public void deleteSource(Long sourceId) {

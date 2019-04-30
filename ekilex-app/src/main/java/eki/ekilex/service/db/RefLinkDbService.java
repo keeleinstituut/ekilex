@@ -4,11 +4,12 @@ import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 
-import eki.ekilex.constant.DbConstant;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import eki.common.constant.DbConstant;
 
 @Component
 public class RefLinkDbService implements DbConstant {
