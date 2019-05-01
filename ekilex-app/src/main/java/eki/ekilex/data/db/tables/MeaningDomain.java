@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
 
-    private static final long serialVersionUID = 2039834994;
+    private static final long serialVersionUID = 1960544533;
 
     /**
      * The reference instance of <code>public.meaning_domain</code>
@@ -80,11 +80,6 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
      * The column <code>public.meaning_domain.order_by</code>.
      */
     public final TableField<MeaningDomainRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_domain_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
-
-    /**
-     * The column <code>public.meaning_domain.process_state_code</code>.
-     */
-    public final TableField<MeaningDomainRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.meaning_domain</code> table reference
@@ -164,7 +159,7 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
      */
     @Override
     public List<ForeignKey<MeaningDomainRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MeaningDomainRecord, ?>>asList(Keys.MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY, Keys.MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY, Keys.MEANING_DOMAIN__MEANING_DOMAIN_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<MeaningDomainRecord, ?>>asList(Keys.MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY, Keys.MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY);
     }
 
     public Meaning meaning() {
@@ -173,10 +168,6 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
 
     public Domain domain() {
         return new Domain(this, Keys.MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.MEANING_DOMAIN__MEANING_DOMAIN_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

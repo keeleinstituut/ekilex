@@ -3,7 +3,6 @@ create type type_definition as (lexeme_id bigint, meaning_id bigint, value text,
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_prese text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
-create type type_word_etym as (word_id bigint, etym_word_id bigint, etym_word text, etym_word_lang char(3), etym_year text, etym_meaning_words text array, etym_word_sources text array, comments text array, is_questionable boolean, is_compound boolean);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_type_codes varchar(100) array, dataset_codes varchar(10) array, word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
@@ -20,16 +19,13 @@ select w.word_id,
        w.morph_code,
        w.display_morph_code,
        w.aspect_code,
-       w.etymology_year,
-       w.etymology_type_code,
        (select array_agg(distinct ld.dataset_code)
         from lexeme ld
         where ld.word_id = w.word_id
         group by w.word_id) as dataset_codes,
        mc.meaning_count,
        mw.meaning_words,
-       wd.definitions,
-       wsl.word_sources
+       wd.definitions
 from (select w.id as word_id,
              array_to_string(array_agg(distinct f.value),',','*') as word,
              w.homonym_nr,
@@ -37,9 +33,7 @@ from (select w.id as word_id,
              w.lang,
              w.morph_code,
              w.display_morph_code,
-             w.aspect_code,
-             w.etymology_year,
-             w.etymology_type_code
+             w.aspect_code
       from word as w
         join paradigm as p on p.word_id = w.id
         join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
@@ -107,11 +101,7 @@ from (select w.id as word_id,
                               inner join dataset ds on ds.code = l.dataset_code
                               left outer join definition d on d.meaning_id = l.meaning_id
                          where l.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')) wd
-                   group by wd.word_id) wd on wd.word_id = w.word_id
-  left outer join (select wsl.word_id,
-                          array_agg(wsl.value order by wsl.order_by) word_sources
-                   from word_source_link wsl
-                   group by wsl.word_id) wsl on wsl.word_id = w.word_id;
+                   group by wd.word_id) wd on wd.word_id = w.word_id;
 
 create view view_ww_as_word 
   as
@@ -396,41 +386,53 @@ create view view_ww_collocation
 -- etymology
 create view view_ww_word_etymology
   as
-	with recursive word_etym_recursion (word_id, word_etym_id, word1_id, word2_id, comments, is_questionable, is_compound, order_by) as
+    with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, word_etym_rel_id, related_word_id) as
     (
-      (select we.word1_id,
-             we.id word_etym_id,
-             we.word1_id,
-             we.word2_id,
-             we.comments,
-             we.is_questionable,
-             we.is_compound,
-             we.order_by
-      from word_etymology we
-      order by we.order_by) 
-      union all 
-      (select wer.word_id,
+      (select we.word_id,
+              we.word_id word_etym_word_id,
               we.id word_etym_id,
-              we.word1_id,
-              we.word2_id,
-              we.comments,
-              we.is_questionable,
-              we.is_compound,
-              we.order_by
-       from word_etym_recursion wer
-         inner join word_etymology we
-                 on we.word1_id = wer.word2_id
-       where we.word1_id = wer.word2_id
-       group by wer.word_id,
-                we.id
-       order by we.order_by)
+              wer.id word_etym_rel_id,
+              wer.related_word_id
+       from word_etymology we
+         left outer join word_etymology_relation wer on wer.word_etym_id = we.id
+       order by we.order_by,
+                wer.order_by)
+       union all
+       (select rec.word_id,
+               we.word_id word_etym_word_id,
+               we.id word_etym_id,
+               wer.id word_etym_rel_id,
+               wer.related_word_id
+        from word_etym_recursion rec
+          inner join word_etymology we on we.word_id = rec.related_word_id
+          left outer join word_etymology_relation wer on wer.word_etym_id = we.id
+        order by we.order_by,
+                 wer.order_by)
     )
-    select wer.word_id,
-           array_agg(row (wer.word1_id,wer.word2_id,ef2.value,ew2.lang,ew2.etymology_year,mw2.meaning_words,wsl2.word_sources,wer.comments,wer.is_questionable,wer.is_compound)::type_word_etym order by wer.order_by) etym_lineup
-    from word_etym_recursion wer
-      inner join word ew2 on ew2.id = wer.word2_id
-      inner join paradigm ep2 on ep2.word_id = ew2.id
-      inner join form ef2 on ef2.paradigm_id = ep2.id and ef2.mode = 'WORD'
+    select rec.word_id,
+           rec.word_etym_word_id,
+           rec.word_etym_id,
+           we.etymology_type_code,
+           we.etymology_year,
+           we.comment word_etym_comment,
+           we.is_questionable word_etym_is_questionable,
+           we.order_by word_etym_order_by,
+           wesl.word_etym_sources,
+           rec.word_etym_rel_id,
+           wer.comment word_etym_rel_comment,
+           wer.is_questionable word_etym_rel_is_questionable,
+           wer.is_compound word_etym_rel_is_compound,
+           wer.order_by word_etym_rel_order_by,
+           rec.related_word_id,
+           f2.value related_word,
+           w2.lang related_word_lang,
+           mw2.meaning_words
+    from word_etym_recursion rec
+      inner join word_etymology we on we.id = rec.word_etym_id
+      left outer join word_etymology_relation wer on wer.id = rec.word_etym_rel_id
+      left outer join word w2 on w2.id = wer.related_word_id
+      left outer join paradigm p2 on p2.word_id = w2.id
+      left outer join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
       left outer join (select l1.word_id,
                               array_agg(distinct f2.value) meaning_words
                        from lexeme l1,
@@ -439,23 +441,22 @@ create view view_ww_word_etymology
                             word w2,
                             paradigm p2,
                             form f2
-                       where l1.dataset_code = 'ety'
-                       and   l1.meaning_id = m.id
+                       where l1.meaning_id = m.id
                        and   l2.meaning_id = m.id
                        and   l1.word_id != l2.word_id
                        and   l2.dataset_code = 'ety'
-                       and   w2.lang = 'est'
                        and   l2.word_id = w2.id
                        and   p2.word_id = w2.id
                        and   f2.paradigm_id = p2.id
                        and   f2.mode = 'WORD'
-                       group by l1.word_id) mw2 on mw2.word_id = wer.word2_id
-      left outer join (select wsl.word_id,
-                              array_agg(wsl.value order by wsl.order_by) word_sources
-                       from word_source_link wsl
-                       group by wsl.word_id) wsl2 on wsl2.word_id = wer.word2_id
-    group by wer.word_id
-    order by wer.word_id;
+                       group by l1.word_id) mw2 on mw2.word_id = rec.related_word_id
+      left outer join (select wesl.word_etym_id,
+                              array_agg(wesl.value order by wesl.order_by) word_etym_sources
+                       from word_etymology_source_link wesl
+                       group by wesl.word_etym_id) wesl on wesl.word_etym_id = rec.word_etym_id
+    order by rec.word_id,
+             we.order_by,
+             wer.order_by;
 
 -- word relations
 create view view_ww_word_relation 

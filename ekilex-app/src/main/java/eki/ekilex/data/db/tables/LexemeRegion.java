@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
 
-    private static final long serialVersionUID = 910328465;
+    private static final long serialVersionUID = 1719968602;
 
     /**
      * The reference instance of <code>public.lexeme_region</code>
@@ -70,11 +70,6 @@ public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
      * The column <code>public.lexeme_region.region_code</code>.
      */
     public final TableField<LexemeRegionRecord, String> REGION_CODE = createField("region_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.lexeme_region.process_state_code</code>.
-     */
-    public final TableField<LexemeRegionRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.lexeme_region</code> table reference
@@ -154,7 +149,7 @@ public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
      */
     @Override
     public List<ForeignKey<LexemeRegionRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRegionRecord, ?>>asList(Keys.LEXEME_REGION__LEXEME_REGION_LEXEME_ID_FKEY, Keys.LEXEME_REGION__LEXEME_REGION_REGION_CODE_FKEY, Keys.LEXEME_REGION__LEXEME_REGION_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeRegionRecord, ?>>asList(Keys.LEXEME_REGION__LEXEME_REGION_LEXEME_ID_FKEY, Keys.LEXEME_REGION__LEXEME_REGION_REGION_CODE_FKEY);
     }
 
     public Lexeme lexeme() {
@@ -163,10 +158,6 @@ public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
 
     public Region region() {
         return new Region(this, Keys.LEXEME_REGION__LEXEME_REGION_REGION_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.LEXEME_REGION__LEXEME_REGION_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

@@ -31,7 +31,7 @@ import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
-import eki.wordweb.data.WordEtymology;
+import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
@@ -127,13 +127,10 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.MORPH_CODE,
 						MVIEW_WW_WORD.DISPLAY_MORPH_CODE,
 						MVIEW_WW_WORD.ASPECT_CODE,
-						MVIEW_WW_WORD.ETYMOLOGY_YEAR,
-						MVIEW_WW_WORD.ETYMOLOGY_TYPE_CODE,
 						MVIEW_WW_WORD.DATASET_CODES,
 						MVIEW_WW_WORD.MEANING_COUNT,
 						MVIEW_WW_WORD.MEANING_WORDS,
-						MVIEW_WW_WORD.DEFINITIONS,
-						MVIEW_WW_WORD.WORD_SOURCES
+						MVIEW_WW_WORD.DEFINITIONS
 						)
 				.from(MVIEW_WW_WORD)
 				.where(MVIEW_WW_WORD.WORD_ID.eq(wordId))
@@ -141,16 +138,33 @@ public class LexSearchDbService {
 				.into(Word.class);
 	}
 
-	public WordEtymology findWordEtymology(Long wordId) {
+	public List<WordEtymTuple> findWordEtymologyTuples(Long wordId) {
 
 		return create
 				.select(
 						MVIEW_WW_WORD_ETYMOLOGY.WORD_ID,
-						MVIEW_WW_WORD_ETYMOLOGY.ETYM_LINEUP
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_WORD_ID,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_ID,
+						MVIEW_WW_WORD_ETYMOLOGY.ETYMOLOGY_TYPE_CODE,
+						MVIEW_WW_WORD_ETYMOLOGY.ETYMOLOGY_YEAR,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_COMMENT,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_IS_QUESTIONABLE,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_SOURCES,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_REL_ID,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_REL_COMMENT,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_REL_IS_QUESTIONABLE,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_REL_IS_COMPOUND,
+						MVIEW_WW_WORD_ETYMOLOGY.RELATED_WORD_ID,
+						MVIEW_WW_WORD_ETYMOLOGY.RELATED_WORD,
+						MVIEW_WW_WORD_ETYMOLOGY.RELATED_WORD_LANG,
+						MVIEW_WW_WORD_ETYMOLOGY.MEANING_WORDS
 						)
 				.from(MVIEW_WW_WORD_ETYMOLOGY)
 				.where(MVIEW_WW_WORD_ETYMOLOGY.WORD_ID.eq(wordId))
-				.fetchOneInto(WordEtymology.class);
+				.orderBy(
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_ORDER_BY,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ETYM_REL_ORDER_BY)
+				.fetchInto(WordEtymTuple.class);
 	}
 
 	public List<WordRelationTuple> findWordRelationTuples(Long wordId) {

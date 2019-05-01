@@ -578,17 +578,18 @@
                   <span th:text="#{label.no.data}">Andmed puuduvad</span>
                 </div>
                 <div th:if="${wordData.word.wordEtymology != null}">
-                  <div th:if="${wordData.word.wordEtymology.wordEtymologyWrapup != null}">
-                    <span th:utext="${wordData.word.wordEtymology.wordEtymologyWrapup}"></span>
+                  <div th:if="${wordData.word.wordEtymology.etymWrapup != null}">
+                    <span th:utext="${wordData.word.wordEtymology.etymWrapup}"></span>
                   </div>
-                  <div th:if="${not #lists.isEmpty(wordData.word.wordEtymology.wordEtymologyLineupWrapup)}">
+                  <div th:if="${not #lists.isEmpty(wordData.word.wordEtymology.etymLevelsWrapup)}">
                     <ul>
-                      <li th:each="wordEtym : ${wordData.word.wordEtymology.wordEtymologyLineupWrapup}">
+                      <li th:each="wordEtym : ${wordData.word.wordEtymology.etymLevelsWrapup}">
                         &lt;
                         <span th:utext="${wordEtym}"></span>
                       </li>
                     </ul>
                   </div>
+                  <div th:if="${wordData.word.wordEtymology.comment != null}" th:utext="${wordData.word.wordEtymology.comment}"></div>
                 </div>
               </div>
             </section>

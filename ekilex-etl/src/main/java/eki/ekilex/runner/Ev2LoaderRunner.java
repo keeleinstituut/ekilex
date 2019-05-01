@@ -165,7 +165,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processAbbreviations(Context context) throws Exception {
 
-		logger.debug("Found abbreviations {} <x:lhx> : {} <x:xlhx>.", context.abbreviationFullWords.size(), context.abbreviationFullWordsRus);
+		//logger.debug("Found abbreviations {} <x:lhx> : {} <x:xlhx>.", context.abbreviationFullWords.size(), context.abbreviationFullWordsRus);
+		logger.debug("Found abbreviations {} <x:lhx>", context.abbreviationFullWords.size());
 		logger.debug("Processing started.");
 		writeToLogFile("Lühendite töötlus <x:lhx> ja <x:xlhx>", "", "");
 

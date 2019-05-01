@@ -10,7 +10,6 @@ import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = -460074090;
+    private static final long serialVersionUID = 559749172;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -77,26 +76,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.dataset_code</code>.
      */
     public final TableField<LexemeRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
-
-    /**
-     * The column <code>public.lexeme.created_on</code>.
-     */
-    public final TableField<LexemeRecord, Timestamp> CREATED_ON = createField("created_on", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>public.lexeme.created_by</code>.
-     */
-    public final TableField<LexemeRecord, String> CREATED_BY = createField("created_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.lexeme.modified_on</code>.
-     */
-    public final TableField<LexemeRecord, Timestamp> MODIFIED_ON = createField("modified_on", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
-
-    /**
-     * The column <code>public.lexeme.modified_by</code>.
-     */
-    public final TableField<LexemeRecord, String> MODIFIED_BY = createField("modified_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme.frequency_group_code</code>.

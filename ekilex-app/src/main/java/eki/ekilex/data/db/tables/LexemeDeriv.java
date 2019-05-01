@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
 
-    private static final long serialVersionUID = -1547866281;
+    private static final long serialVersionUID = 1375709850;
 
     /**
      * The reference instance of <code>public.lexeme_deriv</code>
@@ -70,11 +70,6 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
      * The column <code>public.lexeme_deriv.deriv_code</code>.
      */
     public final TableField<LexemeDerivRecord, String> DERIV_CODE = createField("deriv_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.lexeme_deriv.process_state_code</code>.
-     */
-    public final TableField<LexemeDerivRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.lexeme_deriv</code> table reference
@@ -154,7 +149,7 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
      */
     @Override
     public List<ForeignKey<LexemeDerivRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeDerivRecord, ?>>asList(Keys.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY, Keys.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY, Keys.LEXEME_DERIV__LEXEME_DERIV_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeDerivRecord, ?>>asList(Keys.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY, Keys.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY);
     }
 
     public Lexeme lexeme() {
@@ -163,10 +158,6 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
 
     public Deriv deriv() {
         return new Deriv(this, Keys.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.LEXEME_DERIV__LEXEME_DERIV_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

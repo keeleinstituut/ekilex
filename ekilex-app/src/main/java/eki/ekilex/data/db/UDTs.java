@@ -11,7 +11,6 @@ import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWord;
-import eki.ekilex.data.db.udt.TypeWordEtym;
 import eki.ekilex.data.db.udt.TypeWordRelation;
 
 import javax.annotation.Generated;
@@ -64,11 +63,6 @@ public class UDTs {
      * The type <code>public.type_word</code>
      */
     public static TypeWord TYPE_WORD = eki.ekilex.data.db.udt.TypeWord.TYPE_WORD;
-
-    /**
-     * The type <code>public.type_word_etym</code>
-     */
-    public static TypeWordEtym TYPE_WORD_ETYM = eki.ekilex.data.db.udt.TypeWordEtym.TYPE_WORD_ETYM;
 
     /**
      * The type <code>public.type_word_relation</code>

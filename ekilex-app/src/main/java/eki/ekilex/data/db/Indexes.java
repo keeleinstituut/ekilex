@@ -282,7 +282,6 @@ public class Indexes {
     public static final Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index VALUE_STATE_PKEY = Indexes0.VALUE_STATE_PKEY;
     public static final Index VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY;
-    public static final Index WORD_ETYM_TYPE_CODE_IDX = Indexes0.WORD_ETYM_TYPE_CODE_IDX;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_LANG_IDX = Indexes0.WORD_LANG_IDX;
     public static final Index WORD_PKEY = Indexes0.WORD_PKEY;
@@ -486,7 +485,6 @@ public class Indexes {
         public static Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("usage_type_label_code_lang_type_key", UsageTypeLabel.USAGE_TYPE_LABEL, new OrderField[] { UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE }, true);
         public static Index VALUE_STATE_PKEY = Internal.createIndex("value_state_pkey", ValueState.VALUE_STATE, new OrderField[] { ValueState.VALUE_STATE.CODE }, true);
         public static Index VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("value_state_label_code_lang_type_key", ValueStateLabel.VALUE_STATE_LABEL, new OrderField[] { ValueStateLabel.VALUE_STATE_LABEL.CODE, ValueStateLabel.VALUE_STATE_LABEL.LANG, ValueStateLabel.VALUE_STATE_LABEL.TYPE }, true);
-        public static Index WORD_ETYM_TYPE_CODE_IDX = Internal.createIndex("word_etym_type_code_idx", Word.WORD, new OrderField[] { Word.WORD.ETYMOLOGY_TYPE_CODE }, false);
         public static Index WORD_HOMONYM_NR_IDX = Internal.createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_LANG_IDX = Internal.createIndex("word_lang_idx", Word.WORD, new OrderField[] { Word.WORD.LANG }, false);
         public static Index WORD_PKEY = Internal.createIndex("word_pkey", Word.WORD, new OrderField[] { Word.WORD.ID }, true);

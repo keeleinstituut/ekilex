@@ -10,13 +10,13 @@ public class WordEtymology extends AbstractDataObject {
 
 	private Long wordId;
 
-	private List<String> wordSources;
+	private List<String> sources;
 
-	private List<TypeWordEtym> etymLineup;
+	private String comment;
 
-	private String wordEtymologyWrapup;
+	private String etymWrapup;
 
-	private List<String> wordEtymologyLineupWrapup;
+	private List<String> etymLevelsWrapup;
 
 	public Long getWordId() {
 		return wordId;
@@ -26,36 +26,36 @@ public class WordEtymology extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public List<String> getWordSources() {
-		return wordSources;
+	public List<String> getSources() {
+		return sources;
 	}
 
-	public void setWordSources(List<String> wordSources) {
-		this.wordSources = wordSources;
+	public void setSources(List<String> sources) {
+		this.sources = sources;
 	}
 
-	public List<TypeWordEtym> getEtymLineup() {
-		return etymLineup;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setEtymLineup(List<TypeWordEtym> etymLineup) {
-		this.etymLineup = etymLineup;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
-	public String getWordEtymologyWrapup() {
-		return wordEtymologyWrapup;
+	public String getEtymWrapup() {
+		return etymWrapup;
 	}
 
-	public void setWordEtymologyWrapup(String wordEtymologyWrapup) {
-		this.wordEtymologyWrapup = wordEtymologyWrapup;
+	public void setEtymWrapup(String wordEtymologyWrapup) {
+		this.etymWrapup = wordEtymologyWrapup;
 	}
 
-	public List<String> getWordEtymologyLineupWrapup() {
-		return wordEtymologyLineupWrapup;
+	public List<String> getEtymLevelsWrapup() {
+		return etymLevelsWrapup;
 	}
 
-	public void setWordEtymologyLineupWrapup(List<String> wordEtymologyLineupWrapup) {
-		this.wordEtymologyLineupWrapup = wordEtymologyLineupWrapup;
+	public void setEtymLevelsWrapup(List<String> wordEtymologyLineupWrapup) {
+		this.etymLevelsWrapup = wordEtymologyLineupWrapup;
 	}
 
 }

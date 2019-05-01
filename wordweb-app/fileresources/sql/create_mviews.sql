@@ -29,7 +29,6 @@ create type type_definition as (lexeme_id bigint, meaning_id bigint, value text,
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_prese text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
-create type type_word_etym as (word_id bigint, etym_word_id bigint, etym_word text, etym_word_lang char(3), etym_year text, etym_meaning_words text array, etym_word_sources text array, comments text array, is_questionable boolean, is_compound boolean);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_type_codes varchar(100) array, dataset_codes varchar(10) array, word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
@@ -48,13 +47,10 @@ dblink(
 	morph_code varchar(100),
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
-	etymology_year text,
-	etymology_type_code varchar(100),
 	dataset_codes varchar(100) array,
 	meaning_count integer,
 	meaning_words type_word array,
-	definitions type_definition array,
-	word_sources text array
+	definitions type_definition array
 );
 
 create materialized view mview_ww_as_word as
@@ -164,7 +160,23 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_etymology') as word_etymology(
 	word_id bigint,
-	etym_lineup type_word_etym array
+	word_etym_word_id bigint,
+	word_etym_id bigint,
+	etymology_type_code varchar(100),
+	etymology_year text,
+	word_etym_comment text,
+	word_etym_is_questionable boolean,
+	word_etym_order_by bigint,
+	word_etym_sources text array,
+	word_etym_rel_id bigint,
+	word_etym_rel_comment text,
+	word_etym_rel_is_questionable boolean,
+	word_etym_rel_is_compound boolean,
+	word_etym_rel_order_by bigint,
+	related_word_id bigint,
+	related_word text,
+	related_word_lang char(3),
+	meaning_words text array
 );
 
 create materialized view mview_ww_word_relation as

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRegister extends TableImpl<LexemeRegisterRecord> {
 
-    private static final long serialVersionUID = 291400184;
+    private static final long serialVersionUID = 2018114923;
 
     /**
      * The reference instance of <code>public.lexeme_register</code>
@@ -70,11 +70,6 @@ public class LexemeRegister extends TableImpl<LexemeRegisterRecord> {
      * The column <code>public.lexeme_register.register_code</code>.
      */
     public final TableField<LexemeRegisterRecord, String> REGISTER_CODE = createField("register_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.lexeme_register.process_state_code</code>.
-     */
-    public final TableField<LexemeRegisterRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme_register.order_by</code>.
@@ -159,7 +154,7 @@ public class LexemeRegister extends TableImpl<LexemeRegisterRecord> {
      */
     @Override
     public List<ForeignKey<LexemeRegisterRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRegisterRecord, ?>>asList(Keys.LEXEME_REGISTER__LEXEME_REGISTER_LEXEME_ID_FKEY, Keys.LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY, Keys.LEXEME_REGISTER__LEXEME_REGISTER_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeRegisterRecord, ?>>asList(Keys.LEXEME_REGISTER__LEXEME_REGISTER_LEXEME_ID_FKEY, Keys.LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY);
     }
 
     public Lexeme lexeme() {
@@ -168,10 +163,6 @@ public class LexemeRegister extends TableImpl<LexemeRegisterRecord> {
 
     public Register register() {
         return new Register(this, Keys.LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.LEXEME_REGISTER__LEXEME_REGISTER_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

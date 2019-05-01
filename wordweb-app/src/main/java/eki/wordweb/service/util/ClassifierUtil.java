@@ -22,9 +22,9 @@ import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
 import eki.wordweb.data.TypeUsage;
-import eki.wordweb.data.TypeWordEtym;
 import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
+import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordGroup;
 import eki.wordweb.service.db.CommonDataDbService;
 
@@ -48,10 +48,6 @@ public class ClassifierUtil {
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		word.setAspect(classifier);
-		classifierCode = word.getEtymologyTypeCode();
-		//TODO no labels yet for etym type code
-		classifier = getClassifier(ClassifierName.ETYMOLOGY_TYPE, classifierCode, displayLang);
-		word.setEtymologyType(classifier);
 	}
 
 	public String applyClassifiers(Form form, String displayLang) {
@@ -79,7 +75,6 @@ public class ClassifierUtil {
 		classifiers = getClassifiers(ClassifierName.DERIV, classifierCodes, displayLang);
 		lexeme.setDerivs(classifiers);
 	}
-
 
 	public void applyClassifiers(LexemeDetailsTuple tuple, MeaningWord meaningWord, String displayLang) {
 		String classifierCode;
@@ -141,12 +136,15 @@ public class ClassifierUtil {
 		wordRelation.setWordRelType(classifier);
 	}
 
-	public void applyClassifiers(TypeWordEtym wordEtym, String displayLang) {
+	public void applyClassifiers(WordEtymTuple tuple, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
-		classifierCode = wordEtym.getEtymWordLang();
+		classifierCode = tuple.getEtymologyTypeCode();
+		classifier = getClassifier(ClassifierName.ETYMOLOGY_TYPE, classifierCode, displayLang);
+		tuple.setEtymologyType(classifier);
+		classifierCode = tuple.getRelatedWordLang();
 		classifier = getClassifier(ClassifierName.LANGUAGE, classifierCode, displayLang);
-		wordEtym.setEtymWordLanguage(classifier);
+		tuple.setRelatedWordLanguage(classifier);
 	}
 
 	public void applyClassifiers(CollocationTuple tuple, CollocationPosGroup collocPosGroup, String displayLang) {

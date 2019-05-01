@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemePos extends TableImpl<LexemePosRecord> {
 
-    private static final long serialVersionUID = 1268497590;
+    private static final long serialVersionUID = -1044599233;
 
     /**
      * The reference instance of <code>public.lexeme_pos</code>
@@ -70,11 +70,6 @@ public class LexemePos extends TableImpl<LexemePosRecord> {
      * The column <code>public.lexeme_pos.pos_code</code>.
      */
     public final TableField<LexemePosRecord, String> POS_CODE = createField("pos_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.lexeme_pos.process_state_code</code>.
-     */
-    public final TableField<LexemePosRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme_pos.order_by</code>.
@@ -159,7 +154,7 @@ public class LexemePos extends TableImpl<LexemePosRecord> {
      */
     @Override
     public List<ForeignKey<LexemePosRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemePosRecord, ?>>asList(Keys.LEXEME_POS__LEXEME_POS_LEXEME_ID_FKEY, Keys.LEXEME_POS__LEXEME_POS_POS_CODE_FKEY, Keys.LEXEME_POS__LEXEME_POS_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemePosRecord, ?>>asList(Keys.LEXEME_POS__LEXEME_POS_LEXEME_ID_FKEY, Keys.LEXEME_POS__LEXEME_POS_POS_CODE_FKEY);
     }
 
     public Lexeme lexeme() {
@@ -168,10 +163,6 @@ public class LexemePos extends TableImpl<LexemePosRecord> {
 
     public Pos pos() {
         return new Pos(this, Keys.LEXEME_POS__LEXEME_POS_POS_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.LEXEME_POS__LEXEME_POS_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

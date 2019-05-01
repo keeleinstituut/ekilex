@@ -28,12 +28,6 @@ public class Word extends WordTypeData {
 
 	private Classifier aspect;
 
-	private String etymologyYear;
-
-	private String etymologyTypeCode;
-
-	private Classifier etymologyType;
-
 	private List<Classifier> summarisedPoses;
 
 	private WordEtymology wordEtymology;
@@ -49,8 +43,6 @@ public class Word extends WordTypeData {
 	private List<TypeDefinition> definitions;
 
 	private String definitionsWrapup;
-
-	private List<String> wordSources;
 
 	private List<TypeWordRelation> relatedWords;
 
@@ -148,30 +140,6 @@ public class Word extends WordTypeData {
 		this.aspect = aspect;
 	}
 
-	public String getEtymologyYear() {
-		return etymologyYear;
-	}
-
-	public void setEtymologyYear(String etymologyYear) {
-		this.etymologyYear = etymologyYear;
-	}
-
-	public String getEtymologyTypeCode() {
-		return etymologyTypeCode;
-	}
-
-	public void setEtymologyTypeCode(String etymologyTypeCode) {
-		this.etymologyTypeCode = etymologyTypeCode;
-	}
-
-	public Classifier getEtymologyType() {
-		return etymologyType;
-	}
-
-	public void setEtymologyType(Classifier etymologyType) {
-		this.etymologyType = etymologyType;
-	}
-
 	public List<Classifier> getSummarisedPoses() {
 		return summarisedPoses;
 	}
@@ -234,14 +202,6 @@ public class Word extends WordTypeData {
 
 	public void setDefinitionsWrapup(String definitionsWrapup) {
 		this.definitionsWrapup = definitionsWrapup;
-	}
-
-	public List<String> getWordSources() {
-		return wordSources;
-	}
-
-	public void setWordSources(List<String> wordSources) {
-		this.wordSources = wordSources;
 	}
 
 	public List<TypeWordRelation> getRelatedWords() {

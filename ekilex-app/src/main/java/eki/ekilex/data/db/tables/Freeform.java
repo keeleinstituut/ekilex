@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Freeform extends TableImpl<FreeformRecord> {
 
-    private static final long serialVersionUID = 51489509;
+    private static final long serialVersionUID = 1456980565;
 
     /**
      * The reference instance of <code>public.freeform</code>
@@ -112,11 +112,6 @@ public class Freeform extends TableImpl<FreeformRecord> {
      * The column <code>public.freeform.lang</code>.
      */
     public final TableField<FreeformRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.freeform.process_state_code</code>.
-     */
-    public final TableField<FreeformRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.freeform.order_by</code>.
@@ -201,7 +196,7 @@ public class Freeform extends TableImpl<FreeformRecord> {
      */
     @Override
     public List<ForeignKey<FreeformRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<FreeformRecord, ?>>asList(Keys.FREEFORM__FREEFORM_PARENT_ID_FKEY, Keys.FREEFORM__FREEFORM_LANG_FKEY, Keys.FREEFORM__FREEFORM_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<FreeformRecord, ?>>asList(Keys.FREEFORM__FREEFORM_PARENT_ID_FKEY, Keys.FREEFORM__FREEFORM_LANG_FKEY);
     }
 
     public eki.ekilex.data.db.tables.Freeform freeform() {
@@ -210,10 +205,6 @@ public class Freeform extends TableImpl<FreeformRecord> {
 
     public Language language() {
         return new Language(this, Keys.FREEFORM__FREEFORM_LANG_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.FREEFORM__FREEFORM_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

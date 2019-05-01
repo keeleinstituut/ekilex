@@ -93,6 +93,8 @@ import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
+import eki.ekilex.data.db.tables.ViewWwWord;
+import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
@@ -115,7 +117,6 @@ import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWord;
-import eki.ekilex.data.db.udt.TypeWordEtym;
 import eki.ekilex.data.db.udt.TypeWordRelation;
 
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -383062947;
+    private static final long serialVersionUID = 132032752;
 
     /**
      * The reference instance of <code>public</code>
@@ -597,6 +598,16 @@ public class Public extends SchemaImpl {
     public final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
 
     /**
+     * The table <code>public.view_ww_word</code>.
+     */
+    public final ViewWwWord VIEW_WW_WORD = eki.ekilex.data.db.tables.ViewWwWord.VIEW_WW_WORD;
+
+    /**
+     * The table <code>public.view_ww_word_etymology</code>.
+     */
+    public final ViewWwWordEtymology VIEW_WW_WORD_ETYMOLOGY = eki.ekilex.data.db.tables.ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY;
+
+    /**
      * The table <code>public.view_ww_word_relation</code>.
      */
     public final ViewWwWordRelation VIEW_WW_WORD_RELATION = eki.ekilex.data.db.tables.ViewWwWordRelation.VIEW_WW_WORD_RELATION;
@@ -887,6 +898,8 @@ public class Public extends SchemaImpl {
             ViewWwMeaning.VIEW_WW_MEANING,
             ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
             ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA,
+            ViewWwWord.VIEW_WW_WORD,
+            ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             Word.WORD,
             WordEtymology.WORD_ETYMOLOGY,
@@ -920,7 +933,6 @@ public class Public extends SchemaImpl {
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeUsage.TYPE_USAGE,
             TypeWord.TYPE_WORD,
-            TypeWordEtym.TYPE_WORD_ETYM,
             TypeWordRelation.TYPE_WORD_RELATION);
     }
 }
