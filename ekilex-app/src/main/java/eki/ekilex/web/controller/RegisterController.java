@@ -48,6 +48,10 @@ public class RegisterController implements WebConstant {
 
 	@GetMapping(REGISTER_PAGE_URI)
 	public String register() {
+		boolean isAuthenticatedUser = userService.isAuthenticatedUser();
+		if (isAuthenticatedUser) {
+			return "redirect:" + HOME_URI;
+		}
 		return REGISTER_PAGE;
 	}
 

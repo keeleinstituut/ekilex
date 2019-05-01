@@ -46,6 +46,12 @@ public class UserService {
 		this.commonDataDbService = commonDataDbService;
 	}
 
+	public boolean isAuthenticatedUser() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		boolean isAuthenticated = principal instanceof EkiUser;
+		return isAuthenticated;
+	}
+
 	public EkiUser getAuthenticatedUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		EkiUser user;

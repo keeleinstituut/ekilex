@@ -37,6 +37,15 @@ public class HomeController extends AbstractPageController {
 	@Autowired
 	private StatDataService statDataService;
 
+	@GetMapping(INDEX_URI)
+	public String index() {
+		boolean isAuthenticatedUser = userService.isAuthenticatedUser();
+		if (isAuthenticatedUser) {
+			return "redirect:" + HOME_URI;
+		}
+		return "index";
+	}
+
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
 		EkiUser user = userService.getAuthenticatedUser();
@@ -100,11 +109,17 @@ public class HomeController extends AbstractPageController {
 		List<StatDataRow> freeformStatData = statDataService.getFreeformStatData();
 		List<StatDataRow> lexemeDatasetStatData = statDataService.getLexemeDatasetStatData();
 		List<StatDataRow> lifecycleUserStatData = statDataService.getLifecycleUserStatData();
+		boolean statExists =
+				(mainEntityStatData.getDatasetCount() > 0)
+				&& CollectionUtils.isNotEmpty(freeformStatData)
+				&& CollectionUtils.isNotEmpty(lexemeDatasetStatData)
+				&& CollectionUtils.isNotEmpty(lifecycleUserStatData);
 
 		model.addAttribute("mainEntityStatData", mainEntityStatData);
 		model.addAttribute("freeformStatData", freeformStatData);
 		model.addAttribute("lexemeDatasetStatData", lexemeDatasetStatData);
 		model.addAttribute("lifecycleUserStatData", lifecycleUserStatData);
+		model.addAttribute("statExists", statExists);
 	}
 
 	@GetMapping("/loginerror")
