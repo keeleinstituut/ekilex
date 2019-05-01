@@ -1041,11 +1041,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return wordNode == null || isRestricted(wordNode) ? null : cleanEkiEntityMarkup(wordNode.getTextTrim());
 	}
 
-	private boolean isNotWordInSs1(String word) {
-		List<Map<String, Object>> words = getWordsInSs1(word);
-		return CollectionUtils.isEmpty(words);
-	}
-
 	private List<Map<String, Object>> getWordsInSs1(String word) {
 		return getWords(word, "ss1");
 	}

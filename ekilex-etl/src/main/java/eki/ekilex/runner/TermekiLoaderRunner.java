@@ -7,7 +7,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,6 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +36,6 @@ import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.constant.TextDecoration;
 import eki.common.data.Count;
-import eki.common.data.PgVarcharArray;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.TermekiService;
@@ -52,8 +49,6 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	private static final String TERMEKI_MARKUP_PATTERN_FOREIGN = "(\\[i\\](.+?)\\[\\/i\\])";
 
 	private static final String TERMEKI_MARKUP_PATTERN_LINK = "(\\[c=(\\d*)\\](.+?)\\[\\/c\\])";
-
-	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datasets where code = :code and origin = :origin";
 
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 	private static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
@@ -621,22 +616,6 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			params.put("lexeme_id", lexemeId);
 			params.put("pos_code", posCodes.get(posCode));
 			basicDbService.create(LEXEME_POS, params);
-		}
-	}
-
-	private void updateDomainDatsetsIfNeeded(Map<String, Object> domain, String dataset) throws Exception {
-
-		PgArray datasetArrObj = (PgArray) domain.get("datasets");
-		String[] datasetArr = (String[]) datasetArrObj.getArray();
-		List<String> datasets = Arrays.asList(datasetArr);
-		if (!datasets.contains(dataset)) {
-			List<String> updatedDatasets = new ArrayList<>(datasets);
-			updatedDatasets.add(dataset);
-			Map<String, Object> tableRowParamMap = new HashMap<>();
-			tableRowParamMap.put("code", domain.get("code"));
-			tableRowParamMap.put("origin", domain.get("origin"));
-			tableRowParamMap.put("datasets", new PgVarcharArray(updatedDatasets));
-			basicDbService.executeScript(SQL_UPDATE_DOMAIN_DATSETS, tableRowParamMap);
 		}
 	}
 

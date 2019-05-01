@@ -193,7 +193,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 					}
 				}
 
-				//TODO impl
+				//TODO nobody needs this?
 				List<Node> etymPrivateNoteNodes = etymNode.selectNodes(etymRootPrivateNoteExp);
 				List<Node> etymGroupNodes = etymNode.selectNodes(etymGroupExp);
 
@@ -387,7 +387,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 								}
 								createLexeme(wordId, meaningId);
 								/* 
-								 * the field contains comma-separated list which should all be separate words
+								 * the field contains comma-separated list which should all be individual words
 								 * 
 								String wordValuesStr = etymEstWordElement.getTextTrim();
 								String[] words = StringUtils.split(wordValuesStr, ',');

@@ -1,7 +1,5 @@
 package eki.ekilex.runner;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
