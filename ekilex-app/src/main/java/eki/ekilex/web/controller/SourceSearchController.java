@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,13 +26,13 @@ public class SourceSearchController extends AbstractPageController {
 	@Autowired
 	private SourceService sourceService;
 
-	@GetMapping("/sourcesearch")
+	@GetMapping(SOURCE_SEARCH_URI)
 	public String initSearch() {
 
-		return "sourcesearch";
+		return SOURCE_SEARCH_PAGE;
 	}
 
-	@PostMapping("/sourcesearch")
+	@PostMapping(SOURCE_SEARCH_URI)
 	public String search(@RequestParam String searchFilter, Model model) {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
@@ -40,7 +42,7 @@ public class SourceSearchController extends AbstractPageController {
 		model.addAttribute("sources", sources);
 		model.addAttribute("sourceCount", sources.size());
 
-		return "sourcesearch";
+		return SOURCE_SEARCH_PAGE;
 	}
 
 	@GetMapping("/sourcesearchajax")
@@ -54,6 +56,21 @@ public class SourceSearchController extends AbstractPageController {
 		model.addAttribute("sourceCount", sources.size());
 
 		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "source_link_dlg";
+	}
+
+	@GetMapping(SOURCE_SEARCH_URI + "/{sourceId}")
+	public String searchById(@PathVariable("sourceId") Long sourceId, Model model) {
+
+		logger.debug("Searching by id: \"{}\"", sourceId);
+
+		List<Source> sources = new ArrayList<>();
+		Source source = sourceService.getSource(sourceId);
+		sources.add(source);
+
+		model.addAttribute("sources", sources);
+		model.addAttribute("sourceCount", sources.size());
+
+		return SOURCE_SEARCH_PAGE;
 	}
 
 }

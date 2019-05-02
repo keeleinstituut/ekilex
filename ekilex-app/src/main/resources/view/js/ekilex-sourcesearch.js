@@ -121,26 +121,17 @@ $(document).on("click", "#addSourceSubmitBtn", function () {
 		return;
 	}
 
-	let sourceName = form.find('[name=sourceName]').val();
 	$.ajax({
 		url: form.attr('action'),
 		data: form.serialize(),
 		method: 'POST',
-	}).done(function (data) {
-		console.log(data);
-		searchSourceByValue(sourceName);
+	}).done(function (sourceId) {
+		window.location = applicationUrl + 'sourcesearch/' + sourceId;
 	}).fail(function (data) {
-		alert("viga");
 		console.log(data);
 		openAlertDlg('Allika lisamine ebaõnnestus');
 	});
 });
-
-function searchSourceByValue(searchValue) {
-	let form = $("#sourceSearchForm");
-	form.find('[name=searchFilter]').val(searchValue);
-	form.submit();
-}
 
 function isNewSourceFormValid(form) {
 	validateRequiredFormField(form, 'input', 'sourceName');
@@ -168,9 +159,7 @@ function executeValidateSourceDelete(sourceId) {
 
 function deleteSourceAndUpdateSearch(deleteUrl) {
 	$.get(deleteUrl).done(function (data) {
-		let form = $("#sourceSearchForm");
-		form.find('[name=searchFilter]').val();
-		form.submit();
+		$("#sourceSearchForm").submit();
 	}).fail(function (data) {
 		openAlertDlg("Allika eemaldamine ebaõnnestus.");
 		console.log(data);

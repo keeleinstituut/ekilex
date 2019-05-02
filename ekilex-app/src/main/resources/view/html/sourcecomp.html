@@ -2,173 +2,239 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:id="${'sourceSearchResult_' + source.sourceId}" class="card shadow mt-2" th:fragment="source_search_result">
-  <div class="card-body">
-    <div class="col-auto form-inline">
-      <div class="ml-auto">
-        <button type="button" class="btn badge badge-success float-right"
-                title="Lisa allikale uus atribuut"
-                data-toggle="modal"
-                th:data-target="${'#addSourcePropertyDlg_' + source.sourceId}">
-          <i class="fa fa-plus" aria-hidden="true"></i>
-        </button>
+  <div th:id="${'sourceSearchResult_' + source.sourceId}" class="card shadow mt-2" th:fragment="source_search_result">
+    <div class="card-body">
+      <div class="col-auto form-inline">
+        <div class="ml-auto">
+          <button type="button" class="btn badge badge-success float-right"
+                  title="Lisa allikale uus atribuut"
+                  data-toggle="modal"
+                  th:data-target="${'#addSourcePropertyDlg_' + source.sourceId}">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="ml-2">
+          <form th:action="@{/source_join}" method="post">
+            <input type="hidden" name="previousSearch" th:value="${searchFilter}">
+            <input type="hidden" name="sourceId" th:value="${source.sourceId}">
+            <button type="submit" class="btn btn-primary btn-sm">Ühenda</button>
+          </form>
+        </div>
+        <div class="ml-2">
+          <button type="button"
+                  class="btn btn-warning font-weight-bold btn-sm"
+                  th:data-source-id="${source.sourceId}"
+                  data-toggle="delete-source-confirm">
+            Eemalda allikas
+          </button>
+        </div>
+        <a th:href="@{'/sourcelifecyclelog:' + ${source.sourceId}}"
+           data-toggle="modal"
+           data-target="#sourceLifecycleLogDlg"
+           class="btn btn-secondary btn-sm ml-4">Tegevuste logi</a>
       </div>
-      <div class="ml-2">
-        <button type="button"
-                class="btn btn-warning font-weight-bold btn-sm"
-                th:data-source-id="${source.sourceId}"
-                data-toggle="delete-source-confirm">
-          Eemalda allikas
-        </button>
-      </div>
-      <a th:href="@{'/sourcelifecyclelog:' + ${source.sourceId}}"
-         data-toggle="modal"
-         data-target="#sourceLifecycleLogDlg"
-         class="btn btn-secondary btn-sm ml-4">Tegevuste logi</a>
-    </div>
-    <table class="w-100">
-      <tr>
-        <td style="width: 100px; text-align: left; vertical-align: top;">
-          <b>
-            <span th:text="${count + '.'}"></span>
-          </b>
-        </td>
-        <td>
-          <div class="row mb-1">
-            <table style="background-color: #ececec; font-weight: bold">
-              <tr>
-                <td>source id</td>
-                <td th:text="${source.sourceId}"></td>
-              </tr>
-              <tr>
-                <td>type</td>
-                <td>
-                  <div class="hidden-buttons">
-                    <div class="col pl-0">
-                      <span th:text="${source.type}"></span>
-                      <button type="button" class="btn badge badge-primary" title="Muuda"
-                              data-toggle="modal"
-                              th:data-target="${'#editSourceTypeDlg_' + source.sourceId}">
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                      </button>
+      <table class="w-100">
+        <tr>
+          <td style="width: 100px; text-align: left; vertical-align: top;">
+            <b>
+              <span th:text="${count + '.'}"></span>
+            </b>
+          </td>
+          <td>
+            <div class="row mb-1">
+              <table style="background-color: #ececec; font-weight: bold">
+                <tr>
+                  <td>source id</td>
+                  <td th:text="${source.sourceId}"></td>
+                </tr>
+                <tr>
+                  <td>type</td>
+                  <td>
+                    <div class="hidden-buttons">
+                      <div class="col pl-0">
+                        <span th:text="${source.type}"></span>
+                        <button type="button" class="btn badge badge-primary" title="Muuda"
+                                data-toggle="modal"
+                                th:data-target="${'#editSourceTypeDlg_' + source.sourceId}">
+                          <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </button>
+                      </div>
                     </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 100px;"></td>
+          <td>
+            <th:block th:each="sourceProperty : ${source.sourceProperties}">
+              <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
+              <div th:replace="sourcedialog :: add_source_property_dlg"></div>
+              <div th:replace="sourcedialog :: edit_source_type_dlg"></div>
+              <div class="row">
+                <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
+                  <div style="display: list-item; position: absolute"></div>
+                  <span th:text="${sourceProperty.type}"></span>
+                  -
+                  <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"
+                        th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+                  <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                  <div class="action-buttons-2">
+                    <button type="button" class="btn badge badge-primary"
+                            th:title="Muuda"
+                            data-toggle="modal"
+                            th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning"
+                            th:data-source-property-id="${sourceProperty.id}"
+                            th:data-source-property-type="${sourceProperty.type}"
+                            th:data-source-id="${source.sourceId}"
+                            th:data-count="${count}"
+                            data-toggle="delete-source-property-confirm"
+                            data-placement="right">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
                   </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td style="width: 100px;"></td>
-        <td>
-          <th:block th:each="sourceProperty : ${source.sourceProperties}">
-            <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
-            <div th:replace="sourcedialog :: add_source_property_dlg"></div>
-            <div th:replace="sourcedialog :: edit_source_type_dlg"></div>
-            <div class="row">
-              <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
-                <div style="display: list-item; position: absolute"></div>
-                <span th:text="${sourceProperty.type}"></span>
-                -
-                <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"
-                      th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
-                <div class="action-buttons-2">
-                  <button type="button" class="btn badge badge-primary"
-                          th:title="Muuda"
-                          data-toggle="modal"
-                          th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-warning"
-                          th:data-source-property-id="${sourceProperty.id}"
-                          th:data-source-property-type="${sourceProperty.type}"
-                          th:data-source-id="${source.sourceId}"
-                          th:data-count="${count}"
-                          data-toggle="delete-source-property-confirm"
-                          data-placement="right">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
                 </div>
               </div>
-            </div>
-          </th:block>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div id="sourceLifecycleLogDlg" class="modal" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </th:block>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="sourceLifecycleLogDlg" class="modal" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body"></div>
         </div>
-        <div class="modal-body"></div>
       </div>
     </div>
+    <script type="text/javascript">
+      $('[data-toggle=delete-source-property-confirm]').confirmation({
+        btnOkLabel: 'Jah',
+        btnCancelLabel: 'Ei',
+        title: 'Palun kinnita allika atribuudi kustutamine',
+        onConfirm: function () {
+          let sourceId = $(this).data('sourceId');
+          let sourcePropertyId = $(this).data('sourcePropertyId');
+          let sourcePropertyType = $(this).data('sourcePropertyType');
+          let count = $(this).data('count');
+          deleteSourceProperty(sourceId, sourcePropertyId, sourcePropertyType, count);
+        }
+      });
+      $('[data-toggle=delete-source-confirm]').confirmation({
+        btnOkLabel: 'Jah',
+        btnCancelLabel: 'Ei',
+        title: 'Palun kinnita allika kustutamine',
+        onConfirm: function () {
+          let sourceId = $(this).data('sourceId');
+          executeValidateSourceDelete(sourceId);
+        }
+      });
+    </script>
   </div>
-  <script type="text/javascript">
-	  $('[data-toggle=delete-source-property-confirm]').confirmation({
-		  btnOkLabel: 'Jah',
-		  btnCancelLabel: 'Ei',
-		  title: 'Palun kinnita allika atribuudi kustutamine',
-		  onConfirm: function () {
-			  let sourceId = $(this).data('sourceId');
-			  let sourcePropertyId = $(this).data('sourcePropertyId');
-			  let sourcePropertyType = $(this).data('sourcePropertyType');
-			  let count = $(this).data('count');
-			  deleteSourceProperty(sourceId, sourcePropertyId, sourcePropertyType, count);
-		  }
-	  });
-	  $('[data-toggle=delete-source-confirm]').confirmation({
-		  btnOkLabel: 'Jah',
-		  btnCancelLabel: 'Ei',
-		  title: 'Palun kinnita allika kustutamine',
-		  onConfirm: function () {
-			  let sourceId = $(this).data('sourceId');
-			  executeValidateSourceDelete(sourceId);
-		  }
-	  });
-  </script>
-</div>
 
-<th:block th:fragment="add_new_source_property">
-  <div class="form-group row" id="source_property_element">
-    <div class="col-md-12">
-      <div class="border rounded" name="sourcePropertyGroup">
-        <div class="form-group row p-2 m-2">
-          <div class="col-auto">
-            <label title="Allika atribuudi nimetus">
-              <select required class="form-control" name="type">
-                <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value
-                </option>
-              </select>
-            </label>
+  <th:block th:fragment="add_new_source_property">
+    <div class="form-group row" id="source_property_element">
+      <div class="col-md-12">
+        <div class="border rounded" name="sourcePropertyGroup">
+          <div class="form-group row p-2 m-2">
+            <div class="col-auto">
+              <label title="Allika atribuudi nimetus">
+                <select required class="form-control" name="type">
+                  <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value
+                  </option>
+                </select>
+              </label>
+            </div>
+            <div class="col-4 pl-0">
+              <button type="button" class="btn btn-success btn-sm mt-1" name="addPropertyGroupBtn" title="Lisa uus allika atribuut">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-danger btn-sm mt-1" name="removePropertyGroupBtn" title="Eemalda">
+                <i class="fa fa-minus" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
-          <div class="col-4 pl-0">
-            <button type="button" class="btn btn-success btn-sm mt-1" name="addPropertyGroupBtn" title="Lisa uus allika atribuut">
-              <i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn btn-danger btn-sm mt-1" name="removePropertyGroupBtn" title="Eemalda">
-              <i class="fa fa-minus" aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
-        <div class="form-group row p-2 m-2" name="propertyValue">
-          <div class="col-12">
-            <textarea rows="3" class="form-control" name="valueText"></textarea>
-            <div class="errors">
-              <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+          <div class="form-group row p-2 m-2" name="propertyValue">
+            <div class="col-12">
+              <textarea rows="3" class="form-control" name="valueText"></textarea>
+              <div class="errors">
+                <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <script th:inline="javascript">
-	  initialiseAddNewProperty();
-  </script>
-</th:block>
+    <script th:inline="javascript">
+		  initialiseAddNewProperty();
+    </script>
+  </th:block>
+
+  <th:block th:fragment="source_join_details(firstSourceId,source)" th:if="${source != null}">
+    <div>
+      <table class="w-100" th:fragment="details">
+        <tr>
+          <td style="width: 50px"></td>
+          <td>
+            <div class="row mb-1">
+              <table style="background-color: #ececec; font-weight: bold;">
+                <tr>
+                  <td>source id &nbsp;</td>
+                  <td th:text="${source.sourceId}"></td>
+                </tr>
+                <tr>
+                  <td>type</td>
+                  <td th:text="${source.type}"></td>
+                </tr>
+              </table>
+              <div class="ml-4">
+                <form th:action="@{/join_sources}" method="post">
+                  <input type="hidden" name="firstSourceId" th:value="${firstSource.sourceId}">
+                  <input type="hidden" name="secondSourceId" th:value="${source.sourceId}">
+                  <button type="button" class="btn btn-primary" data-toggle="join-confirm" data-placement="right"
+                          th:if="${source.sourceId != firstSourceId}">Ühenda</button>
+                </form>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 50px"></td>
+          <td>
+            <th:block th:each="sourceProperty : ${source.sourceProperties}">
+              <div class="row">
+                <div class="mb-1">
+                  <div style="display: list-item; position: absolute"></div>
+                  <span th:text="${sourceProperty.type}"></span>
+                  -
+                  <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"></span>
+                  <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                </div>
+              </div>
+            </th:block>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <script th:inline="javascript">
+      $('[data-toggle=join-confirm]').confirmation({
+        btnOkLabel: 'Jah',
+        btnCancelLabel: 'Ei',
+        title: 'Kas olete kindel, et soovite allikad ühendada?',
+        onConfirm: function () {
+          $(this).closest('form').submit();
+        }
+      });
+    </script>
+  </th:block>
+
 </body>
 </html>

@@ -34,7 +34,7 @@ public class SourceEditController extends AbstractPageController {
 	@Autowired
 	private SourceService sourceService;
 
-	@PostMapping("/edit_source_property")
+	@PostMapping(EDIT_SOURCE_PROPERTY_URI)
 	public String editSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("sourcePropertyId") Long sourcePropertyId,
 			@RequestParam("type") FreeformType type, @RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count,
 			Model model) {
@@ -46,10 +46,10 @@ public class SourceEditController extends AbstractPageController {
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
 
-		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";
+		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@PostMapping("/add_source_property")
+	@PostMapping(ADD_SOURCE_PROPERTY_URI)
 	public String addSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("type") FreeformType type,
 			@RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count, Model model) {
 
@@ -60,10 +60,10 @@ public class SourceEditController extends AbstractPageController {
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
 
-		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";
+		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@GetMapping("/delete_source_property/{sourceId}/{sourcePropertyId}/{sourcePropertyType}/{count}")
+	@GetMapping(DELETE_SOURCE_PROPERTY_URI + "/{sourceId}/{sourcePropertyId}/{sourcePropertyType}/{count}")
 	public String deleteSourceProperty(@PathVariable("sourceId") Long sourceId, @PathVariable("sourcePropertyId") Long sourcePropertyId,
 			@PathVariable("sourcePropertyType") FreeformType type, @PathVariable("count") String count, Model model) {
 
@@ -74,10 +74,10 @@ public class SourceEditController extends AbstractPageController {
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
 
-		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";
+		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@PostMapping("/edit_source_type")
+	@PostMapping(EDIT_SOURCE_TYPE_URI)
 	public String editSourceType(@RequestParam("sourceId") Long sourceId, @RequestParam("sourceType") SourceType type,
 			@RequestParam("searchResultCount") String count, Model model) {
 
@@ -88,10 +88,10 @@ public class SourceEditController extends AbstractPageController {
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
 
-		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";
+		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@PostMapping("/add_source")
+	@PostMapping(ADD_SOURCE_URI)
 	@ResponseBody
 	public String addSource(@RequestParam("sourceName") String sourceName, @RequestParam("sourceType") SourceType sourceType,
 			@RequestParam("type") List<FreeformType> sourcePropertyTypes, @RequestParam("valueText") List<String> valueTexts) {
@@ -119,7 +119,7 @@ public class SourceEditController extends AbstractPageController {
 		return String.valueOf(sourceId);
 	}
 
-	@GetMapping("validate_source_delete/{sourceId}")
+	@GetMapping(VALIDATE_SOURCE_DELETE_URI + "/{sourceId}")
 	@ResponseBody
 	public String validateSourceDelete(@PathVariable("sourceId") Long sourceId) throws JsonProcessingException {
 
@@ -136,7 +136,7 @@ public class SourceEditController extends AbstractPageController {
 		return jsonMapper.writeValueAsString(response);
 	}
 
-	@GetMapping("delete_source/{sourceId}")
+	@GetMapping(DELETE_SOURCE_URI + "/{sourceId}")
 	@ResponseBody
 	public String deleteSource(@PathVariable("sourceId") Long sourceId) {
 
@@ -144,6 +144,37 @@ public class SourceEditController extends AbstractPageController {
 
 		sourceService.deleteSource(sourceId);
 		return "ok";
+	}
+
+	@PostMapping(SOURCE_JOIN_URI)
+	public String joinSources(@RequestParam("sourceId") Long sourceId, @RequestParam("previousSearch") String previousSearch, Model model) {
+
+		Source firstSource = sourceService.getSource(sourceId);
+		model.addAttribute("firstSource", firstSource);
+		model.addAttribute("previousSearch", previousSearch);
+
+		return SOURCE_JOIN_PAGE;
+	}
+
+	@PostMapping(JOIN_SOURCES_URI)
+	public String joinSources(@RequestParam("firstSourceId") Long firstSourceId, @RequestParam("secondSourceId") Long secondSourceId) {
+
+		sourceService.joinSources(firstSourceId, secondSourceId);
+		return "redirect:" + SOURCE_SEARCH_URI + "/" + firstSourceId;
+	}
+
+	@PostMapping(SEARCH_SOURCES_URI)
+	public String searchSources(@RequestParam("firstSourceId") Long firstSourceId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
+			@RequestParam("previousSearch") String previousSearch, Model model) {
+
+		Source firstSource = sourceService.getSource(firstSourceId);
+		List<Source> sources = sourceService.findSourcesToJoin(searchFilter, firstSource);
+		model.addAttribute("firstSource", firstSource);
+		model.addAttribute("sources", sources);
+		model.addAttribute("searchFilter", searchFilter);
+		model.addAttribute("previousSearch", previousSearch);
+
+		return SOURCE_JOIN_PAGE;
 	}
 
 }

@@ -157,7 +157,7 @@
     </div>
   </div>
   <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="source_link_dlg">
-    <div th:text="#{source.serach.not.found}" th:if="${#lists.isEmpty(sources)}">Nothing found</div>
+    <div th:text="#{source.search.not.found}" th:if="${#lists.isEmpty(sources)}">Nothing found</div>
     <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden;" th:if="${not #lists.isEmpty(sources)}">
       <table class="w-100 border mb-2" th:each="source,sourceIter : ${sources}">
         <div class="w-100">

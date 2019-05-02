@@ -2,133 +2,132 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:id="${'editSourcePropertyDlg_' + sourceProperty.id}" class="modal" role="dialog" th:fragment="edit_source_property_dlg">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <form th:action="@{/edit_source_property}">
-        <div class="modal-body">
-          <input type="hidden" name="sourceId" th:value="${source.sourceId}">
-          <input type="hidden" name="sourcePropertyId" th:value="${sourceProperty.id}">
-          <input type="hidden" name="type" th:value="${sourceProperty.type}">
-          <input type="hidden" name="searchResultCount" th:value="${count}">
-          <div class="form-group row">
-            <div class="col-auto">
-              <span th:text="${sourceProperty.type}"></span>
+  <div th:id="${'editSourcePropertyDlg_' + sourceProperty.id}" class="modal" role="dialog" th:fragment="edit_source_property_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/edit_source_property}">
+          <div class="modal-body">
+            <input type="hidden" name="sourceId" th:value="${source.sourceId}">
+            <input type="hidden" name="sourcePropertyId" th:value="${sourceProperty.id}">
+            <input type="hidden" name="type" th:value="${sourceProperty.type}">
+            <input type="hidden" name="searchResultCount" th:value="${count}">
+            <div class="form-group row">
+              <div class="col-auto">
+                <span th:text="${sourceProperty.type}"></span>
+              </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-12">
-              <textarea rows="3" class="form-control" name="valueText" th:text="${sourceProperty.valueText}"></textarea>
-              <div class="errors">
-                <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+            <div class="form-group row">
+              <div class="col-12">
+                <textarea rows="3" class="form-control" name="valueText" th:text="${sourceProperty.valueText}"></textarea>
+                <div class="errors">
+                  <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Muuda</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
-<div th:id="${'addSourcePropertyDlg_' + source.sourceId}" class="modal" role="dialog" th:fragment="add_source_property_dlg">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <form th:action="@{/add_source_property}">
-        <div class="modal-body">
-          <input type="hidden" name="sourceId" th:value="${source.sourceId}">
-          <input type="hidden" name="searchResultCount" th:value="${count}">
-          <div class="form-group row">
-            <div class="col-auto">
-              <select required class="form-control" name="type">
-                <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value
-                </option>
-              </select>
+  <div th:id="${'addSourcePropertyDlg_' + source.sourceId}" class="modal" role="dialog" th:fragment="add_source_property_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/add_source_property}">
+          <div class="modal-body">
+            <input type="hidden" name="sourceId" th:value="${source.sourceId}">
+            <input type="hidden" name="searchResultCount" th:value="${count}">
+            <div class="form-group row">
+              <div class="col-auto">
+                <select required class="form-control" name="type">
+                  <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value
+                  </option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-12">
-              <textarea rows="3" class="form-control" name="valueText"></textarea>
-              <div class="errors">
-                <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+            <div class="form-group row">
+              <div class="col-12">
+                <textarea rows="3" class="form-control" name="valueText"></textarea>
+                <div class="errors">
+                  <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
-<div th:id="${'editSourceTypeDlg_' + source.sourceId}" class="modal select-dlg" role="dialog" th:fragment="edit_source_type_dlg">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form th:action="@{/edit_source_type}">
-        <div class="modal-body">
-          <input type="hidden" name="sourceId" th:value="${source.sourceId}">
-          <input type="hidden" name="searchResultCount" th:value="${count}">
-          <select class="form-control" name="sourceType">
-            <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}" th:selected="${type == source.type}">value</option>
-          </select>
-        </div>
-      </form>
+  <div th:id="${'editSourceTypeDlg_' + source.sourceId}" class="modal select-dlg" role="dialog" th:fragment="edit_source_type_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/edit_source_type}">
+          <div class="modal-body">
+            <input type="hidden" name="sourceId" th:value="${source.sourceId}">
+            <input type="hidden" name="searchResultCount" th:value="${count}">
+            <select class="form-control" name="sourceType">
+              <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}" th:selected="${type == source.type}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="addSourceDlg" class="modal" role="dialog" th:fragment="add_source_dlg">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <form id="addSourceForm" th:action="@{/add_source}" method="post">
-        <div class="modal-body">
-          <div class="form-group row">
-            <div class="col-md-12">
-              <div class="border rounded">
-                <div class="form-group row p-2 m-2">
-                  <div class="col-md-12">
-                    <input class="form-control" name="sourceName" placeholder="allika nimetus">
-                    <div class="errors">
-                      <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+  <div id="addSourceDlg" class="modal" role="dialog" th:fragment="add_source_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form id="addSourceForm" th:action="@{/add_source}" method="post">
+          <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <div class="border rounded">
+                  <div class="form-group row p-2 m-2">
+                    <div class="col-md-12">
+                      <input class="form-control" name="sourceName" placeholder="allika nimetus">
+                      <div class="errors">
+                        <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="form-group row p-2 m-2">
-                  <div class="col-md-12">
-                    <div class="form-group row">
-                      <div class="col-auto">
-                        <label title="Tüüp">
-                          <select required class="form-control" name="sourceType">
-                            <option value="" hidden disabled selected>vali allika tüüp</option>
-                            <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}">value</option>
-                          </select>
-                          <div class="errors">
-                            <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
-                          </div>
-                        </label>
+                  <div class="form-group row p-2 m-2">
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <div class="col-auto">
+                          <label title="Tüüp">
+                            <select required class="form-control" name="sourceType">
+                              <option value="" hidden disabled selected>vali allika tüüp</option>
+                              <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}">value</option>
+                            </select>
+                            <div class="errors">
+                              <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
+                            </div>
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <th:block th:replace="sourcecomp :: add_new_source_property"></th:block>
           </div>
-          <th:block th:replace="sourcecomp :: add_new_source_property"></th:block>
-        </div>
-        <div class="modal-footer">
-          <button id="addSourceSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
+          <div class="modal-footer">
+            <button id="addSourceSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
-
 </body>
 </html>

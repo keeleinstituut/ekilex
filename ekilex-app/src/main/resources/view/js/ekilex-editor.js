@@ -122,7 +122,6 @@ function addNode(ekiTag) {
 	}
 }
 
-//TODO not working
 function removeEkiTag(editorElem) {
 	let sel = window.getSelection();
 	if (sel.rangeCount) {

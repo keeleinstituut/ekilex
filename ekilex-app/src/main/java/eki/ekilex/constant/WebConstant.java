@@ -88,6 +88,34 @@ public interface WebConstant {
 
 	String SOURCE_COMPONENTS_PAGE = "sourcecomp";
 
+	String SOURCE_SEARCH_URI = "/sourcesearch";
+
+	String SOURCE_SEARCH_PAGE = "sourcesearch";
+
+	String SOURCE_SEARCH_RESULT = "source_search_result";
+
+	String EDIT_SOURCE_PROPERTY_URI = "/edit_source_property";
+
+	String ADD_SOURCE_PROPERTY_URI = "/add_source_property";
+
+	String DELETE_SOURCE_PROPERTY_URI = "/delete_source_property";
+
+	String EDIT_SOURCE_TYPE_URI = "/edit_source_type";
+
+	String ADD_SOURCE_URI = "/add_source";
+
+	String VALIDATE_SOURCE_DELETE_URI = "/validate_source_delete";
+
+	String DELETE_SOURCE_URI = "/delete_source";
+
+	String SOURCE_JOIN_URI = "/source_join";
+
+	String SOURCE_JOIN_PAGE = "sourcejoin";
+
+	String JOIN_SOURCES_URI = "/join_sources";
+
+	String SEARCH_SOURCES_URI = "/search_sources";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	// mode flags
