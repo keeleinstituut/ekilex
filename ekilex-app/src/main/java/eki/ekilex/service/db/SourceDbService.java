@@ -241,41 +241,35 @@ public class SourceDbService implements SystemConstant {
 		deleteSource(secondSourceId);
 	}
 
-	// TODO refactor - Yogesh
-	public boolean isSourceDeletePossible(Long sourceId) {
+	public boolean validateSourceDelete(Long sourceId) {
 
-		return countDefinitionSourceLinksBySourceId(sourceId) == 0
-				&& countFreeformSourceLinksBySourceId(sourceId) == 0
-				&& countLexemeSourceLinksBySourceId(sourceId) == 0
-				&& countWordSourceLinksBySourceId(sourceId) == 0;
-	}
+		return create.select(DSL.field(DSL.count(SOURCE.ID).gt(0)).as("is_unbinded"))
+				.from(SOURCE)
+				.where(
+						SOURCE.ID.eq(sourceId)
+						.andNotExists(DSL
+								.select(DEFINITION_SOURCE_LINK.ID)
+								.from(DEFINITION_SOURCE_LINK)
+								.where(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId))
+						)
+						.andNotExists(DSL
+								.select(FREEFORM_SOURCE_LINK.ID)
+								.from(FREEFORM_SOURCE_LINK)
+								.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId))
+						)
+						.andNotExists(DSL
+								.select(LEXEME_SOURCE_LINK.ID)
+								.from(LEXEME_SOURCE_LINK)
+								.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId))
 
-	private int countDefinitionSourceLinksBySourceId(Long sourceId) {
-
-		return create.fetchCount(DSL.select(DEFINITION_SOURCE_LINK.ID)
-				.from(DEFINITION_SOURCE_LINK)
-				.where(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
-	}
-
-	private int countFreeformSourceLinksBySourceId(Long sourceId) {
-
-		return create.fetchCount(DSL.select(FREEFORM_SOURCE_LINK.ID)
-				.from(FREEFORM_SOURCE_LINK)
-				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
-	}
-
-	private int countLexemeSourceLinksBySourceId(Long sourceId) {
-
-		return create.fetchCount(DSL.select(LEXEME_SOURCE_LINK.ID)
-				.from(LEXEME_SOURCE_LINK)
-				.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
-	}
-
-	private int countWordSourceLinksBySourceId(Long sourceId) {
-
-		return create.fetchCount(DSL.select(WORD_ETYMOLOGY_SOURCE_LINK.ID)
-				.from(WORD_ETYMOLOGY_SOURCE_LINK)
-				.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+						)
+						.andNotExists(DSL
+								.select(WORD_ETYMOLOGY_SOURCE_LINK.ID)
+								.from(WORD_ETYMOLOGY_SOURCE_LINK)
+								.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId))
+						)
+				)
+				.fetchSingleInto(Boolean.class);
 	}
 
 	private Result<FreeformRecord> getSourceFreeformRecords(Long sourceId) {

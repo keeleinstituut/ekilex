@@ -139,8 +139,8 @@ public class SourceService {
 	}
 
 	@Transactional
-	public boolean isSourceDeletePossible(Long sourceId) {
-		return sourceDbService.isSourceDeletePossible(sourceId);
+	public boolean validateSourceDelete(Long sourceId) {
+		return sourceDbService.validateSourceDelete(sourceId);
 	}
 
 	@Transactional

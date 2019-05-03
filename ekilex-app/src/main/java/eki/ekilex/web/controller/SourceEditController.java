@@ -126,7 +126,7 @@ public class SourceEditController extends AbstractPageController {
 		logger.debug("Validating source delete, source id: {}", sourceId);
 
 		Map<String, String> response = new HashMap<>();
-		if (sourceService.isSourceDeletePossible(sourceId)) {
+		if (sourceService.validateSourceDelete(sourceId)) {
 			response.put("status", "ok");
 		} else {
 			response.put("status", "invalid");
