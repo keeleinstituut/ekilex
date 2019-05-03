@@ -105,13 +105,17 @@ public class SourceEditController extends AbstractPageController {
 		name.setValueText(sourceName);
 		sourceProperties.add(name);
 
-		for (int i = 0; i < sourcePropertyTypes.size(); i++) {
-			FreeformType type = sourcePropertyTypes.get(i);
-			String valueText = valueTexts.get(i);
-			SourceProperty sourceProperty = new SourceProperty();
-			sourceProperty.setType(type);
-			sourceProperty.setValueText(valueText);
-			sourceProperties.add(sourceProperty);
+		if (!valueTexts.isEmpty()) {
+			for (int i = 0; i < sourcePropertyTypes.size(); i++) {
+				FreeformType type = sourcePropertyTypes.get(i);
+				String valueText = valueTexts.get(i);
+				if (!valueText.isEmpty()) {
+					SourceProperty sourceProperty = new SourceProperty();
+					sourceProperty.setType(type);
+					sourceProperty.setValueText(valueText);
+					sourceProperties.add(sourceProperty);
+				}
+			}
 		}
 
 		Long sourceId = sourceService.addSource(sourceType, sourceProperties);
