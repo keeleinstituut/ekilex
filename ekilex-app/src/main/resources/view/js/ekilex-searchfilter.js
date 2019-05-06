@@ -93,11 +93,7 @@ function initialiseDeatailSearch() {
 
 		// should lookup by search key + operand
 		let searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
-		let templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
-		let copyOfValueTemplate = $(templateElement.html());
-		copyOfValueTemplate.attr('name', searchValueElement.attr('name'));
-		searchValueElement.closest('div').attr('class', templateElement.attr('class'));
-		searchValueElement.replaceWith(copyOfValueTemplate);
+		replaceSearchValueElement(searchKeyVal, searchValueElement);
 	});
 
 	$(document).on("change", "select[name$='searchOperand']", function() {
@@ -111,13 +107,25 @@ function initialiseDeatailSearch() {
 			searchValueElement.empty();
 			searchValueElement.prop('hidden', true);
 		} else {
-			let templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
-			let copyOfValueTemplate = $(templateElement.html());
-			copyOfValueTemplate.attr('name', searchValueElement.attr('name'));
-			searchValueElement.closest('div').attr('class', templateElement.attr('class'));
-			searchValueElement.replaceWith(copyOfValueTemplate);
+			replaceSearchValueElement(searchKeyVal, searchValueElement);
 		}
 	});
+
+	function replaceSearchValueElement(searchKeyVal, searchValueElement) {
+		let templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
+		let copyOfValueTemplate = $(templateElement.html());
+		if (copyOfValueTemplate.hasClass('date')) {
+			copyOfValueTemplate.children().attr('name', searchValueElement.attr('name'));
+		} else {
+			copyOfValueTemplate.attr('name', searchValueElement.attr('name'));
+		}
+		searchValueElement.closest('div').not('.date').attr('class', templateElement.attr('class'));
+		if (searchValueElement.parent().hasClass('date')) {
+			searchValueElement.parent().replaceWith(copyOfValueTemplate);
+		} else {
+			searchValueElement.replaceWith(copyOfValueTemplate);
+		}
+	}
 
 	$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
 		let detailGroupElement = $(this).closest('[name="detailGroup"]');
