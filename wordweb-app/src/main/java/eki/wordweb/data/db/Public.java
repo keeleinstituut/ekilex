@@ -27,6 +27,7 @@ import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
 import eki.wordweb.data.db.udt.TypeUsage;
 import eki.wordweb.data.db.udt.TypeWord;
+import eki.wordweb.data.db.udt.TypeWordEtymRelation;
 import eki.wordweb.data.db.udt.TypeWordRelation;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 2015303632;
+    private static final long serialVersionUID = 1255352336;
 
     /**
      * The reference instance of <code>public</code>
@@ -216,6 +217,7 @@ public class Public extends SchemaImpl {
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeUsage.TYPE_USAGE,
             TypeWord.TYPE_WORD,
+            TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
             TypeWordRelation.TYPE_WORD_RELATION);
     }
 }

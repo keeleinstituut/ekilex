@@ -3,6 +3,7 @@ create type type_definition as (lexeme_id bigint, meaning_id bigint, value text,
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_prese text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
+create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_type_codes varchar(100) array, dataset_codes varchar(10) array, word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
@@ -410,27 +411,22 @@ create view view_ww_word_etymology
                  wer.order_by)
     )
     select rec.word_id,
-           rec.word_etym_word_id,
            rec.word_etym_id,
+           rec.word_etym_word_id,
+           f2.value word,
+           w2.lang word_lang,
+           mw2.meaning_words,
            we.etymology_type_code,
            we.etymology_year,
-           we.comment word_etym_comment,
+           we.comment_prese word_etym_comment,
            we.is_questionable word_etym_is_questionable,
            we.order_by word_etym_order_by,
            wesl.word_etym_sources,
-           rec.word_etym_rel_id,
-           wer.comment word_etym_rel_comment,
-           wer.is_questionable word_etym_rel_is_questionable,
-           wer.is_compound word_etym_rel_is_compound,
-           wer.order_by word_etym_rel_order_by,
-           rec.related_word_id,
-           f2.value related_word,
-           w2.lang related_word_lang,
-           mw2.meaning_words
+           array_agg(row(wer.id,wer.comment_prese,wer.is_questionable,wer.is_compound,wer.related_word_id)::type_word_etym_relation order by wer.order_by) word_etym_relations
     from word_etym_recursion rec
       inner join word_etymology we on we.id = rec.word_etym_id
       left outer join word_etymology_relation wer on wer.id = rec.word_etym_rel_id
-      left outer join word w2 on w2.id = wer.related_word_id
+      left outer join word w2 on w2.id = rec.word_etym_word_id
       left outer join paradigm p2 on p2.word_id = w2.id
       left outer join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
       left outer join (select l1.word_id,
@@ -449,14 +445,22 @@ create view view_ww_word_etymology
                        and   p2.word_id = w2.id
                        and   f2.paradigm_id = p2.id
                        and   f2.mode = 'WORD'
-                       group by l1.word_id) mw2 on mw2.word_id = rec.related_word_id
+                       group by l1.word_id) mw2 on mw2.word_id = rec.word_etym_word_id
       left outer join (select wesl.word_etym_id,
                               array_agg(wesl.value order by wesl.order_by) word_etym_sources
                        from word_etymology_source_link wesl
                        group by wesl.word_etym_id) wesl on wesl.word_etym_id = rec.word_etym_id
+    group by rec.word_id,
+             rec.word_etym_id,
+             rec.word_etym_word_id,
+             mw2.meaning_words,
+             wesl.word_etym_sources,
+             we.id,
+             w2.id,
+             p2.id,
+             f2.id
     order by rec.word_id,
-             we.order_by,
-             wer.order_by;
+             we.order_by;
 
 -- word relations
 create view view_ww_word_relation 

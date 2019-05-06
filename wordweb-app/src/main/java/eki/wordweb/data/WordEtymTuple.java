@@ -11,9 +11,17 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	private Long wordId;
 
+	private Long wordEtymId;
+
 	private Long wordEtymWordId;
 
-	private Long wordEtymId;
+	private String wordEtymWord;
+
+	private String wordEtymWordLang;
+
+	private Classifier wordEtymWordLanguage;
+
+	private List<String> wordEtymWordMeaningWords;
 
 	private String etymologyTypeCode;
 
@@ -27,23 +35,7 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	private List<String> wordEtymSources;
 
-	private Long wordEtymRelId;
-
-	private String wordEtymRelComment;
-
-	private boolean wordEtymRelIsQuestionable;
-
-	private boolean wordEtymRelIsCompound;
-
-	private Long relatedWordId;
-
-	private String relatedWord;
-
-	private String relatedWordLang;
-
-	private Classifier relatedWordLanguage;
-
-	private List<String> meaningWords;
+	private List<TypeWordEtymRelation> wordEtymRelations;
 
 	public Long getWordId() {
 		return wordId;
@@ -51,6 +43,14 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public Long getWordEtymId() {
+		return wordEtymId;
+	}
+
+	public void setWordEtymId(Long wordEtymId) {
+		this.wordEtymId = wordEtymId;
 	}
 
 	public Long getWordEtymWordId() {
@@ -61,12 +61,36 @@ public class WordEtymTuple extends AbstractDataObject {
 		this.wordEtymWordId = wordEtymWordId;
 	}
 
-	public Long getWordEtymId() {
-		return wordEtymId;
+	public String getWordEtymWord() {
+		return wordEtymWord;
 	}
 
-	public void setWordEtymId(Long wordEtymId) {
-		this.wordEtymId = wordEtymId;
+	public void setWordEtymWord(String wordEtymWord) {
+		this.wordEtymWord = wordEtymWord;
+	}
+
+	public String getWordEtymWordLang() {
+		return wordEtymWordLang;
+	}
+
+	public void setWordEtymWordLang(String wordEtymWordLang) {
+		this.wordEtymWordLang = wordEtymWordLang;
+	}
+
+	public Classifier getWordEtymWordLanguage() {
+		return wordEtymWordLanguage;
+	}
+
+	public void setWordEtymWordLanguage(Classifier wordEtymWordLanguage) {
+		this.wordEtymWordLanguage = wordEtymWordLanguage;
+	}
+
+	public List<String> getWordEtymWordMeaningWords() {
+		return wordEtymWordMeaningWords;
+	}
+
+	public void setWordEtymWordMeaningWords(List<String> wordEtymWordMeaningWords) {
+		this.wordEtymWordMeaningWords = wordEtymWordMeaningWords;
 	}
 
 	public String getEtymologyTypeCode() {
@@ -117,76 +141,12 @@ public class WordEtymTuple extends AbstractDataObject {
 		this.wordEtymSources = wordEtymSources;
 	}
 
-	public Long getWordEtymRelId() {
-		return wordEtymRelId;
+	public List<TypeWordEtymRelation> getWordEtymRelations() {
+		return wordEtymRelations;
 	}
 
-	public void setWordEtymRelId(Long wordEtymRelId) {
-		this.wordEtymRelId = wordEtymRelId;
-	}
-
-	public String getWordEtymRelComment() {
-		return wordEtymRelComment;
-	}
-
-	public void setWordEtymRelComment(String wordEtymRelComment) {
-		this.wordEtymRelComment = wordEtymRelComment;
-	}
-
-	public boolean isWordEtymRelIsQuestionable() {
-		return wordEtymRelIsQuestionable;
-	}
-
-	public void setWordEtymRelIsQuestionable(boolean wordEtymRelIsQuestionable) {
-		this.wordEtymRelIsQuestionable = wordEtymRelIsQuestionable;
-	}
-
-	public boolean isWordEtymRelIsCompound() {
-		return wordEtymRelIsCompound;
-	}
-
-	public void setWordEtymRelIsCompound(boolean wordEtymRelIsCompound) {
-		this.wordEtymRelIsCompound = wordEtymRelIsCompound;
-	}
-
-	public Long getRelatedWordId() {
-		return relatedWordId;
-	}
-
-	public void setRelatedWordId(Long relatedWordId) {
-		this.relatedWordId = relatedWordId;
-	}
-
-	public String getRelatedWord() {
-		return relatedWord;
-	}
-
-	public void setRelatedWord(String relatedWord) {
-		this.relatedWord = relatedWord;
-	}
-
-	public String getRelatedWordLang() {
-		return relatedWordLang;
-	}
-
-	public void setRelatedWordLang(String relatedWordLang) {
-		this.relatedWordLang = relatedWordLang;
-	}
-
-	public Classifier getRelatedWordLanguage() {
-		return relatedWordLanguage;
-	}
-
-	public void setRelatedWordLanguage(Classifier relatedWordLanguage) {
-		this.relatedWordLanguage = relatedWordLanguage;
-	}
-
-	public List<String> getMeaningWords() {
-		return meaningWords;
-	}
-
-	public void setMeaningWords(List<String> meaningWords) {
-		this.meaningWords = meaningWords;
+	public void setWordEtymRelations(List<TypeWordEtymRelation> wordEtymRelations) {
+		this.wordEtymRelations = wordEtymRelations;
 	}
 
 }

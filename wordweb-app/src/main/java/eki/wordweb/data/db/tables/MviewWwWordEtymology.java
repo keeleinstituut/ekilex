@@ -4,18 +4,14 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordEtymologyRecord;
-
-import java.util.Arrays;
-import java.util.List;
+import eki.wordweb.data.db.udt.records.TypeWordEtymRelationRecord;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -38,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> {
 
-    private static final long serialVersionUID = -1146036205;
+    private static final long serialVersionUID = -123854282;
 
     /**
      * The reference instance of <code>public.mview_ww_word_etymology</code>
@@ -59,14 +55,29 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.mview_ww_word_etymology.word_etym_id</code>.
+     */
+    public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ETYM_ID = createField("word_etym_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
      * The column <code>public.mview_ww_word_etymology.word_etym_word_id</code>.
      */
     public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ETYM_WORD_ID = createField("word_etym_word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_word_etymology.word_etym_id</code>.
+     * The column <code>public.mview_ww_word_etymology.word_etym_word</code>.
      */
-    public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ETYM_ID = createField("word_etym_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordEtymologyRecord, String> WORD_ETYM_WORD = createField("word_etym_word", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_etymology.word_etym_word_lang</code>.
+     */
+    public final TableField<MviewWwWordEtymologyRecord, String> WORD_ETYM_WORD_LANG = createField("word_etym_word_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_etymology.word_etym_word_meaning_words</code>.
+     */
+    public final TableField<MviewWwWordEtymologyRecord, String[]> WORD_ETYM_WORD_MEANING_WORDS = createField("word_etym_word_meaning_words", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word_etymology.etymology_type_code</code>.
@@ -99,49 +110,9 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     public final TableField<MviewWwWordEtymologyRecord, String[]> WORD_ETYM_SOURCES = createField("word_etym_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_word_etymology.word_etym_rel_id</code>.
+     * The column <code>public.mview_ww_word_etymology.word_etym_relations</code>.
      */
-    public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ETYM_REL_ID = createField("word_etym_rel_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.word_etym_rel_comment</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, String> WORD_ETYM_REL_COMMENT = createField("word_etym_rel_comment", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.word_etym_rel_is_questionable</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, Boolean> WORD_ETYM_REL_IS_QUESTIONABLE = createField("word_etym_rel_is_questionable", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.word_etym_rel_is_compound</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, Boolean> WORD_ETYM_REL_IS_COMPOUND = createField("word_etym_rel_is_compound", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.word_etym_rel_order_by</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ETYM_REL_ORDER_BY = createField("word_etym_rel_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.related_word_id</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, Long> RELATED_WORD_ID = createField("related_word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.related_word</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, String> RELATED_WORD = createField("related_word", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.related_word_lang</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, String> RELATED_WORD_LANG = createField("related_word_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.meaning_words</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, String[]> MEANING_WORDS = createField("meaning_words", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwWordEtymologyRecord, TypeWordEtymRelationRecord[]> WORD_ETYM_RELATIONS = createField("word_etym_relations", eki.wordweb.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_word_etymology</code> table reference
@@ -182,14 +153,6 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_ETYMOLOGY_WORD_ID_IDX);
     }
 
     /**

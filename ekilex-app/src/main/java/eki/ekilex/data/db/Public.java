@@ -117,6 +117,7 @@ import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWord;
+import eki.ekilex.data.db.udt.TypeWordEtymRelation;
 import eki.ekilex.data.db.udt.TypeWordRelation;
 
 import java.util.ArrayList;
@@ -145,7 +146,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 132032752;
+    private static final long serialVersionUID = 2025895358;
 
     /**
      * The reference instance of <code>public</code>
@@ -933,6 +934,7 @@ public class Public extends SchemaImpl {
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeUsage.TYPE_USAGE,
             TypeWord.TYPE_WORD,
+            TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
             TypeWordRelation.TYPE_WORD_RELATION);
     }
 }

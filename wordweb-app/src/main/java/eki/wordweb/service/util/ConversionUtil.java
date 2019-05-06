@@ -42,6 +42,7 @@ import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
 import eki.wordweb.data.TypeUsage;
 import eki.wordweb.data.TypeWord;
+import eki.wordweb.data.TypeWordEtymRelation;
 import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
@@ -602,7 +603,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		return collocMemberGroupKey;
 	}
 
-	//TODO under construction
 	public void composeWordEtymology(Word word, List<WordEtymTuple> wordEtymTuples, String displayLang) {
 
 		if (CollectionUtils.isEmpty(wordEtymTuples)) {
@@ -610,125 +610,154 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		}
 		wordEtymTuples.forEach(tuple -> {
 			classifierUtil.applyClassifiers(tuple, displayLang);
-			if (CollectionUtils.isNotEmpty(tuple.getMeaningWords())) {
-				tuple.getMeaningWords().remove(word.getWord());
+			if (CollectionUtils.isNotEmpty(tuple.getWordEtymWordMeaningWords())) {
+				tuple.getWordEtymWordMeaningWords().remove(word.getWord());
 			}
 		});
 
-		WordEtymology wordEtymology = new WordEtymology();
-		word.setWordEtymology(wordEtymology);
-		wordEtymology.setEtymLevelsWrapup(new ArrayList<>());
-
-		List<Long> etymLevelsWordIds = wordEtymTuples.stream().map(WordEtymTuple::getWordEtymWordId).distinct().collect(Collectors.toList());
-		Map<Long, List<WordEtymTuple>> etymLevelsMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId));
-
-		//headword etymology
 		Long headwordId = word.getWordId();
-		List<WordEtymTuple> headwordEtymTuples = etymLevelsMap.get(headwordId);
-		WordEtymTuple headwordEtymTuple = headwordEtymTuples.get(0);
 
-		StringBuilder wordEtymBuf = new StringBuilder();
+		Map<Long, List<WordEtymTuple>> etymAltsMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId));
+
+		WordEtymTuple headwordEtymTuple = etymAltsMap.get(headwordId).get(0);
+		WordEtymology wordEtymology = composeHeadwordEtym(headwordEtymTuple);
+		word.setWordEtymology(wordEtymology);
+
+		List<String> etymLevelsWrapup = new ArrayList<>();
+		wordEtymology.setEtymLevelsWrapup(etymLevelsWrapup);
+		composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, etymAltsMap);
+	}
+
+	private WordEtymology composeHeadwordEtym(WordEtymTuple headwordEtymTuple) {
+
+		WordEtymology wordEtymology = new WordEtymology();
+		StringBuilder headwordEtymBuf = new StringBuilder();
 		if (headwordEtymTuple.getEtymologyType() != null) {
-			wordEtymBuf.append("<font style='font-variant: small-caps'>");
-			wordEtymBuf.append(headwordEtymTuple.getEtymologyType().getValue());
-			wordEtymBuf.append("</font>");
+			headwordEtymBuf.append("<font style='font-variant: small-caps'>");
+			headwordEtymBuf.append(headwordEtymTuple.getEtymologyType().getValue());
+			headwordEtymBuf.append("</font>");
 		}
 		List<String> wordEtymSources = headwordEtymTuple.getWordEtymSources();
 		if (CollectionUtils.isNotEmpty(wordEtymSources)) {
-			if (wordEtymBuf.length() > 0) {
-				wordEtymBuf.append(", ");
+			if (headwordEtymBuf.length() > 0) {
+				headwordEtymBuf.append(", ");
 			}
-			wordEtymBuf.append(StringUtils.join(wordEtymSources, ", "));
+			headwordEtymBuf.append(StringUtils.join(wordEtymSources, ", "));
 		}
 		String etymologyYear = headwordEtymTuple.getEtymologyYear();
 		if (StringUtils.isNotEmpty(etymologyYear)) {
-			if (wordEtymBuf.length() > 0) {
-				wordEtymBuf.append(", ");
+			if (headwordEtymBuf.length() > 0) {
+				headwordEtymBuf.append(", ");
 			}
-			wordEtymBuf.append(etymologyYear);
+			headwordEtymBuf.append(etymologyYear);
 		}
-		if (wordEtymBuf.length() > 0) {
-			String wordEtymologyWrapup = wordEtymBuf.toString().trim();
-			wordEtymology.setEtymWrapup(wordEtymologyWrapup);
+		if (headwordEtymBuf.length() > 0) {
+			String headwordEtymWrapup = headwordEtymBuf.toString().trim();
+			wordEtymology.setEtymWrapup(headwordEtymWrapup);
 		}
 		wordEtymology.setComment(headwordEtymTuple.getWordEtymComment());
+		return wordEtymology;
+	}
 
-		//etymology levels lineup
-		List<String> wordEtymLevelsWrapup = wordEtymology.getEtymLevelsWrapup();
-		
-		for (Long etymLevelWordId : etymLevelsWordIds) {
-			List<WordEtymTuple> etymLevelTuples = etymLevelsMap.get(etymLevelWordId);
-			boolean membersHaveSameLang = etymLevelTuples.stream().allMatch(
-					etymLevelMember -> StringUtils.equals(etymLevelMember.getRelatedWordLang(), etymLevelTuples.get(0).getRelatedWordLang()));
-			boolean membersHaveSameComment = etymLevelTuples.stream().allMatch(
-					etymLevelMember -> StringUtils.equals(etymLevelMember.getWordEtymRelComment(), etymLevelTuples.get(0).getWordEtymRelComment()));
-			StringBuilder etymLevelBuf = new StringBuilder();
-			int etymLevelSize = etymLevelTuples.size();
-			for (int etymLevelMemberIndex = 0; etymLevelMemberIndex < etymLevelSize; etymLevelMemberIndex++) {
-				WordEtymTuple etymLevelMember = etymLevelTuples.get(etymLevelMemberIndex);
-				if (etymLevelMember.getRelatedWordId() == null) {
-					continue;
-				}
-				String etymWord = etymLevelMember.getRelatedWord();
-				Classifier etymWordLanguage = etymLevelMember.getRelatedWordLanguage();
-				List<String> etymMeaningWords = etymLevelMember.getMeaningWords();
-				List<String> etymWordSources = etymLevelMember.getWordEtymSources();
-				String comment = etymLevelMember.getWordEtymRelComment();
-				if (etymLevelMember.isWordEtymRelIsCompound()) {
-					etymLevelBuf.append(" + ");
-				} else if (etymLevelMemberIndex > 0) {
-					etymLevelBuf.append(", ");
-				}
-				if (etymLevelMember.isWordEtymRelIsQuestionable()) {
-					etymLevelBuf.append(" ? ");
-				}
-				if (etymWordLanguage != null) {
-					if (etymLevelMemberIndex == 0) {
-						etymLevelBuf.append(etymWordLanguage.getValue());
-						etymLevelBuf.append(" ");						
-					} else if (!membersHaveSameLang) {
-						etymLevelBuf.append(etymWordLanguage.getValue());
-						etymLevelBuf.append(" ");
-					}
-				}
-				etymLevelBuf.append("<i>");
-				etymLevelBuf.append(etymWord);
-				etymLevelBuf.append("</i>");
-				if (CollectionUtils.isNotEmpty(etymMeaningWords)) {
-					etymLevelBuf.append(' ');
-					etymLevelBuf.append('\'');
-					etymLevelBuf.append(StringUtils.join(etymMeaningWords, ", "));
-					etymLevelBuf.append('\'');
-				}
-				if (CollectionUtils.isNotEmpty(etymWordSources)) {
-					etymLevelBuf.append(' ');
-					etymLevelBuf.append('(');
-					etymLevelBuf.append(StringUtils.join(etymWordSources, ", "));
-					if (StringUtils.isNotBlank(etymLevelMember.getEtymologyYear())) {
-						etymLevelBuf.append(' ');
-						etymLevelBuf.append(etymLevelMember.getEtymologyYear());
-					}
-					etymLevelBuf.append(')');
-				}
-				if (StringUtils.isNotEmpty(comment)) {
-					if (membersHaveSameComment && (etymLevelMemberIndex == etymLevelSize - 1)) {
-						etymLevelBuf.append(". ");
-						etymLevelBuf.append(comment);
-					} else if (!membersHaveSameComment) {
-						etymLevelBuf.append(". ");
-						etymLevelBuf.append(comment);
-					}
-				}
-			}
-			String etymWrapup = StringUtils.trim(etymLevelBuf.toString());
-			if (StringUtils.isBlank(etymWrapup)) {
-				continue;
-			}
-			if (wordEtymLevelsWrapup.contains(etymWrapup)) {
-				continue;
-			}
-			wordEtymLevelsWrapup.add(etymWrapup);
+	private void composeEtymLevelsWrapup(List<String> etymLevelsWrapup, Long wordId, Map<Long, List<WordEtymTuple>> etymAltsMap) {
+
+		if (wordId == null) {
+			return;
 		}
+		List<WordEtymTuple> wordEtymAlts = etymAltsMap.get(wordId);
+		List<String> wordEtymAltsContent = new ArrayList<>();
+		List<Long> etymLevelWordIds = new ArrayList<>();
+		for (WordEtymTuple wordEtymAlt : wordEtymAlts) {
+			List<TypeWordEtymRelation> wordEtymRelations = wordEtymAlt.getWordEtymRelations();
+			String etymLevelWrapup = composeEtymLevelWrapup(wordEtymRelations, etymAltsMap);
+			if (StringUtils.isNotBlank(etymLevelWrapup)) {
+				if (wordEtymAlt.isWordEtymIsQuestionable()) {
+					etymLevelWrapup = " ? " + etymLevelWrapup;
+				}
+				wordEtymAltsContent.add(etymLevelWrapup);
+			}
+			List<Long> relatedWordIds = wordEtymRelations.stream()
+					.filter(rel -> rel.getRelatedWordId() != null)
+					.map(TypeWordEtymRelation::getRelatedWordId).collect(Collectors.toList());
+			etymLevelWordIds.addAll(relatedWordIds);
+		}
+		String etymLevelWrapupJoin = StringUtils.join(wordEtymAltsContent, " v ");
+		if (StringUtils.isNotBlank(etymLevelWrapupJoin) && !etymLevelsWrapup.contains(etymLevelWrapupJoin)) {
+			etymLevelsWrapup.add(etymLevelWrapupJoin);
+		}
+		for (Long etymLevelWordId : etymLevelWordIds) {
+			composeEtymLevelsWrapup(etymLevelsWrapup, etymLevelWordId, etymAltsMap);
+		}
+	}
+
+	private String composeEtymLevelWrapup(List<TypeWordEtymRelation> wordEtymRelations, Map<Long, List<WordEtymTuple>> etymAltsMap) {
+
+		StringBuilder etymLevelBuf = new StringBuilder();
+		int etymLevelMemberIndex = 0;
+		int etymLevelSize = wordEtymRelations.size();
+		String recentEtymWordLang = null;
+		for (TypeWordEtymRelation wordEtymRel : wordEtymRelations) {
+			if (wordEtymRel.getRelatedWordId() == null) {
+				break;
+			}
+			Long relatedWordId = wordEtymRel.getRelatedWordId();
+			String comment = wordEtymRel.getComment();
+			boolean isQuestionable = wordEtymRel.isQuestionable();
+			boolean isCompound = wordEtymRel.isCompound();
+			if (isCompound) {
+				etymLevelBuf.append(" + ");
+			} else if (etymLevelMemberIndex > 0) {
+				etymLevelBuf.append(", ");
+			}
+			if (isQuestionable) {
+				etymLevelBuf.append(" ? ");
+			}
+			List<WordEtymTuple> relatedWordTuples = etymAltsMap.get(relatedWordId);
+			WordEtymTuple etymLevelMember = relatedWordTuples.get(0);
+
+			String etymWord = etymLevelMember.getWordEtymWord();
+			String etymWordLang = etymLevelMember.getWordEtymWordLang();
+			Classifier etymWordLanguage = etymLevelMember.getWordEtymWordLanguage();
+			List<String> etymWordMeaningWords = etymLevelMember.getWordEtymWordMeaningWords();
+			List<String> etymWordSources = etymLevelMember.getWordEtymSources();
+			if (etymWordLanguage != null) {
+				if (etymLevelMemberIndex == 0) {
+					etymLevelBuf.append(etymWordLanguage.getValue());
+					etymLevelBuf.append(" ");						
+				} else if (!StringUtils.equals(recentEtymWordLang, etymWordLang)) {
+					etymLevelBuf.append(etymWordLanguage.getValue());
+					etymLevelBuf.append(" ");
+				}
+			}
+			etymLevelBuf.append("<i>");
+			etymLevelBuf.append(etymWord);
+			etymLevelBuf.append("</i>");
+			if (CollectionUtils.isNotEmpty(etymWordMeaningWords)) {
+				etymLevelBuf.append(' ');
+				etymLevelBuf.append('\'');
+				etymLevelBuf.append(StringUtils.join(etymWordMeaningWords, ", "));
+				etymLevelBuf.append('\'');
+			}
+			if (CollectionUtils.isNotEmpty(etymWordSources)) {
+				etymLevelBuf.append(' ');
+				etymLevelBuf.append('(');
+				etymLevelBuf.append(StringUtils.join(etymWordSources, ", "));
+				if (StringUtils.isNotBlank(etymLevelMember.getEtymologyYear())) {
+					etymLevelBuf.append(' ');
+					etymLevelBuf.append(etymLevelMember.getEtymologyYear());
+				}
+				etymLevelBuf.append(')');
+			}
+			if (StringUtils.isNotEmpty(comment)) {
+				if (etymLevelMemberIndex == etymLevelSize - 1) {
+					etymLevelBuf.append(". ");
+					etymLevelBuf.append(comment);
+				}
+			}
+			recentEtymWordLang = etymWordLang;
+			etymLevelMemberIndex++;
+		}
+		return etymLevelBuf.toString();
 	}
 
 	public void composeWordRelations(Word word, List<WordRelationTuple> wordRelationTuples, String[] datasets, String displayLang) {

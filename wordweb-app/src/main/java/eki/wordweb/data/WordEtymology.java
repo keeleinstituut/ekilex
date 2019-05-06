@@ -10,8 +10,6 @@ public class WordEtymology extends AbstractDataObject {
 
 	private Long wordId;
 
-	private List<String> sources;
-
 	private String comment;
 
 	private String etymWrapup;
@@ -26,14 +24,6 @@ public class WordEtymology extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public List<String> getSources() {
-		return sources;
-	}
-
-	public void setSources(List<String> sources) {
-		this.sources = sources;
-	}
-
 	public String getComment() {
 		return comment;
 	}
@@ -46,16 +36,16 @@ public class WordEtymology extends AbstractDataObject {
 		return etymWrapup;
 	}
 
-	public void setEtymWrapup(String wordEtymologyWrapup) {
-		this.etymWrapup = wordEtymologyWrapup;
+	public void setEtymWrapup(String etymWrapup) {
+		this.etymWrapup = etymWrapup;
 	}
 
 	public List<String> getEtymLevelsWrapup() {
 		return etymLevelsWrapup;
 	}
 
-	public void setEtymLevelsWrapup(List<String> wordEtymologyLineupWrapup) {
-		this.etymLevelsWrapup = wordEtymologyLineupWrapup;
+	public void setEtymLevelsWrapup(List<String> etymLevelsWrapup) {
+		this.etymLevelsWrapup = etymLevelsWrapup;
 	}
 
 }

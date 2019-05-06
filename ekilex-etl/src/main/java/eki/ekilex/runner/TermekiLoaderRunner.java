@@ -272,9 +272,12 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 		for (Map<String, Object> term : context.terms) {
 
+			String wordValue = (String) term.get("term");
+			if (StringUtils.isBlank(wordValue)) {
+				continue;
+			}
 			Integer termId = (Integer) term.get("term_id");
 			Integer conceptId = (Integer) term.get("concept_id");
-			String wordValue = (String) term.get("term");
 			String language = (String) term.get("lang");
 			language = unifyLang(language);
 			String gender = (String) term.get("gender");

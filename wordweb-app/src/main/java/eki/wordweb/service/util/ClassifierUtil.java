@@ -139,12 +139,12 @@ public class ClassifierUtil {
 	public void applyClassifiers(WordEtymTuple tuple, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
+		classifierCode = tuple.getWordEtymWordLang();
+		classifier = getClassifier(ClassifierName.LANGUAGE, classifierCode, displayLang);
+		tuple.setWordEtymWordLanguage(classifier);
 		classifierCode = tuple.getEtymologyTypeCode();
 		classifier = getClassifier(ClassifierName.ETYMOLOGY_TYPE, classifierCode, displayLang);
 		tuple.setEtymologyType(classifier);
-		classifierCode = tuple.getRelatedWordLang();
-		classifier = getClassifier(ClassifierName.LANGUAGE, classifierCode, displayLang);
-		tuple.setRelatedWordLanguage(classifier);
 	}
 
 	public void applyClassifiers(CollocationTuple tuple, CollocationPosGroup collocPosGroup, String displayLang) {

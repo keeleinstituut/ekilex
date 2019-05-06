@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -321,7 +322,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							List<String> words = new ArrayList<>();
 							String wordVer;
 							if (StringUtils.contains(wordStr, '(')) {
-								wordVer = StringUtils.substringBefore(wordStr, "(");
+								wordVer = RegExUtils.removePattern(wordStr, "[(]\\w+[)]");
 								wordVer = cleanUp(wordVer);
 								words.add(wordVer);
 							}
@@ -433,7 +434,9 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 
 	private String cleanUp(String value) {
 		String cleanedWord = replaceChars(value, formStrCleanupChars, "");
-		return removePattern(cleanedWord, "[&]\\w+[;]");
+		cleanedWord = removePattern(cleanedWord, "[&]\\w+[;]");
+		cleanedWord = StringUtils.trim(cleanedWord);
+		return cleanedWord;
 	}
 
 	private WordEtymPeekAhead getWordEtymPeekAhead(List<Node> etymGroupNodes, int etymGroupNodePeekIndex) {

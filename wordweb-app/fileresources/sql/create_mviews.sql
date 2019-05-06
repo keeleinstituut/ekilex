@@ -15,7 +15,8 @@ drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
 drop type if exists type_colloc_member;
-drop type if exists type_word_etym;
+drop type if exists type_word_etym;--remove later
+drop type if exists type_word_etym_relation;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
@@ -29,6 +30,7 @@ create type type_definition as (lexeme_id bigint, meaning_id bigint, value text,
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_prese text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
+create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_type_codes varchar(100) array, dataset_codes varchar(10) array, word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
@@ -160,23 +162,18 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_etymology') as word_etymology(
 	word_id bigint,
-	word_etym_word_id bigint,
 	word_etym_id bigint,
+	word_etym_word_id bigint,
+	word_etym_word text,
+	word_etym_word_lang char(3),
+	word_etym_word_meaning_words text array,
 	etymology_type_code varchar(100),
 	etymology_year text,
 	word_etym_comment text,
 	word_etym_is_questionable boolean,
 	word_etym_order_by bigint,
 	word_etym_sources text array,
-	word_etym_rel_id bigint,
-	word_etym_rel_comment text,
-	word_etym_rel_is_questionable boolean,
-	word_etym_rel_is_compound boolean,
-	word_etym_rel_order_by bigint,
-	related_word_id bigint,
-	related_word text,
-	related_word_lang char(3),
-	meaning_words text array
+	word_etym_relations type_word_etym_relation array
 );
 
 create materialized view mview_ww_word_relation as

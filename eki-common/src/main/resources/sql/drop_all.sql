@@ -17,7 +17,8 @@ drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
 drop type if exists type_colloc_member;
-drop type if exists type_word_etym;
+drop type if exists type_word_etym;--remove later
+drop type if exists type_word_etym_relation;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;

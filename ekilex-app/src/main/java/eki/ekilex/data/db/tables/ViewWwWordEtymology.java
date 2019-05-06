@@ -6,6 +6,7 @@ package eki.ekilex.data.db.tables;
 
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwWordEtymologyRecord;
+import eki.ekilex.data.db.udt.records.TypeWordEtymRelationRecord;
 
 import javax.annotation.Generated;
 
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordEtymology extends TableImpl<ViewWwWordEtymologyRecord> {
 
-    private static final long serialVersionUID = -495613706;
+    private static final long serialVersionUID = -1379914851;
 
     /**
      * The reference instance of <code>public.view_ww_word_etymology</code>
@@ -54,14 +55,29 @@ public class ViewWwWordEtymology extends TableImpl<ViewWwWordEtymologyRecord> {
     public final TableField<ViewWwWordEtymologyRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.view_ww_word_etymology.word_etym_id</code>.
+     */
+    public final TableField<ViewWwWordEtymologyRecord, Long> WORD_ETYM_ID = createField("word_etym_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
      * The column <code>public.view_ww_word_etymology.word_etym_word_id</code>.
      */
     public final TableField<ViewWwWordEtymologyRecord, Long> WORD_ETYM_WORD_ID = createField("word_etym_word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.view_ww_word_etymology.word_etym_id</code>.
+     * The column <code>public.view_ww_word_etymology.word</code>.
      */
-    public final TableField<ViewWwWordEtymologyRecord, Long> WORD_ETYM_ID = createField("word_etym_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwWordEtymologyRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_word_etymology.word_lang</code>.
+     */
+    public final TableField<ViewWwWordEtymologyRecord, String> WORD_LANG = createField("word_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.view_ww_word_etymology.meaning_words</code>.
+     */
+    public final TableField<ViewWwWordEtymologyRecord, String[]> MEANING_WORDS = createField("meaning_words", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word_etymology.etymology_type_code</code>.
@@ -94,49 +110,9 @@ public class ViewWwWordEtymology extends TableImpl<ViewWwWordEtymologyRecord> {
     public final TableField<ViewWwWordEtymologyRecord, String[]> WORD_ETYM_SOURCES = createField("word_etym_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.view_ww_word_etymology.word_etym_rel_id</code>.
+     * The column <code>public.view_ww_word_etymology.word_etym_relations</code>.
      */
-    public final TableField<ViewWwWordEtymologyRecord, Long> WORD_ETYM_REL_ID = createField("word_etym_rel_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.word_etym_rel_comment</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, String> WORD_ETYM_REL_COMMENT = createField("word_etym_rel_comment", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.word_etym_rel_is_questionable</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, Boolean> WORD_ETYM_REL_IS_QUESTIONABLE = createField("word_etym_rel_is_questionable", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.word_etym_rel_is_compound</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, Boolean> WORD_ETYM_REL_IS_COMPOUND = createField("word_etym_rel_is_compound", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.word_etym_rel_order_by</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, Long> WORD_ETYM_REL_ORDER_BY = createField("word_etym_rel_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.related_word_id</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, Long> RELATED_WORD_ID = createField("related_word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.related_word</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, String> RELATED_WORD = createField("related_word", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.related_word_lang</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, String> RELATED_WORD_LANG = createField("related_word_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.meaning_words</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, String[]> MEANING_WORDS = createField("meaning_words", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwWordEtymologyRecord, TypeWordEtymRelationRecord[]> WORD_ETYM_RELATIONS = createField("word_etym_relations", eki.ekilex.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.view_ww_word_etymology</code> table reference
