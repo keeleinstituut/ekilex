@@ -7,7 +7,8 @@ public enum SearchKey {
 	DOMAIN(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
 	ID(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
 	SOURCE_REF(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS}, SearchValueType.TEXTUAL),
-	SOURCE_NAME(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS}, SearchValueType.TEXTUAL)
+	SOURCE_NAME(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS}, SearchValueType.TEXTUAL),
+	MODIFIED_ON(new SearchOperand[] {SearchOperand.EARLIER_THAN, SearchOperand.LATER_THAN}, SearchValueType.TEXTUAL)
 	;
 
 	private SearchOperand[] operands;

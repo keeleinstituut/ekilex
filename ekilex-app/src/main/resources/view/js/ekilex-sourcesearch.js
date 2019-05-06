@@ -30,7 +30,7 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 }
 
 function isSourcePropertyFormValid(form) {
-	validateRequiredFormField(form, 'input', 'valueText');
+	validateRequiredFormField(form, 'textarea', 'valueText');
 	return form.find(".error-show").length == 0;
 }
 

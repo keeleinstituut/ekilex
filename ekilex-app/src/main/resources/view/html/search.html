@@ -124,6 +124,14 @@
             <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
               <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
             </div>
+            <div class="col-3" th:if="${criteria.searchKey.name() == 'MODIFIED_ON'}">
+              <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                <span class="input-group-addon">
+                  <i class="fa fa-calendar fa-lg"></i>
+                </span>
+              </div>
+            </div>
             <div class="col-2">
               <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
                 <i class="fa fa-plus" aria-hidden="true"></i>
@@ -193,6 +201,14 @@
                       th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
             </optgroup>
           </select>
+        </div>
+        <div name="MODIFIED_ON" class="col-3">
+          <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+            <input type="text" class="form-control">
+            <span class="input-group-addon">
+              <i class="fa fa-calendar fa-lg"></i>
+            </span>
+          </div>
         </div>
       </div>
 
