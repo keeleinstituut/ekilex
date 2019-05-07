@@ -34,8 +34,8 @@ public class FeedbackService {
 
 	@Transactional
 	public List<Feedback> findFeedbackLog() {
-		List<Feedback> feedbacks = feedbackDbService.findFeedback().into(Feedback.class);
-		List<FeedbackComment> feedbackComments = feedbackDbService.findAllFeedbackComments().into(FeedbackComment.class);
+		List<Feedback> feedbacks = feedbackDbService.findFeedback();
+		List<FeedbackComment> feedbackComments = feedbackDbService.findAllFeedbackComments();
 		feedbacks.forEach(fb ->
 				fb.setFeedbackComments(feedbackComments.stream()
 						.filter(fc -> fc.getFeedbackId().equals(fb.getId()))
@@ -47,7 +47,7 @@ public class FeedbackService {
 
 	@Transactional
 	public List<FeedbackComment> getFeedbackComments(Long feedbackId) {
-		return feedbackDbService.getFeedbackComments(feedbackId).into(FeedbackComment.class);
+		return feedbackDbService.getFeedbackComments(feedbackId);
 	}
 
 	@Transactional

@@ -1,15 +1,17 @@
 package eki.ekilex.service.db;
 
-import eki.ekilex.data.Feedback;
-import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
-import eki.ekilex.data.db.tables.records.FeedbackLogRecord;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.springframework.stereotype.Service;
-
 import static eki.ekilex.data.db.Tables.FEEDBACK_LOG;
 import static eki.ekilex.data.db.Tables.FEEDBACK_LOG_COMMENT;
+
+import java.util.List;
+
+import org.jooq.DSLContext;
+import org.springframework.stereotype.Service;
+
+import eki.ekilex.data.Feedback;
+import eki.ekilex.data.FeedbackComment;
+import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
+import eki.ekilex.data.db.tables.records.FeedbackLogRecord;
 
 @Service
 public class FeedbackDbService {
@@ -32,12 +34,12 @@ public class FeedbackDbService {
 				.execute();
 	}
 
-	public Result<Record> findFeedback() {
+	public List<Feedback> findFeedback() {
 		return create
 				.select(FEEDBACK_LOG.fields())
 				.from(FEEDBACK_LOG)
 				.orderBy(FEEDBACK_LOG.CREATED_ON.desc())
-				.fetch();
+				.fetchInto(Feedback.class);
 	}
 
 	public Long addFeedbackComment(Long feedbackId, String comment, String userName) {
@@ -49,19 +51,19 @@ public class FeedbackDbService {
 		return feedbackComment.getId();
 	}
 
-	public Result<Record> findAllFeedbackComments() {
+	public List<FeedbackComment> findAllFeedbackComments() {
 		return create
 				.select(FEEDBACK_LOG_COMMENT.fields())
 				.from(FEEDBACK_LOG_COMMENT)
-				.fetch();
+				.fetchInto(FeedbackComment.class);
 	}
 
-	public Result<Record> getFeedbackComments(Long feedbackId) {
+	public List<FeedbackComment> getFeedbackComments(Long feedbackId) {
 		return create
 				.select(FEEDBACK_LOG_COMMENT.fields())
 				.from(FEEDBACK_LOG_COMMENT)
 				.where(FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID.eq(feedbackId))
-				.fetch();
+				.fetchInto(FeedbackComment.class);
 	}
 
 }

@@ -37,74 +37,74 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<Classifier> getLanguages() {
-		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getDomainsInUse() {
-		return commonDataDbService.getDomainsInUse().into(Classifier.class);
+		return commonDataDbService.getDomainsInUse();
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomainsInUse().into(Classifier.class);
+		List<Classifier> domains = commonDataDbService.getDomainsInUse();
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getAllDomainsByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomains().into(Classifier.class);
+		List<Classifier> domains = commonDataDbService.getDomains();
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
 	@Transactional
 	public List<Classifier> getFrequencyGroups() {
-		return commonDataDbService.getFrequencyGroups().into(Classifier.class);
+		return commonDataDbService.getFrequencyGroups();
 	}
 
 	@Transactional
 	public List<Classifier> getMorphs() {
-		return commonDataDbService.getMorphs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getMorphs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getGenders() {
-		return commonDataDbService.getGenders(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getGenders(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getWordTypes() {
-		return commonDataDbService.getWordTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getWordTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getAspects() {
-		return commonDataDbService.getAspects(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getAspects(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getWordRelationTypes() {
-		return commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL).into(Classifier.class);
+		return commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 	}
 
 	@Transactional
 	public List<Classifier> getLexemeRelationTypes() {
-		return commonDataDbService.getLexemeRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL).into(Classifier.class);
+		return commonDataDbService.getLexemeRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 	}
 
 	@Transactional
 	public List<Classifier> getMeaningRelationTypes() {
-		return commonDataDbService.getMeaningRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getMeaningRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getPoses() {
-		return commonDataDbService.getPoses(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getPoses(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getRegisters() {
-		return commonDataDbService.getRegisters(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getRegisters(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
@@ -114,17 +114,17 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<Classifier> getDerivs() {
-		return commonDataDbService.getDerivs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getDerivs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getValueStates() {
-		return commonDataDbService.getValueStates(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP).into(Classifier.class);
+		return commonDataDbService.getValueStates(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
 	public List<Classifier> getProcessStates() {
-		return commonDataDbService.getProcessStates().into(Classifier.class);
+		return commonDataDbService.getProcessStates();
 	}
 
 	public List<Classifier> getClassifiers(ClassifierName classifierName) {

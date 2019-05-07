@@ -96,13 +96,13 @@ public class TermSearchService extends AbstractSearchService {
 	@Transactional
 	public String getMeaningFirstWordValue(Long meaningId, List<String> selectedDatasetCodes) {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-		return termSearchDbService.getMeaningFirstWord(meaningId, searchDatasetsRestriction).into(String.class);
+		return termSearchDbService.getMeaningFirstWord(meaningId, searchDatasetsRestriction);
 	}
 
 	@Transactional
 	public Long getMeaningFirstLexemeId(Long meaningId, List<String> selectedDatasetCodes) {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-		return termSearchDbService.getMeaningFirstLexemeId(meaningId, searchDatasetsRestriction).into(Long.class);
+		return termSearchDbService.getMeaningFirstLexemeId(meaningId, searchDatasetsRestriction);
 	}
 
 	@Transactional
@@ -117,18 +117,18 @@ public class TermSearchService extends AbstractSearchService {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
-		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction).into(Meaning.class);
-		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
+		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
+		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
-		List<Classifier> domains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
-		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId, excludeMeaningAttributeTypes).into(FreeForm.class);
-		List<FreeForm> learnerComments = commonDataDbService.findMeaningLearnerComments(meaningId).into(FreeForm.class);
+		List<Classifier> domains = commonDataDbService.findMeaningDomains(meaningId);
+		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
+		List<FreeForm> learnerComments = commonDataDbService.findMeaningLearnerComments(meaningId);
 		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.findMeaningNoteSourceTuples(FreeformType.PUBLIC_NOTE, meaningId);
 		List<Note> meaningPublicNotes = conversionUtil.composeNotes(meaningPublicNoteSourceTuples);
 		List<NoteSourceTuple> meaningPrivateNoteSourceTuples = commonDataDbService.findMeaningNoteSourceTuples(FreeformType.PRIVATE_NOTE, meaningId);
 		List<Note> meaningPrivateNotes = conversionUtil.composeNotes(meaningPrivateNoteSourceTuples);
-		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
+		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
@@ -136,22 +136,21 @@ public class TermSearchService extends AbstractSearchService {
 
 		for (Long lexemeId : lexemeIds) {
 
-			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId).into(Lexeme.class);
-			List<Classifier> wordTypes = commonDataDbService.findWordTypes(lexeme.getWordId(), classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> lexemePos = commonDataDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId);
+			List<Classifier> wordTypes = commonDataDbService.findWordTypes(lexeme.getWordId(), classifierLabelLang, classifierLabelTypeDescrip);
+			List<Classifier> lexemePos = commonDataDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<Classifier> lexemeRegions = commonDataDbService.findLexemeRegions(lexemeId);
-			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes).into(FreeForm.class);
+			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-					commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
-							.into(UsageTranslationDefinitionTuple.class);
+					commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			List<NoteSourceTuple> lexemePublicNoteSourceTuples = commonDataDbService.findLexemePublicNoteSourceTuples(lexemeId);
 			List<Note> lexemePublicNotes = conversionUtil.composeNotes(lexemePublicNoteSourceTuples);
-			List<FreeForm> lexemeGrammars = commonDataDbService.findGrammars(lexemeId).into(FreeForm.class);
-			List<SourceLink> lexemeRefLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
-			List<Relation> lexemeRelations = commonDataDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+			List<FreeForm> lexemeGrammars = commonDataDbService.findGrammars(lexemeId);
+			List<SourceLink> lexemeRefLinks = commonDataDbService.findLexemeSourceLinks(lexemeId);
+			List<Relation> lexemeRelations = commonDataDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
 
 			boolean classifiersExist =
 					StringUtils.isNotBlank(lexeme.getWordGenderCode())

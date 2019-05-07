@@ -31,12 +31,9 @@ import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -47,6 +44,7 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
@@ -93,42 +91,42 @@ public class UpdateDbService implements DbConstant {
 
 	public void updateDefinitionOrderby(ListData item) {
 		create
-			.update(DEFINITION)
-			.set(DEFINITION.ORDER_BY, item.getOrderby())
-			.where(DEFINITION.ID.eq(item.getId()))
-			.execute();
+				.update(DEFINITION)
+				.set(DEFINITION.ORDER_BY, item.getOrderby())
+				.where(DEFINITION.ID.eq(item.getId()))
+				.execute();
 	}
 
 	public void updateLexemeRelationOrderby(ListData item) {
 		create
-			.update(LEX_RELATION)
-			.set(LEX_RELATION.ORDER_BY, item.getOrderby())
-			.where(LEX_RELATION.ID.eq(item.getId()))
-			.execute();
+				.update(LEX_RELATION)
+				.set(LEX_RELATION.ORDER_BY, item.getOrderby())
+				.where(LEX_RELATION.ID.eq(item.getId()))
+				.execute();
 	}
 
 	public void updateMeaningRelationOrderby(ListData item) {
 		create
-			.update(MEANING_RELATION)
-			.set(MEANING_RELATION.ORDER_BY, item.getOrderby())
-			.where(MEANING_RELATION.ID.eq(item.getId()))
-			.execute();
+				.update(MEANING_RELATION)
+				.set(MEANING_RELATION.ORDER_BY, item.getOrderby())
+				.where(MEANING_RELATION.ID.eq(item.getId()))
+				.execute();
 	}
 
 	public void updateWordRelationOrderby(ListData item) {
 		create
-			.update(WORD_RELATION)
-			.set(WORD_RELATION.ORDER_BY, item.getOrderby())
-			.where(WORD_RELATION.ID.eq(item.getId()))
-			.execute();
+				.update(WORD_RELATION)
+				.set(WORD_RELATION.ORDER_BY, item.getOrderby())
+				.where(WORD_RELATION.ID.eq(item.getId()))
+				.execute();
 	}
 
 	public void updateWordEtymologyOrderby(ListData item) {
 		create
-			.update(WORD_ETYMOLOGY)
-			.set(WORD_ETYMOLOGY.ORDER_BY, item.getOrderby())
-			.where(WORD_ETYMOLOGY.ID.eq(item.getId()))
-			.execute();
+				.update(WORD_ETYMOLOGY)
+				.set(WORD_ETYMOLOGY.ORDER_BY, item.getOrderby())
+				.where(WORD_ETYMOLOGY.ID.eq(item.getId()))
+				.execute();
 	}
 
 	public void updateLexemeOrderby(ListData item) {
@@ -139,7 +137,7 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
-	public Result<Record4<Long,Integer,Integer,Integer>> findWordLexemes(Long lexemeId) {
+	public List<WordLexeme> findWordLexemes(Long lexemeId) {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		return create
@@ -151,10 +149,10 @@ public class UpdateDbService implements DbConstant {
 				.from(l2, l1)
 				.where(
 						l1.ID.eq(lexemeId)
-						.and(l1.WORD_ID.eq(l2.WORD_ID))
-						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))
+								.and(l1.WORD_ID.eq(l2.WORD_ID))
+								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))
 				.orderBy(l2.LEVEL1, l2.LEVEL2, l2.LEVEL3)
-				.fetch();
+				.fetchInto(WordLexeme.class);
 	}
 
 	public void updateLexemeLevels(Long id, Integer level1, Integer level2, Integer level3) {
@@ -263,8 +261,8 @@ public class UpdateDbService implements DbConstant {
 				.set(MEANING_DOMAIN.DOMAIN_ORIGIN, newDomain.getOrigin())
 				.where(
 						MEANING_DOMAIN.MEANING_ID.eq(meaningId).and(
-						MEANING_DOMAIN.DOMAIN_CODE.eq(currentDomain.getCode())).and(
-						MEANING_DOMAIN.DOMAIN_ORIGIN.eq(currentDomain.getOrigin())))
+								MEANING_DOMAIN.DOMAIN_CODE.eq(currentDomain.getCode())).and(
+										MEANING_DOMAIN.DOMAIN_ORIGIN.eq(currentDomain.getOrigin())))
 				.returning(MEANING_DOMAIN.ID)
 				.fetchOne()
 				.getId();
@@ -272,113 +270,110 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public Long addLexemePos(Long lexemeId, String posCode) {
-		Record1<Long> lexemePos = create
+		Long lexemePosId = create
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_POS.POS_CODE.eq(posCode)))
-				.fetchOne();
-		Long lexemePosId;
-		if (lexemePos == null) {
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (lexemePosId == null) {
 			lexemePosId = create
-				.insertInto(LEXEME_POS, LEXEME_POS.LEXEME_ID, LEXEME_POS.POS_CODE)
-				.values(lexemeId, posCode)
-				.returning(LEXEME_POS.ID)
-				.fetchOne()
-				.getId();
-		} else {
-			lexemePosId = lexemePos.into(Long.class);
+					.insertInto(LEXEME_POS, LEXEME_POS.LEXEME_ID, LEXEME_POS.POS_CODE)
+					.values(lexemeId, posCode)
+					.returning(LEXEME_POS.ID)
+					.fetchOne()
+					.getId();
 		}
 		return lexemePosId;
 	}
 
 	public Long addLexemeDeriv(Long lexemeId, String derivCode) {
-		Record1<Long> lexemeDeriv = create
+		Long lexemeDerivId = create
 				.select(LEXEME_DERIV.ID).from(LEXEME_DERIV)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
-				.fetchOne();
-		Long lexemeDerivId;
-		if (lexemeDeriv == null) {
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (lexemeDerivId == null) {
 			lexemeDerivId = create
-				.insertInto(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID, LEXEME_DERIV.DERIV_CODE)
-				.values(lexemeId, derivCode)
-				.returning(LEXEME_DERIV.ID)
-				.fetchOne()
-				.getId();
-		} else {
-			lexemeDerivId = lexemeDeriv.into(Long.class);
+					.insertInto(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID, LEXEME_DERIV.DERIV_CODE)
+					.values(lexemeId, derivCode)
+					.returning(LEXEME_DERIV.ID)
+					.fetchOne()
+					.getId();
 		}
 		return lexemeDerivId;
 	}
 
 	public Long addLexemeRegister(Long lexemeId, String registerCode) {
-		Record1<Long> lexemeRegister = create
+		Long lexemeRegisterId = create
 				.select(LEXEME_REGISTER.ID).from(LEXEME_REGISTER)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
-				.fetchOne();
-		Long lexemeRegisterId;
-		if (lexemeRegister == null) {
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (lexemeRegisterId == null) {
 			lexemeRegisterId = create
-				.insertInto(LEXEME_REGISTER, LEXEME_REGISTER.LEXEME_ID, LEXEME_REGISTER.REGISTER_CODE)
-				.values(lexemeId, registerCode)
-				.returning(LEXEME_REGISTER.ID)
-				.fetchOne()
-				.getId();
-		} else {
-			lexemeRegisterId = lexemeRegister.into(Long.class);
+					.insertInto(LEXEME_REGISTER, LEXEME_REGISTER.LEXEME_ID, LEXEME_REGISTER.REGISTER_CODE)
+					.values(lexemeId, registerCode)
+					.returning(LEXEME_REGISTER.ID)
+					.fetchOne()
+					.getId();
 		}
 		return lexemeRegisterId;
 	}
 
 	public Long addLexemeRegion(Long lexemeId, String regionCode) {
-		Record1<Long> lexemeRegion = create
+		Long lexemeRegionId = create
 				.select(LEXEME_REGION.ID).from(LEXEME_REGION)
 				.where(LEXEME_REGION.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_REGION.REGION_CODE.eq(regionCode)))
-				.fetchOne();
-		Long lexemeRegionId;
-		if (lexemeRegion == null) {
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (lexemeRegionId == null) {
 			lexemeRegionId = create
 					.insertInto(LEXEME_REGION, LEXEME_REGION.LEXEME_ID, LEXEME_REGION.REGION_CODE)
 					.values(lexemeId, regionCode)
 					.returning(LEXEME_REGION.ID)
 					.fetchOne()
 					.getId();
-		} else {
-			lexemeRegionId = lexemeRegion.into(Long.class);
 		}
 		return lexemeRegionId;
 	}
 
 	public Long addMeaningDomain(Long meaningId, Classifier domain) {
-		Record1<Long> meaningDomain = create
+		Long meaningDomainId = create
 				.select(MEANING_DOMAIN.ID).from(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode()))
 						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin())))
-				.fetchOne();
-		Long meaningDomainId;
-		if (meaningDomain == null) {
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (meaningDomainId == null) {
 			meaningDomainId = create
 					.insertInto(MEANING_DOMAIN, MEANING_DOMAIN.MEANING_ID, MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
 					.values(meaningId, domain.getOrigin(), domain.getCode())
 					.returning(MEANING_DOMAIN.ID)
 					.fetchOne()
 					.getId();
-		} else {
-			meaningDomainId = meaningDomain.into(Long.class);
 		}
 		return meaningDomainId;
 	}
 
 	public Long addWord(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
-		Record1<Integer> currentHomonymNumber = create.select(DSL.max(WORD.HOMONYM_NR)).from(WORD, PARADIGM, FORM)
-				.where(WORD.LANG.eq(language).and(FORM.MODE.eq(FormMode.WORD.name())).and(FORM.VALUE.eq(value)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))).fetchOne();
+		Integer currentHomonymNumber = create
+				.select(DSL.max(WORD.HOMONYM_NR))
+				.from(WORD, PARADIGM, FORM)
+				.where(
+						WORD.LANG.eq(language)
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(FORM.VALUE.eq(value))
+								.and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID)))
+				.fetchOneInto(Integer.class);
 		int homonymNumber = 1;
-		if (currentHomonymNumber.value1() != null) {
-			homonymNumber = currentHomonymNumber.value1() + 1;
+		if (currentHomonymNumber != null) {
+			homonymNumber = currentHomonymNumber + 1;
 		}
 		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
@@ -411,69 +406,79 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public Long addWordType(Long wordId, String typeCode) {
-		Record1<Long> wordWordType = create
-				.select(WORD_WORD_TYPE.ID).from(WORD_WORD_TYPE)
+		Long wordWordTypeId = create
+				.select(WORD_WORD_TYPE.ID)
+				.from(WORD_WORD_TYPE)
 				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId)
 						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)))
-				.fetchOne();
-		Long wordWordTypeId;
-		if (wordWordType == null) {
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (wordWordTypeId == null) {
 			wordWordTypeId = create
-				.insertInto(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID, WORD_WORD_TYPE.WORD_TYPE_CODE)
-				.values(wordId, typeCode)
-				.returning(WORD_WORD_TYPE.ID)
-				.fetchOne()
-				.getId();
-		} else {
-			wordWordTypeId = wordWordType.into(Long.class);
+					.insertInto(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID, WORD_WORD_TYPE.WORD_TYPE_CODE)
+					.values(wordId, typeCode)
+					.returning(WORD_WORD_TYPE.ID)
+					.fetchOne()
+					.getId();
 		}
 		return wordWordTypeId;
 	}
 
 	public Long addWordRelation(Long wordId, Long targetWordId, String wordRelationCode) {
 
-		Optional<WordRelationRecord> wordRelationRecord = create.fetchOptional(WORD_RELATION,
-				WORD_RELATION.WORD1_ID.eq(wordId).and(
-				WORD_RELATION.WORD2_ID.eq(targetWordId)).and(
-				WORD_RELATION.WORD_REL_TYPE_CODE.eq(wordRelationCode)));
-		if (wordRelationRecord.isPresent()) {
-			return wordRelationRecord.get().getId();
-		} else {
+		Long wordRelationId = create
+				.select(WORD_RELATION.ID)
+				.from(WORD_RELATION)
+				.where(
+						WORD_RELATION.WORD1_ID.eq(wordId)
+								.and(WORD_RELATION.WORD2_ID.eq(targetWordId))
+								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(wordRelationCode)))
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (wordRelationId == null) {
 			WordRelationRecord newRelation = create.newRecord(WORD_RELATION);
 			newRelation.setWord1Id(wordId);
 			newRelation.setWord2Id(targetWordId);
 			newRelation.setWordRelTypeCode(wordRelationCode);
 			newRelation.store();
-			return newRelation.getId();
+			wordRelationId = newRelation.getId();
 		}
+		return wordRelationId;
 	}
 
 	public Long findWordRelationGroupId(String groupType, Long wordId) {
-		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+		Long id = create
+				.select(WORD_GROUP.ID)
 				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
 				.where(WORD_GROUP.WORD_REL_TYPE_CODE.eq(groupType).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
-				.fetchOptional();
-		return result.map(Record1::value1).orElse(null);
+				.fetchOneInto(Long.class);
+		return id;
 	}
 
 	public Long findWordRelationGroupId(Long relationId) {
-		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+		Long id = create.select(WORD_GROUP.ID)
 				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
 				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
-				.fetchOptional();
-		return result.map(Record1::value1).orElse(null);
+				.fetchOneInto(Long.class);
+		return id;
 	}
 
 	public boolean isMemberOfWordRelationGroup(Long groupId, Long wordId) {
-		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+		Long id = create.select(WORD_GROUP.ID)
 				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
 				.where(WORD_GROUP.ID.eq(groupId).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
-				.fetchOptional();
-		return result.isPresent();
+				.fetchOneInto(Long.class);
+		boolean exists = (id != null);
+		return exists;
 	}
 
 	public List<Map<String, Object>> findWordRelationGroupMembers(Long groupId) {
-		return create.selectDistinct(WORD_GROUP_MEMBER.ID, WORD_GROUP_MEMBER.WORD_ID, FORM.VALUE, WORD_GROUP.WORD_REL_TYPE_CODE)
+		return create
+				.selectDistinct(
+						WORD_GROUP_MEMBER.ID,
+						WORD_GROUP_MEMBER.WORD_ID,
+						FORM.VALUE,
+						WORD_GROUP.WORD_REL_TYPE_CODE)
 				.from(WORD_GROUP_MEMBER)
 				.join(WORD_GROUP).on(WORD_GROUP.ID.eq(WORD_GROUP_MEMBER.WORD_GROUP_ID))
 				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(WORD_GROUP_MEMBER.WORD_ID))
@@ -512,8 +517,8 @@ public class UpdateDbService implements DbConstant {
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
 
-		LexemeRecord lexeme = create.fetchOne(LEXEME,LEXEME.ID.eq(lexemeId));
-		LexemeRecord sourceLexeme = create.fetchOne(LEXEME,LEXEME.ID.eq(sourceLexemeId));
+		LexemeRecord lexeme = create.fetchOne(LEXEME, LEXEME.ID.eq(lexemeId));
+		LexemeRecord sourceLexeme = create.fetchOne(LEXEME, LEXEME.ID.eq(sourceLexemeId));
 		if (lexeme.getWordId().equals(sourceLexeme.getWordId()) && lexeme.getDatasetCode().equals(sourceLexeme.getDatasetCode())) {
 			joinLexemes(lexemeId, sourceLexemeId);
 		}
@@ -545,7 +550,7 @@ public class UpdateDbService implements DbConstant {
 						.and(LEXEME_POS.POS_CODE.notIn(
 								DSL.select(LEXEME_POS.POS_CODE).from(LEXEME_POS).where(LEXEME_POS.LEXEME_ID.eq(lexemeId)))))
 				.execute(); // <-unique
-		create.update(LEXEME_FREEFORM).set(LEXEME_FREEFORM.LEXEME_ID, lexemeId).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)).execute();  // <- ??
+		create.update(LEXEME_FREEFORM).set(LEXEME_FREEFORM.LEXEME_ID, lexemeId).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)).execute(); // <- ??
 		create.update(LEXEME_DERIV)
 				.set(LEXEME_DERIV.LEXEME_ID, lexemeId)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(sourceLexemeId)
@@ -559,7 +564,7 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public LexemeRecord getLexeme(Long lexemeId) {
-		return create.fetchOne(LEXEME,LEXEME.ID.eq(lexemeId));
+		return create.fetchOne(LEXEME, LEXEME.ID.eq(lexemeId));
 	}
 
 	public void deleteFreeform(Long id) {
@@ -637,7 +642,7 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
-	public Long findMeaningDomainId(Long meaningId,  Classifier domain) {
+	public Long findMeaningDomainId(Long meaningId, Classifier domain) {
 		MeaningDomainRecord meaningDomainRecord = create.fetchOne(MEANING_DOMAIN,
 				MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
@@ -888,10 +893,14 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public String getFirstDefinitionOfMeaning(Long meaningId) {
-		Optional<Record1<String>> definition = create.select(DEFINITION.VALUE_PRESE).from(DEFINITION)
-				.where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).limit(1)
-				.fetchOptional();
-		return definition.map(Record1::value1).orElse(null);
+		String definition = create
+				.select(DEFINITION.VALUE_PRESE)
+				.from(DEFINITION)
+				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.orderBy(DEFINITION.ORDER_BY)
+				.limit(1)
+				.fetchOneInto(String.class);
+		return definition;
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {
@@ -908,8 +917,7 @@ public class UpdateDbService implements DbConstant {
 				.fetch();
 		List<Long> nonDublicateFreeformIds = sourceMeaningFreeforms.stream()
 				.filter(sf -> meaningFreeforms.stream()
-						.noneMatch(mf -> mf.getType().equals(sf.getType()) && (
-								(Objects.nonNull(mf.getValueText()) && mf.getValueText().equals(sf.getValueText())) ||
+						.noneMatch(mf -> mf.getType().equals(sf.getType()) && ((Objects.nonNull(mf.getValueText()) && mf.getValueText().equals(sf.getValueText())) ||
 								(Objects.nonNull(mf.getValueNumber()) && mf.getValueNumber().equals(sf.getValueNumber())) ||
 								(Objects.nonNull(mf.getClassifCode()) && mf.getClassifCode().equals(sf.getClassifCode())) ||
 								(Objects.nonNull(mf.getValueDate()) && mf.getValueDate().equals(sf.getValueDate())))))
@@ -923,9 +931,9 @@ public class UpdateDbService implements DbConstant {
 	private void joinMeaningDomains(Long meaningId, Long sourceMeaningId) {
 		create.update(MEANING_DOMAIN).set(MEANING_DOMAIN.MEANING_ID, meaningId)
 				.where(
-					MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)
-					.and(DSL.row(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).notIn(
-							DSL.select(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).from(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)))))
+						MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)
+								.and(DSL.row(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).notIn(
+										DSL.select(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).from(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)))))
 				.execute();
 		create.delete(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)).execute();
 	}
@@ -933,7 +941,8 @@ public class UpdateDbService implements DbConstant {
 	private void joinMeaningDefinitions(Long meaningId, Long sourceMeaningId) {
 		create.update(DEFINITION).set(DEFINITION.MEANING_ID, meaningId)
 				.where(DEFINITION.MEANING_ID.eq(sourceMeaningId)
-						.and(DEFINITION.VALUE.notIn(DSL.select(DEFINITION.VALUE).from(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId))))).execute();
+						.and(DEFINITION.VALUE.notIn(DSL.select(DEFINITION.VALUE).from(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)))))
+				.execute();
 		create.delete(DEFINITION).where(DEFINITION.MEANING_ID.eq(sourceMeaningId)).execute();
 	}
 
@@ -978,9 +987,9 @@ public class UpdateDbService implements DbConstant {
 		Result<MeaningDomainRecord> domains = create.selectFrom(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(lexemeMeaningId)).fetch();
 		domains.forEach(d -> {
 			create
-				.insertInto(MEANING_DOMAIN, MEANING_DOMAIN.MEANING_ID, MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
-				.values(newMeaningId, d.getDomainOrigin(), d.getDomainCode())
-				.execute();
+					.insertInto(MEANING_DOMAIN, MEANING_DOMAIN.MEANING_ID, MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
+					.values(newMeaningId, d.getDomainOrigin(), d.getDomainCode())
+					.execute();
 		});
 	}
 
@@ -988,9 +997,9 @@ public class UpdateDbService implements DbConstant {
 		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(lexemeMeaningId)).fetch();
 		definitions.forEach(d -> {
 			create
-				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG, DEFINITION.DEFINITION_TYPE_CODE)
-				.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang(), d.getDefinitionTypeCode())
-				.execute();
+					.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG, DEFINITION.DEFINITION_TYPE_CODE)
+					.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang(), d.getDefinitionTypeCode())
+					.execute();
 		});
 	}
 

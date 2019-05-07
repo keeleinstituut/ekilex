@@ -1,7 +1,9 @@
 package eki.ekilex.test;
 
+import static eki.ekilex.data.db.Tables.LEXEME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -14,6 +16,7 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.DSLContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +40,21 @@ public class QueryTest {
 	@Autowired
 	private BasicDbService basicDbService;
 
+	@Autowired
+	private DSLContext create;
+
 	@Before
 	public void beforeTest() throws Exception {
 
 		testEnvInitialiser.initDatabase();
+	}
+
+	@Test
+	public void testJooqQueryResultParsing() throws Exception {
+
+		Long lexemeId = create.select(LEXEME.ID).from(LEXEME).where(LEXEME.DATASET_CODE.eq("qq2")).limit(1).fetchOneInto(Long.class);
+
+		assertNotNull("Incorrect query result", lexemeId);
 	}
 
 	@Test
@@ -239,7 +253,7 @@ public class QueryTest {
 
 	@Test
 	public void testQueryWordsRelations() throws Exception {
-		
+
 		final String sqlScriptFilePath = "./fileresources/sql/test_query_words_relations.sql";
 		final String defaultLabelLang = "est";
 		final String defaultLabelType = "full";

@@ -27,8 +27,7 @@ public class RefLinkDbService implements DbConstant {
 				.select(
 						FREEFORM_SOURCE_LINK.FREEFORM_ID.as("owner_id"),
 						FREEFORM_SOURCE_LINK.TYPE,
-						FREEFORM_SOURCE_LINK.SOURCE_ID
-						)
+						FREEFORM_SOURCE_LINK.SOURCE_ID)
 				.from(FREEFORM_SOURCE_LINK)
 				.where(FREEFORM_SOURCE_LINK.ID.eq(refLinkId))
 				.fetchOne();
@@ -40,8 +39,7 @@ public class RefLinkDbService implements DbConstant {
 				.select(
 						DEFINITION_SOURCE_LINK.DEFINITION_ID.as("owner_id"),
 						DEFINITION_SOURCE_LINK.TYPE,
-						DEFINITION_SOURCE_LINK.SOURCE_ID
-						)
+						DEFINITION_SOURCE_LINK.SOURCE_ID)
 				.from(DEFINITION_SOURCE_LINK)
 				.where(DEFINITION_SOURCE_LINK.ID.eq(refLinkId))
 				.fetchOne();
@@ -53,8 +51,7 @@ public class RefLinkDbService implements DbConstant {
 				.select(
 						LEXEME_SOURCE_LINK.LEXEME_ID.as("owner_id"),
 						LEXEME_SOURCE_LINK.TYPE,
-						LEXEME_SOURCE_LINK.SOURCE_ID
-						)
+						LEXEME_SOURCE_LINK.SOURCE_ID)
 				.from(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.ID.eq(refLinkId))
 				.fetchOne();

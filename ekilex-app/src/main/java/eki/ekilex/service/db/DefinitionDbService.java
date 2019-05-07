@@ -58,6 +58,11 @@ public class DefinitionDbService implements DbConstant {
 		return create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).fetch();
 	}
 
+	public String getCombinedMeaningDefinitions(Long meaningId) {
+		List<DefinitionRecord> meaningDefinitions = findMeaningDefinitions(meaningId);
+		return meaningDefinitions.stream().map(DefinitionRecord::getValue).collect(Collectors.joining(" | "));
+	}
+
 	public void cloneDefinitionDatasets(Long definitionId, Long clonedDefinintionId) {
 
 		Result<DefinitionDatasetRecord> definitionDatasets =
@@ -81,11 +86,6 @@ public class DefinitionDbService implements DbConstant {
 			clonedDefinitionSourceLink.changed(DEFINITION_SOURCE_LINK.ORDER_BY, false);
 			clonedDefinitionSourceLink.store();
 		});
-	}
-
-	public String getCombinedMeaningDefinitions(Long meaningId) {
-		List<DefinitionRecord> meaningDefinitions = findMeaningDefinitions(meaningId);
-		return meaningDefinitions.stream().map(DefinitionRecord::getValue).collect(Collectors.joining(" | "));
 	}
 
 }

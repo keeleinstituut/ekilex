@@ -6,6 +6,8 @@ import eki.ekilex.data.StatDataRow;
 import eki.ekilex.service.db.StatDataDbService;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +22,11 @@ public class StatDataService implements InitializingBean, SystemConstant {
 
 	private static final int LIFECYCLE_USER_STAT_DATA_LAST_DAYS_COUNT = 30;
 
-	private final StatDataDbService statDataDbService;
+	@Value("${scheduling.enabled:false}")
+	private boolean isSchedulingEnabled;
+
+	@Autowired
+	private StatDataDbService statDataDbService;
 
 	private StatData mainEntityStatData;
 
@@ -29,10 +35,6 @@ public class StatDataService implements InitializingBean, SystemConstant {
 	private List<StatDataRow> lexemeDatasetStatData;
 
 	private List<StatDataRow> lifecycleUserStatData;
-
-	public StatDataService(StatDataDbService statDataDbService) {
-		this.statDataDbService = statDataDbService;
-	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -46,6 +48,9 @@ public class StatDataService implements InitializingBean, SystemConstant {
 	@Transactional
 	public void updateStatData() {
 
+		if (!isSchedulingEnabled) {
+			return;
+		}
 		Timestamp from = getPastTimestamp(LIFECYCLE_USER_STAT_DATA_LAST_DAYS_COUNT);
 		mainEntityStatData = statDataDbService.getMainEntityStatData();
 		freeformStatData = statDataDbService.getFreeformStatData();

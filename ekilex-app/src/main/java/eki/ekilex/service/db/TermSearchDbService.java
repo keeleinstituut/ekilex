@@ -22,12 +22,9 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record13;
-import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record6;
-import org.jooq.Result;
 import org.jooq.SelectHavingStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -196,15 +193,13 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
 
 				List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
-						.filter(crit -> 
-								crit.getSearchKey().equals(SearchKey.DOMAIN)
+						.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
 								&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
 								&& (crit.getSearchValue() != null))
 						.collect(toList());
 
 				boolean isNotExistsFilter = searchCriteria.stream()
-						.anyMatch(crit ->
-								crit.getSearchKey().equals(SearchKey.DOMAIN)
+						.anyMatch(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
 								&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
 
 				MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
@@ -284,13 +279,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				// notes owners joined
 				Table<Record1<Long>> n1 = DSL
-					.select(DSL.coalesce(mff2.MEANING_ID, DSL.coalesce(dff2.field("meaning_id"), lff2.field("meaning_id"))).as("meaning_id"))
-					.from(n2
-							.leftOuterJoin(mff2).on(mff2.FREEFORM_ID.eq(n2.field("freeform_id", Long.class)))
-							.leftOuterJoin(dff2).on(dff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
-							.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
-							)
-					.asTable("n1");
+						.select(DSL.coalesce(mff2.MEANING_ID, DSL.coalesce(dff2.field("meaning_id"), lff2.field("meaning_id"))).as("meaning_id"))
+						.from(n2
+								.leftOuterJoin(mff2).on(mff2.FREEFORM_ID.eq(n2.field("freeform_id", Long.class)))
+								.leftOuterJoin(dff2).on(dff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
+								.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class))))
+						.asTable("n1");
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID))));
 
@@ -328,7 +322,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(l1.WORD_ID.eq(w1.ID));
 				where2 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where2);
 
-				where1 = DSL.exists(DSL.select(w1.ID).from(f1, p1, w1).where(where2)); 
+				where1 = DSL.exists(DSL.select(w1.ID).from(f1, p1, w1).where(where2));
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				SelectHavingStep<Record1<Long>> selectWord = DSL.select(l1.MEANING_ID).from(l1).where(where1).groupBy(l1.MEANING_ID);
 
@@ -408,7 +402,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.where(meaningCondition)
 				.asTable("m");
 
-
 		Condition where3 = l1.WORD_ID.eq(w1.ID);
 		if (StringUtils.isNotBlank(resultLang)) {
 			where3 = where3.and(w1.LANG.eq(resultLang));
@@ -458,14 +451,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Table<Record2<Long, String>> c = DSL
 				.select(
 						mff.MEANING_ID,
-						ff.VALUE_TEXT.as("concept_id")
-						)
+						ff.VALUE_TEXT.as("concept_id"))
 				.from(mff, ff)
 				.where(
 						mff.FREEFORM_ID.eq(ff.ID)
-						.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name()))
-						.and(ff.VALUE_TEXT.likeRegex(NUMERIC_VALUE_PATTERN))
-						)
+								.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name()))
+								.and(ff.VALUE_TEXT.likeRegex(NUMERIC_VALUE_PATTERN)))
 				.asTable("c");
 
 		Table<Record3<Long, Long, Long>> mw = DSL
@@ -545,7 +536,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.groupBy(mow.field("word_id"))
 				.asField("other_word_dataset_codes_wrapup");
 
-		Result<Record13<Long, String, Long, String, Integer, String, String, Long, String, Integer, String, Long, String>> result = create
+		List<TermMeaningWordTuple> result = create
 				.select(
 						mmw.field("meaning_id", Long.class),
 						mmw.field("concept_id", String.class),
@@ -564,14 +555,14 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.leftOuterJoin(mow)
 						.on(mow.field("meaning_id", Long.class).eq(mmw.field("meaning_id", Long.class))
 								.and(mow.field("word_id", Long.class).ne(mmw.field("word_id", Long.class)))))
-				.fetch();
+				.fetchInto(TermMeaningWordTuple.class);
 
-		return result.into(TermMeaningWordTuple.class);
+		return result;
 	}
 
 	// getters
 
-	public Record2<Long,Long[]> getMeaning(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public eki.ekilex.data.Meaning getMeaning(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -585,10 +576,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(dsWhere))
 				.groupBy(MEANING.ID)
-				.fetchSingle();
+				.fetchSingleInto(eki.ekilex.data.Meaning.class);
 	}
 
-	public Record16<Long, String, Integer, String, String, Long, Long, String, Integer, Integer, Integer, String, String[], String, String, Long> getLexeme(Long lexemeId) {
+	public eki.ekilex.data.Lexeme getLexeme(Long lexemeId) {
 
 		Lexeme l = LEXEME.as("l");
 		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
@@ -623,8 +614,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						lfreq.as("lexeme_frequencies"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
-						l.ORDER_BY
-						)
+						l.ORDER_BY)
 				.from(f, p, w, l)
 				.where(
 						l.ID.eq(lexemeId)
@@ -634,10 +624,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(f.MODE.eq(FormMode.WORD.name())))
 				.groupBy(l.ID, w.ID)
 				.orderBy(w.ID, l.DATASET_CODE, l.LEVEL1, l.LEVEL2, l.LEVEL3)
-				.fetchSingle();
+				.fetchSingleInto(eki.ekilex.data.Lexeme.class);
 	}
 
-	public Record1<String> getMeaningFirstWord(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public String getMeaningFirstWord(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -652,10 +642,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(dsWhere))
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
 				.limit(1)
-				.fetchSingle();
+				.fetchSingleInto(String.class);
 	}
 
-	public Record1<Long> getMeaningFirstLexemeId(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public Long getMeaningFirstLexemeId(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -670,7 +660,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(dsWhere))
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
 				.limit(1)
-				.fetchSingle();
+				.fetchSingleInto(Long.class);
 	}
 
 }

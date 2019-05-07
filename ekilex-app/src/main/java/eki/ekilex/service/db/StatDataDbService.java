@@ -65,24 +65,24 @@ public class StatDataDbService implements DbConstant {
 
 		return create
 				.select(
-					DSL.field(IGNORE_QUERY_LOG).as("comment"),
-					wc.field("word_count", long.class),
-					lc.field("lexeme_count", long.class),
-					pc.field("paradigm_count", long.class),
-					fc.field("form_count", long.class),
-					mnc.field("meaning_count", long.class),
-					dc.field("definition_count", long.class),
-					datc.field("dataset_count", long.class),
-					sc.field("source_count", long.class),
-					cc.field("collocation_count", long.class),
-					langc.field("language_count", long.class),
-					rc.field("register_count", long.class),
-					ac.field("aspect_count", long.class),
-					gc.field("gender_count", long.class),
-					posc.field("pos_count", long.class),
-					mc.field("morph_count", long.class),
-					derc.field("deriv_count", long.class),
-					domc.field("domain_count", long.class))
+						DSL.field(IGNORE_QUERY_LOG).as("comment"),
+						wc.field("word_count", long.class),
+						lc.field("lexeme_count", long.class),
+						pc.field("paradigm_count", long.class),
+						fc.field("form_count", long.class),
+						mnc.field("meaning_count", long.class),
+						dc.field("definition_count", long.class),
+						datc.field("dataset_count", long.class),
+						sc.field("source_count", long.class),
+						cc.field("collocation_count", long.class),
+						langc.field("language_count", long.class),
+						rc.field("register_count", long.class),
+						ac.field("aspect_count", long.class),
+						gc.field("gender_count", long.class),
+						posc.field("pos_count", long.class),
+						mc.field("morph_count", long.class),
+						derc.field("deriv_count", long.class),
+						domc.field("domain_count", long.class))
 				.from(wc, lc, pc, fc, mnc, dc, datc, sc, cc, langc, rc, ac, gc, posc, mc, derc, domc)
 				.fetchSingleInto(StatData.class);
 	}

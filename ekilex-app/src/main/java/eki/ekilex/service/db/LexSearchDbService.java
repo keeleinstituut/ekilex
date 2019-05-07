@@ -28,7 +28,6 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -38,14 +37,8 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Record10;
 import org.jooq.Record11;
-import org.jooq.Record16;
-import org.jooq.Record4;
-import org.jooq.Record6;
 import org.jooq.Record7;
-import org.jooq.Record8;
-import org.jooq.Result;
 import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -57,11 +50,15 @@ import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.ParadigmFormTuple;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.WordEtymTuple;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Form;
@@ -408,8 +405,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return create.fetchCount(ww);
 	}
 
-	public Result<Record11<Long, String, Long, String, String, String[], String, String, String, String, String[]>> findParadigmFormTuples(
-			Long wordId, String wordValue, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<ParadigmFormTuple> findParadigmFormTuples(Long wordId, String wordValue, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Field<String[]> ffreq = DSL
 				.select(DSL.arrayAgg(DSL.concat(
@@ -444,7 +440,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(MORPH_LABEL.LANG.eq(classifierLabelLang))
 								.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.orderBy(PARADIGM.ID, FORM.ORDER_BY)
-				.fetch();
+				.fetchInto(ParadigmFormTuple.class);
 	}
 
 	private SelectField<?>[] getWordLexemeSelectFields() {
@@ -480,7 +476,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		};
 	}
 
-	public Result<Record> findWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public List<WordLexeme> findWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -498,10 +494,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				)
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
 				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
-				.fetch();
+				.fetchInto(WordLexeme.class);
 	}
 
-	public Record findLexeme(Long lexemeId) {
+	public WordLexeme findLexeme(Long lexemeId) {
 
 		return create.select(getWordLexemeSelectFields())
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
@@ -514,10 +510,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID)
-				.fetchSingle();
+				.fetchSingleInto(WordLexeme.class);
 	}
 
-	public Result<Record4<Long, String, Integer, String>> findMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public List<eki.ekilex.data.Word> findMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -538,10 +534,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(dsWhere))
 				.groupBy(WORD.ID, FORM.VALUE)
 				.orderBy(FORM.VALUE)
-				.fetch();
+				.fetchInto(eki.ekilex.data.Word.class);
 	}
 
-	public Result<Record8<Long, Long, Long, Long, String, String, String, Long>> findWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<Relation> findWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordGroupMember wgrm1 = WORD_GROUP_MEMBER.as("wgrm1");
 		WordGroupMember wgrm2 = WORD_GROUP_MEMBER.as("wgrm2");
@@ -580,10 +576,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(f2.PARADIGM_ID.eq(p2.ID))
 								.and(f2.MODE.eq(FormMode.WORD.name())))
 				.orderBy(wgrm2.ORDER_BY)
-				.fetch();
+				.fetchInto(Relation.class);
 	}
 
-	public Result<Record6<Long, String, Long, String, String, Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<Relation> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.selectDistinct(
@@ -608,7 +604,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.orderBy(WORD_RELATION.ORDER_BY)
-				.fetch();
+				.fetchInto(Relation.class);
 	}
 
 	public List<WordEtymTuple> findWordEtymology(Long wordId) {
@@ -649,8 +645,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(WordEtymTuple.class);
 	}
 
-	public Result<Record16<Long, String, Long, String, BigDecimal, BigDecimal, Long, String, String, BigDecimal, BigDecimal, String[], Long, String, String, BigDecimal>> findPrimaryCollocationTuples(
-			Long lexemeId) {
+	public List<CollocationTuple> findPrimaryCollocationTuples(Long lexemeId) {
 
 		LexCollocPosGroup pgr1 = LEX_COLLOC_POS_GROUP.as("pgr1");
 		LexCollocRelGroup rgr1 = LEX_COLLOC_REL_GROUP.as("rgr1");
@@ -693,10 +688,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
 				.groupBy(c.ID, pgr1.ID, rgr1.ID, lc1.ID, lc2.ID, l2.ID, f2.VALUE, f2.MODE)
 				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc1.GROUP_ORDER, c.ID, lc2.MEMBER_ORDER)
-				.fetch();
+				.fetchInto(CollocationTuple.class);
 	}
 
-	public Result<Record10<Long, String, String, BigDecimal, BigDecimal, String[], Long, String, String, BigDecimal>> findSecondaryCollocationTuples(Long lexemeId) {
+	public List<CollocationTuple> findSecondaryCollocationTuples(Long lexemeId) {
 
 		LexColloc lc1 = LEX_COLLOC.as("lc1");
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
@@ -729,10 +724,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(f2.PARADIGM_ID.eq(p2.ID))
 								.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
 				.orderBy(c.ID, lc2.MEMBER_ORDER)
-				.fetch();
+				.fetchInto(CollocationTuple.class);
 	}
 
-	public boolean isTheOnlyLexemeForWord(Long lexemeId) {
+	public boolean isOnlyLexemeForWord(Long lexemeId) {
 		Lexeme lex = LEXEME.as("lex");
 		Lexeme lex2 = LEXEME.as("lex2");
 		int count = create.fetchCount(DSL.select(lex.ID).from(lex, lex2).where(lex2.ID.eq(lexemeId).and(lex.WORD_ID.eq(lex2.WORD_ID))));

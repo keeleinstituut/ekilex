@@ -81,8 +81,8 @@ public class SourceDbService implements SystemConstant {
 		return findSourcesByNameAndTypeExcludingOneSource(searchFilterWithMetaCharacters, sourceType, null);
 	}
 
-	public List<SourcePropertyTuple> findSourcesByNameAndTypeExcludingOneSource(String searchFilterWithMetaCharacters, SourceType sourceType,
-			Long sourceIdToExclude) {
+	public List<SourcePropertyTuple> findSourcesByNameAndTypeExcludingOneSource(
+			String searchFilterWithMetaCharacters, SourceType sourceType, Long sourceIdToExclude) {
 
 		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
 
