@@ -1,0 +1,53 @@
+.footer {
+    position: absolute;
+    bottom: 0px;
+    width:100%;
+    min-height: 60px;
+    background: #001124;
+    padding: 1rem 0 1rem 0;
+}
+
+footer p {
+    color: #d8d8d8;
+    margin-bottom: 0px;
+}
+
+.footer-wrapper {
+    max-width: 80vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.copyright {
+    display: block;
+    margin: 0 auto 0 auto;
+    color: #d8d8d8;
+    text-align: center;
+    width: 100%;
+}
+
+.col-reverse {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.eki-logo {
+    background: url(../img/eki.svg) center center no-repeat;
+    display: inline-block;
+    height: calc(6.25rem / 1.8);
+    width: calc(16.875rem / 1.8);
+    background-size: calc(16.875rem / 1.8) calc(6.25rem / 1.8);
+}
+
+.erf-logo {
+    background: url(../img/erf.svg) center center no-repeat;
+    display: inline-block;
+    height: calc(11.6875rem / 2);
+    width: calc(22.125rem / 2);
+    background-size: calc(22.125rem / 2) calc(11.6875rem / 2);
+}
+
+.mini-logo {
+    justify-content: center;
+    margin: 0 2rem;
+}
