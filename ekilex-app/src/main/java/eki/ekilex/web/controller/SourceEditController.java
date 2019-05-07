@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,11 +107,11 @@ public class SourceEditController extends AbstractPageController {
 		name.setValueText(sourceName);
 		sourceProperties.add(name);
 
-		if (!valueTexts.isEmpty()) {
-			for (int i = 0; i < sourcePropertyTypes.size(); i++) {
-				FreeformType type = sourcePropertyTypes.get(i);
-				String valueText = valueTexts.get(i);
-				if (!valueText.isEmpty()) {
+		if (CollectionUtils.isNotEmpty(valueTexts)) {
+			for (int sourcePropertyIndex = 0; sourcePropertyIndex < sourcePropertyTypes.size(); sourcePropertyIndex++) {
+				FreeformType type = sourcePropertyTypes.get(sourcePropertyIndex);
+				String valueText = valueTexts.get(sourcePropertyIndex);
+				if (StringUtils.isNotBlank(valueText)) {
 					SourceProperty sourceProperty = new SourceProperty();
 					sourceProperty.setType(type);
 					sourceProperty.setValueText(valueText);
