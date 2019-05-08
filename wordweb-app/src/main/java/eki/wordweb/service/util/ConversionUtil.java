@@ -123,15 +123,18 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		boolean isPrefixoid = false;
 		boolean isSuffixoid = false;
 		boolean isAbbreviationWord = false;
+		boolean isForeignWord = false;
 		List<String> wordTypeCodes = wordTypeData.getWordTypeCodes();
 		if (CollectionUtils.isNotEmpty(wordTypeCodes)) {
 			isPrefixoid = wordTypeCodes.contains(PREFIXOID_WORD_TYPE_CODE);
 			isSuffixoid = wordTypeCodes.contains(SUFFIXOID_WORD_TYPE_CODE);
 			isAbbreviationWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(ABBREVIATION_WORD_TYPE_CODES));
+			isForeignWord = wordTypeCodes.contains(FOREIGN_WORD_TYPE_CODE);
 		}
 		wordTypeData.setPrefixoid(isPrefixoid);
 		wordTypeData.setSuffixoid(isSuffixoid);
 		wordTypeData.setAbbreviationWord(isAbbreviationWord);
+		wordTypeData.setForeignWord(isForeignWord);
 
 		if (wordTypeData instanceof Word) {
 			Word word = (Word) wordTypeData;
