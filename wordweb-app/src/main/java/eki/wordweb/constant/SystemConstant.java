@@ -30,5 +30,7 @@ public interface SystemConstant {
 
 	String SUFFIXOID_WORD_TYPE_CODE = "sf";
 
+	String FOREIGN_WORD_TYPE_CODE = "z";
+
 	Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
 }

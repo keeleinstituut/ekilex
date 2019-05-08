@@ -19,6 +19,8 @@ public abstract class WordTypeData extends AbstractDataObject {
 
 	private boolean abbreviationWord;
 
+	private boolean foreignWord;
+
 	public List<String> getWordTypeCodes() {
 		return wordTypeCodes;
 	}
@@ -59,4 +61,11 @@ public abstract class WordTypeData extends AbstractDataObject {
 		this.abbreviationWord = abbreviationWord;
 	}
 
+	public boolean isForeignWord() {
+		return foreignWord;
+	}
+
+	public void setForeignWord(boolean foreignWord) {
+		this.foreignWord = foreignWord;
+	}
 }
