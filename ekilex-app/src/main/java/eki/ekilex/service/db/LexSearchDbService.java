@@ -42,7 +42,7 @@ import org.jooq.Record7;
 import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
@@ -80,7 +80,7 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 
-@Service
+@Component
 public class LexSearchDbService extends AbstractSearchDbService {
 
 	private DSLContext create;
@@ -89,7 +89,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public List<eki.ekilex.data.Word> findWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {
+	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
@@ -268,7 +268,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return where;
 	}
 
-	public List<eki.ekilex.data.Word> findWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {
+	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
@@ -405,7 +405,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return create.fetchCount(ww);
 	}
 
-	public List<ParadigmFormTuple> findParadigmFormTuples(Long wordId, String wordValue, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String wordValue, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Field<String[]> ffreq = DSL
 				.select(DSL.arrayAgg(DSL.concat(
@@ -476,7 +476,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		};
 	}
 
-	public List<WordLexeme> findWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public List<WordLexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -497,7 +497,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(WordLexeme.class);
 	}
 
-	public WordLexeme findLexeme(Long lexemeId) {
+	public WordLexeme getLexeme(Long lexemeId) {
 
 		return create.select(getWordLexemeSelectFields())
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
@@ -513,7 +513,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchSingleInto(WordLexeme.class);
 	}
 
-	public List<eki.ekilex.data.Word> findMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public List<eki.ekilex.data.Word> getMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -537,7 +537,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(eki.ekilex.data.Word.class);
 	}
 
-	public List<Relation> findWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<Relation> getWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordGroupMember wgrm1 = WORD_GROUP_MEMBER.as("wgrm1");
 		WordGroupMember wgrm2 = WORD_GROUP_MEMBER.as("wgrm2");
@@ -579,7 +579,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(Relation.class);
 	}
 
-	public List<Relation> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<Relation> getWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.selectDistinct(
@@ -607,7 +607,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(Relation.class);
 	}
 
-	public List<WordEtymTuple> findWordEtymology(Long wordId) {
+	public List<WordEtymTuple> getWordEtymology(Long wordId) {
 
 		WordEtymology we = WORD_ETYMOLOGY.as("we");
 		WordEtymologySourceLink wesl = WORD_ETYMOLOGY_SOURCE_LINK.as("wesl");
@@ -645,7 +645,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(WordEtymTuple.class);
 	}
 
-	public List<CollocationTuple> findPrimaryCollocationTuples(Long lexemeId) {
+	public List<CollocationTuple> getPrimaryCollocationTuples(Long lexemeId) {
 
 		LexCollocPosGroup pgr1 = LEX_COLLOC_POS_GROUP.as("pgr1");
 		LexCollocRelGroup rgr1 = LEX_COLLOC_REL_GROUP.as("rgr1");
@@ -691,7 +691,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(CollocationTuple.class);
 	}
 
-	public List<CollocationTuple> findSecondaryCollocationTuples(Long lexemeId) {
+	public List<CollocationTuple> getSecondaryCollocationTuples(Long lexemeId) {
 
 		LexColloc lc1 = LEX_COLLOC.as("lc1");
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
@@ -734,7 +734,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return count == 1;
 	}
 
-	public boolean isTheOnlyLexemeForMeaning(Long lexemeId) {
+	public boolean isOnlyLexemeForMeaning(Long lexemeId) {
 		Lexeme lex = LEXEME.as("lex");
 		Lexeme lex2 = LEXEME.as("lex2");
 		int count = create.fetchCount(DSL.select(lex.ID).from(lex, lex2).where(lex2.ID.eq(lexemeId).and(lex.MEANING_ID.eq(lex2.MEANING_ID))));

@@ -30,12 +30,12 @@ function initialise() {
 
 	$(document).on('click', '.order-up', function() {
 		let orderingData = changeItemOrdering($(this), -1);
-		postJson(applicationUrl + 'modify_ordering', orderingData);
+		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
 
 	$(document).on('click', '.order-down', function() {
 		let orderingData = changeItemOrdering($(this), 1);
-		postJson(applicationUrl + 'modify_ordering', orderingData);
+		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
 
 	$(document).on('click', '#show-all-btn', function(e) {

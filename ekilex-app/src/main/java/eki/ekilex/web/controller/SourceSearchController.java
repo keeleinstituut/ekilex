@@ -37,7 +37,7 @@ public class SourceSearchController extends AbstractPageController {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
-		List<Source> sources = sourceService.findSourcesByName(searchFilter);
+		List<Source> sources = sourceService.getSources(searchFilter);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sources", sources);
 		model.addAttribute("sourceCount", sources.size());
@@ -50,7 +50,7 @@ public class SourceSearchController extends AbstractPageController {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
-		List<Source> sources = sourceService.findSourcesByName(searchFilter);
+		List<Source> sources = sourceService.getSources(searchFilter);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sources", sources);
 		model.addAttribute("sourceCount", sources.size());

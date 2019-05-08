@@ -65,7 +65,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// simple search
 
-	public List<TermMeaningWordTuple> findMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll) {
+	public List<TermMeaningWordTuple> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll) {
 
 		Meaning m1 = MEANING.as("m1");
 		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
@@ -114,7 +114,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// detail search
 
-	public List<TermMeaningWordTuple> findMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll) throws Exception {
+	public List<TermMeaningWordTuple> getMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll) throws Exception {
 
 		Meaning m1 = MEANING.as("m1");
 		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);

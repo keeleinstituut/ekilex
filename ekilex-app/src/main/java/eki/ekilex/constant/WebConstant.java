@@ -86,6 +86,22 @@ public interface WebConstant {
 
 	String ERROR_PAGE = "error";
 
+	String CREATE_WORD_URI = "/create_word";
+
+	String CREATE_HOMONYM_URI = "/create_homonym";
+
+	String CREATE_ITEM_URI = "/create_item";
+
+	String UPDATE_ITEM_URI = "/update_item";
+
+	String UPDATE_ORDERING_URI = "/update_ordering";
+
+	String UPDATE_LEVELS_URI = "/update_levels";
+
+	String VALIDATE_DELETE_ITEM_URI = "/validate_delete_item";
+
+	String DELETE_ITEM_URI = "/delete_item";
+
 	String SOURCE_COMPONENTS_PAGE = "sourcecomp";
 
 	String SOURCE_SEARCH_URI = "/sourcesearch";
@@ -96,15 +112,15 @@ public interface WebConstant {
 
 	String EDIT_SOURCE_PROPERTY_URI = "/edit_source_property";
 
-	String ADD_SOURCE_PROPERTY_URI = "/add_source_property";
+	String CREATE_SOURCE_PROPERTY_URI = "/create_source_property";
 
 	String DELETE_SOURCE_PROPERTY_URI = "/delete_source_property";
 
-	String EDIT_SOURCE_TYPE_URI = "/edit_source_type";
+	String UPDATE_SOURCE_TYPE_URI = "/update_source_type";
 
-	String ADD_SOURCE_URI = "/add_source";
+	String CREATE_SOURCE_URI = "/create_source";
 
-	String VALIDATE_SOURCE_DELETE_URI = "/validate_source_delete";
+	String VALIDATE_DELETE_SOURCE_URI = "/validate_delete_source";
 
 	String DELETE_SOURCE_URI = "/delete_source";
 

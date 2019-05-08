@@ -19,7 +19,7 @@
         <h5 class="card-title">Olemasoleva sõna valik</h5>
       </div>
       <div class="card-body">
-        <form th:action="@{/add_homonym}" method="post">
+        <form th:action="@{/create_homonym}" method="post">
           <input type="hidden" name="dataset" th:value="${dataset}">
           <input type="hidden" name="language" th:value="${language}">
           <input type="hidden" name="morphCode" th:value="${morphCode}">

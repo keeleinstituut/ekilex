@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class SourceEditController extends AbstractPageController {
 
-	private static final Logger logger = LoggerFactory.getLogger(ModifyController.class);
+	private static final Logger logger = LoggerFactory.getLogger(EditController.class);
 
 	@Autowired
 	private SourceService sourceService;
@@ -43,7 +43,7 @@ public class SourceEditController extends AbstractPageController {
 
 		logger.debug("Editing source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		sourceService.editSourceProperty(sourcePropertyId, type, valueText);
+		sourceService.updateSourceProperty(sourcePropertyId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -51,13 +51,13 @@ public class SourceEditController extends AbstractPageController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@PostMapping(ADD_SOURCE_PROPERTY_URI)
+	@PostMapping(CREATE_SOURCE_PROPERTY_URI)
 	public String addSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("type") FreeformType type,
 			@RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count, Model model) {
 
 		logger.debug("Adding property for source with id: {}", sourceId);
 
-		sourceService.addSourceProperty(sourceId, type, valueText);
+		sourceService.createSourceProperty(sourceId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -79,13 +79,13 @@ public class SourceEditController extends AbstractPageController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@PostMapping(EDIT_SOURCE_TYPE_URI)
+	@PostMapping(UPDATE_SOURCE_TYPE_URI)
 	public String editSourceType(@RequestParam("sourceId") Long sourceId, @RequestParam("sourceType") SourceType type,
 			@RequestParam("searchResultCount") String count, Model model) {
 
 		logger.debug("Editing source type, source id: {}", sourceId);
 
-		sourceService.editSourceType(sourceId, type);
+		sourceService.updateSourceType(sourceId, type);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -93,7 +93,7 @@ public class SourceEditController extends AbstractPageController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@PostMapping(ADD_SOURCE_URI)
+	@PostMapping(CREATE_SOURCE_URI)
 	@ResponseBody
 	public String addSource(@RequestParam("sourceName") String sourceName, @RequestParam("sourceType") SourceType sourceType,
 			@RequestParam("type") List<FreeformType> sourcePropertyTypes, @RequestParam("valueText") List<String> valueTexts) {
@@ -120,12 +120,12 @@ public class SourceEditController extends AbstractPageController {
 			}
 		}
 
-		Long sourceId = sourceService.addSource(sourceType, sourceProperties);
+		Long sourceId = sourceService.createSource(sourceType, sourceProperties);
 
 		return String.valueOf(sourceId);
 	}
 
-	@GetMapping(VALIDATE_SOURCE_DELETE_URI + "/{sourceId}")
+	@GetMapping(VALIDATE_DELETE_SOURCE_URI + "/{sourceId}")
 	@ResponseBody
 	public String validateSourceDelete(@PathVariable("sourceId") Long sourceId) throws JsonProcessingException {
 
@@ -174,7 +174,7 @@ public class SourceEditController extends AbstractPageController {
 			@RequestParam("previousSearch") String previousSearch, Model model) {
 
 		Source firstSource = sourceService.getSource(firstSourceId);
-		List<Source> sources = sourceService.findSourcesToJoin(searchFilter, firstSource);
+		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, firstSource);
 		model.addAttribute("firstSource", firstSource);
 		model.addAttribute("sources", sources);
 		model.addAttribute("searchFilter", searchFilter);

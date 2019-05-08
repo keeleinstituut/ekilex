@@ -24,14 +24,14 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 
 	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 
-		populateGeneralData(model);
+		populateGlobalData(model);
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("searchWord", searchWord);
 		model.addAttribute("wordsData", wordsData);
 		model.addAttribute("wordData", new WordData());
 	}
 
-	protected void populateGeneralData(Model model) {
+	protected void populateGlobalData(Model model) {
 
 		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
 		SessionBean sessionBean;

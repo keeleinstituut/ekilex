@@ -23,22 +23,15 @@ import eki.common.constant.SourceType;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
-import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.SourceDbService;
 
 @Component
-public class SourceService {
+public class SourceService extends AbstractService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceService.class);
 
 	@Autowired
 	private SourceDbService sourceDbService;
-
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
 	public Source getSource(Long sourceId) {
@@ -63,63 +56,62 @@ public class SourceService {
 	}
 
 	@Transactional
-	public List<Source> findSourcesByName(String searchFilter) {
-		return findSourcesByNameAndType(searchFilter, null);
+	public List<Source> getSources(String searchFilter) {
+		return getSources(searchFilter, null);
 	}
 
 	@Transactional
-	public List<Source> findSourcesByNameAndType(String searchFilter, SourceType sourceType) {
+	public List<Source> getSources(String searchFilter, SourceType sourceType) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.findSourcesByNameAndType(searchFilter, sourceType);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType);
 		List<Source> sources = convert(sourcePropertyTuples);
 
 		return sources;
 	}
 
 	@Transactional
-	public List<Source> findSourcesToJoin(String searchFilter, Source initiatorSource) {
+	public List<Source> getSourcesExcludingOne(String searchFilter, Source excludedSource) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		SourceType sourceType = initiatorSource.getType();
-		Long sourceIdToExclude = initiatorSource.getSourceId();
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService
-				.findSourcesByNameAndTypeExcludingOneSource(searchFilter, sourceType, sourceIdToExclude);
+		SourceType sourceType = excludedSource.getType();
+		Long excludedSourceId = excludedSource.getSourceId();
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType, excludedSourceId);
 		List<Source> sources = convert(sourcePropertyTuples);
 
 		return sources;
 	}
 
 	@Transactional
-	public Long addSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
+	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
 
-		Long sourceId = sourceDbService.addSource(sourceType, sourceProperties);
-		addSourceLifecycleLog(LifecycleEventType.CREATE, LifecycleProperty.VALUE, sourceId, null);
-		addSourceLifecycleLog(LifecycleEventType.CREATE, LifecycleProperty.SOURCE_TYPE, sourceId, sourceType.name());
+		Long sourceId = sourceDbService.createSource(sourceType, sourceProperties);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, sourceType.name());
 		for (SourceProperty sourceProperty : sourceProperties) {
 			LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(sourceProperty.getType().name());
-			addSourceLifecycleLog(LifecycleEventType.CREATE, lifecycleProperty, sourceId, sourceProperty.getValueText());
+			createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, lifecycleProperty, sourceId, sourceProperty.getValueText());
 		}
 		return sourceId;
 	}
 
 	@Transactional
-	public void addSourceProperty(Long sourceId, FreeformType type, String valueText) {
+	public void createSourceProperty(Long sourceId, FreeformType type, String valueText) {
 
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
-		addSourceLifecycleLog(LifecycleEventType.CREATE, lifecycleProperty, sourceId, valueText);
-		sourceDbService.addSourceProperty(sourceId, type, valueText);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, lifecycleProperty, sourceId, valueText);
+		sourceDbService.createSourceProperty(sourceId, type, valueText);
 	}
 
 	@Transactional
-	public void editSourceProperty(Long sourcePropertyId, FreeformType type, String valueText) {
+	public void updateSourceProperty(Long sourcePropertyId, FreeformType type, String valueText) {
 
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
-		addSourceLifecycleLog(LifecycleEventType.UPDATE, lifecycleProperty, sourcePropertyId, valueText);
+		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId, valueText);
 		sourceDbService.updateSourceProperty(sourcePropertyId, valueText);
 	}
 
@@ -127,15 +119,15 @@ public class SourceService {
 	public void deleteSourceProperty(Long sourcePropertyId, FreeformType type) {
 
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
-		addSourceLifecycleLog(LifecycleEventType.DELETE, lifecycleProperty, sourcePropertyId, null);
+		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId);
 		sourceDbService.deleteSourceProperty(sourcePropertyId);
 	}
 
 	@Transactional
-	public void editSourceType(Long sourceId, SourceType type) {
+	public void updateSourceType(Long sourceId, SourceType type) {
 
-		addSourceLifecycleLog(LifecycleEventType.UPDATE, LifecycleProperty.SOURCE_TYPE, sourceId, type.name());
-		sourceDbService.editSourceType(sourceId, type);
+		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, type.name());
+		sourceDbService.updateSourceType(sourceId, type);
 	}
 
 	@Transactional
@@ -146,14 +138,16 @@ public class SourceService {
 	@Transactional
 	public void deleteSource(Long sourceId) {
 
-		addSourceLifecycleLog(LifecycleEventType.DELETE, LifecycleProperty.VALUE, sourceId, null);
+		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId);
 		sourceDbService.deleteSource(sourceId);
 	}
 
 	@Transactional
 	public void joinSources(Long firstSourceId, Long secondSourceId) {
 
-		addSourceLifecycleLog(LifecycleEventType.JOIN, LifecycleProperty.VALUE, firstSourceId, String.valueOf(secondSourceId), String.valueOf(firstSourceId));
+		//TODO should log some human readable textual wrapup rather than id-s
+		createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, firstSourceId, String.valueOf(secondSourceId), String.valueOf(firstSourceId));
+
 		sourceDbService.joinSources(firstSourceId, secondSourceId);
 	}
 
@@ -205,16 +199,6 @@ public class SourceService {
 
 		}
 		return sources;
-	}
-
-	private void addSourceLifecycleLog(LifecycleEventType eventType, LifecycleProperty property, Long entityId, String entry) {
-		addSourceLifecycleLog(eventType, property, entityId, null, entry);
-	}
-
-	private void addSourceLifecycleLog(LifecycleEventType eventType, LifecycleProperty property, Long entityId, String recent, String entry) {
-
-		String userName = userService.getAuthenticatedUser().getName();
-		lifecycleLogDbService.addLog(userName, eventType, LifecycleEntity.SOURCE, property, entityId, recent, entry);
 	}
 
 }

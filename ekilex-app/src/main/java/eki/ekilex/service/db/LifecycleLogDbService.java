@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
@@ -16,33 +17,38 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record8;
+import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
+import eki.ekilex.data.Government;
 import eki.ekilex.data.LifecycleLog;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 
 @Component
 public class LifecycleLogDbService {
 
+	@Autowired
 	private DSLContext create;
 
-	private LifecycleLogDbServiceHelper helper;
+	@Autowired
+	private CommonDataDbService commonDataDbService;
 
-	public LifecycleLogDbService(DSLContext context, LifecycleLogDbServiceHelper helper) {
-		this.create = context;
-		this.helper = helper;
-	}
+	@Autowired
+	private LifecycleLogDbServiceHelper helper;
 
 	public List<LifecycleLog> getLogForWord(Long wordId) {
 		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = DSL
@@ -58,40 +64,37 @@ public class LifecycleLogDbService {
 				.from(LEXEME, LEXEME_LIFECYCLE_LOG, LIFECYCLE_LOG)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
-						.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
-						)
+								.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
+								.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
 				.unionAll(DSL
-				.select(
-						LIFECYCLE_LOG.ENTITY_ID,
-						LIFECYCLE_LOG.ENTITY_NAME,
-						LIFECYCLE_LOG.ENTITY_PROP,
-						LIFECYCLE_LOG.EVENT_TYPE,
-						LIFECYCLE_LOG.EVENT_BY,
-						LIFECYCLE_LOG.EVENT_ON,
-						LIFECYCLE_LOG.RECENT,
-						LIFECYCLE_LOG.ENTRY)
-				.from(WORD_LIFECYCLE_LOG, LIFECYCLE_LOG)
-				.where(
-						WORD_LIFECYCLE_LOG.WORD_ID.eq(wordId)
-						.and(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
-						))
+						.select(
+								LIFECYCLE_LOG.ENTITY_ID,
+								LIFECYCLE_LOG.ENTITY_NAME,
+								LIFECYCLE_LOG.ENTITY_PROP,
+								LIFECYCLE_LOG.EVENT_TYPE,
+								LIFECYCLE_LOG.EVENT_BY,
+								LIFECYCLE_LOG.EVENT_ON,
+								LIFECYCLE_LOG.RECENT,
+								LIFECYCLE_LOG.ENTRY)
+						.from(WORD_LIFECYCLE_LOG, LIFECYCLE_LOG)
+						.where(
+								WORD_LIFECYCLE_LOG.WORD_ID.eq(wordId)
+										.and(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
 				.unionAll(DSL
-				.select(
-						LIFECYCLE_LOG.ENTITY_ID,
-						LIFECYCLE_LOG.ENTITY_NAME,
-						LIFECYCLE_LOG.ENTITY_PROP,
-						LIFECYCLE_LOG.EVENT_TYPE,
-						LIFECYCLE_LOG.EVENT_BY,
-						LIFECYCLE_LOG.EVENT_ON,
-						LIFECYCLE_LOG.RECENT,
-						LIFECYCLE_LOG.ENTRY)
-				.from(LEXEME, MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.MEANING_ID.eq(MEANING_LIFECYCLE_LOG.MEANING_ID))
-						.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
-						))
+						.select(
+								LIFECYCLE_LOG.ENTITY_ID,
+								LIFECYCLE_LOG.ENTITY_NAME,
+								LIFECYCLE_LOG.ENTITY_PROP,
+								LIFECYCLE_LOG.EVENT_TYPE,
+								LIFECYCLE_LOG.EVENT_BY,
+								LIFECYCLE_LOG.EVENT_ON,
+								LIFECYCLE_LOG.RECENT,
+								LIFECYCLE_LOG.ENTRY)
+						.from(LEXEME, MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
+						.where(
+								LEXEME.WORD_ID.eq(wordId)
+										.and(LEXEME.MEANING_ID.eq(MEANING_LIFECYCLE_LOG.MEANING_ID))
+										.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
 				.asTable("ll");
 		List<LifecycleLog> results = create
 				.select(
@@ -102,8 +105,7 @@ public class LifecycleLogDbService {
 						ll.field("event_by", String.class),
 						ll.field("event_on", Timestamp.class),
 						ll.field("recent", String.class),
-						ll.field("entry", String.class)
-						)
+						ll.field("entry", String.class))
 				.from(ll)
 				.orderBy(ll.field("event_on").desc())
 				.fetchInto(LifecycleLog.class);
@@ -124,40 +126,37 @@ public class LifecycleLogDbService {
 				.from(LEXEME, LEXEME_LIFECYCLE_LOG, LIFECYCLE_LOG)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-						.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
-						.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
-						)
+								.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
+								.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
 				.unionAll(DSL
-				.select(
-						LIFECYCLE_LOG.ENTITY_ID,
-						LIFECYCLE_LOG.ENTITY_NAME,
-						LIFECYCLE_LOG.ENTITY_PROP,
-						LIFECYCLE_LOG.EVENT_TYPE,
-						LIFECYCLE_LOG.EVENT_BY,
-						LIFECYCLE_LOG.EVENT_ON,
-						LIFECYCLE_LOG.RECENT,
-						LIFECYCLE_LOG.ENTRY)
-				.from(LEXEME, WORD_LIFECYCLE_LOG, LIFECYCLE_LOG)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-						.and(WORD_LIFECYCLE_LOG.WORD_ID.eq(LEXEME.WORD_ID))
-						.and(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
-						))
+						.select(
+								LIFECYCLE_LOG.ENTITY_ID,
+								LIFECYCLE_LOG.ENTITY_NAME,
+								LIFECYCLE_LOG.ENTITY_PROP,
+								LIFECYCLE_LOG.EVENT_TYPE,
+								LIFECYCLE_LOG.EVENT_BY,
+								LIFECYCLE_LOG.EVENT_ON,
+								LIFECYCLE_LOG.RECENT,
+								LIFECYCLE_LOG.ENTRY)
+						.from(LEXEME, WORD_LIFECYCLE_LOG, LIFECYCLE_LOG)
+						.where(
+								LEXEME.MEANING_ID.eq(meaningId)
+										.and(WORD_LIFECYCLE_LOG.WORD_ID.eq(LEXEME.WORD_ID))
+										.and(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
 				.unionAll(DSL
-				.select(
-						LIFECYCLE_LOG.ENTITY_ID,
-						LIFECYCLE_LOG.ENTITY_NAME,
-						LIFECYCLE_LOG.ENTITY_PROP,
-						LIFECYCLE_LOG.EVENT_TYPE,
-						LIFECYCLE_LOG.EVENT_BY,
-						LIFECYCLE_LOG.EVENT_ON,
-						LIFECYCLE_LOG.RECENT,
-						LIFECYCLE_LOG.ENTRY)
-				.from(MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
-				.where(
-						MEANING_LIFECYCLE_LOG.MEANING_ID.eq(meaningId)
-						.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
-						))
+						.select(
+								LIFECYCLE_LOG.ENTITY_ID,
+								LIFECYCLE_LOG.ENTITY_NAME,
+								LIFECYCLE_LOG.ENTITY_PROP,
+								LIFECYCLE_LOG.EVENT_TYPE,
+								LIFECYCLE_LOG.EVENT_BY,
+								LIFECYCLE_LOG.EVENT_ON,
+								LIFECYCLE_LOG.RECENT,
+								LIFECYCLE_LOG.ENTRY)
+						.from(MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
+						.where(
+								MEANING_LIFECYCLE_LOG.MEANING_ID.eq(meaningId)
+										.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
 				.asTable("ll");
 		List<LifecycleLog> results = create
 				.select(
@@ -168,8 +167,7 @@ public class LifecycleLogDbService {
 						ll.field("event_by", String.class),
 						ll.field("event_on", Timestamp.class),
 						ll.field("recent", String.class),
-						ll.field("entry", String.class)
-						)
+						ll.field("entry", String.class))
 				.from(ll)
 				.orderBy(ll.field("event_on").desc())
 				.fetchInto(LifecycleLog.class);
@@ -187,23 +185,20 @@ public class LifecycleLogDbService {
 						LIFECYCLE_LOG.EVENT_BY,
 						LIFECYCLE_LOG.EVENT_ON,
 						LIFECYCLE_LOG.RECENT,
-						LIFECYCLE_LOG.ENTRY
-				)
+						LIFECYCLE_LOG.ENTRY)
 				.from(
 						SOURCE_LIFECYCLE_LOG, LIFECYCLE_LOG)
 				.where(
 						SOURCE_LIFECYCLE_LOG.SOURCE_ID.eq(sourceId)
-						.and(SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
-				)
+								.and(SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
 				.orderBy(
-						LIFECYCLE_LOG.EVENT_ON.desc()
-				)
+						LIFECYCLE_LOG.EVENT_ON.desc())
 				.fetchInto(LifecycleLog.class);
 
 		return results;
 	}
 
-	public void addLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String recent, String entry) {
+	public void createLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String recent, String entry) {
 		if (LifecycleEntity.USAGE.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.USAGE);
@@ -451,7 +446,7 @@ public class LifecycleLogDbService {
 					createMeaningLifecycleLog(meaningId, lifecycleLogId);
 					return;
 				}
-				
+
 			}
 		} else if (LifecycleEntity.WORD_RELATION.equals(entity)) {
 			Map<String, Object> entityData = helper.getWordRelationData(create, entityId);
@@ -579,7 +574,7 @@ public class LifecycleLogDbService {
 		return LifecycleEventType.UPDATE.equals(eventType);
 	}
 
-	public void addLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, ListData item) {
+	public void createLog(String userName, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, ListData item) {
 		Long entityId = item.getId();
 		Long newOrderby = item.getOrderby();
 		if (LifecycleEntity.DEFINITION.equals(entity)) {
@@ -663,62 +658,57 @@ public class LifecycleLogDbService {
 		String entityProp = property.name();
 		String eventTypeName = eventType.name();
 		Long lifecycleLogId = create
-			.insertInto(
-					LIFECYCLE_LOG,
-					LIFECYCLE_LOG.ENTITY_ID,
-					LIFECYCLE_LOG.ENTITY_NAME,
-					LIFECYCLE_LOG.ENTITY_PROP,
-					LIFECYCLE_LOG.EVENT_TYPE,
-					LIFECYCLE_LOG.EVENT_BY,
-					LIFECYCLE_LOG.RECENT,
-					LIFECYCLE_LOG.ENTRY
-					)
-			.values(
-					entityId,
-					entityName,
-					entityProp,
-					eventTypeName,
-					userName,
-					recent,
-					entry
-					)
-			.returning(LIFECYCLE_LOG.ID)
-			.fetchOne()
-			.getId();
+				.insertInto(
+						LIFECYCLE_LOG,
+						LIFECYCLE_LOG.ENTITY_ID,
+						LIFECYCLE_LOG.ENTITY_NAME,
+						LIFECYCLE_LOG.ENTITY_PROP,
+						LIFECYCLE_LOG.EVENT_TYPE,
+						LIFECYCLE_LOG.EVENT_BY,
+						LIFECYCLE_LOG.RECENT,
+						LIFECYCLE_LOG.ENTRY)
+				.values(
+						entityId,
+						entityName,
+						entityProp,
+						eventTypeName,
+						userName,
+						recent,
+						entry)
+				.returning(LIFECYCLE_LOG.ID)
+				.fetchOne()
+				.getId();
 		return lifecycleLogId;
 	}
 
 	private void createWordLifecycleLog(Long wordId, Long lifecycleLogId) {
 		create
-		.insertInto(
-				WORD_LIFECYCLE_LOG,
-				WORD_LIFECYCLE_LOG.WORD_ID,
-				WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID
-				)
-		.values(wordId, lifecycleLogId)
-		.execute();
+				.insertInto(
+						WORD_LIFECYCLE_LOG,
+						WORD_LIFECYCLE_LOG.WORD_ID,
+						WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
+				.values(wordId, lifecycleLogId)
+				.execute();
 	}
 
 	private void createLexemeLifecycleLog(Long lexemeId, Long lifecycleLogId) {
 		create
-			.insertInto(
-					LEXEME_LIFECYCLE_LOG,
-					LEXEME_LIFECYCLE_LOG.LEXEME_ID,
-					LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID
-					)
-			.values(lexemeId, lifecycleLogId)
-			.execute();
+				.insertInto(
+						LEXEME_LIFECYCLE_LOG,
+						LEXEME_LIFECYCLE_LOG.LEXEME_ID,
+						LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
+				.values(lexemeId, lifecycleLogId)
+				.execute();
 	}
 
 	private void createMeaningLifecycleLog(Long meaningId, Long lifecycleLogId) {
 		create
-			.insertInto(
-					MEANING_LIFECYCLE_LOG,
-					MEANING_LIFECYCLE_LOG.MEANING_ID,
-					MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID
-					)
-			.values(meaningId, lifecycleLogId)
-			.execute();
+				.insertInto(
+						MEANING_LIFECYCLE_LOG,
+						MEANING_LIFECYCLE_LOG.MEANING_ID,
+						MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
+				.values(meaningId, lifecycleLogId)
+				.execute();
 	}
 
 	private void createSourceLifecycleLog(Long sourceId, Long lifecycleLogId) {
@@ -726,10 +716,37 @@ public class LifecycleLogDbService {
 				.insertInto(
 						SOURCE_LIFECYCLE_LOG,
 						SOURCE_LIFECYCLE_LOG.SOURCE_ID,
-						SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID
-				)
+						SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
 				.values(sourceId, lifecycleLogId)
 				.execute();
 	}
 
+	public String getSimpleLexemeDescription(Long lexemeId) {
+
+		Map<String, Object> lexemeData = helper.getLexemeData(create, lexemeId);
+		String level1 = lexemeData.get("level1").toString();
+		String level2 = lexemeData.get("level2").toString();
+		String level3 = lexemeData.get("level3").toString();
+		String levels = String.join(".", level1, level2, level3);
+		return lexemeData.get("value") + " [" + levels + "]";
+	}
+
+	public String getExtendedLexemeDescription(Long lexemeId) {
+
+		String logString = getSimpleLexemeDescription(lexemeId);
+		Map<String, Object> lexemeUsageData = helper.getLexemeUsageData(create, lexemeId);
+		String usages = "";
+		if (lexemeUsageData.get("value_text") != null) {
+			usages = lexemeUsageData.get("value_text").toString();
+		}
+		List<Government> lexemeGovernments = commonDataDbService.getLexemeGovernments(lexemeId);
+		String governments = lexemeGovernments.stream().map(Government::getValue).collect(Collectors.joining(", "));
+		logString = String.join(" ", logString, governments, usages);
+		return logString;
+	}
+
+	public String getCombinedMeaningDefinitions(Long meaningId) {
+		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).fetch();
+		return definitions.stream().map(DefinitionRecord::getValue).collect(Collectors.joining(" | "));
+	}
 }

@@ -116,7 +116,7 @@ public class SearchController extends AbstractController {
 		sessionBean.setDestinLang(destinLang);
 		sessionBean.setSearchMode(searchMode);
 
-		WordsData wordsData = lexSearchService.findWords(searchWord, sourceLang, destinLang, homonymNr, searchMode);
+		WordsData wordsData = lexSearchService.getWords(searchWord, sourceLang, destinLang, homonymNr, searchMode);
 		sessionBean.setSearchMode(wordsData.getSearchMode());
 		populateSearchModel(searchWord, wordsData, model);
 
@@ -133,7 +133,7 @@ public class SearchController extends AbstractController {
 			@PathVariable("destinLang") String destinLang,
 			@PathVariable("wordPrefix") String wordPrefix) {
 
-		Map<String, List<String>> searchResultCandidates = lexSearchService.findWordsByPrefix(wordPrefix, sourceLang, destinLang, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		Map<String, List<String>> searchResultCandidates = lexSearchService.getWordsByPrefix(wordPrefix, sourceLang, destinLang, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
 		return searchResultCandidates;
 	}
 
@@ -157,9 +157,9 @@ public class SearchController extends AbstractController {
 
 		List<CorporaSentence> textCorpus = new ArrayList<>();
 		if (StringUtils.equalsIgnoreCase(language, "est")) {
-			textCorpus = corporaServiceEst.fetchSentences(sentence);
+			textCorpus = corporaServiceEst.getSentences(sentence);
 		} else if (StringUtils.equalsIgnoreCase(language, "rus")) {
-			textCorpus = corporaServiceRus.fetchSentences(sentence);
+			textCorpus = corporaServiceRus.getSentences(sentence);
 		}
 		model.addAttribute("sentences", textCorpus);
 		model.addAttribute("sentence", sentence);

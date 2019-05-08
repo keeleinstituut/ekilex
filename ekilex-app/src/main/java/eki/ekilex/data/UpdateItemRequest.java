@@ -3,7 +3,7 @@ package eki.ekilex.data;
 import eki.common.data.AbstractDataObject;
 
 //lots of properties just in case. should unify usage to less
-public class ModifyItemRequest extends AbstractDataObject {
+public class UpdateItemRequest extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

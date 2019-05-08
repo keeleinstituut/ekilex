@@ -11,8 +11,8 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
 	});
 }
 
-function doPostDelete(removeUrl, callbackFunc) {
-	$.post(removeUrl).done(function() {
+function doPostDelete(deleteUrl, callbackFunc) {
+	$.post(deleteUrl).done(function() {
 		callbackFunc();
 	}).fail(function(data) {
 		openAlertDlg("Andmete eemaldamine ebaõnnestus.");
@@ -111,15 +111,15 @@ function executeValidateDelete() {
 	var id = $(this).attr("data-id");
 	var callback = $(this).attr("data-callback");
 	let callbackFunc = () => eval(callback)($(this))
-	let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + opCode + '&id=' + id;
-	let removeUrl = applicationUrl + 'remove_item?opCode=' + opCode + '&id=' + id;
+	let validateUrl = applicationUrl + 'validate_delete_item?opCode=' + opCode + '&id=' + id;
+	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
 	$.post(validateUrl).done(function(data) {
 		let response = JSON.parse(data);
 		if (response.status === 'ok') {
-			doPostDelete(removeUrl, callbackFunc);
+			doPostDelete(deleteUrl, callbackFunc);
 		} else if (response.status === 'confirm') {
 			openConfirmDlg(response.question, function() {
-				doPostDelete(removeUrl, callbackFunc)
+				doPostDelete(deleteUrl, callbackFunc)
 			});
 		} else if (response.status === 'invalid') {
 			openAlertDlg(response.message);
@@ -137,11 +137,11 @@ function executeDelete() {
 	var id = $(this).attr("data-id");
 	var value = $(this).attr("data-value");
 	let callbackFunc = () => $('#refresh-details').trigger('click');
-	let removeUrl = applicationUrl + 'remove_item?opCode=' + opCode + '&id=' + id;
+	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
 	if (value !== undefined) {
-		removeUrl = removeUrl + '&value=' + encodeURIComponent(value);
+		deleteUrl = deleteUrl + '&value=' + encodeURIComponent(value);
 	}
-	doPostDelete(removeUrl, callbackFunc);
+	doPostDelete(deleteUrl, callbackFunc);
 }
 
 function initAddMultiDataDlg(theDlg) {

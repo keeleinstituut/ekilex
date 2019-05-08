@@ -235,7 +235,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private Long getMeaningIdOfTheFirstLexeme(Long wordId) throws Exception {
-		List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordId);
+		List<Map<String, Object>> lexemesForWord = getExistingLexemesForWord(wordId);
 		Optional<Map<String, Object>> firstLexeme = lexemesForWord.stream()
 				.filter(l -> Objects.equals(l.get("level1"), 1) && Objects.equals(l.get("level2"), 1) && Objects.equals(l.get("level3"), 1))
 				.findFirst();
@@ -336,7 +336,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					continue;
 				}
 				WordData wordData = findOrCreateWordUsingSs1(context, wordValue, word, wordInSs1);
-				List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
+				List<Map<String, Object>> lexemesForWord = getExistingLexemesForWord(wordData.id);
 				int lexemeLevel1 = 1;
 				List<Node> meaningGroupNodes = groupNode.selectNodes(meaningGroupExp);
 				for (Node meaningGroupNode : meaningGroupNodes) {
@@ -659,7 +659,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							continue;
 						}
 						WordData wordData = findOrCreateWordUsingSs1(context, wordValue, word, wordInSs1);
-						List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
+						List<Map<String, Object>> lexemesForWord = getExistingLexemesForWord(wordData.id);
 						int meaningNodeIndex = 1;
 						for (Node meaningGroupNode : meaningGroupNodes) {
 							Long meaningId;
@@ -710,7 +710,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								boolean createNewRussianLexeme = true;
 								Long russianLexemeId = null;
 								if (useExistingLexeme) {
-									createNewRussianLexeme = findExistingLexemeForWordAndMeaning(russianWordData.id, meaningId) == null;
+									createNewRussianLexeme = getExistingLexemeForWordAndMeaning(russianWordData.id, meaningId) == null;
 									if (createNewRussianLexeme) {
 										writeToLogFile(reportingId, "lisan vene vaste olemasolevale mõistele", wordData.value + " : " + russianWordData.value);
 									}
@@ -1046,7 +1046,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return getWords(word, "ss1");
 	}
 
-	private List<Map<String, Object>> findExistingLexemesForWord(Long wordId) throws Exception {
+	private List<Map<String, Object>> getExistingLexemesForWord(Long wordId) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("word_id", wordId);
@@ -1054,7 +1054,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return basicDbService.selectAll(LEXEME, params);
 	}
 
-	private Map<String, Object> findExistingLexemeForWordAndMeaning(Long wordId, Long meaningId) throws Exception {
+	private Map<String, Object> getExistingLexemeForWordAndMeaning(Long wordId, Long meaningId) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("word_id", wordId);

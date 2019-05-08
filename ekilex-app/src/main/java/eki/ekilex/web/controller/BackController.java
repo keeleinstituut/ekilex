@@ -9,6 +9,7 @@ import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,20 +23,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class BackController implements WebConstant {
 
-	private final CommonDataService commonDataService;
+	@Autowired
+	private CommonDataService commonDataService;
 
-	private final TermSearchService termSearchService;
+	@Autowired
+	private TermSearchService termSearchService;
 
-	private final LexSearchService lexSearchService;
+	@Autowired
+	private LexSearchService lexSearchService;
 
-	private final SearchHelper searchHelper;
-
-	public BackController(CommonDataService commonDataService, TermSearchService termSearchService, LexSearchService lexSearchService, SearchHelper searchHelper) {
-		this.commonDataService = commonDataService;
-		this.termSearchService = termSearchService;
-		this.lexSearchService = lexSearchService;
-		this.searchHelper = searchHelper;
-	}
+	@Autowired
+	private SearchHelper searchHelper;
 
 	@GetMapping("/wordback/{wordId}")
 	public String wordBack(

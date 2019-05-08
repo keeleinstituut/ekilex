@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import eki.ekilex.service.CloningService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,38 +21,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
-import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexModifyController implements WebConstant {
+public class LexEditController implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(LexModifyController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LexEditController.class);
 
-	private final LexSearchService lexSearchService;
+	@Autowired
+	private LexSearchService lexSearchService;
 
-	private final UpdateService updateService;
+	@Autowired
+	private SearchHelper searchHelper;
 
-	private final SearchHelper searchHelper;
-
-	private final CloningService cloningService;
-
-	public LexModifyController(
-			LexSearchService lexSearchService,
-			UpdateService updateService,
-			SearchHelper searchHelper,
-			CloningService cloningService) {
-		this.lexSearchService = lexSearchService;
-		this.updateService = updateService;
-		this.searchHelper = searchHelper;
-		this.cloningService = cloningService;
-	}
+	@Autowired
+	private CompositionService compositionService;
 
 	@GetMapping("/lexjoin/{lexemeId}")
 	public String show(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
@@ -77,7 +68,7 @@ public class LexModifyController implements WebConstant {
 		if (CollectionUtils.isNotEmpty(sessionBean.getSelectedDatasets())) {
 			datasets = sessionBean.getSelectedDatasets();
 		}
-		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithMinimalData(searchFilter, datasets);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets);
 		model.addAttribute("sourceLexeme", lexeme);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("lexemes", lexemes);
@@ -93,13 +84,13 @@ public class LexModifyController implements WebConstant {
 			Model model) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
-		List<String> validationMessages = updateService.validateLexemeJoin(lexemeId, lexemeId2);
+		List<String> validationMessages = compositionService.validateLexemeJoin(lexemeId, lexemeId2);
 		if (!validationMessages.isEmpty()) {
 			model.addAttribute("sourceLexeme", lexeme);
 			model.addAttribute("validationMessages", validationMessages);
 			return LEX_JOIN_PAGE;
 		}
-		updateService.joinLexemes(lexemeId, lexemeId2);
+		compositionService.joinLexemes(lexemeId, lexemeId2);
 
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
 		String firstWordValue = lexeme.getWords()[0];
@@ -114,7 +105,7 @@ public class LexModifyController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
-		updateService.separateLexemeMeanings(lexemeId);
+		compositionService.separateLexemeMeanings(lexemeId);
 
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
 		String firstWordValue = lexeme.getWords()[0];
@@ -130,7 +121,7 @@ public class LexModifyController implements WebConstant {
 		Map<String, String> response = new HashMap<>();
 		Optional<Long> clonedLexeme = Optional.empty();
 		try {
-			clonedLexeme = cloningService.cloneLexeme(lexemeId);
+			clonedLexeme = compositionService.cloneLexeme(lexemeId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}

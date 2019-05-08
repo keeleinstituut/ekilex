@@ -140,7 +140,7 @@ function isNewSourceFormValid(form) {
 }
 
 function executeValidateSourceDelete(sourceId) {
-	let validateUrl = applicationUrl + 'validate_source_delete/' + sourceId;
+	let validateUrl = applicationUrl + 'validate_delete_source/' + sourceId;
 	let deleteUrl = applicationUrl + 'delete_source/' + sourceId;
 	$.get(validateUrl).done(function (data) {
 		let response = JSON.parse(data);

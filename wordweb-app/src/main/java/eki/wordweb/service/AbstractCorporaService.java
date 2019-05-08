@@ -20,21 +20,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public abstract class CorporaService implements SystemConstant {
+public abstract class AbstractCorporaService implements SystemConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(CorporaService.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractCorporaService.class);
 
 	protected abstract List<CorporaSentence> parseResponse(Map<String, Object> response);
 
 	protected abstract URI composeCorporaUri(String sentence);
 
 	@Cacheable(value = CACHE_KEY_CORPORA)
-	public List<CorporaSentence> fetchSentences(String sentence) {
-		Map<String, Object> response = fetch(sentence);
+	public List<CorporaSentence> getSentences(String sentence) {
+		Map<String, Object> response = requestSentences(sentence);
 		return parseResponse(response);
 	}
 
-	private Map<String, Object> fetch(String sentence) {
+	private Map<String, Object> requestSentences(String sentence) {
 
 		URI corporaUrl = composeCorporaUri(sentence);
 		Map<String, Object> response = Collections.emptyMap();

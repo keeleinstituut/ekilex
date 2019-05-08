@@ -6,14 +6,14 @@ import static eki.ekilex.data.db.Tables.FEEDBACK_LOG_COMMENT;
 import java.util.List;
 
 import org.jooq.DSLContext;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Feedback;
 import eki.ekilex.data.FeedbackComment;
 import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
 import eki.ekilex.data.db.tables.records.FeedbackLogRecord;
 
-@Service
+@Component
 public class FeedbackDbService {
 
 	private DSLContext create;
@@ -34,7 +34,7 @@ public class FeedbackDbService {
 				.execute();
 	}
 
-	public List<Feedback> findFeedback() {
+	public List<Feedback> getFeedback() {
 		return create
 				.select(FEEDBACK_LOG.fields())
 				.from(FEEDBACK_LOG)
@@ -42,7 +42,7 @@ public class FeedbackDbService {
 				.fetchInto(Feedback.class);
 	}
 
-	public Long addFeedbackComment(Long feedbackId, String comment, String userName) {
+	public Long createFeedbackComment(Long feedbackId, String comment, String userName) {
 		FeedbackLogCommentRecord feedbackComment = create.newRecord(FEEDBACK_LOG_COMMENT);
 		feedbackComment.setFeedbackLogId(feedbackId);
 		feedbackComment.setComment(comment);
@@ -51,7 +51,7 @@ public class FeedbackDbService {
 		return feedbackComment.getId();
 	}
 
-	public List<FeedbackComment> findAllFeedbackComments() {
+	public List<FeedbackComment> getAllFeedbackComments() {
 		return create
 				.select(FEEDBACK_LOG_COMMENT.fields())
 				.from(FEEDBACK_LOG_COMMENT)

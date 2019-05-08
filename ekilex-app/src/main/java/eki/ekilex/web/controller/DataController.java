@@ -77,7 +77,7 @@ public class DataController implements SystemConstant, WebConstant {
 
 		boolean fetchAll = true;
 		List<String> datasets = parseDatasets(datasetsStr);
-		WordsResult results = lexSearchService.findWords(word, datasets, fetchAll);
+		WordsResult results = lexSearchService.getWords(word, datasets, fetchAll);
 		return results;
 	}
 
@@ -109,7 +109,7 @@ public class DataController implements SystemConstant, WebConstant {
 		boolean fetchAll = true;
 		List<String> datasets = parseDatasets(datasetsStr);
 		String resultLang = null;
-		MeaningsResult results = termSearchService.findMeanings(word, datasets, resultLang, fetchAll);
+		MeaningsResult results = termSearchService.getMeanings(word, datasets, resultLang, fetchAll);
 		return results;
 	}
 

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -34,17 +35,14 @@ public class RegisterController implements WebConstant {
 	@Value("${ekilex.app.url:}")
 	private String ekilexAppUrl;
 
+	@Autowired
 	private UserService userService;
 
+	@Autowired
 	private EkilexPasswordEncoder passwordEncoder;
 
+	@Autowired
 	private EmailService emailService;
-
-	public RegisterController(UserService userService, EkilexPasswordEncoder passwordEncoder, EmailService emailService) {
-		this.userService = userService;
-		this.passwordEncoder = passwordEncoder;
-		this.emailService = emailService;
-	}
 
 	@GetMapping(REGISTER_PAGE_URI)
 	public String register() {

@@ -42,8 +42,7 @@
           </span>
         </a>
         <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-        <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#"
-           sec:authorize="${#authentication.principal.datasetPermissionsExist}"> Lisa uus keelend </a>
+        <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#" sec:authorize="${#authentication.principal.datasetPermissionsExist}"> Lisa uus keelend </a>
       </div>
       <div class="navbar-nav ml-auto">
         <form th:action="@{/dologout}" method="post" sec:authorize="isAuthenticated()">
@@ -85,45 +84,23 @@
       <i class="fa fa-arrow-down" aria-hidden="true"></i>
     </button>
   </th:block>
-  <div id="editDlg" class="modal" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id">
-            <input type="hidden" name="opCode">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <textarea class="form-control" rows="2" name="value"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form id="addWordForm" th:action="@{/add_word}" method="post">
+        <form id="addWordForm" th:action="@{/create_word}" method="post">
           <div class="modal-body">
             <input type="hidden" name="returnPage" th:value="${returnPage}">
             <input type="hidden" name="meaningId">
             <div class="form-group row">
               <div class="col-md-12">
-                <input class="form-control" name="value" placeholder="uus keelend">
+                <input class="form-control" name="wordValue" placeholder="uus keelend">
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-12">
                 <select required class="form-control common-word-dataset-select" name="dataset">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedDataset)}">vali sõnastik...</option>
-                  <option th:each="dataset : ${userPermDatasets}" th:value="${dataset.code}"
-                          th:selected="${dataset.code == sessionBean.newWordSelectedDataset}" th:text="${dataset.name}">name</option>
+                  <option th:each="dataset : ${userPermDatasets}" th:value="${dataset.code}" th:selected="${dataset.code == sessionBean.newWordSelectedDataset}" th:text="${dataset.name}">name</option>
                 </select>
               </div>
             </div>
@@ -132,8 +109,7 @@
                 <th:block th:fragment="word_perm_lang_select">
                   <select required id="wordPermLanguageSelect" class="form-control" name="language">
                     <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
-                    <option th:each="language : ${userPermLanguages}" th:value="${language.code}"
-                            th:selected="${language.code == sessionBean.newWordSelectedLanguage}" th:text="${language.value}">language</option>
+                    <option th:each="language : ${userPermLanguages}" th:value="${language.code}" th:selected="${language.code == sessionBean.newWordSelectedLanguage}" th:text="${language.value}">language</option>
                   </select>
                 </th:block>
               </div>
@@ -142,8 +118,7 @@
               <div class="col-md-8">
                 <select required class="form-control" name="morphCode">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
-                  <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}"
-                          th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}" th:text="${morphCode.value}">morphCode</option>
+                  <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}" th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}" th:text="${morphCode.value}">morphCode</option>
                 </select>
               </div>
             </div>
@@ -160,91 +135,84 @@
     <div th:text="#{source.search.not.found}" th:if="${#lists.isEmpty(sources)}">Nothing found</div>
     <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden;" th:if="${not #lists.isEmpty(sources)}">
       <table class="w-100 border mb-2" th:each="source,sourceIter : ${sources}">
-        <div class="w-100">
-          <tr>
-            <td style="width: 70px; text-align: left; vertical-align: top;">
-              <b> <span th:text="${sourceIter.count + '.'}"></span>
-              </b>
-            </td>
-            <td>
-              <div class="row mb-1">
-                <table style="background-color: #ececec; font-weight: bold">
-                  <tr>
-                    <td>source id &nbsp;</td>
-                    <td th:text="${source.sourceId}"></td>
-                  </tr>
-                  <tr>
-                    <td>type</td>
-                    <td th:text="${source.type}"></td>
-                  </tr>
-                </table>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td style="width: 70px;"></td>
-            <td>
-              <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
-                <div class="row">
-                  <div class="mb-1">
-                    <div style="display: list-item; position: absolute"></div>
-                    <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}"
-                           th:name="${'source_' + source.sourceId}" th:checked="${sourcePropertyIter.count == 1}">
-                    <span th:text="${sourceProperty.type}"></span>
-                    -
-                    <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"
-                          th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                    <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}"
-                          th:if="${sourceProperty.valueDate != null}"></span>
-                  </div>
-                </div>
-              </th:block>
-            </td>
-          </tr>
-        </div>
-        <div class="w-100">
-          <tr>
-            <td style="width: 70px;"></td>
-            <td colspan="2">
+        <tr>
+          <td style="width: 70px; text-align: left; vertical-align: top;">
+            <b> <span th:text="${sourceIter.count + '.'}"></span>
+            </b>
+          </td>
+          <td>
+            <div class="row mb-1">
+              <table style="background-color: #ececec; font-weight: bold">
+                <tr>
+                  <td>source id &nbsp;</td>
+                  <td th:text="${source.sourceId}"></td>
+                </tr>
+                <tr>
+                  <td>type</td>
+                  <td th:text="${source.type}"></td>
+                </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 70px;"></td>
+          <td>
+            <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
               <div class="row">
-                <div class="col-12">
-                  <div class="form-group row">
-                    <label class="col-auto col-form-label">Siseviide</label>
-                    <div class="col-8">
-                      <input type="text" class="form-control">
-                    </div>
-                    <div class="col-2">
-                      <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
-                    </div>
+                <div class="mb-1">
+                  <div style="display: list-item; position: absolute"></div>
+                  <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" th:name="${'source_' + source.sourceId}"
+                    th:checked="${sourcePropertyIter.count == 1}">
+                  <span th:text="${sourceProperty.type}"></span>
+                  -
+                  <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+                  <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                </div>
+              </div>
+            </th:block>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 70px;"></td>
+          <td colspan="2">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-auto col-form-label">Siseviide</label>
+                  <div class="col-8">
+                    <input type="text" class="form-control">
+                  </div>
+                  <div class="col-2">
+                    <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
                   </div>
                 </div>
               </div>
-            </td>
-          </tr>
-        </div>
+            </div>
+          </td>
+        </tr>
       </table>
-    </div>
     </div>
   </div>
   <script th:inline="javascript" th:fragment="confirmations">
-    $('[data-toggle=confirmation]').confirmation({
-      btnOkLabel : 'Jah',
-      btnCancelLabel : 'Ei'
-    });
-    $('[data-toggle=validate-delete-confirm]').confirmation({
-      btnOkLabel : 'Jah',
-      btnCancelLabel : 'Ei',
-      title : 'Kinnita kustutamine',
-      onConfirm : executeValidateDelete
-    });
-    $('[data-toggle=delete-confirm]').confirmation({
-      btnOkLabel : 'Jah',
-      btnCancelLabel : 'Ei',
-      title : 'Kinnita kustutamine',
-      onConfirm : executeDelete
-    });
-    decorateSourceLinks();
-  </script>
+			$('[data-toggle=confirmation]').confirmation({
+				btnOkLabel : 'Jah',
+				btnCancelLabel : 'Ei'
+			});
+			$('[data-toggle=validate-delete-confirm]').confirmation({
+				btnOkLabel : 'Jah',
+				btnCancelLabel : 'Ei',
+				title : 'Kinnita kustutamine',
+				onConfirm : executeValidateDelete
+			});
+			$('[data-toggle=delete-confirm]').confirmation({
+				btnOkLabel : 'Jah',
+				btnCancelLabel : 'Ei',
+				title : 'Kinnita kustutamine',
+				onConfirm : executeDelete
+			});
+			decorateSourceLinks();
+		</script>
   <div id="sourceDetailsDlg" class="modal" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">

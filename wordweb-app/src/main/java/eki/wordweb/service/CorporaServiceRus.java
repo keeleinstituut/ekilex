@@ -1,21 +1,22 @@
 package eki.wordweb.service;
 
-import eki.wordweb.data.CorporaSentence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
-@Service
-public class CorporaServiceRus extends CorporaService {
+import eki.wordweb.data.CorporaSentence;
+
+@Component
+public class CorporaServiceRus extends AbstractCorporaService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CorporaServiceRus.class);
 
@@ -37,16 +38,16 @@ public class CorporaServiceRus extends CorporaService {
 			return null;
 		} else {
 			return UriComponentsBuilder.fromUriString(serviceUrl)
-				.queryParam("corpname", corpName)
-				.queryParam("username", userName)
-				.queryParam("api_key", apiKey)
-				.queryParam("format", "json")
-				.queryParam("viewmode", "sentence")
-				.queryParam("async", "0")
-				.queryParam("pagesize", "15")
-				.queryParam("q", "q"+parseSentenceToQueryString(sentence))
-				.build()
-				.toUri();
+					.queryParam("corpname", corpName)
+					.queryParam("username", userName)
+					.queryParam("api_key", apiKey)
+					.queryParam("format", "json")
+					.queryParam("viewmode", "sentence")
+					.queryParam("async", "0")
+					.queryParam("pagesize", "15")
+					.queryParam("q", "q" + parseSentenceToQueryString(sentence))
+					.build()
+					.toUri();
 		}
 	}
 
@@ -71,7 +72,7 @@ public class CorporaServiceRus extends CorporaService {
 
 	private String composeSentence(Object wordsList) {
 		List<Map<String, Object>> listOfWordObjects = (List<Map<String, Object>>) wordsList;
-		return listOfWordObjects.stream().map(w -> (String )w.get("str")).reduce("", (a, b) -> a + b);
+		return listOfWordObjects.stream().map(w -> (String) w.get("str")).reduce("", (a, b) -> a + b);
 	}
 
 }

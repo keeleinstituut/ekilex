@@ -77,12 +77,11 @@ public class SourceDbService implements SystemConstant {
 				.fetchOneInto(String.class);
 	}
 
-	public List<SourcePropertyTuple> findSourcesByNameAndType(String searchFilterWithMetaCharacters, SourceType sourceType) {
-		return findSourcesByNameAndTypeExcludingOneSource(searchFilterWithMetaCharacters, sourceType, null);
+	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType) {
+		return getSources(searchFilterWithMetaCharacters, sourceType, null);
 	}
 
-	public List<SourcePropertyTuple> findSourcesByNameAndTypeExcludingOneSource(
-			String searchFilterWithMetaCharacters, SourceType sourceType, Long sourceIdToExclude) {
+	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType, Long sourceIdToExclude) {
 
 		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
 
@@ -132,7 +131,7 @@ public class SourceDbService implements SystemConstant {
 				.into(SourcePropertyTuple.class);
 	}
 
-	public Long addSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
+	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
 
 		Long sourceId =
 				create.insertInto(SOURCE, SOURCE.TYPE)
@@ -142,12 +141,12 @@ public class SourceDbService implements SystemConstant {
 						.getId();
 
 		for (SourceProperty sourceProperty : sourceProperties) {
-			addSourceProperty(sourceId, sourceProperty.getType(), sourceProperty.getValueText());
+			createSourceProperty(sourceId, sourceProperty.getType(), sourceProperty.getValueText());
 		}
 		return sourceId;
 	}
 
-	public Long addSourceProperty(Long sourceId, FreeformType type, String valueText) {
+	public Long createSourceProperty(Long sourceId, FreeformType type, String valueText) {
 
 		Long sourceFreeformId = create
 				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
@@ -178,7 +177,7 @@ public class SourceDbService implements SystemConstant {
 				.execute();
 	}
 
-	public void editSourceType(Long sourceId, SourceType type) {
+	public void updateSourceType(Long sourceId, SourceType type) {
 
 		create.update(SOURCE)
 				.set(SOURCE.TYPE, type.name())

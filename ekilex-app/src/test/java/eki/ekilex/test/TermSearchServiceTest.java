@@ -47,7 +47,7 @@ public class TermSearchServiceTest {
 		String resultLang = null;
 		boolean fetchAll = true;
 
-		List<TermMeaningWordTuple> termMeanings = termSearchDbService.findMeanings(wordWithMetaCharacters, searchDatasetsRestriction, resultLang, fetchAll);
+		List<TermMeaningWordTuple> termMeanings = termSearchDbService.getMeanings(wordWithMetaCharacters, searchDatasetsRestriction, resultLang, fetchAll);
 
 		assertEquals("Incorrect count of matches", 20, termMeanings.size());
 	}

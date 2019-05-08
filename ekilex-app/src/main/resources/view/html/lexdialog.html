@@ -5,7 +5,7 @@
   <div th:id="${'addLexemeDataDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_data_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="id2" th:value="${lexeme.meaningId}">
@@ -114,7 +114,7 @@
   <div th:id="${'addWordDataDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_data_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id">
             <input type="hidden" name="id2">
@@ -166,7 +166,7 @@
   <div th:id="${'addDefinitionDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_definition_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="definition">
@@ -209,7 +209,7 @@
   <div th:id="${'editDefinitionDlg_' + lexeme.lexemeId + '_' + definition.id}" class="modal" role="dialog" th:fragment="edit_definition_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition">
@@ -244,7 +244,7 @@
             </div>
           </form>
         </div>
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
           <input type="hidden" name="opCode" value="lex_source_link">
           <input type="hidden" name="id2">
@@ -261,7 +261,7 @@
   <div th:id="${'addLearnerCommentDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_learner_comment_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
@@ -280,7 +280,7 @@
   <div th:id="${'editLearnerCommentDlg_' + lexeme.lexemeId + '_' + learnerComment.id}" class="modal" role="dialog" th:fragment="edit_learner_comment_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${learnerComment.id}">
             <input type="hidden" name="opCode" value="learner_comment">
@@ -314,7 +314,7 @@
               </div>
             </div>
           </form>
-          <form th:action="@{/add_item}" method="post">
+          <form th:action="@{/create_item}" method="post">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_relation">
             <input type="hidden" name="id2">
@@ -338,7 +338,7 @@
   <div th:id="${'addGovernmentDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_government_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="government">
@@ -359,7 +359,7 @@
   <div th:id="${'editGovernmentDlg_' + lexeme.lexemeId + '_' + government.id}" class="modal" role="dialog" th:fragment="edit_government_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${government.id}">
             <input type="hidden" name="opCode" value="government">
@@ -380,7 +380,7 @@
   <div th:id="${'addUsageDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_usage_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
@@ -414,7 +414,7 @@
               </div>
             </div>
           </form>
-          <form th:action="@{/add_item}" method="post">
+          <form th:action="@{/create_item}" method="post">
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage_author">
             <input type="hidden" name="id2">
@@ -439,7 +439,7 @@
   <div th:id="${'editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}" class="modal" role="dialog" th:fragment="edit_usage_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
@@ -457,7 +457,7 @@
   <div th:id="${'addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}" class="modal" role="dialog" th:fragment="add_usage_member_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="value">
@@ -496,7 +496,7 @@
   <div th:id="${'editUsageTranslationDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageTranslation.id}" class="modal" role="dialog" th:fragment="edit_usage_translation_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${usageTranslation.id}">
             <input type="hidden" name="opCode" value="usage_translation">
@@ -514,7 +514,7 @@
   <div th:id="${'editUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageDefinition.id}" class="modal" role="dialog" th:fragment="edit_usage_definition_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${usageDefinition.id}">
             <input type="hidden" name="opCode" value="usage_definition">
@@ -532,7 +532,7 @@
   <div th:id="${'addLexemePublicNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_public_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/add_item}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
@@ -551,7 +551,7 @@
   <div th:id="${'editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="edit_lexeme_public_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${publicNote.id}">
             <input type="hidden" name="opCode" value="lexeme_public_note">
@@ -585,7 +585,7 @@
               </div>
             </div>
           </form>
-          <form th:action="@{/add_item}" method="post">
+          <form th:action="@{/create_item}" method="post">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_relation">
             <input type="hidden" name="id2">
@@ -624,7 +624,7 @@
               </div>
             </div>
           </form>
-          <form th:action="@{/add_item}" method="post">
+          <form th:action="@{/create_item}" method="post">
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_relation">
             <input type="hidden" name="id2">
@@ -648,7 +648,7 @@
   <div th:id="${'editWordGenderDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_gender_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_gender">
@@ -663,7 +663,7 @@
   <div th:id="${'editWordAspectDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_aspect_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_aspect">
@@ -678,7 +678,7 @@
   <div th:id="${'editWordTypeDlg_' + wordId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_word_type_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_type">
@@ -694,7 +694,7 @@
   <div th:id="${'editLexemeProcessStateDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_process_state_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_process_state">
@@ -709,7 +709,7 @@
   <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_value_state_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_value_state">
@@ -724,7 +724,7 @@
   <div th:id="${'editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}" class="modal" role="dialog" th:fragment="edit_lexeme_grammar_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${grammar.id}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
@@ -745,7 +745,7 @@
   <div th:id="${'editLexemeFrequencyGroupDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_frequency_group_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_frequency_group">
@@ -760,7 +760,7 @@
   <div th:id="${'editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_pos_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_pos">
@@ -776,7 +776,7 @@
   <div th:id="${'editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_deriv_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_deriv">
@@ -792,7 +792,7 @@
   <div th:id="${'editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_register_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_register">
@@ -808,7 +808,7 @@
   <div th:id="${'editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_meaning_domain_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/modify_item}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_domain">
@@ -834,7 +834,7 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
-          <form th:action="@{/modify_levels}" method="post" class="form-inline">
+          <form th:action="@{/update_levels}" method="post" class="form-inline">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="action">
             <button type="submit" class="btn btn-primary mr-1" data-action="pop">

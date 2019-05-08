@@ -68,16 +68,16 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	}
 
 	@Transactional
-	public WordsData findWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
+	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
 
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
 		String primaryDataset = datasets[0];
-		List<Word> allWords = lexSearchDbService.findWords(searchWord, sourceLang, primaryDataset);
+		List<Word> allWords = lexSearchDbService.getWords(searchWord, sourceLang, primaryDataset);
 		boolean isForcedSearchMode = false;
 		if (CollectionUtils.isEmpty(allWords) && StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
 			datasets = getDatasets(sourceLang, destinLang, SEARCH_MODE_DETAIL);
 			primaryDataset = datasets[0];
-			allWords = lexSearchDbService.findWords(searchWord, sourceLang, primaryDataset);
+			allWords = lexSearchDbService.getWords(searchWord, sourceLang, primaryDataset);
 			if (CollectionUtils.isNotEmpty(allWords)) {
 				searchMode = SEARCH_MODE_DETAIL;
 				isForcedSearchMode = true;
@@ -98,11 +98,11 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	}
 
 	@Transactional
-	public Map<String, List<String>> findWordsByPrefix(String wordPrefix, String sourceLang, String destinLang, int limit) {
+	public Map<String, List<String>> getWordsByPrefix(String wordPrefix, String sourceLang, String destinLang, int limit) {
 
 		String[] datasets = getDatasets(sourceLang, destinLang, SEARCH_MODE_DETAIL);
 		String primaryDataset = datasets[0];
-		Map<String, List<WordOrForm>> results = lexSearchDbService.findWordsByPrefix(wordPrefix, sourceLang, primaryDataset, limit);
+		Map<String, List<WordOrForm>> results = lexSearchDbService.getWordsByPrefix(wordPrefix, sourceLang, primaryDataset, limit);
 		List<WordOrForm> prefWordsResult = results.get("prefWords");
 		List<WordOrForm> formWordsResult = results.get("formWords");
 		List<String> prefWords, formWords;
@@ -147,15 +147,15 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		Word word = lexSearchDbService.getWord(wordId);
 		classifierUtil.applyClassifiers(word, displayLang);
 		conversionUtil.setWordTypeFlags(word);
-		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.findWordEtymologyTuples(wordId);
+		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymologyTuples(wordId);
 		conversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
-		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.findWordRelationTuples(wordId);
+		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.getWordRelationTuples(wordId);
 		conversionUtil.composeWordRelations(word, wordRelationTuples, datasets, displayLang);
-		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
-		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets, targetContext);
+		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.getLexemeDetailsTuples(wordId, datasets);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, datasets);
+		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, datasets, targetContext);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
-		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId, maxDisplayLevel);
+		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();
 		lexemes.forEach(lexeme -> {

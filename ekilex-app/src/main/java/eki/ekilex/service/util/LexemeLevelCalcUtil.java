@@ -1,15 +1,55 @@
 package eki.ekilex.service.util;
 
+import static java.lang.Math.max;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.WordLexeme;
 
 @Component
 public class LexemeLevelCalcUtil {
+
+	public void combineLevels(List<WordLexeme> lexemes) {
+
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
+		}
+
+		lexemes.forEach(lexeme -> {
+			if (lexeme.getLevel1() == 0) {
+				lexeme.setLevels(null);
+				return;
+			}
+			String levels;
+			long nrOfLexemesWithSameLevel1 = lexemes.stream()
+					.filter(otherLexeme -> otherLexeme.getLevel1().equals(lexeme.getLevel1())
+							&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
+					.count();
+			if (nrOfLexemesWithSameLevel1 == 1) {
+				levels = String.valueOf(lexeme.getLevel1());
+			} else {
+				long nrOfLexemesWithSameLevel2 = lexemes.stream()
+						.filter(otherLexeme -> otherLexeme.getLevel1().equals(lexeme.getLevel1())
+								&& otherLexeme.getLevel2().equals(lexeme.getLevel2())
+								&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
+						.count();
+				if (nrOfLexemesWithSameLevel2 == 1) {
+					int level2 = max(lexeme.getLevel2() - 1, 0);
+					levels = lexeme.getLevel1() + (level2 == 0 ? "" : "." + level2);
+				} else {
+					int level3 = max(lexeme.getLevel3() - 1, 0);
+					levels = lexeme.getLevel1() + "." + lexeme.getLevel2() + (level3 == 0 ? "" : "." + level3);
+				}
+			}
+			lexeme.setLevels(levels);
+		});
+	}
 
 	public void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {
 

@@ -22,12 +22,12 @@ function initialise() {
 
 	$(document).on('click', '.order-up', function() {
 		let orderingData = changeItemOrdering($(this), -1);
-		postJson(applicationUrl + 'modify_ordering', orderingData);
+		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
 
 	$(document).on('click', '.order-down', function() {
 		let orderingData = changeItemOrdering($(this), 1);
-		postJson(applicationUrl + 'modify_ordering', orderingData);
+		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
 
 	$(document).on('click', '#show-all-btn', function() {
@@ -41,7 +41,7 @@ function initialise() {
 			opCode: "term_user_lang",
 			code: lang
 		};
-		postJson(applicationUrl + 'modify_item', itemData).done(function(data) {
+		postJson(applicationUrl + 'update_item', itemData).done(function(data) {
 			refreshDetails();
 		});
 	});

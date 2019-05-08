@@ -34,7 +34,7 @@ public class WordwebFeedbackController implements WebConstant {
 
 	@GetMapping(WW_FEEDBACK_URI)
 	public String openPage(Model model) {
-		List<Feedback> feedbackLog = feedbackService.findFeedbackLog();
+		List<Feedback> feedbackLog = feedbackService.getFeedbackLog();
 		model.addAttribute("feedbackLog", feedbackLog);
 		return WW_FEEDBACK_PAGE;
 	}
@@ -48,7 +48,7 @@ public class WordwebFeedbackController implements WebConstant {
 
 		String statusMessage;
 		if (feedbackService.isValidFeedback(newFeedback)) {
-			statusMessage = feedbackService.addFeedback(newFeedback);
+			statusMessage = feedbackService.createFeedback(newFeedback);
 		} else {
 			statusMessage = "error";
 		}
@@ -63,7 +63,7 @@ public class WordwebFeedbackController implements WebConstant {
 		Long feedbackId = Long.valueOf(requestBody.get("feedbackId"));
 		String comment = requestBody.get("comment");
 
-		feedbackService.addFeedbackComment(feedbackId, comment);
+		feedbackService.createFeedbackComment(feedbackId, comment);
 
 		populateFeedbackModel(feedbackId, model);
 

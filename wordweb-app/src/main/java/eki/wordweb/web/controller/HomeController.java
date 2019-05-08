@@ -22,43 +22,43 @@ public class HomeController extends AbstractController {
 
 	@GetMapping(LEARN_URI)
 	public String learn(Model model) {
-		populateGeneralData(model);
+		populateGlobalData(model);
 		return LEARN_PAGE;
 	}
 
 	@GetMapping(GAMES_URI)
 	public String games(Model model) {
-		populateGeneralData(model);
+		populateGlobalData(model);
 		return GAMES_PAGE;
 	}
 
 	@GetMapping(CONTACTS_URI)
 	public String contacts(Model model) {
-		populateGeneralData(model);
+		populateGlobalData(model);
 		return CONTACTS_PAGE;
 	}
 
 	@GetMapping(COLLECTIONS_URI)
 	public String collections(Model model) {
-		populateGeneralData(model);
+		populateGlobalData(model);
 		return COLLECTIONS_PAGE;
 	}
 
 	@GetMapping(ABOUT_URI)
 	public String about(Model model) {
-		populateGeneralData(model);
+		populateGlobalData(model);
 		return ABOUT_PAGE;
 	}
 
 	@GetMapping(REGULATIONS_URI)
 	public String regulations(Model model) {
-		populateGeneralData(model);
+		populateGlobalData(model);
 		return REGULATIONS_PAGE;
 	}
 
 	@GetMapping(CONDITIONS_URI)
 	public String conditions(Model model) {
-		populateGeneralData(model);
+		populateGlobalData(model);
 		return CONDITIONS_PAGE;
 	}
 

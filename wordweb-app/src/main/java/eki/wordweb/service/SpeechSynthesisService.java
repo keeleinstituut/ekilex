@@ -25,7 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,7 +33,7 @@ import eki.common.util.CodeGenerator;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Word;
 
-@Service
+@Component
 public class SpeechSynthesisService implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SpeechSynthesisService.class);

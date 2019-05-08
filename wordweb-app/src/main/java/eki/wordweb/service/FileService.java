@@ -1,12 +1,5 @@
 package eki.wordweb.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +12,14 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-@Service
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
+
+@Component
 public class FileService {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileService.class);
@@ -30,7 +30,7 @@ public class FileService {
 	public Resource getSoundFileAsResource(String fileName) {
 
 		Resource resource = null;
-		Path pathToFile = findFilePath(fileName);
+		Path pathToFile = getFilePath(fileName);
 		if (pathToFile != null) {
 			Path path = doMp3ConversionIfNeeded(pathToFile);
 			resource = new FileSystemResource(path);
@@ -40,11 +40,11 @@ public class FileService {
 
 	public Resource getFileAsResource(String fileName) {
 
-		Path pathToFile = findFilePath(fileName);
+		Path pathToFile = getFilePath(fileName);
 		return pathToFile == null ? null : new FileSystemResource(pathToFile);
 	}
 
-	private Path findFilePath(String fileName) {
+	private Path getFilePath(String fileName) {
 
 		Path filePath = null;
 		try (Stream<Path> dirStream = Files.find(

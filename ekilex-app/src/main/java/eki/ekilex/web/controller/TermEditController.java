@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import eki.ekilex.service.CloningService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,41 +24,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
-import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class TermModifyController implements WebConstant {
+public class TermEditController implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(TermModifyController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TermEditController.class);
 
-	private final TermSearchService termSearchService;
+	@Autowired
+	private TermSearchService termSearchService;
 
-	private final LexSearchService lexSearchService;
+	@Autowired
+	private LexSearchService lexSearchService;
 
-	private final UpdateService updateService;
+	@Autowired
+	private SearchHelper searchHelper;
 
-	private final SearchHelper searchHelper;
-
-	private final CloningService cloningService;
-
-
-	public TermModifyController(TermSearchService termSearchService,
-			LexSearchService lexSearchService,
-			UpdateService updateService,
-			SearchHelper searchHelper,
-			CloningService cloningService) {
-		this.termSearchService = termSearchService;
-		this.lexSearchService = lexSearchService;
-		this.updateService = updateService;
-		this.searchHelper = searchHelper;
-		this.cloningService = cloningService;
-	}
+	@Autowired
+	private CompositionService compositionService;
 
 	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
 	public String show(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
@@ -82,7 +71,7 @@ public class TermModifyController implements WebConstant {
 		model.addAttribute("sourceLexeme", lexSearchService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("meaningId", meaningId);
-		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithMinimalData(searchFilter, sessionBean.getSelectedDatasets());
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, sessionBean.getSelectedDatasets());
 		model.addAttribute("meaningLexemes", lexemes);
 
 		return MEANING_JOIN_PAGE;
@@ -94,7 +83,7 @@ public class TermModifyController implements WebConstant {
 			@PathVariable("meaningId2") Long sourceMeaningId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		updateService.joinMeanings(meaningId, sourceMeaningId);
+		compositionService.joinMeanings(meaningId, sourceMeaningId);
 
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
 		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId, selectedDatasets);
@@ -112,7 +101,7 @@ public class TermModifyController implements WebConstant {
 		Map<String, String> response = new HashMap<>();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
-			clonedMeaning = cloningService.cloneMeaning(meaningId);
+			clonedMeaning = compositionService.cloneMeaning(meaningId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}

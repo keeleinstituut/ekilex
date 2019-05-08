@@ -1,9 +1,7 @@
 package eki.wordweb.service;
 
-import eki.wordweb.data.CorporaSentence;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
+import static java.lang.Math.abs;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -11,11 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static java.lang.Math.abs;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
-@Service
-public class CorporaServiceEst extends CorporaService {
+import eki.wordweb.data.CorporaSentence;
+
+@Component
+public class CorporaServiceEst extends AbstractCorporaService {
 
 	@Value("${corpora.service.est.url:}")
 	private String serviceUrl;

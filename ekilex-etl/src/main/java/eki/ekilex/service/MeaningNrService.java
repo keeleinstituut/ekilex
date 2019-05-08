@@ -1,15 +1,7 @@
 package eki.ekilex.service;
 
-import eki.common.exception.DataLoadingException;
-import eki.common.service.db.BasicDbService;
-import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.data.transform.Mnr;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static eki.common.constant.TableName.MEANING_NR;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -20,10 +12,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static eki.common.constant.TableName.MEANING_NR;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Service
+import eki.common.exception.DataLoadingException;
+import eki.common.service.db.BasicDbService;
+import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.transform.Mnr;
+
+@Component
 public class MeaningNrService implements SystemConstant {
 
 	private final static String MAIN_DATASET = "ss1";

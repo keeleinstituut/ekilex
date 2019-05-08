@@ -105,9 +105,9 @@ public class LexSearchController extends AbstractSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.findWords(detailSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll);
 		} else {
-			wordsResult = lexSearchService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -126,7 +126,7 @@ public class LexSearchController extends AbstractSearchController {
 			Model model) {
 		logger.debug("word search ajax {}", searchFilter);
 
-		WordsResult result = lexSearchService.findWords(searchFilter, sessionBean.getSelectedDatasets(), false);
+		WordsResult result = lexSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
@@ -142,7 +142,7 @@ public class LexSearchController extends AbstractSearchController {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
-		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithDefinitionsData(searchFilter, datasets);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_search_result";
@@ -155,7 +155,7 @@ public class LexSearchController extends AbstractSearchController {
 			Model model) {
 		logger.debug("meaning search ajax {}", searchFilter);
 
-		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithDefinitionsData(searchFilter, sessionBean.getSelectedDatasets());
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, sessionBean.getSelectedDatasets());
 		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();
 		for (WordLexeme lexeme : lexemes) {
@@ -176,7 +176,7 @@ public class LexSearchController extends AbstractSearchController {
 			Model model) {
 		logger.debug("person search ajax {}", searchFilter);
 
-		List<Source> sources = sourceService.findSourcesByNameAndType(searchFilter, SourceType.PERSON);
+		List<Source> sources = sourceService.getSources(searchFilter, SourceType.PERSON);
 		model.addAttribute("sourcesFoundBySearch", sources);
 
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";

@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class FileService {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileService.class);
@@ -24,11 +24,11 @@ public class FileService {
 
 	public Resource getFileAsResource(String fileName) {
 
-		Path pathToFile = findFilePath(fileName);
+		Path pathToFile = getFilePath(fileName);
 		return pathToFile == null ? null : new FileSystemResource(pathToFile);
 	}
 
-	private Path findFilePath(String fileName) {
+	private Path getFilePath(String fileName) {
 
 		Path filePath = null;
 		try (Stream<Path> dirStream = Files.find(

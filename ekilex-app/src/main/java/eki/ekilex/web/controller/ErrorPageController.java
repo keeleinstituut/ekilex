@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ErrorPageController implements WebConstant {
 
 	@Autowired
-	protected MessageSource messageSource;
+	private MessageSource messageSource;
 
 	@RequestMapping(value = "error/{error}")
 	public String showError(@PathVariable("error") String error, Model model) throws Exception {

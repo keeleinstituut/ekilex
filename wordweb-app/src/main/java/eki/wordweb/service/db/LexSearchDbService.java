@@ -46,7 +46,7 @@ public class LexSearchDbService {
 	@Autowired
 	private DSLContext create;
 
-	public List<Word> findWords(String searchFilter, String lang, String dataset) {
+	public List<Word> getWords(String searchFilter, String lang, String dataset) {
 
 		String searchFilterLower = StringUtils.lowerCase(searchFilter);
 		return create
@@ -77,7 +77,7 @@ public class LexSearchDbService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordOrForm>> findWordsByPrefix(String wordPrefix, String lang, String dataset, int maxWordCount) {
+	public Map<String, List<WordOrForm>> getWordsByPrefix(String wordPrefix, String lang, String dataset, int maxWordCount) {
 
 		String wordPrefixLower = StringUtils.lowerCase(wordPrefix);
 		Field<String> iswtf = DSL.field(DSL.value("prefWords")).as("group");
@@ -138,7 +138,7 @@ public class LexSearchDbService {
 				.into(Word.class);
 	}
 
-	public List<WordEtymTuple> findWordEtymologyTuples(Long wordId) {
+	public List<WordEtymTuple> getWordEtymologyTuples(Long wordId) {
 
 		return create
 				.select(
@@ -161,7 +161,7 @@ public class LexSearchDbService {
 				.fetchInto(WordEtymTuple.class);
 	}
 
-	public List<WordRelationTuple> findWordRelationTuples(Long wordId) {
+	public List<WordRelationTuple> getWordRelationTuples(Long wordId) {
 
 		return create
 				.select(
@@ -177,7 +177,7 @@ public class LexSearchDbService {
 				.into(WordRelationTuple.class);
 	}
 
-	public List<LexemeDetailsTuple> findLexemeDetailsTuples(Long wordId, String[] datasets) {
+	public List<LexemeDetailsTuple> getLexemeDetailsTuples(Long wordId, String[] datasets) {
 
 		MviewWwLexeme l1 = MVIEW_WW_LEXEME.as("l1");
 		MviewWwLexeme l2 = MVIEW_WW_LEXEME.as("l2");
@@ -233,7 +233,7 @@ public class LexSearchDbService {
 				.into(LexemeDetailsTuple.class);
 	}
 
-	public List<LexemeMeaningTuple> findLexemeMeaningTuples(Long wordId, String[] datasets) {
+	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId, String[] datasets) {
 	
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
@@ -261,7 +261,7 @@ public class LexSearchDbService {
 				.into(LexemeMeaningTuple.class);
 	}
 
-	public List<CollocationTuple> findCollocations(Long wordId, String[] datasets, TargetContext targetContext) {
+	public List<CollocationTuple> getCollocations(Long wordId, String[] datasets, TargetContext targetContext) {
 
 		Condition where = MVIEW_WW_COLLOCATION.WORD_ID.eq(wordId).and(MVIEW_WW_COLLOCATION.DATASET_CODE.in(datasets));
 		if (targetContext != null) {
@@ -296,7 +296,7 @@ public class LexSearchDbService {
 				.into(CollocationTuple.class);
 	}
 
-	public Map<Long, List<Form>> findWordForms(Long wordId, Integer maxDisplayLevel) {
+	public Map<Long, List<Form>> getWordForms(Long wordId, Integer maxDisplayLevel) {
 
 		Condition where = MVIEW_WW_FORM.WORD_ID.eq(wordId).and(MVIEW_WW_FORM.MODE.in(FormMode.WORD.name(), FormMode.FORM.name()));
 		if (maxDisplayLevel != null) {
