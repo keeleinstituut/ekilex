@@ -197,9 +197,6 @@
                     <i th:each="government,iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
                   </div>
                   <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
-                    <button class="more-btn" name="colloc-usages-btn" th:if="${lexeme.moreUsages}" aria-expanded="false">
-                      <span class="icon icon-chevron-left"></span>
-                    </button>
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}">
                       <div class="dependence-unit"  th:data-words="${usage.usage}" onclick="generateAudioAndPlay(this)">
                         <span class="example-text" th:utext="${usage.usagePrese}"></span>
@@ -218,6 +215,11 @@
                       </div>
                     </div>
                   </div>
+                  <button class="show-more" aria-expanded="false" name="colloc-usages-btn"
+                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:text="#{button.see.more}"
+                          th:if="${lexeme.moreUsages}">
+                  </button>
                   <div class="mt-3" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
                     <img class="homonym-image" th:each="imageFile : ${lexeme.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}">
                   </div>
@@ -273,9 +275,6 @@
                 <div class="col-12 collocations-section">
                   <div th:id="${'collocs-area-' + lexeme.lexemeId}">
                     <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
-                      <button class="more-btn" name="colloc-expand-btn" aria-expanded="false">
-                        <span class="icon icon-chevron-left"></span>
-                      </button>
                       <div class="w-100 colloc-samples">
                         <div class="colloc-heading row">
                             <span class="col">
@@ -284,7 +283,7 @@
                         </div>
                         <div class="colloc-section w-100" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
                           <div class="colloc-inner-section" style="padding: 0px 10px;">
-                            <div class="colloc-row row" style="padding: 5px;">
+                            <div class="colloc-row row" style="padding: 5px 5px 0px;">
                               <span class="colloc-col" th:each="displayColloc,displayCollocIter : ${lexeme.limitedPrimaryDisplayCollocs}" style="padding: 2px;">
                                 <span class="colloc-member">
                                   <span th:if="${displayCollocIter.first}">
@@ -350,7 +349,7 @@
                                 </div>
                               </div>
                               <div class="colloc-inner-section" style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
-                                <div class="colloc-row row" style="padding: 5px;">
+                                <div class="colloc-row row" style="padding: 5px 5px 0px;">
                                   <span class="colloc-col" th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}" style="padding: 2px;">
                                     <span class="colloc-member">
                                       <span th:if="${displayCollocIter.first}">
@@ -412,6 +411,10 @@
                           </div>
                         </th:block>
                       </div>
+                      <button class="show-more" aria-expanded="false" name="colloc-expand-btn"
+                              th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                              th:text="#{button.see.more}">
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -422,23 +425,20 @@
           <div class="col-md-5 col-lg-4 more-data sidebar">
             <section class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
-                <h5 class="font-weight-bold">
+                <h5 class="font-weight-bold mb-0">
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
                   <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
                 </h5>
                 <span th:text="#{label.no.data}">Andmed puuduvad</span>
               </div>
               <div class="col-12 morphology-panel" th:unless="${wordData.unknownForm}">
-                <h5 class="font-weight-bold">
+                <h5 class="font-weight-bold mb-0">
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
                   <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
                 </h5>
                 <div class="position-relative" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-                  <button class="more-btn" aria-expanded="false" th:if="${paradigm.expandable}">
-                    <span class="icon icon-chevron-left"></span>
-                  </button>
                   <div class="morphology-section d-flex">
-                    <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
+                    <div class="d-flex flex-column w-50 mt-2" th:each="paradigmGroup1 : ${paradigm.groups}">
                       <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}" class="secondary-morph"></h5>
                       <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
                         <div th:each="form : ${paradigmGroup1.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
@@ -512,6 +512,11 @@
                       </th:block>
                     </div>
                   </div>
+                  <button class="show-more" aria-expanded="false"
+                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:text="#{button.see.more}"
+                          th:if="${paradigm.expandable}">
+                  </button>
                   <hr th:unless="${paradigmIter.last}" />
                 </div>
               </div>
@@ -526,9 +531,6 @@
                   <span th:text="#{label.no.data}">Andmed puuduvad</span>
                 </div>
                 <div th:if="${wordData.word.wordRelationsExist}">
-                  <button class="more-btn" th:if="${wordData.word.moreWordRelations}" aria-expanded="false">
-                    <span class="icon icon-chevron-left"></span>
-                  </button>
                   <div th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
                     <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}">
                       <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ' :'}"></span>
@@ -542,7 +544,7 @@
                   <div class="relations-wrapper" th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
                     <div class="word-group limited-group">
                       <th:block th:each="relationTypeGroup : ${wordData.word.limitedRelatedWordTypeGroups}">
-                        <div class="word-grouper-wrapper mb-2">
+                        <div class="word-grouper-wrapper mt-2">
                           <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
                           <span class="word-options mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
                             <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
@@ -565,6 +567,11 @@
                       </th:block>
                     </div>
                   </div>
+                  <button class="show-more" aria-expanded="false"
+                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:text="#{button.see.more}"
+                          th:if="${wordData.word.moreWordRelations}">
+                  </button>
                 </div>
               </div>
             </section>
