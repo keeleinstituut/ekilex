@@ -52,36 +52,36 @@ $(function() {
 	});
 });
 
-$(document).on("click", ".menu-btn", function() {
-      if($(this).attr('aria-expanded')==='false'){
-           //alert("true");
-           $(this).attr('aria-expanded','false');
-       }
-       else{
-            $(this).attr('aria-expanded','true');           
-       }
+$(document).on("click", ".menu-btn", function () {
+	if ($(this).attr('aria-expanded') === 'false') {
+		$(this).attr('aria-expanded', 'false');
+	} else {
+		$(this).attr('aria-expanded', 'true');
+	}
 });
 
-$(document).on("click", ".more-btn", function() {
-      if($(this).attr('aria-expanded')==='false'){
-           //alert("true");
-           $(this).attr('aria-expanded','true');
-       }
-       else{
-            $(this).attr('aria-expanded','false');           
-       }
+$(document).on("click", ".show-more", function() {
+	let buttonText = '';
+	if ($(this).attr('aria-expanded') === 'false') {
+		$(this).attr('aria-expanded', 'true');
+		buttonText = $(this).data("see-less");
+	} else {
+		$(this).attr('aria-expanded', 'false');
+		buttonText = $(this).data("see-more");
+	}
+	$(this).text(buttonText);
 });
 
 
-$(document).on("click", ".more-btn", function() {
+$(document).on("click", ".show-more", function() {
 	$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel").toggleClass("expand");
 
 	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options, .sentence-wrapper")
+			.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+4), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options, .sentence-wrapper")
 			.toggleClass("fade-target");
 
 	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel").find(
-			".colloc-fulldata .colloc-col:lt(3), .dependencies .dependence:lt(3), .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
+			".colloc-fulldata .colloc-col:lt(3), .dependencies .dependence:lt(2), .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
 			.removeClass("fade-target");
 });
 

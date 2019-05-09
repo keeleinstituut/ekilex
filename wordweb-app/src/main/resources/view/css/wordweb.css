@@ -234,3 +234,14 @@
 	margin-right: 0.5rem;
 	font-size: 1rem;
 }
+
+.show-more {
+	padding: 0;
+	border: none;
+	background: none;
+	cursor: pointer;
+	display: block;
+	color: dodgerblue;
+	font-size: 0.85rem;
+	margin-bottom: 0.5rem;
+}
