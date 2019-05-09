@@ -1118,19 +1118,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				writeToLogFile(reportingId, "Tähenduse juures leiti rohkem kui üks sõnaliik <x:tp/x:grg/x:sl>", "");
 			}
 		}
-		for (String code : lexemePosCodes) {
-			if (posCodes.containsKey(code)) {
-				Map<String, Object> params = new HashMap<>();
-				params.put("lexeme_id", lexemeId);
-				params.put("pos_code", posCodes.get(code));
-				basicDbService.create(LEXEME_POS, params);
+		for (String posCode : lexemePosCodes) {
+			if (posCodes.containsKey(posCode)) {
+				String mappedPosCode = posCodes.get(posCode);
+				createLexemePos(lexemeId, mappedPosCode);
 			}
 		}
 		if (derivCodes.containsKey(newWordData.derivCode)) {
-			Map<String, Object> params = new HashMap<>();
-			params.put("lexeme_id", lexemeId);
-			params.put("deriv_code", derivCodes.get(newWordData.derivCode));
-			basicDbService.create(LEXEME_DERIV, params);
+			String mappedDerivCode = derivCodes.get(newWordData.derivCode);
+			createLexemeDeriv(lexemeId, mappedDerivCode);
 		}
 	}
 

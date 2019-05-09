@@ -320,7 +320,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 		boolean domainExists = domainExists(domainCode, originMiliterm);
 		if (domainExists) {
-			createMeaningDomain(meaningId, domainCode, originMiliterm);
+			createMeaningDomain(meaningId, originMiliterm, domainCode);
 			domainCodes.add(domainCode);
 		} else {
 			logger.warn("Incorrect domain reference \"{}\"", domainCode);

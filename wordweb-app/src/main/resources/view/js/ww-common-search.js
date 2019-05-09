@@ -167,13 +167,13 @@ function calculateAndSetStyles() {
 	}
 }
 
-function playSound(soundSource, onEndedCallback) {
-	var music = new Audio(soundSource);
+function playAudio(audioSource, onEndedCallback) {
+	var music = new Audio(audioSource);
 	music.onended = onEndedCallback;
 	music.play();
 }
 
-function generateVoiceAndPlay(e) {
+function generateAudioAndPlay(e) {
 	var elem = $(e);
 	if (elem.data('is-playing') !== undefined) {
 		return;
@@ -193,20 +193,20 @@ function generateVoiceAndPlay(e) {
 		}
 	};
 
-	if (elem.data('url-to-sound') !== undefined) {
-		playSound(elem.data('urlToSound'), onEndCallback);
+	if (elem.data('url-to-audio') !== undefined) {
+		playAudio(elem.data('playAudio'), onEndCallback);
 		return;
 	}
 
 	var data = {
 		'words': elem.data('words')
 	};
-	$.post(applicationUrl + 'generate_voice', data).done(function (urlToSound) {
-		elem.data('url-to-sound', urlToSound);
-		playSound(urlToSound, onEndCallback);
+	$.post(applicationUrl + 'generate_audio', data).done(function (playAudio) {
+		elem.data('url-to-audio', playAudio);
+		playAudio(playAudio, onEndCallback);
 	}).fail(function () {
 		onEndCallback();
-		alert(messages.sound_generation_failure);
+		alert(messages.audio_generation_failure);
 	})
 }
 

@@ -814,7 +814,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 		boolean domainExists = domainExists(domainCode, domainOrigin);
 		if (domainExists) {
-			createMeaningDomain(meaningId, domainCode, domainOrigin);
+			createMeaningDomain(meaningId, domainOrigin, domainCode);
 			domainCodes.add(domainCode);
 		} else {
 			logger.warn("Incorrect domain reference @ concept \"{}\" - \"{}\"", concept, domainCode);

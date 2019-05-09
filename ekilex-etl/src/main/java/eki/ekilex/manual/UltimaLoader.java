@@ -28,7 +28,7 @@ import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
 import eki.ekilex.runner.TermekiLoaderRunner;
-import eki.ekilex.runner.VoiceFileUpdaterRunner;
+import eki.ekilex.runner.AudioFileUpdaterRunner;
 import eki.ekilex.service.MabService;
 
 public class UltimaLoader extends AbstractLoader {
@@ -71,7 +71,7 @@ public class UltimaLoader extends AbstractLoader {
 			MilitermLoaderRunner milRunner = getComponent(MilitermLoaderRunner.class);
 			TermekiLoaderRunner termekiLoaderRunner = getComponent(TermekiLoaderRunner.class);
 			FrequencyUpdateRunner freqUpdateRunner = getComponent(FrequencyUpdateRunner.class);
-			VoiceFileUpdaterRunner voiceFileUpdaterRunner = getComponent(VoiceFileUpdaterRunner.class);
+			AudioFileUpdaterRunner audioFileUpdaterRunner = getComponent(AudioFileUpdaterRunner.class);
 			GameDataLoaderRunner gameDataLoaderRunner = getComponent(GameDataLoaderRunner.class);
 
 			String dataFilePath, dataFilePath2, dataset;
@@ -246,11 +246,11 @@ public class UltimaLoader extends AbstractLoader {
 				}
 			}
 
-			// sound file names updater
-			dataFilePath = confService.getConfProperty("voice.index.file");
+			// audio file names updater
+			dataFilePath = confService.getConfProperty("audio.index.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				if (isFullReload) {
-					voiceFileUpdaterRunner.update(dataFilePath);
+					audioFileUpdaterRunner.update(dataFilePath);
 				}
 			}
 

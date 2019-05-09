@@ -14,7 +14,7 @@ select w.id word_id,
        f.components,
        f.display_form,
        f.vocal_form,
-       f.sound_file,
+       f.audio_file,
        f.order_by
 from word w,
      paradigm p,

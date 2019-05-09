@@ -56,7 +56,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private final String wordClassAttr = "kuvasonaklass";
 	private final String inflectionTypeAttr = "kuvamuuttyyp";
 	private final String formValueAttr = "kuvavorm";
-	private final String soundFileAttr = "kuvaheli";
+	private final String audioFileAttr = "kuvaheli";
 	private final String formOrderAttr = "ord";
 	private final String morphGroup1Attr = "grp2";
 	private final String morphGroup2Attr = "grp3";
@@ -103,7 +103,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		Form form;
 		String[] components;
 		String guid, word, wordAlt, wordClass, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, inflectionType;
-		String formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, soundFile;
+		String formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, audioFile;
 		Integer formOrderBy, displayLevel;
 		Long wordId, paradigmId;
 
@@ -228,7 +228,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 								components = StringUtils.split(cleanDisplayForm, FORM_COMPONENT_SEPARATOR);
 								components = escapeNulls(components);
 							}
-							soundFile = extractSoundFileName(formElement);
+							audioFile = extractAudioFileName(formElement);
 
 							form = new Form();
 							form.setMorphGroup1(morphGroup1);
@@ -241,7 +241,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 							form.setComponents(components);
 							form.setDisplayForm(displayForm);
 							//formObj.setVocalForm(vocalForm);
-							form.setSoundFile(soundFile);
+							form.setAudioFile(audioFile);
 							form.setOrderBy(formOrderBy);
 
 							forms.add(form);
@@ -313,8 +313,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private String extractSoundFileName(Element element) {
-		String name = element.attributeValue(soundFileAttr);
+	private String extractAudioFileName(Element element) {
+		String name = element.attributeValue(audioFileAttr);
 		return isNotBlank(name) ? name + ".mp3" : null;
 	}
 

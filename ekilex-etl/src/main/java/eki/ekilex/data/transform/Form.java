@@ -29,7 +29,7 @@ public class Form extends AbstractDataObject {
 
 	private String vocalForm;
 
-	private String soundFile;
+	private String audioFile;
 
 	private Integer orderBy;
 
@@ -121,12 +121,12 @@ public class Form extends AbstractDataObject {
 		this.vocalForm = vocalForm;
 	}
 
-	public String getSoundFile() {
-		return soundFile;
+	public String getAudioFile() {
+		return audioFile;
 	}
 
-	public void setSoundFile(String soundFile) {
-		this.soundFile = soundFile;
+	public void setAudioFile(String audioFile) {
+		this.audioFile = audioFile;
 	}
 
 	public Integer getOrderBy() {

@@ -18,7 +18,7 @@ public class WordData extends AbstractDataObject {
 
 	private String firstAvailableVocalForm;
 
-	private String firstAvailableSoundFile;
+	private String firstAvailableAudioFile;
 
 	private boolean unknownForm;
 
@@ -62,12 +62,12 @@ public class WordData extends AbstractDataObject {
 		this.firstAvailableVocalForm = firstAvailableVocalForm;
 	}
 
-	public String getFirstAvailableSoundFile() {
-		return firstAvailableSoundFile;
+	public String getFirstAvailableAudioFile() {
+		return firstAvailableAudioFile;
 	}
 
-	public void setFirstAvailableSoundFile(String firstAvailableSoundFile) {
-		this.firstAvailableSoundFile = firstAvailableSoundFile;
+	public void setFirstAvailableAudioFile(String firstAvailableAudioFile) {
+		this.firstAvailableAudioFile = firstAvailableAudioFile;
 	}
 
 	public boolean isUnknownForm() {

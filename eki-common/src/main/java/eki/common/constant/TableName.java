@@ -38,9 +38,9 @@ public interface TableName {
 	String LEXEME_REGISTER = "lexeme_register";
 	String LEXEME_REGION = "lexeme_region";
 	String LEXEME_FREEFORM = "lexeme_freeform";
-	String LEXEME_SOURCE_LINK = "lexeme_source_link";
 	String LEXEME_FREQUENCY = "lexeme_frequency";
 	String LEXEME_RELATION = "lex_relation";
+	String LEXEME_SOURCE_LINK = "lexeme_source_link";
 	String LEXEME_LIFECYCLE_LOG = "lexeme_lifecycle_log";
 	String LEX_COLLOC = "lex_colloc";
 	String LEX_COLLOC_POS_GROUP = "lex_colloc_pos_group";

@@ -6,6 +6,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
@@ -310,6 +311,14 @@ public class LifecycleLogDbService {
 						.select(LEXEME_REGISTER.LEXEME_ID)
 						.from(LEXEME_REGISTER)
 						.where(LEXEME_REGISTER.ID.eq(entityId))
+						.fetchSingleInto(Long.class);
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+			} else if (LifecycleProperty.REGION.equals(property)) {
+				Long lexemeId = create
+						.select(LEXEME_REGION.LEXEME_ID)
+						.from(LEXEME_REGION)
+						.where(LEXEME_REGION.ID.eq(entityId))
 						.fetchSingleInto(Long.class);
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);

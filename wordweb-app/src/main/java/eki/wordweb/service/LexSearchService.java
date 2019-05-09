@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
-import eki.common.constant.TargetContext;
+import eki.common.constant.Complexity;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
@@ -134,12 +134,12 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 
 		// query params
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
-		TargetContext targetContext = null;
+		Complexity complexity = null;
 		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-			targetContext = TargetContext.SIMPLE;
+			complexity = Complexity.SIMPLE;
 		}
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		if (TargetContext.SIMPLE.equals(targetContext)) {
+		if (Complexity.SIMPLE.equals(complexity)) {
 			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		}
 
@@ -153,7 +153,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		conversionUtil.composeWordRelations(word, wordRelationTuples, datasets, displayLang);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.getLexemeDetailsTuples(wordId, datasets);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, datasets);
-		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, datasets, targetContext);
+		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, datasets, complexity);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
@@ -166,7 +166,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 
 		// resulting flags
 		String firstAvailableVocalForm = null;
-		String firstAvailableSoundFile = null;
+		String firstAvailableAudioFile = null;
 		boolean isUnknownForm = false;
 		if (MapUtils.isNotEmpty(paradigmFormsMap)) {
 			Form firstAvailableWordForm = paradigmFormsMap.values().stream()
@@ -175,7 +175,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 					.findFirst().orElse(null);
 			if (firstAvailableWordForm != null) {
 				firstAvailableVocalForm = firstAvailableWordForm.getVocalForm();
-				firstAvailableSoundFile = firstAvailableWordForm.getSoundFile();
+				firstAvailableAudioFile = firstAvailableWordForm.getAudioFile();
 				isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstAvailableWordForm.getMorphCode());
 			}
 		}
@@ -186,7 +186,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		wordData.setParadigms(paradigms);
 		wordData.setImageFiles(allImageFiles);
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
-		wordData.setFirstAvailableSoundFile(firstAvailableSoundFile);
+		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
 		wordData.setUnknownForm(isUnknownForm);
 		combineLevels(wordData.getLexemes());
 		return wordData;

@@ -49,9 +49,9 @@ public class DataController implements WebConstant, SystemConstant {
 		return appDataHolder.getAppData();
 	}
 
-	@PostMapping("/generate_voice")
-	public String generateSoundFileUrl(@RequestParam String words) {
-		return speechSynthesisService.urlToSoundSource(words);
+	@PostMapping("/generate_audio")
+	public String generateAudioFileUrl(@RequestParam String words) {
+		return speechSynthesisService.urlToAudioSource(words);
 	}
 
 	@GetMapping(FILES_URI + "/{fileId}")
@@ -78,11 +78,11 @@ public class DataController implements WebConstant, SystemConstant {
 				.body(resource);
 	}
 
-	@GetMapping(FILES_URI + "/sounds/{fileName:.+}")
+	@GetMapping(FILES_URI + "/audio/{fileName:.+}")
 	@ResponseBody
-	public ResponseEntity<Resource> serveSoundFile(@PathVariable String fileName) {
+	public ResponseEntity<Resource> serveAudioFile(@PathVariable String fileName) {
 
-		Resource resource = fileService.getSoundFileAsResource(fileName);
+		Resource resource = fileService.getAudioFileAsResource(fileName);
 		return ResponseEntity
 				.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")

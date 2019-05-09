@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
-import eki.common.constant.TargetContext;
+import eki.common.constant.Complexity;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
@@ -261,11 +261,11 @@ public class LexSearchDbService {
 				.into(LexemeMeaningTuple.class);
 	}
 
-	public List<CollocationTuple> getCollocations(Long wordId, String[] datasets, TargetContext targetContext) {
+	public List<CollocationTuple> getCollocations(Long wordId, String[] datasets, Complexity complexity) {
 
 		Condition where = MVIEW_WW_COLLOCATION.WORD_ID.eq(wordId).and(MVIEW_WW_COLLOCATION.DATASET_CODE.in(datasets));
-		if (targetContext != null) {
-			where = where.and(MVIEW_WW_COLLOCATION.TARGET_CONTEXT.eq(targetContext.name()));
+		if (complexity != null) {
+			where = where.and(MVIEW_WW_COLLOCATION.TARGET_CONTEXT.eq(complexity.name()));
 		}
 
 		return create

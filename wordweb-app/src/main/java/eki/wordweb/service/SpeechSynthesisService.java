@@ -51,7 +51,7 @@ public class SpeechSynthesisService implements WebConstant {
 	@Value("${speech.synthesizer.service.url:}")
 	private String synthesizerUrl;
 
-	public String urlToSoundSource(String words) {
+	public String urlToAudioSource(String words) {
 		if (!isEnabled()) {
 			return null;
 		}
@@ -61,9 +61,9 @@ public class SpeechSynthesisService implements WebConstant {
 		return urlFromEkiPublicService(words);
 	}
 
-	public String urlToSoundSource(Word word) {
+	public String urlToAudioSource(Word word) {
 		if (StringUtils.equals(LANG_EST, word.getLang())) {
-			return urlToSoundSource(word.getWord());
+			return urlToAudioSource(word.getWord());
 		}
 		return null;
 	}

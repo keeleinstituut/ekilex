@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
-import eki.common.constant.TargetContext;
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
@@ -512,7 +512,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 			domainCodes.add(domainCode);
-			createMeaningDomain(meaningId, domainCode, domainOriginBolan);
+			createMeaningDomain(meaningId, domainOriginBolan, domainCode);
 		}
 	}
 
@@ -866,7 +866,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			boolean collocExists = collocMap.containsKey(collocation);
-			String targetContext = calculateTargetContext(collocMembersPermutation);
+			String complexity = calculateComplexity(collocMembersPermutation);
 
 			if (collocExists) {
 				String collocLexemesKey = composeCollocLexemesKey(currentCollocMemberRecords);
@@ -874,7 +874,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				existingCollocRecord = collocLexemesMap.get(collocLexemesKey);
 				if (existingCollocRecord == null) {
 					duplicateCollocationCount.increment();
-					Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, targetContext, currentCollocMemberRecords);
+					Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, complexity, currentCollocMemberRecords);
 					existingCollocRecord = new CollocRecord(collocId, collocDefinition, collocUsages, currentCollocMemberRecords);
 					collocLexemesMap.put(collocLexemesKey, existingCollocRecord);
 				} else {
@@ -885,7 +885,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			} else {
 				collocationCount.increment();
 				collocateCount.increment(currentCollocMemberRecords.size());
-				Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, targetContext, currentCollocMemberRecords);
+				Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, complexity, currentCollocMemberRecords);
 				existingCollocRecord = new CollocRecord(collocId, collocDefinition, collocUsages, currentCollocMemberRecords);
 				String collocLexemesKey = composeCollocLexemesKey(existingCollocRecord.getMembers());
 				collocLexemesMap = new HashMap<>();
@@ -895,18 +895,18 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private String calculateTargetContext(List<CollocMember> collocMembersPermutation) {
+	private String calculateComplexity(List<CollocMember> collocMembersPermutation) {
 		boolean totalPsvAvailability = collocMembersPermutation.stream()
 				.filter(collocMember -> ArrayUtils.contains(primaryCollocMemberNames, collocMember.getName()))
 				.allMatch(CollocMember::isAvailability);
-		String targetContext;
+		String complexity;
 		if (totalPsvAvailability) {
-			targetContext = TargetContext.SIMPLE.name();
+			complexity = Complexity.SIMPLE.name();
 		} else {
 			//well, don't know really...
-			targetContext = TargetContext.DETAIL.name();
+			complexity = Complexity.DETAIL.name();
 		}
-		return targetContext;
+		return complexity;
 	}
 
 	private String composeCollocLexemesKey(List<CollocMemberRecord> collocMembers) {
@@ -1021,9 +1021,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private Long createCollocation(
-			String collocation, String definition, Float frequency, Float score, List<String> collocUsages, String targetContext, List<CollocMemberRecord> collocMemberRecords) throws Exception {
+			String collocation, String definition, Float frequency, Float score, List<String> collocUsages, String complexity, List<CollocMemberRecord> collocMemberRecords) throws Exception {
 
-		Long collocationId = createCollocation(collocation, definition, frequency, score, collocUsages, targetContext);
+		Long collocationId = createCollocation(collocation, definition, frequency, score, collocUsages, complexity);
 		Integer memberOrder = 0;
 		for (CollocMemberRecord collocMemberRecord : collocMemberRecords) {
 			memberOrder++;
@@ -1158,14 +1158,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return lexemeMeaning;
 	}
 
-	private void createLexemePos(Long lexemeId, String posCode) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("lexeme_id", lexemeId);
-		tableRowParamMap.put("pos_code", posCode);
-		basicDbService.createIfNotExists(LEXEME_POS, tableRowParamMap);
-	}
-
 	private Long createCollocPosGroup(Long lexemeId, String posGroupCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -1190,7 +1182,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return collocRelGroupId;
 	}
 
-	private Long createCollocation(String collocation, String definition, Float frequency, Float score, List<String> collocUsages, String targetContext) throws Exception {
+	private Long createCollocation(String collocation, String definition, Float frequency, Float score, List<String> collocUsages, String complexity) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("value", collocation);
@@ -1207,7 +1199,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String[] collocUsagesArr = collocUsages.toArray(new String[0]);
 			tableRowParamMap.put("usages", collocUsagesArr);
 		}
-		tableRowParamMap.put("target_context", targetContext);
+		tableRowParamMap.put("complexity", complexity);
 		Long collocationId = basicDbService.create(COLLOCATION, tableRowParamMap);
 		return collocationId;
 	}

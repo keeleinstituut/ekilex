@@ -587,7 +587,7 @@ create table form
   components varchar(100) array null,
   display_form varchar(255) null,
   vocal_form varchar(255) null,
-  sound_file varchar(255) null,
+  audio_file varchar(255) null,
   order_by integer not null default 0
 );
 alter sequence form_id_seq restart with 10000;
@@ -638,8 +638,8 @@ create table meaning_domain
 (
   id bigserial primary key,
   meaning_id bigint references meaning(id) on delete cascade not null,
-  domain_code varchar(100) not null,
   domain_origin varchar(100) not null,
+  domain_code varchar(100) not null,
   order_by bigserial,
   foreign key (domain_code, domain_origin) references domain (code, origin),
   unique(meaning_id, domain_code, domain_origin)
@@ -703,7 +703,7 @@ create table collocation
   frequency numeric(14, 4),
   score numeric(14, 4),
   usages text array,
-  target_context varchar(100) not null
+  complexity varchar(100) not null
 );
 alter sequence collocation_id_seq restart with 10000;
 

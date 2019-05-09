@@ -334,7 +334,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				if (domain == null) {
 					logger.info("Invalid domain code : {}", domainCode);
 				} else {
-					createMeaningDomain(meaningId, domainCode, dataset);
+					createMeaningDomain(meaningId, dataset, domainCode);
 					//updateDomainDatsetsIfNeeded(domain, dataset);
 				}
 			}
@@ -615,10 +615,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	private void savePosCode(Long lexemeId, String posCode) throws Exception {
 
 		if (posCodes.containsKey(posCode)) {
-			Map<String, Object> params = new HashMap<>();
-			params.put("lexeme_id", lexemeId);
-			params.put("pos_code", posCodes.get(posCode));
-			basicDbService.create(LEXEME_POS, params);
+			String mappedPosCode = posCodes.get(posCode);
+			createLexemePos(lexemeId, mappedPosCode);
 		}
 	}
 

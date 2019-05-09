@@ -88,7 +88,7 @@ dblink(
 	components varchar(100) array,
 	display_form varchar(255),
 	vocal_form varchar(255),
-	sound_file varchar(255),
+	audio_file varchar(255),
 	order_by integer
 );
 
@@ -153,7 +153,7 @@ dblink(
 	colloc_definition text,
 	colloc_usages text array,
 	colloc_members type_colloc_member array,
-	target_context varchar(100)
+	complexity varchar(100)
 );
 
 create materialized view mview_ww_word_etymology as
@@ -257,7 +257,7 @@ create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_collocation_lexeme_id_idx on mview_ww_collocation (lexeme_id);
 create index mview_ww_collocation_word_id_idx on mview_ww_collocation (word_id);
 create index mview_ww_collocation_dataset_code_idx on mview_ww_collocation (dataset_code);
-create index mview_ww_collocation_target_context_idx on mview_ww_collocation (target_context);
+create index mview_ww_collocation_complexity_idx on mview_ww_collocation (complexity);
 create index mview_ww_word_etymology_word_id_idx on mview_ww_word_etymology (word_id);
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);

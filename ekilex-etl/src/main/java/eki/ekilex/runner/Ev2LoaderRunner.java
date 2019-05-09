@@ -796,10 +796,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 			for (String posCode : combinedPosCodes) {
 				if (posCodes.containsKey(posCode)) {
-					Map<String, Object> params = new HashMap<>();
-					params.put("lexeme_id", lexemeId);
-					params.put("pos_code", posCodes.get(posCode));
-					basicDbService.create(LEXEME_POS, params);
+					String mappedPosCode = posCodes.get(posCode);
+					createLexemePos(lexemeId, mappedPosCode);
 				}
 			}
 		} catch (Exception e) {

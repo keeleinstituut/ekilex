@@ -210,11 +210,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			domainCodes.addAll(additionalDomains);
 		}
 		for (String domainCode : domainCodes) {
-			Map<String, Object> params = new HashMap<>();
-			params.put("meaning_id", meaningId);
-			params.put("domain_code", domainCode);
-			params.put("domain_origin", domainOrigin);
-			basicDbService.createIfNotExists(MEANING_DOMAIN, params);
+			createMeaningDomain(meaningId, domainOrigin, domainCode);
 		}
 	}
 

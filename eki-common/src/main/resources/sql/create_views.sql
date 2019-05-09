@@ -151,7 +151,7 @@ create view view_ww_form
       ff.components,
       ff.display_form,
       ff.vocal_form,
-      ff.sound_file,
+      ff.audio_file,
       ff.order_by
     from
       word w,
@@ -346,7 +346,7 @@ create view view_ww_collocation
       c.definition as colloc_definition,
       c.usages as colloc_usages,
       array_agg(row(lw2.lexeme_id, lw2.word_id, lw2.word, lc2.member_form, lw2.homonym_nr, lw2.word_exists, lc2.conjunct, lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members,
-      c.target_context
+      c.complexity
     from
       collocation as c
       inner join lex_colloc as lc1 on lc1.collocation_id = c.id

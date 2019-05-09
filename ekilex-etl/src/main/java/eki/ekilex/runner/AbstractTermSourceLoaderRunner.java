@@ -18,7 +18,7 @@ import eki.ekilex.constant.TermSourceLoaderConstant;
 
 public abstract class AbstractTermSourceLoaderRunner extends AbstractLoaderRunner implements TermSourceLoaderConstant {
 
-	DateFormat defaultDateFormat;
+	protected DateFormat defaultDateFormat;
 
 	protected void extractAndSaveFreeforms(Long sourceId, Node termGroupNode, FreeformType freeformType, String sourceTermPropertyExp) throws Exception {
 

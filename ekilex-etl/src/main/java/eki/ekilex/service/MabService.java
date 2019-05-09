@@ -208,7 +208,7 @@ public class MabService implements SystemConstant, InitializingBean {
 				form.setComponents(tuple.getComponents());
 				form.setDisplayForm(tuple.getDisplayForm());
 				form.setVocalForm(tuple.getVocalForm());
-				form.setSoundFile(tuple.getSoundFile());
+				form.setAudioFile(tuple.getAudioFile());
 				form.setOrderBy(tuple.getOrderBy());
 				paradigm.getForms().add(form);
 			}
@@ -246,7 +246,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		}
 		String displayForm = (String) row.get("display_form");
 		String vocalForm = (String) row.get("vocal_form");
-		String soundFile = (String) row.get("sound_file");
+		String audioFile = (String) row.get("audio_file");
 		Integer orderBy = (Integer) row.get("order_by");
 		ParadigmFormTuple tuple = new ParadigmFormTuple();
 		tuple.setWordId(wordId);
@@ -265,7 +265,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		tuple.setComponents(components);
 		tuple.setDisplayForm(displayForm);
 		tuple.setVocalForm(vocalForm);
-		tuple.setSoundFile(soundFile);
+		tuple.setAudioFile(audioFile);
 		tuple.setOrderBy(orderBy);
 		return tuple;
 	}

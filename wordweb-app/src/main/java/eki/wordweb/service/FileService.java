@@ -27,7 +27,7 @@ public class FileService {
 	@Value("${file.repository.path:}")
 	private String fileRepositoryPath;
 
-	public Resource getSoundFileAsResource(String fileName) {
+	public Resource getAudioFileAsResource(String fileName) {
 
 		Resource resource = null;
 		Path pathToFile = getFilePath(fileName);
@@ -61,22 +61,22 @@ public class FileService {
 		return filePath;
 	}
 
-	private Path doMp3ConversionIfNeeded(Path soundFile) {
+	private Path doMp3ConversionIfNeeded(Path audioFile) {
 
-		if (soundFile.getFileName().toString().endsWith("wav")) {
-			String mp3File = soundFile.getFileName().toString().replace(".wav", ".mp3");
+		if (audioFile.getFileName().toString().endsWith("wav")) {
+			String mp3File = audioFile.getFileName().toString().replace(".wav", ".mp3");
 			mp3File = System.getProperty("java.io.tmpdir") + "/" + mp3File;
 			if (Files.exists(Paths.get(mp3File))) {
 				return Paths.get(mp3File);
 			}
 
-			String wavFile = soundFile.toString();
+			String wavFile = audioFile.toString();
 			String command = String.format("lame --silent %s %s", wavFile, mp3File);
 			if (execute(command)) {
 				return Paths.get(mp3File);
 			}
 		}
-		return soundFile;
+		return audioFile;
 	}
 
 	private boolean execute(String command) {

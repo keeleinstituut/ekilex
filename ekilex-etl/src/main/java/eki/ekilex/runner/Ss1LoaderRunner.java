@@ -840,12 +840,10 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			} else {
 				lexemePosCodes.addAll(meaningPosCodes);
 			}
-			for (String code : lexemePosCodes) {
-				if (posCodes.containsKey(code)) {
-					Map<String, Object> params = new HashMap<>();
-					params.put("lexeme_id", lexemeId);
-					params.put("pos_code", posCodes.get(code));
-					basicDbService.create(LEXEME_POS, params);
+			for (String posCode : lexemePosCodes) {
+				if (posCodes.containsKey(posCode)) {
+					String mappedPosCode = posCodes.get(posCode);
+					createLexemePos(lexemeId, mappedPosCode);
 				}
 			}
 		} catch (Exception e) {

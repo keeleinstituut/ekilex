@@ -576,7 +576,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		String[] components = form.getComponents();
 		String displayForm = form.getDisplayForm();
 		String vocalForm = form.getVocalForm();
-		String soundFile = form.getSoundFile();
+		String audioFile = form.getAudioFile();
 		Integer orderBy = form.getOrderBy();
 
 		String valueClean = cleanEkiEntityMarkup(value);
@@ -610,8 +610,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		if (StringUtils.isNotBlank(vocalForm)) {
 			tableRowParamMap.put("vocal_form", vocalForm);
 		}
-		if (StringUtils.isNotBlank(soundFile)) {
-			tableRowParamMap.put("sound_file", soundFile);
+		if (StringUtils.isNotBlank(audioFile)) {
+			tableRowParamMap.put("audio_file", audioFile);
 		}
 		if (orderBy != null) {
 			tableRowParamMap.put("order_by", orderBy);
@@ -761,12 +761,12 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		basicDbService.createIfNotExists(MEANING_NR, tableRowParamMap);
 	}
 
-	protected void createMeaningDomain(Long meaningId, String domainCode, String domainOrigin) throws Exception {
+	protected void createMeaningDomain(Long meaningId, String domainOrigin, String domainCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
-		tableRowParamMap.put("domain_code", domainCode);
 		tableRowParamMap.put("domain_origin", domainOrigin);
+		tableRowParamMap.put("domain_code", domainCode);
 		Long meaningDomainId = basicDbService.createIfNotExists(MEANING_DOMAIN, tableRowParamMap);
 
 		if (meaningDomainId != null) {
@@ -1194,6 +1194,30 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		if (lexemeRegisterId != null) {
 			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
+		}
+	}
+
+	protected void createLexemePos(Long lexemeId, String posCode) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("pos_code", posCode);
+		Long lexemePosId = basicDbService.createIfNotExists(LEXEME_POS, tableRowParamMap);
+
+		if (lexemePosId != null) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
+		}
+	}
+
+	protected void createLexemeDeriv(Long lexemeId, String derivCode) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("deriv_code", derivCode);
+		Long lexemeDerivId = basicDbService.createIfNotExists(LEXEME_DERIV, tableRowParamMap);
+
+		if (lexemeDerivId != null) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
 		}
 	}
 
