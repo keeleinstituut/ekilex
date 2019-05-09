@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> implements Record7<Long, String, String, BigDecimal, BigDecimal, String[], String> {
 
-    private static final long serialVersionUID = 2084176711;
+    private static final long serialVersionUID = 1015512254;
 
     /**
      * Setter for <code>public.collocation.id</code>.
@@ -117,16 +117,16 @@ public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> im
     }
 
     /**
-     * Setter for <code>public.collocation.target_context</code>.
+     * Setter for <code>public.collocation.complexity</code>.
      */
-    public void setTargetContext(String value) {
+    public void setComplexity(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>public.collocation.target_context</code>.
+     * Getter for <code>public.collocation.complexity</code>.
      */
-    public String getTargetContext() {
+    public String getComplexity() {
         return (String) get(6);
     }
 
@@ -215,7 +215,7 @@ public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> im
      */
     @Override
     public Field<String> field7() {
-        return Collocation.COLLOCATION.TARGET_CONTEXT;
+        return Collocation.COLLOCATION.COMPLEXITY;
     }
 
     /**
@@ -271,7 +271,7 @@ public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> im
      */
     @Override
     public String component7() {
-        return getTargetContext();
+        return getComplexity();
     }
 
     /**
@@ -327,7 +327,7 @@ public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> im
      */
     @Override
     public String value7() {
-        return getTargetContext();
+        return getComplexity();
     }
 
     /**
@@ -389,7 +389,7 @@ public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> im
      */
     @Override
     public CollocationRecord value7(String value) {
-        setTargetContext(value);
+        setComplexity(value);
         return this;
     }
 
@@ -422,7 +422,7 @@ public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> im
     /**
      * Create a detached, initialised CollocationRecord
      */
-    public CollocationRecord(Long id, String value, String definition, BigDecimal frequency, BigDecimal score, String[] usages, String targetContext) {
+    public CollocationRecord(Long id, String value, String definition, BigDecimal frequency, BigDecimal score, String[] usages, String complexity) {
         super(Collocation.COLLOCATION);
 
         set(0, id);
@@ -431,6 +431,6 @@ public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> im
         set(3, frequency);
         set(4, score);
         set(5, usages);
-        set(6, targetContext);
+        set(6, complexity);
     }
 }

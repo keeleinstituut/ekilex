@@ -28,7 +28,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocationRecord> implements Record19<Long, Long, String, Integer, Integer, Integer, Long, String, Long, Long, String, Long, Integer, Long, String, String, String[], TypeCollocMemberRecord[], String> {
 
-    private static final long serialVersionUID = -684034543;
+    private static final long serialVersionUID = 227246058;
 
     /**
      * Setter for <code>public.mview_ww_collocation.lexeme_id</code>.
@@ -283,16 +283,16 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
     }
 
     /**
-     * Setter for <code>public.mview_ww_collocation.target_context</code>.
+     * Setter for <code>public.mview_ww_collocation.complexity</code>.
      */
-    public void setTargetContext(String value) {
+    public void setComplexity(String value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_collocation.target_context</code>.
+     * Getter for <code>public.mview_ww_collocation.complexity</code>.
      */
-    public String getTargetContext() {
+    public String getComplexity() {
         return (String) get(18);
     }
 
@@ -465,7 +465,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
      */
     @Override
     public Field<String> field19() {
-        return MviewWwCollocation.MVIEW_WW_COLLOCATION.TARGET_CONTEXT;
+        return MviewWwCollocation.MVIEW_WW_COLLOCATION.COMPLEXITY;
     }
 
     /**
@@ -617,7 +617,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
      */
     @Override
     public String component19() {
-        return getTargetContext();
+        return getComplexity();
     }
 
     /**
@@ -769,7 +769,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
      */
     @Override
     public String value19() {
-        return getTargetContext();
+        return getComplexity();
     }
 
     /**
@@ -939,7 +939,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
      */
     @Override
     public MviewWwCollocationRecord value19(String value) {
-        setTargetContext(value);
+        setComplexity(value);
         return this;
     }
 
@@ -984,7 +984,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
     /**
      * Create a detached, initialised MviewWwCollocationRecord
      */
-    public MviewWwCollocationRecord(Long lexemeId, Long wordId, String datasetCode, Integer level1, Integer level2, Integer level3, Long posGroupId, String posGroupCode, Long posGroupOrderBy, Long relGroupId, String relGroupName, Long relGroupOrderBy, Integer collocGroupOrder, Long collocId, String collocValue, String collocDefinition, String[] collocUsages, TypeCollocMemberRecord[] collocMembers, String targetContext) {
+    public MviewWwCollocationRecord(Long lexemeId, Long wordId, String datasetCode, Integer level1, Integer level2, Integer level3, Long posGroupId, String posGroupCode, Long posGroupOrderBy, Long relGroupId, String relGroupName, Long relGroupOrderBy, Integer collocGroupOrder, Long collocId, String collocValue, String collocDefinition, String[] collocUsages, TypeCollocMemberRecord[] collocMembers, String complexity) {
         super(MviewWwCollocation.MVIEW_WW_COLLOCATION);
 
         set(0, lexemeId);
@@ -1005,6 +1005,6 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
         set(15, collocDefinition);
         set(16, collocUsages);
         set(17, collocMembers);
-        set(18, targetContext);
+        set(18, complexity);
     }
 }

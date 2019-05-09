@@ -265,7 +265,7 @@ public class LexSearchDbService {
 
 		Condition where = MVIEW_WW_COLLOCATION.WORD_ID.eq(wordId).and(MVIEW_WW_COLLOCATION.DATASET_CODE.in(datasets));
 		if (complexity != null) {
-			where = where.and(MVIEW_WW_COLLOCATION.TARGET_CONTEXT.eq(complexity.name()));
+			where = where.and(MVIEW_WW_COLLOCATION.COMPLEXITY.eq(complexity.name()));
 		}
 
 		return create
@@ -319,7 +319,7 @@ public class LexSearchDbService {
 						MVIEW_WW_FORM.COMPONENTS,
 						MVIEW_WW_FORM.DISPLAY_FORM,
 						MVIEW_WW_FORM.VOCAL_FORM,
-						MVIEW_WW_FORM.SOUND_FILE,
+						MVIEW_WW_FORM.AUDIO_FILE,
 						MVIEW_WW_FORM.ORDER_BY
 						)
 				.from(MVIEW_WW_FORM)

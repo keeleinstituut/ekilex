@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord> implements Record5<Long, Long, String, String, Long> {
 
-    private static final long serialVersionUID = 671624978;
+    private static final long serialVersionUID = 1448409720;
 
     /**
      * Setter for <code>public.meaning_domain.id</code>.
@@ -59,30 +59,30 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
     }
 
     /**
-     * Setter for <code>public.meaning_domain.domain_code</code>.
-     */
-    public void setDomainCode(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.meaning_domain.domain_code</code>.
-     */
-    public String getDomainCode() {
-        return (String) get(2);
-    }
-
-    /**
      * Setter for <code>public.meaning_domain.domain_origin</code>.
      */
     public void setDomainOrigin(String value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.meaning_domain.domain_origin</code>.
      */
     public String getDomainOrigin() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>public.meaning_domain.domain_code</code>.
+     */
+    public void setDomainCode(String value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.meaning_domain.domain_code</code>.
+     */
+    public String getDomainCode() {
         return (String) get(3);
     }
 
@@ -153,7 +153,7 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
      */
     @Override
     public Field<String> field3() {
-        return MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE;
+        return MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN;
     }
 
     /**
@@ -161,7 +161,7 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
      */
     @Override
     public Field<String> field4() {
-        return MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN;
+        return MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE;
     }
 
     /**
@@ -193,7 +193,7 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
      */
     @Override
     public String component3() {
-        return getDomainCode();
+        return getDomainOrigin();
     }
 
     /**
@@ -201,7 +201,7 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
      */
     @Override
     public String component4() {
-        return getDomainOrigin();
+        return getDomainCode();
     }
 
     /**
@@ -233,7 +233,7 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
      */
     @Override
     public String value3() {
-        return getDomainCode();
+        return getDomainOrigin();
     }
 
     /**
@@ -241,7 +241,7 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
      */
     @Override
     public String value4() {
-        return getDomainOrigin();
+        return getDomainCode();
     }
 
     /**
@@ -275,7 +275,7 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
      */
     @Override
     public MeaningDomainRecord value3(String value) {
-        setDomainCode(value);
+        setDomainOrigin(value);
         return this;
     }
 
@@ -284,7 +284,7 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
      */
     @Override
     public MeaningDomainRecord value4(String value) {
-        setDomainOrigin(value);
+        setDomainCode(value);
         return this;
     }
 
@@ -324,13 +324,13 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
     /**
      * Create a detached, initialised MeaningDomainRecord
      */
-    public MeaningDomainRecord(Long id, Long meaningId, String domainCode, String domainOrigin, Long orderBy) {
+    public MeaningDomainRecord(Long id, Long meaningId, String domainOrigin, String domainCode, Long orderBy) {
         super(MeaningDomain.MEANING_DOMAIN);
 
         set(0, id);
         set(1, meaningId);
-        set(2, domainCode);
-        set(3, domainOrigin);
+        set(2, domainOrigin);
+        set(3, domainCode);
         set(4, orderBy);
     }
 }

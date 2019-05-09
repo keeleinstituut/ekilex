@@ -4,14 +4,19 @@
 package eki.wordweb.data.db.tables;
 
 
+import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordEtymologyRecord;
 import eki.wordweb.data.db.udt.records.TypeWordEtymRelationRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -34,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> {
 
-    private static final long serialVersionUID = -123854282;
+    private static final long serialVersionUID = 1599120466;
 
     /**
      * The reference instance of <code>public.mview_ww_word_etymology</code>
@@ -153,6 +158,14 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_ETYMOLOGY_WORD_ID_IDX);
     }
 
     /**

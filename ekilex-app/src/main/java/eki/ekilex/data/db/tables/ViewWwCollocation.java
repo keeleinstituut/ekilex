@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
 
-    private static final long serialVersionUID = -1667533515;
+    private static final long serialVersionUID = 1278390078;
 
     /**
      * The reference instance of <code>public.view_ww_collocation</code>
@@ -140,9 +140,9 @@ public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
     public final TableField<ViewWwCollocationRecord, TypeCollocMemberRecord[]> COLLOC_MEMBERS = createField("colloc_members", eki.ekilex.data.db.udt.TypeCollocMember.TYPE_COLLOC_MEMBER.getDataType().getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.view_ww_collocation.target_context</code>.
+     * The column <code>public.view_ww_collocation.complexity</code>.
      */
-    public final TableField<ViewWwCollocationRecord, String> TARGET_CONTEXT = createField("target_context", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ViewWwCollocationRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.view_ww_collocation</code> table reference

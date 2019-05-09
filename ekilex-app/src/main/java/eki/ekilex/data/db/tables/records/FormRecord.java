@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Record16<Long, Long, String, String, String, String, Integer, String, Boolean, String, String, String[], String, String, String, Integer> {
 
-    private static final long serialVersionUID = -1685477988;
+    private static final long serialVersionUID = 432935392;
 
     /**
      * Setter for <code>public.form.id</code>.
@@ -227,16 +227,16 @@ public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Recor
     }
 
     /**
-     * Setter for <code>public.form.sound_file</code>.
+     * Setter for <code>public.form.audio_file</code>.
      */
-    public void setSoundFile(String value) {
+    public void setAudioFile(String value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>public.form.sound_file</code>.
+     * Getter for <code>public.form.audio_file</code>.
      */
-    public String getSoundFile() {
+    public String getAudioFile() {
         return (String) get(14);
     }
 
@@ -403,7 +403,7 @@ public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Recor
      */
     @Override
     public Field<String> field15() {
-        return Form.FORM.SOUND_FILE;
+        return Form.FORM.AUDIO_FILE;
     }
 
     /**
@@ -531,7 +531,7 @@ public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Recor
      */
     @Override
     public String component15() {
-        return getSoundFile();
+        return getAudioFile();
     }
 
     /**
@@ -659,7 +659,7 @@ public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Recor
      */
     @Override
     public String value15() {
-        return getSoundFile();
+        return getAudioFile();
     }
 
     /**
@@ -801,7 +801,7 @@ public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Recor
      */
     @Override
     public FormRecord value15(String value) {
-        setSoundFile(value);
+        setAudioFile(value);
         return this;
     }
 
@@ -852,7 +852,7 @@ public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Recor
     /**
      * Create a detached, initialised FormRecord
      */
-    public FormRecord(Long id, Long paradigmId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String value, String valuePrese, String[] components, String displayForm, String vocalForm, String soundFile, Integer orderBy) {
+    public FormRecord(Long id, Long paradigmId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String value, String valuePrese, String[] components, String displayForm, String vocalForm, String audioFile, Integer orderBy) {
         super(Form.FORM);
 
         set(0, id);
@@ -869,7 +869,7 @@ public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Recor
         set(11, components);
         set(12, displayForm);
         set(13, vocalForm);
-        set(14, soundFile);
+        set(14, audioFile);
         set(15, orderBy);
     }
 }

@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> implements Record20<Long, String, String, String[], Long, String, Long, String, String, String, String, Integer, String, Boolean, String, String[], String, String, String, Integer> {
 
-    private static final long serialVersionUID = 1552202233;
+    private static final long serialVersionUID = -1998185923;
 
     /**
      * Setter for <code>public.view_ww_form.word_id</code>.
@@ -282,16 +282,16 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> implemen
     }
 
     /**
-     * Setter for <code>public.view_ww_form.sound_file</code>.
+     * Setter for <code>public.view_ww_form.audio_file</code>.
      */
-    public void setSoundFile(String value) {
+    public void setAudioFile(String value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>public.view_ww_form.sound_file</code>.
+     * Getter for <code>public.view_ww_form.audio_file</code>.
      */
-    public String getSoundFile() {
+    public String getAudioFile() {
         return (String) get(18);
     }
 
@@ -478,7 +478,7 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> implemen
      */
     @Override
     public Field<String> field19() {
-        return ViewWwForm.VIEW_WW_FORM.SOUND_FILE;
+        return ViewWwForm.VIEW_WW_FORM.AUDIO_FILE;
     }
 
     /**
@@ -638,7 +638,7 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> implemen
      */
     @Override
     public String component19() {
-        return getSoundFile();
+        return getAudioFile();
     }
 
     /**
@@ -798,7 +798,7 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> implemen
      */
     @Override
     public String value19() {
-        return getSoundFile();
+        return getAudioFile();
     }
 
     /**
@@ -976,7 +976,7 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> implemen
      */
     @Override
     public ViewWwFormRecord value19(String value) {
-        setSoundFile(value);
+        setAudioFile(value);
         return this;
     }
 
@@ -1031,7 +1031,7 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> implemen
     /**
      * Create a detached, initialised ViewWwFormRecord
      */
-    public ViewWwFormRecord(Long wordId, String word, String lang, String[] datasetCodes, Long paradigmId, String inflectionType, Long formId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String form, String[] components, String displayForm, String vocalForm, String soundFile, Integer orderBy) {
+    public ViewWwFormRecord(Long wordId, String word, String lang, String[] datasetCodes, Long paradigmId, String inflectionType, Long formId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String form, String[] components, String displayForm, String vocalForm, String audioFile, Integer orderBy) {
         super(ViewWwForm.VIEW_WW_FORM);
 
         set(0, wordId);
@@ -1052,7 +1052,7 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> implemen
         set(15, components);
         set(16, displayForm);
         set(17, vocalForm);
-        set(18, soundFile);
+        set(18, audioFile);
         set(19, orderBy);
     }
 }

@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> implements Record20<Long, String, String, String[], Long, String, Long, String, String, String, String, Integer, String, Boolean, String, String[], String, String, String, Integer> {
 
-    private static final long serialVersionUID = -1705112703;
+    private static final long serialVersionUID = -1785455657;
 
     /**
      * Setter for <code>public.mview_ww_form.word_id</code>.
@@ -282,16 +282,16 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> implem
     }
 
     /**
-     * Setter for <code>public.mview_ww_form.sound_file</code>.
+     * Setter for <code>public.mview_ww_form.audio_file</code>.
      */
-    public void setSoundFile(String value) {
+    public void setAudioFile(String value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_form.sound_file</code>.
+     * Getter for <code>public.mview_ww_form.audio_file</code>.
      */
-    public String getSoundFile() {
+    public String getAudioFile() {
         return (String) get(18);
     }
 
@@ -478,7 +478,7 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> implem
      */
     @Override
     public Field<String> field19() {
-        return MviewWwForm.MVIEW_WW_FORM.SOUND_FILE;
+        return MviewWwForm.MVIEW_WW_FORM.AUDIO_FILE;
     }
 
     /**
@@ -638,7 +638,7 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> implem
      */
     @Override
     public String component19() {
-        return getSoundFile();
+        return getAudioFile();
     }
 
     /**
@@ -798,7 +798,7 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> implem
      */
     @Override
     public String value19() {
-        return getSoundFile();
+        return getAudioFile();
     }
 
     /**
@@ -976,7 +976,7 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> implem
      */
     @Override
     public MviewWwFormRecord value19(String value) {
-        setSoundFile(value);
+        setAudioFile(value);
         return this;
     }
 
@@ -1031,7 +1031,7 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> implem
     /**
      * Create a detached, initialised MviewWwFormRecord
      */
-    public MviewWwFormRecord(Long wordId, String word, String lang, String[] datasetCodes, Long paradigmId, String inflectionType, Long formId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String form, String[] components, String displayForm, String vocalForm, String soundFile, Integer orderBy) {
+    public MviewWwFormRecord(Long wordId, String word, String lang, String[] datasetCodes, Long paradigmId, String inflectionType, Long formId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String form, String[] components, String displayForm, String vocalForm, String audioFile, Integer orderBy) {
         super(MviewWwForm.MVIEW_WW_FORM);
 
         set(0, wordId);
@@ -1052,7 +1052,7 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> implem
         set(15, components);
         set(16, displayForm);
         set(17, vocalForm);
-        set(18, soundFile);
+        set(18, audioFile);
         set(19, orderBy);
     }
 }
