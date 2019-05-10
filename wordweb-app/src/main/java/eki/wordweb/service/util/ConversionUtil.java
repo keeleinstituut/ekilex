@@ -613,9 +613,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		}
 		wordEtymTuples.forEach(tuple -> {
 			classifierUtil.applyClassifiers(tuple, displayLang);
-			if (CollectionUtils.isNotEmpty(tuple.getWordEtymWordMeaningWords())) {
-				tuple.getWordEtymWordMeaningWords().remove(word.getWord());
-			}
 		});
 
 		Long headwordId = word.getWordId();
@@ -628,13 +625,16 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 
 		List<String> etymLevelsWrapup = new ArrayList<>();
 		wordEtymology.setEtymLevelsWrapup(etymLevelsWrapup);
-		composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, etymAltsMap);
+		composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, headwordId, etymAltsMap);
 	}
 
 	private WordEtymology composeHeadwordEtym(WordEtymTuple headwordEtymTuple) {
 
 		WordEtymology wordEtymology = new WordEtymology();
 		StringBuilder headwordEtymBuf = new StringBuilder();
+		if (headwordEtymTuple.isWordEtymIsQuestionable()) {
+			headwordEtymBuf.append(" ? ");
+		}
 		if (headwordEtymTuple.getEtymologyType() != null) {
 			headwordEtymBuf.append("<font style='font-variant: small-caps'>");
 			headwordEtymBuf.append(headwordEtymTuple.getEtymologyType().getValue());
@@ -662,7 +662,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		return wordEtymology;
 	}
 
-	private void composeEtymLevelsWrapup(List<String> etymLevelsWrapup, Long wordId, Map<Long, List<WordEtymTuple>> etymAltsMap) {
+	private void composeEtymLevelsWrapup(List<String> etymLevelsWrapup, Long headwordId, Long wordId, Map<Long, List<WordEtymTuple>> etymAltsMap) {
 
 		if (wordId == null) {
 			return;
@@ -674,7 +674,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			List<TypeWordEtymRelation> wordEtymRelations = wordEtymAlt.getWordEtymRelations();
 			String etymLevelWrapup = composeEtymLevelWrapup(wordEtymRelations, etymAltsMap);
 			if (StringUtils.isNotBlank(etymLevelWrapup)) {
-				if (wordEtymAlt.isWordEtymIsQuestionable()) {
+				if (!headwordId.equals(wordId) && wordEtymAlt.isWordEtymIsQuestionable()) {
 					etymLevelWrapup = " ? " + etymLevelWrapup;
 				}
 				wordEtymAltsContent.add(etymLevelWrapup);
@@ -689,7 +689,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			etymLevelsWrapup.add(etymLevelWrapupJoin);
 		}
 		for (Long etymLevelWordId : etymLevelWordIds) {
-			composeEtymLevelsWrapup(etymLevelsWrapup, etymLevelWordId, etymAltsMap);
+			composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, etymLevelWordId, etymAltsMap);
 		}
 	}
 

@@ -443,6 +443,7 @@ create view view_ww_word_etymology
                        and   l2.dataset_code = 'ety'
                        and   l2.word_id = w2.id
                        and   p2.word_id = w2.id
+                       and   w2.lang = 'est'
                        and   f2.paradigm_id = p2.id
                        and   f2.mode = 'WORD'
                        group by l1.word_id) mw2 on mw2.word_id = rec.word_etym_word_id

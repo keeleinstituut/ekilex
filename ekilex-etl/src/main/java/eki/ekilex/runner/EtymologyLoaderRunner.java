@@ -322,7 +322,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							List<String> words = new ArrayList<>();
 							String wordVer;
 							if (StringUtils.contains(wordStr, '(')) {
-								wordVer = RegExUtils.removePattern(wordStr, "[(]\\w+[)]");
+								wordVer = RegExUtils.removePattern(wordStr, "[(].*?[)]");
 								wordVer = cleanUp(wordVer);
 								words.add(wordVer);
 							}
