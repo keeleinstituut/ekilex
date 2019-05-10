@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -44,11 +45,17 @@ public class PermissionService implements SystemConstant {
 
 	@Transactional
 	public List<Dataset> getUserPermDatasets(Long userId) {
+		if (userId == null) {
+			return Collections.emptyList();
+		}
 		return permissionDbService.getUserPermDatasets(userId);
 	}
 
 	@Transactional
 	public List<Dataset> getUserOwnedDatasets(Long userId) {
+		if (userId == null) {
+			return Collections.emptyList();
+		}
 		return permissionDbService.getUserOwnedDatasets(userId);
 	}
 

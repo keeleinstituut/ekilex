@@ -51,6 +51,7 @@ import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
@@ -58,6 +59,7 @@ import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -76,7 +78,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 
 @Component
-public class CommonDataDbService implements DbConstant {
+public class CommonDataDbService implements DbConstant, SystemConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -85,10 +87,12 @@ public class CommonDataDbService implements DbConstant {
 		return create.select().from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
+	@Cacheable(value = CACHE_KEY_DATASET)
 	public List<Dataset> getDatasets() {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getLanguages(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -104,6 +108,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Classifier> getFrequencyGroups() {
 		return create
 				.select(
@@ -114,6 +119,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getPoses(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -125,6 +131,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getRegisters(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -136,6 +143,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Classifier> getRegions() {
 		return create
 				.select(
@@ -146,6 +154,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getDerivs(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -157,6 +166,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getGenders(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -168,6 +178,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getAspects(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -179,6 +190,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Classifier> getDomains() {
 		return create
 				.select(
@@ -191,6 +203,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Classifier> getDomainsInUse() {
 		return create
 				.select(
@@ -208,6 +221,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getWordTypes(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -219,6 +233,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getWordRelationTypes(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -230,6 +245,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getLexemeRelationTypes(String classifierLabelLang, String classifierLabelType) {
 		return create
 				.select(
@@ -241,6 +257,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getMeaningRelationTypes(String classifierLabelLang, String classifierLabelType) {
 		return create
 				.select(
@@ -252,6 +269,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getMorphs(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -263,6 +281,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getValueStates(String classifierLabelLang, String classifierLabelType) {
 		return create
 				.select(
@@ -274,6 +293,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Classifier> getProcessStates() {
 		return create
 				.select(
@@ -309,7 +329,7 @@ public class CommonDataDbService implements DbConstant {
 	}
 
 	public List<Classifier> getWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
-	
+
 		return create
 				.select(
 						getClassifierNameField(ClassifierName.WORD_TYPE),

@@ -51,3 +51,11 @@ footer p {
     justify-content: center;
     margin: 0 2rem;
 }
+
+.last-update {  
+  display: block; 
+  margin: 0 auto 0 auto; 
+  color: #d8d8d8; 
+  text-align: center; 
+  width: 100%;
+}

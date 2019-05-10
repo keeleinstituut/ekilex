@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.AuthorityItem;
@@ -20,6 +21,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserPermData;
+import eki.ekilex.service.MaintenanceService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 
@@ -35,6 +37,9 @@ public class PermissionsController extends AbstractPageController {
 
 	@Autowired
 	private PermissionService permissionService;
+
+	@Autowired
+	private MaintenanceService maintenanceService;
 
 	@GetMapping(PERMISSIONS_URI)
 	public String permissions(Model model) {
@@ -98,6 +103,13 @@ public class PermissionsController extends AbstractPageController {
 	private void populateUserPermDataModel(Model model) {
 		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions();
 		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
+	}
+
+	@ResponseBody
+	@GetMapping(PERMISSIONS_URI + "/clearcache")
+	public String clearCache() {
+		maintenanceService.clearCache();
+		return "OK";
 	}
 
 	@GetMapping(COMPONENT_URI + "/commonwordlangselect/{datasetCode}")
