@@ -25,7 +25,6 @@ import org.jooq.Record5;
 import org.jooq.SelectSelectStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
@@ -69,7 +68,6 @@ public class PermissionDbService implements SystemConstant {
 				.fetchInto(EkiUserPermData.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_USER, key = "{#root.methodName, #userId}")
 	public List<DatasetPermission> getDatasetPermissions(Long userId) {
 
 		return create
@@ -91,7 +89,6 @@ public class PermissionDbService implements SystemConstant {
 				.fetchInto(DatasetPermission.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_USER, key = "{#root.methodName, #userId}")
 	public List<Dataset> getUserPermDatasets(Long userId) {
 		Condition userIsAdminCond = DSL
 				.exists(DSL
@@ -111,7 +108,6 @@ public class PermissionDbService implements SystemConstant {
 				.fetchInto(Dataset.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_USER, key = "{#root.methodName, #userId}")
 	public List<Dataset> getUserOwnedDatasets(Long userId) {
 		Condition userIsAdminCond = DSL
 				.exists(DSL
@@ -134,7 +130,6 @@ public class PermissionDbService implements SystemConstant {
 				.fetchInto(Dataset.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_USER, key = "{#root.methodName, #userId}")
 	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
 		Condition userIsAdminCond = DSL
 				.exists(DSL
