@@ -42,10 +42,11 @@ public class AudioFileUpdaterRunner extends AbstractLoaderCommons implements Ini
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
+		final String csvSeparatorStr = "" + CSV_SEPARATOR;
 		List<String> lines = readFileLines(audioFilesIndexFilePath);
 		int updatedAudioFileNameCount = 0;
 		for (String line : lines) {
-			String[] cells = StringUtils.split(line, CSV_SEPARATOR);
+			String[] cells = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, csvSeparatorStr);
 			if (cells.length > 1) {
 				String word = cells[0];
 				String audioFileName = cells[3];
