@@ -1,6 +1,9 @@
 eki-foreign {
-	color: #00874F;
 	font-style: italic;
+}
+
+.example-text eki-foreign {
+	font-style: normal;
 }
 
 eki-highlight {
@@ -18,12 +21,12 @@ eki-sup {
 }
 
 eki-meta {
-	color: #00874F;
 	font-variant: small-caps;
 	font-stretch: expanded;
 }
 
 eki-link {
-	color: #004F87;
-	cursor: pointer;
+	/*disabled until clicking has functionality*/
+	/*color: #004F87;*/
+	/*cursor: pointer;*/
 }
