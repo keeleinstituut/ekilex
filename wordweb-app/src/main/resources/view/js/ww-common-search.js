@@ -193,17 +193,18 @@ function generateAudioAndPlay(e) {
 		}
 	};
 
-	if (elem.data('url-to-audio') !== undefined) {
-		playAudio(elem.data('playAudio'), onEndCallback);
+	var definedUrlToAudio = elem.data('url-to-audio');
+	if (definedUrlToAudio !== undefined) {
+		playAudio(definedUrlToAudio, onEndCallback);
 		return;
 	}
 
 	var data = {
 		'words': elem.data('words')
 	};
-	$.post(applicationUrl + 'generate_audio', data).done(function (playAudio) {
-		elem.data('url-to-audio', playAudio);
-		playAudio(playAudio, onEndCallback);
+	$.post(applicationUrl + 'generate_audio', data).done(function (providedUrlToAudio) {
+		elem.data('url-to-audio', providedUrlToAudio);
+		playAudio(providedUrlToAudio, onEndCallback);
 	}).fail(function () {
 		onEndCallback();
 		alert(messages.audio_generation_failure);
