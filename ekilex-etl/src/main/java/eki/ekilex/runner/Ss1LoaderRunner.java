@@ -651,11 +651,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private void saveComments(Long lexemeId, List<CommentData> comments) throws Exception {
 		for (CommentData comment : comments) {
-			Long commentFreeformId = createLexemeFreeform(lexemeId, FreeformType.PRIVATE_NOTE, comment.value, dataLang);
-			createFreeformTextOrDate(FreeformType.CREATED_BY, commentFreeformId, comment.author, dataLang);
-			Long valueLong = dateFormat.parse(comment.createdAt).getTime();
-			Timestamp valueTs = new Timestamp(valueLong);
-			createFreeformTextOrDate(FreeformType.CREATED_ON, commentFreeformId, valueTs, dataLang);
+			Long eventOnLong = dateFormat.parse(comment.createdAt).getTime();
+			Timestamp eventOnTs = new Timestamp(eventOnLong);
+			createLexemeProcessLog(lexemeId, comment.value, comment.author, eventOnTs);
 		}
 	}
 

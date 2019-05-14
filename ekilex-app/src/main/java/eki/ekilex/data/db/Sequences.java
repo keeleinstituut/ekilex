@@ -254,6 +254,11 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_POS_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_pos_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.lexeme_process_log_id_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_PROCESS_LOG_ID_SEQ = new SequenceImpl<Long>("lexeme_process_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.lexeme_region_id_seq</code>
      */
     public static final Sequence<Long> LEXEME_REGION_ID_SEQ = new SequenceImpl<Long>("lexeme_region_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -314,6 +319,11 @@ public class Sequences {
     public static final Sequence<Long> MEANING_NR_ID_SEQ = new SequenceImpl<Long>("meaning_nr_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.meaning_process_log_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_PROCESS_LOG_ID_SEQ = new SequenceImpl<Long>("meaning_process_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.meaning_rel_type_order_by_seq</code>
      */
     public static final Sequence<Long> MEANING_REL_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("meaning_rel_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -347,6 +357,21 @@ public class Sequences {
      * The sequence <code>public.pos_order_by_seq</code>
      */
     public static final Sequence<Long> POS_ORDER_BY_SEQ = new SequenceImpl<Long>("pos_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.process_log_id_seq</code>
+     */
+    public static final Sequence<Long> PROCESS_LOG_ID_SEQ = new SequenceImpl<Long>("process_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.process_log_source_link_id_seq</code>
+     */
+    public static final Sequence<Long> PROCESS_LOG_SOURCE_LINK_ID_SEQ = new SequenceImpl<Long>("process_log_source_link_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.process_log_source_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> PROCESS_LOG_SOURCE_LINK_ORDER_BY_SEQ = new SequenceImpl<Long>("process_log_source_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.process_state_order_by_seq</code>
@@ -447,6 +472,11 @@ public class Sequences {
      * The sequence <code>public.word_lifecycle_log_id_seq</code>
      */
     public static final Sequence<Long> WORD_LIFECYCLE_LOG_ID_SEQ = new SequenceImpl<Long>("word_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_process_log_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_PROCESS_LOG_ID_SEQ = new SequenceImpl<Long>("word_process_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.word_rel_type_order_by_seq</code>

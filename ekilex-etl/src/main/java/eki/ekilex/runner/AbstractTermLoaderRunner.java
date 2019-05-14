@@ -126,6 +126,14 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 	}
 
 	protected String handleFreeformTextSourceLinks(Node mixedContentNode, Long freeformId, String fileName) throws Exception {
+		return handleTextSourceLinks(SourceOwner.PUBLIC_NOTE, mixedContentNode, freeformId, fileName);
+	}
+
+	protected String handleProcessLogTextSourceLinks(Node mixedContentNode, Long processLogId, String fileName) throws Exception {
+		return handleTextSourceLinks(SourceOwner.PROCESS_LOG, mixedContentNode, processLogId, fileName);
+	}
+
+	private String handleTextSourceLinks(SourceOwner sourceOwner, Node mixedContentNode, Long id, String fileName) throws Exception {
 
 		Iterator<Node> contentNodeIter = ((Element) mixedContentNode).nodeIterator();
 		StringBuffer contentBuf = new StringBuffer();
@@ -150,9 +158,15 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 						if (sourceId == null) {
 							contentBuf.append(valueStr);
 						} else {
-							Long sourceLinkId = createFreeformSourceLink(freeformId, ReferenceType.ANY, sourceId, null, valueStr);
-							String sourceLinkMarkup = composeLinkMarkup(ContentKey.FREEFORM_SOURCE_LINK, sourceLinkId.toString(), valueStr);
-							contentBuf.append(sourceLinkMarkup);
+							if (SourceOwner.PROCESS_LOG.equals(sourceOwner)) {
+								Long sourceLinkId = createProcessLogSourceLink(id, ReferenceType.ANY, sourceId, valueStr);
+								String sourceLinkMarkup = composeLinkMarkup(ContentKey.PROCESS_LOG_SOURCE_LINK, sourceLinkId.toString(), valueStr);
+								contentBuf.append(sourceLinkMarkup);
+							} else if (SourceOwner.PUBLIC_NOTE.equals(sourceOwner)) {
+								Long sourceLinkId = createFreeformSourceLink(id, ReferenceType.ANY, sourceId, null, valueStr);
+								String sourceLinkMarkup = composeLinkMarkup(ContentKey.FREEFORM_SOURCE_LINK, sourceLinkId.toString(), valueStr);
+								contentBuf.append(sourceLinkMarkup);
+							}
 						}
 					} else {
 						// unknown ref type
@@ -311,6 +325,6 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 	}
 
 	enum SourceOwner {
-		LEXEME, DEFINITION, USAGE, PUBLIC_NOTE
+		LEXEME, DEFINITION, USAGE, PUBLIC_NOTE, PROCESS_LOG
 	}
 }

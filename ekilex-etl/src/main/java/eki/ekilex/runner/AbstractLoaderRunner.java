@@ -956,6 +956,31 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 	}
 
+	protected Long createProcessLog(String value, String eventBy, Timestamp eventOn) throws Exception {
+
+		String datasetCode = getDataset();
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("comment", value);
+		tableRowParamMap.put("dataset_code", datasetCode);
+		if (StringUtils.isNotBlank(eventBy)) {
+			tableRowParamMap.put("event_by", eventBy);
+		}
+		if (eventOn != null) {
+			tableRowParamMap.put("event_on", eventOn);
+		}
+		Long processLogId = basicDbService.create(PROCESS_LOG, tableRowParamMap);
+		return processLogId;
+	}
+
+	protected void updateProcessLogText(Long processLogId, String value) throws Exception {
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("id", processLogId);
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("comment", value);
+		basicDbService.update(PROCESS_LOG, criteriaParamMap, valueParamMap);
+	}
+
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {
 
 		Long freeformId = createFreeformTextOrDate(freeformType, null, value, lang);
@@ -990,6 +1015,22 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
+	protected Long createLexemeProcessLog(Long lexemeId, String value) throws Exception {
+		return createLexemeProcessLog(lexemeId, value, null, null);
+	}
+
+	protected Long createLexemeProcessLog(Long lexemeId, String value, String eventBy, Timestamp eventOn) throws Exception {
+
+		Long processLogId = createProcessLog(value, eventBy, eventOn);
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("process_log_id", processLogId);
+		basicDbService.create(LEXEME_PROCESS_LOG, tableRowParamMap);
+
+		return processLogId;
+	}
+
 	protected Long createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
 
 		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
@@ -1006,6 +1047,18 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 
 		return freeformId;
+	}
+
+	protected Long createMeaningProcessLog(Long meaningId, String value) throws Exception {
+
+		Long processLogId = createProcessLog(value, null, null);
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("process_log_id", processLogId);
+		basicDbService.create(MEANING_PROCESS_LOG, tableRowParamMap);
+
+		return processLogId;
 	}
 
 	protected Long createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
@@ -1084,6 +1137,19 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			tableRowParamMap.put("value", value);
 		}
 		Long sourceLinkId = basicDbService.create(FREEFORM_SOURCE_LINK, tableRowParamMap);
+		return sourceLinkId;
+	}
+
+	protected Long createProcessLogSourceLink(Long processLogId, ReferenceType refType, Long sourceId, String value) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("process_log_id", processLogId);
+		tableRowParamMap.put("type", refType.name());
+		tableRowParamMap.put("source_id", sourceId);
+		if (StringUtils.isNotBlank(value)) {
+			tableRowParamMap.put("value", value);
+		}
+		Long sourceLinkId = basicDbService.create(PROCESS_LOG_SOURCE_LINK, tableRowParamMap);
 		return sourceLinkId;
 	}
 

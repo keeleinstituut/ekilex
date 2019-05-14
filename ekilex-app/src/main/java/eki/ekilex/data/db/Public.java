@@ -52,6 +52,7 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeProcessLog;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -61,6 +62,7 @@ import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningNr;
+import eki.ekilex.data.db.tables.MeaningProcessLog;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
@@ -71,6 +73,8 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.ProcessLog;
+import eki.ekilex.data.db.tables.ProcessLogSourceLink;
 import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
@@ -104,6 +108,7 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
+import eki.ekilex.data.db.tables.WordProcessLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -146,7 +151,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 2025895358;
+    private static final long serialVersionUID = -724753055;
 
     /**
      * The reference instance of <code>public</code>
@@ -394,6 +399,11 @@ public class Public extends SchemaImpl {
     public final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
 
     /**
+     * The table <code>public.lexeme_process_log</code>.
+     */
+    public final LexemeProcessLog LEXEME_PROCESS_LOG = eki.ekilex.data.db.tables.LexemeProcessLog.LEXEME_PROCESS_LOG;
+
+    /**
      * The table <code>public.lexeme_region</code>.
      */
     public final LexemeRegion LEXEME_REGION = eki.ekilex.data.db.tables.LexemeRegion.LEXEME_REGION;
@@ -437,6 +447,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_nr</code>.
      */
     public final MeaningNr MEANING_NR = eki.ekilex.data.db.tables.MeaningNr.MEANING_NR;
+
+    /**
+     * The table <code>public.meaning_process_log</code>.
+     */
+    public final MeaningProcessLog MEANING_PROCESS_LOG = eki.ekilex.data.db.tables.MeaningProcessLog.MEANING_PROCESS_LOG;
 
     /**
      * The table <code>public.meaning_rel_type</code>.
@@ -487,6 +502,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.pos_label</code>.
      */
     public final PosLabel POS_LABEL = eki.ekilex.data.db.tables.PosLabel.POS_LABEL;
+
+    /**
+     * The table <code>public.process_log</code>.
+     */
+    public final ProcessLog PROCESS_LOG = eki.ekilex.data.db.tables.ProcessLog.PROCESS_LOG;
+
+    /**
+     * The table <code>public.process_log_source_link</code>.
+     */
+    public final ProcessLogSourceLink PROCESS_LOG_SOURCE_LINK = eki.ekilex.data.db.tables.ProcessLogSourceLink.PROCESS_LOG_SOURCE_LINK;
 
     /**
      * The table <code>public.process_state</code>.
@@ -654,6 +679,11 @@ public class Public extends SchemaImpl {
     public final WordLifecycleLog WORD_LIFECYCLE_LOG = eki.ekilex.data.db.tables.WordLifecycleLog.WORD_LIFECYCLE_LOG;
 
     /**
+     * The table <code>public.word_process_log</code>.
+     */
+    public final WordProcessLog WORD_PROCESS_LOG = eki.ekilex.data.db.tables.WordProcessLog.WORD_PROCESS_LOG;
+
+    /**
      * The table <code>public.word_rel_type</code>.
      */
     public final WordRelType WORD_REL_TYPE = eki.ekilex.data.db.tables.WordRelType.WORD_REL_TYPE;
@@ -754,6 +784,7 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_ORDER_BY_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
             Sequences.LEXEME_POS_ORDER_BY_SEQ,
+            Sequences.LEXEME_PROCESS_LOG_ID_SEQ,
             Sequences.LEXEME_REGION_ID_SEQ,
             Sequences.LEXEME_REGISTER_ID_SEQ,
             Sequences.LEXEME_REGISTER_ORDER_BY_SEQ,
@@ -766,6 +797,7 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_ID_SEQ,
             Sequences.MEANING_LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_NR_ID_SEQ,
+            Sequences.MEANING_PROCESS_LOG_ID_SEQ,
             Sequences.MEANING_REL_TYPE_ORDER_BY_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
@@ -773,6 +805,9 @@ public class Public extends SchemaImpl {
             Sequences.PARADIGM_ID_SEQ,
             Sequences.POS_GROUP_ORDER_BY_SEQ,
             Sequences.POS_ORDER_BY_SEQ,
+            Sequences.PROCESS_LOG_ID_SEQ,
+            Sequences.PROCESS_LOG_SOURCE_LINK_ID_SEQ,
+            Sequences.PROCESS_LOG_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.PROCESS_STATE_ORDER_BY_SEQ,
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
@@ -793,6 +828,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
             Sequences.WORD_LIFECYCLE_LOG_ID_SEQ,
+            Sequences.WORD_PROCESS_LOG_ID_SEQ,
             Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
@@ -858,6 +894,7 @@ public class Public extends SchemaImpl {
             LexemeFrequency.LEXEME_FREQUENCY,
             LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG,
             LexemePos.LEXEME_POS,
+            LexemeProcessLog.LEXEME_PROCESS_LOG,
             LexemeRegion.LEXEME_REGION,
             LexemeRegister.LEXEME_REGISTER,
             LexemeSourceLink.LEXEME_SOURCE_LINK,
@@ -867,6 +904,7 @@ public class Public extends SchemaImpl {
             MeaningFreeform.MEANING_FREEFORM,
             MeaningLifecycleLog.MEANING_LIFECYCLE_LOG,
             MeaningNr.MEANING_NR,
+            MeaningProcessLog.MEANING_PROCESS_LOG,
             MeaningRelType.MEANING_REL_TYPE,
             MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
             MeaningRelation.MEANING_RELATION,
@@ -877,6 +915,8 @@ public class Public extends SchemaImpl {
             PosGroup.POS_GROUP,
             PosGroupLabel.POS_GROUP_LABEL,
             PosLabel.POS_LABEL,
+            ProcessLog.PROCESS_LOG,
+            ProcessLogSourceLink.PROCESS_LOG_SOURCE_LINK,
             ProcessState.PROCESS_STATE,
             Region.REGION,
             Register.REGISTER,
@@ -910,6 +950,7 @@ public class Public extends SchemaImpl {
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,
             WordLifecycleLog.WORD_LIFECYCLE_LOG,
+            WordProcessLog.WORD_PROCESS_LOG,
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,
             WordRelation.WORD_RELATION,

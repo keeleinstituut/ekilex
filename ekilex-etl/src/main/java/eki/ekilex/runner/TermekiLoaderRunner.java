@@ -407,7 +407,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				Long meaningId = conceptMeaningIdMap.get(conceptId);
 				String privateNote = (String) comment.get("content");
 				if (isNotBlank(privateNote)) {
-					createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, privateNote);
+					createMeaningProcessLog(meaningId, privateNote);
 				}
 			}
 		}

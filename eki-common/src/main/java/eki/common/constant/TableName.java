@@ -32,6 +32,7 @@ public interface TableName {
 	String WORD_RELATION_GROUP = "word_group";
 	String WORD_RELATION_GROUP_MEMBER = "word_group_member";
 	String WORD_LIFECYCLE_LOG = "word_lifecycle_log";
+	String WORD_PROCESS_LOG = "word_process_log";
 	String LEXEME = "lexeme";
 	String LEXEME_POS = "lexeme_pos";
 	String LEXEME_DERIV = "lexeme_deriv";
@@ -42,6 +43,7 @@ public interface TableName {
 	String LEXEME_RELATION = "lex_relation";
 	String LEXEME_SOURCE_LINK = "lexeme_source_link";
 	String LEXEME_LIFECYCLE_LOG = "lexeme_lifecycle_log";
+	String LEXEME_PROCESS_LOG = "lexeme_process_log";
 	String LEX_COLLOC = "lex_colloc";
 	String LEX_COLLOC_POS_GROUP = "lex_colloc_pos_group";
 	String LEX_COLLOC_REL_GROUP = "lex_colloc_rel_group";
@@ -51,6 +53,7 @@ public interface TableName {
 	String MEANING_FREEFORM = "meaning_freeform";
 	String MEANING_RELATION = "meaning_relation";
 	String MEANING_LIFECYCLE_LOG = "meaning_lifecycle_log";
+	String MEANING_PROCESS_LOG = "meaning_process_log";
 	String DEFINITION = "definition";
 	String DEFINITION_FREEFORM = "definition_freeform";
 	String DEFINITION_SOURCE_LINK = "definition_source_link";
@@ -64,4 +67,6 @@ public interface TableName {
 	String COLLOCATION_FREEFORM = "collocation_freeform";
 	String LIFECYCLE_LOG = "lifecycle_log";
 	String GAME_NONWORD = "game_nonword";
+	String PROCESS_LOG = "process_log";
+	String PROCESS_LOG_SOURCE_LINK = "process_log_source_link";
 }

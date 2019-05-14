@@ -197,7 +197,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				Element coincidentValueNode = (Element) termGroupNode.selectSingleNode(overlapExp);
 				if (coincidentValueNode != null) {
 					String coincidentValue = coincidentValueNode.getTextTrim();
-					createLexemeFreeform(lexemeId, FreeformType.PRIVATE_NOTE, coincidentValue, lang);
+					createLexemeProcessLog(lexemeId, coincidentValue);
 				}
 
 				List<Node> regionValueNodes = termGroupNode.selectNodes(regionExp);
@@ -346,10 +346,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(privateNoteExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
+			Long processLogId = createMeaningProcessLog(meaningId, valueStr);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
-				updateFreeformText(freeformId, valueStr);
+				valueStr = handleProcessLogTextSourceLinks(valueNode, processLogId, fileName);
+				updateProcessLogText(processLogId, valueStr);
 			}
 		}
 

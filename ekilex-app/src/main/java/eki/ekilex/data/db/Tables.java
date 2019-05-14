@@ -52,6 +52,7 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeProcessLog;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -61,6 +62,7 @@ import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningNr;
+import eki.ekilex.data.db.tables.MeaningProcessLog;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
@@ -71,6 +73,8 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.ProcessLog;
+import eki.ekilex.data.db.tables.ProcessLogSourceLink;
 import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
@@ -104,6 +108,7 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
+import eki.ekilex.data.db.tables.WordProcessLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -368,6 +373,11 @@ public class Tables {
     public static final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
 
     /**
+     * The table <code>public.lexeme_process_log</code>.
+     */
+    public static final LexemeProcessLog LEXEME_PROCESS_LOG = eki.ekilex.data.db.tables.LexemeProcessLog.LEXEME_PROCESS_LOG;
+
+    /**
      * The table <code>public.lexeme_region</code>.
      */
     public static final LexemeRegion LEXEME_REGION = eki.ekilex.data.db.tables.LexemeRegion.LEXEME_REGION;
@@ -411,6 +421,11 @@ public class Tables {
      * The table <code>public.meaning_nr</code>.
      */
     public static final MeaningNr MEANING_NR = eki.ekilex.data.db.tables.MeaningNr.MEANING_NR;
+
+    /**
+     * The table <code>public.meaning_process_log</code>.
+     */
+    public static final MeaningProcessLog MEANING_PROCESS_LOG = eki.ekilex.data.db.tables.MeaningProcessLog.MEANING_PROCESS_LOG;
 
     /**
      * The table <code>public.meaning_rel_type</code>.
@@ -461,6 +476,16 @@ public class Tables {
      * The table <code>public.pos_label</code>.
      */
     public static final PosLabel POS_LABEL = eki.ekilex.data.db.tables.PosLabel.POS_LABEL;
+
+    /**
+     * The table <code>public.process_log</code>.
+     */
+    public static final ProcessLog PROCESS_LOG = eki.ekilex.data.db.tables.ProcessLog.PROCESS_LOG;
+
+    /**
+     * The table <code>public.process_log_source_link</code>.
+     */
+    public static final ProcessLogSourceLink PROCESS_LOG_SOURCE_LINK = eki.ekilex.data.db.tables.ProcessLogSourceLink.PROCESS_LOG_SOURCE_LINK;
 
     /**
      * The table <code>public.process_state</code>.
@@ -626,6 +651,11 @@ public class Tables {
      * The table <code>public.word_lifecycle_log</code>.
      */
     public static final WordLifecycleLog WORD_LIFECYCLE_LOG = eki.ekilex.data.db.tables.WordLifecycleLog.WORD_LIFECYCLE_LOG;
+
+    /**
+     * The table <code>public.word_process_log</code>.
+     */
+    public static final WordProcessLog WORD_PROCESS_LOG = eki.ekilex.data.db.tables.WordProcessLog.WORD_PROCESS_LOG;
 
     /**
      * The table <code>public.word_rel_type</code>.
