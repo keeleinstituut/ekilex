@@ -1500,10 +1500,10 @@ word_type	vlj	väljend	est	descrip
 word_type	ys	ühendsidesõna (nii et)	est	descrip
 word_type	ys	ühendsidesõna	est	wordweb
 word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
-word_type	f	fras-väljend (väljendite plokis)	est	descrip
-word_type	f	(idiomatic) phrase (grp)	eng	descrip
-word_type	mf	märksõna-väljend (iseseisev)	est	descrip
-word_type	mf	multiword unit (in the alphabet)	eng	descrip
+word_type	f	fras-väljend	est	descrip
+word_type	f	multiword expression	eng	descrip
+word_type	mf	fras-väljend	est	descrip
+word_type	mf	multiword expression	eng	descrip
 word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
 word_type	g	täiendsõna	est	wordweb
 word_type	lz	tsitaatsõna lühend	est	descrip
