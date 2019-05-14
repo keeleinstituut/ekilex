@@ -964,6 +964,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("dataset_code", datasetCode);
 		if (StringUtils.isNotBlank(eventBy)) {
 			tableRowParamMap.put("event_by", eventBy);
+		} else {
+			tableRowParamMap.put("event_by", datasetCode);
 		}
 		if (eventOn != null) {
 			tableRowParamMap.put("event_on", eventOn);

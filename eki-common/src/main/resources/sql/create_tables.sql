@@ -463,7 +463,7 @@ alter sequence source_lifecycle_log_id_seq restart with 10000;
 create table process_log
 (
 	id bigserial primary key,
-	event_by text null,
+	event_by text not null,
 	event_on timestamp not null default statement_timestamp(),
 	comment text null,
 	process_state_code varchar(100) references process_state(code) null,
