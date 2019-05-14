@@ -96,9 +96,14 @@ public class QueryLoggerListener extends DefaultExecuteListener implements DbCon
 		long end = System.currentTimeMillis();
 		long exec = end - start;
 
-		if (logger.isDebugEnabled()) {
+		String queryStr = getLogContent(ctx);
+		boolean isForceQueryLog = queryStr.contains(FORCE_QUERY_LOG);
+		if (isForceQueryLog) {
 
-			String queryStr = getLogContent(ctx);
+			logger.info("Query \n{}", queryStr);
+			logger.info("Executed in {} ms", exec);
+
+		} else if (logger.isDebugEnabled()) {
 
 			logger.debug("Query \n{}", queryStr);
 			logger.debug("Executed in {} ms", exec);
@@ -107,16 +112,14 @@ public class QueryLoggerListener extends DefaultExecuteListener implements DbCon
 
 			if (exec > XTRA_PROLONGED_QUERY_TRESHOLD_MS) {
 
-				String queryStr = getLogContent(ctx);
 				logger.info("Extra prolonging query \n{}", queryStr);
 				logger.info("Executed in {} ms", exec);
 
 			} else if (exec > PROLONGED_QUERY_TRESHOLD_MS) {
 
-				String queryStr = getLogContent(ctx);
+				boolean isIgnoreQueryLog = queryStr.contains(IGNORE_QUERY_LOG);
+				if (!isIgnoreQueryLog) {
 
-				boolean isQueryIgnored = queryStr.contains(IGNORE_QUERY_LOG);
-				if (!isQueryIgnored) {
 					logger.info("Prolonging query \n{}", queryStr);
 					logger.info("Executed in {} ms", exec);
 				}

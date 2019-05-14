@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.Complexity;
+import eki.common.constant.DbConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
@@ -41,7 +42,7 @@ import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 
 @Component
-public class LexSearchDbService {
+public class LexSearchDbService implements DbConstant{
 
 	@Autowired
 	private DSLContext create;
@@ -214,7 +215,11 @@ public class LexSearchDbService {
 						lr.RELATED_LEXEMES
 						)
 				.from(l1
-						.leftOuterJoin(l2).on(l2.MEANING_ID.eq(l1.MEANING_ID).and(l2.LEXEME_ID.ne(l1.LEXEME_ID)).and(l2.DATASET_CODE.in(datasets)))
+						.leftOuterJoin(l2).on(
+								l2.MEANING_ID.eq(l1.MEANING_ID)
+								.and(l2.LEXEME_ID.ne(l1.LEXEME_ID))
+								.and(l2.WORD_ID.ne(l1.WORD_ID))
+								.and(l2.DATASET_CODE.in(datasets)))
 						.leftOuterJoin(w2).on(l2.WORD_ID.eq(w2.WORD_ID))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l1.LEXEME_ID)))
 				.where(

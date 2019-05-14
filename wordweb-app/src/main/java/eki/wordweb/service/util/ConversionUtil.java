@@ -451,7 +451,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 	}
 
 	private void filterMeaningWords(Lexeme lexeme, List<String> allRelatedWordValues) {
-	
+
 		List<MeaningWord> meaningWords = lexeme.getMeaningWords();
 		if (CollectionUtils.isNotEmpty(allRelatedWordValues)) {
 			meaningWords = meaningWords.stream().filter(meaningWord -> !allRelatedWordValues.contains(meaningWord.getWord())).collect(Collectors.toList());
@@ -726,7 +726,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			if (etymWordLanguage != null) {
 				if (etymLevelMemberIndex == 0) {
 					etymLevelBuf.append(etymWordLanguage.getValue());
-					etymLevelBuf.append(" ");						
+					etymLevelBuf.append(" ");
 				} else if (!StringUtils.equals(recentEtymWordLang, etymWordLang)) {
 					etymLevelBuf.append(etymWordLanguage.getValue());
 					etymLevelBuf.append(" ");
@@ -778,7 +778,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				relatedWords = relatedWords.stream().filter(relation -> CollectionUtils.containsAny(relation.getDatasetCodes(), datasetsList)).collect(Collectors.toList());
 			}
-			if(CollectionUtils.isNotEmpty(relatedWords)) {
+			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				word.getRelatedWords().addAll(relatedWords);
 			}
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
