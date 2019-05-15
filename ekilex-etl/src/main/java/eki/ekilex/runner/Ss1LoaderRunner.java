@@ -159,10 +159,10 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			processArticleHeader(reportingId, headerNode, newWords, context, guid);
 			extractLogDataAndCreateLifecycleLog(articleNode, newWords);
-			List<CommentData> comments = extractArticleComments(articleNode);
+			processArticleComments(articleNode, newWords);
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(reportingId, contentNode, newWords, context, comments);
+				processArticleContent(reportingId, contentNode, newWords, context);
 				processVariants(newWords);
 			}
 			context.importedWords.addAll(newWords);
@@ -494,8 +494,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			String reportingId,
 			Element contentNode,
 			List<WordData> newWords,
-			Context context,
-			List<CommentData> comments) throws Exception {
+			Context context) throws Exception {
 
 		final String meaningNumberGroupExp = "s:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -519,7 +518,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			for (Node meaningGroupNode : meanigGroupNodes) {
 				List<WordData> subWords = processSubWords(meaningGroupNode, context, reportingId);
 				if (!subWords.isEmpty()) {
-					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, meaningNrForGroup, reportingId);
+					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, null, meaningNrForGroup, reportingId);
 					if (!createdLexemIds.isEmpty()) {
 						lexemeLevel2++;
 						for (WordData newWord : newWords) {
@@ -532,7 +531,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					}
 				} else {
 					lexemeLevel2++;
-					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, comments, conceptId, meaningNrForGroup, reportingId);
+					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, conceptId, meaningNrForGroup, reportingId);
 				}
 			}
 		}
@@ -544,7 +543,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			List<WordData> newWords,
 			int lexemeLevel1,
 			int lexemeLevel2,
-			List<CommentData> comments,
 			String conceptId,
 			String meaningNrForGroup,
 			String reportingId) throws Exception {
@@ -635,7 +633,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				saveRegisters(lexemeId, registers, reportingId);
 				saveAdviceNotes(lexemeId, adviceNotes);
 				savePublicNotes(lexemeId, publicNotes);
-				saveComments(lexemeId, comments);
 				for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
 					LexemeToWordData abbreviationData = meaningAbbreviation.copy();
 					abbreviationData.lexemeId = lexemeId;
@@ -647,14 +644,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		return createdLexemeIds;
-	}
-
-	private void saveComments(Long lexemeId, List<CommentData> comments) throws Exception {
-		for (CommentData comment : comments) {
-			Long eventOnLong = dateFormat.parse(comment.createdAt).getTime();
-			Timestamp eventOnTs = new Timestamp(eventOnLong);
-			createLexemeProcessLog(lexemeId, comment.value, comment.author, eventOnTs);
-		}
 	}
 
 	private void savePublicNotes(Long lexemeId, List<String> notes) throws Exception {
@@ -730,23 +719,26 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private List<CommentData> extractArticleComments(Node node) {
+	private void processArticleComments(Node node, List<WordData> newWords) throws Exception {
 
 		final String commentGroupExp = "s:KOM/s:komg";
 		final String commentValueExp = "s:kom";
 		final String commentAuthorExp = "s:kaut";
 		final String commentCreatedExp = "s:kaeg";
 
-		List<CommentData> comments = new ArrayList<>();
 		List<Node> commentGroupNodes = node.selectNodes(commentGroupExp);
 		for (Node commentGroupNode : commentGroupNodes) {
-			CommentData comment = new CommentData();
-			comment.value = commentGroupNode.selectSingleNode(commentValueExp).getText();
-			comment.author = commentGroupNode.selectSingleNode(commentAuthorExp).getText();
-			comment.createdAt = commentGroupNode.selectSingleNode(commentCreatedExp).getText();
-			comments.add(comment);
+			String comment = commentGroupNode.selectSingleNode(commentValueExp).getText();
+			String eventBy = commentGroupNode.selectSingleNode(commentAuthorExp).getText();
+
+			String eventOn = commentGroupNode.selectSingleNode(commentCreatedExp).getText();
+			long eventOnLong = dateFormat.parse(eventOn).getTime();
+			Timestamp eventOnTs = new Timestamp(eventOnLong);
+
+			for (WordData newWord : newWords) {
+				createWordProcessLog(newWord.id, comment, eventBy, eventOnTs);
+			}
 		}
-		return comments;
 	}
 
 	private void extractLogDataAndCreateLifecycleLog(Node articleNode, List<WordData> newWords) throws Exception {

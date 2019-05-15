@@ -182,7 +182,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, lexemeId, processStateCode);
+		createLexemeProcessLog(lexemeId, processStateCode);
 		cudDbService.updateLexemeProcessState(lexemeId, processStateCode);
 	}
 
