@@ -462,7 +462,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		lexeme.setLevel2(level2);
 		lexeme.setLevel3(1);
 		lexeme.setFrequencyGroupCode(wordData.frequencyGroup);
-		Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
+		Long lexemeId = createLexemeIfNotExists(lexeme);
 		if (!wordData.governments.isEmpty()) {
 			for (String government : wordData.governments) {
 				createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, null);
@@ -589,7 +589,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 		if (!definitionsToAdd.isEmpty()) {
 			for (String definition : definitionsToAdd) {
-				createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
+				createOrSelectDefinition(meaningId, definition, dataLang);
 			}
 			if (definitionsToAdd.size() > 1) {
 				writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
@@ -623,7 +623,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setLevel2(lexemeLevel2);
 			lexeme.setLevel3(1);
 			lexeme.setFrequencyGroupCode(newWordData.frequencyGroup);
-			Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
+			Long lexemeId = createLexemeIfNotExists(lexeme);
 			if (lexemeId != null) {
 				createdLexemeIds.add(lexemeId);
 				createUsages(lexemeId, usages, dataLang);
@@ -882,7 +882,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				Word word = extractWordData(wordGroupNode, wordData, guid, index);
 				if (word != null) {
 					List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-					wordData.id = createOrSelectWord(word, paradigms, getDataset(), context.reusedWordCount);
+					wordData.id = createOrSelectWord(word, paradigms, context.reusedWordCount);
 				}
 
 				if (index == 0) {

@@ -186,7 +186,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(level1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				createLexemeIfNotExists(lexeme, getDataset());
+				createLexemeIfNotExists(lexeme);
 			}
 		}
 		return newWordCount;
@@ -225,7 +225,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		createdWord.value = wordValue;
 		createdWord.displayForm = displayForm;
 		createdWord.language = lang;
-		createdWord.id = createOrSelectWord(word, null, getDataset(), null);
+		createdWord.id = createOrSelectWord(word, null, null);
 		return createdWord;
 	}
 

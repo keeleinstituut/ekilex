@@ -231,14 +231,14 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					homonymNr = getWordMaxHomonymNr(term, lang);
 					homonymNr++;
 					wordObj = new Word(term, lang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, termWordTypeCodes);
-					wordId = createOrSelectWord(wordObj, null, null, null);
+					wordId = createOrSelectWord(wordObj, null, null);
 
 					//lexeme
 					lexemeObj = new Lexeme();
 					lexemeObj.setWordId(wordId);
 					lexemeObj.setMeaningId(meaningId);
 					lexemeObj.setProcessStateCode(processStateCode);
-					lexemeId = createOrSelectLexemeId(lexemeObj, getDataset());
+					lexemeId = createOrSelectLexemeId(lexemeObj);
 
 					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode, fileName, term);
 					createLexemeLifecycleLog(lexemeId, term, termGroupNode);
@@ -559,7 +559,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			String definition = definitionObj.getValue();
 			String lang = definitionObj.getLang();
 			List<Ref> refs = definitionObj.getRefs();
-			Long definitionId = createOrSelectDefinition(meaningId, definition, lang, getDataset());
+			Long definitionId = createOrSelectDefinition(meaningId, definition, lang);
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
 				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, concept, term, fileName);

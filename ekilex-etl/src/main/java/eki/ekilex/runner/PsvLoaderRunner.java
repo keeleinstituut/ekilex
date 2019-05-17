@@ -452,9 +452,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
 		if (isNotBlank(wordData.definition)) {
-			createOrSelectDefinition(meaningId, wordData.definition, dataLang, getDataset());
+			createOrSelectDefinition(meaningId, wordData.definition, dataLang);
 		}
-		createdLexemeData.lexemeId = createLexemeIfNotExists(lexeme, getDataset());
+		createdLexemeData.lexemeId = createLexemeIfNotExists(lexeme);
 		return createdLexemeData;
 	}
 
@@ -465,7 +465,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		createdWord.wordTypeCodes = wordTypeCodes;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
-		createdWord.id = createOrSelectWord(word, null, null, null);
+		createdWord.id = createOrSelectWord(word, null, null);
 		return createdWord;
 	}
 
@@ -589,7 +589,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				createLexemeIfNotExists(lexeme, getDataset());
+				createLexemeIfNotExists(lexeme);
 			}
 		}
 		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
@@ -671,12 +671,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
 				if (meaningId == null) {
-					meaningId = createOrSelectMeaning(mnr, getDataset(), ssMnrMap, context.ssMeaningCount);
+					meaningId = createOrSelectMeaning(mnr, ssMnrMap, context.ssMeaningCount);
 				} else {
 					logger.debug("synonym meaning found : {}", newWords.get(0).value);
 				}
 				for (String definition : definitions) {
-					createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
+					createOrSelectDefinition(meaningId, definition, dataLang);
 				}
 
 				if (isNotBlank(learnerComment)) {
@@ -707,7 +707,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexeme.setLevel2(lexemeLevel2);
 					lexeme.setLevel3(1);
 					lexeme.setFrequencyGroupCode(newWordData.frequencyGroup);
-					Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
+					Long lexemeId = createLexemeIfNotExists(lexeme);
 					if (lexemeId == null) {
 						context.lexemeDuplicateCount.increment();
 					} else {
@@ -784,7 +784,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(abbreviation.level1);
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
-		createLexemeIfNotExists(lexeme, getDataset());
+		createLexemeIfNotExists(lexeme);
 		abbreviation.level1++;
 	}
 
@@ -1230,7 +1230,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid, context);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, context.ssWordCount, context.reusedWordCount);
+				wordData.id = createOrSelectWord(word, paradigms, ssGuidMap, context.ssWordCount, context.reusedWordCount);
 			}
 
 			List<WordData> basicWordsOfTheWord = extractWordMetadata(wordGroupNode, basicWordExp, wordData.id, reportingId);

@@ -465,7 +465,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private SourceLink getOrCreateSource(String sourceName, SourceType sourceType) throws Exception {
-		Long sourceId = getSource(sourceType, EXT_SOURCE_ID_NA, sourceName);
+		Long sourceId = getSource(sourceType, EXT_SOURCE_ID_NA, sourceName, getDataset());
 		if (sourceId == null) {
 			sourceId = createSource(sourceType, EXT_SOURCE_ID_NA, sourceName);
 		}

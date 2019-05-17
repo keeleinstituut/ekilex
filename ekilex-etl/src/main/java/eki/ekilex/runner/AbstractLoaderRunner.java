@@ -326,8 +326,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		logger.debug("Data deletion complete for \"{}\"", dataset);
 	}
 
-	protected Long createOrSelectWord(Word word, List<Paradigm> paradigms, String dataset, Count reusedWordCount) throws Exception {
+	protected Long createOrSelectWord(Word word, List<Paradigm> paradigms, Count reusedWordCount) throws Exception {
 
+		String dataset = getDataset();
 		String wordOrigValue = word.getValue();
 		AffixoidData affixoidData = getAffixoidData(wordOrigValue);
 
@@ -412,20 +413,24 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	}
 
 	protected Long createOrSelectWord(
-			Word word, List<Paradigm> paradigms, String dataset, Map<String, List<Guid>> ssGuidMap,
-			Count ssWordCount, Count reusedWordCount) throws Exception {
+			Word word,
+			List<Paradigm> paradigms,
+			Map<String, List<Guid>> ssGuidMap,
+			Count ssWordCount,
+			Count reusedWordCount) throws Exception {
 
 		if (MapUtils.isEmpty(ssGuidMap)) {
-			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+			return createOrSelectWord(word, paradigms, reusedWordCount);
 		}
 
+		String dataset = getDataset();
 		String wordOrigValue = word.getValue();
 		String guid = word.getGuid();
 
 		List<Guid> mappedGuids = ssGuidMap.get(guid);
 		if (CollectionUtils.isEmpty(mappedGuids)) {
 			appendToReport(REPORT_GUID_MAPPING_MISSING, dataset, wordOrigValue, guid);
-			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+			return createOrSelectWord(word, paradigms, reusedWordCount);
 		}
 
 		AffixoidData affixoidData = getAffixoidData(wordOrigValue);
@@ -446,7 +451,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 					logger.warn("There are multiple words with same value and guid in {}: \"{}\" - \"{}\"", GUID_OWNER_DATASET_CODE, wordOrigValue, ssGuid);
 				}
 				if (tableRowValueMap == null) {
-					return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+					return createOrSelectWord(word, paradigms, reusedWordCount);
 				}
 				ssWordCount.increment();
 				Long wordId = (Long) tableRowValueMap.get("id");
@@ -465,7 +470,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		logger.debug("Word value doesn't match guid mapping(s): \"{}\" / \"{}\"", wordOrigValue, mappedWordValues);
 		appendToReport(REPORT_GUID_MISMATCH, dataset, wordOrigValue, guid, mappedWordValues, "Sõnad ei kattu");
 
-		return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+		return createOrSelectWord(word, paradigms, reusedWordCount);
 	}
 
 	private void handleAffixoidClassifiers(Word word, AffixoidData affixoidData) {
@@ -700,7 +705,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return basicDbService.queryList(sqls.getSqlSelectWordByDataset(), tableRowParamMap);
 	}
 
-	protected Long createOrSelectMeaning(String mnr, String dataset, Map<String, List<Mnr>> ssMnrMap, Count ssMeaningCount) throws Exception {
+	protected Long createOrSelectMeaning(String mnr, Map<String, List<Mnr>> ssMnrMap, Count ssMeaningCount) throws Exception {
 
 		if (MapUtils.isEmpty(ssMnrMap)) {
 			return createMeaning();
@@ -714,6 +719,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		if (CollectionUtils.isEmpty(mappedMnrs)) {
 			return createMeaning();
 		}
+
+		String dataset = getDataset();
 
 		for (Mnr ssMnrObj : mappedMnrs) {
 
@@ -774,14 +781,15 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 	}
 
-	protected Long createOrSelectDefinition(Long meaningId, String value, String lang, String dataset) throws Exception {
+	protected Long createOrSelectDefinition(Long meaningId, String value, String lang) throws Exception {
 
-		Long definitionId = createOrSelectDefinition(meaningId, value, DEFAULT_DEFINITION_TYPE_CODE, lang, dataset);
+		Long definitionId = createOrSelectDefinition(meaningId, value, DEFAULT_DEFINITION_TYPE_CODE, lang);
 		return definitionId;
 	}
 
-	protected Long createOrSelectDefinition(Long meaningId, String value, String definitionTypeCode, String lang, String dataset) throws Exception {
+	protected Long createOrSelectDefinition(Long meaningId, String value, String definitionTypeCode, String lang) throws Exception {
 
+		String dataset = getDataset();
 		String valueClean = cleanEkiEntityMarkup(value);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -813,8 +821,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return definitionId;
 	}
 
-	protected Long createOrSelectLexemeId(Lexeme lexeme, String dataset) throws Exception {
+	protected Long createOrSelectLexemeId(Lexeme lexeme) throws Exception {
 
+		String dataset = getDataset();
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
 
@@ -825,7 +834,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Map<String, Object> lexemeResult = basicDbService.select(LEXEME, criteriaParamMap);
 		Long lexemeId;
 		if (MapUtils.isEmpty(lexemeResult)) {
-			lexemeId = createLexeme(lexeme, dataset);
+			lexemeId = createLexeme(lexeme);
 			lexeme.setLexemeId(lexemeId);
 		} else {
 			lexemeId = (Long) lexemeResult.get("id");
@@ -833,8 +842,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return lexemeId;
 	}
 
-	protected Long createLexeme(Lexeme lexeme, String dataset) throws Exception {
+	private Long createLexeme(Lexeme lexeme) throws Exception {
 
+		String dataset = getDataset();
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
 
@@ -847,8 +857,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return lexemeId;
 	}
 
-	protected Long createLexemeIfNotExists(Lexeme lexeme, String dataset) throws Exception {
+	protected Long createLexemeIfNotExists(Lexeme lexeme) throws Exception {
 
+		String dataset = getDataset();
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
 
@@ -925,7 +936,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				extSourceId = EXT_SOURCE_ID_NA;
 			}
 			if (StringUtils.isNotBlank(author)) {
-				Long authorId = getSource(SourceType.PERSON, extSourceId, author);
+				Long authorId = getSource(SourceType.PERSON, extSourceId, author, getDataset());
 				if (authorId == null) {
 					authorId = createSource(SourceType.PERSON, extSourceId, author);
 				}
@@ -1344,25 +1355,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		basicDbService.create(SOURCE_FREEFORM, tableRowParamMap);
 
 		return freeformId;
-	}
-
-	// TODO 3 different getSource methods - 2 here and 1 in AbstractTermLoaderRunner. Possibility for refactoring?
-	protected Long getSource(SourceType sourceType, String extSourceId, String sourceName) {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("sourceType", sourceType.name());
-		tableRowParamMap.put("sourcePropertyTypeName", FreeformType.SOURCE_NAME.name());
-		tableRowParamMap.put("sourceName", sourceName);
-		tableRowParamMap.put("sourcePropertyTypeExtSourceId", FreeformType.EXTERNAL_SOURCE_ID.name());
-		tableRowParamMap.put("extSourceId", extSourceId);
-		List<Map<String, Object>> sources = basicDbService.queryList(sqls.getSqlSelectSourceByTypeAndName(), tableRowParamMap);
-
-		if (CollectionUtils.isEmpty(sources)) {
-			return null;
-		}
-		Map<String, Object> sourceRecord = sources.get(0);
-		Long sourceId = (Long) sourceRecord.get("id");
-		return sourceId;
 	}
 
 	protected Long getSource(SourceType sourceType, String extSourceId, String sourceName, String fileName) {

@@ -256,7 +256,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// save word+paradigm+form
 				wordObj = new Word(word, dataLang, wordFormsStr, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, guid, null);
-				wordId = createOrSelectWord(wordObj, paradigms, getDataset(), ssGuidMap, ssWordCount, reusedWordCount);
+				wordId = createOrSelectWord(wordObj, paradigms, ssGuidMap, ssWordCount, reusedWordCount);
 				if (!wordIds.contains(wordId)) {
 					wordIds.add(wordId);
 					newWords.add(wordObj);
@@ -301,7 +301,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 					// meaning
 					if (isSingleMeaning) {
-						meaningId = createOrSelectMeaning(mnr, getDataset(), ssMnrMap, ssMeaningCount);
+						meaningId = createOrSelectMeaning(mnr, ssMnrMap, ssMeaningCount);
 					} else {
 						meaningId = createMeaning();
 						multipleMeaningsGroupCount.increment();
@@ -329,7 +329,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						}
 
 						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, null, defaultHomonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
-						wordId = createOrSelectWord(wordObj, null, getDataset(), reusedWordCount);
+						wordId = createOrSelectWord(wordObj, null, reusedWordCount);
 						wordMatches.add(wordObj);
 						allWordMatches.add(wordObj);
 
@@ -341,7 +341,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						lexemeObj = new Lexeme();
 						lexemeObj.setWordId(wordId);
 						lexemeObj.setMeaningId(meaningId);
-						lexemeId = createOrSelectLexemeId(lexemeObj, getDataset());
+						lexemeId = createOrSelectLexemeId(lexemeObj);
 
 						if (lexemeId == null) {
 							lexemeDuplicateCount.increment();
@@ -361,7 +361,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						lexemeObj.setMeaningId(meaningId);
 						lexemeObj.setLevel1(lexemeLevel1);
 						lexemeObj.setLevel2(lexemeLevel2);
-						lexemeId = createOrSelectLexemeId(lexemeObj, getDataset());
+						lexemeId = createOrSelectLexemeId(lexemeObj);
 
 						governments = wordIdGovernmentMap.get(newWordId);
 
@@ -534,7 +534,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 		for (Node definitionValueNode : definitionValueNodes) {
 			String definition = ((Element) definitionValueNode).getTextTrim();
-			createOrSelectDefinition(meaningId, definition, dataLang, dataset);
+			createOrSelectDefinition(meaningId, definition, dataLang);
 		}
 	}
 

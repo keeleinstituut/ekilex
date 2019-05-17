@@ -167,12 +167,12 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				int homonymNr = getWordMaxHomonymNr(term, lang);
 				homonymNr++;
 				Word word = new Word(term, lang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
-				Long wordId = createOrSelectWord(word, null, null, null);
+				Long wordId = createOrSelectWord(word, null, null);
 
 				Lexeme lexeme = new Lexeme();
 				lexeme.setWordId(wordId);
 				lexeme.setMeaningId(meaningId);
-				Long lexemeId = createLexemeIfNotExists(lexeme, getDataset());
+				Long lexemeId = createLexemeIfNotExists(lexeme);
 				createLexemeLifecycleLog(lexemeId, termGroupNode, term);
 
 				saveListValueFreeforms(lang, listValues, lexemeId);
@@ -587,7 +587,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			String definition = definitionObj.getValue();
 			String lang = definitionObj.getLang();
 			List<Ref> refs = definitionObj.getRefs();
-			Long definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang, getDataset());
+			Long definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang);
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
 				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, term, fileName);

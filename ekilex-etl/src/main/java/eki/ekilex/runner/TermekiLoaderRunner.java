@@ -223,7 +223,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		} else {
 			sourceType = SourceType.UNKNOWN;
 		}
-		Long sourceId = getSource(sourceType, extSourceId, sourceName);
+		Long sourceId = getSource(sourceType, extSourceId, sourceName, getDataset());
 		if (sourceId == null) {
 			sourceId = createSource(sourceType, extSourceId, sourceName);
 			if (StringUtils.isNotBlank(author)) {
@@ -303,7 +303,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 						logger.info("Invalid gender code : {}", genderCode);
 					}
 				}
-				wordId = createOrSelectWord(word, null, null, wordDuplicateCount);
+				wordId = createOrSelectWord(word, null, wordDuplicateCount);
 				termWordIdMap.put(termId, wordId);
 			}
 
@@ -342,7 +342,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
-			Long lexemeId = createLexemeIfNotExists(lexeme, dataset);
+			Long lexemeId = createLexemeIfNotExists(lexeme);
 			if (lexemeId != null) {
 				String posCode;
 				if (StringUtils.isBlank(pronunciation)) {
@@ -376,7 +376,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				String definitionValue = (String) definition.get("definition");
 				definitionValue = applyPattern(markupPatternForeign, definitionValue, TextDecoration.FOREIGN);
 				definitionValue = convertTermekiLinkMarkup(definitionValue, conceptMeaningIdMap);
-				Long definitionId = createOrSelectDefinition(meaningId, definitionValue, language, dataset);
+				Long definitionId = createOrSelectDefinition(meaningId, definitionValue, language);
 				definitionsCount++;
 				String publicNote = (String) definition.get("description");
 				if (isNotBlank(publicNote)) {
@@ -576,11 +576,11 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			String abbreviationValue = (String) abbreviation.get().get("attribute_value");
 			int homonymNr = getWordMaxHomonymNr(abbreviationValue, language) + 1;
 			Word word = new Word(abbreviationValue, language, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
-			Long wordId = createOrSelectWord(word, null, null, wordDuplicateCount);
+			Long wordId = createOrSelectWord(word, null, wordDuplicateCount);
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
-			Long abbreviationLexemeId = createLexemeIfNotExists(lexeme, dataset);
+			Long abbreviationLexemeId = createLexemeIfNotExists(lexeme);
 			createLexemeRelation(abbreviationLexemeId, termLexemeId, LEXEME_RELATION_ABBREVIATION);
 		}
 	}

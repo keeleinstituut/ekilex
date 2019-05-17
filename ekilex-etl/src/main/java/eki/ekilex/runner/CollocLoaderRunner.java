@@ -520,7 +520,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Node> meaningDefinitionNodes = meaningDefinitionGroupNode.selectNodes(meaningDefinitionExp);
 		for (Node meaningDefinitionNode : meaningDefinitionNodes) {
 			String definition = ((Element) meaningDefinitionNode).getTextTrim();
-			createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
+			createOrSelectDefinition(meaningId, definition, dataLang);
 		}
 	}
 
@@ -1138,19 +1138,19 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		homonymNr++;
 		Word wordObj = new Word(word, dataLang, homonymNr, morphCode, guid);
 		wordObj.setDisplayMorph(wordDisplayMorph);
-		Long wordId = createOrSelectWord(wordObj, null, getDataset(), ssGuidMap, ssWordCount, reusedWordCount);
+		Long wordId = createOrSelectWord(wordObj, null, ssGuidMap, ssWordCount, reusedWordCount);
 		wordObj.setId(wordId);
 		return wordObj;
 	}
 
 	private LexemeMeaning createLexemeMeaning(Long wordId, Integer level1, String posCode, String mnr, Map<String, List<Mnr>> ssMnrMap, Count ssMeaningCount) throws Exception {
 
-		Long meaningId = createOrSelectMeaning(mnr, getDataset(), ssMnrMap, ssMeaningCount);
+		Long meaningId = createOrSelectMeaning(mnr, ssMnrMap, ssMeaningCount);
 		Lexeme lexemeObj = new Lexeme();
 		lexemeObj.setWordId(wordId);
 		lexemeObj.setMeaningId(meaningId);
 		lexemeObj.setLevel1(level1);
-		Long lexemeId = createOrSelectLexemeId(lexemeObj, getDataset());
+		Long lexemeId = createOrSelectLexemeId(lexemeObj);
 		if (StringUtils.isNotBlank(posCode)) {
 			createLexemePos(lexemeId, posCode);
 		}
