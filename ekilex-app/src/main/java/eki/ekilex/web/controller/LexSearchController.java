@@ -80,7 +80,7 @@ public class LexSearchController extends AbstractSearchController {
 	}
 
 	@GetMapping(value = LEX_SEARCH_URI + "/**")
-	public String lexSearch(Model model, HttpServletRequest request) {
+	public String lexSearch(Model model, HttpServletRequest request) throws Exception {
 
 		// if redirect from login arrives
 		initSearchForms(model);

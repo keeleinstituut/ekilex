@@ -8,11 +8,9 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
-import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
@@ -35,8 +33,6 @@ import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
-import eki.ekilex.constant.SearchOperand;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -50,7 +46,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
@@ -141,7 +136,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 		Lexeme m1ds = LEXEME.as("m1ds");
 		Condition dsFiltWhere = composeLexemeDatasetsCondition(m1ds, searchDatasetsRestriction);
-		Condition meaningCondition = DSL.exists(DSL.select(m1ds.ID).from(m1ds).where(m1ds.MEANING_ID.eq(m1.ID).and(dsFiltWhere)));
+		Condition where = DSL.exists(DSL.select(m1ds.ID).from(m1ds).where(m1ds.MEANING_ID.eq(m1.ID).and(dsFiltWhere)));
 
 		for (SearchCriterionGroup searchCriterionGroup : criteriaGroups) {
 
@@ -169,7 +164,11 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
 
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
+
+				Condition where2 = l1.MEANING_ID.eq(m1.ID).and(l1.WORD_ID.eq(w1.ID));
+				where2 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
+				where = applyTermWordLifecycleLogFilters(searchCriteria, l1, w1, where2, where);
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
@@ -188,35 +187,16 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
 
-				List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
-						.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
-								&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
-								&& (crit.getSearchValue() != null))
-						.collect(toList());
+				Lexeme l1 = LEXEME.as("l1");
+				Condition where1 = l1.MEANING_ID.eq(m1.ID);
 
-				boolean isNotExistsFilter = searchCriteria.stream()
-						.anyMatch(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
-								&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
-
-				MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
-
-				if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
-					Condition where1 = m1d.MEANING_ID.eq(m1.ID);
-					for (SearchCriterion criterion : domainCriteriaWithExists) {
-						Classifier domain = (Classifier) criterion.getSearchValue();
-						where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
-					}
-					meaningCondition = meaningCondition.and(DSL.exists(DSL.select(m1d.ID).from(m1d).where(where1)));
-				}
-
-				if (isNotExistsFilter) {
-					Condition where1 = m1d.MEANING_ID.eq(m1.ID);
-					meaningCondition = meaningCondition.and(DSL.notExists(DSL.select(m1d.ID).from(m1d).where(where1)));
-				}
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where = applyTermMeaningLifecycleLogFilters(searchCriteria, l1, where1, where);
+				where = applyDomainFilters(searchCriteria, m1, where);
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
@@ -231,7 +211,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
 
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
@@ -250,7 +230,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, where1);
 
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
 
 			} else if (SearchEntity.NOTE.equals(searchEntity)) {
 
@@ -286,7 +266,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class))))
 						.asTable("n1");
 
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID))));
+				where = where.and(DSL.exists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID))));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
@@ -299,7 +279,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1);
 
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(c1.ID).from(m1ff, c1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(c1.ID).from(m1ff, c1).where(where1)));
 
 			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
 
@@ -373,10 +353,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.unionAll(selectLexemeFreeformSubTypes)
 						.asTable("a1");
 
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(a1.field("meaning_id")).from(a1).where(a1.field("meaning_id", Long.class).eq(m1.ID))));
+				where = where.and(DSL.exists(DSL.select(a1.field("meaning_id")).from(a1).where(a1.field("meaning_id", Long.class).eq(m1.ID))));
 			}
 		}
-		return meaningCondition;
+		return where;
 	}
 
 	private int executeCountMeanings(Meaning m1, Condition meaningCondition) {

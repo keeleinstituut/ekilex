@@ -80,7 +80,7 @@ public class LexSearchService extends AbstractSearchService {
 	}
 
 	@Transactional
-	public WordsResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, boolean fetchAll) {
+	public WordsResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, boolean fetchAll) throws Exception {
 
 		List<Word> words;
 		int wordCount;

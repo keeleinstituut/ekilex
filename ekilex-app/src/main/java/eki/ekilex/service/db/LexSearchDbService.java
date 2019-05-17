@@ -13,7 +13,6 @@ import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -26,11 +25,9 @@ import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
-import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -48,8 +45,6 @@ import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
-import eki.ekilex.constant.SearchOperand;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
@@ -69,7 +64,6 @@ import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
@@ -89,7 +83,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {
+	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
@@ -99,7 +93,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return execute(w1, p, wordCondition, fetchAll);
 	}
 
-	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		Word w1 = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
@@ -108,7 +102,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return count(w1, p, wordCondition);
 	}
 
-	private Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, SearchDatasetsRestriction searchDatasetsRestriction) {
+	private Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		Condition where = composeWordDatasetsCondition(w1, searchDatasetsRestriction);
 
@@ -136,7 +130,12 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
 
-				where = where.and(DSL.exists(DSL.select(l1.ID).from(l1, p1, f1).where(where1)));
+				where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
+
+				Condition where2 = l1.WORD_ID.eq(w1.ID);
+				where2 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
+
+				where = applyLexWordLifecycleLogFilters(searchCriteria, l1, where2, where);
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
 
@@ -159,7 +158,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l2.ID, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l2.ID, where1);
 
-				where = where.and(DSL.exists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1)));
+				where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
@@ -174,40 +173,17 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 
-				where = where.and(DSL.exists(DSL.select(l1.ID).from(l1, p1, f1).where(where1)));
+				where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
 
-				List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
-						.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
-								&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
-								&& (crit.getSearchValue() != null))
-						.collect(toList());
-
-				boolean isNotExistsFilter = searchCriteria.stream()
-						.anyMatch(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
-								&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
-
 				Lexeme l1 = LEXEME.as("l1");
 				Meaning m1 = MEANING.as("m1");
-				MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
 				Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-
-				if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
-					where1 = where1.and(m1d.MEANING_ID.eq(m1.ID));
-					for (SearchCriterion criterion : domainCriteriaWithExists) {
-						Classifier domain = (Classifier) criterion.getSearchValue();
-						where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
-					}
-					where = where.and(DSL.exists(DSL.select(m1.ID).from(l1, m1, m1d).where(where1)));
-				}
-
-				if (isNotExistsFilter) {
-					where1 = where1.andNotExists(DSL.select(m1d.ID).from(m1d).where(m1d.MEANING_ID.eq(m1.ID)));
-					where = where.and(DSL.exists(DSL.select(m1.ID).from(l1, m1).where(where1)));
-				}
+				where = applyDomainFilters(searchCriteria, l1, m1, where1, where);
+				where = applyLexMeaningLifecycleLogFilters(searchCriteria, l1, m1, where1, where);
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
@@ -224,7 +200,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
 
-				where = where.and(DSL.exists(DSL.select(d1.ID).from(l1, m1, d1).where(where1)));
+				where = where.andExists(DSL.select(d1.ID).from(l1, m1, d1).where(where1));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
@@ -243,7 +219,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, where1);
 
-				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
+				where = where.andExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
@@ -262,7 +238,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1);
 
-				where = where.and(DSL.exists(DSL.select(c1.ID).from(l1, m1, m1ff, c1).where(where1)));
+				where = where.andExists(DSL.select(c1.ID).from(l1, m1, m1ff, c1).where(where1));
 			}
 		}
 		return where;
