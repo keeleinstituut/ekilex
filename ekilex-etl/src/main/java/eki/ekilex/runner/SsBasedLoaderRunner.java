@@ -527,12 +527,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	protected class CommentData {
-		String value;
-		String author;
-		String createdAt;
-	}
-
 	protected class WordData {
 		Long id;
 		String value;

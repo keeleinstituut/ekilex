@@ -5,8 +5,8 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
@@ -349,11 +349,6 @@ public class LifecycleLogDbService {
 			} else if (LifecycleProperty.VALUE_STATE.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
 				recent = (String) entityData.get("value_state_code");
-				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
-				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.PROCESS_STATE.equals(property)) {
-				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-				recent = (String) entityData.get("process_state_code");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			}
