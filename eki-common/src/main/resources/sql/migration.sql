@@ -1,3 +1,9 @@
+drop table if exists lexeme_process_log;
+drop table if exists meaning_process_log;
+drop table if exists word_process_log;
+drop table if exists process_log_source_link;
+drop table if exists process_log;
+
 -- protsessi logi
 create table process_log
 (
