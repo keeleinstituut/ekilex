@@ -1340,6 +1340,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		source.setType(sourceType);
 		Long sourceId = createSource(source);
 		createSourceFreeform(sourceId, FreeformType.SOURCE_NAME, sourceName);
+		createSourceFreeform(sourceId, FreeformType.SOURCE_FILE, getDataset());
 		createSourceFreeform(sourceId, FreeformType.EXTERNAL_SOURCE_ID, extSourceId);
 
 		return sourceId;
