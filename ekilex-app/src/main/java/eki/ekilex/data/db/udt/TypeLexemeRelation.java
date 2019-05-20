@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeLexemeRelation extends UDTImpl<TypeLexemeRelationRecord> {
 
-    private static final long serialVersionUID = 215035710;
+    private static final long serialVersionUID = -1540573918;
 
     /**
      * The reference instance of <code>public.type_lexeme_relation</code>
@@ -63,6 +63,11 @@ public class TypeLexemeRelation extends UDTImpl<TypeLexemeRelationRecord> {
      * The attribute <code>public.type_lexeme_relation.word_lang</code>.
      */
     public static final UDTField<TypeLexemeRelationRecord, String> WORD_LANG = createField("word_lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_LEXEME_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_lexeme_relation.homonym_nr</code>.
+     */
+    public static final UDTField<TypeLexemeRelationRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_LEXEME_RELATION, "");
 
     /**
      * The attribute <code>public.type_lexeme_relation.lex_rel_type_code</code>.

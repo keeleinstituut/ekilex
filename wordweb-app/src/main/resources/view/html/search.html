@@ -162,7 +162,7 @@
                       <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
                         <span th:text="#{label.same.as}">sama mis</span>
                         <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word)}}" class="synonym">
+                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
                             <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '') + (meaningWordIter.last ? '' : ', ')}">tee</span>
                           </a>
                         </span>
@@ -172,7 +172,7 @@
                   <div class="matches">
                     <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
-                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" class="matching-word">
+                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
                           <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
@@ -231,7 +231,7 @@
                         <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                           <span th:text="${relationType.value}"></span>
                           <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word, relation.homonymNr)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
                           </th:block>
                         </div>
                       </div>
@@ -241,7 +241,7 @@
                         <div th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                           <span th:text="${relationType.value}"></span>
                           <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word, relation.homonymNr)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
                           </th:block>
                         </div>
                       </div>
@@ -535,7 +535,7 @@
                     <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}">
                       <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ' :'}"></span>
                       <span th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
-                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
+                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word, relation.homonymNr)}}">
                           <span th:text="${(relation.suffixoid ? '-' : '') + relation.word + (relation.prefixoid ? '-' : '') + (relationIter.last ? '' : ',')}">tee</span>
                         </a>
                       </span>
@@ -547,7 +547,7 @@
                         <div class="word-grouper-wrapper mt-2">
                           <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
                           <span class="word-options mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word, relation.homonymNr)}}">
                               <span th:text="${(relation.suffixoid ? '-' : '') + relation.word + (relation.prefixoid ? '-' : '') + (relationIter.last ? '' : ',')}">tee</span>
                             </a>
                           </span>
@@ -559,7 +559,7 @@
                         <div class="word-grouper-wrapper mb-2">
                           <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
                           <span class="word-options mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word, relation.homonymNr)}}">
                               <span th:text="${(relation.suffixoid ? '-' : '') + relation.word + (relation.prefixoid ? '-' : '') + (relationIter.last ? '' : ',')}">tee</span>
                             </a>
                           </span>

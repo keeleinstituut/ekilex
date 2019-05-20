@@ -15,6 +15,8 @@ public class TypeLexemeRelation extends AbstractDataObject {
 
 	private String wordLang;
 
+	private Integer homonymNr;
+
 	private String lexRelTypeCode;
 
 	private Classifier lexRelType;
@@ -49,6 +51,14 @@ public class TypeLexemeRelation extends AbstractDataObject {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
+	}
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 
 	public String getLexRelTypeCode() {

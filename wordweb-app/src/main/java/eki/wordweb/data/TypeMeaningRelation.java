@@ -17,6 +17,8 @@ public class TypeMeaningRelation extends AbstractDataObject {
 
 	private String wordLang;
 
+	private Integer homonymNr;
+
 	private String meaningRelTypeCode;
 
 	private Classifier meaningRelType;
@@ -59,6 +61,14 @@ public class TypeMeaningRelation extends AbstractDataObject {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
+	}
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 
 	public String getMeaningRelTypeCode() {

@@ -4,9 +4,9 @@ create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_prese text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
-create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_type_codes varchar(100) array, dataset_codes varchar(10) array, word_rel_type_code varchar(100));
-create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
-create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
+create type type_word_relation as (word_id bigint, word text, word_lang char(3), homonym_nr integer, word_type_codes varchar(100) array, dataset_codes varchar(10) array, word_rel_type_code varchar(100));
+create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, lex_rel_type_code varchar(100));
+create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, meaning_rel_type_code varchar(100));
 
 -- words
 create view view_ww_word 
@@ -473,7 +473,7 @@ create view view_ww_word_relation
            wg.word_group_members
     from word w
       left outer join (select w1.id word_id,
-                              array_agg(row (w2.related_word_id,w2.related_word,w2.related_word_lang,w2.word_type_codes,w2.dataset_codes,w2.word_rel_type_code)::type_word_relation order by w2.word_rel_order_by) related_words
+                              array_agg(row (w2.related_word_id,w2.related_word,w2.related_word_lang,w2.related_word_homonym_nr,w2.word_type_codes,w2.dataset_codes,w2.word_rel_type_code)::type_word_relation order by w2.word_rel_order_by) related_words
                        from word w1
                          inner join (select distinct
                                             r.word1_id,
@@ -482,6 +482,7 @@ create view view_ww_word_relation
                                             r.order_by word_rel_order_by,
                                             f2.value related_word,
                                             w2.lang related_word_lang,
+                                            w2.homonym_nr related_word_homonym_nr,
                                             (select array_agg(wt.word_type_code order by wt.order_by) 
                                              from word_word_type wt 
                                              where wt.word_id = w2.id 
@@ -506,7 +507,7 @@ create view view_ww_word_relation
       left outer join (select wg.word_id,
                               wg.word_group_id,
                               wg.word_rel_type_code,
-                              array_agg(row (wg.group_member_word_id,wg.group_member_word,wg.group_member_word_lang,wg.word_type_codes,wg.dataset_codes,wg.word_rel_type_code)::type_word_relation order by wg.group_member_order_by) word_group_members
+                              array_agg(row (wg.group_member_word_id,wg.group_member_word,wg.group_member_word_lang,wg.group_member_homonym_nr,wg.word_type_codes,wg.dataset_codes,wg.word_rel_type_code)::type_word_relation order by wg.group_member_order_by) word_group_members
                        from (select distinct 
                                     w1.id word_id,
                                     wg.id word_group_id,
@@ -514,6 +515,7 @@ create view view_ww_word_relation
                                     w2.id group_member_word_id,
                                     f2.value group_member_word,
                                     w2.lang group_member_word_lang,
+                                    w2.homonym_nr group_member_homonym_nr,
                                     (select array_agg(wt.word_type_code order by wt.order_by) 
                                      from word_word_type wt 
                                      where wt.word_id = w2.id 
@@ -556,11 +558,12 @@ create view view_ww_word_relation
 create view view_ww_lexeme_relation 
   as
     select r.lexeme1_id lexeme_id,
-           array_agg(row (l2.related_lexeme_id,l2.related_word_id,l2.related_word,l2.related_word_lang,r.lex_rel_type_code)::type_lexeme_relation order by r.order_by) related_lexemes
+           array_agg(row (l2.related_lexeme_id,l2.related_word_id,l2.related_word,l2.related_word_lang,l2.related_word_homonym_nr,r.lex_rel_type_code)::type_lexeme_relation order by r.order_by) related_lexemes
     from lex_relation r
       inner join (select l2.id related_lexeme_id,
                          w2.id related_word_id,
                          w2.lang related_word_lang,
+                         w2.homonym_nr related_word_homonym_nr,
                          f2.value related_word
                   from lexeme l2,
                        word w2,
@@ -577,14 +580,15 @@ create view view_ww_lexeme_relation
 create view view_ww_meaning_relation 
   as
     select m1.id meaning_id,
-           array_agg(row (m2.meaning_id,m2.lexeme_id,m2.word_id,m2.word,m2.word_lang,r.meaning_rel_type_code)::type_meaning_relation order by r.order_by) related_meanings
+           array_agg(row (m2.meaning_id,m2.lexeme_id,m2.word_id,m2.word,m2.word_lang,m2.homonym_nr,r.meaning_rel_type_code)::type_meaning_relation order by r.order_by) related_meanings
     from meaning m1,
          meaning_relation r,
          (select distinct l2.meaning_id,
                  l2.id lexeme_id,
                  l2.word_id,
                  f2.value word,
-                 w2.lang word_lang
+                 w2.lang word_lang,
+                 w2.homonym_nr
           from lexeme l2,
                word w2,
                paradigm p2,

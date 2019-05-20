@@ -14,6 +14,8 @@ public class TypeWordRelation extends WordTypeData {
 
 	private String wordLang;
 
+	private Integer homonymNr;
+
 	private List<String> datasetCodes;
 
 	private String wordRelTypeCode;
@@ -42,6 +44,14 @@ public class TypeWordRelation extends WordTypeData {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
+	}
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 
 	public List<String> getDatasetCodes() {
