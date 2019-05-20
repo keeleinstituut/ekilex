@@ -8,19 +8,19 @@
     <div class="card mt-4 shadow">
       <div class="card-header">
         <h5 class="card-title">
-          Teretulemast
+          Tere tulemast,
           <span th:text="${#authentication.name}"></span>!
         </h5>
       </div>
       <div class="card-body">
         <div class="alert alert-info" role="alert" th:if="${applicationNotSubmitted}">
-          <div>See on EKI sõnastikesüsteem Ekilex. Siin saad esiteda taotluse Ekilexi kasutamiseks. Kui vaja, vali vastavad sõnakogud, millele soovid muutmisõigust</div>
+          <div>See on EKI sõnastikesüsteem Ekilex. Siin saad esiteda taotluse Ekilexi kasutamiseks. Kui vaja, vali vastavad sõnakogud, millele soovid muutmisõigust.</div>
         </div>
         <div class="alert alert-info" role="alert" th:if="${applicationReviewPending}">
-          <div>Sinu Ekilexi kasutamise taotlus on vastu võetud ning ootab rahuldamist</div>
+          <div>Sinu Ekilexi kasutamise taotlus on vastu võetud ning ootab rahuldamist.</div>
         </div>
         <div class="alert alert-warning" role="alert" th:if="${applicationDenied}">
-          <div>Sinu Ekilexi kasutamise taotlus lükati tagasi</div>
+          <div>Sinu Ekilexi kasutamise taotlus lükati tagasi.</div>
         </div>
         <div class="container float-left w-50" th:if="${applicationNotSubmitted}">
           <form th:action="@{/apply}" method="post">
