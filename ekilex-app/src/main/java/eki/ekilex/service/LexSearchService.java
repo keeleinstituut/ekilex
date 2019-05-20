@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -35,6 +36,7 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
@@ -212,6 +214,34 @@ public class LexSearchService extends AbstractSearchService {
 	}
 
 	@Transactional
+	public List<WordDescript> getWordDescripts(String searchFilter, List<String> datasets) {
+
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
+		WordsResult words = getWords(searchFilter, datasets, true);
+		List<WordDescript> wordDescripts = new ArrayList<>();
+		for (Word word : words.getWords()) {
+			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);
+			List<String> allDefinitionValues = new ArrayList<>();
+			lexemes.forEach(lexeme -> {
+				Long meaningId = lexeme.getMeaningId();
+				List<Word> meaningWords = lexSearchDbService.getMeaningWords(lexeme.getWordId(), meaningId, searchDatasetsRestriction);
+				lexeme.setMeaningWords(meaningWords);
+				List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+				List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
+				allDefinitionValues.addAll(lexemeDefinitionValues);
+			});
+			List<String> distinctDefinitionValues = allDefinitionValues.stream().distinct().collect(Collectors.toList());
+			WordDescript wordDescript = new WordDescript();
+			wordDescript.setWord(word);
+			wordDescript.setLexemes(lexemes);
+			wordDescript.setDefinitions(distinctDefinitionValues);
+			wordDescripts.add(wordDescript);
+		}
+		return wordDescripts;
+	}
+
+	@Transactional
 	public boolean isOnlyLexemeForWord(Long lexemeId) {
 		return lexSearchDbService.isOnlyLexemeForWord(lexemeId);
 	}
@@ -229,13 +259,14 @@ public class LexSearchService extends AbstractSearchService {
 		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
 		lexeme.setDataset(datasetName);
 
+		Long wordId = lexeme.getWordId();
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 
 		List<String> vocalForms = lexeme.getVocalForms();
 		vocalForms = cleanUpVocalForms(vocalForms);
 
-		List<Word> meaningWords = lexSearchDbService.getMeaningWords(lexeme.getWordId(), meaningId, searchDatasetsRestriction);
+		List<Word> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);

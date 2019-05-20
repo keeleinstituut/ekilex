@@ -1,11 +1,8 @@
 package eki.ekilex.web.controller;
 
-import static java.util.Arrays.asList;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -32,19 +29,19 @@ import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.SourceService;
-import eki.ekilex.service.CudService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
@@ -512,7 +509,6 @@ public class EditController implements WebConstant {
 		return null;
 	}
 
-	//TODO omg what is going on here?! implement optimal data aggregation
 	@GetMapping(WORD_SELECT_URI)
 	public String listSelectableWords(
 			@ModelAttribute(name = "dataset") String dataset,
@@ -524,21 +520,8 @@ public class EditController implements WebConstant {
 			Model model) {
 
 		List<String> allDatasets = commonDataService.getDatasetCodes();
-		WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true);
-		List<Word> wordsInDifferentDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).collect(Collectors.toList());
-		boolean hasWordInSameDataset = words.getWords().size() != wordsInDifferentDatasets.size();
-		model.addAttribute("words", wordsInDifferentDatasets);
-		model.addAttribute("hasWordInSameDataset", hasWordInSameDataset);
-		Map<Long, WordDetails> wordDetailsMap = new HashMap<>();
-		Map<Long, Boolean> wordHasDefinitions = new HashMap<>();
-		for (Word word : words.getWords()) {
-			WordDetails wordDetails = lexSearchService.getWordDetails(word.getWordId(), allDatasets);
-			wordDetailsMap.put(word.getWordId(), wordDetails);
-			boolean hasDefinitions = wordDetails.getLexemes().stream().anyMatch(d -> !d.getDefinitions().isEmpty());
-			wordHasDefinitions.put(word.getWordId(), hasDefinitions);
-		}
-		model.addAttribute("details", wordDetailsMap);
-		model.addAttribute("hasDefinitions", wordHasDefinitions);
+		List<WordDescript> wordDescripts = lexSearchService.getWordDescripts(wordValue, allDatasets);
+		model.addAttribute("wordDescripts", wordDescripts);
 
 		return WORD_SELECT_PAGE;
 	}

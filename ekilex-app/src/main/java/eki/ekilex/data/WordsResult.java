@@ -2,7 +2,11 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-public class WordsResult {
+import eki.common.data.AbstractDataObject;
+
+public class WordsResult extends AbstractDataObject {
+
+	private static final long serialVersionUID = 1L;
 
 	private int totalCount;
 

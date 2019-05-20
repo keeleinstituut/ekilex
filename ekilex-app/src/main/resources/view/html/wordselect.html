@@ -35,14 +35,15 @@
           </div>
         </form>
       </div>
-      <div class="card-body" th:if="${not #lists.isEmpty(words)}">
-        <div style="width: 95%" class="border rounded p-2 mb-2" th:each="word : ${words}">
+      <div class="card-body" th:if="${not #lists.isEmpty(wordDescripts)}">
+        <div style="width: 95%" class="border rounded p-2 mb-2" th:each="wordDescript : ${wordDescripts}">
           <div>
-            <span th:text="${word.value}" class="ttl"></span>
-            <span th:text="${word.homonymNumber}" class="ttl"></span>
-            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${word.wordId} + '/' + ${meaningId} + '/' + ${returnPage}}">Vali</a>
+            <span th:text="${wordDescript.word.value}" class="ttl"></span>
+            <span th:text="${wordDescript.word.homonymNumber}" class="ttl"></span>
+            <span th:text="${'(' + wordDescript.word.language + ')'}"></span>
+            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${wordDescript.word.wordId} + '/' + ${meaningId} + '/' + ${returnPage}}">Vali</a>
             <span class="float-right">
-              <th:block th:each="code, codeIter : ${word.datasetCodes}">
+              <th:block th:each="code, codeIter : ${wordDescript.word.datasetCodes}">
                 <b th:text="${code}"></b>
                 <b th:unless="${codeIter.last}">, </b>
               </th:block>
@@ -50,7 +51,7 @@
           </div>
           <hr />
           <div>
-            <span th:each="lexeme, lexemeIter : ${details.get(word.getWordId()).getLexemes()}">
+            <span th:each="lexeme, lexemeIter : ${wordDescript.lexemes}">
               <th:block th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
                 <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                   <span th:text="${meaningWord.value}"></span>
@@ -61,11 +62,9 @@
               </th:block>
             </span>
           </div>
-          <div class="mt-2" th:if="${hasDefinitions.get(word.getWordId())}">
+          <div class="mt-2" th:if="${not #lists.isEmpty(wordDescript.definitions)}">
             <span class="lbl">Seletused</span>
-            <th:block th:each="lexeme : ${details.get(word.getWordId()).getLexemes()}">
-              <div th:each="definition : ${lexeme.getDefinitions()}" th:text="${definition.getValue()}"></div>
-            </th:block>
+            <div th:each="definition : ${wordDescript.definitions}" th:text="${definition}"></div>
           </div>
         </div>
       </div>
