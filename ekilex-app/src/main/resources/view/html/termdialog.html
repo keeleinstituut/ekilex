@@ -135,7 +135,6 @@
                   <option value="addDefinitionDlg" sec:authorize="${#authentication.principal.datasetPermissionsExist}">Mõiste seletus</option>
                   <option value="addLearnerCommentDlg" sec:authorize="{#vars.isMeaningCrudGranted}">Õppekommentaar</option>
                   <option value="addMeaningPublicNoteDlg" sec:authorize="{#vars.isMeaningCrudGranted}">Märkus</option>
-                  <option value="addMeaningPrivateNoteDlg" sec:authorize="{#vars.isMeaningCrudGranted}">Sisemärkus</option>
                   <option value="addMeaningRelationDlg" sec:authorize="{#vars.isMeaningCrudGranted}">Tähenduse seos</option>
                 </select>
               </div>
@@ -637,74 +636,30 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningPrivateNoteDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_private_note_dlg">
+  <div th:id="${'addMeaningProcessLogDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_process_log_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
+        <form th:action="@{/create_meaning_process_log}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
-            <input type="hidden" name="language" value="est"><!-- FIXME what lang? -->
-            <input type="hidden" name="opCode" value="meaning_private_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control term-def-dataset-select" name="dataset">
+                  <option value="" hidden disabled selected>vali sõnastik...</option>
+                  <option th:each="dataset : ${userPermDatasets}"
+                          th:value="${dataset.code}"
+                          th:text="${dataset.name}">name</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editMeaningPrivateNoteDlg_' + meaningId + '_' + privateNote.id}" class="modal" role="dialog" th:fragment="edit_meaning_private_note_dlg">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${privateNote.id}">
-            <input type="hidden" name="opCode" value="meaning_private_note">
-            <input type="hidden" name="value" th:value="${privateNote.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'addMeaningPrivateNoteSourceLinkDlg_' + meaningId + '_' + privateNote.id}" class="modal" role="dialog" th:fragment="add_meaning_private_note_source_link_dlg">
-    <div class="modal-dialog" role="document" style="max-width: 1000px;">
-      <div class="modal-content">
-        <div class="modal-body">
-          <form th:action="@{/sourcesearchajax}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
-                  <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-        <form th:action="@{/create_item}" method="post">
-          <input type="hidden" name="id" th:value="${privateNote.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
-          <input type="hidden" name="id2">
-          <input type="hidden" name="id3">
-          <input type="hidden" name="value">
-          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
-        </form>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
       </div>
     </div>
   </div>

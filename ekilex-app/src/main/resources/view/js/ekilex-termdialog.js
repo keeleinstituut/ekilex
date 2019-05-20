@@ -62,12 +62,7 @@ $(document).on("show.bs.modal", "[id^=editMeaningPublicNoteDlg_]", function(e) {
 	alignAndFocus(e, $(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addMeaningPrivateNoteDlg_]", function(e) {
-	initEkiEditorDlg($(this));
-	alignAndFocus(e, $(this));
-});
-
-$(document).on("show.bs.modal", "[id^=editMeaningPrivateNoteDlg_]", function(e) {
+$(document).on("show.bs.modal", "[id^=addMeaningProcessLogDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
@@ -85,10 +80,6 @@ $(document).on("show.bs.modal", "[id^=addLexemePublicNoteSourceLinkDlg_]", funct
 });
 
 $(document).on("show.bs.modal", "[id^=addMeaningPublicNoteSourceLinkDlg_]", function() {
-	initAddSourceLinkDlg($(this));
-});
-
-$(document).on("show.bs.modal", "[id^=addMeaningPrivateNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 });
 

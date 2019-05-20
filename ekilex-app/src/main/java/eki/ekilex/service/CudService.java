@@ -43,6 +43,9 @@ public class CudService extends AbstractService {
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
 
+	@Autowired
+	private ProcessLogService processLogService;
+
 	// --- UPDATE ---
 
 	@Transactional
@@ -182,7 +185,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
-		createLexemeProcessLog(lexemeId, processStateCode);
+		processLogService.createLexemeProcessLog(lexemeId, processStateCode);
 		cudDbService.updateLexemeProcessState(lexemeId, processStateCode);
 	}
 
@@ -233,13 +236,6 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateMeaningPublicNote(Long id, String valuePrese) {
 		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		cudDbService.updateFreeformTextValue(id, value, valuePrese);
-	}
-
-	@Transactional
-	public void updateMeaningPrivateNote(Long id, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
@@ -406,13 +402,6 @@ public class CudService extends AbstractService {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = cudDbService.createMeaningPublicNote(meaningId, value, valuePrese, languageCode);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
-	}
-
-	@Transactional
-	public void createMeaningPrivateNote(Long meaningId, String valuePrese, String languageCode) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long usageDefinitionId = cudDbService.createMeaningPrivateNote(meaningId, value, valuePrese, languageCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
 	// --- DELETE ---
@@ -624,12 +613,6 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteMeaningPublicNote(Long id) {
 		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
-		cudDbService.deleteFreeform(id);
-	}
-
-	@Transactional
-	public void deleteMeaningPrivateNote(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PRIVATE_NOTE, LifecycleProperty.VALUE, id);
 		cudDbService.deleteFreeform(id);
 	}
 

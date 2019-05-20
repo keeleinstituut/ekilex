@@ -108,7 +108,7 @@ public class TermSearchService extends AbstractSearchService {
 	@Transactional
 	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder) {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name()};
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
 
 		final String classifierLabelLang = "est";
@@ -126,8 +126,6 @@ public class TermSearchService extends AbstractSearchService {
 		List<FreeForm> learnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(FreeformType.PUBLIC_NOTE, meaningId);
 		List<Note> meaningPublicNotes = conversionUtil.composeNotes(meaningPublicNoteSourceTuples);
-		List<NoteSourceTuple> meaningPrivateNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(FreeformType.PRIVATE_NOTE, meaningId);
-		List<Note> meaningPrivateNotes = conversionUtil.composeNotes(meaningPrivateNoteSourceTuples);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);
 
@@ -198,7 +196,6 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setLearnerComments(learnerComments);
 		meaning.setPublicNotes(meaningPublicNotes);
-		meaning.setPrivateNotes(meaningPrivateNotes);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
 		meaning.setContentExists(contentExists);
