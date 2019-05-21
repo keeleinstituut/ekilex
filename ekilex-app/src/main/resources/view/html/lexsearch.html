@@ -241,7 +241,7 @@
                 </div>
                 <div class="col pl-0">
                   <div class="orderable" data-op-code="definition">
-                    <th:block th:each="definition, itemIter : ${lexeme.definitions}"
+                    <div th:each="definition, itemIter : ${lexeme.definitions}"
                               th:with="isDefinitionCrudGranted=${#authorization.expression('hasPermission(#vars.definition.id, ''DEFINITION'', ''DATASET:CRUD'')')}"
                               th:data-id="${definition.id}"
                               th:data-orderby="${definition.orderBy}">
@@ -275,7 +275,7 @@
                           </div>
                         </div>
                       </div>
-                    </th:block>
+                    </div>
                   </div>
                 </div>
               </div>
