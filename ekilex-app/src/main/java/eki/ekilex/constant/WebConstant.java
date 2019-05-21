@@ -82,6 +82,8 @@ public interface WebConstant {
 
 	String LIFECYCLELOGVIEW_PAGE = "lifecyclelogview";
 
+	String PROCESS_LOG_VIEW_PAGE = "processlogview";
+
 	String SOURCEVIEW_PAGE = "sourceview";
 
 	String ERROR_PAGE = "error";

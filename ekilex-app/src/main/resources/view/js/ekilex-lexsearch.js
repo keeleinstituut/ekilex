@@ -56,6 +56,17 @@ function initialise() {
 		});
 	});
 
+	$(document).on('show.bs.modal', '#processLogDlg', function(e) {
+		var dlg = $(this);
+		var link = $(e.relatedTarget);
+		var url = link.attr('href');
+		dlg.find('.close').focus();
+		dlg.find('.modal-body').html(null);
+		$.get(url).done(function(data) {
+			dlg.find('.modal-body').html(data);
+		});
+	});
+
 	$(document).on('click', '[id^=lexemeCopyBtn_]', function() {
 		var lexemeId = $(this).data('lexeme-id');
 		let url = applicationUrl + 'lexemecopy/' + lexemeId;

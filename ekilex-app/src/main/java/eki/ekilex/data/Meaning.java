@@ -28,8 +28,6 @@ public class Meaning extends AbstractDataObject {
 
 	private List<Note> publicNotes;
 
-	private List<Note> privateNotes;
-
 	private List<Relation> relations;
 
 	private List<List<Relation>> groupedRelations;
@@ -98,14 +96,6 @@ public class Meaning extends AbstractDataObject {
 
 	public void setPublicNotes(List<Note> publicNotes) {
 		this.publicNotes = publicNotes;
-	}
-
-	public List<Note> getPrivateNotes() {
-		return privateNotes;
-	}
-
-	public void setPrivateNotes(List<Note> privateNotes) {
-		this.privateNotes = privateNotes;
 	}
 
 	public List<Relation> getRelations() {

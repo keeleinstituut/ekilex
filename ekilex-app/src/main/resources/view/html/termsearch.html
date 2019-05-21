@@ -118,7 +118,7 @@
         <div th:replace="termdialog :: add_definition_dlg"></div>
         <div th:replace="termdialog :: add_learner_comment_dlg"></div>
         <div th:replace="termdialog :: add_meaning_public_note_dlg"></div>
-        <div th:replace="termdialog :: add_meaning_private_note_dlg"></div>
+        <div th:replace="termdialog :: add_meaning_process_log_dlg"></div>
         <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
 
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
@@ -155,8 +155,20 @@
               <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
                  data-toggle="modal"
                  data-target="#meaningLifecycleLogDlg"
-                 class="btn btn-secondary btn-sm ml-4"
+                 class="btn btn-secondary btn-sm  ml-4"
                  sec:authorize="${#vars.isMeaningCrudGranted}">Tegevuste logi</a>
+              <a th:href="@{'/meaningprocesslog:' + ${meaningId}}"
+                 data-toggle="modal"
+                 data-target="#processLogDlg"
+                 class="btn btn-secondary btn-sm"
+                 sec:authorize="${#vars.isMeaningCrudGranted}">Menetluse logi</a>
+              <button type="button" class="btn badge badge-secondary"
+                      title="Lisa kirje menetluse logisse"
+                      data-toggle="modal"
+                      th:data-target="${'#addMeaningProcessLogDlg_' + meaningId}"
+                      sec:authorize="${#vars.isMeaningCrudGranted}">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
           <div th:replace="termcomp :: meaning_domain"></div>
@@ -372,83 +384,6 @@
               </th:block>
             </div>
           </div>
-          <div class="row">
-            <hr />
-            <div class="col pr-0 col-w13rem">
-              <span class="lbl">Sisemärkused
-                <button type="button" class="btn badge badge-success"
-                        title="Lisa uus"
-                        data-toggle="modal"
-                        th:data-target="${'#addMeaningPrivateNoteDlg_' + meaningId}"
-                        sec:authorize="${#vars.isMeaningCrudGranted}">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-              </span>
-            </div>
-            <div th:if="${not #lists.isEmpty(meaning.privateNotes)}" sec:authorize="${#vars.isMeaningCrudGranted}" class="col pl-0">
-              <th:block th:each="privateNote : ${meaning.privateNotes}">
-                <div th:replace="termdialog :: edit_meaning_private_note_dlg"></div>
-                <div th:replace="termdialog :: add_meaning_private_note_source_link_dlg"></div>
-                <div class="invisible-buttons action-buttons-anchor mw-90">
-                  <div style="display: list-item; position: absolute"></div>
-                  <span th:utext="${privateNote.valuePrese}"></span>
-                  <span class="show-on-mouseover" th:if="${#lists.isEmpty(privateNote.sourceLinks)}">
-                          [
-                          <button type="button" class="btn badge badge-success"
-                                  title="Lisa allikaviide"
-                                  data-toggle="modal"
-                                  th:data-target="${'#addMeaningPrivateNoteSourceLinkDlg_' + meaningId + '_' + privateNote.id}"
-                                  sec:authorize="${#vars.isMeaningCrudGranted}">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                          </button>
-                          ]
-                        </span>
-                  <div class="action-buttons-2">
-                    <button type="button" class="btn badge badge-primary"
-                            th:title="Muuda"
-                            data-toggle="modal"
-                            th:data-target="${'#editMeaningPrivateNoteDlg_' + meaningId + '_' + privateNote.id}"
-                            sec:authorize="${#vars.isMeaningCrudGranted}">
-                      <i class="fa fa-edit" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-id="${privateNote.id}"
-                            data-op-code="meaning_private_note"
-                            data-toggle="delete-confirm"
-                            data-placement="right"
-                            sec:authorize="${#vars.isMeaningCrudGranted}">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="hidden-buttons">
-                      <span th:each="sourceLink : ${privateNote.sourceLinks}">
-                        [
-                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                        <span th:if="${sourceLink.name != null}">
-                          <span th:text="${sourceLink.name}"></span>
-                        </span>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-id="${sourceLink.id}"
-                                data-op-code="ff_source_link"
-                                data-toggle="delete-confirm"
-                                data-placement="right"
-                                sec:authorize="${#vars.isMeaningCrudGranted}">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                        ]
-                      </span>
-                  <button type="button" class="btn badge badge-success"
-                          title="Lisa allikaviide"
-                          data-toggle="modal"
-                          th:data-target="${'#addMeaningPrivateNoteSourceLinkDlg_' + meaningId + '_' + privateNote.id}"
-                          sec:authorize="${#vars.isMeaningCrudGranted}">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                  </button>
-                </div>
-              </th:block>
-            </div>
-          </div>
           <div class="row" th:if="${not #lists.isEmpty(meaning.freeforms)}">
             <hr/>
             <div class="col pr-0 col-w13rem">
@@ -520,6 +455,16 @@
               </div>
             </div>
           </div>
+          <div id="processLogDlg" class="modal" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
@@ -577,6 +522,13 @@
                           sec:authorize="${#vars.isLexemeCrudGranted}">
                     Eemalda
                   </button>
+                </div>
+                <div class="ml-2">
+                  <a th:href="@{'/lexemeandwordprocesslog:' + ${lexeme.lexemeId}}"
+                     data-toggle="modal"
+                     data-target="#processLogDlg"
+                     class="btn btn-secondary btn-sm ml-4"
+                     sec:authorize="${#vars.isLexemeCrudGranted}">Menetluse logi</a>
                 </div>
                 <div class="ml-2">
                   <b th:text="${lexeme.dataset}"></b>

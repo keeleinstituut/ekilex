@@ -570,22 +570,6 @@ public class CudDbService implements DbConstant {
 		return freeform.getId();
 	}
 
-	public Long createMeaningPrivateNote(Long meaningId, String value, String valuePrese, String languageCode) {
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.PRIVATE_NOTE.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setLang(languageCode);
-		freeform.store();
-	
-		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
-		meaningFreeform.setMeaningId(meaningId);
-		meaningFreeform.setFreeformId(freeform.getId());
-		meaningFreeform.store();
-	
-		return freeform.getId();
-	}
-
 	public Long createUsage(Long lexemeId, String value, String valuePrese, String languageCode) {
 		Long usageFreeformId = create
 				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG)

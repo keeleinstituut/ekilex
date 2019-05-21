@@ -236,7 +236,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				// notes
 				Freeform nff3 = FREEFORM.as("nff3");
-				Condition where3 = nff3.TYPE.in(FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name());
+				Condition where3 = nff3.TYPE.eq(FreeformType.PUBLIC_NOTE.name());
 
 				where3 = applyValueFilters(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3);
 				where3 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, nff3.ID, where3);
@@ -315,7 +315,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				// meaning ff select
 				String[] meaningFreeformTypes = new String[] {
-						FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name(), FreeformType.CONCEPT_ID.name(), FreeformType.LEARNER_COMMENT.name()};
+						FreeformType.PUBLIC_NOTE.name(), FreeformType.CONCEPT_ID.name(), FreeformType.LEARNER_COMMENT.name()};
 				where1 = ff1.TYPE.in(meaningFreeformTypes).and(mff1.FREEFORM_ID.eq(ff1.ID));
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
 				whereDs = composeLexemeDatasetsCondition(lds, searchDatasetsRestriction);
@@ -331,7 +331,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				// lexeme ff select
 				String[] lexemeFreeformTypes = new String[] {
-						FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name(), FreeformType.USAGE.name(), FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
+						FreeformType.PUBLIC_NOTE.name(), FreeformType.USAGE.name(), FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
 				where1 = ff1.TYPE.in(lexemeFreeformTypes).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID));
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);

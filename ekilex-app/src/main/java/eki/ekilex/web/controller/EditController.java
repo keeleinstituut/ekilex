@@ -173,9 +173,6 @@ public class EditController implements WebConstant {
 		case "meaning_public_note":
 			cudService.createMeaningPublicNote(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
-		case "meaning_private_note":
-			cudService.createMeaningPrivateNote(itemData.getId(), valuePrese, itemData.getLanguage());
-			break;
 		}
 		return "{}";
 	}
@@ -256,9 +253,6 @@ public class EditController implements WebConstant {
 			break;
 		case "meaning_public_note":
 			cudService.updateMeaningPublicNote(itemData.getId(), valuePrese);
-			break;
-		case "meaning_private_note":
-			cudService.updateMeaningPrivateNote(itemData.getId(), valuePrese);
 			break;
 		}
 		return "{}";
@@ -429,9 +423,6 @@ public class EditController implements WebConstant {
 			break;
 		case "meaning_public_note":
 			cudService.deleteMeaningPublicNote(id);
-			break;
-		case "meaning_private_note":
-			cudService.deleteMeaningPrivateNote(id);
 			break;
 		}
 		return "OK";
