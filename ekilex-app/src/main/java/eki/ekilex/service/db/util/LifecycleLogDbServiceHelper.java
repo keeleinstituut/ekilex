@@ -116,9 +116,7 @@ public class LifecycleLogDbServiceHelper {
 
 	public Map<String, Object> getSourceType(DSLContext create, Long entityId) {
 		Map<String, Object> result = create
-				.select(
-						SOURCE.TYPE
-				)
+				.select(SOURCE.TYPE)
 				.from(SOURCE)
 				.where(SOURCE.ID.eq(entityId))
 				.fetchSingleMap();
@@ -130,14 +128,15 @@ public class LifecycleLogDbServiceHelper {
 				.selectDistinct(
 						WORD.GENDER_CODE,
 						WORD.ASPECT_CODE,
-						FORM.VALUE,
-						FORM.VALUE_PRESE
+						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value"),
+						DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("value_prese")
 						)
 				.from(WORD, PARADIGM, FORM)
 				.where(WORD.ID.eq(entityId)
 						.and(PARADIGM.WORD_ID.eq(entityId))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.groupBy(WORD.ID)
 				.fetchSingleMap();
 		return result;
 	}
@@ -152,13 +151,14 @@ public class LifecycleLogDbServiceHelper {
 						LEXEME.VALUE_STATE_CODE,
 						LEXEME.PROCESS_STATE_CODE,
 						LEXEME.ORDER_BY,
-						FORM.VALUE
+						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value")
 						)
 				.from(LEXEME, PARADIGM, FORM)
 				.where(LEXEME.ID.eq(entityId)
 						.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.groupBy(LEXEME.ID)
 				.fetchSingleMap();
 		return result;
 	}

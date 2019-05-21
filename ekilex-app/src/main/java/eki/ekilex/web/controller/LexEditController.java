@@ -116,12 +116,12 @@ public class LexEditController implements WebConstant {
 
 	@ResponseBody
 	@PostMapping("/lexemecopy/{lexemeId}")
-	public String meaningCopy(@PathVariable("lexemeId") Long lexemeId) throws JsonProcessingException {
+	public String duplicate(@PathVariable("lexemeId") Long lexemeId) throws JsonProcessingException {
 
 		Map<String, String> response = new HashMap<>();
 		Optional<Long> clonedLexeme = Optional.empty();
 		try {
-			clonedLexeme = compositionService.cloneLexeme(lexemeId);
+			clonedLexeme = compositionService.optionalDuplicateLexemeAndMeaning(lexemeId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}

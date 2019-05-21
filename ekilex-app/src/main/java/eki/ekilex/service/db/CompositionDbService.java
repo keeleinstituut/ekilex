@@ -332,9 +332,15 @@ public class CompositionDbService {
 	public Long cloneMeaning(Long meaningId) {
 
 		MeaningRecord meaning = create.selectFrom(MEANING).where(MEANING.ID.eq(meaningId)).fetchOne();
-		MeaningRecord clonedMeaning = meaning.copy();
-		clonedMeaning.store();
-		return clonedMeaning.getId();
+		Long clonedMeaningId;
+		if (meaning.fields().length == 1) {
+			clonedMeaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		} else {
+			MeaningRecord clonedMeaning = meaning.copy();
+			clonedMeaning.store();
+			clonedMeaningId = clonedMeaning.getId();
+		}
+		return clonedMeaningId;
 	}
 
 	public void cloneMeaningDomains(Long meaningId, Long clonedMeaningId) {
