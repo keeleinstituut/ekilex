@@ -86,13 +86,18 @@
                 th:title="#{corpus.title.rus}"></span>
         </h5>
       </div>
+      <div class="corp-warning" th:unless="${#lists.isEmpty(sentences)}">
+        <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>
+        <span th:text="#{corpus.warning}"></span>
+      </div>
       <div class="mt-1 sentence-wrapper" th:each="sentence : ${sentences}">
         <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
       </div>
       <button class="show-more" aria-expanded="false"
               th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
-              th:text="#{button.see.more}"
               th:unless="${#lists.isEmpty(sentences)}">
+        <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
+        <span th:text="#{button.see.more}"></span>
       </button>
     </div>
     <script th:inline="javascript">

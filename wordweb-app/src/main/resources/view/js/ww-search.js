@@ -64,12 +64,14 @@ $(document).on("click", ".show-more", function() {
 	let buttonText = '';
 	if ($(this).attr('aria-expanded') === 'false') {
 		$(this).attr('aria-expanded', 'true');
+		$(this).find("i").removeClass("fa-angle-down").addClass("fa-angle-up");
 		buttonText = $(this).data("see-less");
 	} else {
 		$(this).attr('aria-expanded', 'false');
+		$(this).find("i").removeClass("fa-angle-up").addClass("fa-angle-down");
 		buttonText = $(this).data("see-more");
 	}
-	$(this).text(buttonText);
+	$(this).find("span").text(buttonText);
 });
 
 
@@ -77,7 +79,7 @@ $(document).on("click", ".show-more", function() {
 	$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel").toggleClass("expand");
 
 	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+4), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options, .sentence-wrapper")
+			.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options, .sentence-wrapper")
 			.toggleClass("fade-target");
 
 	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel").find(
