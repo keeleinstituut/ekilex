@@ -54,6 +54,11 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	private static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
 	private static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
 
+	private static final String PROCESS_STATE_PUBLIC = "avalik";
+	private static final String PROCESS_STATE_NEW = "koostamisel";
+	private static final String PROCESS_STATE_APPROVED = "heaks kiidetud";
+	private static final String PROCESS_STATE_REJECTED = "tagasi lükatud";
+
 	private Pattern markupPatternForeign;
 
 	private Pattern markupPatternLink;
@@ -97,6 +102,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		lexemeValueStateCodes = new HashMap<>();
 		lexemeValueStateCodes.put("variant", "variant");
 		lexemeValueStateCodes.put("synonym", "rööptermin");
+		lexemeValueStateCodes.put("preferredTerm-admn-sts", "eelistermin");
+		lexemeValueStateCodes.put("deprecatedTerm-admn-sts", "väldi");
 	}
 
 	@Transactional
@@ -303,8 +310,11 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			String administrativeStatus = (String) term.get("administrative_status");
 			Integer termStatus = (Integer) term.get("term_status");
 			String termType = (String) term.get("term_type");
-			if ("les".equals(dataset)) {
-				Boolean inDictionary = (Boolean) term.get("in_dictionary");
+			Boolean inDictionary = (Boolean) term.get("in_dictionary");
+
+			boolean isValidTerm = isValidTerm(dataset, inDictionary);
+			if (!isValidTerm) {
+				continue;
 			}
 
 			String wordTypeCode = null;
@@ -369,9 +379,15 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
+			String processStateCode = extractProcessStateCode(isPublic, termStatus);
+			if (StringUtils.isBlank(lexemeValuseStateCode)) {
+				lexemeValuseStateCode = lexemeValueStateCodes.get(administrativeStatus);
+			}
+
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
+			lexeme.setProcessStateCode(processStateCode);
 			lexeme.setValueStateCode(lexemeValuseStateCode);
 			Long lexemeId = createLexemeIfNotExists(lexeme);
 			if (lexemeId != null) {
@@ -381,7 +397,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				} else {
 					posCode = pronunciation;
 				}
-				
+
 				savePosCode(lexemeId, posCode);
 				createLexemeSourceLink(context, sourceId, lexemeId);
 				createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
@@ -652,6 +668,23 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private String extractProcessStateCode(Boolean isPublic, Integer termStatus) {
+
+		String processStateCode = null;
+		if (isPublic) {
+			processStateCode = PROCESS_STATE_PUBLIC;
+		} else {
+			if (termStatus == 1) {
+				processStateCode = PROCESS_STATE_NEW;
+			} else if (termStatus == 3) {
+				processStateCode = PROCESS_STATE_REJECTED;
+			} else if (termStatus == 5) {
+				processStateCode = PROCESS_STATE_APPROVED;
+			}
+		}
+		return processStateCode;
+	}
+
 	private boolean hasTermDatabaseAndIsKnownDataset(Integer baseId, String dataset) throws Exception {
 		return termekiService.hasTermDatabase(baseId) && isKnownDataset(dataset);
 	}
@@ -680,6 +713,15 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			logger.info("Dataset {} : {}", dataset, selectedDataset.get("name"));
 		}
 		return selectedDataset != null;
+	}
+
+	private boolean isValidTerm(String dataset, Boolean inDictionary) {
+
+		if ("les".equals(dataset) && !inDictionary) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	private class SourceData {
