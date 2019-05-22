@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.WebConstant;
@@ -115,16 +114,17 @@ public class LexEditController implements WebConstant {
 	}
 
 	@ResponseBody
-	@PostMapping("/lexemecopy/{lexemeId}")
-	public String duplicate(@PathVariable("lexemeId") Long lexemeId) throws JsonProcessingException {
+	@PostMapping("/duplicatelexeme/{lexemeId}")
+	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
-		Map<String, String> response = new HashMap<>();
 		Optional<Long> clonedLexeme = Optional.empty();
 		try {
 			clonedLexeme = compositionService.optionalDuplicateLexemeAndMeaning(lexemeId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
+
+		Map<String, String> response = new HashMap<>();
 		if (clonedLexeme.isPresent()) {
 			response.put("message", "Lekseemi duplikaat lisatud");
 			response.put("status", "ok");
@@ -137,4 +137,18 @@ public class LexEditController implements WebConstant {
 		return jsonMapper.writeValueAsString(response);
 	}
 
+
+	@ResponseBody
+	@PostMapping("/duplicateemptylexeme/{lexemeId}")
+	public String duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
+
+		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId);
+
+		Map<String, String> response = new HashMap<>();
+		response.put("message", "Uus tähendus loodud");
+		response.put("status", "ok");
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(response);
+	}
 }

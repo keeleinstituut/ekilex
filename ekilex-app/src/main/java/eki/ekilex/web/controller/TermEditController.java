@@ -93,18 +93,17 @@ public class TermEditController implements WebConstant {
 	}
 
 	@ResponseBody
-	@PostMapping("/meaningcopy/{meaningId}")
-	public String meaningCopy(@PathVariable("meaningId") Long meaningId) throws JsonProcessingException {
+	@PostMapping("/duplicatemeaning/{meaningId}")
+	public String duplicateMeaning(@PathVariable("meaningId") Long meaningId) throws JsonProcessingException {
 
-		logger.debug("meaningId : {}", meaningId);
-
-		Map<String, String> response = new HashMap<>();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
-			clonedMeaning = compositionService.cloneMeaning(meaningId);
+			clonedMeaning = compositionService.optionalDuplicateMeaning(meaningId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
+
+		Map<String, String> response = new HashMap<>();
 		if (clonedMeaning.isPresent()) {
 			response.put("message", "Mõiste duplikaat lisatud");
 			response.put("status", "ok");
@@ -116,5 +115,4 @@ public class TermEditController implements WebConstant {
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(response);
 	}
-
 }

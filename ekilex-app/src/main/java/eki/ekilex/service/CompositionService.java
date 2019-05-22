@@ -41,7 +41,7 @@ public class CompositionService extends AbstractService {
 	private UserService userService;
 
 	@Transactional
-	public Optional<Long> cloneMeaning(Long meaningId) {
+	public Optional<Long> optionalDuplicateMeaning(Long meaningId) {
 		return Optional.of(duplicateMeaningWithLexemes(meaningId));
 	}
 
@@ -50,10 +50,51 @@ public class CompositionService extends AbstractService {
 		return Optional.of(duplicateLexemeAndMeaning(lexemeId));
 	}
 
-	private Long duplicateLexemeData(Long lexemeId, Long meaningId) {
+	@Transactional
+	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId) {
+		Long duplicateMeaningId = cudDbService.createMeaning();
+		Long duplicateLexemeId = compositionDbService.cloneEmptyLexeme(lexemeId, duplicateMeaningId);
+		String userName = userService.getAuthenticatedUser().getName();
+		String targetLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(duplicateLexemeId);
+		lifecycleLogDbService.createLog(
+				userName,
+				LifecycleEventType.CREATE,
+				LifecycleEntity.MEANING,
+				LifecycleProperty.VALUE,
+				duplicateMeaningId,
+				null,
+				targetLexemeDescription);
+		lifecycleLogDbService.createLog(
+				userName,
+				LifecycleEventType.CREATE,
+				LifecycleEntity.LEXEME,
+				LifecycleProperty.VALUE,
+				duplicateLexemeId,
+				null,
+				targetLexemeDescription);
+		return duplicateLexemeId;
+	}
+
+	private Long duplicateLexemeAndMeaning(Long lexemeId) {
 	
+		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
+		Long duplicateMeaningId = duplicateMeaningData(lexeme.getMeaningId());
+		Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId);
+		return duplicateLexemeId;
+	}
+
+	private Long duplicateMeaningWithLexemes(Long meaningId) {
+
+		Long duplicateMeaningId = duplicateMeaningData(meaningId);
+		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId);
+		meaningLexemes.forEach(meaningLexeme -> duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId));
+		return duplicateMeaningId;
+	}
+
+	private Long duplicateLexemeData(Long lexemeId, Long meaningId) {
+		
 		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, meaningId);
-		compositionDbService.cloneLexemeDerivatives(lexemeId, duplicateLexemeId);
+		compositionDbService.cloneLexemeDerivs(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeFreeforms(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemePoses(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
@@ -73,14 +114,6 @@ public class CompositionService extends AbstractService {
 		return duplicateLexemeId;
 	}
 
-	private Long duplicateLexemeAndMeaning(Long lexemeId) {
-	
-		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
-		Long duplicateMeaningId = duplicateMeaningData(lexeme.getMeaningId());
-		Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId);
-		return duplicateLexemeId;
-	}
-
 	private Long duplicateMeaningData(Long meaningId) {
 
 		Long duplicateMeaningId = compositionDbService.cloneMeaning(meaningId);
@@ -89,6 +122,7 @@ public class CompositionService extends AbstractService {
 		compositionDbService.cloneMeaningFreeforms(meaningId, duplicateMeaningId);
 		duplicateMeaningDefinitions(meaningId, duplicateMeaningId);
 		String userName = userService.getAuthenticatedUser().getName();
+		String targetMeaningDescription = lifecycleLogDbService.getCombinedMeaningDefinitions(duplicateMeaningId);
 		lifecycleLogDbService.createLog(
 				userName,
 				LifecycleEventType.CLONE,
@@ -96,15 +130,7 @@ public class CompositionService extends AbstractService {
 				LifecycleProperty.VALUE,
 				duplicateMeaningId,
 				null,
-				lifecycleLogDbService.getCombinedMeaningDefinitions(duplicateMeaningId));
-		return duplicateMeaningId;
-	}
-
-	private Long duplicateMeaningWithLexemes(Long meaningId) {
-
-		Long duplicateMeaningId = duplicateMeaningData(meaningId);
-		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId);
-		meaningLexemes.forEach(meaningLexeme -> duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId));
+				targetMeaningDescription);
 		return duplicateMeaningId;
 	}
 

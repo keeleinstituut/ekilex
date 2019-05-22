@@ -46,8 +46,8 @@ function initialise() {
 		});
 	});
 
-	$(document).on('click', '#meaningCopyBtn', function() {
-		let url = applicationUrl + 'meaningcopy/' + $(this).data('meaning-id');
+	$(document).on('click', '#duplicateMeaningBtn', function() {
+		let url = applicationUrl + 'duplicatemeaning/' + $(this).data('meaning-id');
 		$.post(url).done(function(data) {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {

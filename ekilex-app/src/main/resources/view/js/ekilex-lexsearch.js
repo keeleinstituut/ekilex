@@ -67,9 +67,9 @@ function initialise() {
 		});
 	});
 
-	$(document).on('click', '[id^=lexemeCopyBtn_]', function() {
+	$(document).on('click', '[id^=duplicateLexemeBtn_]', function() {
 		var lexemeId = $(this).data('lexeme-id');
-		let url = applicationUrl + 'lexemecopy/' + lexemeId;
+		let url = applicationUrl + 'duplicatelexeme/' + lexemeId;
 		$.post(url).done(function(data) {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {
@@ -78,7 +78,19 @@ function initialise() {
 				openAlertDlg(response.message);
 			}
 		}).fail(function(data) {
-			openAlertDlg("Lekseemi dubleerimine ebaõnnestus");
+			openAlertDlg("Tähenduse dubleerimine ebaõnnestus");
+			console.log(data);
+		});
+	});
+
+	$(document).on('click', '[id^=duplicateEmptyLexemeBtn_]', function() {
+		var lexemeId = $(this).data('lexeme-id');
+		var url = applicationUrl + 'duplicateemptylexeme/' + lexemeId;
+		$.post(url).done(function(data) {
+			var response = JSON.parse(data);
+			openMessageDlg(response.message);
+		}).fail(function(data) {
+			openAlertDlg("Tähenduse lisamine ebaõnnestus");
 			console.log(data);
 		});
 	});
