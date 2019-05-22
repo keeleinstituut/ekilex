@@ -173,15 +173,19 @@
                      data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
                      sec:authorize="${#vars.isLexemeCrudGranted}"
                     >Lahuta</a>
+                  <button th:id="${'duplicateLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
+                          title="Tee duplikaat ilmikust ja temaga seotud elementidest"
+                          th:data-lexeme-id="${lexeme.lexemeId}"
+                          sec:authorize="${#vars.isLexemeCrudGranted}">Duplikaat</button>
                   <button class="btn btn-sm btn-primary" 
                           data-toggle="modal" 
                           data-target="#newWordDlg" 
                           th:data-meaning-id="${lexeme.meaningId}"
-                          sec:authorize="${#authentication.principal.datasetPermissionsExist}">Lisa uus keelend</button>
-                  <button th:id="${'lexemeCopyBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
-                          title="Tee duplikaat ilmikust ja temaga seotud elementidest"
+                          sec:authorize="${#authentication.principal.datasetPermissionsExist}">Uus keelend</button>
+                  <button th:id="${'duplicateEmptyLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
+                          title="Loo uus ilmik ja tähendus"
                           th:data-lexeme-id="${lexeme.lexemeId}"
-                          sec:authorize="${#vars.isLexemeCrudGranted}">Duplikaat</button>
+                          sec:authorize="${#vars.isLexemeCrudGranted}">Uus tähendus</button>
                   <button class="btn btn-warning font-weight-bold btn-sm" type="button"
                           th:data-id="${lexeme.lexemeId}"
                           th:data-op-code="lexeme"

@@ -1,6 +1,7 @@
 $(document).on("change", "select.lex-def-dataset-select[name='dataset']", function() {
 	var datasetCode = $(this).val();
-	var permLanguageSelect = $("#definitionPermLanguageSelect");
+	var localForm = $(this).closest("form");
+	var permLanguageSelect = localForm.find("select[name=language]")
 	if (datasetCode) {
 		var getLanguageSelectUrl = applicationUrl + "comp/lexdeflangselect/" + datasetCode;
 		$.get(getLanguageSelectUrl).done(function(data) {
