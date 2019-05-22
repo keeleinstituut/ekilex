@@ -1893,10 +1893,10 @@ insert into word_type_label (code, value, lang, type) values ('vlj', 'väljend',
 insert into word_type_label (code, value, lang, type) values ('ys', 'ühendsidesõna (nii et)', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('ys', 'ühendsidesõna', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('rs', 'rühmsidesõna (ei .. ega)', 'est', 'descrip');
-insert into word_type_label (code, value, lang, type) values ('f', 'fras-väljend (väljendite plokis)', 'est', 'descrip');
-insert into word_type_label (code, value, lang, type) values ('f', '(idiomatic) phrase (grp)', 'eng', 'descrip');
-insert into word_type_label (code, value, lang, type) values ('mf', 'märksõna-väljend (iseseisev)', 'est', 'descrip');
-insert into word_type_label (code, value, lang, type) values ('mf', 'multiword unit (in the alphabet)', 'eng', 'descrip');
+insert into word_type_label (code, value, lang, type) values ('f', 'fras-väljend', 'est', 'descrip');
+insert into word_type_label (code, value, lang, type) values ('f', 'multiword expression', 'eng', 'descrip');
+insert into word_type_label (code, value, lang, type) values ('mf', 'fras-väljend', 'est', 'descrip');
+insert into word_type_label (code, value, lang, type) values ('mf', 'multiword expression', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('g', 'omastavaline täiend, genitiivne täiend', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('g', 'täiendsõna', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('lz', 'tsitaatsõna lühend', 'est', 'descrip');
