@@ -19,7 +19,7 @@ import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.ProcessLog;
 
 @Component
-public class ProcessLogDbService {
+public class ProcessDbService {
 
 	@Autowired
 	private DSLContext create;
@@ -173,6 +173,15 @@ public class ProcessLogDbService {
 
 		Long processLogId = createProcessLog(eventBy, dataset, comment, null);
 		createWordProcessLog(wordId, processLogId);
+	}
+
+	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
+
+		create.
+				update(LEXEME)
+				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
 	}
 
 	private Long createProcessLog(String eventBy, String datasetCode, String comment, String processStateCode) {

@@ -156,9 +156,6 @@ public class EditController implements WebConstant {
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), valuePrese);
 			break;
-		case "lexeme_process_state":
-			cudService.updateLexemeProcessState(itemData.getId(), valuePrese);
-			break;
 		case "usage_author":
 			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
 			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
@@ -241,9 +238,6 @@ public class EditController implements WebConstant {
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), valuePrese);
-			break;
-		case "lexeme_process_state":
-			cudService.updateLexemeProcessState(itemData.getId(), valuePrese);
 			break;
 		case "learner_comment":
 			cudService.updateMeaningLearnerComment(itemData.getId(), valuePrese);
@@ -405,9 +399,6 @@ public class EditController implements WebConstant {
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(id, null);
-			break;
-		case "lexeme_process_state":
-			cudService.updateLexemeProcessState(id, null);
 			break;
 		case "usage_author":
 			cudService.deleteFreeformSourceLink(id);

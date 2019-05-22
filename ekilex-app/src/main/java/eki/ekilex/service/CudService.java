@@ -43,9 +43,6 @@ public class CudService extends AbstractService {
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
 
-	@Autowired
-	private ProcessLogService processLogService;
-
 	// --- UPDATE ---
 
 	@Transactional
@@ -181,12 +178,6 @@ public class CudService extends AbstractService {
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
 		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE_STATE, lexemeId, valueStateCode);
 		cudDbService.updateLexemeValueState(lexemeId, valueStateCode);
-	}
-
-	@Transactional
-	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
-		processLogService.createLexemeProcessLog(lexemeId, processStateCode);
-		cudDbService.updateLexemeProcessState(lexemeId, processStateCode);
 	}
 
 	@Transactional

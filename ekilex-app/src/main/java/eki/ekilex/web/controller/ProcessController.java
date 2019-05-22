@@ -12,29 +12,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.ProcessLog;
-import eki.ekilex.service.ProcessLogService;
+import eki.ekilex.data.UpdateItemRequest;
+import eki.ekilex.service.ProcessService;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class ProcessLogController implements WebConstant {
+public class ProcessController implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProcessLogController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProcessController.class);
 
 	@Autowired
-	private ProcessLogService processLogService;
+	private ProcessService processService;
 
 	@GetMapping("/meaningprocesslog:{meaningId}")
 	public String meaningProcessLogLink(@PathVariable("meaningId") Long meaningId, Model model) {
 
 		logger.debug("Requested process log for meaning \"{}\"", meaningId);
-		List<ProcessLog> processLog = processLogService.getLogForMeaning(meaningId);
+		List<ProcessLog> processLog = processService.getLogForMeaning(meaningId);
 		model.addAttribute("processLog", processLog);
 
 		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
@@ -44,7 +46,7 @@ public class ProcessLogController implements WebConstant {
 	public String wordProcessLogLink(@PathVariable("wordId") Long wordId, Model model) {
 
 		logger.debug("Requested process log for word \"{}\"", wordId);
-		List<ProcessLog> processLog = processLogService.getLogForWord(wordId);
+		List<ProcessLog> processLog = processService.getLogForWord(wordId);
 		model.addAttribute("processLog", processLog);
 
 		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
@@ -54,7 +56,7 @@ public class ProcessLogController implements WebConstant {
 	public String lexemeAndWordProcessLogLink(@PathVariable("lexemeId") Long lexemeId, Model model) {
 
 		logger.debug("Requested process log for lexeme and word, lexeme id \"{}\"", lexemeId);
-		List<ProcessLog> processLog = processLogService.getLogForLexemeAndWord(lexemeId);
+		List<ProcessLog> processLog = processService.getLogForLexemeAndWord(lexemeId);
 		model.addAttribute("processLog", processLog);
 
 		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
@@ -64,7 +66,7 @@ public class ProcessLogController implements WebConstant {
 	public String lexemeAndMeaningProcessLogLink(@PathVariable("lexemeId") Long lexemeId, Model model) {
 
 		logger.debug("Requested process log for lexeme and meaning, lexeme id \"{}\"", lexemeId);
-		List<ProcessLog> processLog = processLogService.getLogForLexemeAndMeaning(lexemeId);
+		List<ProcessLog> processLog = processService.getLogForLexemeAndMeaning(lexemeId);
 		model.addAttribute("processLog", processLog);
 
 		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
@@ -78,7 +80,7 @@ public class ProcessLogController implements WebConstant {
 		String value = itemData.getValue();
 		String dataset = itemData.getDataset();
 		logger.debug("Creating process log for meaning \"{}\"", meaningId);
-		processLogService.createMeaningProcessLog(meaningId, dataset, value);
+		processService.createMeaningProcessLog(meaningId, dataset, value);
 
 		return "{}";
 	}
@@ -91,7 +93,44 @@ public class ProcessLogController implements WebConstant {
 		String value = itemData.getValue();
 		String dataset = itemData.getDataset();
 		logger.debug("Creating process log for word \"{}\"", wordId);
-		processLogService.createWordProcessLog(wordId, dataset, value);
+		processService.createWordProcessLog(wordId, dataset, value);
+
+		return "{}";
+	}
+
+	@PostMapping("/create_lexeme_process_state")
+	@ResponseBody
+	public String createLexemeProcessState(@RequestBody CreateItemRequest itemData) {
+
+		Long lexemeId = itemData.getId();
+		String processStateCode = itemData.getValue();
+		logger.debug("Creating process state for lexeme \"{}\"", lexemeId);
+		processService.createLexemeProcessLog(lexemeId, processStateCode);
+		processService.updateLexemeProcessState(lexemeId, processStateCode);
+
+		return "{}";
+	}
+
+	@PostMapping("/update_lexeme_process_state")
+	@ResponseBody
+	public String updateLexemeProcessState(@RequestBody UpdateItemRequest itemData) {
+
+		Long lexemeId = itemData.getId();
+		String processStateCode = itemData.getValue();
+		logger.debug("Updating process state for lexeme \"{}\"", lexemeId);
+		processService.createLexemeProcessLog(lexemeId, processStateCode);
+		processService.updateLexemeProcessState(lexemeId, processStateCode);
+
+		return "{}";
+	}
+
+	@PostMapping("/delete_lexeme_process_state")
+	@ResponseBody
+	public String deleteLexemeProcessState(@RequestParam("lexemeId") Long lexemeId) {
+
+		logger.debug("Deleting process state for lexeme \"{}\"", lexemeId);
+		processService.createLexemeProcessLog(lexemeId, null);
+		processService.updateLexemeProcessState(lexemeId, null);
 
 		return "{}";
 	}

@@ -487,6 +487,7 @@
                   isWordCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.wordId, ''WORD'', ''DATASET:CRUD'')')}
                   ">
 
+            <div th:replace="termdialog :: add_lexeme_process_state_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_data_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_source_link_dlg"></div>
             <div th:replace="termdialog :: add_usage_dlg"></div>
