@@ -60,6 +60,10 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 	private Map<String, String> posCodes;
 
+	private Map<String, String> lexemeValueStateCodes;
+
+	private Map<String, String> wordTypeCodes;
+
 	private String dataset;
 
 	@Autowired
@@ -86,6 +90,13 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		markupPatternLink = Pattern.compile(TERMEKI_MARKUP_PATTERN_LINK);
 		posCodes = loadClassifierMappingsFor(TERMEKI_CLASSIFIER_PRONUNCIATION);
 		posCodes.putAll(loadClassifierMappingsFor(TERMEKI_CLASSIFIER_WORD_CLASS));
+
+		wordTypeCodes = new HashMap<>();
+		wordTypeCodes.put("abbreviation", "l");
+
+		lexemeValueStateCodes = new HashMap<>();
+		lexemeValueStateCodes.put("variant", "variant");
+		lexemeValueStateCodes.put("synonym", "rööptermin");
 	}
 
 	@Transactional
@@ -296,12 +307,24 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				Boolean inDictionary = (Boolean) term.get("in_dictionary");
 			}
 
+			String wordTypeCode = null;
+			String lexemeValuseStateCode = null;
+			if (StringUtils.isNotBlank(termType)) {
+				wordTypeCode = wordTypeCodes.get(termType);
+				lexemeValuseStateCode = lexemeValueStateCodes.get(termType);
+			}
+
 			Long wordId;
 			if (termWordIdMap.containsKey(termId)) {
 				wordId = termWordIdMap.get(termId);
 			} else {
 				int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
-				Word word = new Word(wordValue, language, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
+				List<String> wordTypeCodes = null;
+				if (StringUtils.isNotBlank(wordTypeCode)) {
+					wordTypeCodes = new ArrayList<>();
+					wordTypeCodes.add(wordTypeCode);
+				}
+				Word word = new Word(wordValue, language, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
 				String genderCode = intoGenderCode(gender);
 				if (StringUtils.isNotBlank(genderCode)) {
 					if (existingGenders.contains(genderCode)) {
@@ -349,6 +372,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
+			lexeme.setValueStateCode(lexemeValuseStateCode);
 			Long lexemeId = createLexemeIfNotExists(lexeme);
 			if (lexemeId != null) {
 				String posCode;
@@ -357,6 +381,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				} else {
 					posCode = pronunciation;
 				}
+				
 				savePosCode(lexemeId, posCode);
 				createLexemeSourceLink(context, sourceId, lexemeId);
 				createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
