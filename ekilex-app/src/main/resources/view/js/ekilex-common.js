@@ -132,15 +132,17 @@ function executeValidateDelete() {
 	});
 }
 
-function executeDelete() {
-	var opCode = $(this).attr("data-op-code");
-	var id = $(this).attr("data-id");
-	var value = $(this).attr("data-value");
-	let callbackFunc = () => $('#refresh-details').trigger('click');
-	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
-	if (value !== undefined) {
-		deleteUrl = deleteUrl + '&value=' + encodeURIComponent(value);
+function executeDelete(deleteUrl) {
+	if (deleteUrl === undefined) {
+		var opCode = $(this).attr("data-op-code");
+		var id = $(this).attr("data-id");
+		var value = $(this).attr("data-value");
+		deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
+		if (value !== undefined) {
+			deleteUrl = deleteUrl + '&value=' + encodeURIComponent(value);
+		}
 	}
+	let callbackFunc = () => $('#refresh-details').trigger('click');
 	doPostDelete(deleteUrl, callbackFunc);
 }
 

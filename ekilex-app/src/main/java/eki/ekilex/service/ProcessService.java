@@ -9,59 +9,69 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.ProcessLog;
-import eki.ekilex.service.db.ProcessLogDbService;
+import eki.ekilex.service.db.ProcessDbService;
 
 @Component
-public class ProcessLogService {
+public class ProcessService {
+
+	private static final String PROCESS_STATE_DELETED_MESSAGE = " - haldusolek kustutatud";
 
 	@Autowired
-	private ProcessLogDbService processLogDbService;
+	private ProcessDbService processDbService;
 
 	@Autowired
 	private UserService userService;
 
 	@Transactional
 	public List<ProcessLog> getLogForMeaning(Long meaningId) {
-		return processLogDbService.getLogForMeaning(meaningId);
+		return processDbService.getLogForMeaning(meaningId);
 	}
 
 	@Transactional
 	public List<ProcessLog> getLogForWord(Long wordId) {
-		return processLogDbService.getLogForWord(wordId);
+		return processDbService.getLogForWord(wordId);
 	}
 
 	@Transactional
 	public List<ProcessLog> getLogForLexemeAndMeaning(Long lexemeId) {
-		return processLogDbService.getLogForLexemeAndMeaning(lexemeId);
+		return processDbService.getLogForLexemeAndMeaning(lexemeId);
 	}
 
 	@Transactional
 	public List<ProcessLog> getLogForLexemeAndWord(Long lexemeId) {
-		return processLogDbService.getLogForLexemeAndWord(lexemeId);
+		return processDbService.getLogForLexemeAndWord(lexemeId);
 	}
 
 	@Transactional
 	public void createLexemeProcessLog(Long lexemeId, String processStateCode) {
 
 		String userName = userService.getAuthenticatedUser().getName();
-		LexemeData lexemeData = processLogDbService.getLexemeData(lexemeId);
+		LexemeData lexemeData = processDbService.getLexemeData(lexemeId);
 		String datasetCode = lexemeData.getDatasetCode();
 		String recentProcessStateCode = lexemeData.getProcessStateCode();
+		if (processStateCode == null) {
+			recentProcessStateCode += PROCESS_STATE_DELETED_MESSAGE;
+		}
 
-		processLogDbService.createLexemeProcessLog(lexemeId, userName, datasetCode, recentProcessStateCode, processStateCode);
+		processDbService.createLexemeProcessLog(lexemeId, userName, datasetCode, recentProcessStateCode, processStateCode);
 	}
 
 	@Transactional
 	public void createMeaningProcessLog(Long meaningId, String dataset, String value) {
 
 		String userName = userService.getAuthenticatedUser().getName();
-		processLogDbService.createMeaningProcessLog(meaningId, dataset, userName, value);
+		processDbService.createMeaningProcessLog(meaningId, dataset, userName, value);
 	}
 
 	@Transactional
 	public void createWordProcessLog(Long wordId, String dataset, String value) {
 
 		String userName = userService.getAuthenticatedUser().getName();
-		processLogDbService.createWordProcessLog(wordId, dataset, userName, value);
+		processDbService.createWordProcessLog(wordId, dataset, userName, value);
+	}
+
+	@Transactional
+	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
+		processDbService.updateLexemeProcessState(lexemeId, processStateCode);
 	}
 }

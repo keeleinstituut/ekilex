@@ -253,13 +253,6 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
-		create.update(LEXEME)
-				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
 	public void updateWordGender(Long wordId, String genderCode) {
 		create.update(WORD)
 				.set(WORD.GENDER_CODE, genderCode)

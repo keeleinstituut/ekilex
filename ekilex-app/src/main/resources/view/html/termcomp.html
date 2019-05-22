@@ -16,13 +16,24 @@
       </button>
       <button type="button" class="btn badge badge-warning"
               th:data-id="${lexeme.lexemeId}"
-              data-op-code="lexeme_process_state"
-              data-toggle="delete-confirm"
+              data-toggle="delete-process-state-confirm"
               data-placement="right"
               sec:authorize="${#vars.isLexemeCrudGranted}">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
     </div>
+    <script th:inline="javascript">
+      $('[data-toggle=delete-process-state-confirm]').confirmation({
+        btnOkLabel: 'Jah',
+        btnCancelLabel: 'Ei',
+        title: 'Kinnita kustutamine',
+        onConfirm: function () {
+          let lexemeId = $(this).attr("data-id");
+          let deleteUrl = applicationUrl + 'delete_lexeme_process_state?lexemeId=' + lexemeId;
+          executeDelete(deleteUrl);
+        }
+      });
+    </script>
   </div>
   <div class="hidden-buttons row" th:if="${lexeme.lexemeValueStateCode != null}" th:fragment="lexeme_value_state">
     <div class="col pr-0 col-w13rem">

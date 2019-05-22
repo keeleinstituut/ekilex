@@ -36,12 +36,12 @@ public class SourceEditController extends AbstractPageController {
 	@Autowired
 	private SourceService sourceService;
 
-	@PostMapping(EDIT_SOURCE_PROPERTY_URI)
-	public String editSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("sourcePropertyId") Long sourcePropertyId,
+	@PostMapping(UPDATE_SOURCE_PROPERTY_URI)
+	public String updateSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("sourcePropertyId") Long sourcePropertyId,
 			@RequestParam("type") FreeformType type, @RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count,
 			Model model) {
 
-		logger.debug("Editing source property with id: {}, source id: {}", sourcePropertyId, sourceId);
+		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
 		sourceService.updateSourceProperty(sourcePropertyId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
@@ -52,10 +52,10 @@ public class SourceEditController extends AbstractPageController {
 	}
 
 	@PostMapping(CREATE_SOURCE_PROPERTY_URI)
-	public String addSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("type") FreeformType type,
+	public String createSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("type") FreeformType type,
 			@RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count, Model model) {
 
-		logger.debug("Adding property for source with id: {}", sourceId);
+		logger.debug("Creating property for source with id: {}", sourceId);
 
 		sourceService.createSourceProperty(sourceId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
@@ -80,10 +80,10 @@ public class SourceEditController extends AbstractPageController {
 	}
 
 	@PostMapping(UPDATE_SOURCE_TYPE_URI)
-	public String editSourceType(@RequestParam("sourceId") Long sourceId, @RequestParam("sourceType") SourceType type,
+	public String updateSourceType(@RequestParam("sourceId") Long sourceId, @RequestParam("sourceType") SourceType type,
 			@RequestParam("searchResultCount") String count, Model model) {
 
-		logger.debug("Editing source type, source id: {}", sourceId);
+		logger.debug("Updating source type, source id: {}", sourceId);
 
 		sourceService.updateSourceType(sourceId, type);
 		Source source = sourceService.getSource(sourceId);
@@ -95,10 +95,10 @@ public class SourceEditController extends AbstractPageController {
 
 	@PostMapping(CREATE_SOURCE_URI)
 	@ResponseBody
-	public String addSource(@RequestParam("sourceName") String sourceName, @RequestParam("sourceType") SourceType sourceType,
+	public String createSource(@RequestParam("sourceName") String sourceName, @RequestParam("sourceType") SourceType sourceType,
 			@RequestParam("type") List<FreeformType> sourcePropertyTypes, @RequestParam("valueText") List<String> valueTexts) {
 
-		logger.debug("Adding new source, source name: {}", sourceName);
+		logger.debug("Creating new source, source name: {}", sourceName);
 
 		List<SourceProperty> sourceProperties = new ArrayList<>();
 

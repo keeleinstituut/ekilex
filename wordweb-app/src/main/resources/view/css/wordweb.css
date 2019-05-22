@@ -244,4 +244,17 @@
 	color: dodgerblue;
 	font-size: 0.85rem;
 	margin-bottom: 0.5rem;
+	outline: none !important;
+	alignment: top;
+}
+
+.show-more-arrow {
+	font-size: 1.6em ;
+	vertical-align: middle;
+}
+
+.corp-warning {
+	font-style: italic;
+	font-size: 0.7rem;
+	line-height: normal;
 }
