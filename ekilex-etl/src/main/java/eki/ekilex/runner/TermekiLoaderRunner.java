@@ -288,6 +288,13 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			Timestamp createdOn = (Timestamp) term.get("create_time");
 			Integer modifiedById = (Integer) term.get("changer_id");
 			Timestamp modifiedOn = (Timestamp) term.get("change_time");
+			Boolean isPublic = (Boolean) term.get("is_public");
+			String administrativeStatus = (String) term.get("administrative_status");
+			Integer termStatus = (Integer) term.get("term_status");
+			String termType = (String) term.get("term_type");
+			if ("les".equals(dataset)) {
+				Boolean inDictionary = (Boolean) term.get("in_dictionary");
+			}
 
 			Long wordId;
 			if (termWordIdMap.containsKey(termId)) {
