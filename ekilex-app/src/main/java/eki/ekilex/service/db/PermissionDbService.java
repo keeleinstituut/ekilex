@@ -103,7 +103,7 @@ public class PermissionDbService implements SystemConstant {
 		return create
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
-				.where(DATASET.IS_PUBLIC.isTrue().and(DSL.or(userIsAdminCond, datasetPermCond)))
+				.where(DATASET.IS_VISIBLE.isTrue().and(DSL.or(userIsAdminCond, datasetPermCond)))
 				.orderBy(DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);
 	}
@@ -125,7 +125,7 @@ public class PermissionDbService implements SystemConstant {
 		return create
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
-				.where(DATASET.IS_PUBLIC.isTrue().and(DSL.or(userIsAdminCond, datasetPermCond)))
+				.where(DATASET.IS_VISIBLE.isTrue().and(DSL.or(userIsAdminCond, datasetPermCond)))
 				.orderBy(DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);
 	}
