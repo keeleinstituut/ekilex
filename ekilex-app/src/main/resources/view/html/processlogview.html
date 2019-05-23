@@ -3,6 +3,9 @@
 <body>
   <th:block>
     <div th:fragment="details" style="width: 100%">
+      <div th:if="${#lists.isEmpty(processLog)}" class="stxt">
+        <span>Andmed puuduvad</span>
+      </div>
       <div th:each="logRow : ${processLog}">
         <div class="card p-2 mt-2">
           <div class="row">
