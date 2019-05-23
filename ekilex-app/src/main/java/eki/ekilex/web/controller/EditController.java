@@ -502,7 +502,7 @@ public class EditController implements WebConstant {
 			Model model) {
 
 		List<String> allDatasets = commonDataService.getDatasetCodes();
-		List<WordDescript> wordDescripts = lexSearchService.getWordDescripts(wordValue, allDatasets);
+		List<WordDescript> wordDescripts = lexSearchService.getWordDescripts(wordValue, allDatasets, meaningId);
 		model.addAttribute("wordDescripts", wordDescripts);
 
 		return WORD_SELECT_PAGE;
@@ -517,7 +517,7 @@ public class EditController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
-		cudService.createWord(wordId, dataset, meaningId);
+		cudService.createLexeme(wordId, dataset, meaningId);
 		Word word = commonDataService.getWord(wordId);
 		String wordValue = word.getValue();
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();

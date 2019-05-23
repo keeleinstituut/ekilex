@@ -241,12 +241,6 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createWord(Long wordId, String datasetCode, Long meaningId) {
-		Long lexemeId = cudDbService.createLexeme(wordId, datasetCode, meaningId);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
-	}
-
-	@Transactional
 	public void createWordType(Long wordId, String typeCode) {
 		Long lexemePosId = cudDbService.createWordType(wordId, typeCode);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
@@ -289,6 +283,15 @@ public class CudService extends AbstractService {
 			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode);
 			createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
 		}
+	}
+
+	@Transactional
+	public void createLexeme(Long wordId, String datasetCode, Long meaningId) {
+		Long lexemeId = cudDbService.createLexeme(wordId, datasetCode, meaningId);
+		if (lexemeId == null) {
+			return;
+		}
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
 	}
 
 	@Transactional

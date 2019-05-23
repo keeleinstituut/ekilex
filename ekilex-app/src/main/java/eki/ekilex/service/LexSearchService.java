@@ -214,13 +214,20 @@ public class LexSearchService extends AbstractSearchService {
 	}
 
 	@Transactional
-	public List<WordDescript> getWordDescripts(String searchFilter, List<String> datasets) {
+	public List<WordDescript> getWordDescripts(String searchFilter, List<String> datasets, Long excludingMeaningId) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
 		WordsResult words = getWords(searchFilter, datasets, true);
 		List<WordDescript> wordDescripts = new ArrayList<>();
 		for (Word word : words.getWords()) {
 			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);
+			boolean lexemeAlreadyExists = false;
+			if (excludingMeaningId != null) {
+				lexemeAlreadyExists = lexemes.stream().anyMatch(lexeme -> lexeme.getMeaningId().equals(excludingMeaningId));
+			}
+			if (lexemeAlreadyExists) {
+				continue;
+			}
 			List<String> allDefinitionValues = new ArrayList<>();
 			lexemes.forEach(lexeme -> {
 				Long meaningId = lexeme.getMeaningId();

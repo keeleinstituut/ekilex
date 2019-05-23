@@ -149,8 +149,10 @@ public class CompositionService extends AbstractService {
 	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
 		String logEntrySource = compositionDbService.getFirstDefinitionOfMeaning(meaningId);
 		String logEntryTarget = compositionDbService.getFirstDefinitionOfMeaning(sourceMeaningId);
-		createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, logEntrySource, logEntryTarget);
-		compositionDbService.joinMeanings(meaningId, sourceMeaningId);
+		boolean success = compositionDbService.joinMeanings(meaningId, sourceMeaningId);
+		if (success) {
+			createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, logEntrySource, logEntryTarget);
+		}
 	}
 
 	//TODO lifecycle log
