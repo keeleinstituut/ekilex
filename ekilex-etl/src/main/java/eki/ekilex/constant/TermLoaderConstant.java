@@ -100,6 +100,8 @@ public interface TermLoaderConstant extends TableName {
 	String definitionTypeCodeDefinition = "definitsioon";
 	String definitionTypeCodeExplanation = "selgitus";
 
+	String EMPTY_CONTENT = "-";
+
 	char listingsDelimiter = '|';
 	char meaningDelimiter = ';';
 	char tlinkDelimiter = ':';

@@ -55,7 +55,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private List<String> processLogSourceRefNames = Arrays.asList("Cancelled", "NATO Agreed");
 
-
 	@Override
 	public String getDataset() {
 		return "mil";
@@ -191,7 +190,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				List<Node> definitionValueNodes = termGroupNode.selectNodes(definitionExp);
 				for (Node definitionValueNode : definitionValueNodes) {
-					List<Content> sources = extractContentAndRefs(definitionValueNode, lang, term, true);
+					List<Content> sources = extractContentAndRefs(definitionValueNode, lang, term, false);
 					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeDefinition, fileName);
 				}
 
@@ -233,7 +232,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				List<Node> noteValueNodes = termGroupNode.selectNodes(noteExp);
 				if (CollectionUtils.isNotEmpty(noteValueNodes)) {
 					for (Node noteValueNode : noteValueNodes) {
-						List<Content> sources = extractContentAndRefs(noteValueNode, lang, term, true);
+						List<Content> sources = extractContentAndRefs(noteValueNode, lang, term, false);
 						savePublicNotesAndSourceLinks(lexemeId, sources, term, fileName);
 					}
 				}
@@ -588,8 +587,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			String definition = definitionObj.getValue();
 			String lang = definitionObj.getLang();
 			List<Ref> refs = definitionObj.getRefs();
-			Long definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang);
-			definitionObj.setId(definitionId);
+			Long definitionId = null;
+			if (EMPTY_CONTENT.equals(definition)) {
+				boolean definitonHasAtLeastOneValidRef = containsValidRef(refs);
+				if (definitonHasAtLeastOneValidRef) {
+					definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang);
+					definitionObj.setId(definitionId);
+				}
+			} else {
+				definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang);
+				definitionObj.setId(definitionId);
+			}
 			for (Ref ref : refs) {
 				String majorRef = ref.getMajorRef();
 				if (processLogSourceRefNames.contains(majorRef)) {
@@ -621,8 +629,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			String publicNote = publicNoteObj.getValue();
 			String lang = publicNoteObj.getLang();
 			List<Ref> refs = publicNoteObj.getRefs();
-			Long publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
-			publicNoteObj.setId(publicNoteId);
+			Long publicNoteId = null;
+			if (EMPTY_CONTENT.equals(publicNote)) {
+				boolean publicNoteHasAtLeastOneValidRef = containsValidRef(refs);
+				if (publicNoteHasAtLeastOneValidRef) {
+					publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
+					publicNoteObj.setId(publicNoteId);
+				}
+			}  else {
+				publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
+				publicNoteObj.setId(publicNoteId);
+			}
 			for (Ref ref : refs) {
 				String majorRef = ref.getMajorRef();
 				if (processLogSourceRefNames.contains(majorRef)) {
@@ -632,6 +649,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private boolean containsValidRef(List<Ref> refs) {
+
+		for (Ref ref : refs) {
+			String majorRef = ref.getMajorRef();
+			if (!processLogSourceRefNames.contains(majorRef)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String term, String fileName) throws Exception {

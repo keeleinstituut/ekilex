@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
-import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
 import eki.ekilex.constant.TermLoaderConstant;
 import eki.ekilex.runner.util.TermLoaderHelper;
@@ -99,7 +98,7 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 					}
 
 					if (contentObj == null) {
-						contentObj = newContent(lang, "-");
+						contentObj = newContent(lang, EMPTY_CONTENT);
 						contentList.add(contentObj);
 						if (logWarrnings) {
 							logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceName);
