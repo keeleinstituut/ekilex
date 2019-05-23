@@ -11,7 +11,12 @@ select t.term_id,
        t.create_time,
        t.creater_id,
        t.change_time,
-       t.changer_id
+       t.changer_id,
+       c.is_public,
+       t.administrative_status,
+       t.in_dictionary,
+       t.term_status,
+       t.term_type
 from termeki_terms t
   left join termeki_concepts c
          on t.concept_id = c.concept_id

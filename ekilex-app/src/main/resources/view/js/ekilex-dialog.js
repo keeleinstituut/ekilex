@@ -35,6 +35,10 @@ $(document).on("show.bs.modal", "[id^=addLexemePublicNoteDlg_]", function(e) {
 	alignAndFocus(e, $(this));
 });
 
+$(document).on("show.bs.modal", "[id^=addLexemeProcessStateDlg]", function() {
+	initGenericTextAddDlg($(this));
+});
+
 $(document).on("show.bs.modal", "[id^=editLexemePublicNoteDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));

@@ -5,7 +5,7 @@
   <div th:id="${'editSourcePropertyDlg_' + sourceProperty.id}" class="modal" role="dialog" th:fragment="edit_source_property_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/edit_source_property}">
+        <form th:action="@{/update_source_property}">
           <div class="modal-body">
             <input type="hidden" name="sourceId" th:value="${source.sourceId}">
             <input type="hidden" name="sourcePropertyId" th:value="${sourceProperty.id}">

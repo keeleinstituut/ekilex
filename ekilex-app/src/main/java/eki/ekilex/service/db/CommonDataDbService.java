@@ -84,12 +84,12 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	private DSLContext create;
 
 	public Map<String, String> getDatasetNameMap() {
-		return create.select().from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).fetchMap(DATASET.CODE, DATASET.NAME);
+		return create.select().from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
 	@Cacheable(value = CACHE_KEY_DATASET)
 	public List<Dataset> getDatasets() {
-		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
+		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")

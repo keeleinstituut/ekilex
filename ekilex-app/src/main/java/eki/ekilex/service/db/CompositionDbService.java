@@ -30,6 +30,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DbConstant;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -49,7 +50,7 @@ import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 
 @Component
-public class CompositionDbService {
+public class CompositionDbService implements DbConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -228,17 +229,37 @@ public class CompositionDbService {
 	public Long cloneLexeme(Long lexemeId, Long meaningId) {
 
 		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
+		Integer level1 = lexeme.getLevel1();
+		int calculatedLevel2 = calculateLevel2(lexeme);
 		LexemeRecord clonedLexeme = lexeme.copy();
 		clonedLexeme.setMeaningId(meaningId);
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
-		clonedLexeme.setLevel1(lexeme.getLevel1());
-		clonedLexeme.setLevel2(calculateLevel2(lexeme));
+		clonedLexeme.setLevel1(level1);
+		clonedLexeme.setLevel2(calculatedLevel2);
 		clonedLexeme.setLevel3(1);
 		clonedLexeme.store();
 		return clonedLexeme.getId();
 	}
 
-	public void cloneLexemeDerivatives(Long lexemeId, Long clonedLexemeId) {
+	public Long cloneEmptyLexeme(Long lexemeId, Long meaningId) {
+
+		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
+		Integer level1 = lexeme.getLevel1();
+		int calculatedLevel2 = calculateLevel2(lexeme);
+		LexemeRecord clonedLexeme = lexeme.copy();
+		clonedLexeme.setMeaningId(meaningId);
+		clonedLexeme.changed(LEXEME.ORDER_BY, false);
+		clonedLexeme.changed(LEXEME.FREQUENCY_GROUP_CODE, false);
+		clonedLexeme.changed(LEXEME.CORPUS_FREQUENCY, false);
+		clonedLexeme.setLevel1(level1);
+		clonedLexeme.setLevel2(calculatedLevel2);
+		clonedLexeme.setLevel3(1);
+		clonedLexeme.setProcessStateCode(PROCESS_STATE_IN_WORK);
+		clonedLexeme.store();
+		return clonedLexeme.getId();
+	}
+
+	public void cloneLexemeDerivs(Long lexemeId, Long clonedLexemeId) {
 
 		Result<LexemeDerivRecord> lexemeDerivatives = create.selectFrom(LEXEME_DERIV)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId))
@@ -332,14 +353,14 @@ public class CompositionDbService {
 	public Long cloneMeaning(Long meaningId) {
 
 		MeaningRecord meaning = create.selectFrom(MEANING).where(MEANING.ID.eq(meaningId)).fetchOne();
-		Long clonedMeaningId;
+		MeaningRecord clonedMeaning;
 		if (meaning.fields().length == 1) {
-			clonedMeaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+			clonedMeaning = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
 		} else {
-			MeaningRecord clonedMeaning = meaning.copy();
+			clonedMeaning = meaning.copy();
 			clonedMeaning.store();
-			clonedMeaningId = clonedMeaning.getId();
 		}
+		Long clonedMeaningId = clonedMeaning.getId();
 		return clonedMeaningId;
 	}
 

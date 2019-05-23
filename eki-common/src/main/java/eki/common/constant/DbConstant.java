@@ -6,6 +6,8 @@ public interface DbConstant {
 
 	String PROCESS_STATE_DELETED = "kustutatud";
 
+	String PROCESS_STATE_IN_WORK = "koostamisel";
+
 	String WORD_TYPE_CODE_PREFIXOID = "pf";
 
 	String WORD_TYPE_CODE_SUFFIXOID = "sf";

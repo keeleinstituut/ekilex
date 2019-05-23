@@ -51,6 +51,7 @@ import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
+import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.tables.records.WordGroupRecord;
@@ -248,13 +249,6 @@ public class CudDbService implements DbConstant {
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
 		create.update(LEXEME)
 				.set(LEXEME.VALUE_STATE_CODE, valueStateCode)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
-		create.update(LEXEME)
-				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
@@ -508,6 +502,11 @@ public class CudDbService implements DbConstant {
 		lexemeRelation.setLexRelTypeCode(relationType);
 		lexemeRelation.store();
 		return lexemeRelation.getId();
+	}
+
+	public Long createMeaning() {
+		MeaningRecord meaning = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
+		return meaning.getId();
 	}
 
 	public Long createMeaningRelation(Long meaningId1, Long meaningId2, String relationType) {

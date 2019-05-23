@@ -37,12 +37,11 @@
     <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
       <a class="navbar-brand" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
       <div class="navbar-nav" th:if="${activeItem}">
-        <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">
-          Leksikograafid
-          </span>
-        </a>
+        <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
         <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-        <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#" sec:authorize="${#authentication.principal.datasetPermissionsExist}"> Lisa uus keelend </a>
+        <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#" sec:authorize="${#authentication.principal.datasetPermissionsExist}">
+          <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
+        </a>
       </div>
       <div class="navbar-nav ml-auto">
         <form th:action="@{/dologout}" method="post" sec:authorize="isAuthenticated()">
