@@ -22,17 +22,20 @@ import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.Complexity;
 import eki.common.constant.DbConstant;
+import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
+import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
@@ -42,7 +45,7 @@ import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 
 @Component
-public class LexSearchDbService implements DbConstant{
+public class LexSearchDbService implements DbConstant, SystemConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -334,4 +337,18 @@ public class LexSearchDbService implements DbConstant{
 				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_NULL_WORD, key = "{#wordId, #tokens}")
+	public List<WordForm> getWordFormCandidates(Long wordId, List<String> tokens) {
+
+		return create
+				.select(
+						MVIEW_WW_FORM.WORD,
+						MVIEW_WW_FORM.FORM)
+				.from(MVIEW_WW_FORM)
+				.where(
+						MVIEW_WW_FORM.WORD_ID.eq(wordId)
+						.and(MVIEW_WW_FORM.FORM.in(tokens))
+						)
+				.fetchInto(WordForm.class);
+	}
 }

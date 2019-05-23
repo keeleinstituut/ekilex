@@ -3,6 +3,7 @@ package eki.wordweb.service;
 import static java.lang.Math.max;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +28,11 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
+import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordsData;
@@ -154,6 +157,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.getLexemeDetailsTuples(wordId, datasets);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, datasets);
 		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, datasets, complexity);
+		compensateNullWords(wordId, collocTuples);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
@@ -190,6 +194,27 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		wordData.setUnknownForm(isUnknownForm);
 		combineLevels(wordData.getLexemes());
 		return wordData;
+	}
+
+	private void compensateNullWords(Long wordId, List<CollocationTuple> collocTuples) {
+
+		for (CollocationTuple tuple : collocTuples) {
+			List<TypeCollocMember> collocMembers = tuple.getCollocMembers();
+			for (TypeCollocMember collocMem : collocMembers) {
+				if (StringUtils.isBlank(collocMem.getWord())) {
+					String collocValue = tuple.getCollocValue();
+					List<String> collocTokens = Arrays.asList(StringUtils.split(collocValue));
+					List<WordForm> wordFormCandidates = lexSearchDbService.getWordFormCandidates(wordId, collocTokens);
+					if (CollectionUtils.isEmpty(wordFormCandidates)) {
+						tuple.setInvalid(true);
+						break;
+					}
+					WordForm firstAvailableReplacement = wordFormCandidates.get(0);
+					collocMem.setWord(firstAvailableReplacement.getWord());
+					collocMem.setForm(firstAvailableReplacement.getForm());
+				}
+			}
+		}
 	}
 
 	private void combineLevels(List<Lexeme> lexemes) {
