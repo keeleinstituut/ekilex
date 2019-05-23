@@ -122,7 +122,7 @@
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control word-data-select" name="opCode">
+                <select required class="form-control word-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="word_gender">Sugu</option>
                   <option value="word_type">Sõna tüüp</option>
@@ -132,7 +132,7 @@
             </div>
             <div th:id="${'word_gender_' + wordId}" class="form-group row value-group" style="display: none">
               <div class="col-md-4">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="gender : ${wordGenders}" th:value="${gender.code}" th:text="${gender.value}">gender</option>
                 </select>
@@ -140,7 +140,7 @@
             </div>
             <div th:id="${'word_type_' + wordId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${wordTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -148,7 +148,7 @@
             </div>
             <div th:id="${'word_aspect_' + wordId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${wordAspects}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>

@@ -30,6 +30,9 @@ function submitDialog(e, dlg, failMessage, callback = $.noop) {
 }
 
 function submitForm(theForm, failMessage, callback = $.noop) {
+	if (!checkRequiredFields(theForm)) {
+		return;
+	}
 	var data = JSON.stringify(theForm.serializeJSON());
 	return $.ajax({
 		url: theForm.attr('action'),
@@ -72,6 +75,14 @@ $(document).on("change", "select.common-word-dataset-select[name='dataset']", fu
 		permLanguageSelect.empty();
 	}
 });
+$(document).on("change", ".required-field", function() {
+	if ($(this).val()) {
+		$(this).removeClass('is-invalid');
+	} else {
+		$(this).addClass('is-invalid');
+	}
+});
+
 
 function changeItemOrdering(target, delta) {
 	let orderBlock = target.closest('.orderable');
@@ -225,6 +236,9 @@ function initNewWordDlg() {
 	let newWordDlg = $('#newWordDlg');
 	newWordDlg.on('shown.bs.modal', function(e) {
 		newWordDlg.find('.form-control').first().focus();
+		newWordDlg.find('.form-control').each(function () {
+			$(this).removeClass('is-invalid');
+		});
 		let searchValue = $("input[name='simpleSearchFilter']").val() || '';
 		if (!searchValue.includes('*') && !searchValue.includes('?')) {
 			newWordDlg.find('[name=value]').val(searchValue);
@@ -234,27 +248,48 @@ function initNewWordDlg() {
 		let meaningId = $(e.relatedTarget).data('meaning-id');
 		$('[name=meaningId]').val(meaningId);
 	});
+
+	newWordDlg.find('.form-control').on('change', function () {
+		if ($(this).val()) {
+			$(this).removeClass('is-invalid');
+		} else {
+			$(this).addClass('is-invalid');
+		}
+	});
 	$(document).on("click", "#addWordSubmitBtn", function() {
 		var addWordForm = $("#addWordForm");
-		var formVal;
-		formVal = addWordForm.find("select[name='dataset']").val();
-		if (formVal == '') {
-			return;
-		}
-		formVal = addWordForm.find("select[name='language']").val();
-		if (formVal == '') {
-			return;
-		}
-		formVal = addWordForm.find("select[name='morphCode']").val();
-		if (formVal == '') {
-			return;
-		}
-		formVal = addWordForm.find("input[name='value']").val();
-		if (formVal == '') {
+		// addWordForm.find("select[name='dataset']"),
+		// 	addWordForm.find("select[name='language']"),
+		// 	addWordForm.find("select[name='morphCode']"),
+		// 	addWordForm.find("input[name='value']")]);
+		var isValid = checkRequiredFields(addWordForm);
+		if (!isValid) {
 			return;
 		}
 		addWordForm.submit();
 	});
+}
+
+/**
+ * Checks if field value is empty and marks with error style if it is.
+ * If any f fields is empty returns false
+ * @param fld
+ */
+function checkRequiredFields(thisForm) {
+	var isValid = true;
+
+	var requiredFields = thisForm.find('.required-field:not(:hidden)');
+	requiredFields.each(function() {
+		var fldVal = $(this).val();
+		if (!fldVal) {
+			$(this).addClass('is-invalid');
+			isValid = false;
+		} else {
+			$(this).removeClass('is-invalid');
+		}
+	});
+
+	return isValid;
 }
 
 function initAddSourceLinkDlg(addDlg) {
