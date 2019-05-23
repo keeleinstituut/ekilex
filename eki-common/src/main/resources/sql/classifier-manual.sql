@@ -32,6 +32,7 @@ insert into dataset (code, name, is_visible, is_public) values ('ent', 'Entomolo
 insert into dataset (code, name, is_visible, is_public) values ('fil', 'Filosoofia', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('fkm', 'Filmikunsti mõisted', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('fon', 'Foneetika', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('gen', 'Geneetika terminibaas', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('get', 'Geoloogia', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('gmt', 'Geomorfoloogia', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('ida', 'Ida mõtteloo leksikon', true, true);

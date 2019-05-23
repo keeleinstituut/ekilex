@@ -854,7 +854,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		valueParamMap.put("dataset_code", dataset);
 		populateLexemeValueParamMap(lexeme, valueParamMap);
 		Long lexemeId = basicDbService.create(LEXEME, valueParamMap);
-		createLexemeProcessStateProcessLog(lexemeId, lexeme.getProcessStateCode());
+		String processStateCode = (String) valueParamMap.get("process_state_code");
+		createLexemeProcessStateProcessLog(lexemeId, processStateCode);
 		return lexemeId;
 	}
 
@@ -877,7 +878,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			populateLexemeValueParamMap(lexeme, valueParamMap);
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
-				createLexemeProcessStateProcessLog(lexemeId, lexeme.getProcessStateCode());
+				String processStateCode = (String) valueParamMap.get("process_state_code");
+				createLexemeProcessStateProcessLog(lexemeId, processStateCode);
 			}
 		}
 		return lexemeId;
@@ -972,6 +974,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected Long createProcessLog(String value, String processStateCode, String eventBy, Timestamp eventOn) throws Exception {
 
 		String datasetCode = getDataset();
+		if (StringUtils.isBlank(eventBy)) {
+			eventBy = "Ekileks " + datasetCode + "-laadur";
+		}
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("dataset_code", datasetCode);
@@ -981,11 +986,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		if (StringUtils.isNotBlank(processStateCode)) {
 			tableRowParamMap.put("process_state_code", processStateCode);
 		}
-		if (StringUtils.isNotBlank(eventBy)) {
-			tableRowParamMap.put("event_by", eventBy);
-		} else {
-			tableRowParamMap.put("event_by", datasetCode);
-		}
+		tableRowParamMap.put("event_by", eventBy);
 		if (eventOn != null) {
 			tableRowParamMap.put("event_on", eventOn);
 		}
