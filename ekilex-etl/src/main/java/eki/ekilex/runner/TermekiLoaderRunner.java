@@ -461,6 +461,15 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private boolean isValidTerm(String dataset, Boolean inDictionary) {
+
+		if ("les".equals(dataset) && !inDictionary) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	private String convertTermekiLinkMarkup(String text, Map<Integer, Long> conceptMeaningIdMap) {
 
 		StringBuffer decorBuf = new StringBuffer();
@@ -713,15 +722,6 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			logger.info("Dataset {} : {}", dataset, selectedDataset.get("name"));
 		}
 		return selectedDataset != null;
-	}
-
-	private boolean isValidTerm(String dataset, Boolean inDictionary) {
-
-		if ("les".equals(dataset) && !inDictionary) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 	private class SourceData {

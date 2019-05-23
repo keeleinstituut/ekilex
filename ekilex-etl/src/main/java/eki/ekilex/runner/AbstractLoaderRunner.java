@@ -842,15 +842,12 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return lexemeId;
 	}
 
-	private Long createLexeme(Lexeme lexeme) throws Exception {
+	protected Long createLexeme(Lexeme lexeme) throws Exception {
 
 		String dataset = getDataset();
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
 
-		if (StringUtils.isBlank(lexeme.getProcessStateCode())) {
-			lexeme.setProcessStateCode(DEFAULT_PROCESS_STATE_CODE);
-		}
 		Map<String, Object> valueParamMap = new HashMap<>();
 		valueParamMap.put("word_id", wordId);
 		valueParamMap.put("meaning_id", meaningId);
@@ -876,9 +873,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		if (lexemeId != null) {
 			criteriaParamMap.clear();
 			criteriaParamMap.put("id", lexemeId);
-			if (StringUtils.isBlank(lexeme.getProcessStateCode())) {
-				lexeme.setProcessStateCode(DEFAULT_PROCESS_STATE_CODE);
-			}
 			Map<String, Object> valueParamMap = new HashMap<>();
 			populateLexemeValueParamMap(lexeme, valueParamMap);
 			if (MapUtils.isNotEmpty(valueParamMap)) {
@@ -917,7 +911,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		if (corpusFrequency != null) {
 			valueParamMap.put("corpus_frequency", corpusFrequency);
 		}
-		valueParamMap.put("process_state_code", processStateCode);
+		if (StringUtils.isBlank(processStateCode)) {
+			valueParamMap.put("process_state_code", DEFAULT_PROCESS_STATE_CODE);
+		} else {
+			valueParamMap.put("process_state_code", processStateCode);			
+		}
 	}
 
 	protected void createUsages(Long lexemeId, List<Usage> usages, String dataLang) throws Exception {

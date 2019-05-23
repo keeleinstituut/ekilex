@@ -32,6 +32,7 @@ import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.service.ReportComposer;
 
 @Component
@@ -569,11 +570,10 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private Long createLexeme(Long wordId, Long meaningId) throws Exception {
-		Map<String, Object> criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word_id", wordId);
-		criteriaParamMap.put("meaning_id", meaningId);
-		criteriaParamMap.put("dataset_code", getDataset());
-		Long lexemeId = basicDbService.create(LEXEME, criteriaParamMap);
+		Lexeme lexeme = new Lexeme();
+		lexeme.setWordId(wordId);
+		lexeme.setMeaningId(meaningId);
+		Long lexemeId = createLexeme(lexeme);
 		return lexemeId;
 	}
 

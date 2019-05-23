@@ -1008,11 +1008,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			Long meaningId = basicDbService.create(MEANING);
 
-			tableRowParamMap = new HashMap<>();
-			tableRowParamMap.put("word_id", wordId);
-			tableRowParamMap.put("meaning_id", meaningId);
-			tableRowParamMap.put("dataset_code", getDataset());
-			Long lexemeId = basicDbService.create(LEXEME, tableRowParamMap);
+			Lexeme lexeme = new Lexeme();
+			lexeme.setWordId(wordId);
+			lexeme.setMeaningId(meaningId);
+			Long lexemeId = createLexeme(lexeme);
 
 			unknownWord = new UnknownWord(wordId, lexemeId, meaningId);
 			dummyWordMap.put(word, unknownWord);

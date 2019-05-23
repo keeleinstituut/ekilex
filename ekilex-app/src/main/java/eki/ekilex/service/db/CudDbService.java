@@ -337,7 +337,7 @@ public class CudDbService implements DbConstant {
 		return meaningDomainId;
 	}
 
-	public Long createWord(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
+	public Long createWordAndLexeme(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD, PARADIGM, FORM)
@@ -362,24 +362,10 @@ public class CudDbService implements DbConstant {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		}
 		create
-				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
-				.values(meaningId, wordId, datasetCode, 1, 1, 1)
+				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE)
+				.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK)
 				.execute();
 		return wordId;
-	}
-
-	public Long createWord(Long wordId, String datasetCode, Long meaningId) {
-	
-		if (meaningId == null) {
-			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
-		}
-		Long lexemeId = create
-				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
-				.values(meaningId, wordId, datasetCode, 1, 1, 1)
-				.returning(LEXEME.ID)
-				.fetchOne()
-				.getId();
-		return lexemeId;
 	}
 
 	public Long createWordType(Long wordId, String typeCode) {
@@ -567,6 +553,20 @@ public class CudDbService implements DbConstant {
 		meaningFreeform.store();
 	
 		return freeform.getId();
+	}
+
+	public Long createLexeme(Long wordId, String datasetCode, Long meaningId) {
+	
+		if (meaningId == null) {
+			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		}
+		Long lexemeId = create
+				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE)
+				.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK)
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
+		return lexemeId;
 	}
 
 	public Long createUsage(Long lexemeId, String value, String valuePrese, String languageCode) {

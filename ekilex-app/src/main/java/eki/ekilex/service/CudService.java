@@ -236,13 +236,13 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void createWord(String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long wordId = cudDbService.createWord(value, valuePrese, datasetCode, language, morphCode, meaningId);
+		Long wordId = cudDbService.createWordAndLexeme(value, valuePrese, datasetCode, language, morphCode, meaningId);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
 	}
 
 	@Transactional
 	public void createWord(Long wordId, String datasetCode, Long meaningId) {
-		Long lexemeId = cudDbService.createWord(wordId, datasetCode, meaningId);
+		Long lexemeId = cudDbService.createLexeme(wordId, datasetCode, meaningId);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
 	}
 
