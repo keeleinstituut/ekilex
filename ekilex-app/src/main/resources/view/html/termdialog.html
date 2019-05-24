@@ -117,7 +117,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <div class="col-md-6">
-              <select required class="form-control value-select" name="value">
+              <select required class="form-control value-select required-field" name="value">
                 <option value="" hidden disabled selected>vali väärtus...</option>
                 <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}">value</option>
               </select>
@@ -491,7 +491,7 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control" name="value">
+                <select required class="form-control required-field" name="value">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${lexemeRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -832,7 +832,7 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control" name="value">
+                <select required class="form-control required-field" name="value">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
