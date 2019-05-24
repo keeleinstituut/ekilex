@@ -23,6 +23,9 @@ function doPostDelete(deleteUrl, callbackFunc) {
 function submitDialog(e, dlg, failMessage, callback = $.noop) {
 	e.preventDefault();
 	let theForm = dlg.find('form');
+	if (!checkRequiredFields(theForm)) {
+		return;
+	}
 
 	submitForm(theForm, failMessage, callback).always(function() {
 		dlg.modal('hide');
@@ -30,9 +33,9 @@ function submitDialog(e, dlg, failMessage, callback = $.noop) {
 }
 
 function submitForm(theForm, failMessage, callback = $.noop) {
-	if (!checkRequiredFields(theForm)) {
-		return;
-	}
+	// if (!checkRequiredFields(theForm)) {
+	// 	return;
+	// }
 	var data = JSON.stringify(theForm.serializeJSON());
 	return $.ajax({
 		url: theForm.attr('action'),
@@ -290,7 +293,6 @@ function checkRequiredFields(thisForm) {
 			$(this).removeClass('is-invalid');
 		}
 	});
-
 	return isValid;
 }
 
@@ -317,9 +319,12 @@ function initAddSourceLinkDlg(addDlg) {
 				addDlg.find('[name=id3]').val(selectedSourceNameId);
 				addDlg.find('[name=value]').val(sourceName);
 				let theForm = button.closest('form');
-				submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
-					addDlg.modal('hide');
-				});
+
+				if (checkRequiredFields(theForm)) {
+					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function () {
+						addDlg.modal('hide');
+					});
+				}
 			});
 		}).fail(function(data) {
 			console.log(data);
@@ -349,9 +354,11 @@ function initRelationDialogLogic(addDlg, idElementName) {
 				let button = $(e.target);
 				addDlg.find('[name=id2]').val(button.data(idElementName));
 				let theForm = button.closest('form');
-				submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
-					addDlg.modal('hide');
-				});
+				if (checkRequiredFields(theForm)) {
+					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+						addDlg.modal('hide');
+					});
+				}
 			});
 		}).fail(function(data) {
 			console.log(data);

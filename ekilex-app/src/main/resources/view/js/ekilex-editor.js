@@ -37,10 +37,17 @@ function initEkiEditorDlg(editDlg) {
 	let modifyFld = editDlg.find('[name=editFld]');
 	modifyFld.html(editDlg.find('[name=value]').val());
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		//TODO why there is always <br> at the end??
-		var content = modifyFld.html().replace("<br>", "");
-		editDlg.find('[name=value]').val(content);
-		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+		if (modifyFld.html()) {
+			//TODO why there is always <br> at the end??
+			var content = modifyFld.html().replace("<br>", "");
+			editDlg.find('[name=value]').val(content);
+			modifyFld.removeClass('is-invalid');
+			submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+		} else {
+			e.preventDefault();
+			modifyFld.addClass('is-invalid');
+			//return;
+		}
 	});
 	let ekiEditorElem = editDlg.find('.eki-editor');
 	initEkiEditor(ekiEditorElem);
@@ -91,6 +98,12 @@ function initEkiEditor(ekiEditorElem) {
 	let removeBtn = ekiEditorElem.find('[data-btn-remove]');
 	removeBtn.off('click').on('click', function() {
 		removeEkiTag(editorElem)
+	});
+
+	editorElem.on('input', function() {
+		if ($(this).html()) {
+			$(this).removeClass('is-invalid');
+		}
 	})
 }
 

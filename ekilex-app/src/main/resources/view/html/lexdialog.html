@@ -13,7 +13,7 @@
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control lex-data-select" name="opCode">
+                <select required class="form-control lex-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="addLexemeProcessStateDlg" sec:authorize="{#vars.isLexemeCrudGranted}">Haldusolek</option>
                   <option value="lexeme_value_state" sec:authorize="{#vars.isLexemeCrudGranted}">Väärtusolek</option>
@@ -36,7 +36,7 @@
             </div>
             <div th:id="${'lexeme_value_state_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-4">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -44,7 +44,7 @@
             </div>
             <div th:id="${'lexeme_frequency_group_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-2">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="freqGroup : ${lexemeFrequencyGroups}" th:value="${freqGroup.code}" th:text="${freqGroup.value}">freqGroup</option>
                 </select>
@@ -52,7 +52,7 @@
             </div>
             <div th:id="${'lexeme_pos_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="pos : ${allLexemePos}" th:value="${pos.code}" th:text="${pos.value}">pos</option>
                 </select>
@@ -60,7 +60,7 @@
             </div>
             <div th:id="${'lexeme_deriv_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="deriv : ${allLexemeDerivs}" th:value="${deriv.code}" th:text="${deriv.value}">deriv</option>
                 </select>
@@ -68,7 +68,7 @@
             </div>
             <div th:id="${'lexeme_register_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
                 </select>
@@ -76,17 +76,17 @@
             </div>
             <div th:id="${'lexeme_grammar_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
-                <input type="text" class="form-control value-select">
+                <input type="text" class="form-control value-select required-field">
               </div>
             </div>
             <div th:id="${'government_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
-                <input type="text" class="form-control value-select">
+                <input type="text" class="form-control value-select required-field">
               </div>
             </div>
             <div th:id="${'meaning_domain_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
-                <select required class="form-control value-select">
+                <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
@@ -110,7 +110,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <div class="col-md-6">
-              <select required class="form-control value-select" name="value">
+              <select required class="form-control value-select required-field" name="value">
                 <option value="" hidden disabled selected>vali väärtus...</option>
                 <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}">value</option>
               </select>
@@ -215,7 +215,7 @@
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-8">
-                <select required class="form-control lex-def-dataset-select" name="dataset">
+                <select required class="form-control lex-def-dataset-select required-field" name="dataset">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedDataset)}">vali sõnastik...</option>
                   <option th:each="dataset : ${userPermDatasets}"
                           th:value="${dataset.code}"
@@ -227,7 +227,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <th:block th:fragment="definition_perm_lang_select">
-                  <select required id="definitionPermLanguageSelect" class="form-control" name="language">
+                  <select required id="definitionPermLanguageSelect" class="form-control required-field" name="language">
                     <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                     <option th:each="language : ${userPermLanguages}"
                             th:value="${language.code}"
@@ -345,7 +345,7 @@
               <div class="col-12">
                 <div class="form-group row">
                   <div class="col-8">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                    <input type="text" class="form-control required-field" name="searchFilter" placeholder="sisesta otsitav keelend">
                   </div>
                   <div class="col-2">
                     <button type="submit" class="btn btn-primary">Otsi</button>
@@ -360,7 +360,7 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control" name="value">
+                <select required class="form-control required-field" name="value">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -616,7 +616,7 @@
               <div class="col-12">
                 <div class="form-group row">
                   <div class="col-8">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                    <input type="text" class="form-control required-field" name="searchFilter" placeholder="sisesta otsitav keelend">
                   </div>
                   <div class="col-2">
                     <button type="submit" class="btn btn-primary">Otsi</button>
@@ -631,7 +631,7 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control" name="value">
+                <select required class="form-control required-field" name="value">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${lexemeRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -670,7 +670,7 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control" name="value">
+                <select required class="form-control required-field" name="value">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${wordRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
