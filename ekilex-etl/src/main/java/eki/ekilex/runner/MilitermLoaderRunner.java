@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +53,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private Count illegalMeaningRelationReferenceValueCount;
 
+	private List<String> processLogSourceRefNames = Arrays.asList("Cancelled", "NATO Agreed");
+
 	@Override
 	public String getDataset() {
 		return "mil";
@@ -75,8 +78,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 		this.doReports = doReports;
 		if (doReports) {
-			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_ILLEGAL_SOURCE_REF, REPORT_MISSING_SOURCE_REFS,
-					REPORT_ILLEGAL_MEANING_RELATION_REF);
+			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_MISSING_SOURCE_REFS, REPORT_ILLEGAL_MEANING_RELATION_REF);
 		}
 		start();
 
@@ -85,7 +87,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		Element rootElement;
 		List<Node> conceptGroupNodes;
 		meaningRelationPartsMap = new HashMap<>();
-		illegalSourceReferenceValueCount = new Count();
 		illegalMeaningRelationReferenceValueCount = new Count();
 
 		int fileCounter = 1;
@@ -127,7 +128,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			findSecondRelationPartAndCreateRelations(initiatorRelationParts);
 		}
 
-		logger.debug("Found {} illegal source reference values", illegalSourceReferenceValueCount.getValue());
 		logger.debug("Found {} illegal meaning relation reference values", illegalMeaningRelationReferenceValueCount.getValue());
 
 		end();
@@ -190,7 +190,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				List<Node> definitionValueNodes = termGroupNode.selectNodes(definitionExp);
 				for (Node definitionValueNode : definitionValueNodes) {
-					List<Content> sources = extractContentAndRefs(definitionValueNode, lang, term, true);
+					List<Content> sources = extractContentAndRefs(definitionValueNode, lang, term, false);
 					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeDefinition, fileName);
 				}
 
@@ -232,7 +232,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				List<Node> noteValueNodes = termGroupNode.selectNodes(noteExp);
 				if (CollectionUtils.isNotEmpty(noteValueNodes)) {
 					for (Node noteValueNode : noteValueNodes) {
-						List<Content> sources = extractContentAndRefs(noteValueNode, lang, term, true);
+						List<Content> sources = extractContentAndRefs(noteValueNode, lang, term, false);
 						savePublicNotesAndSourceLinks(lexemeId, sources, term, fileName);
 					}
 				}
@@ -587,10 +587,24 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			String definition = definitionObj.getValue();
 			String lang = definitionObj.getLang();
 			List<Ref> refs = definitionObj.getRefs();
-			Long definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang);
-			definitionObj.setId(definitionId);
+			Long definitionId = null;
+			if (EMPTY_CONTENT.equals(definition)) {
+				boolean definitonHasAtLeastOneValidRef = containsValidRef(refs);
+				if (definitonHasAtLeastOneValidRef) {
+					definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang);
+					definitionObj.setId(definitionId);
+				}
+			} else {
+				definitionId = createOrSelectDefinition(meaningId, definition, definitionTypeCode, lang);
+				definitionObj.setId(definitionId);
+			}
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, term, fileName);
+				String majorRef = ref.getMajorRef();
+				if (processLogSourceRefNames.contains(majorRef)) {
+					createMeaningProcessLog(meaningId, majorRef);
+				} else {
+					createSourceLink(SourceOwner.DEFINITION, definitionId, ref, term, fileName);
+				}
 			}
 		}
 	}
@@ -615,12 +629,37 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			String publicNote = publicNoteObj.getValue();
 			String lang = publicNoteObj.getLang();
 			List<Ref> refs = publicNoteObj.getRefs();
-			Long publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
-			publicNoteObj.setId(publicNoteId);
+			Long publicNoteId = null;
+			if (EMPTY_CONTENT.equals(publicNote)) {
+				boolean publicNoteHasAtLeastOneValidRef = containsValidRef(refs);
+				if (publicNoteHasAtLeastOneValidRef) {
+					publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
+					publicNoteObj.setId(publicNoteId);
+				}
+			}  else {
+				publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
+				publicNoteObj.setId(publicNoteId);
+			}
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.PUBLIC_NOTE, publicNoteId, ref, term, fileName);
+				String majorRef = ref.getMajorRef();
+				if (processLogSourceRefNames.contains(majorRef)) {
+					createLexemeProcessLog(lexemeId, majorRef);
+				} else {
+					createSourceLink(SourceOwner.PUBLIC_NOTE, publicNoteId, ref, term, fileName);
+				}
 			}
 		}
+	}
+
+	private boolean containsValidRef(List<Ref> refs) {
+
+		for (Ref ref : refs) {
+			String majorRef = ref.getMajorRef();
+			if (!processLogSourceRefNames.contains(majorRef)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String term, String fileName) throws Exception {

@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -18,12 +19,16 @@ public class LifecycleLogService {
 
 	@Transactional
 	public List<LifecycleLog> getLogForWord(Long wordId) {
-		return lifecycleLogDbService.getLogForWord(wordId);
+		List<LifecycleLog> logForWord = lifecycleLogDbService.getLogForWord(wordId);
+		List<LifecycleLog> distinctLogForWord = logForWord.stream().distinct().collect(Collectors.toList());
+		return distinctLogForWord;
 	}
 
 	@Transactional
 	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
-		return lifecycleLogDbService.getLogForMeaning(meaningId);
+		List<LifecycleLog> logForMeaning = lifecycleLogDbService.getLogForMeaning(meaningId);
+		List<LifecycleLog> distinctLogForMeaning = logForMeaning.stream().distinct().collect(Collectors.toList());
+		return distinctLogForMeaning;
 	}
 
 	@Transactional

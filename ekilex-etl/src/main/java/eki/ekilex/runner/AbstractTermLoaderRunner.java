@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
-import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
 import eki.ekilex.constant.TermLoaderConstant;
 import eki.ekilex.runner.util.TermLoaderHelper;
@@ -33,8 +32,6 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 	private TermLoaderHelper loaderHelper;
 
 	protected ReportComposer reportComposer;
-
-	protected Count illegalSourceReferenceValueCount;
 
 	protected List<Content> extractContentAndRefs(Node rootContentNode, String lang, String term, boolean logWarrnings) throws Exception {
 
@@ -93,32 +90,33 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 				elemContentNode = (DefaultElement) contentNode;
 				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
 					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
+					String sourceName;
 					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
-						String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
-						if (contentObj == null) {
-							contentObj = newContent(lang, "-");
-							contentList.add(contentObj);
-							if (logWarrnings) {
-								logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceName);
-							}
-						}
-						isRefOn = true;
-						ReferenceType refType;
-						if (StringUtils.equalsIgnoreCase(refTypeExpert, sourceName)) {
-							refType = ReferenceType.EXPERT;
-						} else if (StringUtils.equalsIgnoreCase(refTypeQuery, sourceName)) {
-							refType = ReferenceType.QUERY;
-						} else {
-							refType = ReferenceType.ANY;
-						}
-						refObj = new Ref();
-						refObj.setMajorRef(sourceName);
-						refObj.setType(refType);
-						contentObj.getRefs().add(refObj);
+						sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
 					} else {
-						appendToReport(doReports, REPORT_ILLEGAL_SOURCE_REF, term, "Allikaviitel on sobimatu väärtus: " + tlinkAttrValue);
-						illegalSourceReferenceValueCount.increment();
+						sourceName = elemContentNode.getTextTrim();
 					}
+
+					if (contentObj == null) {
+						contentObj = newContent(lang, EMPTY_CONTENT);
+						contentList.add(contentObj);
+						if (logWarrnings) {
+							logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceName);
+						}
+					}
+					isRefOn = true;
+					ReferenceType refType;
+					if (StringUtils.equalsIgnoreCase(refTypeExpert, sourceName)) {
+						refType = ReferenceType.EXPERT;
+					} else if (StringUtils.equalsIgnoreCase(refTypeQuery, sourceName)) {
+						refType = ReferenceType.QUERY;
+					} else {
+						refType = ReferenceType.ANY;
+					}
+					refObj = new Ref();
+					refObj.setMajorRef(sourceName);
+					refObj.setType(refType);
+					contentObj.getRefs().add(refObj);
 				}
 			}
 		}
@@ -152,25 +150,25 @@ public abstract class AbstractTermLoaderRunner extends AbstractLoaderRunner impl
 				valueStr = elemContentNode.getTextTrim();
 				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
 					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
+					String sourceName;
 					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
-						String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
-						Long sourceId = getSource(sourceName, fileName);
-						if (sourceId == null) {
-							contentBuf.append(valueStr);
-						} else {
-							if (SourceOwner.PROCESS_LOG.equals(sourceOwner)) {
-								Long sourceLinkId = createProcessLogSourceLink(id, ReferenceType.ANY, sourceId, valueStr);
-								String sourceLinkMarkup = composeLinkMarkup(ContentKey.PROCESS_LOG_SOURCE_LINK, sourceLinkId.toString(), valueStr);
-								contentBuf.append(sourceLinkMarkup);
-							} else if (SourceOwner.PUBLIC_NOTE.equals(sourceOwner)) {
-								Long sourceLinkId = createFreeformSourceLink(id, ReferenceType.ANY, sourceId, null, valueStr);
-								String sourceLinkMarkup = composeLinkMarkup(ContentKey.FREEFORM_SOURCE_LINK, sourceLinkId.toString(), valueStr);
-								contentBuf.append(sourceLinkMarkup);
-							}
-						}
+						sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
 					} else {
-						// unknown ref type
+						sourceName = elemContentNode.getTextTrim();
+					}
+					Long sourceId = getSource(sourceName, fileName);
+					if (sourceId == null) {
 						contentBuf.append(valueStr);
+					} else {
+						if (SourceOwner.PROCESS_LOG.equals(sourceOwner)) {
+							Long sourceLinkId = createProcessLogSourceLink(id, ReferenceType.ANY, sourceId, valueStr);
+							String sourceLinkMarkup = composeLinkMarkup(ContentKey.PROCESS_LOG_SOURCE_LINK, sourceLinkId.toString(), valueStr);
+							contentBuf.append(sourceLinkMarkup);
+						} else if (SourceOwner.PUBLIC_NOTE.equals(sourceOwner)) {
+							Long sourceLinkId = createFreeformSourceLink(id, ReferenceType.ANY, sourceId, null, valueStr);
+							String sourceLinkMarkup = composeLinkMarkup(ContentKey.FREEFORM_SOURCE_LINK, sourceLinkId.toString(), valueStr);
+							contentBuf.append(sourceLinkMarkup);
+						}
 					}
 				} else {
 					throw new DataLoadingException("Unsupported mixed content node name: " + contentNode.getName());

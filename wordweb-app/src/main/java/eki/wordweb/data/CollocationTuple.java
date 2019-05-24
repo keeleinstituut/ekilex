@@ -30,6 +30,8 @@ public class CollocationTuple extends AbstractDataObject {
 
 	private List<TypeCollocMember> collocMembers;
 
+	private boolean invalid;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -116,6 +118,14 @@ public class CollocationTuple extends AbstractDataObject {
 
 	public void setCollocMembers(List<TypeCollocMember> collocMembers) {
 		this.collocMembers = collocMembers;
+	}
+
+	public boolean isInvalid() {
+		return invalid;
+	}
+
+	public void setInvalid(boolean invalid) {
+		this.invalid = invalid;
 	}
 
 }

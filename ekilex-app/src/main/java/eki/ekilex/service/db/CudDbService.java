@@ -556,16 +556,29 @@ public class CudDbService implements DbConstant {
 	}
 
 	public Long createLexeme(Long wordId, String datasetCode, Long meaningId) {
-	
+
 		if (meaningId == null) {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		} else {
+			Long existingLexemeId = create
+					.select(LEXEME.ID)
+					.from(LEXEME)
+					.where(
+							LEXEME.WORD_ID.eq(wordId)
+							.and(LEXEME.DATASET_CODE.eq(datasetCode))
+							.and(LEXEME.MEANING_ID.eq(meaningId)))
+					.fetchOptionalInto(Long.class)
+					.orElse(null);
+			if (existingLexemeId != null) {
+				return null;
+			}
 		}
 		Long lexemeId = create
-				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE)
-				.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK)
-				.returning(LEXEME.ID)
-				.fetchOne()
-				.getId();
+					.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE)
+					.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK)
+					.returning(LEXEME.ID)
+					.fetchOne()
+					.getId();
 		return lexemeId;
 	}
 

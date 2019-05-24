@@ -16,6 +16,8 @@ public interface SystemConstant {
 
 	long CACHE_EVICT_DELAY_60MIN = 60 * 60 * 1000;
 
+	String CACHE_KEY_NULL_WORD = "nullword";
+
 	String CACHE_KEY_CLASSIF = "classif";
 
 	String CACHE_KEY_DATASET = "dataset";

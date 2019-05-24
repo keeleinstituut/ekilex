@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
+import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -88,7 +90,32 @@ public class CompositionDbService implements DbConstant {
 		joinMeanings(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
 	}
 
-	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
+	//TODO this is not viable solution when meanings share common words
+	public boolean joinMeanings(Long meaningId, Long sourceMeaningId) {
+
+		Meaning m1 = MEANING.as("m1");
+		Meaning m2 = MEANING.as("m2");
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Boolean commonWordsExist = create
+									.select(DSL.field(DSL.count(m1.ID).gt(0)))
+									.from(m1, l1)
+									.where(
+											m1.ID.eq(meaningId)
+											.and(l1.MEANING_ID.eq(m1.ID))
+											.andExists(DSL
+													.select(m2.ID)
+													.from(m2, l2)
+													.where(
+															m2.ID.eq(sourceMeaningId)
+															.and(l2.MEANING_ID.eq(m2.ID))
+															.and(l2.WORD_ID.eq(l1.WORD_ID)))
+													)
+											)
+									.fetchOneInto(Boolean.class);
+		if (commonWordsExist) {
+			return false;
+		}
 		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
 		joinMeaningDefinitions(meaningId, sourceMeaningId);
 		joinMeaningDomains(meaningId, sourceMeaningId);
@@ -96,6 +123,7 @@ public class CompositionDbService implements DbConstant {
 		joinMeaningRelations(meaningId, sourceMeaningId);
 		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, meaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
+		return true;
 	}
 
 	public void joinLexemes(Long lexemeId, Long sourceLexemeId) {
