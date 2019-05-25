@@ -101,7 +101,7 @@ public class TermekiService implements InitializingBean {
 		if (termbase != null) {
 			logger.debug("Connection success, termeki base {} : \"{}\".", baseId, termbase.get("termbase_name"));
 		} else {
-			logger.info("No termeki base with id found", baseId);
+			logger.info("No termeki base with id \"{}\" found", baseId);
 		}
 		return termbase != null;
 	}
