@@ -80,7 +80,7 @@ public class RegisterController implements WebConstant {
 		}
 		if (userService.isValidUser(email)) {
 			String encodedPassword = passwordEncoder.encode(password);
-			String activationKey = userService.generateActivationKey();
+			String activationKey = userService.generateUniqueKey();
 			String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 			userService.createUser(email, name, encodedPassword, activationKey);
 			// FIXME : remove after email service is properly configured
@@ -113,6 +113,76 @@ public class RegisterController implements WebConstant {
 			attributes.addFlashAttribute("userEmail", ekiUser.getEmail());
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
+	}
+
+	@GetMapping(PASSWORD_RECOVERY_URI)
+	public String recoverPasswordPage() {
+		return PASSWORD_RECOVERY_PAGE;
+	}
+
+	@PostMapping(PASSWORD_RECOVERY_URI)
+	public String recoverPassword(@RequestParam("email") String email, @RequestParam(value = "ccode", required = false) String honeyPot, Model model,
+			HttpServletRequest request) {
+
+		if (StringUtils.isNotEmpty(honeyPot)) {
+			// bot protection triggered
+			logger.warn("Bot protection triggered : url - > {} : honey -> {} : email -> {}", request.getRemoteAddr(), honeyPot, email);
+			try {
+				sleep(10 * 1000);
+			} catch (InterruptedException e) {
+			}
+			return "redirect:" + LOGIN_PAGE_URI;
+		}
+
+		if (StringUtils.isNotBlank(email)) {
+			EkiUser user = userService.getUserByEmail(email);
+			if (user != null) {
+				Long userId = user.getId();
+				String recoveryKey = userService.generateUniqueKey();
+				userService.updateUserRecoveryKey(userId, recoveryKey);
+				String passwordRecoveyLink = ekilexAppUrl + PASSWORD_SET_PAGE_URI + "/" + recoveryKey;
+
+				String content = "Kasutaja salasõna lähtestamiseks mine lingile: " + "<a href='" + passwordRecoveyLink +"'>" + passwordRecoveyLink + "</a>";
+				emailService.sendEmail(
+						Collections.singletonList(email),
+						Collections.emptyList(),
+						"Ekilexi kasutaja salasõna lähtestamine",
+						content);
+
+				if (emailService.isEnabled()) {
+					model.addAttribute("message", "Kui sellise e-postiga kasutaja eksisteerib, siis on salasõna muutmise link on saadetud e-postile: " + email);
+				} else {
+					model.addAttribute("message", "Salasõna muutmise link:  " + passwordRecoveyLink);
+				}
+				return PASSWORD_RECOVERY_PAGE;
+			}
+		}
+
+		model.addAttribute("warning", "Salasõna lähtestamine ebaõnnestus");
+		return PASSWORD_RECOVERY_PAGE;
+	}
+
+	@GetMapping(PASSWORD_SET_PAGE_URI + "/{recoveryKey}")
+	public String setPasswordPage(@PathVariable(name = "recoveryKey") String recoveryKey, Model model) {
+		model.addAttribute("recoveryKey", recoveryKey);
+		return PASSWORD_SET_PAGE;
+	}
+
+	@PostMapping(PASSWORD_SET_PAGE_URI)
+	public String setPassword(@RequestParam("salasona") String password, @RequestParam("salasona2") String password2,
+			@RequestParam("recoveryKey") String recoveryKey, Model model, RedirectAttributes attributes) {
+
+		if (!userService.isValidPassword(password, password2)) {
+			model.addAttribute("error", "Parool ei sobi, kas liiga lühike või väljade väärtused on erinevad.");
+			model.addAttribute("recoveryKey", recoveryKey);
+			return PASSWORD_SET_PAGE;
+		}
+
+		String encodedPassword = passwordEncoder.encode(password);
+		EkiUser ekiUser = userService.changePassword(recoveryKey, encodedPassword);
+		attributes.addFlashAttribute("success_message", "Parool vahetatud. Logige sisse uue parooliga.");
+		attributes.addFlashAttribute("userEmail", ekiUser.getEmail());
+		return "redirect:" + LOGIN_PAGE_URI;
 	}
 
 }

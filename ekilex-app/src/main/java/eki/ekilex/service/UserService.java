@@ -120,7 +120,7 @@ public class UserService {
 		userDbService.enableUser(userId, enable);
 	}
 
-	public String generateActivationKey() {
+	public String generateUniqueKey() {
 		return CodeGenerator.generateUniqueId();
 	}
 
@@ -158,5 +158,16 @@ public class UserService {
 			}
 		}
 		return userApplications;
+	}
+
+	@Transactional
+	public void updateUserRecoveryKey(Long userId, String recoveryKey) {
+		userDbService.updateUserRecoveryKey(userId, recoveryKey);
+	}
+
+	@Transactional
+	public EkiUser changePassword(String recoveryKey, String encodedPassword) {
+		EkiUser user = userDbService.changeUserPassword(recoveryKey, encodedPassword);
+		return user;
 	}
 }
