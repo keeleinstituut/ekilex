@@ -74,8 +74,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 	@Transactional
 	public void execute(String milFilePath1, String milFilePath2, boolean doReports) throws Exception {
 
-		logger.debug("Starting loading Militerm...");
-
 		this.doReports = doReports;
 		if (doReports) {
 			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_MISSING_SOURCE_REFS, REPORT_ILLEGAL_MEANING_RELATION_REF);

@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -201,5 +202,11 @@ public class LoaderConfService implements InitializingBean, SystemConstant {
 			}
 		}
 		return termekiIds;
+	}
+
+	public List<String> getLexemeMergeDatasets() throws Exception {
+		String lexemeMergeDatasetsStr = getMandatoryConfProperty("lex.merge.dataset");
+		String[] lexemeMergeDatasetsArr = StringUtils.split(lexemeMergeDatasetsStr);
+		return Arrays.asList(lexemeMergeDatasetsArr);
 	}
 }
