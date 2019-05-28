@@ -2,8 +2,6 @@ package eki.ekilex.web.controller;
 
 import static java.lang.Thread.sleep;
 
-import java.util.Collections;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -63,38 +61,28 @@ public class RegisterController implements WebConstant {
 			Model model,
 			RedirectAttributes attributes,
 			HttpServletRequest request) {
-		if (StringUtils.isNotEmpty(honeyPot)) {
-			// bot protection triggered
-			logger.warn("Bot protection triggered : url - > {} : honey -> {} : name -> {}", request.getRemoteAddr(), honeyPot, name);
-			try {
-				sleep(10 * 1000);
-			} catch (InterruptedException e) {
-			}
+
+		boolean isBotProtectionTriggered = checkBotProtection(honeyPot, request.getRemoteAddr(), email);
+		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
+
 		if (!userService.isValidPassword(password, password2)) {
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
 			model.addAttribute("error_message", "Parool ei sobi, kas liiga lühike või väljade väärtused on erinevad.");
 			return REGISTER_PAGE;
 		}
+
 		if (userService.isValidUser(email)) {
-			String encodedPassword = passwordEncoder.encode(password);
-			String activationKey = userService.generateUniqueKey();
+			String activationKey = userService.generateActivationKeyAndCreateUser(email, name, password);
 			String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
-			userService.createUser(email, name, encodedPassword, activationKey);
-			// FIXME : remove after email service is properly configured
+			emailService.sendUserActivationEmail(email, activationLink);
 			if (emailService.isEnabled()) {
 				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile : " + email);
 			} else {
 				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud : aktiveeri " + activationLink);
 			}
-			String content = "Kasutaja aktiveerimiseks mine lingile : " + "<a href='" + activationLink +"'>" + activationLink + "</a>";
-			emailService.sendEmail(
-					Collections.singletonList(email),
-					Collections.emptyList(),
-					"Ekilexi kasutaja registreerimine",
-					content);
 			return "redirect:" + LOGIN_PAGE_URI;
 		} else {
 			model.addAttribute("error_message", "Sellise nime või e-posti aadressiga kasutaja on juba registreeritud.");
@@ -124,35 +112,21 @@ public class RegisterController implements WebConstant {
 	public String recoverPassword(@RequestParam("email") String email, @RequestParam(value = "ccode", required = false) String honeyPot, Model model,
 			HttpServletRequest request) {
 
-		if (StringUtils.isNotEmpty(honeyPot)) {
-			// bot protection triggered
-			logger.warn("Bot protection triggered : url - > {} : honey -> {} : email -> {}", request.getRemoteAddr(), honeyPot, email);
-			try {
-				sleep(10 * 1000);
-			} catch (InterruptedException e) {
-			}
+		boolean isBotProtectionTriggered = checkBotProtection(honeyPot, request.getRemoteAddr(), email);
+		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
 
 		if (StringUtils.isNotBlank(email)) {
-			EkiUser user = userService.getUserByEmail(email);
-			if (user != null) {
-				Long userId = user.getId();
-				String recoveryKey = userService.generateUniqueKey();
-				userService.updateUserRecoveryKey(userId, recoveryKey);
-				String passwordRecoveyLink = ekilexAppUrl + PASSWORD_SET_PAGE_URI + "/" + recoveryKey;
-
-				String content = "Kasutaja salasõna lähtestamiseks mine lingile: " + "<a href='" + passwordRecoveyLink +"'>" + passwordRecoveyLink + "</a>";
-				emailService.sendEmail(
-						Collections.singletonList(email),
-						Collections.emptyList(),
-						"Ekilexi kasutaja salasõna lähtestamine",
-						content);
-
+			Long userId = userService.getUserIdByEmail(email);
+			if (userId != null) {
+				String recoveryKey = userService.generateAndUpdateUserRecoveryKey(userId);
+				String passwordRecoveryLink = ekilexAppUrl + PASSWORD_SET_PAGE_URI + "/" + recoveryKey;
+				emailService.sendPasswordRecoveryEmail(email, passwordRecoveryLink);
 				if (emailService.isEnabled()) {
 					model.addAttribute("message", "Kui sellise e-postiga kasutaja eksisteerib, siis on salasõna muutmise link on saadetud e-postile: " + email);
 				} else {
-					model.addAttribute("message", "Salasõna muutmise link:  " + passwordRecoveyLink);
+					model.addAttribute("message", "Salasõna muutmise link:  " + passwordRecoveryLink);
 				}
 				return PASSWORD_RECOVERY_PAGE;
 			}
@@ -178,11 +152,28 @@ public class RegisterController implements WebConstant {
 			return PASSWORD_SET_PAGE;
 		}
 
-		String encodedPassword = passwordEncoder.encode(password);
-		EkiUser ekiUser = userService.changePassword(recoveryKey, encodedPassword);
+		EkiUser ekiUser = userService.changePassword(recoveryKey, password);
+		if (ekiUser == null) {
+			model.addAttribute("warning", "Tundmatu salasõna lähtestamise võti.");
+			return PASSWORD_RECOVERY_PAGE;
+		}
+
 		attributes.addFlashAttribute("success_message", "Parool vahetatud. Logige sisse uue parooliga.");
 		attributes.addFlashAttribute("userEmail", ekiUser.getEmail());
 		return "redirect:" + LOGIN_PAGE_URI;
+	}
+
+	private boolean checkBotProtection(String honeyPot, String url, String email) {
+
+		if (StringUtils.isNotEmpty(honeyPot)) {
+			logger.warn("Bot protection triggered : url - > {} : honey -> {} : email -> {}", url, honeyPot, email);
+			try {
+				sleep(10 * 1000);
+			} catch (InterruptedException e) {
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

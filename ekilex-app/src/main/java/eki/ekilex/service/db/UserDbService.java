@@ -43,6 +43,16 @@ public class UserDbService extends AbstractDbService {
 				.orElse(null);
 	}
 
+	public Long getUserIdByEmail(String email) {
+
+		return create
+				.select(EKI_USER.ID)
+				.from(EKI_USER)
+				.where(EKI_USER.EMAIL.eq(email))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
 	public Long createUser(String email, String name, String password, String activationKey) {
 		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
 		ekiUser.setEmail(email);

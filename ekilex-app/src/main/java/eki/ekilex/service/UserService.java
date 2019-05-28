@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
+import eki.ekilex.security.EkilexPasswordEncoder;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
@@ -31,20 +33,17 @@ public class UserService {
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
 
+	@Autowired
 	private UserDbService userDbService;
 
+	@Autowired
 	private PermissionDbService permissionDbService;
 
+	@Autowired
 	private CommonDataDbService commonDataDbService;
 
-	public UserService(
-			UserDbService userDbService,
-			PermissionDbService permissionDbService,
-			CommonDataDbService commonDataDbService) {
-		this.userDbService = userDbService;
-		this.permissionDbService = permissionDbService;
-		this.commonDataDbService = commonDataDbService;
-	}
+	@Autowired
+	private EkilexPasswordEncoder passwordEncoder;
 
 	public boolean isAuthenticatedUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -87,6 +86,12 @@ public class UserService {
 	}
 
 	@Transactional
+	public Long getUserIdByEmail(String email) {
+		Long userId = userDbService.getUserIdByEmail(email);
+		return userId;
+	}
+
+	@Transactional
 	public boolean isValidUser(String email) {
 		if (StringUtils.isBlank(email)) {
 			return false;
@@ -96,10 +101,14 @@ public class UserService {
 	}
 
 	@Transactional
-	public void createUser(String email, String name, String password, String activationKey) {
-		userDbService.createUser(email, name, password, activationKey);
+	public String generateActivationKeyAndCreateUser(String email, String name, String password) {
+
+		String activationKey = generateUniqueKey();
+		String encodedPassword = passwordEncoder.encode(password);
+		userDbService.createUser(email, name, encodedPassword, activationKey);
 		EkiUser user = userDbService.getUserByEmail(email);
 		logger.debug("Created new user : {}", user.getDescription());
+		return activationKey;
 	}
 
 	@Transactional
@@ -118,10 +127,6 @@ public class UserService {
 	@Transactional
 	public void enableUser(Long userId, boolean enable) {
 		userDbService.enableUser(userId, enable);
-	}
-
-	public String generateUniqueKey() {
-		return CodeGenerator.generateUniqueId();
 	}
 
 	public boolean isActiveUser(EkiUser user) {
@@ -161,13 +166,22 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updateUserRecoveryKey(Long userId, String recoveryKey) {
+	public String generateAndUpdateUserRecoveryKey(Long userId) {
+
+		String recoveryKey = generateUniqueKey();
 		userDbService.updateUserRecoveryKey(userId, recoveryKey);
+		return recoveryKey;
 	}
 
 	@Transactional
-	public EkiUser changePassword(String recoveryKey, String encodedPassword) {
+	public EkiUser changePassword(String recoveryKey, String password) {
+
+		String encodedPassword = passwordEncoder.encode(password);
 		EkiUser user = userDbService.changeUserPassword(recoveryKey, encodedPassword);
 		return user;
+	}
+
+	private String generateUniqueKey() {
+		return CodeGenerator.generateUniqueId();
 	}
 }
