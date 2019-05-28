@@ -83,7 +83,7 @@ public class HomeController extends AbstractPageController {
 			populateStatData(model);
 			return HOME_PAGE;			
 		}
-		userService.submitUserApplication(user.getId(), selectedDatasets, applicationComment);
+		userService.submitUserApplication(user, selectedDatasets, applicationComment);
 		populateUserApplicationData(user, model);
 		return APPLY_PAGE;
 	}

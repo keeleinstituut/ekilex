@@ -64,6 +64,15 @@ public class UserDbService extends AbstractDbService {
 				.orElse(null);
 	}
 
+	public List<String> getAdminEmails() {
+
+		return create
+				.select(EKI_USER.EMAIL)
+				.from(EKI_USER)
+				.where(EKI_USER.IS_ADMIN.eq(true))
+				.fetchInto(String.class);
+	}
+
 	public Long createUser(String email, String name, String password, String activationKey) {
 		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
 		ekiUser.setEmail(email);
