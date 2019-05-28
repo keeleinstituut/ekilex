@@ -34,6 +34,7 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER.EMAIL,
 						EKI_USER.PASSWORD,
 						EKI_USER.ACTIVATION_KEY,
+						EKI_USER.RECOVERY_KEY,
 						EKI_USER.IS_ADMIN.as("admin"),
 						EKI_USER.IS_ENABLED.as("enabled")
 						)
