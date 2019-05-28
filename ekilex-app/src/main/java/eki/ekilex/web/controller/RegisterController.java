@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.security.EkilexPasswordEncoder;
 import eki.ekilex.service.EmailService;
 import eki.ekilex.service.UserService;
 
@@ -35,9 +34,6 @@ public class RegisterController implements WebConstant {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private EkilexPasswordEncoder passwordEncoder;
 
 	@Autowired
 	private EmailService emailService;
@@ -120,7 +116,7 @@ public class RegisterController implements WebConstant {
 		if (StringUtils.isNotBlank(email)) {
 			Long userId = userService.getUserIdByEmail(email);
 			if (userId != null) {
-				String recoveryKey = userService.generateAndUpdateUserRecoveryKey(userId);
+				String recoveryKey = userService.generateAndSetUserRecoveryKey(userId);
 				String passwordRecoveryLink = ekilexAppUrl + PASSWORD_SET_PAGE_URI + "/" + recoveryKey;
 				emailService.sendPasswordRecoveryEmail(email, passwordRecoveryLink);
 				if (emailService.isEnabled()) {
@@ -138,6 +134,13 @@ public class RegisterController implements WebConstant {
 
 	@GetMapping(PASSWORD_SET_PAGE_URI + "/{recoveryKey}")
 	public String setPasswordPage(@PathVariable(name = "recoveryKey") String recoveryKey, Model model) {
+
+		String userEmail = userService.getUserEmailByRecoveryKey(recoveryKey);
+		if (StringUtils.isBlank(userEmail)) {
+			model.addAttribute("warning", "Tundmatu salasõna lähtestamise võti.");
+			return PASSWORD_RECOVERY_PAGE;
+		}
+		model.addAttribute("userEmail", userEmail);
 		model.addAttribute("recoveryKey", recoveryKey);
 		return PASSWORD_SET_PAGE;
 	}
@@ -152,14 +155,14 @@ public class RegisterController implements WebConstant {
 			return PASSWORD_SET_PAGE;
 		}
 
-		EkiUser ekiUser = userService.changePassword(recoveryKey, password);
-		if (ekiUser == null) {
+		String userEmail = userService.getUserEmailByRecoveryKey(recoveryKey);
+		if (StringUtils.isBlank(userEmail)) {
 			model.addAttribute("warning", "Tundmatu salasõna lähtestamise võti.");
 			return PASSWORD_RECOVERY_PAGE;
 		}
-
+		userService.setUserPassword(userEmail, password);
 		attributes.addFlashAttribute("success_message", "Parool vahetatud. Logige sisse uue parooliga.");
-		attributes.addFlashAttribute("userEmail", ekiUser.getEmail());
+		attributes.addFlashAttribute("userEmail", userEmail);
 		return "redirect:" + LOGIN_PAGE_URI;
 	}
 

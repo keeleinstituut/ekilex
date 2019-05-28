@@ -86,6 +86,12 @@ public class UserService {
 	}
 
 	@Transactional
+	public String getUserEmailByRecoveryKey(String recoveryKey) {
+		String email = userDbService.getUserEmailByRecoveryKey(recoveryKey);
+		return email;
+	}
+
+	@Transactional
 	public Long getUserIdByEmail(String email) {
 		Long userId = userDbService.getUserIdByEmail(email);
 		return userId;
@@ -166,19 +172,17 @@ public class UserService {
 	}
 
 	@Transactional
-	public String generateAndUpdateUserRecoveryKey(Long userId) {
+	public String generateAndSetUserRecoveryKey(Long userId) {
 
 		String recoveryKey = generateUniqueKey();
-		userDbService.updateUserRecoveryKey(userId, recoveryKey);
+		userDbService.setUserRecoveryKey(userId, recoveryKey);
 		return recoveryKey;
 	}
 
 	@Transactional
-	public EkiUser changePassword(String recoveryKey, String password) {
-
+	public void setUserPassword(String email, String password) {
 		String encodedPassword = passwordEncoder.encode(password);
-		EkiUser user = userDbService.changeUserPassword(recoveryKey, encodedPassword);
-		return user;
+		userDbService.setUserPassword(email, encodedPassword);
 	}
 
 	private String generateUniqueKey() {

@@ -54,6 +54,16 @@ public class UserDbService extends AbstractDbService {
 				.orElse(null);
 	}
 
+	public String getUserEmailByRecoveryKey(String recoveryKey) {
+
+		return create
+				.select(EKI_USER.EMAIL)
+				.from(EKI_USER)
+				.where(EKI_USER.RECOVERY_KEY.eq(recoveryKey))
+				.fetchOptionalInto(String.class)
+				.orElse(null);
+	}
+
 	public Long createUser(String email, String name, String password, String activationKey) {
 		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
 		ekiUser.setEmail(email);
@@ -109,7 +119,7 @@ public class UserDbService extends AbstractDbService {
 				.fetchInto(EkiUserApplication.class);
 	}
 
-	public void updateUserRecoveryKey(Long userId, String recoveryKey) {
+	public void setUserRecoveryKey(Long userId, String recoveryKey) {
 
 		create
 				.update(EKI_USER)
@@ -117,15 +127,11 @@ public class UserDbService extends AbstractDbService {
 				.where(EKI_USER.ID.eq(userId)).execute();
 	}
 
-	public EkiUser changeUserPassword(String recoveryKey, String encodedPassword) {
+	public void setUserPassword(String email, String encodedPassword) {
 
-		Optional<EkiUserRecord> ekiUser = create.selectFrom(EKI_USER).where(EKI_USER.RECOVERY_KEY.eq(recoveryKey)).fetchOptional();
-		if (ekiUser.isPresent()) {
-			ekiUser.get().setRecoveryKey(null);
-			ekiUser.get().setPassword(encodedPassword);
-			ekiUser.get().store();
-			return ekiUser.get().into(EkiUser.class);
-		}
-		return null;
+		EkiUserRecord ekiUser = create.selectFrom(EKI_USER).where(EKI_USER.EMAIL.eq(email)).fetchOne();
+		ekiUser.setRecoveryKey(null);
+		ekiUser.setPassword(encodedPassword);
+		ekiUser.store();
 	}
 }
