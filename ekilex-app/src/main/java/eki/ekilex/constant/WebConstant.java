@@ -142,7 +142,19 @@ public interface WebConstant {
 
 	String SEARCH_SOURCES_URI = "/search_sources";
 
+	String DICTIONARIES_URI = "/dictionaries";
+
+	String DATASETS_PAGE = "datasets";
+
+	String CREATE_DICTIONARY_URI = "/create_dictionary";
+
+	String UPDATE_DICTIONARY_URI = "/update_dictionary";
+
+	String DELETE_DICTIONARY_URI = "/delete_dictionary";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
+
+	String REDIRECT_PREF = "redirect:";
 
 	// mode flags
 

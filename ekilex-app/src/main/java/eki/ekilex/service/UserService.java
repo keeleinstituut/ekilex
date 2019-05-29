@@ -45,6 +45,9 @@ public class UserService {
 	@Autowired
 	private EkilexPasswordEncoder passwordEncoder;
 
+	@Autowired
+	private EmailService emailService;
+
 	public boolean isAuthenticatedUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		boolean isAuthenticated = principal instanceof EkiUser;
@@ -83,6 +86,12 @@ public class UserService {
 			user.setDatasetOwnershipExist(datasetOwnershipExist);
 		}
 		return user;
+	}
+
+	@Transactional
+	public String getUserEmailByRecoveryKey(String recoveryKey) {
+		String email = userDbService.getUserEmailByRecoveryKey(recoveryKey);
+		return email;
 	}
 
 	@Transactional
@@ -138,12 +147,15 @@ public class UserService {
 	}
 
 	@Transactional
-	public void submitUserApplication(Long userId, List<String> datasets, String comment) {
+	public void submitUserApplication(EkiUser user, List<String> datasets, String comment) {
 		String[] datasetArr = null;
 		if (CollectionUtils.isNotEmpty(datasets)) {
 			datasetArr = datasets.toArray(new String[datasets.size()]);
 		}
+		Long userId = user.getId();
 		userDbService.createUserApplication(userId, datasetArr, comment);
+		List<String> adminEmails = userDbService.getAdminEmails();
+		emailService.sendApplicationSubmitEmail(adminEmails, user, datasets, comment);
 	}
 
 	@Transactional
@@ -166,19 +178,17 @@ public class UserService {
 	}
 
 	@Transactional
-	public String generateAndUpdateUserRecoveryKey(Long userId) {
+	public String generateAndSetUserRecoveryKey(Long userId) {
 
 		String recoveryKey = generateUniqueKey();
-		userDbService.updateUserRecoveryKey(userId, recoveryKey);
+		userDbService.setUserRecoveryKey(userId, recoveryKey);
 		return recoveryKey;
 	}
 
 	@Transactional
-	public EkiUser changePassword(String recoveryKey, String password) {
-
+	public void setUserPassword(String email, String password) {
 		String encodedPassword = passwordEncoder.encode(password);
-		EkiUser user = userDbService.changeUserPassword(recoveryKey, encodedPassword);
-		return user;
+		userDbService.setUserPassword(email, encodedPassword);
 	}
 
 	private String generateUniqueKey() {

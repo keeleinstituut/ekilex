@@ -10,6 +10,12 @@ public class Dataset extends AbstractDataObject {
 
 	private String name;
 
+	private String description;
+
+	private boolean isVisible;
+
+	private boolean isPublic;
+
 	public String getCode() {
 		return code;
 	}
@@ -26,4 +32,27 @@ public class Dataset extends AbstractDataObject {
 		this.name = name;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public boolean isVisible() {
+		return isVisible;
+	}
+
+	public void setVisible(boolean visible) {
+		isVisible = visible;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean aPublic) {
+		isPublic = aPublic;
+	}
 }

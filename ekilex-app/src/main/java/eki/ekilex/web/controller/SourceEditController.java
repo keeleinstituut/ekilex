@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class SourceEditController extends AbstractPageController {
 
-	private static final Logger logger = LoggerFactory.getLogger(EditController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
 
 	@Autowired
 	private SourceService sourceService;
