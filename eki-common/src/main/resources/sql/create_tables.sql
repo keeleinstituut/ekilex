@@ -5,6 +5,7 @@ create table eki_user
   email text not null,
   password text not null,
   activation_key varchar(60),
+  recovery_key varchar(60),
   is_admin boolean default false,
   is_enabled boolean,
   created timestamp not null default statement_timestamp(),

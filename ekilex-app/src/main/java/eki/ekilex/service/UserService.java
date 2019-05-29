@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
+import eki.ekilex.security.EkilexPasswordEncoder;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
@@ -31,20 +33,20 @@ public class UserService {
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
 
+	@Autowired
 	private UserDbService userDbService;
 
+	@Autowired
 	private PermissionDbService permissionDbService;
 
+	@Autowired
 	private CommonDataDbService commonDataDbService;
 
-	public UserService(
-			UserDbService userDbService,
-			PermissionDbService permissionDbService,
-			CommonDataDbService commonDataDbService) {
-		this.userDbService = userDbService;
-		this.permissionDbService = permissionDbService;
-		this.commonDataDbService = commonDataDbService;
-	}
+	@Autowired
+	private EkilexPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private EmailService emailService;
 
 	public boolean isAuthenticatedUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -87,6 +89,18 @@ public class UserService {
 	}
 
 	@Transactional
+	public String getUserEmailByRecoveryKey(String recoveryKey) {
+		String email = userDbService.getUserEmailByRecoveryKey(recoveryKey);
+		return email;
+	}
+
+	@Transactional
+	public Long getUserIdByEmail(String email) {
+		Long userId = userDbService.getUserIdByEmail(email);
+		return userId;
+	}
+
+	@Transactional
 	public boolean isValidUser(String email) {
 		if (StringUtils.isBlank(email)) {
 			return false;
@@ -96,10 +110,14 @@ public class UserService {
 	}
 
 	@Transactional
-	public void createUser(String email, String name, String password, String activationKey) {
-		userDbService.createUser(email, name, password, activationKey);
+	public String generateActivationKeyAndCreateUser(String email, String name, String password) {
+
+		String activationKey = generateUniqueKey();
+		String encodedPassword = passwordEncoder.encode(password);
+		userDbService.createUser(email, name, encodedPassword, activationKey);
 		EkiUser user = userDbService.getUserByEmail(email);
 		logger.debug("Created new user : {}", user.getDescription());
+		return activationKey;
 	}
 
 	@Transactional
@@ -120,10 +138,6 @@ public class UserService {
 		userDbService.enableUser(userId, enable);
 	}
 
-	public String generateActivationKey() {
-		return CodeGenerator.generateUniqueId();
-	}
-
 	public boolean isActiveUser(EkiUser user) {
 		return user != null && StringUtils.isBlank(user.getActivationKey());
 	}
@@ -133,12 +147,15 @@ public class UserService {
 	}
 
 	@Transactional
-	public void submitUserApplication(Long userId, List<String> datasets, String comment) {
+	public void submitUserApplication(EkiUser user, List<String> datasets, String comment) {
 		String[] datasetArr = null;
 		if (CollectionUtils.isNotEmpty(datasets)) {
 			datasetArr = datasets.toArray(new String[datasets.size()]);
 		}
+		Long userId = user.getId();
 		userDbService.createUserApplication(userId, datasetArr, comment);
+		List<String> adminEmails = userDbService.getAdminEmails();
+		emailService.sendApplicationSubmitEmail(adminEmails, user, datasets, comment);
 	}
 
 	@Transactional
@@ -158,5 +175,23 @@ public class UserService {
 			}
 		}
 		return userApplications;
+	}
+
+	@Transactional
+	public String generateAndSetUserRecoveryKey(Long userId) {
+
+		String recoveryKey = generateUniqueKey();
+		userDbService.setUserRecoveryKey(userId, recoveryKey);
+		return recoveryKey;
+	}
+
+	@Transactional
+	public void setUserPassword(String email, String password) {
+		String encodedPassword = passwordEncoder.encode(password);
+		userDbService.setUserPassword(email, encodedPassword);
+	}
+
+	private String generateUniqueKey() {
+		return CodeGenerator.generateUniqueId();
 	}
 }

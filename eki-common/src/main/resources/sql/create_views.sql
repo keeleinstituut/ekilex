@@ -101,7 +101,7 @@ from (select w.id as word_id,
                          from lexeme l
                               inner join dataset ds on ds.code = l.dataset_code
                               left outer join definition d on d.meaning_id = l.meaning_id
-                         where l.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')) wd
+                         where l.dataset_code in ('ss1', 'psv', 'qq2', 'ev2')) wd -- kol is ignored
                    group by wd.word_id) wd on wd.word_id = w.word_id;
 
 create view view_ww_as_word 
@@ -186,6 +186,15 @@ create view view_ww_meaning
       left outer join (select d.meaning_id,
                               array_agg(row (null,d.meaning_id,d.value,d.value_prese,d.lang,null)::type_definition order by d.order_by) definitions
                        from definition d
+                       where exists (
+                           select
+                             dd.definition_id
+                           from
+                             definition_dataset dd
+                           where
+                             dd.definition_id = d.id
+                             and dd.dataset_code in ('ss1', 'psv', 'qq2', 'ev2') -- kol is ignored
+                       )
                        group by d.meaning_id) d on d.meaning_id = m.id
       left outer join (select mf.meaning_id,
                               array_agg(ff.value_text order by ff.order_by) image_files

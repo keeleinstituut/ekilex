@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -10,12 +11,15 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+
+import eki.ekilex.data.EkiUser;
 
 @Component
 public class EmailService {
@@ -41,8 +45,43 @@ public class EmailService {
 		return isEmailSendingEnabled;
 	}
 
-	public void sendEmail(List<String> to, List<String> cc, String subject, String content) {
-		if (CollectionUtils.isEmpty(to)) {
+	public void sendUserActivationEmail(String email, String activationLink) {
+
+		String subject = "Ekilexi kasutaja registreerimine";
+		String content = "Kasutaja aktiveerimiseks mine lingile: " + "<a href='" + activationLink + "'>" + activationLink + "</a>";
+		sendEmail(email, subject, content);
+	}
+
+	public void sendPasswordRecoveryEmail(String email, String passwordRecoveryLink) {
+
+		String subject = "Ekilexi kasutaja salasõna lähtestamine";
+		String content = "Kasutaja salasõna lähtestamiseks mine lingile: " + "<a href='" + passwordRecoveryLink + "'>" + passwordRecoveryLink + "</a>";
+		sendEmail(email, subject, content);
+	}
+
+	public void sendApplicationSubmitEmail(List<String> emails, EkiUser user, List<String> datasets, String comment) {
+
+		String subject = "Ekilexi kasutaja õiguste taotlus";
+		String content = "Ekilexi kasutaja \"" + user.getName() + "\", kelle e-post on \"" + user.getEmail() + "\" esitas vaatamisõiguste taotluse";
+		if (CollectionUtils.isEmpty(datasets)) {
+			content += ".";
+		} else {
+			String joinedDatasets = String.join(", ", datasets);
+			content += " ning muutmisõiguste taotluse sõnakogudele: " + joinedDatasets + ".";
+		}
+		if (StringUtils.isNotBlank(comment)) {
+			content += "<br>Taotluse põhjendus:<br>" + comment;
+		}
+
+		sendEmail(emails, Collections.emptyList(), subject, content);
+	}
+
+	private void sendEmail(String to, String subject, String content) {
+		sendEmail(Collections.singletonList(to), Collections.emptyList(), subject, content);
+	}
+
+	private void sendEmail(List<String> toList, List<String> ccList, String subject, String content) {
+		if (CollectionUtils.isEmpty(toList)) {
 			return;
 		}
 		try {
@@ -50,9 +89,9 @@ public class EmailService {
 			// pass 'true' to the constructor to create a multipart message
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-			helper.setTo(to.toArray(new String[0]));
-			if (CollectionUtils.isNotEmpty(cc)) {
-				helper.setCc(cc.toArray(new String[0]));
+			helper.setTo(toList.toArray(new String[0]));
+			if (CollectionUtils.isNotEmpty(ccList)) {
+				helper.setCc(ccList.toArray(new String[0]));
 			}
 			helper.setSubject(subject);
 			helper.setFrom(fromAddress, fromName);

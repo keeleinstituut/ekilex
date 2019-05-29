@@ -34,6 +34,7 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER.EMAIL,
 						EKI_USER.PASSWORD,
 						EKI_USER.ACTIVATION_KEY,
+						EKI_USER.RECOVERY_KEY,
 						EKI_USER.IS_ADMIN.as("admin"),
 						EKI_USER.IS_ENABLED.as("enabled")
 						)
@@ -41,6 +42,35 @@ public class UserDbService extends AbstractDbService {
 				.where(EKI_USER.EMAIL.eq(email))
 				.fetchOptionalInto(EkiUser.class)
 				.orElse(null);
+	}
+
+	public Long getUserIdByEmail(String email) {
+
+		return create
+				.select(EKI_USER.ID)
+				.from(EKI_USER)
+				.where(EKI_USER.EMAIL.eq(email))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public String getUserEmailByRecoveryKey(String recoveryKey) {
+
+		return create
+				.select(EKI_USER.EMAIL)
+				.from(EKI_USER)
+				.where(EKI_USER.RECOVERY_KEY.eq(recoveryKey))
+				.fetchOptionalInto(String.class)
+				.orElse(null);
+	}
+
+	public List<String> getAdminEmails() {
+
+		return create
+				.select(EKI_USER.EMAIL)
+				.from(EKI_USER)
+				.where(EKI_USER.IS_ADMIN.eq(true))
+				.fetchInto(String.class);
 	}
 
 	public Long createUser(String email, String name, String password, String activationKey) {
@@ -98,4 +128,19 @@ public class UserDbService extends AbstractDbService {
 				.fetchInto(EkiUserApplication.class);
 	}
 
+	public void setUserRecoveryKey(Long userId, String recoveryKey) {
+
+		create
+				.update(EKI_USER)
+				.set(EKI_USER.RECOVERY_KEY, recoveryKey)
+				.where(EKI_USER.ID.eq(userId)).execute();
+	}
+
+	public void setUserPassword(String email, String encodedPassword) {
+
+		EkiUserRecord ekiUser = create.selectFrom(EKI_USER).where(EKI_USER.EMAIL.eq(email)).fetchOne();
+		ekiUser.setRecoveryKey(null);
+		ekiUser.setPassword(encodedPassword);
+		ekiUser.store();
+	}
 }

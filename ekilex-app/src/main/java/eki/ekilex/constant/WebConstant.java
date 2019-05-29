@@ -72,6 +72,14 @@ public interface WebConstant {
 
 	String ACTIVATE_PAGE_URI = "/activate";
 
+	String PASSWORD_RECOVERY_URI = "/passwordrecovery";
+
+	String PASSWORD_RECOVERY_PAGE = "passwordrecovery";
+
+	String PASSWORD_SET_PAGE_URI = "/passwordset";
+
+	String PASSWORD_SET_PAGE = "passwordset";
+
 	String COMPONENTS_PAGE = "components";
 
 	String COMMON_PAGE = "common";
