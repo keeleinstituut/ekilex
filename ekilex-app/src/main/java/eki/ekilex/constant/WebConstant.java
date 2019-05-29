@@ -108,9 +108,9 @@ public interface WebConstant {
 
 	String UPDATE_LEVELS_URI = "/update_levels";
 
-	String VALIDATE_DELETE_ITEM_URI = "/validate_delete_item";
-
 	String DELETE_ITEM_URI = "/delete_item";
+
+	String CONFIRM_OP_URI = "/confirm_op";
 
 	String SOURCE_COMPONENTS_PAGE = "sourcecomp";
 

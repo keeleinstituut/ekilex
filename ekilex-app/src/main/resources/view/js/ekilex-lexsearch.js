@@ -156,3 +156,34 @@ function toggleLexeme(e) {
 function doNewSearch() {
 	$('#simple_search_filter').find('button[type=submit]').trigger('click');
 }
+
+function deleteLexemeAndWordAndMeaning() {
+	var opName = "delete";
+	var opCode = "lexeme";
+	var lexemeId = $(this).attr("data-id");
+	var successCallbackName = $(this).attr("data-callback");
+	let successCallbackFunc = () => eval(successCallbackName)($(this));
+	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + lexemeId;
+	var confirmationOpUrl = applicationUrl + "confirm_op";
+	var dataObj = {
+		opName: opName,
+		opCode: opCode,
+		id: lexemeId
+	}; 
+	$.ajax({
+		url: confirmationOpUrl,
+		data: JSON.stringify(dataObj),
+		method: 'POST',
+		dataType: 'json',
+		contentType: 'application/json'
+	}).done(function (data) {
+		if (data.unconfirmed) {
+			openMultiConfirmDlg(data.questions, doPostDelete, deleteUrl, successCallbackFunc);
+		} else {
+			doPostDelete(deleteUrl, successCallbackFunc);
+		}
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg("Kustutamine ebaõnnestus");
+	});
+}

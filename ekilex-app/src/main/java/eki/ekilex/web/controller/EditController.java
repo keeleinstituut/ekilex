@@ -1,9 +1,9 @@
 package eki.ekilex.web.controller;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -22,9 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
 import eki.common.service.TextDecorationService;
@@ -32,6 +29,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.CreateItemRequest;
+import eki.ekilex.data.ConfirmationRequest;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
@@ -187,7 +185,9 @@ public class EditController implements WebConstant {
 		logger.debug("Update operation for {}", itemData.getOpCode());
 		switch (itemData.getOpCode()) {
 		case "term_user_lang":
-			updateLanguageSelection(itemData, sessionBean);
+			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+			ClassifierSelect langSelect = languagesOrder.stream().filter(classif -> StringUtils.equals(classif.getCode(), itemData.getCode())).findFirst().get();
+			langSelect.setSelected(!langSelect.isSelected());
 			break;
 		case "usage":
 			cudService.updateUsageValue(itemData.getId(), valuePrese);
@@ -281,12 +281,6 @@ public class EditController implements WebConstant {
 		return "{}";
 	}
 
-	private void updateLanguageSelection(UpdateItemRequest itemData, SessionBean sessionBean) {
-		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		ClassifierSelect langSelect = languagesOrder.stream().filter(classif -> StringUtils.equals(classif.getCode(), itemData.getCode())).findFirst().get();
-		langSelect.setSelected(!langSelect.isSelected());
-	}
-
 	@ResponseBody
 	@PostMapping(UPDATE_LEVELS_URI)
 	public String updateLexemeLevels(@RequestParam("id") Long lexemeId, @RequestParam("action") String action) {
@@ -297,31 +291,39 @@ public class EditController implements WebConstant {
 	}
 
 	@ResponseBody
-	@PostMapping(VALIDATE_DELETE_ITEM_URI)
-	public String validateDeleteItem(
-			@RequestParam("opCode") String opCode,
-			@RequestParam("id") Long id) throws JsonProcessingException {
+	@PostMapping(CONFIRM_OP_URI)
+	public ConfirmationRequest confirmOperation(@RequestBody ConfirmationRequest confirmationRequest) {
 
-		logger.debug("Delete validation operation : {} : for id {}", opCode, id);
-		Map<String, String> response = new HashMap<>();
-		switch (opCode) {
-		case "lexeme":
-			if (lexSearchService.isOnlyLexemeForMeaning(id)) {
-				response.put("status", "invalid");
-				response.put("message", "Valitud ilmik on mõiste ainus ilmik. Seda ei saa eemaldada.");
-			} else if (lexSearchService.isOnlyLexemeForWord(id)) {
-				response.put("status", "confirm");
-				response.put("question", "Valitud ilmik on keelendi ainus ilmik. Koos ilmikuga kustutatakse ka keelend, kas jätkan ?");
-			} else {
-				response.put("status", "ok");
+		String opName = confirmationRequest.getOpName();
+		String opCode = confirmationRequest.getOpCode();
+		Long id = confirmationRequest.getId();
+
+		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
+
+		switch (opName) {
+		case "delete":
+			switch (opCode) {
+			case "lexeme":
+				List<String> questions = new ArrayList<>();
+				String question;
+				boolean isOnlyLexemeForMeaning = lexSearchService.isOnlyLexemeForMeaning(id);
+				if (isOnlyLexemeForMeaning) {
+					question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
+					questions.add(question);
+				}
+				boolean isOnlyLexemeForWord = lexSearchService.isOnlyLexemeForWord(id);
+				if (isOnlyLexemeForWord) {
+					question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
+					questions.add(question);
+				}
+				boolean unconfirmed = CollectionUtils.isNotEmpty(questions);
+				confirmationRequest.setUnconfirmed(unconfirmed);
+				confirmationRequest.setQuestions(questions);
+				break;
 			}
 			break;
-		default:
-			response.put("status", "ok");
-			break;
 		}
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		return confirmationRequest;
 	}
 
 	@ResponseBody
@@ -333,6 +335,9 @@ public class EditController implements WebConstant {
 
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
 		switch (opCode) {
+		case "definition":
+			cudService.deleteDefinition(id);
+			break;
 		case "usage":
 			cudService.deleteUsage(id);
 			break;
@@ -342,30 +347,17 @@ public class EditController implements WebConstant {
 		case "usage_definition":
 			cudService.deleteUsageDefinition(id);
 			break;
-		case "definition":
-			cudService.deleteDefinition(id);
+		case "government":
+			cudService.deleteLexemeGovernment(id);
+			break;
+		case "lexeme_public_note":
+			cudService.deleteLexemePublicNote(id);
 			break;
 		case "lexeme_frequency_group":
 			cudService.updateLexemeFrequencyGroup(id, null);
 			break;
 		case "lexeme_pos":
 			cudService.deleteLexemePos(id, valueToDelete);
-			break;
-		case "meaning_domain":
-			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToDelete);
-			cudService.deleteMeaningDomain(id, meaningDomain);
-			break;
-		case "government":
-			cudService.deleteLexemeGovernment(id);
-			break;
-		case ContentKey.DEFINITION_SOURCE_LINK:
-			cudService.deleteDefinitionSourceLink(id);
-			break;
-		case ContentKey.FREEFORM_SOURCE_LINK:
-			cudService.deleteFreeformSourceLink(id);
-			break;
-		case ContentKey.LEXEME_SOURCE_LINK:
-			cudService.deleteLexemeSourceLink(id);
 			break;
 		case "lexeme_deriv":
 			cudService.deleteLexemeDeriv(id, valueToDelete);
@@ -376,26 +368,11 @@ public class EditController implements WebConstant {
 		case "lexeme_region":
 			cudService.deleteLexemeRegion(id, valueToDelete);
 			break;
-		case "word_gender":
-			cudService.updateWordGender(id, null);
-			break;
 		case "lexeme_grammar":
 			cudService.deleteLexemeGrammar(id);
 			break;
-		case "word_type":
-			cudService.deleteWordType(id, valueToDelete);
-			break;
-		case "word_aspect":
-			cudService.updateWordAspect(id, null);
-			break;
-		case "word_relation":
-			cudService.deleteWordRelation(id);
-			break;
 		case "lexeme_relation":
 			cudService.deleteLexemeRelation(id);
-			break;
-		case "meaning_relation":
-			cudService.deleteMeaningRelation(id);
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(id, null);
@@ -406,14 +383,39 @@ public class EditController implements WebConstant {
 		case "lexeme":
 			cudService.deleteLexeme(id);
 			break;
+		case "meaning_domain":
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToDelete);
+			cudService.deleteMeaningDomain(id, meaningDomain);
+			break;
 		case "learner_comment":
 			cudService.deleteMeaningLearnerComment(id);
 			break;
-		case "lexeme_public_note":
-			cudService.deleteLexemePublicNote(id);
-			break;
 		case "meaning_public_note":
 			cudService.deleteMeaningPublicNote(id);
+			break;
+		case "meaning_relation":
+			cudService.deleteMeaningRelation(id);
+			break;
+		case "word_gender":
+			cudService.updateWordGender(id, null);
+			break;
+		case "word_type":
+			cudService.deleteWordType(id, valueToDelete);
+			break;
+		case "word_aspect":
+			cudService.updateWordAspect(id, null);
+			break;
+		case "word_relation":
+			cudService.deleteWordRelation(id);
+			break;
+		case ContentKey.DEFINITION_SOURCE_LINK:
+			cudService.deleteDefinitionSourceLink(id);
+			break;
+		case ContentKey.FREEFORM_SOURCE_LINK:
+			cudService.deleteFreeformSourceLink(id);
+			break;
+		case ContentKey.LEXEME_SOURCE_LINK:
+			cudService.deleteLexemeSourceLink(id);
 			break;
 		}
 		return "OK";

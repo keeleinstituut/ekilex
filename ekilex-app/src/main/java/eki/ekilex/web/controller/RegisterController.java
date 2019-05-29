@@ -104,13 +104,13 @@ public class RegisterController implements WebConstant {
 	}
 
 	@GetMapping(PASSWORD_RECOVERY_URI)
-	public String recoverPasswordPage() {
+	public String passwordRecoveryPage() {
 		return PASSWORD_RECOVERY_PAGE;
 	}
 
 	@PostMapping(PASSWORD_RECOVERY_URI)
-	public String recoverPassword(@RequestParam("email") String email, @RequestParam(value = "ccode", required = false) String honeyPot, Model model,
-			HttpServletRequest request) {
+	public String recoverPassword(
+			@RequestParam("email") String email, @RequestParam(value = "ccode", required = false) String honeyPot, Model model, HttpServletRequest request) {
 
 		boolean isBotProtectionTriggered = checkBotProtection(honeyPot, request.getRemoteAddr(), email);
 		if (isBotProtectionTriggered) {
