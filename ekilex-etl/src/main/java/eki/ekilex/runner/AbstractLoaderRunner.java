@@ -284,7 +284,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		// delete collocations + freeforms
 		if (StringUtils.equals(COLLOC_OWNER_DATASET_CODE, dataset)) {
-			basicDbService.executeScript(sqls.getSqlDeleteCollocationFreeformsForDataset());
+			basicDbService.executeScript(sqls.getSqlDeleteCollocationFreeformsForDataset(), tableRowParamMap);
 			sql = "delete from " + COLLOCATION;
 			basicDbService.executeScript(sql);
 		}
