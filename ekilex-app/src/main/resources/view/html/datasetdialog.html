@@ -61,12 +61,12 @@
               </div>
             </div>
             <div class="form-check mt-1">
-              <input class="form-check-input" type="checkbox" name="visible" th:checked="${thisDataset.visible}">
-              <label class="form-check-label" th:text="#{dictionaries.dataset.is.visible}">Nähtav</label>
+              <input th:id="${'chkVisible_' + thisDataset.code}" class="form-check-input" type="checkbox" name="visible" th:checked="${thisDataset.visible}">
+              <label th:for="${'chkVisible_' + thisDataset.code}" class="form-check-label" th:text="#{dictionaries.dataset.is.visible}">Nähtav</label>
             </div>
             <div class="form-check mt-1">
-              <input class="form-check-input" type="checkbox" name="public" th:checked="${thisDataset.public}">
-              <label class="form-check-label" th:text="#{dictionaries.dataset.is.public}">Nähtav</label>
+              <input th:id="${'chkPublic_' + thisDataset.code}" class="form-check-input" type="checkbox" name="public" th:checked="${thisDataset.public}">
+              <label th:for="${'chkPublic_' + thisDataset.code}" class="form-check-label" th:text="#{dictionaries.dataset.is.public}">Nähtav</label>
             </div>
           </div>
 
