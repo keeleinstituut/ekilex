@@ -79,12 +79,34 @@ $(document).on("change", "select.common-word-dataset-select[name='dataset']", fu
 	}
 });
 $(document).on("change", ".required-field", function() {
+	console.log('change');
 	if ($(this).val()) {
 		$(this).removeClass('is-invalid');
 	} else {
 		$(this).addClass('is-invalid');
 	}
+
+	let errorSmallElem = $(this).closest('.form-group').find('.field-error');
+	if (errorSmallElem.length) {
+		errorSmallElem.html('');
+		errorSmallElem.hide();
+	}
 });
+
+/**
+ * Adds an error class to the given field
+ * Finds a <small class="field-error"> element inside of a <div class="form-group"> with the given field. If found shows it with the given text.
+ * @param field
+ * @param errorText
+ */
+function showFieldError(field, errorText) {
+	let errorSmallElem = field.closest('.form-group').find('.field-error');
+	if (errorSmallElem.length) {
+		errorSmallElem.html(errorText);
+		errorSmallElem.show();
+		field.addClass('is-invalid');
+	}
+}
 
 
 function changeItemOrdering(target, delta) {
@@ -255,11 +277,11 @@ function initNewWordDlg() {
  * @param fld
  */
 function checkRequiredFields(thisForm) {
-	var isValid = true;
 
-	var requiredFields = thisForm.find('.required-field:not(:hidden)');
+	let isValid = true;
+	let requiredFields = thisForm.find('.required-field:not(:hidden)');
 	requiredFields.each(function() {
-		var fldVal = $(this).val();
+		let fldVal = $(this).val();
 		if (!fldVal) {
 			$(this).addClass('is-invalid');
 			isValid = false;

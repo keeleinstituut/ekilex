@@ -8,56 +8,74 @@
 
 </head>
 <body class="body-with-navbar">
-
   <th:block th:replace="common :: nav_bar"></th:block>
-
   <div class="container-fluid">
-    <div class="row">
-      <button class="btn btn-primary position-right"
-              title="Lisa uus sõnakogu"
-              data-toggle="modal"
-              data-target="#addDatasetDlg" th:text="#{dictionaries.add}">
-      </button>
-    </div>
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Sõnakogude haldus</h5>
+        <div class="ml-auto pull-right">
+        <button class="btn btn-primary"
+                title="Lisa uus sõnakogu"
+                data-toggle="modal"
+                data-target="#addDatasetDlg" th:text="#{dictionaries.add}">
+        </button>
+        </div>
+      </div>
 
-    <div class="row no-gutters mt-2">
-      <div class="col-10 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;">
-        <div class="card shadow">
-          <div class="card-body p-2">
-            <div id="results" class="w-100">
-              <div th:each="dataset, datasetIter : ${datasets}" th:class="${datasetIter.last} ? '' : 'border-bottom'">
-                <div>
-                  <button type="button" class="btn btn-link pt-0" data-toggle="modal" th:data-target="${'#editDatasetDlg_' + dataset.code}">
-                    <span th:text="${dataset.name}" class="ttl">EuropeAid</span>
-                  </button>
-                  <button type="button" class="btn btn-sm btn-primary"
-                          title="Muuda"
-                          data-toggle="modal"
-                          th:data-target="${'#editDatasetDlg_' + dataset.code}">Muuda
-                  </button>
-                  <button class="btn btn-sm btn-warning delete-dataset-confirm" type="button"
-                          th:data-code="${dataset.code}"
-                          data-toggle="datasetDeleteConfirm">Kustuta</button>
+      <div class="card-body">
+        <div class="float-left mt-3 w-100">
+          <div id="datasetsArea">
+            <table class="table table-striped m-0 p-0">
+              <tr>
+                <th class="m-1 p-1" style="width: 10%">Kood</th>
+                <th class="m-1 p-1" style="width: 15%">Nimi</th>
+                <th class="m-1 p-1" style="width: 60%">Kirjeldus</th>
+                <th class="m-1 p-1 text-center" style="width: 5%">Nähtav</th>
+                <th class="m-1 p-1 text-center" style="width: 5%">Avalik</th>
+                <th class="m-1 p-1" style="width: 5%"></th>
+              </tr>
+              <th:block th:each="dataset : ${datasets}">
+                <tr>
+                  <td class="m-1 p-1">
+                    <span th:text="${dataset.code}"></span>
+                  </td>
+                  <td class="m-1 p-1">
+                    <span th:text="${dataset.name}"></span>
+                  </td>
+                  <td class="m-1 p-1">
+                    <small data-toggle="tooltip" data-placement="bottom" th:title="${dataset.description}" th:text="${#strings.abbreviate(dataset.description, 500)}"></small>
+                  </td>
+                  <td class="m-1 p-1 text-center">
+                    <span th:text="${dataset.visible ? 'Jah' : 'Ei'}"></span>
+                  </td>
+                  <td class="m-1 p-1 text-center">
+                    <span th:text="${dataset.public ? 'Jah' : 'Ei'}"></span>
+                  </td>
 
-                  <span class="float-right" style="padding: 15px">
-                    <!--<span th:id="${'meaning_select_point_' + termMeaning.meaningId}" class="fa fa-play" style="display: none"></span>-->
-                    <!--<span th:id="${'meaning_select_wait_' + termMeaning.meaningId}" class="fa fa-refresh fa-spin" style="display: none"></span>-->
-                  </span>
-                  <div style="position:relative; top: -10px; padding-left: 10px">
-                    <small>
-                      <span th:text="${#strings.abbreviate(dataset.description, 500)}"></span>
-                    </small>
-                  </div>
-                </div>
+                  <td class="m-1 p-1">
+                    <button type="button" class="btn badge badge-primary"
+                            title="Muuda"
+                            data-toggle="modal"
+                            th:data-target="${'#editDatasetDlg_' + dataset.code}">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning delete-dataset-confirm"
+                            th:data-code="${dataset.code}"
+                            data-toggle="datasetDeleteConfirm">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
                 <div th:replace="datasetdialog :: edit_dataset_dlg(${dataset})"></div>
-              </div>
-            </div>
+              </th:block>
+            </table>
           </div>
         </div>
       </div>
     </div>
     <div th:replace="datasetdialog :: add_dataset_dlg"></div>
   </div>
+  <div th:replace="common :: #alertDlg"></div>
   <script th:inline="javascript">
 	  initialise();
   </script>

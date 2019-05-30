@@ -240,4 +240,13 @@ public class DatasetDbService {
 				.execute();
 	}
 
+	public boolean datasetCodeExists(String datasetCode) {
+		return
+			create.fetchExists(
+				create.select()
+						.from(DATASET)
+						.where(DATASET.CODE.equalIgnoreCase(datasetCode))
+			);
+	}
+
 }

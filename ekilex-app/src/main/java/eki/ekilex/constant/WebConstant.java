@@ -152,6 +152,8 @@ public interface WebConstant {
 
 	String DELETE_DICTIONARY_URI = "/delete_dictionary";
 
+	String VALIDATE_CREATE_DICTIONARY_URI = "/validate_create_dictionary";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";
