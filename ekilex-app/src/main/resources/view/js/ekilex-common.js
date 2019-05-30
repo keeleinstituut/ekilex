@@ -142,32 +142,6 @@ function changeItemOrdering(target, delta) {
 	};
 }
 
-function executeValidateDelete() {
-	var opCode = $(this).attr("data-op-code");
-	var id = $(this).attr("data-id");
-	var callback = $(this).attr("data-callback");
-	let callbackFunc = () => eval(callback)($(this))
-	let validateUrl = applicationUrl + 'validate_delete_item?opCode=' + opCode + '&id=' + id;
-	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
-	$.post(validateUrl).done(function(data) {
-		let response = JSON.parse(data);
-		if (response.status === 'ok') {
-			doPostDelete(deleteUrl, callbackFunc);
-		} else if (response.status === 'confirm') {
-			openConfirmDlg(response.question, function() {
-				doPostDelete(deleteUrl, callbackFunc)
-			});
-		} else if (response.status === 'invalid') {
-			openAlertDlg(response.message);
-		} else {
-			openAlertDlg("Andmete eemaldamine ebaõnnestus.");
-		}
-	}).fail(function(data) {
-		openAlertDlg("Andmete eemaldamine ebaõnnestus.");
-		console.log(data);
-	});
-}
-
 function executeDelete(deleteUrl) {
 	if (deleteUrl === undefined) {
 		var opCode = $(this).attr("data-op-code");
@@ -459,5 +433,24 @@ function openConfirmDlg(confirmQuestion, callback) {
 	okBtn.off('click').on('click', function() {
 		alertDlg.modal('hide');
 		callback();
+	});
+}
+
+function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
+	var ul = $("<ul/>");
+	$.each(confirmQuestions, function(index, question) {
+		var li = $("<li/>").text(question);
+		ul.append(li);
+	});
+	var qWrap = $("<div/>");
+	qWrap.append(ul);
+	var alertDlg = $('#confirmDlg');
+	alertDlg.find('[name=confirm_question]').replaceWith(qWrap);
+	alertDlg.modal('show');
+	let okBtn = alertDlg.find('.modal-footer [name=ok]');
+	okBtn.focus();
+	okBtn.off('click').on('click', function() {
+		alertDlg.modal('hide');
+		callback(...callbackArgs);
 	});
 }

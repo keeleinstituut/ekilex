@@ -189,10 +189,9 @@
                           sec:authorize="${#vars.isLexemeCrudGranted}">Uus tähendus</button>
                   <button class="btn btn-warning font-weight-bold btn-sm" type="button"
                           th:data-id="${lexeme.lexemeId}"
-                          th:data-op-code="lexeme"
                           data-callback="doNewSearch"
-                          data-toggle="validate-delete-confirm"
-                          sec:authorize="${#vars.isLexemeCrudGranted}">Eemalda</button>
+                          data-toggle="deleteLexemeAndWordAndMeaning"
+                          sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta</button>
                   <a th:href="@{'/lexemeandmeaningprocesslog:' + ${lexeme.lexemeId}}"
                      data-toggle="modal"
                      data-target="#processLogDlg"
@@ -1023,6 +1022,14 @@
       </div>
     </div>
     <script th:replace="common :: confirmations"></script>
+    <script>
+		$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
+			btnOkLabel : 'Jah',
+			btnCancelLabel : 'Ei',
+			title : 'Kinnita kustutamine',
+			onConfirm : deleteLexemeAndWordAndMeaning
+		});
+	</script>
   </th:block>
 
   <div th:replace="common :: newWordDlg('lex_search')"></div>

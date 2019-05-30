@@ -483,18 +483,19 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteLexeme(Long lexemeId) {
-		if (lexSearchDbService.isOnlyLexemeForMeaning(lexemeId)) {
-			return;
-		}
-		Long wordId = null;
-		boolean isLastLexeme = lexSearchDbService.isOnlyLexemeForWord(lexemeId);
-		if (isLastLexeme) {
-			wordId = lexSearchDbService.getLexeme(lexemeId).getWordId();
-		}
+		boolean isOnlyLexemeForMeaning = lexSearchDbService.isOnlyLexemeForMeaning(lexemeId);
+		boolean isOnlyLexemeForWord = lexSearchDbService.isOnlyLexemeForWord(lexemeId);
+		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
+		Long wordId = lexeme.getWordId();
+		Long meaningId = lexeme.getMeaningId();
+
 		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
 		updateLexemeLevels(lexemeId, "delete");
 		cudDbService.deleteLexeme(lexemeId);
-		if (isLastLexeme) {
+		if (isOnlyLexemeForMeaning) {
+			//deleteMeaning(meaningId);
+		}
+		if (isOnlyLexemeForWord) {
 			deleteWord(wordId);
 		}
 	}
@@ -581,6 +582,12 @@ public class CudService extends AbstractService {
 	public void deleteLexemeRelation(Long relationId) {
 		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId);
 		cudDbService.deleteLexemeRelation(relationId);
+	}
+
+	@Transactional
+	public void deleteMeaning(Long meaningId) {
+		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId);
+		cudDbService.deleteMeaning(meaningId);
 	}
 
 	@Transactional

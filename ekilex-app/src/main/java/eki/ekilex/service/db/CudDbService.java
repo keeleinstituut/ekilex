@@ -723,6 +723,7 @@ public class CudDbService implements DbConstant {
 	}
 
 	public void deleteWord(Long wordId) {
+		//TODO delete freeforms first
 		create.delete(WORD)
 				.where(WORD.ID.eq(wordId))
 				.execute();
@@ -818,6 +819,13 @@ public class CudDbService implements DbConstant {
 	public void deleteFreeformRefLink(Long refLinkId) {
 		create.delete(FREEFORM_SOURCE_LINK)
 				.where(FREEFORM_SOURCE_LINK.ID.eq(refLinkId))
+				.execute();
+	}
+
+	public void deleteMeaning(Long meaningId) {
+		//TODO delete freeforms first
+		create.delete(MEANING)
+				.where(MEANING.ID.eq(meaningId))
 				.execute();
 	}
 
