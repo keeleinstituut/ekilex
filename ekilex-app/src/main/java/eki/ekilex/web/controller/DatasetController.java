@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
+@PreAuthorize("authentication.principal.datasetPermissionsExist")
 public class DatasetController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(DatasetController.class);
@@ -58,7 +59,6 @@ public class DatasetController implements WebConstant {
 		return DATASETS_PAGE;
 	}
 
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@PostMapping(CREATE_DICTIONARY_URI)
 	public String createDataset(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
 		logger.debug("Creating dataset, name : {}", datasetFormData.getName());
@@ -70,7 +70,6 @@ public class DatasetController implements WebConstant {
 		return REDIRECT_PREF + DICTIONARIES_URI;
 	}
 
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@PostMapping(UPDATE_DICTIONARY_URI)
 	public String updateDataSet(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
 		logger.debug("Updating dataset, name : {}", datasetFormData.getName());
@@ -79,7 +78,6 @@ public class DatasetController implements WebConstant {
 		return REDIRECT_PREF + DICTIONARIES_URI;
 	}
 
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@GetMapping(DELETE_DICTIONARY_URI + "/{datasetCode}")
 	@ResponseBody
 	public String deleteDataset(@PathVariable("datasetCode") String datasetCode) throws JsonProcessingException {
@@ -102,4 +100,13 @@ public class DatasetController implements WebConstant {
 		return jsonMapper.writeValueAsString(response);
 	}
 
+	@GetMapping(REST_SERVICES_URI + VALIDATE_CREATE_DICTIONARY_URI + "/{datasetCode}")
+	@ResponseBody
+	public String validateCreateDataset(@PathVariable("datasetCode") String datasetCode) {
+		if (datasetService.datasetCodeExists(datasetCode)) {
+			logger.debug("Trying to create dataset with existing code '{}'.", datasetCode);
+			return "code_exists";
+		}
+		return "ok";
+	}
 }

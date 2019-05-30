@@ -35,4 +35,9 @@ public class DatasetService {
 	public void deleteDataset(String code) {
 		datasetDbService.deleteDataset(code);
 	}
+
+	@Transactional
+	public boolean datasetCodeExists(String code) {
+		return datasetDbService.datasetCodeExists(code);
+	}
 }
