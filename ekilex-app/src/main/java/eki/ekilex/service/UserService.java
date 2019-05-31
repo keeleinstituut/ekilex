@@ -194,4 +194,9 @@ public class UserService {
 	private String generateUniqueKey() {
 		return CodeGenerator.generateUniqueId();
 	}
+
+	public void addDatasetPermission(DatasetPermission dataSetPermission) {
+		EkiUser authenticatedUser = getAuthenticatedUser();
+		authenticatedUser.getDatasetPermissions().add(dataSetPermission);
+	}
 }

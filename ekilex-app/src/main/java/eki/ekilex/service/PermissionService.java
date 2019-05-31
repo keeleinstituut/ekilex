@@ -65,24 +65,29 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public void createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
+	public Long createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
 
 		if (StringUtils.isBlank(datasetCode)) {
-			return;
+			return null;
 		}
 		if (authItem == null) {
-			return;
+			return null;
 		}
 		if (authOp == null) {
-			return;
+			return null;
 		}
-		permissionDbService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
+		return permissionDbService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
 	}
 
 	@Transactional
 	public void deleteDatasetPermission(Long datasetPermissionId) {
 
 		permissionDbService.deleteDatasetPermission(datasetPermissionId);
+	}
+
+	@Transactional
+	public DatasetPermission getDatasetPermission(Long id) {
+		return permissionDbService.getDatasetPermission(id);
 	}
 
 }
