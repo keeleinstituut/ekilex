@@ -145,10 +145,18 @@ public class SourceService extends AbstractService {
 	@Transactional
 	public void joinSources(Long firstSourceId, Long secondSourceId) {
 
-		//TODO should log some human readable textual wrapup rather than id-s
-		createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, firstSourceId, String.valueOf(secondSourceId), String.valueOf(firstSourceId));
+		String firstSourceNames = joinSourceNames(firstSourceId);
+		String secondSourceNames = joinSourceNames(secondSourceId);
+		createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, firstSourceId, secondSourceNames, firstSourceNames);
 
 		sourceDbService.joinSources(firstSourceId, secondSourceId);
+	}
+
+	private String joinSourceNames(Long sourceId) {
+
+		List<String> names = sourceDbService.getSourceAttributesByType(sourceId, FreeformType.SOURCE_NAME);
+		String joinedNames = StringUtils.join(names, "; ");
+		return joinedNames;
 	}
 
 	private List<Source> convert(List<SourcePropertyTuple> sourcePropertyTuples) {
