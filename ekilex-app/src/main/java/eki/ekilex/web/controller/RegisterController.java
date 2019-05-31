@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,9 +27,6 @@ import eki.ekilex.service.UserService;
 public class RegisterController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
-
-	@Value("${ekilex.app.url:}")
-	private String ekilexAppUrl;
 
 	@Autowired
 	private UserService userService;
@@ -71,9 +67,7 @@ public class RegisterController implements WebConstant {
 		}
 
 		if (userService.isValidUser(email)) {
-			String activationKey = userService.generateActivationKeyAndCreateUser(email, name, password);
-			String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
-			emailService.sendUserActivationEmail(email, activationLink);
+			String activationLink = userService.createUser(email, name, password);
 			if (emailService.isEnabled()) {
 				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile: " + email);
 			} else {
@@ -116,9 +110,7 @@ public class RegisterController implements WebConstant {
 		if (StringUtils.isNotBlank(email)) {
 			Long userId = userService.getUserIdByEmail(email);
 			if (userId != null) {
-				String recoveryKey = userService.generateAndSetUserRecoveryKey(userId);
-				String passwordRecoveryLink = ekilexAppUrl + PASSWORD_SET_PAGE_URI + "/" + recoveryKey;
-				emailService.sendPasswordRecoveryEmail(email, passwordRecoveryLink);
+				String passwordRecoveryLink = userService.handleUserPasswordRecovery(userId, email);
 				if (emailService.isEnabled()) {
 					model.addAttribute("message", "Kui sellise e-postiga kasutaja eksisteerib, siis on salasõna muutmise link on saadetud e-postile: " + email);
 				} else {
