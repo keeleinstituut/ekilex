@@ -12,11 +12,15 @@ public class DatasetPermission extends AbstractDataObject {
 
 	private String datasetCode;
 
+	private String datasetName;
+
 	private AuthorityOperation authOperation;
 
 	private AuthorityItem authItem;
 
 	private String authLang;
+
+	private String authLangValue;
 
 	public Long getId() {
 		return id;
@@ -32,6 +36,14 @@ public class DatasetPermission extends AbstractDataObject {
 
 	public void setDatasetCode(String datasetCode) {
 		this.datasetCode = datasetCode;
+	}
+
+	public String getDatasetName() {
+		return datasetName;
+	}
+
+	public void setDatasetName(String datasetName) {
+		this.datasetName = datasetName;
 	}
 
 	public AuthorityOperation getAuthOperation() {
@@ -58,4 +70,11 @@ public class DatasetPermission extends AbstractDataObject {
 		this.authLang = authLang;
 	}
 
+	public String getAuthLangValue() {
+		return authLangValue;
+	}
+
+	public void setAuthLangValue(String authLangValue) {
+		this.authLangValue = authLangValue;
+	}
 }

@@ -75,9 +75,9 @@ public class RegisterController implements WebConstant {
 			String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 			emailService.sendUserActivationEmail(email, activationLink);
 			if (emailService.isEnabled()) {
-				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile : " + email);
+				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile: " + email);
 			} else {
-				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud : aktiveeri " + activationLink);
+				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveeri: " + activationLink);
 			}
 			return "redirect:" + LOGIN_PAGE_URI;
 		} else {

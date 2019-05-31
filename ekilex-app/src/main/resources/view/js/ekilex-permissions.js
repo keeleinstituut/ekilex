@@ -12,7 +12,7 @@ $(document).on("click", ":input[name='userEnableCheck']", function() {
 		permissionsArea.replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
-		alert('Viga!');
+		openAlertDlg('Viga!');
 	});
 });
 
@@ -30,7 +30,7 @@ $(document).on("click", ":input[name='userAdminCheck']", function() {
 		permissionsArea.replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
-		alert('Viga!');
+		openAlertDlg('Viga!');
 	});
 });
 
@@ -41,6 +41,21 @@ function deleteDatasetPermission(datasetPermId) {
 		permissionsArea.replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
-		alert('Viga!');
+		openAlertDlg('Viga!');
+	});
+}
+
+function sendPermissionsEmail(userEmail) {
+	let sendPermissionsEmailUrl = applicationUrl + 'permissions/sendpermissionsemail/' + userEmail;
+	$.get(sendPermissionsEmailUrl).done(function (response) {
+		if (response === "OK") {
+			openMessageDlg("Kiri saadetud");
+		} else {
+			console.log(response);
+			openAlertDlg("Kirja saatmine ebaõnnestus");
+		}
+	}).fail(function (response) {
+		console.log(response);
+		openAlertDlg("Kirja saatmine ebaõnnestus");
 	});
 }

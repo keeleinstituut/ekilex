@@ -24,6 +24,7 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
@@ -65,7 +66,11 @@ public class DatasetController implements WebConstant {
 		datasetService.createDataset(datasetFormData);
 
 		EkiUser currentUser = userService.getAuthenticatedUser();
-		permissionService.createDatasetPermission(currentUser.getId(), datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
+		Long newPermissionId = permissionService
+				.createDatasetPermission(currentUser.getId(), datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
+		DatasetPermission datasetPermission = permissionService.getDatasetPermission(newPermissionId);
+
+		currentUser.getDatasetPermissions().add(datasetPermission);
 
 		return REDIRECT_PREF + DICTIONARIES_URI;
 	}
@@ -92,6 +97,19 @@ public class DatasetController implements WebConstant {
 		// 	response.put("status", "invalid");
 		// 	response.put("message", "Allikat ei saa kustutada, sest sellele on viidatud.");
 		// }
+
+		EkiUser currentUser = userService.getAuthenticatedUser();
+
+		DatasetPermission datasetPermission = currentUser.getDatasetPermissions()
+				.stream()
+				.filter(permission -> permission.getDatasetCode().equals(datasetCode))
+				.findFirst()
+				.orElse(null);
+
+		if (datasetPermission != null ) {
+			permissionService.deleteDatasetPermission(datasetPermission.getId());
+			currentUser.getDatasetPermissions().remove(datasetPermission);
+		}
 
 		datasetService.deleteDataset(datasetCode);
 		response.put("status", "ok");

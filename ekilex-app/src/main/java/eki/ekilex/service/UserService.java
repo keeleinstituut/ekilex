@@ -194,4 +194,5 @@ public class UserService {
 	private String generateUniqueKey() {
 		return CodeGenerator.generateUniqueId();
 	}
+
 }

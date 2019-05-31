@@ -74,13 +74,18 @@ public class PermissionDbService implements SystemConstant {
 				.select(
 						DATASET_PERMISSION.ID,
 						DATASET_PERMISSION.DATASET_CODE,
+						DATASET.NAME.as("dataset_name"),
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
-						DATASET_PERMISSION.AUTH_LANG)
-				.from(DATASET_PERMISSION, DATASET)
+						DATASET_PERMISSION.AUTH_LANG,
+						LANGUAGE_LABEL.VALUE.as("auth_lang_value"))
+				.from(DATASET_PERMISSION, DATASET, LANGUAGE_LABEL)
 				.where(
 						DATASET_PERMISSION.USER_ID.eq(userId)
-								.and(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE)))
+								.and(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE))
+								.and(LANGUAGE_LABEL.CODE.eq(DATASET_PERMISSION.AUTH_LANG))
+								.and(LANGUAGE_LABEL.LANG.eq(CLASSIF_LABEL_LANG_EST))
+								.and(LANGUAGE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP)))
 				.orderBy(
 						DATASET.ORDER_BY,
 						DATASET_PERMISSION.AUTH_OPERATION,
@@ -159,7 +164,7 @@ public class PermissionDbService implements SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
-	public void createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
+	public Long createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
 
 		eki.ekilex.data.db.tables.DatasetPermission edp = DATASET_PERMISSION.as("edp");
 		SelectSelectStep<Record5<Long, String, String, String, String>> select = DSL.select(
@@ -176,7 +181,7 @@ public class PermissionDbService implements SystemConstant {
 			authLangCond = edp.AUTH_LANG.eq(authLang);
 		}
 
-		create
+		return create
 				.insertInto(
 						DATASET_PERMISSION,
 						DATASET_PERMISSION.USER_ID,
@@ -195,7 +200,9 @@ public class PermissionDbService implements SystemConstant {
 														.and(edp.AUTH_ITEM.eq(authItem.name()))
 														.and(edp.AUTH_OPERATION.eq(authOp.name()))
 														.and(authLangCond))))
-				.execute();
+				.returning(DATASET_PERMISSION.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public void deleteDatasetPermission(Long datasetPermissionId) {
@@ -334,4 +341,20 @@ public class PermissionDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public DatasetPermission getDatasetPermission(Long id) {
+
+		return
+			create
+				.select(
+						DATASET_PERMISSION.ID,
+						DATASET_PERMISSION.AUTH_LANG,
+						DATASET_PERMISSION.DATASET_CODE,
+						DATASET_PERMISSION.USER_ID,
+						DATASET_PERMISSION.AUTH_OPERATION,
+						DATASET_PERMISSION.AUTH_ITEM)
+				.from(DATASET_PERMISSION)
+				.where(DATASET_PERMISSION.ID.eq(id))
+				.fetchSingleInto(DatasetPermission.class);
+
+	}
 }
