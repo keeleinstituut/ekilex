@@ -142,4 +142,12 @@ public class PermissionsController extends AbstractPageController {
 		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
 		model.addAttribute("userPermLanguages", userPermLanguages);
 	}
+
+	@GetMapping(PERMISSIONS_URI + "/sendpermissionsemail/{userEmail}")
+	@ResponseBody
+	public String sendPermissionsEmail(@PathVariable("userEmail") String userEmail) {
+
+		permissionService.sendPermissionsEmail(userEmail);
+		return "OK";
+	}
 }

@@ -25,7 +25,7 @@
                   <th class="m-1 p-1 text-center">Admin</th>
                   <th class="m-1 p-1 text-center">Lubatud</th>
                   <th class="m-1 p-1">Avaldused</th>
-                  <th class="m-1 p-1" colspan="2">Load</th>
+                  <th class="m-1 p-1" colspan="3">Load</th>
                 </tr>
                 <th:block th:each="userPerm : ${ekiUserPermissions}">
                   <tr>
@@ -92,25 +92,45 @@
                         </div>
                       </th:block>
                     </td>
+                    <td class="m-1 p-1">
+                      <button type="button" class="btn badge"
+                              data-toggle="send-mail-confirm"
+                              data-placement="top"
+                              th:data-user-email="${userPerm.email}"
+                              sec:authorize="${#authentication.principal.datasetOwnershipExist}"
+                              th:disabled="${#authentication.principal.id == userPerm.id}">
+                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                      </button>
+                    </td>
                   </tr>
                 </th:block>
               </table>
             </div>
             <script type="text/javascript">
-				$('[data-toggle=delete-confirm]').confirmation({
-					btnOkLabel : 'Jah',
-					btnCancelLabel : 'Ei',
-					title : 'Palun kinnita kustutamine',
-					onConfirm : function() {
-						var datasetPermId = $(this).data('id');
-						deleteDatasetPermission(datasetPermId);
-					}
-				});
-			</script>
+              $('[data-toggle=delete-confirm]').confirmation({
+                btnOkLabel: 'Jah',
+                btnCancelLabel: 'Ei',
+                title: 'Palun kinnita kustutamine',
+                onConfirm: function () {
+                  var datasetPermId = $(this).data('id');
+                  deleteDatasetPermission(datasetPermId);
+                }
+              });
+              $('[data-toggle=send-mail-confirm]').confirmation({
+                btnOkLabel : 'Jah',
+                btnCancelLabel : 'Ei',
+                title : 'Saada kasutajale e-postiga olemasolevate õiguste nimekiri',
+                onConfirm : function() {
+                  let userEmail = $(this).data('user-email');
+                  sendPermissionsEmail(userEmail);
+                }
+              });
+            </script>
           </th:block>
         </div>
       </div>
     </div>
   </div>
+  <div th:replace="common :: #alertDlg"></div>
 </body>
 </html>
