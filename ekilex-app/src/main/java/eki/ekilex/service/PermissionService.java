@@ -15,6 +15,7 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserPermData;
 import eki.ekilex.service.db.PermissionDbService;
@@ -24,10 +25,16 @@ import eki.ekilex.service.db.UserDbService;
 public class PermissionService implements SystemConstant {
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private UserDbService userDbService;
 
 	@Autowired
 	private PermissionDbService permissionDbService;
+
+	@Autowired
+	private EmailService emailService;
 
 	@Transactional
 	public List<EkiUserPermData> getEkiUserPermissions() {
@@ -85,6 +92,17 @@ public class PermissionService implements SystemConstant {
 		permissionDbService.deleteDatasetPermission(datasetPermissionId);
 	}
 
+	@Transactional
+	public void sendPermissionsEmail(String userEmail) {
+
+		EkiUser sender = userService.getAuthenticatedUser();
+		EkiUser receiver = userDbService.getUserByEmail(userEmail);
+		Long receiverId = receiver.getId();
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(receiverId);
+		receiver.setDatasetPermissions(datasetPermissions);
+
+		emailService.sendPermissionsEmail(receiver, sender);
+	}
 	@Transactional
 	public DatasetPermission getDatasetPermission(Long id) {
 		return permissionDbService.getDatasetPermission(id);

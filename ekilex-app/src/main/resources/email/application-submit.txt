@@ -1,0 +1,5 @@
+Ekilexi kasutaja "[(${userName})]", kelle e-post on "[(${userEmail})]" esitas vaatamisõiguste taotluse.
+
+[# th:if="${not #strings.isEmpty(datasets)}"]Lisaks esitas ta muutmisõiguste taotluse sõnakogudele: [(${datasets})][/]
+
+[# th:if="${not #strings.isEmpty(comment)}"]Taotluse põhjendus: [(${comment})][/]
