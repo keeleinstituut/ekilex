@@ -493,7 +493,7 @@ public class CudService extends AbstractService {
 		updateLexemeLevels(lexemeId, "delete");
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
-			//deleteMeaning(meaningId);
+			deleteMeaning(meaningId);
 		}
 		if (isOnlyLexemeForWord) {
 			deleteWord(wordId);

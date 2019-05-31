@@ -78,7 +78,7 @@ public class PermissionDbService implements SystemConstant {
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG,
-						LANGUAGE_LABEL.VALUE.as("auth_lang_label"))
+						LANGUAGE_LABEL.VALUE.as("auth_lang_value"))
 				.from(DATASET_PERMISSION, DATASET, LANGUAGE_LABEL)
 				.where(
 						DATASET_PERMISSION.USER_ID.eq(userId)

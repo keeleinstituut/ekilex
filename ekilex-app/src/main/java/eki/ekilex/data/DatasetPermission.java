@@ -20,7 +20,7 @@ public class DatasetPermission extends AbstractDataObject {
 
 	private String authLang;
 
-	private String authLangLabel;
+	private String authLangValue;
 
 	public Long getId() {
 		return id;
@@ -70,11 +70,11 @@ public class DatasetPermission extends AbstractDataObject {
 		this.authLang = authLang;
 	}
 
-	public String getAuthLangLabel() {
-		return authLangLabel;
+	public String getAuthLangValue() {
+		return authLangValue;
 	}
 
-	public void setAuthLangLabel(String authLangLabel) {
-		this.authLangLabel = authLangLabel;
+	public void setAuthLangValue(String authLangValue) {
+		this.authLangValue = authLangValue;
 	}
 }

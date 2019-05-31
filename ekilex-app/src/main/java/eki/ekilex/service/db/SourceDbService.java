@@ -271,6 +271,18 @@ public class SourceDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public List<String> getSourceAttributesByType(Long sourceId, FreeformType freeformType) {
+
+		return create
+				.select(FREEFORM.VALUE_TEXT)
+				.from(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(SOURCE_FREEFORM.FREEFORM_ID)
+						.from(SOURCE_FREEFORM)
+						.where(SOURCE_FREEFORM.SOURCE_ID.eq(sourceId)
+								.and(FREEFORM.TYPE.eq(freeformType.name())))))
+				.fetchInto(String.class);
+	}
+
 	private Result<FreeformRecord> getSourceFreeformRecords(Long sourceId) {
 
 		return create

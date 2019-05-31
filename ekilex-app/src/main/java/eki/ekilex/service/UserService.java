@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.util.CodeGenerator;
+import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
@@ -27,11 +29,14 @@ import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
 
 @Component
-public class UserService {
+public class UserService implements WebConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
+
+	@Value("${ekilex.app.url:}")
+	private String ekilexAppUrl;
 
 	@Autowired
 	private UserDbService userDbService;
@@ -110,14 +115,16 @@ public class UserService {
 	}
 
 	@Transactional
-	public String generateActivationKeyAndCreateUser(String email, String name, String password) {
+	public String createUser(String email, String name, String password) {
 
 		String activationKey = generateUniqueKey();
+		String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 		String encodedPassword = passwordEncoder.encode(password);
 		userDbService.createUser(email, name, encodedPassword, activationKey);
 		EkiUser user = userDbService.getUserByEmail(email);
+		emailService.sendUserActivationEmail(email, activationLink);
 		logger.debug("Created new user : {}", user.getDescription());
-		return activationKey;
+		return activationLink;
 	}
 
 	@Transactional
@@ -178,11 +185,13 @@ public class UserService {
 	}
 
 	@Transactional
-	public String generateAndSetUserRecoveryKey(Long userId) {
+	public String handleUserPasswordRecovery(Long userId, String email) {
 
 		String recoveryKey = generateUniqueKey();
+		String passwordRecoveryLink = ekilexAppUrl + PASSWORD_SET_PAGE_URI + "/" + recoveryKey;
 		userDbService.setUserRecoveryKey(userId, recoveryKey);
-		return recoveryKey;
+		emailService.sendPasswordRecoveryEmail(email, passwordRecoveryLink);
+		return passwordRecoveryLink;
 	}
 
 	@Transactional

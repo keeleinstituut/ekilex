@@ -10,7 +10,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 @Configuration
-public class SpringMailConfig {
+public class SpringEmailConfig {
 
 	@Bean
 	@Qualifier("emailTemplateEngine")
