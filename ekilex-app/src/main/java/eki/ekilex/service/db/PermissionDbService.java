@@ -164,7 +164,7 @@ public class PermissionDbService implements SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
-	public Long createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
+	public void createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
 
 		eki.ekilex.data.db.tables.DatasetPermission edp = DATASET_PERMISSION.as("edp");
 		SelectSelectStep<Record5<Long, String, String, String, String>> select = DSL.select(
@@ -181,7 +181,7 @@ public class PermissionDbService implements SystemConstant {
 			authLangCond = edp.AUTH_LANG.eq(authLang);
 		}
 
-		return create
+		create
 				.insertInto(
 						DATASET_PERMISSION,
 						DATASET_PERMISSION.USER_ID,
@@ -200,9 +200,7 @@ public class PermissionDbService implements SystemConstant {
 														.and(edp.AUTH_ITEM.eq(authItem.name()))
 														.and(edp.AUTH_OPERATION.eq(authOp.name()))
 														.and(authLangCond))))
-				.returning(DATASET_PERMISSION.ID)
-				.fetchOne()
-				.getId();
+				.execute();
 	}
 
 	public void deleteDatasetPermission(Long datasetPermissionId) {

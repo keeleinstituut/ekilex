@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-@PreAuthorize("authentication.principal.datasetPermissionsExist")
 public class DatasetController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(DatasetController.class);
@@ -72,21 +71,22 @@ public class DatasetController implements WebConstant {
 		return DATASETS_PAGE;
 	}
 
+	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@PostMapping(CREATE_DICTIONARY_URI)
 	public String createDataset(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
 		logger.debug("Creating dataset, name : {}", datasetFormData.getName());
 		datasetService.createDataset(datasetFormData);
 
 		EkiUser currentUser = userService.getAuthenticatedUser();
-		Long newPermissionId = permissionService
+		permissionService
 				.createDatasetPermission(currentUser.getId(), datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
-		DatasetPermission datasetPermission = permissionService.getDatasetPermission(newPermissionId);
 
-		currentUser.getDatasetPermissions().add(datasetPermission);
+		userService.updateUserSecurityContext();
 
 		return REDIRECT_PREF + DICTIONARIES_URI;
 	}
 
+	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@PostMapping(UPDATE_DICTIONARY_URI)
 	public String updateDataSet(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
 		logger.debug("Updating dataset, name : {}", datasetFormData.getName());
@@ -95,6 +95,7 @@ public class DatasetController implements WebConstant {
 		return REDIRECT_PREF + DICTIONARIES_URI;
 	}
 
+	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@GetMapping(DELETE_DICTIONARY_URI + "/{datasetCode}")
 	@ResponseBody
 	public String deleteDataset(@PathVariable("datasetCode") String datasetCode) throws JsonProcessingException {
@@ -110,20 +111,9 @@ public class DatasetController implements WebConstant {
 		// 	response.put("message", "Allikat ei saa kustutada, sest sellele on viidatud.");
 		// }
 
-		EkiUser currentUser = userService.getAuthenticatedUser();
-
-		DatasetPermission datasetPermission = currentUser.getDatasetPermissions()
-				.stream()
-				.filter(permission -> permission.getDatasetCode().equals(datasetCode))
-				.findFirst()
-				.orElse(null);
-
-		if (datasetPermission != null ) {
-			permissionService.deleteDatasetPermission(datasetPermission.getId());
-			currentUser.getDatasetPermissions().remove(datasetPermission);
-		}
-
 		datasetService.deleteDataset(datasetCode);
+		userService.updateUserSecurityContext();
+
 		response.put("status", "ok");
 
 		ObjectMapper jsonMapper = new ObjectMapper();

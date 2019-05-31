@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -12,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -204,4 +208,19 @@ public class UserService implements WebConstant {
 		return CodeGenerator.generateUniqueId();
 	}
 
+	public void updateUserSecurityContext() {
+
+		String userEmail = getAuthenticatedUser().getEmail();
+
+		if (StringUtils.isNotBlank(userEmail)) {
+			EkiUser ekiUser = getUserByEmail(userEmail);
+
+			SecurityContext context = SecurityContextHolder.getContext();
+
+			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ekiUser, null, authorities);
+
+			context.setAuthentication(authenticationToken);
+		}
+	}
 }
