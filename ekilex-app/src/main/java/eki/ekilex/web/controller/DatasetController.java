@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -50,12 +51,23 @@ public class DatasetController implements WebConstant {
 	private PermissionService permissionService;
 
 	@GetMapping(DICTIONARIES_URI)
-	public String search(Model model) {
+	public String list(Model model) {
 
 		logger.debug("Fetching all datasets");
 		List<Dataset> datasets = datasetService.getDatasets();
 
+		EkiUser currentUser = userService.getAuthenticatedUser();
+		List<DatasetPermission> datasetPermissions = permissionService.getUserDatasetPermissions(currentUser.getId());
+
+		List<String> ownedDataSetCodes = datasetPermissions
+				.stream()
+				.filter(permission -> AuthorityOperation.OWN.equals(permission.getAuthOperation()))
+				.map(DatasetPermission::getDatasetCode)
+				.collect(Collectors.toList());
+
+		model.addAttribute("ownedDatasetCodes", ownedDataSetCodes);
 		model.addAttribute("datasets", datasets);
+
 
 		return DATASETS_PAGE;
 	}

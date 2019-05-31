@@ -24,7 +24,7 @@
 
       <div class="card-body">
         <div class="float-left mt-3 w-100">
-          <div id="datasetsArea">
+          <div id="datasetsArea" th:with="isAdmin=${#authentication.principal.admin}">
             <table class="table table-striped m-0 p-0">
               <tr>
                 <th class="m-1 p-1" style="width: 10%">Kood</th>
@@ -53,17 +53,19 @@
                   </td>
 
                   <td class="m-1 p-1">
-                    <button type="button" class="btn badge badge-primary"
-                            title="Muuda"
-                            data-toggle="modal"
-                            th:data-target="${'#editDatasetDlg_' + dataset.code}">
-                      <i class="fa fa-edit" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning delete-dataset-confirm"
-                            th:data-code="${dataset.code}"
-                            data-toggle="datasetDeleteConfirm">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
+                    <th:block th:if="${isAdmin || #lists.contains(ownedDatasetCodes, dataset.code)}">
+                      <button type="button" class="btn badge badge-primary"
+                              title="Muuda"
+                              data-toggle="modal"
+                              th:data-target="${'#editDatasetDlg_' + dataset.code}">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning delete-dataset-confirm"
+                              th:data-code="${dataset.code}"
+                              data-toggle="datasetDeleteConfirm">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </th:block>
                   </td>
                 </tr>
                 <div th:replace="datasetdialog :: edit_dataset_dlg(${dataset})"></div>

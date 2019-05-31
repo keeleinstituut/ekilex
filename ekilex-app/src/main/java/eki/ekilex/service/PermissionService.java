@@ -109,4 +109,10 @@ public class PermissionService implements SystemConstant {
 		return permissionDbService.getDatasetPermission(id);
 	}
 
+	@Transactional
+	public List<DatasetPermission> getUserDatasetPermissions(Long userId) {
+		return permissionDbService.getDatasetPermissions(userId);
+	}
+
+
 }
