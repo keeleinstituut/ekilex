@@ -1,7 +1,8 @@
 function initialise() {
 	$(document).on("click", "#addDatasetSubmitBtn", function(e) {
 		e.preventDefault();
-		var thisForm = $("#addDatasetForm");
+		let thisForm = $("#addDatasetForm");
+
 		let fieldsFilled = checkRequiredFields(thisForm)
 
 		if (fieldsFilled) {
@@ -23,6 +24,10 @@ function initialise() {
 		$('#codeExistsError').hide();
 	})
 
+}
+function isValidDatasetCodeFormat(code) {
+	let pattern = /^((?!\?|\%)\S)*$/;
+	return pattern.test(code);
 }
 
 function deleteDataset(datasetCode) {
@@ -46,6 +51,11 @@ function deleteDataset(datasetCode) {
 function checkAndAddDataset(addDatasetForm) {
 	let newCodeField = addDatasetForm.find('input[name="code"]');
 	let validateUrl = applicationUrl + 'data/validate_create_dictionary/' + newCodeField.val();
+
+	if (!isValidDatasetCodeFormat(newCodeField.val())) {
+		showFieldError(newCodeField, "Kood tohib sisaldada ainult tähti ja numbreid.");
+		return;
+	}
 
 	$.get(validateUrl).done(function (data) {
 		let responseCode = data;
