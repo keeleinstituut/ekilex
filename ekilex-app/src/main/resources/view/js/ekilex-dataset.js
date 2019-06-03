@@ -26,6 +26,7 @@ function initialise() {
 
 }
 function isValidDatasetCodeFormat(code) {
+	//don't allow spaces, tabls ? and %
 	let pattern = /^((?!\?|\%)\S)*$/;
 	return pattern.test(code);
 }
@@ -34,16 +35,13 @@ function deleteDataset(datasetCode) {
 	let deleteUrl = applicationUrl + 'delete_dictionary/' + datasetCode;
 
 	$.get(deleteUrl).done(function (data) {
-		let response = JSON.parse(data);
-		if (response.status === 'ok') {
+		if (data === 'OK') {
 			window.location = applicationUrl + 'dictionaries';
-		} else if (response.status === 'invalid') {
-			openAlertDlg(response.message);
 		} else {
 			openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		}
 	}).fail(function (data) {
-		openAlertDlg("Allika eemaldamine ebaõnnestus.");
+		openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		console.log(data);
 	});
 }
@@ -60,9 +58,9 @@ function checkAndAddDataset(addDatasetForm) {
 	$.get(validateUrl).done(function (data) {
 		let responseCode = data;
 
-		if (responseCode === 'ok') {
+		if (responseCode === 'OK') {
 			addDatasetForm.submit();
-		} else if (responseCode === 'code_exists') {
+		} else if (responseCode === 'CODE_EXISTS') {
 			showFieldError(newCodeField, "Sellise koodiga sõnakogu on olemas.");
 		} else {
 			openAlertDlg("Sõnakogu lisamine ebaõnnestus, veakood: '" + responseCode + "'");
