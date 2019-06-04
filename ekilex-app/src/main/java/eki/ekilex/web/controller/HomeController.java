@@ -4,25 +4,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
+import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserService;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -36,6 +42,9 @@ public class HomeController extends AbstractPageController {
 
 	@Autowired
 	private StatDataService statDataService;
+
+	@Autowired
+	private PermissionService permissionService;
 
 	@GetMapping(INDEX_URI)
 	public String index() {
@@ -126,5 +135,29 @@ public class HomeController extends AbstractPageController {
 	public String loginError(RedirectAttributes attributes) {
 		attributes.addFlashAttribute("loginerror", "Autentimine ebaõnnestus");
 		return "redirect:" + LOGIN_PAGE_URI;
+	}
+
+	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@PostMapping(CHANGE_ROLE_URI)
+	public String changeRole(@RequestParam Long permissionId, @RequestParam(required = false) Boolean isAdmin,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		EkiUser user = userService.getAuthenticatedUser();
+
+		if (BooleanUtils.isTrue(isAdmin) && user.isAdmin()) {
+			sessionBean.setAdminRoleSelected(true);
+			sessionBean.setSelectedDatasetPermission(null);
+		} else {
+			sessionBean.setAdminRoleSelected(false);
+		}
+
+		if (permissionId != null) {
+			DatasetPermission datasetPermission = permissionService.getDatasetPermission(permissionId);
+			sessionBean.setSelectedDatasetPermission(datasetPermission);
+		} else {
+			sessionBean.setSelectedDatasetPermission(null);
+		}
+
+		return REDIRECT_PREF + HOME_URI;
 	}
 }

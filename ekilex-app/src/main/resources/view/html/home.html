@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="common :: common_header(_,_)">
+<head th:replace="common :: common_header(_,~{::links})">
+  <th:block th:fragment="links">
+    <script type="text/javascript" th:src="@{/view/js/ekilex-home.js}"></script>
+  </th:block>
 </head>
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar"></th:block>
@@ -28,6 +31,7 @@
         <p sec:authorize="${#authentication.principal.datasetOwnershipExist}">
           <a th:href="@{/permissions}">Õiguste haldus</a>
         </p>
+        <th:block th:replace="components :: change_role"  sec:authorize="${#authentication.principal.datasetOwnershipExist}"></th:block>
       </div>
     </div>
   </div>
@@ -136,5 +140,9 @@
       </div>
     </div>
   </div>
+
+  <script th:inline="javascript">
+	  initialise();
+  </script>
 </body>
 </html>

@@ -154,6 +154,8 @@ public interface WebConstant {
 
 	String VALIDATE_CREATE_DICTIONARY_URI = "/validate_create_dictionary";
 
+	String CHANGE_ROLE_URI = "/change_role";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";

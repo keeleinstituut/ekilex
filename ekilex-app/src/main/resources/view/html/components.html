@@ -137,4 +137,23 @@
       </div>
     </div>
   </div>
+  <th:block th:fragment="change_role">
+    <hr/>
+    <form method="post" id="changeRoleForm" th:action="@{change_role}">
+      <div class="row">
+        <label class="col-form-label col-auto">Vali roll:</label>
+        <input name="isAdmin" type="hidden"/>
+        <select class="form-control col-2" id="changeRoleSelect" name="permissionId">
+          <option value=""></option>
+          <th:block th:each="datasetPermission : ${#authentication.principal.datasetPermissions}">
+            <option th:value="${datasetPermission.id}" th:text="${datasetPermission.datasetName
+                + ' (' + datasetPermission.authOperation.name() + ')' }"
+                  th:selected="${sessionBean.selectedDatasetPermission == datasetPermission}"/>
+          </th:block>
+          </option>
+          <option value="" th:if="${#authentication.principal.admin}" data-admin="true" th:selected="${sessionBean.adminRoleSelected}">** Admin **</option>
+        </select>
+      </div>
+    </form>
+  </th:block>
 </body>
