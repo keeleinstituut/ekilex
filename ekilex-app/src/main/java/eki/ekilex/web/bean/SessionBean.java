@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.UserRole;
 
 public class SessionBean extends AbstractDataObject {
 
@@ -22,9 +22,7 @@ public class SessionBean extends AbstractDataObject {
 
 	private String newWordSelectedMorphCode;
 
-	private DatasetPermission selectedDatasetPermission;
-
-	private boolean adminRoleSelected;
+	private UserRole userRole;
 
 	public List<String> getSelectedDatasets() {
 		return selectedDatasets;
@@ -74,19 +72,11 @@ public class SessionBean extends AbstractDataObject {
 		this.newWordSelectedMorphCode = newWordSelectedMorphCode;
 	}
 
-	public DatasetPermission getSelectedDatasetPermission() {
-		return selectedDatasetPermission;
+	public UserRole getUserRole() {
+		return userRole;
 	}
 
-	public void setSelectedDatasetPermission(DatasetPermission selectedDatasetPermission) {
-		this.selectedDatasetPermission = selectedDatasetPermission;
-	}
-
-	public boolean isAdminRoleSelected() {
-		return adminRoleSelected;
-	}
-
-	public void setAdminRoleSelected(boolean adminRoleSelected) {
-		this.adminRoleSelected = adminRoleSelected;
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
 	}
 }

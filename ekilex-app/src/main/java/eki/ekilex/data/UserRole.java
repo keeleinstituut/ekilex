@@ -12,7 +12,7 @@ public class UserRole implements Serializable {
 
 	private DatasetPermission selectedDatasetPermission;
 
-	private boolean isAdmin;
+	private boolean admin;
 
 	public DatasetPermission getSelectedDatasetPermission() {
 		return selectedDatasetPermission;
@@ -23,10 +23,10 @@ public class UserRole implements Serializable {
 	}
 
 	public boolean isAdmin() {
-		return isAdmin;
+		return admin;
 	}
 
 	public void setAdmin(boolean admin) {
-		isAdmin = admin;
+		this.admin = admin;
 	}
 }

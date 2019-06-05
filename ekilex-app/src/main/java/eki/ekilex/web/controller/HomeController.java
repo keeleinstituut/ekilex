@@ -25,6 +25,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
+import eki.ekilex.data.UserRole;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserService;
@@ -142,20 +143,28 @@ public class HomeController extends AbstractPageController {
 	public String changeRole(@RequestParam Long permissionId, @RequestParam(required = false) Boolean isAdmin,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		logger.debug("User initiated role change, dataSetPermissionId: {}, isAdmi:  {}", permissionId, isAdmin);
+
 		EkiUser user = userService.getAuthenticatedUser();
 
+		UserRole currentRole = sessionBean.getUserRole();
+		if (currentRole == null) {
+			currentRole = new UserRole();
+			sessionBean.setUserRole(currentRole);
+		}
+
 		if (BooleanUtils.isTrue(isAdmin) && user.isAdmin()) {
-			sessionBean.setAdminRoleSelected(true);
-			sessionBean.setSelectedDatasetPermission(null);
+			currentRole.setAdmin(true);
+			currentRole.setSelectedDatasetPermission(null);
 		} else {
-			sessionBean.setAdminRoleSelected(false);
+			currentRole.setAdmin(false);
 		}
 
 		if (permissionId != null) {
 			DatasetPermission datasetPermission = permissionService.getDatasetPermission(permissionId);
-			sessionBean.setSelectedDatasetPermission(datasetPermission);
+			currentRole.setSelectedDatasetPermission(datasetPermission);
 		} else {
-			sessionBean.setSelectedDatasetPermission(null);
+			currentRole.setSelectedDatasetPermission(null);
 		}
 
 		return REDIRECT_PREF + HOME_URI;
