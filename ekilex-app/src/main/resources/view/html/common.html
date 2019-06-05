@@ -45,7 +45,11 @@
       </div>
       <div class="navbar-nav ml-auto">
         <th:block th:if="${sessionBean.userRole != null &&  sessionBean.userRole.selectedDatasetPermission != null }" th:with="selectedPermission = ${sessionBean.userRole.selectedDatasetPermission}">
-          <div class="text-white mr-2" th:text="'Valitud roll: ' + ${selectedPermission.datasetName + ' (' + selectedPermission.authOperation.name() + ')' }"></div>
+
+          <div class="text-white mr-2" th:with="permissionName=#{|authorityoperation.${selectedPermission.authOperation}|}"
+            th:text="#{home.selectedrole(${selectedPermission.datasetName}, ${permissionName})}">
+          </div>
+
         </th:block>
         <div th:if="${sessionBean.userRole != null && sessionBean.userRole.admin}" class="text-white mr-2">Valitud roll: Admin</div>
         <form th:action="@{/dologout}" method="post" sec:authorize="isAuthenticated()">
