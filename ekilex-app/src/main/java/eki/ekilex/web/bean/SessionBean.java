@@ -4,6 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.UserRole;
 
 public class SessionBean extends AbstractDataObject {
 
@@ -20,6 +21,8 @@ public class SessionBean extends AbstractDataObject {
 	private String newWordSelectedLanguage;
 
 	private String newWordSelectedMorphCode;
+
+	private UserRole userRole;
 
 	public List<String> getSelectedDatasets() {
 		return selectedDatasets;
@@ -69,4 +72,11 @@ public class SessionBean extends AbstractDataObject {
 		this.newWordSelectedMorphCode = newWordSelectedMorphCode;
 	}
 
+	public UserRole getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
+	}
 }

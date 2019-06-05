@@ -1,8 +1,6 @@
 package eki.ekilex.web.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -31,7 +29,6 @@ import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -102,22 +99,10 @@ public class DatasetController implements WebConstant {
 
 		logger.debug("Deleting dataset, code: {}", datasetCode);
 
-		Map<String, String> response = new HashMap<>();
-
-		// if (sourceService.validateSourceDelete(sourceId)) {
-		// 	response.put("status", "ok");
-		// } else {
-		// 	response.put("status", "invalid");
-		// 	response.put("message", "Allikat ei saa kustutada, sest sellele on viidatud.");
-		// }
-
 		datasetService.deleteDataset(datasetCode);
 		userService.updateUserSecurityContext();
 
-		response.put("status", "ok");
-
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		return "OK";
 	}
 
 	@GetMapping(REST_SERVICES_URI + VALIDATE_CREATE_DICTIONARY_URI + "/{datasetCode}")
@@ -125,8 +110,8 @@ public class DatasetController implements WebConstant {
 	public String validateCreateDataset(@PathVariable("datasetCode") String datasetCode) {
 		if (datasetService.datasetCodeExists(datasetCode)) {
 			logger.debug("Trying to create dataset with existing code '{}'.", datasetCode);
-			return "code_exists";
+			return "CODE_EXISTS";
 		}
-		return "ok";
+		return "OK";
 	}
 }
