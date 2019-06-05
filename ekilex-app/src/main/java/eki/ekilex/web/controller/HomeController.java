@@ -155,16 +155,16 @@ public class HomeController extends AbstractPageController {
 
 		if (BooleanUtils.isTrue(isAdmin) && user.isAdmin()) {
 			currentRole.setAdmin(true);
-			currentRole.setSelectedDatasetPermission(null);
+			currentRole.setDatasetPermission(null);
 		} else {
 			currentRole.setAdmin(false);
 		}
 
 		if (permissionId != null) {
 			DatasetPermission datasetPermission = permissionService.getDatasetPermission(permissionId);
-			currentRole.setSelectedDatasetPermission(datasetPermission);
+			currentRole.setDatasetPermission(datasetPermission);
 		} else {
-			currentRole.setSelectedDatasetPermission(null);
+			currentRole.setDatasetPermission(null);
 		}
 
 		return REDIRECT_PREF + HOME_URI;
