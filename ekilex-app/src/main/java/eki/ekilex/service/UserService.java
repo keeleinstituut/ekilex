@@ -215,11 +215,10 @@ public class UserService implements WebConstant {
 		if (StringUtils.isNotBlank(userEmail)) {
 			EkiUser ekiUser = getUserByEmail(userEmail);
 
-			SecurityContext context = SecurityContextHolder.getContext();
-
 			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ekiUser, null, authorities);
 
+			SecurityContext context = SecurityContextHolder.getContext();
 			context.setAuthentication(authenticationToken);
 		}
 	}

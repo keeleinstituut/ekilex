@@ -12,19 +12,23 @@ public class Lexeme extends AbstractDataObject {
 
 	private Long meaningId;
 
+	private String datasetCode;
+
+	private String frequencyGroupCode;
+
+	private Float corpusFrequency;
+
 	private Integer level1;
 
 	private Integer level2;
 
 	private Integer level3;
 
-	private String frequencyGroupCode;
-
 	private String valueStateCode;
 
 	private String processStateCode;
 
-	private Float corpusFrequency;
+	private Long orderBy;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -48,6 +52,30 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
+	}
+
+	public String getFrequencyGroupCode() {
+		return frequencyGroupCode;
+	}
+
+	public void setFrequencyGroupCode(String frequencyGroupCode) {
+		this.frequencyGroupCode = frequencyGroupCode;
+	}
+
+	public Float getCorpusFrequency() {
+		return corpusFrequency;
+	}
+
+	public void setCorpusFrequency(Float corpusFrequency) {
+		this.corpusFrequency = corpusFrequency;
 	}
 
 	public Integer getLevel1() {
@@ -74,14 +102,6 @@ public class Lexeme extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
-	public String getFrequencyGroupCode() {
-		return frequencyGroupCode;
-	}
-
-	public void setFrequencyGroupCode(String frequencyGroupCode) {
-		this.frequencyGroupCode = frequencyGroupCode;
-	}
-
 	public String getValueStateCode() {
 		return valueStateCode;
 	}
@@ -98,11 +118,12 @@ public class Lexeme extends AbstractDataObject {
 		this.processStateCode = processStateCode;
 	}
 
-	public Float getCorpusFrequency() {
-		return corpusFrequency;
+	public Long getOrderBy() {
+		return orderBy;
 	}
 
-	public void setCorpusFrequency(Float corpusFrequency) {
-		this.corpusFrequency = corpusFrequency;
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
+
 }
