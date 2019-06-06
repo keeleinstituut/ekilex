@@ -1,5 +1,7 @@
 package eki.ekilex.config;
 
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +27,7 @@ public class SpringEmailConfig {
 		templateResolver.setPrefix("email/");
 		templateResolver.setSuffix(".txt");
 		templateResolver.setTemplateMode(TemplateMode.TEXT);
-		templateResolver.setCharacterEncoding("UTF-8");
+		templateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		templateResolver.setCacheable(false);
 		return templateResolver;
 	}
