@@ -22,7 +22,9 @@ function initialise() {
 
 	$('#addDatasetForm').find('input[name="code"]').on('blur', function (e) {
 		$('#codeExistsError').hide();
-	})
+	});
+
+	$('.classifier-select').selectpicker();
 
 }
 function isValidDatasetCodeFormat(code) {

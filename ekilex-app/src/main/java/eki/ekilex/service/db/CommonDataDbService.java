@@ -714,4 +714,24 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	private Field<String> getClassifierNameField(ClassifierName classifierName) {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
+
+	public Classifier getLanguage(String code) {
+		return
+				create
+					.select(LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
+					.from(LANGUAGE)
+					.where(LANGUAGE.CODE.eq(code))
+					.fetchSingleInto(Classifier.class);
+	}
+
+	public void updateClassifierDatasets(ClassifierName classifierName, List<String> datasets) {
+		if (ClassifierName.LANGUAGE.equals(classifierName)) {
+			// create
+			// 		.update(LANGUAGE)
+			// 		.set(LANGUAGE.DATASETS, datasets.toArray(String[].class))
+			// 		.w
+		}
+	}
+
+
 }

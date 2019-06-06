@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
@@ -45,6 +47,9 @@ public class DatasetController implements WebConstant {
 
 	@Autowired
 	private PermissionService permissionService;
+
+	@Autowired
+	private CommonDataService commonDataService;
 
 	@GetMapping(DICTIONARIES_URI)
 	public String list(Model model) {
@@ -113,5 +118,10 @@ public class DatasetController implements WebConstant {
 			return "CODE_EXISTS";
 		}
 		return "OK";
+	}
+
+	@ModelAttribute("languages")
+	public List<Classifier> getLanguages() {
+		return commonDataService.getLanguages();
 	}
 }
