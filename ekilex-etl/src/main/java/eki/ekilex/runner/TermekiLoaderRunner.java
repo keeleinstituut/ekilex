@@ -680,16 +680,14 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	private String extractProcessStateCode(Boolean isPublic, Integer termStatus) {
 
 		String processStateCode = null;
-		if (isPublic) {
+		if (termStatus == 1) {
+			processStateCode = PROCESS_STATE_NEW;
+		} else if (termStatus == 3) {
+			processStateCode = PROCESS_STATE_REJECTED;
+		} else if (termStatus == 5) {
+			processStateCode = PROCESS_STATE_APPROVED;
+		} else if (isPublic) {
 			processStateCode = PROCESS_STATE_PUBLIC;
-		} else {
-			if (termStatus == 1) {
-				processStateCode = PROCESS_STATE_NEW;
-			} else if (termStatus == 3) {
-				processStateCode = PROCESS_STATE_REJECTED;
-			} else if (termStatus == 5) {
-				processStateCode = PROCESS_STATE_APPROVED;
-			}
 		}
 		return processStateCode;
 	}
