@@ -28,7 +28,9 @@ import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
 import eki.ekilex.data.transform.Freeform;
 import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.LexemeFrequency;
 import eki.ekilex.runner.util.FreeformRowMapper;
+import eki.ekilex.runner.util.LexemeFrequencyRowMapper;
 
 @Component
 public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConstant {
@@ -37,7 +39,11 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 	private static final String SQL_SELECT_WORD_LEXEME_MEANING_IDS_PATH = "sql/select_word_lexeme_meaning_ids.sql";
 
+	private static final String SQL_SELECT_LEXEME_FREEFORMS_PATH = "sql/select_lexeme_freeforms.sql";
+
 	private String sqlSelectWordLexemeMeaningIds;
+
+	private String sqlSelectLexemeFreeforms;
 
 	private String lexemeMergeName;
 
@@ -61,6 +67,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_LEXEME_MEANING_IDS_PATH);
 		sqlSelectWordLexemeMeaningIds = getContent(resourceFileInputStream);
 
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_FREEFORMS_PATH);
+		sqlSelectLexemeFreeforms = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
@@ -114,10 +122,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 				composeSumLexemeFreeforms(allLexemes, sumLexeme);
 			}
 			Long sumLexemeId = createLexeme(sumLexeme);
-			createFreeforms(sumLexemeId, sumLexeme.getFreeforms());
+			createLexemeFreeforms(sumLexemeId, sumLexeme.getFreeforms());
+			createLexemeFrequencies(sumLexemeId, allLexemes);
 
-			// TODO freeform hierarchy
-			// TODO lexeme_frequency
 			// TODO lexeme_register
 			// TODO lexeme_pos
 			// TODO lexeme_deriv
@@ -145,7 +152,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		logger.info("Found {} competing value state lexemes", tooManyValueStateCodeCount.getValue());
 
 		if (true) {
-			throw new DataLoadingException("Intentional interruption to avoid transaction commit");
+			throw new DataLoadingException("IT'S OK!");
 		}
 
 		end();
@@ -255,15 +262,50 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		return wordMeaningPairs;
 	}
 
-	private void createFreeforms(Long sumLexemeId, List<Freeform> freeforms) throws Exception {
+	private void createLexemeFreeforms(Long sumLexemeId, List<Freeform> freeforms) throws Exception {
+
+		for (Freeform freeform : freeforms) {
+			Long freeformId = null;
+			if (freeform.getValueText() != null) {
+				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueText(), freeform.getLangCode());				
+			} else if (freeform.getValueDate() != null) {
+				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode());
+			} else {
+				// other data types?
+			}
+			if (freeform.isChildrenExist()) {
+				createNestedFreeforms(freeformId, freeform.getChildren());
+			}
+		}
+	}
+
+	private void createNestedFreeforms(Long parentId, List<Freeform> freeforms) throws Exception {
 
 		for (Freeform freeform : freeforms) {
 			if (freeform.getValueText() != null) {
-				createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueText(), freeform.getLangCode());				
+				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueText(), freeform.getLangCode());
 			} else if (freeform.getValueDate() != null) {
-				createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode());
-			} else {
-				// other data types?
+				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode());
+			}
+		}
+	}
+
+	private void createLexemeFrequencies(Long sumLexemeId, List<FullLexeme> allLexemes) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("lexeme_id", sumLexemeId);
+		for (FullLexeme lexeme : allLexemes) {
+			List<LexemeFrequency> lexemeFrequencies = lexeme.getLexemeFrequencies();
+			if (CollectionUtils.isNotEmpty(lexemeFrequencies)) {
+				for (LexemeFrequency lexemeFrequency : lexemeFrequencies) {
+					paramMap.put("source_name", lexemeFrequency.getSourceName());
+					paramMap.put("created_on", lexemeFrequency.getCreatedOn());
+					paramMap.put("rank", lexemeFrequency.getRank());
+					paramMap.put("value", lexemeFrequency.getValue());
+					basicDbService.createIfNotExists(LEXEME_FREQUENCY, paramMap);
+				}
+				// first available set is created
+				return;
 			}
 		}
 	}
@@ -280,11 +322,25 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		paramMap = new HashMap<>();
 		paramMap.put("lexemeId", lexemeId);
-		sql = "select ff.* from " + FREEFORM + " ff, " + LEXEME_FREEFORM + " lff where lff.freeform_id = ff.id and lff.lexeme_id = :lexemeId order by ff.order_by";
-		List<Freeform> freeforms = basicDbService.getResults(sql, paramMap, new FreeformRowMapper());
+		List<Freeform> freeforms = basicDbService.getResults(sqlSelectLexemeFreeforms, paramMap, new FreeformRowMapper());
 		lexeme.setFreeforms(freeforms);
 
-		//TODO freeform hierarchy?
+		List<Freeform> children;
+		for (Freeform freeform : freeforms) {
+			if (freeform.isChildrenExist()) {
+				paramMap = new HashMap<>();
+				paramMap.put("freeformId", freeform.getFreeformId());
+				sql = "select ff.*, false as children_exist from " + FREEFORM + " ff where ff.parent_id = :freeformId order by ff.order_by";
+				children = basicDbService.getResults(sql, paramMap, new FreeformRowMapper());
+				freeform.setChildren(children);
+			}
+		}
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		sql = "select lf.* from " + LEXEME_FREQUENCY + " lf where lf.lexeme_id = :lexemeId";
+		List<LexemeFrequency> lexemeFrequencies = basicDbService.getResults(sql, paramMap, new LexemeFrequencyRowMapper());
+		lexeme.setLexemeFrequencies(lexemeFrequencies);
 
 		return lexeme;
 	}
@@ -339,6 +395,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		private List<Freeform> freeforms;
 
+		private List<LexemeFrequency> lexemeFrequencies;
+
 		public List<Freeform> getFreeforms() {
 			return freeforms;
 		}
@@ -346,6 +404,15 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		public void setFreeforms(List<Freeform> freeforms) {
 			this.freeforms = freeforms;
 		}
+
+		public List<LexemeFrequency> getLexemeFrequencies() {
+			return lexemeFrequencies;
+		}
+
+		public void setLexemeFrequencies(List<LexemeFrequency> lexemeFrequencies) {
+			this.lexemeFrequencies = lexemeFrequencies;
+		}
+
 	}
 
 	class WordMeaningPairRowMapper implements RowMapper<WordMeaningPair> {

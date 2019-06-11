@@ -104,7 +104,7 @@ public class EmailService {
 		boolean isAdmin = receiver.isAdmin();
 		List<DatasetPermission> datasetPermissions = receiver.getDatasetPermissions();
 
-		logger.info("User \"{}\" (email: \"{}\") initiated permissions email sending to user \"{}\" (email: \"{}\")", senderName, senderEmail, name, email );
+		logger.info("User \"{}\" (email: \"{}\") initiated permissions email sending to user \"{}\" (email: \"{}\")", senderName, senderEmail, name, email);
 
 		Context context = new Context(locale);
 		context.setVariable("isEnabled", isEnabled);

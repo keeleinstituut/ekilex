@@ -1,6 +1,7 @@
 package eki.ekilex.data.transform;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
@@ -32,6 +33,10 @@ public class Freeform extends AbstractDataObject {
 	private String langCode;
 
 	private Long orderBy;
+
+	private boolean childrenExist;
+
+	private List<Freeform> children;
 
 	public Long getFreeformId() {
 		return freeformId;
@@ -127,6 +132,22 @@ public class Freeform extends AbstractDataObject {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public boolean isChildrenExist() {
+		return childrenExist;
+	}
+
+	public void setChildrenExist(boolean childrenExist) {
+		this.childrenExist = childrenExist;
+	}
+
+	public List<Freeform> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<Freeform> children) {
+		this.children = children;
 	}
 
 }

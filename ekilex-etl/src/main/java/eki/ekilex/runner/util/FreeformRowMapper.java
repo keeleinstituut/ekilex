@@ -28,11 +28,15 @@ public class FreeformRowMapper implements RowMapper<Freeform> {
 		Timestamp valueDate = rs.getTimestamp("value_date");
 		Float valueNumber = rs.getFloat("value_number");
 		Array valueArrayObj = rs.getArray("value_array");
-		String[] valueArray = (String[]) valueArrayObj.getArray();
+		String[] valueArray = null;
+		if (valueArrayObj != null) {
+			valueArray = (String[]) valueArrayObj.getArray();
+		}
 		String classifName = rs.getString("classif_name");
 		String classifCode = rs.getString("classif_code");
 		String langCode = rs.getString("lang");
 		Long orderBy = rs.getLong("order_by");
+		boolean childrenExist = rs.getBoolean("children_exist");
 
 		Freeform freeform = new Freeform();
 		freeform.setFreeformId(freeformId);
@@ -47,6 +51,7 @@ public class FreeformRowMapper implements RowMapper<Freeform> {
 		freeform.setClassifCode(classifCode);
 		freeform.setLangCode(langCode);
 		freeform.setOrderBy(orderBy);
+		freeform.setChildrenExist(childrenExist);
 		return freeform;
 	}
 

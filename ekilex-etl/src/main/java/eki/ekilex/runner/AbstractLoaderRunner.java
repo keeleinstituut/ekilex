@@ -934,7 +934,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			String extSourceId = usage.getExtSourceId();
 			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usageValue, dataLang);
 			if (StringUtils.isNotBlank(usageType)) {
-				createFreeformClassifier(FreeformType.USAGE_TYPE, usageId, usageType);
+				createFreeformClassifier(usageId, FreeformType.USAGE_TYPE, usageType);
 			}
 			if (StringUtils.isBlank(extSourceId)) {
 				extSourceId = EXT_SOURCE_ID_NA;
@@ -955,7 +955,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
-					Long usageDefinitionId = createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageId, usageDefinition, dataLang);
+					Long usageDefinitionId = createFreeformTextOrDate(usageId, FreeformType.USAGE_DEFINITION, usageDefinition, dataLang);
 					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, usageDefinition);
 				}
 			}
@@ -963,7 +963,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
 					String usageTranslationValue = usageTranslation.getValue();
 					String usageTranslationLang = usageTranslation.getLang();
-					Long usageTranslationId = createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageId, usageTranslationValue, usageTranslationLang);
+					Long usageTranslationId = createFreeformTextOrDate(usageId, FreeformType.USAGE_TRANSLATION, usageTranslationValue, usageTranslationLang);
 					createLifecycleLog(
 							LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, usageTranslationValue);
 				}
@@ -1057,7 +1057,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(freeformType, null, value, lang);
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, lang);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -1091,7 +1091,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
@@ -1109,7 +1109,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("definition_id", definitionId);
@@ -1119,7 +1119,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
-	protected Long createFreeformTextOrDate(FreeformType freeformType, Long parentId, Object value, String lang) throws Exception {
+	protected Long createFreeformTextOrDate(Long parentId, FreeformType freeformType, Object value, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
@@ -1146,7 +1146,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
-	protected Long createFreeformClassifier(FreeformType freeformType, Long parentId, String classifierCode) throws Exception {
+	protected Long createFreeformClassifier(Long parentId, FreeformType freeformType, String classifierCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
@@ -1369,7 +1369,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createSourceFreeform(Long sourceId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("source_id", sourceId);

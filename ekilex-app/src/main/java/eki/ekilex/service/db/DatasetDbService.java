@@ -4,6 +4,7 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_NR;
+import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
 
@@ -109,6 +110,9 @@ public class DatasetDbService {
 		if (CollectionUtils.isNotEmpty(meaningIds)) {
 			create.deleteFrom(MEANING).where(MEANING.ID.in(wordIds)).execute();
 		}
+
+		// delete process log
+		create.deleteFrom(PROCESS_LOG).where(PROCESS_LOG.DATASET_CODE.eq(datasetCode)).execute();
 
 		// delete dataset
 		create.delete(DATASET).where(DATASET.CODE.eq(datasetCode)).execute();
