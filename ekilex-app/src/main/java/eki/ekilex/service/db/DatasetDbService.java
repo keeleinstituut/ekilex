@@ -160,6 +160,15 @@ public class DatasetDbService {
 		}
 	}
 
+	private void removeDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
+
+		List<Classifier> existingClassifiers = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode)
+				.stream()
+				.collect(Collectors.toList());
+
+		existingClassifiers.forEach(classifier -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin()));
+	}
+
 	private void updateDatasetDomains(Dataset dataset) {
 		List<CodeOriginTuple> existingClassifierCodeOrigins = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, dataset.getCode())
 				.stream()
@@ -229,13 +238,9 @@ public class DatasetDbService {
 			create.deleteFrom(MEANING).where(MEANING.ID.in(wordIds)).execute();
 		}
 
-		// remove dataset from classfiers
-		List<String> existingClassifierCodes = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode)
-				.stream()
-				.map(Classifier::getCode)
-				.collect(Collectors.toList());
-
-		existingClassifierCodes.forEach(code -> commonDataDbService.removeDatasetCodeFromClassifier(ClassifierName.LANGUAGE, code, datasetCode, null));
+		removeDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode);
+		removeDatasetClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
+		removeDatasetClassifiers(ClassifierName.DOMAIN, datasetCode);
 
 		// delete dataset
 		create.delete(DATASET).where(DATASET.CODE.eq(datasetCode)).execute();
