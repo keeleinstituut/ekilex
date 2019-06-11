@@ -161,11 +161,7 @@ public class DatasetDbService {
 	}
 
 	private void removeDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
-
-		List<Classifier> existingClassifiers = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode)
-				.stream()
-				.collect(Collectors.toList());
-
+		List<Classifier> existingClassifiers = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode);
 		existingClassifiers.forEach(classifier -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin()));
 	}
 
