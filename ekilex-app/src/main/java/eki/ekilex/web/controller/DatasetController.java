@@ -12,23 +12,31 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.CodeOriginTuple;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.editor.CodeOriginTupleEditor;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -45,6 +53,14 @@ public class DatasetController implements WebConstant {
 
 	@Autowired
 	private PermissionService permissionService;
+
+	@Autowired
+	private CommonDataService commonDataService;
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(CodeOriginTuple.class, new CodeOriginTupleEditor());
+	}
 
 	@GetMapping(DICTIONARIES_URI)
 	public String list(Model model) {
@@ -63,6 +79,7 @@ public class DatasetController implements WebConstant {
 
 		model.addAttribute("ownedDatasetCodes", ownedDataSetCodes);
 		model.addAttribute("datasets", datasets);
+		model.addAttribute("datasetData", new Dataset());
 
 
 		return DATASETS_PAGE;
@@ -113,5 +130,27 @@ public class DatasetController implements WebConstant {
 			return "CODE_EXISTS";
 		}
 		return "OK";
+	}
+
+	@ModelAttribute("languages")
+	public List<Classifier> getLanguages() {
+		return commonDataService.getLanguages();
+	}
+
+	@ModelAttribute("processStates")
+	public List<Classifier> getProcessStates() {
+		return commonDataService.getProcessStates();
+	}
+
+
+	@PostMapping(REST_SERVICES_URI + SEARCH_DOMAINS_URI)
+	@ResponseBody
+	public String searchDomain(@RequestParam String searchText) throws Exception {
+
+		List<Classifier> result = commonDataService.findDomainsByValue(searchText);
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(result);
+
 	}
 }

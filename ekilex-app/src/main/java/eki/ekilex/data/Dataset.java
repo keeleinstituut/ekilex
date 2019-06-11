@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class Dataset extends AbstractDataObject {
@@ -15,6 +17,12 @@ public class Dataset extends AbstractDataObject {
 	private boolean isVisible;
 
 	private boolean isPublic;
+
+	private List<String> selectedLanguageCodes;
+
+	private List<CodeOriginTuple> selectedDomainCodeOriginPairs;
+
+	private List<String> selectedProcessStateCodes;
 
 	public String getCode() {
 		return code;
@@ -54,5 +62,29 @@ public class Dataset extends AbstractDataObject {
 
 	public void setPublic(boolean aPublic) {
 		isPublic = aPublic;
+	}
+
+	public List<String> getSelectedLanguageCodes() {
+		return selectedLanguageCodes;
+	}
+
+	public void setSelectedLanguageCodes(List<String> selectedLanguageCodes) {
+		this.selectedLanguageCodes = selectedLanguageCodes;
+	}
+
+	public List<String> getSelectedProcessStateCodes() {
+		return selectedProcessStateCodes;
+	}
+
+	public void setSelectedProcessStateCodes(List<String> selectedProcessStateCodes) {
+		this.selectedProcessStateCodes = selectedProcessStateCodes;
+	}
+
+	public List<CodeOriginTuple> getSelectedDomainCodeOriginPairs() {
+		return selectedDomainCodeOriginPairs;
+	}
+
+	public void setSelectedDomainCodeOriginPairs(List<CodeOriginTuple> selectedDomainCodeOriginPairs) {
+		this.selectedDomainCodeOriginPairs = selectedDomainCodeOriginPairs;
 	}
 }

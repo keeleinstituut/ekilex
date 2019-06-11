@@ -18,6 +18,8 @@ public class Classifier extends AbstractDataObject {
 
 	private String value;
 
+	private String[] datasets;
+
 	public String getName() {
 		return name;
 	}
@@ -48,6 +50,14 @@ public class Classifier extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String[] getDatasets() {
+		return datasets;
+	}
+
+	public void setDatasets(String[] datasets) {
+		this.datasets = datasets;
 	}
 
 	public String toIdString() {

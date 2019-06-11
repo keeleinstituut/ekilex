@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Dataset;
+import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.DatasetDbService;
 
 @Component
@@ -15,6 +16,10 @@ public class DatasetService {
 
 	@Autowired
 	private DatasetDbService datasetDbService;
+
+	@Autowired
+	private CommonDataDbService commonDataDbService;
+
 
 	@Transactional
 	public List<Dataset> getDatasets() {
@@ -29,6 +34,7 @@ public class DatasetService {
 	@Transactional
 	public void updateDataset(Dataset dataset) {
 		datasetDbService.updateDataset(dataset);
+
 	}
 
 	@Transactional
@@ -40,4 +46,6 @@ public class DatasetService {
 	public boolean datasetCodeExists(String code) {
 		return datasetDbService.datasetCodeExists(code);
 	}
+
+
 }

@@ -40,10 +40,10 @@ public class CommonDataService implements SystemConstant {
 		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
-	@Transactional
-	public List<Classifier> getDomainsInUse() {
-		return commonDataDbService.getDomainsInUse();
-	}
+	// @Transactional
+	// public List<Classifier> getDomainsInUse() {
+	// 	return commonDataDbService.getDomainsInUse();
+	// }
 
 	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
@@ -183,4 +183,21 @@ public class CommonDataService implements SystemConstant {
 	public Word getWord(Long wordId) {
 		return commonDataDbService.getWord(wordId);
 	}
+
+	//TODO - think if business level
+	// @Transactional
+	// public void addDatasetCodeToClassifierIfNotExists(ClassifierName classifierName, String classifierCode, String datasetCode) {
+	//
+	// }
+	//
+	// @Transactional
+	// public void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode) {
+	//
+	// }
+
+	@Transactional
+	public List<Classifier> findDomainsByValue(String searchValue) {
+		return commonDataDbService.findDomainsByValue(searchValue);
+	}
+
 }

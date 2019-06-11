@@ -1398,7 +1398,8 @@ register	eevn	eestivene	est	descrip
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
 register	hellitl	hellitlev	est	descrip
-register	hrv	harvaesinev	est	descrip
+register	hrv	harv	est	descrip
+register	hrv	harv	est	wordweb
 register	hrv	rare	eng	descrip
 register	kõrgst	kõrgstiil	est	descrip
 register	lastek	lastekeelne	est	descrip

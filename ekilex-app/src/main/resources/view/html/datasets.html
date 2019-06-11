@@ -3,7 +3,11 @@
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{dictionaries.title}">Sõnakogud</title>
 <th:block th:fragment="links">
+  <script type="stylesheet" th:src="@{/view/css/ajax-bootstrap-select.min.css}"></script>
+
+  <script type="text/javascript" th:src="@{/view/js/ajax-bootstrap-select.min.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-dataset.js}"></script>
+
 </th:block>
 
 </head>
@@ -68,9 +72,11 @@
                     </th:block>
                   </td>
                 </tr>
-                <div th:replace="datasetdialog :: edit_dataset_dlg(${dataset})"></div>
               </th:block>
             </table>
+            <th:block th:each="dataset : ${datasets}">
+              <div th:replace="datasetdialog :: edit_dataset_dlg(${dataset})"></div>
+            </th:block>
           </div>
         </div>
       </div>
