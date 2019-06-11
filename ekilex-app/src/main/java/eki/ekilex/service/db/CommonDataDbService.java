@@ -718,40 +718,34 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 
-	/**
-	 * Adds the given dataset code to classifier without checking the existance.
-	 * @param classifierName
-	 * @param classifierCode
-	 * @param datasetCode
-	 */
-	void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
+	public void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
 
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
 		String[] existingDatasets = classifier.getDatasets();
 		List<String> existingDatasetsList = new LinkedList<>(Arrays.asList(existingDatasets));
 
 		existingDatasetsList.add(datasetCode);
-		String [] datasets = new String[existingDatasetsList.size()];
-		datasets  = existingDatasetsList.toArray(datasets);
+		String[] datasets = new String[existingDatasetsList.size()];
+		datasets = existingDatasetsList.toArray(datasets);
 
 		updateClassiferDatasets(classifierName, classifierCode, datasets);
-
 	}
 
-	void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
+	public void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
+
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
 		String[] existingDatasets = classifier.getDatasets();
 		List<String> existingDatasetsList = new LinkedList<>(Arrays.asList(existingDatasets));
 
 		existingDatasetsList.remove(datasetCode);
-		String [] datasets = new String[existingDatasetsList.size()];
-		datasets  = existingDatasetsList.toArray(datasets);
+		String[] datasets = new String[existingDatasetsList.size()];
+		datasets = existingDatasetsList.toArray(datasets);
 
 		updateClassiferDatasets(classifierName, classifierCode, datasets);
-
 	}
 
 	private void updateClassiferDatasets(ClassifierName classifierName, String code, String[] datasets) {
+
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
 
 			create
@@ -779,65 +773,53 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		}
 	}
 
-	/**
-	 * Returns "Plain" Classifier from the base table.
-	 * @param name
-	 * @param classifierCode
-	 * @return
-	 */
 	private Classifier getClassifierWithDatasets(ClassifierName name, String classifierCode, String origin) {
 
 		if (ClassifierName.LANGUAGE.equals(name)) {
 
-			return
-				create
+			return create
 					.select(LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
 					.from(LANGUAGE)
 					.where(LANGUAGE.CODE.eq(classifierCode))
 					.fetchSingleInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(name)) {
 
-			return
-				create
+			return create
 					.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
 					.from(DOMAIN)
 					.where(DOMAIN.CODE.eq(classifierCode))
-						.and(DOMAIN.ORIGIN.eq(origin))
+					.and(DOMAIN.ORIGIN.eq(origin))
 					.fetchSingleInto(Classifier.class);
 		} else if (ClassifierName.PROCESS_STATE.equals(name)) {
 
-			return
-				create
+			return create
 					.select(PROCESS_STATE.CODE, PROCESS_STATE.DATASETS, PROCESS_STATE.ORDER_BY)
 					.from(PROCESS_STATE)
 					.where(PROCESS_STATE.CODE.eq(classifierCode))
 					.fetchSingleInto(Classifier.class);
 		}
 
-
 		//TODO - add the rest?
-			throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException();
 
 	}
 
 	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
 
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			return
-				create.select(LANGUAGE.CODE, LANGUAGE.ORDER_BY, LANGUAGE.ORDER_BY)
+			return create.select(LANGUAGE.CODE, LANGUAGE.ORDER_BY, LANGUAGE.ORDER_BY)
 					.from(LANGUAGE)
-					.where(LANGUAGE.DATASETS.contains(new String[]{datasetCode}))
+					.where(LANGUAGE.DATASETS.contains(new String[] {datasetCode}))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-			return
-				create.select(PROCESS_STATE.CODE, PROCESS_STATE.ORDER_BY, PROCESS_STATE.ORDER_BY)
+			return create.select(PROCESS_STATE.CODE, PROCESS_STATE.ORDER_BY, PROCESS_STATE.ORDER_BY)
 					.from(PROCESS_STATE)
-					.where(PROCESS_STATE.DATASETS.contains(new String[]{datasetCode}))
+					.where(PROCESS_STATE.DATASETS.contains(new String[] {datasetCode}))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 			return create.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY, DOMAIN.ORDER_BY)
 					.from(DOMAIN)
-					.where(DOMAIN.DATASETS.contains(new String[]{datasetCode}))
+					.where(DOMAIN.DATASETS.contains(new String[] {datasetCode}))
 					.fetchInto(Classifier.class);
 		}
 

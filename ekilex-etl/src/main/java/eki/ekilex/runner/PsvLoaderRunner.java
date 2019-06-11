@@ -425,7 +425,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			if (data.government != null) {
 				Long governmentId = createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, data.government.getValue(), dataLang);
 				if (isNotBlank(data.government.getType())) {
-					createFreeformClassifier(FreeformType.GOVERNMENT_TYPE, governmentId, data.government.getType());
+					createFreeformClassifier(governmentId, FreeformType.GOVERNMENT_TYPE, data.government.getType());
 				}
 			}
 		} else {
@@ -1148,16 +1148,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Government government = extractGovernment(governmentNode);
 				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government.getValue());
 				if (isNotBlank(government.getType())) {
-					createFreeformClassifier(FreeformType.GOVERNMENT_TYPE, governmentId, government.getType());
+					createFreeformClassifier(governmentId, FreeformType.GOVERNMENT_TYPE, government.getType());
 				}
 				if (isNotBlank(governmentPlacement)) {
-					createFreeformTextOrDate(FreeformType.GOVERNMENT_PLACEMENT, governmentId, governmentPlacement, null);
+					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_PLACEMENT, governmentPlacement, null);
 				}
 				if (isNotBlank(government.getVariant())) {
-					createFreeformTextOrDate(FreeformType.GOVERNMENT_VARIANT, governmentId, government.getVariant(), null);
+					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_VARIANT, government.getVariant(), null);
 				}
 				if (isNotBlank(government.getOptional())) {
-					createFreeformTextOrDate(FreeformType.GOVERNMENT_OPTIONAL, governmentId, government.getOptional(), null);
+					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_OPTIONAL, government.getOptional(), null);
 				}
 			}
 		}

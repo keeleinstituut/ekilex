@@ -1,9 +1,9 @@
-SELECT
+select
   ff.*
-FROM
-  LEXEME_FREEFORM lf, FREEFORM ff
-WHERE
+from
+  lexeme_freeform lf, freeform ff
+where
   lf.lexeme_id = :lexeme_id
-  AND lf.freeform_id = ff.id
-  AND ff.type = :type
-  AND ff.value_text = :value
+  and lf.freeform_id = ff.id
+  and ff.type = :type
+  and ff.value_text = :value
