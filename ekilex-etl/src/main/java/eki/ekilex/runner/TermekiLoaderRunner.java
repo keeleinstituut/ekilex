@@ -59,6 +59,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	private static final String PROCESS_STATE_APPROVED = "heaks kiidetud";
 	private static final String PROCESS_STATE_REJECTED = "tagasi lükatud";
 
+	private static final String MEANING_RELATION_UNSPECIFIED = "määramata";
+
 	private Pattern markupPatternForeign;
 
 	private Pattern markupPatternLink;
@@ -129,7 +131,11 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		context.describingYears = loadDescribingYears(dataset);
 		context.geolDomains = loadGeolDomains(dataset);
 		context.models = loadModelHtml(dataset);
-		doImport(context, dataset);
+
+		Map<Integer, Long> conceptMeaningIdMap = new HashMap<>();
+		doImport(context, dataset, conceptMeaningIdMap);
+		List<Map<String, Object>> conceptRelations = termekiService.getConceptRelations();
+		createMeaningRelations(conceptMeaningIdMap, conceptRelations);
 		updateDataset(baseId, dataset);
 
 		end();
@@ -275,13 +281,10 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		basicDbService.update(DATASET, params, values);
 	}
 
-	private void doImport(
-			Context context,
-			String dataset) throws Exception {
+	private void doImport(Context context, String dataset, Map<Integer, Long> conceptMeaningIdMap) throws Exception {
 
 		Count wordDuplicateCount = new Count();
 		Map<Integer, Long> termWordIdMap = new HashMap<>();
-		Map<Integer, Long> conceptMeaningIdMap = new HashMap<>();
 		List<String> existingGenders = getGenders();
 
 		long termCount = context.terms.size();
@@ -720,6 +723,20 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			logger.info("Dataset {} : {}", dataset, selectedDataset.get("name"));
 		}
 		return selectedDataset != null;
+	}
+
+	private void createMeaningRelations(Map<Integer, Long> conceptMeaningIdMap, List<Map<String, Object>> conceptRelations) throws Exception {
+
+		for (Map<String, Object> conceptRelation : conceptRelations) {
+			Integer conceptId1 = (Integer) conceptRelation.get("source_concept_id");
+			Integer conceptId2 = (Integer) conceptRelation.get("target_concept_id");
+			Long meaningId1 = conceptMeaningIdMap.get(conceptId1);
+			Long meaningId2 = conceptMeaningIdMap.get(conceptId2);
+
+			if (meaningId1 != null && meaningId2 != null) {
+				createMeaningRelation(meaningId1, meaningId2, MEANING_RELATION_UNSPECIFIED);
+			}
+		}
 	}
 
 	private class SourceData {

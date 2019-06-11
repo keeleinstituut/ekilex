@@ -44,6 +44,8 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_CONCEPT_ATTRIBUTES = "sql/select_termeki_concept_attributes.sql";
 
+	private static final String SQL_SELECT_CONCEPT_RELATIONS = "sql/select_termeki_concept_relations.sql";
+
 	private static final String SQL_SELECT_EXAMPLES = "sql/select_termeki_examples.sql";
 
 	private static final String SQL_SELECT_IMAGES = "select * from termeki_concept_images where concept_id in (select concept_id from termeki_concepts where termbase_id = :baseId)";
@@ -67,6 +69,8 @@ public class TermekiService implements InitializingBean {
 
 	private String sqlSelectConceptAttributes;
 
+	private String sqlSelectConceptRelations;
+
 	private Map<Integer, String> termbaseIdMap;
 
 	private String sqlSelectExamples;
@@ -85,6 +89,7 @@ public class TermekiService implements InitializingBean {
 		sqlSelectComments = getContent(SQL_SELECT_COMMENTS);
 		sqlSelectTermAttributes = getContent(SQL_SELECT_TERM_ATTRIBUTES);
 		sqlSelectConceptAttributes = getContent(SQL_SELECT_CONCEPT_ATTRIBUTES);
+		sqlSelectConceptRelations = getContent(SQL_SELECT_CONCEPT_RELATIONS);
 		sqlSelectExamples = getContent(SQL_SELECT_EXAMPLES);
 		termbaseIdMap = null;
 	}
@@ -169,6 +174,11 @@ public class TermekiService implements InitializingBean {
 		Map<String, Object> params = new HashMap<>();
 		params.put("attributeId", attributeId);
 		return queryList(sqlSelectConceptAttributes, params);
+	}
+
+	public List<Map<String, Object>> getConceptRelations() {
+
+		return queryList(sqlSelectConceptRelations, Collections.emptyMap());
 	}
 
 	public Collection<String> getTermbaseCodes() {
