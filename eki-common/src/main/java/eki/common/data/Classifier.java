@@ -1,7 +1,5 @@
 package eki.common.data;
 
-import java.util.List;
-
 public class Classifier extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -17,8 +15,6 @@ public class Classifier extends AbstractDataObject {
 	private String value;
 
 	private String lang;
-
-	private List<String> datasets;
 
 	public Classifier() {
 	}
@@ -80,11 +76,4 @@ public class Classifier extends AbstractDataObject {
 		this.lang = lang;
 	}
 
-	public List<String> getDatasets() {
-		return datasets;
-	}
-
-	public void setDatasets(List<String> datasets) {
-		this.datasets = datasets;
-	}
 }

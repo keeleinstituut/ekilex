@@ -1,19 +1,26 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
+import static eki.ekilex.data.db.Tables.DOMAIN;
+import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_NR;
+import static eki.ekilex.data.db.Tables.PROCESS_STATE;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.CodeOriginTuple;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.service.db.util.DatasetDbServiceHelper;
 
@@ -26,9 +33,12 @@ public class DatasetDbService {
 	@Autowired
 	private DatasetDbServiceHelper helper;
 
+	@Autowired
+	private CommonDataDbService commonDataDbService;
+
 	public List<Dataset> getDatasets() {
 
-		return create
+		List<Dataset> datasets = create
 				.select(DATASET.CODE,
 						DATASET.NAME,
 						DATASET.DESCRIPTION,
@@ -37,6 +47,38 @@ public class DatasetDbService {
 				.from(DATASET)
 				.orderBy(DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);
+
+
+		for (Dataset dataset : datasets ) {
+			String[] datasetCodeArr = {dataset.getCode()};
+			List<String> languageCodes =
+					create.select(LANGUAGE.CODE).from(LANGUAGE)
+						.where(LANGUAGE.DATASETS.contains(datasetCodeArr)).fetchInto(String.class);
+
+			List<String> processStateCodes =
+					create.select(PROCESS_STATE.CODE).from(PROCESS_STATE)
+							.where(PROCESS_STATE.DATASETS.contains(datasetCodeArr)).fetchInto(String.class);
+
+			List<CodeOriginTuple> domainCodeOrigins =
+					create.select(DOMAIN.CODE, DOMAIN.ORIGIN)
+							.from(DOMAIN)
+							.where(DOMAIN.DATASETS.contains(datasetCodeArr))
+							.fetchInto(CodeOriginTuple.class);
+
+			// fill domain labels for selected domains
+			//TODO can be done by some jooq trick or just to take the first label from domain_label?
+			domainCodeOrigins.forEach(
+					codeOriginTuple -> codeOriginTuple.setValue(
+							String.join(", ", commonDataDbService.getDomainLabels(codeOriginTuple.getCode(), codeOriginTuple.getOrigin()))
+					)
+			);
+
+			dataset.setSelectedLanguageCodes(languageCodes);
+			dataset.setSelectedProcessStateCodes(processStateCodes);
+			dataset.setSelectedDomainCodeOriginPairs(domainCodeOrigins);
+
+		}
+		return datasets;
 
 	}
 
@@ -55,6 +97,29 @@ public class DatasetDbService {
 						dataset.isVisible(),
 						dataset.isPublic())
 				.execute();
+
+		addSelectedClassifiers(dataset.getCode(), ClassifierName.LANGUAGE, dataset.getSelectedLanguageCodes());
+		addSelectedClassifiers(dataset.getCode(), ClassifierName.PROCESS_STATE, dataset.getSelectedProcessStateCodes());
+
+		addSelectedDomains(dataset);
+
+	}
+
+	private void addSelectedClassifiers(String datasetCode, ClassifierName classifierName, List<String> selectedClassifierCodes) {
+		if (selectedClassifierCodes!= null) {
+			for (String code : selectedClassifierCodes) {
+				commonDataDbService.addDatasetCodeToClassifier(classifierName, code, datasetCode, null);
+			}
+		}
+	}
+
+	private void addSelectedDomains(Dataset dataset) {
+		List<CodeOriginTuple> selectedClassifierCodeOrigins = dataset.getSelectedDomainCodeOriginPairs();
+		if (selectedClassifierCodeOrigins != null) {
+			for (CodeOriginTuple codeOrigin : selectedClassifierCodeOrigins) {
+				commonDataDbService.addDatasetCodeToClassifier(ClassifierName.DOMAIN, codeOrigin.getCode(), dataset.getCode(), codeOrigin.getOrigin());
+			}
+		}
 	}
 
 	public void updateDataset(Dataset dataset) {
@@ -67,6 +132,60 @@ public class DatasetDbService {
 				.set(DATASET.IS_PUBLIC, dataset.isPublic())
 				.where(DATASET.CODE.eq(dataset.getCode()))
 				.execute();
+
+		updateDatasetClassifiers(ClassifierName.LANGUAGE, dataset.getCode(), dataset.getSelectedLanguageCodes());
+		updateDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode(), dataset.getSelectedProcessStateCodes());
+		updateDatasetDomains(dataset);
+
+	}
+
+	private void updateDatasetClassifiers(ClassifierName classifierName, String datasetCode, List<String> selectedClassifierCodes) {
+		List<String> existingClassifierCodes = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode)
+				.stream()
+				.map(Classifier::getCode)
+				.collect(Collectors.toList());
+
+		// remove dataset code from Classifier if was unselected
+		existingClassifierCodes
+				.stream()
+				.filter(code -> selectedClassifierCodes == null || !selectedClassifierCodes.contains(code))
+				.forEach(code -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, code, datasetCode, null));
+
+		if (selectedClassifierCodes != null) {
+			for (String classifCode : selectedClassifierCodes) {
+				if (!existingClassifierCodes.contains(classifCode)) {
+					commonDataDbService.addDatasetCodeToClassifier(classifierName, classifCode, datasetCode, null);
+				}
+			}
+		}
+	}
+
+	private void updateDatasetDomains(Dataset dataset) {
+		List<CodeOriginTuple> existingClassifierCodeOrigins = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, dataset.getCode())
+				.stream()
+				.map(classifier -> {
+					CodeOriginTuple tuple = new CodeOriginTuple();
+					tuple.setCode(classifier.getCode());
+					tuple.setOrigin(classifier.getOrigin());
+
+					return tuple;
+					})
+				.collect(Collectors.toList());
+
+
+		// remove dataset code from Classifier if was unselected
+		existingClassifierCodeOrigins
+				.stream()
+				.filter(codeOriginTuple -> dataset.getSelectedDomainCodeOriginPairs() == null || !dataset.getSelectedDomainCodeOriginPairs().contains(codeOriginTuple))
+				.forEach(codeOriginTuple  -> commonDataDbService.removeDatasetCodeFromClassifier(ClassifierName.DOMAIN, codeOriginTuple.getCode(), dataset.getCode(), codeOriginTuple.getOrigin()));
+
+		if (dataset.getSelectedDomainCodeOriginPairs() != null) {
+			for (CodeOriginTuple codeOriginTuple : dataset.getSelectedDomainCodeOriginPairs()) {
+				if (!existingClassifierCodeOrigins.contains(codeOriginTuple)) {
+					commonDataDbService.addDatasetCodeToClassifier(ClassifierName.DOMAIN, codeOriginTuple.getCode(), dataset.getCode(), codeOriginTuple.getOrigin());
+				}
+			}
+		}
 	}
 
 	public void deleteDataset(String datasetCode) {
@@ -109,6 +228,14 @@ public class DatasetDbService {
 		if (CollectionUtils.isNotEmpty(meaningIds)) {
 			create.deleteFrom(MEANING).where(MEANING.ID.in(wordIds)).execute();
 		}
+
+		// remove dataset from classfiers
+		List<String> existingClassifierCodes = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode)
+				.stream()
+				.map(Classifier::getCode)
+				.collect(Collectors.toList());
+
+		existingClassifierCodes.forEach(code -> commonDataDbService.removeDatasetCodeFromClassifier(ClassifierName.LANGUAGE, code, datasetCode, null));
 
 		// delete dataset
 		create.delete(DATASET).where(DATASET.CODE.eq(datasetCode)).execute();

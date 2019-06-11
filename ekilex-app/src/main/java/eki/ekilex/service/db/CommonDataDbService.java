@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
+import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
@@ -42,6 +43,8 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -715,23 +718,155 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 
-	public Classifier getLanguage(String code) {
-		return
-				create
-					.select(LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
-					.from(LANGUAGE)
-					.where(LANGUAGE.CODE.eq(code))
-					.fetchSingleInto(Classifier.class);
+	/**
+	 * Adds the given dataset code to classifier without checking the existance.
+	 * @param classifierName
+	 * @param classifierCode
+	 * @param datasetCode
+	 */
+	void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
+
+		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
+		String[] existingDatasets = classifier.getDatasets();
+		List<String> existingDatasetsList = new LinkedList<>(Arrays.asList(existingDatasets));
+
+		existingDatasetsList.add(datasetCode);
+		String [] datasets = new String[existingDatasetsList.size()];
+		datasets  = existingDatasetsList.toArray(datasets);
+
+		updateClassiferDatasets(classifierName, classifierCode, datasets);
+
 	}
 
-	public void updateClassifierDatasets(ClassifierName classifierName, List<String> datasets) {
+	void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
+		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
+		String[] existingDatasets = classifier.getDatasets();
+		List<String> existingDatasetsList = new LinkedList<>(Arrays.asList(existingDatasets));
+
+		existingDatasetsList.remove(datasetCode);
+		String [] datasets = new String[existingDatasetsList.size()];
+		datasets  = existingDatasetsList.toArray(datasets);
+
+		updateClassiferDatasets(classifierName, classifierCode, datasets);
+
+	}
+
+	private void updateClassiferDatasets(ClassifierName classifierName, String code, String[] datasets) {
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			// create
-			// 		.update(LANGUAGE)
-			// 		.set(LANGUAGE.DATASETS, datasets.toArray(String[].class))
-			// 		.w
+
+			create
+					.update(LANGUAGE)
+					.set(LANGUAGE.DATASETS, datasets)
+					.where(LANGUAGE.CODE.eq(code))
+					.execute();
+		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+
+			create
+					.update(DOMAIN)
+					.set(DOMAIN.DATASETS, datasets)
+					.where(DOMAIN.CODE.eq(code))
+					.execute();
+		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+
+			create
+					.update(PROCESS_STATE)
+					.set(PROCESS_STATE.DATASETS, datasets)
+					.where(PROCESS_STATE.CODE.eq(code))
+					.execute();
+		} else {
+			//TODO? exception needed?
+			throw new UnsupportedOperationException();
 		}
 	}
 
+	/**
+	 * Returns "Plain" Classifier from the base table.
+	 * @param name
+	 * @param classifierCode
+	 * @return
+	 */
+	private Classifier getClassifierWithDatasets(ClassifierName name, String classifierCode, String origin) {
 
+		if (ClassifierName.LANGUAGE.equals(name)) {
+
+			return
+				create
+					.select(LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
+					.from(LANGUAGE)
+					.where(LANGUAGE.CODE.eq(classifierCode))
+					.fetchSingleInto(Classifier.class);
+		} else if (ClassifierName.DOMAIN.equals(name)) {
+
+			return
+				create
+					.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
+					.from(DOMAIN)
+					.where(DOMAIN.CODE.eq(classifierCode))
+						.and(DOMAIN.ORIGIN.eq(origin))
+					.fetchSingleInto(Classifier.class);
+		} else if (ClassifierName.PROCESS_STATE.equals(name)) {
+
+			return
+				create
+					.select(PROCESS_STATE.CODE, PROCESS_STATE.DATASETS, PROCESS_STATE.ORDER_BY)
+					.from(PROCESS_STATE)
+					.where(PROCESS_STATE.CODE.eq(classifierCode))
+					.fetchSingleInto(Classifier.class);
+		}
+
+
+		//TODO - add the rest?
+			throw new UnsupportedOperationException();
+
+	}
+
+	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
+
+		if (ClassifierName.LANGUAGE.equals(classifierName)) {
+			return
+				create.select(LANGUAGE.CODE, LANGUAGE.ORDER_BY, LANGUAGE.ORDER_BY)
+					.from(LANGUAGE)
+					.where(LANGUAGE.DATASETS.contains(new String[]{datasetCode}))
+					.fetchInto(Classifier.class);
+		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+			return
+				create.select(PROCESS_STATE.CODE, PROCESS_STATE.ORDER_BY, PROCESS_STATE.ORDER_BY)
+					.from(PROCESS_STATE)
+					.where(PROCESS_STATE.DATASETS.contains(new String[]{datasetCode}))
+					.fetchInto(Classifier.class);
+		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+			return create.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY, DOMAIN.ORDER_BY)
+					.from(DOMAIN)
+					.where(DOMAIN.DATASETS.contains(new String[]{datasetCode}))
+					.fetchInto(Classifier.class);
+		}
+
+		//TODO?
+		throw new UnsupportedOperationException();
+	}
+
+	public List<Classifier> findDomainsByValue(String searchValue) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.DOMAIN),
+						DOMAIN_LABEL.ORIGIN,
+						DOMAIN_LABEL.CODE,
+						DOMAIN_LABEL.VALUE)
+				.from(DOMAIN_LABEL)
+				.whereExists(DSL
+						.select(MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
+						.from(MEANING_DOMAIN)
+						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
+								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))))
+				.and(DOMAIN_LABEL.VALUE.containsIgnoreCase(searchValue))
+				.orderBy(DOMAIN_LABEL.VALUE, DOMAIN_LABEL.ORIGIN)
+				.fetchInto(Classifier.class);
+	}
+
+	public List<String> getDomainLabels(String code, String origin) {
+		return create
+				.select(DOMAIN_LABEL.VALUE)
+				.from(DOMAIN_LABEL)
+				.where(DOMAIN_LABEL.CODE.eq(code)).and(DOMAIN_LABEL.ORIGIN.eq(origin)).fetchInto(String.class);
+	}
 }

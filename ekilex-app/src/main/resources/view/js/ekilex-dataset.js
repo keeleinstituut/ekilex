@@ -2,7 +2,6 @@ function initialise() {
 	$(document).on("click", "#addDatasetSubmitBtn", function(e) {
 		e.preventDefault();
 		let thisForm = $("#addDatasetForm");
-
 		let fieldsFilled = checkRequiredFields(thisForm)
 
 		if (fieldsFilled) {
@@ -24,8 +23,49 @@ function initialise() {
 		$('#codeExistsError').hide();
 	});
 
+	//$('.classifier-select').selectpicker({width:'100%'});
 	$('.classifier-select').selectpicker();
 
+	//TODO - label texts to messages.properties
+	$('.domain-select').selectpicker('refresh').ajaxSelectPicker({
+		minLength : 3,
+		locale :  {
+			currentlySelected: 'Valitud',
+			emptyTitle: '** Tekst puudub **',
+			errorText: 'Viga otsingul',
+			searchPlaceholder: 'Sisesta otsitav valdkond...',
+			statusInitialized: '',
+			statusNoResults: 'Ei leitud midagi',
+			statusSearching: 'Oota...',
+			statusTooShort: 'Sisesta vähemalt 3 tähemärki'
+		},
+
+		ajax: {
+			url: applicationUrl + 'data/search_domains',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				searchText: '{{{q}}}'
+			}
+		},
+		preprocessData: function (data) {
+			var i, l = data.length, dropdownValues = [];
+			if (l) {
+				for (i = 0; i < l; i++) {
+					dropdownValues.push($.extend(true, data[i], {
+						text : data[i].value,
+						value: data[i].code + "|" + data[i].origin,
+						data : {
+							subtext: data[i].origin
+						}
+					}));
+				}
+			}
+
+			return dropdownValues;
+		}
+
+	});
 }
 function isValidDatasetCodeFormat(code) {
 	//don't allow spaces, tabls ? and %

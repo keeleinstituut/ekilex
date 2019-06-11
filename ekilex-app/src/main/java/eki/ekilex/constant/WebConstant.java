@@ -152,6 +152,8 @@ public interface WebConstant {
 
 	String DELETE_DICTIONARY_URI = "/delete_dictionary";
 
+	String SEARCH_DOMAINS_URI = "/search_domains";
+
 	String VALIDATE_CREATE_DICTIONARY_URI = "/validate_create_dictionary";
 
 	String CHANGE_ROLE_URI = "/change_role";

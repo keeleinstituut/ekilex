@@ -79,7 +79,6 @@ $(document).on("change", "select.common-word-dataset-select[name='dataset']", fu
 	}
 });
 $(document).on("change", ".required-field", function() {
-	console.log('change');
 	if ($(this).val()) {
 		$(this).removeClass('is-invalid');
 	} else {

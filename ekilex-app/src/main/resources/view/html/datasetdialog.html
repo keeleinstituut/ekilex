@@ -24,10 +24,30 @@
             </div>
 
             <div class="form-group row">
+              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
+              <div class="col-md-12">
+                <select  name="selectedDomainCodeOriginPairs" class="domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.languages}">Keeled</label>
               <div class="col-md-12">
                 <select  name="selectedLanguageCodes" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.language}">
                   <th:block th:each="language: ${languages}">
                     <option th:value="${language.code}" th:text="${language.value}"/>
+                  </th:block>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.processstates}">Protsessiolekud</label>
+              <div class="col-md-12">
+                <select  name="selectedProcessStateCodes" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.processstate}">
+                  <th:block th:each="processState: ${processStates}">
+                    <option th:value="${processState.code}" th:text="${processState.value}"/>
                   </th:block>
                 </select>
               </div>
@@ -72,6 +92,42 @@
                 <textarea class="form-control" rows="4" name="description" th:text="${thisDataset.description}"></textarea>
               </div>
             </div>
+
+            <div class="form-group row">
+              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
+              <div class="col-md-12">
+                <select  name="selectedDomainCodeOriginPairs" class="domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
+                  <option th:each="selectedDomain : ${thisDataset.selectedDomainCodeOriginPairs}"
+                          th:data-subtext="${selectedDomain.origin}" selected="selected"
+                          th:value="${selectedDomain.code + '|' + selectedDomain.origin}" th:text="${selectedDomain.value}"/>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.languages}">Keeled</label>
+                <div class="col-md-12">
+                  <select name="selectedLanguageCodes"  class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.language}">
+                    <th:block th:each="language: ${languages}">
+                      <option th:value="${language.code}" th:text="${language.value}"
+                        th:selected="${#lists.contains(thisDataset.selectedLanguageCodes, language.code)}"/>
+                    </th:block>
+                  </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.processstates}">Protsessiolekud</label>
+              <div class="col-md-12">
+                <select  name="selectedProcessStateCodes" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.processstate}">
+                  <th:block th:each="processState: ${processStates}">
+                    <option th:value="${processState.code}" th:text="${processState.value}"
+                            th:selected="${thisDataset.selectedProcessStateCodes != null && #lists.contains(thisDataset.selectedProcessStateCodes, processState.code)}"/>
+                  </th:block>
+                </select>
+              </div>
+            </div>
+
             <div class="form-check mt-1">
               <input th:id="${'chkVisible_' + thisDataset.code}" class="form-check-input" type="checkbox" name="visible" th:checked="${thisDataset.visible}">
               <label th:for="${'chkVisible_' + thisDataset.code}" class="form-check-label" th:text="#{dictionaries.dataset.is.visible}">Nähtav</label>
