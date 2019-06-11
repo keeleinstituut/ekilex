@@ -31,7 +31,7 @@
         <p sec:authorize="${#authentication.principal.datasetOwnershipExist}">
           <a th:href="@{/permissions}">Õiguste haldus</a>
         </p>
-        <th:block th:replace="components :: change_role"  sec:authorize="${#authentication.principal.datasetOwnershipExist}"></th:block>
+        <th:block th:replace="components :: change_role" sec:authorize="${#authentication.principal.datasetPermissionsExist}"></th:block>
       </div>
     </div>
   </div>
