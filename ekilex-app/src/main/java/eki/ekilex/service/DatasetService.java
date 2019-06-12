@@ -51,37 +51,30 @@ public class DatasetService {
 		addDatasetToSelectedClassifiers(dataset);
 	}
 
+	private void addDatasetToSelectedClassifiers(ClassifierName classifierName, String datasetCode, List<Classifier> selectedClassifiers) {
+		if (selectedClassifiers != null) {
+			for (Classifier classifier : selectedClassifiers) {
+				commonDataDbService.addDatasetCodeToClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin());
+			}
+		}
+
+	}
 	private void addDatasetToSelectedClassifiers(Dataset dataset) {
-		List<Classifier> selectedDomains = dataset.getSelectedDomains();
-		if (selectedDomains != null) {
-			for (Classifier classifier : selectedDomains) {
-				commonDataDbService.addDatasetCodeToClassifier(ClassifierName.DOMAIN, classifier.getCode(), dataset.getCode(), classifier.getOrigin());
-			}
-		}
-
-		List<Classifier> selectedLanguages = dataset.getSelectedLanguages();
-		if (selectedLanguages != null) {
-			for (Classifier classifier : selectedLanguages) {
-				commonDataDbService.addDatasetCodeToClassifier(ClassifierName.LANGUAGE, classifier.getCode(), dataset.getCode(), classifier.getOrigin());
-			}
-		}
-
-		List<Classifier> selectedProcessStates = dataset.getSelectedProcessStates();
-		if (selectedProcessStates != null) {
-			for (Classifier classifier : selectedProcessStates) {
-				commonDataDbService.addDatasetCodeToClassifier(ClassifierName.PROCESS_STATE, classifier.getCode(), dataset.getCode(), classifier.getOrigin());
-			}
-		}
+		addDatasetToSelectedClassifiers(ClassifierName.DOMAIN, dataset.getCode(), dataset.getSelectedDomains());
+		addDatasetToSelectedClassifiers(ClassifierName.LANGUAGE, dataset.getCode(), dataset.getSelectedLanguages());
+		addDatasetToSelectedClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode(), dataset.getSelectedProcessStates());
 	}
 
 	@Transactional
 	public void updateDataset(Dataset dataset) {
 		datasetDbService.updateDataset(dataset);
+		updateDatasetSelectedClassifiers(dataset);
+	}
 
+	private  void  updateDatasetSelectedClassifiers(Dataset dataset) {
 		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedDomains(), ClassifierName.DOMAIN);
 		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedLanguages(), ClassifierName.LANGUAGE);
 		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedProcessStates(), ClassifierName.PROCESS_STATE);
-
 	}
 
 	private void updateDatasetSelectedClassifiers(String datasetCode, List<Classifier> selectedClassifiers, ClassifierName classifierName) {
