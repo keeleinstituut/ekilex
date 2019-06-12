@@ -727,7 +727,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
 
 		String[] classiferDatasets = classifier.getDatasets();
-		ArrayUtils.add(classiferDatasets, datasetCode);
+		classiferDatasets = ArrayUtils.add(classiferDatasets, datasetCode);
 
 		updateClassiferDatasets(classifierName, classifierCode, classiferDatasets);
 	}
@@ -737,7 +737,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		//TODO study array_remove option
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
 		String[] classifierDatasetCodes = classifier.getDatasets();
-		ArrayUtils.removeElement(classifierDatasetCodes, classifierCode);
+		classifierDatasetCodes = ArrayUtils.removeElement(classifierDatasetCodes, classifierCode);
 
 		updateClassiferDatasets(classifierName, classifierCode, classifierDatasetCodes);
 	}
