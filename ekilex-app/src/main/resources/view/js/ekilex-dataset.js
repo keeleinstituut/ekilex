@@ -74,15 +74,18 @@ function isValidDatasetCodeFormat(code) {
 }
 
 function deleteDataset(datasetCode) {
+	openWaitDlg("Palun oodake, sõnakogu kustutamine on pooleli");
 	let deleteUrl = applicationUrl + 'delete_dictionary/' + datasetCode;
 
 	$.get(deleteUrl).done(function (data) {
+		closeWaitDlg();
 		if (data === 'OK') {
 			window.location = applicationUrl + 'dictionaries';
 		} else {
 			openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		}
 	}).fail(function (data) {
+		closeWaitDlg();
 		openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		console.log(data);
 	});
