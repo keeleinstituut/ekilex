@@ -1,7 +1,6 @@
 package eki.ekilex.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -73,31 +72,7 @@ public class DatasetService {
 				commonDataDbService.addDatasetCodeToClassifier(ClassifierName.PROCESS_STATE, classifier.getCode(), dataset.getCode(), classifier.getOrigin());
 			}
 		}
-
 	}
-
-	private void updateSelectedDatasetClassifiersByCode(ClassifierName classifierName, String datasetCode, List<String> selectedClassifierCodes) {
-
-		List<String> existingClassifierCodes = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode)
-				.stream()
-				.map(Classifier::getCode)
-				.collect(Collectors.toList());
-
-		// remove dataset code from Classifier if was unselected
-		existingClassifierCodes
-				.stream()
-				.filter(code -> selectedClassifierCodes == null || !selectedClassifierCodes.contains(code))
-				.forEach(code -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, code, datasetCode, null));
-
-		if (selectedClassifierCodes != null) {
-			for (String classifCode : selectedClassifierCodes) {
-				if (!existingClassifierCodes.contains(classifCode)) {
-					commonDataDbService.addDatasetCodeToClassifier(classifierName, classifCode, datasetCode, null);
-				}
-			}
-		}
-	}
-
 
 	@Transactional
 	public void updateDataset(Dataset dataset) {
