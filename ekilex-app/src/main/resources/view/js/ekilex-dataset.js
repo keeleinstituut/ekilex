@@ -54,7 +54,7 @@ function initialise() {
 				for (i = 0; i < l; i++) {
 					dropdownValues.push($.extend(true, data[i], {
 						text : data[i].value,
-						value: data[i].name + '|' + data[i].code + "|" + data[i].origin + '|' + data[i].value,
+						value: JSON.stringify(data[i]), // data[i].name + '|' + data[i].code + "|" + data[i].origin + '|' + data[i].value,
 						data : {
 							subtext: data[i].origin
 						}
