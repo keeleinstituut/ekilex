@@ -717,10 +717,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 
-	private Table getClassifierTable(ClassifierName classifierName) {
-		return DSL.table(DSL.value(classifierName.name()));
-	}
-
 	public void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
 
 		//TODO - study array_add possibility in jooq
@@ -737,7 +733,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		//TODO study array_remove option
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
 		String[] classifierDatasetCodes = classifier.getDatasets();
-		classifierDatasetCodes = ArrayUtils.removeElement(classifierDatasetCodes, classifierCode);
+		classifierDatasetCodes = ArrayUtils.removeElement(classifierDatasetCodes, datasetCode);
 
 		updateClassiferDatasets(classifierName, classifierCode, classifierDatasetCodes);
 	}
@@ -776,14 +772,14 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		if (ClassifierName.LANGUAGE.equals(name)) {
 
 			return create
-					.select(LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
+					.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
 					.from(LANGUAGE)
 					.where(LANGUAGE.CODE.eq(classifierCode))
 					.fetchSingleInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(name)) {
 
 			return create
-					.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
+					.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
 					.from(DOMAIN)
 					.where(DOMAIN.CODE.eq(classifierCode))
 					.and(DOMAIN.ORIGIN.eq(origin))
@@ -791,7 +787,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		} else if (ClassifierName.PROCESS_STATE.equals(name)) {
 
 			return create
-					.select(PROCESS_STATE.CODE, PROCESS_STATE.DATASETS, PROCESS_STATE.ORDER_BY)
+					.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.DATASETS, PROCESS_STATE.ORDER_BY)
 					.from(PROCESS_STATE)
 					.where(PROCESS_STATE.CODE.eq(classifierCode))
 					.fetchSingleInto(Classifier.class);
@@ -803,21 +799,21 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	}
 
 	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
-
+		String[] datasetCodeParam = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			return create.select(LANGUAGE.CODE, LANGUAGE.ORDER_BY, LANGUAGE.ORDER_BY)
+			return create.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE.ORDER_BY, LANGUAGE.ORDER_BY)
 					.from(LANGUAGE)
-					.where(LANGUAGE.DATASETS.contains(new String[] {datasetCode}))
+					.where(LANGUAGE.DATASETS.contains(datasetCodeParam))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-			return create.select(PROCESS_STATE.CODE, PROCESS_STATE.ORDER_BY, PROCESS_STATE.ORDER_BY)
+			return create.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.ORDER_BY, PROCESS_STATE.ORDER_BY)
 					.from(PROCESS_STATE)
-					.where(PROCESS_STATE.DATASETS.contains(new String[] {datasetCode}))
+					.where(PROCESS_STATE.DATASETS.contains(datasetCodeParam))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-			return create.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY, DOMAIN.ORDER_BY)
+			return create.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY)
 					.from(DOMAIN)
-					.where(DOMAIN.DATASETS.contains(new String[] {datasetCode}))
+					.where(DOMAIN.DATASETS.contains(datasetCodeParam))
 					.fetchInto(Classifier.class);
 		}
 
@@ -843,5 +839,11 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	public List<String> getDomainLabels(String code, String origin) {
+		return create
+				.select(DOMAIN_LABEL.VALUE)
+				.from(DOMAIN_LABEL)
+				.where(DOMAIN_LABEL.CODE.eq(code)).and(DOMAIN_LABEL.ORIGIN.eq(origin)).fetchInto(String.class);
+	}
 
 }

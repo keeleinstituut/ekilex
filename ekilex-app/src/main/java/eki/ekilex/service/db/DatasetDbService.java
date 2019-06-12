@@ -1,14 +1,10 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DOMAIN;
-import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_NR;
 import static eki.ekilex.data.db.Tables.PROCESS_LOG;
-import static eki.ekilex.data.db.Tables.PROCESS_STATE;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
 
@@ -19,7 +15,6 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.CodeOriginTuple;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.service.db.util.DatasetDbServiceHelper;
 
@@ -44,29 +39,7 @@ public class DatasetDbService {
 				.orderBy(DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);
 
-		for (Dataset dataset : datasets) {
-			String[] datasetCodeArr = {dataset.getCode()};
-			List<String> languageCodes = create.select(LANGUAGE.CODE).from(LANGUAGE)
-					.where(LANGUAGE.DATASETS.contains(datasetCodeArr)).fetchInto(String.class);
 
-			List<String> processStateCodes = create.select(PROCESS_STATE.CODE).from(PROCESS_STATE)
-					.where(PROCESS_STATE.DATASETS.contains(datasetCodeArr)).fetchInto(String.class);
-
-			List<CodeOriginTuple> domainCodeOrigins = create.select(DOMAIN.CODE, DOMAIN.ORIGIN)
-					.from(DOMAIN)
-					.where(DOMAIN.DATASETS.contains(datasetCodeArr))
-					.fetchInto(CodeOriginTuple.class);
-
-
-			//TODO - this need some refactoring
-			domainCodeOrigins.forEach(domain -> domain.setValue(String.join(", ", getDomainLabels(domain.getCode(), domain.getOrigin()))));
-
-			dataset.setSelectedLanguageCodes(languageCodes);
-			dataset.setSelectedProcessStateCodes(processStateCodes);
-			dataset.setSelectedDomainCodeOriginPairs(domainCodeOrigins);
-
-
-		}
 		return datasets;
 
 	}
@@ -100,12 +73,7 @@ public class DatasetDbService {
 				.where(DATASET.CODE.eq(dataset.getCode()))
 				.execute();
 
-
 	}
-
-
-
-
 
 	public void deleteDataset(String datasetCode) {
 
@@ -161,13 +129,6 @@ public class DatasetDbService {
 				create.select()
 						.from(DATASET)
 						.where(DATASET.CODE.equalIgnoreCase(datasetCode)));
-	}
-
-	private List<String> getDomainLabels(String code, String origin) {
-		return create
-				.select(DOMAIN_LABEL.VALUE)
-				.from(DOMAIN_LABEL)
-				.where(DOMAIN_LABEL.CODE.eq(code)).and(DOMAIN_LABEL.ORIGIN.eq(origin)).fetchInto(String.class);
 	}
 
 
