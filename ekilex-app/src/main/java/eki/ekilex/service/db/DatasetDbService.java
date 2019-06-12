@@ -36,7 +36,7 @@ public class DatasetDbService {
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC)
 				.from(DATASET)
-				.orderBy(DATASET.ORDER_BY)
+				.orderBy(DATASET.NAME)
 				.fetchInto(Dataset.class);
 
 

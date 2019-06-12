@@ -31,6 +31,8 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.Form;
+import eki.ekilex.data.Image;
+import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Note;
@@ -410,6 +412,42 @@ public class ConversionUtil {
 		}
 
 		return notes;
+	}
+
+	public List<Image> composeMeaningImages(List<ImageSourceTuple> imageSourceTuples) {
+
+		List<Image> images = new ArrayList<>();
+
+		Map<Long, Image> imageMap = new HashMap<>();
+		List<SourceLink> sourceLinks;
+
+		for (ImageSourceTuple tuple : imageSourceTuples) {
+			Long imageId = tuple.getImageFreeformId();
+			Long sourceLinkId = tuple.getSourceLinkId();
+
+			Image image = imageMap.get(imageId);
+			if (image == null) {
+				image = new Image();
+				sourceLinks = new ArrayList<>();
+				image.setSourceLinks(sourceLinks);
+				image.setFileName(tuple.getImageFreeformValueText());
+				image.setTitle(tuple.getTitleFreeformValueText());
+				imageMap.put(imageId, image);
+				images.add(image);
+			} else {
+				sourceLinks = image.getSourceLinks();
+			}
+			if (sourceLinkId != null) {
+				SourceLink sourceLink = new SourceLink();
+				sourceLink.setId(sourceLinkId);
+				sourceLink.setType(tuple.getSourceLinkType());
+				sourceLink.setName(tuple.getSourceLinkName());
+				sourceLink.setValue(tuple.getSourceLinkValue());
+				sourceLinks.add(sourceLink);
+			}
+		}
+
+		return images;
 	}
 
 	public List<LexemeLangGroup> composeLexemeLangGroups(List<Lexeme> lexemes, List<ClassifierSelect> languagesOrder) {

@@ -356,6 +356,32 @@
                   </th:block>
                 </div>
               </div>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.meaningImages)}">
+                <hr>
+                <div class="col pr-0 col-w13rem">
+                  <span class="lbl">Pildid</span>
+                </div>
+                <div class="col pl-0">
+                  <table>
+                    <tr th:each="image : ${lexeme.meaningImages}">
+                      <td>
+                        <br>
+                        <img class="w-75" th:src="@{'/files/images/' + ${image.fileName}}">
+                        <div th:text="${image.title}"></div>
+                        <span th:each="sourceLink : ${image.sourceLinks}">
+                          [
+                          <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                          <span th:if="${sourceLink.name != null}">
+                            <span th:text="${sourceLink.name}"></span>
+                          </span>
+                          ]
+                        </span>
+                        <hr>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.meaningFreeforms)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
@@ -367,13 +393,9 @@
                       <td class="align-text-top pr-3">
                         <span th:text="${freeform.type}"></span>
                       </td>
-                      <td th:unless="${freeform.type.toString() == 'IMAGE_FILE'}">
+                      <td>
                         <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
                         <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
-                      </td>
-                      <td th:if="${freeform.type.toString() == 'IMAGE_FILE'}">
-                        <div th:text="${freeform.valueText}"></div>
-                        <img class="w-100" th:src="@{'/files/images/' + ${freeform.valueText}}">
                       </td>
                     </tr>
                   </table>
