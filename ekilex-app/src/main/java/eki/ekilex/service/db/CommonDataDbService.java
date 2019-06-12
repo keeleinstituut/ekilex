@@ -43,11 +43,10 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
@@ -718,30 +717,29 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 
+	private Table getClassifierTable(ClassifierName classifierName) {
+		return DSL.table(DSL.value(classifierName.name()));
+	}
+
 	public void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
 
+		//TODO - study array_add possibility in jooq
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
-		String[] existingDatasets = classifier.getDatasets();
-		List<String> existingDatasetsList = new LinkedList<>(Arrays.asList(existingDatasets));
 
-		existingDatasetsList.add(datasetCode);
-		String[] datasets = new String[existingDatasetsList.size()];
-		datasets = existingDatasetsList.toArray(datasets);
+		String[] classiferDatasets = classifier.getDatasets();
+		ArrayUtils.add(classiferDatasets, datasetCode);
 
-		updateClassiferDatasets(classifierName, classifierCode, datasets);
+		updateClassiferDatasets(classifierName, classifierCode, classiferDatasets);
 	}
 
 	public void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
 
+		//TODO study array_remove option
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
-		String[] existingDatasets = classifier.getDatasets();
-		List<String> existingDatasetsList = new LinkedList<>(Arrays.asList(existingDatasets));
+		String[] classifierDatasetCodes = classifier.getDatasets();
+		ArrayUtils.removeElement(classifierDatasetCodes, classifierCode);
 
-		existingDatasetsList.remove(datasetCode);
-		String[] datasets = new String[existingDatasetsList.size()];
-		datasets = existingDatasetsList.toArray(datasets);
-
-		updateClassiferDatasets(classifierName, classifierCode, datasets);
+		updateClassiferDatasets(classifierName, classifierCode, classifierDatasetCodes);
 	}
 
 	private void updateClassiferDatasets(ClassifierName classifierName, String code, String[] datasets) {
@@ -845,10 +843,5 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
-	public List<String> getDomainLabels(String code, String origin) {
-		return create
-				.select(DOMAIN_LABEL.VALUE)
-				.from(DOMAIN_LABEL)
-				.where(DOMAIN_LABEL.CODE.eq(code)).and(DOMAIN_LABEL.ORIGIN.eq(origin)).fetchInto(String.class);
-	}
+
 }
