@@ -85,6 +85,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Definition> definitions;
 
+	private List<Image> meaningImages;
+
 	private List<FreeForm> meaningFreeforms;
 
 	private List<FreeForm> meaningLearnerComments;
@@ -337,6 +339,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setDefinitions(List<Definition> definitions) {
 		this.definitions = definitions;
+	}
+
+	public List<Image> getMeaningImages() {
+		return meaningImages;
+	}
+
+	public void setMeaningImages(List<Image> meaningImages) {
+		this.meaningImages = meaningImages;
 	}
 
 	public List<FreeForm> getMeaningFreeforms() {

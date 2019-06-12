@@ -67,6 +67,7 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
+import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
@@ -397,6 +398,33 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.and(FREEFORM.TYPE.eq(freeformType.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(NoteSourceTuple.class);
+	}
+
+	public List<ImageSourceTuple> getMeaningImageSourceTuples(Long meaningId) {
+
+		Freeform iff = FREEFORM.as("iff");
+		Freeform tff = FREEFORM.as("tff");
+
+		return create
+				.select(
+						iff.ID.as("image_freeform_id"),
+						iff.VALUE_TEXT.as("image_freeform_value_text"),
+						tff.VALUE_TEXT.as("title_freeform_value_text"),
+						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
+						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
+						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
+						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"))
+				.from(
+						MEANING_FREEFORM,
+						iff
+								.leftOuterJoin(tff).on(tff.PARENT_ID.eq(iff.ID).and(tff.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
+								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(iff.ID)))
+				.where(
+						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
+								.and(iff.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
+								.and(iff.TYPE.eq(FreeformType.IMAGE_FILE.name())))
+				.orderBy(iff.ORDER_BY)
+				.fetchInto(ImageSourceTuple.class);
 	}
 
 	public List<Classifier> getMeaningDomains(Long meaningId) {
