@@ -37,6 +37,7 @@ public class FreeformRowMapper implements RowMapper<Freeform> {
 		String langCode = rs.getString("lang");
 		Long orderBy = rs.getLong("order_by");
 		boolean childrenExist = rs.getBoolean("children_exist");
+		boolean sourceLinksExist = rs.getBoolean("source_links_exist");
 
 		Freeform freeform = new Freeform();
 		freeform.setFreeformId(freeformId);
@@ -52,6 +53,7 @@ public class FreeformRowMapper implements RowMapper<Freeform> {
 		freeform.setLangCode(langCode);
 		freeform.setOrderBy(orderBy);
 		freeform.setChildrenExist(childrenExist);
+		freeform.setSourceLinksExist(sourceLinksExist);
 		return freeform;
 	}
 

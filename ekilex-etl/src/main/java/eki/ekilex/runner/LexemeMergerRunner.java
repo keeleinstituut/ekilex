@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -23,14 +24,26 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
+import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.LifecycleProperty;
+import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
-import eki.common.exception.DataLoadingException;
 import eki.ekilex.data.transform.Freeform;
+import eki.ekilex.data.transform.FreeformSourceLink;
 import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.LexemeClassifier;
 import eki.ekilex.data.transform.LexemeFrequency;
+import eki.ekilex.data.transform.LexemeRelation;
+import eki.ekilex.data.transform.LexemeSourceLink;
 import eki.ekilex.runner.util.FreeformRowMapper;
+import eki.ekilex.runner.util.FreeformSourceLinkRowMapper;
+import eki.ekilex.runner.util.LexemeClassifierRowMapper;
 import eki.ekilex.runner.util.LexemeFrequencyRowMapper;
+import eki.ekilex.runner.util.LexemeRelationRowMapper;
+import eki.ekilex.runner.util.LexemeSourceLinkRowMapper;
 
 @Component
 public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConstant {
@@ -44,6 +57,24 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	private String sqlSelectWordLexemeMeaningIds;
 
 	private String sqlSelectLexemeFreeforms;
+
+	private String sqlSelectLexeme = "select * from " + LEXEME + " where id = :id";
+
+	private String sqlSelectFreeformChildren = "select ff.*, false as children_exist, false as source_links_exist from " + FREEFORM + " ff where ff.parent_id = :freeformId order by ff.order_by";
+
+	private String sqlSelectLexemeFrequencies = "select lf.* from " + LEXEME_FREQUENCY + " lf where lf.lexeme_id = :lexemeId";
+
+	private String sqlSelectLexemeRegisters = "select c.lexeme_id, c.register_code as code from " + LEXEME_REGISTER + " c where c.lexeme_id = :lexemeId order by c.order_by";
+
+	private String sqlSelectLexemePoses = "select c.lexeme_id, c.pos_code as code from " + LEXEME_POS + " c where c.lexeme_id = :lexemeId order by c.order_by";
+
+	private String sqlSelectLexemeDerivs = "select c.lexeme_id, c.deriv_code as code from " + LEXEME_DERIV + " c where c.lexeme_id = :lexemeId order by c.id";
+
+	private String sqlSelectLexemeRegions = "select c.lexeme_id, c.region_code as code from " + LEXEME_REGION + " c where c.lexeme_id = :lexemeId order by c.id";
+
+	private String sqlSelectLexemeSourceLinks = "select lsl.* from " + LEXEME_SOURCE_LINK + " lsl where lsl.lexeme_id = :lexemeId order by lsl.order_by";
+
+	private String sqlSelectFreeformSourceLinks = "select ffsl.* from " + FREEFORM_SOURCE_LINK + " ffsl where ffsl.freeform_id = :freeformId order by ffsl.order_by";
 
 	private String lexemeMergeName;
 
@@ -81,12 +112,37 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		createDatasetIfNotExists(lexemeMergeName);
 
 		List<WordMeaningPair> wordMeaningPairs = getWordMeaningPairs(lexemeMergeDatasets);
+		Map<Long, Long> sumLexemeIdMap = new HashMap<>();
 
 		int wordMeaningPairCount = wordMeaningPairs.size();
 		logger.debug("Merging lexemes between {} word meaning pairs", wordMeaningPairCount);
 
 		Count tooManyFreqGroupCodeCount = new Count();
 		Count tooManyValueStateCodeCount = new Count();
+		Count summableLexemeCount = new Count();
+		Count sumLexemeCount = new Count();
+		Count summableLexemeFreeformCount = new Count();
+		Count sumLexemeFreeformCount = new Count();
+		Count summableLexemeFreeformSourceLinkCount = new Count();
+		Count sumLexemeFreeformSourceLinkCount = new Count();
+		Count summableLexemeSourceLinkCount = new Count();
+		Count sumLexemeSourceLinkCount = new Count();
+		Count summableLexemeRelationCount = new Count();
+		Count sumLexemeRelationCount = new Count();
+
+		Map<String, Count> countsMap = new HashMap<>();
+		countsMap.put("tooManyFreqGroupCodeCount", tooManyFreqGroupCodeCount);
+		countsMap.put("tooManyValueStateCodeCount", tooManyValueStateCodeCount);
+		countsMap.put("summableLexemeCount", summableLexemeCount);
+		countsMap.put("sumLexemeCount", sumLexemeCount);
+		countsMap.put("summableLexemeFreeformCount", summableLexemeFreeformCount);
+		countsMap.put("sumLexemeFreeformCount", sumLexemeFreeformCount);
+		countsMap.put("summableLexemeFreeformSourceLinkCount", summableLexemeFreeformSourceLinkCount);
+		countsMap.put("sumLexemeFreeformSourceLinkCount", sumLexemeFreeformSourceLinkCount);
+		countsMap.put("summableLexemeSourceLinkCount", summableLexemeSourceLinkCount);
+		countsMap.put("sumLexemeSourceLinkCount", sumLexemeSourceLinkCount);
+		countsMap.put("summableLexemeRelationCount", summableLexemeRelationCount);
+		countsMap.put("sumLexemeRelationCount", sumLexemeRelationCount);
 
 		long wordMeaningPairCounter = 0;
 		long progressIndicator = wordMeaningPairCount / Math.min(wordMeaningPairCount, 100);
@@ -96,7 +152,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			List<Long> lexemeIds = wordMeaningPair.getLexemeIds();
 			List<FullLexeme> allLexemes = new ArrayList<>();
 			for (Long lexemeId : lexemeIds) {
-				FullLexeme lexeme = getFullLexeme(lexemeId);
+				FullLexeme lexeme = getFullLexeme(lexemeId, countsMap);
 				allLexemes.add(lexeme);
 			}
 
@@ -108,37 +164,34 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 			if (CollectionUtils.size(allLexemes) == 1) {
 				//copy single to single lexeme
-				FullLexeme lexeme = allLexemes.get(0);
-				sumLexeme.setFrequencyGroupCode(lexeme.getFrequencyGroupCode());
-				sumLexeme.setCorpusFrequency(lexeme.getCorpusFrequency());
-				sumLexeme.setLevel1(lexeme.getLevel1());
-				sumLexeme.setLevel2(lexeme.getLevel2());
-				sumLexeme.setLevel3(lexeme.getLevel3());
-				sumLexeme.setValueStateCode(lexeme.getValueStateCode());
-				sumLexeme.setFreeforms(lexeme.getFreeforms());
+				FullLexeme singleLexeme = allLexemes.get(0);
+				composeSumLexeme(sumLexeme, singleLexeme);
 			} else {
 				//compare and copy sum into single lexeme
-				composeSumLexeme(allLexemes, sumLexeme, tooManyFreqGroupCodeCount, tooManyValueStateCodeCount);
-				composeSumLexemeFreeforms(allLexemes, sumLexeme);
+				composeSumLexeme(sumLexeme, allLexemes, countsMap);
 			}
 			Long sumLexemeId = createLexeme(sumLexeme);
-			createLexemeFreeforms(sumLexemeId, sumLexeme.getFreeforms());
-			createLexemeFrequencies(sumLexemeId, allLexemes);
+			sumLexemeCount.increment();
+			for (Long lexemeId : lexemeIds) {
+				sumLexemeIdMap.put(lexemeId, sumLexemeId);
+				summableLexemeCount.increment();
+			}
 
-			// TODO lexeme_register
-			// TODO lexeme_pos
-			// TODO lexeme_deriv
-			// TODO lexeme_region
-			// TODO lexeme_lifecycle_log ??
-			// TODO lexeme_process_log ??
-			// TODO lex_relation
+			createLexemeFreeformsAndSourceLinks(sumLexemeId, allLexemes, countsMap);
+			createLexemeFrequencies(sumLexemeId, allLexemes);
+			createLexemeRegisters(sumLexemeId, allLexemes);
+			createLexemePoses(sumLexemeId, allLexemes);
+			createLexemeDerivs(sumLexemeId, allLexemes);
+			createLexemeRegions(sumLexemeId, allLexemes);
+			createLexemeSourceLinks(sumLexemeId, allLexemes, countsMap);
+
 			// TODO lex_colloc_pos_group
 			// TODO lex_colloc_rel_group
 			// TODO lex_colloc
-			// TODO lexeme_source_link
-			// TODO freeform_source_link
 			// TODO collocation
 			// TODO collocation_freeform
+			// TODO lexeme_lifecycle_log
+			// TODO lexeme_process_log
 
 			// progress
 			wordMeaningPairCounter++;
@@ -148,47 +201,46 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			}
 		}
 
+		List<LexemeRelation> lexemeRelations = getLexemeRelations(sumLexemeIdMap.keySet());
+		summableLexemeRelationCount.increment(lexemeRelations.size());
+		createLexemeRelations(sumLexemeIdMap, lexemeRelations, countsMap);
+
+		logger.info("Collected {} lexemes to sum", summableLexemeCount.getValue());
+		logger.info("Created {} sum lexemes", sumLexemeCount.getValue());
 		logger.info("Found {} competing freq group lexemes", tooManyFreqGroupCodeCount.getValue());
 		logger.info("Found {} competing value state lexemes", tooManyValueStateCodeCount.getValue());
-
-		if (true) {
-			throw new DataLoadingException("IT'S OK!");
-		}
+		logger.info("Collected {} lexeme freeforms", summableLexemeFreeformCount.getValue());
+		logger.info("Created {} lexeme freeforms", sumLexemeFreeformCount.getValue());
+		logger.info("Collected {} lexeme freeform source links", summableLexemeFreeformSourceLinkCount.getValue());
+		logger.info("Created {} lexeme freeform source links", sumLexemeFreeformSourceLinkCount.getValue());
+		logger.info("Collected {} lexeme source links", summableLexemeSourceLinkCount.getValue());
+		logger.info("Created {} lexeme source links", sumLexemeSourceLinkCount.getValue());
+		logger.info("Found {} lexeme relations", summableLexemeRelationCount.getValue());
+		logger.info("Created {} lexeme relations", sumLexemeRelationCount.getValue());
 
 		end();
 	}
 
-	private void composeSumLexemeFreeforms(List<FullLexeme> allLexemes, FullLexeme sumLexeme) {
-
-		List<Freeform> sumFreeforms = new ArrayList<>();
-		for (FullLexeme lexeme : allLexemes) {
-			List<Freeform> srcFreeforms = lexeme.getFreeforms();
-			if (CollectionUtils.isEmpty(srcFreeforms)) {
-				continue;
-			}
-			if (CollectionUtils.isEmpty(sumFreeforms)) {
-				sumFreeforms.addAll(srcFreeforms);
-			} else {
-				for (Freeform srcFreeform : srcFreeforms) {
-					boolean freeformExists = sumFreeforms.stream()
-							.filter(sumFreeform -> Objects.equals(sumFreeform.getType(), srcFreeform.getType()))
-							.anyMatch(sumFreeform -> {
-								if (StringUtils.equals(sumFreeform.getValueText(), srcFreeform.getValueText())
-										|| Objects.equals(sumFreeform.getValueDate(), srcFreeform.getValueDate())) {
-									return true;
-								}
-								return false;
-							});
-					if (!freeformExists) {
-						sumFreeforms.add(srcFreeform);
-					}
-				}
-			}
-		}
-		sumLexeme.setFreeforms(sumFreeforms);
+	private void composeSumLexeme(FullLexeme sumLexeme, FullLexeme lexeme) {
+		sumLexeme.setFrequencyGroupCode(lexeme.getFrequencyGroupCode());
+		sumLexeme.setCorpusFrequency(lexeme.getCorpusFrequency());
+		sumLexeme.setLevel1(lexeme.getLevel1());
+		sumLexeme.setLevel2(lexeme.getLevel2());
+		sumLexeme.setLevel3(lexeme.getLevel3());
+		sumLexeme.setValueStateCode(lexeme.getValueStateCode());
+		sumLexeme.setFreeforms(lexeme.getFreeforms());
+		sumLexeme.setLexemeFrequencies(lexeme.getLexemeFrequencies());
+		sumLexeme.setLexemeRegisters(lexeme.getLexemeRegisters());
+		sumLexeme.setLexemePoses(lexeme.getLexemePoses());
+		sumLexeme.setLexemeDerivs(lexeme.getLexemeDerivs());
+		sumLexeme.setLexemeRegions(lexeme.getLexemeRegions());
+		sumLexeme.setLexemeSourceLinks(lexeme.getLexemeSourceLinks());
 	}
 
-	private void composeSumLexeme(List<FullLexeme> allLexemes, Lexeme sumLexeme, Count tooManyFreqGroupCodeCount, Count tooManyValueStateCodeCount) throws Exception {
+	private void composeSumLexeme(Lexeme sumLexeme, List<FullLexeme> allLexemes, Map<String, Count> countsMap) throws Exception {
+
+		Count tooManyFreqGroupCodeCount = countsMap .get("tooManyFreqGroupCodeCount");
+		Count tooManyValueStateCodeCount = countsMap .get("tooManyValueStateCodeCount");
 
 		List<Lexeme> lexemesSortedByLevels = allLexemes.stream()
 				.sorted(Comparator
@@ -262,19 +314,163 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		return wordMeaningPairs;
 	}
 
-	private void createLexemeFreeforms(Long sumLexemeId, List<Freeform> freeforms) throws Exception {
+	private FullLexeme getFullLexeme(Long lexemeId, Map<String, Count> countsMap) throws Exception {
+
+		Count summableLexemeFreeformCount = countsMap.get("summableLexemeFreeformCount");
+		Count summableLexemeFreeformSourceLinkCount = countsMap.get("summableLexemeFreeformSourceLinkCount");
+		Count summableLexemeSourceLinkCount = countsMap.get("summableLexemeSourceLinkCount");
+
+		Map<String, Object> paramMap;
+		FreeformRowMapper freeformRowMapper = new FreeformRowMapper();
+		FreeformSourceLinkRowMapper freeformSourceLinkRowMapper = new FreeformSourceLinkRowMapper();
+
+		paramMap = new HashMap<>();
+		paramMap.put("id", lexemeId);
+		FullLexeme lexeme = basicDbService.getSingleResult(sqlSelectLexeme, paramMap, new FullLexemeRowMapper());
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<Freeform> freeforms = basicDbService.getResults(sqlSelectLexemeFreeforms, paramMap, freeformRowMapper);
+		lexeme.setFreeforms(freeforms);
+		summableLexemeFreeformCount.increment(freeforms.size());
+
+		List<Freeform> children;
+		List<FreeformSourceLink> sourceLinks;
 
 		for (Freeform freeform : freeforms) {
+			if (freeform.isChildrenExist()) {
+				paramMap = new HashMap<>();
+				paramMap.put("freeformId", freeform.getFreeformId());
+				children = basicDbService.getResults(sqlSelectFreeformChildren, paramMap, freeformRowMapper);
+				freeform.setChildren(children);
+				summableLexemeFreeformCount.increment(children.size());
+			}
+			if (freeform.isSourceLinksExist()) {
+				paramMap = new HashMap<>();
+				paramMap.put("freeformId", freeform.getFreeformId());
+				sourceLinks = basicDbService.getResults(sqlSelectFreeformSourceLinks, paramMap, freeformSourceLinkRowMapper);
+				freeform.setSourceLinks(sourceLinks);
+				summableLexemeFreeformSourceLinkCount.increment(sourceLinks.size());
+			}
+		}
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<LexemeSourceLink> lexemeSourceLinks = basicDbService.getResults(sqlSelectLexemeSourceLinks, paramMap, new LexemeSourceLinkRowMapper());
+		lexeme.setLexemeSourceLinks(lexemeSourceLinks);
+		summableLexemeSourceLinkCount.increment(lexemeSourceLinks.size());
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<LexemeFrequency> lexemeFrequencies = basicDbService.getResults(sqlSelectLexemeFrequencies, paramMap, new LexemeFrequencyRowMapper());
+		lexeme.setLexemeFrequencies(lexemeFrequencies);
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<LexemeClassifier> lexemeRegisters = basicDbService.getResults(sqlSelectLexemeRegisters, paramMap, new LexemeClassifierRowMapper());
+		lexeme.setLexemeRegisters(lexemeRegisters);
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<LexemeClassifier> lexemePoses = basicDbService.getResults(sqlSelectLexemePoses, paramMap, new LexemeClassifierRowMapper());
+		lexeme.setLexemePoses(lexemePoses);
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<LexemeClassifier> lexemeDerivs = basicDbService.getResults(sqlSelectLexemeDerivs, paramMap, new LexemeClassifierRowMapper());
+		lexeme.setLexemeDerivs(lexemeDerivs);
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<LexemeClassifier> lexemeRegions = basicDbService.getResults(sqlSelectLexemeRegions, paramMap, new LexemeClassifierRowMapper());
+		lexeme.setLexemeRegions(lexemeRegions);
+
+		return lexeme;
+	}
+
+	private List<LexemeRelation> getLexemeRelations(Set<Long> lexemeIds) throws Exception {
+
+		List<Long> allLexemeIdList = new ArrayList<>(lexemeIds);
+		List<LexemeRelation> lexemeRelations = new ArrayList<>();
+
+		Map<String, Object> paramMap;
+		String sql = "select r.lexeme1_id, r.lexeme2_id, r.lex_rel_type_code, r.order_by from " + LEXEME_RELATION + " r where r.lexeme1_id in (:lexemeIds) order by r.order_by";
+
+		int lexemeIdCount = lexemeIds.size();
+		final int lexemeSublistLength = 100;
+		int lexemeIdSublistFromIndex = 0;
+		int lexemeIdSublistToIndex;
+		List<Long> lexemeIdSublist;
+		List<LexemeRelation> lexemeRelationSublist;
+
+		while (lexemeIdSublistFromIndex < lexemeIdCount) {
+			lexemeIdSublistToIndex = lexemeIdSublistFromIndex + lexemeSublistLength;
+			lexemeIdSublistToIndex = Math.min(lexemeIdSublistToIndex, lexemeIdCount);
+			lexemeIdSublist = allLexemeIdList.subList(lexemeIdSublistFromIndex, lexemeIdSublistToIndex);
+			paramMap = new HashMap<>();
+			paramMap.put("lexemeIds", lexemeIdSublist);
+			lexemeRelationSublist = basicDbService.getResults(sql, paramMap, new LexemeRelationRowMapper());
+			if (CollectionUtils.isNotEmpty(lexemeRelationSublist)) {
+				lexemeRelations.addAll(lexemeRelationSublist);
+			}
+			lexemeIdSublistFromIndex = lexemeIdSublistToIndex;
+		}
+		lexemeRelations = lexemeRelations.stream().sorted(Comparator.comparing(LexemeRelation::getOrderBy)).collect(Collectors.toList());
+		return lexemeRelations;
+	}
+
+	private void createLexemeFreeformsAndSourceLinks(Long sumLexemeId, List<FullLexeme> allLexemes, Map<String, Count> countsMap) throws Exception {
+
+		Count sumLexemeFreeformCount = countsMap.get("sumLexemeFreeformCount");
+		Count sumLexemeFreeformSourceLinkCount = countsMap.get("sumLexemeFreeformSourceLinkCount");
+
+		List<Freeform> sumFreeforms = new ArrayList<>();
+		for (FullLexeme lexeme : allLexemes) {
+			List<Freeform> srcFreeforms = lexeme.getFreeforms();
+			if (CollectionUtils.isEmpty(srcFreeforms)) {
+				continue;
+			}
+			if (CollectionUtils.isEmpty(sumFreeforms)) {
+				sumFreeforms.addAll(srcFreeforms);
+			} else {
+				for (Freeform srcFreeform : srcFreeforms) {
+					boolean freeformExists = sumFreeforms.stream()
+							.filter(sumFreeform -> Objects.equals(sumFreeform.getType(), srcFreeform.getType()))
+							.anyMatch(sumFreeform -> {
+								if (StringUtils.equals(sumFreeform.getValueText(), srcFreeform.getValueText())
+										|| Objects.equals(sumFreeform.getValueDate(), srcFreeform.getValueDate())) {
+									return true;
+								}
+								return false;
+							});
+					if (!freeformExists) {
+						sumFreeforms.add(srcFreeform);
+					}
+				}
+			}
+		}
+		sumLexemeFreeformCount.increment(sumFreeforms.size());
+
+		for (Freeform freeform : sumFreeforms) {
 			Long freeformId = null;
 			if (freeform.getValueText() != null) {
-				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueText(), freeform.getLangCode());				
+				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueText(), freeform.getLangCode());
 			} else if (freeform.getValueDate() != null) {
 				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode());
 			} else {
 				// other data types?
 			}
 			if (freeform.isChildrenExist()) {
-				createNestedFreeforms(freeformId, freeform.getChildren());
+				List<Freeform> children = freeform.getChildren();
+				createNestedFreeforms(freeformId, children);
+				sumLexemeFreeformCount.increment(children.size());
+			}
+			if (freeform.isSourceLinksExist()) {
+				List<FreeformSourceLink> sourceLinks = freeform.getSourceLinks();
+				sumLexemeFreeformSourceLinkCount.increment(sourceLinks.size());
+				for (FreeformSourceLink sourceLink : sourceLinks) {
+					createFreeformSourceLink(freeformId, sourceLink.getType(), sourceLink.getSourceId(), sourceLink.getName(), sourceLink.getValue());
+				}
 			}
 		}
 	}
@@ -310,39 +506,116 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		}
 	}
 
-	private FullLexeme getFullLexeme(Long lexemeId) throws Exception {
+	private void createLexemeRegisters(Long sumLexemeId, List<FullLexeme> allLexemes) throws Exception {
 
-		Map<String, Object> paramMap;
-		String sql;
+		for (FullLexeme lexeme : allLexemes) {
+			List<LexemeClassifier> lexemeClassifiers = lexeme.getLexemeRegisters();
+			if (CollectionUtils.isNotEmpty(lexemeClassifiers)) {
+				for (LexemeClassifier lexemeClassifier : lexemeClassifiers) {
+					createLexemeRegister(sumLexemeId, lexemeClassifier.getCode());
+				}
+			}
+		}
+	}
 
-		paramMap = new HashMap<>();
-		paramMap.put("id", lexemeId);
-		sql = "select * from " + LEXEME + " where id = :id";
-		FullLexeme lexeme = basicDbService.getSingleResult(sql, paramMap, new FullLexemeRowMapper());
+	private void createLexemePoses(Long sumLexemeId, List<FullLexeme> allLexemes) throws Exception {
 
-		paramMap = new HashMap<>();
-		paramMap.put("lexemeId", lexemeId);
-		List<Freeform> freeforms = basicDbService.getResults(sqlSelectLexemeFreeforms, paramMap, new FreeformRowMapper());
-		lexeme.setFreeforms(freeforms);
+		for (FullLexeme lexeme : allLexemes) {
+			List<LexemeClassifier> lexemeClassifiers = lexeme.getLexemePoses();
+			if (CollectionUtils.isNotEmpty(lexemeClassifiers)) {
+				for (LexemeClassifier lexemeClassifier : lexemeClassifiers) {
+					createLexemePos(sumLexemeId, lexemeClassifier.getCode());
+				}
+			}
+		}
+	}
 
-		List<Freeform> children;
-		for (Freeform freeform : freeforms) {
-			if (freeform.isChildrenExist()) {
-				paramMap = new HashMap<>();
-				paramMap.put("freeformId", freeform.getFreeformId());
-				sql = "select ff.*, false as children_exist from " + FREEFORM + " ff where ff.parent_id = :freeformId order by ff.order_by";
-				children = basicDbService.getResults(sql, paramMap, new FreeformRowMapper());
-				freeform.setChildren(children);
+	private void createLexemeDerivs(Long sumLexemeId, List<FullLexeme> allLexemes) throws Exception {
+
+		for (FullLexeme lexeme : allLexemes) {
+			List<LexemeClassifier> lexemeClassifiers = lexeme.getLexemeDerivs();
+			if (CollectionUtils.isNotEmpty(lexemeClassifiers)) {
+				for (LexemeClassifier lexemeClassifier : lexemeClassifiers) {
+					createLexemeDeriv(sumLexemeId, lexemeClassifier.getCode());
+				}
+			}
+		}
+	}
+
+	private void createLexemeRegions(Long sumLexemeId, List<FullLexeme> allLexemes) throws Exception {
+
+		for (FullLexeme lexeme : allLexemes) {
+			List<LexemeClassifier> lexemeClassifiers = lexeme.getLexemeRegions();
+			if (CollectionUtils.isNotEmpty(lexemeClassifiers)) {
+				for (LexemeClassifier lexemeClassifier : lexemeClassifiers) {
+					createLexemeRegion(sumLexemeId, lexemeClassifier.getCode());
+				}
+			}
+		}
+	}
+
+	private void createLexemeSourceLinks(Long sumLexemeId, List<FullLexeme> allLexemes, Map<String, Count> countsMap) throws Exception {
+
+		Count sumLexemeSourceLinkCount = countsMap.get("sumLexemeSourceLinkCount");
+
+		for (FullLexeme lexeme : allLexemes) {
+			List<LexemeSourceLink> sourceLinks = lexeme.getLexemeSourceLinks();
+			if (CollectionUtils.isNotEmpty(sourceLinks)) {
+				for (LexemeSourceLink sourceLink : sourceLinks) {
+					Long sourceLinkId = createLexemeSourceLinkIfNotExists(sumLexemeId, sourceLink);
+					if (sourceLinkId != null) {
+						sumLexemeSourceLinkCount.increment();
+					}
+				}
+			}
+		}
+	}
+
+	private Long createLexemeSourceLinkIfNotExists(Long sumLexemeId, LexemeSourceLink sourceLink) throws Exception {
+
+		Long sourceId = sourceLink.getSourceId();
+		ReferenceType type = sourceLink.getType();
+		String name = sourceLink.getName();
+		String value = sourceLink.getValue();
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", sumLexemeId);
+		tableRowParamMap.put("source_id", sourceId);
+		tableRowParamMap.put("type", type.name());
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
+		if (StringUtils.isNotBlank(value)) {
+			tableRowParamMap.put("value", value);
+		}
+		Long sourceLinkId = basicDbService.createIfNotExists(LEXEME_SOURCE_LINK, tableRowParamMap);
+
+		if (sourceLinkId != null) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, sumLexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, value);
+		}
+
+		return sourceLinkId;
+	}
+
+	private void createLexemeRelations(Map<Long, Long> sumLexemeIdMap, List<LexemeRelation> lexemeRelations, Map<String, Count> countsMap) throws Exception {
+
+		logger.debug("Creating {} lexeme relations for {} lexemes", lexemeRelations.size(), sumLexemeIdMap.size());
+
+		Count sumLexemeRelationCount = countsMap.get("sumLexemeRelationCount");
+
+		for (LexemeRelation lexemeRelation : lexemeRelations) {
+			Long lexeme1Id = lexemeRelation.getLexeme1Id();
+			Long lexeme2Id = lexemeRelation.getLexeme2Id();
+			String lexemeRelationTypeCode = lexemeRelation.getLexemeRelationTypeCode();
+			Long sumLexeme1Id = sumLexemeIdMap.get(lexeme1Id);
+			Long sumLexeme2Id = sumLexemeIdMap.get(lexeme2Id);
+			Long lexemeRelationId = createLexemeRelation(sumLexeme1Id, sumLexeme2Id, lexemeRelationTypeCode);
+			if (lexemeRelationId != null) {
+				sumLexemeRelationCount.increment();
 			}
 		}
 
-		paramMap = new HashMap<>();
-		paramMap.put("lexemeId", lexemeId);
-		sql = "select lf.* from " + LEXEME_FREQUENCY + " lf where lf.lexeme_id = :lexemeId";
-		List<LexemeFrequency> lexemeFrequencies = basicDbService.getResults(sql, paramMap, new LexemeFrequencyRowMapper());
-		lexeme.setLexemeFrequencies(lexemeFrequencies);
-
-		return lexeme;
+		logger.debug("Done with lexeme relations");
 	}
 
 	class WordMeaningPair extends AbstractDataObject {
@@ -397,6 +670,16 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		private List<LexemeFrequency> lexemeFrequencies;
 
+		private List<LexemeClassifier> lexemeRegisters;
+
+		private List<LexemeClassifier> lexemePoses;
+
+		private List<LexemeClassifier> lexemeDerivs;
+
+		private List<LexemeClassifier> lexemeRegions;
+
+		private List<LexemeSourceLink> lexemeSourceLinks;
+
 		public List<Freeform> getFreeforms() {
 			return freeforms;
 		}
@@ -411,6 +694,46 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		public void setLexemeFrequencies(List<LexemeFrequency> lexemeFrequencies) {
 			this.lexemeFrequencies = lexemeFrequencies;
+		}
+
+		public List<LexemeClassifier> getLexemeRegisters() {
+			return lexemeRegisters;
+		}
+
+		public void setLexemeRegisters(List<LexemeClassifier> lexemeRegisters) {
+			this.lexemeRegisters = lexemeRegisters;
+		}
+
+		public List<LexemeClassifier> getLexemePoses() {
+			return lexemePoses;
+		}
+
+		public void setLexemePoses(List<LexemeClassifier> lexemePoses) {
+			this.lexemePoses = lexemePoses;
+		}
+
+		public List<LexemeClassifier> getLexemeDerivs() {
+			return lexemeDerivs;
+		}
+
+		public void setLexemeDerivs(List<LexemeClassifier> lexemeDerivs) {
+			this.lexemeDerivs = lexemeDerivs;
+		}
+
+		public List<LexemeClassifier> getLexemeRegions() {
+			return lexemeRegions;
+		}
+
+		public void setLexemeRegions(List<LexemeClassifier> lexemeRegions) {
+			this.lexemeRegions = lexemeRegions;
+		}
+
+		public List<LexemeSourceLink> getLexemeSourceLinks() {
+			return lexemeSourceLinks;
+		}
+
+		public void setLexemeSourceLinks(List<LexemeSourceLink> lexemeSourceLinks) {
+			this.lexemeSourceLinks = lexemeSourceLinks;
 		}
 
 	}

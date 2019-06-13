@@ -36,7 +36,11 @@ public class Freeform extends AbstractDataObject {
 
 	private boolean childrenExist;
 
+	private boolean sourceLinksExist;
+
 	private List<Freeform> children;
+
+	private List<FreeformSourceLink> sourceLinks;
 
 	public Long getFreeformId() {
 		return freeformId;
@@ -142,6 +146,14 @@ public class Freeform extends AbstractDataObject {
 		this.childrenExist = childrenExist;
 	}
 
+	public boolean isSourceLinksExist() {
+		return sourceLinksExist;
+	}
+
+	public void setSourceLinksExist(boolean sourceLinksExist) {
+		this.sourceLinksExist = sourceLinksExist;
+	}
+
 	public List<Freeform> getChildren() {
 		return children;
 	}
@@ -150,4 +162,11 @@ public class Freeform extends AbstractDataObject {
 		this.children = children;
 	}
 
+	public List<FreeformSourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	public void setSourceLinks(List<FreeformSourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
+	}
 }
