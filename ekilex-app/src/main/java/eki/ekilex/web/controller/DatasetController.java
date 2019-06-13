@@ -26,11 +26,10 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.CodeOriginTuple;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.editor.CodeOriginTupleEditor;
+import eki.ekilex.data.editor.ClassifierEditor;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
@@ -59,7 +58,7 @@ public class DatasetController implements WebConstant {
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(CodeOriginTuple.class, new CodeOriginTupleEditor());
+		binder.registerCustomEditor(Classifier.class, new ClassifierEditor());
 	}
 
 	@GetMapping(DICTIONARIES_URI)

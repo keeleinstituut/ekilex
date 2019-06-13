@@ -435,6 +435,17 @@ function openConfirmDlg(confirmQuestion, callback) {
 	});
 }
 
+function openWaitDlg(message = "Palun oodake") {
+	$("#waitMessage").text(message);
+	$("#waitDlg").modal("show");
+	$("body").css("cursor", "progress");
+}
+
+function closeWaitDlg() {
+	$("#waitDlg").modal("hide");
+	$("body").css("cursor", "default");
+}
+
 function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
 	var ul = $("<ul/>");
 	$.each(confirmQuestions, function(index, question) {

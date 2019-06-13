@@ -23,47 +23,50 @@ function initialise() {
 		$('#codeExistsError').hide();
 	});
 
-	//$('.classifier-select').selectpicker({width:'100%'});
-	$('.classifier-select').selectpicker();
+	$('.classifier-select').selectpicker({width:'100%'});
+	//$('.classifier-select').selectpicker();
 
 	//TODO - label texts to messages.properties
-	$('.domain-select').selectpicker('refresh').ajaxSelectPicker({
-		minLength : 3,
-		locale :  {
-			currentlySelected: 'Valitud',
-			emptyTitle: '** Tekst puudub **',
-			errorText: 'Viga otsingul',
-			searchPlaceholder: 'Sisesta otsitav valdkond...',
-			statusInitialized: '',
-			statusNoResults: 'Ei leitud midagi',
-			statusSearching: 'Oota...',
-			statusTooShort: 'Sisesta vähemalt 3 tähemärki'
-		},
+	$('.domain-select')
+		.selectpicker('refresh')
+		.selectpicker({width:'100%'})
+		.ajaxSelectPicker({
+			minLength : 3,
+			locale :  {
+				currentlySelected: 'Valitud',
+				emptyTitle: '** Tekst puudub **',
+				errorText: 'Viga otsingul',
+				searchPlaceholder: 'Sisesta otsitav valdkond...',
+				statusInitialized: '',
+				statusNoResults: 'Ei leitud midagi',
+				statusSearching: 'Oota...',
+				statusTooShort: 'Sisesta vähemalt 3 tähemärki'
+			},
 
-		ajax: {
-			url: applicationUrl + 'data/search_domains',
-			type: 'POST',
-			dataType: 'json',
-			data: {
-				searchText: '{{{q}}}'
-			}
-		},
-		preprocessData: function (data) {
-			var i, l = data.length, dropdownValues = [];
-			if (l) {
-				for (i = 0; i < l; i++) {
-					dropdownValues.push($.extend(true, data[i], {
-						text : data[i].value,
-						value: data[i].code + "|" + data[i].origin,
-						data : {
-							subtext: data[i].origin
-						}
-					}));
+			ajax: {
+				url: applicationUrl + 'data/search_domains',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					searchText: '{{{q}}}'
 				}
-			}
+			},
+			preprocessData: function (data) {
+				var i, l = data.length, dropdownValues = [];
+				if (l) {
+					for (i = 0; i < l; i++) {
+						dropdownValues.push($.extend(true, data[i], {
+							text : data[i].value,
+							value: JSON.stringify(data[i]),
+							data : {
+								subtext: data[i].origin
+							}
+						}));
+					}
+				}
 
-			return dropdownValues;
-		}
+				return dropdownValues;
+			}
 
 	});
 }
@@ -74,15 +77,18 @@ function isValidDatasetCodeFormat(code) {
 }
 
 function deleteDataset(datasetCode) {
+	openWaitDlg("Palun oodake, sõnakogu kustutamine on pooleli");
 	let deleteUrl = applicationUrl + 'delete_dictionary/' + datasetCode;
 
 	$.get(deleteUrl).done(function (data) {
+		closeWaitDlg();
 		if (data === 'OK') {
 			window.location = applicationUrl + 'dictionaries';
 		} else {
 			openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		}
 	}).fail(function (data) {
+		closeWaitDlg();
 		openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		console.log(data);
 	});

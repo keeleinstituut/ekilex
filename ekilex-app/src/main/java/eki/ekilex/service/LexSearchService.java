@@ -27,6 +27,8 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
+import eki.ekilex.data.Image;
+import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
@@ -282,6 +284,8 @@ public class LexSearchService extends AbstractSearchService {
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
+		List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
+		List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
 		List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 		List<FreeForm> lexemePublicNotes = commonDataDbService.getLexemePublicNotes(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
@@ -306,6 +310,7 @@ public class LexSearchService extends AbstractSearchService {
 		lexeme.setDefinitions(definitions);
 		lexeme.setMeaningFreeforms(meaningFreeforms);
 		lexeme.setMeaningLearnerComments(meaningLearnerComments);
+		lexeme.setMeaningImages(meaningImages);
 		lexeme.setLexemeFreeforms(lexemeFreeforms);
 		lexeme.setLexemePublicNotes(lexemePublicNotes);
 		lexeme.setGovernments(governments);

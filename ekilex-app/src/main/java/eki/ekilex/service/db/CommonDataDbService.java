@@ -43,11 +43,10 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
@@ -68,6 +67,7 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
+import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
@@ -400,6 +400,33 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(NoteSourceTuple.class);
 	}
 
+	public List<ImageSourceTuple> getMeaningImageSourceTuples(Long meaningId) {
+
+		Freeform iff = FREEFORM.as("iff");
+		Freeform tff = FREEFORM.as("tff");
+
+		return create
+				.select(
+						iff.ID.as("image_freeform_id"),
+						iff.VALUE_TEXT.as("image_freeform_value_text"),
+						tff.VALUE_TEXT.as("title_freeform_value_text"),
+						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
+						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
+						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
+						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"))
+				.from(
+						MEANING_FREEFORM,
+						iff
+								.leftOuterJoin(tff).on(tff.PARENT_ID.eq(iff.ID).and(tff.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
+								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(iff.ID)))
+				.where(
+						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
+								.and(iff.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
+								.and(iff.TYPE.eq(FreeformType.IMAGE_FILE.name())))
+				.orderBy(iff.ORDER_BY)
+				.fetchInto(ImageSourceTuple.class);
+	}
+
 	public List<Classifier> getMeaningDomains(Long meaningId) {
 
 		return create
@@ -720,28 +747,23 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 	public void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
 
+		//TODO - study array_add possibility in jooq
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
-		String[] existingDatasets = classifier.getDatasets();
-		List<String> existingDatasetsList = new LinkedList<>(Arrays.asList(existingDatasets));
 
-		existingDatasetsList.add(datasetCode);
-		String[] datasets = new String[existingDatasetsList.size()];
-		datasets = existingDatasetsList.toArray(datasets);
+		String[] classiferDatasets = classifier.getDatasets();
+		classiferDatasets = ArrayUtils.add(classiferDatasets, datasetCode);
 
-		updateClassiferDatasets(classifierName, classifierCode, datasets);
+		updateClassiferDatasets(classifierName, classifierCode, classiferDatasets);
 	}
 
 	public void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
 
+		//TODO study array_remove option
 		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
-		String[] existingDatasets = classifier.getDatasets();
-		List<String> existingDatasetsList = new LinkedList<>(Arrays.asList(existingDatasets));
+		String[] classifierDatasetCodes = classifier.getDatasets();
+		classifierDatasetCodes = ArrayUtils.removeElement(classifierDatasetCodes, datasetCode);
 
-		existingDatasetsList.remove(datasetCode);
-		String[] datasets = new String[existingDatasetsList.size()];
-		datasets = existingDatasetsList.toArray(datasets);
-
-		updateClassiferDatasets(classifierName, classifierCode, datasets);
+		updateClassiferDatasets(classifierName, classifierCode, classifierDatasetCodes);
 	}
 
 	private void updateClassiferDatasets(ClassifierName classifierName, String code, String[] datasets) {
@@ -778,14 +800,14 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		if (ClassifierName.LANGUAGE.equals(name)) {
 
 			return create
-					.select(LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
+					.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
 					.from(LANGUAGE)
 					.where(LANGUAGE.CODE.eq(classifierCode))
 					.fetchSingleInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(name)) {
 
 			return create
-					.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
+					.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
 					.from(DOMAIN)
 					.where(DOMAIN.CODE.eq(classifierCode))
 					.and(DOMAIN.ORIGIN.eq(origin))
@@ -793,7 +815,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		} else if (ClassifierName.PROCESS_STATE.equals(name)) {
 
 			return create
-					.select(PROCESS_STATE.CODE, PROCESS_STATE.DATASETS, PROCESS_STATE.ORDER_BY)
+					.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.DATASETS, PROCESS_STATE.ORDER_BY)
 					.from(PROCESS_STATE)
 					.where(PROCESS_STATE.CODE.eq(classifierCode))
 					.fetchSingleInto(Classifier.class);
@@ -805,21 +827,21 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	}
 
 	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
-
+		String[] datasetCodeParam = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			return create.select(LANGUAGE.CODE, LANGUAGE.ORDER_BY, LANGUAGE.ORDER_BY)
+			return create.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE.ORDER_BY, LANGUAGE.ORDER_BY)
 					.from(LANGUAGE)
-					.where(LANGUAGE.DATASETS.contains(new String[] {datasetCode}))
+					.where(LANGUAGE.DATASETS.contains(datasetCodeParam))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-			return create.select(PROCESS_STATE.CODE, PROCESS_STATE.ORDER_BY, PROCESS_STATE.ORDER_BY)
+			return create.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.ORDER_BY, PROCESS_STATE.ORDER_BY)
 					.from(PROCESS_STATE)
-					.where(PROCESS_STATE.DATASETS.contains(new String[] {datasetCode}))
+					.where(PROCESS_STATE.DATASETS.contains(datasetCodeParam))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-			return create.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY, DOMAIN.ORDER_BY)
+			return create.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY)
 					.from(DOMAIN)
-					.where(DOMAIN.DATASETS.contains(new String[] {datasetCode}))
+					.where(DOMAIN.DATASETS.contains(datasetCodeParam))
 					.fetchInto(Classifier.class);
 		}
 
@@ -851,4 +873,5 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.from(DOMAIN_LABEL)
 				.where(DOMAIN_LABEL.CODE.eq(code)).and(DOMAIN_LABEL.ORIGIN.eq(origin)).fetchInto(String.class);
 	}
+
 }

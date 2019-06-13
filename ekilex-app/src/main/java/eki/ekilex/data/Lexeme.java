@@ -75,6 +75,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Usage> usages;
 
+	private List<Image> images;
+
 	private List<FreeForm> freeforms;
 
 	private List<Note> publicNotes;
@@ -269,6 +271,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
+	}
+
+	public List<Image> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 
 	public List<FreeForm> getFreeforms() {

@@ -18,11 +18,11 @@ public class Dataset extends AbstractDataObject {
 
 	private boolean isPublic;
 
-	private List<String> selectedLanguageCodes;
+	private List<Classifier> selectedDomains;
 
-	private List<CodeOriginTuple> selectedDomainCodeOriginPairs;
+	private List<Classifier> selectedLanguages;
 
-	private List<String> selectedProcessStateCodes;
+	private List<Classifier> selectedProcessStates;
 
 	public String getCode() {
 		return code;
@@ -64,27 +64,27 @@ public class Dataset extends AbstractDataObject {
 		isPublic = aPublic;
 	}
 
-	public List<String> getSelectedLanguageCodes() {
-		return selectedLanguageCodes;
+	public List<Classifier> getSelectedDomains() {
+		return selectedDomains;
 	}
 
-	public void setSelectedLanguageCodes(List<String> selectedLanguageCodes) {
-		this.selectedLanguageCodes = selectedLanguageCodes;
+	public void setSelectedDomains(List<Classifier> selectedDomains) {
+		this.selectedDomains = selectedDomains;
 	}
 
-	public List<String> getSelectedProcessStateCodes() {
-		return selectedProcessStateCodes;
+	public List<Classifier> getSelectedLanguages() {
+		return selectedLanguages;
 	}
 
-	public void setSelectedProcessStateCodes(List<String> selectedProcessStateCodes) {
-		this.selectedProcessStateCodes = selectedProcessStateCodes;
+	public void setSelectedLanguages(List<Classifier> selectedLanguages) {
+		this.selectedLanguages = selectedLanguages;
 	}
 
-	public List<CodeOriginTuple> getSelectedDomainCodeOriginPairs() {
-		return selectedDomainCodeOriginPairs;
+	public List<Classifier> getSelectedProcessStates() {
+		return selectedProcessStates;
 	}
 
-	public void setSelectedDomainCodeOriginPairs(List<CodeOriginTuple> selectedDomainCodeOriginPairs) {
-		this.selectedDomainCodeOriginPairs = selectedDomainCodeOriginPairs;
+	public void setSelectedProcessStates(List<Classifier> selectedProcessStates) {
+		this.selectedProcessStates = selectedProcessStates;
 	}
 }

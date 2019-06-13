@@ -26,7 +26,7 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
-                <select  name="selectedDomainCodeOriginPairs" class="domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
+                <select  name="selectedDomains" class="domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
                 </select>
               </div>
             </div>
@@ -34,9 +34,9 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.languages}">Keeled</label>
               <div class="col-md-12">
-                <select  name="selectedLanguageCodes" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.language}">
+                <select  name="selectedLanguages" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.language}">
                   <th:block th:each="language: ${languages}">
-                    <option th:value="${language.code}" th:text="${language.value}"/>
+                    <option th:value="${language.toIdString()}" th:text="${language.value}"/>
                   </th:block>
                 </select>
               </div>
@@ -45,9 +45,9 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.processstates}">Protsessiolekud</label>
               <div class="col-md-12">
-                <select  name="selectedProcessStateCodes" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.processstate}">
+                <select  name="selectedProcessStates" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.processstate}">
                   <th:block th:each="processState: ${processStates}">
-                    <option th:value="${processState.code}" th:text="${processState.value}"/>
+                    <option th:value="${processState.toIdString()}" th:text="${processState.value}"/>
                   </th:block>
                 </select>
               </div>
@@ -96,10 +96,10 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
-                <select  name="selectedDomainCodeOriginPairs" class="domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
-                  <option th:each="selectedDomain : ${thisDataset.selectedDomainCodeOriginPairs}"
+                <select  name="selectedDomains" class="domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
+                  <option th:each="selectedDomain : ${thisDataset.selectedDomains}"
                           th:data-subtext="${selectedDomain.origin}" selected="selected"
-                          th:value="${selectedDomain.code + '|' + selectedDomain.origin}" th:text="${selectedDomain.value}"/>
+                          th:value="${selectedDomain.toIdString()}" th:text="${selectedDomain.value}"/>
                 </select>
               </div>
             </div>
@@ -107,10 +107,10 @@
             <div class="form-group row">
                 <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.languages}">Keeled</label>
                 <div class="col-md-12">
-                  <select name="selectedLanguageCodes"  class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.language}">
+                  <select name="selectedLanguages"  class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.language}">
                     <th:block th:each="language: ${languages}">
-                      <option th:value="${language.code}" th:text="${language.value}"
-                        th:selected="${#lists.contains(thisDataset.selectedLanguageCodes, language.code)}"/>
+                      <option th:value="${language.toIdString()}" th:text="${language.value}"
+                        th:selected="${#lists.contains(thisDataset.selectedLanguages, language)}"/>
                     </th:block>
                   </select>
                 </div>
@@ -119,10 +119,10 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.processstates}">Protsessiolekud</label>
               <div class="col-md-12">
-                <select  name="selectedProcessStateCodes" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.processstate}">
+                <select  name="selectedProcessStates" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.processstate}">
                   <th:block th:each="processState: ${processStates}">
-                    <option th:value="${processState.code}" th:text="${processState.value}"
-                            th:selected="${thisDataset.selectedProcessStateCodes != null && #lists.contains(thisDataset.selectedProcessStateCodes, processState.code)}"/>
+                    <option th:value="${processState.toIdString()}" th:text="${processState.value}"
+                            th:selected="${thisDataset.selectedProcessStates != null && #lists.contains(thisDataset.selectedProcessStates, processState)}"/>
                   </th:block>
                 </select>
               </div>
