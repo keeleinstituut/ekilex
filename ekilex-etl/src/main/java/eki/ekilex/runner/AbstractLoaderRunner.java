@@ -1234,7 +1234,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return refLinkId;
 	}
 
-	protected void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) throws Exception {
+	protected Long createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) throws Exception {
 
 		Map<String, Object> relationParams = new HashMap<>();
 		relationParams.put("lexeme1_id", lexemeId1);
@@ -1245,6 +1245,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		if (lexemeRelationId != null) {
 			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId1, LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
 		}
+		return lexemeRelationId;
 	}
 
 	protected boolean hasNoWordRelationGroupWithMembers(WordRelationGroupType groupType, List<Long> memberIds) throws Exception {

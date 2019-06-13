@@ -122,6 +122,7 @@ public class CommonDataService implements SystemConstant {
 		return commonDataDbService.getProcessStates();
 	}
 
+	@Transactional
 	public List<Classifier> getClassifiers(ClassifierName classifierName) {
 		if (classifierName == null) {
 			return null;
