@@ -21,6 +21,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.UserRole;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
@@ -43,10 +44,14 @@ public abstract class AbstractSearchController extends AbstractPageController {
 
 	@ModelAttribute("datasetDomains")
 	public Map<String,List<Classifier>> getDatasetDomains(Model model) {
-		SessionBean sessionBean = getSessionBean(model);
 
-		if (sessionBean.getUserRole() != null) {
-			return commonDataService.getUserDomainsByOrigin(sessionBean.getUserRole());
+		UserRole role = getSessionBean(model).getUserRole();
+		if (role != null) {
+			if (role.isAdmin()) {
+				return commonDataService.getAllDomainsByOrigin();
+			} else if (role.getDatasetPermission() != null) {
+				return commonDataService.getDatasetDomainsByOrigin(role.getDatasetPermission().getDatasetCode());
+			}
 		}
 		return new HashMap<>();
 	}
