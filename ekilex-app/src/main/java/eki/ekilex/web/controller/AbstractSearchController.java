@@ -2,6 +2,7 @@ package eki.ekilex.web.controller;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -122,8 +123,17 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	}
 
 	@ModelAttribute("processStates")
-	public List<Classifier> getProcessStates() {
-		return commonDataService.getProcessStates();
+	public List<Classifier> getProcessStates(Model model) {
+
+		UserRole role = getSessionBean(model).getUserRole();
+		if (role != null) {
+			if (role.isAdmin()) {
+				return commonDataService.getProcessStates();
+			} else if (role.getDatasetPermission() != null) {
+				return commonDataService.getProcessStatesByDataset(role.getDatasetPermission().getDatasetCode());
+			}
+		}
+		return new ArrayList<>();
 	}
 
 	protected SessionBean getSessionBean(Model model) {

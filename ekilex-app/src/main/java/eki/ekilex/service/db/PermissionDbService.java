@@ -203,6 +203,10 @@ public class PermissionDbService implements SystemConstant {
 				.execute();
 	}
 
+	public void deleteDatasetPermissions(String datasetCode) {
+		create.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode)).execute();
+	}
+
 	public void deleteDatasetPermission(Long datasetPermissionId) {
 
 		create.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.ID.eq(datasetPermissionId)).execute();

@@ -13,6 +13,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.DatasetDbService;
+import eki.ekilex.service.db.PermissionDbService;
 
 @Component
 public class DatasetService implements SystemConstant {
@@ -22,6 +23,9 @@ public class DatasetService implements SystemConstant {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
+
+	@Autowired
+	private PermissionDbService permissionDbService;
 
 
 	@Transactional
@@ -99,6 +103,7 @@ public class DatasetService implements SystemConstant {
 		removeDatasetClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
 		removeDatasetClassifiers(ClassifierName.DOMAIN, datasetCode);
 
+		permissionDbService.deleteDatasetPermissions(datasetCode);
 		datasetDbService.deleteDataset(datasetCode);
 	}
 

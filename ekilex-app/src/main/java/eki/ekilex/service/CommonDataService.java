@@ -131,6 +131,11 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<Classifier> getProcessStatesByDataset(String datasetCode) {
+		return commonDataDbService.getDatasetClassifiers(ClassifierName.PROCESS_STATE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
 	public List<Classifier> getClassifiers(ClassifierName classifierName) {
 		if (classifierName == null) {
 			return null;
