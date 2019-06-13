@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -25,6 +24,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractSearchController extends AbstractPageController {
 
@@ -41,9 +41,14 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return commonDataService.getDomainsInUseByOrigin();
 	}
 
-	@ModelAttribute("allDomains")
-	public Map<String,List<Classifier>> getAllDomains() {
-		return commonDataService.getAllDomainsByOrigin();
+	@ModelAttribute("datasetDomains")
+	public Map<String,List<Classifier>> getDatasetDomains(Model model) {
+		SessionBean sessionBean = getSessionBean(model);
+
+		if (sessionBean.getUserRole() != null) {
+			return commonDataService.getUserDomainsByOrigin(sessionBean.getUserRole());
+		}
+		return new HashMap<>();
 	}
 
 	@ModelAttribute("lexemeFrequencyGroups")

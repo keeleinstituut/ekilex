@@ -78,6 +78,8 @@ $(document).on("change", "select.common-word-dataset-select[name='dataset']", fu
 		permLanguageSelect.empty();
 	}
 });
+
+
 $(document).on("change", ".required-field", function() {
 	if ($(this).val()) {
 		$(this).removeClass('is-invalid');

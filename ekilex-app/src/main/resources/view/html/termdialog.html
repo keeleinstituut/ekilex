@@ -154,9 +154,9 @@
             </div>
             <div th:id="${'meaning_domain_' + meaningId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
-                <select required class="form-control value-select required-field">
+                <select required class="form-control value-select required-field term-domain-select">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+                  <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                   </optgroup>
                 </select>
@@ -326,7 +326,7 @@
             <div class="col-md-12">
               <select required class="form-control value-select">
                 <option value="" hidden disabled selected>vali väärtus...</option>
-                <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+                <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                 </optgroup>
               </select>
@@ -349,7 +349,7 @@
             <input type="hidden" name="opCode" value="meaning_domain">
             <input type="hidden" name="currentValue" th:value="${classif.toIdString()}">
             <select class="form-control" name="value">
-              <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+              <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
                         th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"

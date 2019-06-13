@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import static java.util.stream.Collectors.groupingBy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import eki.common.constant.ClassifierName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.UserRole;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.db.CommonDataDbService;
 
@@ -46,9 +48,17 @@ public class CommonDataService implements SystemConstant {
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
+
 	@Transactional
-	public Map<String, List<Classifier>> getAllDomainsByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomains();
+	public Map<String, List<Classifier>> getUserDomainsByOrigin(UserRole role) {
+		List<Classifier> domains = new ArrayList<>();
+		if (role.isAdmin()) {
+			domains = commonDataDbService.getDomains();
+		} else if (role.getDatasetPermission() != null) {
+			domains = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, role.getDatasetPermission().getDatasetCode(),
+					CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		}
+
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 

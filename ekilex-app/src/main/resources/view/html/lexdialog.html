@@ -88,7 +88,7 @@
               <div class="col-md-12">
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+                  <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                   </optgroup>
                 </select>
@@ -853,7 +853,7 @@
             <input type="hidden" name="opCode" value="meaning_domain">
             <input type="hidden" name="currentValue" th:value="${classif.toIdString()}">
             <select class="form-control" name="value">
-              <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+              <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
                         th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"

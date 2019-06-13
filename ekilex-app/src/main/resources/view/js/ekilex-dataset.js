@@ -27,7 +27,7 @@ function initialise() {
 	//$('.classifier-select').selectpicker();
 
 	//TODO - label texts to messages.properties
-	$('.domain-select')
+	$('.dataset-domain-select')
 		.selectpicker('refresh')
 		.selectpicker({width:'100%'})
 		.ajaxSelectPicker({
