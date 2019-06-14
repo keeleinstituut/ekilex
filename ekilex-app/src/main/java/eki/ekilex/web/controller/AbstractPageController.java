@@ -20,6 +20,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.PermDataUtil;
 
 public abstract class AbstractPageController implements WebConstant {
 
@@ -31,6 +32,9 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@Autowired
 	protected PermissionService permissionService;
+
+	@Autowired
+	protected PermDataUtil permDataUtil;
 
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {
@@ -49,9 +53,10 @@ public abstract class AbstractPageController implements WebConstant {
 	public List<Classifier> getUserPermLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 		String newWordSelectedDataset = sessionBean.getNewWordSelectedDataset();
 		if (StringUtils.isNotBlank(newWordSelectedDataset)) {
-			EkiUser user = userService.getAuthenticatedUser();
-			Long userId = user.getId();
-			return permissionService.getUserDatasetLanguages(userId, newWordSelectedDataset);
+			//EkiUser user = userService.getAuthenticatedUser();
+			//Long userId = user.getId();
+			//return permissionService.getUserDatasetLanguages(userId, newWordSelectedDataset);
+			return permDataUtil.getUserPermLanguages(newWordSelectedDataset);
 		}
 		return Collections.emptyList();
 	}

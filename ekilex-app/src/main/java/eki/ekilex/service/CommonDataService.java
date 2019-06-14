@@ -198,4 +198,9 @@ public class CommonDataService implements SystemConstant {
 		return commonDataDbService.findDomainsByValue(searchValue);
 	}
 
+	@Transactional
+	public List<Classifier> getDatasetLanguages(String datasetCode) {
+		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
 }

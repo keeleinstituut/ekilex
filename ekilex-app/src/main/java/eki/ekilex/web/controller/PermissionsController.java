@@ -24,6 +24,7 @@ import eki.ekilex.data.EkiUserPermData;
 import eki.ekilex.service.MaintenanceService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
+import eki.ekilex.web.util.PermDataUtil;
 
 @ConditionalOnWebApplication
 @Controller
@@ -37,6 +38,9 @@ public class PermissionsController extends AbstractPageController {
 
 	@Autowired
 	private PermissionService permissionService;
+
+	@Autowired
+	private PermDataUtil permDataUtil;
 
 	@Autowired
 	private MaintenanceService maintenanceService;
@@ -137,9 +141,7 @@ public class PermissionsController extends AbstractPageController {
 	}
 
 	private void populateUserPermLanguagesModel(String datasetCode, Model model) {
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
-		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
+		List<Classifier> userPermLanguages = permDataUtil.getUserPermLanguages(datasetCode);
 		model.addAttribute("userPermLanguages", userPermLanguages);
 	}
 

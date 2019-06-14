@@ -149,6 +149,8 @@ public class PermissionDbService implements SystemConstant {
 								DATASET_PERMISSION.USER_ID.eq(userId)
 										.and(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode))
 										.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(LANGUAGE.CODE)))));
+
+
 		return create
 				.select(
 						DSL.field(DSL.value(ClassifierName.LANGUAGE.name())).as("name"),
@@ -159,7 +161,7 @@ public class PermissionDbService implements SystemConstant {
 						LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
 								.and(LANGUAGE_LABEL.LANG.eq(classifierLabelLang))
 								.and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode))
-								.and(DSL.or(userIsAdminCond, datasetPermCond)))
+								.and(DSL.or(userIsAdminCond, DSL.and(datasetPermCond))))
 				.orderBy(LANGUAGE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
