@@ -34,6 +34,25 @@ $(document).on("click", ":input[name='userAdminCheck']", function() {
 	});
 });
 
+$(document).on("change", ".perm-dataset-code", function() {
+	var datasetCode = $(this).val();
+	var $languages = $(this).closest('form').find('[name="authLang"]');
+
+	let getDatasetLanguagesUrl = applicationUrl + 'permissions/dataset_languages/' + datasetCode;
+	$.get(getDatasetLanguagesUrl).done(function (response) {
+		$languages.empty();
+		var datasetLanguages = JSON.parse(response);
+		$.each(datasetLanguages, function (index, language) {
+			$languages.append($("<option></option>")
+				.attr("value", language.code).text(language.value));
+		});
+
+	}).fail(function (response) {
+		console.log(response);
+		openAlertDlg("Andmekogu keelte päring ebaõnnestus");
+	});
+});
+
 function deleteDatasetPermission(datasetPermId) {
 	var deleteDatasetPermUrl = applicationUrl + 'permissions/deletedatasetperm/' + datasetPermId;
 	$.get(deleteDatasetPermUrl).done(function(data) {

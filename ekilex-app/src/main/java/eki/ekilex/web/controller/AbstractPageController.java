@@ -53,9 +53,6 @@ public abstract class AbstractPageController implements WebConstant {
 	public List<Classifier> getUserPermLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 		String newWordSelectedDataset = sessionBean.getNewWordSelectedDataset();
 		if (StringUtils.isNotBlank(newWordSelectedDataset)) {
-			//EkiUser user = userService.getAuthenticatedUser();
-			//Long userId = user.getId();
-			//return permissionService.getUserDatasetLanguages(userId, newWordSelectedDataset);
 			return permDataUtil.getUserPermLanguages(newWordSelectedDataset);
 		}
 		return Collections.emptyList();

@@ -21,10 +21,12 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserPermData;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.MaintenanceService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.util.PermDataUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -41,6 +43,10 @@ public class PermissionsController extends AbstractPageController {
 
 	@Autowired
 	private PermDataUtil permDataUtil;
+
+	@Autowired
+	private CommonDataService commonDataService;
+
 
 	@Autowired
 	private MaintenanceService maintenanceService;
@@ -151,5 +157,16 @@ public class PermissionsController extends AbstractPageController {
 
 		permissionService.sendPermissionsEmail(userEmail);
 		return "OK";
+	}
+
+	@ResponseBody
+	@GetMapping(PERMISSIONS_URI + "/dataset_languages/{datasetCode}")
+	public String getDataSetLanguages(@PathVariable String datasetCode) throws Exception {
+
+		List<Classifier> userLanguages = commonDataService.getDatasetLanguages(datasetCode);
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(userLanguages);
+
 	}
 }

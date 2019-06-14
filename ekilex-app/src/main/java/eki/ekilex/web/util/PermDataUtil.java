@@ -27,6 +27,7 @@ public class PermDataUtil {
 	public List<Classifier> getUserPermLanguages(String datasetCode) {
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
+
 		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
 		List<Classifier> datasetLanguages = commonDataService.getDatasetLanguages(datasetCode);
 
