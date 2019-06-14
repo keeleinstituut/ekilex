@@ -311,7 +311,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	public Word getWord(Long wordId) {
 		return create.select(
 				WORD.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("word"),
+				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word"),
 				WORD.HOMONYM_NR,
 				WORD.LANG,
 				WORD.WORD_CLASS,

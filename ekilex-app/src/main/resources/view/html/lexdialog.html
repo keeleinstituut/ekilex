@@ -685,6 +685,38 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editWordValueDlg_' + wordId}" class="modal" role="dialog" th:fragment="edit_word_value_dlg">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_word_value}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="wordId" th:value="${wordId}">
+            <input type="hidden" name="value" th:value="${details.word.value}">
+            <div class="form-group row eki-editor">
+              <div class="col-md-12 pb-3">
+                <div class="float-right">
+                  <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgend</button>
+                  <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgend</button>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div contenteditable="true" name="editFld" class="edit-area form-control required-field"></div>
+                <div class="eki-editor-menu">
+                  <select class="eki-tag-select" size="6">
+                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button name="saveWordValueBtn" type="button" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editWordGenderDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_gender_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -693,7 +725,7 @@
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_gender">
             <select required class="form-control" name="value">
-              <option th:each="item : ${wordGenders}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.wordGenderCode}">value</option>
+              <option th:each="item : ${wordGenders}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.word.genderCode}">value</option>
             </select>
           </div>
         </form>
@@ -708,7 +740,7 @@
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_aspect">
             <select required class="form-control" name="value">
-              <option th:each="item : ${wordAspects}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.wordAspectCode}">value</option>
+              <option th:each="item : ${wordAspects}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.word.aspectCode}">value</option>
             </select>
           </div>
         </form>

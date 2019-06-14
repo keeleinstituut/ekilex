@@ -253,6 +253,17 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
+	public void updateWordValue(Long wordId, String value, String valuePrese) {
+		create.update(FORM)
+				.set(FORM.VALUE, value)
+				.set(FORM.VALUE_PRESE, valuePrese)
+				.from(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.execute();
+	}
+
 	public void updateWordGender(Long wordId, String genderCode) {
 		create.update(WORD)
 				.set(WORD.GENDER_CODE, genderCode)

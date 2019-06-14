@@ -518,12 +518,22 @@
             <div th:replace="termdialog :: edit_lexeme_process_state_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_frequency_group_dlg"></div>
+            <div th:replace="termdialog :: edit_word_value_dlg"></div>
             <div th:replace="termdialog :: edit_word_gender_dlg"></div>
 
             <div class="card-body" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
-                  <span th:text="${lexeme.word}" class="ttl"></span>
+                  <div class="hidden-buttons">
+                    <span th:id="${'word-value-' + lexeme.wordId}" th:utext="${lexeme.word}" class="ttl word-value"></span>
+                    <button type="button" class="btn badge badge-primary"
+                            title="Muuda"
+                            data-toggle="modal"
+                            th:data-target="${'#editWordValueDlg_' + lexeme.wordId}"
+                            sec:authorize="${#vars.isWordCrudGranted}">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                  </div>
                   <span th:text="${lexeme.homonymNumber}" class="pl-1"></span>
                   <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}" class="pl-1"></span>
                 </div>

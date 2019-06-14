@@ -536,4 +536,14 @@ public class EditController implements WebConstant {
 		return null;
 	}
 
+	@PostMapping(UPDATE_WORD_VALUE_URI)
+	@ResponseBody
+	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String valuePrese) {
+
+		valuePrese = textDecorationService.cleanEkiElementHtmlMarkup(valuePrese);
+		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, valuePrese);
+		cudService.updateWordValue(wordId, valuePrese);
+		return valuePrese;
+	}
+
 }

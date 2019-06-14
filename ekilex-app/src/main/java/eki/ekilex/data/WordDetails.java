@@ -8,13 +8,9 @@ public class WordDetails extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Word word;
+
 	private List<Classifier> wordTypes;
-
-	private String wordClass;
-
-	private String wordGenderCode;
-
-	private String wordAspectCode;
 
 	private List<Paradigm> paradigms;
 
@@ -29,36 +25,20 @@ public class WordDetails extends AbstractDataObject {
 	public WordDetails() {
 	}
 
+	public Word getWord() {
+		return word;
+	}
+
+	public void setWord(Word word) {
+		this.word = word;
+	}
+
 	public List<Classifier> getWordTypes() {
 		return wordTypes;
 	}
 
 	public void setWordTypes(List<Classifier> wordTypes) {
 		this.wordTypes = wordTypes;
-	}
-
-	public String getWordClass() {
-		return wordClass;
-	}
-
-	public void setWordClass(String wordClass) {
-		this.wordClass = wordClass;
-	}
-
-	public String getWordGenderCode() {
-		return wordGenderCode;
-	}
-
-	public void setWordGenderCode(String wordGenderCode) {
-		this.wordGenderCode = wordGenderCode;
-	}
-
-	public String getWordAspectCode() {
-		return wordAspectCode;
-	}
-
-	public void setWordAspectCode(String wordAspectCode) {
-		this.wordAspectCode = wordAspectCode;
 	}
 
 	public List<Paradigm> getParadigms() {

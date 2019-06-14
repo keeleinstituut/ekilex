@@ -108,6 +108,8 @@ public interface WebConstant {
 
 	String UPDATE_LEVELS_URI = "/update_levels";
 
+	String UPDATE_WORD_VALUE_URI = "/update_word_value";
+
 	String DELETE_ITEM_URI = "/delete_item";
 
 	String CONFIRM_OP_URI = "/confirm_op";
