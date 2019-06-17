@@ -51,13 +51,13 @@ function initialiseSearchForm() {
 		datasetDlg.find('.btn').first().focus();
 	});
 
-	$('#searchForm').submit(function(e){
-		let currentSearchMode = $('#searchMode').val();
-		if (currentSearchMode === 'SIMPLE') {
-			e.preventDefault();
-			validateAndSubmitSimpleSearch();
-		}
-	});
+	// $('#searchForm').submit(function(e){
+	// 	let currentSearchMode = $('#searchMode').val();
+	// 	if (currentSearchMode === 'SIMPLE') {
+	// 		e.preventDefault();
+	// 		validateAndSubmitSimpleSearch();
+	// 	}
+	// });
 }
 
 function validateAndSubmitSimpleSearch() {
