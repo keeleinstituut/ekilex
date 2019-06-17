@@ -240,12 +240,12 @@
       </span>
     </div>
   </div>
-  <div class="row mr-0 hidden-buttons" th:if="${details.wordGenderCode != null}" th:fragment="word_gender">
+  <div class="row mr-0 hidden-buttons" th:if="${details.word.genderCode != null}" th:fragment="word_gender">
     <div class="col pr-0 col-w7rem">
       <span class="lbl">Sugu</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordGenderCode, wordGenders)}"></span>
+      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.genderCode, wordGenders)}"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"
@@ -294,12 +294,12 @@
       </span>
     </div>
   </div>
-  <div class="row mr-0 hidden-buttons" th:if="${details.wordAspectCode != null}" th:fragment="word_aspect">
+  <div class="row mr-0 hidden-buttons" th:if="${details.word.aspectCode != null}" th:fragment="word_aspect">
     <div class="col pr-0 col-w7rem">
       <span class="lbl">Aspekt</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordAspectCode, wordAspects)}"></span>
+      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.aspectCode, wordAspects)}"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"
