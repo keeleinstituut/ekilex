@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
@@ -258,36 +259,33 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected void deleteDatasetData(String dataset) throws Exception {
 
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("dataset", dataset);
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("dataset", dataset);
 
-		List<Long> wordIdsLex = basicDbService.queryList(sqls.getSqlSelectWordIdsForDatasetByLexeme(), tableRowParamMap, Long.class);
-		List<Long> wordIdsGuid = basicDbService.queryList(sqls.getSqlSelectWordIdsForDatasetByGuid(), tableRowParamMap, Long.class);
+		List<Long> wordIdsLex = basicDbService.queryList(sqls.getSqlSelectWordIdsForDatasetByLexeme(), paramMap, Long.class);
+		List<Long> wordIdsGuid = basicDbService.queryList(sqls.getSqlSelectWordIdsForDatasetByGuid(), paramMap, Long.class);
 		List<Long> wordIds = new ArrayList<>();
 		wordIds.addAll(wordIdsLex);
 		wordIds.addAll(wordIdsGuid);
 		wordIds = wordIds.stream().distinct().collect(Collectors.toList());
 		logger.debug("There are {} words in \"{}\" to be deleted - {} by lexemes, {} by guids", wordIds.size(), dataset, wordIdsLex.size(), wordIdsGuid.size());
 
-		List<Long> meaningIds = basicDbService.queryList(sqls.getSqlSelectMeaningIdsForDataset(), tableRowParamMap, Long.class);
+		List<Long> meaningIds = basicDbService.queryList(sqls.getSqlSelectMeaningIdsForDataset(), paramMap, Long.class);
 		logger.debug("There are {} meanings in \"{}\" to be deleted", meaningIds.size(), dataset);
 
 		String sql;
 
 		// freeforms
-		basicDbService.executeScript(sqls.getSqlDeleteDefinitionFreeformsForDataset(), tableRowParamMap);
-		basicDbService.executeScript(sqls.getSqlDeleteMeaningFreeformsForDataset(), tableRowParamMap);
-		basicDbService.executeScript(sqls.getSqlDeleteLexemeFreeformsForDataset(), tableRowParamMap);
+		basicDbService.executeScript(sqls.getSqlDeleteDefinitionFreeformsForDataset(), paramMap);
+		basicDbService.executeScript(sqls.getSqlDeleteMeaningFreeformsForDataset(), paramMap);
+		basicDbService.executeScript(sqls.getSqlDeleteLexemeFreeformsForDataset(), paramMap);
 
 		// delete definitions
-		basicDbService.executeScript(sqls.getSqlDeleteDefinitionsForDataset(), tableRowParamMap);
+		basicDbService.executeScript(sqls.getSqlDeleteDefinitionsForDataset(), paramMap);
 
 		// delete collocations + freeforms
-		if (StringUtils.equals(COLLOC_OWNER_DATASET_CODE, dataset)) {
-			basicDbService.executeScript(sqls.getSqlDeleteCollocationFreeformsForDataset(), tableRowParamMap);
-			sql = "delete from " + COLLOCATION;
-			basicDbService.executeScript(sql);
-		}
+		basicDbService.executeScript(sqls.getSqlDeleteCollocationFreeformsForDataset(), paramMap);
+		basicDbService.executeScript(sqls.getSqlDeleteCollocationsForDataset(), paramMap);
 
 		// delete etymology
 		if (StringUtils.equals(ETYMOLOGY_OWNER_DATASET_CODE, dataset)) {
@@ -297,30 +295,30 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		// delete lexemes
 		sql = "delete from " + LEXEME + " l where l.dataset_code = :dataset";
-		basicDbService.executeScript(sql, tableRowParamMap);
+		basicDbService.executeScript(sql, paramMap);
 
 		// delete word guids and mnrs
 		if (!StringUtils.equals(GUID_OWNER_DATASET_CODE, dataset)) {
 			sql = "delete from " + WORD_GUID + " wg where wg.dataset_code = :dataset";
-			basicDbService.executeScript(sql, tableRowParamMap);
+			basicDbService.executeScript(sql, paramMap);
 			sql = "delete from " + MEANING_NR + " mn where mn.dataset_code = :dataset";
-			basicDbService.executeScript(sql, tableRowParamMap);
+			basicDbService.executeScript(sql, paramMap);
 		}
 
 		// delete words
 		sql = "delete from " + WORD + " where id = :wordId";
-		tableRowParamMap.clear();
+		paramMap.clear();
 		for (Long wordId : wordIds) {
-			tableRowParamMap.put("wordId", wordId);
-			basicDbService.executeScript(sql, tableRowParamMap);
+			paramMap.put("wordId", wordId);
+			basicDbService.executeScript(sql, paramMap);
 		}
 
 		// delete meanings
 		sql = "delete from " + MEANING + " where id = :meaningId";
-		tableRowParamMap.clear();
+		paramMap.clear();
 		for (Long meaningId : meaningIds) {
-			tableRowParamMap.put("meaningId", meaningId);
-			basicDbService.executeScript(sql, tableRowParamMap);
+			paramMap.put("meaningId", meaningId);
+			basicDbService.executeScript(sql, paramMap);
 		}
 
 		logger.debug("Data deletion complete for \"{}\"", dataset);
@@ -1346,6 +1344,28 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 	}
 
+	protected Long createCollocation(String value, String definition, Float frequency, Float score, List<String> collocUsages, Complexity complexity) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("value", value);
+		if (StringUtils.isNotBlank(definition)) {
+			tableRowParamMap.put("definition", definition);
+		}
+		if (frequency != null) {
+			tableRowParamMap.put("frequency", frequency);
+		}
+		if (score != null) {
+			tableRowParamMap.put("score", score);
+		}
+		if (CollectionUtils.isNotEmpty(collocUsages)) {
+			String[] collocUsagesArr = collocUsages.toArray(new String[0]);
+			tableRowParamMap.put("usages", collocUsagesArr);
+		}
+		tableRowParamMap.put("complexity", complexity.name());
+		Long collocationId = basicDbService.create(COLLOCATION, tableRowParamMap);
+		return collocationId;
+	}
+
 	protected Long createSource(Source source) throws Exception {
 
 		SourceType type = source.getType();
@@ -1454,6 +1474,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			createMeaningLifecycleLog(ownerId, lifecycleLogId);
 		} else if (LifecycleLogOwner.WORD.equals(logOwner)) {
 			createWordLifecycleLog(ownerId, lifecycleLogId);
+		} else if (LifecycleLogOwner.SOURCE.equals(logOwner)) {
+			createSourceLifecycleLog(ownerId, lifecycleLogId);
 		}
 	}
 
@@ -1479,6 +1501,14 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("lifecycle_log_id", lifecycleLogId);
 		basicDbService.create(LEXEME_LIFECYCLE_LOG, tableRowParamMap);
+	}
+
+	private void createSourceLifecycleLog(Long sourceId, Long lifecycleLogId) throws Exception {
+
+		Map<String, Object> sourceLifecycleLogMap = new HashMap<>();
+		sourceLifecycleLogMap.put("source_id", sourceId);
+		sourceLifecycleLogMap.put("lifecycle_log_id", lifecycleLogId);
+		basicDbService.create(SOURCE_LIFECYCLE_LOG, sourceLifecycleLogMap);
 	}
 
 	protected Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {

@@ -2,9 +2,7 @@ package eki.ekilex.runner;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
@@ -13,6 +11,7 @@ import org.dom4j.Node;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
 import eki.ekilex.constant.TermSourceLoaderConstant;
 
@@ -69,33 +68,7 @@ public abstract class AbstractTermSourceLoaderRunner extends AbstractLoaderRunne
 			modifiedOn = new Timestamp(valueLong);
 		}
 
-		createSourceLifecycleLog(sourceId, LifecycleEventType.CREATE, LifecycleProperty.VALUE, null, createdOn, createdBy);
-		createSourceLifecycleLog(sourceId, LifecycleEventType.UPDATE, LifecycleProperty.VALUE, null, modifiedOn, modifiedBy);
-	}
-
-	private void createSourceLifecycleLog(Long sourceId, LifecycleEventType eventType, LifecycleProperty property, String entry, Timestamp eventOn,
-			String eventBy) throws Exception {
-
-		if (eventBy == null) {
-			eventBy = "Ekileks " + getDataset() + "-laadur";
-		}
-
-		Map<String, Object> lifecycleLogMap = new HashMap<>();
-		lifecycleLogMap.put("entity_id", sourceId);
-		lifecycleLogMap.put("entity_name", LifecycleEntity.SOURCE.name());
-		lifecycleLogMap.put("entity_prop", property.name());
-		lifecycleLogMap.put("event_type", eventType.name());
-		lifecycleLogMap.put("event_by", eventBy);
-		lifecycleLogMap.put("entry", entry);
-		if (eventOn != null) {
-			lifecycleLogMap.put("event_on", eventOn);
-		}
-		Long lifecycleLogId = basicDbService.create(LIFECYCLE_LOG, lifecycleLogMap);
-
-
-		Map<String, Object> sourceLifecycleLogMap = new HashMap<>();
-		sourceLifecycleLogMap.put("source_id", sourceId);
-		sourceLifecycleLogMap.put("lifecycle_log_id", lifecycleLogId);
-		basicDbService.create(SOURCE_LIFECYCLE_LOG, sourceLifecycleLogMap);
+		createLifecycleLog(LifecycleLogOwner.SOURCE, sourceId, LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId, null, createdOn, createdBy);
+		createLifecycleLog(LifecycleLogOwner.SOURCE, sourceId, LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId, null, modifiedOn, modifiedBy);
 	}
 }

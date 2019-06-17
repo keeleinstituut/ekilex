@@ -24,7 +24,7 @@ public class LexemeMerger extends AbstractLoader {
 			String lexemeMergeName = confService.getMandatoryConfProperty("lex.merge.name");
 			List<String> lexemeMergeDatasets = confService.getLexemeMergeDatasets();
 
-			lexemeMergerRunner.deleteDatasetData();
+			lexemeMergerRunner.deleteLexemeMergeData(lexemeMergeName);
 			lexemeMergerRunner.execute(lexemeMergeName, lexemeMergeDatasets);
 
 		} catch (Exception e) {

@@ -866,7 +866,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			boolean collocExists = collocMap.containsKey(collocation);
-			String complexity = calculateComplexity(collocMembersPermutation);
+			Complexity complexity = calculateComplexity(collocMembersPermutation);
 
 			if (collocExists) {
 				String collocLexemesKey = composeCollocLexemesKey(currentCollocMemberRecords);
@@ -895,16 +895,16 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private String calculateComplexity(List<CollocMember> collocMembersPermutation) {
+	private Complexity calculateComplexity(List<CollocMember> collocMembersPermutation) {
 		boolean totalPsvAvailability = collocMembersPermutation.stream()
 				.filter(collocMember -> ArrayUtils.contains(primaryCollocMemberNames, collocMember.getName()))
 				.allMatch(CollocMember::isAvailability);
-		String complexity;
+		Complexity complexity;
 		if (totalPsvAvailability) {
-			complexity = Complexity.SIMPLE.name();
+			complexity = Complexity.SIMPLE;
 		} else {
 			//well, don't know really...
-			complexity = Complexity.DETAIL.name();
+			complexity = Complexity.DETAIL;
 		}
 		return complexity;
 	}
@@ -1020,7 +1020,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private Long createCollocation(
-			String collocation, String definition, Float frequency, Float score, List<String> collocUsages, String complexity, List<CollocMemberRecord> collocMemberRecords) throws Exception {
+			String collocation, String definition, Float frequency, Float score, List<String> collocUsages, Complexity complexity, List<CollocMemberRecord> collocMemberRecords) throws Exception {
 
 		Long collocationId = createCollocation(collocation, definition, frequency, score, collocUsages, complexity);
 		Integer memberOrder = 0;
@@ -1179,28 +1179,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 		Long collocRelGroupId = basicDbService.create(LEX_COLLOC_REL_GROUP, tableRowParamMap);
 		return collocRelGroupId;
-	}
-
-	private Long createCollocation(String collocation, String definition, Float frequency, Float score, List<String> collocUsages, String complexity) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("value", collocation);
-		if (StringUtils.isNotBlank(definition)) {
-			tableRowParamMap.put("definition", definition);
-		}
-		if (frequency != null) {
-			tableRowParamMap.put("frequency", frequency);
-		}
-		if (score != null) {
-			tableRowParamMap.put("score", score);
-		}
-		if (CollectionUtils.isNotEmpty(collocUsages)) {
-			String[] collocUsagesArr = collocUsages.toArray(new String[0]);
-			tableRowParamMap.put("usages", collocUsagesArr);
-		}
-		tableRowParamMap.put("complexity", complexity);
-		Long collocationId = basicDbService.create(COLLOCATION, tableRowParamMap);
-		return collocationId;
 	}
 
 	private Long createLexemeCollocation(Long collocationId, Integer memberOrder, CollocMemberRecord collocMemberRecord) throws Exception {

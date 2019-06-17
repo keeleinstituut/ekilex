@@ -27,6 +27,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_DELETE_DEFINITION_FF_FOR_DATASET = "sql/delete_definition_freeforms_for_dataset.sql";
 	private static final String SQL_DELETE_MEANING_FF_FOR_DATASET = "sql/delete_meaning_freeforms_for_dataset.sql";
 	private static final String SQL_DELETE_COLLOCATION_FF_FOR_DATASET = "sql/delete_collocation_freeforms_for_dataset.sql";
+	private static final String SQL_DELETE_COLLOCATIONS_FOR_DATASET = "sql/delete_collocations_for_dataset.sql";
 	private static final String SQL_DELETE_LEXEME_FF_FOR_DATASET = "sql/delete_lexeme_freeforms_for_dataset.sql";
 
 	private String sqlSelectWordIdsForDatasetByLexeme;
@@ -48,6 +49,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlDeleteDefinitionFreeformsForDataset;
 	private String sqlDeleteMeaningFreeformsForDataset;
 	private String sqlDeleteCollocationFreeformsForDataset;
+	private String sqlDeleteCollocationsForDataset;
 	private String sqlDeleteLexemeFreeformsForDataset;
 
 	@Override
@@ -112,6 +114,9 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_COLLOCATION_FF_FOR_DATASET);
 		sqlDeleteCollocationFreeformsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_COLLOCATIONS_FOR_DATASET);
+		sqlDeleteCollocationsForDataset = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_LEXEME_FF_FOR_DATASET);
 		sqlDeleteLexemeFreeformsForDataset = getContent(resourceFileInputStream);
@@ -191,6 +196,10 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	public String getSqlDeleteCollocationFreeformsForDataset() {
 		return sqlDeleteCollocationFreeformsForDataset;
+	}
+
+	public String getSqlDeleteCollocationsForDataset() {
+		return sqlDeleteCollocationsForDataset;
 	}
 
 	public String getSqlDeleteLexemeFreeformsForDataset() {
