@@ -51,13 +51,14 @@ function initialiseSearchForm() {
 		datasetDlg.find('.btn').first().focus();
 	});
 
-	// $('#searchForm').submit(function(e){
-	// 	let currentSearchMode = $('#searchMode').val();
-	// 	if (currentSearchMode === 'SIMPLE') {
-	// 		e.preventDefault();
-	// 		validateAndSubmitSimpleSearch();
-	// 	}
-	// });
+	$('#searchForm').submit(function(e){
+		let currentSearchMode = $('#searchMode').val();
+		let isSearchFilterValid = $('#isSearchFilterValid').val();
+		if (currentSearchMode === 'SIMPLE' && isSearchFilterValid === 'false') {
+			e.preventDefault();
+			validateAndSubmitSimpleSearch();
+		}
+	});
 }
 
 function validateAndSubmitSimpleSearch() {
@@ -65,6 +66,7 @@ function validateAndSubmitSimpleSearch() {
 	let searchFilter = searchForm.find('input[name="simpleSearchFilter"]').val();
 	let isSearchFilterValid = validateSearchFilter(searchFilter);
 	if (isSearchFilterValid) {
+		$('#isSearchFilterValid').val('true');
 		searchForm.submit();
 	}
 }
