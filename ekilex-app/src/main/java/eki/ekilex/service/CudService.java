@@ -46,6 +46,13 @@ public class CudService extends AbstractService {
 	// --- UPDATE ---
 
 	@Transactional
+	public void updateWordValue(Long id, String valuePrese) {
+		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, id, valuePrese);
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		cudDbService.updateWordValue(id, value, valuePrese);
+	}
+
+	@Transactional
 	public void updateWordType(Long wordId, String currentTypeCode, String newTypeCode) {
 		Long wordWordTypeId = cudDbService.updateWordType(wordId, currentTypeCode, newTypeCode);
 		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, currentTypeCode, newTypeCode);

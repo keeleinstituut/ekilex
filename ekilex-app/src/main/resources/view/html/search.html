@@ -13,6 +13,7 @@
       <div class="row">
         <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
         <input type="hidden" id="fetchAll" name="fetchAll" value="false">
+        <input type="hidden" id="isSearchFilterValid" value="false">
         <div class="col-1">
           <button type="button" class="btn btn-sm btn-secondary" id="searchModeBtn"
                   th:text="${searchMode == 'SIMPLE'} ? #{'search.mode.DETAIL'} : #{'search.mode.SIMPLE'}">search toggle</button>
@@ -24,7 +25,7 @@
   <th:block th:replace="::detail_search(${searchPageName})"></th:block>
   <th:block th:replace="::simple_search"></th:block>
   <script th:inline="javascript">
-      initaliseSearchForm()
+      initialiseSearchForm()
   </script>
 </th:block>
 
@@ -218,7 +219,7 @@
     </div>
   </div>
   <script th:inline="javascript">
-  	initialiseDeatailSearch()
+  	initialiseDetailSearch()
   </script>
 </th:block>
 

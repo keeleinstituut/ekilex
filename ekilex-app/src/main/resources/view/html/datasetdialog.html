@@ -26,7 +26,7 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
-                <select  name="selectedDomains" class="domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
+                <select  name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
                 </select>
               </div>
             </div>
@@ -96,7 +96,7 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
-                <select  name="selectedDomains" class="domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
+                <select  name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
                   <option th:each="selectedDomain : ${thisDataset.selectedDomains}"
                           th:data-subtext="${selectedDomain.origin}" selected="selected"
                           th:value="${selectedDomain.toIdString()}" th:text="${selectedDomain.value}"/>

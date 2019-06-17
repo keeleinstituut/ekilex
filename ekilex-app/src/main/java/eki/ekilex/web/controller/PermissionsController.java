@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,9 +22,13 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserPermData;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.MaintenanceService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
+import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.PermDataUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -37,6 +42,13 @@ public class PermissionsController extends AbstractPageController {
 
 	@Autowired
 	private PermissionService permissionService;
+
+	@Autowired
+	private PermDataUtil permDataUtil;
+
+	@Autowired
+	private CommonDataService commonDataService;
+
 
 	@Autowired
 	private MaintenanceService maintenanceService;
@@ -113,33 +125,34 @@ public class PermissionsController extends AbstractPageController {
 	}
 
 	@GetMapping(COMPONENT_URI + "/commonwordlangselect/{datasetCode}")
-	public String getCommonWordLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
+	public String getCommonWordLangSelect(@PathVariable("datasetCode") String datasetCode, Model model,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		populateUserPermLanguagesModel(datasetCode, model);
+		populateUserPermLanguagesModel(datasetCode, model, sessionBean);
 
 		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "word_perm_lang_select";
 	}
 
 	@GetMapping(COMPONENT_URI + "/lexdeflangselect/{datasetCode}")
-	public String getLexDefLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
+	public String getLexDefLangSelect(@PathVariable("datasetCode") String datasetCode, Model model,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		populateUserPermLanguagesModel(datasetCode, model);
+		populateUserPermLanguagesModel(datasetCode, model, sessionBean);
 
 		return LEXDIALOG_PAGE + PAGE_FRAGMENT_ELEM + "definition_perm_lang_select";
 	}
 
 	@GetMapping(COMPONENT_URI + "/termdeflangselect/{datasetCode}")
-	public String getTermDefLangSelect(@PathVariable("datasetCode") String datasetCode, Model model) {
+	public String getTermDefLangSelect(@PathVariable("datasetCode") String datasetCode, Model model,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		populateUserPermLanguagesModel(datasetCode, model);
+		populateUserPermLanguagesModel(datasetCode, model, sessionBean);
 
 		return TERMDIALOG_PAGE + PAGE_FRAGMENT_ELEM + "definition_perm_lang_select";
 	}
 
-	private void populateUserPermLanguagesModel(String datasetCode, Model model) {
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
-		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
+	private void populateUserPermLanguagesModel(String datasetCode, Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+		List<Classifier> userPermLanguages = permDataUtil.getUserPermLanguages(datasetCode, sessionBean);
 		model.addAttribute("userPermLanguages", userPermLanguages);
 	}
 
@@ -149,5 +162,16 @@ public class PermissionsController extends AbstractPageController {
 
 		permissionService.sendPermissionsEmail(userEmail);
 		return "OK";
+	}
+
+	@ResponseBody
+	@GetMapping(PERMISSIONS_URI + "/dataset_languages/{datasetCode}")
+	public String getDataSetLanguages(@PathVariable String datasetCode) throws Exception {
+
+		List<Classifier> userLanguages = commonDataService.getDatasetLanguages(datasetCode);
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(userLanguages);
+
 	}
 }

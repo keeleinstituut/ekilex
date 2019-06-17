@@ -147,7 +147,8 @@
           <option value="" hidden disabled th:selected="${sessionBean.userRole == null}"></option>
           <th:block th:each="datasetPermission : ${#authentication.principal.datasetPermissions}">
             <option th:with="permissionName=#{|authorityoperation.${datasetPermission.authOperation}|}"
-                    th:value="${datasetPermission.id}" th:text="${datasetPermission.datasetName + ' (' + permissionName + ')' }"
+                    th:value="${datasetPermission.id}" th:text="${datasetPermission.datasetName + ' (' + permissionName + ')'
+                      + (datasetPermission.authLang != null ? ' - ' + datasetPermission.authLangValue : '')}"
                     th:selected="${sessionBean.userRole != null && sessionBean.userRole.datasetPermission == datasetPermission}"/>
           </th:block>
           <option value="" th:if="${#authentication.principal.admin}" data-admin="true" th:selected="${sessionBean.userRole != null && sessionBean.userRole.admin}">** Admin **</option>

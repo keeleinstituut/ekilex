@@ -46,9 +46,17 @@ public class CommonDataService implements SystemConstant {
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
+
+	@Transactional
+	public Map<String, List<Classifier>> getDatasetDomainsByOrigin(String datasetCode) {
+		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, datasetCode,
+					CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return domains.stream().collect(groupingBy(Classifier::getOrigin));
+	}
+
 	@Transactional
 	public Map<String, List<Classifier>> getAllDomainsByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomains();
+		List<Classifier> domains = domains = commonDataDbService.getDomains();
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
@@ -123,6 +131,11 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<Classifier> getProcessStatesByDataset(String datasetCode) {
+		return commonDataDbService.getDatasetClassifiers(ClassifierName.PROCESS_STATE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
 	public List<Classifier> getClassifiers(ClassifierName classifierName) {
 		if (classifierName == null) {
 			return null;
@@ -183,6 +196,11 @@ public class CommonDataService implements SystemConstant {
 	@Transactional
 	public List<Classifier> findDomainsByValue(String searchValue) {
 		return commonDataDbService.findDomainsByValue(searchValue);
+	}
+
+	@Transactional
+	public List<Classifier> getDatasetLanguages(String datasetCode) {
+		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 }

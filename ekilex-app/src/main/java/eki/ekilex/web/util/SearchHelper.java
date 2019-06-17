@@ -256,7 +256,7 @@ public class SearchHelper {
 				criterionGroup.getSearchCriteria().add(criterion);
 			}
 		}
-		isValid = StringUtils.isNotBlank(simpleSearchFilter) || (detailSearchFilter != null && CollectionUtils.isNotEmpty(detailSearchFilter.getCriteriaGroups()));
+		isValid = validateSearchFilter(simpleSearchFilter, detailSearchFilter);
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}
@@ -277,6 +277,37 @@ public class SearchHelper {
 		searchGroup.setSearchCriteria(asList(defaultCriterion));
 		detailSearch.setCriteriaGroups(asList(searchGroup));
 		return detailSearch;
+	}
+
+	private boolean validateSearchFilter(String simpleSearchFilter, SearchFilter detailSearchFilter) {
+
+		if (StringUtils.isNotBlank(simpleSearchFilter)) {
+			return validateSimpleSearchFilter(simpleSearchFilter);
+		}
+		if (detailSearchFilter != null) {
+			List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
+			return validateDetailSearchCriteriaGroups(criteriaGroups);
+		}
+		return false;
+	}
+
+	private boolean validateSimpleSearchFilter(String simpleSearchFilter) {
+
+		return !StringUtils.containsOnly(simpleSearchFilter, '*');
+	}
+
+	private boolean validateDetailSearchCriteriaGroups(List<SearchCriterionGroup> criteriaGroups) {
+
+		if (CollectionUtils.isNotEmpty(criteriaGroups)) {
+			for (SearchCriterionGroup criteriaGroup : criteriaGroups) {
+				for (SearchCriterion criteria : criteriaGroup.getSearchCriteria()) {
+					if (criteria.getSearchValue() != null) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private String encode(String value) {

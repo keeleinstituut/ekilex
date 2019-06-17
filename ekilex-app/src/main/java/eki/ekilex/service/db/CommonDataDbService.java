@@ -311,7 +311,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	public Word getWord(Long wordId) {
 		return create.select(
 				WORD.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("word"),
+				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word"),
 				WORD.HOMONYM_NR,
 				WORD.LANG,
 				WORD.WORD_CLASS,
@@ -790,7 +790,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 					.where(PROCESS_STATE.CODE.eq(code))
 					.execute();
 		} else {
-			//TODO? exception needed?
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -821,31 +820,40 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 					.fetchSingleInto(Classifier.class);
 		}
 
-		//TODO - add the rest?
 		throw new UnsupportedOperationException();
 
 	}
 
-	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
-		String[] datasetCodeParam = {datasetCode};
+	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode, String labelLanguage, String labelType) {
+		String[] datasetCodes = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			return create.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE.ORDER_BY, LANGUAGE.ORDER_BY)
-					.from(LANGUAGE)
-					.where(LANGUAGE.DATASETS.contains(datasetCodeParam))
-					.fetchInto(Classifier.class);
+			return create.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE_LABEL.VALUE, LANGUAGE.ORDER_BY)
+				.from(LANGUAGE, LANGUAGE_LABEL)
+				.where(
+					LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
+						.and(LANGUAGE_LABEL.TYPE.eq(labelType))
+						.and(LANGUAGE_LABEL.LANG.eq(labelLanguage))
+						.and(LANGUAGE.DATASETS.contains(datasetCodes)))
+				.fetchInto(Classifier.class);
 		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-			return create.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.ORDER_BY, PROCESS_STATE.ORDER_BY)
+			return create.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.CODE.as("value"),
+				PROCESS_STATE.ORDER_BY.as("order_by"))
 					.from(PROCESS_STATE)
-					.where(PROCESS_STATE.DATASETS.contains(datasetCodeParam))
+					.where(PROCESS_STATE.DATASETS.contains(datasetCodes))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-			return create.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY)
-					.from(DOMAIN)
-					.where(DOMAIN.DATASETS.contains(datasetCodeParam))
+			return create.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE,
+				DOMAIN_LABEL.VALUE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY)
+					.from(DOMAIN, DOMAIN_LABEL)
+					.where(
+						DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
+							.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
+							.and(DOMAIN_LABEL.LANG.eq(labelLanguage))
+							.and(DOMAIN_LABEL.TYPE.eq(labelType)).and(
+						DOMAIN.DATASETS.contains(datasetCodes)))
 					.fetchInto(Classifier.class);
 		}
 
-		//TODO?
 		throw new UnsupportedOperationException();
 	}
 
@@ -865,13 +873,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.and(DOMAIN_LABEL.VALUE.containsIgnoreCase(searchValue))
 				.orderBy(DOMAIN_LABEL.VALUE, DOMAIN_LABEL.ORIGIN)
 				.fetchInto(Classifier.class);
-	}
-
-	public List<String> getDomainLabels(String code, String origin) {
-		return create
-				.select(DOMAIN_LABEL.VALUE)
-				.from(DOMAIN_LABEL)
-				.where(DOMAIN_LABEL.CODE.eq(code)).and(DOMAIN_LABEL.ORIGIN.eq(origin)).fetchInto(String.class);
 	}
 
 }

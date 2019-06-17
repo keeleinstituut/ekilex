@@ -2,7 +2,9 @@ package eki.ekilex.web.controller;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,17 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.UserRole;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractSearchController extends AbstractPageController {
 
@@ -41,9 +43,18 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return commonDataService.getDomainsInUseByOrigin();
 	}
 
-	@ModelAttribute("allDomains")
-	public Map<String,List<Classifier>> getAllDomains() {
-		return commonDataService.getAllDomainsByOrigin();
+	@ModelAttribute("datasetDomains")
+	public Map<String,List<Classifier>> getDatasetDomains(Model model) {
+
+		UserRole role = getSessionBean(model).getUserRole();
+		if (role != null) {
+			if (role.isAdmin()) {
+				return commonDataService.getAllDomainsByOrigin();
+			} else if (role.getDatasetPermission() != null) {
+				return commonDataService.getDatasetDomainsByOrigin(role.getDatasetPermission().getDatasetCode());
+			}
+		}
+		return new HashMap<>();
 	}
 
 	@ModelAttribute("lexemeFrequencyGroups")
@@ -112,8 +123,17 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	}
 
 	@ModelAttribute("processStates")
-	public List<Classifier> getProcessStates() {
-		return commonDataService.getProcessStates();
+	public List<Classifier> getProcessStates(Model model) {
+
+		UserRole role = getSessionBean(model).getUserRole();
+		if (role != null) {
+			if (role.isAdmin()) {
+				return commonDataService.getProcessStates();
+			} else if (role.getDatasetPermission() != null) {
+				return commonDataService.getProcessStatesByDataset(role.getDatasetPermission().getDatasetCode());
+			}
+		}
+		return new ArrayList<>();
 	}
 
 	protected SessionBean getSessionBean(Model model) {

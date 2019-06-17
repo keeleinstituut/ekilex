@@ -8,13 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.DatasetDbService;
+import eki.ekilex.service.db.PermissionDbService;
 
 @Component
-public class DatasetService {
+public class DatasetService implements SystemConstant {
 
 	@Autowired
 	private DatasetDbService datasetDbService;
@@ -22,18 +24,18 @@ public class DatasetService {
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
+	@Autowired
+	private PermissionDbService permissionDbService;
+
 
 	@Transactional
 	public List<Dataset> getDatasets() {
 		List<Dataset> datasets = datasetDbService.getDatasets();
 
 		for (Dataset dataset : datasets) {
-			List<Classifier> domains = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, dataset.getCode());
-			List<Classifier> languages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, dataset.getCode());
-			List<Classifier> processStates = commonDataDbService.getDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode());
-
-			//TODO - this need some refactoring and thinking
-			domains.forEach(domain -> domain.setValue(String.join(", ", commonDataDbService.getDomainLabels(domain.getCode(), domain.getOrigin()))));
+			List<Classifier> domains = getDatasetClassifiers(ClassifierName.DOMAIN, dataset.getCode());
+			List<Classifier> languages = getDatasetClassifiers(ClassifierName.LANGUAGE, dataset.getCode());
+			List<Classifier> processStates = getDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode());
 
 			dataset.setSelectedLanguages(languages);
 			dataset.setSelectedProcessStates(processStates);
@@ -71,7 +73,7 @@ public class DatasetService {
 		updateDatasetSelectedClassifiers(dataset);
 	}
 
-	private  void  updateDatasetSelectedClassifiers(Dataset dataset) {
+	private void updateDatasetSelectedClassifiers(Dataset dataset) {
 		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedDomains(), ClassifierName.DOMAIN);
 		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedLanguages(), ClassifierName.LANGUAGE);
 		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedProcessStates(), ClassifierName.PROCESS_STATE);
@@ -79,7 +81,7 @@ public class DatasetService {
 
 	private void updateDatasetSelectedClassifiers(String datasetCode, List<Classifier> selectedClassifiers, ClassifierName classifierName) {
 
-		List<Classifier> previousDatasetClassifiers = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode);
+		List<Classifier> previousDatasetClassifiers = getDatasetClassifiers(classifierName, datasetCode);
 		previousDatasetClassifiers
 				.stream()
 				.filter(c -> selectedClassifiers == null || !selectedClassifiers.contains(c))
@@ -97,11 +99,11 @@ public class DatasetService {
 	@Transactional
 	public void deleteDataset(String datasetCode) {
 
-		// delete classifiers
 		removeDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode);
 		removeDatasetClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
 		removeDatasetClassifiers(ClassifierName.DOMAIN, datasetCode);
 
+		permissionDbService.deleteDatasetPermissions(datasetCode);
 		datasetDbService.deleteDataset(datasetCode);
 	}
 
@@ -112,8 +114,11 @@ public class DatasetService {
 
 
 	private void removeDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
-		List<Classifier> existingClassifiers = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode);
+		List<Classifier> existingClassifiers = getDatasetClassifiers(classifierName, datasetCode);
 		existingClassifiers.forEach(classifier -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin()));
 	}
 
+	private List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
+		return commonDataDbService.getDatasetClassifiers(classifierName, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
 }

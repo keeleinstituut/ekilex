@@ -78,6 +78,8 @@ $(document).on("change", "select.common-word-dataset-select[name='dataset']", fu
 		permLanguageSelect.empty();
 	}
 });
+
+
 $(document).on("change", ".required-field", function() {
 	if ($(this).val()) {
 		$(this).removeClass('is-invalid');
@@ -462,5 +464,37 @@ function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
 	okBtn.off('click').on('click', function() {
 		alertDlg.modal('hide');
 		callback(...callbackArgs);
+	});
+}
+
+function initWordValueEditorDlg(dlg) {
+	let editFld = dlg.find('[name=editFld]');
+	let valueInput = dlg.find('[name=value]');
+	let ekiEditorElem = dlg.find('.eki-editor');
+	editFld.removeClass('is-invalid');
+	editFld.html(valueInput.val());
+	initEkiEditor(ekiEditorElem);
+
+	$(document).on("click", "button[name='saveWordValueBtn']", function () {
+		let form = dlg.find('form');
+		if (editFld.html()) {
+			valueInput.val(editFld.html());
+			$.ajax({
+				url: form.attr('action'),
+				data: form.serialize(),
+				method: 'POST',
+			}).done(function (data) {
+				dlg.modal('hide');
+				let wordId = dlg.find('[name=wordId]').val();
+				let wordValueSpan = $('#word-value-' + wordId);
+				wordValueSpan.html(data);
+			}).fail(function (data) {
+				dlg.modal('hide');
+				console.log(data);
+				openAlertDlg('Salvestamine ebaõnnestus');
+			});
+		} else {
+			editFld.addClass('is-invalid');
+		}
 	});
 }

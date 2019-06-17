@@ -19,7 +19,7 @@
   <div class="container-fluid">
     <div class="card shadow">
       <div class="card-body p-2">
-        <form th:action="@{/lexsearch}" method="post">
+        <form id="searchForm" th:action="@{/lexsearch}" method="post">
           <th:block th:replace="search :: search_form('lex_search')"></th:block>
         </form>
       </div>
@@ -28,12 +28,18 @@
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>
     </div>
+    <div class="mt-4 float-left" th:if="${invalidSearch}">
+      <div th:text="#{lex.search.invalid}"></div>
+    </div>
 
     <div class="row no-gutters mt-2" th:unless="${noResults}">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
         <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
           <div class="card-body p-2">
-            <a href="/" id="show-all-btn"><span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span></a>
+<!--            TODO commented out temporarily. Undo or remove completely after receiving feedback-->
+<!--            <a href="/" id="show-all-btn">-->
+              <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
+<!--            </a>-->
             <table id="results" class="table table-striped mb-0">
               <tr th:each="word : ${wordsResult.words}">
                 <td class="p-0">
@@ -101,9 +107,6 @@
               </button>
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
-                  <span class="ttl" th:each="word,wordIter : ${lexeme.words}"
-                        th:text="${word + (wordIter.last ? '' : ', ')}"
-                        th:classappend="${wordIter.last ? 'pr-2' : ''}"></span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
@@ -118,7 +121,7 @@
                         th:data-level2="${lexeme.level2}"
                         th:data-level3="${lexeme.level3}"
                         class="pl-1">
-                    <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
+                    <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
                   </span>
                 </div>
                 <div class="ml-auto">
@@ -137,9 +140,6 @@
               </button>
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
-                  <span class="ttl" th:each="word,wordIter : ${lexeme.words}"
-                        th:text="${word + (wordIter.last ? '' : ', ')}"
-                        th:classappend="${wordIter.last ? 'pr-2' : ''}"></span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <button type="button" class="btn btn-link pl-0 pr-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
                       <span th:text="${meaningWord.value}"></span>
@@ -157,7 +157,7 @@
                         data-toggle="modal"
                         th:data-target="${'#editLexemeLevelsDlg_' + lexeme.lexemeId}"
                         sec:authorize="${#vars.isLexemeCrudGranted}">
-                    <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
+                    <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
                   </span>
                   <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
                 </div>
@@ -863,10 +863,25 @@
         </div>
         <div class="col-4">
           <div th:replace="lexdialog :: add_word_data_dlg"></div>
+          <div th:replace="lexdialog :: add_word_relation_dlg"></div>
+          <div th:replace="lexdialog :: edit_word_value_dlg"></div>
           <div th:replace="lexdialog :: edit_word_gender_dlg"></div>
           <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
-          <div th:replace="lexdialog :: add_word_relation_dlg"></div>
           <div class="card shadow pt-3 mb-2">
+            <div class="card-body pt-0 pb-0">
+              <div class="hidden-buttons">
+                <span th:id="${'word-value-' + wordId}" th:utext="${details.word.value}" class="ttl word-value"></span>
+                <button type="button"
+                        class="btn badge badge-primary"
+                        title="Muuda"
+                        data-toggle="modal"
+                        th:data-target="${'#editWordValueDlg_' + wordId}"
+                        sec:authorize="${#vars.isWordCrudGranted}">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+              </div>
+              <hr/>
+            </div>
             <div class="card-body pt-0 pb-0">
               <div class="lbl mb-2">Keelendi omadused
                 <button type="button" class="btn badge badge-success"

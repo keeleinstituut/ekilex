@@ -154,9 +154,9 @@
             </div>
             <div th:id="${'meaning_domain_' + meaningId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
-                <select required class="form-control value-select required-field">
+                <select required class="form-control value-select required-field term-domain-select">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+                  <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                   </optgroup>
                 </select>
@@ -326,7 +326,7 @@
             <div class="col-md-12">
               <select required class="form-control value-select">
                 <option value="" hidden disabled selected>vali väärtus...</option>
-                <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+                <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                 </optgroup>
               </select>
@@ -349,7 +349,7 @@
             <input type="hidden" name="opCode" value="meaning_domain">
             <input type="hidden" name="currentValue" th:value="${classif.toIdString()}">
             <select class="form-control" name="value">
-              <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+              <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
                         th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
@@ -858,6 +858,38 @@
             <select class="form-control" name="value">
               <option th:each="item : ${wordTypes}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">value</option>
             </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordValueDlg_' + lexeme.wordId}" class="modal" role="dialog" th:fragment="edit_word_value_dlg">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_word_value}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="wordId" th:value="${lexeme.wordId}">
+            <input type="hidden" name="value" th:value="${lexeme.word}">
+            <div class="form-group row eki-editor">
+              <div class="col-md-12 pb-3">
+                <div class="float-right">
+                  <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgend</button>
+                  <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgend</button>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div contenteditable="true" name="editFld" class="edit-area form-control required-field"></div>
+                <div class="eki-editor-menu">
+                  <select class="eki-tag-select" size="6">
+                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button name="saveWordValueBtn" type="button" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
       </div>

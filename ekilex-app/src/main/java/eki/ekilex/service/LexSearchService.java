@@ -125,10 +125,8 @@ public class LexSearchService extends AbstractSearchService {
 		lexemeLevelCalcUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
+		wordDetails.setWord(word);
 		wordDetails.setWordTypes(wordTypes);
-		wordDetails.setWordClass(word.getWordClass());
-		wordDetails.setWordGenderCode(word.getGenderCode());
-		wordDetails.setWordAspectCode(word.getAspectCode());
 		wordDetails.setParadigms(paradigms);
 		wordDetails.setLexemes(lexemes);
 		wordDetails.setWordRelations(wordRelations);
