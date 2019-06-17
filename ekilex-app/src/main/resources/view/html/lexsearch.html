@@ -28,6 +28,9 @@
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>
     </div>
+    <div class="mt-4 float-left" th:if="${invalidSearch}">
+      <div th:text="#{lex.search.invalid}"></div>
+    </div>
 
     <div class="row no-gutters mt-2" th:unless="${noResults}">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">

@@ -282,13 +282,18 @@ public class SearchHelper {
 	private boolean validateSearchFilter(String simpleSearchFilter, SearchFilter detailSearchFilter) {
 
 		if (StringUtils.isNotBlank(simpleSearchFilter)) {
-			return true;
+			return validateSimpleSearchFilter(simpleSearchFilter);
 		}
 		if (detailSearchFilter != null) {
 			List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
 			return validateDetailSearchCriteriaGroups(criteriaGroups);
 		}
 		return false;
+	}
+
+	private boolean validateSimpleSearchFilter(String simpleSearchFilter) {
+
+		return !StringUtils.containsOnly(simpleSearchFilter, '*');
 	}
 
 	private boolean validateDetailSearchCriteriaGroups(List<SearchCriterionGroup> criteriaGroups) {

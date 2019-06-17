@@ -55,6 +55,9 @@
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{term.not.found}">Not found.</div>
     </div>
+    <div class="mt-4 float-left" th:if="${invalidSearch}">
+      <div th:text="#{term.search.invalid}"></div>
+    </div>
 
     <div class="row no-gutters mt-2">
       <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;">
