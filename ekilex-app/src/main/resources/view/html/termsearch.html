@@ -61,11 +61,12 @@
         <div class="card shadow" th:if="${meaningsResult.resultExist}">
           <div class="card-body p-2">
             <div>
-              <a href="javascript:void(0);" id="show-all-btn">
+<!--              TODO commented out temporarily. Undo or remove completely after receiving feedback-->
+<!--              <a href="javascript:void(0);" id="show-all-btn">-->
                 <span th:text="${'Mõisteid : ' + meaningsResult.meaningCount}"></span>
                 &nbsp;|&nbsp;
                 <span th:text="${'Termineid : ' + meaningsResult.wordCount}"></span>
-              </a>
+<!--              </a>-->
             </div>
             <hr />
             <div id="results" class="w-100">
