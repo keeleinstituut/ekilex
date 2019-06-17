@@ -514,7 +514,7 @@
                 <div class="col-md-4">
                   <select required class="form-control" name="language">
                     <option value="" hidden disabled selected>vali väärtus...</option>
-                    <option th:each="language : ${permDataUtil.getUserPermLanguages(lexeme.datasetCode)}"
+                    <option th:each="language : ${permDataUtil.getUserPermLanguages(lexeme.datasetCode, sessionBean)}"
                             th:value="${language.code}" th:text="${language.value}">language</option>
                   </select>
                 </div>
