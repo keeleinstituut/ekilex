@@ -44,15 +44,32 @@ function toggleSearch() {
 	}
 }
 
-function initaliseSearchForm() {
+function initialiseSearchForm() {
 	$('#searchModeBtn').on('click', toggleSearch);
 	let datasetDlg = $('#datasetSelectDlg');
 	datasetDlg.on('shown.bs.modal', () => {
 		datasetDlg.find('.btn').first().focus();
-	})
+	});
+
+	$('#searchForm').submit(function(e){
+		let currentSearchMode = $('#searchMode').val();
+		if (currentSearchMode === 'SIMPLE') {
+			e.preventDefault();
+			validateAndSubmitSimpleSearch();
+		}
+	});
 }
 
-function initialiseDeatailSearch() {
+function validateAndSubmitSimpleSearch() {
+	let searchForm = $('#searchForm');
+	let searchFilter = searchForm.find('input[name="simpleSearchFilter"]').val();
+	let isSearchFilterValid = validateSearchFilter(searchFilter);
+	if (isSearchFilterValid) {
+		searchForm.submit();
+	}
+}
+
+function initialiseDetailSearch() {
 	displayDetailConditionButtons();
 	displayDetailGroupButtons();
 
@@ -168,4 +185,12 @@ function initCondition(conditionElement) {
 	searchKeySelect.val(searchKeySelect.find('option').first().val());
 	searchKeySelect.trigger('change');
 	displayDetailConditionButtons();
+}
+
+function validateSearchFilter(searchFilter) {
+	if (searchFilter === '*') {
+		openMessageDlg('Palun täiendage otsingu parameetrit.');
+		return false;
+	}
+	return true;
 }

@@ -20,7 +20,7 @@
   <div class="container-fluid">
     <div class="card shadow">
       <div class="card-body p-2">
-        <form th:action="@{/termsearch}" method="post">
+        <form id="searchForm" th:action="@{/termsearch}" method="post">
           <th:block th:replace="search :: search_form('term_search')"></th:block>
           <div class="form-row pt-2 align-items-center">
             <div class="col-auto">
