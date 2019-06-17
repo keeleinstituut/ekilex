@@ -521,11 +521,23 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	private void saveImages(Context context, Integer conceptId, Long meaningId) throws Exception {
 
 		List<Map<String, Object>> images = context.images.stream().filter(f -> f.get("concept_id").equals(conceptId)).collect(toList());
-		if (images.isEmpty())
+		if (images.isEmpty()) {
 			return;
+		}
 
 		for (Map<String, Object> image : images) {
-			createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, image.get("image_id").toString());
+			Long imageFreeformId = createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, image.get("image_id").toString());
+
+			String heading = (String) image.get("heading");
+			if (StringUtils.isNotBlank(heading)) {
+				createFreeformTextOrDate(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null);
+			}
+
+			Integer extSourceId = (Integer) image.get("source_id");
+			if (context.sourceMapping.containsKey(extSourceId)) {
+				SourceData ekilexSource = context.sourceMapping.get(extSourceId);
+				createFreeformSourceLink(imageFreeformId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
+			}
 		}
 	}
 
