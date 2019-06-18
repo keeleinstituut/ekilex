@@ -160,6 +160,12 @@ public interface WebConstant {
 
 	String CHANGE_ROLE_URI = "/change_role";
 
+	String SYNO_SEARCH_PAGE = "synosearch";
+
+	String SYNO_SEARCH_URI = "/synosearch";
+
+	String SYNO_WORD_DETAILS_URI = "/syno_worddetails";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";
