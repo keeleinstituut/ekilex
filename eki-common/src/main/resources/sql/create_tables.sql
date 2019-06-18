@@ -388,7 +388,6 @@ create table lifecycle_log
   event_type varchar(100) not null,
   event_by text not null,
   event_on timestamp not null default statement_timestamp(),
-  source_name text null,
   recent text null,
   entry text null
 );

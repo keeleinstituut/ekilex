@@ -3,6 +3,7 @@ package eki.ekilex.runner;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,15 +37,18 @@ import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.LexemeClassifier;
 import eki.ekilex.data.transform.LexemeCollocationTuple;
 import eki.ekilex.data.transform.LexemeFrequency;
+import eki.ekilex.data.transform.LexemeLifecycleLog;
 import eki.ekilex.data.transform.LexemeRelation;
 import eki.ekilex.data.transform.LexemeSourceLink;
 import eki.ekilex.data.transform.WordMeaningPair;
+import eki.ekilex.runner.util.AbstractRowMapper;
 import eki.ekilex.runner.util.CollocationRowMapper;
 import eki.ekilex.runner.util.FreeformRowMapper;
 import eki.ekilex.runner.util.FreeformSourceLinkRowMapper;
 import eki.ekilex.runner.util.LexemeClassifierRowMapper;
 import eki.ekilex.runner.util.LexemeCollocationTupleRowMapper;
 import eki.ekilex.runner.util.LexemeFrequencyRowMapper;
+import eki.ekilex.runner.util.LexemeLifecycleLogRowMapper;
 import eki.ekilex.runner.util.LexemeRelationRowMapper;
 import eki.ekilex.runner.util.LexemeSourceLinkRowMapper;
 import eki.ekilex.runner.util.WordMeaningPairRowMapper;
@@ -62,6 +66,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 	private static final String SQL_SELECT_LEXEME_COLLOC_TUPLES_FOR_DATASETS_PATH = "sql/select_lexeme_colloc_tuples_for_datasets.sql";
 
+	private static final String SQL_SELECT_LEXEME_LIFECYCLE_LOGS_FOR_DATASETS_PATH = "sql/select_lexeme_lifecycle_logs_for_datasets.sql";
+
 	private String sqlSelectWordLexemeMeaningIds;
 
 	private String sqlSelectLexemeFreeforms;
@@ -69,6 +75,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	private String sqlSelectCollocationsForDatasets;
 
 	private String sqlSelectLexemeCollocTuplesForDatasets;
+
+	private String sqlSelectLexemeLifecycleLogsForDatasets;
 
 	private String sqlSelectLexeme = "select * from " + LEXEME + " where id = :id";
 
@@ -88,7 +96,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 	private String sqlSelectFreeformSourceLinks = "select ffsl.* from " + FREEFORM_SOURCE_LINK + " ffsl where ffsl.freeform_id = :freeformId order by ffsl.order_by";
 
-	private String sqlSelectLexemeRelations = "select r.lexeme1_id, r.lexeme2_id, r.lex_rel_type_code, r.order_by from " + LEXEME_RELATION + " r where r.lexeme1_id in (:lexemeIds) order by r.order_by";
+	private String sqlSelectLexemeRelations =
+			"select r.lexeme1_id, r.lexeme2_id, r.lex_rel_type_code, r.order_by from " + LEXEME_RELATION + " r where r.lexeme1_id in (:lexemeIds) order by r.order_by";
 
 	private String lexemeMergeName;
 
@@ -124,13 +133,15 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_COLLOC_TUPLES_FOR_DATASETS_PATH);
 		sqlSelectLexemeCollocTuplesForDatasets = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_LIFECYCLE_LOGS_FOR_DATASETS_PATH);
+		sqlSelectLexemeLifecycleLogsForDatasets = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
 	public void execute(String lexemeMergeName, List<String> lexemeMergeDatasets) throws Exception {
 		this.lexemeMergeName = lexemeMergeName;
 
-		// start new load
 		start();
 
 		logger.debug("Merging {} lexemes into {}", lexemeMergeDatasets, lexemeMergeName);
@@ -191,7 +202,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			createLexemeRegions(sumLexemeId, allLexemes);
 			createLexemeSourceLinks(sumLexemeId, allLexemes, countsMap);
 
-			// TODO lexeme_lifecycle_log
 			// TODO lexeme_process_log
 
 			// progress
@@ -211,6 +221,10 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		List<Collocation> collocations = getCollocations(lexemeMergeDatasets);
 		List<LexemeCollocationTuple> lexemeCollocationTuples = getLexemeCollocationTuples(lexemeMergeDatasets);
 		createLexemeCollocations(sumLexemeIdMap, collocations, lexemeCollocationTuples);
+
+		// post handling lexeme lifecycle logs
+		List<LexemeLifecycleLog> lexemeLifecycleLogs = getLexemeLifecycleLogs(lexemeMergeDatasets);
+		createLexemeLifecycleLogs(sumLexemeIdMap, lexemeLifecycleLogs);
 
 		logCounts(countsMap);
 
@@ -494,6 +508,14 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		return lexemeCollocationTuples;
 	}
 
+	private List<LexemeLifecycleLog> getLexemeLifecycleLogs(List<String> lexemeMergeDatasets) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("datasetCodes", lexemeMergeDatasets);
+		List<LexemeLifecycleLog> lexemeLifecycleLogs = basicDbService.getResults(sqlSelectLexemeLifecycleLogsForDatasets, paramMap, new LexemeLifecycleLogRowMapper());
+		return lexemeLifecycleLogs;
+	}
+
 	private void createLexemeFreeformsAndSourceLinks(Long sumLexemeId, List<LexemeExt> allLexemes, Map<String, Count> countsMap) throws Exception {
 
 		Count sumLexemeFreeformCount = countsMap.get("sumLexemeFreeformCount");
@@ -666,7 +688,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Long sourceLinkId = basicDbService.createIfNotExists(LEXEME_SOURCE_LINK, tableRowParamMap);
 
 		if (sourceLinkId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, sumLexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, value);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, sumLexemeId, sourceLinkId, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value);
 		}
 
 		return sourceLinkId;
@@ -819,6 +841,29 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		return collocRelGroupId;
 	}
 
+	private void createLexemeLifecycleLogs(Map<Long, Long> sumLexemeIdMap, List<LexemeLifecycleLog> lexemeLifecycleLogs) throws Exception {
+
+		logger.debug("Creating lexeme lifecycle logs");
+
+		for (LexemeLifecycleLog lexemeLifecycleLog : lexemeLifecycleLogs) {
+			Long sourceLexemeId = lexemeLifecycleLog.getLexemeId();
+			Long targetLexemeId = sumLexemeIdMap.get(sourceLexemeId);
+			Long entityId = lexemeLifecycleLog.getEntityId();
+			LifecycleEntity entity = lexemeLifecycleLog.getEntity();
+			LifecycleProperty property = lexemeLifecycleLog.getProperty();
+			LifecycleEventType eventType = lexemeLifecycleLog.getEventType();
+			String eventBy = lexemeLifecycleLog.getEventBy();
+			Timestamp eventOn = lexemeLifecycleLog.getEventOn();
+			String recent = lexemeLifecycleLog.getRecent();
+			String entry = lexemeLifecycleLog.getEntry();
+			createLifecycleLog(LifecycleLogOwner.LEXEME, targetLexemeId, entityId, entity, property, eventType, eventBy, eventOn, recent, entry);
+		}
+
+		logger.debug("Created {} lexeme lifecycle logs", lexemeLifecycleLogs.size());
+
+		logger.debug("Done with lexeme lifecycle logs");
+	}
+
 	class LexemeExt extends Lexeme {
 
 		private static final long serialVersionUID = 1L;
@@ -895,23 +940,23 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 	}
 
-	class LexemeExtRowMapper implements RowMapper<LexemeExt> {
+	class LexemeExtRowMapper extends AbstractRowMapper implements RowMapper<LexemeExt> {
 
 		@Override
 		public LexemeExt mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-			Long lexemeId = rs.getLong("id");
-			Long wordId = rs.getLong("word_id");
-			Long meaningId = rs.getLong("meaning_id");
+			Long lexemeId = rs.getObject("id", Long.class);
+			Long wordId = rs.getObject("word_id", Long.class);
+			Long meaningId = rs.getObject("meaning_id", Long.class);
 			String datasetCode = rs.getString("dataset_code");
 			String frequencyGroupCode = rs.getString("frequency_group_code");
-			Float corpusFrequency = rs.getFloat("corpus_frequency");
-			Integer level1 = rs.getInt("level1");
-			Integer level2 = rs.getInt("level2");
-			Integer level3 = rs.getInt("level3");
+			Float corpusFrequency = getFloat(rs, "corpus_frequency");
+			Integer level1 = rs.getObject("level1", Integer.class);
+			Integer level2 = rs.getObject("level2", Integer.class);
+			Integer level3 = rs.getObject("level3", Integer.class);
 			String valueStateCode = rs.getString("value_state_code");
 			String processStateCode = rs.getString("process_state_code");
-			Long orderBy = rs.getLong("order_by");
+			Long orderBy = rs.getObject("order_by", Long.class);
 
 			LexemeExt lexeme = new LexemeExt();
 			lexeme.setLexemeId(lexemeId);

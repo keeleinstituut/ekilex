@@ -351,12 +351,12 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			if (createdOn != null && createdById != null) {
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue,
-						createdOn, String.valueOf(createdById));
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.CREATE, String.valueOf(createdById),
+						createdOn, wordValue);
 			}
 			if (modifiedOn != null && modifiedById != null) {
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue,
-						modifiedOn, String.valueOf(modifiedById));
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, String.valueOf(modifiedById),
+						modifiedOn, wordValue);
 			}
 
 			Long meaningId;
@@ -441,12 +441,12 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				Integer modifiedById = (Integer) definition.get("changer_id");
 				Timestamp modifiedOn = (Timestamp) definition.get("change_time");
 				if (createdOn != null && createdById != null) {
-					createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE,
-							definitionId, definitionValue, createdOn, String.valueOf(createdById));
+					createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, definitionId, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE,
+							LifecycleEventType.CREATE, String.valueOf(createdById), createdOn, definitionValue);
 				}
 				if (modifiedOn != null && modifiedById != null) {
-					createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE,
-							definitionId, definitionValue, modifiedOn, String.valueOf(modifiedById));
+					createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, definitionId, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE,
+							LifecycleEventType.UPDATE, String.valueOf(modifiedById), modifiedOn, definitionValue);
 				}
 			}
 		}

@@ -68,7 +68,7 @@ public abstract class AbstractTermSourceLoaderRunner extends AbstractLoaderRunne
 			modifiedOn = new Timestamp(valueLong);
 		}
 
-		createLifecycleLog(LifecycleLogOwner.SOURCE, sourceId, LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId, null, createdOn, createdBy);
-		createLifecycleLog(LifecycleLogOwner.SOURCE, sourceId, LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId, null, modifiedOn, modifiedBy);
+		createLifecycleLog(LifecycleLogOwner.SOURCE, sourceId, sourceId, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, LifecycleEventType.CREATE, createdBy, createdOn, null);
+		createLifecycleLog(LifecycleLogOwner.SOURCE, sourceId, sourceId, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, modifiedBy, modifiedOn, null);
 	}
 }

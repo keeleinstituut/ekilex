@@ -441,8 +441,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-					null, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.VALUE, LifecycleEventType.CREATE,
+					valueStr1, valueTs, null);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
@@ -460,8 +460,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-					null, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.VALUE, LifecycleEventType.UPDATE,
+					valueStr1, valueTs, null);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(ltbCreatedByExp);
@@ -479,8 +479,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-					LTB_CREATED, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.VALUE, LifecycleEventType.CREATE,
+					valueStr1, valueTs, LTB_CREATED);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(ltbEõkkModifiedByExp);
@@ -498,8 +498,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-					LTB_UPDATED, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.VALUE, LifecycleEventType.UPDATE,
+					valueStr1, valueTs, LTB_UPDATED);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(etEnReviewedByExp);
@@ -517,8 +517,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-					ET_EN_REVIEWED, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.VALUE, LifecycleEventType.UPDATE,
+					valueStr1, valueTs, ET_EN_REVIEWED);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(enEtReviewedByExp);
@@ -536,8 +536,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-					EN_ET_REVIEWED, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.VALUE, LifecycleEventType.UPDATE,
+					valueStr1, valueTs, EN_ET_REVIEWED);
 		}
 	}
 
@@ -705,8 +705,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, term,
-					valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, LifecycleEventType.CREATE, valueStr1,
+					valueTs, term);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(modifiedByExp);
@@ -724,8 +724,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, term,
-					valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, valueStr1,
+					valueTs, term);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(eõkkCreatedByExp);
@@ -744,8 +744,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
 			String entry = EOKK_CREATED + " " + term;
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, entry,
-					valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, LifecycleEventType.CREATE, valueStr1,
+					valueTs, entry);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(ltbEõkkModifiedByExp);
@@ -764,8 +764,8 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
 			String entry = EOKK_UPDATED + " " + term;
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId,
-					entry, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, LifecycleEventType.UPDATE,
+					valueStr1, valueTs, entry);
 		}
 	}
 
