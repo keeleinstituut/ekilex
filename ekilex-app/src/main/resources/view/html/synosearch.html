@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{lex.search.title}">EKILEX otsing</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-searchfilter.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-synosearch.js}"></script>
+</th:block>
+</head>
+<body class="body-with-navbar compacted">
+  <th:block th:replace="common :: nav_bar(activeItem = 'syno')"></th:block>
+
+  <div class="container-fluid">
+    <div class="card shadow">
+      <div class="card-body p-2">
+        <form th:action="@{/synosearch}" method="post">
+          <th:block th:replace="search :: search_form('syno_search')"></th:block>
+        </form>
+      </div>
+    </div>
+
+    <div class="mt-4 float-left" th:if="${noResults}">
+      <div th:text="#{lex.not.found}">Not found.</div>
+    </div>
+
+    <div class="row no-gutters mt-2" th:unless="${noResults}">
+      <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
+        <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
+          <div class="card-body p-2">
+<!--            TODO commented out temporarily. Undo or remove completely after receiving feedback-->
+<!--            <a href="/" id="show-all-btn">-->
+              <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
+<!--            </a>-->
+            <table id="results" class="table table-striped mb-0">
+              <tr th:each="word : ${wordsResult.words}">
+                <td class="p-0">
+                  <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="synoDetailsBtn">
+                    <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>
+                    <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
+                    <span th:text="${'(' + word.language + ')'}"></span>
+                  </button>
+                  <span class="float-right" style="padding: 15px">
+                    <span th:id="${'syno_select_point_' + word.wordId}" class="fa fa-play" style="display: none"></span>
+                    <span th:id="${'syno_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+                  </span>
+                  <div style="position:relative; top: -10px; padding-left: 10px">
+                    <small>
+                      <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
+                        <span th:text="${wordDatasetCode}"></span>
+                        <span th:unless="${wordDatasetIter.last}">,</span>
+                      </span>
+                    </small>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-9" style="height: calc(100vh - 12rem); overflow-y: auto;">
+        <div id="syno_details_div"></div>
+      </div>
+    </div>
+  </div>
+  <th:block th:fragment="details" th:if="${details != null}">
+    <div th:data-id="${wordId}" id="details_div"
+         th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')}">
+      <div class="row no-gutters">
+        <div class="col-8 pr-2">
+          <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}"
+               th:with="
+               isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
+               isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}
+               ">
+
+            <div class="card-body" data-lexeme-title>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+
+  <div th:replace="common :: #sourceDetailsDlg"></div>
+  <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #confirmDlg"></div>
+
+  <script th:inline="javascript">
+  	initialise();
+  </script>
+</body>
+</html>
