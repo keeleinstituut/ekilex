@@ -1792,7 +1792,8 @@ insert into register_label (code, value, lang, type) values ('eevn', 'eestivene'
 insert into register_label (code, value, lang, type) values ('hlv', 'halvustav, solvav', 'est', 'descrip');
 insert into register_label (code, value, lang, type) values ('hlv', 'offensive', 'eng', 'descrip');
 insert into register_label (code, value, lang, type) values ('hellitl', 'hellitlev', 'est', 'descrip');
-insert into register_label (code, value, lang, type) values ('hrv', 'harvaesinev', 'est', 'descrip');
+insert into register_label (code, value, lang, type) values ('hrv', 'harv', 'est', 'descrip');
+insert into register_label (code, value, lang, type) values ('hrv', 'harv', 'est', 'wordweb');
 insert into register_label (code, value, lang, type) values ('hrv', 'rare', 'eng', 'descrip');
 insert into register_label (code, value, lang, type) values ('kõrgst', 'kõrgstiil', 'est', 'descrip');
 insert into register_label (code, value, lang, type) values ('lastek', 'lastekeelne', 'est', 'descrip');
@@ -1862,7 +1863,6 @@ insert into word_rel_type_label (code, value, lang, type) values ('SERIES', 'sar
 insert into word_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('ASPECTS', 'aspektid', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('ühend', 'ühend', 'est', 'full');
-insert into word_rel_type_label (code, value, lang, type) values ('raw', 'vasted', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('posit', 'võrdlus', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('komp', 'võrdlus', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('deriv', 'saab moodustada', 'est', 'wordweb');
@@ -1872,7 +1872,8 @@ insert into word_rel_type_label (code, value, lang, type) values ('SERIES', 'sam
 insert into word_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('ASPECTS', 'aspektid', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('ühend', 'ühendid', 'est', 'wordweb');
-insert into word_rel_type_label (code, value, lang, type) values ('raw', 'vasted', 'est', 'wordweb');
+insert into word_rel_type_label (code, value, lang, type) values ('raw', 'Veel sarnaseid sõnu', 'est', 'wordweb');
+insert into word_rel_type_label (code, value, lang, type) values ('raw', 'Veel sarnaseid sõnu', 'est', 'full');
 insert into word_type_label (code, value, lang, type) values ('k', 'kohanimi', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('k', 'place name', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('l', 'lühend', 'est', 'descrip');
