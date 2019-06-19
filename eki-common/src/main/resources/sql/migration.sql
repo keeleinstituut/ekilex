@@ -19,5 +19,6 @@ create index word_relation_param_word_relation_id_idx on word_relation_param(wor
 
 alter table word_relation add relation_status varchar(100);
 
+insert into word_rel_type (code, datasets) values ('raw', '{}');
 insert into word_rel_type_label (code, value, lang, type) values ('raw', 'vasted', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('raw', 'vasted', 'est', 'full');
