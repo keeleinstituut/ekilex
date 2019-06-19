@@ -1,5 +1,7 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,26 +21,32 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.client.HttpClientErrorException;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
+import eki.ekilex.data.UserRole;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.SynoSearchService;
+import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.SynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SynoSearchController extends AbstractSearchController {
+public class SynSearchController extends AbstractSearchController {
 
-	private static final Logger logger = LoggerFactory.getLogger(SynoSearchController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SynSearchController.class);
 
 	@Autowired
-	private SynoSearchService synoSearchService;
+	private SynSearchService synSearchService;
 
-	@GetMapping(value = SYNO_SEARCH_URI)
+	@Autowired
+	private CommonDataService commonDataService;
+
+	@GetMapping(value = SYN_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
 
 		initSearchForms(model);
@@ -45,11 +54,11 @@ public class SynoSearchController extends AbstractSearchController {
 		WordsResult wordsResult = new WordsResult();
 		model.addAttribute("wordsResult", wordsResult);
 
-		return SYNO_SEARCH_PAGE;
+		return SYN_SEARCH_PAGE;
 	}
 
-	@PostMapping(value = SYNO_SEARCH_URI)
-	public String synoSearch(
+	@PostMapping(value = SYN_SEARCH_URI)
+	public String synSearch(
 			@RequestParam(name = "searchMode", required = false) String searchMode,
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
@@ -64,19 +73,20 @@ public class SynoSearchController extends AbstractSearchController {
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		selectedDatasets = sessionBean.getSelectedDatasets();
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, fetchAll);
-		return "redirect:" + SYNO_SEARCH_URI + searchUri;
+		List<String> filteredDatasetCodes = cleanDatasetCodesForRole(selectedDatasets, sessionBean);
+
+		String searchUri = searchHelper.composeSearchUri(searchMode, filteredDatasetCodes, simpleSearchFilter, detailSearchFilter, fetchAll);
+		return "redirect:" + SYN_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping(value = SYNO_SEARCH_URI + "/**")
-	public String synoSearch(Model model, HttpServletRequest request) throws Exception {
+	@GetMapping(value = SYN_SEARCH_URI + "/**")
+	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
 		// if redirect from login arrives
 		initSearchForms(model);
 
-		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYNO_SEARCH_URI);
+		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYN_SEARCH_URI);
 		logger.debug(searchUri);
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
@@ -85,7 +95,7 @@ public class SynoSearchController extends AbstractSearchController {
 			initSearchForms(model);
 			model.addAttribute("wordsResult", new WordsResult());
 			model.addAttribute("noResults", true);
-			return SYNO_SEARCH_PAGE;
+			return SYN_SEARCH_PAGE;
 		}
 
 		String searchMode = searchUriData.getSearchMode();
@@ -96,9 +106,9 @@ public class SynoSearchController extends AbstractSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synoSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = synSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll);
 		} else {
-			wordsResult = synoSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -107,10 +117,10 @@ public class SynoSearchController extends AbstractSearchController {
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("noResults", noResults);
 
-		return SYNO_SEARCH_PAGE;
+		return SYN_SEARCH_PAGE;
 	}
 
-	@GetMapping(SYNO_WORD_DETAILS_URI + "/{wordId}")
+	@GetMapping(SYN_WORD_DETAILS_URI + "/{wordId}")
 	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);
@@ -119,12 +129,24 @@ public class SynoSearchController extends AbstractSearchController {
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}
-		WordDetails details = synoSearchService.getWordDetails(wordId, selectedDatasets);
+		List<String> filteredDatasets = cleanDatasetCodesForRole(selectedDatasets, sessionBean);
+		WordDetails details = synSearchService.getWordDetails(wordId, filteredDatasets);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
-		return SYNO_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
+		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
+	private List<String> cleanDatasetCodesForRole(List<String> selectedDatasetCodes, SessionBean sessionBean) {
+		UserRole role = sessionBean.getUserRole();
+		if (role != null) {
+			if (role.isAdmin()) {
+				return selectedDatasetCodes;
+			} else if (role.getDatasetPermission() != null) {
+				return new ArrayList<>(Collections.singletonList(role.getDatasetPermission().getDatasetCode()));
+			}
+		}
+		throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
+	}
 
 }

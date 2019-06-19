@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
@@ -156,6 +157,14 @@ public class CudDbService implements DbConstant {
 		LexemeRegionRecord lexemeRegionRecord = create.fetchOne(LEXEME_REGION,
 				LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(regionCode)));
 		return lexemeRegionRecord.getId();
+	}
+
+	public Long getLexemeWordId(Long lexemeId) {
+		return create
+				.select(LEXEME.WORD_ID)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(Long.class);
 	}
 
 	public Long getMeaningDomainId(Long meaningId, Classifier domain) {
@@ -834,7 +843,13 @@ public class CudDbService implements DbConstant {
 	}
 
 	public void deleteMeaning(Long meaningId) {
-		//TODO delete freeforms first
+		List<Long> definitionIds = getMeaningDefinitionIds(meaningId);
+		for (Long definitionId : definitionIds) {
+			deleteDefinitionFreeforms(definitionId);
+			deleteDefinition(definitionId);
+		}
+		deleteMeaningFreeforms(meaningId);
+
 		create.delete(MEANING)
 				.where(MEANING.ID.eq(meaningId))
 				.execute();
@@ -849,6 +864,32 @@ public class CudDbService implements DbConstant {
 	public void deleteMeaningDomain(Long meaningDomainId) {
 		create.delete(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.ID.eq(meaningDomainId))
+				.execute();
+	}
+
+	private List<Long> getMeaningDefinitionIds(Long meaningId) {
+		return create
+				.select(DEFINITION.ID)
+				.from(DEFINITION)
+				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.fetchInto(Long.class);
+	}
+
+	private void deleteDefinitionFreeforms(Long definitionId) {
+		create.delete(FREEFORM)
+				.where(
+						FREEFORM.ID.in(DSL.select(DEFINITION_FREEFORM.FREEFORM_ID)
+								.from(DEFINITION_FREEFORM)
+								.where(DEFINITION_FREEFORM.DEFINITION_ID.eq(definitionId))))
+				.execute();
+	}
+
+	private void deleteMeaningFreeforms(Long meaningId) {
+		create.delete(FREEFORM)
+				.where(
+						FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID)
+								.from(MEANING_FREEFORM)
+								.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))))
 				.execute();
 	}
 

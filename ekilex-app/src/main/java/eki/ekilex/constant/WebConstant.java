@@ -160,11 +160,11 @@ public interface WebConstant {
 
 	String CHANGE_ROLE_URI = "/change_role";
 
-	String SYNO_SEARCH_PAGE = "synosearch";
+	String SYN_SEARCH_PAGE = "synsearch";
 
-	String SYNO_SEARCH_URI = "/synosearch";
+	String SYN_SEARCH_URI = "/synsearch";
 
-	String SYNO_WORD_DETAILS_URI = "/syno_worddetails";
+	String SYN_WORD_DETAILS_URI = "/syn_worddetails";
 
 	String PAGE_FRAGMENT_ELEM = " :: ";
 

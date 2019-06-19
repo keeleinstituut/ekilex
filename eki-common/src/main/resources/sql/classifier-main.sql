@@ -428,6 +428,7 @@ insert into word_rel_type (code, datasets) values ('SERIES', '{}');
 insert into word_rel_type (code, datasets) values ('VARIANTS', '{}');
 insert into word_rel_type (code, datasets) values ('ASPECTS', '{}');
 insert into word_rel_type (code, datasets) values ('ühend', '{}');
+insert into word_rel_type (code, datasets) values ('raw', '{}');
 insert into word_type (code, datasets) values ('k', '{}');
 insert into word_type (code, datasets) values ('l', '{}');
 insert into word_type (code, datasets) values ('p', '{}');
@@ -1861,6 +1862,7 @@ insert into word_rel_type_label (code, value, lang, type) values ('SERIES', 'sar
 insert into word_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('ASPECTS', 'aspektid', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('ühend', 'ühend', 'est', 'full');
+insert into word_rel_type_label (code, value, lang, type) values ('raw', 'vasted', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('posit', 'võrdlus', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('komp', 'võrdlus', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('deriv', 'saab moodustada', 'est', 'wordweb');
@@ -1870,6 +1872,7 @@ insert into word_rel_type_label (code, value, lang, type) values ('SERIES', 'sam
 insert into word_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('ASPECTS', 'aspektid', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('ühend', 'ühendid', 'est', 'wordweb');
+insert into word_rel_type_label (code, value, lang, type) values ('raw', 'vasted', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('k', 'kohanimi', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('k', 'place name', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('l', 'lühend', 'est', 'descrip');

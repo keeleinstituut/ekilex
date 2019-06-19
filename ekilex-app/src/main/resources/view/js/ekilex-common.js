@@ -12,8 +12,13 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
 }
 
 function doPostDelete(deleteUrl, callbackFunc) {
-	$.post(deleteUrl).done(function() {
-		callbackFunc();
+	$.post(deleteUrl).done(function(data) {
+		if (data === "OK") {
+			callbackFunc();
+		} else {
+			openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+			console.log(data);
+		}
 	}).fail(function(data) {
 		openAlertDlg("Andmete eemaldamine ebaõnnestus.");
 		console.log(data);
@@ -496,5 +501,31 @@ function initWordValueEditorDlg(dlg) {
 		} else {
 			editFld.addClass('is-invalid');
 		}
+	});
+}
+
+function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) {
+	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
+	var confirmationOpUrl = applicationUrl + "confirm_op";
+	var dataObj = {
+		opName: opName,
+		opCode: opCode,
+		id: id
+	};
+	$.ajax({
+		url: confirmationOpUrl,
+		data: JSON.stringify(dataObj),
+		method: 'POST',
+		dataType: 'json',
+		contentType: 'application/json'
+	}).done(function (data) {
+		if (data.unconfirmed) {
+			openMultiConfirmDlg(data.questions, doPostDelete, deleteUrl, successCallbackFunc);
+		} else {
+			doPostDelete(deleteUrl, successCallbackFunc);
+		}
+	}).fail(function (data) {
+		console.log(data);
+		openAlertDlg("Kustutamine ebaõnnestus");
 	});
 }

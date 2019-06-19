@@ -40,6 +40,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.service.TermSearchService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
@@ -56,6 +57,9 @@ public class EditController implements WebConstant {
 
 	@Autowired
 	private LexSearchService lexSearchService;
+
+	@Autowired
+	private TermSearchService termSearchService;
 
 	@Autowired
 	private CommonDataService commonDataService;
@@ -297,6 +301,8 @@ public class EditController implements WebConstant {
 		String opName = confirmationRequest.getOpName();
 		String opCode = confirmationRequest.getOpCode();
 		Long id = confirmationRequest.getId();
+		List<String> questions = new ArrayList<>();
+		String question;
 
 		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
 
@@ -304,8 +310,6 @@ public class EditController implements WebConstant {
 		case "delete":
 			switch (opCode) {
 			case "lexeme":
-				List<String> questions = new ArrayList<>();
-				String question;
 				boolean isOnlyLexemeForMeaning = lexSearchService.isOnlyLexemeForMeaning(id);
 				if (isOnlyLexemeForMeaning) {
 					question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
@@ -316,13 +320,21 @@ public class EditController implements WebConstant {
 					question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
 					questions.add(question);
 				}
-				boolean unconfirmed = CollectionUtils.isNotEmpty(questions);
-				confirmationRequest.setUnconfirmed(unconfirmed);
-				confirmationRequest.setQuestions(questions);
+				break;
+			case "meaning":
+				boolean meaningHasLexemeThatIsOnlyLexemeForWord = termSearchService.meaningHasLexemeThatIsOnlyLexemeForWord(id);
+				if (meaningHasLexemeThatIsOnlyLexemeForWord) {
+					question = "Leidub vähemalt üks selline ilmik, mis on keelendi ainus ilmik. Palun kinnita keelendite kustutamine";
+					questions.add(question);
+				}
 				break;
 			}
 			break;
 		}
+
+		boolean unconfirmed = CollectionUtils.isNotEmpty(questions);
+		confirmationRequest.setUnconfirmed(unconfirmed);
+		confirmationRequest.setQuestions(questions);
 		return confirmationRequest;
 	}
 
@@ -346,6 +358,9 @@ public class EditController implements WebConstant {
 			break;
 		case "usage_definition":
 			cudService.deleteUsageDefinition(id);
+			break;
+		case "usage_author":
+			cudService.deleteFreeformSourceLink(id);
 			break;
 		case "government":
 			cudService.deleteLexemeGovernment(id);
@@ -377,18 +392,18 @@ public class EditController implements WebConstant {
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(id, null);
 			break;
-		case "usage_author":
-			cudService.deleteFreeformSourceLink(id);
-			break;
 		case "lexeme":
 			cudService.deleteLexeme(id);
+			break;
+		case "learner_comment":
+			cudService.deleteMeaningLearnerComment(id);
+			break;
+		case "meaning":
+			cudService.deleteMeaningAndLexemes(id);
 			break;
 		case "meaning_domain":
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToDelete);
 			cudService.deleteMeaningDomain(id, meaningDomain);
-			break;
-		case "learner_comment":
-			cudService.deleteMeaningLearnerComment(id);
 			break;
 		case "meaning_public_note":
 			cudService.deleteMeaningPublicNote(id);

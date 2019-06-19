@@ -525,6 +525,7 @@ create table word_relation
   word1_id bigint references word(id) on delete cascade not null,
   word2_id bigint references word(id) on delete cascade not null,
   word_rel_type_code varchar(100) references word_rel_type(code),
+  relation_status varchar(100),
   order_by bigserial,
   unique(word1_id, word2_id, word_rel_type_code)
 );
@@ -985,6 +986,17 @@ create table feedback_log_comment
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
 
+create table word_relation_param
+(
+  id bigserial primary key,
+  word_relation_id bigint references word_relation(id) on delete cascade not null,
+  param_name text not null,
+  value_float float,
+  value_int int,
+  value_boolean boolean
+);
+alter sequence word_relation_param_id_seq restart with 10000;
+
 --- indexes
 create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
 create index dataset_perm_user_id_idx on dataset_permission(user_id);
@@ -1082,3 +1094,4 @@ create index process_log_source_link_source_id_idx on process_log_source_link(so
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));
 create index form_fts_idx on form using gin(to_tsvector('simple',value));
+create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);

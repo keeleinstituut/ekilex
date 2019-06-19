@@ -76,6 +76,14 @@ public class UserService implements WebConstant {
 	}
 
 	@Transactional
+	public void updateAuthenticatedUserDatasetPermissions() {
+		EkiUser user = getAuthenticatedUser();
+		Long userId = user.getId();
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+		user.setDatasetPermissions(datasetPermissions);
+	}
+
+	@Transactional
 	public EkiUser getUserByEmail(String email) {
 		EkiUser user = userDbService.getUserByEmail(email);
 		if (user != null) {

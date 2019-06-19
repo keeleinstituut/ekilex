@@ -643,4 +643,21 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchSingleInto(Long.class);
 	}
 
+	public List<Long> getMeaningLexemeIds(Long meaningId) {
+
+		return create.
+				select(LEXEME.ID)
+				.from(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId))
+				.fetchInto(Long.class);
+	}
+
+	public boolean isOnlyLexemeForWord(Long lexemeId) {
+
+		Lexeme lex = LEXEME.as("lex");
+		Lexeme lex2 = LEXEME.as("lex2");
+		int count = create.fetchCount(DSL.select(lex.ID).from(lex, lex2).where(lex2.ID.eq(lexemeId).and(lex.WORD_ID.eq(lex2.WORD_ID))));
+		return count == 1;
+	}
+
 }
