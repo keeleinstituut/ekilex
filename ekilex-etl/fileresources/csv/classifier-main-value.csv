@@ -1478,6 +1478,8 @@ word_rel_type	SERIES	samas sarjas	est	wordweb
 word_rel_type	VARIANTS	variandid	est	wordweb
 word_rel_type	ASPECTS	aspektid	est	wordweb
 word_rel_type	ühend	ühendid	est	wordweb
+word_rel_type	raw	Veel sarnaseid sõnu	est	wordweb
+word_rel_type	raw	Veel sarnaseid sõnu	est	full
 word_type	k	kohanimi	est	descrip
 word_type	k	place name	eng	descrip
 word_type	l	lühend	est	descrip
