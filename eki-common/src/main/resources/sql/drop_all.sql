@@ -66,6 +66,7 @@ drop table if exists word_etymology;
 drop table if exists word_guid;
 drop table if exists word_group_member;
 drop table if exists word_group;
+drop table if exists word_relation_param;
 drop table if exists word_relation;
 drop table if exists word_word_type;
 drop table if exists word;

@@ -531,6 +531,17 @@ create table word_relation
 );
 alter sequence word_relation_id_seq restart with 10000;
 
+create table word_relation_param
+(
+  id bigserial primary key,
+  word_relation_id bigint references word_relation(id) on delete cascade not null,
+  param_name text not null,
+  value_float float,
+  value_int int,
+  value_boolean boolean
+);
+alter sequence word_relation_param_id_seq restart with 10000;
+
 -- keelendi sari
 create table word_group
 (
@@ -986,17 +997,6 @@ create table feedback_log_comment
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
 
-create table word_relation_param
-(
-  id bigserial primary key,
-  word_relation_id bigint references word_relation(id) on delete cascade not null,
-  param_name text not null,
-  value_float float,
-  value_int int,
-  value_boolean boolean
-);
-alter sequence word_relation_param_id_seq restart with 10000;
-
 --- indexes
 create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
 create index dataset_perm_user_id_idx on dataset_permission(user_id);
@@ -1037,6 +1037,7 @@ create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
 create index word_relation_word1_id_idx on word_relation(word1_id);
 create index word_relation_word2_id_idx on word_relation(word2_id);
+create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);
 create index freeform_parent_id_idx on freeform(parent_id);
 create index freeform_value_text_idx on freeform(value_text);
 create index freeform_type_idx on freeform(type);
@@ -1094,4 +1095,3 @@ create index process_log_source_link_source_id_idx on process_log_source_link(so
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));
 create index form_fts_idx on form using gin(to_tsvector('simple',value));
-create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);
