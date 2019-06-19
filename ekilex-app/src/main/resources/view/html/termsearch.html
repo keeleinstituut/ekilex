@@ -21,7 +21,7 @@
     <div class="card shadow">
       <div class="card-body p-2">
         <form id="searchForm" th:action="@{/termsearch}" method="post">
-          <th:block th:replace="search :: search_form('term_search')"></th:block>
+          <th:block th:replace="search :: search_form('term_search', true)"></th:block>
           <div class="form-row pt-2 align-items-center">
             <div class="col-auto">
               <div class="row align-items-center">

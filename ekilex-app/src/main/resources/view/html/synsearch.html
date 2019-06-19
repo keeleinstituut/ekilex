@@ -15,7 +15,7 @@
     <div class="card shadow">
       <div class="card-body p-2">
         <form th:action="@{/synsearch}" method="post">
-          <th:block th:replace="search :: search_form('syn_search')"></th:block>
+          <th:block th:replace="search :: search_form('syn_search', ${sessionBean.userRole != null && sessionBean.userRole.isAdmin()})"></th:block>
         </form>
       </div>
     </div>

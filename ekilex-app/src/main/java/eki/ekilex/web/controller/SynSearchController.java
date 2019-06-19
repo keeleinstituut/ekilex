@@ -1,5 +1,7 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +21,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.client.HttpClientErrorException;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
+import eki.ekilex.data.UserRole;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
+import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.SynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -36,6 +43,13 @@ public class SynSearchController extends AbstractSearchController {
 
 	@Autowired
 	private SynSearchService synSearchService;
+
+	@Autowired
+	private CommonDataService commonDataService;
+
+	@Autowired
+	private PermissionService permissionService;
+
 
 	@GetMapping(value = SYN_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
@@ -64,9 +78,10 @@ public class SynSearchController extends AbstractSearchController {
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		selectedDatasets = sessionBean.getSelectedDatasets();
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, fetchAll);
+		List<String> filteredDatasetCodes = cleanDatasetCodesForRole(selectedDatasets, sessionBean);
+
+		String searchUri = searchHelper.composeSearchUri(searchMode, filteredDatasetCodes, simpleSearchFilter, detailSearchFilter, fetchAll);
 		return "redirect:" + SYN_SEARCH_URI + searchUri;
 	}
 
@@ -119,12 +134,24 @@ public class SynSearchController extends AbstractSearchController {
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}
-		WordDetails details = synSearchService.getWordDetails(wordId, selectedDatasets);
+		List<String> filteredDatasets = cleanDatasetCodesForRole(selectedDatasets, sessionBean);
+		WordDetails details = synSearchService.getWordDetails(wordId, filteredDatasets);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
+	private List<String> cleanDatasetCodesForRole(List<String> selectedDatasetCodes, SessionBean sessionBean) {
+		UserRole role = sessionBean.getUserRole();
+		if (role != null) {
+			if (role.isAdmin()) {
+				return selectedDatasetCodes;
+			} else if (role.getDatasetPermission() != null) {
+				return new ArrayList<>(Collections.singletonList(role.getDatasetPermission().getDatasetCode()));
+			}
+		}
+		throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
+	}
 
 }

@@ -20,7 +20,8 @@
           <a th:href="@{/termsearch}">Terminoloogide otsing</a>
         </p>
         <p>
-          <a th:href="@{/synsearch}">Sünonüümide otsing</a>
+          <a th:href="@{/synsearch}" th:if="${sessionBean.userRole != null}">Sünonüümide otsing</a>
+          <div th:if="${sessionBean.userRole == null}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</div>
         </p>
         <p>
           <a th:href="@{/sourcesearch}">Allikate otsing</a>
