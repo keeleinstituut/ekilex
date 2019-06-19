@@ -12,7 +12,7 @@ public class LexemeClassifierRowMapper implements RowMapper<LexemeClassifier> {
 	@Override
 	public LexemeClassifier mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		Long lexemeId = rs.getLong("lexeme_id");
+		Long lexemeId = rs.getObject("lexeme_id", Long.class);
 		String code = rs.getString("code");
 
 		LexemeClassifier lexemeClassifier = new LexemeClassifier();

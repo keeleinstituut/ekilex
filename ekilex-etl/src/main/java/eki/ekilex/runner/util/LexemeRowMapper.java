@@ -7,23 +7,23 @@ import org.springframework.jdbc.core.RowMapper;
 
 import eki.ekilex.data.transform.Lexeme;
 
-public class LexemeRowMapper implements RowMapper<Lexeme> {
+public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexeme> {
 
 	@Override
 	public Lexeme mapRow(ResultSet rs, int rowNum) throws SQLException {
-		
-		Long lexemeId = rs.getLong("id");
-		Long wordId = rs.getLong("word_id");
-		Long meaningId = rs.getLong("meaning_id");
+
+		Long lexemeId = rs.getObject("id", Long.class);
+		Long wordId = rs.getObject("word_id", Long.class);
+		Long meaningId = rs.getObject("meaning_id", Long.class);
 		String datasetCode = rs.getString("dataset_code");
 		String frequencyGroupCode = rs.getString("frequency_group_code");
-		Float corpusFrequency = rs.getFloat("corpus_frequency");
-		Integer level1 = rs.getInt("level1");
-		Integer level2 = rs.getInt("level2");
-		Integer level3 = rs.getInt("level3");
+		Float corpusFrequency = getFloat(rs, "corpus_frequency");
+		Integer level1 = rs.getObject("level1", Integer.class);
+		Integer level2 = rs.getObject("level2", Integer.class);
+		Integer level3 = rs.getObject("level3", Integer.class);
 		String valueStateCode = rs.getString("value_state_code");
 		String processStateCode = rs.getString("process_state_code");
-		Long orderBy = rs.getLong("order_by");
+		Long orderBy = rs.getObject("order_by", Long.class);
 
 		Lexeme lexeme = new Lexeme();
 		lexeme.setLexemeId(lexemeId);
@@ -40,5 +40,5 @@ public class LexemeRowMapper implements RowMapper<Lexeme> {
 		lexeme.setOrderBy(orderBy);
 		return lexeme;
 	}
-	
+
 }

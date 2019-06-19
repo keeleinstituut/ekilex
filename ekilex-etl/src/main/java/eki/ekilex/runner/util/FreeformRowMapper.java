@@ -11,13 +11,13 @@ import org.springframework.jdbc.core.RowMapper;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.transform.Freeform;
 
-public class FreeformRowMapper implements RowMapper<Freeform> {
+public class FreeformRowMapper extends AbstractRowMapper implements RowMapper<Freeform> {
 
 	@Override
 	public Freeform mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		Long freeformId = rs.getLong("id");
-		Long parentId = rs.getLong("parent_id");
+		Long freeformId = rs.getObject("id", Long.class);
+		Long parentId = rs.getObject("parent_id", Long.class);
 		String typeStr = rs.getString("type");
 		FreeformType type = null;
 		if (StringUtils.isNotBlank(typeStr)) {
@@ -26,7 +26,7 @@ public class FreeformRowMapper implements RowMapper<Freeform> {
 		String valueText = rs.getString("value_text");
 		String valuePrese = rs.getString("value_prese");
 		Timestamp valueDate = rs.getTimestamp("value_date");
-		Float valueNumber = rs.getFloat("value_number");
+		Float valueNumber = getFloat(rs, "value_number");
 		Array valueArrayObj = rs.getArray("value_array");
 		String[] valueArray = null;
 		if (valueArrayObj != null) {
@@ -35,7 +35,7 @@ public class FreeformRowMapper implements RowMapper<Freeform> {
 		String classifName = rs.getString("classif_name");
 		String classifCode = rs.getString("classif_code");
 		String langCode = rs.getString("lang");
-		Long orderBy = rs.getLong("order_by");
+		Long orderBy = rs.getObject("order_by", Long.class);
 		boolean childrenExist = rs.getBoolean("children_exist");
 		boolean sourceLinksExist = rs.getBoolean("source_links_exist");
 

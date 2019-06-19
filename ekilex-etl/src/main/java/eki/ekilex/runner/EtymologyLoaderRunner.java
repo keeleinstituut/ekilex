@@ -565,7 +565,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("value_prese", word);//TODO decoration conversion
 		basicDbService.create(FORM, tableRowParamMap);
 
-		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
+		createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.CREATE, word);
 		return wordId;
 	}
 

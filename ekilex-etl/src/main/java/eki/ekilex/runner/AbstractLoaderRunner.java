@@ -274,35 +274,47 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		logger.debug("There are {} meanings in \"{}\" to be deleted", meaningIds.size(), dataset);
 
 		String sql;
+		int deletedRecordCount;
 
 		// freeforms
-		basicDbService.executeScript(sqls.getSqlDeleteDefinitionFreeformsForDataset(), paramMap);
-		basicDbService.executeScript(sqls.getSqlDeleteMeaningFreeformsForDataset(), paramMap);
-		basicDbService.executeScript(sqls.getSqlDeleteLexemeFreeformsForDataset(), paramMap);
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteDefinitionFreeformsForDataset(), paramMap);
+		logger.debug("Deleted {} definition freeforms in \"{}\"", deletedRecordCount, dataset);
+
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteMeaningFreeformsForDataset(), paramMap);
+		logger.debug("Deleted {} meaning freeforms in \"{}\"", deletedRecordCount, dataset);
+
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteLexemeFreeformsForDataset(), paramMap);
+		logger.debug("Deleted {} lexeme freeforms in \"{}\"", deletedRecordCount, dataset);
+
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteCollocationFreeformsForDataset(), paramMap);
+		logger.debug("Deleted {} collocation freeforms in \"{}\"", deletedRecordCount, dataset);
 
 		// delete definitions
-		basicDbService.executeScript(sqls.getSqlDeleteDefinitionsForDataset(), paramMap);
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteDefinitionsForDataset(), paramMap);
+		logger.debug("Deleted {} definitions in \"{}\"", deletedRecordCount, dataset);
 
-		// delete collocations + freeforms
-		basicDbService.executeScript(sqls.getSqlDeleteCollocationFreeformsForDataset(), paramMap);
-		basicDbService.executeScript(sqls.getSqlDeleteCollocationsForDataset(), paramMap);
+		// delete collocations
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteCollocationsForDataset(), paramMap);
+		logger.debug("Deleted {} collocations in \"{}\"", deletedRecordCount, dataset);
 
 		// delete etymology
 		if (StringUtils.equals(ETYMOLOGY_OWNER_DATASET_CODE, dataset)) {
 			sql = "delete from " + WORD_ETYMOLOGY;
-			basicDbService.executeScript(sql);
+			deletedRecordCount = basicDbService.executeScript(sql);
+			logger.debug("Deleted {} word etyms in \"{}\"", deletedRecordCount, dataset);
 		}
 
 		// delete lexemes
 		sql = "delete from " + LEXEME + " l where l.dataset_code = :dataset";
-		basicDbService.executeScript(sql, paramMap);
+		deletedRecordCount = basicDbService.executeScript(sql, paramMap);
+		logger.debug("Deleted {} lexemes in \"{}\"", deletedRecordCount, dataset);
 
 		// delete word guids and mnrs
 		if (!StringUtils.equals(GUID_OWNER_DATASET_CODE, dataset)) {
 			sql = "delete from " + WORD_GUID + " wg where wg.dataset_code = :dataset";
-			basicDbService.executeScript(sql, paramMap);
+			deletedRecordCount = basicDbService.executeScript(sql, paramMap);
 			sql = "delete from " + MEANING_NR + " mn where mn.dataset_code = :dataset";
-			basicDbService.executeScript(sql, paramMap);
+			deletedRecordCount= basicDbService.executeScript(sql, paramMap);
 		}
 
 		// delete words
@@ -649,7 +661,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("gender_code", genderCode);
 		tableRowParamMap.put("aspect_code", aspectCode);
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
-		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
+		createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.CREATE, word);
 		return wordId;
 	}
 
@@ -775,7 +787,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Long meaningDomainId = basicDbService.createIfNotExists(MEANING_DOMAIN, tableRowParamMap);
 
 		if (meaningDomainId != null) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domainCode);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningDomainId, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, LifecycleEventType.CREATE, domainCode);
 		}
 	}
 
@@ -805,7 +817,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			tableRowParamMap.put("lang", lang);
 			tableRowParamMap.put("definition_type_code", definitionTypeCode);
 			definitionId = basicDbService.create(DEFINITION, tableRowParamMap);
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, value);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, definitionId, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value);
 		} else {
 			definitionId = (Long) definition.get("id");
 		}
@@ -949,12 +961,12 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 					referenceType = ReferenceType.TRANSLATOR;
 				}
 				Long freeformSourceLinkId = createFreeformSourceLink(usageId, referenceType, authorId, null, author);
-				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, freeformSourceLinkId, author);
+				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformSourceLinkId, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, LifecycleEventType.CREATE, author);
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
 					Long usageDefinitionId = createFreeformTextOrDate(usageId, FreeformType.USAGE_DEFINITION, usageDefinition, dataLang);
-					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, usageDefinition);
+					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, usageDefinitionId, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, usageDefinition);
 				}
 			}
 			if (CollectionUtils.isNotEmpty(usage.getUsageTranslations())) {
@@ -963,7 +975,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 					String usageTranslationLang = usageTranslation.getLang();
 					Long usageTranslationId = createFreeformTextOrDate(usageId, FreeformType.USAGE_TRANSLATION, usageTranslationValue, usageTranslationLang);
 					createLifecycleLog(
-							LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, usageTranslationValue);
+							LifecycleLogOwner.LEXEME, lexemeId, usageTranslationId, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, usageTranslationValue);
 				}
 			}
 		}
@@ -973,7 +985,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		String datasetCode = getDataset();
 		if (StringUtils.isBlank(eventBy)) {
-			eventBy = "Ekileks " + datasetCode + "-laadur";
+			eventBy = "Ekilex " + datasetCode + "-laadur";
 		}
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -1064,7 +1076,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		try {
 			LifecycleEntity lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.VALUE, freeformId, value.toString());
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
 		} catch (Exception e) {
 		}
 
@@ -1098,7 +1110,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		try {
 			LifecycleEntity lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.VALUE, freeformId, value.toString());
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
 		} catch (Exception e) {
 		}
 
@@ -1211,7 +1223,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 		Long sourceLinkId = basicDbService.create(LEXEME_SOURCE_LINK, tableRowParamMap);
 
-		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, value);
+		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, sourceLinkId, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value);
 
 		return sourceLinkId;
 	}
@@ -1241,7 +1253,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Long lexemeRelationId = basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
 
 		if (lexemeRelationId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId1, LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId1, lexemeRelationId, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, relationType);
 		}
 		return lexemeRelationId;
 	}
@@ -1279,7 +1291,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Long wordRelationId = basicDbService.createIfNotExists(WORD_RELATION, relationParams);
 
 		if (wordRelationId != null) {
-			createLifecycleLog(LifecycleLogOwner.WORD, wordId1, LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, wordRelationId, relationType);
+			createLifecycleLog(LifecycleLogOwner.WORD, wordId1, wordRelationId, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, relationType);
 		}
 	}
 
@@ -1292,7 +1304,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Long meaningRelationId = basicDbService.createIfNotExists(MEANING_RELATION, relationParams);
 
 		if (meaningRelationId != null) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId1, LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId1, meaningRelationId, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, relationType);
 		}
 	}
 
@@ -1304,7 +1316,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Long lexemeRegisterId = basicDbService.createIfNotExists(LEXEME_REGISTER, params);
 
 		if (lexemeRegisterId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeRegisterId, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, LifecycleEventType.CREATE, registerCode);
 		}
 	}
 
@@ -1316,7 +1328,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Long lexemePosId = basicDbService.createIfNotExists(LEXEME_POS, tableRowParamMap);
 
 		if (lexemePosId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemePosId, LifecycleEntity.LEXEME, LifecycleProperty.POS, LifecycleEventType.CREATE, posCode);
 		}
 	}
 
@@ -1328,7 +1340,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Long lexemeDerivId = basicDbService.createIfNotExists(LEXEME_DERIV, tableRowParamMap);
 
 		if (lexemeDerivId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeDerivId, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, LifecycleEventType.CREATE, derivCode);
 		}
 	}
 
@@ -1340,7 +1352,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Long lexemeRegionId = basicDbService.createIfNotExists(LEXEME_REGION, params);
 
 		if (lexemeRegionId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeRegionId, LifecycleEntity.LEXEME, LifecycleProperty.REGION, LifecycleEventType.CREATE, regionCode);
 		}
 	}
 
@@ -1443,17 +1455,23 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return relationParts;
 	}
 
-	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity,
-			LifecycleProperty property, Long entityId, String entry) throws Exception {
+	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, Long entityId, LifecycleEntity entity,
+			LifecycleProperty property, LifecycleEventType eventType, String entry) throws Exception {
 
-		createLifecycleLog(logOwner, ownerId, eventType, entity, property, entityId, entry, null, null);
+		createLifecycleLog(logOwner, ownerId, entityId, entity, property, eventType, null, null, null, entry);
 	}
 
-	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity,
-			LifecycleProperty property, Long entityId, String entry, Timestamp eventOn, String eventBy) throws Exception {
+	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, Long entityId, LifecycleEntity entity,
+			LifecycleProperty property, LifecycleEventType eventType, String eventBy, Timestamp eventOn, String entry) throws Exception {
+
+		createLifecycleLog(logOwner, ownerId, entityId, entity, property, eventType, eventBy, eventOn, null, entry);
+	}
+
+	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, Long entityId, LifecycleEntity entity,
+			LifecycleProperty property, LifecycleEventType eventType, String eventBy, Timestamp eventOn, String recent, String entry) throws Exception {
 
 		if (eventBy == null) {
-			eventBy = "Ekileks " + getDataset() + "-laadur";
+			eventBy = "Ekilex " + getDataset() + "-laadur";
 		}
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -1462,10 +1480,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("entity_prop", property.name());
 		tableRowParamMap.put("event_type", eventType.name());
 		tableRowParamMap.put("event_by", eventBy);
-		tableRowParamMap.put("entry", entry);
 		if (eventOn != null) {
 			tableRowParamMap.put("event_on", eventOn);
 		}
+		tableRowParamMap.put("recent", recent);
+		tableRowParamMap.put("entry", entry);
 		Long lifecycleLogId = basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
 
 		if (LifecycleLogOwner.LEXEME.equals(logOwner)) {
@@ -1552,27 +1571,27 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		for (Long wordId : wordIds) {
 			if (logData.getCreatedBy() != null && logData.getCreatedOn() != null) {
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, dataset,
-						logData.getCreatedOn(), logData.getCreatedBy());
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.CREATE, logData.getCreatedBy(),
+						logData.getCreatedOn(), dataset);
 			}
 			if (logData.getCreatedBy() != null && logData.getCreationEnd() != null) {
 				String message = dataset + " " + CREATION_END;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.getCreationEnd(), logData.getCreatedBy());
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, logData.getCreatedBy(),
+						logData.getCreationEnd(), message);
 			}
 			if (logData.getModifiedBy() != null && logData.getModifiedOn() != null) {
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, dataset,
-						logData.getModifiedOn(), logData.getModifiedBy());
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, logData.getModifiedBy(),
+						logData.getModifiedOn(), dataset);
 			}
 			if (logData.getModifiedBy() != null && logData.getModificationEnd() != null) {
 				String message = dataset + " " + MODIFICATION_END;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.getModificationEnd(), logData.getModifiedBy());
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, logData.getModifiedBy(),
+						logData.getModificationEnd(), message);
 			}
 			if (logData.getChiefEditedBy() != null && logData.getChiefEditedOn() != null) {
 				String message = dataset + " " + CHIEF_EDITING;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, message,
-						logData.getChiefEditedOn(), logData.getChiefEditedBy());
+				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, logData.getChiefEditedBy(),
+						logData.getChiefEditedOn(), message);
 			}
 		}
 	}

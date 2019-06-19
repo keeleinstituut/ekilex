@@ -7,27 +7,27 @@ import org.springframework.jdbc.core.RowMapper;
 
 import eki.ekilex.data.transform.LexemeCollocationTuple;
 
-public class LexemeCollocationTupleRowMapper implements RowMapper<LexemeCollocationTuple> {
+public class LexemeCollocationTupleRowMapper extends AbstractRowMapper implements RowMapper<LexemeCollocationTuple> {
 
 	@Override
 	public LexemeCollocationTuple mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		Long lexCollocId = rs.getLong("lex_colloc_id");
-		Long lexemeId = rs.getLong("lexeme_id");
-		Long collocationId = rs.getLong("collocation_id");
+		Long lexCollocId = rs.getObject("lex_colloc_id", Long.class);
+		Long lexemeId = rs.getObject("lexeme_id", Long.class);
+		Long collocationId = rs.getObject("collocation_id", Long.class);
 		String memberForm = rs.getString("member_form");
 		String conjunct = rs.getString("conjunct");
-		Float weight = rs.getFloat("weight");
-		Integer memberOrder = rs.getInt("member_order");
-		Integer groupOrder = rs.getInt("group_order");
-		Long posGroupId = rs.getLong("pos_group_id");
+		Float weight = getFloat(rs, "weight");
+		Integer memberOrder = rs.getObject("member_order", Integer.class);
+		Integer groupOrder = rs.getObject("group_order", Integer.class);
+		Long posGroupId = rs.getObject("pos_group_id", Long.class);
 		String posGroupCode = rs.getString("pos_group_code");
-		Long posGroupOrderBy = rs.getLong("pos_group_order_by");
-		Long relGroupId = rs.getLong("rel_group_id");
+		Long posGroupOrderBy = rs.getObject("pos_group_order_by", Long.class);
+		Long relGroupId = rs.getObject("rel_group_id", Long.class);
 		String relGroupName = rs.getString("rel_group_name");
-		Float relGroupFrequency = rs.getFloat("rel_group_frequency");
-		Float relGroupScore = rs.getFloat("rel_group_score");
-		Long relGroupOrderBy = rs.getLong("rel_group_order_by");
+		Float relGroupFrequency = getFloat(rs, "rel_group_frequency");
+		Float relGroupScore = getFloat(rs, "rel_group_score");
+		Long relGroupOrderBy = rs.getObject("rel_group_order_by", Long.class);
 
 		LexemeCollocationTuple tuple = new LexemeCollocationTuple();
 		tuple.setLexCollocId(lexCollocId);

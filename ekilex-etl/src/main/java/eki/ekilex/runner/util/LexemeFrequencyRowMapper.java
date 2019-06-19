@@ -8,16 +8,16 @@ import org.springframework.jdbc.core.RowMapper;
 
 import eki.ekilex.data.transform.LexemeFrequency;
 
-public class LexemeFrequencyRowMapper implements RowMapper<LexemeFrequency> {
+public class LexemeFrequencyRowMapper extends AbstractRowMapper implements RowMapper<LexemeFrequency> {
 
 	@Override
 	public LexemeFrequency mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		Long lexemeId = rs.getLong("lexeme_id");
+		Long lexemeId = rs.getObject("lexeme_id", Long.class);
 		String sourceName = rs.getString("source_name");
 		Timestamp createdOn = rs.getTimestamp("created_on");
-		Long rank = rs.getLong("rank");
-		Float value = rs.getFloat("value");
+		Long rank = rs.getObject("rank", Long.class);
+		Float value = getFloat(rs, "value");
 
 		LexemeFrequency lexemeFrequency = new LexemeFrequency();
 		lexemeFrequency.setLexemeId(lexemeId);

@@ -12,10 +12,10 @@ public class LexemeRelationRowMapper implements RowMapper<LexemeRelation> {
 	@Override
 	public LexemeRelation mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		Long lexeme1Id = rs.getLong("lexeme1_id");
-		Long lexeme2Id = rs.getLong("lexeme2_id");
+		Long lexeme1Id = rs.getObject("lexeme1_id", Long.class);
+		Long lexeme2Id = rs.getObject("lexeme2_id", Long.class);
 		String lexemeRelationTypeCode = rs.getString("lex_rel_type_code");
-		Long orderBy = rs.getLong("order_by");
+		Long orderBy = rs.getObject("order_by", Long.class);
 
 		LexemeRelation lexemeRelation = new LexemeRelation();
 		lexemeRelation.setLexeme1Id(lexeme1Id);

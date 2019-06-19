@@ -12,16 +12,16 @@ import org.springframework.jdbc.core.RowMapper;
 import eki.common.constant.Complexity;
 import eki.ekilex.data.transform.Collocation;
 
-public class CollocationRowMapper implements RowMapper<Collocation> {
+public class CollocationRowMapper extends AbstractRowMapper implements RowMapper<Collocation> {
 
 	@Override
 	public Collocation mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		Long collocationId = rs.getLong("id");
+		Long collocationId = rs.getObject("id", Long.class);
 		String value = rs.getString("value");
 		String definition = rs.getString("definition");
-		Float frequency = rs.getFloat("frequency");
-		Float score = rs.getFloat("score");
+		Float frequency = getFloat(rs, "frequency");
+		Float score = getFloat(rs, "score");
 		Array usagesArrayObj = rs.getArray("usages");
 		List<String> usages = null;
 		if (usagesArrayObj != null) {

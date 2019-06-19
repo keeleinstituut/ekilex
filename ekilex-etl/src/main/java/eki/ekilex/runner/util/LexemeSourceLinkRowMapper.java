@@ -14,8 +14,8 @@ public class LexemeSourceLinkRowMapper implements RowMapper<LexemeSourceLink> {
 	@Override
 	public LexemeSourceLink mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		Long lexemeId = rs.getLong("lexeme_id");
-		Long sourceId = rs.getLong("source_id");
+		Long lexemeId = rs.getObject("lexeme_id", Long.class);
+		Long sourceId = rs.getObject("source_id", Long.class);
 		String typeStr = rs.getString("type");
 		ReferenceType type = null;
 		if (StringUtils.isNotBlank(typeStr)) {

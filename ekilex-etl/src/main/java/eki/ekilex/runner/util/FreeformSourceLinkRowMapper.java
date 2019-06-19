@@ -14,8 +14,8 @@ public class FreeformSourceLinkRowMapper implements RowMapper<FreeformSourceLink
 	@Override
 	public FreeformSourceLink mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-		Long freeformId = rs.getLong("freeform_id");
-		Long sourceId = rs.getLong("source_id");
+		Long freeformId = rs.getObject("freeform_id", Long.class);
+		Long sourceId = rs.getObject("source_id", Long.class);
 		String typeStr = rs.getString("type");
 		ReferenceType type = null;
 		if (StringUtils.isNotBlank(typeStr)) {

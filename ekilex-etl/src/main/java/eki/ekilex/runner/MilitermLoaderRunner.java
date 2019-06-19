@@ -382,8 +382,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-					null, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.VALUE, LifecycleEventType.CREATE,
+					valueStr1, valueTs, null);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
@@ -401,8 +401,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId,
-					null, valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.VALUE, LifecycleEventType.UPDATE,
+					valueStr1, valueTs, null);
 		}
 	}
 
@@ -430,8 +430,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, term,
-					valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, LifecycleEventType.CREATE, valueStr1,
+					valueTs, term);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(modifiedByExp);
@@ -449,8 +449,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, term,
-					valueTs, valueStr1);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, valueStr1,
+					valueTs, term);
 		}
 	}
 
