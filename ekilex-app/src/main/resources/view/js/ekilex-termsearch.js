@@ -107,3 +107,17 @@ function refreshDetails() {
 	var refreshButton = $('#refresh-details');
 	refreshButton.trigger('click');
 }
+
+function doNewSearch() {
+	$('#simple_search_filter').find('button[type=submit]').trigger('click');
+}
+
+function deleteMeaningAndLexemesAndWords() {
+	var opName = "delete";
+	var opCode = "meaning";
+	var meaningId = $(this).attr("data-id");
+	var successCallbackName = $(this).attr("data-callback");
+	let successCallbackFunc = () => eval(successCallbackName)($(this));
+
+	executeMultiConfirmPostDelete(opName, opCode, meaningId, successCallbackFunc);
+}
