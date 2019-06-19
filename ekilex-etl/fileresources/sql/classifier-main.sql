@@ -1820,7 +1820,6 @@ insert into register_label (code, value, lang, type) values ('vulg', 'vulgar', '
 insert into register_label (code, value, lang, type) values ('eevn', 'eestivene', 'est', 'wordweb');
 insert into register_label (code, value, lang, type) values ('hellitl', 'hellitlev', 'est', 'wordweb');
 insert into register_label (code, value, lang, type) values ('hlv', 'halvustav', 'est', 'wordweb');
-insert into register_label (code, value, lang, type) values ('hrv', 'harvaesinev', 'est', 'wordweb');
 insert into register_label (code, value, lang, type) values ('kõrgst', 'kõrgstiil', 'est', 'wordweb');
 insert into register_label (code, value, lang, type) values ('lastek', 'lastekeelne', 'est', 'wordweb');
 insert into register_label (code, value, lang, type) values ('madalk', 'madalkeelne', 'est', 'wordweb');
