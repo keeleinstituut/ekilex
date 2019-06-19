@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{lex.search.title}">EKILEX otsing</title>
+<title th:text="#{syno.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-searchfilter.js}"></script>
@@ -64,8 +64,9 @@
     </div>
   </div>
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${wordId}" id="details_div"
+    <div th:data-id="${wordId}" id="syno_details_div"
          th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')}">
+      <button id="refresh-details" hidden th:data-id="${wordId}" name="synoDetailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
           <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}"
@@ -75,7 +76,67 @@
                ">
 
             <div class="card-body" data-lexeme-title>
+              <div class="d-flex flex-row align-items-center flex-wrap">
+                <div class="d-flex align-items-center flex-wrap">
+                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <div class="btn-custom">
+                      <span th:text="${meaningWord.value}"></span>
+                      <span th:text="${meaningWord.homonymNumber}"></span>
+                      <span th:text="${'(' + meaningWord.language + ')'}"></span>
+                    </div>
+                    <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
+                  </th:block>
+                  <span th:if="${lexeme.levels != null}"
+                        th:data-id="${lexeme.lexemeId}"
+                        th:data-level1="${lexeme.level1}"
+                        th:data-level2="${lexeme.level2}"
+                        th:data-level3="${lexeme.level3}"
+                        class="pl-1">
+                    <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
+                  </span>
+                </div>
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+                <span th:utext="${lexeme.definitions.get(0).value}"></span>
+              </div>
+            </div>
+            <div class="card-body" th:data-id="${lexeme.lexemeId}">
+              <div class="d-flex align-items-center flex-wrap">
+                <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
+                  <hr />
+                  <div class="col pr-0 col-w13rem">
+                    <span class="lbl">Kasutusnäited</span>
+                  </div>
+                  <div class="col pl-0">
+                    <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
+                      <div th:each="usage,usageIter : ${lexeme.usages}"
+                           th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
+                        <div class="row">
 
+                        </div>
+                        <div class="row" th:each="usageTranslation : ${usage.translations}">
+                          <div th:replace="lexdialog :: edit_usage_translation_dlg"></div>
+                          <div class="col">
+                            <!-- intentional generic lexeme perm on translations -->
+                            <div class="col">
+                              <span th:utext="${usageTranslation.value}"></span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row" th:each="usageDefinition : ${usage.definitions}">
+                          <div class="col">
+                              <span th:utext="${usageDefinition.value}"></span>
+                          </div>
+                        </div>
+                        <div class="w-50" th:unless="${usageIter.last}">
+                          <hr />
+                        </div>
+                      </div>
+                    </th:block>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
@@ -83,9 +144,9 @@
     </div>
   </th:block>
 
-  <div th:replace="common :: #sourceDetailsDlg"></div>
+  <!--<div th:replace="common :: #sourceDetailsDlg"></div>-->
   <div th:replace="common :: #alertDlg"></div>
-  <div th:replace="common :: #confirmDlg"></div>
+  <!--<div th:replace="common :: #confirmDlg"></div>-->
 
   <script th:inline="javascript">
   	initialise();
