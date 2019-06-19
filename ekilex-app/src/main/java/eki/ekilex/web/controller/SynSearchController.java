@@ -30,7 +30,6 @@ import eki.ekilex.data.UserRole;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.SynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -46,10 +45,6 @@ public class SynSearchController extends AbstractSearchController {
 
 	@Autowired
 	private CommonDataService commonDataService;
-
-	@Autowired
-	private PermissionService permissionService;
-
 
 	@GetMapping(value = SYN_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
