@@ -156,6 +156,11 @@
                       data-target="#newWordDlg"
                       th:data-meaning-id="${meaningId}"
                       sec:authorize="${#authentication.principal.datasetPermissionsExist}">Uus termin</button>
+              <button class="btn btn-warning font-weight-bold btn-sm" type="button"
+                      th:data-id="${meaningId}"
+                      data-callback="doNewSearch"
+                      data-toggle="deleteMeaningAndLexemesAndWords"
+                      sec:authorize="${#vars.isMeaningCrudGranted}">Kustuta</button>
               <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
                  data-toggle="modal"
                  data-target="#meaningLifecycleLogDlg"
@@ -847,6 +852,14 @@
       </th:block>
     </div>
     <script th:replace="common :: confirmations"></script>
+    <script>
+		$('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({
+			btnOkLabel: 'Jah',
+			btnCancelLabel: 'Ei',
+			title: 'Kinnita kustutamine',
+			onConfirm: deleteMeaningAndLexemesAndWords
+		});
+    </script>
   </th:block>
 
   <div th:replace="common :: newWordDlg('term_search')"></div>
