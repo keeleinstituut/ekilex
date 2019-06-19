@@ -981,25 +981,24 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 	}
 
-	protected Long createProcessLog(String value, String processStateCode, String eventBy, Timestamp eventOn) throws Exception {
+	protected Long createProcessLog(String eventBy, Timestamp eventOn, String comment, String processStateCode, String datasetCode) throws Exception {
 
-		String datasetCode = getDataset();
 		if (StringUtils.isBlank(eventBy)) {
 			eventBy = "Ekilex " + datasetCode + "-laadur";
 		}
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("dataset_code", datasetCode);
-		if (StringUtils.isNotBlank(value)) {
-			tableRowParamMap.put("comment", value);
-		}
-		if (StringUtils.isNotBlank(processStateCode)) {
-			tableRowParamMap.put("process_state_code", processStateCode);
-		}
 		tableRowParamMap.put("event_by", eventBy);
 		if (eventOn != null) {
 			tableRowParamMap.put("event_on", eventOn);
 		}
+		if (StringUtils.isNotBlank(comment)) {
+			tableRowParamMap.put("comment", comment);
+		}
+		if (StringUtils.isNotBlank(processStateCode)) {
+			tableRowParamMap.put("process_state_code", processStateCode);
+		}
+		tableRowParamMap.put("dataset_code", datasetCode);
 		Long processLogId = basicDbService.create(PROCESS_LOG, tableRowParamMap);
 		return processLogId;
 	}
@@ -1013,9 +1012,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		basicDbService.update(PROCESS_LOG, criteriaParamMap, valueParamMap);
 	}
 
-	protected Long createWordProcessLog(Long wordId, String comment, String eventBy, Timestamp eventOn) throws Exception {
+	protected Long createWordProcessLog(Long wordId, String eventBy, Timestamp eventOn, String comment) throws Exception {
 
-		Long processLogId = createProcessLog(comment, null, eventBy, eventOn);
+		String datasetCode = getDataset();
+
+		Long processLogId = createProcessLog(eventBy, eventOn, comment, null, datasetCode);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
@@ -1026,8 +1027,23 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	}
 
 	protected Long createLexemeProcessStateProcessLog(Long lexemeId, String processStateCode) throws Exception {
+		String datasetCode = getDataset();
+		return createLexemeProcessLog(lexemeId, null, null, null, processStateCode, datasetCode);
+	}
 
-		Long processLogId = createProcessLog(null, processStateCode, null, null);
+	protected Long createLexemeProcessLog(Long lexemeId, String comment) throws Exception {
+		String datasetCode = getDataset();
+		return createLexemeProcessLog(lexemeId, null, null, comment, null, datasetCode);
+	}
+
+	protected Long createLexemeProcessLog(Long lexemeId, String eventBy, Timestamp eventOn, String comment) throws Exception {
+		String datasetCode = getDataset();
+		return createLexemeProcessLog(lexemeId, eventBy, eventOn, comment, null, datasetCode);
+	}
+
+	protected Long createLexemeProcessLog(Long lexemeId, String eventBy, Timestamp eventOn, String comment, String processStateCode, String datasetCode) throws Exception {
+		
+		Long processLogId = createProcessLog(eventBy, eventOn, comment, processStateCode, datasetCode);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -1037,25 +1053,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return processLogId;
 	}
 
-	protected Long createLexemeProcessLog(Long lexemeId, String value) throws Exception {
-		return createLexemeProcessLog(lexemeId, value, null, null);
-	}
+	protected Long createMeaningProcessLog(Long meaningId, String comment) throws Exception {
 
-	protected Long createLexemeProcessLog(Long lexemeId, String value, String eventBy, Timestamp eventOn) throws Exception {
+		String datasetCode = getDataset();
 
-		Long processLogId = createProcessLog(value, null, eventBy, eventOn);
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("lexeme_id", lexemeId);
-		tableRowParamMap.put("process_log_id", processLogId);
-		basicDbService.create(LEXEME_PROCESS_LOG, tableRowParamMap);
-
-		return processLogId;
-	}
-
-	protected Long createMeaningProcessLog(Long meaningId, String value) throws Exception {
-
-		Long processLogId = createProcessLog(value, null, null, null);
+		Long processLogId = createProcessLog(null, null, comment, null, datasetCode);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);

@@ -1,4 +1,4 @@
-package eki.ekilex.runner.util;
+package eki.ekilex.data.util;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;

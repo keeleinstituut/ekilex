@@ -736,7 +736,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Timestamp eventOnTs = new Timestamp(eventOnLong);
 
 			for (WordData newWord : newWords) {
-				createWordProcessLog(newWord.id, comment, eventBy, eventOnTs);
+				createWordProcessLog(newWord.id, eventBy, eventOnTs, comment);
 			}
 		}
 	}

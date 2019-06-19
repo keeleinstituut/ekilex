@@ -38,20 +38,24 @@ import eki.ekilex.data.transform.LexemeClassifier;
 import eki.ekilex.data.transform.LexemeCollocationTuple;
 import eki.ekilex.data.transform.LexemeFrequency;
 import eki.ekilex.data.transform.LexemeLifecycleLog;
+import eki.ekilex.data.transform.LexemeProcessLog;
 import eki.ekilex.data.transform.LexemeRelation;
 import eki.ekilex.data.transform.LexemeSourceLink;
+import eki.ekilex.data.transform.ProcessLogSourceLink;
 import eki.ekilex.data.transform.WordMeaningPair;
-import eki.ekilex.runner.util.AbstractRowMapper;
-import eki.ekilex.runner.util.CollocationRowMapper;
-import eki.ekilex.runner.util.FreeformRowMapper;
-import eki.ekilex.runner.util.FreeformSourceLinkRowMapper;
-import eki.ekilex.runner.util.LexemeClassifierRowMapper;
-import eki.ekilex.runner.util.LexemeCollocationTupleRowMapper;
-import eki.ekilex.runner.util.LexemeFrequencyRowMapper;
-import eki.ekilex.runner.util.LexemeLifecycleLogRowMapper;
-import eki.ekilex.runner.util.LexemeRelationRowMapper;
-import eki.ekilex.runner.util.LexemeSourceLinkRowMapper;
-import eki.ekilex.runner.util.WordMeaningPairRowMapper;
+import eki.ekilex.data.util.AbstractRowMapper;
+import eki.ekilex.data.util.CollocationRowMapper;
+import eki.ekilex.data.util.FreeformRowMapper;
+import eki.ekilex.data.util.FreeformSourceLinkRowMapper;
+import eki.ekilex.data.util.LexemeClassifierRowMapper;
+import eki.ekilex.data.util.LexemeCollocationTupleRowMapper;
+import eki.ekilex.data.util.LexemeFrequencyRowMapper;
+import eki.ekilex.data.util.LexemeLifecycleLogRowMapper;
+import eki.ekilex.data.util.LexemeProcessLogRowMapper;
+import eki.ekilex.data.util.LexemeRelationRowMapper;
+import eki.ekilex.data.util.LexemeSourceLinkRowMapper;
+import eki.ekilex.data.util.ProcessLogSourceLinkRowMapper;
+import eki.ekilex.data.util.WordMeaningPairRowMapper;
 
 @Component
 public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConstant {
@@ -68,6 +72,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 	private static final String SQL_SELECT_LEXEME_LIFECYCLE_LOGS_FOR_DATASETS_PATH = "sql/select_lexeme_lifecycle_logs_for_datasets.sql";
 
+	private static final String SQL_SELECT_LEXEME_PROCESS_LOGS_FOR_DATASETS_PATH = "sql/select_lexeme_process_logs_for_datasets.sql";
+
 	private String sqlSelectWordLexemeMeaningIds;
 
 	private String sqlSelectLexemeFreeforms;
@@ -77,6 +83,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	private String sqlSelectLexemeCollocTuplesForDatasets;
 
 	private String sqlSelectLexemeLifecycleLogsForDatasets;
+
+	private String sqlSelectLexemeProcessLogsForDatasets;
 
 	private String sqlSelectLexeme = "select * from " + LEXEME + " where id = :id";
 
@@ -95,6 +103,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	private String sqlSelectLexemeSourceLinks = "select lsl.* from " + LEXEME_SOURCE_LINK + " lsl where lsl.lexeme_id = :lexemeId order by lsl.order_by";
 
 	private String sqlSelectFreeformSourceLinks = "select ffsl.* from " + FREEFORM_SOURCE_LINK + " ffsl where ffsl.freeform_id = :freeformId order by ffsl.order_by";
+
+	private String sqlSelectProcessLogSourceLinks = "select plsl.* from " + PROCESS_LOG_SOURCE_LINK + " plsl where plsl.process_log_id = :processLogId order by plsl.order_by";
 
 	private String sqlSelectLexemeRelations =
 			"select r.lexeme1_id, r.lexeme2_id, r.lex_rel_type_code, r.order_by from " + LEXEME_RELATION + " r where r.lexeme1_id in (:lexemeIds) order by r.order_by";
@@ -136,6 +146,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_LIFECYCLE_LOGS_FOR_DATASETS_PATH);
 		sqlSelectLexemeLifecycleLogsForDatasets = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_PROCESS_LOGS_FOR_DATASETS_PATH);
+		sqlSelectLexemeProcessLogsForDatasets = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
@@ -202,8 +215,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			createLexemeRegions(sumLexemeId, allLexemes);
 			createLexemeSourceLinks(sumLexemeId, allLexemes, countsMap);
 
-			// TODO lexeme_process_log
-
 			// progress
 			wordMeaningPairCounter++;
 			if (wordMeaningPairCounter % progressIndicator == 0) {
@@ -220,11 +231,15 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		// post handling collocations
 		List<Collocation> collocations = getCollocations(lexemeMergeDatasets);
 		List<LexemeCollocationTuple> lexemeCollocationTuples = getLexemeCollocationTuples(lexemeMergeDatasets);
-		createLexemeCollocations(sumLexemeIdMap, collocations, lexemeCollocationTuples);
+		createLexemeCollocations(sumLexemeIdMap, collocations, lexemeCollocationTuples, countsMap);
 
 		// post handling lexeme lifecycle logs
 		List<LexemeLifecycleLog> lexemeLifecycleLogs = getLexemeLifecycleLogs(lexemeMergeDatasets);
-		createLexemeLifecycleLogs(sumLexemeIdMap, lexemeLifecycleLogs);
+		createLexemeLifecycleLogs(sumLexemeIdMap, lexemeLifecycleLogs, countsMap);
+
+		// post handling lexeme process logs
+		List<LexemeProcessLog> lexemeProcessLogs = getLexemeProcessLogs(lexemeMergeDatasets);
+		createLexemeProcessLogs(sumLexemeIdMap, lexemeProcessLogs, countsMap);
 
 		logCounts(countsMap);
 
@@ -246,6 +261,12 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Count sumLexemeSourceLinkCount = new Count();
 		Count summableLexemeRelationCount = new Count();
 		Count sumLexemeRelationCount = new Count();
+		Count sumCollocationCount = new Count();
+		Count sumLexemeCollocCount = new Count();
+		Count sumLexemeCollocPosGroupCount = new Count();
+		Count sumLexemeCollocRelGroupCount = new Count();
+		Count sumLexemeLifecycleLogCount = new Count();
+		Count sumLexemeProcessLogCount = new Count();
 
 		Map<String, Count> countsMap = new HashMap<>();
 		countsMap.put("wordMeaningPairCount", wordMeaningPairCount);
@@ -261,6 +282,12 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		countsMap.put("sumLexemeSourceLinkCount", sumLexemeSourceLinkCount);
 		countsMap.put("summableLexemeRelationCount", summableLexemeRelationCount);
 		countsMap.put("sumLexemeRelationCount", sumLexemeRelationCount);
+		countsMap.put("sumCollocationCount", sumCollocationCount);
+		countsMap.put("sumLexemeCollocCount", sumLexemeCollocCount);
+		countsMap.put("sumLexemeCollocPosGroupCount", sumLexemeCollocPosGroupCount);
+		countsMap.put("sumLexemeCollocRelGroupCount", sumLexemeCollocRelGroupCount);
+		countsMap.put("sumLexemeLifecycleLogCount", sumLexemeLifecycleLogCount);
+		countsMap.put("sumLexemeProcessLogCount", sumLexemeProcessLogCount);
 
 		return countsMap;
 	}
@@ -280,6 +307,12 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Count sumLexemeSourceLinkCount = countsMap.get("sumLexemeSourceLinkCount");
 		Count summableLexemeRelationCount = countsMap.get("summableLexemeRelationCount");
 		Count sumLexemeRelationCount = countsMap.get("sumLexemeRelationCount");
+		Count sumCollocationCount = countsMap.get("sumCollocationCount");
+		Count sumLexemeCollocCount = countsMap.get("sumLexemeCollocCount");
+		Count sumLexemeCollocPosGroupCount = countsMap.get("sumLexemeCollocPosGroupCount");
+		Count sumLexemeCollocRelGroupCount = countsMap.get("sumLexemeCollocRelGroupCount");
+		Count sumLexemeLifecycleLogCount = countsMap.get("sumLexemeLifecycleLogCount");
+		Count sumLexemeProcessLogCount = countsMap.get("sumLexemeProcessLogCount");
 
 		logger.info("Collected {} word meaning pairs", wordMeaningPairCount.getValue());
 		logger.info("Collected {} lexemes to sum", summableLexemeCount.getValue());
@@ -294,6 +327,12 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		logger.info("Created {} lexeme source links", sumLexemeSourceLinkCount.getValue());
 		logger.info("Found {} lexeme relations", summableLexemeRelationCount.getValue());
 		logger.info("Created {} lexeme relations", sumLexemeRelationCount.getValue());
+		logger.info("Created {} collocations", sumCollocationCount.getValue());
+		logger.info("Created {} lexeme colloc bindings", sumLexemeCollocCount.getValue());
+		logger.info("Created {} lexeme colloc pos groups", sumLexemeCollocPosGroupCount.getValue());
+		logger.info("Created {} lexeme colloc rel groups", sumLexemeCollocRelGroupCount.getValue());
+		logger.info("Created {} lexeme lifecycle logs", sumLexemeLifecycleLogCount.getValue());
+		logger.info("Created {} lexeme process logs", sumLexemeProcessLogCount.getValue());
 	}
 
 	private void composeSumLexeme(LexemeExt sumLexeme, LexemeExt lexeme) {
@@ -516,6 +555,20 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		return lexemeLifecycleLogs;
 	}
 
+	private List<LexemeProcessLog> getLexemeProcessLogs(List<String> lexemeMergeDatasets) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("datasetCodes", lexemeMergeDatasets);
+		List<LexemeProcessLog> lexemeProcessLogs = basicDbService.getResults(sqlSelectLexemeProcessLogsForDatasets, paramMap, new LexemeProcessLogRowMapper());
+		for (LexemeProcessLog lexemeProcessLog : lexemeProcessLogs) {
+			if (lexemeProcessLog.isSourceLinksExist()) {
+				List<ProcessLogSourceLink> sourceLinks = basicDbService.getResults(sqlSelectProcessLogSourceLinks, paramMap, new ProcessLogSourceLinkRowMapper());
+				lexemeProcessLog.setSourceLinks(sourceLinks);
+			}
+		}
+		return lexemeProcessLogs;
+	}
+
 	private void createLexemeFreeformsAndSourceLinks(Long sumLexemeId, List<LexemeExt> allLexemes, Map<String, Count> countsMap) throws Exception {
 
 		Count sumLexemeFreeformCount = countsMap.get("sumLexemeFreeformCount");
@@ -696,7 +749,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 	private void createLexemeRelations(Map<Long, Long> sumLexemeIdMap, List<LexemeRelation> lexemeRelations, Map<String, Count> countsMap) throws Exception {
 
-		logger.debug("Creating {} lexeme relations for {} lexemes", lexemeRelations.size(), sumLexemeIdMap.size());
+		logger.debug("Creating lexeme relations");
 
 		Count sumLexemeRelationCount = countsMap.get("sumLexemeRelationCount");
 
@@ -715,9 +768,15 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		logger.debug("Done with lexeme relations");
 	}
 
-	private void createLexemeCollocations(Map<Long, Long> sumLexemeIdMap, List<Collocation> collocations, List<LexemeCollocationTuple> lexemeCollocationTuples) throws Exception {
+	private void createLexemeCollocations(
+			Map<Long, Long> sumLexemeIdMap, List<Collocation> collocations, List<LexemeCollocationTuple> lexemeCollocationTuples, Map<String, Count> countsMap) throws Exception {
 
 		logger.debug("Creating collocations and associated lexeme bindings");
+
+		Count sumCollocationCount = countsMap.get("sumCollocationCount");
+		Count sumLexemeCollocCount = countsMap.get("sumLexemeCollocCount");
+		Count sumLexemeCollocPosGroupCount = countsMap.get("sumLexemeCollocPosGroupCount");
+		Count sumLexemeCollocRelGroupCount = countsMap.get("sumLexemeCollocRelGroupCount");
 
 		Map<Long, Long> collocIdMap = new HashMap<>();
 
@@ -732,6 +791,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			Complexity complexity = colloc.getComplexity();
 			Long targetCollocId = createCollocation(value, definition, frequency, score, usages, complexity);
 			collocIdMap.put(sourceCollocId, targetCollocId);
+			sumCollocationCount.increment();
 		}
 
 		Map<Long, Long> lexCollocIdMap = new HashMap<>();
@@ -758,6 +818,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 					Long posGroupOrderBy = tuple.getPosGroupOrderBy();
 					targetPosGroupId = createCollocPosGroup(targetLexemeId, posGroupCode, posGroupOrderBy);
 					lexCollocPosGroupIdMap.put(sourcePosGroupId, targetPosGroupId);
+					sumLexemeCollocPosGroupCount.increment();
 				}
 			}
 
@@ -770,6 +831,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 					Long relGroupOrderBy = tuple.getRelGroupOrderBy();
 					targetRelGroupId = createCollocRelGroup(targetPosGroupId, relGroupName, relGroupFrequency, relGroupScore, relGroupOrderBy);
 					lexCollocRelGroupIdMap.put(sourceRelGroupId, targetRelGroupId);
+					sumLexemeCollocRelGroupCount.increment();
 				}
 			}
 
@@ -782,13 +844,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 				Integer groupOrder = tuple.getGroupOrder();
 				targetLexCollocId = createLexemeCollocation(targetLexemeId, targetRelGroupId, targetCollocId, memberForm, conjunct, weight, memberOrder, groupOrder);
 				lexCollocIdMap.put(sourceLexCollocId, targetLexCollocId);
+				sumLexemeCollocCount.increment();
 			}
 		}
-
-		logger.debug("Created {} collocations", collocations.size());
-		logger.debug("Created {} lexeme collocation bindings", lexCollocIdMap.size());
-		logger.debug("Created {} lexeme collocation pos groups", lexCollocPosGroupIdMap.size());
-		logger.debug("Created {} lexeme collocation rel groups", lexCollocRelGroupIdMap.size());
 
 		logger.debug("Done with collocations");
 	}
@@ -841,9 +899,11 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		return collocRelGroupId;
 	}
 
-	private void createLexemeLifecycleLogs(Map<Long, Long> sumLexemeIdMap, List<LexemeLifecycleLog> lexemeLifecycleLogs) throws Exception {
+	private void createLexemeLifecycleLogs(Map<Long, Long> sumLexemeIdMap, List<LexemeLifecycleLog> lexemeLifecycleLogs, Map<String, Count> countsMap) throws Exception {
 
 		logger.debug("Creating lexeme lifecycle logs");
+
+		Count sumLexemeLifecycleLogCount = countsMap.get("sumLexemeLifecycleLogCount");
 
 		for (LexemeLifecycleLog lexemeLifecycleLog : lexemeLifecycleLogs) {
 			Long sourceLexemeId = lexemeLifecycleLog.getLexemeId();
@@ -857,11 +917,41 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			String recent = lexemeLifecycleLog.getRecent();
 			String entry = lexemeLifecycleLog.getEntry();
 			createLifecycleLog(LifecycleLogOwner.LEXEME, targetLexemeId, entityId, entity, property, eventType, eventBy, eventOn, recent, entry);
+			sumLexemeLifecycleLogCount.increment();
 		}
 
-		logger.debug("Created {} lexeme lifecycle logs", lexemeLifecycleLogs.size());
-
 		logger.debug("Done with lexeme lifecycle logs");
+	}
+
+	private void createLexemeProcessLogs(Map<Long, Long> sumLexemeIdMap, List<LexemeProcessLog> lexemeProcessLogs, Map<String, Count> countsMap) throws Exception {
+
+		logger.debug("Creating lexeme process logs");
+
+		Count sumLexemeProcessLogCount = countsMap.get("sumLexemeProcessLogCount");
+
+		for (LexemeProcessLog lexemeProcessLog : lexemeProcessLogs) {
+			Long sourceLexemeId = lexemeProcessLog.getLexemeId();
+			Long targetLexemeId = sumLexemeIdMap.get(sourceLexemeId);
+			String eventBy = lexemeProcessLog.getEventBy();
+			Timestamp eventOn = lexemeProcessLog.getEventOn();
+			String comment = lexemeProcessLog.getComment();
+			String processStateCode = lexemeProcessLog.getProcessStateCode();
+			String datasetCode = lexemeProcessLog.getDatasetCode();
+			boolean sourceLinksExist = lexemeProcessLog.isSourceLinksExist();
+			Long targetProcessLogId = createLexemeProcessLog(targetLexemeId, eventBy, eventOn, comment, processStateCode, datasetCode);
+			sumLexemeProcessLogCount.increment();
+			if (sourceLinksExist) {
+				List<ProcessLogSourceLink> sourceLinks = lexemeProcessLog.getSourceLinks();
+				for (ProcessLogSourceLink sourceLink : sourceLinks) {
+					ReferenceType refType = sourceLink.getType();
+					Long sourceId = sourceLink.getSourceId();
+					String value = sourceLink.getValue();
+					createProcessLogSourceLink(targetProcessLogId, refType, sourceId, value);
+				}
+			}
+		}
+
+		logger.debug("Done with lexeme process logs");
 	}
 
 	class LexemeExt extends Lexeme {
