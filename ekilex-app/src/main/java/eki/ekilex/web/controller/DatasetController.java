@@ -104,7 +104,6 @@ public class DatasetController implements WebConstant {
 	public String updateDataSet(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
 		logger.debug("Updating dataset, name : {}", datasetFormData.getName());
 		datasetService.updateDataset(datasetFormData);
-		userService.updateAuthenticatedUserDatasetPermissions();
 
 		return REDIRECT_PREF + DICTIONARIES_URI;
 	}

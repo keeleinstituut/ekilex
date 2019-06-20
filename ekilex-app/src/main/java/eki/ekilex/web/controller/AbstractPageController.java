@@ -15,6 +15,7 @@ import eki.common.data.CodeValue;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
@@ -63,6 +64,13 @@ public abstract class AbstractPageController implements WebConstant {
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
 		return permissionService.getUserOwnedDatasets(userId);
+	}
+
+	@ModelAttribute("userDatasetPermissions")
+	public List<DatasetPermission> getUserDatasetPermissions() {
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		return permissionService.getUserDatasetPermissions(userId);
 	}
 
 	@ModelAttribute("allLanguages")
