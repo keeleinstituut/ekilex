@@ -12,4 +12,10 @@ public final class CodeGenerator {
 		return code;
 	}
 
+	public static String generateIdFromTimestamp() {
+		String code = "id-";
+		code += String.valueOf(System.currentTimeMillis());
+		return code;
+	}
+
 }

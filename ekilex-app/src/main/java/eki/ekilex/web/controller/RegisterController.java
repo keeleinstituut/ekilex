@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import eki.common.util.CodeGenerator;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.EmailService;
@@ -28,6 +29,8 @@ public class RegisterController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
+	private static final String HONEY_POT_CODE = "honeyPotCode";
+
 	@Autowired
 	private UserService userService;
 
@@ -35,11 +38,14 @@ public class RegisterController implements WebConstant {
 	private EmailService emailService;
 
 	@GetMapping(REGISTER_PAGE_URI)
-	public String register() {
+	public String register(Model model, HttpServletRequest request) {
 		boolean isAuthenticatedUser = userService.isAuthenticatedUser();
 		if (isAuthenticatedUser) {
 			return "redirect:" + HOME_URI;
 		}
+		String honeyPotCode = CodeGenerator.generateIdFromTimestamp();
+		request.getSession().setAttribute(HONEY_POT_CODE, honeyPotCode);
+		model.addAttribute(HONEY_POT_CODE, honeyPotCode);
 		return REGISTER_PAGE;
 	}
 
@@ -49,11 +55,13 @@ public class RegisterController implements WebConstant {
 			@RequestParam("name") String name,
 			@RequestParam("salasona") String password,
 			@RequestParam("salasona2") String password2,
-			@RequestParam(value = "ccode", required = false) String honeyPot,
 			Model model,
 			RedirectAttributes attributes,
 			HttpServletRequest request) {
 
+		String honeyPotCode = (String) request.getSession().getAttribute(HONEY_POT_CODE);
+		request.getSession().removeAttribute(HONEY_POT_CODE);
+		String honeyPot = request.getParameter(honeyPotCode);
 		boolean isBotProtectionTriggered = checkBotProtection(honeyPot, request.getRemoteAddr(), email);
 		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
