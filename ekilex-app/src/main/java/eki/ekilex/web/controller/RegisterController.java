@@ -162,7 +162,7 @@ public class RegisterController implements WebConstant {
 	}
 
 	private void setHoneyPotCode(Model model, HttpServletRequest request) {
-		String honeyPotCode = CodeGenerator.generateIdFromTimestamp();
+		String honeyPotCode = CodeGenerator.generateHoneyPotName();
 		request.getSession().setAttribute(HONEY_POT_CODE, honeyPotCode);
 		model.addAttribute(HONEY_POT_CODE, honeyPotCode);
 	}
