@@ -43,9 +43,7 @@ public class RegisterController implements WebConstant {
 		if (isAuthenticatedUser) {
 			return "redirect:" + HOME_URI;
 		}
-		String honeyPotCode = CodeGenerator.generateIdFromTimestamp();
-		request.getSession().setAttribute(HONEY_POT_CODE, honeyPotCode);
-		model.addAttribute(HONEY_POT_CODE, honeyPotCode);
+		setHoneyPotCode(model, request);
 		return REGISTER_PAGE;
 	}
 
@@ -59,10 +57,7 @@ public class RegisterController implements WebConstant {
 			RedirectAttributes attributes,
 			HttpServletRequest request) {
 
-		String honeyPotCode = (String) request.getSession().getAttribute(HONEY_POT_CODE);
-		request.getSession().removeAttribute(HONEY_POT_CODE);
-		String honeyPot = request.getParameter(honeyPotCode);
-		boolean isBotProtectionTriggered = checkBotProtection(honeyPot, request.getRemoteAddr(), email);
+		boolean isBotProtectionTriggered = checkBotProtection(request, email);
 		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
@@ -102,15 +97,15 @@ public class RegisterController implements WebConstant {
 	}
 
 	@GetMapping(PASSWORD_RECOVERY_URI)
-	public String passwordRecoveryPage() {
+	public String passwordRecoveryPage(Model model, HttpServletRequest request) {
+		setHoneyPotCode(model, request);
 		return PASSWORD_RECOVERY_PAGE;
 	}
 
 	@PostMapping(PASSWORD_RECOVERY_URI)
-	public String recoverPassword(
-			@RequestParam("email") String email, @RequestParam(value = "ccode", required = false) String honeyPot, Model model, HttpServletRequest request) {
+	public String recoverPassword(@RequestParam("email") String email, Model model, HttpServletRequest request) {
 
-		boolean isBotProtectionTriggered = checkBotProtection(honeyPot, request.getRemoteAddr(), email);
+		boolean isBotProtectionTriggered = checkBotProtection(request, email);
 		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
@@ -166,9 +161,20 @@ public class RegisterController implements WebConstant {
 		return "redirect:" + LOGIN_PAGE_URI;
 	}
 
-	private boolean checkBotProtection(String honeyPot, String url, String email) {
+	private void setHoneyPotCode(Model model, HttpServletRequest request) {
+		String honeyPotCode = CodeGenerator.generateIdFromTimestamp();
+		request.getSession().setAttribute(HONEY_POT_CODE, honeyPotCode);
+		model.addAttribute(HONEY_POT_CODE, honeyPotCode);
+	}
+
+	private boolean checkBotProtection(HttpServletRequest request, String email) {
+
+		String honeyPotCode = (String) request.getSession().getAttribute(HONEY_POT_CODE);
+		request.getSession().removeAttribute(HONEY_POT_CODE);
+		String honeyPot = request.getParameter(honeyPotCode);
 
 		if (StringUtils.isNotEmpty(honeyPot)) {
+			String url = request.getRemoteAddr();
 			logger.warn("Bot protection triggered : url - > {} : honey -> {} : email -> {}", url, honeyPot, email);
 			try {
 				sleep(10 * 1000);
