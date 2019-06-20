@@ -535,10 +535,8 @@ create table word_relation_param
 (
   id bigserial primary key,
   word_relation_id bigint references word_relation(id) on delete cascade not null,
-  param_name text not null,
-  value_float float,
-  value_int int,
-  value_boolean boolean
+  name text not null,
+  value text not null
 );
 alter sequence word_relation_param_id_seq restart with 10000;
 
