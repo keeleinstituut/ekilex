@@ -17,7 +17,3 @@ alter sequence word_relation_param_id_seq restart with 10000;
 create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);
 
 alter table word_relation add relation_status varchar(100);
-
-insert into word_rel_type (code, datasets) values ('raw', '{}');
-insert into word_rel_type_label (code, value, lang, type) values ('raw', 'Veel sarnaseid sõnu', 'est', 'wordweb');
-insert into word_rel_type_label (code, value, lang, type) values ('raw', 'Veel sarnaseid sõnu', 'est', 'full');
