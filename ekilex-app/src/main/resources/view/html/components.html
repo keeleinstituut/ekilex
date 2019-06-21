@@ -145,7 +145,7 @@
         <input name="isAdmin" type="hidden"/>
         <select class="form-control col-2" id="changeRoleSelect" name="permissionId">
           <option value="" hidden disabled th:selected="${sessionBean.userRole == null}"></option>
-          <th:block th:each="datasetPermission : ${#authentication.principal.datasetPermissions}">
+          <th:block th:each="datasetPermission : ${userDatasetPermissions}">
             <option th:with="permissionName=#{|authorityoperation.${datasetPermission.authOperation}|}"
                     th:value="${datasetPermission.id}" th:text="${datasetPermission.datasetName + ' (' + permissionName + ')'
                       + (datasetPermission.authLang != null ? ' - ' + datasetPermission.authLangValue : '')}"

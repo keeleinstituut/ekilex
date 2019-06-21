@@ -76,15 +76,8 @@ public class UserService implements WebConstant {
 	}
 
 	@Transactional
-	public void updateAuthenticatedUserDatasetPermissions() {
-		EkiUser user = getAuthenticatedUser();
-		Long userId = user.getId();
-		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
-		user.setDatasetPermissions(datasetPermissions);
-	}
-
-	@Transactional
 	public EkiUser getUserByEmail(String email) {
+		email = email.toLowerCase();
 		EkiUser user = userDbService.getUserByEmail(email);
 		if (user != null) {
 			Long userId = user.getId();
@@ -113,6 +106,7 @@ public class UserService implements WebConstant {
 
 	@Transactional
 	public Long getUserIdByEmail(String email) {
+		email = email.toLowerCase();
 		Long userId = userDbService.getUserIdByEmail(email);
 		return userId;
 	}
@@ -122,6 +116,7 @@ public class UserService implements WebConstant {
 		if (StringUtils.isBlank(email)) {
 			return false;
 		}
+		email = email.toLowerCase();
 		EkiUser user = userDbService.getUserByEmail(email);
 		return user == null;
 	}
@@ -129,6 +124,7 @@ public class UserService implements WebConstant {
 	@Transactional
 	public String createUser(String email, String name, String password) {
 
+		email = email.toLowerCase();
 		String activationKey = generateUniqueKey();
 		String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 		String encodedPassword = passwordEncoder.encode(password);
