@@ -23,4 +23,5 @@ public interface SystemConstant {
 	String CACHE_KEY_DATASET = "dataset";
 
 	String CACHE_KEY_USER = "user";
+
 }

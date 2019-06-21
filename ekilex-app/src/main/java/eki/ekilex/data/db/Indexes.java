@@ -98,6 +98,7 @@ import eki.ekilex.data.db.tables.WordProcessLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
@@ -333,6 +334,8 @@ public class Indexes {
     public static final Index WORD_RELATION_WORD1_ID_IDX = Indexes0.WORD_RELATION_WORD1_ID_IDX;
     public static final Index WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Indexes0.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY;
     public static final Index WORD_RELATION_WORD2_ID_IDX = Indexes0.WORD_RELATION_WORD2_ID_IDX;
+    public static final Index WORD_RELATION_PARAM_PKEY = Indexes0.WORD_RELATION_PARAM_PKEY;
+    public static final Index WORD_RELATION_PARAM_WORD_RELATION_ID_IDX = Indexes0.WORD_RELATION_PARAM_WORD_RELATION_ID_IDX;
     public static final Index WORD_TYPE_PKEY = Indexes0.WORD_TYPE_PKEY;
     public static final Index WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index WORD_WORD_TYPE_PKEY = Indexes0.WORD_WORD_TYPE_PKEY;
@@ -550,6 +553,8 @@ public class Indexes {
         public static Index WORD_RELATION_WORD1_ID_IDX = Internal.createIndex("word_relation_word1_id_idx", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD1_ID }, false);
         public static Index WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Internal.createIndex("word_relation_word1_id_word2_id_word_rel_type_code_key", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD1_ID, WordRelation.WORD_RELATION.WORD2_ID, WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE }, true);
         public static Index WORD_RELATION_WORD2_ID_IDX = Internal.createIndex("word_relation_word2_id_idx", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD2_ID }, false);
+        public static Index WORD_RELATION_PARAM_PKEY = Internal.createIndex("word_relation_param_pkey", WordRelationParam.WORD_RELATION_PARAM, new OrderField[] { WordRelationParam.WORD_RELATION_PARAM.ID }, true);
+        public static Index WORD_RELATION_PARAM_WORD_RELATION_ID_IDX = Internal.createIndex("word_relation_param_word_relation_id_idx", WordRelationParam.WORD_RELATION_PARAM, new OrderField[] { WordRelationParam.WORD_RELATION_PARAM.WORD_RELATION_ID }, false);
         public static Index WORD_TYPE_PKEY = Internal.createIndex("word_type_pkey", WordType.WORD_TYPE, new OrderField[] { WordType.WORD_TYPE.CODE }, true);
         public static Index WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("word_type_label_code_lang_type_key", WordTypeLabel.WORD_TYPE_LABEL, new OrderField[] { WordTypeLabel.WORD_TYPE_LABEL.CODE, WordTypeLabel.WORD_TYPE_LABEL.LANG, WordTypeLabel.WORD_TYPE_LABEL.TYPE }, true);
         public static Index WORD_WORD_TYPE_PKEY = Internal.createIndex("word_word_type_pkey", WordWordType.WORD_WORD_TYPE, new OrderField[] { WordWordType.WORD_WORD_TYPE.ID }, true);

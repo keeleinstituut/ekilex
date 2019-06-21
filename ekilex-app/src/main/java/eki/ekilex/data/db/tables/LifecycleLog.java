@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LifecycleLog extends TableImpl<LifecycleLogRecord> {
 
-    private static final long serialVersionUID = -343002517;
+    private static final long serialVersionUID = 1831976575;
 
     /**
      * The reference instance of <code>public.lifecycle_log</code>
@@ -91,11 +91,6 @@ public class LifecycleLog extends TableImpl<LifecycleLogRecord> {
      * The column <code>public.lifecycle_log.event_on</code>.
      */
     public final TableField<LifecycleLogRecord, Timestamp> EVENT_ON = createField("event_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>public.lifecycle_log.source_name</code>.
-     */
-    public final TableField<LifecycleLogRecord, String> SOURCE_NAME = createField("source_name", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.lifecycle_log.recent</code>.

@@ -112,6 +112,7 @@ import eki.ekilex.data.db.tables.WordProcessLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
@@ -151,7 +152,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -724753055;
+    private static final long serialVersionUID = -974023700;
 
     /**
      * The reference instance of <code>public</code>
@@ -699,6 +700,11 @@ public class Public extends SchemaImpl {
     public final WordRelation WORD_RELATION = eki.ekilex.data.db.tables.WordRelation.WORD_RELATION;
 
     /**
+     * The table <code>public.word_relation_param</code>.
+     */
+    public final WordRelationParam WORD_RELATION_PARAM = eki.ekilex.data.db.tables.WordRelationParam.WORD_RELATION_PARAM;
+
+    /**
      * The table <code>public.word_type</code>.
      */
     public final WordType WORD_TYPE = eki.ekilex.data.db.tables.WordType.WORD_TYPE;
@@ -832,6 +838,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
+            Sequences.WORD_RELATION_PARAM_ID_SEQ,
             Sequences.WORD_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_WORD_TYPE_ID_SEQ,
             Sequences.WORD_WORD_TYPE_ORDER_BY_SEQ);
@@ -954,6 +961,7 @@ public class Public extends SchemaImpl {
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,
             WordRelation.WORD_RELATION,
+            WordRelationParam.WORD_RELATION_PARAM,
             WordType.WORD_TYPE,
             WordTypeLabel.WORD_TYPE_LABEL,
             WordWordType.WORD_WORD_TYPE);

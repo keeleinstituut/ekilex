@@ -563,6 +563,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						FORM.VALUE.as("word"),
 						WORD.ID.as("word_id"),
 						WORD.LANG.as("word_lang"),
+						WORD_RELATION.WORD_REL_TYPE_CODE.as("rel_type_code"),
 						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
 						WORD_RELATION.ORDER_BY.as("order_by"))
 				.from(

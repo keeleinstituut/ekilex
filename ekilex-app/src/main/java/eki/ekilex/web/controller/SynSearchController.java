@@ -130,7 +130,7 @@ public class SynSearchController extends AbstractSearchController {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}
 		List<String> filteredDatasets = cleanDatasetCodesForRole(selectedDatasets, sessionBean);
-		WordDetails details = synSearchService.getWordDetails(wordId, filteredDatasets);
+		WordDetails details = synSearchService.getWordDetailsSynonyms(wordId, filteredDatasets);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 

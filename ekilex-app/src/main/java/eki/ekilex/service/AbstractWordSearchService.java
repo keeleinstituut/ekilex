@@ -211,4 +211,5 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 	private List<String> cleanUpVocalForms(List<String> vocalForms) {
 		return vocalForms.stream().filter(Objects::nonNull).collect(toList());
 	}
+
 }

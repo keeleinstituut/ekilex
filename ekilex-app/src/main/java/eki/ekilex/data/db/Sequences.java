@@ -494,6 +494,11 @@ public class Sequences {
     public static final Sequence<Long> WORD_RELATION_ORDER_BY_SEQ = new SequenceImpl<Long>("word_relation_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.word_relation_param_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_RELATION_PARAM_ID_SEQ = new SequenceImpl<Long>("word_relation_param_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.word_type_order_by_seq</code>
      */
     public static final Sequence<Long> WORD_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("word_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
