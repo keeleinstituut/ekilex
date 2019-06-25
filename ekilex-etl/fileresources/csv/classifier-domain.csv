@@ -126,13 +126,13 @@ bolan	bot	-	botaanika	et
 bolan	bot	-	botany	en
 bolan	ehit	-	ehitusala	et
 bolan	ehit	-	building	en
-bolan	el	-	elekter ja elektrotehnika	et
+bolan	el	-	elekter	et
 bolan	el	-	electricity	en
 bolan	etn	-	etnograafia	et
 bolan	etn	-	ethnography	en
 bolan	farm	-	farmaatsia	et
 bolan	farm	-	pharmacy	en
-bolan	filos	-	filos	et
+bolan	filos	-	filosoofia	et
 bolan	filos	-	philosophy	en
 bolan	folkl	-	folkloor	et
 bolan	folkl	-	folklore	en
@@ -146,9 +146,9 @@ bolan	geogr	-	geograafia	et
 bolan	geogr	-	geography	en
 bolan	geol	-	geoloogia	et
 bolan	geol	-	geology	en
-bolan	info	-	informaatika, arvutiteadus	et
+bolan	info	-	infotehnoloogia	et
 bolan	info	-	information technology, computer science	en
-bolan	jur	-	jurisprudents	et
+bolan	jur	-	õigusteadus	et
 bolan	jur	-	law	en
 bolan	kal	-	kalandus	et
 bolan	kal	-	fishery	en
@@ -160,8 +160,8 @@ bolan	kirikl	-	kiriklik	et
 bolan	kirikl	-	ecclesiastical	en
 bolan	kirj	-	kirjandusteadus	et
 bolan	kirj	-	literature	en
-bolan	kok	-	kokandus, kulinaaria	et
-bolan	kok	-	culinary	en
+bolan	kok	-	kokandus	et
+bolan	kok	-	cookery	en
 bolan	kunst	-	kunst	et
 bolan	kunst	-	art	en
 bolan	loog	-	loogika	et
@@ -200,8 +200,8 @@ bolan	relig	-	religioon	et
 bolan	relig	-	religion	en
 bolan	sport	-	sport	et
 bolan	sport	-	sports	en
-bolan	sõj	-	sõjandus, riigikaitse	et
-bolan	sõj	-	military science, national defence	en
+bolan	sõj	-	sõjandus	et
+bolan	sõj	-	military science	en
 bolan	zool	-	zooloogia	et
 bolan	zool	-	zoology	en
 bolan	teater	-	teater	et
@@ -213,7 +213,7 @@ bolan	tekst	-	textiles	en
 bolan	trük	-	trükindus	et
 bolan	trük	-	printing industry	en
 bolan	vet	-	veterinaaria	et
-bolan	vet	-	veterinary science	en
+bolan	vet	-	veterinary	en
 bolan	arhit	-	arhitektuur	et
 bolan	arhit	-	architecture	en
 bolan	aut	-	autondus	et
@@ -228,7 +228,7 @@ bolan	jah	-	jahindus	et
 bolan	jah	-	hunting	en
 bolan	ker	-	keraamika	et
 bolan	ker	-	pottery	en
-bolan	kul	-	kulinaaria	et
+bolan	kul	-	kokandus	et
 bolan	kul	-	cookery	en
 bolan	lenn	-	lennundus	et
 bolan	lenn	-	aviation	en
