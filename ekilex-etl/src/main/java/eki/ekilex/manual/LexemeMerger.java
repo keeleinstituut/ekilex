@@ -23,9 +23,10 @@ public class LexemeMerger extends AbstractLoader {
 			LexemeMergerRunner lexemeMergerRunner = getComponent(LexemeMergerRunner.class);
 			String lexemeMergeName = confService.getMandatoryConfProperty("lex.merge.name");
 			List<String> lexemeMergeDatasets = confService.getLexemeMergeDatasets();
+			boolean doReports = confService.doReports();
 
 			lexemeMergerRunner.deleteLexemeMergeData(lexemeMergeName);
-			lexemeMergerRunner.execute(lexemeMergeName, lexemeMergeDatasets);
+			lexemeMergerRunner.execute(lexemeMergeName, lexemeMergeDatasets, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

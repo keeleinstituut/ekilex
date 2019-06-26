@@ -430,6 +430,7 @@ create table freeform
   classif_name text null,
   classif_code varchar(100) null,
   lang char(3) references language(code) null,
+  complexity varchar(100) null,
   order_by bigserial
 );
 alter sequence freeform_id_seq restart with 10000;
@@ -720,10 +721,11 @@ create table definition
 (
   id bigserial primary key,
   meaning_id bigint references meaning(id) not null,
+  definition_type_code varchar(100) references definition_type(code) not null,
   value text not null,
   value_prese text not null,
   lang char(3) references language(code) not null,
-  definition_type_code varchar(100) references definition_type(code) not null,
+  complexity varchar(100) not null,
   order_by bigserial
 );
 alter sequence definition_id_seq restart with 10000;

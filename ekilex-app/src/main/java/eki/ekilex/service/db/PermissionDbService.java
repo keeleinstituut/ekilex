@@ -4,18 +4,28 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.PROCESS_LOG;
+import static eki.ekilex.data.db.Tables.PROCESS_LOG_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -343,6 +353,86 @@ public class PermissionDbService implements SystemConstant {
 																				.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
 																				.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(FREEFORM.LANG))))))))
 				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean isGrantedForSource(Long userId, Long sourceId, String authItem, List<String> authOps) {
+
+		Table<Record1<String>> dffds = DSL
+				.select(DEFINITION_DATASET.DATASET_CODE)
+				.from(DEFINITION_DATASET, DEFINITION_FREEFORM, FREEFORM_SOURCE_LINK)
+				.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION_FREEFORM.DEFINITION_ID)
+						.and(DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID))
+						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("dffds");
+
+		Table<Record1<String>> mffds = DSL
+				.select(LEXEME.DATASET_CODE)
+				.from(LEXEME, MEANING_FREEFORM, FREEFORM_SOURCE_LINK)
+				.where(LEXEME.MEANING_ID.eq(MEANING_FREEFORM.MEANING_ID)
+						.and(MEANING_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID))
+						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("mffds");
+
+		Table<Record1<String>> lffds = DSL
+				.select(LEXEME.DATASET_CODE).from(LEXEME, LEXEME_FREEFORM, FREEFORM_SOURCE_LINK)
+				.where(LEXEME.ID.eq(LEXEME_FREEFORM.LEXEME_ID)
+						.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID))
+						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("lffds");
+
+		Table<Record1<String>> dds = DSL
+				.select(DEFINITION_DATASET.DATASET_CODE)
+				.from(DEFINITION_DATASET, DEFINITION_SOURCE_LINK)
+				.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID)
+						.and(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("dds");
+
+		Table<Record1<String>> lds = DSL
+				.select(LEXEME.DATASET_CODE)
+				.from(LEXEME, LEXEME_SOURCE_LINK)
+				.where(LEXEME.ID.eq(LEXEME_SOURCE_LINK.LEXEME_ID)
+						.and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("lds");
+
+		Table<Record1<String>> plds = DSL
+				.select(PROCESS_LOG.DATASET_CODE)
+				.from(PROCESS_LOG, PROCESS_LOG_SOURCE_LINK)
+				.where(PROCESS_LOG.ID.eq(PROCESS_LOG_SOURCE_LINK.PROCESS_LOG_ID)
+						.and(PROCESS_LOG_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("plds");
+
+		Table<Record1<String>> weds = DSL
+				.select(LEXEME.DATASET_CODE)
+				.from(LEXEME, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK)
+				.where(LEXEME.WORD_ID.eq(WORD_ETYMOLOGY.WORD_ID)
+						.and(WORD_ETYMOLOGY.ID.eq(WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYM_ID))
+						.and(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("weds");
+
+		Table<Record1<String>> sds = DSL
+				.selectFrom(dffds)
+				.unionAll(DSL.selectFrom(mffds))
+				.unionAll(DSL.selectFrom(lffds))
+				.unionAll(DSL.selectFrom(dds))
+				.unionAll(DSL.selectFrom(lds))
+				.unionAll(DSL.selectFrom(plds))
+				.unionAll(DSL.selectFrom(weds))
+				.asTable("sds");
+
+		List<String> linkedDatasets = create
+				.selectDistinct(sds.field("dataset_code", String.class))
+				.from(sds).fetchInto(String.class);
+
+		List<String> permittedDatasets = create
+				.select(DATASET_PERMISSION.DATASET_CODE)
+				.from(DATASET_PERMISSION)
+				.where(
+						DATASET_PERMISSION.USER_ID.eq(userId)
+								.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
+								.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem)))
+				.fetchInto(String.class);
+
+		return CollectionUtils.containsAll(permittedDatasets, linkedDatasets);
 	}
 
 	public DatasetPermission getDatasetPermission(Long id) {

@@ -76,7 +76,7 @@ public class HomeController extends AbstractPageController {
 	public String apply(Model model) {
 		EkiUser user = userService.getAuthenticatedUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
-			return "redirect:" + HOME_URI;			
+			return "redirect:" + HOME_URI;
 		}
 		populateUserApplicationData(user, model);
 		return APPLY_PAGE;
@@ -91,7 +91,7 @@ public class HomeController extends AbstractPageController {
 		EkiUser user = userService.getAuthenticatedUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			populateStatData(model);
-			return HOME_PAGE;			
+			return HOME_PAGE;
 		}
 		userService.submitUserApplication(user, selectedDatasets, applicationComment);
 		populateUserApplicationData(user, model);
@@ -119,8 +119,7 @@ public class HomeController extends AbstractPageController {
 		List<StatDataRow> freeformStatData = statDataService.getFreeformStatData();
 		List<StatDataRow> lexemeDatasetStatData = statDataService.getLexemeDatasetStatData();
 		List<StatDataRow> lifecycleUserStatData = statDataService.getLifecycleUserStatData();
-		boolean statExists =
-				(mainEntityStatData.getDatasetCount() > 0)
+		boolean statExists = (mainEntityStatData.getDatasetCount() > 0)
 				&& CollectionUtils.isNotEmpty(freeformStatData)
 				&& CollectionUtils.isNotEmpty(lexemeDatasetStatData)
 				&& CollectionUtils.isNotEmpty(lifecycleUserStatData);

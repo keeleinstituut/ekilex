@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Government;
@@ -99,6 +100,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "psv";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.SIMPLE1;
 	}
 
 	@Transactional
@@ -1151,13 +1157,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					createFreeformClassifier(governmentId, FreeformType.GOVERNMENT_TYPE, government.getType());
 				}
 				if (isNotBlank(governmentPlacement)) {
-					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_PLACEMENT, governmentPlacement, null);
+					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_PLACEMENT, governmentPlacement, null, null);
 				}
 				if (isNotBlank(government.getVariant())) {
-					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_VARIANT, government.getVariant(), null);
+					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_VARIANT, government.getVariant(), null, null);
 				}
 				if (isNotBlank(government.getOptional())) {
-					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_OPTIONAL, government.getOptional(), null);
+					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_OPTIONAL, government.getOptional(), null, null);
 				}
 			}
 		}

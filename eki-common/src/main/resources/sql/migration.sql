@@ -17,3 +17,12 @@ alter sequence word_relation_param_id_seq restart with 10000;
 create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);
 
 alter table word_relation add relation_status varchar(100);
+
+-- 21.06.19
+
+alter table freeform add column complexity varchar(100);
+update freeform set complexity = 'DEFAULT';
+
+alter table definition add column complexity varchar(100);
+update definition set complexity = 'DEFAULT';
+alter table definition alter column complexity set not null;

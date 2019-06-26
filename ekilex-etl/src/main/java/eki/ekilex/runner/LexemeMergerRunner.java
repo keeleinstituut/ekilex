@@ -56,11 +56,16 @@ import eki.ekilex.data.util.LexemeRelationRowMapper;
 import eki.ekilex.data.util.LexemeSourceLinkRowMapper;
 import eki.ekilex.data.util.ProcessLogSourceLinkRowMapper;
 import eki.ekilex.data.util.WordMeaningPairRowMapper;
+import eki.ekilex.service.ReportComposer;
 
 @Component
 public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(LexemeMergerRunner.class);
+
+	private static final String REPORT_LEXEME_DATA_CONFLICT = "lexeme_data_conflict";
+
+	private static final String DATASET_CODE_SS1 = "ss1";
 
 	private static final String SQL_SELECT_WORD_LEXEME_MEANING_IDS_PATH = "sql/select_word_lexeme_meaning_ids.sql";
 
@@ -109,11 +114,18 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	private String sqlSelectLexemeRelations =
 			"select r.lexeme1_id, r.lexeme2_id, r.lex_rel_type_code, r.order_by from " + LEXEME_RELATION + " r where r.lexeme1_id in (:lexemeIds) order by r.order_by";
 
+	private ReportComposer reportComposer;
+
 	private String lexemeMergeName;
 
 	@Override
 	public String getDataset() {
 		return lexemeMergeName;
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return null;
 	}
 
 	@Override
@@ -152,8 +164,13 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	}
 
 	@Transactional
-	public void execute(String lexemeMergeName, List<String> lexemeMergeDatasets) throws Exception {
+	public void execute(String lexemeMergeName, List<String> lexemeMergeDatasets, boolean doReports) throws Exception {
 		this.lexemeMergeName = lexemeMergeName;
+		this.doReports = doReports;
+
+		if (doReports) {
+			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_LEXEME_DATA_CONFLICT);
+		}
 
 		start();
 
@@ -186,11 +203,14 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 				allLexemes.add(lexeme);
 			}
 
+			String word = wordMeaningPair.getWord();
+			Long wordId = wordMeaningPair.getWordId();
+			Long meaningId = wordMeaningPair.getMeaningId();
+
 			LexemeExt sumLexeme = new LexemeExt();
-			sumLexeme.setWordId(wordMeaningPair.getWordId());
-			sumLexeme.setMeaningId(wordMeaningPair.getMeaningId());
+			sumLexeme.setWordId(wordId);
+			sumLexeme.setMeaningId(meaningId);
 			sumLexeme.setDatasetCode(lexemeMergeName);
-			sumLexeme.setProcessStateCode(PROCESS_STATE_PUBLIC);
 
 			if (CollectionUtils.size(allLexemes) == 1) {
 				//copy single to single lexeme
@@ -198,7 +218,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 				composeSumLexeme(sumLexeme, singleLexeme);
 			} else {
 				//compare and copy sum into single lexeme
-				composeSumLexeme(sumLexeme, allLexemes, countsMap);
+				composeSumLexeme(word, sumLexeme, allLexemes, countsMap);
 			}
 			Long sumLexemeId = createLexeme(sumLexeme);
 			sumLexemeCount.increment();
@@ -242,6 +262,10 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		createLexemeProcessLogs(sumLexemeIdMap, lexemeProcessLogs, countsMap);
 
 		logCounts(countsMap);
+
+		if (reportComposer != null) {
+			reportComposer.end();
+		}
 
 		end();
 	}
@@ -342,6 +366,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		sumLexeme.setLevel2(lexeme.getLevel2());
 		sumLexeme.setLevel3(lexeme.getLevel3());
 		sumLexeme.setValueStateCode(lexeme.getValueStateCode());
+		sumLexeme.setProcessStateCode(lexeme.getProcessStateCode());
 		sumLexeme.setFreeforms(lexeme.getFreeforms());
 		sumLexeme.setLexemeFrequencies(lexeme.getLexemeFrequencies());
 		sumLexeme.setLexemeRegisters(lexeme.getLexemeRegisters());
@@ -351,21 +376,31 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		sumLexeme.setLexemeSourceLinks(lexeme.getLexemeSourceLinks());
 	}
 
-	private void composeSumLexeme(Lexeme sumLexeme, List<LexemeExt> allLexemes, Map<String, Count> countsMap) throws Exception {
+	private void composeSumLexeme(String word, Lexeme sumLexeme, List<LexemeExt> allLexemes, Map<String, Count> countsMap) throws Exception {
 
 		Count tooManyFreqGroupCodeCount = countsMap.get("tooManyFreqGroupCodeCount");
 		Count tooManyValueStateCodeCount = countsMap.get("tooManyValueStateCodeCount");
 
-		List<Lexeme> lexemesSortedByLevels = allLexemes.stream()
-				.sorted(Comparator
-						.comparing(Lexeme::getLevel1)
-						.thenComparing(Lexeme::getLevel2)
-						.thenComparing(Lexeme::getLevel3))
-				.collect(Collectors.toList());
-		Lexeme firstLevelLexeme = lexemesSortedByLevels.get(0);
-		Integer sumLevel1 = firstLevelLexeme.getLevel1();
-		Integer sumLevel2 = firstLevelLexeme.getLevel2();
-		Integer sumLevel3 = firstLevelLexeme.getLevel3();
+		// sum levels
+		Lexeme ssLexeme = allLexemes.stream().filter(lexeme -> StringUtils.equals(DATASET_CODE_SS1, lexeme.getDatasetCode())).findFirst().orElse(null);
+
+		Integer sumLevel1 = null;
+		Integer sumLevel2 = null;
+		Integer sumLevel3 = null;
+
+		if (ssLexeme == null) {
+			// FIXME no no no wrong!
+			sumLevel1 = allLexemes.stream().max(Comparator.comparing(Lexeme::getLevel1)).map(Lexeme::getLevel1).orElse(null);
+			sumLevel1 = sumLevel1 + 1;
+			sumLevel2 = 0;
+			sumLevel3 = 0;
+		} else {
+			sumLevel1 = ssLexeme.getLevel1();
+			sumLevel2 = ssLexeme.getLevel2();
+			sumLevel3 = ssLexeme.getLevel3();
+		}
+
+		// sum freq group
 		List<String> frequencyGroupCodeCandidates = allLexemes.stream()
 				.filter(lexeme -> StringUtils.isNotBlank(lexeme.getFrequencyGroupCode()))
 				.map(Lexeme::getFrequencyGroupCode)
@@ -381,10 +416,14 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		} else {
 			sumFrequencyGroupCode = frequencyGroupCodeCandidates.get(0);
 		}
+
+		// sum corpus freq
 		Float sumCorpusFrequency = allLexemes.stream()
 				.filter(lexeme -> lexeme.getCorpusFrequency() != null)
 				.map(Lexeme::getCorpusFrequency)
 				.findFirst().orElse(null);
+
+		// sum value state
 		List<String> valueStateCodeCandidates = allLexemes.stream()
 				.filter(lexeme -> StringUtils.isNotBlank(lexeme.getValueStateCode()))
 				.map(Lexeme::getValueStateCode)
@@ -394,18 +433,36 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		if (CollectionUtils.isEmpty(valueStateCodeCandidates)) {
 			sumValueStateCode = null;
 		} else if (valueStateCodeCandidates.size() > 1) {
-			logger.debug("More than one value state codes: {}", valueStateCodeCandidates);
+			appendToReport(REPORT_LEXEME_DATA_CONFLICT, word, "ilmikutel kokku rohkem kui üks väärtusolek", valueStateCodeCandidates);
 			tooManyValueStateCodeCount.increment();
 			sumValueStateCode = valueStateCodeCandidates.get(0);
 		} else {
 			sumValueStateCode = valueStateCodeCandidates.get(0);
 		}
+
+		// sum process state
+		List<String> processStateCodeCandidates = allLexemes.stream()
+				.filter(lexeme -> StringUtils.isNotBlank(lexeme.getProcessStateCode()))
+				.map(Lexeme::getProcessStateCode)
+				.distinct()
+				.collect(Collectors.toList());
+		String sumProcessStateCode;
+		if (CollectionUtils.isEmpty(processStateCodeCandidates)) {
+			sumProcessStateCode = PROCESS_STATE_PUBLIC;
+		} else if (processStateCodeCandidates.size() > 1) {
+			appendToReport(REPORT_LEXEME_DATA_CONFLICT, word, "ilmikutel kokku rohkem kui üks haldusolek", processStateCodeCandidates);
+			sumProcessStateCode = processStateCodeCandidates.get(0);
+		} else {
+			sumProcessStateCode = processStateCodeCandidates.get(0);
+		}
+
 		sumLexeme.setFrequencyGroupCode(sumFrequencyGroupCode);
 		sumLexeme.setCorpusFrequency(sumCorpusFrequency);
 		sumLexeme.setLevel1(sumLevel1);
 		sumLexeme.setLevel2(sumLevel2);
 		sumLexeme.setLevel3(sumLevel3);
 		sumLexeme.setValueStateCode(sumValueStateCode);
+		sumLexeme.setProcessStateCode(sumProcessStateCode);
 	}
 
 	private void createDatasetIfNotExists(String datasetCode) throws Exception {
@@ -604,9 +661,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		for (Freeform freeform : sumFreeforms) {
 			Long freeformId = null;
 			if (freeform.getValueText() != null) {
-				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueText(), freeform.getLangCode());
+				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueText(), freeform.getLangCode(), freeform.getComplexity());
 			} else if (freeform.getValueDate() != null) {
-				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode());
+				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode(), freeform.getComplexity());
 			} else {
 				// other data types?
 			}
@@ -629,9 +686,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		for (Freeform freeform : freeforms) {
 			if (freeform.getValueText() != null) {
-				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueText(), freeform.getLangCode());
+				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueText(), freeform.getLangCode(), freeform.getComplexity());
 			} else if (freeform.getValueDate() != null) {
-				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode());
+				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode(), freeform.getComplexity());
 			}
 		}
 	}
@@ -952,6 +1009,14 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		}
 
 		logger.debug("Done with lexeme process logs");
+	}
+
+	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
+		if (!doReports) {
+			return;
+		}
+		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
+		reportComposer.append(reportName, logRow);
 	}
 
 	class LexemeExt extends Lexeme {

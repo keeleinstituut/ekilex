@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
@@ -72,6 +73,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "mab";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return null;
 	}
 
 	@Override

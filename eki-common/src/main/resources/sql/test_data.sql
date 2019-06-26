@@ -52,21 +52,21 @@ insert into meaning (id) values (2025);
 insert into meaning (id) values (2026);
 insert into meaning (id) values (2027);
 
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1001, 2001, 'külmunud kaste maas', 'külmunud kaste maas', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1002, 2002, 'avar üldkasutatav hoone v ruum', 'avar üldkasutatav hoone v ruum', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1003, 2002, 'suur esinduslik ruum elamus, kodasaal', 'suur esinduslik ruum elamus, kodasaal', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1004, 2004, 'temperatuuri langemisel alla 0 °C õhus olevast veeaurust tekkinud ebaühtlane jääkristallide kiht maapinnal, taimedel ja esemetel (hrl. kevadel ja sügisel)', 'temperatuuri langemisel alla 0 °C õhus olevast veeaurust tekkinud ebaühtlane jääkristallide kiht maapinnal, taimedel ja esemetel (hrl. kevadel ja sügisel)', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1005, 2005, 'värvuselt musta ja valge vahepealne', 'värvuselt musta ja valge vahepealne', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1006, 2006, 'valge ja pimeda vahepealne, hämar; sombune', 'valge ja pimeda vahepealne, hämar; sombune', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1007, 2007, 'kaugesse minevikku ulatuv, ajaloo hämarusse kaduv', 'kaugesse minevikku ulatuv, ajaloo hämarusse kaduv', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1008, 2008, 'üksluine, ühetooniline, vaheldusetu, tuim, igav', 'üksluine, ühetooniline, vaheldusetu, tuim, igav', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1009, 2009, 'see, kes v. mis on hall (1. täh.)', 'see, kes v. mis on hall (1. täh.)', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1010, 2010, 'kodasaal, elamu suurem siseruum; suur köetav esik (esimesel korrusel)', 'kodasaal, elamu suurem siseruum; suur köetav esik (esimesel korrusel)', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1011, 2011, 'rohkearvulisele publikule mõeldud suur saal v. hoone; suur tootmisruum v. hoone', 'rohkearvulisele publikule mõeldud suur saal v. hoone; suur tootmisruum v. hoone', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1012, 2016, 'suur esik; saal; tootmishoone', 'suur esik; saal; tootmishoone', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1013, 2021, 'suur selvekauplus, kus peale toiduainete müüakse ka muid igapäevakaupu', 'suur selvekauplus, kus peale toiduainete müüakse ka muid igapäevakaupu', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1014, 2025, 'hiirekarva hall', 'hiirekarva hall', 'est', 'määramata');
-insert into definition (id, meaning_id, value, value_prese, lang, definition_type_code) values (1015, 2026, 'rõdu, eriti kirikus', 'rõdu, eriti kirikus', 'est', 'määramata');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1001, 2001, 'määramata', 'külmunud kaste maas', 'külmunud kaste maas', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1002, 2002, 'määramata', 'avar üldkasutatav hoone v ruum', 'avar üldkasutatav hoone v ruum', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1003, 2002, 'määramata', 'suur esinduslik ruum elamus, kodasaal', 'suur esinduslik ruum elamus, kodasaal', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1004, 2004, 'määramata', 'temperatuuri langemisel alla 0 °C õhus olevast veeaurust tekkinud ebaühtlane jääkristallide kiht maapinnal, taimedel ja esemetel (hrl. kevadel ja sügisel)', 'temperatuuri langemisel alla 0 °C õhus olevast veeaurust tekkinud ebaühtlane jääkristallide kiht maapinnal, taimedel ja esemetel (hrl. kevadel ja sügisel)', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1005, 2005, 'määramata', 'värvuselt musta ja valge vahepealne', 'värvuselt musta ja valge vahepealne', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1006, 2006, 'määramata', 'valge ja pimeda vahepealne, hämar; sombune', 'valge ja pimeda vahepealne, hämar; sombune', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1007, 2007, 'määramata', 'kaugesse minevikku ulatuv, ajaloo hämarusse kaduv', 'kaugesse minevikku ulatuv, ajaloo hämarusse kaduv', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1008, 2008, 'määramata', 'üksluine, ühetooniline, vaheldusetu, tuim, igav', 'üksluine, ühetooniline, vaheldusetu, tuim, igav', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1009, 2009, 'määramata', 'see, kes v. mis on hall (1. täh.)', 'see, kes v. mis on hall (1. täh.)', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1010, 2010, 'määramata', 'kodasaal, elamu suurem siseruum; suur köetav esik (esimesel korrusel)', 'kodasaal, elamu suurem siseruum; suur köetav esik (esimesel korrusel)', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1011, 2011, 'määramata', 'rohkearvulisele publikule mõeldud suur saal v. hoone; suur tootmisruum v. hoone', 'rohkearvulisele publikule mõeldud suur saal v. hoone; suur tootmisruum v. hoone', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1012, 2016, 'määramata', 'suur esik; saal; tootmishoone', 'suur esik; saal; tootmishoone', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1013, 2021, 'määramata', 'suur selvekauplus, kus peale toiduainete müüakse ka muid igapäevakaupu', 'suur selvekauplus, kus peale toiduainete müüakse ka muid igapäevakaupu', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1014, 2025, 'määramata', 'hiirekarva hall', 'hiirekarva hall', 'est', 'DEFAULT');
+insert into definition (id, meaning_id, definition_type_code, value, value_prese, lang, complexity) values (1015, 2026, 'määramata', 'rõdu, eriti kirikus', 'rõdu, eriti kirikus', 'est', 'DEFAULT');
 
 insert into definition_dataset (definition_id, dataset_code) values (1001, 'qq2');
 insert into definition_dataset (definition_id, dataset_code) values (1002, 'qq2');
@@ -179,10 +179,10 @@ insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values 
 insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values (1008, 4003, 4024, 'comp');
 insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values (1009, 4003, 4025, 'comp');
 
-insert into freeform (id, parent_id, type, value_text) values (1001, null, 'CONCEPT_ID', '123456');
-insert into freeform (id, parent_id, type, value_text) values (1002, null, 'GOVERNMENT', 'keda mida');
-insert into freeform (id, parent_id, type, value_text) values (1003, null, 'USAGE', 'Hommikul oli hall maas');
-insert into freeform (id, parent_id, type, value_text) values (1004, null, 'USAGE', 'Haned lähevad, hallad taga');
+insert into freeform (id, parent_id, type, value_text, lang, complexity) values (1001, null, 'CONCEPT_ID', '123456', null, 'DEFAULT');
+insert into freeform (id, parent_id, type, value_text, lang, complexity) values (1002, null, 'GOVERNMENT', 'keda mida', 'est', 'DEFAULT');
+insert into freeform (id, parent_id, type, value_text, lang, complexity) values (1003, null, 'USAGE', 'Hommikul oli hall maas', 'est', 'DEFAULT');
+insert into freeform (id, parent_id, type, value_text, lang, complexity) values (1004, null, 'USAGE', 'Haned lähevad, hallad taga', 'est', 'DEFAULT');
 
 insert into meaning_freeform (id, meaning_id, freeform_id) values (1001, 2024, 1001);
 insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1002, 4001, 1003);

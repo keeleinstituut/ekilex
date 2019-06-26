@@ -5,6 +5,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
@@ -59,7 +61,12 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	private static final String PROCESS_STATE_APPROVED = "heaks kiidetud";
 	private static final String PROCESS_STATE_REJECTED = "tagasi lükatud";
 
-	private static final String MEANING_RELATION_UNSPECIFIED = "määramata";
+	private static final String RELATION_TYPE_OTHER = "määramata";
+	private static final String RELATION_TYPE_ANT = "vastand";
+	private static final String RELATION_TYPE_HYPO = "liigimõiste";
+	private static final String RELATION_TYPE_HYPERO = "soomõiste";
+	private static final String RELATION_TYPE_MERO = "osamõiste";
+	private static final String RELATION_TYPE_HOLO = "tervikumõiste";
 
 	private Pattern markupPatternForeign;
 
@@ -71,6 +78,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 	private Map<String, String> wordTypeCodes;
 
+	private Map<Integer, String> relationTypeCodes;
+
 	private String dataset;
 
 	@Autowired
@@ -79,6 +88,11 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	String getDataset() {
 		return dataset;
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DEFAULT;
 	}
 
 	@Override
@@ -106,6 +120,14 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		lexemeValueStateCodes.put("synonym", "rööptermin");
 		lexemeValueStateCodes.put("preferredTerm-admn-sts", "eelistermin");
 		lexemeValueStateCodes.put("deprecatedTerm-admn-sts", "väldi");
+
+		relationTypeCodes = new HashMap<>();
+		relationTypeCodes.put(1, RELATION_TYPE_OTHER);
+		relationTypeCodes.put(2, RELATION_TYPE_ANT);
+		relationTypeCodes.put(4, RELATION_TYPE_HYPO);
+		relationTypeCodes.put(5, RELATION_TYPE_HYPERO);
+		relationTypeCodes.put(6, RELATION_TYPE_MERO);
+		relationTypeCodes.put(7, RELATION_TYPE_HOLO);
 	}
 
 	@Transactional
@@ -530,7 +552,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 			String heading = (String) image.get("heading");
 			if (StringUtils.isNotBlank(heading)) {
-				createFreeformTextOrDate(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null);
+				createFreeformTextOrDate(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null, null);
 			}
 
 			Integer extSourceId = (Integer) image.get("source_id");
@@ -742,11 +764,13 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		for (Map<String, Object> conceptRelation : conceptRelations) {
 			Integer conceptId1 = (Integer) conceptRelation.get("source_concept_id");
 			Integer conceptId2 = (Integer) conceptRelation.get("target_concept_id");
+			int relationTypeNum = ((BigInteger) conceptRelation.get("relation_type")).intValue();
 			Long meaningId1 = conceptMeaningIdMap.get(conceptId1);
 			Long meaningId2 = conceptMeaningIdMap.get(conceptId2);
 
 			if (meaningId1 != null && meaningId2 != null) {
-				createMeaningRelation(meaningId1, meaningId2, MEANING_RELATION_UNSPECIFIED);
+				String relationType = relationTypeCodes.get(relationTypeNum);
+				createMeaningRelation(meaningId1, meaningId2, relationType);
 			}
 		}
 	}

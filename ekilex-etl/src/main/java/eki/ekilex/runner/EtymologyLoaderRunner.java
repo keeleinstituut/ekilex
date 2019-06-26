@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -84,6 +85,11 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "ety";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DEFAULT;
 	}
 
 	@Transactional

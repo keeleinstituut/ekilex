@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.RowMapper;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.transform.Freeform;
 
@@ -35,6 +36,11 @@ public class FreeformRowMapper extends AbstractRowMapper implements RowMapper<Fr
 		String classifName = rs.getString("classif_name");
 		String classifCode = rs.getString("classif_code");
 		String langCode = rs.getString("lang");
+		String complexityStr = rs.getString("complexity");
+		Complexity complexity = null;
+		if (StringUtils.isNotBlank(complexityStr)) {
+			complexity = Complexity.valueOf(complexityStr);
+		}
 		Long orderBy = rs.getObject("order_by", Long.class);
 		boolean childrenExist = rs.getBoolean("children_exist");
 		boolean sourceLinksExist = rs.getBoolean("source_links_exist");
@@ -51,6 +57,7 @@ public class FreeformRowMapper extends AbstractRowMapper implements RowMapper<Fr
 		freeform.setClassifName(classifName);
 		freeform.setClassifCode(classifCode);
 		freeform.setLangCode(langCode);
+		freeform.setComplexity(complexity);
 		freeform.setOrderBy(orderBy);
 		freeform.setChildrenExist(childrenExist);
 		freeform.setSourceLinksExist(sourceLinksExist);

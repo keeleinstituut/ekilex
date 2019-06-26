@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = 908667900;
+    private static final long serialVersionUID = -1753286592;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -67,6 +67,11 @@ public class Definition extends TableImpl<DefinitionRecord> {
     public final TableField<DefinitionRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
+     * The column <code>public.definition.definition_type_code</code>.
+     */
+    public final TableField<DefinitionRecord, String> DEFINITION_TYPE_CODE = createField("definition_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
      * The column <code>public.definition.value</code>.
      */
     public final TableField<DefinitionRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
@@ -82,9 +87,9 @@ public class Definition extends TableImpl<DefinitionRecord> {
     public final TableField<DefinitionRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
-     * The column <code>public.definition.definition_type_code</code>.
+     * The column <code>public.definition.complexity</code>.
      */
-    public final TableField<DefinitionRecord, String> DEFINITION_TYPE_CODE = createField("definition_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DefinitionRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.definition.order_by</code>.
@@ -169,19 +174,19 @@ public class Definition extends TableImpl<DefinitionRecord> {
      */
     @Override
     public List<ForeignKey<DefinitionRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY, Keys.DEFINITION__DEFINITION_LANG_FKEY, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY);
+        return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY, Keys.DEFINITION__DEFINITION_LANG_FKEY);
     }
 
     public Meaning meaning() {
         return new Meaning(this, Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY);
     }
 
-    public Language language() {
-        return new Language(this, Keys.DEFINITION__DEFINITION_LANG_FKEY);
-    }
-
     public DefinitionType definitionType() {
         return new DefinitionType(this, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY);
+    }
+
+    public Language language() {
+        return new Language(this, Keys.DEFINITION__DEFINITION_LANG_FKEY);
     }
 
     /**

@@ -20,7 +20,7 @@
                 title="Lisa uus allikas"
                 data-toggle="modal"
                 data-target="#addSourceDlg"
-                sec:authorize="${#authentication.principal.admin}">
+                sec:authorize="${#authentication.principal.datasetPermissionsExist}">
           Lisa uus allikas
         </button>
         <form id="sourceSearchForm" th:action="@{/sourcesearch}" method="post">

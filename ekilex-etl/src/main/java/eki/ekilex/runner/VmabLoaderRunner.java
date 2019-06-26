@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
+
 //TODO under construction
 @Component
 public class VmabLoaderRunner extends AbstractLoaderRunner {
@@ -20,6 +22,11 @@ public class VmabLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "vm";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return null;
 	}
 
 	@Override
