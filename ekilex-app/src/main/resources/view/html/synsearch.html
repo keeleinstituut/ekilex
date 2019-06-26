@@ -144,19 +144,43 @@
             </div>
           </div>
         </div>
-        <div class="col-3 pr-2">
+        <div class="col-4 pr-2">
           <div class="card shadow mb-2">
             <div class="lbl mb-2">Sünonüümid</div>
             <div th:if="${!#lists.isEmpty(details.wordSynRelations)}" th:each="synRelation : ${details.wordSynRelations}">
-              <span class="btn-custom" th:text="${synRelation.wordRelation.word}"/>
-              <span th:if="${synRelation.oppositeRelation != null}">
-                <span style="font-family:'LucidaGrande', 'Lucida Grande';">↳</span>
-                <span style="font-family:'ArialMT', 'Arial';" th:text="${synRelation.oppositeRelation.word + ' (' + synRelation.oppositeRelation.relationStatus + ')'}"></span>
-              </span>
+              <table width="100%">
+                <tr>
+                  <td>
+                    <span class="btn-custom" th:text="${synRelation.wordRelation.word}"/>
+                  </td>
+                  <td>
+                    <span th:if="${synRelation.oppositeRelation != null}">
+                      <span style="font-family:'LucidaGrande', 'Lucida Grande';">↳</span>
+                      <span th:with="oppositeRelationStatus=#{|relationstatus.${synRelation.oppositeRelation.relationStatus}|}"
+                        style="font-family:'ArialMT', 'Arial';" th:text="${synRelation.oppositeRelation.word + ' (' + oppositeRelationStatus + ')'}">
+                      </span>
+                    </span>
+                  </td>
+                  <td align="right">
+                    <span>
+                      <button type="button" class="btn badge badge-secondary"
+                              data-toggle="modal"
+                              th:data-target="${'#synStatsDlg' + synRelation.wordRelation.id}">
+                            <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+
+    <div th:if="${!#lists.isEmpty(details.wordSynRelations)}" th:each="synRelation : ${details.wordSynRelations}">
+      <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>
   </th:block>
 

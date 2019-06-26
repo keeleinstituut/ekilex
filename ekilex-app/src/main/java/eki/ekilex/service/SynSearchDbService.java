@@ -4,9 +4,9 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.DSLContext;
@@ -57,8 +57,18 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 	public List<RelationParam> getRelationParameters(Long relationId) {
 
-		//TODO - after generation
-		return new ArrayList<>();
+		return create
+					.select(
+							WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE
+					)
+					.from(
+							WORD_RELATION_PARAM
+					)
+					.where(
+							WORD_RELATION_PARAM.WORD_RELATION_ID.eq(relationId)
+					)
+					.fetchInto(RelationParam.class);
+
 	}
 
 }
