@@ -21,8 +21,8 @@ alter table word_relation add relation_status varchar(100);
 -- 21.06.19
 
 alter table freeform add column complexity varchar(100);
-update set complexity = 'DEFAULT';
+update freeform set complexity = 'DEFAULT';
 
 alter table definition add column complexity varchar(100);
-update set complexity = 'DEFAULT';
+update definition set complexity = 'DEFAULT';
 alter table definition alter column complexity set not null;
