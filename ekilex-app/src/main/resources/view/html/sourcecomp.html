@@ -2,11 +2,14 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <div th:id="${'sourceSearchResult_' + source.sourceId}" class="card shadow mt-2" th:fragment="source_search_result">
+  <div class="card shadow mt-2"
+       th:id="${'sourceSearchResult_' + source.sourceId}"
+       th:with="isSourceCrudGranted=${#authorization.expression('hasPermission(#vars.source.sourceId, ''SOURCE'', ''DATASET:CRUD'')')}"
+       th:fragment="source_search_result">
     <div class="card-body">
       <div class="col-auto form-inline">
         <div class="ml-auto">
-          <button type="button" class="btn badge badge-success float-right" 
+          <button type="button" class="btn badge badge-success float-right"
                   title="Lisa allikale uus atribuut"
                   data-toggle="modal"
                   th:data-target="${'#addSourcePropertyDlg_' + source.sourceId}"
@@ -164,7 +167,9 @@
     	initialiseAddNewProperty();
     </script>
   </th:block>
-  <th:block th:fragment="source_join_details(firstSourceId,source)" th:if="${source != null}">
+  <th:block th:fragment="source_join_details(firstSourceId,source)"
+            th:if="${source != null}"
+            th:with="isSourceCrudGranted=${#authorization.expression('hasPermission(#vars.source.sourceId, ''SOURCE'', ''DATASET:CRUD'')')}">
     <div>
       <table class="w-100" th:fragment="details">
         <tr>
@@ -188,7 +193,8 @@
                   <button type="button" class="btn btn-primary"
                           data-toggle="join-confirm"
                           data-placement="right"
-                          th:if="${source.sourceId != firstSourceId}">Ühenda</button>
+                          th:if="${source.sourceId != firstSourceId}"
+                          sec:authorize="${#vars.isSourceCrudGranted}">Ühenda</button>
                 </form>
               </div>
             </div>

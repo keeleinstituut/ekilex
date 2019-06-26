@@ -929,6 +929,29 @@ meaning_rel_type	kaashüponüüm	võrdle	est	wordweb
 meaning_rel_type	antonüüm	vastand	est	wordweb
 meaning_rel_type	määramata	seotud	est	descrip
 meaning_rel_type	määramata	seotud	est	wordweb
+meaning_rel_type	soomõiste	soomõiste	est	descrip
+meaning_rel_type	liigimõiste	liigimõiste	est	descrip
+meaning_rel_type	tervikumõiste	tervikumõiste	est	descrip
+meaning_rel_type	osamõiste	osamõiste	est	descrip
+meaning_rel_type	kaasalluv mõiste	kaasalluv mõiste	est	descrip
+meaning_rel_type	seotud mõiste	seotud mõiste	est	descrip
+meaning_rel_type	põhjus	põhjus	est	descrip
+meaning_rel_type	tagajärg	tagajärg	est	descrip
+meaning_rel_type	eelnev	eelnev	est	descrip
+meaning_rel_type	järgnev	järgnev	est	descrip
+meaning_rel_type	vastand	vastand	est	descrip
+meaning_rel_type	vahend	vahend	est	descrip
+meaning_rel_type	eesmärk	eesmärk	est	descrip
+meaning_rel_type	tegevus	tegevus	est	descrip
+meaning_rel_type	tegija	tegija	est	descrip
+meaning_rel_type	dimensioon	dimensioon	est	descrip
+meaning_rel_type	mõõtühik	mõõtühik	est	descrip
+meaning_rel_type	tootja	tootja	est	descrip
+meaning_rel_type	toode	toode	est	descrip
+meaning_rel_type	ülemmõiste	ülemmõiste	est	descrip
+meaning_rel_type	alammõiste	alammõiste	est	descrip
+meaning_rel_type	üldmõiste	üldmõiste	est	descrip
+meaning_rel_type	ainikmõiste	ainikmõiste	est	descrip
 morph	ID	muutumatu	est	descrip2
 morph	SgN	ainsuse nimetav	est	descrip2
 morph	SgN	SgN	eng	descrip2

@@ -45,9 +45,8 @@
         <span>Tulemusi</span>
         <span th:text="${sourceCount}">123</span>
       </div>
-      <th:block th:each="source,sourceIter : ${sources}"
-                th:with="count=${sourceIter.count}, isSourceCrudGranted=${#authorization.expression('hasPermission(#vars.source.sourceId, ''SOURCE'', ''DATASET:CRUD'')')}">
-        <th:block th:replace="sourcecomp :: source_search_result"></th:block>
+      <th:block th:each="source,sourceIter : ${sources}" th:with="count=${sourceIter.count}">
+          <th:block th:replace="sourcecomp :: source_search_result"></th:block>
       </th:block>
     </div>
   </div>
