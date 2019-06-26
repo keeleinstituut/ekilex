@@ -22,7 +22,6 @@ alter table word_relation add relation_status varchar(100);
 
 alter table freeform add column complexity varchar(100);
 update table set complexity = 'UNKNOWN';
-alter table freeform alter column complexity set not null;
 
 alter table definition add column complexity varchar(100);
 update table set complexity = 'UNKNOWN';
