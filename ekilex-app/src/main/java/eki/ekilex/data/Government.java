@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class Government extends AbstractDataObject {
@@ -11,6 +12,8 @@ public class Government extends AbstractDataObject {
 	private String value;
 
 	private String typeCode;
+
+	private Complexity complexity;
 
 	public Long getId() {
 		return id;
@@ -34,6 +37,14 @@ public class Government extends AbstractDataObject {
 
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 }

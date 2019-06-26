@@ -1,7 +1,6 @@
 package eki.ekilex.data;
 
-import javax.persistence.Column;
-
+import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
@@ -9,31 +8,24 @@ public class DefinitionRefTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "definition_id")
 	private Long definitionId;
 
-	@Column(name = "definition_value")
 	private String definitionValue;
 
-	@Column(name = "definition_lang")
 	private String definitionLang;
 
-	@Column(name = "definition_order_by")
+	private Complexity definitionComplexity;
+
 	private Long definitionOrderBy;
 
-	@Column(name = "definition_type_code")
 	private String definitionTypeCode;
 
-	@Column(name = "source_link_id")
 	private Long sourceLinkId;
 
-	@Column(name = "source_link_type")
 	private ReferenceType sourceLinkType;
 
-	@Column(name = "source_link_name")
 	private String sourceLinkName;
 
-	@Column(name = "source_link_value")
 	private String sourceLinkValue;
 
 	public Long getDefinitionId() {
@@ -58,6 +50,14 @@ public class DefinitionRefTuple extends AbstractDataObject {
 
 	public void setDefinitionLang(String definitionLang) {
 		this.definitionLang = definitionLang;
+	}
+
+	public Complexity getDefinitionComplexity() {
+		return definitionComplexity;
+	}
+
+	public void setDefinitionComplexity(Complexity definitionComplexity) {
+		this.definitionComplexity = definitionComplexity;
 	}
 
 	public Long getDefinitionOrderBy() {

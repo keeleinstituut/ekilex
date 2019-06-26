@@ -258,6 +258,7 @@
                           <div class="action-buttons-anchor">
                             <div class="pr-3">
                               <span th:utext="${definition.value}"></span>
+                              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${definition.complexity}} + ')'"></span>
                             </div>
                             <div class="action-buttons-2">
                               <button type="button" class="btn badge badge-primary"
@@ -458,6 +459,7 @@
                     <div class="row">
                       <div class="col hidden-buttons">
                         <span class="pr-3" th:text="${government.value}"></span>
+                        <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${government.complexity}} + ')'"></span>
                         <button type="button" class="btn badge badge-primary"
                                 title="Muuda"
                                 data-toggle="modal"
@@ -501,6 +503,7 @@
                         <div class="col invisible-buttons">
                           <div class="d-inline-block" th:utext="${usage.value}"></div>
                           <div class="d-inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
+                          <div class="d-inline-block ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'"></div>
                           <div th:if="${#lists.isEmpty(usage.authors)}" class="show-on-mouseover" sec:authorize="${#vars.isUsageCrudGranted}">
                             (
                             <button type="button" class="btn badge badge-success hidden"
@@ -671,6 +674,7 @@
                         <div class="action-buttons-anchor">
                           <div class="pr-3">
                             <span th:utext="${publicNote.valuePrese}"></span>
+                            <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${publicNote.complexity}} + ')'"></span>
                           </div>
                           <div class="action-buttons-2">
                             <button type="button" class="btn badge badge-primary"

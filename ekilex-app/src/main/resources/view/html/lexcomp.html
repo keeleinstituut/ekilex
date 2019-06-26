@@ -67,6 +67,7 @@
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
         <span th:replace="lexdialog :: edit_lexeme_grammar_dlg"></span>
         <span th:text="${grammar.valueText}"></span>
+        <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${grammar.complexity}} + ')'"></span>
         <button type="button" class="btn badge badge-primary"
                 title="Muuda"
                 data-toggle="modal"
