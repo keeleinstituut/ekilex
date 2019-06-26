@@ -16,15 +16,9 @@ public class WordMeaningPair extends AbstractDataObject {
 
 	private List<Long> lexemeIds;
 
-	public WordMeaningPair() {
-	}
+	private boolean mainDatasetLexemeExists;
 
-	public WordMeaningPair(String word, Long wordId, Long meaningId, List<Long> lexemeIds) {
-		this.word = word;
-		this.wordId = wordId;
-		this.meaningId = meaningId;
-		this.lexemeIds = lexemeIds;
-	}
+	private Integer mainDatasetLexemeMaxLevel1;
 
 	public String getWord() {
 		return word;
@@ -57,4 +51,21 @@ public class WordMeaningPair extends AbstractDataObject {
 	public void setLexemeIds(List<Long> lexemeIds) {
 		this.lexemeIds = lexemeIds;
 	}
+
+	public boolean isMainDatasetLexemeExists() {
+		return mainDatasetLexemeExists;
+	}
+
+	public void setMainDatasetLexemeExists(boolean mainDatasetLexemeExists) {
+		this.mainDatasetLexemeExists = mainDatasetLexemeExists;
+	}
+
+	public Integer getMainDatasetLexemeMaxLevel1() {
+		return mainDatasetLexemeMaxLevel1;
+	}
+
+	public void setMainDatasetLexemeMaxLevel1(Integer mainDatasetLexemeMaxLevel1) {
+		this.mainDatasetLexemeMaxLevel1 = mainDatasetLexemeMaxLevel1;
+	}
+
 }

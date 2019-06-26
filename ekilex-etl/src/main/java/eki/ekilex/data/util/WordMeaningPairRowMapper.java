@@ -21,7 +21,15 @@ public class WordMeaningPairRowMapper implements RowMapper<WordMeaningPair> {
 		Array lexemeIdsPgArr = rs.getArray("lexeme_ids");
 		Long[] lexemeIdsArr = (Long[]) lexemeIdsPgArr.getArray();
 		List<Long> lexemeIds = Arrays.asList(lexemeIdsArr);
-		WordMeaningPair wordMeaningPair = new WordMeaningPair(word, wordId, meaningId, lexemeIds);
+		boolean mainDatasetLexemeExists = rs.getBoolean("main_ds_lex_exists");
+		Integer mainDatasetLexemeMaxLevel1 = rs.getInt("main_ds_lex_max_level1");
+		WordMeaningPair wordMeaningPair = new WordMeaningPair();
+		wordMeaningPair.setWord(word);
+		wordMeaningPair.setWordId(wordId);
+		wordMeaningPair.setMeaningId(meaningId);
+		wordMeaningPair.setLexemeIds(lexemeIds);
+		wordMeaningPair.setMainDatasetLexemeExists(mainDatasetLexemeExists);
+		wordMeaningPair.setMainDatasetLexemeMaxLevel1(mainDatasetLexemeMaxLevel1);
 		return wordMeaningPair;
 	}
 }

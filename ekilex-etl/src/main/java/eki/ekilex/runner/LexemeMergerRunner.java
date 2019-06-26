@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -190,6 +191,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		wordMeaningPairCount.increment(wordMeaningPairCountValue);
 
 		Map<Long, Long> sumLexemeIdMap = new HashMap<>();
+		Map<Long, Integer> nonSsWordLexemeLevelMap = new HashMap<>();
 
 		long wordMeaningPairCounter = 0;
 		long progressIndicator = wordMeaningPairCountValue / Math.min(wordMeaningPairCountValue, 100);
@@ -218,7 +220,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 				composeSumLexeme(sumLexeme, singleLexeme);
 			} else {
 				//compare and copy sum into single lexeme
-				composeSumLexeme(word, sumLexeme, allLexemes, countsMap);
+				composeSumLexeme(wordMeaningPair, sumLexeme, allLexemes, nonSsWordLexemeLevelMap, countsMap);
 			}
 			Long sumLexemeId = createLexeme(sumLexeme);
 			sumLexemeCount.increment();
@@ -229,10 +231,10 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 			createLexemeFreeformsAndSourceLinks(sumLexemeId, allLexemes, countsMap);
 			createLexemeFrequencies(sumLexemeId, allLexemes);
-			createLexemeRegisters(sumLexemeId, allLexemes);
-			createLexemePoses(sumLexemeId, allLexemes);
-			createLexemeDerivs(sumLexemeId, allLexemes);
-			createLexemeRegions(sumLexemeId, allLexemes);
+			createLexemeRegisters(word, sumLexemeId, allLexemes);
+			createLexemePoses(word, sumLexemeId, allLexemes);
+			createLexemeDerivs(word, sumLexemeId, allLexemes);
+			createLexemeRegions(word, sumLexemeId, allLexemes);
 			createLexemeSourceLinks(sumLexemeId, allLexemes, countsMap);
 
 			// progress
@@ -376,10 +378,25 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		sumLexeme.setLexemeSourceLinks(lexeme.getLexemeSourceLinks());
 	}
 
-	private void composeSumLexeme(String word, Lexeme sumLexeme, List<LexemeExt> allLexemes, Map<String, Count> countsMap) throws Exception {
+	private void composeSumLexeme(
+			WordMeaningPair wordMeaningPair, Lexeme sumLexeme, List<LexemeExt> allLexemes,
+			Map<Long, Integer> nonSsWordLexemeLevelMap, Map<String, Count> countsMap) throws Exception {
 
 		Count tooManyFreqGroupCodeCount = countsMap.get("tooManyFreqGroupCodeCount");
 		Count tooManyValueStateCodeCount = countsMap.get("tooManyValueStateCodeCount");
+
+		String word = wordMeaningPair.getWord();
+		Long wordId = wordMeaningPair.getWordId();
+		boolean mainDatasetLexemeExists = wordMeaningPair.isMainDatasetLexemeExists();
+		Integer mainDatasetLexemeMaxLevel1 = wordMeaningPair.getMainDatasetLexemeMaxLevel1();
+
+		if (!nonSsWordLexemeLevelMap.containsKey(wordId)) {
+			if (mainDatasetLexemeExists) {
+				nonSsWordLexemeLevelMap.put(wordId, mainDatasetLexemeMaxLevel1);
+			} else {
+				nonSsWordLexemeLevelMap.put(wordId, 0);
+			}
+		}
 
 		// sum levels
 		Lexeme ssLexeme = allLexemes.stream().filter(lexeme -> StringUtils.equals(DATASET_CODE_SS1, lexeme.getDatasetCode())).findFirst().orElse(null);
@@ -389,11 +406,11 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Integer sumLevel3 = null;
 
 		if (ssLexeme == null) {
-			// FIXME no no no wrong!
-			sumLevel1 = allLexemes.stream().max(Comparator.comparing(Lexeme::getLevel1)).map(Lexeme::getLevel1).orElse(null);
+			sumLevel1 = nonSsWordLexemeLevelMap.get(wordId);
 			sumLevel1 = sumLevel1 + 1;
 			sumLevel2 = 0;
 			sumLevel3 = 0;
+			nonSsWordLexemeLevelMap.put(wordId, sumLevel1);
 		} else {
 			sumLevel1 = ssLexeme.getLevel1();
 			sumLevel2 = ssLexeme.getLevel2();
@@ -479,7 +496,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("datasetCodes", datasetCodes);
-		paramMap.put("processState", PROCESS_STATE_PUBLIC);
+		paramMap.put("mainDatasetCode", DATASET_CODE_SS1);
+		//paramMap.put("processState", PROCESS_STATE_PUBLIC);
 		List<WordMeaningPair> wordMeaningPairs = basicDbService.getResults(sqlSelectWordLexemeMeaningIds, paramMap, new WordMeaningPairRowMapper());
 		return wordMeaningPairs;
 	}
@@ -713,52 +731,110 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		}
 	}
 
-	private void createLexemeRegisters(Long sumLexemeId, List<LexemeExt> allLexemes) throws Exception {
+	private void createLexemeRegisters(String word, Long sumLexemeId, List<LexemeExt> allLexemes) throws Exception {
+
+		List<List<String>> allLexemeClassifierCodes = new ArrayList<>();
 
 		for (LexemeExt lexeme : allLexemes) {
 			List<LexemeClassifier> lexemeClassifiers = lexeme.getLexemeRegisters();
 			if (CollectionUtils.isNotEmpty(lexemeClassifiers)) {
+				List<String> lexemeClassifierCodes = lexemeClassifiers.stream().map(LexemeClassifier::getCode).collect(Collectors.toList());
+				allLexemeClassifierCodes.add(lexemeClassifierCodes);
 				for (LexemeClassifier lexemeClassifier : lexemeClassifiers) {
 					createLexemeRegister(sumLexemeId, lexemeClassifier.getCode());
 				}
 			}
 		}
+
+		detectAndLogConflictingData(word, allLexemeClassifierCodes, "register");
 	}
 
-	private void createLexemePoses(Long sumLexemeId, List<LexemeExt> allLexemes) throws Exception {
+	private void createLexemePoses(String word, Long sumLexemeId, List<LexemeExt> allLexemes) throws Exception {
+
+		List<List<String>> allLexemeClassifierCodes = new ArrayList<>();
 
 		for (LexemeExt lexeme : allLexemes) {
 			List<LexemeClassifier> lexemeClassifiers = lexeme.getLexemePoses();
 			if (CollectionUtils.isNotEmpty(lexemeClassifiers)) {
+				List<String> lexemeClassifierCodes = lexemeClassifiers.stream().map(LexemeClassifier::getCode).collect(Collectors.toList());
+				allLexemeClassifierCodes.add(lexemeClassifierCodes);
 				for (LexemeClassifier lexemeClassifier : lexemeClassifiers) {
 					createLexemePos(sumLexemeId, lexemeClassifier.getCode());
 				}
 			}
 		}
+
+		detectAndLogConflictingData(word, allLexemeClassifierCodes, "pos");
 	}
 
-	private void createLexemeDerivs(Long sumLexemeId, List<LexemeExt> allLexemes) throws Exception {
+	private void createLexemeDerivs(String word, Long sumLexemeId, List<LexemeExt> allLexemes) throws Exception {
+
+		List<List<String>> allLexemeClassifierCodes = new ArrayList<>();
 
 		for (LexemeExt lexeme : allLexemes) {
 			List<LexemeClassifier> lexemeClassifiers = lexeme.getLexemeDerivs();
 			if (CollectionUtils.isNotEmpty(lexemeClassifiers)) {
+				List<String> lexemeClassifierCodes = lexemeClassifiers.stream().map(LexemeClassifier::getCode).collect(Collectors.toList());
+				allLexemeClassifierCodes.add(lexemeClassifierCodes);
 				for (LexemeClassifier lexemeClassifier : lexemeClassifiers) {
 					createLexemeDeriv(sumLexemeId, lexemeClassifier.getCode());
 				}
 			}
 		}
+
+		detectAndLogConflictingData(word, allLexemeClassifierCodes, "pos");
 	}
 
-	private void createLexemeRegions(Long sumLexemeId, List<LexemeExt> allLexemes) throws Exception {
+	private void createLexemeRegions(String word, Long sumLexemeId, List<LexemeExt> allLexemes) throws Exception {
+
+		List<List<String>> allLexemeClassifierCodes = new ArrayList<>();
 
 		for (LexemeExt lexeme : allLexemes) {
 			List<LexemeClassifier> lexemeClassifiers = lexeme.getLexemeRegions();
 			if (CollectionUtils.isNotEmpty(lexemeClassifiers)) {
+				List<String> lexemeClassifierCodes = lexemeClassifiers.stream().map(LexemeClassifier::getCode).collect(Collectors.toList());
+				allLexemeClassifierCodes.add(lexemeClassifierCodes);
 				for (LexemeClassifier lexemeClassifier : lexemeClassifiers) {
 					createLexemeRegion(sumLexemeId, lexemeClassifier.getCode());
 				}
 			}
 		}
+
+		detectAndLogConflictingData(word, allLexemeClassifierCodes, "region");
+	}
+
+	private void detectAndLogConflictingData(String word, List<List<String>> allLexemeClassifierCodes, String dataName) throws Exception {
+
+		boolean disconnectionExists = disconnectionExists(allLexemeClassifierCodes);
+		if (disconnectionExists) {
+			List<String> sumClassifierCodes = getSumClassifierCodes(allLexemeClassifierCodes);
+			appendToReport(REPORT_LEXEME_DATA_CONFLICT, word, "ilmikutel mittekattuvad klassifikaatorid: " + dataName, sumClassifierCodes);
+		}
+	}
+
+	private boolean disconnectionExists(List<List<String>> allClassifierCodes) {
+
+		if (allClassifierCodes.size() > 1) {
+			for (List<String> classifierCodes1 : allClassifierCodes) {
+				for (List<String> classifierCodes2 : allClassifierCodes) {
+					Collection<String> intersection = CollectionUtils.intersection(classifierCodes1, classifierCodes2);
+					if (CollectionUtils.isEmpty(intersection)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private List<String> getSumClassifierCodes(List<List<String>> allClassifierCodes) {
+
+		List<String> sumClassifierCodes = new ArrayList<>();
+		for (List<String> classifierCodes : allClassifierCodes) {
+			Collection<String> disjunction = CollectionUtils.disjunction(sumClassifierCodes, classifierCodes);
+			sumClassifierCodes.addAll(disjunction);
+		}
+		return sumClassifierCodes;
 	}
 
 	private void createLexemeSourceLinks(Long sumLexemeId, List<LexemeExt> allLexemes, Map<String, Count> countsMap) throws Exception {
