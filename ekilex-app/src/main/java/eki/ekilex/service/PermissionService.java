@@ -83,6 +83,9 @@ public class PermissionService implements SystemConstant {
 		if (authOp == null) {
 			return;
 		}
+		if (StringUtils.isBlank(authLang)) {
+			authLang = null;
+		}
 		permissionDbService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
 	}
 
