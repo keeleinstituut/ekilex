@@ -98,6 +98,7 @@ import eki.ekilex.data.db.tables.WordProcessLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
@@ -194,6 +195,7 @@ import eki.ekilex.data.db.tables.records.WordProcessLogRecord;
 import eki.ekilex.data.db.tables.records.WordRecord;
 import eki.ekilex.data.db.tables.records.WordRelTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.WordRelTypeRecord;
+import eki.ekilex.data.db.tables.records.WordRelationParamRecord;
 import eki.ekilex.data.db.tables.records.WordRelationRecord;
 import eki.ekilex.data.db.tables.records.WordTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.WordTypeRecord;
@@ -300,6 +302,7 @@ public class Keys {
     public static final Identity<WordProcessLogRecord, Long> IDENTITY_WORD_PROCESS_LOG = Identities0.IDENTITY_WORD_PROCESS_LOG;
     public static final Identity<WordRelTypeRecord, Long> IDENTITY_WORD_REL_TYPE = Identities0.IDENTITY_WORD_REL_TYPE;
     public static final Identity<WordRelationRecord, Long> IDENTITY_WORD_RELATION = Identities0.IDENTITY_WORD_RELATION;
+    public static final Identity<WordRelationParamRecord, Long> IDENTITY_WORD_RELATION_PARAM = Identities0.IDENTITY_WORD_RELATION_PARAM;
     public static final Identity<WordTypeRecord, Long> IDENTITY_WORD_TYPE = Identities0.IDENTITY_WORD_TYPE;
     public static final Identity<WordWordTypeRecord, Long> IDENTITY_WORD_WORD_TYPE = Identities0.IDENTITY_WORD_WORD_TYPE;
 
@@ -424,6 +427,7 @@ public class Keys {
     public static final UniqueKey<WordRelTypeLabelRecord> WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<WordRelationRecord> WORD_RELATION_PKEY = UniqueKeys0.WORD_RELATION_PKEY;
     public static final UniqueKey<WordRelationRecord> WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = UniqueKeys0.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY;
+    public static final UniqueKey<WordRelationParamRecord> WORD_RELATION_PARAM_PKEY = UniqueKeys0.WORD_RELATION_PARAM_PKEY;
     public static final UniqueKey<WordTypeRecord> WORD_TYPE_PKEY = UniqueKeys0.WORD_TYPE_PKEY;
     public static final UniqueKey<WordTypeLabelRecord> WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<WordWordTypeRecord> WORD_WORD_TYPE_PKEY = UniqueKeys0.WORD_WORD_TYPE_PKEY;
@@ -586,6 +590,7 @@ public class Keys {
     public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY;
     public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY;
     public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY;
+    public static final ForeignKey<WordRelationParamRecord, WordRelationRecord> WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY = ForeignKeys0.WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, WordTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, LanguageRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, LabelTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY;
@@ -672,6 +677,7 @@ public class Keys {
         public static Identity<WordProcessLogRecord, Long> IDENTITY_WORD_PROCESS_LOG = Internal.createIdentity(WordProcessLog.WORD_PROCESS_LOG, WordProcessLog.WORD_PROCESS_LOG.ID);
         public static Identity<WordRelTypeRecord, Long> IDENTITY_WORD_REL_TYPE = Internal.createIdentity(WordRelType.WORD_REL_TYPE, WordRelType.WORD_REL_TYPE.ORDER_BY);
         public static Identity<WordRelationRecord, Long> IDENTITY_WORD_RELATION = Internal.createIdentity(WordRelation.WORD_RELATION, WordRelation.WORD_RELATION.ID);
+        public static Identity<WordRelationParamRecord, Long> IDENTITY_WORD_RELATION_PARAM = Internal.createIdentity(WordRelationParam.WORD_RELATION_PARAM, WordRelationParam.WORD_RELATION_PARAM.ID);
         public static Identity<WordTypeRecord, Long> IDENTITY_WORD_TYPE = Internal.createIdentity(WordType.WORD_TYPE, WordType.WORD_TYPE.ORDER_BY);
         public static Identity<WordWordTypeRecord, Long> IDENTITY_WORD_WORD_TYPE = Internal.createIdentity(WordWordType.WORD_WORD_TYPE, WordWordType.WORD_WORD_TYPE.ID);
     }
@@ -794,6 +800,7 @@ public class Keys {
         public static final UniqueKey<WordRelTypeLabelRecord> WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label_code_lang_type_key", WordRelTypeLabel.WORD_REL_TYPE_LABEL.CODE, WordRelTypeLabel.WORD_REL_TYPE_LABEL.LANG, WordRelTypeLabel.WORD_REL_TYPE_LABEL.TYPE);
         public static final UniqueKey<WordRelationRecord> WORD_RELATION_PKEY = Internal.createUniqueKey(WordRelation.WORD_RELATION, "word_relation_pkey", WordRelation.WORD_RELATION.ID);
         public static final UniqueKey<WordRelationRecord> WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Internal.createUniqueKey(WordRelation.WORD_RELATION, "word_relation_word1_id_word2_id_word_rel_type_code_key", WordRelation.WORD_RELATION.WORD1_ID, WordRelation.WORD_RELATION.WORD2_ID, WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE);
+        public static final UniqueKey<WordRelationParamRecord> WORD_RELATION_PARAM_PKEY = Internal.createUniqueKey(WordRelationParam.WORD_RELATION_PARAM, "word_relation_param_pkey", WordRelationParam.WORD_RELATION_PARAM.ID);
         public static final UniqueKey<WordTypeRecord> WORD_TYPE_PKEY = Internal.createUniqueKey(WordType.WORD_TYPE, "word_type_pkey", WordType.WORD_TYPE.CODE);
         public static final UniqueKey<WordTypeLabelRecord> WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_code_lang_type_key", WordTypeLabel.WORD_TYPE_LABEL.CODE, WordTypeLabel.WORD_TYPE_LABEL.LANG, WordTypeLabel.WORD_TYPE_LABEL.TYPE);
         public static final UniqueKey<WordWordTypeRecord> WORD_WORD_TYPE_PKEY = Internal.createUniqueKey(WordWordType.WORD_WORD_TYPE, "word_word_type_pkey", WordWordType.WORD_WORD_TYPE.ID);
@@ -954,6 +961,7 @@ public class Keys {
         public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word1_id_fkey", WordRelation.WORD_RELATION.WORD1_ID);
         public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word2_id_fkey", WordRelation.WORD_RELATION.WORD2_ID);
         public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_REL_TYPE_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word_rel_type_code_fkey", WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE);
+        public static final ForeignKey<WordRelationParamRecord, WordRelationRecord> WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_RELATION_PKEY, WordRelationParam.WORD_RELATION_PARAM, "word_relation_param__word_relation_param_word_relation_id_fkey", WordRelationParam.WORD_RELATION_PARAM.WORD_RELATION_ID);
         public static final ForeignKey<WordTypeLabelRecord, WordTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_TYPE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label__word_type_label_code_fkey", WordTypeLabel.WORD_TYPE_LABEL.CODE);
         public static final ForeignKey<WordTypeLabelRecord, LanguageRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label__word_type_label_lang_fkey", WordTypeLabel.WORD_TYPE_LABEL.LANG);
         public static final ForeignKey<WordTypeLabelRecord, LabelTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label__word_type_label_type_fkey", WordTypeLabel.WORD_TYPE_LABEL.TYPE);

@@ -41,6 +41,7 @@ $(document).on("change", ".perm-dataset-code", function() {
 	let getDatasetLanguagesUrl = applicationUrl + 'permissions/dataset_languages/' + datasetCode;
 	$.get(getDatasetLanguagesUrl).done(function (response) {
 		$languages.empty();
+		$languages.append($("<option value=''></option>"));
 		var datasetLanguages = JSON.parse(response);
 		$.each(datasetLanguages, function (index, language) {
 			$languages.append($("<option></option>")

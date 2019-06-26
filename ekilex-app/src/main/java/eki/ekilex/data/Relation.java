@@ -29,11 +29,18 @@ public class Relation extends AbstractDataObject {
 	@Column(name = "word_lang")
 	private String wordLang;
 
+	@Column(name = "rel_type_code")
+	private String relationTypeCode;
+
 	@Column(name = "rel_type_label")
 	private String relationTypeLabel;
 
 	@Column(name = "order_by")
 	private Long orderBy;
+
+	@Column(name = "relation_status")
+	private String relationStatus;
+
 
 	public Long getId() {
 		return id;
@@ -107,4 +114,19 @@ public class Relation extends AbstractDataObject {
 		this.orderBy = orderBy;
 	}
 
+	public String getRelationTypeCode() {
+		return relationTypeCode;
+	}
+
+	public void setRelationTypeCode(String relationTypeCode) {
+		this.relationTypeCode = relationTypeCode;
+	}
+
+	public String getRelationStatus() {
+		return relationStatus;
+	}
+
+	public void setRelationStatus(String relationStatus) {
+		this.relationStatus = relationStatus;
+	}
 }

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelation extends TableImpl<WordRelationRecord> {
 
-    private static final long serialVersionUID = -1497136193;
+    private static final long serialVersionUID = -191208368;
 
     /**
      * The reference instance of <code>public.word_relation</code>
@@ -75,6 +75,11 @@ public class WordRelation extends TableImpl<WordRelationRecord> {
      * The column <code>public.word_relation.word_rel_type_code</code>.
      */
     public final TableField<WordRelationRecord, String> WORD_REL_TYPE_CODE = createField("word_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.word_relation.relation_status</code>.
+     */
+    public final TableField<WordRelationRecord, String> RELATION_STATUS = createField("relation_status", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word_relation.order_by</code>.

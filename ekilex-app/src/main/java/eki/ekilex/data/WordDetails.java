@@ -18,6 +18,8 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<Relation> wordRelations;
 
+	private List<SynRelation> wordSynRelations;
+
 	private List<WordEtym> wordEtymology;
 
 	private List<WordGroup> wordGroups;
@@ -81,4 +83,11 @@ public class WordDetails extends AbstractDataObject {
 		this.wordGroups = wordGroups;
 	}
 
+	public List<SynRelation> getWordSynRelations() {
+		return wordSynRelations;
+	}
+
+	public void setWordSynRelations(List<SynRelation> wordSynRelations) {
+		this.wordSynRelations = wordSynRelations;
+	}
 }

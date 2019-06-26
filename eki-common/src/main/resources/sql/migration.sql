@@ -18,10 +18,6 @@ create index word_relation_param_word_relation_id_idx on word_relation_param(wor
 
 alter table word_relation add relation_status varchar(100);
 
-insert into word_rel_type (code, datasets) values ('raw', '{}');
-insert into word_rel_type_label (code, value, lang, type) values ('raw', 'Veel sarnaseid sõnu', 'est', 'wordweb');
-insert into word_rel_type_label (code, value, lang, type) values ('raw', 'Veel sarnaseid sõnu', 'est', 'full');
-
 -- 21.06.19
 
 alter table freeform add column complexity varchar(100);

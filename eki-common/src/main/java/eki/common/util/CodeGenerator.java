@@ -12,8 +12,8 @@ public final class CodeGenerator {
 		return code;
 	}
 
-	public static String generateIdFromTimestamp() {
-		String code = "id-";
+	public static String generateHoneyPotName() {
+		String code = "_";
 		code += String.valueOf(System.currentTimeMillis());
 		return code;
 	}
