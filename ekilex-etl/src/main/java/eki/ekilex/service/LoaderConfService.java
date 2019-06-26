@@ -2,6 +2,8 @@ package eki.ekilex.service;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -39,8 +41,10 @@ public class LoaderConfService implements InitializingBean, SystemConstant {
 	public void afterPropertiesSet() throws Exception {
 		Resource loaderConfResource = resourceLoader.getResource("ultima-loader.properties");
 		InputStream confStream = loaderConfResource.getInputStream();
+		InputStreamReader inputStreamReader = new InputStreamReader(confStream, Charset.forName(UTF_8));
 		loaderConf = new Properties();
-		loaderConf.load(confStream);
+		loaderConf.load(inputStreamReader);
+		inputStreamReader.close();
 		confStream.close();
 	}
 
