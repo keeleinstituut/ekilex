@@ -32,7 +32,6 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record5;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectSelectStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -358,61 +357,71 @@ public class PermissionDbService implements SystemConstant {
 
 	public boolean isGrantedForSource(Long userId, Long sourceId, String authItem, List<String> authOps) {
 
-		SelectConditionStep<Record1<String>> selectDefinitionFreeformDatasets = DSL
+		Table<Record1<String>> dffds = DSL
 				.select(DEFINITION_DATASET.DATASET_CODE)
 				.from(DEFINITION_DATASET, DEFINITION_FREEFORM, FREEFORM_SOURCE_LINK)
 				.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION_FREEFORM.DEFINITION_ID)
 						.and(DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID))
-						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("dffds");
 
-		SelectConditionStep<Record1<String>> selectMeaningFreeformDatasets = DSL
+		Table<Record1<String>> mffds = DSL
 				.select(LEXEME.DATASET_CODE)
 				.from(LEXEME, MEANING_FREEFORM, FREEFORM_SOURCE_LINK)
 				.where(LEXEME.MEANING_ID.eq(MEANING_FREEFORM.MEANING_ID)
 						.and(MEANING_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID))
-						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("mffds");
 
-		SelectConditionStep<Record1<String>> selectLexemeFreeformDatasets = DSL
+		Table<Record1<String>> lffds = DSL
 				.select(LEXEME.DATASET_CODE).from(LEXEME, LEXEME_FREEFORM, FREEFORM_SOURCE_LINK)
 				.where(LEXEME.ID.eq(LEXEME_FREEFORM.LEXEME_ID)
 						.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID))
-						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+						.and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("lffds");
 
-		SelectConditionStep<Record1<String>> selectDefinitionDatasets = DSL
+		Table<Record1<String>> dds = DSL
 				.select(DEFINITION_DATASET.DATASET_CODE)
 				.from(DEFINITION_DATASET, DEFINITION_SOURCE_LINK)
 				.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID)
-						.and(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+						.and(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("dds");
 
-		SelectConditionStep<Record1<String>> selectLexemeDatasets = DSL
+		Table<Record1<String>> lds = DSL
 				.select(LEXEME.DATASET_CODE)
 				.from(LEXEME, LEXEME_SOURCE_LINK)
 				.where(LEXEME.ID.eq(LEXEME_SOURCE_LINK.LEXEME_ID)
-						.and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+						.and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("lds");
 
-		SelectConditionStep<Record1<String>> selectProcessLogDatasets = DSL
+		Table<Record1<String>> plds = DSL
 				.select(PROCESS_LOG.DATASET_CODE)
 				.from(PROCESS_LOG, PROCESS_LOG_SOURCE_LINK)
 				.where(PROCESS_LOG.ID.eq(PROCESS_LOG_SOURCE_LINK.PROCESS_LOG_ID)
-						.and(PROCESS_LOG_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+						.and(PROCESS_LOG_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("plds");
 
-		SelectConditionStep<Record1<String>> selectWordEtymDatasets = DSL
+		Table<Record1<String>> weds = DSL
 				.select(LEXEME.DATASET_CODE)
 				.from(LEXEME, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK)
 				.where(LEXEME.WORD_ID.eq(WORD_ETYMOLOGY.WORD_ID)
 						.and(WORD_ETYMOLOGY.ID.eq(WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYM_ID))
-						.and(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId)));
+						.and(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+				.asTable("weds");
 
-		Table<Record1<String>> datasets = selectDefinitionFreeformDatasets
-				.union(selectMeaningFreeformDatasets)
-				.union(selectLexemeFreeformDatasets)
-				.union(selectDefinitionDatasets)
-				.union(selectLexemeDatasets)
-				.union(selectProcessLogDatasets)
-				.union(selectWordEtymDatasets)
-				.asTable("datasets");
+		Table<Record1<String>> sds = DSL
+				.selectFrom(dffds)
+				.unionAll(DSL.selectFrom(mffds))
+				.unionAll(DSL.selectFrom(lffds))
+				.unionAll(DSL.selectFrom(dds))
+				.unionAll(DSL.selectFrom(lds))
+				.unionAll(DSL.selectFrom(plds))
+				.unionAll(DSL.selectFrom(weds))
+				.asTable("sds");
 
-		List<String> linkedDatasets = create.selectFrom(datasets).fetchInto(String.class);
+		List<String> linkedDatasets = create
+				.selectDistinct(sds.field("dataset_code", String.class))
+				.from(sds).fetchInto(String.class);
 
 		List<String> permittedDatasets = create
 				.select(DATASET_PERMISSION.DATASET_CODE)
