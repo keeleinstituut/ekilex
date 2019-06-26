@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
@@ -79,6 +80,11 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	String getDataset() {
 		return dataset;
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DEFAULT;
 	}
 
 	@Override
@@ -530,7 +536,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 			String heading = (String) image.get("heading");
 			if (StringUtils.isNotBlank(heading)) {
-				createFreeformTextOrDate(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null);
+				createFreeformTextOrDate(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null, null);
 			}
 
 			Integer extSourceId = (Integer) image.get("source_id");

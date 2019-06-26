@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -58,6 +59,11 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "mil";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DEFAULT;
 	}
 
 	@Transactional

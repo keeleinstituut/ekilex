@@ -130,6 +130,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return "kol";
 	}
 
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DEFAULT;
+	}
+
 	@Transactional
 	@Override
 	public void deleteDatasetData() throws Exception {

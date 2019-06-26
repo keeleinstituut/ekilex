@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -76,6 +77,11 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "est";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DEFAULT;
 	}
 
 	@Transactional

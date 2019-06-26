@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
@@ -108,6 +109,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "qq2";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.SIMPLE2;
 	}
 
 	@Transactional

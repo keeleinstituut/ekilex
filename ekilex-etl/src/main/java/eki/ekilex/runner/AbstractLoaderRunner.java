@@ -64,6 +64,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private TextDecorationService textDecorationService;
 
 	abstract String getDataset();
+	abstract Complexity getComplexity();
 	abstract void deleteDatasetData() throws Exception;
 	abstract void initialise() throws Exception;
 
@@ -72,8 +73,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	private static final String REPORT_GUID_MISMATCH = "guid_mismatch";
 	private static final String REPORT_GUID_MAPPING_MISSING = "guid_mapping_missing";
-
-	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
 
 	protected static final String GUID_OWNER_DATASET_CODE = "ss1";
 	protected static final String COLLOC_OWNER_DATASET_CODE = "kol";
@@ -84,6 +83,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String UNIFIED_AFIXOID_SYMBOL = "-";
 	protected static final String PREFIXOID_WORD_TYPE_CODE = "pf";
 	protected static final String SUFFIXOID_WORD_TYPE_CODE = "sf";
+	protected static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
 	protected static final String DEFAULT_PROCESS_STATE_CODE = "avalik";
 
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
@@ -801,14 +801,16 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		String dataset = getDataset();
 		String valueClean = cleanEkiEntityMarkup(value);
+		Complexity complexity = getComplexity();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("meaningId", meaningId);
 		tableRowParamMap.put("value", valueClean);
-		tableRowParamMap.put("definition_type_code", definitionTypeCode);
-		Map<String, Object> definition = basicDbService.select(DEFINITION, tableRowParamMap);
+		tableRowParamMap.put("definitionTypeCode", definitionTypeCode);
+		tableRowParamMap.put("datasetCode", dataset);
+		List<Map<String, Object>> definitionCandidates = basicDbService.queryList(sqls.getSqlSelectDefinitionByMeaningValueType(), tableRowParamMap);
 		Long definitionId = null;
-		if (MapUtils.isEmpty(definition)) {
+		if (CollectionUtils.isEmpty(definitionCandidates)) {
 			String valuePrese = convertEkiEntityMarkup(value);
 			tableRowParamMap.clear();
 			tableRowParamMap.put("meaning_id", meaningId);
@@ -816,19 +818,27 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			tableRowParamMap.put("value_prese", valuePrese);
 			tableRowParamMap.put("lang", lang);
 			tableRowParamMap.put("definition_type_code", definitionTypeCode);
+			tableRowParamMap.put("complexity", complexity.name());
 			definitionId = basicDbService.create(DEFINITION, tableRowParamMap);
+			createDefinitionDataset(definitionId, dataset);
 			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, definitionId, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value);
 		} else {
+			Map<String, Object> definition = definitionCandidates.get(0);
 			definitionId = (Long) definition.get("id");
-		}
-		tableRowParamMap.clear();
-		tableRowParamMap.put("definition_id", definitionId);
-		tableRowParamMap.put("dataset_code", dataset);
-		Map<String, Object> definitionDataset = basicDbService.select(DEFINITION_DATASET, tableRowParamMap);
-		if (MapUtils.isEmpty(definitionDataset)) {
-			basicDbService.createWithoutId(DEFINITION_DATASET, tableRowParamMap);
+			boolean datasetExists = (boolean) definition.get("dataset_exists");
+			if (!datasetExists) {
+				tableRowParamMap.clear();
+				createDefinitionDataset(definitionId, dataset);
+			}
 		}
 		return definitionId;
+	}
+
+	private void createDefinitionDataset(Long definitionId, String dataset) throws Exception {
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("definition_id", definitionId);
+		tableRowParamMap.put("dataset_code", dataset);
+		basicDbService.createWithoutId(DEFINITION_DATASET, tableRowParamMap);
 	}
 
 	protected Long createOrSelectLexemeId(Lexeme lexeme) throws Exception {
@@ -965,7 +975,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
-					Long usageDefinitionId = createFreeformTextOrDate(usageId, FreeformType.USAGE_DEFINITION, usageDefinition, dataLang);
+					Long usageDefinitionId = createFreeformTextOrDate(usageId, FreeformType.USAGE_DEFINITION, usageDefinition, dataLang, null);
 					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, usageDefinitionId, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, usageDefinition);
 				}
 			}
@@ -973,7 +983,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
 					String usageTranslationValue = usageTranslation.getValue();
 					String usageTranslationLang = usageTranslation.getLang();
-					Long usageTranslationId = createFreeformTextOrDate(usageId, FreeformType.USAGE_TRANSLATION, usageTranslationValue, usageTranslationLang);
+					Long usageTranslationId = createFreeformTextOrDate(usageId, FreeformType.USAGE_TRANSLATION, usageTranslationValue, usageTranslationLang, null);
 					createLifecycleLog(
 							LifecycleLogOwner.LEXEME, lexemeId, usageTranslationId, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, usageTranslationValue);
 				}
@@ -1069,18 +1079,32 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, lang);
+		Complexity complexity = getComplexity();
+
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, lang, complexity);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("freeform_id", freeformId);
 		basicDbService.create(LEXEME_FREEFORM, tableRowParamMap);
 
-		try {
-			LifecycleEntity lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
-		} catch (Exception e) {
-		}
+		LifecycleEntity lifecycleEntity = translate(freeformType);
+		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
+
+		return freeformId;
+	}
+
+	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang, Complexity complexity) throws Exception {
+
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, lang, complexity);
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("freeform_id", freeformId);
+		basicDbService.create(LEXEME_FREEFORM, tableRowParamMap);
+
+		LifecycleEntity lifecycleEntity = translate(freeformType);
+		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
 
 		return freeformId;
 	}
@@ -1103,25 +1127,32 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null);
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("freeform_id", freeformId);
 		basicDbService.create(MEANING_FREEFORM, tableRowParamMap);
 
-		try {
-			LifecycleEntity lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
-		} catch (Exception e) {
-		}
+		LifecycleEntity lifecycleEntity = translate(freeformType);
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
 
 		return freeformId;
 	}
 
+	private LifecycleEntity translate(FreeformType freeformType) {
+		LifecycleEntity lifecycleEntity;
+		try {
+			lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
+		} catch (Exception e) {
+			lifecycleEntity = LifecycleEntity.ATTRIBUTE_FREEFORM;
+		}
+		return lifecycleEntity;
+	}
+
 	protected Long createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null);
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("definition_id", definitionId);
@@ -1131,7 +1162,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
-	protected Long createFreeformTextOrDate(Long parentId, FreeformType freeformType, Object value, String lang) throws Exception {
+	protected Long createFreeformTextOrDate(Long parentId, FreeformType freeformType, Object value, String lang, Complexity complexity) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
@@ -1153,6 +1184,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 		if (StringUtils.isNotBlank(lang)) {
 			tableRowParamMap.put("lang", lang);
+		}
+		if (complexity != null) {
+			tableRowParamMap.put("complexity", complexity.name());
 		}
 		Long freeformId = basicDbService.create(FREEFORM, tableRowParamMap);
 		return freeformId;
@@ -1404,7 +1438,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createSourceFreeform(Long sourceId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null);
+		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("source_id", sourceId);

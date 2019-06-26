@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
@@ -81,6 +82,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "ev2";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DETAIL2;
 	}
 
 	@Transactional

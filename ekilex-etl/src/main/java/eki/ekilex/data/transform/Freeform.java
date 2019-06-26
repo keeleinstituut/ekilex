@@ -3,6 +3,7 @@ package eki.ekilex.data.transform;
 import java.sql.Timestamp;
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
@@ -31,6 +32,8 @@ public class Freeform extends AbstractDataObject {
 	private String classifCode;
 
 	private String langCode;
+
+	private Complexity complexity;
 
 	private Long orderBy;
 
@@ -130,6 +133,14 @@ public class Freeform extends AbstractDataObject {
 		this.langCode = langCode;
 	}
 
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
+	}
+
 	public Long getOrderBy() {
 		return orderBy;
 	}
@@ -169,4 +180,5 @@ public class Freeform extends AbstractDataObject {
 	public void setSourceLinks(List<FreeformSourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
 	}
+
 }

@@ -8,6 +8,8 @@ public class WordMeaningPair extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private String word;
+
 	private Long wordId;
 
 	private Long meaningId;
@@ -17,10 +19,19 @@ public class WordMeaningPair extends AbstractDataObject {
 	public WordMeaningPair() {
 	}
 
-	public WordMeaningPair(Long wordId, Long meaningId, List<Long> lexemeIds) {
+	public WordMeaningPair(String word, Long wordId, Long meaningId, List<Long> lexemeIds) {
+		this.word = word;
 		this.wordId = wordId;
 		this.meaningId = meaningId;
 		this.lexemeIds = lexemeIds;
+	}
+
+	public String getWord() {
+		return word;
+	}
+
+	public void setWord(String word) {
+		this.word = word;
 	}
 
 	public Long getWordId() {

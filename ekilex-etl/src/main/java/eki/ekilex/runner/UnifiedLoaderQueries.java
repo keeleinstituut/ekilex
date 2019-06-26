@@ -23,6 +23,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_SELECT_MEANING_IDS_FOR_DATASET = "sql/select_meaning_ids_for_dataset.sql";
 	private static final String SQL_SELECT_MEANING_IDS_AND_WORD_LANGS = "sql/select_meaning_ids_and_word_langs.sql";
 	private static final String SQL_SELECT_MEANING_BY_DATASET_AND_MNR = "sql/select_meaning_by_dataset_and_mnr.sql";
+	private static final String SQL_SELECT_DEFINITION_BY_MEANING_VALUE_TYPE = "sql/select_definition_by_meaning_value_type.sql";
 	private static final String SQL_DELETE_DEFINITIONS_FOR_DATASET = "sql/delete_definitions_for_dataset.sql";
 	private static final String SQL_DELETE_DEFINITION_FF_FOR_DATASET = "sql/delete_definition_freeforms_for_dataset.sql";
 	private static final String SQL_DELETE_MEANING_FF_FOR_DATASET = "sql/delete_meaning_freeforms_for_dataset.sql";
@@ -45,6 +46,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlSelectMeaningIdsForDataset;
 	private String sqlSelectMeaningIdsAndWordLangs;
 	private String sqlSelectMeaningByDatasetAndMnr;
+	private String sqlSelectDefinitionByMeaningValueType;
 	private String sqlDeleteDefinitionsForDataset;
 	private String sqlDeleteDefinitionFreeformsForDataset;
 	private String sqlDeleteMeaningFreeformsForDataset;
@@ -102,6 +104,9 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_BY_DATASET_AND_MNR);
 		sqlSelectMeaningByDatasetAndMnr = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_DEFINITION_BY_MEANING_VALUE_TYPE);
+		sqlSelectDefinitionByMeaningValueType = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITIONS_FOR_DATASET);
 		sqlDeleteDefinitionsForDataset = getContent(resourceFileInputStream);
@@ -180,6 +185,10 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	public String getSqlSelectMeaningByDatasetAndMnr() {
 		return sqlSelectMeaningByDatasetAndMnr;
+	}
+
+	public String getSqlSelectDefinitionByMeaningValueType() {
+		return sqlSelectDefinitionByMeaningValueType;
 	}
 
 	public String getSqlDeleteDefinitionsForDataset() {

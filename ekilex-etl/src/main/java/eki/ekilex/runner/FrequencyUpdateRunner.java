@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.data.Count;
 
 @Component
@@ -49,6 +50,11 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 	@Override
 	public String getDataset() {
 		return module;
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return null;
 	}
 
 	public String getLexemeFrequencyModule() {

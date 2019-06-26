@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.transform.Source;
@@ -27,6 +28,11 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "est";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DEFAULT;
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.data.Count;
@@ -79,6 +80,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "ss1";
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return Complexity.DETAIL1;
 	}
 
 	@Transactional
@@ -708,7 +714,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Long meaningFreeformId = createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
 			String semanticTypeGroup = ((Element)semanticTypeNode).attributeValue(semanticTypeGroupAttr);
 			if (isNotBlank(semanticTypeGroup)) {
-				createFreeformTextOrDate(meaningFreeformId, FreeformType.SEMANTIC_TYPE_GROUP, semanticTypeGroup, null);
+				createFreeformTextOrDate(meaningFreeformId, FreeformType.SEMANTIC_TYPE_GROUP, semanticTypeGroup, null, null);
 			}
 		}
 

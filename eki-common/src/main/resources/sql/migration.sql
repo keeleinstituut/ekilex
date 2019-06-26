@@ -21,3 +21,13 @@ alter table word_relation add relation_status varchar(100);
 insert into word_rel_type (code, datasets) values ('raw', '{}');
 insert into word_rel_type_label (code, value, lang, type) values ('raw', 'Veel sarnaseid sõnu', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('raw', 'Veel sarnaseid sõnu', 'est', 'full');
+
+-- 21.06.19
+
+alter table freeform add column complexity varchar(100);
+update table set complexity = 'UNKNOWN';
+alter table freeform alter column complexity set not null;
+
+alter table definition add column complexity varchar(100);
+update table set complexity = 'UNKNOWN';
+alter table definition alter column complexity set not null;
