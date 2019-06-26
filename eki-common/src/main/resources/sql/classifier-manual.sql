@@ -39,6 +39,7 @@ insert into dataset (code, name, is_visible, is_public) values ('get', 'Geoloogi
 insert into dataset (code, name, is_visible, is_public) values ('gmt', 'Geomorfoloogia', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('ida', 'Ida mõtteloo leksikon', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('iht', 'Ihtüoloogia', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('imm', 'Immunoloogia', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('bks', 'Inglise-eesti biokeemia sõnastik', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('kto', 'Käsitööteaduse oskussõnad', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('kem', 'Keemiatermite baas', true, true);
@@ -61,10 +62,14 @@ insert into dataset (code, name, is_visible, is_public) values ('mut', 'Muuseumi
 insert into dataset (code, name, is_visible, is_public) values ('mte', 'Muusikateraapia seletav sõnastik', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('nht', 'Nahkhiirte-alased terminid', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('prs', 'Parasitoloogia terminid', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('plt', 'Põllumajandusloomade tõud', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('pot', 'Patsiendiohutuse terminibaas', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('pol', 'Poliitika ja valitsemise sõnastik', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('pur', 'Purjetamise terminoloogia', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('p3m', 'P3M (Projektide, programmide ja portfellide juhtimise mõistete baas)', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('rkb', 'Rakubioloogia', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('rob', 'Robootika', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('skt', 'Skeemiteraapiasõnastik', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('tee', 'Teenuste valdkonna terminibaas', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('tts', 'Tootmistehnika ja süsteemide terminibaas', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('usk', 'Uskumusolendite sõnastik', true, true);
