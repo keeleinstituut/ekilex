@@ -565,6 +565,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						WORD.LANG.as("word_lang"),
 						WORD_RELATION.WORD_REL_TYPE_CODE.as("rel_type_code"),
 						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						WORD_RELATION.RELATION_STATUS.as("relation_status"),
 						WORD_RELATION.ORDER_BY.as("order_by"))
 				.from(
 						WORD_RELATION.leftOuterJoin(WORD_REL_TYPE_LABEL).on(

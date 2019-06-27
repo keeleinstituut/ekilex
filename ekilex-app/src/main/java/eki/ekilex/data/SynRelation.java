@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+//TODO - think - can we use the existing Relation POJO just by adding oppsoiteRelation and params attributes to it
 public class SynRelation {
 
 	private static final long serialVersionUID = 1896105442587879210L;
