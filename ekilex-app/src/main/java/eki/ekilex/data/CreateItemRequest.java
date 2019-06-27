@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class CreateItemRequest extends AbstractDataObject {
@@ -21,6 +22,8 @@ public class CreateItemRequest extends AbstractDataObject {
 	private String value;
 
 	private String dataset;
+
+	private Complexity complexity;
 
 	public String getOpCode() {
 		return opCode;
@@ -86,4 +89,11 @@ public class CreateItemRequest extends AbstractDataObject {
 		this.dataset = dataset;
 	}
 
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
+	}
 }

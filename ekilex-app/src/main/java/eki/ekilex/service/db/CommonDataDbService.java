@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.ASPECT_LABEL;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN;
@@ -459,6 +460,11 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						DEFINITION.COMPLEXITY.as("definition_complexity"),
 						DEFINITION.ORDER_BY.as("definition_order_by"),
 						DEFINITION.DEFINITION_TYPE_CODE.as("definition_type_code"),
+						DSL.field(DSL
+								.select(DSL.arrayAgg(DEFINITION_DATASET.DATASET_CODE))
+								.from(DEFINITION_DATASET)
+								.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)))
+								.as("definition_dataset_codes"),
 						DEFINITION_SOURCE_LINK.ID.as("source_link_id"),
 						DEFINITION_SOURCE_LINK.TYPE.as("source_link_type"),
 						DEFINITION_SOURCE_LINK.NAME.as("source_link_name"),

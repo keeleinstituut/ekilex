@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.common.constant.TextDecoration;
@@ -95,5 +96,10 @@ public abstract class AbstractPageController implements WebConstant {
 				FreeformType.SOURCE_ISBN, FreeformType.SOURCE_ISSN, FreeformType.SOURCE_WWW, FreeformType.SOURCE_FILE, FreeformType.SOURCE_PUBLISHER,
 				FreeformType.SOURCE_PUBLICATION_NAME, FreeformType.SOURCE_PUBLICATION_PLACE, FreeformType.SOURCE_PUBLICATION_YEAR, FreeformType.SOURCE_CELEX,
 				FreeformType.SOURCE_RT);
+	}
+
+	@ModelAttribute("complexities")
+	public List<Complexity> getComplexities() {
+		return Arrays.asList(Complexity.class.getEnumConstants());
 	}
 }

@@ -86,7 +86,7 @@ public class EditController implements WebConstant {
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			cudService.createDefinition(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getDataset());
+			cudService.createDefinition(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getDataset(), itemData.getComplexity());
 			break;
 		case "usage":
 			cudService.createUsage(itemData.getId(), valuePrese, itemData.getLanguage());
@@ -203,7 +203,7 @@ public class EditController implements WebConstant {
 			cudService.updateUsageDefinitionValue(itemData.getId(), valuePrese);
 			break;
 		case "definition":
-			cudService.updateDefinitionValue(itemData.getId(), valuePrese);
+			cudService.updateDefinition(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
 		case "lexeme_frequency_group":
 			cudService.updateLexemeFrequencyGroup(itemData.getId(), valuePrese);
