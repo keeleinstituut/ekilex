@@ -354,7 +354,10 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						FREEFORM.TYPE,
 						FREEFORM.VALUE_TEXT,
 						FREEFORM.VALUE_PRESE,
-						FREEFORM.VALUE_DATE)
+						FREEFORM.VALUE_DATE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY
+						)
 				.from(FREEFORM, MEANING_FREEFORM)
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
@@ -369,7 +372,10 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.select(
 						FREEFORM.ID,
 						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE)
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY
+						)
 				.from(FREEFORM, MEANING_FREEFORM)
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
@@ -450,6 +456,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						DEFINITION.ID.as("definition_id"),
 						DEFINITION.VALUE_PRESE.as("definition_value"),
 						DEFINITION.LANG.as("definition_lang"),
+						DEFINITION.COMPLEXITY.as("definition_complexity"),
 						DEFINITION.ORDER_BY.as("definition_order_by"),
 						DEFINITION.DEFINITION_TYPE_CODE.as("definition_type_code"),
 						DEFINITION_SOURCE_LINK.ID.as("source_link_id"),
@@ -500,7 +507,16 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 	public List<FreeForm> getLexemeFreeforms(Long lexemeId, String... excludedTypes) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.VALUE_DATE)
+				.select(
+						FREEFORM.ID,
+						FREEFORM.TYPE,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.VALUE_DATE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.ORDER_BY
+						)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
@@ -512,7 +528,14 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 	public List<FreeForm> getLexemePublicNotes(Long lexemeId) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
+				.select(
+						FREEFORM.ID,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.ORDER_BY
+						)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
@@ -537,7 +560,14 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 	public List<FreeForm> getLexemeGrammars(Long lexemeId) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
+				.select(
+						FREEFORM.ID,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.ORDER_BY
+						)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
@@ -556,7 +586,8 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.select(
 						g.ID,
 						g.VALUE_TEXT.as("value"),
-						gt.CLASSIF_CODE.as("type_code"))
+						gt.CLASSIF_CODE.as("type_code"),
+						g.COMPLEXITY)
 				.from(
 						glff.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())))
 								.leftOuterJoin(gt).on(gt.PARENT_ID.eq(g.ID).and(gt.TYPE.eq(FreeformType.GOVERNMENT_TYPE.name()))))
@@ -597,6 +628,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						u.ID.as("usage_id"),
 						u.VALUE_PRESE.as("usage_value"),
 						u.LANG.as("usage_lang"),
+						u.COMPLEXITY.as("usage_complexity"),
 						utype.CLASSIF_CODE.as("usage_type_code"),
 						utypelbl.VALUE.as("usage_type_value"),
 						ut.ID.as("usage_translation_id"),

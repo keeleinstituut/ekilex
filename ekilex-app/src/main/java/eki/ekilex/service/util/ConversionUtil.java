@@ -18,6 +18,7 @@ import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
@@ -319,6 +320,7 @@ public class ConversionUtil {
 				usage.setId(usageId);
 				usage.setValue(tuple.getUsageValue());
 				usage.setLang(tuple.getUsageLang());
+				usage.setComplexity(tuple.getUsageComplexity());
 				usage.setTypeCode(tuple.getUsageTypeCode());
 				usage.setTypeValue(tuple.getUsageTypeValue());
 				usage.setTranslations(new ArrayList<>());
@@ -497,12 +499,14 @@ public class ConversionUtil {
 			if (definition == null) {
 				String definitionValue = definitionRefTuple.getDefinitionValue();
 				String definitionLang = definitionRefTuple.getDefinitionLang();
+				Complexity definitionComplexity = definitionRefTuple.getDefinitionComplexity();
 				Long definitionOrderBy = definitionRefTuple.getDefinitionOrderBy();
 				String definitionTypeCode = definitionRefTuple.getDefinitionTypeCode();
 				definition = new Definition();
 				definition.setId(definitionId);
 				definition.setValue(definitionValue);
 				definition.setLang(definitionLang);
+				definition.setComplexity(definitionComplexity);
 				definition.setOrderBy(definitionOrderBy);
 				definition.setTypeCode(definitionTypeCode);
 				definition.setSourceLinks(new ArrayList<>());

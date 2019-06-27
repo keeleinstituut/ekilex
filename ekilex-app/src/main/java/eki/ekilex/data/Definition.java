@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class Definition extends AbstractDataObject {
@@ -13,6 +14,8 @@ public class Definition extends AbstractDataObject {
 	private String value;
 
 	private String lang;
+
+	private Complexity complexity;
 
 	private Long orderBy;
 
@@ -42,6 +45,14 @@ public class Definition extends AbstractDataObject {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public Long getOrderBy() {

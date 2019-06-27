@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import javax.persistence.Column;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
@@ -18,6 +19,9 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	@Column(name = "usage_lang")
 	private String usageLang;
+
+	@Column(name = "usage_complexity")
+	private Complexity usageComplexity;
 
 	@Column(name = "usage_type_code")
 	private String usageTypeCode;
@@ -86,6 +90,14 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	public void setUsageLang(String usageLang) {
 		this.usageLang = usageLang;
+	}
+
+	public Complexity getUsageComplexity() {
+		return usageComplexity;
+	}
+
+	public void setUsageComplexity(Complexity usageComplexity) {
+		this.usageComplexity = usageComplexity;
 	}
 
 	public String getUsageTypeCode() {

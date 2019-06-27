@@ -28,6 +28,11 @@ td {
 	color: #666;
 }
 
+.ctxt {
+	font-size: 80%;
+	color: #888;
+}
+
 .modal-backdrop.show {
 	opacity: 0.1;
 }

@@ -4,8 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-
+import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
@@ -13,22 +12,20 @@ public class FreeForm extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "type")
 	private FreeformType type;
 
-	@Column(name = "value_text")
 	private String valueText;
 
-	@Column(name = "value_prese")
 	private String valuePrese;
 
-	@Column(name = "value_date")
 	private Timestamp valueDate;
 
-	@Column(name = "order_by")
+	private String lang;
+
+	private Complexity complexity;
+
 	private Long orderBy;
 
 	private List<FreeForm> children = new ArrayList<>();
@@ -71,6 +68,22 @@ public class FreeForm extends AbstractDataObject {
 
 	public void setValueDate(Timestamp valueDate) {
 		this.valueDate = valueDate;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public List<FreeForm> getChildren() {
