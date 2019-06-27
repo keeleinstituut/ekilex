@@ -149,10 +149,6 @@ input:checked+.slider:before {
 	cursor: auto !important;
 }
 
-.validation {
-	display: none;
-}
-
 .btn-toggle {
 	font-size: large;
 	border-radius: 1rem;

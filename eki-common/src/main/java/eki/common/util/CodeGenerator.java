@@ -12,10 +12,8 @@ public final class CodeGenerator {
 		return code;
 	}
 
-	public static String generateHoneyPotName() {
-		String code = "_";
-		code += String.valueOf(System.currentTimeMillis());
-		return code;
+	public static String generateTimestampCode() {
+		return String.valueOf(System.currentTimeMillis());
 	}
 
 }
