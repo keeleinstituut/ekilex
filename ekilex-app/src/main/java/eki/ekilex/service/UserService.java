@@ -82,7 +82,7 @@ public class UserService implements WebConstant {
 		if (user != null) {
 			Long userId = user.getId();
 			List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
-			boolean datasetPermissionsExist = CollectionUtils.isNotEmpty(datasetPermissions) || user.isAdmin();
+			boolean datasetPermissionsExist = CollectionUtils.isNotEmpty(datasetPermissions);
 			boolean datasetOwnershipExist;
 			if (CollectionUtils.isNotEmpty(datasetPermissions)) {
 				datasetOwnershipExist = datasetPermissions.stream().anyMatch(

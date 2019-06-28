@@ -21,7 +21,7 @@
         </p>
         <p>
           <a th:href="@{/synsearch}" th:if="${sessionBean.userRole != null}">Sünonüümide otsing</a>
-          <div th:if="${sessionBean.userRole == null}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</div>
+          <span th:if="${sessionBean.userRole == null}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</span>
         </p>
         <p>
           <a th:href="@{/sourcesearch}">Allikate otsing</a>

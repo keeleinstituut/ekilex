@@ -1,20 +1,3 @@
-$(document).on("change", "select.lex-def-dataset-select[name='dataset']", function() {
-	var datasetCode = $(this).val();
-	var localForm = $(this).closest("form");
-	var permLanguageSelect = localForm.find("select[name=language]")
-	if (datasetCode) {
-		var getLanguageSelectUrl = applicationUrl + "comp/lexdeflangselect/" + datasetCode;
-		$.get(getLanguageSelectUrl).done(function(data) {
-			permLanguageSelect.replaceWith(data);
-		}).fail(function(data) {
-			console.log(data);
-			alert('Viga!');
-		});
-	} else {
-		permLanguageSelect.empty();
-	}
-});
-
 //addLexemeDataDlg_ select
 $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	var opCode = $(this).val();

@@ -68,23 +68,6 @@ function alignAndFocus(e, dlg) {
 	}
 }
 
-$(document).on("change", "select.common-word-dataset-select[name='dataset']", function() {
-	var datasetCode = $(this).val();
-	var permLanguageSelect = $("#wordPermLanguageSelect");
-	if (datasetCode) {
-		var getLanguageSelectUrl = applicationUrl + "comp/commonwordlangselect/" + datasetCode;
-		$.get(getLanguageSelectUrl).done(function(data) {
-			permLanguageSelect.replaceWith(data);
-		}).fail(function(data) {
-			console.log(data);
-			alert('Viga!');
-		});
-	} else {
-		permLanguageSelect.empty();
-	}
-});
-
-
 $(document).on("change", ".required-field", function() {
 	if ($(this).val()) {
 		$(this).removeClass('is-invalid');
@@ -265,10 +248,6 @@ function initNewWordDlg() {
 	});
 	$(document).on("click", "#addWordSubmitBtn", function() {
 		var addWordForm = $("#addWordForm");
-		// addWordForm.find("select[name='dataset']"),
-		// 	addWordForm.find("select[name='language']"),
-		// 	addWordForm.find("select[name='morphCode']"),
-		// 	addWordForm.find("input[name='value']")]);
 		var isValid = checkRequiredFields(addWordForm);
 		if (!isValid) {
 			return;

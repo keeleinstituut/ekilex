@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
-import eki.ekilex.data.UserRole;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserService;
@@ -139,31 +137,15 @@ public class HomeController extends AbstractPageController {
 
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@PostMapping(CHANGE_ROLE_URI)
-	public String changeRole(@RequestParam Long permissionId, @RequestParam(required = false) Boolean isAdmin,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String changeRole(@RequestParam Long permissionId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		logger.debug("User initiated role change, dataSetPermissionId: {}, isAdmi:  {}", permissionId, isAdmin);
-
-		EkiUser user = userService.getAuthenticatedUser();
-
-		UserRole currentRole = sessionBean.getUserRole();
-		if (currentRole == null) {
-			currentRole = new UserRole();
-			sessionBean.setUserRole(currentRole);
-		}
-
-		if (BooleanUtils.isTrue(isAdmin) && user.isAdmin()) {
-			currentRole.setAdmin(true);
-			currentRole.setDatasetPermission(null);
-		} else {
-			currentRole.setAdmin(false);
-		}
+		logger.debug("User initiated role change, dataSetPermissionId: {}", permissionId);
 
 		if (permissionId != null) {
 			DatasetPermission datasetPermission = permissionService.getDatasetPermission(permissionId);
-			currentRole.setDatasetPermission(datasetPermission);
+			sessionBean.setUserRole(datasetPermission);
 		} else {
-			currentRole.setDatasetPermission(null);
+			sessionBean.setUserRole(null);
 		}
 
 		return REDIRECT_PREF + HOME_URI;

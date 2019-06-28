@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +20,11 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.LifecycleEntity;
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.db.PermissionDbService;
+import eki.ekilex.web.bean.SessionBean;
 
 @Component
 public class EkilexPermissionEvaluator implements PermissionEvaluator {
@@ -30,6 +35,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 
 	@Autowired
 	private PermissionDbService permissionDbService;
+
+	@Autowired
+	private HttpServletRequest request;
 
 	//hasPermission(#foo, 'write')
 	@Override
@@ -52,31 +60,43 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
 
+		DatasetPermission userRole = getUserRole();
+		if (userRole == null) {
+			return false;
+		}
+
 		EkiUser user = (EkiUser) authentication.getPrincipal();
 		Long userId = user.getId();
 
-		if (user.isAdmin()) {
-			return true;
-		}
+		// provided user role
+		String providedDatasetCode = userRole.getDatasetCode();
+		AuthorityOperation providedAuthOperation = userRole.getAuthOperation();
+		AuthorityItem providedAuthItem = userRole.getAuthItem();
+		String providedAuthLang = userRole.getAuthLang();
 
+		// required authority
 		Long entityId = Long.valueOf(targetId.toString());
-		RequiredAuthority requiredAuthority = parse(permission);
-		String authItem = requiredAuthority.getItem();
-		List<String> authOps = requiredAuthority.getOps();
+		Authority requiredAuthority = parse(permission);
+		AuthorityItem requiredAuthItem = requiredAuthority.getAuthItem();
+		List<String> requiredAuthOps = requiredAuthority.getAuthOps();
 		boolean isPermGranted = false;
 
 		if (StringUtils.equals(LifecycleEntity.WORD.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForWord(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForWord(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
 		} else if (StringUtils.equals(LifecycleEntity.MEANING.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
 		} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, authItem, authOps);
+			if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
+				isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, providedDatasetCode);
+			}
 		} else if (StringUtils.equals(LifecycleEntity.DEFINITION.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForDefinition(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForDefinition(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
 		} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, authItem, authOps);
+			if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
+				isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, providedDatasetCode, providedAuthLang);
+			}
 		} else if (StringUtils.equals(LifecycleEntity.SOURCE.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForSource(userId, entityId, authItem, authOps);
+			isPermGranted = permissionDbService.isGrantedForSource(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
 		}
 
 		//logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\" granted: {}", userId, targetId, targetType, permission, isPermGranted);
@@ -84,40 +104,49 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		return isPermGranted;
 	}
 
-	private RequiredAuthority parse(Object permission) {
-		String permSentence = permission.toString();
-		String[] perms = StringUtils.split(permSentence, PERM_KEY_VALUE_SEPARATOR);
-		AuthorityItem permAuthItem = AuthorityItem.valueOf(perms[0]);
-		AuthorityOperation permAuthOp = AuthorityOperation.valueOf(perms[1]);
-		String item = permAuthItem.name();
-		List<String> ops = new ArrayList<>();
-		ops.add(permAuthOp.name());
-		// if crud is required, owner is also pass
-		if (AuthorityItem.DATASET.equals(permAuthItem) && AuthorityOperation.CRUD.equals(permAuthOp)) {
-			ops.add(AuthorityOperation.OWN.name());
+	private DatasetPermission getUserRole() {
+		HttpSession session = request.getSession();
+		SessionBean sessionBean = (SessionBean) session.getAttribute(WebConstant.SESSION_BEAN);
+		if (sessionBean == null) {
+			return null;
 		}
-		return new RequiredAuthority(item, ops);
+		DatasetPermission userRole = sessionBean.getUserRole();
+		return userRole;
 	}
 
-	public class RequiredAuthority extends AbstractDataObject {
+	private Authority parse(Object permission) {
+		String permSentence = permission.toString();
+		String[] perms = StringUtils.split(permSentence, PERM_KEY_VALUE_SEPARATOR);
+		AuthorityItem authItem = AuthorityItem.valueOf(perms[0]);
+		AuthorityOperation authOp = AuthorityOperation.valueOf(perms[1]);
+		List<String> authOps = new ArrayList<>();
+		authOps.add(authOp.name());
+		// if crud is required, owner is also pass
+		if (AuthorityItem.DATASET.equals(authItem) && AuthorityOperation.CRUD.equals(authOp)) {
+			authOps.add(AuthorityOperation.OWN.name());
+		}
+		return new Authority(authItem, authOps);
+	}
+
+	public class Authority extends AbstractDataObject {
 
 		private static final long serialVersionUID = 1L;
 
-		private String item;
+		private AuthorityItem authItem;
 
-		private List<String> ops;
+		private List<String> authOps;
 
-		public RequiredAuthority(String item, List<String> ops) {
-			this.item = item;
-			this.ops = ops;
+		public Authority(AuthorityItem authItem, List<String> authOps) {
+			this.authItem = authItem;
+			this.authOps = authOps;
 		}
 
-		public String getItem() {
-			return item;
+		public AuthorityItem getAuthItem() {
+			return authItem;
 		}
 
-		public List<String> getOps() {
-			return ops;
+		public List<String> getAuthOps() {
+			return authOps;
 		}
 	}
 }

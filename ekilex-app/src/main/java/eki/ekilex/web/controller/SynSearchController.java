@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
-import eki.ekilex.data.UserRole;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
@@ -138,15 +138,11 @@ public class SynSearchController extends AbstractSearchController {
 	}
 
 	private List<String> cleanDatasetCodesForRole(List<String> selectedDatasetCodes, SessionBean sessionBean) {
-		UserRole role = sessionBean.getUserRole();
-		if (role != null) {
-			if (role.isAdmin()) {
-				return selectedDatasetCodes;
-			} else if (role.getDatasetPermission() != null) {
-				return new ArrayList<>(Collections.singletonList(role.getDatasetPermission().getDatasetCode()));
-			}
+		DatasetPermission role = sessionBean.getUserRole();
+		if (role == null) {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
 		}
-		throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
+		return new ArrayList<>(Collections.singletonList(role.getDatasetCode()));
 	}
 
 }

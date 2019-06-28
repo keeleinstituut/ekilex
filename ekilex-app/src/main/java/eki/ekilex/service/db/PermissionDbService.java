@@ -287,6 +287,10 @@ public class PermissionDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	/*
+	 * currently not used. remove?
+	 * isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
+	 */
 	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String authItem, List<String> authOps) {
 
 		return create
@@ -302,6 +306,15 @@ public class PermissionDbService implements SystemConstant {
 														.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 														.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
 														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE)))))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String datasetCode) {
+
+		return create
+				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchSingleInto(Boolean.class);
 	}
 
@@ -329,6 +342,10 @@ public class PermissionDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	/*
+	 * currently not used. remove?
+	 * isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
+	 */
 	public boolean isGrantedForUsage(Long userId, Long usageId, String authItem, List<String> authOps) {
 
 		return create
@@ -352,6 +369,28 @@ public class PermissionDbService implements SystemConstant {
 																				.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
 																				.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
 																				.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(FREEFORM.LANG))))))))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean isGrantedForUsage(Long userId, Long usageId, String datasetCode, String lang) {
+
+		Condition langCond;
+		if (StringUtils.isBlank(lang)) {
+			langCond = DSL.trueCondition();
+		} else {
+			langCond = FREEFORM.LANG.eq(lang);
+		}
+		return create
+				.select(DSL.field((DSL.count(FREEFORM.ID).gt(0))).as("is_granted"))
+				.from(FREEFORM, LEXEME, LEXEME_FREEFORM)
+				.where(
+						FREEFORM.ID.eq(usageId)
+						.and(FREEFORM.TYPE.eq(FreeformType.USAGE.name()))
+						.and(langCond)
+						.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID))
+						.and(LEXEME_FREEFORM.LEXEME_ID.eq(LEXEME.ID))
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
+						)
 				.fetchSingleInto(Boolean.class);
 	}
 

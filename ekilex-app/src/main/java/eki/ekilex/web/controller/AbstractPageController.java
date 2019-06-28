@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,21 +44,30 @@ public abstract class AbstractPageController implements WebConstant {
 		return commonDataService.getDatasets();
 	}
 
-	@ModelAttribute("userPermDatasets")
-	public List<Dataset> getUserPermDatasets() {
+	@ModelAttribute("userRoleLanguages")
+	public List<Classifier> getUserRoleLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		if (sessionBean == null) {
+			return Collections.emptyList();
+		}
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return Collections.emptyList();
+		}
+		String datasetCode = userRole.getDatasetCode();
+		String authLang = userRole.getAuthLang();
+
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
-		return permissionService.getUserPermDatasets(userId);
-	}
 
-	//duplicate model population in case when defaults have already been set by user
-	@ModelAttribute("userPermLanguages")
-	public List<Classifier> getUserPermLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
-		String newWordSelectedDataset = sessionBean.getNewWordSelectedDataset();
-		if (StringUtils.isNotBlank(newWordSelectedDataset)) {
-			return permDataUtil.getUserPermLanguages(newWordSelectedDataset, sessionBean);
+		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
+		List<Classifier> datasetLanguages = commonDataService.getDatasetLanguages(datasetCode);
+
+		if (StringUtils.isNotBlank(authLang)) {
+			datasetLanguages.removeIf(classifier -> !StringUtils.equals(classifier.getCode(), authLang));
 		}
-		return Collections.emptyList();
+
+		return userPermLanguages.stream().filter(datasetLanguages::contains).collect(Collectors.toList());
 	}
 
 	@ModelAttribute("userOwnedDatasets")

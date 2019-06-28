@@ -449,7 +449,6 @@ public class EditController implements WebConstant {
 
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
-			sessionBean.setNewWordSelectedDataset(dataset);
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
 			List<String> allDatasets = commonDataService.getDatasetCodes();

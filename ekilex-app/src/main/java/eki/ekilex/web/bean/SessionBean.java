@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.UserRole;
+import eki.ekilex.data.DatasetPermission;
 
 public class SessionBean extends AbstractDataObject {
 
@@ -16,13 +16,11 @@ public class SessionBean extends AbstractDataObject {
 
 	private List<ClassifierSelect> languagesOrder;
 
-	private String newWordSelectedDataset;
-
 	private String newWordSelectedLanguage;
 
 	private String newWordSelectedMorphCode;
 
-	private UserRole userRole;
+	private DatasetPermission userRole;
 
 	public List<String> getSelectedDatasets() {
 		return selectedDatasets;
@@ -48,14 +46,6 @@ public class SessionBean extends AbstractDataObject {
 		this.languagesOrder = languagesOrder;
 	}
 
-	public String getNewWordSelectedDataset() {
-		return newWordSelectedDataset;
-	}
-
-	public void setNewWordSelectedDataset(String newWordSelectedDataset) {
-		this.newWordSelectedDataset = newWordSelectedDataset;
-	}
-
 	public String getNewWordSelectedLanguage() {
 		return newWordSelectedLanguage;
 	}
@@ -72,11 +62,12 @@ public class SessionBean extends AbstractDataObject {
 		this.newWordSelectedMorphCode = newWordSelectedMorphCode;
 	}
 
-	public UserRole getUserRole() {
+	public DatasetPermission getUserRole() {
 		return userRole;
 	}
 
-	public void setUserRole(UserRole userRole) {
+	public void setUserRole(DatasetPermission userRole) {
 		this.userRole = userRole;
 	}
+
 }

@@ -2,9 +2,7 @@ package eki.ekilex.web.controller;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,17 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.UserRole;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractSearchController extends AbstractPageController {
 
@@ -39,22 +38,30 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	protected SearchHelper searchHelper;
 
 	@ModelAttribute("domains")
-	public Map<String,List<Classifier>> getDomainsInUse() {
+	public Map<String, List<Classifier>> getDomainsInUse() {
 		return commonDataService.getDomainsInUseByOrigin();
 	}
 
 	@ModelAttribute("datasetDomains")
-	public Map<String,List<Classifier>> getDatasetDomains(Model model) {
+	public Map<String, List<Classifier>> getDatasetDomains(Model model) {
 
-		UserRole role = getSessionBean(model).getUserRole();
-		if (role != null) {
-			if (role.isAdmin()) {
-				return commonDataService.getAllDomainsByOrigin();
-			} else if (role.getDatasetPermission() != null) {
-				return commonDataService.getDatasetDomainsByOrigin(role.getDatasetPermission().getDatasetCode());
-			}
+		SessionBean sessionBean = getSessionBean(model);
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return Collections.emptyMap();
 		}
-		return new HashMap<>();
+		return commonDataService.getDatasetDomainsByOrigin(userRole.getDatasetCode());
+	}
+
+	@ModelAttribute("processStates")
+	public List<Classifier> getProcessStates(Model model) {
+
+		SessionBean sessionBean = getSessionBean(model);
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return Collections.emptyList();
+		}
+		return commonDataService.getProcessStatesByDataset(userRole.getDatasetCode());
 	}
 
 	@ModelAttribute("lexemeFrequencyGroups")
@@ -120,20 +127,6 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	@ModelAttribute("lexemeValueStates")
 	public List<Classifier> getLexemeValueStates() {
 		return commonDataService.getValueStates();
-	}
-
-	@ModelAttribute("processStates")
-	public List<Classifier> getProcessStates(Model model) {
-
-		UserRole role = getSessionBean(model).getUserRole();
-		if (role != null) {
-			if (role.isAdmin()) {
-				return commonDataService.getProcessStates();
-			} else if (role.getDatasetPermission() != null) {
-				return commonDataService.getProcessStatesByDataset(role.getDatasetPermission().getDatasetCode());
-			}
-		}
-		return new ArrayList<>();
 	}
 
 	protected SessionBean getSessionBean(Model model) {

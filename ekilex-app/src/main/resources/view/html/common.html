@@ -43,20 +43,20 @@
         <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
         <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
         <a class="nav-item nav-link" th:if="${sessionBean.userRole != null}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
-        <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#" sec:authorize="${#authentication.principal.datasetPermissionsExist}"
+        <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#"
+           sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)"
            th:if="${activeItem == 'lex' || activeItem == 'term'}">
           <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
         </a>
       </div>
       <div class="navbar-nav ml-auto">
         <th:block sec:authorize="isAuthenticated()">
-          <th:block th:if="${sessionBean.userRole != null}">
-            <th:block th:if="${sessionBean.userRole.datasetPermission != null}" th:with="selectedPermission = ${sessionBean.userRole.datasetPermission}">
+          <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+            <th:block th:with="selectedRole = ${sessionBean.userRole}">
               <div class="text-white mr-5 mt-2"
-                   th:with="permissionName=#{|authorityoperation.${selectedPermission.authOperation}|}"
-                   th:text="#{home.selectedrole(${selectedPermission.datasetName}, ${permissionName})}"></div>
+                   th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
+                   th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></div>
             </th:block>
-            <div th:if="${sessionBean.userRole.admin}" class="text-white mr-5 mt-2">Valitud roll: Admin</div>
           </th:block>
           <form th:action="@{/dologout}" method="post">
             <button type="submit" class="btn btn-info">
@@ -99,12 +99,13 @@
     </button>
   </th:block>
   <div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog" role="document" th:if="${permDataUtil.isRoleSelected(sessionBean)}">
       <div class="modal-content">
         <form id="addWordForm" th:action="@{/create_word}" method="post">
           <div class="modal-body">
             <input type="hidden" name="returnPage" th:value="${returnPage}">
             <input type="hidden" name="meaningId">
+            <input type="hidden" name="dataset" th:value="${sessionBean.userRole.datasetCode}"/>
             <div class="form-group row">
               <div class="col-md-12">
                 <input class="form-control required-field" name="wordValue" placeholder="uus keelend">
@@ -112,20 +113,15 @@
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <select required class="form-control common-word-dataset-select required-field" name="dataset">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedDataset)}">vali sõnastik...</option>
-                  <option th:each="dataset : ${userPermDatasets}" th:value="${dataset.code}" th:selected="${dataset.code == sessionBean.newWordSelectedDataset}" th:text="${dataset.name}">name</option>
-                </select>
+                <span th:text="${sessionBean.userRole.datasetName}"></span>
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-8">
-                <th:block th:fragment="word_perm_lang_select">
-                  <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
-                    <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
-                    <option th:each="language : ${userPermLanguages}" th:value="${language.code}" th:selected="${language.code == sessionBean.newWordSelectedLanguage}" th:text="${language.value}">language</option>
-                  </select>
-                </th:block>
+                <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:selected="${language.code == sessionBean.newWordSelectedLanguage}" th:text="${language.value}">language</option>
+                </select>
               </div>
             </div>
             <div class="form-group row">
