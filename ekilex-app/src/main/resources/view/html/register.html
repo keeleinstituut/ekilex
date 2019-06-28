@@ -2,6 +2,7 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(_,~{::links})">
 <th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-register.js}"></script>
   <link rel="stylesheet" th:href="@{/view/css/text-security-disc.css}" />
 </th:block>
 </head>
@@ -18,7 +19,7 @@
         </div>
         <div class="row">
           <div class="col-8">
-            <form th:action="@{/register}" method="post">
+            <form id="registerForm" th:action="@{/submit}" method="post">
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">
                   <span class="float-right">Ees- ja perekonnanimi</span>
@@ -33,14 +34,6 @@
                 </label>
                 <div class="col-sm-4">
                   <input type="email" class="form-control" name="email" placeholder="e-posti aadress" th:value="${userEmail}">
-                </div>
-              </div>
-              <div class="form-group row validation">
-                <label class="col-sm-2 col-form-label">
-                  <span class="float-right">Kontroll kood</span>
-                </label>
-                <div class="col-sm-4">
-                  <input type="text" class="form-control" th:name="${honeyPotCode}">
                 </div>
               </div>
               <div class="form-group row">
@@ -61,7 +54,7 @@
               </div>
               <div class="form-group row">
                 <div class="col-sm-10 offset-sm-2">
-                  <button type="submit" class="btn btn-primary">Registreeru</button>
+                  <button type="button" class="btn btn-primary" id="registerBtn" th:data-code="${botProtectionCode}">Registreeru</button>
                 </div>
               </div>
             </form>
@@ -70,5 +63,8 @@
       </div>
     </div>
   </div>
+  <script th:inline="javascript">
+	  initialise();
+  </script>
 </body>
 </html>

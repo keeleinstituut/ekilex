@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
@@ -19,6 +21,8 @@ public class DefinitionRefTuple extends AbstractDataObject {
 	private Long definitionOrderBy;
 
 	private String definitionTypeCode;
+
+	private List<String> definitionDatasetCodes;
 
 	private Long sourceLinkId;
 
@@ -74,6 +78,14 @@ public class DefinitionRefTuple extends AbstractDataObject {
 
 	public void setDefinitionTypeCode(String definitionTypeCode) {
 		this.definitionTypeCode = definitionTypeCode;
+	}
+
+	public List<String> getDefinitionDatasetCodes() {
+		return definitionDatasetCodes;
+	}
+
+	public void setDefinitionDatasetCodes(List<String> definitionDatasetCodes) {
+		this.definitionDatasetCodes = definitionDatasetCodes;
 	}
 
 	public Long getSourceLinkId() {

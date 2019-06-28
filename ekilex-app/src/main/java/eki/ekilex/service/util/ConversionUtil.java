@@ -505,6 +505,7 @@ public class ConversionUtil {
 				Complexity definitionComplexity = definitionRefTuple.getDefinitionComplexity();
 				Long definitionOrderBy = definitionRefTuple.getDefinitionOrderBy();
 				String definitionTypeCode = definitionRefTuple.getDefinitionTypeCode();
+				List<String> definitionDatasetCodes = definitionRefTuple.getDefinitionDatasetCodes();
 				definition = new Definition();
 				definition.setId(definitionId);
 				definition.setValue(definitionValue);
@@ -512,6 +513,7 @@ public class ConversionUtil {
 				definition.setComplexity(definitionComplexity);
 				definition.setOrderBy(definitionOrderBy);
 				definition.setTypeCode(definitionTypeCode);
+				definition.setDatasetCodes(definitionDatasetCodes);
 				definition.setSourceLinks(new ArrayList<>());
 				definitionMap.put(definitionId, definition);
 				definitions.add(definition);

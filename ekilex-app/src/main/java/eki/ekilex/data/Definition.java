@@ -21,6 +21,8 @@ public class Definition extends AbstractDataObject {
 
 	private String typeCode;
 
+	private List<String> datasetCodes;
+
 	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
@@ -69,6 +71,14 @@ public class Definition extends AbstractDataObject {
 
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
+	}
+
+	public List<String> getDatasetCodes() {
+		return datasetCodes;
+	}
+
+	public void setDatasetCodes(List<String> datasetCodes) {
+		this.datasetCodes = datasetCodes;
 	}
 
 	public List<SourceLink> getSourceLinks() {

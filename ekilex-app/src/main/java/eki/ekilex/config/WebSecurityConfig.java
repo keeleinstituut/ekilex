@@ -30,7 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 						VIEW_RESOURCES_URI + "/**",
 						REST_SERVICES_URI + "/**",
 						SEND_FEEDBACK_URI,
-						PASSWORD_RECOVERY_URI,
+						FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI,
+						PASSWORD_RECOVERY_URI + "/**",
 						PASSWORD_SET_PAGE_URI + "/**")
 				.permitAll()
 				.anyRequest().authenticated()

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
@@ -200,10 +201,10 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateDefinitionValue(Long id, String valuePrese) {
+	public void updateDefinition(Long id, String valuePrese, Complexity complexity) {
 		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		cudDbService.updateDefinitionValue(id, value, valuePrese);
+		cudDbService.updateDefinition(id, value, valuePrese, complexity);
 	}
 
 	@Transactional
@@ -412,9 +413,9 @@ public class CudService extends AbstractService {
 	// --- DELETE ---
 
 	@Transactional
-	public void createDefinition(Long meaningId, String valuePrese, String languageCode, String datasetCode) {
+	public void createDefinition(Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, DEFAULT_DEFINITION_TYPE_CODE);
+		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, DEFAULT_DEFINITION_TYPE_CODE, complexity);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
 	}

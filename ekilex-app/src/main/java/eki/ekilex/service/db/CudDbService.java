@@ -34,6 +34,7 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
@@ -183,10 +184,11 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public void updateDefinitionValue(Long id, String value, String valuePrese) {
+	public void updateDefinition(Long id, String value, String valuePrese, Complexity complexity) {
 		create.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
+				.set(DEFINITION.COMPLEXITY, complexity.name())
 				.where(DEFINITION.ID.eq(id))
 				.execute();
 	}
@@ -444,10 +446,17 @@ public class CudDbService implements DbConstant {
 		return wordGroupMember.getId();
 	}
 
-	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode) {
+	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, Complexity complexity) {
 		return create
-				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.DEFINITION_TYPE_CODE)
-				.values(meaningId, languageCode, value, valuePrese, definitionTypeCode)
+				.insertInto(
+						DEFINITION,
+						DEFINITION.MEANING_ID,
+						DEFINITION.LANG,
+						DEFINITION.VALUE,
+						DEFINITION.VALUE_PRESE,
+						DEFINITION.DEFINITION_TYPE_CODE,
+						DEFINITION.COMPLEXITY)
+				.values(meaningId, languageCode, value, valuePrese, definitionTypeCode, complexity.name())
 				.returning(DEFINITION.ID)
 				.fetchOne()
 				.getId();

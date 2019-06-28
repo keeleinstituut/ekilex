@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 //lots of properties just in case. should unify usage to less
@@ -24,6 +25,8 @@ public class UpdateItemRequest extends AbstractDataObject {
 	private String currentValue;
 
 	private boolean selected;
+
+	private Complexity complexity;
 
 	public String getTarget() {
 		return target;
@@ -97,4 +100,11 @@ public class UpdateItemRequest extends AbstractDataObject {
 		this.selected = selected;
 	}
 
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
+	}
 }
