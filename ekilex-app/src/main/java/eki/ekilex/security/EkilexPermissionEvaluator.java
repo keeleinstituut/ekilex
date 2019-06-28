@@ -36,7 +36,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 	@Autowired
 	private PermissionDbService permissionDbService;
 
-	@Autowired
+	@Autowired(required = false)
 	private HttpServletRequest request;
 
 	//hasPermission(#foo, 'write')
@@ -105,6 +105,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 	}
 
 	private DatasetPermission getUserRole() {
+		if (request == null) {
+			return null;
+		}
 		HttpSession session = request.getSession();
 		SessionBean sessionBean = (SessionBean) session.getAttribute(WebConstant.SESSION_BEAN);
 		if (sessionBean == null) {
