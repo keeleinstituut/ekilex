@@ -99,4 +99,12 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(WordSynLexeme.class);
 	}
 
+
+	public void changeRelationStatus(Long id, String status) {
+		create.update(WORD_RELATION)
+				.set(WORD_RELATION.RELATION_STATUS, status)
+				.where(WORD_RELATION.ID.eq(id))
+				.execute();
+	}
+
 }

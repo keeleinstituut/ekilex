@@ -16,4 +16,26 @@ function initialise() {
 		});
 	});
 
+	$(document).on("click", ".rel-status-btn", function() {
+		let status = $(this).data('status');
+		let id = $(this).data('id');
+		let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
+
+		let callbackFunc = () => $('#refresh-details').trigger('click');
+
+		doPostRelationChange(actionUrl, callbackFunc);
+
+	});
+
+	function doPostRelationChange(actionUrl, callbackFunc) {
+
+		$.post(actionUrl).done(function(data) {
+				callbackFunc();
+		}).fail(function(data) {
+			openAlertDlg("Andmete muutmine ebaõnnestus.");
+			console.log(data);
+		});
+	}
+
+
 }
