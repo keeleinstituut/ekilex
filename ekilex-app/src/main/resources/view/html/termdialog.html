@@ -81,6 +81,7 @@
               </div>
             </div>
             <div th:id="${'lexeme_grammar_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <input type="hidden" name="complexity" th:value="${complexities[0]}">
               <div class="col-md-12">
                 <input type="text" class="form-control value-select required-field">
               </div>
@@ -207,6 +208,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${grammar.id}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
+            <input type="hidden" name="complexity" th:value="${grammar.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="2" name="value" th:text="${grammar.valueText}"></textarea>
@@ -438,6 +440,7 @@
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
+            <input type="hidden" name="complexity" th:value="${complexities[0]}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
@@ -456,6 +459,7 @@
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.value}">
+            <input type="hidden" name="complexity" th:value="${usage.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">

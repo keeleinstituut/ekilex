@@ -89,7 +89,7 @@ public class EditController implements WebConstant {
 			cudService.createDefinition(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getDataset(), itemData.getComplexity());
 			break;
 		case "usage":
-			cudService.createUsage(itemData.getId(), valuePrese, itemData.getLanguage());
+			cudService.createUsage(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getComplexity());
 			break;
 		case "usage_translation":
 			cudService.createUsageTranslation(itemData.getId(), valuePrese, itemData.getLanguage());
@@ -108,7 +108,7 @@ public class EditController implements WebConstant {
 			cudService.createMeaningDomain(itemData.getId2(), meaningDomain);
 			break;
 		case "government":
-			cudService.createLexemeGovernment(itemData.getId(), valuePrese);
+			cudService.createLexemeGovernment(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK: {
 			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
@@ -144,7 +144,7 @@ public class EditController implements WebConstant {
 			cudService.updateWordAspect(itemData.getId3(), valuePrese);
 			break;
 		case "lexeme_grammar":
-			cudService.createLexemeGrammar(itemData.getId(), valuePrese);
+			cudService.createLexemeGrammar(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
 		case "word_relation":
 			cudService.createWordRelation(itemData.getId(), itemData.getId2(), valuePrese);
@@ -194,7 +194,7 @@ public class EditController implements WebConstant {
 			langSelect.setSelected(!langSelect.isSelected());
 			break;
 		case "usage":
-			cudService.updateUsageValue(itemData.getId(), valuePrese);
+			cudService.updateUsageValue(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
 		case "usage_translation":
 			cudService.updateUsageTranslationValue(itemData.getId(), valuePrese);
@@ -217,7 +217,7 @@ public class EditController implements WebConstant {
 			cudService.updateMeaningDomain(itemData.getId(), currentMeaningDomain, newMeaningDomain);
 			break;
 		case "government":
-			cudService.updateLexemeGovernment(itemData.getId(), valuePrese);
+			cudService.updateLexemeGovernment(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
 		case "lexeme_deriv":
 			cudService.updateLexemeDeriv(itemData.getId(), itemData.getCurrentValue(), valuePrese);
@@ -235,7 +235,7 @@ public class EditController implements WebConstant {
 			cudService.updateWordType(itemData.getId(), itemData.getCurrentValue(), valuePrese);
 			break;
 		case "lexeme_grammar":
-			cudService.updateLexemeGrammar(itemData.getId(), valuePrese);
+			cudService.updateLexemeGrammar(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(itemData.getId(), valuePrese);

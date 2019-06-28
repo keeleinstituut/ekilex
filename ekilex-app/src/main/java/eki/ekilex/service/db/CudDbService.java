@@ -184,6 +184,15 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
+	public void updateFreeformTextValueAndComplexity(Long id, String value, String valuePrese, Complexity complexity) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, value)
+				.set(FREEFORM.VALUE_PRESE, valuePrese)
+				.set(FREEFORM.COMPLEXITY, complexity.name())
+				.where(FREEFORM.ID.eq(id))
+				.execute();
+	}
+
 	public void updateDefinition(Long id, String value, String valuePrese, Complexity complexity) {
 		create.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
@@ -611,10 +620,10 @@ public class CudDbService implements DbConstant {
 		return lexemeId;
 	}
 
-	public Long createUsage(Long lexemeId, String value, String valuePrese, String languageCode) {
+	public Long createUsage(Long lexemeId, String value, String valuePrese, String languageCode, Complexity complexity) {
 		Long usageFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG)
-				.values(FreeformType.USAGE.name(), value, valuePrese, languageCode)
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG, FREEFORM.COMPLEXITY)
+				.values(FreeformType.USAGE.name(), value, valuePrese, languageCode, complexity.name())
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
@@ -656,10 +665,10 @@ public class CudDbService implements DbConstant {
 		return freeform.getId();
 	}
 
-	public Long createLexemeGovernment(Long lexemeId, String government) {
+	public Long createLexemeGovernment(Long lexemeId, String government, Complexity complexity) {
 		Long governmentFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
-				.values(FreeformType.GOVERNMENT.name(), government)
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.COMPLEXITY)
+				.values(FreeformType.GOVERNMENT.name(), government, complexity.name())
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
@@ -667,11 +676,11 @@ public class CudDbService implements DbConstant {
 		return governmentFreeformId;
 	}
 
-	public Long createLexemeGrammar(Long lexemeId, String value) {
+	public Long createLexemeGrammar(Long lexemeId, String value, Complexity complexity) {
 	
 		Long grammarFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
-				.values(FreeformType.GRAMMAR.name(), value)
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.COMPLEXITY)
+				.values(FreeformType.GRAMMAR.name(), value, complexity.name())
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
