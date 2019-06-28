@@ -2,16 +2,54 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-//TODO - think - can we use the existing Relation POJO just by adding oppsoiteRelation and params attributes to it
-public class SynRelation {
+import eki.common.constant.RelationStatus;
+import eki.common.data.AbstractDataObject;
+
+public class SynRelation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1896105442587879210L;
 
-	private Relation wordRelation;
+	private Long id;
 
-	private Relation oppositeRelation;
+	private String word;
+
+	private RelationStatus relationStatus;
+
+	private RelationStatus oppositeRelationStatus;
 
 	private List<RelationParam> relationParams;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getWord() {
+		return word;
+	}
+
+	public void setWord(String word) {
+		this.word = word;
+	}
+
+	public RelationStatus getRelationStatus() {
+		return relationStatus;
+	}
+
+	public void setRelationStatus(RelationStatus relationStatus) {
+		this.relationStatus = relationStatus;
+	}
+
+	public RelationStatus getOppositeRelationStatus() {
+		return oppositeRelationStatus;
+	}
+
+	public void setOppositeRelationStatus(RelationStatus oppositeRelationStatus) {
+		this.oppositeRelationStatus = oppositeRelationStatus;
+	}
 
 	public List<RelationParam> getRelationParams() {
 		return relationParams;
@@ -19,21 +57,5 @@ public class SynRelation {
 
 	public void setRelationParams(List<RelationParam> relationParams) {
 		this.relationParams = relationParams;
-	}
-
-	public Relation getWordRelation() {
-		return wordRelation;
-	}
-
-	public void setWordRelation(Relation wordRelation) {
-		this.wordRelation = wordRelation;
-	}
-
-	public Relation getOppositeRelation() {
-		return oppositeRelation;
-	}
-
-	public void setOppositeRelation(Relation oppositeRelation) {
-		this.oppositeRelation = oppositeRelation;
 	}
 }

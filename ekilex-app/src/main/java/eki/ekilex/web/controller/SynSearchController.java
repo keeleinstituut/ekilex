@@ -27,7 +27,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.UserRole;
-import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.SynSearchService;
@@ -130,7 +130,7 @@ public class SynSearchController extends AbstractSearchController {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}
 		List<String> filteredDatasets = cleanDatasetCodesForRole(selectedDatasets, sessionBean);
-		WordDetails details = synSearchService.getWordDetailsSynonyms(wordId, filteredDatasets);
+		WordSynDetails details = synSearchService.getWordSynDetails(wordId, filteredDatasets);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
