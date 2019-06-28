@@ -129,21 +129,22 @@
         <div class="col-4 pr-2">
           <div class="card shadow mb-2">
             <div class="lbl mb-2">Sünonüümid</div>
-            <td th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
-              <table width="100%">
-                <tr>
+            <div th:if="${!#lists.isEmpty(details.relations)}">
+              <table width="100%" class="orderable" data-op-code="word_relation">
+                <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}">
                   <td width="10%" align="center">
                     <span th:title="#{|relationstatus.${synRelation.relationStatus}|}">
                       <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i>
                     </span>
                   </td>
-                  <td width="45%"  class="hidden-buttons">
+                  <td width="65%"  class="hidden-buttons">
                     <span class="btn-custom" th:text="${synRelation.word}"/>
                     <span class="pull-right">
-                      <button type="button" class="btn badge badge-secondary" title="Liiguta üles">
+
+                      <button type="button" th:hidden="${relationIter.first}" class="btn badge badge-secondary order-up" title="Muuda järjestust">
                         <i class="fa fa-arrow-up" aria-hidden="true"></i>
                       </button>
-                      <button type="button" class="btn badge badge-secondary" title="Liiguta alla">
+                      <button type="button" th:hidden="${relationIter.last}" class="btn badge badge-secondary order-down" title="Muuda järjestust">
                         <i class="fa fa-arrow-down" aria-hidden="true"></i>
                       </button>
                       <button type="button" class="btn badge badge-success rel-status-btn" th:data-id="${synRelation.id}" data-status="CONFIRMED" title="Kinnita">
@@ -157,7 +158,7 @@
                       </button>
                     </span>
                   </td>
-                  <td width="30%" align="right">
+                  <td width="10%" align="right">
                     <span th:if="${synRelation.oppositeRelationStatus != null}">
                       <span th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}">
                         <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i>

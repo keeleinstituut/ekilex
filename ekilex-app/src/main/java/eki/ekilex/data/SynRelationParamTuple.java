@@ -21,6 +21,9 @@ public class SynRelationParamTuple extends AbstractDataObject {
 	@Column(name= "opposite_relation_status")
 	private RelationStatus oppositeRelationStatus;
 
+	@Column(name = "order_by")
+	private Long orderBy;
+
 	@Column(name= "param_name")
 	private String paramName;
 
@@ -73,5 +76,13 @@ public class SynRelationParamTuple extends AbstractDataObject {
 
 	public void setParamValue(String paramValue) {
 		this.paramValue = paramValue;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 }

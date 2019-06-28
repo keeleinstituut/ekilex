@@ -161,6 +161,6 @@ public class SynSearchController extends AbstractSearchController {
 
 		synSearchService.changeRelationStatus(id, status);
 
-		return StringUtils.EMPTY;
+		return "{}";
 	}
 }

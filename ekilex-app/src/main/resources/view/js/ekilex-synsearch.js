@@ -27,6 +27,16 @@ function initialise() {
 
 	});
 
+	$(document).on('click', '.order-up', function() {
+		let orderingData = changeItemOrdering($(this), -1);
+		postJson(applicationUrl + 'update_ordering', orderingData);
+	});
+
+	$(document).on('click', '.order-down', function() {
+		let orderingData = changeItemOrdering($(this), 1);
+		postJson(applicationUrl + 'update_ordering', orderingData);
+	});
+
 	function doPostRelationChange(actionUrl, callbackFunc) {
 
 		$.post(actionUrl).done(function(data) {
