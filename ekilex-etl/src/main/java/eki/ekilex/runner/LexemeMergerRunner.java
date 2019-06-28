@@ -205,23 +205,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 				allLexemes.add(lexeme);
 			}
 
-			String word = wordMeaningPair.getWord();
-			Long wordId = wordMeaningPair.getWordId();
-			Long meaningId = wordMeaningPair.getMeaningId();
-
-			LexemeExt sumLexeme = new LexemeExt();
-			sumLexeme.setWordId(wordId);
-			sumLexeme.setMeaningId(meaningId);
+			LexemeExt sumLexeme = composeSumLexeme(wordMeaningPair, allLexemes, nonSsWordLexemeLevelMap, countsMap);
 			sumLexeme.setDatasetCode(lexemeMergeName);
 
-			if (CollectionUtils.size(allLexemes) == 1) {
-				//copy single to single lexeme
-				LexemeExt singleLexeme = allLexemes.get(0);
-				composeSumLexeme(sumLexeme, singleLexeme);
-			} else {
-				//compare and copy sum into single lexeme
-				composeSumLexeme(wordMeaningPair, sumLexeme, allLexemes, nonSsWordLexemeLevelMap, countsMap);
-			}
 			Long sumLexemeId = createLexeme(sumLexeme);
 			sumLexemeCount.increment();
 			for (Long lexemeId : lexemeIds) {
@@ -229,6 +215,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 				summableLexemeCount.increment();
 			}
 
+			String word = wordMeaningPair.getWord();
 			createLexemeFreeformsAndSourceLinks(sumLexemeId, allLexemes, countsMap);
 			createLexemeFrequencies(sumLexemeId, allLexemes);
 			createLexemeRegisters(word, sumLexemeId, allLexemes);
@@ -361,25 +348,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		logger.info("Created {} lexeme process logs", sumLexemeProcessLogCount.getValue());
 	}
 
-	private void composeSumLexeme(LexemeExt sumLexeme, LexemeExt lexeme) {
-		sumLexeme.setFrequencyGroupCode(lexeme.getFrequencyGroupCode());
-		sumLexeme.setCorpusFrequency(lexeme.getCorpusFrequency());
-		sumLexeme.setLevel1(lexeme.getLevel1());
-		sumLexeme.setLevel2(lexeme.getLevel2());
-		sumLexeme.setLevel3(lexeme.getLevel3());
-		sumLexeme.setValueStateCode(lexeme.getValueStateCode());
-		sumLexeme.setProcessStateCode(lexeme.getProcessStateCode());
-		sumLexeme.setFreeforms(lexeme.getFreeforms());
-		sumLexeme.setLexemeFrequencies(lexeme.getLexemeFrequencies());
-		sumLexeme.setLexemeRegisters(lexeme.getLexemeRegisters());
-		sumLexeme.setLexemePoses(lexeme.getLexemePoses());
-		sumLexeme.setLexemeDerivs(lexeme.getLexemeDerivs());
-		sumLexeme.setLexemeRegions(lexeme.getLexemeRegions());
-		sumLexeme.setLexemeSourceLinks(lexeme.getLexemeSourceLinks());
-	}
-
-	private void composeSumLexeme(
-			WordMeaningPair wordMeaningPair, Lexeme sumLexeme, List<LexemeExt> allLexemes,
+	private LexemeExt composeSumLexeme(WordMeaningPair wordMeaningPair, List<LexemeExt> allLexemes,
 			Map<Long, Integer> nonSsWordLexemeLevelMap, Map<String, Count> countsMap) throws Exception {
 
 		Count tooManyFreqGroupCodeCount = countsMap.get("tooManyFreqGroupCodeCount");
@@ -387,6 +356,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		String word = wordMeaningPair.getWord();
 		Long wordId = wordMeaningPair.getWordId();
+		Long meaningId = wordMeaningPair.getMeaningId();
 		boolean mainDatasetLexemeExists = wordMeaningPair.isMainDatasetLexemeExists();
 		Integer mainDatasetLexemeMaxLevel1 = wordMeaningPair.getMainDatasetLexemeMaxLevel1();
 
@@ -473,6 +443,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			sumProcessStateCode = processStateCodeCandidates.get(0);
 		}
 
+		LexemeExt sumLexeme = new LexemeExt();
+		sumLexeme.setWordId(wordId);
+		sumLexeme.setMeaningId(meaningId);
 		sumLexeme.setFrequencyGroupCode(sumFrequencyGroupCode);
 		sumLexeme.setCorpusFrequency(sumCorpusFrequency);
 		sumLexeme.setLevel1(sumLevel1);
@@ -480,6 +453,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		sumLexeme.setLevel3(sumLevel3);
 		sumLexeme.setValueStateCode(sumValueStateCode);
 		sumLexeme.setProcessStateCode(sumProcessStateCode);
+
+		return sumLexeme;
 	}
 
 	private void createDatasetIfNotExists(String datasetCode) throws Exception {
