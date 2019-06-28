@@ -70,27 +70,4 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		return result;
 	}
 
-
-	// protected void populateSynLexeme(WordLexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction, Map<String, String> datasetNameMap) {
-	//
-	// 	Long lexemeId = lexeme.getLexemeId();
-	// 	Long wordId = lexeme.getWordId();
-	// 	Long meaningId = lexeme.getMeaningId();
-	//
-	// 	List<Word> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
-	// 	List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-	// 	List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
-	// 	List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
-	//
-	// 	List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-	// 			commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-	// 	List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-	//
-	// 	lexeme.setPos(lexemePos);
-	// 	lexeme.setMeaningWords(meaningWords);
-	// 	lexeme.setDefinitions(definitions);
-	// 	lexeme.setUsages(usages);
-	//
-	// }
-
 }

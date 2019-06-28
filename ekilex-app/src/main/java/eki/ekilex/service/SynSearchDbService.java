@@ -14,8 +14,6 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.SelectField;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
@@ -76,7 +74,15 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
-		return create.select(getWordSynLexemeSelectFields())
+		return create.select(
+					WORD.ID.as("word_id"),
+					LEXEME.ID.as("lexeme_id"),
+					LEXEME.MEANING_ID,
+					LEXEME.DATASET_CODE.as("dataset"),
+					LEXEME.LEVEL1,
+					LEXEME.LEVEL2,
+					LEXEME.LEVEL3
+				)
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
 				.where(
 						WORD.ID.eq(wordId)
@@ -91,20 +97,6 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
 				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetchInto(WordSynLexeme.class);
-	}
-
-	private SelectField<?>[] getWordSynLexemeSelectFields() {
-
-		return new Field<?>[] {
-				//DSL.arrayAggDistinct(FORM.VALUE).as("words"),
-				WORD.ID.as("word_id"),
-				LEXEME.ID.as("lexeme_id"),
-				LEXEME.MEANING_ID,
-				LEXEME.DATASET_CODE.as("dataset"),
-				LEXEME.LEVEL1,
-				LEXEME.LEVEL2,
-				LEXEME.LEVEL3,
-		};
 	}
 
 }

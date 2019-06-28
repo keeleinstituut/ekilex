@@ -35,19 +35,18 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
 
-
 	@Transactional
 	public WordSynDetails getWordSynDetails(Long wordId, List<String> selectedDatasetCodes) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordSynLexemes(wordId, searchDatasetsRestriction);
-
-		List<SynRelationParamTuple> relationTuples = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
-		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
-
 		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, searchDatasetsRestriction));
-
 		lexemeLevelCalcUtil.combineLevels(synLexemes);
+
+		List<SynRelationParamTuple> relationTuples =
+				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
+		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
 
 		WordSynDetails wordDetails = new WordSynDetails();
 		wordDetails.setLexemes(synLexemes);
