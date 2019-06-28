@@ -76,6 +76,10 @@
             <div class="card-body" data-lexeme-title>
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
+                  <span th:if="${lexeme.levels != null}" class="pl-1 pr-1">
+                    <span th:text="${lexeme.levels}"></span>
+                  </span>
+
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
@@ -84,10 +88,6 @@
                     </div>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
-
-                  <span th:if="${lexeme.levels != null}" class="pl-1">
-                        <span class="lbl" th:text="#{syn.search.level}">Tähendustase</span> <span th:text="${lexeme.levels}"></span>
-                  </span>
                 </div>
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
@@ -116,21 +116,8 @@
                 <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
                   <div class="col pl-0">
                     <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
-                      <div th:with="usage= ${lexeme.usages[0]}, isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
-                        <div class="row" th:each="usageTranslation : ${usage.translations}">
-                          <div th:replace="lexdialog :: edit_usage_translation_dlg"></div>
-                          <div class="col">
-                            <!-- intentional generic lexeme perm on translations -->
-                            <div class="col">
-                              <span th:utext="${usageTranslation.value}"></span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row" th:each="usageDefinition : ${usage.definitions}">
-                          <div class="col">
-                            <span th:utext="${usageDefinition.value}"></span>
-                          </div>
-                        </div>
+                      <div th:with="usage= ${lexeme.usages[0]}">
+                        <div class="col" th:utext="${usage.value}"></div>
                       </div>
                     </th:block>
                   </div>
