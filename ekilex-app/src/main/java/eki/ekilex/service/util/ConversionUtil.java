@@ -726,8 +726,10 @@ public class ConversionUtil {
 				relation = new SynRelation();
 				relation.setId(paramTuple.getRelationId());
 				relation.setWord(paramTuple.getWord());
-				relation.setRelationParams(new ArrayList<>());
+				relation.setOrderBy(paramTuple.getOrderBy());
 				relation.setRelationStatus(paramTuple.getRelationStatus());
+
+				relation.setRelationParams(new ArrayList<>());
 
 				relationMap.put(relation.getId(), relation);
 				synRelations.add(relation);

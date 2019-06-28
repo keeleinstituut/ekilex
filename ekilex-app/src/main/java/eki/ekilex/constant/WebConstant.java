@@ -168,6 +168,8 @@ public interface WebConstant {
 
 	String SYN_WORD_DETAILS_URI = "/syn_worddetails";
 
+	String SYN_CHANGE_RELATION_STATUS = "/syn_relation_status";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";

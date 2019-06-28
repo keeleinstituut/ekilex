@@ -1,5 +1,5 @@
 package eki.common.constant;
 
 public enum RelationStatus {
-	UNDEFINED;
+	UNDEFINED, CONFIRMED, HANDLED, DELETED;
 }

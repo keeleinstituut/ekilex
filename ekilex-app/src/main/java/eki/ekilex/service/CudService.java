@@ -93,10 +93,10 @@ public class CudService extends AbstractService {
 
 	//@PreAuthorize("hasPermission(#id, 'USAGE', 'DATASET:CRUD')")
 	@Transactional
-	public void updateUsageValue(Long id, String valuePrese) {
+	public void updateUsageValue(Long id, String valuePrese, Complexity complexity) {
 		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		cudDbService.updateFreeformTextValue(id, value, valuePrese);
+		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
 	}
 
 	@Transactional
@@ -138,15 +138,15 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateLexemeGovernment(Long id, String value) {
+	public void updateLexemeGovernment(Long id, String value, Complexity complexity) {
 		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, value);
-		cudDbService.updateFreeformTextValue(id, value, null);
+		cudDbService.updateFreeformTextValueAndComplexity(id, value, null, complexity);
 	}
 
 	@Transactional
-	public void updateLexemeGrammar(Long id, String value) {
+	public void updateLexemeGrammar(Long id, String value, Complexity complexity) {
 		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, value);
-		cudDbService.updateFreeformTextValue(id, value, null);
+		cudDbService.updateFreeformTextValueAndComplexity(id, value, null, complexity);
 	}
 
 	@Transactional
@@ -307,9 +307,9 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createUsage(Long lexemeId, String valuePrese, String languageCode) {
+	public void createUsage(Long lexemeId, String valuePrese, String languageCode, Complexity complexity) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long usageId = cudDbService.createUsage(lexemeId, value, valuePrese, languageCode);
+		Long usageId = cudDbService.createUsage(lexemeId, value, valuePrese, languageCode, complexity);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
 	}
 
@@ -352,14 +352,14 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createLexemeGovernment(Long lexemeId, String government) {
-		Long governmentId = cudDbService.createLexemeGovernment(lexemeId, government);
+	public void createLexemeGovernment(Long lexemeId, String government, Complexity complexity) {
+		Long governmentId = cudDbService.createLexemeGovernment(lexemeId, government, complexity);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, government);
 	}
 
 	@Transactional
-	public void createLexemeGrammar(Long lexemeId, String value) {
-		Long grammarId = cudDbService.createLexemeGrammar(lexemeId, value);
+	public void createLexemeGrammar(Long lexemeId, String value, Complexity complexity) {
+		Long grammarId = cudDbService.createLexemeGrammar(lexemeId, value, complexity);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, value);
 	}
 

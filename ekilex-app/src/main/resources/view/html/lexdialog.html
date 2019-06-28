@@ -78,10 +78,26 @@
               <div class="col-md-12">
                 <input type="text" class="form-control value-select required-field">
               </div>
+              <div class="col-md-4 mt-2">
+                <select required class="form-control required-field" name="complexity">
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                  </option>
+                </select>
+              </div>
             </div>
             <div th:id="${'government_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
                 <input type="text" class="form-control value-select required-field">
+              </div>
+              <div class="col-md-4 mt-2">
+                <select required class="form-control required-field" name="complexity">
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                  </option>
+                </select>
               </div>
             </div>
             <div th:id="${'meaning_domain_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
@@ -395,6 +411,15 @@
                 <textarea class="form-control" rows="1" name="value"></textarea>
               </div>
             </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -416,6 +441,17 @@
                 <textarea class="form-control" rows="1" name="value" th:text="${government.value}"></textarea>
               </div>
             </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:selected="${complexity == government.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                  </option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -435,6 +471,15 @@
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -493,6 +538,17 @@
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.value}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:selected="${complexity == usage.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                  </option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -809,6 +865,17 @@
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="2" name="value" th:text="${grammar.valueText}"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:selected="${complexity == grammar.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                  </option>
+                </select>
               </div>
             </div>
           </div>

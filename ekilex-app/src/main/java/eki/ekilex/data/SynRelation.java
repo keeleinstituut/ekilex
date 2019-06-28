@@ -13,6 +13,8 @@ public class SynRelation extends AbstractDataObject {
 
 	private String word;
 
+	private Long orderBy;
+
 	private RelationStatus relationStatus;
 
 	private RelationStatus oppositeRelationStatus;
@@ -57,5 +59,13 @@ public class SynRelation extends AbstractDataObject {
 
 	public void setRelationParams(List<RelationParam> relationParams) {
 		this.relationParams = relationParams;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 }

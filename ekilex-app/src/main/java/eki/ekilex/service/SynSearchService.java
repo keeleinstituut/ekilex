@@ -77,4 +77,8 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	}
 
+	@Transactional
+	public void changeRelationStatus(Long id, String status) {
+		synSearchDbService.changeRelationStatus(id, status);
+	}
 }
