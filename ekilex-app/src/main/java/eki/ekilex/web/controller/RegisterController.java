@@ -1,7 +1,5 @@
 package eki.ekilex.web.controller;
 
-import static java.lang.Thread.sleep;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +27,7 @@ public class RegisterController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
-	private static final String HONEY_POT_CODE = "honeyPotCode";
+	private static final String BOT_PROTECTION_CODE = "botProtectionCode";
 
 	@Autowired
 	private UserService userService;
@@ -43,12 +41,13 @@ public class RegisterController implements WebConstant {
 		if (isAuthenticatedUser) {
 			return "redirect:" + HOME_URI;
 		}
-		setHoneyPotCode(model, request);
+		setBotProtectionCode(model, request);
 		return REGISTER_PAGE;
 	}
 
-	@PostMapping(REGISTER_PAGE_URI)
+	@PostMapping(REGISTER_PAGE_URI + "/{botProtectionCode}")
 	public String registerNewUser(
+			@PathVariable(value = "botProtectionCode", required = false) String botProtectionCode,
 			@RequestParam("email") String email,
 			@RequestParam("name") String name,
 			@RequestParam("salasona") String password,
@@ -57,7 +56,7 @@ public class RegisterController implements WebConstant {
 			RedirectAttributes attributes,
 			HttpServletRequest request) {
 
-		boolean isBotProtectionTriggered = checkBotProtection(request, email);
+		boolean isBotProtectionTriggered = checkBotProtection(request, botProtectionCode, email);
 		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
@@ -83,6 +82,15 @@ public class RegisterController implements WebConstant {
 		}
 	}
 
+	@PostMapping(FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI)
+	public String fakeSubmit(@RequestParam("email") String email, HttpServletRequest request) {
+
+		String clientAddress = request.getRemoteAddr();
+		logger.warn("Fake submit action used. Client IP: {}, email: {}", clientAddress, email);
+		sleep(10);
+		return "redirect:" + LOGIN_PAGE_URI;
+	}
+
 	@GetMapping(REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/{activationKey}")
 	public String activate(@PathVariable(name = "activationKey") String activationKey, Model model, RedirectAttributes attributes) {
 		EkiUser ekiUser = userService.activateUser(activationKey);
@@ -98,14 +106,15 @@ public class RegisterController implements WebConstant {
 
 	@GetMapping(PASSWORD_RECOVERY_URI)
 	public String passwordRecoveryPage(Model model, HttpServletRequest request) {
-		setHoneyPotCode(model, request);
+		setBotProtectionCode(model, request);
 		return PASSWORD_RECOVERY_PAGE;
 	}
 
-	@PostMapping(PASSWORD_RECOVERY_URI)
-	public String recoverPassword(@RequestParam("email") String email, Model model, HttpServletRequest request) {
+	@PostMapping(PASSWORD_RECOVERY_URI + "/{botProtectionCode}")
+	public String recoverPassword(@PathVariable(value = "botProtectionCode", required = false) String botProtectionCode, @RequestParam("email") String email,
+			Model model, HttpServletRequest request) {
 
-		boolean isBotProtectionTriggered = checkBotProtection(request, email);
+		boolean isBotProtectionTriggered = checkBotProtection(request, botProtectionCode, email);
 		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
@@ -119,8 +128,14 @@ public class RegisterController implements WebConstant {
 				} else {
 					model.addAttribute("message", "Salasõna muutmise link:  " + passwordRecoveryLink);
 				}
-				return PASSWORD_RECOVERY_PAGE;
+			} else {
+				if (emailService.isEnabled()) {
+					model.addAttribute("message", "Kui sellise e-postiga kasutaja eksisteerib, siis on salasõna muutmise link on saadetud e-postile: " + email);
+				} else {
+					model.addAttribute("warning", "Salasõna lähtestamine ebaõnnestus");
+				}
 			}
+			return PASSWORD_RECOVERY_PAGE;
 		}
 
 		model.addAttribute("warning", "Salasõna lähtestamine ebaõnnestus");
@@ -161,28 +176,30 @@ public class RegisterController implements WebConstant {
 		return "redirect:" + LOGIN_PAGE_URI;
 	}
 
-	private void setHoneyPotCode(Model model, HttpServletRequest request) {
-		String honeyPotCode = CodeGenerator.generateHoneyPotName();
-		request.getSession().setAttribute(HONEY_POT_CODE, honeyPotCode);
-		model.addAttribute(HONEY_POT_CODE, honeyPotCode);
+	private void setBotProtectionCode(Model model, HttpServletRequest request) {
+		String botProtectionCode = CodeGenerator.generateTimestampCode();
+		request.getSession().setAttribute(BOT_PROTECTION_CODE, botProtectionCode);
+		model.addAttribute(BOT_PROTECTION_CODE, botProtectionCode);
 	}
 
-	private boolean checkBotProtection(HttpServletRequest request, String email) {
+	private boolean checkBotProtection(HttpServletRequest request, String botProtectionCode, String email) {
 
-		String honeyPotCode = (String) request.getSession().getAttribute(HONEY_POT_CODE);
-		request.getSession().removeAttribute(HONEY_POT_CODE);
-		String honeyPot = request.getParameter(honeyPotCode);
-
-		if (StringUtils.isNotEmpty(honeyPot)) {
-			String url = request.getRemoteAddr();
-			logger.warn("Bot protection triggered : url - > {} : honey -> {} : email -> {}", url, honeyPot, email);
-			try {
-				sleep(10 * 1000);
-			} catch (InterruptedException e) {
-			}
+		String correctBotProtectionCode = (String) request.getSession().getAttribute(BOT_PROTECTION_CODE);
+		if (!StringUtils.equals(botProtectionCode, correctBotProtectionCode)) {
+			String clientAddress = request.getRemoteAddr();
+			logger.warn("Bot protection code validation failed. Client IP: {}, email: {}", clientAddress, email);
+			sleep(10);
 			return true;
 		}
 		return false;
+	}
+
+	private void sleep(int seconds) {
+		try {
+			Thread.sleep(seconds * 1000);
+		} catch (InterruptedException e) {
+			logger.warn("InterruptedException");
+		}
 	}
 
 }

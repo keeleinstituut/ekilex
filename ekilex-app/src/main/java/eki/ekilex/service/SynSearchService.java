@@ -1,18 +1,25 @@
 package eki.ekilex.service;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Definition;
+import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
-import eki.ekilex.data.Relation;
-import eki.ekilex.data.RelationParam;
-import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.SynRelationParamTuple;
+import eki.ekilex.data.Usage;
+import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.data.Word;
+import eki.ekilex.data.WordSynDetails;
+import eki.ekilex.data.WordSynLexeme;
+import eki.ekilex.service.db.LexSearchDbService;
+import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
 public class SynSearchService extends AbstractWordSearchService {
@@ -22,40 +29,52 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Autowired
 	private SynSearchDbService synSearchDbService;
 
-	public WordDetails getWordDetailsSynonyms(Long wordId, List<String> selectedDatasetCodes) {
-		WordDetails details = getWordDetails(wordId, selectedDatasetCodes);
-		populateSynRelations(details);
+	@Autowired
+	private LexSearchDbService lexSearchDbService;
 
+	@Autowired
+	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
 
-		return details;
+	@Transactional
+	public WordSynDetails getWordSynDetails(Long wordId, List<String> selectedDatasetCodes) {
+
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+
+		List<WordSynLexeme> synLexemes = synSearchDbService.getWordSynLexemes(wordId, searchDatasetsRestriction);
+		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, searchDatasetsRestriction));
+		lexemeLevelCalcUtil.combineLevels(synLexemes);
+
+		List<SynRelationParamTuple> relationTuples =
+				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
+		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
+
+		WordSynDetails wordDetails = new WordSynDetails();
+		wordDetails.setLexemes(synLexemes);
+		wordDetails.setRelations(relations);
+
+		return wordDetails;
+	}
+
+	private void populateSynLexeme(WordSynLexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction) {
+
+		Long lexemeId = lexeme.getLexemeId();
+		Long wordId = lexeme.getWordId();
+		Long meaningId = lexeme.getMeaningId();
+
+		List<Word> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
+		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+
+		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
+				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
+
+		lexeme.setPos(lexemePos);
+		lexeme.setMeaningWords(meaningWords);
+		lexeme.setDefinitions(definitions);
+		lexeme.setUsages(usages);
 
 	}
 
-	private void populateSynRelations(WordDetails wordDetails) {
-
-		wordDetails.setWordSynRelations(new ArrayList<>());
-
-		List<Relation> rawRelations = wordDetails.getWordRelations()
-				.stream()
-				.filter(r-> RAW_RELATION_CODE.equals(r.getRelationTypeCode()))
-				.collect(toList());
-
-		if (CollectionUtils.isNotEmpty(rawRelations)) {
-			rawRelations.forEach(relation -> {
-				SynRelation synRelation = new SynRelation();
-				synRelation.setWordRelation(relation);
-
-				Relation oppositeRelation = synSearchDbService.
-						getOppositeRelation(wordDetails.getWord().getWordId(), relation.getWordId(), RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
-
-				synRelation.setOppositeRelation(oppositeRelation);
-
-				List<RelationParam> relationParams = synSearchDbService.getRelationParameters(relation.getId());
-				synRelation.setRelationParams(relationParams);
-
-				wordDetails.getWordSynRelations().add(synRelation);
-
-			});
-		}
-	}
 }

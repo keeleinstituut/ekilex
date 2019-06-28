@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import javax.persistence.Column;
 
+import eki.common.constant.RelationStatus;
 import eki.common.data.AbstractDataObject;
 
 public class Relation extends AbstractDataObject {
@@ -39,7 +40,7 @@ public class Relation extends AbstractDataObject {
 	private Long orderBy;
 
 	@Column(name = "relation_status")
-	private String relationStatus;
+	private RelationStatus relationStatus;
 
 
 	public Long getId() {
@@ -122,11 +123,11 @@ public class Relation extends AbstractDataObject {
 		this.relationTypeCode = relationTypeCode;
 	}
 
-	public String getRelationStatus() {
+	public RelationStatus getRelationStatus() {
 		return relationStatus;
 	}
 
-	public void setRelationStatus(String relationStatus) {
+	public void setRelationStatus(RelationStatus relationStatus) {
 		this.relationStatus = relationStatus;
 	}
 }

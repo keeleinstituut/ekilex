@@ -684,6 +684,7 @@
             <input type="hidden" name="language" value="est">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value">
+            <input type="hidden" name="complexity" th:value="${complexities[0]}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-8">
@@ -726,6 +727,7 @@
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.value}">
+            <input type="hidden" name="complexity" th:value="${definition.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">

@@ -41,7 +41,10 @@ import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.RelationParam;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermMeaningWord;
 import eki.ekilex.data.TermMeaningWordTuple;
@@ -502,6 +505,7 @@ public class ConversionUtil {
 				Complexity definitionComplexity = definitionRefTuple.getDefinitionComplexity();
 				Long definitionOrderBy = definitionRefTuple.getDefinitionOrderBy();
 				String definitionTypeCode = definitionRefTuple.getDefinitionTypeCode();
+				List<String> definitionDatasetCodes = definitionRefTuple.getDefinitionDatasetCodes();
 				definition = new Definition();
 				definition.setId(definitionId);
 				definition.setValue(definitionValue);
@@ -509,6 +513,7 @@ public class ConversionUtil {
 				definition.setComplexity(definitionComplexity);
 				definition.setOrderBy(definitionOrderBy);
 				definition.setTypeCode(definitionTypeCode);
+				definition.setDatasetCodes(definitionDatasetCodes);
 				definition.setSourceLinks(new ArrayList<>());
 				definitionMap.put(definitionId, definition);
 				definitions.add(definition);
@@ -712,4 +717,36 @@ public class ConversionUtil {
 		collocation.getCollocMembers().add(collocMember);
 	}
 
+	public List<SynRelation> composeSynRelations(List<SynRelationParamTuple> synRelationParamTuples) {
+		List<SynRelation> synRelations = new ArrayList<>();
+		Map<Long, SynRelation> relationMap = new HashMap<>();
+		for (SynRelationParamTuple paramTuple : synRelationParamTuples) {
+			SynRelation relation = relationMap.get(paramTuple.getRelationId());
+			if (relation == null) {
+				relation = new SynRelation();
+				relation.setId(paramTuple.getRelationId());
+				relation.setWord(paramTuple.getWord());
+				relation.setRelationParams(new ArrayList<>());
+				relation.setRelationStatus(paramTuple.getRelationStatus());
+
+				relationMap.put(relation.getId(), relation);
+				synRelations.add(relation);
+
+			}
+
+			if (paramTuple.getOppositeRelationStatus() != null) {
+				relation.setOppositeRelationStatus(paramTuple.getOppositeRelationStatus());
+			}
+
+			if (StringUtils.isNotBlank(paramTuple.getParamName()) && StringUtils.isNotBlank(paramTuple.getParamValue())) {
+				RelationParam param = new RelationParam();
+				param.setName(paramTuple.getParamName());
+				param.setValue(paramTuple.getParamValue());
+
+				relation.getRelationParams().add(param);
+			}
+		}
+
+		return synRelations;
+	}
 }

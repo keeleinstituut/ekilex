@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+
+
+  <th:block th:fragment="syn_stats_dlg(synRelation)">
+
+    <div class="modal" style="position: absolute" role="dialog" th:id="${'synStatsDlg' + synRelation.id}">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="color: white; background-color: black">
+            <span th:text="${synRelation.word}"/>
+            <span class="pull-right ml-auto"><button type="button" class="btn btn-sm" data-dismiss="modal">X</button></span>
+          </div>
+          <div class="modal-body" style="color: white; background-color: black">
+            <table width="100%">
+              <tr th:each="relationParam : ${synRelation.relationParams}">
+                <td width="50%" th:text="${relationParam.name}"/>
+                <td width="50%" th:text="${relationParam.value}"/>
+              </tr>
+            </table>
+        </div>
+      </div>
+
+    </div>
+    </div>
+  </th:block>
+</body>
+</html>

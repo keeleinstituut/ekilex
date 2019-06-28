@@ -259,6 +259,9 @@
                             <div class="pr-3">
                               <span th:utext="${definition.value}"></span>
                               <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${definition.complexity}} + ')'"></span>
+                              <span class="ctxt"
+                                    th:each="datasetCode,iter : ${definition.datasetCodes}"
+                                    th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
                             </div>
                             <div class="action-buttons-2">
                               <button type="button" class="btn badge badge-primary"

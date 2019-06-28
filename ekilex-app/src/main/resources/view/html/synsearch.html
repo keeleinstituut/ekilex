@@ -28,10 +28,7 @@
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
         <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
           <div class="card-body p-2">
-<!--            TODO commented out temporarily. Undo or remove completely after receiving feedback-->
-<!--            <a href="/" id="show-all-btn">-->
-              <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
-<!--            </a>-->
+            <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
             <table id="results" class="table table-striped mb-0">
               <tr th:each="word : ${wordsResult.words}">
                 <td class="p-0">
@@ -63,9 +60,6 @@
       </div>
     </div>
 
-
-
-
   </div>
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:data-id="${wordId}" id="syn_details_div"
@@ -90,13 +84,9 @@
                     </div>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
-                  <span th:if="${lexeme.levels != null}"
-                        th:data-id="${lexeme.lexemeId}"
-                        th:data-level1="${lexeme.level1}"
-                        th:data-level2="${lexeme.level2}"
-                        th:data-level3="${lexeme.level3}"
-                        class="pl-1">
-                    <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
+
+                  <span th:if="${lexeme.levels != null}" class="pl-1">
+                        <span class="lbl" th:text="#{syn.search.level}">Tähendustase</span> <span th:text="${lexeme.levels}"></span>
                   </span>
                 </div>
               </div>
@@ -104,20 +94,29 @@
                 <span th:utext="${lexeme.definitions.get(0).value}"></span>
               </div>
             </div>
+
+
+            <div class="row" th:if="${not #lists.isEmpty(lexeme.pos)}">
+              <div class="col pl-4">
+                <span th:each="classif,classifIter : ${lexeme.pos}" class="hidden-buttons">
+
+                <span th:text="${classif.code}"></span>
+                <th:block th:unless="${classif.code == classif.value}">
+                  -
+                  <span th:text="${classif.value}"></span>
+                </th:block>
+
+                  <span th:unless="${classifIter.last}">,</span>
+                </span>
+              </div>
+            </div>
+
             <div class="card-body" th:data-id="${lexeme.lexemeId}">
               <div class="d-flex align-items-center flex-wrap">
                 <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
-                  <hr />
-                  <div class="col pr-0 col-w13rem">
-                    <span class="lbl">Kasutusnäited</span>
-                  </div>
                   <div class="col pl-0">
                     <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
-                      <div th:each="usage,usageIter : ${lexeme.usages}"
-                           th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
-                        <div class="row">
-
-                        </div>
+                      <div th:with="usage= ${lexeme.usages[0]}, isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
                         <div class="row" th:each="usageTranslation : ${usage.translations}">
                           <div th:replace="lexdialog :: edit_usage_translation_dlg"></div>
                           <div class="col">
@@ -129,11 +128,8 @@
                         </div>
                         <div class="row" th:each="usageDefinition : ${usage.definitions}">
                           <div class="col">
-                              <span th:utext="${usageDefinition.value}"></span>
+                            <span th:utext="${usageDefinition.value}"></span>
                           </div>
-                        </div>
-                        <div class="w-50" th:unless="${usageIter.last}">
-                          <hr />
                         </div>
                       </div>
                     </th:block>
@@ -144,19 +140,47 @@
             </div>
           </div>
         </div>
-        <div class="col-3 pr-2">
+        <div class="col-4 pr-2">
           <div class="card shadow mb-2">
             <div class="lbl mb-2">Sünonüümid</div>
-            <div th:if="${!#lists.isEmpty(details.wordSynRelations)}" th:each="synRelation : ${details.wordSynRelations}">
-              <span class="btn-custom" th:text="${synRelation.wordRelation.word}"/>
-              <span th:if="${synRelation.oppositeRelation != null}">
-                <span style="font-family:'LucidaGrande', 'Lucida Grande';">↳</span>
-                <span style="font-family:'ArialMT', 'Arial';" th:text="${synRelation.oppositeRelation.word + ' (' + synRelation.oppositeRelation.relationStatus + ')'}"></span>
-              </span>
+            <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
+              <table width="100%">
+                <tr>
+                  <td width="10%" align="center">
+                    <span th:title="#{|relationstatus.${synRelation.relationStatus}|}">
+                      <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i>
+                    </span>
+                  </td>
+                  <td width="30%">
+                    <span class="btn-custom" th:text="${synRelation.word}"/>
+                  </td>
+                  <td width="40%">
+                    <span th:if="${synRelation.oppositeRelationStatus != null}">
+                      <span th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}">
+                        <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i>
+                      </span>
+                    </span>
+                  </td>
+                  <td align="right">
+                    <span>
+                      <button type="button" class="btn badge badge-secondary"
+                              data-toggle="modal"
+                              th:data-target="${'#synStatsDlg' + synRelation.id}">
+                            <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+
+    <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
+      <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>
   </th:block>
 
@@ -165,7 +189,7 @@
   <!--<div th:replace="common :: #confirmDlg"></div>-->
 
   <script th:inline="javascript">
-  	initialise();
+	  initialise();
   </script>
 </body>
 </html>

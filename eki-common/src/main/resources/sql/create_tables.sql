@@ -1037,6 +1037,7 @@ create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
 create index word_relation_word1_id_idx on word_relation(word1_id);
 create index word_relation_word2_id_idx on word_relation(word2_id);
+create index word_relation_word_rel_type_code_idx on word_relation(word_rel_type_code);
 create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);
 create index freeform_parent_id_idx on freeform(parent_id);
 create index freeform_value_text_idx on freeform(value_text);

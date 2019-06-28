@@ -187,3 +187,13 @@ insert into freeform (id, parent_id, type, value_text, lang, complexity) values 
 insert into meaning_freeform (id, meaning_id, freeform_id) values (1001, 2024, 1001);
 insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1002, 4001, 1003);
 insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1003, 4001, 1004);
+
+insert into word_relation(id, word1_id, word2_id, word_rel_type_code, relation_status) values (1001, 1003, 1004, 'raw', 'UNDEFINED');
+insert into word_relation(id, word1_id, word2_id, word_rel_type_code, relation_status) values (1002, 1003, 1005, 'deriv', 'UNDEFINED');
+insert into word_relation(id, word1_id, word2_id, word_rel_type_code, relation_status) values (1003, 1003, 1006, 'raw', 'UNDEFINED');
+insert into word_relation(id, word1_id, word2_id, word_rel_type_code, relation_status) values (1004, 1006, 1003, 'raw', 'UNDEFINED');
+insert into word_relation(id, word1_id, word2_id, word_rel_type_code, relation_status) values (1005, 1004, 1003, 'deriv', 'UNDEFINED');
+
+insert into word_relation_param(id, word_relation_id, name, value) values (1001, 1001, 'param1.1', '0.001');
+insert into word_relation_param(id, word_relation_id, name, value) values (1002, 1002, 'param1.2', '0.002');
+insert into word_relation_param(id, word_relation_id, name, value) values (1003, 1001, 'param2.2', '0.003');
