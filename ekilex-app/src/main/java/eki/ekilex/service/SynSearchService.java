@@ -47,8 +47,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, searchDatasetsRestriction));
 
-		//TODO if needed
-		//lexemeLevelCalcUtil.combineLevels(lexemes);
+		lexemeLevelCalcUtil.combineLevels(synLexemes);
 
 		WordSynDetails wordDetails = new WordSynDetails();
 		wordDetails.setLexemes(synLexemes);

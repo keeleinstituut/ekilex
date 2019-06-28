@@ -6,7 +6,7 @@ import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordLexeme extends AbstractDataObject {
+public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCalc {
 
 	private static final long serialVersionUID = 1L;
 

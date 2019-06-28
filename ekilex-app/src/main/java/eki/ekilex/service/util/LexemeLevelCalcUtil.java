@@ -11,11 +11,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordLexemeLevelCalc;
 
 @Component
 public class LexemeLevelCalcUtil {
 
-	public void combineLevels(List<WordLexeme> lexemes) {
+	public void combineLevels(List<? extends WordLexemeLevelCalc> lexemes) {
 
 		if (CollectionUtils.isEmpty(lexemes)) {
 			return;

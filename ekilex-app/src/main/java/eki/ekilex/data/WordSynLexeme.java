@@ -6,7 +6,7 @@ import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordSynLexeme extends AbstractDataObject {
+public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevelCalc {
 
 	private static final long serialVersionUID = 1L;
 
@@ -31,6 +31,9 @@ public class WordSynLexeme extends AbstractDataObject {
 	private Integer level3;
 
 	private String levels;
+
+	@Column(name = "dataset")
+	private String datasetCode;
 
 	private List<Definition> definitions;
 
@@ -124,5 +127,14 @@ public class WordSynLexeme extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	@Override
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 }
