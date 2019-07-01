@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,6 @@ public class SynSearchController extends AbstractSearchController {
 	@PostMapping(value = SYN_SEARCH_URI)
 	public String synSearch(
 			@RequestParam(name = "searchMode", required = false) String searchMode,
-			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
@@ -71,13 +69,13 @@ public class SynSearchController extends AbstractSearchController {
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(selectedDatasets, simpleSearchFilter, detailSearchFilter, null, sessionBean, model);
+		formDataCleanup(null, simpleSearchFilter, detailSearchFilter, null, sessionBean, model);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
 
-		List<String> filteredDatasetCodes = cleanDatasetCodesForRole(selectedDatasets, sessionBean);
+		List<String> filteredDatasetCodes = getDatasetCodesFromRole(sessionBean);
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, filteredDatasetCodes, simpleSearchFilter, detailSearchFilter, fetchAll);
 		return "redirect:" + SYN_SEARCH_URI + searchUri;
@@ -128,19 +126,15 @@ public class SynSearchController extends AbstractSearchController {
 
 		logger.debug("Requesting details by word {}", wordId);
 
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
-		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = commonDataService.getDatasetCodes();
-		}
-		List<String> filteredDatasets = cleanDatasetCodesForRole(selectedDatasets, sessionBean);
-		WordSynDetails details = synSearchService.getWordSynDetails(wordId, filteredDatasets);
+		List<String> dataSetCode = getDatasetCodesFromRole(sessionBean);
+		WordSynDetails details = synSearchService.getWordSynDetails(wordId, dataSetCode);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
-	private List<String> cleanDatasetCodesForRole(List<String> selectedDatasetCodes, SessionBean sessionBean) {
+	private List<String> getDatasetCodesFromRole(SessionBean sessionBean) {
 		DatasetPermission role = sessionBean.getUserRole();
 		if (role == null) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
