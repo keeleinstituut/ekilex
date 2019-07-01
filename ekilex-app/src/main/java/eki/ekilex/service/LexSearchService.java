@@ -85,7 +85,8 @@ public class LexSearchService extends AbstractWordSearchService {
 
 						String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
 						List<Word> meaningWords = lexSearchDbService.getMeaningWords(lexeme.getWordId(), meaningId, searchDatasetsRestriction);
-						List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+						List<DefinitionRefTuple> definitionRefTuples =
+								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 						List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 						List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
@@ -119,7 +120,8 @@ public class LexSearchService extends AbstractWordSearchService {
 					wordLexemes.forEach(lexeme -> {
 						Long meaningId = lexeme.getMeaningId();
 						List<Word> meaningWords = lexSearchDbService.getMeaningWords(lexeme.getWordId(), meaningId, searchDatasetsRestriction);
-						List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+						List<DefinitionRefTuple> definitionRefTuples =
+								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 						lexeme.setMeaningWords(meaningWords);
 						lexeme.setDefinitions(definitions);
@@ -152,7 +154,8 @@ public class LexSearchService extends AbstractWordSearchService {
 				Long meaningId = lexeme.getMeaningId();
 				List<Word> meaningWords = lexSearchDbService.getMeaningWords(lexeme.getWordId(), meaningId, searchDatasetsRestriction);
 				lexeme.setMeaningWords(meaningWords);
-				List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+				List<DefinitionRefTuple> definitionRefTuples =
+						commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 				List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
 				allDefinitionValues.addAll(lexemeDefinitionValues);
@@ -228,7 +231,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
-		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+		List<DefinitionRefTuple> definitionRefTuples =
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);

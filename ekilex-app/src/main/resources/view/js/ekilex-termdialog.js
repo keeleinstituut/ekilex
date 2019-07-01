@@ -59,6 +59,20 @@ $(document).on("show.bs.modal", "[id^=addDefinitionSourceLinkDlg_]", function() 
 	initAddSourceLinkDlg($(this));
 });
 
+$(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editDefinitionPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteSourceLinkDlg_]", function() {
+	initAddSourceLinkDlg($(this));
+});
+
 $(document).on("show.bs.modal", "[id^=addLexemePublicNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 });

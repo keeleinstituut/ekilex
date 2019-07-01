@@ -26,3 +26,9 @@ update freeform set complexity = 'DEFAULT';
 alter table definition add column complexity varchar(100);
 update definition set complexity = 'DEFAULT';
 alter table definition alter column complexity set not null;
+
+-- 01.07.19
+
+insert into definition_type_label (code, value, lang, type) values ('määramata', '–', 'est', 'descrip');
+insert into definition_type_label (code, value, lang, type) values ('definitsioon', 'definitsioon', 'est', 'descrip');
+insert into definition_type_label (code, value, lang, type) values ('selgitus', 'selgitus', 'est', 'descrip');

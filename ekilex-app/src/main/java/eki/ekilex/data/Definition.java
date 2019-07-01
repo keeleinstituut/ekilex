@@ -21,7 +21,11 @@ public class Definition extends AbstractDataObject {
 
 	private String typeCode;
 
+	private String typeValue;
+
 	private List<String> datasetCodes;
+
+	private List<Note> publicNotes;
 
 	private List<SourceLink> sourceLinks;
 
@@ -73,12 +77,28 @@ public class Definition extends AbstractDataObject {
 		this.typeCode = typeCode;
 	}
 
+	public String getTypeValue() {
+		return typeValue;
+	}
+
+	public void setTypeValue(String typeValue) {
+		this.typeValue = typeValue;
+	}
+
 	public List<String> getDatasetCodes() {
 		return datasetCodes;
 	}
 
 	public void setDatasetCodes(List<String> datasetCodes) {
 		this.datasetCodes = datasetCodes;
+	}
+
+	public List<Note> getPublicNotes() {
+		return publicNotes;
+	}
+
+	public void setPublicNotes(List<Note> publicNotes) {
+		this.publicNotes = publicNotes;
 	}
 
 	public List<SourceLink> getSourceLinks() {

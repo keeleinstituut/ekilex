@@ -63,7 +63,8 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<Word> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+		List<DefinitionRefTuple> definitionRefTuples =
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
