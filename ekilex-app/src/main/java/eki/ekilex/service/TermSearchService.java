@@ -120,7 +120,8 @@ public class TermSearchService extends AbstractSearchService {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
-		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+		List<DefinitionRefTuple> definitionRefTuples =
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		for (Definition definition : definitions) {

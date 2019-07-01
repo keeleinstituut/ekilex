@@ -31,8 +31,6 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 @Component
 public class CudService extends AbstractService {
 
-	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
-
 	@Autowired
 	private CudDbService cudDbService;
 
@@ -201,10 +199,10 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateDefinition(Long id, String valuePrese, Complexity complexity) {
+	public void updateDefinition(Long id, String valuePrese, Complexity complexity, String typeCode) {
 		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		cudDbService.updateDefinition(id, value, valuePrese, complexity);
+		cudDbService.updateDefinition(id, value, valuePrese, complexity, typeCode);
 	}
 
 	@Transactional
@@ -418,9 +416,9 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createDefinition(Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity) {
+	public void createDefinition(Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, DEFAULT_DEFINITION_TYPE_CODE, complexity);
+		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
 	}

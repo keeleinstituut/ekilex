@@ -194,11 +194,12 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public void updateDefinition(Long id, String value, String valuePrese, Complexity complexity) {
+	public void updateDefinition(Long id, String value, String valuePrese, Complexity complexity, String typeCode) {
 		create.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.set(DEFINITION.COMPLEXITY, complexity.name())
+				.set(DEFINITION.DEFINITION_TYPE_CODE, typeCode)
 				.where(DEFINITION.ID.eq(id))
 				.execute();
 	}

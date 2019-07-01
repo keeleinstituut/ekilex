@@ -21,6 +21,8 @@ public class Definition extends AbstractDataObject {
 
 	private String typeCode;
 
+	private String typeValue;
+
 	private List<String> datasetCodes;
 
 	private List<Note> publicNotes;
@@ -73,6 +75,14 @@ public class Definition extends AbstractDataObject {
 
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
+	}
+
+	public String getTypeValue() {
+		return typeValue;
+	}
+
+	public void setTypeValue(String typeValue) {
+		this.typeValue = typeValue;
 	}
 
 	public List<String> getDatasetCodes() {

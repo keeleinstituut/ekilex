@@ -22,6 +22,8 @@ public class DefinitionRefTuple extends AbstractDataObject {
 
 	private String definitionTypeCode;
 
+	private String definitionTypeValue;
+
 	private List<String> definitionDatasetCodes;
 
 	private Long sourceLinkId;
@@ -78,6 +80,14 @@ public class DefinitionRefTuple extends AbstractDataObject {
 
 	public void setDefinitionTypeCode(String definitionTypeCode) {
 		this.definitionTypeCode = definitionTypeCode;
+	}
+
+	public String getDefinitionTypeValue() {
+		return definitionTypeValue;
+	}
+
+	public void setDefinitionTypeValue(String definitionTypeValue) {
+		this.definitionTypeValue = definitionTypeValue;
 	}
 
 	public List<String> getDefinitionDatasetCodes() {
