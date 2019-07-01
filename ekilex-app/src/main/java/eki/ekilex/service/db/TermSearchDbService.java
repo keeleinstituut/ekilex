@@ -159,8 +159,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
 
@@ -184,8 +184,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
 
 				where = where.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
 
@@ -206,8 +206,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1, false);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
 
@@ -225,8 +225,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1, false);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, where1);
 
@@ -238,7 +238,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Freeform nff3 = FREEFORM.as("nff3");
 				Condition where3 = nff3.TYPE.eq(FreeformType.PUBLIC_NOTE.name());
 
-				where3 = applyValueFilters(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3);
+				where3 = applyValueFilters(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3, true);
 				where3 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, nff3.ID, where3);
 				where3 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, nff3.ID, where3);
 
@@ -277,7 +277,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(m1ff.FREEFORM_ID.eq(c1.ID))
 						.and(c1.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
-				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1);
+				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1, false);
 
 				where = where.and(DSL.exists(DSL.select(c1.ID).from(m1ff, c1).where(where1)));
 
@@ -300,7 +300,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.and(f1.PARADIGM_ID.eq(p1.ID))
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(l1.WORD_ID.eq(w1.ID));
-				where2 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where2);
+				where2 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where2, true);
 
 				where1 = DSL.exists(DSL.select(w1.ID).from(f1, p1, w1).where(where2));
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
@@ -308,7 +308,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				// definition select
 				where1 = DSL.trueCondition();
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1, true);
 				whereDs = composeLexemeDatasetsCondition(lds, searchDatasetsRestriction);
 				where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(d1.MEANING_ID).and(whereDs)));
 				SelectHavingStep<Record1<Long>> selectDefinition = DSL.select(d1.MEANING_ID).from(d1).where(where1).groupBy(d1.MEANING_ID);
@@ -317,14 +317,14 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				String[] meaningFreeformTypes = new String[] {
 						FreeformType.PUBLIC_NOTE.name(), FreeformType.CONCEPT_ID.name(), FreeformType.LEARNER_COMMENT.name()};
 				where1 = ff1.TYPE.in(meaningFreeformTypes).and(mff1.FREEFORM_ID.eq(ff1.ID));
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 				whereDs = composeLexemeDatasetsCondition(lds, searchDatasetsRestriction);
 				where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(mff1.MEANING_ID).and(whereDs)));
 				SelectHavingStep<Record1<Long>> selectMeaningFreeforms = DSL.select(mff1.MEANING_ID).from(mff1, ff1).where(where1).groupBy(mff1.MEANING_ID);
 
 				// definition ff select
 				where1 = ff1.TYPE.eq(FreeformType.PUBLIC_NOTE.name()).and(dff1.FREEFORM_ID.eq(ff1.ID)).and(dff1.DEFINITION_ID.eq(d1.ID));
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 				whereDs = composeLexemeDatasetsCondition(lds, searchDatasetsRestriction);
 				where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(d1.MEANING_ID).and(whereDs)));
 				SelectHavingStep<Record1<Long>> selectDefinitionFreeforms = DSL.select(d1.MEANING_ID).from(d1, dff1, ff1).where(where1).groupBy(d1.MEANING_ID);
@@ -333,14 +333,14 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				String[] lexemeFreeformTypes = new String[] {
 						FreeformType.PUBLIC_NOTE.name(), FreeformType.USAGE.name(), FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
 				where1 = ff1.TYPE.in(lexemeFreeformTypes).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID));
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				SelectHavingStep<Record1<Long>> selectLexemeFreeforms = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.MEANING_ID);
 
 				// lexeme usage translation, definition select
 				String[] lexemeFreeformSubTypes = new String[] {FreeformType.USAGE_TRANSLATION.name(), FreeformType.USAGE_DEFINITION.name()};
 				where1 = ff1.TYPE.in(lexemeFreeformSubTypes).and(lff1.FREEFORM_ID.eq(ff1.PARENT_ID)).and(lff1.LEXEME_ID.eq(l1.ID));
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				SelectHavingStep<Record1<Long>> selectLexemeFreeformSubTypes = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.MEANING_ID);
 
