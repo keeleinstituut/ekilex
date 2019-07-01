@@ -31,7 +31,6 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.SynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -44,9 +43,6 @@ public class SynSearchController extends AbstractSearchController {
 
 	@Autowired
 	private SynSearchService synSearchService;
-
-	@Autowired
-	private CommonDataService commonDataService;
 
 	@GetMapping(value = SYN_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
@@ -75,9 +71,9 @@ public class SynSearchController extends AbstractSearchController {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
 
-		List<String> filteredDatasetCodes = getDatasetCodesFromRole(sessionBean);
+		List<String> roleDatasetCode = getDatasetCodeFromRole(sessionBean);
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, filteredDatasetCodes, simpleSearchFilter, detailSearchFilter, fetchAll);
+		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasetCode, simpleSearchFilter, detailSearchFilter, fetchAll);
 		return "redirect:" + SYN_SEARCH_URI + searchUri;
 	}
 
@@ -126,7 +122,7 @@ public class SynSearchController extends AbstractSearchController {
 
 		logger.debug("Requesting details by word {}", wordId);
 
-		List<String> dataSetCode = getDatasetCodesFromRole(sessionBean);
+		List<String> dataSetCode = getDatasetCodeFromRole(sessionBean);
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, dataSetCode);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
@@ -134,7 +130,7 @@ public class SynSearchController extends AbstractSearchController {
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
-	private List<String> getDatasetCodesFromRole(SessionBean sessionBean) {
+	private List<String> getDatasetCodeFromRole(SessionBean sessionBean) {
 		DatasetPermission role = sessionBean.getUserRole();
 		if (role == null) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
