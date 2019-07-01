@@ -216,6 +216,13 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
+	public void updateDefinitionPublicNote(Long id, String valuePrese) {
+		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		cudDbService.updateFreeformTextValue(id, value, valuePrese);
+	}
+
+	@Transactional
 	public void updateMeaningRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
 			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.ORDER_BY, item);
@@ -364,10 +371,10 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createLexemePublicNote(Long lexemeId, String valuePrese, String languageCode) {
+	public void createLexemePublicNote(Long lexemeId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long usageDefinitionId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese, languageCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		Long lexemeFreeformId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
 	}
 
 	@Transactional
@@ -399,18 +406,16 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long usageDefinitionId = cudDbService.createMeaningLearnerComment(meaningId, value, valuePrese, languageCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		Long meaningFreeformId = cudDbService.createMeaningLearnerComment(meaningId, value, valuePrese, languageCode);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
 	}
 
 	@Transactional
-	public void createMeaningPublicNote(Long meaningId, String valuePrese, String languageCode) {
+	public void createMeaningPublicNote(Long meaningId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long usageDefinitionId = cudDbService.createMeaningPublicNote(meaningId, value, valuePrese, languageCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		Long meaningFreeformId = cudDbService.createMeaningPublicNote(meaningId, value, valuePrese);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
 	}
-
-	// --- DELETE ---
 
 	@Transactional
 	public void createDefinition(Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity) {
@@ -418,6 +423,13 @@ public class CudService extends AbstractService {
 		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, DEFAULT_DEFINITION_TYPE_CODE, complexity);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
+	}
+
+	@Transactional
+	public void createDefinitionPublicNote(Long definitionId, String valuePrese) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		Long definitionFreeformId = cudDbService.createDefinitionPublicNote(definitionId, value, valuePrese);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, definitionFreeformId, valuePrese);
 	}
 
 	@Transactional
@@ -433,6 +445,8 @@ public class CudService extends AbstractService {
 		Long sourceLinkId = cudDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
 	}
+
+	// --- DELETE ---
 
 	@Transactional
 	public void deleteWord(Long wordId) {
@@ -491,6 +505,12 @@ public class CudService extends AbstractService {
 	public void deleteDefinitionSourceLink(Long sourceLinkId) {
 		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
 		cudDbService.deleteDefinitionRefLink(sourceLinkId);
+	}
+
+	@Transactional
+	public void deleteDefinitionPublicNote(Long id) {
+		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional

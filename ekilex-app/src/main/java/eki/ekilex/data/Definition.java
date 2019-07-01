@@ -23,6 +23,8 @@ public class Definition extends AbstractDataObject {
 
 	private List<String> datasetCodes;
 
+	private List<Note> publicNotes;
+
 	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
@@ -79,6 +81,14 @@ public class Definition extends AbstractDataObject {
 
 	public void setDatasetCodes(List<String> datasetCodes) {
 		this.datasetCodes = datasetCodes;
+	}
+
+	public List<Note> getPublicNotes() {
+		return publicNotes;
+	}
+
+	public void setPublicNotes(List<Note> publicNotes) {
+		this.publicNotes = publicNotes;
 	}
 
 	public List<SourceLink> getSourceLinks() {

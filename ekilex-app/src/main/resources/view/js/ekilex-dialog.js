@@ -12,6 +12,16 @@ $(document).on("show.bs.modal", "[id^=editDefinitionDlg_]", function(e) {
 	alignAndFocus(e, $(this));
 });
 
+$(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editDefinitionPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
 $(document).on("show.bs.modal", "[id^=addLexemeSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 });

@@ -43,6 +43,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
@@ -491,6 +492,21 @@ public class CudDbService implements DbConstant {
 				.getId();
 	}
 
+	public Long createDefinitionPublicNote(Long definitionId, String value, String valuePrese) {
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.PUBLIC_NOTE.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.store();
+
+		DefinitionFreeformRecord definitionFreeform = create.newRecord(DEFINITION_FREEFORM);
+		definitionFreeform.setDefinitionId(definitionId);
+		definitionFreeform.setFreeformId(freeform.getId());
+		definitionFreeform.store();
+
+		return freeform.getId();
+	}
+
 	public Long createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
 		return create
 				.insertInto(
@@ -577,12 +593,11 @@ public class CudDbService implements DbConstant {
 		return meaningDomainId;
 	}
 
-	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese, String languageCode) {
+	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
-		freeform.setLang(languageCode);
 		freeform.store();
 	
 		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
@@ -649,12 +664,11 @@ public class CudDbService implements DbConstant {
 				.getId();
 	}
 
-	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese, String languageCode) {
+	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
-		freeform.setLang(languageCode);
 		freeform.store();
 	
 		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);

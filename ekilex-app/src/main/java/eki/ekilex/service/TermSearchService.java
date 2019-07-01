@@ -121,14 +121,22 @@ public class TermSearchService extends AbstractSearchService {
 
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
 		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId);
+
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		for (Definition definition : definitions) {
+			Long definitionId = definition.getId();
+			List<NoteSourceTuple> definitionPublicNoteSourceTuples = commonDataDbService.getDefinitionPublicNoteSourceTuples(definitionId);
+			List<Note> definitionPublicNotes = conversionUtil.composeNotes(definitionPublicNoteSourceTuples);
+			definition.setPublicNotes(definitionPublicNotes);
+		}
+
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<Classifier> domains = commonDataDbService.getMeaningDomains(meaningId);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> learnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<ImageSourceTuple> imageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
 		List<Image> images = conversionUtil.composeMeaningImages(imageSourceTuples);
-		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(FreeformType.PUBLIC_NOTE, meaningId);
+		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningPublicNoteSourceTuples(meaningId);
 		List<Note> meaningPublicNotes = conversionUtil.composeNotes(meaningPublicNoteSourceTuples);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);

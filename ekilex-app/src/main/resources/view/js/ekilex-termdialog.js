@@ -59,6 +59,10 @@ $(document).on("show.bs.modal", "[id^=addDefinitionSourceLinkDlg_]", function() 
 	initAddSourceLinkDlg($(this));
 });
 
+$(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteSourceLinkDlg_]", function() {
+	initAddSourceLinkDlg($(this));
+});
+
 $(document).on("show.bs.modal", "[id^=addLexemePublicNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 });

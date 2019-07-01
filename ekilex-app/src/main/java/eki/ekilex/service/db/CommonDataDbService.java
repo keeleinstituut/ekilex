@@ -4,6 +4,7 @@ import static eki.ekilex.data.db.Tables.ASPECT_LABEL;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN;
@@ -386,7 +387,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(FreeForm.class);
 	}
 
-	public List<NoteSourceTuple> getMeaningNoteSourceTuples(FreeformType freeformType, Long meaningId) {
+	public List<NoteSourceTuple> getMeaningPublicNoteSourceTuples(Long meaningId) {
 
 		return create
 				.select(
@@ -402,7 +403,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
 								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(freeformType.name())))
+								.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(NoteSourceTuple.class);
 	}
@@ -474,6 +475,27 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.orderBy(DEFINITION.ORDER_BY)
 				.fetchInto(DefinitionRefTuple.class);
+	}
+
+	public List<NoteSourceTuple> getDefinitionPublicNoteSourceTuples(Long definitionId) {
+
+		return create
+				.select(
+						FREEFORM.ID.as("freeform_id"),
+						FREEFORM.VALUE_TEXT.as("freeform_value_text"),
+						FREEFORM.VALUE_PRESE.as("freeform_value_prese"),
+						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
+						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
+						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
+						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"))
+				.from(DEFINITION_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
+						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
+				.where(
+						DEFINITION_FREEFORM.DEFINITION_ID.eq(definitionId)
+								.and(FREEFORM.ID.eq(DEFINITION_FREEFORM.FREEFORM_ID))
+								.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(NoteSourceTuple.class);
 	}
 
 	public List<Relation> getMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
