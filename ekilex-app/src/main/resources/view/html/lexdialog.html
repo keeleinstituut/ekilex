@@ -18,19 +18,19 @@
                   <option value="addLexemeProcessStateDlg" sec:authorize="#vars.isLexemeCrudGranted">Haldusolek</option>
                   <option value="lexeme_value_state" sec:authorize="#vars.isLexemeCrudGranted">Väärtusolek</option>
                   <option value="lexeme_frequency_group" sec:authorize="#vars.isLexemeCrudGranted">Sagedusrühm</option>
+                  <option value="addDefinitionDlg" sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">Tähenduse seletus</option>
+                  <option value="addUsageDlg" sec:authorize="#vars.isLexemeCrudGranted">Kasutusnäide</option>
                   <option value="lexeme_pos" sec:authorize="#vars.isLexemeCrudGranted">Sõnaliik</option>
                   <option value="lexeme_deriv" sec:authorize="#vars.isLexemeCrudGranted">Tuletuskood</option>
                   <option value="lexeme_register" sec:authorize="#vars.isLexemeCrudGranted">Register</option>
                   <option value="lexeme_grammar" sec:authorize="#vars.isLexemeCrudGranted">Grammatika</option>
                   <option value="government" sec:authorize="#vars.isLexemeCrudGranted">Rektsioon</option>
-                  <option value="meaning_domain" sec:authorize="#vars.isMeaningCrudGranted">Valdkond</option>
-                  <option value="addDefinitionDlg" sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">Mõiste seletus</option>
                   <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.isLexemeCrudGranted">Allikaviide</option>
-                  <option value="addLearnerCommentDlg" sec:authorize="#vars.isMeaningCrudGranted">Õppekommentaar</option>
-                  <option value="addMeaningRelationDlg" sec:authorize="#vars.isMeaningCrudGranted">Tähenduse seos</option>
-                  <option value="addUsageDlg" sec:authorize="#vars.isLexemeCrudGranted">Kasutusnäide</option>
-                  <option value="addLexemePublicNoteDlg" sec:authorize="#vars.isLexemeCrudGranted">Märkus</option>
                   <option value="addLexemeRelationDlg" sec:authorize="#vars.isLexemeCrudGranted">Ilmiku seos</option>
+                  <option value="addLexemePublicNoteDlg" sec:authorize="#vars.isLexemeCrudGranted">Ilmiku märkus</option>
+                  <option value="meaning_domain" sec:authorize="#vars.isMeaningCrudGranted">Valdkond</option>
+                  <option value="addMeaningRelationDlg" sec:authorize="#vars.isMeaningCrudGranted">Tähenduse seos</option>
+                  <option value="addLearnerCommentDlg" sec:authorize="#vars.isMeaningCrudGranted">Õppekommentaar</option>
                 </select>
               </div>
             </div>
