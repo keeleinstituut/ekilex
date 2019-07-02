@@ -1094,9 +1094,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
-	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang, Complexity complexity) throws Exception {
+	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, lang, complexity);
+		Long freeformId = createFreeformTextOrDate(null, freeformType, valueText, valuePrese, lang, complexity);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -1104,7 +1104,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		basicDbService.create(LEXEME_FREEFORM, tableRowParamMap);
 
 		LifecycleEntity lifecycleEntity = translate(freeformType);
-		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
+		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, valueText);
 
 		return freeformId;
 	}
@@ -1182,6 +1182,25 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				throw new Exception("Not yet supported freeform data type " + value);
 			}
 		}
+		if (StringUtils.isNotBlank(lang)) {
+			tableRowParamMap.put("lang", lang);
+		}
+		if (complexity != null) {
+			tableRowParamMap.put("complexity", complexity.name());
+		}
+		Long freeformId = basicDbService.create(FREEFORM, tableRowParamMap);
+		return freeformId;
+	}
+
+	private Long createFreeformTextOrDate(Long parentId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("type", freeformType.name());
+		if (parentId != null) {
+			tableRowParamMap.put("parent_id", parentId);
+		}
+		tableRowParamMap.put("value_text", valueText);
+		tableRowParamMap.put("value_prese", valuePrese);
 		if (StringUtils.isNotBlank(lang)) {
 			tableRowParamMap.put("lang", lang);
 		}
