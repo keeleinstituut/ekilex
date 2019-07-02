@@ -31,6 +31,8 @@ public abstract class AbstractSearchController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractSearchController.class);
 
+	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
+
 	@Autowired
 	protected CommonDataService commonDataService;
 
@@ -131,6 +133,11 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	@ModelAttribute("lexemeValueStates")
 	public List<Classifier> getLexemeValueStates() {
 		return commonDataService.getValueStates();
+	}
+
+	@ModelAttribute("defaultDefinitionTypeCode")
+	public String getDefaultDefinitionTypeCode() {
+		return DEFAULT_DEFINITION_TYPE_CODE;
 	}
 
 	protected SessionBean getSessionBean(Model model) {

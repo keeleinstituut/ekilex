@@ -223,6 +223,7 @@
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="dataset" th:value="${sessionBean.userRole.datasetCode}"/>
+            <input type="hidden" name="itemType" th:value="${defaultDefinitionTypeCode}">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
@@ -267,6 +268,7 @@
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.value}">
+            <input type="hidden" name="code" th:value="${definition.typeCode}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -274,7 +276,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == definition.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
