@@ -44,4 +44,17 @@ public class PermDataUtil {
 		}
 		return userRole.getDatasetCode();
 	}
+
+	public boolean isLexemeDeleteGrantedForMeaning(Long meaningId, SessionBean sessionBean) {
+		if (sessionBean == null) {
+			return false;
+		}
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return false;
+		}
+		String datasetCode = userRole.getDatasetCode();
+		boolean isGrantedForMeaning = permissionService.isGrantedForMeaning(meaningId, datasetCode);
+		return isGrantedForMeaning;
+	}
 }

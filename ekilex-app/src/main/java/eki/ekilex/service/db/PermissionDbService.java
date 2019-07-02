@@ -287,6 +287,21 @@ public class PermissionDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public boolean isGrantedForMeaning(Long meaningId, String datasetCode) {
+
+		return create
+				.select(DSL.field(DSL.count(MEANING.ID).gt(0)).as("is_granted"))
+				.from(MEANING)
+				.where(
+						MEANING.ID.eq(meaningId)
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.MEANING_ID.eq(MEANING.ID)
+												.and(LEXEME.DATASET_CODE.eq(datasetCode)))))
+				.fetchSingleInto(Boolean.class);
+	}
+
 	/*
 	 * currently not used. remove?
 	 * isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, requiredAuthItem.name(), requiredAuthOps);

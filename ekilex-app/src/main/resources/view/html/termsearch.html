@@ -160,7 +160,7 @@
                       th:data-id="${meaningId}"
                       data-callback="doNewSearch"
                       data-toggle="deleteMeaningAndLexemesAndWords"
-                      sec:authorize="${#vars.isMeaningCrudGranted}">Kustuta</button>
+                      sec:authorize="#vars.permDataUtil.isLexemeDeleteGrantedForMeaning(#vars.meaningId, #vars.sessionBean)">Kustuta</button>
               <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
                  data-toggle="modal"
                  data-target="#meaningLifecycleLogDlg"
