@@ -27,7 +27,9 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -45,6 +47,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
+import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
@@ -125,8 +128,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
 				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
 
@@ -139,26 +142,47 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
 
+				List<SearchCriterion> positiveExistSearchCriteria = filterPositiveExistCriteria(searchCriteria);
+				List<SearchCriterion> negativeExistSearchCriteria = filterNegativeExistCriteria(searchCriteria);
+
 				Lexeme l1 = Lexeme.LEXEME.as("l1");
 				Lexeme l2 = Lexeme.LEXEME.as("l2");
 				Word w2 = Word.WORD.as("w2");
-				Paradigm p2 = Paradigm.PARADIGM.as("p2");
-				Form f2 = Form.FORM.as("f2");
-				Condition where1 = l1.WORD_ID.eq(w1.ID)
-						.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-						.and(w2.ID.eq(l2.WORD_ID))
-						.and(p2.WORD_ID.eq(w2.ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
-				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f2.VALUE, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w2.LANG, where1);
-				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l2.ID, where1);
-				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l2.ID, where1);
+				if (CollectionUtils.isNotEmpty(positiveExistSearchCriteria)) {
 
-				where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
+					Paradigm p2 = Paradigm.PARADIGM.as("p2");
+					Form f2 = Form.FORM.as("f2");
+
+					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+							.and(l2.WORD_ID.eq(w2.ID))
+							.and(p2.WORD_ID.eq(w2.ID))
+							.and(f2.PARADIGM_ID.eq(p2.ID))
+							.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
+
+					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+					where1 = applyValueFilters(SearchKey.VALUE, positiveExistSearchCriteria, f2.VALUE, where1, true);
+					where1 = applyValueFilters(SearchKey.LANGUAGE, positiveExistSearchCriteria, w2.LANG, where1, false);
+					where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, positiveExistSearchCriteria, l2.ID, where1);
+					where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, positiveExistSearchCriteria, l2.ID, where1);
+
+					where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
+				}
+
+				if (CollectionUtils.isNotEmpty(negativeExistSearchCriteria)) {
+
+					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+							.and(l2.WORD_ID.eq(w2.ID));
+
+					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+					where1 = applyLanguageNotExistFilters(negativeExistSearchCriteria, l1, l2, w2, where1);
+
+					where = where.andNotExists(DSL.select(l1.ID).from(l1, l2, w2).where(where1));					
+				}
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
@@ -170,8 +194,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f1.PARADIGM_ID.eq(p1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
 
 				where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
 
@@ -195,8 +219,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(d1.MEANING_ID.eq(m1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1, false);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
 				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
 
@@ -214,8 +238,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1, false);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
 				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, where1);
 
@@ -236,12 +260,23 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(c1.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1);
+				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1, false);
 
 				where = where.andExists(DSL.select(c1.ID).from(l1, m1, m1ff, c1).where(where1));
 			}
 		}
 		return where;
+	}
+
+	private List<SearchCriterion> filterPositiveExistCriteria(List<SearchCriterion> searchCriteria) {
+		// any other than NOT_EXISTS
+		List<SearchCriterion> positiveExistCriteria = searchCriteria.stream().filter(crit -> !SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand())).collect(Collectors.toList());
+		return positiveExistCriteria;
+	}
+
+	private List<SearchCriterion> filterNegativeExistCriteria(List<SearchCriterion> searchCriteria) {
+		List<SearchCriterion> negativeExistCriteria = searchCriteria.stream().filter(crit -> SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand())).collect(Collectors.toList());
+		return negativeExistCriteria;
 	}
 
 	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {

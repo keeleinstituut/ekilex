@@ -2,9 +2,9 @@ LEX nimi	LEX kood	LEX väärtus	LEX keel	LEX väärtuse liik
 aspect	сов.	совершенный	est	descrip
 aspect	несов.	несовершенный	est	descrip
 aspect	сов. и несов.	совершенный и несовершенный	est	descrip
-definition_type	määramata	-	-	-
-definition_type	definitsioon	-	-	-
-definition_type	selgitus	-	-	-
+definition_type	määramata	–	est	descrip
+definition_type	definitsioon	definitsioon	est	descrip
+definition_type	selgitus	selgitus	est	descrip
 deriv	adv	adverb (-lt)	est	descrip
 deriv	dem	KE/KENE	est	ekimorfo
 deriv	dem	diminutive	eng	descrip

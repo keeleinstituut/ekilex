@@ -122,7 +122,7 @@ function initialiseDetailSearch() {
 		let searchKeyVal = searchKeyElement.val();
 
 		let searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
-		if (searchOperandVal == 'NOT_EXISTS') {
+		if (searchKeyVal == 'DOMAIN' && searchOperandVal == 'NOT_EXISTS') {
 			searchValueElement.empty();
 			searchValueElement.prop('hidden', true);
 		} else {

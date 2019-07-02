@@ -102,6 +102,8 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
 		boolean noDatasetsFiltering = searchDatasetsRestriction.isNoDatasetsFiltering();
 		boolean allDatasetsPermissions = searchDatasetsRestriction.isAllDatasetsPermissions();
+		boolean isSingleFilteringDataset = searchDatasetsRestriction.isSingleFilteringDataset();
+		boolean isSinglePermDataset = searchDatasetsRestriction.isSinglePermDataset();
 
 		if (noDatasetsFiltering) {
 			if (allDatasetsPermissions) {
@@ -111,36 +113,67 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
 			} else {
 				//all ds, selected perm
-				where = where.and(DSL.or(
-							lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC),
-							lexeme.DATASET_CODE.in(userPermDatasetCodes))
-						);
+				Condition permDatasetCodeCond;
+				if (isSinglePermDataset) {
+					String singlePermDatasetCode = userPermDatasetCodes.get(0);
+					permDatasetCodeCond = lexeme.DATASET_CODE.eq(singlePermDatasetCode);
+				} else {
+					permDatasetCodeCond = lexeme.DATASET_CODE.in(userPermDatasetCodes);
+				}
+				where = where.and(DSL.or(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC), permDatasetCodeCond));
 			}
 		} else {
+			Condition filteringDatasetCodeCond;
+			if (isSingleFilteringDataset) {
+				String singleFilteringDatasetCode = filteringDatasetCodes.get(0);
+				filteringDatasetCodeCond = lexeme.DATASET_CODE.eq(singleFilteringDatasetCode);
+			} else {
+				filteringDatasetCodeCond = lexeme.DATASET_CODE.in(filteringDatasetCodes);
+			}
 			if (allDatasetsPermissions) {
 				//selected ds, full perm
-				where = where.and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
+				where = where.and(filteringDatasetCodeCond);
 			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
 				//selected ds, only public
-				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)));
+				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringDatasetCodeCond));
 			} else {
 				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
 				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
 					//selected ds, only public
-					where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)));
+					where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringDatasetCodeCond));
 				} else {
 					//selected ds, some perm, some public
-					where = where.and(DSL.or(
-								lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)),
-								lexeme.DATASET_CODE.in(filteringPermDatasetCodes))
-							);
+					boolean isSingleFilteringPermDataset = CollectionUtils.size(filteringPermDatasetCodes) == 1;
+					Condition filteringPermDatasetCodeCond;
+					if (isSingleFilteringPermDataset) {
+						String filteringPermDatasetCode = filteringPermDatasetCodes.iterator().next();
+						filteringPermDatasetCodeCond = lexeme.DATASET_CODE.eq(filteringPermDatasetCode);
+					} else {
+						filteringPermDatasetCodeCond = lexeme.DATASET_CODE.in(filteringPermDatasetCodes);
+					}
+					Collection<String> filteringNoPermDatasetCodes = CollectionUtils.subtract(filteringDatasetCodes, userPermDatasetCodes);
+					if (CollectionUtils.isEmpty(filteringNoPermDatasetCodes)) {
+						where = where.and(filteringPermDatasetCodeCond);
+					} else {
+						boolean isSingleFilteringNoPermDataset = CollectionUtils.size(filteringNoPermDatasetCodes) == 1;
+						Condition filteringNoPermDatasetCodeCond;
+						if (isSingleFilteringNoPermDataset) {
+							String singleFilteringNoPermDatasetCode = filteringNoPermDatasetCodes.iterator().next();
+							filteringNoPermDatasetCodeCond = lexeme.DATASET_CODE.eq(singleFilteringNoPermDatasetCode);
+						} else {
+							filteringNoPermDatasetCodeCond = lexeme.DATASET_CODE.in(filteringNoPermDatasetCodes);
+						}
+						where = where.and(DSL.or(
+								lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringNoPermDatasetCodeCond),
+								filteringPermDatasetCodeCond));
+					}
 				}
 			}
 		}
 		return where;
 	}
 
-	protected Condition applyValueFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition) throws Exception {
+	protected Condition applyValueFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition, boolean isOnLowerValue) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
@@ -153,22 +186,26 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
 			String searchValueStr = criterion.getSearchValue().toString();
-			condition = applyValueFilter(searchValueStr, searchOperand, valueField, condition);
+			condition = applyValueFilter(searchValueStr, searchOperand, valueField, condition, isOnLowerValue);
 		}
 		return condition;
 	}
 
-	protected Condition applyValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) throws Exception {
+	protected Condition applyValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition, boolean isOnLowerValue) throws Exception {
 
 		searchValueStr = StringUtils.lowerCase(searchValueStr);
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().equal(searchValueStr));
+			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
+			condition = condition.and(textTypeSearchFieldCase.equal(searchValueStr));
 		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().startsWith(searchValueStr));
+			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
+			condition = condition.and(textTypeSearchFieldCase.startsWith(searchValueStr));
 		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().endsWith(searchValueStr));
+			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
+			condition = condition.and(textTypeSearchFieldCase.endsWith(searchValueStr));
 		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().contains(searchValueStr));
+			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
+			condition = condition.and(textTypeSearchFieldCase.contains(searchValueStr));
 		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
 			condition = condition.and(DSL.field("to_tsvector('simple',{0}) @@ to_tsquery('simple',{1})",
 					Boolean.class,
@@ -187,6 +224,14 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
 		}
 		return condition;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Field<String> getTextTypeSearchFieldCase(Field<?> searchField, boolean isOnLowerValue) {
+		if (isOnLowerValue) {
+			return searchField.lower();
+		}
+		return (Field<String>) searchField;
 	}
 
 	protected Condition applyLexemeSourceFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
@@ -213,7 +258,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		Condition sourceCondition = lsl.LEXEME_ID.eq(lexemeIdField);
 
 		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition);
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
 	}
@@ -225,15 +270,14 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		Condition sourceCondition =
-				lsl.LEXEME_ID.eq(lexemeIdField)
+		Condition sourceCondition = lsl.LEXEME_ID.eq(lexemeIdField)
 				.and(lsl.SOURCE_ID.eq(s.ID))
 				.and(sff.SOURCE_ID.eq(s.ID))
 				.and(sff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
 		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
 	}
@@ -248,7 +292,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 			return condition;
 		}
 		if (SearchKey.SOURCE_NAME.equals(searchKey)) {
-			return applyDefinitionSourceNameFilter(sourceCriteria, definitionIdField, condition);	
+			return applyDefinitionSourceNameFilter(sourceCriteria, definitionIdField, condition);
 		} else if (SearchKey.SOURCE_REF.equals(searchKey)) {
 			return applyDefinitionSourceRefFilter(sourceCriteria, definitionIdField, condition);
 		}
@@ -262,7 +306,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField);
 
 		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition);
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
 	}
@@ -274,15 +318,14 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		Condition sourceCondition =
-				dsl.DEFINITION_ID.eq(definitionIdField)
+		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField)
 				.and(dsl.SOURCE_ID.eq(s.ID))
 				.and(sff.SOURCE_ID.eq(s.ID))
 				.and(sff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
 		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
 	}
@@ -297,7 +340,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 			return condition;
 		}
 		if (SearchKey.SOURCE_NAME.equals(searchKey)) {
-			return applyFreeformSourceNameFilter(sourceCriteria, freeformIdField, condition);	
+			return applyFreeformSourceNameFilter(sourceCriteria, freeformIdField, condition);
 		} else if (SearchKey.SOURCE_REF.equals(searchKey)) {
 			return applyFreeformSourceRefFilter(sourceCriteria, freeformIdField, condition);
 		}
@@ -310,7 +353,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		Condition sourceCondition = usl.FREEFORM_ID.eq(freeformIdField);
 
 		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), usl.VALUE, sourceCondition);
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), usl.VALUE, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(usl.ID).from(usl).where(sourceCondition)));
 	}
@@ -322,17 +365,35 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		Condition sourceCondition =
-				usl.FREEFORM_ID.eq(freeformIdField)
+		Condition sourceCondition = usl.FREEFORM_ID.eq(freeformIdField)
 				.and(usl.SOURCE_ID.eq(s.ID))
 				.and(sff.SOURCE_ID.eq(s.ID))
 				.and(sff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
 		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(usl, s, sff, ff).where(sourceCondition)));
+	}
+
+	protected Condition applyLanguageNotExistFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Lexeme l2, Word w2, Condition w2Where) {
+
+		List<SearchCriterion> languageNotExistCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.LANGUAGE)
+						&& crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)
+						&& (crit.getSearchValue() != null))
+				.collect(toList());
+
+		if (CollectionUtils.isNotEmpty(languageNotExistCriteria)) {
+
+			for (SearchCriterion criterion : languageNotExistCriteria) {
+				String lang = criterion.getSearchValue().toString();
+				w2Where = w2Where.and(w2.LANG.eq(lang));
+			}
+		}
+
+		return w2Where;
 	}
 
 	protected Condition applyDomainFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition m1Where, Condition w1Where) {
@@ -413,8 +474,8 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		Condition lllCondition = l1Where.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			wllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, wllCondition);
-			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition);
+			wllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, wllCondition, false);
+			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition, false);
 		}
 
 		Condition wllExist = DSL.exists(DSL.select(wll.ID).from(l1, ll, wll).where(wllCondition));
@@ -441,8 +502,8 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		Condition lllCondition = m1Where.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			mllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, mllCondition);
-			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition);
+			mllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, mllCondition, false);
+			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition, false);
 		}
 
 		Condition mllExist = DSL.exists(DSL.select(mll.ID).from(m1, l1, ll, mll).where(mllCondition));
@@ -469,8 +530,8 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		Condition lllCondition = w1Where.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			wllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, wllCondition);
-			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition);
+			wllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, wllCondition, false);
+			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition, false);
 		}
 
 		Condition wllExist = DSL.exists(DSL.select(wll.ID).from(w1, l1, ll, wll).where(wllCondition));
@@ -497,8 +558,8 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		Condition lllCondition = l1Where.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			mllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, mllCondition);
-			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition);
+			mllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, mllCondition, false);
+			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition, false);
 		}
 
 		Condition mllExist = DSL.exists(DSL.select(mll.ID).from(l1, ll, mll).where(mllCondition));

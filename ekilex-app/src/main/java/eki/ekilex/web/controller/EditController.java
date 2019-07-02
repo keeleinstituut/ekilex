@@ -28,8 +28,8 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.ConfirmationRequest;
+import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
@@ -86,7 +86,11 @@ public class EditController implements WebConstant {
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			cudService.createDefinition(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getDataset(), itemData.getComplexity());
+			cudService.createDefinition(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getDataset(), itemData.getComplexity(),
+					itemData.getItemType());
+			break;
+		case "definition_public_note":
+			cudService.createDefinitionPublicNote(itemData.getId(), valuePrese);
 			break;
 		case "usage":
 			cudService.createUsage(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getComplexity());
@@ -167,10 +171,10 @@ public class EditController implements WebConstant {
 			cudService.createMeaningLearnerComment(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		case "lexeme_public_note":
-			cudService.createLexemePublicNote(itemData.getId(), valuePrese, itemData.getLanguage());
+			cudService.createLexemePublicNote(itemData.getId(), valuePrese);
 			break;
 		case "meaning_public_note":
-			cudService.createMeaningPublicNote(itemData.getId(), valuePrese, itemData.getLanguage());
+			cudService.createMeaningPublicNote(itemData.getId(), valuePrese);
 			break;
 		}
 		return "{}";
@@ -203,7 +207,10 @@ public class EditController implements WebConstant {
 			cudService.updateUsageDefinitionValue(itemData.getId(), valuePrese);
 			break;
 		case "definition":
-			cudService.updateDefinition(itemData.getId(), valuePrese, itemData.getComplexity());
+			cudService.updateDefinition(itemData.getId(), valuePrese, itemData.getComplexity(), itemData.getCode());
+			break;
+		case "definition_public_note":
+			cudService.updateDefinitionPublicNote(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_frequency_group":
 			cudService.updateLexemeFrequencyGroup(itemData.getId(), valuePrese);
@@ -349,6 +356,9 @@ public class EditController implements WebConstant {
 		switch (opCode) {
 		case "definition":
 			cudService.deleteDefinition(id);
+			break;
+		case "definition_public_note":
+			cudService.deleteDefinitionPublicNote(id);
 			break;
 		case "usage":
 			cudService.deleteUsage(id);

@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
@@ -213,6 +214,25 @@ public class LifecycleLogDbServiceHelper {
 				.where(
 						DEFINITION.ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID)
 						.and(DEFINITION_SOURCE_LINK.ID.eq(entityId)))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getDefinitionFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
+		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
+		Freeform ff1 = FREEFORM.as("ff1");
+		Map<String, Object> result = create
+				.select(
+						dff.DEFINITION_ID,
+						ff1.VALUE_TEXT,
+						ff1.VALUE_PRESE,
+						DEFINITION.MEANING_ID)
+				.from(dff, ff1, DEFINITION)
+				.where(
+						dff.FREEFORM_ID.eq(ff1.ID)
+								.and(ff1.ID.eq(entityId))
+								.and(ff1.TYPE.eq(freeformType.name()))
+								.and(DEFINITION.ID.eq(dff.DEFINITION_ID)))
 				.fetchSingleMap();
 		return result;
 	}

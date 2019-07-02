@@ -16,6 +16,10 @@ public class SearchDatasetsRestriction extends AbstractDataObject {
 
 	private boolean allDatasetsPermissions;
 
+	private boolean singleFilteringDataset;
+
+	private boolean singlePermDataset;
+
 	public List<String> getFilteringDatasetCodes() {
 		return filteringDatasetCodes;
 	}
@@ -46,6 +50,22 @@ public class SearchDatasetsRestriction extends AbstractDataObject {
 
 	public void setAllDatasetsPermissions(boolean allDatasetsPermissions) {
 		this.allDatasetsPermissions = allDatasetsPermissions;
+	}
+
+	public boolean isSingleFilteringDataset() {
+		return singleFilteringDataset;
+	}
+
+	public void setSingleFilteringDataset(boolean singleFilteringDataset) {
+		this.singleFilteringDataset = singleFilteringDataset;
+	}
+
+	public boolean isSinglePermDataset() {
+		return singlePermDataset;
+	}
+
+	public void setSinglePermDataset(boolean singlePermDataset) {
+		this.singlePermDataset = singlePermDataset;
 	}
 
 }

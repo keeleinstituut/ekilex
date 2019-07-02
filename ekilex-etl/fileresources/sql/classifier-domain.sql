@@ -3440,8 +3440,8 @@ insert into domain_label (origin, code, value, lang, type) values ('bolan', 'geo
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'geogr', 'geography', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'geol', 'geoloogia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'geol', 'geology', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'info', 'infotehnoloogia', 'est', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'info', 'information technology, computer science', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'info', 'IT', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'info', 'IT', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'jur', 'õigusteadus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'jur', 'law', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kal', 'kalandus', 'est', 'descrip');

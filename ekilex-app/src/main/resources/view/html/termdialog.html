@@ -81,7 +81,7 @@
               </div>
             </div>
             <div th:id="${'lexeme_grammar_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
-              <input type="hidden" name="complexity" th:value="${complexities[0]}">
+              <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
               <div class="col-md-12">
                 <input type="text" class="form-control value-select required-field">
               </div>
@@ -440,7 +440,7 @@
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${complexities[0]}">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
@@ -516,7 +516,6 @@
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="lexeme_public_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
@@ -587,7 +586,6 @@
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
-            <input type="hidden" name="language" value="est"><!-- FIXME what lang? -->
             <input type="hidden" name="opCode" value="meaning_public_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
@@ -684,7 +682,7 @@
             <input type="hidden" name="language" value="est">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${complexities[0]}">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
             <input type="hidden" name="dataset" th:value="${sessionBean.userRole.datasetCode}"/>
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
@@ -700,6 +698,14 @@
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
                           th:text="${language.value}">language</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control value-select required-field" name="itemType">
+                  <option value="" hidden disabled selected>vali tüüp...</option>
+                  <option th:each="type : ${definitionTypes}" th:value="${type.code}" th:text="${type.value}">type</option>
                 </select>
               </div>
             </div>
@@ -722,6 +728,13 @@
             <input type="hidden" name="value" th:value="${definition.value}">
             <input type="hidden" name="complexity" th:value="${definition.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control value-select required-field" name="code">
+                  <option th:each="type : ${definitionTypes}" th:value="${type.code}" th:text="${type.value}" th:selected="${type.code == definition.typeCode}">type</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -754,6 +767,76 @@
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${definition.id}">
           <input type="hidden" name="opCode" value="def_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addDefinitionPublicNoteDlg_' + definition.id}" class="modal" role="dialog" th:fragment="add_definition_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${definition.id}">
+            <input type="hidden" name="opCode" value="definition_public_note">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editDefinitionPublicNoteDlg_' + definition.id + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="edit_definition_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${publicNote.id}">
+            <input type="hidden" name="opCode" value="definition_public_note">
+            <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addDefinitionPublicNoteSourceLinkDlg_' + definition.id + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="add_definition_public_note_source_link_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/sourcesearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-auto col-form-label">Otsing</label>
+                  <div class="col-5">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <form th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${publicNote.id}">
+          <input type="hidden" name="opCode" value="ff_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="id3">
           <input type="hidden" name="value">

@@ -110,6 +110,6 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@ModelAttribute("complexities")
 	public List<Complexity> getComplexities() {
-		return Arrays.asList(Complexity.class.getEnumConstants());
+		return Arrays.asList(Complexity.values());
 	}
 }

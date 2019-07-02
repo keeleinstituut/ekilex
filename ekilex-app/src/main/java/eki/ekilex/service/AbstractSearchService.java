@@ -41,8 +41,10 @@ public abstract class AbstractSearchService implements SystemConstant {
 		} else {
 			filteringDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		}
+		boolean singleFilteringDataset = filteringDatasetCodes.size() == 1;
 		searchDatasetsRestriction.setFilteringDatasetCodes(filteringDatasetCodes);
 		searchDatasetsRestriction.setNoDatasetsFiltering(noDatasetsFiltering);
+		searchDatasetsRestriction.setSingleFilteringDataset(singleFilteringDataset);
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<String> userPermDatasetCodes;
 		boolean allDatasetsPermissions;
@@ -58,8 +60,10 @@ public abstract class AbstractSearchService implements SystemConstant {
 				userPermDatasetCodes = Collections.emptyList();
 			}			
 		}
+		boolean singlePermDataset = userPermDatasetCodes.size() == 1;
 		searchDatasetsRestriction.setUserPermDatasetCodes(userPermDatasetCodes);
 		searchDatasetsRestriction.setAllDatasetsPermissions(allDatasetsPermissions);
+		searchDatasetsRestriction.setSinglePermDataset(singlePermDataset);
 
 		return searchDatasetsRestriction;
 	}

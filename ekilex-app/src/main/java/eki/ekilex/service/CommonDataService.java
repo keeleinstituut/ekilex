@@ -101,6 +101,11 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<Classifier> getDefinitionTypes() {
+		return commonDataDbService.getDefinitionTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
 	public List<Classifier> getPoses() {
 		return commonDataDbService.getPoses(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
@@ -166,6 +171,9 @@ public class CommonDataService implements SystemConstant {
 		}
 		if (ClassifierName.MEANING_REL_TYPE.equals(classifierName)) {
 			return getMeaningRelationTypes();
+		}
+		if (ClassifierName.DEFINITION_TYPE.equals(classifierName)) {
+			return getDefinitionTypes();
 		}
 		if (ClassifierName.POS.equals(classifierName)) {
 			return getPoses();
