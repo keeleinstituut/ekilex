@@ -10,6 +10,31 @@ function initialise() {
 			detailsDiv.replaceWith(data);
 			$("#syn_select_wait_" + id).hide();
 			$("#syn_select_point_" + id).show();
+
+			$(document).find('.draggable-synonym').draggable({ revert: "invalid" });
+
+			$(document).find('.droppable-lexeme').droppable(
+			{
+				accept:".draggable-synonym",
+				classes: {
+					"ui-droppable-active": "ui-state-active",
+					"ui-droppable-hover": "ui-state-hover"
+				},
+				drop: function (event, ui) {
+					alert($(this).data('id'));
+					alert(ui.draggable.data('id'));
+
+					//let callbackFunc = () => $('#refresh-details').trigger('click');
+					$('#refresh-details').trigger('click');
+					//
+					// $(this)
+					// 	.addClass("ui-state-highlight")
+					// 	.find("p")
+					// 	.html("Dropped!");
+				}
+			}
+			);
+
 		}).fail(function(data) {
 			console.log(data);
 			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
@@ -36,6 +61,8 @@ function initialise() {
 		let orderingData = changeItemOrdering($(this), 1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
+
+	$(document).find('.draggable-synonym').draggable();
 
 	function doPostRelationChange(actionUrl, callbackFunc) {
 

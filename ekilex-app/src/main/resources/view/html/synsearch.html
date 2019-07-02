@@ -67,7 +67,7 @@
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
-          <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}"
+          <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme : ${details.lexemes}" th:data-id="${lexeme.lexemeId}"
                th:with="
                isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
                isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}
@@ -132,15 +132,17 @@
             <div th:if="${!#lists.isEmpty(details.relations)}">
               <table width="100%" class="orderable" data-op-code="word_relation">
                 <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}">
-                  <td width="10%" align="center">
+                  <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-id="${synRelation.id}" >
+                    <span>
+                      <i class="fa fa-list" aria-hidden="true"></i>
+                    </span>
                     <span th:title="#{|relationstatus.${synRelation.relationStatus}|}">
                       <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i>
                     </span>
-                  </td>
-                  <td width="65%"  class="hidden-buttons">
+                  <!--</td>-->
+                  <!--<td width="65%"  class="hidden-buttons">-->
                     <span class="btn-custom" th:text="${synRelation.word}"/>
                     <span class="pull-right">
-
                       <button type="button" th:hidden="${relationIter.first}" class="btn badge badge-secondary order-up" title="Muuda järjestust">
                         <i class="fa fa-arrow-up" aria-hidden="true"></i>
                       </button>
