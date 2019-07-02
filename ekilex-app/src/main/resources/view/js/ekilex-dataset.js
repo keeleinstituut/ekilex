@@ -24,7 +24,6 @@ function initialise() {
 	});
 
 	$('.classifier-select').selectpicker({width:'100%'});
-	//$('.classifier-select').selectpicker();
 
 	//TODO - label texts to messages.properties
 	$('.dataset-domain-select')
@@ -117,7 +116,6 @@ function checkAndAddDataset(addDatasetForm) {
 		openAlertDlg("Sõnakogu lisamine ebaõnnestus.");
 		console.log(data);
 	});
-
 }
 
 
