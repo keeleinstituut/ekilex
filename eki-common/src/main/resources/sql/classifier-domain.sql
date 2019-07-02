@@ -3420,13 +3420,13 @@ insert into domain_label (origin, code, value, lang, type) values ('bolan', 'bot
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'bot', 'botany', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'ehit', 'ehitusala', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'ehit', 'building', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'el', 'elekter ja elektrotehnika', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'el', 'elekter', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'el', 'electricity', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'etn', 'etnograafia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'etn', 'ethnography', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'farm', 'farmaatsia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'farm', 'pharmacy', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'filos', 'filos', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'filos', 'filosoofia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'filos', 'philosophy', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'folkl', 'folkloor', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'folkl', 'folklore', 'eng', 'descrip');
@@ -3440,9 +3440,9 @@ insert into domain_label (origin, code, value, lang, type) values ('bolan', 'geo
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'geogr', 'geography', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'geol', 'geoloogia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'geol', 'geology', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'info', 'informaatika, arvutiteadus', 'est', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'info', 'information technology, computer science', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'jur', 'jurisprudents', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'info', 'IT', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'info', 'IT', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'jur', 'õigusteadus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'jur', 'law', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kal', 'kalandus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kal', 'fishery', 'eng', 'descrip');
@@ -3454,8 +3454,8 @@ insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kir
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kirikl', 'ecclesiastical', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kirj', 'kirjandusteadus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kirj', 'literature', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kok', 'kokandus, kulinaaria', 'est', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kok', 'culinary', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kok', 'kokandus', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kok', 'cookery', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kunst', 'kunst', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kunst', 'art', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'loog', 'loogika', 'est', 'descrip');
@@ -3494,8 +3494,8 @@ insert into domain_label (origin, code, value, lang, type) values ('bolan', 'rel
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'relig', 'religion', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'sport', 'sport', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'sport', 'sports', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'sõj', 'sõjandus, riigikaitse', 'est', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'sõj', 'military science, national defence', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'sõj', 'sõjandus', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'sõj', 'military science', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'zool', 'zooloogia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'zool', 'zoology', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'teater', 'teater', 'est', 'descrip');
@@ -3507,7 +3507,7 @@ insert into domain_label (origin, code, value, lang, type) values ('bolan', 'tek
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'trük', 'trükindus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'trük', 'printing industry', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'vet', 'veterinaaria', 'est', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'vet', 'veterinary science', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'vet', 'veterinary', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'arhit', 'arhitektuur', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'arhit', 'architecture', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'aut', 'autondus', 'est', 'descrip');
@@ -3522,7 +3522,7 @@ insert into domain_label (origin, code, value, lang, type) values ('bolan', 'jah
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'jah', 'hunting', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'ker', 'keraamika', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'ker', 'pottery', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kul', 'kulinaaria', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kul', 'kokandus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'kul', 'cookery', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'lenn', 'lennundus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('bolan', 'lenn', 'aviation', 'eng', 'descrip');
