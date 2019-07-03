@@ -18,17 +18,17 @@
                   <option value="addLexemeProcessStateDlg" sec:authorize="#vars.isLexemeCrudGranted">Haldusolek</option>
                   <option value="lexeme_value_state" sec:authorize="#vars.isLexemeCrudGranted">Väärtusolek</option>
                   <option value="lexeme_frequency_group" sec:authorize="#vars.isLexemeCrudGranted">Sagedusrühm</option>
+                  <option value="addUsageDlg" sec:authorize="#vars.isLexemeCrudGranted">Kasutusnäide</option>
                   <option value="lexeme_pos" sec:authorize="#vars.isLexemeCrudGranted">Sõnaliik</option>
                   <option value="lexeme_deriv" sec:authorize="#vars.isLexemeCrudGranted">Tuletuskood</option>
                   <option value="lexeme_register" sec:authorize="#vars.isLexemeCrudGranted">Register</option>
-                  <option value="lexeme_region" sec:authorize="#vars.isLexemeCrudGranted">Regioon</option>
                   <option value="lexeme_grammar" sec:authorize="#vars.isLexemeCrudGranted">Grammatika</option>
-                  <option value="word_gender" sec:authorize="#vars.isWordCrudGranted">Sugu</option>
-                  <option value="word_type" sec:authorize="#vars.isWordCrudGranted">Sõna tüüp</option>
+                  <option value="lexeme_region" sec:authorize="#vars.isLexemeCrudGranted">Regioon</option>
                   <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.isLexemeCrudGranted">Allikaviide</option>
-                  <option value="addUsageDlg" sec:authorize="#vars.isLexemeCrudGranted">Kasutusnäide</option>
                   <option value="addLexemeRelationDlg" sec:authorize="#vars.isLexemeCrudGranted">Ilmiku seos</option>
                   <option value="addLexemePublicNoteDlg" sec:authorize="#vars.isLexemeCrudGranted">Ilmiku märkus</option>
+                  <option value="word_gender" sec:authorize="#vars.isWordCrudGranted">Sugu</option>
+                  <option value="word_type" sec:authorize="#vars.isWordCrudGranted">Sõna tüüp</option>
                 </select>
               </div>
             </div>
@@ -146,7 +146,7 @@
                 <select required class="form-control meaning-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="meaning_domain" sec:authorize="#vars.isMeaningCrudGranted">Valdkond</option>
-                  <option value="addDefinitionDlg" sec:authorize="${#authentication.principal.datasetPermissionsExist}">Mõiste seletus</option>
+                  <option value="addDefinitionDlg" sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">Mõiste seletus</option>
                   <option value="addLearnerCommentDlg" sec:authorize="#vars.isMeaningCrudGranted">Õppekommentaar</option>
                   <option value="addMeaningPublicNoteDlg" sec:authorize="#vars.isMeaningCrudGranted">Märkus</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.isMeaningCrudGranted">Tähenduse seos</option>

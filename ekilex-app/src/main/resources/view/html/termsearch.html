@@ -155,12 +155,12 @@
                       data-toggle="modal"
                       data-target="#newWordDlg"
                       th:data-meaning-id="${meaningId}"
-                      sec:authorize="${#authentication.principal.datasetPermissionsExist}">Uus termin</button>
+                      sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">Uus termin</button>
               <button class="btn btn-warning font-weight-bold btn-sm" type="button"
                       th:data-id="${meaningId}"
                       data-callback="doNewSearch"
                       data-toggle="deleteMeaningAndLexemesAndWords"
-                      sec:authorize="${#vars.isMeaningCrudGranted}">Kustuta</button>
+                      sec:authorize="#vars.permDataUtil.isLexemeDeleteGrantedForMeaning(#vars.meaningId, #vars.sessionBean)">Kustuta</button>
               <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
                  data-toggle="modal"
                  data-target="#meaningLifecycleLogDlg"
@@ -187,7 +187,7 @@
               <button type="button" class="btn badge badge-success" title="Lisa uus"
                       data-toggle="modal"
                       th:data-target="${'#addDefinitionDlg_' + meaningId}"
-                      sec:authorize="${#authentication.principal.datasetPermissionsExist}">
+                      sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </div>

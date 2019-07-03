@@ -239,7 +239,7 @@
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addDefinitionDlg_' + lexeme.lexemeId}"
-                          sec:authorize="${#authentication.principal.datasetPermissionsExist}">
+                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>

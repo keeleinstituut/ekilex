@@ -287,6 +287,21 @@ public class PermissionDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public boolean isGrantedForMeaning(Long meaningId, String datasetCode) {
+
+		return create
+				.select(DSL.field(DSL.count(MEANING.ID).gt(0)).as("is_granted"))
+				.from(MEANING)
+				.where(
+						MEANING.ID.eq(meaningId)
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.MEANING_ID.eq(MEANING.ID)
+												.and(LEXEME.DATASET_CODE.eq(datasetCode)))))
+				.fetchSingleInto(Boolean.class);
+	}
+
 	/*
 	 * currently not used. remove?
 	 * isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
@@ -318,6 +333,10 @@ public class PermissionDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	/*
+	 * currently not used. remove?
+	 * isPermGranted = permissionDbService.isGrantedForDefinition(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
+	 */
 	public boolean isGrantedForDefinition(Long userId, Long definitionId, String authItem, List<String> authOps) {
 
 		return create
@@ -339,6 +358,28 @@ public class PermissionDbService implements SystemConstant {
 																				.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
 																				.and(DATASET_PERMISSION.DATASET_CODE.eq(DEFINITION_DATASET.DATASET_CODE))
 																				.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(DEFINITION.LANG))))))))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean isGrantedForDefinition(Long userId, Long definitionId, String datasetCode, String lang) {
+
+		Condition langCond;
+		if (StringUtils.isBlank(lang)) {
+			langCond = DSL.trueCondition();
+		} else {
+			langCond = DEFINITION.LANG.eq(lang);
+		}
+		return create
+				.select(DSL.field((DSL.count(DEFINITION.ID).gt(0))).as("is_granted"))
+				.from(DEFINITION)
+				.where(
+						DEFINITION.ID.eq(definitionId)
+								.and(langCond)
+								.andExists(DSL
+										.select(DEFINITION_DATASET.DEFINITION_ID)
+										.from(DEFINITION_DATASET)
+										.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)
+														.and(DEFINITION_DATASET.DATASET_CODE.eq(datasetCode)))))
 				.fetchSingleInto(Boolean.class);
 	}
 

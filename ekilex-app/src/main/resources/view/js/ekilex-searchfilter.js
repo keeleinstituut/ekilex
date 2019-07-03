@@ -104,8 +104,13 @@ function initialiseDetailSearch() {
 	$(document).on("change", "select[name$='searchKey']", function() {
 
 		let searchKeyVal = $(this).val();
+		let searchEntity = $(this).closest('[name="detailGroup"]').find('[name$="entity"]').val();
 		let searchOperandElement = $(this).closest('[name="detailCondition"]').find('[name$="searchOperand"]');
-		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKeyVal + '"]');
+		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKeyVal + '"]').clone();
+		// currently only lexsearch WORD->LANGUAGE->NOT_EXISTS implemented
+		if (searchEntity == 'HEADWORD') {
+			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
+		}
 		searchOperandElement.find('option').remove();
 		searchOperandElement.append(operandTemplate.html());
 		searchOperandElement.val(searchOperandElement.find('option').first().val());

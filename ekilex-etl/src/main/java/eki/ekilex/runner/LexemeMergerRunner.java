@@ -31,6 +31,7 @@ import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
+import eki.common.exception.DataLoadingException;
 import eki.ekilex.data.transform.Collocation;
 import eki.ekilex.data.transform.Freeform;
 import eki.ekilex.data.transform.FreeformSourceLink;
@@ -625,10 +626,14 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Count sumLexemeFreeformSourceLinkCount = countsMap.get("sumLexemeFreeformSourceLinkCount");
 
 		List<Freeform> sumFreeforms = new ArrayList<>();
+		List<String> allFfVals = new ArrayList<>();
 		for (LexemeExt lexeme : allLexemes) {
 			List<Freeform> srcFreeforms = lexeme.getFreeforms();
 			if (CollectionUtils.isEmpty(srcFreeforms)) {
 				continue;
+			}
+			for (Freeform srcFreeform : srcFreeforms) {
+				allFfVals.add(srcFreeform.getValueText() + " (" + srcFreeform.getType() + ")");
 			}
 			if (CollectionUtils.isEmpty(sumFreeforms)) {
 				sumFreeforms.addAll(srcFreeforms);
@@ -637,9 +642,14 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 					boolean freeformExists = sumFreeforms.stream()
 							.filter(sumFreeform -> Objects.equals(sumFreeform.getType(), srcFreeform.getType()))
 							.anyMatch(sumFreeform -> {
-								if (StringUtils.equals(sumFreeform.getValueText(), srcFreeform.getValueText())
-										|| Objects.equals(sumFreeform.getValueDate(), srcFreeform.getValueDate())) {
-									return true;
+								if (srcFreeform.getValueText() != null) {
+									if (StringUtils.equals(sumFreeform.getValueText(), srcFreeform.getValueText())) {
+										return true;
+									}
+								} else if (srcFreeform.getValueDate() != null) {
+									if (Objects.equals(sumFreeform.getValueDate(), srcFreeform.getValueDate())) {
+										return true;
+									}									
 								}
 								return false;
 							});
@@ -654,9 +664,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		for (Freeform freeform : sumFreeforms) {
 			Long freeformId = null;
 			if (freeform.getValueText() != null) {
-				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueText(), freeform.getLangCode(), freeform.getComplexity());
+				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueText(), freeform.getValuePrese(), freeform.getLangCode(), freeform.getComplexity());
 			} else if (freeform.getValueDate() != null) {
-				freeformId = createLexemeFreeform(sumLexemeId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode(), freeform.getComplexity());
+				throw new DataLoadingException("Unexpected lexeme freeform data type: " + freeform.getValueDate());
 			} else {
 				// other data types?
 			}
