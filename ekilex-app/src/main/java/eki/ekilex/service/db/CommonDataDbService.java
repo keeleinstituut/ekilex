@@ -77,8 +77,10 @@ import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
@@ -992,5 +994,95 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 					.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
 				.where(DOMAIN.DATASETS.contains(datasetCodes))
 				.fetchInto(Classifier.class);
+	}
+
+	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIds(Long meaningId, String datasetCode) {
+
+		return create
+				.select(
+						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
+						LEXEME.ID.as("lexeme_id")
+						)
+				.from(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchInto(WordLexemeMeaningIdTuple.class);
+	}
+
+	public WordLexemeMeaningIdTuple geWordLexemeMeaningId(Long lexemeId) {
+
+		return create
+				.select(
+						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
+						LEXEME.ID.as("lexeme_id")
+						)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(WordLexemeMeaningIdTuple.class);
+	}
+
+	public boolean isOnlyLexemeForWord(Long lexemeId) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		int count = create
+				.fetchCount(DSL
+						.select(l2.ID)
+						.from(l1, l2)
+						.where(
+								l1.ID.eq(lexemeId)
+										.and(l1.WORD_ID.eq(l2.WORD_ID))
+										.and(l1.ID.ne(l2.ID))));
+		return count == 1;
+	}
+
+	public boolean isOnlyLexemeForMeaning(Long lexemeId) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		int count = create
+				.fetchCount(DSL
+						.select(l2.ID)
+						.from(l1, l2)
+						.where(
+								l1.ID.eq(lexemeId)
+										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+										.and(l1.ID.ne(l2.ID))));
+		return count == 1;
+	}
+
+	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
+
+		boolean noOtherDatasetsExist = create
+				.select(DSL.field(DSL.count(LEXEME.ID).eq(0)).as("no_other_datasets_exist"))
+				.from(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.ne(datasetCode)))
+				.fetchSingleInto(Boolean.class);
+
+		return noOtherDatasetsExist;
+	}
+
+	public boolean isOnlyLexemesForWords(Long meaningId, String datasetCode) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+
+		boolean noOtherMeaningsExist = create
+				.select(DSL.field(DSL.countDistinct(l2.WORD_ID).eq(0)).as("no_other_meanings_exist"))
+				.from(l1, l2)
+				.where(
+						l1.MEANING_ID.eq(meaningId)
+								.and(l1.WORD_ID.eq(l2.WORD_ID))
+								.and(l1.DATASET_CODE.eq(datasetCode))
+								.and(l1.ID.ne(l2.ID))
+								.and(DSL.or(
+										l1.MEANING_ID.ne(l2.MEANING_ID),
+										l1.MEANING_ID.eq(l2.MEANING_ID).and(l1.DATASET_CODE.ne(l2.DATASET_CODE))))
+
+				)
+				.fetchSingleInto(Boolean.class);
+
+		return noOtherMeaningsExist;
 	}
 }

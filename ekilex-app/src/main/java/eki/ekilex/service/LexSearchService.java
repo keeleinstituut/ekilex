@@ -171,16 +171,6 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public boolean isOnlyLexemeForWord(Long lexemeId) {
-		return lexSearchDbService.isOnlyLexemeForWord(lexemeId);
-	}
-
-	@Transactional
-	public boolean isOnlyLexemeForMeaning(Long lexemeId) {
-		return lexSearchDbService.isOnlyLexemeForMeaning(lexemeId);
-	}
-
-	@Transactional
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);

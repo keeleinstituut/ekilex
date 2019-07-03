@@ -218,16 +218,6 @@ public class TermSearchService extends AbstractSearchService {
 		return meaning;
 	}
 
-	@Transactional
-	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
-		return termSearchDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
-	}
-
-	@Transactional
-	public boolean isOnlyLexemesForWords(Long meaningId, String datasetCode) {
-		return termSearchDbService.isOnlyLexemesForWords(meaningId, datasetCode);
-	}
-
 	private String composeLevels(Lexeme lexeme) {
 
 		Integer level1 = lexeme.getLevel1();

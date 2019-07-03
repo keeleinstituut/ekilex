@@ -23,9 +23,8 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CudDbService;
-import eki.ekilex.service.db.LexSearchDbService;
-import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetPermissionsExist")
@@ -39,10 +38,7 @@ public class CudService extends AbstractService {
 	private TextDecorationService textDecorationService;
 
 	@Autowired
-	private LexSearchDbService lexSearchDbService;
-
-	@Autowired
-	private TermSearchDbService termSearchDbService;
+	private CommonDataDbService commonDataDbService;
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
@@ -528,11 +524,12 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteLexeme(Long lexemeId) {
-		boolean isOnlyLexemeForMeaning = lexSearchDbService.isOnlyLexemeForMeaning(lexemeId);
-		boolean isOnlyLexemeForWord = lexSearchDbService.isOnlyLexemeForWord(lexemeId);
-		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
-		Long wordId = lexeme.getWordId();
-		Long meaningId = lexeme.getMeaningId();
+
+		boolean isOnlyLexemeForMeaning = commonDataDbService.isOnlyLexemeForMeaning(lexemeId);
+		boolean isOnlyLexemeForWord = commonDataDbService.isOnlyLexemeForWord(lexemeId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.geWordLexemeMeaningId(lexemeId);
+		Long wordId = wordLexemeMeaningId.getWordId();
+		Long meaningId = wordLexemeMeaningId.getMeaningId();
 
 		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
 		updateLexemeLevels(lexemeId, "delete");
@@ -632,26 +629,10 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteMeaningAndLexemes(Long meaningId, String datasetCode) {
 
-		boolean isOnlyLexemesForMeaning = termSearchDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
-		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = termSearchDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
-
+		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = commonDataDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
-
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
-			Long wordId = wordLexemeMeaningId.getWordId();
-
-			boolean isOnlyLexemeForWord = termSearchDbService.isOnlyLexemeForWord(lexemeId);
-
-			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
-			updateLexemeLevels(lexemeId, "delete");
-			cudDbService.deleteLexeme(lexemeId);
-
-			if (isOnlyLexemeForWord) {
-				deleteWord(wordId);
-			}
-		}
-		if (isOnlyLexemesForMeaning) {
-			deleteMeaning(meaningId);
+			deleteLexeme(lexemeId);
 		}
 	}
 

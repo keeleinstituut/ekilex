@@ -47,17 +47,16 @@ public class CommonDataService implements SystemConstant {
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
-
 	@Transactional
 	public Map<String, List<Classifier>> getDatasetDomainsByOrigin(String datasetCode) {
-		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, datasetCode,
-					CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(
+				ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getAllDomainsByOrigin() {
-		List<Classifier> domains = domains = commonDataDbService.getDomains();
+		List<Classifier> domains = commonDataDbService.getDomains();
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
@@ -220,5 +219,25 @@ public class CommonDataService implements SystemConstant {
 	@Transactional
 	public List<Classifier> findDomainsByOrigin(String originCode) {
 		return commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
+	public boolean isOnlyLexemeForWord(Long lexemeId) {
+		return commonDataDbService.isOnlyLexemeForWord(lexemeId);
+	}
+
+	@Transactional
+	public boolean isOnlyLexemeForMeaning(Long lexemeId) {
+		return commonDataDbService.isOnlyLexemeForMeaning(lexemeId);
+	}
+
+	@Transactional
+	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
+		return commonDataDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
+	}
+
+	@Transactional
+	public boolean isOnlyLexemesForWords(Long meaningId, String datasetCode) {
+		return commonDataDbService.isOnlyLexemesForWords(meaningId, datasetCode);
 	}
 }

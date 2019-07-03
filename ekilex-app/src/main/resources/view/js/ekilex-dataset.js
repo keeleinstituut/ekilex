@@ -1,6 +1,6 @@
-String.prototype.toUnicode = function(){
+String.prototype.toUnicode = function() {
 	var result = "";
-	for(var i = 0; i < this.length; i++) {
+	for (var i = 0; i < this.length; i++) {
 		// Assumption: all characters are < 0xffff
 		if (this[i].charCodeAt(0) > 127) {
 			result += "\\u" + ("000" + this[i].charCodeAt(0).toString(16)).substr(-4).toUpperCase();
@@ -12,14 +12,13 @@ String.prototype.toUnicode = function(){
 	return result;
 };
 
-String.prototype.trunc =
-	function( n, useWordBoundary ){
-		if (this.length <= n) { return this; }
-		var subString = this.substr(0, n-1);
-		return (useWordBoundary
-			? subString.substr(0, subString.lastIndexOf(' '))
-			: subString) + "&hellip;";
-	};
+String.prototype.trunc = function(n, useWordBoundary) {
+	if (this.length <= n) {
+		return this;
+	}
+	var subString = this.substr(0, n - 1);
+	return (useWordBoundary ? subString.substr(0, subString.lastIndexOf(' ')) : subString) + "&hellip;";
+};
 
 function initialise() {
 	$(document).on("click", "#addDatasetSubmitBtn", function(e) {
@@ -41,7 +40,6 @@ function initialise() {
 		closeWaitDlg();
 	});
 
-
 	$('.delete-dataset-confirm').confirmation({
 		btnOkLabel : 'Jah',
 		btnCancelLabel : 'Ei',
@@ -52,11 +50,13 @@ function initialise() {
 		}
 	});
 
-	$('#addDatasetForm').find('input[name="code"]').on('blur', function (e) {
+	$('#addDatasetForm').find('input[name="code"]').on('blur', function(e) {
 		$('#codeExistsError').hide();
 	});
 
-	$('.classifier-select').selectpicker({width:'100%'});
+	$('.classifier-select').selectpicker({
+		width : '100%'
+	});
 
 	$(document).on("change", ".dataset-origin-select", function(e) {
 		var originCode = $(this).val();
@@ -72,10 +72,10 @@ function initialise() {
 		}
 
 		let getOriginDomainsUrl = applicationUrl + 'data/origin_domains/' + originCode;
-		$.get(getOriginDomainsUrl).done(function (response) {
+		$.get(getOriginDomainsUrl).done(function(response) {
 
 			var domainOrigins = JSON.parse(response);
-			$.each(domainOrigins, function (index, domain) {
+			$.each(domainOrigins, function(index, domain) {
 				let domainOptionText = domain.value;
 				if (domain.value != domain.code) {
 					domainOptionText += ' [' + domain.code + ']';
@@ -89,9 +89,7 @@ function initialise() {
 						return val;
 					}
 				}).replace(/\\\\/g, '\\'); //TODO - better solution
-				let domainOption = $("<option></option>")
-					.attr("value", domainJson)
-					.text(domainOptionText);
+				let domainOption = $("<option></option>").attr("value", domainJson).text(domainOptionText);
 
 				if (previousDomains != undefined && previousDomains.includes(domainJson)) {
 					domainOption.attr("selected", "selected");
@@ -101,7 +99,7 @@ function initialise() {
 
 			domains.selectpicker('refresh');
 
-		}).fail(function (response) {
+		}).fail(function(response) {
 			console.log(response);
 			openAlertDlg("Päritolu valdkondade päring ebaõnnestus");
 		});
@@ -115,9 +113,9 @@ function initialise() {
 		}
 	});
 
-
-	$('.dataset-domain-select').selectpicker({width:'100%'});
-
+	$('.dataset-domain-select').selectpicker({
+		width : '100%'
+	});
 
 }
 function isValidDatasetCodeFormat(code) {
@@ -130,14 +128,14 @@ function deleteDataset(datasetCode) {
 	openWaitDlg("Palun oodake, sõnakogu kustutamine on pooleli");
 	let deleteUrl = applicationUrl + 'delete_dictionary/' + datasetCode;
 
-	$.get(deleteUrl).done(function (data) {
+	$.get(deleteUrl).done(function(data) {
 		closeWaitDlg();
 		if (data === 'OK') {
 			window.location = applicationUrl + 'dictionaries';
 		} else {
 			openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		}
-	}).fail(function (data) {
+	}).fail(function(data) {
 		closeWaitDlg();
 		openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		console.log(data);
@@ -153,7 +151,7 @@ function checkAndAddDataset(addDatasetForm) {
 		return;
 	}
 
-	$.get(validateUrl).done(function (data) {
+	$.get(validateUrl).done(function(data) {
 		let responseCode = data;
 
 		if (responseCode === 'OK') {
@@ -165,10 +163,8 @@ function checkAndAddDataset(addDatasetForm) {
 		} else {
 			openAlertDlg("Sõnakogu lisamine ebaõnnestus, veakood: '" + responseCode + "'");
 		}
-	}).fail(function (data) {
+	}).fail(function(data) {
 		openAlertDlg("Sõnakogu lisamine ebaõnnestus.");
 		console.log(data);
 	});
 }
-
-

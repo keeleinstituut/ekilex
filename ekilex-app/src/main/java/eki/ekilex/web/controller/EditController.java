@@ -41,7 +41,6 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.SourceService;
-import eki.ekilex.service.TermSearchService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
@@ -58,9 +57,6 @@ public class EditController implements WebConstant {
 
 	@Autowired
 	private LexSearchService lexSearchService;
-
-	@Autowired
-	private TermSearchService termSearchService;
 
 	@Autowired
 	private CommonDataService commonDataService;
@@ -325,12 +321,12 @@ public class EditController implements WebConstant {
 		case "delete":
 			switch (opCode) {
 			case "lexeme":
-				boolean isOnlyLexemeForMeaning = lexSearchService.isOnlyLexemeForMeaning(id);
+				boolean isOnlyLexemeForMeaning = commonDataService.isOnlyLexemeForMeaning(id);
 				if (isOnlyLexemeForMeaning) {
 					question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
 					questions.add(question);
 				}
-				boolean isOnlyLexemeForWord = lexSearchService.isOnlyLexemeForWord(id);
+				boolean isOnlyLexemeForWord = commonDataService.isOnlyLexemeForWord(id);
 				if (isOnlyLexemeForWord) {
 					question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
 					questions.add(question);
@@ -344,12 +340,12 @@ public class EditController implements WebConstant {
 					break;
 				}
 				String datasetCode = userRole.getDatasetCode();
-				boolean isOnlyLexemesForMeaning = termSearchService.isOnlyLexemesForMeaning(id, datasetCode);
+				boolean isOnlyLexemesForMeaning = commonDataService.isOnlyLexemesForMeaning(id, datasetCode);
 				if (isOnlyLexemesForMeaning) {
 					question = "Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine";
 					questions.add(question);
 				}
-				boolean isOnlyLexemesForWords = termSearchService.isOnlyLexemesForWords(id, datasetCode);
+				boolean isOnlyLexemesForWords = commonDataService.isOnlyLexemesForWords(id, datasetCode);
 				if (isOnlyLexemesForWords) {
 					question = "Valitud mõiste kustutamisel jäävad mõned terminid mõisteta. Palun kinnita terminite kustutamine";
 					questions.add(question);
