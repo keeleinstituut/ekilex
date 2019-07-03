@@ -298,6 +298,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		Map<String, Object> params = new HashMap<>();
 		params.put("code", dataset);
 		Map<String, Object> values = new HashMap<>();
+		values.put("name", termbase.get("termbase_name"));
 		values.put("description", termbase.get("description"));
 		values.put("is_public", termbase.get("is_public"));
 		basicDbService.update(DATASET, params, values);

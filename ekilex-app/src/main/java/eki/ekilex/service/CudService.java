@@ -22,6 +22,7 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.TermSearchDbService;
@@ -629,12 +630,17 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void deleteMeaningAndLexemes(Long meaningId) {
-		// TODO delete only lexemes that are allowed by role check. If there are lexemes that are not allowed to delete, then do not delete meaning.
-		List<Long> lexemeIds = termSearchDbService.getMeaningLexemeIds(meaningId);
-		for (Long lexemeId : lexemeIds) {
+	public void deleteMeaningAndLexemes(Long meaningId, String datasetCode) {
+
+		boolean isOnlyLexemesForMeaning = termSearchDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
+		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = termSearchDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+
+		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
+
+			Long lexemeId = wordLexemeMeaningId.getLexemeId();
+			Long wordId = wordLexemeMeaningId.getWordId();
+
 			boolean isOnlyLexemeForWord = termSearchDbService.isOnlyLexemeForWord(lexemeId);
-			Long wordId = cudDbService.getLexemeWordId(lexemeId);
 
 			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
 			updateLexemeLevels(lexemeId, "delete");
@@ -644,7 +650,9 @@ public class CudService extends AbstractService {
 				deleteWord(wordId);
 			}
 		}
-		deleteMeaning(meaningId);
+		if (isOnlyLexemesForMeaning) {
+			deleteMeaning(meaningId);
+		}
 	}
 
 	@Transactional

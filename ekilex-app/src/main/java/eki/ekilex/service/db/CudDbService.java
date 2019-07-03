@@ -161,14 +161,6 @@ public class CudDbService implements DbConstant {
 		return lexemeRegionRecord.getId();
 	}
 
-	public Long getLexemeWordId(Long lexemeId) {
-		return create
-				.select(LEXEME.WORD_ID)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(Long.class);
-	}
-
 	public Long getMeaningDomainId(Long meaningId, Classifier domain) {
 		MeaningDomainRecord meaningDomainRecord = create.fetchOne(MEANING_DOMAIN,
 				MEANING_DOMAIN.MEANING_ID.eq(meaningId)

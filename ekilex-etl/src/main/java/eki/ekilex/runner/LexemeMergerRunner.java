@@ -819,6 +819,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			Collection<String> disjunction = CollectionUtils.disjunction(sumClassifierCodes, classifierCodes);
 			sumClassifierCodes.addAll(disjunction);
 		}
+		sumClassifierCodes = sumClassifierCodes.stream().distinct().collect(Collectors.toList());
 		return sumClassifierCodes;
 	}
 

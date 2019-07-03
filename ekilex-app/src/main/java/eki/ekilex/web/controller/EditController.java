@@ -30,6 +30,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.ConfirmationRequest;
 import eki.ekilex.data.CreateItemRequest;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
@@ -340,16 +341,21 @@ public class EditController implements WebConstant {
 				}
 				break;
 			case "meaning":
-				boolean meaningHasLexemeThatIsOnlyLexemeForWord = termSearchService.meaningHasLexemeThatIsOnlyLexemeForWord(id);
-				boolean meaningHasLexemeWithoutValidRole = permDataUtil.meaningHasLexemeWithoutValidRole(id, sessionBean);
-
-				if (meaningHasLexemeWithoutValidRole) {
-					question = "Mõistet ei saa kustutada, sest leidub valitud rollile mittevastavaid ilmikuid. Palun kinnita ainult ilmikute kustutamine";
+				DatasetPermission userRole = sessionBean.getUserRole();
+				if (userRole == null) {
+					question = "Mõiste kustutamine pole ilma rollita õigustatud";
+					questions.add(question);
+					break;
+				}
+				String datasetCode = userRole.getDatasetCode();
+				boolean isOnlyLexemesForMeaning = termSearchService.isOnlyLexemesForMeaning(id, datasetCode);
+				if (isOnlyLexemesForMeaning) {
+					question = "Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine";
 					questions.add(question);
 				}
-
-				if (meaningHasLexemeThatIsOnlyLexemeForWord) {
-					question = "Leidub vähemalt üks selline ilmik, mis on keelendi ainus ilmik. Palun kinnita keelendite kustutamine";
+				boolean isOnlyLexemesForWords = termSearchService.isOnlyLexemesForWords(id, datasetCode);
+				if (isOnlyLexemesForWords) {
+					question = "Valitud mõiste kustutamisel jäävad mõned terminid mõisteta. Palun kinnita terminite kustutamine";
 					questions.add(question);
 				}
 				break;
@@ -368,9 +374,17 @@ public class EditController implements WebConstant {
 	public String deleteItem(
 			@RequestParam("opCode") String opCode,
 			@RequestParam("id") Long id,
-			@RequestParam(value = "value", required = false) String valueToDelete) {
+			@RequestParam(value = "value", required = false) String valueToDelete,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
+
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return "NOK";
+		}
+		String datasetCode = userRole.getDatasetCode();
+
 		switch (opCode) {
 		case "definition":
 			cudService.deleteDefinition(id);
@@ -427,8 +441,7 @@ public class EditController implements WebConstant {
 			cudService.deleteMeaningLearnerComment(id);
 			break;
 		case "meaning":
-			// TODO see tuleb arvatavasti siit välja tõsta, et sessionbean ka kätte saada (kuna on siin ainuke, mis seda vajab)
-			cudService.deleteMeaningAndLexemes(id);
+			cudService.deleteMeaningAndLexemes(id, datasetCode);
 			break;
 		case "meaning_domain":
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToDelete);
@@ -591,5 +604,4 @@ public class EditController implements WebConstant {
 		cudService.updateWordValue(wordId, valuePrese);
 		return valuePrese;
 	}
-
 }

@@ -107,6 +107,16 @@
               </button>
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
+                  <span th:if="${lexeme.levels != null}"
+                        th:data-id="${lexeme.lexemeId}"
+                        th:data-level1="${lexeme.level1}"
+                        th:data-level2="${lexeme.level2}"
+                        th:data-level3="${lexeme.level3}"
+                        class="pl-1 pr-2">
+                    <span class="bubble">
+                      <span th:text="${lexeme.levels}"></span>
+                    </span>
+                  </span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
@@ -115,14 +125,6 @@
                     </div>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
-                  <span th:if="${lexeme.levels != null}"
-                        th:data-id="${lexeme.lexemeId}"
-                        th:data-level1="${lexeme.level1}"
-                        th:data-level2="${lexeme.level2}"
-                        th:data-level3="${lexeme.level3}"
-                        class="pl-1">
-                    <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
-                  </span>
                 </div>
                 <div class="ml-auto">
                   <b th:text="${lexeme.dataset}"></b>
@@ -140,6 +142,25 @@
               </button>
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
+                  <span class="btn pl-0 pr-2"
+                        th:if="${lexeme.levels != null}"
+                        th:data-id="${lexeme.lexemeId}"
+                        th:data-level1="${lexeme.level1}"
+                        th:data-level2="${lexeme.level2}"
+                        th:data-level3="${lexeme.level3}"
+                        data-toggle="modal"
+                        th:data-target="${'#editLexemeLevelsDlg_' + lexeme.lexemeId}"
+                        sec:authorize="#vars.isLexemeCrudGranted">
+                    <span class="bubble">
+                      <span th:text="${lexeme.levels}"></span>
+                    </span>
+                  </span>
+                  <span class="pl-0 pr-2"th:if="${!isLexemeCrudGranted}">
+                    <span class="bubble">
+                      <span th:text="${lexeme.levels}"></span>
+                    </span>
+                  </span>
+                  <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <button type="button" class="btn btn-link pl-0 pr-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
                       <span th:text="${meaningWord.value}"></span>
@@ -148,19 +169,6 @@
                     </button>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
-                  <span class="btn pl-0"
-                        th:if="${lexeme.levels != null}"
-                        th:data-id="${lexeme.lexemeId}"
-                        th:data-level1="${lexeme.level1}"
-                        th:data-level2="${lexeme.level2}"
-                        th:data-level3="${lexeme.level3}"
-                        data-toggle="modal"
-                        th:data-target="${'#editLexemeLevelsDlg_' + lexeme.lexemeId}"
-                        sec:authorize="${#vars.isLexemeCrudGranted}">
-                    <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
-                  </span>
-                  <span th:text="${'[ ' + lexeme.levels + ' ]'}" th:if="${!#vars.isLexemeCrudGranted}"></span>
-                  <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
                 </div>
                 <div>
                   <a class="btn btn-sm btn-primary"

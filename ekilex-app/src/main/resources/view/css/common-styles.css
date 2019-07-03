@@ -33,6 +33,22 @@ td {
 	color: #888;
 }
 
+.bubble {
+	width: 30px;
+	line-height: 0px;
+	border-radius: 50%;
+	text-align: center;
+	padding: 1px;
+	background: #eee;
+}
+
+.bubble span {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 5px;
+	font-weight: bold;
+}
+
 .modal-backdrop.show {
 	opacity: 0.1;
 }
