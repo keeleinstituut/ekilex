@@ -38,6 +38,7 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteSourceTuple;
+import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
@@ -688,6 +689,42 @@ public class ConversionUtil {
 	public List<List<Relation>> groupRelationsById(List<Relation> relations) {
 		Map<Long, List<Relation>> groupedById = relations.stream().collect(groupingBy(Relation::getId));
 		return new ArrayList<>(groupedById.values());
+	}
+
+	public List<OrderedClassifier> removeOrderedClassifierDuplicates(List<OrderedClassifier> classifiersWithDuplicates) {
+
+		List<OrderedClassifier> classifiers = new ArrayList<>();
+		for (OrderedClassifier possiblyDuplicateClassifier : classifiersWithDuplicates) {
+			String possiblyDuplicateCode = possiblyDuplicateClassifier.getCode();
+			boolean isDuplicate = false;
+			for (OrderedClassifier classifier : classifiers) {
+				if (classifier.getCode().equals(possiblyDuplicateCode)) {
+					isDuplicate = true;
+				}
+			}
+			if (!isDuplicate) {
+				classifiers.add(possiblyDuplicateClassifier);
+			}
+		}
+		return classifiers;
+	}
+
+	public List<Classifier> removeClassifierDuplicates(List<Classifier> classifiersWithDuplicates) {
+
+		List<Classifier> classifiers = new ArrayList<>();
+		for (Classifier possiblyDuplicateClassifier : classifiersWithDuplicates) {
+			String possiblyDuplicateCode = possiblyDuplicateClassifier.getCode();
+			boolean isDuplicate = false;
+			for (Classifier classifier : classifiers) {
+				if (classifier.getCode().equals(possiblyDuplicateCode)) {
+					isDuplicate = true;
+				}
+			}
+			if (!isDuplicate) {
+				classifiers.add(possiblyDuplicateClassifier);
+			}
+		}
+		return classifiers;
 	}
 
 	private Collocation addCollocation(Map<Long, Collocation> collocMap, CollocationTuple collocTuple, List<Collocation> collocations) {

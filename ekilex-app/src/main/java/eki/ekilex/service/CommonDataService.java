@@ -18,12 +18,16 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.db.CommonDataDbService;
+import eki.ekilex.service.util.ConversionUtil;
 
 @Component
 public class CommonDataService implements SystemConstant {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
+
+	@Autowired
+	protected ConversionUtil conversionUtil;
 
 	@Transactional
 	public List<Dataset> getDatasets() {
@@ -52,12 +56,13 @@ public class CommonDataService implements SystemConstant {
 	public Map<String, List<Classifier>> getDatasetDomainsByOrigin(String datasetCode) {
 		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, datasetCode,
 					CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		domains = conversionUtil.removeClassifierDuplicates(domains);
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getAllDomainsByOrigin() {
-		List<Classifier> domains = domains = commonDataDbService.getDomains();
+		List<Classifier> domains = commonDataDbService.getDomains();
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 

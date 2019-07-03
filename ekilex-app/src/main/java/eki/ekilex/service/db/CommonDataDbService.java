@@ -72,6 +72,7 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.NoteSourceTuple;
+import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
@@ -449,20 +450,23 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(ImageSourceTuple.class);
 	}
 
-	public List<Classifier> getMeaningDomains(Long meaningId) {
+	public List<OrderedClassifier> getMeaningDomains(Long meaningId) {
 
 		return create
 				.select(
 						getClassifierNameField(ClassifierName.DOMAIN),
 						DOMAIN_LABEL.CODE,
 						DOMAIN_LABEL.ORIGIN,
-						DOMAIN_LABEL.VALUE)
+						DOMAIN_LABEL.VALUE,
+						MEANING_DOMAIN.ID,
+						MEANING_DOMAIN.ORDER_BY)
 				.from(
 						MEANING_DOMAIN.leftOuterJoin(DOMAIN_LABEL).on(
 								MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE)
 										.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))))
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
-				.fetchInto(Classifier.class);
+				.orderBy(MEANING_DOMAIN.ORDER_BY, DOMAIN_LABEL.LANG.desc())
+				.fetchInto(OrderedClassifier.class);
 	}
 
 	public List<DefinitionRefTuple> getMeaningDefinitionRefTuples(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -932,8 +936,10 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
 							.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
 							.and(DOMAIN.DATASETS.contains(datasetCodes)))
+					.orderBy(DOMAIN.CODE, DOMAIN_LABEL.LANG.desc())
 					.fetchInto(Classifier.class);
 		}
+
 
 		throw new UnsupportedOperationException();
 	}
