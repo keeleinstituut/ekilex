@@ -1,3 +1,17 @@
+String.prototype.toUnicode = function(){
+	var result = "";
+	for(var i = 0; i < this.length; i++) {
+		// Assumption: all characters are < 0xffff
+		if (this[i].charCodeAt(0) > 127) {
+			result += "\\u" + ("000" + this[i].charCodeAt(0).toString(16)).substr(-4).toUpperCase();
+		} else {
+			result += this[i];
+		}
+
+	}
+	return result;
+};
+
 String.prototype.trunc =
 	function( n, useWordBoundary ){
 		if (this.length <= n) { return this; }
@@ -44,10 +58,6 @@ function initialise() {
 
 	$('.classifier-select').selectpicker({width:'100%'});
 
-	$(document).on("click", ".dataset-domain-select", function(e) {
-		//TODO - clear domain
-	});
-
 	$(document).on("change", ".dataset-origin-select", function(e) {
 		var originCode = $(this).val();
 		var domains = $(this).closest('form').find('[name="selectedDomains"]');
@@ -72,10 +82,13 @@ function initialise() {
 				}
 				domainOptionText = domainOptionText.trunc(100);
 				let domainJson = JSON.stringify(domain, function(key, val) {
+					if (key == "code") {
+						return val.toUnicode();
+					}
 					if (key !== "value") {
 						return val;
 					}
-				});
+				}).replace(/\\\\/g, '\\'); //TODO - better solution
 				let domainOption = $("<option></option>")
 					.attr("value", domainJson)
 					.text(domainOptionText);
