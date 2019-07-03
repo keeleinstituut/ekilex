@@ -833,7 +833,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		String[] classiferDatasets = classifier.getDatasets();
 		classiferDatasets = ArrayUtils.add(classiferDatasets, datasetCode);
 
-		updateClassiferDatasets(classifierName, classifierCode, classiferDatasets);
+		updateClassiferDatasets(classifierName, classifierCode, origin, classiferDatasets);
 	}
 
 	public void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
@@ -843,10 +843,10 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		String[] classifierDatasetCodes = classifier.getDatasets();
 		classifierDatasetCodes = ArrayUtils.removeElement(classifierDatasetCodes, datasetCode);
 
-		updateClassiferDatasets(classifierName, classifierCode, classifierDatasetCodes);
+		updateClassiferDatasets(classifierName, classifierCode, origin, classifierDatasetCodes);
 	}
 
-	private void updateClassiferDatasets(ClassifierName classifierName, String code, String[] datasets) {
+	private void updateClassiferDatasets(ClassifierName classifierName, String code, String origin, String[] datasets) {
 
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
 
@@ -860,7 +860,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 			create
 					.update(DOMAIN)
 					.set(DOMAIN.DATASETS, datasets)
-					.where(DOMAIN.CODE.eq(code))
+					.where(DOMAIN.CODE.eq(code).and(DOMAIN.ORIGIN.eq(origin)))
 					.execute();
 		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
 
@@ -924,13 +924,13 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 			return create.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE,
 				DOMAIN_LABEL.VALUE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY)
-					.from(DOMAIN, DOMAIN_LABEL)
+					.from(DOMAIN)
+					.leftJoin(DOMAIN_LABEL)
+					.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
 					.where(
 						DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
 							.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
-							.and(DOMAIN_LABEL.LANG.eq(labelLanguage))
-							.and(DOMAIN_LABEL.TYPE.eq(labelType)).and(
-						DOMAIN.DATASETS.contains(datasetCodes)))
+							.and(DOMAIN.DATASETS.contains(datasetCodes)))
 					.fetchInto(Classifier.class);
 		}
 
@@ -955,4 +955,41 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
+
+	public List<String> getAllDomainOriginCodes() {
+		return create
+				.selectDistinct(DOMAIN_LABEL.ORIGIN)
+				.from(DOMAIN_LABEL)
+				.orderBy(DOMAIN_LABEL.ORIGIN)
+				.fetchInto(String.class);
+	}
+
+	public List<Classifier> findDomainsByOriginCode(String originCode, String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(getClassifierNameField(ClassifierName.DOMAIN),
+					DOMAIN.CODE,
+					DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
+					DOMAIN_LABEL.VALUE)
+				.distinctOn(DOMAIN.CODE)
+				.from(DOMAIN)
+				.leftJoin(DOMAIN_LABEL).on(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN)))
+				.where(DOMAIN.ORIGIN.eq(originCode))
+				.orderBy(DOMAIN.CODE, DOMAIN_LABEL.LANG.desc())
+				.fetchInto(Classifier.class);
+	}
+
+	public List<Classifier> getDatasetDomains(String datasetCode) {
+		String[] datasetCodes = {datasetCode};
+		return create.select(getClassifierNameField(ClassifierName.DOMAIN),
+				DOMAIN.CODE,
+				DOMAIN.ORIGIN,
+				DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
+				DOMAIN_LABEL.VALUE)
+				.distinctOn(DOMAIN.CODE)
+				.from(DOMAIN)
+				.leftJoin(DOMAIN_LABEL)
+					.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
+				.where(DOMAIN.DATASETS.contains(datasetCodes))
+				.fetchInto(Classifier.class);
+	}
 }

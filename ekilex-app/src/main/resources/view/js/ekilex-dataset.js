@@ -25,49 +25,77 @@ function initialise() {
 
 	$('.classifier-select').selectpicker({width:'100%'});
 
-	//TODO - label texts to messages.properties
-	$('.dataset-domain-select')
-		.selectpicker('refresh')
-		.selectpicker({width:'100%'})
-		.ajaxSelectPicker({
-			minLength : 3,
-			locale :  {
-				currentlySelected: 'Valitud',
-				emptyTitle: '** Tekst puudub **',
-				errorText: 'Viga otsingul',
-				searchPlaceholder: 'Sisesta otsitav valdkond...',
-				statusInitialized: '',
-				statusNoResults: 'Ei leitud midagi',
-				statusSearching: 'Oota...',
-				statusTooShort: 'Sisesta vähemalt 3 tähemärki'
-			},
+	$(document).on("change", ".dataset-origin-select", function(e) {
+		var originCode = $(this).val();
+		var domains = $(this).closest('form').find('[name="selectedDomains"]');
 
-			ajax: {
-				url: applicationUrl + 'data/search_domains',
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					searchText: '{{{q}}}'
-				}
-			},
-			preprocessData: function (data) {
-				var i, l = data.length, dropdownValues = [];
-				if (l) {
-					for (i = 0; i < l; i++) {
-						dropdownValues.push($.extend(true, data[i], {
-							text : data[i].value,
-							value: JSON.stringify(data[i]),
-							data : {
-								subtext: data[i].origin
-							}
-						}));
-					}
-				}
+		let getOriginDomainsUrl = applicationUrl + 'data/origin_domains/' + originCode;
+		$.get(getOriginDomainsUrl).done(function (response) {
+			domains.empty();
 
-				return dropdownValues;
-			}
+			var domainOrigins = JSON.parse(response);
+			$.each(domainOrigins, function (index, domain) {
+				domains.append($("<option></option>")
+					.attr("value", JSON.stringify(domain)).text(domain.value + '[' + domain.code + ']'));
+			});
+
+			domains.selectpicker('refresh');
+
+		}).fail(function (response) {
+			console.log(response);
+			openAlertDlg("Päritolu valdkondade päring ebaõnnestus");
+		});
 
 	});
+
+	$('.dataset-domain-select').selectpicker({width:'100%'});
+
+	// 	//.selectpicker('refresh')
+	// 	.selectpicker({width:'100%'});
+	//TODO - label texts to messages.properties
+
+	// $('.dataset-domain-select')
+	// 	.selectpicker('refresh')
+	// 	.selectpicker({width:'100%'})
+	// 	.ajaxSelectPicker({
+	// 		minLength : 3,
+	// 		locale :  {
+	// 			currentlySelected: 'Valitud',
+	// 			emptyTitle: '** Tekst puudub **',
+	// 			errorText: 'Viga otsingul',
+	// 			searchPlaceholder: 'Sisesta otsitav valdkond...',
+	// 			statusInitialized: '',
+	// 			statusNoResults: 'Ei leitud midagi',
+	// 			statusSearching: 'Oota...',
+	// 			statusTooShort: 'Sisesta vähemalt 3 tähemärki'
+	// 		},
+	//
+	// 		ajax: {
+	// 			url: applicationUrl + 'data/search_domains',
+	// 			type: 'POST',
+	// 			dataType: 'json',
+	// 			data: {
+	// 				searchText: '{{{q}}}'
+	// 			}
+	// 		},
+	// 		preprocessData: function (data) {
+	// 			var i, l = data.length, dropdownValues = [];
+	// 			if (l) {
+	// 				for (i = 0; i < l; i++) {
+	// 					dropdownValues.push($.extend(true, data[i], {
+	// 						text : data[i].value,
+	// 						value: JSON.stringify(data[i]),
+	// 						data : {
+	// 							subtext: data[i].origin
+	// 						}
+	// 					}));
+	// 				}
+	// 			}
+	//
+	// 			return dropdownValues;
+	// 		}
+	//
+	// });
 }
 function isValidDatasetCodeFormat(code) {
 	//don't allow spaces, tabls ? and %

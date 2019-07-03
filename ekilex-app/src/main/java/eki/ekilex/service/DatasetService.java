@@ -33,7 +33,7 @@ public class DatasetService implements SystemConstant {
 		List<Dataset> datasets = datasetDbService.getDatasets();
 
 		for (Dataset dataset : datasets) {
-			List<Classifier> domains = getDatasetClassifiers(ClassifierName.DOMAIN, dataset.getCode());
+			List<Classifier> domains = getDatasetDomains(dataset.getCode());
 			List<Classifier> languages = getDatasetClassifiers(ClassifierName.LANGUAGE, dataset.getCode());
 			List<Classifier> processStates = getDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode());
 
@@ -121,4 +121,9 @@ public class DatasetService implements SystemConstant {
 	private List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
 		return commonDataDbService.getDatasetClassifiers(classifierName, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
+
+	private List<Classifier> getDatasetDomains(String datasetCode) {
+		return commonDataDbService.getDatasetDomains(datasetCode);
+	}
+
 }

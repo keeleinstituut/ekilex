@@ -98,11 +98,25 @@
             </div>
 
             <div class="form-group row">
+              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.origins}">Päritolu</label>
+              <div class="col-md-12">
+                <select class="dataset-origin-select" data-live-search="true" th:title="#{dictionaries.dataset.select.origin}">
+                  <option value=""></option>
+                  <option th:each="origin : ${originCodes}"
+                          th:value="${origin}" th:text="${origin}"
+                          th:selected="${not #lists.isEmpty(thisDataset.selectedDomains) && thisDataset.selectedDomains[0].origin == origin}"/>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
-                <select  name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}">
+                <select  name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}"
+                         data-actions-box="true"
+                         th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
                   <option th:each="selectedDomain : ${thisDataset.selectedDomains}"
-                          th:data-subtext="${selectedDomain.origin}" selected="selected"
+                          selected="selected"
                           th:value="${selectedDomain.toIdString()}" th:text="${selectedDomain.value}"/>
                 </select>
               </div>

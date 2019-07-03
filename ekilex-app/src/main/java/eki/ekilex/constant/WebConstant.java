@@ -158,6 +158,8 @@ public interface WebConstant {
 
 	String SEARCH_DOMAINS_URI = "/search_domains";
 
+	String ORIGIN_DOMAINS_URI = "/origin_domains";
+
 	String VALIDATE_CREATE_DICTIONARY_URI = "/validate_create_dictionary";
 
 	String CHANGE_ROLE_URI = "/change_role";

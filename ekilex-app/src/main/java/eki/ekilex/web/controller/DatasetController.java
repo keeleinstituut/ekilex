@@ -141,6 +141,11 @@ public class DatasetController implements WebConstant {
 		return commonDataService.getProcessStates();
 	}
 
+	@ModelAttribute("originCodes")
+	public List<String> getOriginCodes() {
+		return commonDataService.getAllOriginCodes();
+	}
+
 
 	@PostMapping(REST_SERVICES_URI + SEARCH_DOMAINS_URI)
 	@ResponseBody
@@ -152,4 +157,16 @@ public class DatasetController implements WebConstant {
 		return jsonMapper.writeValueAsString(result);
 
 	}
+
+	@GetMapping(REST_SERVICES_URI + ORIGIN_DOMAINS_URI + "/{originCode}")
+	@ResponseBody
+	public String getOriginDomains(@PathVariable String originCode) throws Exception {
+
+		List<Classifier> originDomains = commonDataService.findDomainsByOrigin(originCode);
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(originDomains);
+
+	}
+
 }

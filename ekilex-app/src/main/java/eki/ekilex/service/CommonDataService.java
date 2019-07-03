@@ -211,4 +211,13 @@ public class CommonDataService implements SystemConstant {
 		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
+	@Transactional
+	public List<String> getAllOriginCodes() {
+		return commonDataDbService.getAllDomainOriginCodes();
+	}
+
+	@Transactional
+	public List<Classifier> findDomainsByOrigin(String originCode) {
+		return commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
 }
