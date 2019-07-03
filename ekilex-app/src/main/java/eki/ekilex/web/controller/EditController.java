@@ -44,7 +44,6 @@ import eki.ekilex.service.SourceService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
-import eki.ekilex.web.util.PermDataUtil;
 import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
@@ -77,9 +76,6 @@ public class EditController implements WebConstant {
 
 	@Autowired
 	private TextDecorationService textDecorationService;
-
-	@Autowired
-	private PermDataUtil permDataUtil;
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
