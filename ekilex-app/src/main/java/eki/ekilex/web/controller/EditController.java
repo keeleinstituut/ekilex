@@ -291,6 +291,9 @@ public class EditController implements WebConstant {
 		case "lexeme":
 			cudService.updateLexemeOrdering(items);
 			break;
+		case "meaning_domain":
+			cudService.updateMeaningDomainOrdering(items);
+			break;
 		}
 		return "{}";
 	}

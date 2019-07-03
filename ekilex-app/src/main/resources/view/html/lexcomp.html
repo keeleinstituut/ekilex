@@ -214,31 +214,42 @@
       <span class="lbl">Valdkonnad</span>
     </div>
     <div class="col pl-0">
-      <span th:each="classif,classifIter : ${lexeme.meaningDomains}" class="hidden-buttons">
-        <span th:replace="lexdialog :: edit_meaning_domain_dlg"></span>
-        <span th:text="${classif.code}"></span>
-        <th:block th:unless="${classif.code == classif.value}">
-          -
-          <span th:text="${classif.value}"></span>
-        </th:block>
-        <button type="button" class="btn badge badge-primary"
-                title="Muuda"
-                data-toggle="modal"
-                th:data-target="${'#editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
-                sec:authorize="${#vars.isMeaningCrudGranted}">
-          <i class="fa fa-caret-down" aria-hidden="true"></i>
-        </button>
-        <button type="button" class="btn badge badge-warning"
-                th:data-id="${lexeme.meaningId}"
-                data-op-code="meaning_domain"
-                th:data-value="${classif.toIdString()}"
-                data-toggle="delete-confirm"
-                data-placement="right"
-                sec:authorize="${#vars.isMeaningCrudGranted}">
-          <i class="fa fa-remove" aria-hidden="true"></i>
-        </button>
-        <span th:unless="${classifIter.last}">,</span>
-      </span>
+      <div class="orderable" data-op-code="meaning_domain">
+        <span th:each="classif,classifIter : ${lexeme.meaningDomains}"
+              th:data-id="${classif.id}"
+              th:data-orderby="${classif.orderBy}"
+              class="hidden-buttons">
+          <div class="row">
+            <td class="action-column">
+              <th:block th:replace="common :: ordering_buttons(${classifIter})" sec:authorize="#vars.isMeaningCrudGranted"></th:block>
+            </td>
+            <div class="col">
+              <span th:replace="lexdialog :: edit_meaning_domain_dlg"></span>
+              <span th:text="${classif.code}"></span>
+              <th:block th:unless="${classif.code == classif.value}">
+                -
+                <span th:text="${classif.value}"></span>
+              </th:block>
+              <button type="button" class="btn badge badge-primary"
+                      title="Muuda"
+                      data-toggle="modal"
+                      th:data-target="${'#editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
+                      sec:authorize="#vars.isMeaningCrudGranted">
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      th:data-id="${lexeme.meaningId}"
+                      data-op-code="meaning_domain"
+                      th:data-value="${classif.toIdString()}"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.isMeaningCrudGranted">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
     </div>
   </div>
   <div class="row mr-0 hidden-buttons" th:if="${details.word.genderCode != null}" th:fragment="word_gender">

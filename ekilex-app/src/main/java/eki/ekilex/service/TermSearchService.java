@@ -27,6 +27,7 @@ import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteSourceTuple;
+import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
@@ -132,7 +133,8 @@ public class TermSearchService extends AbstractSearchService {
 		}
 
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
-		List<Classifier> domains = commonDataDbService.getMeaningDomains(meaningId);
+		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId);
+		domains = conversionUtil.removeOrderedClassifierDuplicates(domains);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> learnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<ImageSourceTuple> imageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);

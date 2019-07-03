@@ -28,6 +28,7 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
@@ -220,7 +221,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<Classifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
+		meaningDomains = conversionUtil.removeOrderedClassifierDuplicates(meaningDomains);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);

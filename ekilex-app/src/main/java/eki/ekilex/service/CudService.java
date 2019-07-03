@@ -86,6 +86,14 @@ public class CudService extends AbstractService {
 		}
 	}
 
+	@Transactional
+	public void updateMeaningDomainOrdering(List<ListData> items) {
+		for (ListData item : items) {
+			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN_ORDER_BY, item);
+			cudDbService.updateMeaningDomainOrderby(item);
+		}
+	}
+
 	//@PreAuthorize("hasPermission(#id, 'USAGE', 'DATASET:CRUD')")
 	@Transactional
 	public void updateUsageValue(Long id, String valuePrese, Complexity complexity) {

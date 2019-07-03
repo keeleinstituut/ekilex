@@ -20,7 +20,7 @@ public class Meaning extends AbstractDataObject {
 
 	private List<LexemeLangGroup> lexemeLangGroups;
 
-	private List<Classifier> domains;
+	private List<OrderedClassifier> domains;
 
 	private List<FreeForm> freeforms;
 
@@ -68,11 +68,11 @@ public class Meaning extends AbstractDataObject {
 		this.lexemeLangGroups = lexemeLangGroups;
 	}
 
-	public List<Classifier> getDomains() {
+	public List<OrderedClassifier> getDomains() {
 		return domains;
 	}
 
-	public void setDomains(List<Classifier> domains) {
+	public void setDomains(List<OrderedClassifier> domains) {
 		this.domains = domains;
 	}
 

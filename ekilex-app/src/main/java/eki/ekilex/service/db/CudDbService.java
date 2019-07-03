@@ -243,6 +243,13 @@ public class CudDbService implements DbConstant {
 				.where(LEXEME.ID.eq(item.getId()))
 				.execute();
 	}
+	public void updateMeaningDomainOrderby(ListData item) {
+		create
+				.update(MEANING_DOMAIN)
+				.set(MEANING_DOMAIN.ORDER_BY, item.getOrderby())
+				.where(MEANING_DOMAIN.ID.eq(item.getId()))
+				.execute();
+	}
 
 	public void updateLexemeLevels(Long id, Integer level1, Integer level2, Integer level3) {
 		create.update(LEXEME)
