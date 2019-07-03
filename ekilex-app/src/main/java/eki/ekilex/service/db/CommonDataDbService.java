@@ -1040,7 +1040,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								l1.ID.eq(lexemeId)
 										.and(l1.WORD_ID.eq(l2.WORD_ID))
 										.and(l1.ID.ne(l2.ID))));
-		return count == 1;
+		return count == 0;
 	}
 
 	public boolean isOnlyLexemeForMeaning(Long lexemeId) {
@@ -1055,7 +1055,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								l1.ID.eq(lexemeId)
 										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
 										.and(l1.ID.ne(l2.ID))));
-		return count == 1;
+		return count == 0;
 	}
 
 	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
