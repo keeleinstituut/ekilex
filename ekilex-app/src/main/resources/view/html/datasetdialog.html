@@ -28,8 +28,8 @@
               <div class="col-md-12">
                 <select class="dataset-origin-select" data-live-search="true" th:title="#{dictionaries.dataset.select.origin}">
                   <option value=""></option>
-                  <option th:each="origin : ${originCodes}"
-                          th:value="${origin}" th:text="${origin}"
+                  <option th:each="origin : ${origins}"
+                          th:value="${origin.code}" th:text="${origin.label != null ? origin.label : origin.code}"
                           />
                 </select>
               </div>
@@ -116,9 +116,10 @@
               <div class="col-md-12">
                 <select class="dataset-origin-select" data-live-search="true" th:title="#{dictionaries.dataset.select.origin}">
                   <option value=""></option>
-                  <option th:each="origin : ${originCodes}"
-                          th:value="${origin}" th:text="${origin}"
-                          th:selected="${not #lists.isEmpty(thisDataset.selectedDomains) && thisDataset.selectedDomains[0].origin == origin}"/>
+                  <option th:each="origin : ${origins}"
+                          th:value="${origin.code}" th:text="${origin.label != null ? origin.label : origin.code}"
+                          th:selected="${not #lists.isEmpty(thisDataset.selectedDomains) && thisDataset.selectedDomains[0].origin == origin.code}"
+                  />
                 </select>
               </div>
             </div>

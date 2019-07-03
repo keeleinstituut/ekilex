@@ -29,6 +29,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.Origin;
 import eki.ekilex.data.editor.ClassifierEditor;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
@@ -141,9 +142,9 @@ public class DatasetController implements WebConstant {
 		return commonDataService.getProcessStates();
 	}
 
-	@ModelAttribute("originCodes")
-	public List<String> getOriginCodes() {
-		return commonDataService.getAllOriginCodes();
+	@ModelAttribute("origins")
+	public List<Origin> getOrigins() {
+		return commonDataService.getAllOrigins();
 	}
 
 

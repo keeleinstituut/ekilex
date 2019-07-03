@@ -10,14 +10,13 @@ String.prototype.trunc =
 function initialise() {
 	$(document).on("click", "#addDatasetSubmitBtn", function(e) {
 		e.preventDefault();
-		openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
+
 		let thisForm = $("#addDatasetForm");
 		let fieldsFilled = checkRequiredFields(thisForm)
 
 		if (fieldsFilled) {
 			checkAndAddDataset(thisForm);
 		}
-		closeWaitDlg();
 	});
 
 	$(document).on("click", ".dataset-save-btn", function(e) {
@@ -127,7 +126,9 @@ function checkAndAddDataset(addDatasetForm) {
 		let responseCode = data;
 
 		if (responseCode === 'OK') {
+			openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
 			addDatasetForm.submit();
+			closeWaitDlg();
 		} else if (responseCode === 'CODE_EXISTS') {
 			showFieldError(newCodeField, "Sellise koodiga sõnakogu on olemas.");
 		} else {

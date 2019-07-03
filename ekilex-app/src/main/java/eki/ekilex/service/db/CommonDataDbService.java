@@ -72,6 +72,7 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.NoteSourceTuple;
+import eki.ekilex.data.Origin;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
@@ -955,13 +956,13 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
-
-	public List<String> getAllDomainOriginCodes() {
+	public List<Origin> getAllDomainOrigins() {
 		return create
-				.selectDistinct(DOMAIN_LABEL.ORIGIN)
-				.from(DOMAIN_LABEL)
-				.orderBy(DOMAIN_LABEL.ORIGIN)
-				.fetchInto(String.class);
+				.selectDistinct(DOMAIN.ORIGIN.as("code"), DATASET.NAME.as("label"))
+				.from(DOMAIN)
+				.leftJoin(DATASET).on(DOMAIN.ORIGIN.eq(DATASET.CODE))
+				.orderBy(DOMAIN.ORIGIN)
+				.fetchInto(Origin.class);
 	}
 
 	public List<Classifier> findDomainsByOriginCode(String originCode, String classifierLabelLang, String classifierLabelTypeCode) {

@@ -15,6 +15,7 @@ import eki.common.constant.ClassifierName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.Origin;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.db.CommonDataDbService;
 
@@ -212,8 +213,8 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<String> getAllOriginCodes() {
-		return commonDataDbService.getAllDomainOriginCodes();
+	public List<Origin> getAllOrigins() {
+		return commonDataDbService.getAllDomainOrigins();
 	}
 
 	@Transactional
