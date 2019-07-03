@@ -67,7 +67,7 @@
                       <button type="button" class="btn badge badge-success" title="Lisa luba"
                               data-toggle="modal"
                               th:data-target="${'#addDatasetPermissionDlg_' + userPerm.id}"
-                              sec:authorize="${#authentication.principal.datasetOwnershipExist}"
+                              sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
                               th:disabled="${#authentication.principal.id == userPerm.id}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
@@ -85,7 +85,7 @@
                                   th:data-id="${datasetPerm.id}"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
-                                  sec:authorize="${#authentication.principal.datasetOwnershipExist}"
+                                  sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
                                   th:disabled="${#authentication.principal.id == userPerm.id}">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
@@ -97,7 +97,7 @@
                               data-toggle="send-mail-confirm"
                               data-placement="top"
                               th:data-user-email="${userPerm.email}"
-                              sec:authorize="${#authentication.principal.datasetOwnershipExist}"
+                              sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
                               th:disabled="${#authentication.principal.id == userPerm.id}">
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                       </button>

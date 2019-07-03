@@ -32,7 +32,7 @@
         <p>
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
-        <p sec:authorize="${#authentication.principal.datasetOwnershipExist}">
+        <p sec:authorize="${#authentication.principal.datasetOwnershipExist or authentication.principal.admin}">
           <a th:href="@{/permissions}">Õiguste haldus</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="${#authentication.principal.datasetPermissionsExist}"></th:block>

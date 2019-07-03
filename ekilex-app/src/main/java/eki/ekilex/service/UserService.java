@@ -90,7 +90,6 @@ public class UserService implements WebConstant {
 			} else {
 				datasetOwnershipExist = false;
 			}
-			datasetOwnershipExist = datasetOwnershipExist || user.isAdmin();
 			user.setDatasetPermissions(datasetPermissions);
 			user.setDatasetPermissionsExist(datasetPermissionsExist);
 			user.setDatasetOwnershipExist(datasetOwnershipExist);

@@ -50,7 +50,7 @@ public class PermissionsController extends AbstractPageController {
 	@GetMapping(PERMISSIONS_URI)
 	public String permissions(Model model) {
 		EkiUser user = userService.getAuthenticatedUser();
-		if (!user.isDatasetOwnershipExist()) {
+		if (!user.isDatasetOwnershipExist() && !user.isAdmin()) {
 			return "redirect:" + HOME_URI;
 		}
 		populateUserPermDataModel(model);

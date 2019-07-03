@@ -81,7 +81,6 @@ public class DatasetController implements WebConstant {
 		model.addAttribute("datasets", datasets);
 		model.addAttribute("datasetData", new Dataset());
 
-
 		return DATASETS_PAGE;
 	}
 
@@ -93,8 +92,7 @@ public class DatasetController implements WebConstant {
 		datasetService.createDataset(datasetFormData);
 
 		EkiUser currentUser = userService.getAuthenticatedUser();
-		permissionService
-				.createDatasetPermission(currentUser.getId(), datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
+		permissionService.createDatasetPermission(currentUser.getId(), datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
 
 		userService.updateUserSecurityContext();
 
@@ -149,7 +147,6 @@ public class DatasetController implements WebConstant {
 		return commonDataService.getAllOrigins();
 	}
 
-
 	@PostMapping(REST_SERVICES_URI + SEARCH_DOMAINS_URI)
 	@ResponseBody
 	public String searchDomain(@RequestParam String searchText) throws Exception {
@@ -158,7 +155,6 @@ public class DatasetController implements WebConstant {
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(result);
-
 	}
 
 	@GetMapping(REST_SERVICES_URI + ORIGIN_DOMAINS_URI + "/{originCode}")
@@ -169,7 +165,6 @@ public class DatasetController implements WebConstant {
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(originDomains);
-
 	}
 
 }
