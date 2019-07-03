@@ -9,6 +9,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
@@ -394,6 +395,14 @@ public class LifecycleLogDbService {
 			} else if (LifecycleProperty.VALUE.equals(property)) {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createMeaningLifecycleLog(entityId, lifecycleLogId);
+			}  else if (LifecycleProperty.IMAGE_TITLE.equals(property)) {
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				Long meaningId = create
+						.select(MEANING_FREEFORM.MEANING_ID)
+						.from(MEANING_FREEFORM)
+						.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
+						.fetchSingleInto(Long.class);
+				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.LEXEME_SOURCE_LINK.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {

@@ -176,6 +176,9 @@ public class EditController implements WebConstant {
 		case "meaning_public_note":
 			cudService.createMeaningPublicNote(itemData.getId(), valuePrese);
 			break;
+		case "image_title":
+			cudService.createImageTitle(itemData.getId(), valuePrese);
+			break;
 		}
 		return "{}";
 	}
@@ -258,6 +261,9 @@ public class EditController implements WebConstant {
 			break;
 		case "meaning_public_note":
 			cudService.updateMeaningPublicNote(itemData.getId(), valuePrese);
+			break;
+		case "image_title":
+			cudService.updateImageTitle(itemData.getId(), valuePrese);
 			break;
 		}
 		return "{}";
@@ -432,6 +438,9 @@ public class EditController implements WebConstant {
 			break;
 		case "word_relation":
 			cudService.deleteWordRelation(id);
+			break;
+		case "image_title":
+			cudService.deleteImageTitle(id);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
 			cudService.deleteDefinitionSourceLink(id);

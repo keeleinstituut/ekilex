@@ -80,6 +80,7 @@
               </div>
               <div class="col-md-4 mt-2">
                 <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">>value
@@ -93,6 +94,7 @@
               </div>
               <div class="col-md-4 mt-2">
                 <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">>value
@@ -245,6 +247,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
@@ -416,6 +419,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
@@ -476,6 +480,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
@@ -999,6 +1004,76 @@
             </button>
           </form>
         </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addImageSourceLinkDlg_' + image.id}" class="modal" role="dialog" th:fragment="add_image_source_link_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/sourcesearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-auto col-form-label">Otsing</label>
+                  <div class="col-5">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <form th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${image.id}">
+          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addImageTitleDlg_' + image.id}" class="modal" role="dialog" th:fragment="add_image_title_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${image.id}">
+            <input type="hidden" name="opCode" value="image_title">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem(false)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editImageTitleDlg_' + image.id}" class="modal" role="dialog" th:fragment="edit_image_title_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${image.id}">
+            <input type="hidden" name="opCode" value="image_title">
+            <input type="hidden" name="value" th:value="${image.title}">
+            <div th:replace="components :: eki_editor_elem(false)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

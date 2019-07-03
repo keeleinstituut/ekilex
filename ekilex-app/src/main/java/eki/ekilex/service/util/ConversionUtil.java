@@ -435,6 +435,7 @@ public class ConversionUtil {
 				image = new Image();
 				sourceLinks = new ArrayList<>();
 				image.setSourceLinks(sourceLinks);
+				image.setId(imageId);
 				image.setFileName(tuple.getImageFreeformValueText());
 				image.setTitle(tuple.getTitleFreeformValueText());
 				imageMap.put(imageId, image);

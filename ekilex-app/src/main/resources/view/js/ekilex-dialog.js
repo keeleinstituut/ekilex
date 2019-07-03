@@ -102,3 +102,17 @@ $(document).on("show.bs.modal", "[id^=editLearnerCommentDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
+
+$(document).on("show.bs.modal", "[id^=addImageSourceLinkDlg_]", function() {
+	initAddSourceLinkDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addImageTitleDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editImageTitleDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
