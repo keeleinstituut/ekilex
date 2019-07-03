@@ -38,8 +38,8 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
-                <select  name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}"
-                         data-actions-box="true"
+                <select name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}"
+                         data-actions-box="true" disabled
                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
                 </select>
               </div>
@@ -127,11 +127,11 @@
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
                 <select  name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}"
+                         th:disabled="${#lists.isEmpty(thisDataset.selectedDomains)}"
                          data-actions-box="true"
                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
                   <option th:each="selectedDomain : ${thisDataset.selectedDomains}"
                           selected="selected"
-                          th:title="${selectedDomain.value}"
                           th:value="${selectedDomain.toIdString()}" th:text="${#strings.abbreviate(selectedDomain.value + (selectedDomain.code != selectedDomain.value ?  ' [' + selectedDomain.code + ']' : ''), 100)}"/>
                 </select>
               </div>

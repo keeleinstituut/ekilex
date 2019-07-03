@@ -54,7 +54,10 @@ function initialise() {
 		var domains = $(this).closest('form').find('[name="selectedDomains"]');
 		domains.empty();
 
+		domains.attr('disabled', originCode == '');
+
 		if (originCode == '') {
+			domains.selectpicker('refresh');
 			return;
 		}
 
@@ -71,7 +74,6 @@ function initialise() {
 				domains.append(
 					$("<option></option>")
 						.attr("value", JSON.stringify(domain))
-						.attr("title", domain.value)
 						.text(domainOptionText));
 			});
 
@@ -85,6 +87,7 @@ function initialise() {
 	});
 
 	$('.dataset-domain-select').selectpicker({width:'100%'});
+
 
 }
 function isValidDatasetCodeFormat(code) {
