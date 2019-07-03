@@ -1,13 +1,33 @@
+String.prototype.trunc =
+	function( n, useWordBoundary ){
+		if (this.length <= n) { return this; }
+		var subString = this.substr(0, n-1);
+		return (useWordBoundary
+			? subString.substr(0, subString.lastIndexOf(' '))
+			: subString) + "&hellip;";
+	};
+
 function initialise() {
 	$(document).on("click", "#addDatasetSubmitBtn", function(e) {
 		e.preventDefault();
+		openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
 		let thisForm = $("#addDatasetForm");
 		let fieldsFilled = checkRequiredFields(thisForm)
 
 		if (fieldsFilled) {
 			checkAndAddDataset(thisForm);
 		}
+		closeWaitDlg();
 	});
+
+	$(document).on("click", ".dataset-save-btn", function(e) {
+		e.preventDefault();
+		openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
+		let thisForm = $(this).closest('form');
+		thisForm.submit();
+		closeWaitDlg();
+	});
+
 
 	$('.delete-dataset-confirm').confirmation({
 		btnOkLabel : 'Jah',
@@ -25,18 +45,34 @@ function initialise() {
 
 	$('.classifier-select').selectpicker({width:'100%'});
 
+	$(document).on("click", ".dataset-domain-select", function(e) {
+		//TODO - clear domain
+	});
+
 	$(document).on("change", ".dataset-origin-select", function(e) {
 		var originCode = $(this).val();
 		var domains = $(this).closest('form').find('[name="selectedDomains"]');
+		domains.empty();
+
+		if (originCode == '') {
+			return;
+		}
 
 		let getOriginDomainsUrl = applicationUrl + 'data/origin_domains/' + originCode;
 		$.get(getOriginDomainsUrl).done(function (response) {
-			domains.empty();
 
 			var domainOrigins = JSON.parse(response);
 			$.each(domainOrigins, function (index, domain) {
-				domains.append($("<option></option>")
-					.attr("value", JSON.stringify(domain)).text(domain.value + '[' + domain.code + ']'));
+				let domainOptionText = domain.value;
+				if (domain.value != domain.code) {
+					domainOptionText += ' [' + domain.code + ']';
+				}
+				domainOptionText = domainOptionText.trunc(100);
+				domains.append(
+					$("<option></option>")
+						.attr("value", JSON.stringify(domain))
+						.attr("title", domain.value)
+						.text(domainOptionText));
 			});
 
 			domains.selectpicker('refresh');
@@ -50,52 +86,6 @@ function initialise() {
 
 	$('.dataset-domain-select').selectpicker({width:'100%'});
 
-	// 	//.selectpicker('refresh')
-	// 	.selectpicker({width:'100%'});
-	//TODO - label texts to messages.properties
-
-	// $('.dataset-domain-select')
-	// 	.selectpicker('refresh')
-	// 	.selectpicker({width:'100%'})
-	// 	.ajaxSelectPicker({
-	// 		minLength : 3,
-	// 		locale :  {
-	// 			currentlySelected: 'Valitud',
-	// 			emptyTitle: '** Tekst puudub **',
-	// 			errorText: 'Viga otsingul',
-	// 			searchPlaceholder: 'Sisesta otsitav valdkond...',
-	// 			statusInitialized: '',
-	// 			statusNoResults: 'Ei leitud midagi',
-	// 			statusSearching: 'Oota...',
-	// 			statusTooShort: 'Sisesta vähemalt 3 tähemärki'
-	// 		},
-	//
-	// 		ajax: {
-	// 			url: applicationUrl + 'data/search_domains',
-	// 			type: 'POST',
-	// 			dataType: 'json',
-	// 			data: {
-	// 				searchText: '{{{q}}}'
-	// 			}
-	// 		},
-	// 		preprocessData: function (data) {
-	// 			var i, l = data.length, dropdownValues = [];
-	// 			if (l) {
-	// 				for (i = 0; i < l; i++) {
-	// 					dropdownValues.push($.extend(true, data[i], {
-	// 						text : data[i].value,
-	// 						value: JSON.stringify(data[i]),
-	// 						data : {
-	// 							subtext: data[i].origin
-	// 						}
-	// 					}));
-	// 				}
-	// 			}
-	//
-	// 			return dropdownValues;
-	// 		}
-	//
-	// });
 }
 function isValidDatasetCodeFormat(code) {
 	//don't allow spaces, tabls ? and %

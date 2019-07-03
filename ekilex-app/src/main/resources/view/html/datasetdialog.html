@@ -117,7 +117,8 @@
                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
                   <option th:each="selectedDomain : ${thisDataset.selectedDomains}"
                           selected="selected"
-                          th:value="${selectedDomain.toIdString()}" th:text="${selectedDomain.value}"/>
+                          th:title="${selectedDomain.value}"
+                          th:value="${selectedDomain.toIdString()}" th:text="${#strings.abbreviate(selectedDomain.value + (selectedDomain.code != selectedDomain.value ?  ' [' + selectedDomain.code + ']' : ''), 100)}"/>
                 </select>
               </div>
             </div>
@@ -159,7 +160,7 @@
           </div>
 
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="submit" class="btn btn-primary dataset-save-btn">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
