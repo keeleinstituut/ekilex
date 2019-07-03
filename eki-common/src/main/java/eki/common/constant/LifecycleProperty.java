@@ -11,7 +11,6 @@ public enum LifecycleProperty {
 	REGION,
 	GENDER,
 	DOMAIN,
-	DOMAIN_ORDER_BY,
 	ORDER_BY,
 	DATASET,
 	WORD_TYPE,

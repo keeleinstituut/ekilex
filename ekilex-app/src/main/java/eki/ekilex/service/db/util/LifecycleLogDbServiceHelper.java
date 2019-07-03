@@ -10,6 +10,7 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -328,6 +329,18 @@ public class LifecycleLogDbServiceHelper {
 						LEXEME.MEANING_ID.eq(entityId)
 						.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.fetch(0, String.class);
+		return result;
+	}
+
+	public Map<String, Object> getMeaningDomainData(DSLContext create, Long entityId) {
+		Map<String, Object> result = create
+				.select(
+						MEANING_DOMAIN.MEANING_ID,
+						MEANING_DOMAIN.DOMAIN_CODE,
+						MEANING_DOMAIN.ORDER_BY)
+				.from(MEANING_DOMAIN)
+				.where(MEANING_DOMAIN.ID.eq(entityId))
+				.fetchSingleMap();
 		return result;
 	}
 
