@@ -142,7 +142,7 @@
               </button>
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
-                  <span class="btn pl-0 pr-2"
+                  <span class="btn pl-1 pr-2"
                         th:if="${lexeme.levels != null}"
                         th:data-id="${lexeme.lexemeId}"
                         th:data-level1="${lexeme.level1}"
@@ -155,7 +155,7 @@
                       <span th:text="${lexeme.levels}"></span>
                     </span>
                   </span>
-                  <span class="pl-0 pr-2"th:if="${!isLexemeCrudGranted}">
+                  <span class="pl-1 pr-2"th:if="${!isLexemeCrudGranted}">
                     <span class="bubble">
                       <span th:text="${lexeme.levels}"></span>
                     </span>
