@@ -43,6 +43,7 @@ import eki.ekilex.service.SourceService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.PermDataUtil;
 import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
@@ -75,6 +76,9 @@ public class EditController implements WebConstant {
 
 	@Autowired
 	private TextDecorationService textDecorationService;
+
+	@Autowired
+	private PermDataUtil permDataUtil;
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
@@ -309,7 +313,8 @@ public class EditController implements WebConstant {
 
 	@ResponseBody
 	@PostMapping(CONFIRM_OP_URI)
-	public ConfirmationRequest confirmOperation(@RequestBody ConfirmationRequest confirmationRequest) {
+	public ConfirmationRequest confirmOperation(@RequestBody ConfirmationRequest confirmationRequest,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		String opName = confirmationRequest.getOpName();
 		String opCode = confirmationRequest.getOpCode();
@@ -336,6 +341,13 @@ public class EditController implements WebConstant {
 				break;
 			case "meaning":
 				boolean meaningHasLexemeThatIsOnlyLexemeForWord = termSearchService.meaningHasLexemeThatIsOnlyLexemeForWord(id);
+				boolean meaningHasLexemeWithoutValidRole = permDataUtil.meaningHasLexemeWithoutValidRole(id, sessionBean);
+
+				if (meaningHasLexemeWithoutValidRole) {
+					question = "Mõistet ei saa kustutada, sest leidub valitud rollile mittevastavaid ilmikuid. Palun kinnita ainult ilmikute kustutamine";
+					questions.add(question);
+				}
+
 				if (meaningHasLexemeThatIsOnlyLexemeForWord) {
 					question = "Leidub vähemalt üks selline ilmik, mis on keelendi ainus ilmik. Palun kinnita keelendite kustutamine";
 					questions.add(question);
@@ -415,6 +427,7 @@ public class EditController implements WebConstant {
 			cudService.deleteMeaningLearnerComment(id);
 			break;
 		case "meaning":
+			// TODO see tuleb arvatavasti siit välja tõsta, et sessionbean ka kätte saada (kuna on siin ainuke, mis seda vajab)
 			cudService.deleteMeaningAndLexemes(id);
 			break;
 		case "meaning_domain":
