@@ -370,6 +370,16 @@ public class CudDbService implements DbConstant {
 		return meaningDomainId;
 	}
 
+	public void updateImageTitle(Long imageFreeformId, String title) {
+		create
+				.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, title)
+				.set(FREEFORM.VALUE_PRESE, title)
+				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
+						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
+				.execute();
+	}
+
 	public Long createWordAndLexeme(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))
@@ -775,6 +785,13 @@ public class CudDbService implements DbConstant {
 		return lexemeRegionId;
 	}
 
+	public void createImageTitle(Long imageId, String value) {
+		create
+				.insertInto(FREEFORM, FREEFORM.PARENT_ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
+				.values(imageId, FreeformType.IMAGE_TITLE.name(), value, value)
+				.execute();
+	}
+
 	public void deleteWord(Long wordId) {
 		//TODO delete freeforms first
 		create.delete(WORD)
@@ -923,6 +940,13 @@ public class CudDbService implements DbConstant {
 						FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID)
 								.from(MEANING_FREEFORM)
 								.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))))
+				.execute();
+	}
+
+	public void deleteImageTitle(Long imageFreeformId) {
+		create.delete(FREEFORM)
+				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
+						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
 				.execute();
 	}
 

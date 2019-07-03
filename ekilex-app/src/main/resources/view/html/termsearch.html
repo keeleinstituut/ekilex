@@ -473,24 +473,107 @@
               <span class="lbl">Pildid</span>
             </div>
             <div class="col pl-0">
-              <table>
-                <tr th:each="image : ${meaning.images}">
-                  <td>
-                    <br>
-                    <img class="w-50" th:src="@{'/files/images/' + ${image.fileName}}">
-                    <div th:text="${image.title}"></div>
+              <th:block th:each="image : ${meaning.images}">
+                <div th:replace="termdialog :: add_image_title_dlg"></div>
+                <div th:replace="termdialog :: edit_image_title_dlg"></div>
+                <div th:replace="termdialog :: add_image_source_link_dlg"></div>
+                <div class="invisible-buttons action-buttons-anchor w-100">
+                  <img class="w-25" th:src="@{'/files/images/' + ${image.fileName}}">
+                  <span th:if="${#strings.isEmpty(image.title)}">
+                    <button type="button" class="btn badge badge-success align-bottom"
+                            title="Lisa pealkiri"
+                            data-toggle="modal"
+                            th:data-target="${'#addImageTitleDlg_' + image.id}"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-success align-bottom"
+                            title="Lisa allikaviide"
+                            data-toggle="modal"
+                            th:data-target="${'#addImageSourceLinkDlg_' + image.id}"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-external-link" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                </div>
+                <div class="col pl-0" th:if="${#strings.isEmpty(image.title)}">
+                  <span th:each="sourceLink : ${image.sourceLinks}" class="hidden-buttons">
+                    [
+                      <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                      <span th:if="${sourceLink.name != null}">
+                        <span th:text="${sourceLink.name}"></span>
+                      </span>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-id="${sourceLink.id}"
+                              data-op-code="ff_source_link"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              sec:authorize="${#vars.isMeaningCrudGranted}">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                      ]
+                  </span>
+                </div>
+                <div th:unless="${#strings.isEmpty(image.title)}">
+                  <div class="invisible-buttons action-buttons-anchor mw-90">
+                    <span th:text="${image.title}"></span>
+                    <span class="show-on-mouseover" th:if="${#lists.isEmpty(image.sourceLinks)}">
+                      [
+                      <button type="button" class="btn badge badge-success"
+                              title="Lisa allikaviide"
+                              data-toggle="modal"
+                              th:data-target="${'#addImageSourceLinkDlg_' + image.id}"
+                              sec:authorize="${#vars.isMeaningCrudGranted}">
+                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                      </button>
+                      ]
+                    </span>
+                    <div class="action-buttons-2">
+                      <button type="button" class="btn badge badge-primary"
+                              th:title="Muuda"
+                              data-toggle="modal"
+                              th:data-target="${'#editImageTitleDlg_' + image.id}"
+                              sec:authorize="${#vars.isMeaningCrudGranted}">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-id="${image.id}"
+                              data-op-code="image_title"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              sec:authorize="${#vars.isMeaningCrudGranted}">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="hidden-buttons">
                     <span th:each="sourceLink : ${image.sourceLinks}">
-                          [
-                          <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                          <span th:if="${sourceLink.name != null}">
-                            <span th:text="${sourceLink.name}"></span>
-                          </span>
-                          ]
-                        </span>
-                    <hr>
-                  </td>
-                </tr>
-              </table>
+                      [
+                      <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                      <span th:if="${sourceLink.name != null}">
+                        <span th:text="${sourceLink.name}"></span>
+                      </span>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-id="${sourceLink.id}"
+                              data-op-code="ff_source_link"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              sec:authorize="${#vars.isMeaningCrudGranted}">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                      ]
+                    </span>
+                    <button type="button" class="btn badge badge-success"
+                            title="Lisa allikaviide"
+                            data-toggle="modal"
+                            th:data-target="${'#addImageSourceLinkDlg_' + image.id}"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-external-link" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <hr>
+                </div>
+              </th:block>
             </div>
           </div>
           <div class="row" th:if="${not #lists.isEmpty(meaning.freeforms)}">

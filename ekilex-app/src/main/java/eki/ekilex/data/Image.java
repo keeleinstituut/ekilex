@@ -8,11 +8,21 @@ public class Image extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
+
 	private String fileName;
 
 	private String title;
 
 	private List<SourceLink> sourceLinks;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getFileName() {
 		return fileName;

@@ -248,6 +248,13 @@ public class CudService extends AbstractService {
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
+	@Transactional
+	public void updateImageTitle(Long imageId, String valuePrese) {
+		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		cudDbService.updateImageTitle(imageId, value);
+	}
+
 	// --- CREATE ---
 
 	@Transactional
@@ -442,6 +449,13 @@ public class CudService extends AbstractService {
 	public void createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
 		Long sourceLinkId = cudDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
 		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+	}
+
+	@Transactional
+	public void createImageTitle(Long imageId, String valuePrese) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		cudDbService.createImageTitle(imageId, value);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
 	}
 
 	// --- DELETE ---
@@ -670,6 +684,12 @@ public class CudService extends AbstractService {
 	public void deleteFreeformSourceLink(Long sourceLinkId) {
 		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
 		cudDbService.deleteFreeformRefLink(sourceLinkId);
+	}
+
+	@Transactional
+	public void deleteImageTitle(Long imageId) {
+		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, null);
+		cudDbService.deleteImageTitle(imageId);
 	}
 
 }
