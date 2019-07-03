@@ -46,8 +46,6 @@ public interface WebConstant {
 
 	String CLASSIFIERS_URI = "/classifiers";
 
-	String DATASETS_URI = "/datasets";
-
 	String WORD_SELECT_URI = "/wordselect";
 
 	String WORD_SELECT_PAGE = "wordselect";
@@ -146,21 +144,21 @@ public interface WebConstant {
 
 	String SEARCH_SOURCES_URI = "/search_sources";
 
-	String DICTIONARIES_URI = "/dictionaries";
+	String DATASETS_URI = "/datasets";
 
 	String DATASETS_PAGE = "datasets";
 
-	String CREATE_DICTIONARY_URI = "/create_dictionary";
+	String CREATE_DATASET_URI = "/create_dataset";
 
-	String UPDATE_DICTIONARY_URI = "/update_dictionary";
+	String UPDATE_DATASET_URI = "/update_dataset";
 
-	String DELETE_DICTIONARY_URI = "/delete_dictionary";
+	String DELETE_DATASET_URI = "/delete_dataset";
+
+	String VALIDATE_CREATE_DATASET_URI = "/validate_create_dataset";
 
 	String SEARCH_DOMAINS_URI = "/search_domains";
 
 	String ORIGIN_DOMAINS_URI = "/origin_domains";
-
-	String VALIDATE_CREATE_DICTIONARY_URI = "/validate_create_dictionary";
 
 	String CHANGE_ROLE_URI = "/change_role";
 

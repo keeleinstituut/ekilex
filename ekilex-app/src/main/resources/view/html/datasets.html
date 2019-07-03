@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{dictionaries.title}">Sõnakogud</title>
+<title th:text="#{datasets.title}">Sõnakogud</title>
 <th:block th:fragment="links">
   <script type="stylesheet" th:src="@{/view/css/ajax-bootstrap-select.min.css}"></script>
 
@@ -21,7 +21,7 @@
         <button class="btn btn-primary"
                 title="Lisa uus sõnakogu"
                 data-toggle="modal"
-                data-target="#addDatasetDlg" th:text="#{dictionaries.add}">
+                data-target="#addDatasetDlg" th:text="#{datasets.add}">
         </button>
         </div>
       </div>

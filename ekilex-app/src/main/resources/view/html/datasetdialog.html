@@ -5,28 +5,28 @@
   <div id="addDatasetDlg" class="modal" role="dialog" th:fragment="add_dataset_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form id="addDatasetForm" th:action="@{/create_dictionary}" method="post" th:object="${datasetData}">
+        <form id="addDatasetForm" th:action="@{/create_dataset}" method="post" th:object="${datasetData}">
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" th:text="#{dictionaries.dataset.code}">Sõnakogu kood</label>
+              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.code}">Sõnakogu kood</label>
               <input class="col-md-3 form-control required-field" maxlength="10" name="code"/>
               <small class="col-md-4 text-danger field-error" style="display: none"></small>
             </div>
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" th:text="#{dictionaries.dataset.name}">Sõnakogu nimi</label>
+              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.name}">Sõnakogu nimi</label>
               <input class="col-md-6 form-control required-field" name="name"/>
             </div>
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.description}">Kirjeldus</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.description}">Kirjeldus</label>
               <div class="col-md-12">
                 <textarea class="form-control" rows="4" name="description"></textarea>
               </div>
             </div>
 
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.origins}">Päritolu</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Päritolu</label>
               <div class="col-md-12">
-                <select class="dataset-origin-select" data-live-search="true" th:title="#{dictionaries.dataset.select.origin}">
+                <select class="dataset-origin-select" data-live-search="true" th:title="#{datasets.dataset.select.origin}">
                   <option value=""></option>
                   <option th:each="origin : ${origins}"
                           th:value="${origin.code}" th:text="${origin.label != null ? origin.label : origin.code}"
@@ -36,9 +36,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
-                <select name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}"
+                <select name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.domain}"
                          data-actions-box="true" disabled
                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
                 </select>
@@ -46,9 +46,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.languages}">Keeled</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.languages}">Keeled</label>
               <div class="col-md-12">
-                <select  name="selectedLanguages" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.language}"
+                <select  name="selectedLanguages" class="classifier-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.language}"
                          data-actions-box="true"
                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
                   <th:block th:each="language: ${languages}">
@@ -59,9 +59,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.processstates}">Protsessiolekud</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.processstates}">Protsessiolekud</label>
               <div class="col-md-12">
-                <select  name="selectedProcessStates" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.processstate}"
+                <select  name="selectedProcessStates" class="classifier-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.processstate}"
                          data-actions-box="true"
                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
                   <th:block th:each="processState: ${processStates}">
@@ -75,11 +75,11 @@
             <div class="form-check mt-1">
               <input id="chkVisible" class="form-check-input" type="checkbox" name="visible"
                      checked="checked"/>
-              <label for="chkVisible" class="form-check-label" th:text="#{dictionaries.dataset.is.visible}">Nähtav</label>
+              <label for="chkVisible" class="form-check-label" th:text="#{datasets.dataset.is.visible}">Nähtav</label>
             </div>
             <div class="form-check mt-1">
               <input id="chkPublic" class="form-check-input" type="checkbox" name="public"/>
-              <label for="chkPublic" class="form-check-label" th:text="#{dictionaries.dataset.is.public}">Nähtav</label>
+              <label for="chkPublic" class="form-check-label" th:text="#{datasets.dataset.is.public}">Nähtav</label>
             </div>
           </div>
           <div class="modal-footer">
@@ -94,27 +94,27 @@
   <div th:id="${'editDatasetDlg_' + thisDataset.code}" class="modal edit-dataset-modal" role="dialog" th:fragment="edit_dataset_dlg(thisDataset)">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_dictionary}" method="post" th:object="${datasetData}">
+        <form th:action="@{/update_dataset}" method="post" th:object="${datasetData}">
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" th:text="#{dictionaries.dataset.code}">Sõnakogu kood</label>
+              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.code}">Sõnakogu kood</label>
               <input class="col-md-3 form-control" readonly name="code" th:value="${thisDataset.code}">
             </div>
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" th:text="#{dictionaries.dataset.name}">Sõnakogu nimi</label>
+              <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.name}">Sõnakogu nimi</label>
               <input class="col-md-6 form-control required-field" name="name" th:value="${thisDataset.name}">
             </div>
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.description}">Kirjeldus</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.description}">Kirjeldus</label>
               <div class="col-md-12">
                 <textarea class="form-control" rows="4" name="description" th:text="${thisDataset.description}"></textarea>
               </div>
             </div>
 
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.origins}">Päritolu</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Päritolu</label>
               <div class="col-md-12">
-                <select name="origin" class="dataset-origin-select" data-live-search="true" th:title="#{dictionaries.dataset.select.origin}">
+                <select name="origin" class="dataset-origin-select" data-live-search="true" th:title="#{datasets.dataset.select.origin}">
                   <option value=""></option>
                   <option th:each="origin : ${origins}"
                           th:value="${origin.code}" th:text="${origin.label != null ? origin.label : origin.code}"
@@ -125,9 +125,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.domains}">Valdkonnad</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
-                <select  name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.domain}"
+                <select  name="selectedDomains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.domain}"
                          th:disabled="${#lists.isEmpty(thisDataset.selectedDomains)}"
                          data-actions-box="true"
                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
@@ -139,10 +139,10 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.languages}">Keeled</label>
+                <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.languages}">Keeled</label>
                 <div class="col-md-12">
                   <select name="selectedLanguages"  class="classifier-select" multiple data-live-search="true" data-actions-box="true"
-                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}" th:title="#{dictionaries.dataset.select.language}">
+                          th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}" th:title="#{datasets.dataset.select.language}">
                     <th:block th:each="language: ${languages}">
                       <option th:value="${language.toIdString()}" th:text="${language.value}"
                         th:selected="${#lists.contains(thisDataset.selectedLanguages, language)}"/>
@@ -152,9 +152,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.processstates}">Protsessiolekud</label>
+              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.processstates}">Protsessiolekud</label>
               <div class="col-md-12">
-                <select  name="selectedProcessStates" class="classifier-select" multiple data-live-search="true" th:title="#{dictionaries.dataset.select.processstate}"
+                <select  name="selectedProcessStates" class="classifier-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.processstate}"
                          data-actions-box="true" th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
                   <th:block th:each="processState: ${processStates}">
                     <option th:value="${processState.toIdString()}" th:text="${processState.value}"
@@ -166,11 +166,11 @@
 
             <div class="form-check mt-1">
               <input th:id="${'chkVisible_' + thisDataset.code}" class="form-check-input" type="checkbox" name="visible" th:checked="${thisDataset.visible}">
-              <label th:for="${'chkVisible_' + thisDataset.code}" class="form-check-label" th:text="#{dictionaries.dataset.is.visible}">Nähtav</label>
+              <label th:for="${'chkVisible_' + thisDataset.code}" class="form-check-label" th:text="#{datasets.dataset.is.visible}">Nähtav</label>
             </div>
             <div class="form-check mt-1">
               <input th:id="${'chkPublic_' + thisDataset.code}" class="form-check-input" type="checkbox" name="public" th:checked="${thisDataset.public}">
-              <label th:for="${'chkPublic_' + thisDataset.code}" class="form-check-label" th:text="#{dictionaries.dataset.is.public}">Nähtav</label>
+              <label th:for="${'chkPublic_' + thisDataset.code}" class="form-check-label" th:text="#{datasets.dataset.is.public}">Nähtav</label>
             </div>
           </div>
 

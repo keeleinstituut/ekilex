@@ -126,12 +126,12 @@ function isValidDatasetCodeFormat(code) {
 
 function deleteDataset(datasetCode) {
 	openWaitDlg("Palun oodake, sõnakogu kustutamine on pooleli");
-	let deleteUrl = applicationUrl + 'delete_dictionary/' + datasetCode;
+	let deleteUrl = applicationUrl + 'delete_dataset/' + datasetCode;
 
 	$.get(deleteUrl).done(function(data) {
 		closeWaitDlg();
 		if (data === 'OK') {
-			window.location = applicationUrl + 'dictionaries';
+			window.location = applicationUrl + 'datasets';
 		} else {
 			openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		}
@@ -144,7 +144,7 @@ function deleteDataset(datasetCode) {
 
 function checkAndAddDataset(addDatasetForm) {
 	let newCodeField = addDatasetForm.find('input[name="code"]');
-	let validateUrl = applicationUrl + 'data/validate_create_dictionary/' + newCodeField.val();
+	let validateUrl = applicationUrl + 'data/validate_create_dataset/' + newCodeField.val();
 
 	if (!isValidDatasetCodeFormat(newCodeField.val())) {
 		showFieldError(newCodeField, "Kood tohib sisaldada ainult tähti ja numbreid.");

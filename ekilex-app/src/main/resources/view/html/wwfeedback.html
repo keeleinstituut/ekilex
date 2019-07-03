@@ -60,7 +60,7 @@
                         title="Lisa uus"
                         data-toggle="modal"
                         th:data-target="${'#addFeedbackCommentDlg_' + fbItem.id}"
-                        sec:authorize="${#authentication.principal.datasetPermissionsExist}">
+                        sec:authorize="${#authentication.principal.datasetPermissionsExist or #authentication.principal.admin}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
                 <table th:id="${'ekiCommentsArea_' + fbItem.id}" th:fragment="eki_comments">
@@ -77,7 +77,7 @@
                   <button type="button" class="btn badge badge-warning" 
                           data-toggle="delete-confirm"
                           data-placement="left"
-                          sec:authorize="${#authentication.principal.datasetPermissionsExist}">
+                          sec:authorize="${#authentication.principal.datasetPermissionsExist or #authentication.principal.admin}">
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </form>

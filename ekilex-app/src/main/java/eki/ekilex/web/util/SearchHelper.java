@@ -34,7 +34,7 @@ public class SearchHelper {
 	private static final char DICTONARIES_SEPARATOR = ',';
 	private static final String EMPTY_VALUE = "-";
 	private static final String SEARCH_MODE = "smode";
-	private static final String DICTIONARIES = "dicts";
+	private static final String DATASETS = "dicts";
 	private static final String SIMPLE_SEARCH_FILTER = "sfilt";
 	private static final String DETAIL_SEARCH_FILTER = "dfilt";
 	private static final String CRITERIA_GROUP = "critgr";
@@ -68,7 +68,7 @@ public class SearchHelper {
 				String[] datasetArr = encodeDatasets(datasets);
 				String dictonaries = StringUtils.join(datasetArr, DICTONARIES_SEPARATOR);
 				uriBuf.append(PATH_SEPARATOR);
-				uriBuf.append(DICTIONARIES);
+				uriBuf.append(DATASETS);
 				uriBuf.append(PATH_SEPARATOR);
 				uriBuf.append(dictonaries);
 			}
@@ -176,7 +176,7 @@ public class SearchHelper {
 			}
 			if (StringUtils.equals(SEARCH_MODE, uriPart)) {
 				searchMode = uriParts[uriPartIndex + 1];
-			} else if (StringUtils.equals(DICTIONARIES, uriPart)) {
+			} else if (StringUtils.equals(DATASETS, uriPart)) {
 				String selectedDatasetsStr = uriParts[uriPartIndex + 1];
 				selectedDatasetsStr = decode(selectedDatasetsStr);
 				selectedDatasetsStr = StringUtils.remove(selectedDatasetsStr, ' ');

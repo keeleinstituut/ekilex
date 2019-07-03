@@ -62,7 +62,7 @@ public class DatasetController implements WebConstant {
 		binder.registerCustomEditor(Classifier.class, new ClassifierEditor());
 	}
 
-	@GetMapping(DICTIONARIES_URI)
+	@GetMapping(DATASETS_URI)
 	public String list(Model model) {
 
 		logger.debug("Fetching all datasets");
@@ -85,9 +85,10 @@ public class DatasetController implements WebConstant {
 		return DATASETS_PAGE;
 	}
 
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
-	@PostMapping(CREATE_DICTIONARY_URI)
+	@PreAuthorize("authentication.principal.datasetPermissionsExist or authentication.principal.admin")
+	@PostMapping(CREATE_DATASET_URI)
 	public String createDataset(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
+
 		logger.debug("Creating dataset, name : {}", datasetFormData.getName());
 		datasetService.createDataset(datasetFormData);
 
@@ -97,20 +98,21 @@ public class DatasetController implements WebConstant {
 
 		userService.updateUserSecurityContext();
 
-		return REDIRECT_PREF + DICTIONARIES_URI;
+		return REDIRECT_PREF + DATASETS_URI;
 	}
 
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
-	@PostMapping(UPDATE_DICTIONARY_URI)
-	public String updateDataSet(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
+	@PreAuthorize("authentication.principal.datasetPermissionsExist or authentication.principal.admin")
+	@PostMapping(UPDATE_DATASET_URI)
+	public String updateDataset(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
+
 		logger.debug("Updating dataset, name : {}", datasetFormData.getName());
 		datasetService.updateDataset(datasetFormData);
 
-		return REDIRECT_PREF + DICTIONARIES_URI;
+		return REDIRECT_PREF + DATASETS_URI;
 	}
 
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
-	@GetMapping(DELETE_DICTIONARY_URI + "/{datasetCode}")
+	@PreAuthorize("authentication.principal.datasetPermissionsExist or authentication.principal.admin")
+	@GetMapping(DELETE_DATASET_URI + "/{datasetCode}")
 	@ResponseBody
 	public String deleteDataset(@PathVariable("datasetCode") String datasetCode) throws JsonProcessingException {
 
@@ -122,7 +124,7 @@ public class DatasetController implements WebConstant {
 		return "OK";
 	}
 
-	@GetMapping(REST_SERVICES_URI + VALIDATE_CREATE_DICTIONARY_URI + "/{datasetCode}")
+	@GetMapping(REST_SERVICES_URI + VALIDATE_CREATE_DATASET_URI + "/{datasetCode}")
 	@ResponseBody
 	public String validateCreateDataset(@PathVariable("datasetCode") String datasetCode) {
 		if (datasetService.datasetCodeExists(datasetCode)) {
