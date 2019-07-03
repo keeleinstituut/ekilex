@@ -51,6 +51,7 @@ function initialise() {
 	$(document).on("change", ".dataset-origin-select", function(e) {
 		var originCode = $(this).val();
 		var domains = $(this).closest('form').find('[name="selectedDomains"]');
+		let previousDomains = domains.val();
 		domains.empty();
 
 		domains.attr('disabled', originCode == '');
@@ -70,10 +71,19 @@ function initialise() {
 					domainOptionText += ' [' + domain.code + ']';
 				}
 				domainOptionText = domainOptionText.trunc(100);
-				domains.append(
-					$("<option></option>")
-						.attr("value", JSON.stringify(domain))
-						.text(domainOptionText));
+				let domainJson = JSON.stringify(domain, function(key, val) {
+					if (key !== "value") {
+						return val;
+					}
+				});
+				let domainOption = $("<option></option>")
+					.attr("value", domainJson)
+					.text(domainOptionText);
+
+				if (previousDomains != undefined && previousDomains.includes(domainJson)) {
+					domainOption.attr("selected", "selected");
+				}
+				domains.append(domainOption);
 			});
 
 			domains.selectpicker('refresh');
@@ -84,6 +94,14 @@ function initialise() {
 		});
 
 	});
+
+	$(document).on('show.bs.modal', ".edit-dataset-modal", function(e) {
+		var datasetOrigin = $(e.relatedTarget).data('origin');
+		if (datasetOrigin != undefined) {
+			$(this).find('.dataset-origin-select').trigger('change');
+		}
+	});
+
 
 	$('.dataset-domain-select').selectpicker({width:'100%'});
 

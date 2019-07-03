@@ -91,7 +91,7 @@
     </div>
   </div>
 
-  <div th:id="${'editDatasetDlg_' + thisDataset.code}" class="modal" role="dialog" th:fragment="edit_dataset_dlg(thisDataset)">
+  <div th:id="${'editDatasetDlg_' + thisDataset.code}" class="modal edit-dataset-modal" role="dialog" th:fragment="edit_dataset_dlg(thisDataset)">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_dictionary}" method="post" th:object="${datasetData}">
@@ -114,11 +114,11 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{dictionaries.dataset.origins}">Päritolu</label>
               <div class="col-md-12">
-                <select class="dataset-origin-select" data-live-search="true" th:title="#{dictionaries.dataset.select.origin}">
+                <select name="origin" class="dataset-origin-select" data-live-search="true" th:title="#{dictionaries.dataset.select.origin}">
                   <option value=""></option>
                   <option th:each="origin : ${origins}"
                           th:value="${origin.code}" th:text="${origin.label != null ? origin.label : origin.code}"
-                          th:selected="${not #lists.isEmpty(thisDataset.selectedDomains) && thisDataset.selectedDomains[0].origin == origin.code}"
+                          th:selected="${thisDataset.origin == origin.code}"
                   />
                 </select>
               </div>

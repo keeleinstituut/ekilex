@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +41,9 @@ public class DatasetService implements SystemConstant {
 			dataset.setSelectedLanguages(languages);
 			dataset.setSelectedProcessStates(processStates);
 			dataset.setSelectedDomains(domains);
+			if (CollectionUtils.isNotEmpty(domains)) {
+				dataset.setOrigin(domains.get(0).getOrigin());
+			}
 		}
 
 		return datasets;

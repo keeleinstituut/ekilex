@@ -59,6 +59,7 @@
                   <td class="m-1 p-1">
                     <th:block th:if="${isAdmin || #lists.contains(ownedDatasetCodes, dataset.code)}">
                       <button type="button" class="btn badge badge-primary"
+                              th:data-origin="${dataset.origin}"
                               title="Muuda"
                               data-toggle="modal"
                               th:data-target="${'#editDatasetDlg_' + dataset.code}">
