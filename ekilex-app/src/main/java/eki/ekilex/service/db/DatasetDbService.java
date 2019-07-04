@@ -132,4 +132,18 @@ public class DatasetDbService {
 	}
 
 
+	public Dataset getDataset(String code) {
+
+		return create
+				.select(DATASET.CODE,
+						DATASET.NAME,
+						DATASET.DESCRIPTION,
+						DATASET.IS_VISIBLE,
+						DATASET.IS_PUBLIC)
+				.from(DATASET)
+				.where(DATASET.CODE.eq(code))
+				.fetchSingleInto(Dataset.class);
+
+	}
+
 }

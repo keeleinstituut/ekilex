@@ -71,12 +71,12 @@ public class Classifier extends AbstractDataObject {
 	}
 
 	public String toIdString() {
-		return new ReflectionToStringBuilder(this, ToStringStyle.JSON_STYLE).setExcludeFieldNames("value").toString();
+		return new ReflectionToStringBuilder(this, ToStringStyle.JSON_STYLE).setExcludeFieldNames("value", "jsonStr").toString();
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return EqualsBuilder.reflectionEquals(this, object, "value");
+		return EqualsBuilder.reflectionEquals(this, object, "value", "jsonStr");
 	}
 
 }

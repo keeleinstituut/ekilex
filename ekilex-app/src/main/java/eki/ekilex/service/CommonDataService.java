@@ -228,14 +228,6 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<Classifier> findDomainsByOrigin(String originCode) {
-		List<Classifier> classifiers = commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		classifiers.forEach(c -> c.setJsonStr(classifierUtil.toJson(c)));
-
-		return classifiers;
-	}
-
-	@Transactional
 	public boolean isOnlyLexemeForWord(Long lexemeId) {
 		return commonDataDbService.isOnlyLexemeForWord(lexemeId);
 	}
@@ -254,4 +246,5 @@ public class CommonDataService implements SystemConstant {
 	public boolean isOnlyLexemesForWords(Long meaningId, String datasetCode) {
 		return commonDataDbService.isOnlyLexemesForWords(meaningId, datasetCode);
 	}
+
 }

@@ -93,11 +93,61 @@ function initialise() {
 		}
 	});
 
+	$(document).on('hide.bs.modal ', ".edit-dataset-dialog", function(e) {
+		emptyClassifSelect($(this), "selectedLanguages");
+		emptyClassifSelect($(this), "selectedProcessStates");
+	});
+
+	$(document).on('show.bs.modal', ".edit-dataset-dialog", function(e) {
+		var datasetCode = $(e.relatedTarget).data('dataset-code');
+		//alert(datasetCode);
+
+		let fetchUrl = applicationUrl + 'dataset/' + datasetCode;
+		let thisForm = $(this).find('form');
+
+		$.get(fetchUrl).done(function(dataset) {
+			console.log('dataset \n' + JSON.stringify(dataset));
+			thisForm.find('input[name="code"]').val(dataset.code);
+			thisForm.find('input[name="name"]').val(dataset.name);
+			thisForm.find('textarea[name="description"]').val(dataset.description);
+			thisForm.find('input[name="public"]').attr('checked', dataset.public);
+			thisForm.find('input[name="visible"]').attr('checked', dataset.visible);
+
+			markSelectedClassifiers(thisForm, "selectedLanguages", dataset.selectedLanguages);
+			markSelectedClassifiers(thisForm, "selectedProcessStates", dataset.selectedProcessStates);
+
+		}).fail(function(data) {
+			openAlertDlg("Sõnakogu andmete päring ebaõnnestus.");
+			console.log(data);
+		});
+
+	});
+
 	$('.dataset-domain-select').selectpicker({
 		width : '100%'
 	});
 
 }
+
+function emptyClassifSelect(modal, classifSelectName) {
+	let thisForm = modal.find('form');
+	let classifSelect = thisForm.find('select[name="' + classifSelectName + '"]');
+	classifSelect.find("option").each(function (o) {
+		$(this).removeAttr("selected");
+	});
+}
+
+function markSelectedClassifiers(form, classifSelectName, classifArray) {
+	let classifSelect = form.find('select[name="' + classifSelectName + '"]'); //.val(JSON.stringify(dataset.selectedLanguages));
+
+	$.each(classifArray, function (key, classif) {
+		let classifOption = classifSelect.find("option[value='" + classif.jsonStr + "']");
+		classifOption.attr("selected", "selected");
+	});
+
+	form.find('select[name="' + classifSelectName + '"]').selectpicker('refresh');
+}
+
 function isValidDatasetCodeFormat(code) {
 	//don't allow spaces, tabls ? and %
 	let pattern = /^((?!\?|\%)\S)*$/;

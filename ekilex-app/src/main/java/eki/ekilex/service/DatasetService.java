@@ -15,6 +15,7 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.DatasetDbService;
 import eki.ekilex.service.db.PermissionDbService;
+import eki.ekilex.web.util.ClassifierUtil;
 
 @Component
 public class DatasetService implements SystemConstant {
@@ -28,6 +29,8 @@ public class DatasetService implements SystemConstant {
 	@Autowired
 	private PermissionDbService permissionDbService;
 
+	@Autowired
+	private ClassifierUtil classifierUtil;
 
 	@Transactional
 	public List<Dataset> getDatasets() {
@@ -51,6 +54,25 @@ public class DatasetService implements SystemConstant {
 	}
 
 	@Transactional
+	public Dataset getDataset(String datasetCode) {
+		Dataset dataset = datasetDbService.getDataset(datasetCode);
+		List<Classifier> domains = getDatasetDomains(dataset.getCode());
+		List<Classifier> languages = getDatasetClassifiers(ClassifierName.LANGUAGE, dataset.getCode());
+		List<Classifier> processStates = getDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode());
+
+		dataset.setSelectedLanguages(languages);
+		dataset.setSelectedProcessStates(processStates);
+		dataset.setSelectedDomains(domains);
+		if (CollectionUtils.isNotEmpty(domains)) {
+			dataset.setOrigin(domains.get(0).getOrigin());
+		}
+
+		return dataset;
+
+	}
+
+
+		@Transactional
 	public void createDataset(Dataset dataset) {
 		datasetDbService.createDataset(dataset);
 
@@ -123,11 +145,29 @@ public class DatasetService implements SystemConstant {
 	}
 
 	private List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
-		return commonDataDbService.getDatasetClassifiers(classifierName, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> classifiers = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		populateClassifierJson(classifiers);
+
+		return classifiers;
 	}
 
 	private List<Classifier> getDatasetDomains(String datasetCode) {
-		return commonDataDbService.getDatasetDomains(datasetCode);
+		List<Classifier> domains = commonDataDbService.getDatasetDomains(datasetCode);
+		populateClassifierJson(domains);
+
+		return domains;
+	}
+
+	@Transactional
+	public List<Classifier> findDomainsByOrigin(String originCode) {
+		List<Classifier> domains = commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		populateClassifierJson(domains);
+
+		return domains;
+	}
+
+	private void populateClassifierJson(List<Classifier> classifiers) {
+		classifiers.forEach(c -> c.setJsonStr(classifierUtil.toJson(c)));
 	}
 
 }

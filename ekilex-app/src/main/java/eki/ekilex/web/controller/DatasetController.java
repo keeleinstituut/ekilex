@@ -71,11 +71,8 @@ public class DatasetController implements WebConstant {
 		EkiUser currentUser = userService.getAuthenticatedUser();
 		List<DatasetPermission> datasetPermissions = permissionService.getUserDatasetPermissions(currentUser.getId());
 
-		List<String> ownedDataSetCodes = datasetPermissions
-				.stream()
-				.filter(permission -> AuthorityOperation.OWN.equals(permission.getAuthOperation()))
-				.map(DatasetPermission::getDatasetCode)
-				.collect(Collectors.toList());
+		List<String> ownedDataSetCodes = datasetPermissions.stream().filter(permission -> AuthorityOperation.OWN.equals(permission.getAuthOperation()))
+				.map(DatasetPermission::getDatasetCode).collect(Collectors.toList());
 
 		model.addAttribute("ownedDatasetCodes", ownedDataSetCodes);
 		model.addAttribute("datasets", datasets);
@@ -161,10 +158,17 @@ public class DatasetController implements WebConstant {
 	@ResponseBody
 	public String getOriginDomains(@PathVariable String originCode) throws Exception {
 
-		List<Classifier> originDomains = commonDataService.findDomainsByOrigin(originCode);
+		List<Classifier> originDomains = datasetService.findDomainsByOrigin(originCode);
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(originDomains);
 	}
 
+	@GetMapping(DATASET_URI + "/{datasetCode}")
+	@ResponseBody
+	public Dataset fetchDataset(@PathVariable String datasetCode) {
+		logger.debug("Fetching dataset code {}", datasetCode);
+		Dataset dataset = datasetService.getDataset(datasetCode);
+		return dataset;
+	}
 }

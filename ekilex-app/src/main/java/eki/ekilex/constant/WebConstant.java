@@ -146,6 +146,8 @@ public interface WebConstant {
 
 	String DATASETS_URI = "/datasets";
 
+	String DATASET_URI = "/dataset";
+
 	String DATASETS_PAGE = "datasets";
 
 	String CREATE_DATASET_URI = "/create_dataset";
