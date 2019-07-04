@@ -1022,6 +1022,17 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		basicDbService.update(PROCESS_LOG, criteriaParamMap, valueParamMap);
 	}
 
+	protected void updateLexemeProcessState(Long lexemeId, String processStateCode) throws Exception {
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("id", lexemeId);
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("process_state_code", processStateCode);
+		basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
+
+		createLexemeProcessStateProcessLog(lexemeId, processStateCode);
+	}
+
 	protected Long createWordProcessLog(Long wordId, String eventBy, Timestamp eventOn, String comment) throws Exception {
 
 		String datasetCode = getDataset();
