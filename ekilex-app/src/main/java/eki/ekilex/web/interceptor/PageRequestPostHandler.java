@@ -19,6 +19,7 @@ import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.web.util.ClassifierUtil;
 import eki.ekilex.web.util.PermDataUtil;
 
 @ConditionalOnWebApplication
@@ -32,6 +33,10 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 
 	@Autowired
 	private PermDataUtil permDataUtil;
+
+	@Autowired
+	private ClassifierUtil classifierUtil;
+
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -62,6 +67,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 		if (!modelMap.containsKey(PERM_DATA_UTIL_KEY)) {
 			modelMap.addAttribute(PERM_DATA_UTIL_KEY, permDataUtil);
+		}
+		if (!modelMap.containsKey(CLASSIFIER_UTIL_KEY)) {
+			modelMap.addAttribute(CLASSIFIER_UTIL_KEY, classifierUtil);
 		}
 
 		logRequestProcessTime(request);

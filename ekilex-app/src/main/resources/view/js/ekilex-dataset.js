@@ -1,17 +1,3 @@
-String.prototype.toUnicode = function() {
-	var result = "";
-	for (var i = 0; i < this.length; i++) {
-		// Assumption: all characters are < 0xffff
-		if (this[i].charCodeAt(0) > 127) {
-			result += "\\u" + ("000" + this[i].charCodeAt(0).toString(16)).substr(-4).toUpperCase();
-		} else {
-			result += this[i];
-		}
-
-	}
-	return result;
-};
-
 String.prototype.trunc = function(n, useWordBoundary) {
 	if (this.length <= n) {
 		return this;
@@ -77,18 +63,12 @@ function initialise() {
 			var domainOrigins = JSON.parse(response);
 			$.each(domainOrigins, function(index, domain) {
 				let domainOptionText = domain.value;
+				let domainJson = domain.jsonStr;
+
 				if (domain.value != domain.code) {
 					domainOptionText += ' [' + domain.code + ']';
 				}
 				domainOptionText = domainOptionText.trunc(100);
-				let domainJson = JSON.stringify(domain, function(key, val) {
-					if (key == "code") {
-						return val.toUnicode();
-					}
-					if (key !== "value") {
-						return val;
-					}
-				}).replace(/\\\\/g, '\\'); //TODO - better solution
 				let domainOption = $("<option></option>").attr("value", domainJson).text(domainOptionText);
 
 				if (previousDomains != undefined && previousDomains.includes(domainJson)) {

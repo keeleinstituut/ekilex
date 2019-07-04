@@ -19,6 +19,7 @@ import eki.ekilex.data.Origin;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.util.ConversionUtil;
+import eki.ekilex.web.util.ClassifierUtil;
 
 @Component
 public class CommonDataService implements SystemConstant {
@@ -28,6 +29,9 @@ public class CommonDataService implements SystemConstant {
 
 	@Autowired
 	protected ConversionUtil conversionUtil;
+
+	@Autowired
+	private ClassifierUtil classifierUtil;
 
 	@Transactional
 	public List<Dataset> getDatasets() {
@@ -225,7 +229,10 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<Classifier> findDomainsByOrigin(String originCode) {
-		return commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> classifiers = commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		classifiers.forEach(c -> c.setJsonStr(classifierUtil.toJson(c)));
+
+		return classifiers;
 	}
 
 	@Transactional

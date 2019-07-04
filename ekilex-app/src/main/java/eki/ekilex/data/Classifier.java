@@ -20,6 +20,8 @@ public class Classifier extends AbstractDataObject {
 
 	private String[] datasets;
 
+	private String jsonStr;
+
 	public String getName() {
 		return name;
 	}
@@ -58,6 +60,14 @@ public class Classifier extends AbstractDataObject {
 
 	public void setDatasets(String[] datasets) {
 		this.datasets = datasets;
+	}
+
+	public String getJsonStr() {
+		return jsonStr;
+	}
+
+	public void setJsonStr(String jsonStr) {
+		this.jsonStr = jsonStr;
 	}
 
 	public String toIdString() {

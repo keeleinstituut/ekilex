@@ -192,6 +192,8 @@ public interface WebConstant {
 
 	String PERM_DATA_UTIL_KEY = "permDataUtil";
 
+	String CLASSIFIER_UTIL_KEY = "classifierUtil";
+
 	String USER_KEY = "user";
 
 	String SEARCH_WORD_KEY = "searchWord";
