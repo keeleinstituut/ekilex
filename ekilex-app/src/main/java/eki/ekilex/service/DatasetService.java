@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -34,23 +35,7 @@ public class DatasetService implements SystemConstant {
 
 	@Transactional
 	public List<Dataset> getDatasets() {
-		List<Dataset> datasets = datasetDbService.getDatasets();
-
-		for (Dataset dataset : datasets) {
-			List<Classifier> domains = getDatasetDomains(dataset.getCode());
-			List<Classifier> languages = getDatasetClassifiers(ClassifierName.LANGUAGE, dataset.getCode());
-			List<Classifier> processStates = getDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode());
-
-			dataset.setSelectedLanguages(languages);
-			dataset.setSelectedProcessStates(processStates);
-			dataset.setSelectedDomains(domains);
-			if (CollectionUtils.isNotEmpty(domains)) {
-				dataset.setOrigin(domains.get(0).getOrigin());
-			}
-		}
-
-		return datasets;
-
+		return datasetDbService.getDatasets();
 	}
 
 	@Transactional
@@ -64,7 +49,13 @@ public class DatasetService implements SystemConstant {
 		dataset.setSelectedProcessStates(processStates);
 		dataset.setSelectedDomains(domains);
 		if (CollectionUtils.isNotEmpty(domains)) {
-			dataset.setOrigin(domains.get(0).getOrigin());
+			dataset.setOrigins(
+					domains
+							.stream()
+							.map(Classifier::getOrigin)
+							.distinct()
+							.sorted()
+							.collect(Collectors.toList()));
 		}
 
 		return dataset;

@@ -18,7 +18,7 @@ public class Dataset extends AbstractDataObject {
 
 	private boolean isPublic;
 
-	private String origin;
+	private List<String> origins;
 
 	private List<Classifier> selectedDomains;
 
@@ -90,11 +90,11 @@ public class Dataset extends AbstractDataObject {
 		this.selectedProcessStates = selectedProcessStates;
 	}
 
-	public String getOrigin() {
-		return origin;
+	public List<String> getOrigins() {
+		return origins;
 	}
 
-	public void setOrigin(String origin) {
-		this.origin = origin;
+	public void setOrigins(List<String> origins) {
+		this.origins = origins;
 	}
 }

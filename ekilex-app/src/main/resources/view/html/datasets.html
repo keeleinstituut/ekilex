@@ -61,13 +61,6 @@
                               data-target="#editDatasetDlg">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
-                      <button type="button" class="btn badge badge-secondary"
-                              th:data-origin="${dataset.origin}"
-                              title="Muuda"
-                              data-toggle="modal"
-                              th:data-target="${'#editDatasetDlg_' + dataset.code}">
-                        <i class="fa fa-thumb-tack" aria-hidden="true"></i>
-                      </button>
                       <button type="button" class="btn badge badge-warning delete-dataset-confirm"
                               th:data-code="${dataset.code}"
                               data-toggle="datasetDeleteConfirm">
@@ -78,9 +71,6 @@
                 </tr>
               </th:block>
             </table>
-            <th:block th:each="dataset : ${datasets}">
-              <div th:replace="datasetdialog :: edit_dataset_dlg(${dataset})"></div>
-            </th:block>
           </div>
         </div>
       </div>
