@@ -344,10 +344,10 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			String wordTypeCode = null;
-			String lexemeValuseStateCode = null;
+			String lexemeValueStateCode = null;
 			if (StringUtils.isNotBlank(termType)) {
 				wordTypeCode = wordTypeCodes.get(termType);
-				lexemeValuseStateCode = lexemeValueStateCodes.get(termType);
+				lexemeValueStateCode = lexemeValueStateCodes.get(termType);
 			}
 
 			Long wordId;
@@ -405,16 +405,16 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
-			String processStateCode = extractProcessStateCode(isPublic, termStatus);
-			if (StringUtils.isBlank(lexemeValuseStateCode)) {
-				lexemeValuseStateCode = lexemeValueStateCodes.get(administrativeStatus);
+			if (StringUtils.isBlank(lexemeValueStateCode)) {
+				lexemeValueStateCode = lexemeValueStateCodes.get(administrativeStatus);
 			}
 
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
-			lexeme.setProcessStateCode(processStateCode);
-			lexeme.setValueStateCode(lexemeValuseStateCode);
+			String processStateFromTerm = extractProcessStateCode(termStatus);
+			lexeme.setProcessStateCode(processStateFromTerm);
+			lexeme.setValueStateCode(lexemeValueStateCode);
 			Long lexemeId = createLexemeIfNotExists(lexeme);
 			if (lexemeId != null) {
 				String posCode;
@@ -423,11 +423,14 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				} else {
 					posCode = pronunciation;
 				}
-
 				savePosCode(lexemeId, posCode);
 				createLexemeSourceLink(context, sourceId, lexemeId);
 				createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
 				saveUsages(context, lexemeId, termId);
+				String processStateFromConcept = extractProcessStateCode(isPublic);
+				if (StringUtils.isNotBlank(processStateFromConcept)) {
+					updateLexemeProcessState(lexemeId, processStateFromConcept);
+				}
 			}
 
 			// progress
@@ -715,7 +718,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private String extractProcessStateCode(Boolean isPublic, Integer termStatus) {
+	private String extractProcessStateCode(Integer termStatus) {
 
 		String processStateCode = null;
 		if (termStatus == 1) {
@@ -724,7 +727,14 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			processStateCode = PROCESS_STATE_REJECTED;
 		} else if (termStatus == 5) {
 			processStateCode = PROCESS_STATE_APPROVED;
-		} else if (isPublic) {
+		}
+		return processStateCode;
+	}
+
+	private String extractProcessStateCode(Boolean isPublic) {
+
+		String processStateCode = null;
+		if (isPublic) {
 			processStateCode = PROCESS_STATE_PUBLIC;
 		}
 		return processStateCode;
