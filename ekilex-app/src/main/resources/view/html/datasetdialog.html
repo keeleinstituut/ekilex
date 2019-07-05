@@ -26,11 +26,12 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Päritolu</label>
               <div class="col-md-12">
-                <select class="dataset-origin-select" data-live-search="true" th:title="#{datasets.dataset.select.origin}">
+                <select name="origins" class="dataset-origin-multi-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.origin}">
                   <option value=""></option>
                   <option th:each="origin : ${origins}"
+                          th:data-subtext="${origin.code}"
                           th:value="${origin.code}" th:text="${origin.label != null ? origin.label : origin.code}"
-                          />
+                  />
                 </select>
               </div>
             </div>
