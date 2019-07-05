@@ -60,6 +60,7 @@ insert into dataset (code, name, is_visible, is_public) values ('mea', 'Metroloo
 insert into dataset (code, name, is_visible, is_public) values ('mon', 'Montessori pedagoogika terminivara', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('mut', 'Muuseumiterminoloogia', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('mte', 'Muusikateraapia seletav sõnastik', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('mtr', 'Materjalitehnika', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('nht', 'Nahkhiirte-alased terminid', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('prs', 'Parasitoloogia terminid', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('plt', 'Põllumajandusloomade tõud', true, true);
