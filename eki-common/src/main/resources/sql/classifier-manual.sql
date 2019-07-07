@@ -53,6 +53,7 @@ insert into dataset (code, name, is_visible, is_public) values ('pre', 'Loomapar
 insert into dataset (code, name, is_visible, is_public) values ('lpr', 'Loomaparasiitide nimistu', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('lko', 'Loomi kaasavate organisatsioonide terminibaas', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('les', 'Läti-eesti sõnastik', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('mtr', 'Materjalitehnika', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('mef', 'Meditsiinifüüsika', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('mes', 'Mesindusleksikon', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('met', 'MetalliAabits', true, true);
