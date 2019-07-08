@@ -956,7 +956,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	}
 
 	public List<Classifier> findDomainsByOriginCode(String originCode, String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		Table originDomains = create
 				.select(getClassifierNameField(ClassifierName.DOMAIN),
 					DOMAIN.CODE,
 					DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
@@ -966,7 +966,12 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.leftJoin(DOMAIN_LABEL).on(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN)))
 					.innerJoin(LANGUAGE).on(LANGUAGE.CODE.eq(DOMAIN_LABEL.LANG))
 				.where(DOMAIN.ORIGIN.eq(originCode))
-				.orderBy(DOMAIN.CODE, LANGUAGE.ORDER_BY)
+				.orderBy(DOMAIN.CODE, LANGUAGE.ORDER_BY).asTable();
+
+		return create
+				.select(originDomains.fields())
+				.from(originDomains)
+				.orderBy(originDomains.field("value"))
 				.fetchInto(Classifier.class);
 	}
 
