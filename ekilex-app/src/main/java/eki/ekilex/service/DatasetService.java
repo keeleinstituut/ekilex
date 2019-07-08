@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -156,6 +157,8 @@ public class DatasetService implements SystemConstant {
 		List<Classifier> domains = commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		populateClassifierJson(domains);
 
+		//TODO - is there any trick to sort in SQL although distinctOn(code) requires sorting by code
+		domains.sort(Comparator.comparing(Classifier::getValue));
 		return domains;
 	}
 

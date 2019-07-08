@@ -964,8 +964,9 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.distinctOn(DOMAIN.CODE)
 				.from(DOMAIN)
 				.leftJoin(DOMAIN_LABEL).on(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN)))
+					.innerJoin(LANGUAGE).on(LANGUAGE.CODE.eq(DOMAIN_LABEL.LANG))
 				.where(DOMAIN.ORIGIN.eq(originCode))
-				.orderBy(DOMAIN.CODE, DOMAIN_LABEL.LANG.desc())
+				.orderBy(DOMAIN.CODE, LANGUAGE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
