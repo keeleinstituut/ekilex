@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -142,16 +141,6 @@ public class DatasetController implements WebConstant {
 	@ModelAttribute("origins")
 	public List<Origin> getOrigins() {
 		return commonDataService.getAllOrigins();
-	}
-
-	@PostMapping(REST_SERVICES_URI + SEARCH_DOMAINS_URI)
-	@ResponseBody
-	public String searchDomain(@RequestParam String searchText) throws Exception {
-
-		List<Classifier> result = commonDataService.findDomainsByValue(searchText);
-
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(result);
 	}
 
 	@GetMapping(REST_SERVICES_URI + ORIGIN_DOMAINS_URI + "/{originCode}")

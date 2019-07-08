@@ -946,24 +946,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		throw new UnsupportedOperationException();
 	}
 
-	public List<Classifier> findDomainsByValue(String searchValue) {
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.DOMAIN),
-						DOMAIN_LABEL.ORIGIN,
-						DOMAIN_LABEL.CODE,
-						DOMAIN_LABEL.VALUE)
-				.from(DOMAIN_LABEL)
-				.whereExists(DSL
-						.select(MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
-						.from(MEANING_DOMAIN)
-						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
-								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))))
-				.and(DOMAIN_LABEL.VALUE.containsIgnoreCase(searchValue))
-				.orderBy(DOMAIN_LABEL.VALUE, DOMAIN_LABEL.ORIGIN)
-				.fetchInto(Classifier.class);
-	}
-
 	public List<Origin> getAllDomainOrigins() {
 		return create
 				.selectDistinct(DOMAIN.ORIGIN.as("code"), DATASET.NAME.as("label"))

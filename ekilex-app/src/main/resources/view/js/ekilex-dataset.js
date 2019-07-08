@@ -44,114 +44,25 @@ function initialise() {
 		width : '100%'
 	});
 
-	$(document).on("changed.bs.select", ".dataset-origin-multi-select", function(e, clickedIndex, newValue, oldValue) {
-		// console.log($(this).value + " : " + newValue + " : " +  clickedIndex  + " : " + oldValue);
-		// var selected = $(e.currentTarget).val();
-		// console.log('selected ' + selected);
-		// console.log('etv ' + $(e.target).value);
-
+	// selector by class does not work for some reason
+	$(document).on("changed.bs.select", "#datasetEditOriginsSelect, #datasetAddOriginsSelect", function(e, clickedIndex, isSelected, oldValue) {
 		let selectedOriginCode = $(this).find('option').eq(clickedIndex).val();
-		console.log('selectedD: ' + selectedOriginCode + '  newValue: ' + newValue + ' oldValue: ' + oldValue);
-
-		let isOriginSelected = newValue;
+		let isOriginSelected = isSelected;
 
 		let domainsSelect = $(this).closest('form').find('[name="selectedDomains"]');
 		let previousDomainsValue = domainsSelect.val();
 
 		if (isOriginSelected) {
-			if (selectedOriginCode == '') {
-				return;
-			}
 			domainsSelect.attr('disabled', false);
-			let getOriginDomainsUrl = applicationUrl + 'data/origin_domains/' + selectedOriginCode;
-
-			$.get(getOriginDomainsUrl).done(function(response) {
-				var domainOrigins = JSON.parse(response);
-				$.each(domainOrigins, function(index, domain) {
-					let domainOptionText = domain.value;
-					let domainJson = domain.jsonStr;
-
-					if (domain.value != domain.code) {
-						domainOptionText += ' [' + domain.code + ']';
-					}
-					domainOptionText = domainOptionText.trunc(100);
-					let domainOption = $("<option></option>")
-						.attr("value", domainJson)
-						.attr("data-subtext", selectedOriginCode)
-						.text(domainOptionText);
-
-					if (previousDomainsValue != undefined && previousDomainsValue.includes(domainJson)) {
-						domainOption.attr("selected", "selected");
-					}
-					domainsSelect.append(domainOption);
-				});
-				domainsSelect.selectpicker('refresh');
-
-			}).fail(function(response) {
-				console.log(response);
-				openAlertDlg("Päritolu valdkondade päring ebaõnnestus");
-			});
+			populateDomains(domainsSelect, selectedOriginCode, previousDomainsValue);
 
 		} else {
 			domainsSelect.find("option[data-subtext='" + selectedOriginCode + "']").remove();
-
-			if (domainsSelect.find(':selected').length == 0) {
+			if ($(this).find(':selected').length == 0) {
 				domainsSelect.attr('disabled', true);
 			}
 			domainsSelect.selectpicker('refresh');
 		}
-
-
-
-		//domainsSelect.attr('disabled', $(this).val() == '');
-
-	});
-
-	// $(document).on("click", ".dataset-origin-multi-select", function() {
-	// 	alert($(this).val());
-	// 	console.log($(this).val());
-	// });
-
-	$(document).on("change", ".dataset-origin-select", function(e) {
-		var originCode = $(this).val();
-		var domains = $(this).closest('form').find('[name="selectedDomains"]');
-		let previousDomains = domains.val();
-		domains.empty();
-
-		domains.attr('disabled', originCode == '');
-
-		if (originCode == '') {
-			domains.selectpicker('refresh');
-			return;
-		}
-
-		let getOriginDomainsUrl = applicationUrl + 'data/origin_domains/' + originCode;
-		$.get(getOriginDomainsUrl).done(function(response) {
-
-			var domainOrigins = JSON.parse(response);
-			$.each(domainOrigins, function(index, domain) {
-				let domainOptionText = domain.value;
-				let domainJson = domain.jsonStr;
-
-				if (domain.value != domain.code) {
-					domainOptionText += ' [' + domain.code + ']';
-				}
-				domainOptionText = domainOptionText.trunc(100);
-				let domainOption = $("<option></option>").attr("value", domainJson).text(domainOptionText);
-
-				if (previousDomains != undefined && previousDomains.includes(domainJson)) {
-					domainOption.attr("selected", "selected");
-				}
-				domains.append(domainOption);
-			});
-
-			domains.selectpicker('refresh');
-
-		}).fail(function(response) {
-			console.log(response);
-			openAlertDlg("Päritolu valdkondade päring ebaõnnestus");
-		});
-
 	});
 
 	$(document).on('hide.bs.modal ', ".edit-dataset-dialog", function(e) {
@@ -159,31 +70,16 @@ function initialise() {
 		emptyClassifSelect($(this), "selectedProcessStates");
 		emptyClassifSelect($(this), "origins");
 		let domains = $(this).find('select[name="selectedDomains"]');
-
-		domains.find("option").remove();
-		domains.val('');
-		domains.attr('disabled', true);
-
-		domains.selectpicker('refresh');
-	});
-
-	$(document).on('show.bs.modal', ".edit-dataset-modal", function(e) {
-		//TODO remove
-		var datasetOrigin = $(e.relatedTarget).data('origin');
-		if (datasetOrigin != undefined) {
-			$(this).find('.dataset-origin-select').trigger('change');
-		}
+		emptyAndDisableSelect(domains);
 	});
 
 	$(document).on('show.bs.modal', ".edit-dataset-dialog", function(e) {
 		var datasetCode = $(e.relatedTarget).data('dataset-code');
-		//alert(datasetCode);
-
 		let fetchUrl = applicationUrl + 'dataset/' + datasetCode;
 		let thisForm = $(this).find('form');
 
 		$.get(fetchUrl).done(function(dataset) {
-			//console.log('dataset \n' + JSON.stringify(dataset));
+
 			thisForm.find('input[name="code"]').val(dataset.code);
 			thisForm.find('input[name="name"]').val(dataset.name);
 			thisForm.find('textarea[name="description"]').val(dataset.description);
@@ -192,76 +88,7 @@ function initialise() {
 
 			markSelectedClassifiers(thisForm, "selectedLanguages", dataset.selectedLanguages);
 			markSelectedClassifiers(thisForm, "selectedProcessStates", dataset.selectedProcessStates);
-
-			//TODO refactor
-			let domainsSelect = thisForm.find('select[name="selectedDomains"]');
-// domainsSelect.attr("disabled", false);
-
-			if (dataset.origins != null) {
-				//console.log("dataset.selectedDomains " + JSON.stringify(dataset.selectedDomains));
-				domainsSelect.attr("disabled", false);
-				domainsSelect.val(JSON.stringify(dataset.selectedDomains));
-			}
-
-			let originSelect = thisForm.find('select[name="origins"]');
-			$.each(dataset.origins, function (key, origin) {
-				let originOption = originSelect.find("option[value='" + origin + "']");
-				originOption.attr("selected", "selected");
-
-			});
-			originSelect.selectpicker('refresh');
-
-
-			let previousDomainsValue = dataset.selectedDomains;
-			let previousDomainsIds = new Array();
-			for (let i=0; i<previousDomainsValue.length; i++) {
-				previousDomainsIds.push(previousDomainsValue[i].jsonStr);
-			}
-
-				originSelect.find('option:selected').each(function () {
-				let originCode = $(this).val();
-
-				let getOriginDomainsUrl = applicationUrl + 'data/origin_domains/' + originCode;
-
-				$.get(getOriginDomainsUrl).done(function(response) {
-					var domainOrigins = JSON.parse(response);
-//console.log("domainOrigins response \n" + response);
-
-					$.each(domainOrigins, function(index, domain) {
-						let domainOptionText = domain.value;
-						let domainJson = domain.jsonStr;
-//console.log('domainJsonStr '+ domainJson);
-						if (domain.value != domain.code) {
-							domainOptionText += ' [' + domain.code + ']';
-						}
-						domainOptionText = domainOptionText.trunc(100);
-						let domainOption = $("<option></option>")
-							.attr("value", domainJson)
-							.attr("data-subtext", originCode)
-							.text(domainOptionText);
-
-							// console.log("somain stringify" + JSON.stringify(domain));
-						// console.log("in arra y" + $.inArray(JSON.stringify(domain), previousDomainsValue))
-
-						if (previousDomainsValue != undefined && $.inArray(domainJson, previousDomainsIds) > -1) {
-							domainOption.attr("selected", "selected");
-						}
-						domainsSelect.append(domainOption);
-					});
-					domainsSelect.selectpicker('refresh');
-
-				}).fail(function(response) {
-					console.log(response);
-					openAlertDlg("Päritolu valdkondade päring ebaõnnestus");
-				});
-
-
-			});
-
-
-
-
-			//thisForm.find('select.dataset-origin-multi-select option ').trigger('change');
+			markClassifierDomains(thisForm, dataset);
 
 		}).fail(function(data) {
 			openAlertDlg("Sõnakogu andmete päring ebaõnnestus.");
@@ -270,12 +97,8 @@ function initialise() {
 
 	});
 
-	$('.dataset-domain-select').selectpicker({
-		width : '100%'
-	});
+	$('.dataset-domain-select').selectpicker({width : '100%'});
 	$('.dataset-origin-select').selectpicker();
-	$('.dataset-origin-multi-select').selectpicker();
-
 }
 
 function emptyClassifSelect(modal, classifSelectName) {
@@ -286,8 +109,59 @@ function emptyClassifSelect(modal, classifSelectName) {
 	});
 }
 
+function populateDomains(domainsSelect, originCode, previousDomainsValue) {
+	let getOriginDomainsUrl = applicationUrl + 'data/origin_domains/' + originCode;
+	$.get(getOriginDomainsUrl).done(function(response) {
+		var domainOrigins = JSON.parse(response);
+
+		$.each(domainOrigins, function(index, domain) {
+			let domainOptionText = domain.value;
+			let domainJson = domain.jsonStr;
+
+			if (domain.value != domain.code) {
+				domainOptionText += ' [' + domain.code + ']';
+			}
+			domainOptionText = domainOptionText.trunc(100);
+			let domainOption = $("<option></option>")
+				.attr("value", domainJson)
+				.attr("data-subtext", originCode)
+				.text(domainOptionText);
+
+			if (previousDomainsValue != undefined && previousDomainsValue.includes(domainJson)) {
+				domainOption.attr("selected", "selected");
+			}
+			domainsSelect.append(domainOption);
+		});
+		domainsSelect.selectpicker('refresh');
+	}).fail(function(response) {
+		console.log(response);
+		openAlertDlg("Päritolu valdkondade päring ebaõnnestus");
+	});
+}
+
+function markClassifierDomains(thisForm, dataset) {
+
+	if (dataset.origins != null) {
+		let domainsSelect = thisForm.find('select[name="selectedDomains"]');
+		domainsSelect.attr("disabled", false);
+		let originSelect = thisForm.find('select[name="origins"]');
+		$.each(dataset.origins, function (key, origin) {
+			let originOption = originSelect.find("option[value='" + origin + "']");
+			originOption.attr("selected", "selected");
+
+		});
+		originSelect.selectpicker('refresh');
+
+		let previousDomainsIds = dataset.selectedDomains.map(domain => domain.jsonStr);
+		originSelect.find('option:selected').each(function () {
+			let originCode = $(this).val();
+			populateDomains(domainsSelect, originCode, previousDomainsIds);
+		});
+	}
+}
+
 function markSelectedClassifiers(form, classifSelectName, classifArray) {
-	let classifSelect = form.find('select[name="' + classifSelectName + '"]'); //.val(JSON.stringify(dataset.selectedLanguages));
+	let classifSelect = form.find('select[name="' + classifSelectName + '"]');
 
 	$.each(classifArray, function (key, classif) {
 		let classifOption = classifSelect.find("option[value='" + classif.jsonStr + "']");
@@ -295,6 +169,12 @@ function markSelectedClassifiers(form, classifSelectName, classifArray) {
 	});
 
 	classifSelect.selectpicker('refresh');
+}
+
+function emptyAndDisableSelect(selectCtl) {
+	selectCtl.find("option").remove();
+	selectCtl.attr('disabled', true);
+	selectCtl.selectpicker('refresh');
 }
 
 function isValidDatasetCodeFormat(code) {

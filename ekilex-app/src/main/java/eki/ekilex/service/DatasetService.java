@@ -73,6 +73,7 @@ public class DatasetService implements SystemConstant {
 	private void addDatasetToSelectedClassifiers(ClassifierName classifierName, String datasetCode, List<Classifier> selectedClassifiers) {
 		if (selectedClassifiers != null) {
 			for (Classifier classifier : selectedClassifiers) {
+				//TODO - study can this by done by one sql
 				commonDataDbService.addDatasetCodeToClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin());
 			}
 		}
@@ -97,7 +98,7 @@ public class DatasetService implements SystemConstant {
 	}
 
 	private void updateDatasetSelectedClassifiers(String datasetCode, List<Classifier> selectedClassifiers, ClassifierName classifierName) {
-
+		//TODO study one sql possibility instead of the cycle
 		List<Classifier> previousDatasetClassifiers = getDatasetClassifiers(classifierName, datasetCode);
 		previousDatasetClassifiers
 				.stream()
@@ -132,6 +133,7 @@ public class DatasetService implements SystemConstant {
 
 	private void removeDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
 		List<Classifier> existingClassifiers = getDatasetClassifiers(classifierName, datasetCode);
+		//TODO - one sql instead of cycle
 		existingClassifiers.forEach(classifier -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin()));
 	}
 

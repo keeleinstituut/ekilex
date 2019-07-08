@@ -158,8 +158,6 @@ public interface WebConstant {
 
 	String VALIDATE_CREATE_DATASET_URI = "/validate_create_dataset";
 
-	String SEARCH_DOMAINS_URI = "/search_domains";
-
 	String ORIGIN_DOMAINS_URI = "/origin_domains";
 
 	String CHANGE_ROLE_URI = "/change_role";
