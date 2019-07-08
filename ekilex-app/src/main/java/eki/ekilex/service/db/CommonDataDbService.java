@@ -350,6 +350,17 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchOneInto(Word.class);
 	}
 
+	public String getWordValue(Long wordId) {
+		return create
+				.select(FORM.VALUE)
+				.from(FORM, PARADIGM)
+				.where(
+						PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.fetchOneInto(String.class);
+	}
+
 	public List<Classifier> getWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create

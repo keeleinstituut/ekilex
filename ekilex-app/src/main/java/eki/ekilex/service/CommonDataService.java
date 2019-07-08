@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import static java.util.stream.Collectors.groupingBy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,9 +18,9 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.util.ConversionUtil;
-import eki.ekilex.web.util.ClassifierUtil;
 
 @Component
 public class CommonDataService implements SystemConstant {
@@ -29,9 +30,6 @@ public class CommonDataService implements SystemConstant {
 
 	@Autowired
 	protected ConversionUtil conversionUtil;
-
-	@Autowired
-	private ClassifierUtil classifierUtil;
 
 	@Transactional
 	public List<Dataset> getDatasets() {
@@ -242,4 +240,20 @@ public class CommonDataService implements SystemConstant {
 		return commonDataDbService.isOnlyLexemesForWords(meaningId, datasetCode);
 	}
 
+	@Transactional
+	public List<String> getWordsToBeDeleted(Long meaningId, String datasetCode) {
+
+		List<String> wordsToBeDeleted = new ArrayList<>();
+		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = commonDataDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
+			Long lexemeId = wordLexemeMeaningId.getLexemeId();
+			Long wordId = wordLexemeMeaningId.getWordId();
+			boolean isOnlyLexemeForWord = commonDataDbService.isOnlyLexemeForWord(lexemeId);
+			if (isOnlyLexemeForWord) {
+				String wordValue = commonDataDbService.getWordValue(wordId);
+				wordsToBeDeleted.add(wordValue);
+			}
+		}
+		return wordsToBeDeleted;
+	}
 }

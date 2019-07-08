@@ -440,8 +440,8 @@ function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
 	});
 	var qWrap = $("<div/>");
 	qWrap.append(ul);
+	$('#confirmQuestion').html(qWrap);
 	var alertDlg = $('#confirmDlg');
-	alertDlg.find('[name=confirm_question]').replaceWith(qWrap);
 	alertDlg.modal('show');
 	let okBtn = alertDlg.find('.modal-footer [name=ok]');
 	okBtn.focus();

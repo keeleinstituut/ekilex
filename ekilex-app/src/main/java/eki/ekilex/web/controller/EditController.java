@@ -350,7 +350,13 @@ public class EditController implements WebConstant {
 				}
 				boolean isOnlyLexemesForWords = commonDataService.isOnlyLexemesForWords(id, datasetCode);
 				if (isOnlyLexemesForWords) {
-					question = "Valitud mõiste kustutamisel jäävad mõned terminid mõisteta. Palun kinnita terminite kustutamine";
+					List<String> wordsToDelete = commonDataService.getWordsToBeDeleted(id, datasetCode);
+					String joinedWords = StringUtils.join(wordsToDelete, ", ");
+
+					question = "Valitud mõiste kustutamisel jäävad järgnevad terminid mõisteta: ";
+					question += joinedWords;
+					questions.add(question);
+					question = "Palun kinnita terminite kustutamine";
 					questions.add(question);
 				}
 				break;
