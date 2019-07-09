@@ -848,6 +848,32 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 
+	public void removeDatasetFromAllClassifiers(ClassifierName classifierName, String datasetCode) {
+		String[] datasetCodes = {datasetCode};
+		if (ClassifierName.LANGUAGE.equals(classifierName)) {
+			create.update(LANGUAGE)
+					.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode)))
+					.where(LANGUAGE.DATASETS.contains(datasetCodes))
+					.execute();
+
+		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+			create.update(PROCESS_STATE)
+					.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayRemove(PROCESS_STATE.DATASETS, datasetCode)))
+					.where(PROCESS_STATE.DATASETS.contains(datasetCodes))
+					.execute();
+
+		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+			create.update(DOMAIN)
+					.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayRemove(DOMAIN.DATASETS, datasetCode)))
+					.where(DOMAIN.DATASETS.contains(datasetCodes))
+					.execute();
+
+		} else {
+			throw new UnsupportedOperationException();
+		}
+
+
+	}
 	public void removeDatasetFromClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> removableClassifiers) {
 		if (CollectionUtils.isNotEmpty(removableClassifiers)) {
 			if (ClassifierName.LANGUAGE.equals(classifierName)) {

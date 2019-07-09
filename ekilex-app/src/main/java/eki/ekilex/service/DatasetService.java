@@ -66,7 +66,6 @@ public class DatasetService implements SystemConstant {
 		@Transactional
 	public void createDataset(Dataset dataset) {
 		datasetDbService.createDataset(dataset);
-
 		addDatasetToSelectedClassifiers(dataset);
 	}
 
@@ -83,12 +82,16 @@ public class DatasetService implements SystemConstant {
 	}
 
 	private void updateDatasetSelectedClassifiers(Dataset dataset) {
-		updateDatasetSelectedClassifiers(dataset, dataset.getSelectedDomains(), ClassifierName.DOMAIN);
-		updateDatasetSelectedClassifiers(dataset, dataset.getSelectedLanguages(), ClassifierName.LANGUAGE);
-		updateDatasetSelectedClassifiers(dataset, dataset.getSelectedProcessStates(), ClassifierName.PROCESS_STATE);
+		removeDatasetFromAllClassifiers(dataset.getCode());
+		addDatasetToSelectedClassifiers(dataset);
+		// updateDatasetSelectedClassifiers(dataset, dataset.getSelectedDomains(), ClassifierName.DOMAIN);
+		// updateDatasetSelectedClassifiers(dataset, dataset.getSelectedLanguages(), ClassifierName.LANGUAGE);
+		// updateDatasetSelectedClassifiers(dataset, dataset.getSelectedProcessStates(), ClassifierName.PROCESS_STATE);
 	}
 
 	private void updateDatasetSelectedClassifiers(Dataset dataset, List<Classifier> selectedClassifiers, ClassifierName classifierName) {
+
+		commonDataDbService.addDatasetToClassifier(classifierName, dataset.getCode(), selectedClassifiers);
 		List<Classifier> previousDatasetClassifiers = getDatasetClassifiers(classifierName, dataset.getCode());
 
 		List<Classifier> removedDatasetClassifiers =
@@ -120,9 +123,10 @@ public class DatasetService implements SystemConstant {
 	@Transactional
 	public void deleteDataset(String datasetCode) {
 
-		removeDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode);
-		removeDatasetClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
-		removeDatasetClassifiers(ClassifierName.DOMAIN, datasetCode);
+		// removeDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode);
+		// removeDatasetClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
+		// removeDatasetClassifiers(ClassifierName.DOMAIN, datasetCode);
+		removeDatasetFromAllClassifiers(datasetCode);
 
 		permissionDbService.deleteDatasetPermissions(datasetCode);
 		datasetDbService.deleteDataset(datasetCode);
@@ -134,8 +138,14 @@ public class DatasetService implements SystemConstant {
 	}
 
 
+	private void removeDatasetFromAllClassifiers(String datasetCode) {
+		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.LANGUAGE, datasetCode);
+		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
+		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.DOMAIN, datasetCode);
+	}
 	private void removeDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
 		List<Classifier> existingClassifiers = getDatasetClassifiers(classifierName, datasetCode);
+
 		//TODO - one sql instead of cycle
 		existingClassifiers.forEach(classifier -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin()));
 	}
