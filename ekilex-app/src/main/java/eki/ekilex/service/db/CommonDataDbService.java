@@ -52,7 +52,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
@@ -874,25 +873,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 
 	}
-	public void removeDatasetFromClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> removableClassifiers) {
-		if (CollectionUtils.isNotEmpty(removableClassifiers)) {
-			if (ClassifierName.LANGUAGE.equals(classifierName)) {
-				List<String> languageCodes = removableClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
-				create.update(LANGUAGE).set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode))).where(LANGUAGE.CODE.in(languageCodes)).execute();
-
-			} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-				List<String> processStateCodes = removableClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
-				create.update(PROCESS_STATE).set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayRemove(PROCESS_STATE.DATASETS, datasetCode))).where(PROCESS_STATE.CODE.in(processStateCodes)).execute();
-
-			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-				Row2[] codeOriginPairs = removableClassifiers.stream().map(c -> row(DSL.val(c.getCode()), DSL.val(c.getOrigin()))).toArray(Row2[]::new);
-				create.update(DOMAIN).set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayRemove(DOMAIN.DATASETS, datasetCode))).where(row(DOMAIN.CODE, DOMAIN.ORIGIN).in(codeOriginPairs)).execute();
-
-			} else {
-				throw new UnsupportedOperationException();
-			}
-		}
-	}
 
 	public void addDatasetToClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> addedClassifiers) {
 		if (CollectionUtils.isNotEmpty(addedClassifiers)) {
@@ -923,84 +903,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				throw new UnsupportedOperationException();
 			}
 		}
-	}
-	public void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
-
-		//TODO - study array_add possibility in jooq
-		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
-
-		String[] classiferDatasets = classifier.getDatasets();
-		classiferDatasets = ArrayUtils.add(classiferDatasets, datasetCode);
-
-		updateClassiferDatasets(classifierName, classifierCode, origin, classiferDatasets);
-	}
-
-	public void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
-
-		//TODO study array_remove option
-		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
-		String[] classifierDatasetCodes = classifier.getDatasets();
-		classifierDatasetCodes = ArrayUtils.removeElement(classifierDatasetCodes, datasetCode);
-
-		updateClassiferDatasets(classifierName, classifierCode, origin, classifierDatasetCodes);
-	}
-
-	private void updateClassiferDatasets(ClassifierName classifierName, String code, String origin, String[] datasets) {
-
-		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-
-			create
-					.update(LANGUAGE)
-					.set(LANGUAGE.DATASETS, datasets)
-					.where(LANGUAGE.CODE.eq(code))
-					.execute();
-		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-
-			create
-					.update(DOMAIN)
-					.set(DOMAIN.DATASETS, datasets)
-					.where(DOMAIN.CODE.eq(code).and(DOMAIN.ORIGIN.eq(origin)))
-					.execute();
-		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-
-			create
-					.update(PROCESS_STATE)
-					.set(PROCESS_STATE.DATASETS, datasets)
-					.where(PROCESS_STATE.CODE.eq(code))
-					.execute();
-		} else {
-			throw new UnsupportedOperationException();
-		}
-	}
-
-	private Classifier getClassifierWithDatasets(ClassifierName name, String classifierCode, String origin) {
-
-		if (ClassifierName.LANGUAGE.equals(name)) {
-
-			return create
-					.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
-					.from(LANGUAGE)
-					.where(LANGUAGE.CODE.eq(classifierCode))
-					.fetchSingleInto(Classifier.class);
-		} else if (ClassifierName.DOMAIN.equals(name)) {
-
-			return create
-					.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
-					.from(DOMAIN)
-					.where(DOMAIN.CODE.eq(classifierCode))
-					.and(DOMAIN.ORIGIN.eq(origin))
-					.fetchSingleInto(Classifier.class);
-		} else if (ClassifierName.PROCESS_STATE.equals(name)) {
-
-			return create
-					.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.DATASETS, PROCESS_STATE.ORDER_BY)
-					.from(PROCESS_STATE)
-					.where(PROCESS_STATE.CODE.eq(classifierCode))
-					.fetchSingleInto(Classifier.class);
-		}
-
-		throw new UnsupportedOperationException();
-
 	}
 
 	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode, String labelLanguage, String labelType) {
@@ -1047,7 +949,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Origin.class);
 	}
 
-	public List<Classifier> findDomainsByOriginCode(String originCode, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<Classifier> findDomainsByOriginCode(String originCode, String labelType) {
 		Table originDomains = create
 				.select(getClassifierNameField(ClassifierName.DOMAIN),
 					DOMAIN.CODE,
@@ -1057,7 +959,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.from(DOMAIN)
 				.leftJoin(DOMAIN_LABEL).on(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN)))
 					.innerJoin(LANGUAGE).on(LANGUAGE.CODE.eq(DOMAIN_LABEL.LANG))
-				.where(DOMAIN.ORIGIN.eq(originCode))
+				.where(DOMAIN.ORIGIN.eq(originCode).and(DOMAIN_LABEL.TYPE.eq(labelType)))
 				.orderBy(DOMAIN.CODE, LANGUAGE.ORDER_BY).asTable();
 
 		return create

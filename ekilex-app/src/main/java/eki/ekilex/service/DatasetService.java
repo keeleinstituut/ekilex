@@ -84,48 +84,10 @@ public class DatasetService implements SystemConstant {
 	private void updateDatasetSelectedClassifiers(Dataset dataset) {
 		removeDatasetFromAllClassifiers(dataset.getCode());
 		addDatasetToSelectedClassifiers(dataset);
-		// updateDatasetSelectedClassifiers(dataset, dataset.getSelectedDomains(), ClassifierName.DOMAIN);
-		// updateDatasetSelectedClassifiers(dataset, dataset.getSelectedLanguages(), ClassifierName.LANGUAGE);
-		// updateDatasetSelectedClassifiers(dataset, dataset.getSelectedProcessStates(), ClassifierName.PROCESS_STATE);
-	}
-
-	private void updateDatasetSelectedClassifiers(Dataset dataset, List<Classifier> selectedClassifiers, ClassifierName classifierName) {
-
-		commonDataDbService.addDatasetToClassifier(classifierName, dataset.getCode(), selectedClassifiers);
-		List<Classifier> previousDatasetClassifiers = getDatasetClassifiers(classifierName, dataset.getCode());
-
-		List<Classifier> removedDatasetClassifiers =
-				previousDatasetClassifiers
-						.stream()
-						.filter(classifier -> CollectionUtils.isEmpty(selectedClassifiers) || !selectedClassifiers.contains(classifier))
-						.collect(Collectors.toList());
-
-		commonDataDbService.removeDatasetFromClassifier(classifierName, dataset.getCode(), removedDatasetClassifiers);
-
-		if (CollectionUtils.isNotEmpty(selectedClassifiers)) {
-			List<Classifier> addedDatasetClassifiers = selectedClassifiers
-					.stream()
-					.filter(classifier -> !previousDatasetClassifiers.contains(classifier))
-					.collect(Collectors.toList());
-
-			commonDataDbService.addDatasetToClassifier(classifierName, dataset.getCode(), addedDatasetClassifiers);
-		}
-
-		// if (selectedClassifiers != null) {
-		// 	for (Classifier classifier : selectedClassifiers) {
-		// 		if (!previousDatasetClassifiers.contains(classifier)) {
-		// 			commonDataDbService.addDatasetCodeToClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin());
-		// 		}
-		// 	}
-		// }
 	}
 
 	@Transactional
 	public void deleteDataset(String datasetCode) {
-
-		// removeDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode);
-		// removeDatasetClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
-		// removeDatasetClassifiers(ClassifierName.DOMAIN, datasetCode);
 		removeDatasetFromAllClassifiers(datasetCode);
 
 		permissionDbService.deleteDatasetPermissions(datasetCode);
@@ -137,17 +99,10 @@ public class DatasetService implements SystemConstant {
 		return datasetDbService.datasetCodeExists(code);
 	}
 
-
 	private void removeDatasetFromAllClassifiers(String datasetCode) {
 		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.LANGUAGE, datasetCode);
 		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
 		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.DOMAIN, datasetCode);
-	}
-	private void removeDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
-		List<Classifier> existingClassifiers = getDatasetClassifiers(classifierName, datasetCode);
-
-		//TODO - one sql instead of cycle
-		existingClassifiers.forEach(classifier -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin()));
 	}
 
 	private List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
@@ -166,7 +121,7 @@ public class DatasetService implements SystemConstant {
 
 	@Transactional
 	public List<Classifier> findDomainsByOrigin(String originCode) {
-		List<Classifier> domains = commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> domains = commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_TYPE_DESCRIP);
 		populateClassifierJson(domains);
 
 		return domains;
