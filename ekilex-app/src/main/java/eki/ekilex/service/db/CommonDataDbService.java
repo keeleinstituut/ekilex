@@ -45,16 +45,21 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static org.jooq.impl.DSL.row;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
+import org.jooq.Row2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -843,6 +848,56 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 
+	public void removeDatasetFromClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> removableClassifiers) {
+		if (CollectionUtils.isNotEmpty(removableClassifiers)) {
+			if (ClassifierName.LANGUAGE.equals(classifierName)) {
+				List<String> languageCodes = removableClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+				create.update(LANGUAGE).set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode))).where(LANGUAGE.CODE.in(languageCodes)).execute();
+
+			} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+				List<String> processStateCodes = removableClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+				create.update(PROCESS_STATE).set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayRemove(PROCESS_STATE.DATASETS, datasetCode))).where(PROCESS_STATE.CODE.in(processStateCodes)).execute();
+
+			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+				Row2[] codeOriginPairs = removableClassifiers.stream().map(c -> row(DSL.val(c.getCode()), DSL.val(c.getOrigin()))).toArray(Row2[]::new);
+				create.update(DOMAIN).set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayRemove(DOMAIN.DATASETS, datasetCode))).where(row(DOMAIN.CODE, DOMAIN.ORIGIN).in(codeOriginPairs)).execute();
+
+			} else {
+				throw new UnsupportedOperationException();
+			}
+		}
+	}
+
+	public void addDatasetToClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> addedClassifiers) {
+		if (CollectionUtils.isNotEmpty(addedClassifiers)) {
+			if (ClassifierName.LANGUAGE.equals(classifierName)) {
+				List<String> languageCodes = addedClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+				create.update(LANGUAGE)
+						.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayAppend(LANGUAGE.DATASETS, datasetCode)))
+						.where(LANGUAGE.CODE.in(languageCodes))
+						.execute();
+
+			} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+				List<String> processStateCodes = addedClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+				create.update(PROCESS_STATE)
+						.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayAppend(PROCESS_STATE.DATASETS, datasetCode)))
+						.where(PROCESS_STATE.CODE.in(processStateCodes))
+						.execute();
+
+			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+				Row2[] selectedCodeOriginPairs = addedClassifiers.stream().map(c -> row(DSL.val(c.getCode()), DSL.val(c.getOrigin())))
+						.toArray(Row2[]::new);
+
+				create.update(DOMAIN)
+						.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayAppend(DOMAIN.DATASETS, datasetCode)))
+						.where(row(DOMAIN.CODE, DOMAIN.ORIGIN).in(selectedCodeOriginPairs))
+						.execute();
+
+			} else {
+				throw new UnsupportedOperationException();
+			}
+		}
+	}
 	public void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
 
 		//TODO - study array_add possibility in jooq
@@ -1090,4 +1145,5 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 		return noOtherMeaningsExist;
 	}
+
 }

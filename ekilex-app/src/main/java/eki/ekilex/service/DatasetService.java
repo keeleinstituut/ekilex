@@ -70,19 +70,10 @@ public class DatasetService implements SystemConstant {
 		addDatasetToSelectedClassifiers(dataset);
 	}
 
-	private void addDatasetToSelectedClassifiers(ClassifierName classifierName, String datasetCode, List<Classifier> selectedClassifiers) {
-		if (selectedClassifiers != null) {
-			for (Classifier classifier : selectedClassifiers) {
-				//TODO - study can this by done by one sql
-				commonDataDbService.addDatasetCodeToClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin());
-			}
-		}
-
-	}
 	private void addDatasetToSelectedClassifiers(Dataset dataset) {
-		addDatasetToSelectedClassifiers(ClassifierName.DOMAIN, dataset.getCode(), dataset.getSelectedDomains());
-		addDatasetToSelectedClassifiers(ClassifierName.LANGUAGE, dataset.getCode(), dataset.getSelectedLanguages());
-		addDatasetToSelectedClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode(), dataset.getSelectedProcessStates());
+		commonDataDbService.addDatasetToClassifier(ClassifierName.LANGUAGE, dataset.getCode(), dataset.getSelectedLanguages());
+		commonDataDbService.addDatasetToClassifier(ClassifierName.PROCESS_STATE, dataset.getCode(), dataset.getSelectedProcessStates());
+		commonDataDbService.addDatasetToClassifier(ClassifierName.DOMAIN, dataset.getCode(), dataset.getSelectedDomains());
 	}
 
 	@Transactional
@@ -92,26 +83,38 @@ public class DatasetService implements SystemConstant {
 	}
 
 	private void updateDatasetSelectedClassifiers(Dataset dataset) {
-		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedDomains(), ClassifierName.DOMAIN);
-		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedLanguages(), ClassifierName.LANGUAGE);
-		updateDatasetSelectedClassifiers(dataset.getCode(), dataset.getSelectedProcessStates(), ClassifierName.PROCESS_STATE);
+		updateDatasetSelectedClassifiers(dataset, dataset.getSelectedDomains(), ClassifierName.DOMAIN);
+		updateDatasetSelectedClassifiers(dataset, dataset.getSelectedLanguages(), ClassifierName.LANGUAGE);
+		updateDatasetSelectedClassifiers(dataset, dataset.getSelectedProcessStates(), ClassifierName.PROCESS_STATE);
 	}
 
-	private void updateDatasetSelectedClassifiers(String datasetCode, List<Classifier> selectedClassifiers, ClassifierName classifierName) {
-		//TODO study one sql possibility instead of the cycle
-		List<Classifier> previousDatasetClassifiers = getDatasetClassifiers(classifierName, datasetCode);
-		previousDatasetClassifiers
-				.stream()
-				.filter(c -> selectedClassifiers == null || !selectedClassifiers.contains(c))
-				.forEach(c -> commonDataDbService.removeDatasetCodeFromClassifier(classifierName, c.getCode(), datasetCode, c.getOrigin()));
+	private void updateDatasetSelectedClassifiers(Dataset dataset, List<Classifier> selectedClassifiers, ClassifierName classifierName) {
+		List<Classifier> previousDatasetClassifiers = getDatasetClassifiers(classifierName, dataset.getCode());
 
-		if (selectedClassifiers != null) {
-			for (Classifier classifier : selectedClassifiers) {
-				if (!previousDatasetClassifiers.contains(classifier)) {
-					commonDataDbService.addDatasetCodeToClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin());
-				}
-			}
+		List<Classifier> removedDatasetClassifiers =
+				previousDatasetClassifiers
+						.stream()
+						.filter(classifier -> CollectionUtils.isEmpty(selectedClassifiers) || !selectedClassifiers.contains(classifier))
+						.collect(Collectors.toList());
+
+		commonDataDbService.removeDatasetFromClassifier(classifierName, dataset.getCode(), removedDatasetClassifiers);
+
+		if (CollectionUtils.isNotEmpty(selectedClassifiers)) {
+			List<Classifier> addedDatasetClassifiers = selectedClassifiers
+					.stream()
+					.filter(classifier -> !previousDatasetClassifiers.contains(classifier))
+					.collect(Collectors.toList());
+
+			commonDataDbService.addDatasetToClassifier(classifierName, dataset.getCode(), addedDatasetClassifiers);
 		}
+
+		// if (selectedClassifiers != null) {
+		// 	for (Classifier classifier : selectedClassifiers) {
+		// 		if (!previousDatasetClassifiers.contains(classifier)) {
+		// 			commonDataDbService.addDatasetCodeToClassifier(classifierName, classifier.getCode(), datasetCode, classifier.getOrigin());
+		// 		}
+		// 	}
+		// }
 	}
 
 	@Transactional
