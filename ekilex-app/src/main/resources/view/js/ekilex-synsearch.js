@@ -13,9 +13,18 @@ function initialise() {
 
 			$(document).find('.draggable-synonym').draggable({ revert: "invalid" });
 
-			$(document).find('.droppable-lexeme').droppable(
-			{
-				accept:".draggable-synonym",
+			$(document).find('.droppable-lexeme').droppable({
+				accept: function(draggableDiv) {
+					if (draggableDiv.hasClass("draggable-synonym")) {
+						let wordId = draggableDiv.data('word-id');
+						let existingWord = $(this).find("input.meaning-word-id[value='" + wordId + "']");
+
+						if (!existingWord.length) {
+							return true;
+						}
+					}
+				},
+
 				classes: {
 					"ui-droppable-active": "ui-state-active",
 					"ui-droppable-hover": "ui-state-hover"
@@ -29,15 +38,8 @@ function initialise() {
 					let callbackFunc = () => $('#refresh-details').trigger('click');
 					doPostRelationChange(actionUrl, callbackFunc);
 
-					//let callbackFunc = () => $('#refresh-details').trigger('click');
-					//
-					// $(this)
-					// 	.addClass("ui-state-highlight")
-					// 	.find("p")
-					// 	.html("Dropped!");
 				}
-			}
-			);
+			});
 
 		}).fail(function(data) {
 			console.log(data);

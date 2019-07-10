@@ -82,6 +82,7 @@
                   </span>
 
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
                       <span th:text="${meaningWord.homonymNumber}"></span>
