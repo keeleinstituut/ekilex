@@ -21,11 +21,15 @@ function initialise() {
 					"ui-droppable-hover": "ui-state-hover"
 				},
 				drop: function (event, ui) {
-					alert($(this).data('id'));
-					alert(ui.draggable.data('id'));
+					let meaningId = $(this).data('meaning-id');
+					let lexemeId = $(this).data('lexeme-id');
+					let wordId = ui.draggable.data('word-id');
+
+					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId;
+					let callbackFunc = () => $('#refresh-details').trigger('click');
+					doPostRelationChange(actionUrl, callbackFunc);
 
 					//let callbackFunc = () => $('#refresh-details').trigger('click');
-					$('#refresh-details').trigger('click');
 					//
 					// $(this)
 					// 	.addClass("ui-state-highlight")
@@ -67,7 +71,11 @@ function initialise() {
 	function doPostRelationChange(actionUrl, callbackFunc) {
 
 		$.post(actionUrl).done(function(data) {
-				callbackFunc();
+			if (data != '{}') {
+				openAlertDlg("Andmete muutmine ebaõnnestus.");
+				console.log(data);
+			}
+			callbackFunc();
 		}).fail(function(data) {
 			openAlertDlg("Andmete muutmine ebaõnnestus.");
 			console.log(data);

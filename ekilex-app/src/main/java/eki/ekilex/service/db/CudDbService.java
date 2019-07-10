@@ -135,6 +135,7 @@ public class CudDbService implements DbConstant {
 		return exists;
 	}
 
+	//TODO unused method?
 	public LexemeRecord getLexeme(Long lexemeId) {
 		return create.fetchOne(LEXEME, LEXEME.ID.eq(lexemeId));
 	}

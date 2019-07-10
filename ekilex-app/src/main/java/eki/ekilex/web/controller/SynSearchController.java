@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -139,7 +138,7 @@ public class SynSearchController extends AbstractSearchController {
 	}
 
 
-	@RequestMapping(SYN_CHANGE_RELATION_STATUS)
+	@PostMapping(SYN_CHANGE_RELATION_STATUS)
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@ResponseBody
 	public String changeRelationStatus(@RequestParam Long id, @RequestParam String status) {
@@ -147,6 +146,18 @@ public class SynSearchController extends AbstractSearchController {
 
 		synSearchService.changeRelationStatus(id, status);
 
+		return "{}";
+	}
+
+	@PostMapping(SYN_CREATE_LEXEME + "/{meaningId}/{wordId}/{lexemeId}")
+	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@ResponseBody
+	public String createSynLexeme(@PathVariable Long meaningId, @PathVariable Long wordId, @PathVariable Long lexemeId, Model model) {
+		logger.debug("Adding lexeme to syn candidate word Id {}, meaning Id {} , existing lexeme Id {}", wordId, meaningId, lexemeId);
+		SessionBean sessionBean = getSessionBean(model);
+		String datasetCode = getDatasetCodeFromRole(sessionBean).get(0);
+
+		synSearchService.createSynLexeme(meaningId, wordId, datasetCode, lexemeId);
 		return "{}";
 	}
 }

@@ -765,7 +765,9 @@ public class ConversionUtil {
 			if (relation == null) {
 				relation = new SynRelation();
 				relation.setId(paramTuple.getRelationId());
+
 				relation.setWord(paramTuple.getWord());
+				relation.setWordId(paramTuple.getWordId());
 				relation.setOrderBy(paramTuple.getOrderBy());
 				relation.setRelationStatus(paramTuple.getRelationStatus());
 

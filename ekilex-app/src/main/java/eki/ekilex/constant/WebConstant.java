@@ -170,6 +170,8 @@ public interface WebConstant {
 
 	String SYN_CHANGE_RELATION_STATUS = "/syn_relation_status";
 
+	String SYN_CREATE_LEXEME = "/syn_create_lexeme";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";

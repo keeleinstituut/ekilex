@@ -14,9 +14,11 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynLexeme;
@@ -37,6 +39,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		return create
 				.selectDistinct(
 						WORD_RELATION.ID.as("relation_id"),
+						WORD.ID.as("word_id"),
 						FORM.VALUE.as("word"),
 						WORD_RELATION.RELATION_STATUS.as("relation_status"),
 						opposite.RELATION_STATUS.as("opposite_relation_status"),
@@ -107,4 +110,29 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.execute();
 	}
 
+
+	public Lexeme getLexeme(Long id) {
+		return create.select(LEXEME.fields())
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(id))
+				.fetchSingleInto(Lexeme.class);
+
+	}
+
+	public void createLexeme(Long wordId, Long meaningId, String datasetCode, Long existingLexemeId
+			//,
+	//		Integer level1, Integer level2, Integer level3, String processStateCode, String valueStateCode, String frequencyGroupCode, BigDecimal corpusFrequency
+		) {
+		create.insertInto(LEXEME,
+				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE,
+				LEXEME.PROCESS_STATE_CODE, LEXEME.VALUE_STATE_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY)
+				.select(create.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode),
+						LEXEME.PROCESS_STATE_CODE, LEXEME.VALUE_STATE_CODE
+						, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY
+						).from(LEXEME).where(LEXEME.ID.eq(existingLexemeId))
+				).execute();
+
+	}
 }
