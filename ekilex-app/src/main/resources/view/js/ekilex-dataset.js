@@ -82,6 +82,7 @@ function initialise() {
 
 			thisForm.find('input[name="code"]').val(dataset.code);
 			thisForm.find('input[name="name"]').val(dataset.name);
+			thisForm.find('select[name="type"]').val(dataset.type);
 			thisForm.find('textarea[name="description"]').val(dataset.description);
 			thisForm.find('input[name="public"]').attr('checked', dataset.public);
 			thisForm.find('input[name="visible"]').attr('checked', dataset.visible);

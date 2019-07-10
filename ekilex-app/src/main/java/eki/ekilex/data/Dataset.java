@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import eki.common.constant.DatasetType;
 import eki.common.data.AbstractDataObject;
 
 public class Dataset extends AbstractDataObject {
@@ -25,6 +26,8 @@ public class Dataset extends AbstractDataObject {
 	private List<Classifier> selectedLanguages;
 
 	private List<Classifier> selectedProcessStates;
+
+	private DatasetType type;
 
 	public String getCode() {
 		return code;
@@ -96,5 +99,13 @@ public class Dataset extends AbstractDataObject {
 
 	public void setOrigins(List<String> origins) {
 		this.origins = origins;
+	}
+
+	public DatasetType getType() {
+		return type;
+	}
+
+	public void setType(DatasetType type) {
+		this.type = type;
 	}
 }

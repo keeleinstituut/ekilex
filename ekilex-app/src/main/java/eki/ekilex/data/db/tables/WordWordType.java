@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordWordType extends TableImpl<WordWordTypeRecord> {
 
-    private static final long serialVersionUID = -802780433;
+    private static final long serialVersionUID = 1682226846;
 
     /**
      * The reference instance of <code>public.word_word_type</code>
@@ -122,7 +122,7 @@ public class WordWordType extends TableImpl<WordWordTypeRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_WORD_TYPE_PKEY, Indexes.WORD_WORD_TYPE_WORD_ID_WORD_TYPE_CODE_KEY);
+        return Arrays.<Index>asList(Indexes.WORD_WORD_TYPE_IDX, Indexes.WORD_WORD_TYPE_PKEY, Indexes.WORD_WORD_TYPE_WORD_ID_IDX, Indexes.WORD_WORD_TYPE_WORD_ID_WORD_TYPE_CODE_KEY);
     }
 
     /**

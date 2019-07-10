@@ -139,6 +139,7 @@ public class Indexes {
     public static final Index DATASET_PERM_USER_ID_IDX = Indexes0.DATASET_PERM_USER_ID_IDX;
     public static final Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Indexes0.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY;
     public static final Index DATASET_PERMISSION_PKEY = Indexes0.DATASET_PERMISSION_PKEY;
+    public static final Index DEFINITION_LANG_IDX = Indexes0.DEFINITION_LANG_IDX;
     public static final Index DEFINITION_MEANING_ID_IDX = Indexes0.DEFINITION_MEANING_ID_IDX;
     public static final Index DEFINITION_PKEY = Indexes0.DEFINITION_PKEY;
     public static final Index DEFINITION_DATASET_PKEY = Indexes0.DEFINITION_DATASET_PKEY;
@@ -147,8 +148,10 @@ public class Indexes {
     public static final Index DEFINITION_FREEFORM_FREEFORM_ID_IDX = Indexes0.DEFINITION_FREEFORM_FREEFORM_ID_IDX;
     public static final Index DEFINITION_FREEFORM_PKEY = Indexes0.DEFINITION_FREEFORM_PKEY;
     public static final Index DEFINITION_SOURCE_LINK_DEFINITION_ID_IDX = Indexes0.DEFINITION_SOURCE_LINK_DEFINITION_ID_IDX;
+    public static final Index DEFINITION_SOURCE_LINK_NAME_IDX = Indexes0.DEFINITION_SOURCE_LINK_NAME_IDX;
     public static final Index DEFINITION_SOURCE_LINK_PKEY = Indexes0.DEFINITION_SOURCE_LINK_PKEY;
     public static final Index DEFINITION_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.DEFINITION_SOURCE_LINK_SOURCE_ID_IDX;
+    public static final Index DEFINITION_SOURCE_LINK_VALUE_IDX = Indexes0.DEFINITION_SOURCE_LINK_VALUE_IDX;
     public static final Index DEFINITION_TYPE_PKEY = Indexes0.DEFINITION_TYPE_PKEY;
     public static final Index DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index DERIV_PKEY = Indexes0.DERIV_PKEY;
@@ -175,13 +178,16 @@ public class Indexes {
     public static final Index FORM_FREQUENCY_PKEY = Indexes0.FORM_FREQUENCY_PKEY;
     public static final Index FORM_FREQUENCY_SOURCE_NAME_IDX = Indexes0.FORM_FREQUENCY_SOURCE_NAME_IDX;
     public static final Index FORM_FREQUENCY_WORD_VALUE_IDX = Indexes0.FORM_FREQUENCY_WORD_VALUE_IDX;
+    public static final Index FREEFORM_LANG_IDX = Indexes0.FREEFORM_LANG_IDX;
     public static final Index FREEFORM_PARENT_ID_IDX = Indexes0.FREEFORM_PARENT_ID_IDX;
     public static final Index FREEFORM_PKEY = Indexes0.FREEFORM_PKEY;
     public static final Index FREEFORM_TYPE_IDX = Indexes0.FREEFORM_TYPE_IDX;
     public static final Index FREEFORM_VALUE_TEXT_IDX = Indexes0.FREEFORM_VALUE_TEXT_IDX;
     public static final Index FREEFORM_SOURCE_LINK_FREEFORM_ID_IDX = Indexes0.FREEFORM_SOURCE_LINK_FREEFORM_ID_IDX;
+    public static final Index FREEFORM_SOURCE_LINK_NAME_IDX = Indexes0.FREEFORM_SOURCE_LINK_NAME_IDX;
     public static final Index FREEFORM_SOURCE_LINK_PKEY = Indexes0.FREEFORM_SOURCE_LINK_PKEY;
     public static final Index FREEFORM_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.FREEFORM_SOURCE_LINK_SOURCE_ID_IDX;
+    public static final Index FREEFORM_SOURCE_LINK_VALUE_IDX = Indexes0.FREEFORM_SOURCE_LINK_VALUE_IDX;
     public static final Index FREQUENCY_GROUP_PKEY = Indexes0.FREQUENCY_GROUP_PKEY;
     public static final Index GAME_NONWORD_PKEY = Indexes0.GAME_NONWORD_PKEY;
     public static final Index GAME_NONWORD_WORD_LANG_KEY = Indexes0.GAME_NONWORD_WORD_LANG_KEY;
@@ -241,8 +247,10 @@ public class Indexes {
     public static final Index LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY = Indexes0.LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY;
     public static final Index LEXEME_REGISTER_PKEY = Indexes0.LEXEME_REGISTER_PKEY;
     public static final Index LEXEME_SOURCE_LINK_LEXEME_ID_IDX = Indexes0.LEXEME_SOURCE_LINK_LEXEME_ID_IDX;
+    public static final Index LEXEME_SOURCE_LINK_NAME_IDX = Indexes0.LEXEME_SOURCE_LINK_NAME_IDX;
     public static final Index LEXEME_SOURCE_LINK_PKEY = Indexes0.LEXEME_SOURCE_LINK_PKEY;
     public static final Index LEXEME_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.LEXEME_SOURCE_LINK_SOURCE_ID_IDX;
+    public static final Index LEXEME_SOURCE_LINK_VALUE_IDX = Indexes0.LEXEME_SOURCE_LINK_VALUE_IDX;
     public static final Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Indexes0.LIFECYCLE_LOG_EVENT_ON_ID_IDX;
     public static final Index LIFECYCLE_LOG_PKEY = Indexes0.LIFECYCLE_LOG_PKEY;
     public static final Index MEANING_PKEY = Indexes0.MEANING_PKEY;
@@ -334,11 +342,14 @@ public class Indexes {
     public static final Index WORD_RELATION_WORD1_ID_IDX = Indexes0.WORD_RELATION_WORD1_ID_IDX;
     public static final Index WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Indexes0.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY;
     public static final Index WORD_RELATION_WORD2_ID_IDX = Indexes0.WORD_RELATION_WORD2_ID_IDX;
+    public static final Index WORD_RELATION_WORD_REL_TYPE_CODE_IDX = Indexes0.WORD_RELATION_WORD_REL_TYPE_CODE_IDX;
     public static final Index WORD_RELATION_PARAM_PKEY = Indexes0.WORD_RELATION_PARAM_PKEY;
     public static final Index WORD_RELATION_PARAM_WORD_RELATION_ID_IDX = Indexes0.WORD_RELATION_PARAM_WORD_RELATION_ID_IDX;
     public static final Index WORD_TYPE_PKEY = Indexes0.WORD_TYPE_PKEY;
     public static final Index WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index WORD_WORD_TYPE_IDX = Indexes0.WORD_WORD_TYPE_IDX;
     public static final Index WORD_WORD_TYPE_PKEY = Indexes0.WORD_WORD_TYPE_PKEY;
+    public static final Index WORD_WORD_TYPE_WORD_ID_IDX = Indexes0.WORD_WORD_TYPE_WORD_ID_IDX;
     public static final Index WORD_WORD_TYPE_WORD_ID_WORD_TYPE_CODE_KEY = Indexes0.WORD_WORD_TYPE_WORD_ID_WORD_TYPE_CODE_KEY;
 
     // -------------------------------------------------------------------------
@@ -358,6 +369,7 @@ public class Indexes {
         public static Index DATASET_PERM_USER_ID_IDX = Internal.createIndex("dataset_perm_user_id_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.USER_ID }, false);
         public static Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Internal.createIndex("dataset_permission_dataset_code_user_id_auth_operation_auth_key", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM, DatasetPermission.DATASET_PERMISSION.AUTH_LANG }, true);
         public static Index DATASET_PERMISSION_PKEY = Internal.createIndex("dataset_permission_pkey", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.ID }, true);
+        public static Index DEFINITION_LANG_IDX = Internal.createIndex("definition_lang_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.LANG }, false);
         public static Index DEFINITION_MEANING_ID_IDX = Internal.createIndex("definition_meaning_id_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.MEANING_ID }, false);
         public static Index DEFINITION_PKEY = Internal.createIndex("definition_pkey", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.ID }, true);
         public static Index DEFINITION_DATASET_PKEY = Internal.createIndex("definition_dataset_pkey", DefinitionDataset.DEFINITION_DATASET, new OrderField[] { DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID, DefinitionDataset.DEFINITION_DATASET.DATASET_CODE }, true);
@@ -366,8 +378,10 @@ public class Indexes {
         public static Index DEFINITION_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("definition_freeform_freeform_id_idx", DefinitionFreeform.DEFINITION_FREEFORM, new OrderField[] { DefinitionFreeform.DEFINITION_FREEFORM.FREEFORM_ID }, false);
         public static Index DEFINITION_FREEFORM_PKEY = Internal.createIndex("definition_freeform_pkey", DefinitionFreeform.DEFINITION_FREEFORM, new OrderField[] { DefinitionFreeform.DEFINITION_FREEFORM.ID }, true);
         public static Index DEFINITION_SOURCE_LINK_DEFINITION_ID_IDX = Internal.createIndex("definition_source_link_definition_id_idx", DefinitionSourceLink.DEFINITION_SOURCE_LINK, new OrderField[] { DefinitionSourceLink.DEFINITION_SOURCE_LINK.DEFINITION_ID }, false);
+        public static Index DEFINITION_SOURCE_LINK_NAME_IDX = Internal.createIndex("definition_source_link_name_idx", DefinitionSourceLink.DEFINITION_SOURCE_LINK, new OrderField[] { DefinitionSourceLink.DEFINITION_SOURCE_LINK.NAME }, false);
         public static Index DEFINITION_SOURCE_LINK_PKEY = Internal.createIndex("definition_source_link_pkey", DefinitionSourceLink.DEFINITION_SOURCE_LINK, new OrderField[] { DefinitionSourceLink.DEFINITION_SOURCE_LINK.ID }, true);
         public static Index DEFINITION_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("definition_source_link_source_id_idx", DefinitionSourceLink.DEFINITION_SOURCE_LINK, new OrderField[] { DefinitionSourceLink.DEFINITION_SOURCE_LINK.SOURCE_ID }, false);
+        public static Index DEFINITION_SOURCE_LINK_VALUE_IDX = Internal.createIndex("definition_source_link_value_idx", DefinitionSourceLink.DEFINITION_SOURCE_LINK, new OrderField[] { DefinitionSourceLink.DEFINITION_SOURCE_LINK.VALUE }, false);
         public static Index DEFINITION_TYPE_PKEY = Internal.createIndex("definition_type_pkey", DefinitionType.DEFINITION_TYPE, new OrderField[] { DefinitionType.DEFINITION_TYPE.CODE }, true);
         public static Index DEFINITION_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("definition_type_label_code_lang_type_key", DefinitionTypeLabel.DEFINITION_TYPE_LABEL, new OrderField[] { DefinitionTypeLabel.DEFINITION_TYPE_LABEL.CODE, DefinitionTypeLabel.DEFINITION_TYPE_LABEL.LANG, DefinitionTypeLabel.DEFINITION_TYPE_LABEL.TYPE }, true);
         public static Index DERIV_PKEY = Internal.createIndex("deriv_pkey", Deriv.DERIV, new OrderField[] { Deriv.DERIV.CODE }, true);
@@ -394,13 +408,16 @@ public class Indexes {
         public static Index FORM_FREQUENCY_PKEY = Internal.createIndex("form_frequency_pkey", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.ID }, true);
         public static Index FORM_FREQUENCY_SOURCE_NAME_IDX = Internal.createIndex("form_frequency_source_name_idx", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.SOURCE_NAME }, false);
         public static Index FORM_FREQUENCY_WORD_VALUE_IDX = Internal.createIndex("form_frequency_word_value_idx", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.WORD_VALUE }, false);
+        public static Index FREEFORM_LANG_IDX = Internal.createIndex("freeform_lang_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.LANG }, false);
         public static Index FREEFORM_PARENT_ID_IDX = Internal.createIndex("freeform_parent_id_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.PARENT_ID }, false);
         public static Index FREEFORM_PKEY = Internal.createIndex("freeform_pkey", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.ID }, true);
         public static Index FREEFORM_TYPE_IDX = Internal.createIndex("freeform_type_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.TYPE }, false);
         public static Index FREEFORM_VALUE_TEXT_IDX = Internal.createIndex("freeform_value_text_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.VALUE_TEXT }, false);
         public static Index FREEFORM_SOURCE_LINK_FREEFORM_ID_IDX = Internal.createIndex("freeform_source_link_freeform_id_idx", FreeformSourceLink.FREEFORM_SOURCE_LINK, new OrderField[] { FreeformSourceLink.FREEFORM_SOURCE_LINK.FREEFORM_ID }, false);
+        public static Index FREEFORM_SOURCE_LINK_NAME_IDX = Internal.createIndex("freeform_source_link_name_idx", FreeformSourceLink.FREEFORM_SOURCE_LINK, new OrderField[] { FreeformSourceLink.FREEFORM_SOURCE_LINK.NAME }, false);
         public static Index FREEFORM_SOURCE_LINK_PKEY = Internal.createIndex("freeform_source_link_pkey", FreeformSourceLink.FREEFORM_SOURCE_LINK, new OrderField[] { FreeformSourceLink.FREEFORM_SOURCE_LINK.ID }, true);
         public static Index FREEFORM_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("freeform_source_link_source_id_idx", FreeformSourceLink.FREEFORM_SOURCE_LINK, new OrderField[] { FreeformSourceLink.FREEFORM_SOURCE_LINK.SOURCE_ID }, false);
+        public static Index FREEFORM_SOURCE_LINK_VALUE_IDX = Internal.createIndex("freeform_source_link_value_idx", FreeformSourceLink.FREEFORM_SOURCE_LINK, new OrderField[] { FreeformSourceLink.FREEFORM_SOURCE_LINK.VALUE }, false);
         public static Index FREQUENCY_GROUP_PKEY = Internal.createIndex("frequency_group_pkey", FrequencyGroup.FREQUENCY_GROUP, new OrderField[] { FrequencyGroup.FREQUENCY_GROUP.CODE }, true);
         public static Index GAME_NONWORD_PKEY = Internal.createIndex("game_nonword_pkey", GameNonword.GAME_NONWORD, new OrderField[] { GameNonword.GAME_NONWORD.ID }, true);
         public static Index GAME_NONWORD_WORD_LANG_KEY = Internal.createIndex("game_nonword_word_lang_key", GameNonword.GAME_NONWORD, new OrderField[] { GameNonword.GAME_NONWORD.WORD, GameNonword.GAME_NONWORD.LANG }, true);
@@ -460,8 +477,10 @@ public class Indexes {
         public static Index LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY = Internal.createIndex("lexeme_register_lexeme_id_register_code_key", LexemeRegister.LEXEME_REGISTER, new OrderField[] { LexemeRegister.LEXEME_REGISTER.LEXEME_ID, LexemeRegister.LEXEME_REGISTER.REGISTER_CODE }, true);
         public static Index LEXEME_REGISTER_PKEY = Internal.createIndex("lexeme_register_pkey", LexemeRegister.LEXEME_REGISTER, new OrderField[] { LexemeRegister.LEXEME_REGISTER.ID }, true);
         public static Index LEXEME_SOURCE_LINK_LEXEME_ID_IDX = Internal.createIndex("lexeme_source_link_lexeme_id_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.LEXEME_ID }, false);
+        public static Index LEXEME_SOURCE_LINK_NAME_IDX = Internal.createIndex("lexeme_source_link_name_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.NAME }, false);
         public static Index LEXEME_SOURCE_LINK_PKEY = Internal.createIndex("lexeme_source_link_pkey", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.ID }, true);
         public static Index LEXEME_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("lexeme_source_link_source_id_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.SOURCE_ID }, false);
+        public static Index LEXEME_SOURCE_LINK_VALUE_IDX = Internal.createIndex("lexeme_source_link_value_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.VALUE }, false);
         public static Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Internal.createIndex("lifecycle_log_event_on_id_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_ON }, false);
         public static Index LIFECYCLE_LOG_PKEY = Internal.createIndex("lifecycle_log_pkey", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.ID }, true);
         public static Index MEANING_PKEY = Internal.createIndex("meaning_pkey", Meaning.MEANING, new OrderField[] { Meaning.MEANING.ID }, true);
@@ -553,11 +572,14 @@ public class Indexes {
         public static Index WORD_RELATION_WORD1_ID_IDX = Internal.createIndex("word_relation_word1_id_idx", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD1_ID }, false);
         public static Index WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Internal.createIndex("word_relation_word1_id_word2_id_word_rel_type_code_key", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD1_ID, WordRelation.WORD_RELATION.WORD2_ID, WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE }, true);
         public static Index WORD_RELATION_WORD2_ID_IDX = Internal.createIndex("word_relation_word2_id_idx", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD2_ID }, false);
+        public static Index WORD_RELATION_WORD_REL_TYPE_CODE_IDX = Internal.createIndex("word_relation_word_rel_type_code_idx", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE }, false);
         public static Index WORD_RELATION_PARAM_PKEY = Internal.createIndex("word_relation_param_pkey", WordRelationParam.WORD_RELATION_PARAM, new OrderField[] { WordRelationParam.WORD_RELATION_PARAM.ID }, true);
         public static Index WORD_RELATION_PARAM_WORD_RELATION_ID_IDX = Internal.createIndex("word_relation_param_word_relation_id_idx", WordRelationParam.WORD_RELATION_PARAM, new OrderField[] { WordRelationParam.WORD_RELATION_PARAM.WORD_RELATION_ID }, false);
         public static Index WORD_TYPE_PKEY = Internal.createIndex("word_type_pkey", WordType.WORD_TYPE, new OrderField[] { WordType.WORD_TYPE.CODE }, true);
         public static Index WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("word_type_label_code_lang_type_key", WordTypeLabel.WORD_TYPE_LABEL, new OrderField[] { WordTypeLabel.WORD_TYPE_LABEL.CODE, WordTypeLabel.WORD_TYPE_LABEL.LANG, WordTypeLabel.WORD_TYPE_LABEL.TYPE }, true);
+        public static Index WORD_WORD_TYPE_IDX = Internal.createIndex("word_word_type_idx", WordWordType.WORD_WORD_TYPE, new OrderField[] { WordWordType.WORD_WORD_TYPE.WORD_TYPE_CODE }, false);
         public static Index WORD_WORD_TYPE_PKEY = Internal.createIndex("word_word_type_pkey", WordWordType.WORD_WORD_TYPE, new OrderField[] { WordWordType.WORD_WORD_TYPE.ID }, true);
+        public static Index WORD_WORD_TYPE_WORD_ID_IDX = Internal.createIndex("word_word_type_word_id_idx", WordWordType.WORD_WORD_TYPE, new OrderField[] { WordWordType.WORD_WORD_TYPE.WORD_ID }, false);
         public static Index WORD_WORD_TYPE_WORD_ID_WORD_TYPE_CODE_KEY = Internal.createIndex("word_word_type_word_id_word_type_code_key", WordWordType.WORD_WORD_TYPE, new OrderField[] { WordWordType.WORD_WORD_TYPE.WORD_ID, WordWordType.WORD_WORD_TYPE.WORD_TYPE_CODE }, true);
     }
 }

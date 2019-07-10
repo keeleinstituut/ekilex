@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelation extends TableImpl<WordRelationRecord> {
 
-    private static final long serialVersionUID = -191208368;
+    private static final long serialVersionUID = -457106379;
 
     /**
      * The reference instance of <code>public.word_relation</code>
@@ -132,7 +132,7 @@ public class WordRelation extends TableImpl<WordRelationRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_RELATION_PKEY, Indexes.WORD_RELATION_WORD1_ID_IDX, Indexes.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY, Indexes.WORD_RELATION_WORD2_ID_IDX);
+        return Arrays.<Index>asList(Indexes.WORD_RELATION_PKEY, Indexes.WORD_RELATION_WORD1_ID_IDX, Indexes.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY, Indexes.WORD_RELATION_WORD2_ID_IDX, Indexes.WORD_RELATION_WORD_REL_TYPE_CODE_IDX);
     }
 
     /**

@@ -32,6 +32,7 @@ public class DatasetDbService {
 		List<Dataset> datasets = create
 				.select(DATASET.CODE,
 						DATASET.NAME,
+						DATASET.TYPE,
 						DATASET.DESCRIPTION,
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC)
@@ -50,11 +51,13 @@ public class DatasetDbService {
 				.insertInto(DATASET,
 						DATASET.CODE,
 						DATASET.NAME,
+						DATASET.TYPE,
 						DATASET.DESCRIPTION,
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC)
 				.values(dataset.getCode(),
 						dataset.getName(),
+						(dataset.getType() != null ? dataset.getType().name() : null),
 						dataset.getDescription(),
 						dataset.isVisible(),
 						dataset.isPublic())
@@ -67,6 +70,7 @@ public class DatasetDbService {
 		create
 				.update(DATASET)
 				.set(DATASET.NAME, dataset.getName())
+				.set(DATASET.TYPE, (dataset.getType() != null ? dataset.getType().name() : null))
 				.set(DATASET.DESCRIPTION, dataset.getDescription())
 				.set(DATASET.IS_VISIBLE, dataset.isVisible())
 				.set(DATASET.IS_PUBLIC, dataset.isPublic())
@@ -137,6 +141,7 @@ public class DatasetDbService {
 		return create
 				.select(DATASET.CODE,
 						DATASET.NAME,
+						DATASET.TYPE,
 						DATASET.DESCRIPTION,
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC)
