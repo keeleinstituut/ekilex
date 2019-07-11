@@ -16,15 +16,22 @@ public class RawRelationsCsvToSqlRunner extends AbstractClassifierRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(ClassifierCsvToSqlRunner.class);
 
-	public final static String RAW_RELATION_SQL_PATH = "./fileresources/sql/insert-raw-relations.sql";
-	public final static String RAW_RELATION_CSV_PATH = "./fileresources/csv/raw-grave-18.csv";
+	private final static String OUTPUT_FILE_EXTENSION = ".sql";
 
 	private static final String INSERT_RAW_RELATION_TEMPLATE = "insert into word_relation (word1_id, word2_id, word_rel_type_code, relation_status) values (${word1_id}, ${word2_id}, 'raw', 'UNDEFINED');";
 	private static final String INSERT_RELATION_PARAM_TEMPLATE = "insert into word_relation_param (word_relation_id, name, value) select id, '${name}', '${value}' from word_relation where word1_id = ${word1_id} and word2_id = ${word2_id} and word_rel_type_code = 'raw';";
 
+	private String inputFileFullPath;
 
 	public void execute() throws Exception {
-		File rawRelationCsvFile = new File(RAW_RELATION_CSV_PATH);
+		File rawRelationCsvFile = new File(inputFileFullPath);
+		logger.info("Reading file {}", inputFileFullPath);
+		if (!rawRelationCsvFile.exists()) {
+			logger.error("-----------------------------------------------------------------");
+			logger.error("The specified file {} does not exist.", inputFileFullPath);
+			logger.error("-----------------------------------------------------------------");
+			return;
+		}
 		StringBuffer insertRawRelationsBuf = new StringBuffer();
 
 		List<String> rawRelationFileLines = readFileLines(rawRelationCsvFile);
@@ -45,16 +52,22 @@ public class RawRelationsCsvToSqlRunner extends AbstractClassifierRunner {
 		}
 
 		writeToFile(insertRawRelationsBuf);
-		logger.debug("Raw relations sql created.");
+
 	}
 
 	private void writeToFile(StringBuffer insertRelationsBuf) throws Exception {
 
-		FileOutputStream rawRelationSqlStream = new FileOutputStream(RAW_RELATION_SQL_PATH);
+		String outputFileName = StringUtils.substringBefore(inputFileFullPath, ".") + OUTPUT_FILE_EXTENSION;
+
+		FileOutputStream rawRelationSqlStream = new FileOutputStream(outputFileName);
 		IOUtils.write(insertRelationsBuf, rawRelationSqlStream, StandardCharsets.UTF_8);
 
 		rawRelationSqlStream.flush();
 		rawRelationSqlStream.close();
+
+		logger.info("=======================================");
+		logger.info("SQL file generated to: {}", outputFileName);
+		logger.info("=======================================");
 	}
 
 
@@ -82,5 +95,9 @@ public class RawRelationsCsvToSqlRunner extends AbstractClassifierRunner {
 	@Override
 	void initialise() throws Exception {
 
+	}
+
+	public void setInputFileFullPath(String inputFileFullPath) {
+		this.inputFileFullPath = inputFileFullPath;
 	}
 }
