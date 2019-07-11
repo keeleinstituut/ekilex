@@ -176,6 +176,9 @@ public class EditController implements WebConstant {
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), valuePrese);
 			break;
+		case "create_raw_relation":
+			cudService.addSynRelation(itemData.getId(), itemData.getId2());
+			break;
 		}
 		return "{}";
 	}

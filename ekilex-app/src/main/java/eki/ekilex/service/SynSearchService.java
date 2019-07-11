@@ -87,4 +87,14 @@ public class SynSearchService extends AbstractWordSearchService {
 	public void createSynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId) {
 		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, existingLexemeId);
 	}
+
+	// @Transactional
+	// public WordsResult getSynCandidates(String searchFilter, List<String> selectedDatasetCodes, boolean fetchAll, List<Long> excludedIds) {
+	// 	WordsResult result = getWords(searchFilter, selectedDatasetCodes, false);
+	// 	if (CollectionUtils.isNotEmpty(excludedIds)) {
+	// 		result
+	// 	}
+	//
+	// 	return result;
+	// }
 }

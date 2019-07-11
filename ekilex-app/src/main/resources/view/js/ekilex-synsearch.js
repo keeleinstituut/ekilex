@@ -68,6 +68,10 @@ function initialise() {
 		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
 
+	$(document).on("show.bs.modal", "[id^=addSynRelationDlg_]", function() {
+		initAddSynRelationDlg($(this));
+	});
+
 	$(document).find('.draggable-synonym').draggable();
 
 	function doPostRelationChange(actionUrl, callbackFunc) {
@@ -84,5 +88,13 @@ function initialise() {
 		});
 	}
 
-
 }
+
+function initAddSynRelationDlg(addDlg) {
+	addDlg.find('.form-control').val(null);
+	addDlg.find('[data-name=dialogContent]').html(null);
+
+	initRelationDialogLogic(addDlg, 'word-id');
+}
+
+

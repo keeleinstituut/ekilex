@@ -160,4 +160,22 @@ public class SynSearchController extends AbstractSearchController {
 		synSearchService.createSynLexeme(meaningId, wordId, datasetCode, lexemeId);
 		return "{}";
 	}
+
+
+	@GetMapping(SYN_SEARCH_WORDS)
+	public String searchSynWords(
+			@RequestParam String searchFilter,
+			@RequestParam(required = false) List<Long> excludedIds,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+		logger.debug("word search ajax {}", searchFilter);
+
+		WordsResult result = synSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false);
+		model.addAttribute("wordsFoundBySearch", result.getWords());
+		model.addAttribute("totalCount", result.getTotalCount());
+		model.addAttribute("existingIds", excludedIds);
+
+		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
+	}
+
 }

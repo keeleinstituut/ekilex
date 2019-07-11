@@ -31,6 +31,9 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 @Component
 public class CudService extends AbstractService {
 
+	private static final String RAW_RELATION_TYPE = "raw";
+	private static final String UNDEFINED_RELATION_STATUS = "UNDEFINED";
+
 	@Autowired
 	private CudDbService cudDbService;
 
@@ -687,6 +690,11 @@ public class CudService extends AbstractService {
 	public void deleteImageTitle(Long imageId) {
 		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, null);
 		cudDbService.deleteImageTitle(imageId);
+
 	}
 
+	@Transactional
+	public void addSynRelation(Long word1Id, Long word2Id) {
+		cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+	}
 }

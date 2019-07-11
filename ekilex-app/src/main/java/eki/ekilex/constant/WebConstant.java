@@ -172,6 +172,8 @@ public interface WebConstant {
 
 	String SYN_CREATE_LEXEME = "/syn_create_lexeme";
 
+	String SYN_SEARCH_WORDS = "/syn_search_words";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";

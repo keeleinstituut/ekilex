@@ -130,62 +130,71 @@
         </div>
         <div class="col-4 pr-2">
           <div class="card shadow mb-2">
-            <div class="lbl mb-2">Sünonüümid</div>
-            <div th:if="${!#lists.isEmpty(details.relations)}">
-              <table width="100%" class="orderable" data-op-code="word_relation">
-                <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}">
-                  <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-word-id="${synRelation.wordId}" >
-                    <span>
-                      <i class="fa fa-list" aria-hidden="true"></i>
-                    </span>
-                    <span th:title="#{|relationstatus.${synRelation.relationStatus}|}">
-                      <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i>
-                    </span>
-                    <span class="btn-custom" th:text="${synRelation.word}"/>
-                    <span class="pull-right">
-                      <button type="button" th:hidden="${relationIter.first}" class="btn badge badge-secondary order-up" title="Muuda järjestust">
-                        <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" th:hidden="${relationIter.last}" class="btn badge badge-secondary order-down" title="Muuda järjestust">
-                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-success rel-status-btn" th:data-id="${synRelation.id}" data-status="CONFIRMED" title="Kinnita">
-                        <i class="fa fa-check" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-primary rel-status-btn" th:data-id="${synRelation.id}" data-status="HANDLED" title="Märgi käsitletuks">
-                        <i class="fa fa-thumb-tack" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-warning rel-status-btn" th:data-id="${synRelation.id}" data-status="DELETED" data-placement="right" title="Kustuta">
-                        <i class="fa fa-remove" aria-hidden="true"></i>
-                      </button>
-                    </span>
-                  </td>
-                  <td width="10%" align="right">
-                    <span th:if="${synRelation.oppositeRelationStatus != null}">
-                      <span th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}">
-                        <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i>
-                      </span>
-                    </span>
-                  </td>
+            <div class="card-body pt-0 pb-0">
+              <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
+                <button type="button" class="btn badge badge-success"
+                        th:title="#{syn.add.synonym}"
+                        data-toggle="modal"
+                        th:data-target="${'#addSynRelationDlg_' + wordId}">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
 
-                  <td align="right">
-                    <span>
-                      <button type="button" class="btn badge badge-secondary"
-                              data-toggle="modal"
-                              th:data-target="${'#synStatsDlg' + synRelation.id}">
-                            <i class="fa fa-bar-chart" aria-hidden="true"></i>
-                      </button>
-                    </span>
-                  </td>
-                </tr>
-              </table>
+              <div th:if="${!#lists.isEmpty(details.relations)}">
+                <table width="100%" class="orderable" data-op-code="word_relation">
+                  <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}">
+                    <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-word-id="${synRelation.wordId}" >
+                      <span>
+                        <i class="fa fa-list" aria-hidden="true"></i>
+                      </span>
+                      <span th:title="#{|relationstatus.${synRelation.relationStatus}|}">
+                        <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i>
+                      </span>
+                      <span class="btn-custom" th:text="${synRelation.word}"/>
+                      <span class="pull-right">
+                        <button type="button" th:hidden="${relationIter.first}" class="btn badge badge-secondary order-up" title="Muuda järjestust">
+                          <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" th:hidden="${relationIter.last}" class="btn badge badge-secondary order-down" title="Muuda järjestust">
+                          <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-success rel-status-btn" th:data-id="${synRelation.id}" data-status="CONFIRMED" title="Kinnita">
+                          <i class="fa fa-check" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-primary rel-status-btn" th:data-id="${synRelation.id}" data-status="HANDLED" title="Märgi käsitletuks">
+                          <i class="fa fa-thumb-tack" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning rel-status-btn" th:data-id="${synRelation.id}" data-status="DELETED" data-placement="right" title="Kustuta">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                    </td>
+                    <td width="10%" align="right">
+                      <span th:if="${synRelation.oppositeRelationStatus != null}">
+                        <span th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}">
+                          <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i>
+                        </span>
+                      </span>
+                    </td>
+
+                    <td align="right">
+                      <span>
+                        <button type="button" class="btn badge badge-secondary"
+                                data-toggle="modal"
+                                th:data-target="${'#synStatsDlg' + synRelation.id}">
+                              <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-
+    <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.relations})"></div>
     <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>

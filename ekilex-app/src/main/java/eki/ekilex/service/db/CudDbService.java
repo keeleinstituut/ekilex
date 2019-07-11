@@ -950,4 +950,13 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
+	public void addSynRelation(Long word1Id, Long word2Id, String relationType, String relatonStatus) {
+		create.insertInto(WORD_RELATION,
+					WORD_RELATION.WORD1_ID,
+					WORD_RELATION.WORD2_ID,
+					WORD_RELATION.WORD_REL_TYPE_CODE,
+					WORD_RELATION.RELATION_STATUS)
+				.values(word1Id, word2Id, relationType, relatonStatus)
+				.execute();
+	}
 }
