@@ -122,12 +122,45 @@
     </div>
   </div>
   <div data-name="dialogContent" th:fragment="syn_word_search_result">
+    <div class="card">
+      <div class="card-body p-2">
+        <div class="form-group row">
+          <div class="col-md-9 ml-2">
+            <div th:text="${sessionBean.userRole.datasetName}"/>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-9 ml-2">
+            <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
+              <option value="" selected disabled>vali keel...</option>
+              <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-9 ml-2">
+            <select required class="form-control required-field" name="itemType">
+              <option value="" selected disabled>vali kood...</option>
+              <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}" th:text="${morphCode.value}">morphCode</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-6 ml-2">
+            <input class="form-control" readonly name="value" th:value="${searchedWord}"/>
+          </div>
+          <div class="col-md-3">
+            <button type="button" id="addSynRelationWord" class="btn btn-sm btn-success" data-btn-menu>Lisa uus keelend</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
       <div class="card-body p-2">
         <span th:text="${'Kokku leiti : ' + totalCount}"></span>
         <div style="max-height: 70vh; overflow: auto;">
           <table class="table table-striped mb-0">
-            <tr th:each="word : ${wordsFoundBySearch}" th:with="wordExists = ${#lists.contains(existingIds, word.wordId)}">
+            <tr th:each="word : ${wordsFoundBySearch}" th:with="wordExists = ${existingIds != null && #lists.contains(existingIds, word.wordId)}">
               <td class="p-0" style="line-height: 0.6rem;">
                 <div class="btn btn-custom pt-0">
                   <span th:text="${word.value}" class="ttl">vorm 1</span>
@@ -154,6 +187,8 @@
       <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
     </div>
   </div>
+
+
   <div class="form-group row eki-editor" th:fragment="eki_editor_elem(showButtons)">
     <div class="col-md-12 pb-3" th:if="${showButtons}">
       <div class="float-right">

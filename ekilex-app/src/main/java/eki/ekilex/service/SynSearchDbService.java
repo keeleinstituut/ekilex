@@ -18,7 +18,6 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
-import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynLexeme;
@@ -108,15 +107,6 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.set(WORD_RELATION.RELATION_STATUS, status)
 				.where(WORD_RELATION.ID.eq(id))
 				.execute();
-	}
-
-
-	public Lexeme getLexeme(Long id) {
-		return create.select(LEXEME.fields())
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(id))
-				.fetchSingleInto(Lexeme.class);
-
 	}
 
 	public void createLexeme(Long wordId, Long meaningId, String datasetCode, Long existingLexemeId

@@ -75,7 +75,7 @@ public class EditController implements WebConstant {
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
-	public String createItem(@RequestBody CreateItemRequest itemData) {
+	public String createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		logger.debug("Add new item : {}", itemData);
 
@@ -178,6 +178,10 @@ public class EditController implements WebConstant {
 			break;
 		case "create_raw_relation":
 			cudService.addSynRelation(itemData.getId(), itemData.getId2());
+			break;
+		case "create_syn_word":
+			String datasetCode = sessionBean.getUserRole().getDatasetCode();
+			cudService.createWordAndSynRelation(itemData.getId(), itemData.getValue(), datasetCode, itemData.getLanguage(), itemData.getItemType());
 			break;
 		}
 		return "{}";

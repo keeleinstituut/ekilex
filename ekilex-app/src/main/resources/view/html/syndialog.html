@@ -33,7 +33,7 @@
                   <div class="form-group row">
                     <input th:each="relation : ${existingRelations}" type="hidden" name="excludedIds" th:value="${relation.wordId}"/>
                     <div class="col-8">
-                      <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                      <input id="txtSynSearchWord" type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
                     </div>
                     <div class="col-2">
                       <button type="submit" class="btn btn-primary">Otsi</button>
@@ -43,9 +43,9 @@
               </div>
             </form>
             <form th:action="@{/create_item}" method="post">
-              <input type="hidden" name="id" th:value="${wordId}">
-              <input type="hidden" name="opCode" value="create_raw_relation">
-              <input type="hidden" name="id2">
+              <input type="hidden" name="id" th:value="${wordId}"/>
+              <input type="hidden" name="opCode" value="create_raw_relation"/>
+              <input type="hidden" name="id2"/>
               <div class="form-group row">
                 <div class="col-md-6">
                 </div>

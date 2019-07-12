@@ -697,4 +697,14 @@ public class CudService extends AbstractService {
 	public void addSynRelation(Long word1Id, Long word2Id) {
 		cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 	}
+
+	@Transactional
+	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		Long createdWordId = cudDbService.createWordAndLexeme(value, valuePrese, datasetCode, language, morphCode, null);
+		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
+
+		addSynRelation(existingWordId, createdWordId);
+	}
+
 }

@@ -175,6 +175,9 @@ public class SynSearchController extends AbstractSearchController {
 		model.addAttribute("totalCount", result.getTotalCount());
 		model.addAttribute("existingIds", excludedIds);
 
+		model.addAttribute("searchedWord", searchFilter);
+		model.addAttribute("sessionBean", sessionBean);
+
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
 	}
 

@@ -57,6 +57,9 @@ function initialise() {
 		doPostRelationChange(actionUrl, callbackFunc);
 
 	});
+	// $(document).on("change", "#txtSynSearchWord", function() {
+	//
+	// });
 
 	$(document).on('click', '.order-up', function() {
 		let orderingData = changeItemOrdering($(this), -1);
@@ -88,13 +91,6 @@ function initialise() {
 		});
 	}
 
-}
-
-function initAddSynRelationDlg(addDlg) {
-	addDlg.find('.form-control').val(null);
-	addDlg.find('[data-name=dialogContent]').html(null);
-
-	initRelationDialogLogic(addDlg, 'word-id');
 }
 
 
