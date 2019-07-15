@@ -64,6 +64,10 @@ public interface WebConstant {
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
 
+	String WORD_JOIN_URI = "/wordjoin";
+
+	String WORD_JOIN_PAGE = "wordjoin";
+
 	String FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI = "/submit";
 
 	String REGISTER_PAGE_URI = "/register";

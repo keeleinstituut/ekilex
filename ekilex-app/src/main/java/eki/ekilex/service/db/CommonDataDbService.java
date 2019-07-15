@@ -1074,4 +1074,26 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return noOtherMeaningsExist;
 	}
 
+	public List<Long> getNonaffixoidWordIds(String wordValue) {
+
+		return create
+				.selectDistinct(WORD.ID)
+				.from(WORD, PARADIGM, FORM)
+				.where(
+						FORM.VALUE.like(wordValue)
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID)))
+								.andNotExists(DSL
+										.select(WORD_WORD_TYPE.ID)
+										.from(WORD_WORD_TYPE)
+										.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+										.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
+				.fetchInto(Long.class);
+	}
+
 }

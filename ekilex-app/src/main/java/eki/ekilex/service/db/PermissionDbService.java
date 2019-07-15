@@ -256,6 +256,30 @@ public class PermissionDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public boolean isGrantedForWord(Long wordId, List<String> datasetCodes) {
+
+		Table<Record1<Integer>> lp = DSL
+				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.from(WORD.leftOuterJoin(LEXEME).on(
+						LEXEME.WORD_ID.eq(WORD.ID)
+								.and(LEXEME.DATASET_CODE.in(datasetCodes))))
+				.where(WORD.ID.eq(wordId))
+				.groupBy(WORD.ID)
+				.asTable("lp");
+
+		Table<Record1<Integer>> la = DSL
+				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId))
+				.groupBy(LEXEME.WORD_ID)
+				.asTable("la");
+
+		return create
+				.select(DSL.field(lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class))).as("is_granted"))
+				.from(lp, la)
+				.fetchSingleInto(Boolean.class);
+	}
+
 	public boolean isGrantedForMeaning(Long userId, Long meaningId, String authItem, List<String> authOps) {
 
 		Table<Record1<Integer>> lp = DSL

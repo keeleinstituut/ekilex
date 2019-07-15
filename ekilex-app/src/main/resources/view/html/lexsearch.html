@@ -968,7 +968,7 @@
           <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
           <div class="card shadow pt-3 mb-2">
             <div class="card-body pt-0 pb-0">
-              <div class="hidden-buttons">
+              <span class="invisible-buttons">
                 <span th:id="${'word-value-' + wordId}" th:utext="${details.word.value}" class="ttl word-value"></span>
                 <button type="button"
                         class="btn badge badge-primary"
@@ -978,7 +978,11 @@
                         sec:authorize="${#vars.isWordCrudGranted}">
                   <i class="fa fa-edit" aria-hidden="true"></i>
                 </button>
-              </div>
+              </span>
+              <a class="btn btn-sm btn-primary"
+                 title="Ühenda keelendid"
+                 th:href="@{'/wordjoin/' + ${details.word.wordId}}"
+                 sec:authorize="${#vars.isWordCrudGranted}">Ühenda</a>
               <hr/>
             </div>
             <div class="card-body pt-0 pb-0">

@@ -702,6 +702,10 @@
                   </div>
                   <span th:text="${lexeme.homonymNumber}" class="pl-1"></span>
                   <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}" class="pl-1"></span>
+                  <a class="btn btn-sm btn-primary ml-2"
+                     title="Ühenda keelendid"
+                     th:href="@{'/wordjoin/' + ${lexeme.wordId}}"
+                     sec:authorize="${#vars.isWordCrudGranted}">Ühenda</a>
                 </div>
                 <div class="ml-auto">
                   <button type="button" class="btn badge badge-success float-right"
