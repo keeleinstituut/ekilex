@@ -567,22 +567,4 @@ public class PermissionDbService implements SystemConstant {
 			.where(DATASET_PERMISSION.USER_ID.eq(userId))
 			.execute();
 	}
-
-	public DatasetPermission getUserLastChosenPermission(Long userId) {
-		return create
-				.select(
-
-						DATASET_PERMISSION.ID,
-						DATASET.NAME.as("dataset_name"),
-						DATASET_PERMISSION.AUTH_LANG,
-						DATASET_PERMISSION.DATASET_CODE,
-						DATASET_PERMISSION.USER_ID,
-						DATASET_PERMISSION.AUTH_OPERATION,
-						DATASET_PERMISSION.AUTH_ITEM)
-				.from(DATASET_PERMISSION)
-				.innerJoin(DATASET).on(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE))
-				.where(DATASET_PERMISSION.USER_ID.eq(userId))
-				.and(DATASET_PERMISSION.IS_LAST_CHOSEN.eq(Boolean.TRUE))
-				.fetchSingleInto(DatasetPermission.class);
-	}
 }
