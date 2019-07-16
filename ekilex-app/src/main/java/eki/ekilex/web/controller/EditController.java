@@ -36,6 +36,7 @@ import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
+import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CudService;
@@ -611,5 +612,33 @@ public class EditController implements WebConstant {
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, valuePrese);
 		cudService.updateWordValue(wordId, valuePrese);
 		return valuePrese;
+	}
+
+	@GetMapping(WORD_JOIN_URI + "/{wordId}")
+	public String showWordJoin(@PathVariable("wordId") Long wordId, Model model) {
+
+		List<String> datasetCodes = commonDataService.getDatasetCodes();
+		WordDetails firstWordDetails = commonDataService.getWordDetails(wordId, datasetCodes);
+		Word firstWord = firstWordDetails.getWord();
+		Long firstWordId = firstWord.getWordId();
+		String firstWordValue = firstWord.getValue();
+		List<WordDetails> wordDetailsList = commonDataService.getWordDetailsOfJoinCandidates(firstWordValue, wordId);
+		List<Classifier> wordGenders = commonDataService.getGenders();
+		List<Classifier> wordAspects = commonDataService.getAspects();
+
+		model.addAttribute("firstWordDetails", firstWordDetails);
+		model.addAttribute("firstWordId", firstWordId);
+		model.addAttribute("wordDetailsList", wordDetailsList);
+		model.addAttribute("wordGenders", wordGenders);
+		model.addAttribute("wordAspects", wordAspects);
+		return WORD_JOIN_PAGE;
+	}
+
+	@PostMapping(WORD_JOIN_URI)
+	public String joinWords(@RequestParam("firstWordId") Long firstWordId, @RequestParam("secondWordId") Long secondWordId) {
+
+		logger.debug("Joining words, firstWordId: \"{}\", secondWordId: \"{}\"", firstWordId, secondWordId);
+		commonDataService.joinWords(firstWordId, secondWordId);
+		return "redirect:" + WORD_BACK_URI + "/" + firstWordId;
 	}
 }

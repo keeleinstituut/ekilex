@@ -42,6 +42,12 @@ import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
+import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
@@ -1074,4 +1080,77 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return noOtherMeaningsExist;
 	}
 
+	public List<Long> getNonaffixoidWordIds(String wordValue) {
+
+		return create
+				.selectDistinct(WORD.ID)
+				.from(WORD, PARADIGM, FORM)
+				.where(
+						FORM.VALUE.like(wordValue)
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID)))
+								.andNotExists(DSL
+										.select(WORD_WORD_TYPE.ID)
+										.from(WORD_WORD_TYPE)
+										.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+										.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
+				.fetchInto(Long.class);
+	}
+
+	public void joinWords(Long firstWordId, Long secondWordId) {
+
+		create.update(WORD_RELATION)
+				.set(WORD_RELATION.WORD1_ID, firstWordId)
+				.where(WORD_RELATION.WORD1_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_RELATION)
+				.set(WORD_RELATION.WORD2_ID, firstWordId)
+				.where(WORD_RELATION.WORD2_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_GROUP_MEMBER)
+				.set(WORD_GROUP_MEMBER.WORD_ID, firstWordId)
+				.where(WORD_GROUP_MEMBER.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_ETYMOLOGY)
+				.set(WORD_ETYMOLOGY.WORD_ID, firstWordId)
+				.where(WORD_ETYMOLOGY.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_ETYMOLOGY_RELATION)
+				.set(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID, firstWordId)
+				.where(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_WORD_TYPE)
+				.set(WORD_WORD_TYPE.WORD_ID, firstWordId)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(LEXEME)
+				.set(LEXEME.WORD_ID, firstWordId)
+				.where(LEXEME.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_PROCESS_LOG)
+				.set(WORD_PROCESS_LOG.WORD_ID, firstWordId)
+				.where(WORD_PROCESS_LOG.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_LIFECYCLE_LOG)
+				.set(WORD_LIFECYCLE_LOG.WORD_ID, firstWordId)
+				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.delete(WORD)
+				.where(WORD.ID.eq(secondWordId))
+				.execute();
+	}
 }

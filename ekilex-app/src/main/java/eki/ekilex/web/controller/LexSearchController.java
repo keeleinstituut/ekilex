@@ -140,7 +140,7 @@ public class LexSearchController extends AbstractSearchController {
 			Model model) {
 		logger.debug("lexeme search ajax {}, lexeme {}", searchFilter, lexemeId);
 
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
@@ -191,7 +191,7 @@ public class LexSearchController extends AbstractSearchController {
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}
-		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets);
+		WordDetails details = commonDataService.getWordDetails(wordId, selectedDatasets);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 

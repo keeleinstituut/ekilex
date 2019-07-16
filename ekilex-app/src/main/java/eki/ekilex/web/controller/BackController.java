@@ -1,14 +1,5 @@
 package eki.ekilex.web.controller;
 
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Word;
-import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.LexSearchService;
-import eki.ekilex.service.TermSearchService;
-import eki.ekilex.web.bean.SessionBean;
-import eki.ekilex.web.util.SearchHelper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -16,7 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Word;
+import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.TermSearchService;
+import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -30,16 +28,10 @@ public class BackController implements WebConstant {
 	private TermSearchService termSearchService;
 
 	@Autowired
-	private LexSearchService lexSearchService;
-
-	@Autowired
 	private SearchHelper searchHelper;
 
-	@GetMapping("/wordback/{wordId}")
-	public String wordBack(
-			@PathVariable("wordId") Long wordId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+	@GetMapping(WORD_BACK_URI + "/{wordId}")
+	public String wordBack(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Word word = commonDataService.getWord(wordId);
 		String wordValue = word.getValue();
@@ -48,24 +40,18 @@ public class BackController implements WebConstant {
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping("/lexback/{lexemeId}")
-	public String lexemeBack(
-			@PathVariable("lexemeId") Long lexemeId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+	@GetMapping(LEX_BACK_URI + "/{lexemeId}")
+	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		String firstWordValue = lexeme.getWords()[0];
 		String searchUri = searchHelper.composeSearchUri(sessionBean.getSelectedDatasets(), firstWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping("/meaningback/{meanigId}")
-	public String meaningBack(
-			@PathVariable("meanigId") Long meaningId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+	@GetMapping(MEANING_BACK_URI + "/{meanigId}")
+	public String meaningBack(@PathVariable("meanigId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, sessionBean.getSelectedDatasets());
 		String searchUri = searchHelper.composeSearchUri(sessionBean.getSelectedDatasets(), firstWordValue);

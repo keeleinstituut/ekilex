@@ -64,6 +64,10 @@ public interface WebConstant {
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
 
+	String WORD_JOIN_URI = "/wordjoin";
+
+	String WORD_JOIN_PAGE = "wordjoin";
+
 	String FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI = "/submit";
 
 	String REGISTER_PAGE_URI = "/register";
@@ -173,6 +177,12 @@ public interface WebConstant {
 	String SYN_CREATE_LEXEME = "/syn_create_lexeme";
 
 	String SYN_SEARCH_WORDS = "/syn_search_words";
+
+	String WORD_BACK_URI = "/wordback";
+
+	String LEX_BACK_URI = "/lexback";
+
+	String MEANING_BACK_URI = "/meaningback";
 
 	String PAGE_FRAGMENT_ELEM = " :: ";
 

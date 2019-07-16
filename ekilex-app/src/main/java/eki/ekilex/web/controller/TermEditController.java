@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
@@ -49,11 +50,14 @@ public class TermEditController implements WebConstant {
 	@Autowired
 	private CompositionService compositionService;
 
+	@Autowired
+	private CommonDataService commonDataService;
+
 	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
 	public String show(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, sessionBean.getSelectedDatasets());
-		model.addAttribute("sourceLexeme", lexSearchService.getWordLexeme(meaningFirstLexemeId));
+		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", null);
 		model.addAttribute("meaningId", meaningId);
 
@@ -68,7 +72,7 @@ public class TermEditController implements WebConstant {
 			Model model) {
 
 		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, sessionBean.getSelectedDatasets());
-		model.addAttribute("sourceLexeme", lexSearchService.getWordLexeme(meaningFirstLexemeId));
+		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("meaningId", meaningId);
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, sessionBean.getSelectedDatasets());

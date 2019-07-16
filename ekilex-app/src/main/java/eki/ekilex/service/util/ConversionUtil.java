@@ -700,6 +700,7 @@ public class ConversionUtil {
 			for (OrderedClassifier classifier : classifiers) {
 				if (classifier.getCode().equals(possiblyDuplicateCode)) {
 					isDuplicate = true;
+					break;
 				}
 			}
 			if (!isDuplicate) {
@@ -718,6 +719,7 @@ public class ConversionUtil {
 			for (Classifier classifier : classifiers) {
 				if (classifier.getCode().equals(possiblyDuplicateCode)) {
 					isDuplicate = true;
+					break;
 				}
 			}
 			if (!isDuplicate) {
