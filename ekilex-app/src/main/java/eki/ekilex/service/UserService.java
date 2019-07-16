@@ -7,6 +7,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,9 +91,13 @@ public class UserService implements WebConstant {
 			} else {
 				datasetOwnershipExist = false;
 			}
+			DatasetPermission lastChosenPermission = getLastChosenOrSinglePermission(user.getId(), datasetPermissions);
+
 			user.setDatasetPermissions(datasetPermissions);
 			user.setDatasetPermissionsExist(datasetPermissionsExist);
+			user.setHasSinglePermission(datasetPermissionsExist && datasetPermissions.size() == 1);
 			user.setDatasetOwnershipExist(datasetOwnershipExist);
+			user.setLastChosenPermission(lastChosenPermission);
 		}
 		return user;
 	}
@@ -224,5 +229,18 @@ public class UserService implements WebConstant {
 			SecurityContext context = SecurityContextHolder.getContext();
 			context.setAuthentication(authenticationToken);
 		}
+	}
+
+	private DatasetPermission getLastChosenOrSinglePermission(Long userId, List<DatasetPermission> permissions) {
+		DatasetPermission permission = null;
+		if (CollectionUtils.isNotEmpty(permissions)) {
+			permission = permissions.stream().filter(p -> BooleanUtils.isTrue(p.isLastChosen())).findFirst().orElse(null);
+			if (permission == null && permissions.size() == 1) {
+				permission = permissions.get(0);
+				permissionDbService.setLastChosenPermissionId(permission.getId(), userId);
+			}
+		}
+
+		return permission;
 	}
 }
