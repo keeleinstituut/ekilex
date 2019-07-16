@@ -42,7 +42,7 @@
       <div class="d-flex align-items-center flex-wrap">
         <span th:utext="${wordDetails.word.value}" class="ttl"></span>
         <div class="ml-4">
-          <form th:action="@{/join_words}" method="post">
+          <form th:action="@{/wordjoin}" method="post">
             <input type="hidden" name="firstWordId" th:value="${firstWordId}">
             <input type="hidden" name="secondWordId" th:value="${wordDetails.word.wordId}">
             <button type="button" class="btn btn-primary btn-sm"

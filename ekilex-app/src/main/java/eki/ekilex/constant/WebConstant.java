@@ -178,6 +178,12 @@ public interface WebConstant {
 
 	String SYN_SEARCH_WORDS = "/syn_search_words";
 
+	String WORD_BACK_URI = "/wordback";
+
+	String LEX_BACK_URI = "/lexback";
+
+	String MEANING_BACK_URI = "/meaningback";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";

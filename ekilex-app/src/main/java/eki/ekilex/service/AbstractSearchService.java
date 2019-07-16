@@ -14,7 +14,7 @@ import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
-public abstract class AbstractSearchService implements SystemConstant {
+public abstract class AbstractSearchService extends AbstractService implements SystemConstant {
 
 	@Autowired
 	protected ConversionUtil conversionUtil;

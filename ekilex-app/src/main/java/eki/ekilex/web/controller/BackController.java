@@ -30,7 +30,7 @@ public class BackController implements WebConstant {
 	@Autowired
 	private SearchHelper searchHelper;
 
-	@GetMapping("/wordback/{wordId}")
+	@GetMapping(WORD_BACK_URI + "/{wordId}")
 	public String wordBack(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Word word = commonDataService.getWord(wordId);
@@ -40,7 +40,7 @@ public class BackController implements WebConstant {
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping("/lexback/{lexemeId}")
+	@GetMapping(LEX_BACK_URI + "/{lexemeId}")
 	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
@@ -50,7 +50,7 @@ public class BackController implements WebConstant {
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping("/meaningback/{meanigId}")
+	@GetMapping(MEANING_BACK_URI + "/{meanigId}")
 	public String meaningBack(@PathVariable("meanigId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, sessionBean.getSelectedDatasets());
