@@ -19,6 +19,7 @@ import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
@@ -53,13 +54,14 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.data.Word;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymRel;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 
 @Component
-public class ConversionUtil {
+public class ConversionUtil implements DbConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 
@@ -794,5 +796,15 @@ public class ConversionUtil {
 		}
 
 		return synRelations;
+	}
+
+	public void setWordTypeFlags(Word word, List<Classifier> wordTypes) {
+
+		if (CollectionUtils.isNotEmpty(wordTypes)) {
+			boolean isPrefixoid = wordTypes.stream().anyMatch(type -> type.getCode().equals(WORD_TYPE_CODE_PREFIXOID));
+			boolean isSuffixoid = wordTypes.stream().anyMatch(type -> type.getCode().equals(WORD_TYPE_CODE_SUFFIXOID));
+			word.setPrefixoid(isPrefixoid);
+			word.setSuffixoid(isSuffixoid);
+		}
 	}
 }
