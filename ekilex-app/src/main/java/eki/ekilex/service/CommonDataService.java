@@ -322,6 +322,7 @@ public class CommonDataService extends AbstractWordSearchService {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Word word = commonDataDbService.getWord(wordId);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
+		conversionUtil.setWordTypeFlags(word, wordTypes);
 		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, word.getValue(), classifierLabelLang, classifierLabelTypeDescrip);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);

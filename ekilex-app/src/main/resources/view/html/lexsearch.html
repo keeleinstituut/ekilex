@@ -982,7 +982,8 @@
               <a class="btn btn-sm btn-primary"
                  title="Ühenda keelendid"
                  th:href="@{'/wordjoin/' + ${details.word.wordId}}"
-                 sec:authorize="${#vars.isWordCrudGranted}">Ühenda</a>
+                 sec:authorize="${#vars.isWordCrudGranted}"
+                 th:if="${!details.word.prefixoid && !details.word.suffixoid}">Ühenda</a>
               <hr/>
             </div>
             <div class="card-body pt-0 pb-0">
