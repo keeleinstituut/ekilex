@@ -166,17 +166,21 @@ public class SynSearchController extends AbstractSearchController {
 	public String searchSynWords(
 			@RequestParam String searchFilter,
 			@RequestParam(required = false) List<Long> excludedIds,
+			@RequestParam(required = false) String language,
+			@RequestParam(required = false) String morphCode,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 		logger.debug("word search ajax {}", searchFilter);
 
 		WordsResult result = synSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false);
+
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 		model.addAttribute("existingIds", excludedIds);
 
 		model.addAttribute("searchedWord", searchFilter);
-//		model.addAttribute("sessionBean", sessionBean);
+		model.addAttribute("selectedWordLanguage", language);
+		model.addAttribute("selectedWordMorphCode", morphCode);
 
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
 	}

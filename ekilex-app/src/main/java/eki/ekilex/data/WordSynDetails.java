@@ -8,6 +8,10 @@ public class WordSynDetails extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private String language;
+
+	private String morphCode;
+
 	private List<WordSynLexeme> lexemes;
 
 	private List<SynRelation> relations;
@@ -26,5 +30,21 @@ public class WordSynDetails extends AbstractDataObject {
 
 	public void setLexemes(List<WordSynLexeme> lexemes) {
 		this.lexemes = lexemes;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getMorphCode() {
+		return morphCode;
+	}
+
+	public void setMorphCode(String morphCode) {
+		this.morphCode = morphCode;
 	}
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.FormMode;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelationParamTuple;
+import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.service.db.AbstractSearchDbService;
@@ -124,5 +125,25 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						).from(LEXEME).where(LEXEME.ID.eq(existingLexemeId))
 				).execute();
 
+	}
+
+	public WordSynDetails getSelectedWord(Long wordId) {
+		return create.select(
+				WORD.ID.as("word_id"),
+				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word"),
+				DSL.field("array_to_string(array_agg(distinct form.morph_code), ',', '*')").cast(String.class).as("morphCode"),
+				WORD.LANG.as("language"))
+				.from(WORD, PARADIGM, FORM)
+				.where(WORD.ID.eq(wordId)
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
+						.andExists(DSL
+								.select(LEXEME.ID)
+								.from(LEXEME)
+								.where(
+										LEXEME.WORD_ID.eq(WORD.ID))))
+				.groupBy(WORD.ID)
+				.fetchOneInto(WordSynDetails.class);
 	}
 }

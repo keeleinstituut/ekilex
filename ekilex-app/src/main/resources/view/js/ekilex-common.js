@@ -38,9 +38,6 @@ function submitDialog(e, dlg, failMessage, callback = $.noop) {
 }
 
 function submitForm(theForm, failMessage, callback = $.noop) {
-	// if (!checkRequiredFields(theForm)) {
-	// 	return;
-	// }
 	var data = JSON.stringify(theForm.serializeJSON());
 	return $.ajax({
 		url: theForm.attr('action'),

@@ -165,7 +165,7 @@
           <div class="col-md-9 ml-2">
             <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
               <option value="" selected disabled>vali keel...</option>
-              <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
+              <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
             </select>
           </div>
         </div>
@@ -173,7 +173,7 @@
           <div class="col-md-9 ml-2">
             <select required class="form-control required-field" name="itemType">
               <option value="" selected disabled>vali kood...</option>
-              <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}" th:text="${morphCode.value}">morphCode</option>
+              <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}" th:text="${morphCode.value}" th:selected="${morphCode.code == selectedWordMorphCode}">morphCode</option>
             </select>
           </div>
         </div>

@@ -57,9 +57,6 @@ function initialise() {
 		doPostRelationChange(actionUrl, callbackFunc);
 
 	});
-	// $(document).on("change", "#txtSynSearchWord", function() {
-	//
-	// });
 
 	$(document).on('click', '.order-up', function() {
 		let orderingData = changeItemOrdering($(this), -1);
