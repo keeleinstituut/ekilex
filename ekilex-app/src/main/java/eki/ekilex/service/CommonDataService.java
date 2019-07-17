@@ -34,6 +34,7 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.LogData;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Paradigm;
@@ -372,7 +373,8 @@ public class CommonDataService extends AbstractWordSearchService {
 	public void joinWords(Long firstWordId, Long secondWordId) {
 
 		String wordValue = commonDataDbService.getWordValue(firstWordId);
-		createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, firstWordId, wordValue, wordValue);
+		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, firstWordId, wordValue, wordValue);
+		createLifecycleLog(logData);
 
 		commonDataDbService.joinWords(firstWordId, secondWordId);
 	}

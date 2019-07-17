@@ -2,10 +2,7 @@ package eki.ekilex.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleEventType;
-import eki.common.constant.LifecycleProperty;
-import eki.ekilex.data.ListData;
+import eki.ekilex.data.LogData;
 import eki.ekilex.service.db.LifecycleLogDbService;
 
 public abstract class AbstractService {
@@ -16,21 +13,16 @@ public abstract class AbstractService {
 	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;
 
-	protected void createLifecycleLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId) {
-		createLifecycleLog(eventType, entity, property, entityId, null, null);
-	}
-
-	protected void createLifecycleLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String entry) {
-		createLifecycleLog(eventType, entity, property, entityId, null, entry);
-	}
-
-	protected void createLifecycleLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String recent, String entry) {
+	protected void createLifecycleLog(LogData logData) {
 		String userName = userService.getAuthenticatedUser().getName();
-		lifecycleLogDbService.createLog(userName, eventType, entity, property, entityId, recent, entry);
+		logData.setUserName(userName);
+		lifecycleLogDbService.createLog(logData);
 	}
 
-	protected void createLifecycleLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, ListData item) {
+	protected void createListOrderingLifecycleLog(LogData logData) {
 		String userName = userService.getAuthenticatedUser().getName();
-		lifecycleLogDbService.createLog(userName, eventType, entity, property, item);
+		logData.setUserName(userName);
+		lifecycleLogDbService.createListOrderingLog(logData);
 	}
+
 }

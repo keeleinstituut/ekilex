@@ -20,6 +20,7 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.SourceType;
+import eki.ekilex.data.LogData;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
@@ -90,11 +91,14 @@ public class SourceService extends AbstractService {
 	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
 
 		Long sourceId = sourceDbService.createSource(sourceType, sourceProperties);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, sourceType.name());
+		LogData sourceValueLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId);
+		createLifecycleLog(sourceValueLogData);
+		LogData sourceTypeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, sourceType.name());
+		createLifecycleLog(sourceTypeLogData);
 		for (SourceProperty sourceProperty : sourceProperties) {
 			LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(sourceProperty.getType().name());
-			createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, lifecycleProperty, sourceId, sourceProperty.getValueText());
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, lifecycleProperty, sourceId, sourceProperty.getValueText());
+			createLifecycleLog(logData);
 		}
 		return sourceId;
 	}
@@ -103,7 +107,8 @@ public class SourceService extends AbstractService {
 	public void createSourceProperty(Long sourceId, FreeformType type, String valueText) {
 
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, lifecycleProperty, sourceId, valueText);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, lifecycleProperty, sourceId, valueText);
+		createLifecycleLog(logData);
 		sourceDbService.createSourceProperty(sourceId, type, valueText);
 	}
 
@@ -111,7 +116,8 @@ public class SourceService extends AbstractService {
 	public void updateSourceProperty(Long sourcePropertyId, FreeformType type, String valueText) {
 
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId, valueText);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId, valueText);
+		createLifecycleLog(logData);
 		sourceDbService.updateSourceProperty(sourcePropertyId, valueText);
 	}
 
@@ -119,14 +125,16 @@ public class SourceService extends AbstractService {
 	public void deleteSourceProperty(Long sourcePropertyId, FreeformType type) {
 
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId);
+		createLifecycleLog(logData);
 		sourceDbService.deleteSourceProperty(sourcePropertyId);
 	}
 
 	@Transactional
 	public void updateSourceType(Long sourceId, SourceType type) {
 
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, type.name());
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, type.name());
+		createLifecycleLog(logData);
 		sourceDbService.updateSourceType(sourceId, type);
 	}
 
@@ -138,7 +146,8 @@ public class SourceService extends AbstractService {
 	@Transactional
 	public void deleteSource(Long sourceId) {
 
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId);
+		createLifecycleLog(logData);
 		sourceDbService.deleteSource(sourceId);
 	}
 
@@ -147,7 +156,9 @@ public class SourceService extends AbstractService {
 
 		String firstSourceNames = joinSourceNames(firstSourceId);
 		String secondSourceNames = joinSourceNames(secondSourceId);
-		createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, firstSourceId, secondSourceNames, firstSourceNames);
+		LogData logData = new LogData(
+				LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, firstSourceId, secondSourceNames, firstSourceNames);
+		createLifecycleLog(logData);
 
 		sourceDbService.joinSources(firstSourceId, secondSourceId);
 	}

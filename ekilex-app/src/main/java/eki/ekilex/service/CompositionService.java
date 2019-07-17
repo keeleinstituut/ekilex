@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
+import eki.ekilex.data.LogData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
@@ -56,22 +57,25 @@ public class CompositionService extends AbstractService {
 		Long duplicateLexemeId = compositionDbService.cloneEmptyLexeme(lexemeId, duplicateMeaningId);
 		String userName = userService.getAuthenticatedUser().getName();
 		String targetLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(duplicateLexemeId);
-		lifecycleLogDbService.createLog(
-				userName,
-				LifecycleEventType.CREATE,
-				LifecycleEntity.MEANING,
-				LifecycleProperty.VALUE,
-				duplicateMeaningId,
-				null,
-				targetLexemeDescription);
-		lifecycleLogDbService.createLog(
-				userName,
-				LifecycleEventType.CREATE,
-				LifecycleEntity.LEXEME,
-				LifecycleProperty.VALUE,
-				duplicateLexemeId,
-				null,
-				targetLexemeDescription);
+
+		LogData meaningLogData = new LogData();
+		meaningLogData.setUserName(userName);
+		meaningLogData.setEventType(LifecycleEventType.CREATE);
+		meaningLogData.setEntityName(LifecycleEntity.MEANING);
+		meaningLogData.setProperty(LifecycleProperty.VALUE);
+		meaningLogData.setEntityId(duplicateMeaningId);
+		meaningLogData.setEntry(targetLexemeDescription);
+		lifecycleLogDbService.createLog(meaningLogData);
+
+		LogData lexemeLogData = new LogData();
+		lexemeLogData.setUserName(userName);
+		lexemeLogData.setEventType(LifecycleEventType.CREATE);
+		lexemeLogData.setEntityName(LifecycleEntity.LEXEME);
+		lexemeLogData.setProperty(LifecycleProperty.VALUE);
+		lexemeLogData.setEntityId(duplicateLexemeId);
+		lexemeLogData.setEntry(targetLexemeDescription);
+		lifecycleLogDbService.createLog(lexemeLogData);
+
 		return duplicateLexemeId;
 	}
 
@@ -103,14 +107,17 @@ public class CompositionService extends AbstractService {
 		String userName = userService.getAuthenticatedUser().getName();
 		String sourceLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(lexemeId);
 		String targetLexemeDescription = lifecycleLogDbService.getExtendedLexemeDescription(duplicateLexemeId);
-		lifecycleLogDbService.createLog(
-				userName,
-				LifecycleEventType.CLONE,
-				LifecycleEntity.LEXEME,
-				LifecycleProperty.VALUE,
-				duplicateLexemeId,
-				sourceLexemeDescription,
-				targetLexemeDescription);
+
+		LogData logData = new LogData();
+		logData.setUserName(userName);
+		logData.setEventType(LifecycleEventType.CLONE);
+		logData.setEntityName(LifecycleEntity.LEXEME);
+		logData.setProperty(LifecycleProperty.VALUE);
+		logData.setEntityId(duplicateLexemeId);
+		logData.setRecent(sourceLexemeDescription);
+		logData.setEntry(targetLexemeDescription);
+		lifecycleLogDbService.createLog(logData);
+
 		return duplicateLexemeId;
 	}
 
@@ -123,14 +130,15 @@ public class CompositionService extends AbstractService {
 		duplicateMeaningDefinitions(meaningId, duplicateMeaningId);
 		String userName = userService.getAuthenticatedUser().getName();
 		String targetMeaningDescription = lifecycleLogDbService.getCombinedMeaningDefinitions(duplicateMeaningId);
-		lifecycleLogDbService.createLog(
-				userName,
-				LifecycleEventType.CLONE,
-				LifecycleEntity.MEANING,
-				LifecycleProperty.VALUE,
-				duplicateMeaningId,
-				null,
-				targetMeaningDescription);
+
+		LogData logData = new LogData();
+		logData.setUserName(userName);
+		logData.setEventType(LifecycleEventType.CLONE);
+		logData.setEntityName(LifecycleEntity.MEANING);
+		logData.setProperty(LifecycleProperty.VALUE);
+		logData.setEntityId(duplicateMeaningId);
+		logData.setEntry(targetMeaningDescription);
+		lifecycleLogDbService.createLog(logData);
 		return duplicateMeaningId;
 	}
 
@@ -151,7 +159,8 @@ public class CompositionService extends AbstractService {
 		String logEntryTarget = compositionDbService.getFirstDefinitionOfMeaning(sourceMeaningId);
 		boolean success = compositionDbService.joinMeanings(meaningId, sourceMeaningId);
 		if (success) {
-			createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, logEntrySource, logEntryTarget);
+			LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, logEntrySource, logEntryTarget);
+			createLifecycleLog(logData);
 		}
 	}
 
@@ -182,11 +191,14 @@ public class CompositionService extends AbstractService {
 			updateLexemeLevels(lexemeId2, "delete");
 			String logEntrySource = StringUtils.joinWith(".", lexeme2.getLevel1(), lexeme2.getLevel2(), lexeme2.getLevel3());
 			String logEntryTarget = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
-			createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, logEntrySource, logEntryTarget);
+			LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, logEntrySource, logEntryTarget);
+			createLifecycleLog(logData);
 		}
 		String logEntrySource = compositionDbService.getFirstDefinitionOfMeaning(lexeme2.getMeaningId());
 		String logEntryTarget = compositionDbService.getFirstDefinitionOfMeaning(lexeme.getMeaningId());
-		createLifecycleLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, lexeme.getMeaningId(), logEntrySource, logEntryTarget);
+		LogData logData = new LogData(
+				LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, lexeme.getMeaningId(), logEntrySource, logEntryTarget);
+		createLifecycleLog(logData);
 		compositionDbService.joinLexemeMeanings(lexemeId, lexemeId2);
 	}
 
@@ -200,7 +212,8 @@ public class CompositionService extends AbstractService {
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
+			createLifecycleLog(logData);
 			cudDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
 		}
 	}
