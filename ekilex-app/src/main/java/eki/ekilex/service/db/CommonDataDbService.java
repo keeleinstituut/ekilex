@@ -1134,9 +1134,18 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.where(WORD_WORD_TYPE.WORD_ID.eq(secondWordId))
 				.execute();
 
-		create.update(LEXEME)
-				.set(LEXEME.WORD_ID, firstWordId)
-				.where(LEXEME.WORD_ID.eq(secondWordId))
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		create.update(l1)
+				.set(l1.WORD_ID, firstWordId)
+				.where(l1.WORD_ID.eq(secondWordId)
+						.andNotExists(DSL
+								.select(l2.ID)
+								.from(l2)
+								.where(
+										l2.WORD_ID.eq(firstWordId)
+												.and(l2.MEANING_ID.eq(l1.MEANING_ID))
+												.and(l2.DATASET_CODE.eq(l1.DATASET_CODE)))))
 				.execute();
 
 		create.update(WORD_PROCESS_LOG)
@@ -1147,6 +1156,10 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		create.update(WORD_LIFECYCLE_LOG)
 				.set(WORD_LIFECYCLE_LOG.WORD_ID, firstWordId)
 				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.delete(LEXEME)
+				.where(LEXEME.WORD_ID.eq(secondWordId))
 				.execute();
 
 		create.delete(WORD)

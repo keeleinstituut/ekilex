@@ -21,6 +21,7 @@ import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.LogData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.CommonDataDbService;
@@ -50,7 +51,8 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void updateWordValue(Long id, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateWordValue(id, value, valuePrese);
 	}
@@ -58,25 +60,30 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateWordType(Long wordId, String currentTypeCode, String newTypeCode) {
 		Long wordWordTypeId = cudDbService.updateWordType(wordId, currentTypeCode, newTypeCode);
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, currentTypeCode, newTypeCode);
+		LogData logData = new LogData(
+				LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, currentTypeCode, newTypeCode);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateWordAspect(Long wordId, String typeCode) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.ASPECT, wordId, typeCode);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.ASPECT, wordId, typeCode);
+		createLifecycleLog(logData);
 		cudDbService.updateWordAspect(wordId, typeCode);
 	}
 
 	@Transactional
 	public void updateWordGender(Long wordId, String genderCode) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.GENDER, wordId, genderCode);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.GENDER, wordId, genderCode);
+		createLifecycleLog(logData);
 		cudDbService.updateWordGender(wordId, genderCode);
 	}
 
 	@Transactional
 	public void updateWordRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.ORDER_BY, item);
+			createListOrderingLifecycleLog(logData);
 			cudDbService.updateWordRelationOrderby(item);
 		}
 	}
@@ -84,7 +91,8 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateWordEtymologyOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ORDER_BY, item);
+			createListOrderingLifecycleLog(logData);
 			cudDbService.updateWordEtymologyOrderby(item);
 		}
 	}
@@ -92,7 +100,8 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateMeaningDomainOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_DOMAIN, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_DOMAIN, LifecycleProperty.ORDER_BY, item);
+			createListOrderingLifecycleLog(logData);
 			cudDbService.updateMeaningDomainOrderby(item);
 		}
 	}
@@ -100,21 +109,24 @@ public class CudService extends AbstractService {
 	//@PreAuthorize("hasPermission(#id, 'USAGE', 'DATASET:CRUD')")
 	@Transactional
 	public void updateUsageValue(Long id, String valuePrese, Complexity complexity) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
 	}
 
 	@Transactional
 	public void updateUsageTranslationValue(Long id, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateUsageDefinitionValue(Long id, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
@@ -122,7 +134,8 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateLexemeOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.ORDER_BY, item);
+			createListOrderingLifecycleLog(logData);
 			cudDbService.updateLexemeOrderby(item);
 		}
 	}
@@ -138,77 +151,90 @@ public class CudService extends AbstractService {
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
+			createLifecycleLog(logData);
 			cudDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
 		}
 	}
 
 	@Transactional
 	public void updateLexemeGovernment(Long id, String value, Complexity complexity) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, value);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, value);
+		createLifecycleLog(logData);
 		cudDbService.updateFreeformTextValueAndComplexity(id, value, null, complexity);
 	}
 
 	@Transactional
 	public void updateLexemeGrammar(Long id, String value, Complexity complexity) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, value);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, value);
+		createLifecycleLog(logData);
 		cudDbService.updateFreeformTextValueAndComplexity(id, value, null, complexity);
 	}
 
 	@Transactional
 	public void updateLexemeFrequencyGroup(Long lexemeId, String freqGroupCode) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.FREQUENCY_GROUP, lexemeId, freqGroupCode);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.FREQUENCY_GROUP, lexemeId, freqGroupCode);
+		createLifecycleLog(logData);
 		cudDbService.updateLexemeFrequencyGroup(lexemeId, freqGroupCode);
 	}
 
 	@Transactional
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		Long lexemePosId = cudDbService.updateLexemePos(lexemeId, currentPos, newPos);
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, currentPos, newPos);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, currentPos, newPos);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) {
 		Long lexemeDerivid = cudDbService.updateLexemeDeriv(lexemeId, currentDeriv, newDeriv);
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivid, currentDeriv, newDeriv);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivid, currentDeriv, newDeriv);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) {
 		Long lexemeRegisterId = cudDbService.updateLexemeRegister(lexemeId, currentRegister, newRegister);
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, currentRegister, newRegister);
+		LogData logData = new LogData(
+				LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, currentRegister, newRegister);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateLexemeRegion(Long lexemeId, String currentRegion, String newRegion) {
 		Long lexemeRegionId = cudDbService.updateLexemeRegion(lexemeId, currentRegion, newRegion);
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, currentRegion, newRegion);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, currentRegion, newRegion);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateLexemePublicNote(Long id, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE_STATE, lexemeId, valueStateCode);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE_STATE, lexemeId, valueStateCode);
+		createLifecycleLog(logData);
 		cudDbService.updateLexemeValueState(lexemeId, valueStateCode);
 	}
 
 	@Transactional
 	public void updateLexemeRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.ORDER_BY, item);
+			createListOrderingLifecycleLog(logData);
 			cudDbService.updateLexemeRelationOrderby(item);
 		}
 	}
 
 	@Transactional
 	public void updateDefinition(Long id, String valuePrese, Complexity complexity, String typeCode) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateDefinition(id, value, valuePrese, complexity, typeCode);
 	}
@@ -216,14 +242,16 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateDefinitionOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.ORDER_BY, item);
+			createListOrderingLifecycleLog(logData);
 			cudDbService.updateDefinitionOrderby(item);
 		}
 	}
 
 	@Transactional
 	public void updateDefinitionPublicNote(Long id, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
@@ -231,7 +259,8 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateMeaningRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.ORDER_BY, item);
+			createListOrderingLifecycleLog(logData);
 			cudDbService.updateMeaningRelationOrderby(item);
 		}
 	}
@@ -239,26 +268,31 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
 		Long meaningDomainId = cudDbService.updateMeaningDomain(meaningId, currentDomain, newDomain);
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, currentDomain.getCode(), newDomain.getCode());
+		LogData logData = new LogData(
+				LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, currentDomain.getCode(), newDomain.getCode());
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateMeaningLearnerComment(Long id, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateMeaningPublicNote(Long id, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
 	@Transactional
 	public void updateImageTitle(Long imageId, String valuePrese) {
-		createLifecycleLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
+		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateImageTitle(imageId, value);
 	}
@@ -269,13 +303,15 @@ public class CudService extends AbstractService {
 	public void createWord(String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long wordId = cudDbService.createWordAndLexeme(value, valuePrese, datasetCode, language, morphCode, meaningId);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createWordType(Long wordId, String typeCode) {
 		Long lexemePosId = cudDbService.createWordType(wordId, typeCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -302,18 +338,16 @@ public class CudService extends AbstractService {
 				List<Map<String, Object>> wordRelationGroupMembers = cudDbService.getWordRelationGroupMembers(groupId);
 				String logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 				for (Map<String, Object> member : wordRelationGroupMembers) {
-					createLifecycleLog(
-							LifecycleEventType.CREATE,
-							LifecycleEntity.WORD_RELATION_GROUP_MEMBER,
-							LifecycleProperty.VALUE,
-							(Long) member.get("id"),
-							previousLogValue,
-							logValue);
+					Long memberId = (Long) member.get("memberId");
+					LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION_GROUP_MEMBER, LifecycleProperty.VALUE, memberId,
+							previousLogValue, logValue);
+					createLifecycleLog(logData);
 				}
 			}
 		} else {
 			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode);
-			createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+			createLifecycleLog(logData);
 		}
 	}
 
@@ -323,77 +357,89 @@ public class CudService extends AbstractService {
 		if (lexemeId == null) {
 			return;
 		}
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createUsage(Long lexemeId, String valuePrese, String languageCode, Complexity complexity) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageId = cudDbService.createUsage(lexemeId, value, valuePrese, languageCode, complexity);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createUsageTranslation(Long usageId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageTranslationId = cudDbService.createUsageTranslation(usageId, value, valuePrese, languageCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createUsageDefinition(Long usageId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = cudDbService.createUsageDefinition(usageId, value, valuePrese, languageCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemePos(Long lexemeId, String posCode) {
 		Long lexemePosId = cudDbService.createLexemePos(lexemeId, posCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = cudDbService.createLexemeDeriv(lexemeId, derivCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeRegister(Long lexemeId, String registerCode) {
 		Long lexemeRegisterId = cudDbService.createLexemeRegister(lexemeId, registerCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeRegion(Long lexemeId, String regionCode) {
 		Long lexemeRegionId = cudDbService.createLexemeRegion(lexemeId, regionCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeGovernment(Long lexemeId, String government, Complexity complexity) {
 		Long governmentId = cudDbService.createLexemeGovernment(lexemeId, government, complexity);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, government);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, government);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeGrammar(Long lexemeId, String value, Complexity complexity) {
 		Long grammarId = cudDbService.createLexemeGrammar(lexemeId, value, complexity);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, value);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, value);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemePublicNote(Long lexemeId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long lexemeFreeformId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) {
 		Long lexemeRelationId = cudDbService.createLexemeRelation(lexemeId1, lexemeId2, relationType);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -401,33 +447,38 @@ public class CudService extends AbstractService {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = cudDbService.createLexemeSourceLink(lexemeId, sourceId, refType, sourceValue, sourceName);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createMeaningDomain(Long meaningId, Classifier domain) {
 		Long meaningDomainId = cudDbService.createMeaningDomain(meaningId, domain);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType) {
 		Long meaningRelationId = cudDbService.createMeaningRelation(meaningId1, meaningId2, relationType);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String languageCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long meaningFreeformId = cudDbService.createMeaningLearnerComment(meaningId, value, valuePrese, languageCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createMeaningPublicNote(Long meaningId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long meaningFreeformId = cudDbService.createMeaningPublicNote(meaningId, value, valuePrese);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -435,14 +486,17 @@ public class CudService extends AbstractService {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createDefinitionPublicNote(Long definitionId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long definitionFreeformId = cudDbService.createDefinitionPublicNote(definitionId, value, valuePrese);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, definitionFreeformId, valuePrese);
+		LogData logData = new LogData(
+				LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, definitionFreeformId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -450,27 +504,31 @@ public class CudService extends AbstractService {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = cudDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceValue, sourceName);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
 		Long sourceLinkId = cudDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createImageTitle(Long imageId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.createImageTitle(imageId, value);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
+		createLifecycleLog(logData);
 	}
 
 	// --- DELETE ---
 
 	@Transactional
 	public void deleteWord(Long wordId) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId);
+		createLifecycleLog(logData);
 		cudDbService.deleteWord(wordId);
 	}
 
@@ -478,7 +536,8 @@ public class CudService extends AbstractService {
 	public void deleteWordType(Long wordId, String typeCode) {
 		if (StringUtils.isNotBlank(typeCode)) {
 			Long wordWordTypeId = cudDbService.getWordWordTypeId(wordId, typeCode);
-			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, typeCode, null);
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, typeCode, null);
+			createLifecycleLog(logData);
 			cudDbService.deleteWordWordType(wordWordTypeId);
 		}
 	}
@@ -487,7 +546,8 @@ public class CudService extends AbstractService {
 	public void deleteWordRelation(Long relationId) {
 		Long groupId = cudDbService.getWordRelationGroupId(relationId);
 		if (groupId == null) {
-			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+			createLifecycleLog(logData);
 			cudDbService.deleteWordRelation(relationId);
 		} else {
 			List<Map<String, Object>> wordRelationGroupMembers = cudDbService.getWordRelationGroupMembers(groupId);
@@ -500,13 +560,10 @@ public class CudService extends AbstractService {
 						.map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 			}
 			for (Map<String, Object> member : wordRelationGroupMembers) {
-				createLifecycleLog(
-						LifecycleEventType.DELETE,
-						LifecycleEntity.WORD_RELATION_GROUP_MEMBER,
-						LifecycleProperty.VALUE,
-						(Long) member.get("id"),
-						previousLogValue,
-						logValue);
+				Long memberId = (Long) member.get("id");
+				LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION_GROUP_MEMBER, LifecycleProperty.VALUE, memberId,
+						previousLogValue, logValue);
+				createLifecycleLog(logData);
 			}
 			cudDbService.deleteWordRelationGroupMember(relationId);
 			if (wordRelationGroupMembers.size() <= 2) {
@@ -517,19 +574,22 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteDefinition(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteDefinition(id);
 	}
 
 	@Transactional
 	public void deleteDefinitionSourceLink(Long sourceLinkId) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteDefinitionRefLink(sourceLinkId);
 	}
 
 	@Transactional
 	public void deleteDefinitionPublicNote(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
@@ -542,7 +602,8 @@ public class CudService extends AbstractService {
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
+		createLifecycleLog(logData);
 		updateLexemeLevels(lexemeId, "delete");
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
@@ -555,43 +616,50 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteUsage(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteUsageTranslation(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteUsageDefinition(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteLexemeGovernment(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteLexemeGrammar(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteLexemePublicNote(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteLexemeSourceLink(Long sourceLinkId) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteLexemeRefLink(sourceLinkId);
 	}
 
@@ -599,7 +667,8 @@ public class CudService extends AbstractService {
 	public void deleteLexemePos(Long lexemeId, String posCode) {
 		if (StringUtils.isNotBlank(posCode)) {
 			Long lexemePosId = cudDbService.getLexemePosId(lexemeId, posCode);
-			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
+			createLifecycleLog(logData);
 			cudDbService.deleteLexemePos(lexemePosId);
 		}
 	}
@@ -608,7 +677,8 @@ public class CudService extends AbstractService {
 	public void deleteLexemeDeriv(Long lexemeId, String derivCode) {
 		if (StringUtils.isNotBlank(derivCode)) {
 			Long lexemeDerivId = cudDbService.getLexemeDerivId(lexemeId, derivCode);
-			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode, null);
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode, null);
+			createLifecycleLog(logData);
 			cudDbService.deleteLexemeDeriv(lexemeDerivId);
 		}
 	}
@@ -617,7 +687,8 @@ public class CudService extends AbstractService {
 	public void deleteLexemeRegister(Long lexemeId, String registerCode) {
 		if (StringUtils.isNotBlank(registerCode)) {
 			Long lexemeRegisterId = cudDbService.getLexemeRegisterId(lexemeId, registerCode);
-			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode, null);
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode, null);
+			createLifecycleLog(logData);
 			cudDbService.deleteLexemeRegister(lexemeRegisterId);
 		}
 	}
@@ -626,14 +697,16 @@ public class CudService extends AbstractService {
 	public void deleteLexemeRegion(Long lexemeId, String regionCode) {
 		if (StringUtils.isNotBlank(regionCode)) {
 			Long lexemeRegionId = cudDbService.getLexemeRegionId(lexemeId, regionCode);
-			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, regionCode, null);
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, regionCode, null);
+			createLifecycleLog(logData);
 			cudDbService.deleteLexemeRegion(lexemeRegionId);
 		}
 	}
 
 	@Transactional
 	public void deleteLexemeRelation(Long relationId) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId);
+		createLifecycleLog(logData);
 		cudDbService.deleteLexemeRelation(relationId);
 	}
 
@@ -649,7 +722,8 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteMeaning(Long meaningId) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId);
+		createLifecycleLog(logData);
 		cudDbService.deleteMeaning(meaningId);
 	}
 
@@ -657,38 +731,44 @@ public class CudService extends AbstractService {
 	public void deleteMeaningDomain(Long meaningId, Classifier domain) {
 		if (domain != null) {
 			Long meaningDomainId = cudDbService.getMeaningDomainId(meaningId, domain);
-			createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
+			createLifecycleLog(logData);
 			cudDbService.deleteMeaningDomain(meaningDomainId);
 		}
 	}
 
 	@Transactional
 	public void deleteMeaningRelation(Long relationId) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId);
+		createLifecycleLog(logData);
 		cudDbService.deleteMeaningRelation(relationId);
 	}
 
 	@Transactional
 	public void deleteMeaningLearnerComment(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteMeaningPublicNote(Long id) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, id);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteFreeformSourceLink(Long sourceLinkId) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteFreeformRefLink(sourceLinkId);
 	}
 
 	@Transactional
 	public void deleteImageTitle(Long imageId) {
-		createLifecycleLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, null);
+		createLifecycleLog(logData);
 		cudDbService.deleteImageTitle(imageId);
 
 	}
@@ -702,7 +782,8 @@ public class CudService extends AbstractService {
 	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long createdWordId = cudDbService.createWordAndLexeme(value, valuePrese, datasetCode, language, morphCode, null);
-		createLifecycleLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
+		createLifecycleLog(logData);
 
 		addSynRelation(existingWordId, createdWordId);
 	}
