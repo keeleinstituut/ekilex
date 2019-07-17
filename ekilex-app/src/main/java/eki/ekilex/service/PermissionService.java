@@ -108,8 +108,11 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public DatasetPermission getDatasetPermission(Long id) {
-		return permissionDbService.getDatasetPermission(id);
+	public DatasetPermission getDatasetPermissionAndSetChosen(Long permissionId) {
+		EkiUser currentUser = userService.getAuthenticatedUser();
+		permissionDbService.setLastChosenPermissionId(permissionId, currentUser.getId());
+
+		return permissionDbService.getDatasetPermission(permissionId);
 	}
 
 	@Transactional
@@ -121,28 +124,5 @@ public class PermissionService implements SystemConstant {
 	public boolean isGrantedForMeaning(Long meaningId, String datasetCode) {
 		return permissionDbService.isGrantedForMeaning(meaningId, datasetCode);
 	}
-
-	@Transactional
-	public void setLastChosenPermission(Long permissionId) {
-		EkiUser currentUser = userService.getAuthenticatedUser();
-		permissionDbService.setLastChosenPermissionId(permissionId, currentUser.getId());
-	}
-
-	// @Transactional
-	// public DatasetPermission getUserLastChosenOrSinglePermission() {
-	// 	EkiUser currentUser = userService.getAuthenticatedUser();
-	//
-	// 	DatasetPermission permission = permissionDbService.getUserLastChosenPermission(currentUser.getId());
-	//
-	// 	if (permission == null) {
-	// 		List<DatasetPermission> userPermissions = permissionDbService.getDatasetPermissions(currentUser.getId());
-	// 		if (CollectionUtils.isNotEmpty(userPermissions) && userPermissions.size() == 1) {
-	// 			permission = userPermissions.get(0);
-	// 			permissionDbService.setLastChosenPermissionId(permission.getId(), currentUser.getId());
-	// 		}
-	// 	}
-	//
-	// 	return permission;
-	// }
 
 }

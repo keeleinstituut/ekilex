@@ -136,9 +136,7 @@ public class HomeController extends AbstractPageController {
 			sessionBean = new SessionBean();
 			model.addAttribute(SESSION_BEAN, sessionBean);
 		}
-		if (sessionBean.getUserRole() == null) {
-			sessionBean.setUserRole(user.getLastChosenPermission());
-		}
+		sessionBean.setUserRole(user.getLastChosenPermission());
 	}
 
 	@GetMapping("/loginerror")
@@ -154,10 +152,8 @@ public class HomeController extends AbstractPageController {
 		logger.debug("User initiated role change, dataSetPermissionId: {}", permissionId);
 
 		if (permissionId != null) {
-			DatasetPermission datasetPermission = permissionService.getDatasetPermission(permissionId);
-			permissionService.setLastChosenPermission(permissionId);
+			DatasetPermission datasetPermission = permissionService.getDatasetPermissionAndSetChosen(permissionId);
 			userService.updateUserSecurityContext();
-
 			sessionBean.setUserRole(datasetPermission);
 		} else {
 			sessionBean.setUserRole(null);
