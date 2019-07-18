@@ -41,6 +41,7 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
@@ -950,13 +951,33 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public void addSynRelation(Long word1Id, Long word2Id, String relationType, String relatonStatus) {
-		create.insertInto(WORD_RELATION,
+	public SynRelation addSynRelation(Long word1Id, Long word2Id, String relationType, String relatonStatus) {
+		return create.insertInto(WORD_RELATION,
 					WORD_RELATION.WORD1_ID,
 					WORD_RELATION.WORD2_ID,
 					WORD_RELATION.WORD_REL_TYPE_CODE,
 					WORD_RELATION.RELATION_STATUS)
 				.values(word1Id, word2Id, relationType, relatonStatus)
+				.returning()
+				.fetchOne()
+				.into(SynRelation.class);
+	}
+
+	public List<SynRelation> getWordRelations(Long wordId, String relTypeCode) {
+		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
+				.from(WORD_RELATION)
+				.where(WORD_RELATION.WORD1_ID.eq(wordId))
+				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
+				.orderBy(WORD_RELATION.ORDER_BY)
+				.fetchInto(SynRelation.class);
+	}
+
+	public void updateWordRelationOrderBy(Long relationId, Long orderBy) {
+		create
+				.update(WORD_RELATION)
+				.set(WORD_RELATION.ORDER_BY, orderBy)
+				.where(WORD_RELATION.ID.eq(relationId))
 				.execute();
 	}
+
 }

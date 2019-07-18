@@ -178,6 +178,7 @@ public class EditController implements WebConstant {
 			cudService.createImageTitle(itemData.getId(), valuePrese);
 			break;
 		case "create_raw_relation":
+			//TODO - can regular word_relation be used here
 			cudService.addSynRelation(itemData.getId(), itemData.getId2());
 			break;
 		case "create_syn_word":

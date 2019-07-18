@@ -22,6 +22,7 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.LogData;
+import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.CommonDataDbService;
@@ -775,7 +776,8 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void addSynRelation(Long word1Id, Long word2Id) {
-		cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+		SynRelation createdRelation = cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+		moveCreatedRelationToFirst(word1Id, createdRelation);
 	}
 
 	@Transactional
@@ -785,7 +787,27 @@ public class CudService extends AbstractService {
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
 		createLifecycleLog(logData);
 
-		addSynRelation(existingWordId, createdWordId);
+		SynRelation createdRelation = cudDbService.addSynRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+		moveCreatedRelationToFirst(existingWordId, createdRelation);
+
 	}
 
+	private void moveCreatedRelationToFirst(Long wordId, SynRelation createdRelation) {
+		List<SynRelation> existingRelations = cudDbService.getWordRelations(wordId, RAW_RELATION_TYPE);
+		if (existingRelations.size() > 1) {
+
+			SynRelation firstRelation = existingRelations.get(0);
+			List<Long> existingOrderByValues = existingRelations.stream().map(SynRelation::getOrderBy).collect(Collectors.toList());
+
+			cudDbService.updateWordRelationOrderBy(createdRelation.getId(), firstRelation.getOrderBy());
+			existingRelations.remove(existingRelations.size() - 1);
+			existingOrderByValues.remove(0);
+
+			int relIdx = 0;
+			for (SynRelation relation : existingRelations) {
+				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
+				relIdx++;
+			}
+		}
+	}
 }
