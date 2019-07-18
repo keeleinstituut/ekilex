@@ -39,6 +39,7 @@ import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.SourceService;
@@ -73,6 +74,9 @@ public class EditController implements WebConstant {
 
 	@Autowired
 	private TextDecorationService textDecorationService;
+
+	@Autowired
+	private CompositionService compositionService;
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
@@ -639,7 +643,7 @@ public class EditController implements WebConstant {
 	public String joinWords(@RequestParam("firstWordId") Long firstWordId, @RequestParam("secondWordId") Long secondWordId) {
 
 		logger.debug("Joining words, firstWordId: \"{}\", secondWordId: \"{}\"", firstWordId, secondWordId);
-		commonDataService.joinWords(firstWordId, secondWordId);
+		compositionService.joinWords(firstWordId, secondWordId);
 		return "redirect:" + WORD_BACK_URI + "/" + firstWordId;
 	}
 }
