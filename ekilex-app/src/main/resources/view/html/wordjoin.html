@@ -75,7 +75,7 @@
                       <span class="btn-link">
                         <span th:if="${wordEtymRel.questionable}">?</span>
                         <span th:if="${wordEtymRel.compound}">+</span>
-                        <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
+                        <span th:text="${wordEtymRel.relatedWord + ' (' + iso2languages[wordEtymRel.relatedWordLang] + ')'}"></span>
                       </span>
                       <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
                     </div>
@@ -157,7 +157,7 @@
                 <table>
                   <tr th:each="relation : ${wordDetails.wordRelations}" th:data-orderby="${relation.orderBy}">
                     <td>
-                      <span class="btn-link" th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
+                      <span class="btn-link" th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
                     </td>
                     <td>
                       <span th:text="${relation.relationTypeLabel}"></span>
@@ -198,7 +198,7 @@
                       <span class="btn-link">
                         <span th:if="${wordEtymRel.questionable}">?</span>
                         <span th:if="${wordEtymRel.compound}">+</span>
-                        <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
+                        <span th:text="${wordEtymRel.relatedWord + ' (' + iso2languages[wordEtymRel.relatedWordLang] + ')'}"></span>
                       </span>
                       <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
                     </div>
@@ -227,7 +227,7 @@
                   <div class="btn-custom">
                     <span th:text="${meaningWord.value}"></span>
                     <span th:text="${meaningWord.homonymNumber}"></span>
-                    <span th:text="${'(' + meaningWord.language + ')'}"></span>
+                    <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                   </div>
                   <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                 </th:block>
