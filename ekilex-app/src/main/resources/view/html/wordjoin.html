@@ -22,71 +22,10 @@
           <div th:if="${firstWordDetails != null}">
             <span th:utext="${firstWordDetails.word.value}" class="ttl"></span>
             <span th:text="${firstWordDetails.word.homonymNumber}" th:if="${firstWordDetails.word.homonymNumber > 0}"></span>
-
-            <div class="row" th:if="${firstWordDetails.word.genderCode != null}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Sugu</span>
-              </div>
-              <div class="col pl-0">
-                <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(firstWordDetails.word.genderCode, wordGenders)}"></span>
-              </div>
-            </div>
-
-            <div class="row" th:if="${not #lists.isEmpty(firstWordDetails.wordTypes)}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Sõna tüüp</span>
-              </div>
-              <div class="col pl-0">
-                <span th:each="classif,classifIter : ${firstWordDetails.wordTypes}" class="hidden-buttons">
-                  <span th:text="${classif.code}"></span>
-                  <th:block th:unless="${classif.code == classif.value}">
-                    -
-                    <span th:text="${classif.value}"></span>
-                  </th:block>
-                </span>
-              </div>
-            </div>
-
-            <div class="row" th:if="${firstWordDetails.word.aspectCode != null}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Aspekt</span>
-              </div>
-              <div class="col pl-0">
-                <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(firstWordDetails.word.aspectCode, wordAspects)}"></span>
-              </div>
-            </div>
-
-            <div class="row mb-2" th:if="${not #lists.isEmpty(firstWordDetails.wordEtymology)}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Keelendi etümoloogia</span>
-              </div>
-              <div class="col pl-0 small" style="line-height: 0.8rem;">
-                <th:block th:each="wordEtym, itemIter : ${firstWordDetails.wordEtymology}">
-                  <div>
-                    <div>
-                      <span th:if="${wordEtym.questionable}">?</span>
-                      <span th:if="${wordEtym.etymologyTypeCode != null}" th:text="${wordEtym.etymologyTypeCode}"></span>
-                      <span th:if="${wordEtym.etymologyYear != null}" th:text="${wordEtym.etymologyYear}"></span>
-                    </div>
-                    <div th:each="wordEtymSourceLink : ${wordEtym.wordEtymSourceLinks}">
-                      <span th:text="${wordEtymSourceLink.value}"></span>
-                    </div>
-                    <div th:each="wordEtymRel : ${wordEtym.wordEtymRelations}">
-                      <span class="btn-link">
-                        <span th:if="${wordEtymRel.questionable}">?</span>
-                        <span th:if="${wordEtymRel.compound}">+</span>
-                        <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
-                      </span>
-                      <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
-                    </div>
-                    <div th:if="${wordEtym.comment != null}" th:utext="${wordEtym.comment}"></div>
-                  </div>
-                  <div th:unless="${itemIter.last}">
-                    <hr />
-                  </div>
-                </th:block>
-              </div>
-            </div>
+            <th:block th:replace=":: gender(${firstWordDetails})"></th:block>
+            <th:block th:replace=":: word_types(${firstWordDetails})"></th:block>
+            <th:block th:replace=":: aspect_code(${firstWordDetails})"></th:block>
+            <th:block th:replace=":: etymology(${firstWordDetails})"></th:block>
           </div>
         </div>
       </div>
@@ -115,40 +54,9 @@
                 </form>
               </div>
             </div>
-
-            <div class="row" th:if="${wordDetails.word.genderCode != null}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Sugu</span>
-              </div>
-              <div class="col pl-0">
-                <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(wordDetails.word.genderCode, wordGenders)}"></span>
-              </div>
-            </div>
-
-            <div class="row" th:if="${not #lists.isEmpty(wordDetails.wordTypes)}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Sõna tüüp</span>
-              </div>
-              <div class="col pl-0">
-                <span th:each="classif,classifIter : ${wordDetails.wordTypes}" class="hidden-buttons">
-                  <span th:text="${classif.code}"></span>
-                  <th:block th:unless="${classif.code == classif.value}">
-                    -
-                    <span th:text="${classif.value}"></span>
-                  </th:block>
-                </span>
-              </div>
-            </div>
-
-            <div class="row" th:if="${wordDetails.word.aspectCode != null}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Aspekt</span>
-              </div>
-              <div class="col pl-0">
-                <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(wordDetails.word.aspectCode, wordAspects)}"></span>
-              </div>
-            </div>
-
+            <th:block th:replace=":: gender(${wordDetails})"></th:block>
+            <th:block th:replace=":: word_types(${wordDetails})"></th:block>
+            <th:block th:replace=":: aspect_code(${wordDetails})"></th:block>
             <div class="row mb-2" th:if="${not #lists.isEmpty(wordDetails.wordRelations)}">
               <div class="col pr-0 col-w13rem">
                 <span class="lbl">Keelendi seosed</span>
@@ -178,39 +86,7 @@
                 </table>
               </div>
             </div>
-
-            <div class="row mb-2" th:if="${not #lists.isEmpty(wordDetails.wordEtymology)}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Keelendi etümoloogia</span>
-              </div>
-              <div class="col pl-0 small" style="line-height: 0.8rem;">
-                <th:block th:each="wordEtym, itemIter : ${wordDetails.wordEtymology}">
-                  <div>
-                    <div>
-                      <span th:if="${wordEtym.questionable}">?</span>
-                      <span th:if="${wordEtym.etymologyTypeCode != null}" th:text="${wordEtym.etymologyTypeCode}"></span>
-                      <span th:if="${wordEtym.etymologyYear != null}" th:text="${wordEtym.etymologyYear}"></span>
-                    </div>
-                    <div th:each="wordEtymSourceLink : ${wordEtym.wordEtymSourceLinks}">
-                      <span th:text="${wordEtymSourceLink.value}"></span>
-                    </div>
-                    <div th:each="wordEtymRel : ${wordEtym.wordEtymRelations}">
-                      <span class="btn-link">
-                        <span th:if="${wordEtymRel.questionable}">?</span>
-                        <span th:if="${wordEtymRel.compound}">+</span>
-                        <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
-                      </span>
-                      <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
-                    </div>
-                    <div th:if="${wordEtym.comment != null}" th:utext="${wordEtym.comment}"></div>
-                  </div>
-                  <div th:unless="${itemIter.last}">
-                    <hr />
-                  </div>
-                </th:block>
-              </div>
-            </div>
-
+            <th:block th:replace=":: etymology(${wordDetails})"></th:block>
             <div class="border rounded mb-2 p-2" th:each="lexeme : ${wordDetails.lexemes}">
               <div class="d-flex align-items-center flex-wrap">
                 <span th:if="${lexeme.levels != null}"
@@ -244,6 +120,75 @@
       </div>
     </div>
   </div>
+  <th:block th:fragment="gender(details)" th:if="${details != null}">
+    <div class="row" th:if="${details.word.genderCode != null}">
+      <div class="col pr-0 col-w13rem">
+        <span class="lbl">Sugu</span>
+      </div>
+      <div class="col pl-0">
+        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.genderCode, wordGenders)}"></span>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="word_types(details)" th:if="${details != null}">
+    <div class="row" th:if="${not #lists.isEmpty(details.wordTypes)}">
+      <div class="col pr-0 col-w13rem">
+        <span class="lbl">Sõna tüüp</span>
+      </div>
+      <div class="col pl-0">
+        <span th:each="classif,classifIter : ${details.wordTypes}" class="hidden-buttons">
+          <span th:text="${classif.code}"></span>
+          <th:block th:unless="${classif.code == classif.value}">
+            -
+            <span th:text="${classif.value}"></span>
+          </th:block>
+        </span>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="aspect_code(details)" th:if="${details != null}">
+    <div class="row" th:if="${details.word.aspectCode != null}">
+      <div class="col pr-0 col-w13rem">
+        <span class="lbl">Aspekt</span>
+      </div>
+      <div class="col pl-0">
+        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.aspectCode, wordAspects)}"></span>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="etymology(details)" th:if="${details != null}">
+    <div class="row mb-2" th:if="${not #lists.isEmpty(details.wordEtymology)}">
+      <div class="col pr-0 col-w13rem">
+        <span class="lbl">Keelendi etümoloogia</span>
+      </div>
+      <div class="col pl-0 small" style="line-height: 0.8rem;">
+        <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">
+          <div>
+            <div>
+              <span th:if="${wordEtym.questionable}">?</span>
+              <span th:if="${wordEtym.etymologyTypeCode != null}" th:text="${wordEtym.etymologyTypeCode}"></span>
+              <span th:if="${wordEtym.etymologyYear != null}" th:text="${wordEtym.etymologyYear}"></span>
+            </div>
+            <div th:each="wordEtymSourceLink : ${wordEtym.wordEtymSourceLinks}">
+              <span th:text="${wordEtymSourceLink.value}"></span>
+            </div>
+            <div th:each="wordEtymRel : ${wordEtym.wordEtymRelations}">
+              <span class="btn-link">
+                <span th:if="${wordEtymRel.questionable}">?</span>
+                <span th:if="${wordEtymRel.compound}">+</span>
+                <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
+              </span>
+              <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
+            </div>
+            <div th:if="${wordEtym.comment != null}" th:utext="${wordEtym.comment}"></div>
+          </div>
+          <div th:unless="${itemIter.last}">
+            <hr />
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </th:block>
   <script th:inline="javascript">
 	  $('[data-toggle=join-confirm]').confirmation({
 		  btnOkLabel : 'Jah',
