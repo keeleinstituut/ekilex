@@ -18,6 +18,7 @@ import eki.ekilex.data.LogData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
@@ -26,11 +27,16 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 @Component
 public class CompositionService extends AbstractService {
 
+	private static final int DEFAULT_LEXEME_LEVEL = 1;
+
 	@Autowired
 	private CompositionDbService compositionDbService;
 
 	@Autowired
 	private CudDbService cudDbService;
+
+	@Autowired
+	private CommonDataDbService commonDataDbService;
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
@@ -200,6 +206,43 @@ public class CompositionService extends AbstractService {
 				LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, lexeme.getMeaningId(), logEntrySource, logEntryTarget);
 		createLifecycleLog(logData);
 		compositionDbService.joinLexemeMeanings(lexemeId, lexemeId2);
+	}
+
+	@Transactional
+	public void joinWords(Long firstWordId, Long secondWordId) {
+
+		String wordValue = commonDataDbService.getWordValue(firstWordId);
+		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, firstWordId, wordValue, wordValue);
+		createLifecycleLog(logData);
+
+		compositionDbService.joinWordData(firstWordId, secondWordId);
+		joinLexemeData(firstWordId, secondWordId);
+		cudDbService.deleteWord(secondWordId);
+	}
+
+	private void joinLexemeData(Long firstWordId, Long secondWordId) {
+
+		List<LexemeRecord> secondWordLexemes = compositionDbService.getWordLexemes(secondWordId);
+		for (LexemeRecord secondWordLexeme : secondWordLexemes) {
+			Long secondWordLexemeId = secondWordLexeme.getId();
+			Long secondWordLexemeMeaningId = secondWordLexeme.getMeaningId();
+			String secondWordLexemeDatasetCode = secondWordLexeme.getDatasetCode();
+
+			Long firstWordLexemeId = compositionDbService.getLexemeId(firstWordId, secondWordLexemeMeaningId, secondWordLexemeDatasetCode);
+			boolean lexemeExists = firstWordLexemeId != null;
+
+			if (lexemeExists) {
+				boolean isOnlyLexemeForMeaning = commonDataDbService.isOnlyLexemeForMeaning(secondWordLexemeId);
+				cudDbService.deleteLexeme(secondWordLexemeId);
+				if (isOnlyLexemeForMeaning) {
+					cudDbService.deleteMeaning(secondWordLexemeMeaningId);
+				}
+			} else {
+				Integer currentMaxLevel = compositionDbService.getWordLexemesMaxFirstLevel(firstWordId);
+				int level1 = currentMaxLevel + 1;
+				compositionDbService.updateLexemeWordIdAndLevels(secondWordLexemeId, firstWordId, level1, DEFAULT_LEXEME_LEVEL, DEFAULT_LEXEME_LEVEL);
+			}
+		}
 	}
 
 	private void updateLexemeLevels(Long lexemeId, String action) {

@@ -19,9 +19,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleEventType;
-import eki.common.constant.LifecycleProperty;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
@@ -34,7 +31,6 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
-import eki.ekilex.data.LogData;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Paradigm;
@@ -373,16 +369,6 @@ public class CommonDataService extends AbstractWordSearchService {
 		}
 
 		return wordDetailsList;
-	}
-
-	@Transactional
-	public void joinWords(Long firstWordId, Long secondWordId) {
-
-		String wordValue = commonDataDbService.getWordValue(firstWordId);
-		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, firstWordId, wordValue, wordValue);
-		createLifecycleLog(logData);
-
-		commonDataDbService.joinWords(firstWordId, secondWordId);
 	}
 
 	private void populateLexeme(WordLexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction, Map<String, String> datasetNameMap) {

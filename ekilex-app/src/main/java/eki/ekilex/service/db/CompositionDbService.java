@@ -19,6 +19,13 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
+import static eki.ekilex.data.db.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.util.List;
 import java.util.Objects;
@@ -63,6 +70,22 @@ public class CompositionDbService implements DbConstant {
 
 	public List<LexemeRecord> getMeaningLexemes(Long meaningId) {
 		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId)).fetch();
+	}
+
+	public List<LexemeRecord> getWordLexemes(Long wordId) {
+		return create.selectFrom(LEXEME).where(LEXEME.WORD_ID.eq(wordId)).fetch();
+	}
+
+	public Long getLexemeId(Long wordId, Long meaningId, String datasetCode) {
+		return create
+				.select(LEXEME.ID)
+				.from(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
 	}
 
 	public List<DefinitionRecord> getMeaningDefinitions(Long meaningId) {
@@ -512,5 +535,68 @@ public class CompositionDbService implements DbConstant {
 			cloneFreeform(f.getId(), clonedFreeform.getId());
 		});
 		return clonedFreeform.getId();
+	}
+
+	public void joinWordData(Long firstWordId, Long secondWordId) {
+
+		create.update(WORD_RELATION)
+				.set(WORD_RELATION.WORD1_ID, firstWordId)
+				.where(WORD_RELATION.WORD1_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_RELATION)
+				.set(WORD_RELATION.WORD2_ID, firstWordId)
+				.where(WORD_RELATION.WORD2_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_GROUP_MEMBER)
+				.set(WORD_GROUP_MEMBER.WORD_ID, firstWordId)
+				.where(WORD_GROUP_MEMBER.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_ETYMOLOGY)
+				.set(WORD_ETYMOLOGY.WORD_ID, firstWordId)
+				.where(WORD_ETYMOLOGY.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_ETYMOLOGY_RELATION)
+				.set(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID, firstWordId)
+				.where(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_WORD_TYPE)
+				.set(WORD_WORD_TYPE.WORD_ID, firstWordId)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_PROCESS_LOG)
+				.set(WORD_PROCESS_LOG.WORD_ID, firstWordId)
+				.where(WORD_PROCESS_LOG.WORD_ID.eq(secondWordId))
+				.execute();
+
+		create.update(WORD_LIFECYCLE_LOG)
+				.set(WORD_LIFECYCLE_LOG.WORD_ID, firstWordId)
+				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(secondWordId))
+				.execute();
+	}
+
+	public Integer getWordLexemesMaxFirstLevel(Long wordId) {
+
+		return create
+				.select(DSL.max(LEXEME.LEVEL1))
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId))
+				.fetchOneInto(Integer.class);
+	}
+
+	public void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2, int level3) {
+
+		create.update(LEXEME)
+				.set(LEXEME.WORD_ID, wordId)
+				.set(LEXEME.LEVEL1, level1)
+				.set(LEXEME.LEVEL2, level2)
+				.set(LEXEME.LEVEL3, level3)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
 	}
 }

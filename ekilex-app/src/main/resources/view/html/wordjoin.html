@@ -21,6 +21,8 @@
         <div class="border rounded p-2">
           <div th:if="${firstWordDetails != null}">
             <span th:utext="${firstWordDetails.word.value}" class="ttl"></span>
+            <span th:text="${firstWordDetails.word.homonymNumber}" th:if="${firstWordDetails.word.homonymNumber > 0}"></span>
+
             <div class="row" th:if="${firstWordDetails.word.genderCode != null}">
               <div class="col pr-0 col-w13rem">
                 <span class="lbl">Sugu</span>
@@ -54,36 +56,6 @@
               </div>
             </div>
 
-            <div class="row mb-2" th:if="${not #lists.isEmpty(firstWordDetails.wordRelations)}">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Keelendi seosed</span>
-              </div>
-              <div class="col pl-0 small" style="line-height: 0.8rem;">
-                <table>
-                  <tr th:each="relation : ${firstWordDetails.wordRelations}" th:data-orderby="${relation.orderBy}">
-                    <td>
-                      <span class="btn-link" th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${relation.relationTypeLabel}"></span>
-                    </td>
-                  </tr>
-                  <th:block th:if="${not #lists.isEmpty(firstWordDetails.wordGroups)}">
-                    <tr th:each="wordGroup : ${firstWordDetails.wordGroups}">
-                      <td>
-                        <span th:each="relation, itemIter : ${wordGroup.members}">
-                          <span class="btn-link" th:text="${relation.word}"></span>
-                        </span>
-                      </td>
-                      <td>
-                        <span th:text="${wordGroup.groupTypeLabel}"></span>
-                      </td>
-                    </tr>
-                  </th:block>
-                </table>
-              </div>
-            </div>
-
             <div class="row mb-2" th:if="${not #lists.isEmpty(firstWordDetails.wordEtymology)}">
               <div class="col pr-0 col-w13rem">
                 <span class="lbl">Keelendi etümoloogia</span>
@@ -103,7 +75,7 @@
                       <span class="btn-link">
                         <span th:if="${wordEtymRel.questionable}">?</span>
                         <span th:if="${wordEtymRel.compound}">+</span>
-                        <span th:text="${wordEtymRel.relatedWord + ' (' + iso2languages[wordEtymRel.relatedWordLang] + ')'}"></span>
+                        <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
                       </span>
                       <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
                     </div>
@@ -127,8 +99,9 @@
         <div class="border border-dark rounded mb-2 p-2" th:each="wordDetails : ${wordDetailsList}">
           <div th:if="${wordDetails != null}"
                th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordDetails.word.wordId, ''WORD'', ''DATASET:CRUD'')')}">
-            <div class="d-flex align-items-center flex-wrap">
+            <div class="d-flex align-items-center flex-wrap mb-2">
               <span th:utext="${wordDetails.word.value}" class="ttl"></span>
+              <span th:text="${wordDetails.word.homonymNumber}" th:if="${wordDetails.word.homonymNumber > 0}" class="ml-2"></span>
               <div class="ml-4">
                 <form th:action="@{/wordjoin}" method="post">
                   <input type="hidden" name="firstWordId" th:value="${firstWordId}">
@@ -184,7 +157,7 @@
                 <table>
                   <tr th:each="relation : ${wordDetails.wordRelations}" th:data-orderby="${relation.orderBy}">
                     <td>
-                      <span class="btn-link" th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
+                      <span class="btn-link" th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
                     </td>
                     <td>
                       <span th:text="${relation.relationTypeLabel}"></span>
@@ -225,7 +198,7 @@
                       <span class="btn-link">
                         <span th:if="${wordEtymRel.questionable}">?</span>
                         <span th:if="${wordEtymRel.compound}">+</span>
-                        <span th:text="${wordEtymRel.relatedWord + ' (' + iso2languages[wordEtymRel.relatedWordLang] + ')'}"></span>
+                        <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
                       </span>
                       <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
                     </div>
@@ -254,7 +227,7 @@
                   <div class="btn-custom">
                     <span th:text="${meaningWord.value}"></span>
                     <span th:text="${meaningWord.homonymNumber}"></span>
-                    <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                    <span th:text="${'(' + meaningWord.language + ')'}"></span>
                   </div>
                   <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                 </th:block>
