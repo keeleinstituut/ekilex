@@ -95,6 +95,12 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
+	public Map<String, String> getLanguagesIso2Map() {
+		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_ISO2).stream()
+				.collect(Collectors.toMap(Classifier::getCode, c-> StringUtils.isNotBlank(c.getValue()) ? c.getValue() : c.getCode()));
+	}
+
+	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
 		List<Classifier> domains = commonDataDbService.getDomainsInUse();
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));

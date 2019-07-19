@@ -2,6 +2,7 @@ package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -641,5 +642,10 @@ public class EditController implements WebConstant {
 		logger.debug("Joining words, firstWordId: \"{}\", secondWordId: \"{}\"", firstWordId, secondWordId);
 		commonDataService.joinWords(firstWordId, secondWordId);
 		return "redirect:" + WORD_BACK_URI + "/" + firstWordId;
+	}
+
+	@ModelAttribute("iso2languages")
+	public Map<String, String> getIso2Languages() {
+		return commonDataService.getLanguagesIso2Map();
 	}
 }

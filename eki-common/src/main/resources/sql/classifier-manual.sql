@@ -5,6 +5,7 @@ insert into label_type (code, value) values ('descrip', 'descrip');
 insert into label_type (code, value) values ('descrip2', 'descrip2');
 insert into label_type (code, value) values ('full', 'full');
 insert into label_type (code, value) values ('wordweb', 'wordweb');
+insert into label_type (code, value) values ('iso2', 'iso2');
 
 -- lex
 insert into dataset (code, name, is_visible, is_public) values ('ss1', 'Eesti keele sõnaraamat 2019', true, true);

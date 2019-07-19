@@ -46,7 +46,7 @@
                   <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="detailsBtn">
                     <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>
                     <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-                    <span th:text="${'(' + word.language + ')'}"></span>
+                    <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
                   </button>
                   <span class="float-right" style="padding: 15px">
                     <span th:id="${'word_select_point_' + word.wordId}" class="fa fa-play" style="display: none"></span>
@@ -121,7 +121,7 @@
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
                       <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'(' + meaningWord.language + ')'}"></span>
+                      <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                     </div>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
@@ -165,7 +165,7 @@
                     <button type="button" class="btn btn-link pl-0 pr-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
                       <span th:text="${meaningWord.value}"></span>
                       <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'(' + meaningWord.language + ')'}"></span>
+                      <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                     </button>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
@@ -515,7 +515,7 @@
                       <td class="pr-3">
                         <th:block th:each="relation, iter : ${relations}">
                           <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                            <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
+                            <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
                           </button>
                           <span th:unless="${iter.last}">,</span>
                         </th:block>
@@ -833,7 +833,7 @@
                       </td>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                          <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
+                          <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"
@@ -1017,7 +1017,7 @@
                   </td>
                   <td class="invisible-buttons">
                     <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                      <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
+                      <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
                     </button>
                     <button type="button" class="btn badge badge-warning"
                             th:data-id="${relation.id}"
@@ -1075,7 +1075,7 @@
                       <span>
                         <span th:if="${wordEtymRel.questionable}">?</span>
                         <span th:if="${wordEtymRel.compound}">+</span>
-                        <span th:text="${wordEtymRel.relatedWord + ' (' + wordEtymRel.relatedWordLang + ')'}"></span>
+                        <span th:text="${wordEtymRel.relatedWord + ' (' + iso2languages[wordEtymRel.relatedWordLang] + ')'}"></span>
                       </span>
                     </button>
                     <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>

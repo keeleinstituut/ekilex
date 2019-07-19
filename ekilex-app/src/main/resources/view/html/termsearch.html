@@ -79,7 +79,7 @@
                     <th:block th:if="${termMeaning.mainWord != null}">
                       <span th:text="${termMeaning.mainWord.word}" class="ttl">EuropeAid</span>
                       <span th:text="${termMeaning.mainWord.homonymNr}" th:if="${termMeaning.mainWord.homonymNr > 0}"></span>
-                      <span th:text="${'(' + termMeaning.mainWord.wordLang + ')'}"></span>
+                      <span th:text="${'(' + iso2languages[termMeaning.mainWord.wordLang] + ')'}"></span>
                     </th:block>
                     <span th:if="${termMeaning.mainWord == null}" th:text="${termMeaning.conceptId}" class="ttl">23648236</span>
                   </button>
@@ -97,7 +97,7 @@
                       <li th:each="otherWord : ${termMeaning.otherWords}">
                         <span th:text="${otherWord.word}"></span>
                         <span th:text="${otherWord.homonymNr}"></span>
-                        <span th:text="${'(' + otherWord.wordLang + ')'}"></span>
+                        <span th:text="${'(' + iso2languages[otherWord.wordLang] + ')'}"></span>
                       </li>
                     </ul>
                   </div>
@@ -194,7 +194,7 @@
             <div class="col pl-0">
               <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
                 <div>
-                  <span th:text="${definitionLangGroup.lang}" class="mr-2"></span>
+                  <span th:text="${iso2languages[definitionLangGroup.lang]}" class="mr-2"></span>
                   <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                           th:data-lang="${definitionLangGroup.lang}"
                           th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
@@ -613,7 +613,7 @@
                   <td class="pr-3">
                     <th:block th:each="relation, iter : ${relations}">
                       <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
-                        <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
+                        <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
                       </button>
                       <span th:unless="${iter.last}">,</span>
                     </th:block>
@@ -657,7 +657,7 @@
       </div>
       <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
         <div class="ml-2 mt-2 mb-2">
-          <span th:text="${lexemeLangGroup.lang}" class="mr-2"></span>
+          <span th:text="${iso2languages[lexemeLangGroup.lang]}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${lexemeLangGroup.lang}"
                   th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}">
@@ -889,7 +889,7 @@
                       </td>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
-                          <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
+                          <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"

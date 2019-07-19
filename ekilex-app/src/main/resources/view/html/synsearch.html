@@ -35,7 +35,7 @@
                   <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="synDetailsBtn">
                     <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>
                     <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-                    <span th:text="${'(' + word.language + ')'}"></span>
+                    <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
                   </button>
                   <span class="float-right" style="padding: 15px">
                     <span th:id="${'syn_select_point_' + word.wordId}" class="fa fa-play" style="display: none"></span>
@@ -86,7 +86,7 @@
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
                       <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'(' + meaningWord.language + ')'}"></span>
+                      <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                     </div>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
