@@ -69,6 +69,7 @@ function initialise() {
 		emptyClassifSelect($(this), "selectedLanguages");
 		emptyClassifSelect($(this), "selectedProcessStates");
 		emptyClassifSelect($(this), "origins");
+
 		let domains = $(this).find('select[name="selectedDomains"]');
 		emptyAndDisableSelect(domains);
 	});
@@ -108,6 +109,7 @@ function emptyClassifSelect(modal, classifSelectName) {
 	classifSelect.find("option").each(function (o) {
 		$(this).removeAttr("selected");
 	});
+	classifSelect.selectpicker('refresh');
 }
 
 function populateDomains(domainsSelect, originCode, previousDomainsValue) {
