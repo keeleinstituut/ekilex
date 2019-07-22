@@ -588,6 +588,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			List<List<LexemeToWordData>> aspectGroups,
 			Long meaningId,
 			Map<String, List<LexemeToWordData>> russianAbbreviationWords) throws Exception {
+
 		for (LexemeToWordData russianWordData : meaningRussianWords) {
 			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, LANG_RUS, russianWordData.aspect, russianWordData.vocalForm);
 			russianWordData.wordId = russianWord.id;
@@ -926,16 +927,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<LexemeToWordData> dataList = new ArrayList<>();
 		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
 		for (Node wordGroupNode : wordGroupNodes) {
-			String word = extractAsString(wordGroupNode, wordExp);
-			String vocalForm = extractAsString(wordGroupNode, vocalFormExp);
-			String aspectWord = extractAsString(wordGroupNode, aspectValueExp);
-			LexemeToWordData wordData = new LexemeToWordData();
-			wordData.word = cleanUpWord(word);
-
-			if (isBlank(wordData.word))
+			String srcWord = extractAsString(wordGroupNode, wordExp);
+			String cleanWord = cleanUpWord(srcWord);
+			if (isBlank(cleanWord)) {
 				continue;
-
-			wordData.displayForm = word;
+			}
+			String vocalForm = extractAsString(wordGroupNode, vocalFormExp);
+			String srcAspectWord = extractAsString(wordGroupNode, aspectValueExp);
+			LexemeToWordData wordData = new LexemeToWordData();
+			wordData.word = cleanWord;
+			wordData.displayForm = srcWord;
 			wordData.reportingId = reportingId;
 			wordData.vocalForm = vocalForm;
 			wordData.register = extractAsString(wordGroupNode, registerExp);
@@ -946,9 +947,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
 			}
-			boolean wordHasAspectPair = isNotBlank(aspectWord);
-			if (wordHasAspectPair || wordContainsAspect(word) || isVerb) {
-				wordData.aspect = calculateAspect(word);
+			boolean wordHasAspectPair = isNotBlank(srcAspectWord);
+			if (wordHasAspectPair || wordContainsAspect(srcWord) || isVerb) {
+				wordData.aspect = calculateAspect(srcWord);
 			}
 			dataList.add(wordData);
 			List<LexemeToWordData> abbreviationFullWords = extractAbbreviationFullWords(wordGroupNode, abbreviationFullWordExp, reportingId);
@@ -957,14 +958,15 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 
 			if (wordHasAspectPair) {
-				LexemeToWordData aspectData = new LexemeToWordData();
-				aspectData.word = cleanUpWord(aspectWord);
-				if (Objects.equals(wordData.word, aspectData.word)) {
-					logger.warn("{} : words in aspect pair have same forms : {} : {}", reportingId, wordData.word, aspectData.word);
-					writeToLogFile(reportingId, "Aspekti paari märksõnade vormid on samadsugused", wordData.word);
+				String cleanAspectWord = cleanUpWord(srcAspectWord);
+				if (Objects.equals(cleanWord, cleanAspectWord) && Objects.equals(srcWord, srcAspectWord)) {
+					logger.warn("{} : words in aspect pair are the same : {}", reportingId, wordData.word);
+					writeToLogFile(reportingId, "Aspekti paari märksõnad korduvad", wordData.word);
 				} else {
-					aspectData.aspect = calculateAspect(aspectWord);
-					aspectData.displayForm = aspectWord;
+					LexemeToWordData aspectData = new LexemeToWordData();
+					aspectData.word = cleanAspectWord;
+					aspectData.displayForm = srcAspectWord;
+					aspectData.aspect = calculateAspect(srcAspectWord);
 					aspectData.reportingId = reportingId;
 					aspectData.register = wordData.register;
 					aspectData.governments.addAll(wordData.governments);
