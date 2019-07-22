@@ -104,6 +104,11 @@ public class Sequences {
     public static final Sequence<Long> EKI_USER_ID_SEQ = new SequenceImpl<Long>("eki_user_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.eki_user_profile_id_seq</code>
+     */
+    public static final Sequence<Long> EKI_USER_PROFILE_ID_SEQ = new SequenceImpl<Long>("eki_user_profile_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.etymology_type_order_by_seq</code>
      */
     public static final Sequence<Long> ETYMOLOGY_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("etymology_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

@@ -132,7 +132,8 @@ public class UserService implements WebConstant {
 		String activationKey = generateUniqueKey();
 		String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 		String encodedPassword = passwordEncoder.encode(password);
-		userDbService.createUser(email, name, encodedPassword, activationKey);
+		Long userId = userDbService.createUser(email, name, encodedPassword, activationKey);
+		userDbService.createUserProfile(userId);
 		EkiUser user = userDbService.getUserByEmail(email);
 		emailService.sendUserActivationEmail(email, activationLink);
 		logger.debug("Created new user : {}", user.getDescription());
@@ -231,16 +232,20 @@ public class UserService implements WebConstant {
 		}
 	}
 
-	private DatasetPermission getLastChosenOrSinglePermission(Long userId, List<DatasetPermission> permissions) {
+	private DatasetPermission getLastChosenOrSinglePermission(Long userId, List<DatasetPermission> userPermissions) {
+
 		DatasetPermission permission = null;
-		if (CollectionUtils.isNotEmpty(permissions)) {
-			permission = permissions.stream().filter(p -> BooleanUtils.isTrue(p.isLastChosen())).findFirst().orElse(null);
-			if (permission == null && permissions.size() == 1) {
-				permission = permissions.get(0);
+		Long lastChosenPermissionId = permissionDbService.getLastChosenPermissionId(userId);
+		if (lastChosenPermissionId == null) {
+			if (userPermissions.size() == 1) {
+				permission = userPermissions.get(0);
 				permissionDbService.setLastChosenPermissionId(permission.getId(), userId);
 			}
+		} else {
+			permission = userPermissions.stream()
+					.filter(perm -> perm.getId().equals(lastChosenPermissionId))
+					.findFirst().orElse(null);
 		}
-
 		return permission;
 	}
 }

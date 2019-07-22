@@ -22,8 +22,6 @@ public class DatasetPermission extends AbstractDataObject {
 
 	private String authLangValue;
 
-	private boolean isLastChosen;
-
 	public Long getId() {
 		return id;
 	}
@@ -80,11 +78,4 @@ public class DatasetPermission extends AbstractDataObject {
 		this.authLangValue = authLangValue;
 	}
 
-	public boolean isLastChosen() {
-		return isLastChosen;
-	}
-
-	public void setLastChosen(boolean lastChosen) {
-		isLastChosen = lastChosen;
-	}
 }

@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
+import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +82,12 @@ public class UserDbService extends AbstractDbService {
 		ekiUser.setActivationKey(activationKey);
 		ekiUser.store();
 		return ekiUser.getId();
+	}
+
+	public void createUserProfile(Long userId) {
+		create.insertInto(EKI_USER_PROFILE, EKI_USER_PROFILE.USER_ID)
+				.values(userId)
+				.execute();
 	}
 
 	public EkiUser activateUser(String activationKey) {

@@ -76,6 +76,7 @@ drop table if exists source_lifecycle_log;
 drop table if exists source_freeform;
 drop table if exists source;
 drop table if exists freeform;
+drop table if exists eki_user_profile;
 drop table if exists dataset_permission;
 drop table if exists dataset;
 drop table if exists etymology_type;

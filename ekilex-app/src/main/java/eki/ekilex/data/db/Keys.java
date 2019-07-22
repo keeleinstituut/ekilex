@@ -24,6 +24,7 @@ import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EkiUserApplication;
+import eki.ekilex.data.db.tables.EkiUserProfile;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
@@ -121,6 +122,7 @@ import eki.ekilex.data.db.tables.records.DisplayMorphRecord;
 import eki.ekilex.data.db.tables.records.DomainLabelRecord;
 import eki.ekilex.data.db.tables.records.DomainRecord;
 import eki.ekilex.data.db.tables.records.EkiUserApplicationRecord;
+import eki.ekilex.data.db.tables.records.EkiUserProfileRecord;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
 import eki.ekilex.data.db.tables.records.EtymologyTypeRecord;
 import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
@@ -241,6 +243,7 @@ public class Keys {
     public static final Identity<DomainRecord, Long> IDENTITY_DOMAIN = Identities0.IDENTITY_DOMAIN;
     public static final Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Identities0.IDENTITY_EKI_USER;
     public static final Identity<EkiUserApplicationRecord, Long> IDENTITY_EKI_USER_APPLICATION = Identities0.IDENTITY_EKI_USER_APPLICATION;
+    public static final Identity<EkiUserProfileRecord, Long> IDENTITY_EKI_USER_PROFILE = Identities0.IDENTITY_EKI_USER_PROFILE;
     public static final Identity<EtymologyTypeRecord, Long> IDENTITY_ETYMOLOGY_TYPE = Identities0.IDENTITY_ETYMOLOGY_TYPE;
     public static final Identity<FeedbackLogRecord, Long> IDENTITY_FEEDBACK_LOG = Identities0.IDENTITY_FEEDBACK_LOG;
     public static final Identity<FeedbackLogCommentRecord, Long> IDENTITY_FEEDBACK_LOG_COMMENT = Identities0.IDENTITY_FEEDBACK_LOG_COMMENT;
@@ -334,6 +337,7 @@ public class Keys {
     public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = UniqueKeys0.EKI_USER_PKEY;
     public static final UniqueKey<EkiUserRecord> EKI_USER_EMAIL_KEY = UniqueKeys0.EKI_USER_EMAIL_KEY;
     public static final UniqueKey<EkiUserApplicationRecord> EKI_USER_APPLICATION_PKEY = UniqueKeys0.EKI_USER_APPLICATION_PKEY;
+    public static final UniqueKey<EkiUserProfileRecord> EKI_USER_PROFILE_PKEY = UniqueKeys0.EKI_USER_PROFILE_PKEY;
     public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = UniqueKeys0.ETYMOLOGY_TYPE_PKEY;
     public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = UniqueKeys0.FEEDBACK_LOG_PKEY;
     public static final UniqueKey<FeedbackLogCommentRecord> FEEDBACK_LOG_COMMENT_PKEY = UniqueKeys0.FEEDBACK_LOG_COMMENT_PKEY;
@@ -468,6 +472,8 @@ public class Keys {
     public static final ForeignKey<DomainLabelRecord, LanguageRecord> DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY;
     public static final ForeignKey<DomainLabelRecord, LabelTypeRecord> DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY;
     public static final ForeignKey<EkiUserApplicationRecord, EkiUserRecord> EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY = ForeignKeys0.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY;
+    public static final ForeignKey<EkiUserProfileRecord, EkiUserRecord> EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY = ForeignKeys0.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY;
+    public static final ForeignKey<EkiUserProfileRecord, DatasetPermissionRecord> EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY = ForeignKeys0.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY;
     public static final ForeignKey<FeedbackLogCommentRecord, FeedbackLogRecord> FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY = ForeignKeys0.FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY;
     public static final ForeignKey<FormRecord, ParadigmRecord> FORM__FORM_PARADIGM_ID_FKEY = ForeignKeys0.FORM__FORM_PARADIGM_ID_FKEY;
     public static final ForeignKey<FormRecord, MorphRecord> FORM__FORM_MORPH_CODE_FKEY = ForeignKeys0.FORM__FORM_MORPH_CODE_FKEY;
@@ -616,6 +622,7 @@ public class Keys {
         public static Identity<DomainRecord, Long> IDENTITY_DOMAIN = Internal.createIdentity(Domain.DOMAIN, Domain.DOMAIN.ORDER_BY);
         public static Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Internal.createIdentity(EkiUser.EKI_USER, EkiUser.EKI_USER.ID);
         public static Identity<EkiUserApplicationRecord, Long> IDENTITY_EKI_USER_APPLICATION = Internal.createIdentity(EkiUserApplication.EKI_USER_APPLICATION, EkiUserApplication.EKI_USER_APPLICATION.ID);
+        public static Identity<EkiUserProfileRecord, Long> IDENTITY_EKI_USER_PROFILE = Internal.createIdentity(EkiUserProfile.EKI_USER_PROFILE, EkiUserProfile.EKI_USER_PROFILE.ID);
         public static Identity<EtymologyTypeRecord, Long> IDENTITY_ETYMOLOGY_TYPE = Internal.createIdentity(EtymologyType.ETYMOLOGY_TYPE, EtymologyType.ETYMOLOGY_TYPE.ORDER_BY);
         public static Identity<FeedbackLogRecord, Long> IDENTITY_FEEDBACK_LOG = Internal.createIdentity(FeedbackLog.FEEDBACK_LOG, FeedbackLog.FEEDBACK_LOG.ID);
         public static Identity<FeedbackLogCommentRecord, Long> IDENTITY_FEEDBACK_LOG_COMMENT = Internal.createIdentity(FeedbackLogComment.FEEDBACK_LOG_COMMENT, FeedbackLogComment.FEEDBACK_LOG_COMMENT.ID);
@@ -707,6 +714,7 @@ public class Keys {
         public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_pkey", EkiUser.EKI_USER.ID);
         public static final UniqueKey<EkiUserRecord> EKI_USER_EMAIL_KEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_email_key", EkiUser.EKI_USER.EMAIL);
         public static final UniqueKey<EkiUserApplicationRecord> EKI_USER_APPLICATION_PKEY = Internal.createUniqueKey(EkiUserApplication.EKI_USER_APPLICATION, "eki_user_application_pkey", EkiUserApplication.EKI_USER_APPLICATION.ID);
+        public static final UniqueKey<EkiUserProfileRecord> EKI_USER_PROFILE_PKEY = Internal.createUniqueKey(EkiUserProfile.EKI_USER_PROFILE, "eki_user_profile_pkey", EkiUserProfile.EKI_USER_PROFILE.ID);
         public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = Internal.createUniqueKey(EtymologyType.ETYMOLOGY_TYPE, "etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE.CODE);
         public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = Internal.createUniqueKey(FeedbackLog.FEEDBACK_LOG, "feedback_log_pkey", FeedbackLog.FEEDBACK_LOG.ID);
         public static final UniqueKey<FeedbackLogCommentRecord> FEEDBACK_LOG_COMMENT_PKEY = Internal.createUniqueKey(FeedbackLogComment.FEEDBACK_LOG_COMMENT, "feedback_log_comment_pkey", FeedbackLogComment.FEEDBACK_LOG_COMMENT.ID);
@@ -839,6 +847,8 @@ public class Keys {
         public static final ForeignKey<DomainLabelRecord, LanguageRecord> DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_lang_fkey", DomainLabel.DOMAIN_LABEL.LANG);
         public static final ForeignKey<DomainLabelRecord, LabelTypeRecord> DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_type_fkey", DomainLabel.DOMAIN_LABEL.TYPE);
         public static final ForeignKey<EkiUserApplicationRecord, EkiUserRecord> EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.EKI_USER_PKEY, EkiUserApplication.EKI_USER_APPLICATION, "eki_user_application__eki_user_application_user_id_fkey", EkiUserApplication.EKI_USER_APPLICATION.USER_ID);
+        public static final ForeignKey<EkiUserProfileRecord, EkiUserRecord> EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.EKI_USER_PKEY, EkiUserProfile.EKI_USER_PROFILE, "eki_user_profile__eki_user_profile_user_id_fkey", EkiUserProfile.EKI_USER_PROFILE.USER_ID);
+        public static final ForeignKey<EkiUserProfileRecord, DatasetPermissionRecord> EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DATASET_PERMISSION_PKEY, EkiUserProfile.EKI_USER_PROFILE, "eki_user_profile__eki_user_profile_recent_dataset_permission_id_fkey", EkiUserProfile.EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID);
         public static final ForeignKey<FeedbackLogCommentRecord, FeedbackLogRecord> FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FEEDBACK_LOG_PKEY, FeedbackLogComment.FEEDBACK_LOG_COMMENT, "feedback_log_comment__feedback_log_comment_feedback_log_id_fkey", FeedbackLogComment.FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID);
         public static final ForeignKey<FormRecord, ParadigmRecord> FORM__FORM_PARADIGM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PARADIGM_PKEY, Form.FORM, "form__form_paradigm_id_fkey", Form.FORM.PARADIGM_ID);
         public static final ForeignKey<FormRecord, MorphRecord> FORM__FORM_MORPH_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MORPH_PKEY, Form.FORM, "form__form_morph_code_fkey", Form.FORM.MORPH_CODE);

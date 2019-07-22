@@ -23,6 +23,14 @@ create table eki_user_application
 );
 alter sequence eki_user_application_id_seq restart with 10000;
 
+create table eki_user_profile
+(
+  id bigserial primary key,
+  user_id bigint references eki_user(id) on delete cascade not null,
+  recent_dataset_permission_id bigint references dataset_permission(id)
+);
+alter sequence eki_user_profile_id_seq restart with 10000;
+
 ---------------------------------
 -- klassifitseeritud andmestik --
 ---------------------------------
@@ -413,7 +421,6 @@ create table dataset_permission
   auth_operation varchar(100) not null,
   auth_item varchar(100) not null,
   auth_lang char(3) references language(code) null,
-  is_last_chosen boolean default false,
   unique(dataset_code, user_id, auth_operation, auth_item, auth_lang)
 );
 alter sequence dataset_permission_id_seq restart with 10000;
@@ -1000,6 +1007,8 @@ create table feedback_log_comment
 alter sequence feedback_log_comment_id_seq restart with 10000;
 
 --- indexes
+create index eki_user_profile_user_id_idx on eki_user(id);
+create index eki_user_profile_recent_dataset_permission_id_idx on dataset_permission(id);
 create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
 create index dataset_perm_user_id_idx on dataset_permission(user_id);
 create index form_value_idx on form(value);

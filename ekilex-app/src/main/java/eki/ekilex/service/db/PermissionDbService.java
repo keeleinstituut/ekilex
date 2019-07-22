@@ -8,6 +8,7 @@ import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
+import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
@@ -89,7 +90,6 @@ public class PermissionDbService implements SystemConstant {
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG,
-						DATASET_PERMISSION.IS_LAST_CHOSEN,
 						LANGUAGE_LABEL.VALUE.as("auth_lang_value"))
 				.from(DATASET, DATASET_PERMISSION.leftOuterJoin(LANGUAGE_LABEL)
 						.on(LANGUAGE_LABEL.CODE.eq(DATASET_PERMISSION.AUTH_LANG)
@@ -560,11 +560,21 @@ public class PermissionDbService implements SystemConstant {
 
 	}
 
-	public void setLastChosenPermissionId(Long permissionId, Long userId) {
-		create
-			.update(DATASET_PERMISSION).set(DATASET_PERMISSION.IS_LAST_CHOSEN,
-					field(DATASET_PERMISSION.ID.eq(permissionId)))
-			.where(DATASET_PERMISSION.USER_ID.eq(userId))
-			.execute();
+	public Long getLastChosenPermissionId(Long userId) {
+
+		return create
+				.select(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID)
+				.from(EKI_USER_PROFILE)
+				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
+				.fetchOneInto(Long.class);
 	}
+
+	public void setLastChosenPermissionId(Long permissionId, Long userId) {
+
+		create.update(EKI_USER_PROFILE)
+				.set(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID, permissionId)
+				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
+				.execute();
+	}
+
 }

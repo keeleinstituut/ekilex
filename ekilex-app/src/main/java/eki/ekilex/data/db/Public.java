@@ -24,6 +24,7 @@ import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EkiUserApplication;
+import eki.ekilex.data.db.tables.EkiUserProfile;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
@@ -152,7 +153,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -974023700;
+    private static final long serialVersionUID = 1072284771;
 
     /**
      * The reference instance of <code>public</code>
@@ -258,6 +259,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.eki_user_application</code>.
      */
     public final EkiUserApplication EKI_USER_APPLICATION = eki.ekilex.data.db.tables.EkiUserApplication.EKI_USER_APPLICATION;
+
+    /**
+     * The table <code>public.eki_user_profile</code>.
+     */
+    public final EkiUserProfile EKI_USER_PROFILE = eki.ekilex.data.db.tables.EkiUserProfile.EKI_USER_PROFILE;
 
     /**
      * The table <code>public.etymology_type</code>.
@@ -760,6 +766,7 @@ public class Public extends SchemaImpl {
             Sequences.DOMAIN_ORDER_BY_SEQ,
             Sequences.EKI_USER_APPLICATION_ID_SEQ,
             Sequences.EKI_USER_ID_SEQ,
+            Sequences.EKI_USER_PROFILE_ID_SEQ,
             Sequences.ETYMOLOGY_TYPE_ORDER_BY_SEQ,
             Sequences.FEEDBACK_LOG_COMMENT_ID_SEQ,
             Sequences.FEEDBACK_LOG_ID_SEQ,
@@ -873,6 +880,7 @@ public class Public extends SchemaImpl {
             DomainLabel.DOMAIN_LABEL,
             EkiUser.EKI_USER,
             EkiUserApplication.EKI_USER_APPLICATION,
+            EkiUserProfile.EKI_USER_PROFILE,
             EtymologyType.ETYMOLOGY_TYPE,
             FeedbackLog.FEEDBACK_LOG,
             FeedbackLogComment.FEEDBACK_LOG_COMMENT,

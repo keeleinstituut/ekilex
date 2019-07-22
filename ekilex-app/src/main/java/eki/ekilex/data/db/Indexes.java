@@ -24,6 +24,7 @@ import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EkiUserApplication;
+import eki.ekilex.data.db.tables.EkiUserProfile;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
@@ -139,6 +140,7 @@ public class Indexes {
     public static final Index DATASET_PERM_USER_ID_IDX = Indexes0.DATASET_PERM_USER_ID_IDX;
     public static final Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Indexes0.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY;
     public static final Index DATASET_PERMISSION_PKEY = Indexes0.DATASET_PERMISSION_PKEY;
+    public static final Index EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX = Indexes0.EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX;
     public static final Index DEFINITION_LANG_IDX = Indexes0.DEFINITION_LANG_IDX;
     public static final Index DEFINITION_MEANING_ID_IDX = Indexes0.DEFINITION_MEANING_ID_IDX;
     public static final Index DEFINITION_PKEY = Indexes0.DEFINITION_PKEY;
@@ -162,7 +164,9 @@ public class Indexes {
     public static final Index DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Indexes0.DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY;
     public static final Index EKI_USER_EMAIL_KEY = Indexes0.EKI_USER_EMAIL_KEY;
     public static final Index EKI_USER_PKEY = Indexes0.EKI_USER_PKEY;
+    public static final Index EKI_USER_PROFILE_USER_ID_IDX = Indexes0.EKI_USER_PROFILE_USER_ID_IDX;
     public static final Index EKI_USER_APPLICATION_PKEY = Indexes0.EKI_USER_APPLICATION_PKEY;
+    public static final Index EKI_USER_PROFILE_PKEY = Indexes0.EKI_USER_PROFILE_PKEY;
     public static final Index ETYMOLOGY_TYPE_PKEY = Indexes0.ETYMOLOGY_TYPE_PKEY;
     public static final Index FEEDBACK_LOG_PKEY = Indexes0.FEEDBACK_LOG_PKEY;
     public static final Index FEEDBACK_LOG_COMMENT_LOG_ID_IDX = Indexes0.FEEDBACK_LOG_COMMENT_LOG_ID_IDX;
@@ -369,6 +373,7 @@ public class Indexes {
         public static Index DATASET_PERM_USER_ID_IDX = Internal.createIndex("dataset_perm_user_id_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.USER_ID }, false);
         public static Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Internal.createIndex("dataset_permission_dataset_code_user_id_auth_operation_auth_key", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM, DatasetPermission.DATASET_PERMISSION.AUTH_LANG }, true);
         public static Index DATASET_PERMISSION_PKEY = Internal.createIndex("dataset_permission_pkey", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.ID }, true);
+        public static Index EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX = Internal.createIndex("eki_user_profile_recent_dataset_permission_id_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.ID }, false);
         public static Index DEFINITION_LANG_IDX = Internal.createIndex("definition_lang_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.LANG }, false);
         public static Index DEFINITION_MEANING_ID_IDX = Internal.createIndex("definition_meaning_id_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.MEANING_ID }, false);
         public static Index DEFINITION_PKEY = Internal.createIndex("definition_pkey", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.ID }, true);
@@ -392,7 +397,9 @@ public class Indexes {
         public static Index DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Internal.createIndex("domain_label_code_origin_lang_type_key", DomainLabel.DOMAIN_LABEL, new OrderField[] { DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN, DomainLabel.DOMAIN_LABEL.LANG, DomainLabel.DOMAIN_LABEL.TYPE }, true);
         public static Index EKI_USER_EMAIL_KEY = Internal.createIndex("eki_user_email_key", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.EMAIL }, true);
         public static Index EKI_USER_PKEY = Internal.createIndex("eki_user_pkey", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.ID }, true);
+        public static Index EKI_USER_PROFILE_USER_ID_IDX = Internal.createIndex("eki_user_profile_user_id_idx", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.ID }, false);
         public static Index EKI_USER_APPLICATION_PKEY = Internal.createIndex("eki_user_application_pkey", EkiUserApplication.EKI_USER_APPLICATION, new OrderField[] { EkiUserApplication.EKI_USER_APPLICATION.ID }, true);
+        public static Index EKI_USER_PROFILE_PKEY = Internal.createIndex("eki_user_profile_pkey", EkiUserProfile.EKI_USER_PROFILE, new OrderField[] { EkiUserProfile.EKI_USER_PROFILE.ID }, true);
         public static Index ETYMOLOGY_TYPE_PKEY = Internal.createIndex("etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE, new OrderField[] { EtymologyType.ETYMOLOGY_TYPE.CODE }, true);
         public static Index FEEDBACK_LOG_PKEY = Internal.createIndex("feedback_log_pkey", FeedbackLog.FEEDBACK_LOG, new OrderField[] { FeedbackLog.FEEDBACK_LOG.ID }, true);
         public static Index FEEDBACK_LOG_COMMENT_LOG_ID_IDX = Internal.createIndex("feedback_log_comment_log_id_idx", FeedbackLogComment.FEEDBACK_LOG_COMMENT, new OrderField[] { FeedbackLogComment.FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID }, false);

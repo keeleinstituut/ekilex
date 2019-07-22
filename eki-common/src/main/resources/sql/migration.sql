@@ -14,3 +14,18 @@ insert into label_type (code, value) values ('iso2', 'iso2');
 -- 22.07.19
 update dataset set type = 'TERM' where type is null;
 alter table dataset alter column type set not null;
+
+alter table dataset_permission drop column if exists is_last_chosen;
+
+create table eki_user_profile
+(
+	id bigserial primary key,
+	user_id bigint references eki_user(id) on delete cascade not null,
+	recent_dataset_permission_id bigint references dataset_permission(id)
+);
+alter sequence eki_user_profile_id_seq restart with 10000;
+
+create index eki_user_profile_user_id_idx on eki_user(id);
+create index eki_user_profile_recent_dataset_permission_id_idx on dataset_permission(id);
+
+insert into eki_user_profile (user_id) (select eki_user.id from eki_user);
