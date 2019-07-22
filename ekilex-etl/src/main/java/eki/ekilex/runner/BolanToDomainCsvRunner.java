@@ -18,7 +18,7 @@ public class BolanToDomainCsvRunner extends AbstractDomainRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(BolanToDomainCsvRunner.class);
 
-	private static final String DOMAIN_EKI_ORIGIN = "bolan";
+	private static final String DOMAIN_ORIGIN_EKI_GENERIC = "eki üld";
 
 	private static final String DOMAIN_EKI_TYPE = "v_tyyp";
 
@@ -38,7 +38,7 @@ public class BolanToDomainCsvRunner extends AbstractDomainRunner {
 			classifierXsdFilePaths.add(classifierXsdFilePath);
 		}
 
-		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(classifierXsdFilePaths, DOMAIN_EKI_TYPE, DOMAIN_EKI_ORIGIN);
+		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(classifierXsdFilePaths, DOMAIN_EKI_TYPE, DOMAIN_ORIGIN_EKI_GENERIC);
 		sourceClassifiers = removeReusedCodes(sourceClassifiers);
 		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifierMappings();
 		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiers, existingClassifiers);

@@ -74,6 +74,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private static final String REPORT_GUID_MISMATCH = "guid_mismatch";
 	private static final String REPORT_GUID_MAPPING_MISSING = "guid_mapping_missing";
 
+	protected static final String DOMAIN_ORIGIN_EKI_GENERIC = "eki üld";
 	protected static final String GUID_OWNER_DATASET_CODE = "ss1";
 	protected static final String COLLOC_OWNER_DATASET_CODE = "kol";
 	protected static final String ETYMOLOGY_OWNER_DATASET_CODE = "ety";

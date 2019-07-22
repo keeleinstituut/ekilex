@@ -202,7 +202,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	protected void processDomains(Node node, Long meaningId, List<String> additionalDomains) throws Exception {
 
-		final String domainOrigin = "bolan";
 		final String domainExp = xpathExpressions().get("domain");
 
 		List<String> domainCodes = node == null ? new ArrayList<>() : extractCleanValues(node, domainExp);
@@ -210,7 +209,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			domainCodes.addAll(additionalDomains);
 		}
 		for (String domainCode : domainCodes) {
-			createMeaningDomain(meaningId, domainOrigin, domainCode);
+			createMeaningDomain(meaningId, DOMAIN_ORIGIN_EKI_GENERIC, domainCode);
 		}
 	}
 

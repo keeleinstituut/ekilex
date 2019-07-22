@@ -96,7 +96,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final char lemmaDataCellDelim = ':';
 	private final char compundWordCompDelim = '+';
 
-	private final String domainOriginBolan = "bolan";
 	private final String datasetCodePsv = "psv";
 
 	private final String prevWordCollocMemberName = "mse";
@@ -517,7 +516,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 			domainCodes.add(domainCode);
-			createMeaningDomain(meaningId, domainOriginBolan, domainCode);
+			createMeaningDomain(meaningId, DOMAIN_ORIGIN_EKI_GENERIC, domainCode);
 		}
 	}
 
