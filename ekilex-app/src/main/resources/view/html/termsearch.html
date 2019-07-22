@@ -8,6 +8,7 @@
   <script type="text/javascript" th:src="@{/view/js/ekilex-termsearch.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-termdialog.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-dialog.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-sourcesearch.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.et.min.js}"></script>
   <link rel="stylesheet" th:href="@{/view/css/bootstrap-datepicker3.css}"/>
@@ -1023,6 +1024,7 @@
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #confirmDlg"></div>
+  <div th:replace="sourcedialog :: add_source_dlg('term_search')"></div>
 
   <script th:inline="javascript">
   	initialise();
