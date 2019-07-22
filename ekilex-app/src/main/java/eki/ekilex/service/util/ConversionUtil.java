@@ -693,42 +693,30 @@ public class ConversionUtil implements DbConstant {
 		return new ArrayList<>(groupedById.values());
 	}
 
-	public List<OrderedClassifier> removeOrderedClassifierDuplicates(List<OrderedClassifier> classifiersWithDuplicates) {
+	public List<OrderedClassifier> removeOrderedClassifierDuplicates(List<OrderedClassifier> allClassifiers) {
 
-		List<OrderedClassifier> classifiers = new ArrayList<>();
-		for (OrderedClassifier possiblyDuplicateClassifier : classifiersWithDuplicates) {
-			String possiblyDuplicateCode = possiblyDuplicateClassifier.getCode();
-			boolean isDuplicate = false;
-			for (OrderedClassifier classifier : classifiers) {
-				if (classifier.getCode().equals(possiblyDuplicateCode)) {
-					isDuplicate = true;
-					break;
-				}
-			}
-			if (!isDuplicate) {
-				classifiers.add(possiblyDuplicateClassifier);
+		List<OrderedClassifier> distinctClassifiers = new ArrayList<>();
+		for (OrderedClassifier classifierCandidate : allClassifiers) {
+			String classifCandidateCode = classifierCandidate.getCode();
+			boolean alreadyExists = distinctClassifiers.stream().anyMatch(classif -> StringUtils.equals(classif.getCode(), classifCandidateCode));
+			if (!alreadyExists) {
+				distinctClassifiers.add(classifierCandidate);
 			}
 		}
-		return classifiers;
+		return distinctClassifiers;
 	}
 
-	public List<Classifier> removeClassifierDuplicates(List<Classifier> classifiersWithDuplicates) {
+	public List<Classifier> removeClassifierDuplicates(List<Classifier> allClassifiers) {
 
-		List<Classifier> classifiers = new ArrayList<>();
-		for (Classifier possiblyDuplicateClassifier : classifiersWithDuplicates) {
-			String possiblyDuplicateCode = possiblyDuplicateClassifier.getCode();
-			boolean isDuplicate = false;
-			for (Classifier classifier : classifiers) {
-				if (classifier.getCode().equals(possiblyDuplicateCode)) {
-					isDuplicate = true;
-					break;
-				}
-			}
-			if (!isDuplicate) {
-				classifiers.add(possiblyDuplicateClassifier);
+		List<Classifier> distinctClassifiers = new ArrayList<>();
+		for (Classifier classifierCandidate : allClassifiers) {
+			String classifCandidateCode = classifierCandidate.getCode();
+			boolean alreadyExists = distinctClassifiers.stream().anyMatch(classif -> StringUtils.equals(classif.getCode(), classifCandidateCode));
+			if (!alreadyExists) {
+				distinctClassifiers.add(classifierCandidate);
 			}
 		}
-		return classifiers;
+		return distinctClassifiers;
 	}
 
 	private Collocation addCollocation(Map<Long, Collocation> collocMap, CollocationTuple collocTuple, List<Collocation> collocations) {
@@ -762,6 +750,7 @@ public class ConversionUtil implements DbConstant {
 	}
 
 	public List<SynRelation> composeSynRelations(List<SynRelationParamTuple> synRelationParamTuples) {
+
 		List<SynRelation> synRelations = new ArrayList<>();
 		Map<Long, SynRelation> relationMap = new HashMap<>();
 		for (SynRelationParamTuple paramTuple : synRelationParamTuples) {
@@ -769,17 +758,13 @@ public class ConversionUtil implements DbConstant {
 			if (relation == null) {
 				relation = new SynRelation();
 				relation.setId(paramTuple.getRelationId());
-
 				relation.setWord(paramTuple.getWord());
 				relation.setWordId(paramTuple.getWordId());
 				relation.setOrderBy(paramTuple.getOrderBy());
 				relation.setRelationStatus(paramTuple.getRelationStatus());
-
 				relation.setRelationParams(new ArrayList<>());
-
 				relationMap.put(relation.getId(), relation);
 				synRelations.add(relation);
-
 			}
 
 			if (paramTuple.getOppositeRelationStatus() != null) {
@@ -790,11 +775,9 @@ public class ConversionUtil implements DbConstant {
 				RelationParam param = new RelationParam();
 				param.setName(paramTuple.getParamName());
 				param.setValue(paramTuple.getParamValue());
-
 				relation.getRelationParams().add(param);
 			}
 		}
-
 		return synRelations;
 	}
 

@@ -1,20 +1,29 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
+import static eki.ekilex.data.db.Tables.DOMAIN;
+import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_NR;
 import static eki.ekilex.data.db.Tables.PROCESS_LOG;
+import static eki.ekilex.data.db.Tables.PROCESS_STATE;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.DSLContext;
+import org.jooq.Row2;
+import org.jooq.impl.DSL;
+import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.service.db.util.DatasetDbServiceHelper;
 
@@ -151,4 +160,59 @@ public class DatasetDbService {
 
 	}
 
+	public void addDatasetToClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> addedClassifiers) {
+
+		if (CollectionUtils.isNotEmpty(addedClassifiers)) {
+			if (ClassifierName.LANGUAGE.equals(classifierName)) {
+				List<String> languageCodes = addedClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+				create.update(LANGUAGE)
+						.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayAppend(LANGUAGE.DATASETS, datasetCode)))
+						.where(LANGUAGE.CODE.in(languageCodes))
+						.execute();
+
+			} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+				List<String> processStateCodes = addedClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+				create.update(PROCESS_STATE)
+						.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayAppend(PROCESS_STATE.DATASETS, datasetCode)))
+						.where(PROCESS_STATE.CODE.in(processStateCodes))
+						.execute();
+
+			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+				List<Row2<String, String>> codeOriginTuples = addedClassifiers.stream().map(c -> DSL.row(DSL.val(c.getCode()), DSL.val(c.getOrigin()))).collect(Collectors.toList());
+				create.update(DOMAIN)
+						.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayAppend(DOMAIN.DATASETS, datasetCode)))
+						.where(DSL.row(DOMAIN.CODE, DOMAIN.ORIGIN).in(codeOriginTuples))
+						.execute();
+
+			} else {
+				throw new UnsupportedOperationException();
+			}
+		}
+	}
+
+	public void removeDatasetFromAllClassifiers(ClassifierName classifierName, String datasetCode) {
+
+		String[] datasetCodes = {datasetCode};
+		if (ClassifierName.LANGUAGE.equals(classifierName)) {
+			create.update(LANGUAGE)
+					.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode)))
+					.where(LANGUAGE.DATASETS.contains(datasetCodes))
+					.execute();
+
+		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+			create.update(PROCESS_STATE)
+					.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayRemove(PROCESS_STATE.DATASETS, datasetCode)))
+					.where(PROCESS_STATE.DATASETS.contains(datasetCodes))
+					.execute();
+
+		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+			create.update(DOMAIN)
+					.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayRemove(DOMAIN.DATASETS, datasetCode)))
+					.where(DOMAIN.DATASETS.contains(datasetCodes))
+					.execute();
+
+		} else {
+			throw new UnsupportedOperationException();
+		}
+	}
 }

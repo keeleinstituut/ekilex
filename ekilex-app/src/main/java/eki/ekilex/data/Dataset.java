@@ -11,6 +11,8 @@ public class Dataset extends AbstractDataObject {
 
 	private String code;
 
+	private DatasetType type;
+
 	private String name;
 
 	private String description;
@@ -21,13 +23,11 @@ public class Dataset extends AbstractDataObject {
 
 	private List<String> origins;
 
-	private List<Classifier> selectedDomains;
+	private List<Classifier> domains;
 
-	private List<Classifier> selectedLanguages;
+	private List<Classifier> languages;
 
-	private List<Classifier> selectedProcessStates;
-
-	private DatasetType type;
+	private List<Classifier> processStates;
 
 	public String getCode() {
 		return code;
@@ -35,6 +35,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public DatasetType getType() {
+		return type;
+	}
+
+	public void setType(DatasetType type) {
+		this.type = type;
 	}
 
 	public String getName() {
@@ -57,40 +65,16 @@ public class Dataset extends AbstractDataObject {
 		return isVisible;
 	}
 
-	public void setVisible(boolean visible) {
-		isVisible = visible;
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 
 	public boolean isPublic() {
 		return isPublic;
 	}
 
-	public void setPublic(boolean aPublic) {
-		isPublic = aPublic;
-	}
-
-	public List<Classifier> getSelectedDomains() {
-		return selectedDomains;
-	}
-
-	public void setSelectedDomains(List<Classifier> selectedDomains) {
-		this.selectedDomains = selectedDomains;
-	}
-
-	public List<Classifier> getSelectedLanguages() {
-		return selectedLanguages;
-	}
-
-	public void setSelectedLanguages(List<Classifier> selectedLanguages) {
-		this.selectedLanguages = selectedLanguages;
-	}
-
-	public List<Classifier> getSelectedProcessStates() {
-		return selectedProcessStates;
-	}
-
-	public void setSelectedProcessStates(List<Classifier> selectedProcessStates) {
-		this.selectedProcessStates = selectedProcessStates;
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public List<String> getOrigins() {
@@ -101,11 +85,29 @@ public class Dataset extends AbstractDataObject {
 		this.origins = origins;
 	}
 
-	public DatasetType getType() {
-		return type;
+	public List<Classifier> getDomains() {
+		return domains;
 	}
 
-	public void setType(DatasetType type) {
-		this.type = type;
+	public void setDomains(List<Classifier> domains) {
+		this.domains = domains;
 	}
+
+	public List<Classifier> getLanguages() {
+		return languages;
+	}
+
+	public void setLanguages(List<Classifier> languages) {
+		this.languages = languages;
+	}
+
+	public List<Classifier> getProcessStates() {
+		return processStates;
+	}
+
+	public void setProcessStates(List<Classifier> processStates) {
+		this.processStates = processStates;
+	}
+
+
 }

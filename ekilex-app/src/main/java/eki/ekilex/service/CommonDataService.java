@@ -53,6 +53,7 @@ import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
+// only common use data aggregation!
 @Component
 public class CommonDataService extends AbstractWordSearchService {
 

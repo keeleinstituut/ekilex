@@ -44,10 +44,10 @@ public class DatasetService implements SystemConstant {
 		List<Classifier> domains = getDatasetDomains(dataset.getCode());
 		List<Classifier> languages = getDatasetClassifiers(ClassifierName.LANGUAGE, dataset.getCode());
 		List<Classifier> processStates = getDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode());
+		dataset.setDomains(domains);
+		dataset.setLanguages(languages);
+		dataset.setProcessStates(processStates);
 
-		dataset.setSelectedLanguages(languages);
-		dataset.setSelectedProcessStates(processStates);
-		dataset.setSelectedDomains(domains);
 		if (CollectionUtils.isNotEmpty(domains)) {
 			dataset.setOrigins(
 					domains
@@ -57,7 +57,6 @@ public class DatasetService implements SystemConstant {
 							.sorted()
 							.collect(Collectors.toList()));
 		}
-
 		return dataset;
 
 	}
@@ -67,12 +66,6 @@ public class DatasetService implements SystemConstant {
 	public void createDataset(Dataset dataset) {
 		datasetDbService.createDataset(dataset);
 		addDatasetToSelectedClassifiers(dataset);
-	}
-
-	private void addDatasetToSelectedClassifiers(Dataset dataset) {
-		commonDataDbService.addDatasetToClassifier(ClassifierName.LANGUAGE, dataset.getCode(), dataset.getSelectedLanguages());
-		commonDataDbService.addDatasetToClassifier(ClassifierName.PROCESS_STATE, dataset.getCode(), dataset.getSelectedProcessStates());
-		commonDataDbService.addDatasetToClassifier(ClassifierName.DOMAIN, dataset.getCode(), dataset.getSelectedDomains());
 	}
 
 	@Transactional
@@ -99,10 +92,16 @@ public class DatasetService implements SystemConstant {
 		return datasetDbService.datasetCodeExists(code);
 	}
 
+	private void addDatasetToSelectedClassifiers(Dataset dataset) {
+		datasetDbService.addDatasetToClassifier(ClassifierName.LANGUAGE, dataset.getCode(), dataset.getLanguages());
+		datasetDbService.addDatasetToClassifier(ClassifierName.PROCESS_STATE, dataset.getCode(), dataset.getProcessStates());
+		datasetDbService.addDatasetToClassifier(ClassifierName.DOMAIN, dataset.getCode(), dataset.getDomains());
+	}
+
 	private void removeDatasetFromAllClassifiers(String datasetCode) {
-		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.LANGUAGE, datasetCode);
-		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
-		commonDataDbService.removeDatasetFromAllClassifiers(ClassifierName.DOMAIN, datasetCode);
+		datasetDbService.removeDatasetFromAllClassifiers(ClassifierName.LANGUAGE, datasetCode);
+		datasetDbService.removeDatasetFromAllClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
+		datasetDbService.removeDatasetFromAllClassifiers(ClassifierName.DOMAIN, datasetCode);
 	}
 
 	private List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {

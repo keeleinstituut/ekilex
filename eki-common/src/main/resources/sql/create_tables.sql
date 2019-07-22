@@ -397,9 +397,9 @@ alter sequence lifecycle_log_id_seq restart with 10000;
 create table dataset
 (
   code varchar(10) primary key,
+  type varchar(10) not null,
   name text not null,
   description text,
-  type varchar(10),
   is_visible boolean default true,
   is_public boolean default true,
   order_by bigserial

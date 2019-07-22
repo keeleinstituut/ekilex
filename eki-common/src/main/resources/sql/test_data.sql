@@ -1,9 +1,9 @@
 insert into eki_user (name, email, password, is_admin, is_enabled) values ('Test Test', 'test@test.com', '$2a$10$8SwxxliqwpG5N9hK246.R.JNhwLFqACg5HVZtFXBhyb7SwbqKnObm', true, true);
 
-insert into dataset (code, name) values ('eos', 'Õigekeelsussõnaraamat ÕS 2013');
-insert into dataset (code, name) values ('ss_', 'Eesti keele seletav sõnaraamat');
-insert into dataset (code, name) values ('sys', 'Sünonüümisõnastik');
-insert into dataset (code, name) values ('evs', 'Eesti-vene sõnaraamat');
+insert into dataset (code, type, name) values ('eos', 'LEX', 'Õigekeelsussõnaraamat ÕS 2013');
+insert into dataset (code, type, name) values ('ss_', 'LEX', 'Eesti keele seletav sõnaraamat');
+insert into dataset (code, type, name) values ('sys', 'LEX', 'Sünonüümisõnastik');
+insert into dataset (code, type, name) values ('evs', 'LEX', 'Eesti-vene sõnaraamat');
 
 insert into word (id, lang, morph_code, homonym_nr) values (1001, 'est', 'SgN', 1);
 insert into word (id, lang, morph_code, homonym_nr) values (1002, 'est', 'SgN', 2);
