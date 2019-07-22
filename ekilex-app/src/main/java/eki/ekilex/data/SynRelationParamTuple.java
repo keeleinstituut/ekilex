@@ -12,6 +12,9 @@ public class SynRelationParamTuple extends AbstractDataObject {
 	@Column(name= "relation_id")
 	private Long relationId;
 
+	@Column(name= "word_id")
+	private Long wordId;
+
 	@Column(name= "word")
 	private String word;
 
@@ -84,5 +87,13 @@ public class SynRelationParamTuple extends AbstractDataObject {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
 	}
 }

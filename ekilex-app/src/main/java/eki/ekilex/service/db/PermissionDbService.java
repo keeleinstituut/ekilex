@@ -22,6 +22,7 @@ import static eki.ekilex.data.db.Tables.PROCESS_LOG_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static org.jooq.impl.DSL.field;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class PermissionDbService implements SystemConstant {
 
 	public List<EkiUserPermData> getUsers() {
 
-		Field<Boolean> enablePendingField = DSL.field(
+		Field<Boolean> enablePendingField = field(
 				EKI_USER.IS_ENABLED.isNull()
 						.andExists(DSL
 								.select(EKI_USER_APPLICATION.ID)
@@ -88,6 +89,7 @@ public class PermissionDbService implements SystemConstant {
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG,
+						DATASET_PERMISSION.IS_LAST_CHOSEN,
 						LANGUAGE_LABEL.VALUE.as("auth_lang_value"))
 				.from(DATASET, DATASET_PERMISSION.leftOuterJoin(LANGUAGE_LABEL)
 						.on(LANGUAGE_LABEL.CODE.eq(DATASET_PERMISSION.AUTH_LANG)
@@ -163,7 +165,7 @@ public class PermissionDbService implements SystemConstant {
 
 		return create
 				.select(
-						DSL.field(DSL.value(ClassifierName.LANGUAGE.name())).as("name"),
+						field(DSL.value(ClassifierName.LANGUAGE.name())).as("name"),
 						LANGUAGE_LABEL.CODE,
 						LANGUAGE_LABEL.VALUE)
 				.from(LANGUAGE, LANGUAGE_LABEL)
@@ -180,11 +182,11 @@ public class PermissionDbService implements SystemConstant {
 
 		eki.ekilex.data.db.tables.DatasetPermission edp = DATASET_PERMISSION.as("edp");
 		SelectSelectStep<Record5<Long, String, String, String, String>> select = DSL.select(
-				DSL.field(DSL.val(userId)),
-				DSL.field(DSL.val(datasetCode)),
-				DSL.field(DSL.val(authItem.name())),
-				DSL.field(DSL.val(authOp.name())),
-				DSL.field(DSL.val(authLang)));
+				field(DSL.val(userId)),
+				field(DSL.val(datasetCode)),
+				field(DSL.val(authItem.name())),
+				field(DSL.val(authOp.name())),
+				field(DSL.val(authLang)));
 
 		Condition authLangCond;
 		if (StringUtils.isBlank(authLang)) {
@@ -227,7 +229,7 @@ public class PermissionDbService implements SystemConstant {
 	public boolean isGrantedForWord(Long userId, Long wordId, String authItem, List<String> authOps) {
 
 		Table<Record1<Integer>> lp = DSL
-				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
 								.andExists(DSL
@@ -239,6 +241,30 @@ public class PermissionDbService implements SystemConstant {
 														.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
 														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
 														.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG)))))))
+				.where(WORD.ID.eq(wordId))
+				.groupBy(WORD.ID)
+				.asTable("lp");
+
+		Table<Record1<Integer>> la = DSL
+				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId))
+				.groupBy(LEXEME.WORD_ID)
+				.asTable("la");
+
+		return create
+				.select(field(lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class))).as("is_granted"))
+				.from(lp, la)
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean isGrantedForWord(Long wordId, List<String> datasetCodes) {
+
+		Table<Record1<Integer>> lp = DSL
+				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.from(WORD.leftOuterJoin(LEXEME).on(
+						LEXEME.WORD_ID.eq(WORD.ID)
+								.and(LEXEME.DATASET_CODE.in(datasetCodes))))
 				.where(WORD.ID.eq(wordId))
 				.groupBy(WORD.ID)
 				.asTable("lp");
@@ -259,7 +285,7 @@ public class PermissionDbService implements SystemConstant {
 	public boolean isGrantedForMeaning(Long userId, Long meaningId, String authItem, List<String> authOps) {
 
 		Table<Record1<Integer>> lp = DSL
-				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
 								.andExists(DSL
@@ -275,14 +301,14 @@ public class PermissionDbService implements SystemConstant {
 				.asTable("lp");
 
 		Table<Record1<Integer>> la = DSL
-				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(LEXEME)
 				.where(LEXEME.MEANING_ID.eq(meaningId))
 				.groupBy(LEXEME.MEANING_ID)
 				.asTable("la");
 
 		return create
-				.select(DSL.field(lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class))).as("is_granted"))
+				.select(field(lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class))).as("is_granted"))
 				.from(lp, la)
 				.fetchSingleInto(Boolean.class);
 	}
@@ -290,7 +316,7 @@ public class PermissionDbService implements SystemConstant {
 	public boolean isGrantedForMeaning(Long meaningId, String datasetCode) {
 
 		return create
-				.select(DSL.field(DSL.count(MEANING.ID).gt(0)).as("is_granted"))
+				.select(field(DSL.count(MEANING.ID).gt(0)).as("is_granted"))
 				.from(MEANING)
 				.where(
 						MEANING.ID.eq(meaningId)
@@ -309,7 +335,7 @@ public class PermissionDbService implements SystemConstant {
 	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String authItem, List<String> authOps) {
 
 		return create
-				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
+				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(LEXEME)
 				.where(
 						LEXEME.ID.eq(lexemeId)
@@ -327,7 +353,7 @@ public class PermissionDbService implements SystemConstant {
 	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String datasetCode) {
 
 		return create
-				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
+				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchSingleInto(Boolean.class);
@@ -340,7 +366,7 @@ public class PermissionDbService implements SystemConstant {
 	public boolean isGrantedForDefinition(Long userId, Long definitionId, String authItem, List<String> authOps) {
 
 		return create
-				.select(DSL.field((DSL.count(DEFINITION.ID).gt(0))).as("is_granted"))
+				.select(field((DSL.count(DEFINITION.ID).gt(0))).as("is_granted"))
 				.from(DEFINITION)
 				.where(
 						DEFINITION.ID.eq(definitionId)
@@ -370,7 +396,7 @@ public class PermissionDbService implements SystemConstant {
 			langCond = DEFINITION.LANG.eq(lang);
 		}
 		return create
-				.select(DSL.field((DSL.count(DEFINITION.ID).gt(0))).as("is_granted"))
+				.select(field((DSL.count(DEFINITION.ID).gt(0))).as("is_granted"))
 				.from(DEFINITION)
 				.where(
 						DEFINITION.ID.eq(definitionId)
@@ -390,7 +416,7 @@ public class PermissionDbService implements SystemConstant {
 	public boolean isGrantedForUsage(Long userId, Long usageId, String authItem, List<String> authOps) {
 
 		return create
-				.select(DSL.field((DSL.count(FREEFORM.ID).gt(0))).as("is_granted"))
+				.select(field((DSL.count(FREEFORM.ID).gt(0))).as("is_granted"))
 				.from(FREEFORM)
 				.where(
 						FREEFORM.ID.eq(usageId)
@@ -422,7 +448,7 @@ public class PermissionDbService implements SystemConstant {
 			langCond = FREEFORM.LANG.eq(lang);
 		}
 		return create
-				.select(DSL.field((DSL.count(FREEFORM.ID).gt(0))).as("is_granted"))
+				.select(field((DSL.count(FREEFORM.ID).gt(0))).as("is_granted"))
 				.from(FREEFORM, LEXEME, LEXEME_FREEFORM)
 				.where(
 						FREEFORM.ID.eq(usageId)
@@ -532,5 +558,13 @@ public class PermissionDbService implements SystemConstant {
 				.where(DATASET_PERMISSION.ID.eq(id))
 				.fetchSingleInto(DatasetPermission.class);
 
+	}
+
+	public void setLastChosenPermissionId(Long permissionId, Long userId) {
+		create
+			.update(DATASET_PERMISSION).set(DATASET_PERMISSION.IS_LAST_CHOSEN,
+					field(DATASET_PERMISSION.ID.eq(permissionId)))
+			.where(DATASET_PERMISSION.USER_ID.eq(userId))
+			.execute();
 	}
 }

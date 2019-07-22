@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.web.bean.SessionBean;
@@ -46,10 +47,13 @@ public class LexEditController implements WebConstant {
 	@Autowired
 	private CompositionService compositionService;
 
+	@Autowired
+	private CommonDataService commonDataService;
+
 	@GetMapping("/lexjoin/{lexemeId}")
 	public String show(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
-		model.addAttribute("sourceLexeme", lexSearchService.getWordLexeme(lexemeId));
+		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(lexemeId));
 		model.addAttribute("searchFilter", null);
 
 		return LEX_JOIN_PAGE;
@@ -62,7 +66,7 @@ public class LexEditController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
 		if (CollectionUtils.isNotEmpty(sessionBean.getSelectedDatasets())) {
 			datasets = sessionBean.getSelectedDatasets();
@@ -82,7 +86,7 @@ public class LexEditController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		List<String> validationMessages = compositionService.validateLexemeJoin(lexemeId, lexemeId2);
 		if (!validationMessages.isEmpty()) {
 			model.addAttribute("sourceLexeme", lexeme);
@@ -103,7 +107,7 @@ public class LexEditController implements WebConstant {
 			@PathVariable("lexemeId") Long lexemeId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		compositionService.separateLexemeMeanings(lexemeId);
 
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();

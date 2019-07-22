@@ -18,6 +18,8 @@ public interface SystemConstant {
 
 	String CLASSIF_LABEL_TYPE_FULL = "full";
 
+	String CLASSIF_LABEL_TYPE_ISO2 = "iso2";
+
 	String CACHE_KEY_CLASSIF = "classif";
 
 	String CACHE_KEY_DATASET = "dataset";

@@ -5,6 +5,7 @@ insert into label_type (code, value) values ('descrip', 'descrip');
 insert into label_type (code, value) values ('descrip2', 'descrip2');
 insert into label_type (code, value) values ('full', 'full');
 insert into label_type (code, value) values ('wordweb', 'wordweb');
+insert into label_type (code, value) values ('iso2', 'iso2');
 
 -- lex
 insert into dataset (code, name, is_visible, is_public) values ('ss1', 'Eesti keele sõnaraamat 2019', true, true);
@@ -60,6 +61,7 @@ insert into dataset (code, name, is_visible, is_public) values ('mea', 'Metroloo
 insert into dataset (code, name, is_visible, is_public) values ('mon', 'Montessori pedagoogika terminivara', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('mut', 'Muuseumiterminoloogia', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('mte', 'Muusikateraapia seletav sõnastik', true, true);
+insert into dataset (code, name, is_visible, is_public) values ('mtr', 'Materjalitehnika', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('nht', 'Nahkhiirte-alased terminid', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('prs', 'Parasitoloogia terminid', true, true);
 insert into dataset (code, name, is_visible, is_public) values ('plt', 'Põllumajandusloomade tõud', true, true);

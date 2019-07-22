@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -26,6 +24,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractSearchController extends AbstractPageController {
 
@@ -139,6 +138,12 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	public String getDefaultDefinitionTypeCode() {
 		return DEFAULT_DEFINITION_TYPE_CODE;
 	}
+
+	@ModelAttribute("iso2languages")
+	public Map<String, String> getIso2Languages() {
+		return commonDataService.getLanguagesIso2Map();
+	}
+
 
 	protected SessionBean getSessionBean(Model model) {
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeSourceLink extends TableImpl<LexemeSourceLinkRecord> {
 
-    private static final long serialVersionUID = -1850975481;
+    private static final long serialVersionUID = -352135045;
 
     /**
      * The reference instance of <code>public.lexeme_source_link</code>
@@ -137,7 +137,7 @@ public class LexemeSourceLink extends TableImpl<LexemeSourceLinkRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_SOURCE_LINK_LEXEME_ID_IDX, Indexes.LEXEME_SOURCE_LINK_PKEY, Indexes.LEXEME_SOURCE_LINK_SOURCE_ID_IDX);
+        return Arrays.<Index>asList(Indexes.LEXEME_SOURCE_LINK_LEXEME_ID_IDX, Indexes.LEXEME_SOURCE_LINK_NAME_IDX, Indexes.LEXEME_SOURCE_LINK_PKEY, Indexes.LEXEME_SOURCE_LINK_SOURCE_ID_IDX, Indexes.LEXEME_SOURCE_LINK_VALUE_IDX);
     }
 
     /**

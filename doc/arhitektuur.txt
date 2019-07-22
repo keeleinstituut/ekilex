@@ -67,12 +67,26 @@ ekilex/ekilex-etl>mvn exec:java -P testsrvss1 (laeb ss1)
 ekilex/ekilex-etl>mvn exec:java -P testsrvkol (laeb kollokatsioonid)
 ekilex/ekilex-etl>mvn exec:java -P testsrvall (tühjendab andmebaasi ja laeb kõik eelneva)
 
+
+Sünonüümide relatsioonide SQL'i genereerimine
+---------------------------------------------
+'raw'-relatsioonide andmefail peab olema CSV-formaadis, eraldajaks TAB. Fail algab andmereaga, pealkirjarida ei ole.
+
+Generaatori käivitamine:
+
+ekilex/ekilex-etl>mvn exec:java -P testsrvgenerateraw  -Dexec.args="<sisendfaili asukoht (full-path, koos kaustaga)> "
+
+Genereeritakse sisendfailiga sama nimega ja laiendiga ".sql" fail samasse kausta, kus oli sisendfail.
+Kui sama nimega fail on kaustas olemas, kirjutatakse see üle.
+
+
 Muud tehn operatsioonid
 -----------------------
 
 Andmebaasi teenuse klasside genereerimine (kasutatakse ainult arenduses, pärast andmebaasi struktuuri muudatusi):
 
 ekilex>mvn compile -Dskip.jooq.generation=false
+
 
 Kõnesüntesaatori lisamine/aktiveerimine eve-app
 -----------------------------------------------

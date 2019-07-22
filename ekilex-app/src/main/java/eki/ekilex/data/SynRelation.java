@@ -11,6 +11,8 @@ public class SynRelation extends AbstractDataObject {
 
 	private Long id;
 
+	private Long wordId;
+
 	private String word;
 
 	private Long orderBy;
@@ -67,5 +69,13 @@ public class SynRelation extends AbstractDataObject {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
 	}
 }

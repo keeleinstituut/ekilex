@@ -48,7 +48,7 @@ public class SynSearchService extends AbstractWordSearchService {
 				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
 		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
 
-		WordSynDetails wordDetails = new WordSynDetails();
+		WordSynDetails wordDetails = synSearchDbService.getSelectedWord(wordId);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
 
@@ -82,4 +82,10 @@ public class SynSearchService extends AbstractWordSearchService {
 	public void changeRelationStatus(Long id, String status) {
 		synSearchDbService.changeRelationStatus(id, status);
 	}
+
+	@Transactional
+	public void createSynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId) {
+		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, existingLexemeId);
+	}
+
 }

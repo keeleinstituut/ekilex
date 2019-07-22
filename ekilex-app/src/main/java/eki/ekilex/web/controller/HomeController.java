@@ -59,6 +59,7 @@ public class HomeController extends AbstractPageController {
 		EkiUser user = userService.getAuthenticatedUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			populateStatData(model);
+			initLastChosenRoleInSession(user, model);
 			return HOME_PAGE;
 		}
 		populateUserApplicationData(user, model);
@@ -129,6 +130,15 @@ public class HomeController extends AbstractPageController {
 		model.addAttribute("statExists", statExists);
 	}
 
+	private void initLastChosenRoleInSession(EkiUser user, Model model) {
+		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
+		if (sessionBean == null) {
+			sessionBean = new SessionBean();
+			model.addAttribute(SESSION_BEAN, sessionBean);
+		}
+		sessionBean.setUserRole(user.getLastChosenPermission());
+	}
+
 	@GetMapping("/loginerror")
 	public String loginError(RedirectAttributes attributes) {
 		attributes.addFlashAttribute("loginerror", "Autentimine ebaõnnestus");
@@ -142,7 +152,8 @@ public class HomeController extends AbstractPageController {
 		logger.debug("User initiated role change, dataSetPermissionId: {}", permissionId);
 
 		if (permissionId != null) {
-			DatasetPermission datasetPermission = permissionService.getDatasetPermission(permissionId);
+			DatasetPermission datasetPermission = permissionService.getDatasetPermissionAndSetChosen(permissionId);
+			userService.updateUserSecurityContext();
 			sessionBean.setUserRole(datasetPermission);
 		} else {
 			sessionBean.setUserRole(null);

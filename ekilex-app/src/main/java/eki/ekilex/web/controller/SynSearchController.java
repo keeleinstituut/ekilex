@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -139,7 +138,7 @@ public class SynSearchController extends AbstractSearchController {
 	}
 
 
-	@RequestMapping(SYN_CHANGE_RELATION_STATUS)
+	@PostMapping(SYN_CHANGE_RELATION_STATUS)
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@ResponseBody
 	public String changeRelationStatus(@RequestParam Long id, @RequestParam String status) {
@@ -149,4 +148,41 @@ public class SynSearchController extends AbstractSearchController {
 
 		return "{}";
 	}
+
+	@PostMapping(SYN_CREATE_LEXEME + "/{meaningId}/{wordId}/{lexemeId}")
+	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@ResponseBody
+	public String createSynLexeme(@PathVariable Long meaningId, @PathVariable Long wordId, @PathVariable Long lexemeId, Model model) {
+		logger.debug("Adding lexeme to syn candidate word Id {}, meaning Id {} , existing lexeme Id {}", wordId, meaningId, lexemeId);
+		SessionBean sessionBean = getSessionBean(model);
+		String datasetCode = getDatasetCodeFromRole(sessionBean).get(0);
+
+		synSearchService.createSynLexeme(meaningId, wordId, datasetCode, lexemeId);
+		return "{}";
+	}
+
+
+	@GetMapping(SYN_SEARCH_WORDS)
+	public String searchSynWords(
+			@RequestParam String searchFilter,
+			@RequestParam(required = false) List<Long> excludedIds,
+			@RequestParam(required = false) String language,
+			@RequestParam(required = false) String morphCode,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+		logger.debug("word search ajax {}", searchFilter);
+
+		WordsResult result = synSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false);
+
+		model.addAttribute("wordsFoundBySearch", result.getWords());
+		model.addAttribute("totalCount", result.getTotalCount());
+		model.addAttribute("existingIds", excludedIds);
+
+		model.addAttribute("searchedWord", searchFilter);
+		model.addAttribute("selectedWordLanguage", language);
+		model.addAttribute("selectedWordMorphCode", morphCode);
+
+		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
+	}
+
 }

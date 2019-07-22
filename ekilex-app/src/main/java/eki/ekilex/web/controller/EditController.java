@@ -2,6 +2,7 @@ package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,8 +37,10 @@ import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
+import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.SourceService;
@@ -73,9 +76,12 @@ public class EditController implements WebConstant {
 	@Autowired
 	private TextDecorationService textDecorationService;
 
+	@Autowired
+	private CompositionService compositionService;
+
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
-	public String createItem(@RequestBody CreateItemRequest itemData) {
+	public String createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		logger.debug("Add new item : {}", itemData);
 
@@ -175,6 +181,14 @@ public class EditController implements WebConstant {
 			break;
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), valuePrese);
+			break;
+		case "create_raw_relation":
+			//TODO - can regular word_relation be used here
+			cudService.addSynRelation(itemData.getId(), itemData.getId2());
+			break;
+		case "create_syn_word":
+			String datasetCode = sessionBean.getUserRole().getDatasetCode();
+			cudService.createWordAndSynRelation(itemData.getId(), itemData.getValue(), datasetCode, itemData.getLanguage(), itemData.getItemType());
 			break;
 		}
 		return "{}";
@@ -350,7 +364,13 @@ public class EditController implements WebConstant {
 				}
 				boolean isOnlyLexemesForWords = commonDataService.isOnlyLexemesForWords(id, datasetCode);
 				if (isOnlyLexemesForWords) {
-					question = "Valitud mõiste kustutamisel jäävad mõned terminid mõisteta. Palun kinnita terminite kustutamine";
+					List<String> wordsToDelete = commonDataService.getWordsToBeDeleted(id, datasetCode);
+					String joinedWords = StringUtils.join(wordsToDelete, ", ");
+
+					question = "Valitud mõiste kustutamisel jäävad järgnevad terminid mõisteta: ";
+					question += joinedWords;
+					questions.add(question);
+					question = "Palun kinnita terminite kustutamine";
 					questions.add(question);
 				}
 				break;
@@ -598,5 +618,38 @@ public class EditController implements WebConstant {
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, valuePrese);
 		cudService.updateWordValue(wordId, valuePrese);
 		return valuePrese;
+	}
+
+	@GetMapping(WORD_JOIN_URI + "/{wordId}")
+	public String showWordJoin(@PathVariable("wordId") Long wordId, Model model) {
+
+		List<String> datasetCodes = commonDataService.getDatasetCodes();
+		WordDetails firstWordDetails = commonDataService.getWordDetails(wordId, datasetCodes);
+		Word firstWord = firstWordDetails.getWord();
+		Long firstWordId = firstWord.getWordId();
+		String firstWordValue = firstWord.getValue();
+		List<WordDetails> wordDetailsList = commonDataService.getWordDetailsOfJoinCandidates(firstWordValue, wordId);
+		List<Classifier> wordGenders = commonDataService.getGenders();
+		List<Classifier> wordAspects = commonDataService.getAspects();
+
+		model.addAttribute("firstWordDetails", firstWordDetails);
+		model.addAttribute("firstWordId", firstWordId);
+		model.addAttribute("wordDetailsList", wordDetailsList);
+		model.addAttribute("wordGenders", wordGenders);
+		model.addAttribute("wordAspects", wordAspects);
+		return WORD_JOIN_PAGE;
+	}
+
+	@PostMapping(WORD_JOIN_URI)
+	public String joinWords(@RequestParam("firstWordId") Long firstWordId, @RequestParam("secondWordId") Long secondWordId) {
+
+		logger.debug("Joining words, firstWordId: \"{}\", secondWordId: \"{}\"", firstWordId, secondWordId);
+		compositionService.joinWords(firstWordId, secondWordId);
+		return "redirect:" + WORD_BACK_URI + "/" + firstWordId;
+	}
+
+	@ModelAttribute("iso2languages")
+	public Map<String, String> getIso2Languages() {
+		return commonDataService.getLanguagesIso2Map();
 	}
 }

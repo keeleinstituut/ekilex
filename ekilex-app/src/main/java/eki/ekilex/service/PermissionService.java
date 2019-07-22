@@ -108,8 +108,11 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public DatasetPermission getDatasetPermission(Long id) {
-		return permissionDbService.getDatasetPermission(id);
+	public DatasetPermission getDatasetPermissionAndSetChosen(Long permissionId) {
+		EkiUser currentUser = userService.getAuthenticatedUser();
+		permissionDbService.setLastChosenPermissionId(permissionId, currentUser.getId());
+
+		return permissionDbService.getDatasetPermission(permissionId);
 	}
 
 	@Transactional
@@ -121,4 +124,5 @@ public class PermissionService implements SystemConstant {
 	public boolean isGrantedForMeaning(Long meaningId, String datasetCode) {
 		return permissionDbService.isGrantedForMeaning(meaningId, datasetCode);
 	}
+
 }

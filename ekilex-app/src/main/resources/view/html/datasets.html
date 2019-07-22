@@ -55,10 +55,10 @@
                   <td class="m-1 p-1">
                     <th:block th:if="${isAdmin || #lists.contains(ownedDatasetCodes, dataset.code)}">
                       <button type="button" class="btn badge badge-primary"
-                              th:data-origin="${dataset.origin}"
+                              th:data-dataset-code="${dataset.code}"
                               title="Muuda"
                               data-toggle="modal"
-                              th:data-target="${'#editDatasetDlg_' + dataset.code}">
+                              data-target="#editDatasetDlg">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
                       <button type="button" class="btn badge badge-warning delete-dataset-confirm"
@@ -71,14 +71,12 @@
                 </tr>
               </th:block>
             </table>
-            <th:block th:each="dataset : ${datasets}">
-              <div th:replace="datasetdialog :: edit_dataset_dlg(${dataset})"></div>
-            </th:block>
           </div>
         </div>
       </div>
     </div>
     <div th:replace="datasetdialog :: add_dataset_dlg"></div>
+    <div th:replace="datasetdialog :: edit_dataset_dialog"></div>
   </div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #waitDlg"></div>

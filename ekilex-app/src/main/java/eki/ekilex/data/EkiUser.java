@@ -37,6 +37,10 @@ public class EkiUser implements Principal, Serializable {
 
 	private boolean datasetOwnershipExist;
 
+	private DatasetPermission lastChosenPermission;
+
+	private boolean hasSinglePermission;
+
 	public Long getId() {
 		return id;
 	}
@@ -123,6 +127,22 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setDatasetOwnershipExist(boolean datasetOwnershipExist) {
 		this.datasetOwnershipExist = datasetOwnershipExist;
+	}
+
+	public DatasetPermission getLastChosenPermission() {
+		return lastChosenPermission;
+	}
+
+	public void setLastChosenPermission(DatasetPermission lastChosenPermission) {
+		this.lastChosenPermission = lastChosenPermission;
+	}
+
+	public boolean isHasSinglePermission() {
+		return hasSinglePermission;
+	}
+
+	public void setHasSinglePermission(boolean hasSinglePermission) {
+		this.hasSinglePermission = hasSinglePermission;
 	}
 
 	@Override

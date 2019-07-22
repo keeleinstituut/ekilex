@@ -399,6 +399,7 @@ create table dataset
   code varchar(10) primary key,
   name text not null,
   description text,
+  type varchar(10),
   is_visible boolean default true,
   is_public boolean default true,
   order_by bigserial
@@ -412,6 +413,7 @@ create table dataset_permission
   auth_operation varchar(100) not null,
   auth_item varchar(100) not null,
   auth_lang char(3) references language(code) null,
+  is_last_chosen boolean default false,
   unique(dataset_code, user_id, auth_operation, auth_item, auth_lang)
 );
 alter sequence dataset_permission_id_seq restart with 10000;

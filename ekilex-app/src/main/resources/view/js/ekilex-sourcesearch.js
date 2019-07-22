@@ -116,7 +116,9 @@ function createAndAttachCopyFromLastItem(parentElement) {
 }
 
 $(document).on("click", "#addSourceSubmitBtn", function () {
+	let location = $(this).attr("data-location");
 	let form = $("#addSourceForm");
+	let dlg = $("#addSourceDlg");
 	if (!isNewSourceFormValid(form)) {
 		return;
 	}
@@ -126,7 +128,13 @@ $(document).on("click", "#addSourceSubmitBtn", function () {
 		data: form.serialize(),
 		method: 'POST',
 	}).done(function (sourceId) {
-		window.location = applicationUrl + 'sourcesearch/' + sourceId;
+		if (location === "source_search") {
+			window.location = applicationUrl + 'sourcesearch/' + sourceId;
+		}
+		if (location === "term_search" || location === "lex_search") {
+			dlg.modal('hide');
+			openMessageDlg("Allikas lisatud");
+		}
 	}).fail(function (data) {
 		console.log(data);
 		openAlertDlg('Allika lisamine ebaõnnestus');

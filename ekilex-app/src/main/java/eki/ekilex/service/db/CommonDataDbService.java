@@ -45,16 +45,20 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static org.jooq.impl.DSL.row;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
+import org.jooq.Row2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -104,18 +108,10 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getLanguages(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.LANGUAGE),
-						LANGUAGE_LABEL.CODE,
-						LANGUAGE_LABEL.VALUE)
-				.from(LANGUAGE, LANGUAGE_LABEL)
-				.where(
-						LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
-								.and(LANGUAGE_LABEL.LANG.eq(classifierLabelLang))
-								.and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(LANGUAGE.ORDER_BY)
-				.fetchInto(Classifier.class);
+		return create.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE_LABEL.CODE, LANGUAGE_LABEL.VALUE).from(LANGUAGE).leftJoin(LANGUAGE_LABEL)
+				.on(LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE))
+				.where(LANGUAGE_LABEL.LANG.eq(classifierLabelLang)).and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode))
+				.orderBy(LANGUAGE.ORDER_BY).fetchInto(Classifier.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
@@ -350,6 +346,17 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchOneInto(Word.class);
 	}
 
+	public String getWordValue(Long wordId) {
+		return create
+				.select(FORM.VALUE)
+				.from(FORM, PARADIGM)
+				.where(
+						PARADIGM.WORD_ID.eq(wordId)
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.fetchOneInto(String.class);
+	}
+
 	public List<Classifier> getWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
@@ -376,7 +383,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						FREEFORM.VALUE_DATE,
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY
-						)
+				)
 				.from(FREEFORM, MEANING_FREEFORM)
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
@@ -394,7 +401,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						FREEFORM.VALUE_PRESE,
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY
-						)
+				)
 				.from(FREEFORM, MEANING_FREEFORM)
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
@@ -494,11 +501,11 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.from(
 						DEFINITION
 								.leftOuterJoin(DEFINITION_SOURCE_LINK).on(
-										DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
+								DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
 								.leftOuterJoin(DEFINITION_TYPE_LABEL).on(
-										DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_LABEL.CODE)
-												.and(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang))
-												.and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
+								DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_LABEL.CODE)
+										.and(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang))
+										.and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.orderBy(DEFINITION.ORDER_BY)
 				.fetchInto(DefinitionRefTuple.class);
@@ -571,7 +578,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY,
 						FREEFORM.ORDER_BY
-						)
+				)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
@@ -590,7 +597,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY,
 						FREEFORM.ORDER_BY
-						)
+				)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
@@ -622,7 +629,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY,
 						FREEFORM.ORDER_BY
-						)
+				)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
@@ -832,136 +839,97 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 
-	public void addDatasetCodeToClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
-
-		//TODO - study array_add possibility in jooq
-		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
-
-		String[] classiferDatasets = classifier.getDatasets();
-		classiferDatasets = ArrayUtils.add(classiferDatasets, datasetCode);
-
-		updateClassiferDatasets(classifierName, classifierCode, origin, classiferDatasets);
-	}
-
-	public void removeDatasetCodeFromClassifier(ClassifierName classifierName, String classifierCode, String datasetCode, String origin) {
-
-		//TODO study array_remove option
-		Classifier classifier = getClassifierWithDatasets(classifierName, classifierCode, origin);
-		String[] classifierDatasetCodes = classifier.getDatasets();
-		classifierDatasetCodes = ArrayUtils.removeElement(classifierDatasetCodes, datasetCode);
-
-		updateClassiferDatasets(classifierName, classifierCode, origin, classifierDatasetCodes);
-	}
-
-	private void updateClassiferDatasets(ClassifierName classifierName, String code, String origin, String[] datasets) {
-
+	public void removeDatasetFromAllClassifiers(ClassifierName classifierName, String datasetCode) {
+		String[] datasetCodes = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-
-			create
-					.update(LANGUAGE)
-					.set(LANGUAGE.DATASETS, datasets)
-					.where(LANGUAGE.CODE.eq(code))
+			create.update(LANGUAGE)
+					.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode)))
+					.where(LANGUAGE.DATASETS.contains(datasetCodes))
 					.execute();
-		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 
-			create
-					.update(DOMAIN)
-					.set(DOMAIN.DATASETS, datasets)
-					.where(DOMAIN.CODE.eq(code).and(DOMAIN.ORIGIN.eq(origin)))
-					.execute();
 		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-
-			create
-					.update(PROCESS_STATE)
-					.set(PROCESS_STATE.DATASETS, datasets)
-					.where(PROCESS_STATE.CODE.eq(code))
+			create.update(PROCESS_STATE)
+					.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayRemove(PROCESS_STATE.DATASETS, datasetCode)))
+					.where(PROCESS_STATE.DATASETS.contains(datasetCodes))
 					.execute();
+
+		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+			create.update(DOMAIN)
+					.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayRemove(DOMAIN.DATASETS, datasetCode)))
+					.where(DOMAIN.DATASETS.contains(datasetCodes))
+					.execute();
+
 		} else {
 			throw new UnsupportedOperationException();
 		}
+
+
 	}
 
-	private Classifier getClassifierWithDatasets(ClassifierName name, String classifierCode, String origin) {
+	public void addDatasetToClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> addedClassifiers) {
+		if (CollectionUtils.isNotEmpty(addedClassifiers)) {
+			if (ClassifierName.LANGUAGE.equals(classifierName)) {
+				List<String> languageCodes = addedClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+				create.update(LANGUAGE)
+						.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayAppend(LANGUAGE.DATASETS, datasetCode)))
+						.where(LANGUAGE.CODE.in(languageCodes))
+						.execute();
 
-		if (ClassifierName.LANGUAGE.equals(name)) {
+			} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+				List<String> processStateCodes = addedClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+				create.update(PROCESS_STATE)
+						.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayAppend(PROCESS_STATE.DATASETS, datasetCode)))
+						.where(PROCESS_STATE.CODE.in(processStateCodes))
+						.execute();
 
-			return create
-					.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE.DATASETS, LANGUAGE.ORDER_BY)
-					.from(LANGUAGE)
-					.where(LANGUAGE.CODE.eq(classifierCode))
-					.fetchSingleInto(Classifier.class);
-		} else if (ClassifierName.DOMAIN.equals(name)) {
+			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+				Row2[] selectedCodeOriginPairs = addedClassifiers.stream().map(c -> row(DSL.val(c.getCode()), DSL.val(c.getOrigin())))
+						.toArray(Row2[]::new);
 
-			return create
-					.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
-					.from(DOMAIN)
-					.where(DOMAIN.CODE.eq(classifierCode))
-					.and(DOMAIN.ORIGIN.eq(origin))
-					.fetchSingleInto(Classifier.class);
-		} else if (ClassifierName.PROCESS_STATE.equals(name)) {
+				create.update(DOMAIN)
+						.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayAppend(DOMAIN.DATASETS, datasetCode)))
+						.where(row(DOMAIN.CODE, DOMAIN.ORIGIN).in(selectedCodeOriginPairs))
+						.execute();
 
-			return create
-					.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.DATASETS, PROCESS_STATE.ORDER_BY)
-					.from(PROCESS_STATE)
-					.where(PROCESS_STATE.CODE.eq(classifierCode))
-					.fetchSingleInto(Classifier.class);
+			} else {
+				throw new UnsupportedOperationException();
+			}
 		}
-
-		throw new UnsupportedOperationException();
-
 	}
 
 	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode, String labelLanguage, String labelType) {
 		String[] datasetCodes = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
 			return create.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE_LABEL.VALUE, LANGUAGE.ORDER_BY)
-				.from(LANGUAGE, LANGUAGE_LABEL)
-				.where(
-					LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
-						.and(LANGUAGE_LABEL.TYPE.eq(labelType))
-						.and(LANGUAGE_LABEL.LANG.eq(labelLanguage))
-						.and(LANGUAGE.DATASETS.contains(datasetCodes)))
-				.fetchInto(Classifier.class);
+					.from(LANGUAGE, LANGUAGE_LABEL)
+					.where(
+							LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
+									.and(LANGUAGE_LABEL.TYPE.eq(labelType))
+									.and(LANGUAGE_LABEL.LANG.eq(labelLanguage))
+									.and(LANGUAGE.DATASETS.contains(datasetCodes)))
+					.fetchInto(Classifier.class);
 		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
 			return create.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.CODE.as("value"),
-				PROCESS_STATE.ORDER_BY.as("order_by"))
+					PROCESS_STATE.ORDER_BY.as("order_by"))
 					.from(PROCESS_STATE)
 					.where(PROCESS_STATE.DATASETS.contains(datasetCodes))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 			return create.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE,
-				DOMAIN_LABEL.VALUE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY)
+					DOMAIN_LABEL.VALUE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY)
 					.from(DOMAIN)
 					.leftJoin(DOMAIN_LABEL)
 					.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
 					.where(
-						DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
-							.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
-							.and(DOMAIN.DATASETS.contains(datasetCodes)))
+							DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
+									.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
+									.and(DOMAIN.DATASETS.contains(datasetCodes)))
 					.orderBy(DOMAIN.CODE, DOMAIN_LABEL.LANG.desc())
 					.fetchInto(Classifier.class);
 		}
 
 
 		throw new UnsupportedOperationException();
-	}
-
-	public List<Classifier> findDomainsByValue(String searchValue) {
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.DOMAIN),
-						DOMAIN_LABEL.ORIGIN,
-						DOMAIN_LABEL.CODE,
-						DOMAIN_LABEL.VALUE)
-				.from(DOMAIN_LABEL)
-				.whereExists(DSL
-						.select(MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
-						.from(MEANING_DOMAIN)
-						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
-								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))))
-				.and(DOMAIN_LABEL.VALUE.containsIgnoreCase(searchValue))
-				.orderBy(DOMAIN_LABEL.VALUE, DOMAIN_LABEL.ORIGIN)
-				.fetchInto(Classifier.class);
 	}
 
 	public List<Origin> getAllDomainOrigins() {
@@ -973,17 +941,23 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Origin.class);
 	}
 
-	public List<Classifier> findDomainsByOriginCode(String originCode, String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+	public List<Classifier> findDomainsByOriginCode(String originCode, String labelType) {
+		Table originDomains = create
 				.select(getClassifierNameField(ClassifierName.DOMAIN),
-					DOMAIN.CODE,
-					DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
-					DOMAIN_LABEL.VALUE)
+						DOMAIN.CODE,
+						DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
+						DOMAIN_LABEL.VALUE)
 				.distinctOn(DOMAIN.CODE)
 				.from(DOMAIN)
 				.leftJoin(DOMAIN_LABEL).on(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN)))
-				.where(DOMAIN.ORIGIN.eq(originCode))
-				.orderBy(DOMAIN.CODE, DOMAIN_LABEL.LANG.desc())
+				.innerJoin(LANGUAGE).on(LANGUAGE.CODE.eq(DOMAIN_LABEL.LANG))
+				.where(DOMAIN.ORIGIN.eq(originCode).and(DOMAIN_LABEL.TYPE.eq(labelType)))
+				.orderBy(DOMAIN.CODE, LANGUAGE.ORDER_BY).asTable();
+
+		return create
+				.select(originDomains.fields())
+				.from(originDomains)
+				.orderBy(originDomains.field("value"))
 				.fetchInto(Classifier.class);
 	}
 
@@ -997,7 +971,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.distinctOn(DOMAIN.CODE)
 				.from(DOMAIN)
 				.leftJoin(DOMAIN_LABEL)
-					.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
+				.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
 				.where(DOMAIN.DATASETS.contains(datasetCodes))
 				.fetchInto(Classifier.class);
 	}
@@ -1009,7 +983,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						LEXEME.WORD_ID,
 						LEXEME.MEANING_ID,
 						LEXEME.ID.as("lexeme_id")
-						)
+				)
 				.from(LEXEME)
 				.where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchInto(WordLexemeMeaningIdTuple.class);
@@ -1022,7 +996,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						LEXEME.WORD_ID,
 						LEXEME.MEANING_ID,
 						LEXEME.ID.as("lexeme_id")
-						)
+				)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(WordLexemeMeaningIdTuple.class);
@@ -1091,4 +1065,27 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 		return noOtherMeaningsExist;
 	}
+
+	public List<Long> getNonaffixoidWordIds(String wordValue) {
+
+		return create
+				.selectDistinct(WORD.ID)
+				.from(WORD, PARADIGM, FORM)
+				.where(
+						FORM.VALUE.like(wordValue)
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID)))
+								.andNotExists(DSL
+										.select(WORD_WORD_TYPE.ID)
+										.from(WORD_WORD_TYPE)
+										.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+										.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
+				.fetchInto(Long.class);
+	}
+
 }

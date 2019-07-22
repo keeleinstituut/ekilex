@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -71,11 +70,8 @@ public class DatasetController implements WebConstant {
 		EkiUser currentUser = userService.getAuthenticatedUser();
 		List<DatasetPermission> datasetPermissions = permissionService.getUserDatasetPermissions(currentUser.getId());
 
-		List<String> ownedDataSetCodes = datasetPermissions
-				.stream()
-				.filter(permission -> AuthorityOperation.OWN.equals(permission.getAuthOperation()))
-				.map(DatasetPermission::getDatasetCode)
-				.collect(Collectors.toList());
+		List<String> ownedDataSetCodes = datasetPermissions.stream().filter(permission -> AuthorityOperation.OWN.equals(permission.getAuthOperation()))
+				.map(DatasetPermission::getDatasetCode).collect(Collectors.toList());
 
 		model.addAttribute("ownedDatasetCodes", ownedDataSetCodes);
 		model.addAttribute("datasets", datasets);
@@ -147,24 +143,21 @@ public class DatasetController implements WebConstant {
 		return commonDataService.getAllOrigins();
 	}
 
-	@PostMapping(REST_SERVICES_URI + SEARCH_DOMAINS_URI)
-	@ResponseBody
-	public String searchDomain(@RequestParam String searchText) throws Exception {
-
-		List<Classifier> result = commonDataService.findDomainsByValue(searchText);
-
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(result);
-	}
-
 	@GetMapping(REST_SERVICES_URI + ORIGIN_DOMAINS_URI + "/{originCode}")
 	@ResponseBody
 	public String getOriginDomains(@PathVariable String originCode) throws Exception {
 
-		List<Classifier> originDomains = commonDataService.findDomainsByOrigin(originCode);
+		List<Classifier> originDomains = datasetService.findDomainsByOrigin(originCode);
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(originDomains);
 	}
 
+	@GetMapping(DATASET_URI + "/{datasetCode}")
+	@ResponseBody
+	public Dataset fetchDataset(@PathVariable String datasetCode) {
+		logger.debug("Fetching dataset code {}", datasetCode);
+		Dataset dataset = datasetService.getDataset(datasetCode);
+		return dataset;
+	}
 }

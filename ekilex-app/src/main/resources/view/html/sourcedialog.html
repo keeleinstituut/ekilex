@@ -83,7 +83,7 @@
     </div>
   </div>
 
-  <div id="addSourceDlg" class="modal" role="dialog" th:fragment="add_source_dlg">
+  <div id="addSourceDlg" class="modal" role="dialog" th:fragment="add_source_dlg(location)">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form id="addSourceForm" th:action="@{/create_source}" method="post">
@@ -122,7 +122,7 @@
             <th:block th:replace="sourcecomp :: add_new_source_property"></th:block>
           </div>
           <div class="modal-footer">
-            <button id="addSourceSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
+            <button id="addSourceSubmitBtn" th:data-location="${location}" type="button" class="btn btn-primary">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>

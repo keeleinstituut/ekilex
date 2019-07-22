@@ -101,530 +101,705 @@ government_type	inf	infinitiivirektsioon	est	full
 government_type	kla	lausungirektsioon	est	full
 government_type	subj	subjektirektsioon	est	full
 language	est	eesti	est	descrip
-language	est	eesti	est	full
 language	est	eesti	est	wordweb
+language	est	eesti	est	full
+language	est	et	est	iso2
 language	zho	hiina	est	descrip
 language	zho	hiina	est	wordweb
 language	zho	hiina keel	est	full
+language	zho	zh	est	iso2
 language	hin	hindi	est	descrip
 language	hin	hindi	est	wordweb
 language	hin	hindi keel	est	full
+language	hin	hi	est	iso2
 language	spa	hispaania	est	descrip
 language	spa	hispaania	est	wordweb
 language	spa	hispaania keel	est	full
+language	spa	es	est	iso2
 language	nld	hollandi	est	descrip
 language	nld	hollandi	est	wordweb
 language	nld	hollandi keel	est	full
+language	nld	nl	est	iso2
 language	eng	inglise	est	descrip
 language	eng	inglise	est	wordweb
 language	eng	inglise keel	est	full
+language	eng	en	est	iso2
 language	jpn	jaapani	est	descrip
 language	jpn	jaapani	est	wordweb
 language	jpn	jaapani keel	est	full
+language	jpn	ja	est	iso2
 language	ell	kreeka	est	descrip
 language	ell	kreeka	est	wordweb
 language	ell	kreeka keel	est	full
+language	ell	el	est	iso2
 language	lat	ladina	est	descrip
 language	lat	ladina	est	wordweb
 language	lat	ladina keel	est	full
+language	lat	la	est	iso2
 language	lav	läti	est	descrip
 language	lav	läti	est	wordweb
 language	lav	läti keel	est	full
+language	lav	lv	est	iso2
 language	pli	paali	est	descrip
-language	pli	paali	est	full
 language	pli	paali	est	wordweb
+language	pli	paali	est	full
+language	pli	pi	est	iso2
 language	pan	pandžabi	est	descrip
-language	pan	pandžabi	est	full
 language	pan	pandžabi	est	wordweb
+language	pan	pandžabi	est	full
+language	pan	pa	est	iso2
 language	pol	poola	est	descrip
 language	pol	poola	est	wordweb
 language	pol	poola keel	est	full
+language	pol	pl	est	iso2
 language	por	portugali	est	descrip
 language	por	portugali	est	wordweb
 language	por	portugali keel	est	full
+language	por	pt	est	iso2
 language	fra	prantsuse	est	descrip
 language	fra	prantsuse	est	wordweb
 language	fra	prantsuse keel	est	full
+language	fra	fr	est	iso2
 language	swe	rootsi	est	descrip
 language	swe	rootsi	est	wordweb
 language	swe	rootsi keel	est	full
+language	swe	sv	est	iso2
 language	deu	saksa	est	descrip
 language	deu	saksa	est	wordweb
 language	deu	saksa keel	est	full
+language	deu	de	est	iso2
 language	san	sanskriti	est	descrip
-language	san	sanskriti	est	full
 language	san	sanskriti	est	wordweb
+language	san	sanskriti	est	full
+language	san	sa	est	iso2
 language	fin	soome	est	descrip
 language	fin	soome	est	wordweb
 language	fin	soome keel	est	full
+language	fin	fi	est	iso2
 language	dan	taani	est	descrip
 language	dan	taani	est	wordweb
 language	dan	taani keel	est	full
+language	dan	da	est	iso2
 language	bod	tiibeti	est	descrip
 language	bod	tiibeti	est	wordweb
 language	bod	tiibeti keel	est	full
+language	bod	bo	est	iso2
 language	rus	vene	est	descrip
 language	rus	vene	est	wordweb
 language	rus	vene keel	est	full
+language	rus	ru	est	iso2
 language	abk	abhaasi	est	descrip
 language	abk	abhaasi	est	wordweb
 language	abk	abhaasi keel	est	full
+language	abk	ab	est	iso2
 language	afr	afrikaani	est	descrip
 language	afr	afrikaani	est	wordweb
 language	afr	afrikaani keel	est	full
+language	afr	af	est	iso2
 language	qab	alamsaksa	est	descrip
 language	qab	alamsaksa	est	wordweb
 language	qab	alamsaksa keel	est	full
+language	qab	qab	est	iso2
 language	sqi	albaania	est	descrip
 language	sqi	albaania	est	wordweb
 language	sqi	albaania keel	est	full
+language	sqi	sq	est	iso2
 language	ara	araabia	est	descrip
 language	ara	araabia	est	wordweb
 language	ara	araabia keel	est	full
+language	ara	ar	est	iso2
 language	arw	aravaki	est	descrip
-language	arw	aravaki	est	full
 language	arw	aravaki	est	wordweb
+language	arw	aravaki	est	full
+language	arw	arw	est	iso2
 language	aze	aserbaidžaani	est	descrip
 language	aze	aserbaidžaani	est	wordweb
 language	aze	aserbaidžaani keel	est	full
+language	aze	az	est	iso2
 language	qbk	Austraalia keeled	est	descrip
-language	qbk	Austraalia keeled	est	full
 language	qbk	Austraalia keeled	est	wordweb
+language	qbk	Austraalia keeled	est	full
+language	qbk	qbk	est	iso2
 language	ave	avesta	est	descrip
 language	ave	avesta	est	wordweb
 language	ave	avesta keel	est	full
+language	ave	ae	est	iso2
 language	bft	balti (tiibeti keelerühmas)	est	descrip
 language	bft	balti (tiibeti keelerühmas)	est	wordweb
 language	bft	balti keel (tiibeti keelerühmas)	est	full
+language	bft	bft	est	iso2
 language	qad	baltisaksa murre	est	descrip
-language	qad	baltisaksa murre	est	full
 language	qad	baltisaksa murre	est	wordweb
+language	qad	baltisaksa murre	est	full
+language	qad	qad	est	iso2
 language	bam	bambara (Malis)	est	descrip
 language	bam	bambara	est	wordweb
 language	bam	bambara keel (Malis)	est	full
+language	bam	bm	est	iso2
 language	qbl	bantu keeled	est	descrip
-language	qbl	bantu keeled	est	full
 language	qbl	bantu keeled	est	wordweb
+language	qbl	bantu keeled	est	full
+language	qbl	qbl	est	iso2
 language	ben	bengali	est	descrip
 language	ben	bengali	est	wordweb
 language	ben	bengali keel	est	full
+language	ben	bn	est	iso2
 language	ber	berberi	est	descrip
 language	ber	berberi	est	wordweb
 language	ber	berberi keel	est	full
+language	ber	ber	est	iso2
 language	xdk	dharuki	est	descrip
-language	xdk	dharuki	est	full
 language	xdk	dharuki	est	wordweb
+language	xdk	dharuki	est	full
+language	xdk	xdk	est	iso2
 language	enh	eenetsi	est	descrip
 language	enh	eenetsi	est	wordweb
 language	enh	eenetsi keel	est	full
+language	enh	en	est	iso2
 language	qaf	eesti-vadja	est	descrip
-language	qaf	eesti-vadja	est	full
 language	qaf	eesti-vadja	est	wordweb
+language	qaf	eesti-vadja	est	full
+language	qaf	qaf	est	iso2
 language	qae	eestirootsi murre	est	descrip
-language	qae	eestirootsi murre	est	full
 language	qae	eestirootsi murre	est	wordweb
+language	qae	eestirootsi murre	est	full
+language	qae	qae	est	iso2
 language	egy	egiptuse	est	descrip
-language	egy	egiptuse	est	full
 language	egy	egiptuse	est	wordweb
+language	egy	egiptuse	est	full
+language	egy	egy	est	iso2
 language	myv	ersa	est	descrip
 language	myv	ersa	est	wordweb
 language	myv	ersa keel	est	full
+language	myv	myv	est	iso2
 language	gez	etioopia	est	descrip
 language	gez	etioopia	est	wordweb
 language	gez	etioopia keel	est	full
+language	gez	gez	est	iso2
 language	eve	eveeni	est	descrip
 language	eve	eveeni	est	wordweb
 language	eve	eveeni keel	est	full
+language	eve	eu	est	iso2
 language	evn	evengi	est	descrip
 language	evn	evengi	est	wordweb
 language	evn	evengi keel	est	full
+language	evn	eu	est	iso2
 language	qag	frangi	est	descrip
 language	qag	frangi	est	wordweb
 language	qag	frangi keel	est	full
+language	qag	qag	est	iso2
 language	gla	gaeli	est	descrip
 language	gla	gaeli	est	wordweb
 language	gla	gaeli keel	est	full
+language	gla	gd	est	iso2
 language	gem	germaani	est	descrip
-language	gem	germaani	est	full
 language	gem	germaani	est	wordweb
+language	gem	germaani	est	full
+language	gem	gem	est	iso2
 language	got	gooti	est	descrip
 language	got	gooti	est	wordweb
 language	got	gooti keel	est	full
+language	got	got	est	iso2
 language	kal	grööni	est	descrip
 language	kal	grööni	est	wordweb
 language	kal	grööni keel	est	full
+language	kal	kl	est	iso2
 language	kat	gruusia	est	descrip
 language	kat	gruusia	est	wordweb
 language	kat	gruusia keel	est	full
+language	kat	ka	est	iso2
 language	kca	handi	est	descrip
 language	kca	handi	est	wordweb
 language	kca	handi keel	est	full
+language	kca	kca	est	iso2
 language	haw	havai	est	descrip
 language	haw	havai	est	wordweb
 language	haw	havai keel	est	full
+language	haw	haw	est	iso2
 language	heb	heebrea	est	descrip
 language	heb	heebrea	est	wordweb
 language	heb	heebrea keel	est	full
+language	heb	he	est	iso2
 language	qah	hiliskreeka (2.-7. saj)	est	descrip
 language	qah	hiliskreeka	est	wordweb
 language	qah	hiliskreeka keel (2.-7. saj)	est	full
+language	qah	qah	est	iso2
 language	qai	hilisladina	est	descrip
 language	qai	hilisladina	est	wordweb
 language	qai	hilisladina keel	est	full
+language	qai	qai	est	iso2
 language	smn	Inari saami	est	descrip
 language	smn	Inari saami	est	wordweb
 language	smn	Inari saami keel	est	full
+language	smn	smn	est	iso2
 language	ine	indoeuroopa	est	descrip
-language	ine	indoeuroopa	est	full
 language	ine	indoeuroopa	est	wordweb
+language	ine	indoeuroopa	est	full
+language	ine	ine	est	iso2
 language	ind	Indoneesia	est	descrip
 language	ind	Indoneesia	est	wordweb
 language	ind	Indoneesia keel	est	full
+language	ind	id	est	iso2
 language	isl	islandi	est	descrip
 language	isl	islandi	est	wordweb
 language	isl	islandi keel	est	full
+language	isl	is	est	iso2
 language	izh	isuri	est	descrip
 language	izh	isuri	est	wordweb
 language	izh	isuri keel	est	full
+language	izh	it	est	iso2
 language	ita	itaalia	est	descrip
 language	ita	itaalia	est	wordweb
 language	ita	itaalia keel	est	full
+language	ita	it	est	iso2
 language	yid	jidiši	est	descrip
 language	yid	jidiši	est	wordweb
 language	yid	jidiši keel	est	full
+language	yid	yi	est	iso2
 language	xas	kamassi	est	descrip
 language	xas	kamassi	est	wordweb
 language	xas	kamassi keel	est	full
+language	xas	xas	est	iso2
 language	car	kariibi	est	descrip
 language	car	kariibi	est	wordweb
 language	car	kariibi keel	est	full
+language	car	car	est	iso2
 language	krl	karjala	est	descrip
 language	krl	karjala	est	wordweb
 language	krl	karjala keel	est	full
+language	krl	krl	est	iso2
 language	kaz	kasahhi	est	descrip
 language	kaz	kasahhi	est	wordweb
 language	kaz	kasahhi keel	est	full
+language	kaz	kk	est	iso2
 language	cat	katalaani	est	descrip
 language	cat	katalaani	est	wordweb
 language	cat	katalaani keel	est	full
+language	cat	ca	est	iso2
 language	qaa	keskaja kreeka	est	descrip
 language	qaa	keskaja kreeka	est	wordweb
 language	qaa	keskaja kreeka keel	est	full
+language	qaa	ps	est	iso2
 language	qak	keskaja ladina	est	descrip
 language	qak	keskaja ladina	est	wordweb
 language	qak	keskaja ladina keel	est	full
+language	qak	qak	est	iso2
 language	dum	keskhollandi	est	descrip
 language	dum	keskhollandi	est	wordweb
 language	dum	keskhollandi keel	est	full
+language	dum	dum	est	iso2
 language	qaj	keskindia	est	descrip
 language	qaj	keskindia	est	wordweb
 language	qaj	keskindia keel	est	full
+language	qaj	qaj	est	iso2
 language	qal	keskpärsia	est	descrip
 language	qal	keskpärsia	est	wordweb
 language	qal	keskpärsia keel	est	full
+language	qal	qal	est	iso2
 language	frm	keskprantsuse	est	descrip
 language	frm	keskprantsuse	est	wordweb
 language	frm	keskprantsuse keel	est	full
+language	frm	frm	est	iso2
 language	gmh	keskülemsaksa	est	descrip
 language	gmh	keskülemsaksa	est	wordweb
 language	gmh	keskülemsaksa keel	est	full
+language	gmh	gmh	est	iso2
 language	que	ketšua	est	descrip
 language	que	ketšua	est	wordweb
 language	que	ketšua keel	est	full
+language	que	qu	est	iso2
 language	kmb	kimbundu	est	descrip
-language	kmb	kimbundu	est	full
 language	kmb	kimbundu	est	wordweb
+language	kmb	kimbundu	est	full
+language	kmb	kmb	est	iso2
 language	kir	kirgiisi	est	descrip
 language	kir	kirgiisi	est	wordweb
 language	kir	kirgiisi keel	est	full
+language	kir	ky	est	iso2
 language	qam	kirikuladina	est	descrip
 language	qam	kirikuladina	est	wordweb
 language	qam	kirikuladina (keel)	est	full
+language	qam	qam	est	iso2
 language	chu	kirikusalaavi (vanaslaavi)	est	descrip
 language	chu	kirikusalaavi	est	wordweb
 language	chu	kirikusalaavi (vanaslaavi) keel	est	full
+language	chu	cu	est	iso2
 language	sms	koltasaami	est	descrip
 language	sms	koltasaami	est	wordweb
 language	sms	koltasaami keel	est	full
+language	sms	sms	est	iso2
 language	kom	komi	est	descrip
 language	kom	komi	est	wordweb
 language	kom	komi keel	est	full
+language	kom	kv	est	iso2
 language	cym	kõmri	est	descrip
 language	cym	kõmri	est	wordweb
 language	cym	kõmri keel	est	full
+language	cym	cy	est	iso2
 language	kon	kongo	est	descrip
 language	kon	kongo	est	wordweb
 language	kon	kongo keel	est	full
+language	kon	kg	est	iso2
 language	qwm	kõptšaki	est	descrip
 language	qwm	kõptšaki	est	wordweb
 language	qwm	kõptšaki keel	est	full
+language	qwm	qu	est	iso2
 language	crh	krimmitatari	est	descrip
 language	crh	krimmitatari	est	wordweb
 language	crh	krimmitatari keel	est	full
+language	crh	crh	est	iso2
 language	qao	läänemeresoome	est	descrip
-language	qao	läänemeresoome	est	full
 language	qao	läänemeresoome	est	wordweb
+language	qao	läänemeresoome	est	full
+language	qao	qao	est	iso2
 language	qap	läänemeresoome-mordva	est	descrip
-language	qap	läänemeresoome-mordva	est	full
 language	qap	läänemeresoome-mordva	est	wordweb
+language	qap	läänemeresoome-mordva	est	full
+language	qap	qap	est	iso2
 language	qaq	läänemeresoome-permi	est	descrip
-language	qaq	läänemeresoome-permi	est	full
 language	qaq	läänemeresoome-permi	est	wordweb
+language	qaq	läänemeresoome-permi	est	full
+language	qaq	qaq	est	iso2
 language	qar	läänemeresoome-saami	est	descrip
-language	qar	läänemeresoome-saami	est	full
 language	qar	läänemeresoome-saami	est	wordweb
+language	qar	läänemeresoome-saami	est	full
+language	qar	qar	est	iso2
 language	qas	läänemeresoome-volga	est	descrip
-language	qas	läänemeresoome-volga	est	full
 language	qas	läänemeresoome-volga	est	wordweb
+language	qas	läänemeresoome-volga	est	full
+language	qas	qas	est	iso2
 language	lit	leedu	est	descrip
 language	lit	leedu	est	wordweb
 language	lit	leedu keel	est	full
+language	lit	lt	est	iso2
 language	liv	liivi	est	descrip
 language	liv	liivi	est	wordweb
 language	liv	liivi keel	est	full
+language	liv	lt	est	iso2
 language	qan	liivi keele Salatsi murre	est	descrip
-language	qan	liivi keele Salatsi murre	est	full
 language	qan	liivi keele Salatsi murre	est	wordweb
+language	qan	liivi keele Salatsi murre	est	full
+language	qan	qan	est	iso2
 language	sma	lõunasaami	est	descrip
 language	sma	lõunasaami	est	wordweb
 language	sma	lõunasaami keel	est	full
+language	sma	sma	est	iso2
 language	smj	Lule saami	est	descrip
 language	smj	Lule saami	est	wordweb
 language	smj	Lule saami keel	est	full
+language	smj	smj	est	iso2
 language	lud	lüüdi	est	descrip
 language	lud	lüüdi	est	wordweb
 language	lud	lüüdi keel	est	full
+language	lud	lu	est	iso2
 language	mlg	malagassi	est	descrip
 language	mlg	malagassi	est	wordweb
 language	mlg	malagassi keel	est	full
+language	mlg	mg	est	iso2
 language	msa	malai	est	descrip
 language	msa	malai	est	wordweb
 language	msa	malai keel	est	full
+language	msa	ms	est	iso2
 language	mal	malajalami	est	descrip
 language	mal	malajalami	est	wordweb
 language	mal	malajalami keel	est	full
+language	mal	ml	est	iso2
 language	div	maldiivi	est	descrip
 language	div	maldiivi	est	wordweb
 language	div	maldiivi keel	est	full
+language	div	dv	est	iso2
 language	mns	mansi	est	descrip
 language	mns	mansi	est	wordweb
 language	mns	mansi keel	est	full
+language	mns	mns	est	iso2
 language	mri	maoori	est	descrip
 language	mri	maoori	est	wordweb
 language	mri	maoori keel	est	full
+language	mri	mi	est	iso2
 language	chm	mari	est	descrip
 language	chm	mari	est	wordweb
 language	chm	mari keel	est	full
+language	chm	chm	est	iso2
 language	qat	meditsiiniladina	est	descrip
 language	qat	meditsiiniladina	est	wordweb
 language	qat	meditsiiniladina keelend	est	full
+language	qat	qat	est	iso2
 language	mic	mikmaki	est	descrip
 language	mic	mikmaki	est	wordweb
 language	mic	mikmaki keel	est	full
+language	mic	mic	est	iso2
 language	mdf	mokša	est	descrip
-language	mdf	mokša	est	full
 language	mdf	mokša	est	wordweb
+language	mdf	mokša	est	full
+language	mdf	mdf	est	iso2
 language	mon	mongoli	est	descrip
 language	mon	mongoli	est	wordweb
 language	mon	mongoli keel	est	full
+language	mon	mn	est	iso2
 language	nah	nahua	est	descrip
 language	nah	nahua	est	wordweb
 language	nah	nahua keel	est	full
+language	nah	nah	est	iso2
 language	naq	nama (endise nimega hotentoti)	est	descrip
 language	naq	nama	est	wordweb
 language	naq	nama (endise nimega hotentoti) keel	est	full
+language	naq	naq	est	iso2
 language	yrk	neenetsi	est	descrip
 language	yrk	neenetsi	est	wordweb
 language	yrk	neenetsi keel	est	full
+language	yrk	yrk	est	iso2
 language	nep	nepaali	est	descrip
 language	nep	nepaali	est	wordweb
 language	nep	nepaali keel	est	full
+language	nep	ne	est	iso2
 language	nio	nganassaani	est	descrip
 language	nio	nganassaani	est	wordweb
 language	nio	nganassaani keel	est	full
+language	nio	nio	est	iso2
 language	nor	norra	est	descrip
 language	nor	norra	est	wordweb
 language	nor	norra keel	est	full
+language	nor	no	est	iso2
 language	oss	osseedi	est	descrip
 language	oss	osseedi	est	wordweb
 language	oss	osseedi keel	est	full
+language	oss	os	est	iso2
 language	fas	pärsia	est	descrip
-language	fas	pärsia	est	full
 language	fas	pärsia	est	wordweb
+language	fas	pärsia	est	full
+language	fas	fa	est	iso2
 language	sje	Pite saami	est	descrip
 language	sje	Pite saami	est	wordweb
 language	sje	Pite saami keel	est	full
+language	sje	sje	est	iso2
 language	pim	pouhatani	est	descrip
 language	pim	pouhatani	est	wordweb
 language	pim	pouhatani keel	est	full
+language	pim	pim	est	iso2
 language	prg	preisi	est	descrip
 language	prg	preisi	est	wordweb
 language	prg	preisi keel	est	full
+language	prg	prg	est	iso2
 language	qau	provansi	est	descrip
-language	qau	provansi	est	full
 language	qau	provansi	est	wordweb
+language	qau	provansi	est	full
+language	qau	qau	est	iso2
 language	qav	rahvaladina	est	descrip
 language	qav	rahvaladina	est	wordweb
 language	qav	rahvaladina keel	est	full
+language	qav	qav	est	iso2
 language	qbm	romaani keeled	est	descrip
-language	qbm	romaani keeled	est	full
 language	qbm	romaani keeled	est	wordweb
+language	qbm	romaani keeled	est	full
+language	qbm	qbm	est	iso2
 language	ron	rumeenia	est	descrip
 language	ron	rumeenia	est	wordweb
 language	ron	rumeenia keel	est	full
+language	ron	ro	est	iso2
 language	qaw	saami	est	descrip
 language	qaw	saami	est	wordweb
 language	qaw	saami keel	est	full
+language	qaw	qaw	est	iso2
 language	srh	sarikoli	est	descrip
 language	srh	sarikoli	est	wordweb
 language	srh	sarikoli keel	est	full
+language	srh	sc	est	iso2
 language	qbn	semi keeled	est	descrip
-language	qbn	semi keeled	est	full
 language	qbn	semi keeled	est	wordweb
+language	qbn	semi keeled	est	full
+language	qbn	qbn	est	iso2
 language	hbs	serbohorvaadi	est	descrip
 language	hbs	serbohorvaadi	est	wordweb
 language	hbs	serbohorvaadi keel	est	full
+language	hbs	hbs	est	iso2
 language	dak	siuu	est	descrip
-language	dak	siuu	est	full
 language	dak	siuu	est	wordweb
+language	dak	siuu	est	full
+language	dak	dak	est	iso2
 language	qbo	slaavi keeled	est	descrip
-language	qbo	slaavi keeled	est	full
 language	qbo	slaavi keeled	est	wordweb
+language	qbo	slaavi keeled	est	full
+language	qbo	qbo	est	iso2
 language	slv	sloveeni	est	descrip
 language	slv	sloveeni	est	wordweb
 language	slv	sloveeni keel	est	full
+language	slv	sl	est	iso2
 language	sel	sölkupi	est	descrip
 language	sel	sölkupi	est	wordweb
 language	sel	sölkupi keel	est	full
+language	sel	sel	est	iso2
 language	qac	soome-ugri	est	descrip
-language	qac	soome-ugri	est	full
 language	qac	soome-ugri	est	wordweb
+language	qac	soome-ugri	est	full
+language	qac	qac	est	iso2
 language	swa	suahiili	est	descrip
 language	swa	suahiili	est	wordweb
 language	swa	suahiili keel	est	full
+language	swa	sw	est	iso2
 language	zul	suulu	est	descrip
 language	zul	suulu	est	wordweb
 language	zul	suulu keel	est	full
+language	zul	zu	est	iso2
 language	syr	süüria	est	descrip
 language	syr	süüria	est	wordweb
 language	syr	süüria keel	est	full
+language	syr	syr	est	iso2
 language	tgk	tadžiki	est	descrip
 language	tgk	tadžiki	est	wordweb
 language	tgk	tadžiki keel	est	full
+language	tgk	tg	est	iso2
 language	tgl	tagalogi	est	descrip
 language	tgl	tagalogi	est	wordweb
 language	tgl	tagalogi keel	est	full
+language	tgl	tl	est	iso2
 language	tha	tai	est	descrip
 language	tha	tai	est	wordweb
 language	tha	tai keel	est	full
+language	tha	th	est	iso2
 language	tnq	taino	est	descrip
 language	tnq	taino	est	wordweb
 language	tnq	taino keel	est	full
+language	tnq	tnq	est	iso2
 language	tam	tamili	est	descrip
 language	tam	tamili	est	wordweb
 language	tam	tamili keel	est	full
+language	tam	ta	est	iso2
 language	tat	tatari	est	descrip
 language	tat	tatari	est	wordweb
 language	tat	tatari keel	est	full
+language	tat	tt	est	iso2
 language	ton	tonga	est	descrip
 language	ton	tonga	est	wordweb
 language	ton	tonga keel	est	full
+language	ton	to	est	iso2
 language	chg	tšagatai (vanausbeki)	est	descrip
 language	chg	tšagatai	est	wordweb
 language	chg	tšagatai (vanausbeki) keel	est	full
+language	chg	chg	est	iso2
 language	ces	tšehhi	est	descrip
 language	ces	tšehhi	est	wordweb
 language	ces	tšehhi keel	est	full
+language	ces	cs	est	iso2
 language	ckt	tšuktši	est	descrip
 language	ckt	tšuktši	est	wordweb
 language	ckt	tšuktši keel	est	full
+language	ckt	ckt	est	iso2
 language	chv	tšuvaši	est	descrip
 language	chv	tšuvaši	est	wordweb
 language	chv	tšuvaši keel	est	full
+language	chv	cv	est	iso2
 language	qax	tupi-guaranii	est	descrip
 language	qax	tupi-guaranii	est	wordweb
 language	qax	tupi-guaranii keel	est	full
+language	qax	qax	est	iso2
 language	tur	türgi	est	descrip
 language	tur	türgi	est	wordweb
 language	tur	türgi keel	est	full
+language	tur	tr	est	iso2
 language	qbj	turgi keeled	est	descrip
-language	qbj	turgi keeled	est	full
 language	qbj	turgi keeled	est	wordweb
+language	qbj	turgi keeled	est	full
+language	qbj	qbj	est	iso2
 language	sjt	turjasaami	est	descrip
 language	sjt	turjasaami	est	wordweb
 language	sjt	turjasaami keel	est	full
+language	sjt	sjt	est	iso2
 language	udm	udmurdi	est	descrip
 language	udm	udmurdi	est	wordweb
 language	udm	udmurdi keel	est	full
+language	udm	udm	est	iso2
 language	uig	uiguuri	est	descrip
 language	uig	uiguuri	est	wordweb
 language	uig	uiguuri keel	est	full
+language	uig	ug	est	iso2
 language	ukr	ukraina	est	descrip
-language	ukr	ukraina	est	full
 language	ukr	ukraina	est	wordweb
+language	ukr	ukraina	est	full
+language	ukr	uk	est	iso2
 language	hun	ungari	est	descrip
 language	hun	ungari	est	wordweb
 language	hun	ungari keel	est	full
+language	hun	hu	est	iso2
 language	urd	urdu	est	descrip
 language	urd	urdu	est	wordweb
 language	urd	urdu keel	est	full
+language	urd	ur	est	iso2
 language	qay	uurali	est	descrip
-language	qay	uurali	est	full
 language	qay	uurali	est	wordweb
+language	qay	uurali	est	full
+language	qay	qay	est	iso2
 language	qaz	uuskreeka	est	descrip
 language	qaz	uuskreeka	est	wordweb
 language	qaz	uuskreeka keel	est	full
+language	qaz	qaz	est	iso2
 language	qba	uusladina	est	descrip
 language	qba	uusladina	est	wordweb
 language	qba	uusladina keel	est	full
+language	qba	qba	est	iso2
 language	vot	vadja	est	descrip
 language	vot	vadja	est	wordweb
 language	vot	vadja keel	est	full
+language	vot	vot	est	iso2
 language	bel	valgevene	est	descrip
 language	bel	valgevene	est	wordweb
 language	bel	valgevene keel	est	full
+language	bel	be	est	iso2
 language	qbb	vanaegiptuse	est	descrip
 language	qbb	vanaegiptuse	est	wordweb
 language	qbb	vanaegiptuse keel	est	full
+language	qbb	qbb	est	iso2
 language	qbc	vanafriisi	est	descrip
 language	qbc	vanafriisi	est	wordweb
 language	qbc	vanafriisi keel	est	full
+language	qbc	qbc	est	iso2
 language	qbd	vanahispaania	est	descrip
 language	qbd	vanahispaania	est	wordweb
 language	qbd	vanahispaania keel	est	full
+language	qbd	qbd	est	iso2
 language	qbe	vanaindia	est	descrip
 language	qbe	vanaindia	est	wordweb
 language	qbe	vanaindia keel	est	full
+language	qbe	qbe	est	iso2
 language	ang	vanainglise	est	descrip
 language	ang	vanainglise	est	wordweb
 language	ang	vanainglise keel	est	full
+language	ang	ang	est	iso2
 language	non	vanapõhja	est	descrip
 language	non	vanapõhja	est	wordweb
 language	non	vanapõhja keel	est	full
+language	non	non	est	iso2
 language	fro	vanaprantsuse	est	descrip
 language	fro	vanaprantsuse	est	wordweb
 language	fro	vanaprantsuse keel	est	full
+language	fro	fro	est	iso2
 language	qbg	vanarootsi	est	descrip
 language	qbg	vanarootsi	est	wordweb
 language	qbg	vanarootsi keel	est	full
+language	qbg	qbg	est	iso2
 language	qbf	vanasaksi	est	descrip
 language	qbf	vanasaksi	est	wordweb
 language	qbf	vanasaksi keel	est	full
+language	qbf	qbf	est	iso2
 language	qbh	vanatürgi	est	descrip
 language	qbh	vanatürgi	est	wordweb
 language	qbh	vanatürgi keel	est	full
+language	qbh	qbh	est	iso2
 language	goh	vanaülemsaksa	est	descrip
 language	goh	vanaülemsaksa	est	wordweb
 language	goh	vanaülemsaksa keel	est	full
+language	goh	goh	est	iso2
 language	qbi	vanavene	est	descrip
 language	qbi	vanavene	est	wordweb
 language	qbi	vanavene keel	est	full
+language	qbi	qbi	est	iso2
 language	vep	vepsa	est	descrip
 language	vep	vepsa	est	wordweb
 language	vep	vepsa keel	est	full
+language	vep	ve	est	iso2
 language	vie	vietnami	est	descrip
 language	vie	vietnami	est	wordweb
 language	vie	vietnami keel	est	full
+language	vie	vi	est	iso2
 language	est	Estonian	eng	descrip
 language	est	Estonian	eng	wordweb
 language	zho	Chinese	eng	descrip

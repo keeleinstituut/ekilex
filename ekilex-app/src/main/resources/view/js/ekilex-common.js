@@ -38,9 +38,6 @@ function submitDialog(e, dlg, failMessage, callback = $.noop) {
 }
 
 function submitForm(theForm, failMessage, callback = $.noop) {
-	// if (!checkRequiredFields(theForm)) {
-	// 	return;
-	// }
 	var data = JSON.stringify(theForm.serializeJSON());
 	return $.ajax({
 		url: theForm.attr('action'),
@@ -370,6 +367,59 @@ function initAddLexemeRelationDlg(addDlg) {
 	initRelationDialogLogic(addDlg, 'lexeme-id');
 }
 
+function initAddSynRelationDlg(addDlg) {
+	addDlg.find('.form-control').val(null);
+	addDlg.find('[data-name=dialogContent]').html(null);
+	let idElementName = 'word-id';
+
+	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+		e.preventDefault();
+		let button = $(this);
+		let content = button.html();
+		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+		let theForm = $(this).closest('form');
+		let url = theForm.attr('action') + '?' + theForm.serialize();
+		$.get(url).done(function(data) {
+			addDlg.find('[data-name=dialogContent]').replaceWith(data);
+			addDlg.find('button[data-' + idElementName + ']').off('click').on('click', function(e) {
+				e.preventDefault();
+				let button = $(e.target);
+				addDlg.find('[name=id2]').val(button.data(idElementName));
+				addDlg.find('[name=opCode]').val('create_raw_relation');
+				let theForm = button.closest('form');
+				submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+					addDlg.modal('hide');
+				});
+			});
+
+			addDlg.find('#addSynRelationWord').on('click', function(e) {
+				e.preventDefault();
+				let button = $(e.target);
+				addDlg.find('[name=opCode]').val('create_syn_word');
+
+				let theForm = button.closest('form');
+				if (checkRequiredFields(theForm)) {
+					submitForm(theForm, 'Keelendi lisamine ebaõnnestus.').always(function() {
+						addDlg.modal('hide');
+					});
+				}
+			});
+
+		}).fail(function(data) {
+			console.log(data);
+			alert(failMessage);
+		}).always(function() {
+			button.html(content);
+		});
+	});
+
+	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+		addDlg.find('.form-control').first().focus();
+	});
+
+
+}
+
 function decorateSourceLinks() {
 	let detailsDiv = $('#details_div');
 	detailsDiv.find('a').each(function(indx, item) {
@@ -440,8 +490,8 @@ function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
 	});
 	var qWrap = $("<div/>");
 	qWrap.append(ul);
+	$('#confirmQuestion').html(qWrap);
 	var alertDlg = $('#confirmDlg');
-	alertDlg.find('[name=confirm_question]').replaceWith(qWrap);
 	alertDlg.modal('show');
 	let okBtn = alertDlg.find('.modal-footer [name=ok]');
 	okBtn.focus();

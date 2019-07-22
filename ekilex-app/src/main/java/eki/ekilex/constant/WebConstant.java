@@ -64,6 +64,10 @@ public interface WebConstant {
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
 
+	String WORD_JOIN_URI = "/wordjoin";
+
+	String WORD_JOIN_PAGE = "wordjoin";
+
 	String FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI = "/submit";
 
 	String REGISTER_PAGE_URI = "/register";
@@ -146,6 +150,8 @@ public interface WebConstant {
 
 	String DATASETS_URI = "/datasets";
 
+	String DATASET_URI = "/dataset";
+
 	String DATASETS_PAGE = "datasets";
 
 	String CREATE_DATASET_URI = "/create_dataset";
@@ -155,8 +161,6 @@ public interface WebConstant {
 	String DELETE_DATASET_URI = "/delete_dataset";
 
 	String VALIDATE_CREATE_DATASET_URI = "/validate_create_dataset";
-
-	String SEARCH_DOMAINS_URI = "/search_domains";
 
 	String ORIGIN_DOMAINS_URI = "/origin_domains";
 
@@ -169,6 +173,16 @@ public interface WebConstant {
 	String SYN_WORD_DETAILS_URI = "/syn_worddetails";
 
 	String SYN_CHANGE_RELATION_STATUS = "/syn_relation_status";
+
+	String SYN_CREATE_LEXEME = "/syn_create_lexeme";
+
+	String SYN_SEARCH_WORDS = "/syn_search_words";
+
+	String WORD_BACK_URI = "/wordback";
+
+	String LEX_BACK_URI = "/lexback";
+
+	String MEANING_BACK_URI = "/meaningback";
 
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
