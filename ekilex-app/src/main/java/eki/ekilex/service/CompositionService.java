@@ -217,6 +217,7 @@ public class CompositionService extends AbstractService {
 
 		compositionDbService.joinWordData(firstWordId, secondWordId);
 		joinLexemeData(firstWordId, secondWordId);
+		joinParadigms(firstWordId, secondWordId);
 		cudDbService.deleteWord(secondWordId);
 	}
 
@@ -242,6 +243,18 @@ public class CompositionService extends AbstractService {
 				int level1 = currentMaxLevel + 1;
 				compositionDbService.updateLexemeWordIdAndLevels(secondWordLexemeId, firstWordId, level1, DEFAULT_LEXEME_LEVEL, DEFAULT_LEXEME_LEVEL);
 			}
+		}
+	}
+
+	private void joinParadigms(Long firstWordId, Long secondWordId) {
+
+		boolean firstWordHasForms = compositionDbService.wordHasForms(firstWordId);
+		if (firstWordHasForms) {
+			return;
+		}
+		boolean secondWordHasForms = compositionDbService.wordHasForms(secondWordId);
+		if (secondWordHasForms) {
+			compositionDbService.joinParadigms(firstWordId, secondWordId);
 		}
 	}
 
