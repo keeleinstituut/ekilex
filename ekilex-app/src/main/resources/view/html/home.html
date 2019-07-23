@@ -29,11 +29,11 @@
         <p>
           <a th:href="@{/datasets}">Sõnakogude haldus</a>
         </p>
-        <p>
-          <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
-        </p>
         <p sec:authorize="${#authentication.principal.datasetOwnershipExist or authentication.principal.admin}">
           <a th:href="@{/permissions}">Õiguste haldus</a>
+        </p>
+        <p>
+          <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="${#authentication.principal.datasetPermissionsExist && !#authentication.principal.hasSingleDatasetPermission}"></th:block>
       </div>

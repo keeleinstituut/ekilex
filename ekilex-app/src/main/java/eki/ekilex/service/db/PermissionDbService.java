@@ -8,6 +8,7 @@ import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
+import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
@@ -45,8 +46,9 @@ import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserPermData;
+import eki.ekilex.data.db.tables.DatasetPermission;
+import eki.ekilex.data.db.tables.EkiUserProfile;
 
 @Component
 public class PermissionDbService implements SystemConstant {
@@ -79,7 +81,7 @@ public class PermissionDbService implements SystemConstant {
 				.fetchInto(EkiUserPermData.class);
 	}
 
-	public List<DatasetPermission> getDatasetPermissions(Long userId) {
+	public List<eki.ekilex.data.DatasetPermission> getDatasetPermissions(Long userId) {
 
 		return create
 				.select(
@@ -102,7 +104,7 @@ public class PermissionDbService implements SystemConstant {
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG)
-				.fetchInto(DatasetPermission.class);
+				.fetchInto(eki.ekilex.data.DatasetPermission.class);
 	}
 
 	public List<Dataset> getUserPermDatasets(Long userId) {
@@ -179,7 +181,7 @@ public class PermissionDbService implements SystemConstant {
 
 	public void createDatasetPermission(Long userId, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
 
-		eki.ekilex.data.db.tables.DatasetPermission edp = DATASET_PERMISSION.as("edp");
+		DatasetPermission edp = DATASET_PERMISSION.as("edp");
 		SelectSelectStep<Record5<Long, String, String, String, String>> select = DSL.select(
 				field(DSL.val(userId)),
 				field(DSL.val(datasetCode)),
@@ -217,10 +219,28 @@ public class PermissionDbService implements SystemConstant {
 	}
 
 	public void deleteDatasetPermissions(String datasetCode) {
+		
+		EkiUserProfile up = EKI_USER_PROFILE.as("up");
+		DatasetPermission dp = DATASET_PERMISSION.as("dp");
+		create
+			.update(up)
+			.set(up.RECENT_DATASET_PERMISSION_ID, (Long) null)
+			.whereExists(DSL
+					.select(dp.ID)
+					.from(dp)
+					.where(dp.ID.eq(up.RECENT_DATASET_PERMISSION_ID).and(dp.DATASET_CODE.eq(datasetCode))))
+			.execute();
+
 		create.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode)).execute();
 	}
 
 	public void deleteDatasetPermission(Long datasetPermissionId) {
+
+		create
+			.update(EKI_USER_PROFILE)
+			.set(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID, (Long) null)
+			.where(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID.eq(datasetPermissionId))
+			.execute();
 
 		create.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.ID.eq(datasetPermissionId)).execute();
 	}
@@ -540,7 +560,7 @@ public class PermissionDbService implements SystemConstant {
 		return CollectionUtils.containsAll(permittedDatasets, linkedDatasets);
 	}
 
-	public DatasetPermission getDatasetPermission(Long id) {
+	public eki.ekilex.data.DatasetPermission getDatasetPermission(Long id) {
 
 		return
 			create
@@ -555,7 +575,7 @@ public class PermissionDbService implements SystemConstant {
 				.from(DATASET_PERMISSION)
 					.innerJoin(DATASET).on(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE))
 				.where(DATASET_PERMISSION.ID.eq(id))
-				.fetchSingleInto(DatasetPermission.class);
+				.fetchSingleInto(eki.ekilex.data.DatasetPermission.class);
 
 	}
 

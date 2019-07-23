@@ -48,8 +48,7 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER.ACTIVATION_KEY,
 						EKI_USER.RECOVERY_KEY,
 						EKI_USER.IS_ADMIN.as("admin"),
-						EKI_USER.IS_ENABLED.as("enabled")
-						)
+						EKI_USER.IS_ENABLED.as("enabled"))
 				.from(EKI_USER)
 				.where(EKI_USER.EMAIL.eq(email))
 				.fetchOptionalInto(EkiUser.class)
@@ -77,7 +76,7 @@ public class UserDbService extends AbstractDbService {
 	}
 
 	public void setUserRecoveryKey(Long userId, String recoveryKey) {
-	
+
 		create
 				.update(EKI_USER)
 				.set(EKI_USER.RECOVERY_KEY, recoveryKey)
@@ -85,7 +84,7 @@ public class UserDbService extends AbstractDbService {
 	}
 
 	public void setUserPassword(String email, String encodedPassword) {
-	
+
 		EkiUserRecord ekiUser = create.selectFrom(EKI_USER).where(EKI_USER.EMAIL.eq(email)).fetchOne();
 		ekiUser.setRecoveryKey(null);
 		ekiUser.setPassword(encodedPassword);
@@ -101,7 +100,6 @@ public class UserDbService extends AbstractDbService {
 	public EkiUserProfile getUserProfile(Long userId) {
 		return create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOptionalInto(EkiUserProfile.class).orElse(null);
 	}
-
 
 	public void setRecentDatasetPermission(Long userId, Long permissionId) {
 
@@ -130,7 +128,7 @@ public class UserDbService extends AbstractDbService {
 	}
 
 	public List<String> getAdminEmails() {
-	
+
 		return create
 				.select(EKI_USER.EMAIL)
 				.from(EKI_USER)
@@ -141,16 +139,16 @@ public class UserDbService extends AbstractDbService {
 	public void createUserApplication(Long userId, String[] datasets, String comment) {
 
 		create
-			.insertInto(EKI_USER_APPLICATION, EKI_USER_APPLICATION.USER_ID, EKI_USER_APPLICATION.DATASETS, EKI_USER_APPLICATION.COMMENT)
-			.values(userId, datasets, comment)
-			.execute();
+				.insertInto(EKI_USER_APPLICATION, EKI_USER_APPLICATION.USER_ID, EKI_USER_APPLICATION.DATASETS, EKI_USER_APPLICATION.COMMENT)
+				.values(userId, datasets, comment)
+				.execute();
 	}
 
 	public List<EkiUserApplication> getUserApplications(Long userId) {
 
 		Field<Boolean> basicApplicationField = DSL.field(
 				EKI_USER_APPLICATION.DATASETS.isNull()
-				.and(DSL.or(EKI_USER_APPLICATION.COMMENT.isNull(), EKI_USER_APPLICATION.COMMENT.eq(""))));
+						.and(DSL.or(EKI_USER_APPLICATION.COMMENT.isNull(), EKI_USER_APPLICATION.COMMENT.eq(""))));
 
 		return create
 				.select(
@@ -158,8 +156,7 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER_APPLICATION.DATASETS.as("dataset_codes"),
 						EKI_USER_APPLICATION.COMMENT,
 						EKI_USER_APPLICATION.CREATED,
-						basicApplicationField.as("basic_application")
-						)
+						basicApplicationField.as("basic_application"))
 				.from(EKI_USER_APPLICATION)
 				.where(EKI_USER_APPLICATION.USER_ID.eq(userId))
 				.fetchInto(EkiUserApplication.class);
