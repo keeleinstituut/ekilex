@@ -61,8 +61,7 @@ public class DatasetService implements SystemConstant {
 
 	}
 
-
-		@Transactional
+	@Transactional
 	public void createDataset(Dataset dataset) {
 		datasetDbService.createDataset(dataset);
 		addDatasetToSelectedClassifiers(dataset);
@@ -82,7 +81,6 @@ public class DatasetService implements SystemConstant {
 	@Transactional
 	public void deleteDataset(String datasetCode) {
 		removeDatasetFromAllClassifiers(datasetCode);
-
 		permissionDbService.deleteDatasetPermissions(datasetCode);
 		datasetDbService.deleteDataset(datasetCode);
 	}
@@ -107,22 +105,19 @@ public class DatasetService implements SystemConstant {
 	private List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
 		List<Classifier> classifiers = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		populateClassifierJson(classifiers);
-
 		return classifiers;
 	}
 
 	private List<Classifier> getDatasetDomains(String datasetCode) {
 		List<Classifier> domains = commonDataDbService.getDatasetDomains(datasetCode);
 		populateClassifierJson(domains);
-
 		return domains;
 	}
 
 	@Transactional
-	public List<Classifier> findDomainsByOrigin(String originCode) {
-		List<Classifier> domains = commonDataDbService.findDomainsByOriginCode(originCode, CLASSIF_LABEL_TYPE_DESCRIP);
+	public List<Classifier> getDomains(String originCode) {
+		List<Classifier> domains = commonDataDbService.getDomains(originCode, CLASSIF_LABEL_TYPE_DESCRIP);
 		populateClassifierJson(domains);
-
 		return domains;
 	}
 

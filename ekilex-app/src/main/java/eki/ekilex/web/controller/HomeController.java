@@ -24,7 +24,6 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
-import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
@@ -42,9 +41,6 @@ public class HomeController extends AbstractPageController {
 	@Autowired
 	private StatDataService statDataService;
 
-	@Autowired
-	private PermissionService permissionService;
-
 	@GetMapping(INDEX_URI)
 	public String index() {
 		boolean isAuthenticatedUser = userService.isAuthenticatedUser();
@@ -59,7 +55,7 @@ public class HomeController extends AbstractPageController {
 		EkiUser user = userService.getAuthenticatedUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			populateStatData(model);
-			initLastChosenRoleInSession(user, model);
+			populateRecentRole(user, model);
 			return HOME_PAGE;
 		}
 		populateUserApplicationData(user, model);
@@ -130,13 +126,9 @@ public class HomeController extends AbstractPageController {
 		model.addAttribute("statExists", statExists);
 	}
 
-	private void initLastChosenRoleInSession(EkiUser user, Model model) {
-		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
-		if (sessionBean == null) {
-			sessionBean = new SessionBean();
-			model.addAttribute(SESSION_BEAN, sessionBean);
-		}
-		sessionBean.setUserRole(user.getLastChosenPermission());
+	private void populateRecentRole(EkiUser user, Model model) {
+		SessionBean sessionBean = getSessionBean(model);
+		sessionBean.setUserRole(user.getRecentRole());
 	}
 
 	@GetMapping("/loginerror")
@@ -151,12 +143,12 @@ public class HomeController extends AbstractPageController {
 
 		logger.debug("User initiated role change, dataSetPermissionId: {}", permissionId);
 
-		if (permissionId != null) {
-			DatasetPermission datasetPermission = permissionService.getDatasetPermissionAndSetChosen(permissionId);
+		if (permissionId == null) {
+			sessionBean.setUserRole(null);
+		} else {
+			DatasetPermission datasetPermission = userService.getAndSetRecentDatasetPermission(permissionId);
 			userService.updateUserSecurityContext();
 			sessionBean.setUserRole(datasetPermission);
-		} else {
-			sessionBean.setUserRole(null);
 		}
 
 		return REDIRECT_PREF + HOME_URI;

@@ -256,18 +256,34 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public Word getWord(Long wordId) {
-		return commonDataDbService.getWord(wordId);
-	}
-
-	@Transactional
 	public List<Classifier> getDatasetLanguages(String datasetCode) {
 		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
 	@Transactional
-	public List<Origin> getAllOrigins() {
-		return commonDataDbService.getAllDomainOrigins();
+	public List<Origin> getDomainOrigins() {
+		List<Origin> allDomainOrigins = commonDataDbService.getDomainOrigins();
+		//hack to beautify specific code into label
+		final String ekiCodePrefix = "eki ";
+		final String ekiLabelPrefix = "EKI ";
+		for (Origin origin : allDomainOrigins) {
+			String code = origin.getCode();
+			String label = origin.getLabel();
+			if (StringUtils.isBlank(label)) {
+				if (StringUtils.startsWith(code, ekiCodePrefix)) {
+					label = StringUtils.replace(code, ekiCodePrefix, ekiLabelPrefix);
+				} else {
+					label = code;
+				}
+				origin.setLabel(label);
+			}
+		}
+		return allDomainOrigins;
+	}
+
+	@Transactional
+	public Word getWord(Long wordId) {
+		return commonDataDbService.getWord(wordId);
 	}
 
 	@Transactional

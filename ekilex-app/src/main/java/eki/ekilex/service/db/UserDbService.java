@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import eki.common.service.db.AbstractDbService;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
 
 @Component
@@ -24,6 +25,16 @@ public class UserDbService extends AbstractDbService {
 
 	public UserDbService(DSLContext context) {
 		create = context;
+	}
+
+	public Long createUser(String email, String name, String password, String activationKey) {
+		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
+		ekiUser.setEmail(email);
+		ekiUser.setName(name);
+		ekiUser.setPassword(password);
+		ekiUser.setActivationKey(activationKey);
+		ekiUser.store();
+		return ekiUser.getId();
 	}
 
 	public EkiUser getUserByEmail(String email) {
@@ -65,28 +76,38 @@ public class UserDbService extends AbstractDbService {
 				.orElse(null);
 	}
 
-	public List<String> getAdminEmails() {
-
-		return create
-				.select(EKI_USER.EMAIL)
-				.from(EKI_USER)
-				.where(EKI_USER.IS_ADMIN.eq(true))
-				.fetchInto(String.class);
+	public void setUserRecoveryKey(Long userId, String recoveryKey) {
+	
+		create
+				.update(EKI_USER)
+				.set(EKI_USER.RECOVERY_KEY, recoveryKey)
+				.where(EKI_USER.ID.eq(userId)).execute();
 	}
 
-	public Long createUser(String email, String name, String password, String activationKey) {
-		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
-		ekiUser.setEmail(email);
-		ekiUser.setName(name);
-		ekiUser.setPassword(password);
-		ekiUser.setActivationKey(activationKey);
+	public void setUserPassword(String email, String encodedPassword) {
+	
+		EkiUserRecord ekiUser = create.selectFrom(EKI_USER).where(EKI_USER.EMAIL.eq(email)).fetchOne();
+		ekiUser.setRecoveryKey(null);
+		ekiUser.setPassword(encodedPassword);
 		ekiUser.store();
-		return ekiUser.getId();
 	}
 
 	public void createUserProfile(Long userId) {
 		create.insertInto(EKI_USER_PROFILE, EKI_USER_PROFILE.USER_ID)
 				.values(userId)
+				.execute();
+	}
+
+	public EkiUserProfile getUserProfile(Long userId) {
+		return create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOptionalInto(EkiUserProfile.class).orElse(null);
+	}
+
+
+	public void setRecentDatasetPermission(Long userId, Long permissionId) {
+
+		create.update(EKI_USER_PROFILE)
+				.set(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID, permissionId)
+				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
 				.execute();
 	}
 
@@ -100,12 +121,21 @@ public class UserDbService extends AbstractDbService {
 		return null;
 	}
 
+	public void enableUser(Long userId, boolean enable) {
+		create.update(EKI_USER).set(EKI_USER.IS_ENABLED, enable).where(EKI_USER.ID.eq(userId)).execute();
+	}
+
 	public void setAdmin(Long userId, boolean isAdmin) {
 		create.update(EKI_USER).set(EKI_USER.IS_ADMIN, isAdmin).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
-	public void enableUser(Long userId, boolean enable) {
-		create.update(EKI_USER).set(EKI_USER.IS_ENABLED, enable).where(EKI_USER.ID.eq(userId)).execute();
+	public List<String> getAdminEmails() {
+	
+		return create
+				.select(EKI_USER.EMAIL)
+				.from(EKI_USER)
+				.where(EKI_USER.IS_ADMIN.isTrue())
+				.fetchInto(String.class);
 	}
 
 	public void createUserApplication(Long userId, String[] datasets, String comment) {
@@ -133,21 +163,5 @@ public class UserDbService extends AbstractDbService {
 				.from(EKI_USER_APPLICATION)
 				.where(EKI_USER_APPLICATION.USER_ID.eq(userId))
 				.fetchInto(EkiUserApplication.class);
-	}
-
-	public void setUserRecoveryKey(Long userId, String recoveryKey) {
-
-		create
-				.update(EKI_USER)
-				.set(EKI_USER.RECOVERY_KEY, recoveryKey)
-				.where(EKI_USER.ID.eq(userId)).execute();
-	}
-
-	public void setUserPassword(String email, String encodedPassword) {
-
-		EkiUserRecord ekiUser = create.selectFrom(EKI_USER).where(EKI_USER.EMAIL.eq(email)).fetchOne();
-		ekiUser.setRecoveryKey(null);
-		ekiUser.setPassword(encodedPassword);
-		ekiUser.store();
 	}
 }

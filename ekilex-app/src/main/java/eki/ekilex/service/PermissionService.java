@@ -108,14 +108,6 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public DatasetPermission getDatasetPermissionAndSetChosen(Long permissionId) {
-		EkiUser currentUser = userService.getAuthenticatedUser();
-		permissionDbService.setLastChosenPermissionId(permissionId, currentUser.getId());
-
-		return permissionDbService.getDatasetPermission(permissionId);
-	}
-
-	@Transactional
 	public List<DatasetPermission> getUserDatasetPermissions(Long userId) {
 		return permissionDbService.getDatasetPermissions(userId);
 	}

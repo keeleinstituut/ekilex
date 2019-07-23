@@ -7,7 +7,6 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +27,7 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.security.EkilexPasswordEncoder;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
@@ -76,6 +76,21 @@ public class UserService implements WebConstant {
 		return user;
 	}
 
+	public void updateUserSecurityContext() {
+
+		String userEmail = getAuthenticatedUser().getEmail();
+
+		if (StringUtils.isNotBlank(userEmail)) {
+			EkiUser ekiUser = getUserByEmail(userEmail);
+
+			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ekiUser, null, authorities);
+
+			SecurityContext context = SecurityContextHolder.getContext();
+			context.setAuthentication(authenticationToken);
+		}
+	}
+
 	@Transactional
 	public EkiUser getUserByEmail(String email) {
 		email = email.toLowerCase();
@@ -83,23 +98,55 @@ public class UserService implements WebConstant {
 		if (user != null) {
 			Long userId = user.getId();
 			List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
-			boolean datasetPermissionsExist = CollectionUtils.isNotEmpty(datasetPermissions);
+			boolean datasetPermissionsExist;
 			boolean datasetOwnershipExist;
-			if (CollectionUtils.isNotEmpty(datasetPermissions)) {
+			boolean hasSingleDatasetPermission;
+			if (CollectionUtils.isEmpty(datasetPermissions)) {
+				datasetPermissionsExist = false;
+				datasetOwnershipExist = false;
+				hasSingleDatasetPermission = false;
+			} else {
+				datasetPermissionsExist = true;
 				datasetOwnershipExist = datasetPermissions.stream().anyMatch(
 						perm -> AuthorityItem.DATASET.equals(perm.getAuthItem()) && AuthorityOperation.OWN.equals(perm.getAuthOperation()));
-			} else {
-				datasetOwnershipExist = false;
+				hasSingleDatasetPermission = datasetPermissions.size() == 1;
 			}
-			DatasetPermission lastChosenPermission = getLastChosenOrSinglePermission(user.getId(), datasetPermissions);
+			DatasetPermission recentRole = resolveRecentRole(userId, datasetPermissions);
 
 			user.setDatasetPermissions(datasetPermissions);
 			user.setDatasetPermissionsExist(datasetPermissionsExist);
-			user.setHasSinglePermission(datasetPermissionsExist && datasetPermissions.size() == 1);
 			user.setDatasetOwnershipExist(datasetOwnershipExist);
-			user.setLastChosenPermission(lastChosenPermission);
+			user.setHasSingleDatasetPermission(hasSingleDatasetPermission);
+			user.setRecentRole(recentRole);
 		}
 		return user;
+	}
+
+	private DatasetPermission resolveRecentRole(Long userId, List<DatasetPermission> userPermissions) {
+
+		EkiUserProfile userProfile = userDbService.getUserProfile(userId);
+		if (userProfile == null) {
+			return null;
+		}
+		if (CollectionUtils.isEmpty(userPermissions)) {
+			return null;
+		}
+		Long recentDatasetPermissionId = userProfile.getRecentDatasetPermissionId();
+		DatasetPermission recentRole = null;
+		if (recentDatasetPermissionId == null) {
+			if (userPermissions.size() == 1) {
+				recentRole = userPermissions.get(0);
+				userDbService.setRecentDatasetPermission(userId, recentRole.getId());
+			}
+		} else {
+			recentRole = userPermissions.stream()
+					.filter(perm -> perm.getId().equals(recentDatasetPermissionId))
+					.findFirst().orElse(null);
+			if (recentRole == null) {
+				userDbService.setRecentDatasetPermission(userId, null);
+			}
+		}
+		return recentRole;
 	}
 
 	@Transactional
@@ -217,35 +264,16 @@ public class UserService implements WebConstant {
 		return CodeGenerator.generateUniqueId();
 	}
 
-	public void updateUserSecurityContext() {
-
-		String userEmail = getAuthenticatedUser().getEmail();
-
-		if (StringUtils.isNotBlank(userEmail)) {
-			EkiUser ekiUser = getUserByEmail(userEmail);
-
-			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ekiUser, null, authorities);
-
-			SecurityContext context = SecurityContextHolder.getContext();
-			context.setAuthentication(authenticationToken);
-		}
-	}
-
-	private DatasetPermission getLastChosenOrSinglePermission(Long userId, List<DatasetPermission> userPermissions) {
-
-		DatasetPermission permission = null;
-		Long lastChosenPermissionId = permissionDbService.getLastChosenPermissionId(userId);
-		if (lastChosenPermissionId == null) {
-			if (userPermissions.size() == 1) {
-				permission = userPermissions.get(0);
-				permissionDbService.setLastChosenPermissionId(permission.getId(), userId);
-			}
+	@Transactional
+	public DatasetPermission getAndSetRecentDatasetPermission(Long permissionId) {
+		EkiUser currentUser = getAuthenticatedUser();
+		DatasetPermission datasetPermission = permissionDbService.getDatasetPermission(permissionId);
+		if (datasetPermission == null) {
+			userDbService.setRecentDatasetPermission(currentUser.getId(), permissionId);
 		} else {
-			permission = userPermissions.stream()
-					.filter(perm -> perm.getId().equals(lastChosenPermissionId))
-					.findFirst().orElse(null);
+			userDbService.setRecentDatasetPermission(currentUser.getId(), null);
 		}
-		return permission;
+		return datasetPermission;
 	}
+
 }

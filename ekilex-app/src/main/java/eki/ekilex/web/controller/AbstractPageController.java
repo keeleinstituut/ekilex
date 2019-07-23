@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.common.constant.Complexity;
@@ -38,6 +39,15 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@Autowired
 	protected PermDataUtil permDataUtil;
+
+	protected SessionBean getSessionBean(Model model) {
+		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
+		if (sessionBean == null) {
+			sessionBean = new SessionBean();
+			model.addAttribute(SESSION_BEAN, sessionBean);
+		}
+		return sessionBean;
+	}
 
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {

@@ -324,6 +324,38 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName}")
+	public List<Origin> getDomainOrigins() {
+		return create
+				.selectDistinct(DOMAIN.ORIGIN.as("code"), DATASET.NAME.as("label"))
+				.from(DOMAIN)
+				.leftJoin(DATASET).on(DOMAIN.ORIGIN.eq(DATASET.CODE))
+				.orderBy(DOMAIN.ORIGIN)
+				.fetchInto(Origin.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #originCode, #classifierLabelTypeCode}")
+	public List<Classifier> getDomains(String originCode, String classifierLabelTypeCode) {
+		Table<Record5<String, String, String, Long, String>> originDomains = create
+				.select(getClassifierNameField(ClassifierName.DOMAIN),
+						DOMAIN.CODE,
+						DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
+						DOMAIN_LABEL.VALUE)
+				.distinctOn(DOMAIN.CODE)
+				.from(DOMAIN)
+				.leftJoin(DOMAIN_LABEL).on(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN)))
+				.innerJoin(LANGUAGE).on(LANGUAGE.CODE.eq(DOMAIN_LABEL.LANG))
+				.where(DOMAIN.ORIGIN.eq(originCode).and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.orderBy(DOMAIN.CODE, LANGUAGE.ORDER_BY)
+				.asTable();
+
+		return create
+				.select(originDomains.fields())
+				.from(originDomains)
+				.orderBy(originDomains.field("value"))
+				.fetchInto(Classifier.class);
+	}
+
 	public Word getWord(Long wordId) {
 		return create.select(
 				WORD.ID.as("word_id"),
@@ -867,36 +899,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		}
 
 		throw new UnsupportedOperationException();
-	}
-
-	public List<Origin> getAllDomainOrigins() {
-		return create
-				.selectDistinct(DOMAIN.ORIGIN.as("code"), DATASET.NAME.as("label"))
-				.from(DOMAIN)
-				.leftJoin(DATASET).on(DOMAIN.ORIGIN.eq(DATASET.CODE))
-				.orderBy(DOMAIN.ORIGIN)
-				.fetchInto(Origin.class);
-	}
-
-	public List<Classifier> findDomainsByOriginCode(String originCode, String labelType) {
-		Table<Record5<String, String, String, Long, String>> originDomains = create
-				.select(getClassifierNameField(ClassifierName.DOMAIN),
-						DOMAIN.CODE,
-						DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
-						DOMAIN_LABEL.VALUE)
-				.distinctOn(DOMAIN.CODE)
-				.from(DOMAIN)
-				.leftJoin(DOMAIN_LABEL).on(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN)))
-				.innerJoin(LANGUAGE).on(LANGUAGE.CODE.eq(DOMAIN_LABEL.LANG))
-				.where(DOMAIN.ORIGIN.eq(originCode).and(DOMAIN_LABEL.TYPE.eq(labelType)))
-				.orderBy(DOMAIN.CODE, LANGUAGE.ORDER_BY)
-				.asTable();
-
-		return create
-				.select(originDomains.fields())
-				.from(originDomains)
-				.orderBy(originDomains.field("value"))
-				.fetchInto(Classifier.class);
 	}
 
 	public List<Classifier> getDatasetDomains(String datasetCode) {

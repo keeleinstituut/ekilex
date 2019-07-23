@@ -5,7 +5,6 @@
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/ekilex-dataset.js}"></script>
 </th:block>
-
 </head>
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar"></th:block>
@@ -14,14 +13,9 @@
       <div class="card-header">
         <h5 class="card-title">Sõnakogude haldus</h5>
         <div class="ml-auto pull-right">
-        <button class="btn btn-primary"
-                title="Lisa uus sõnakogu"
-                data-toggle="modal"
-                data-target="#addDatasetDlg" th:text="#{datasets.add}">
-        </button>
+          <button class="btn btn-primary" title="Lisa uus sõnakogu" data-toggle="modal" data-target="#addDatasetDlg" th:text="#{datasets.add}"></button>
         </div>
       </div>
-
       <div class="card-body">
         <div class="float-left mt-3 w-100">
           <div id="datasetsArea" th:with="isAdmin=${#authentication.principal.admin}">
@@ -51,19 +45,12 @@
                   <td class="m-1 p-1 text-center">
                     <span th:text="${dataset.public ? 'Jah' : 'Ei'}"></span>
                   </td>
-
                   <td class="m-1 p-1">
                     <th:block th:if="${isAdmin || #lists.contains(ownedDatasetCodes, dataset.code)}">
-                      <button type="button" class="btn badge badge-primary"
-                              th:data-dataset-code="${dataset.code}"
-                              title="Muuda"
-                              data-toggle="modal"
-                              data-target="#editDatasetDlg">
+                      <button type="button" class="btn badge badge-primary" th:data-dataset-code="${dataset.code}" title="Muuda" data-toggle="modal" data-target="#editDatasetDlg">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
-                      <button type="button" class="btn badge badge-warning delete-dataset-confirm"
-                              th:data-code="${dataset.code}"
-                              data-toggle="datasetDeleteConfirm">
+                      <button type="button" class="btn badge badge-warning delete-dataset-confirm" th:data-code="${dataset.code}" data-toggle="datasetDeleteConfirm">
                         <i class="fa fa-remove" aria-hidden="true"></i>
                       </button>
                     </th:block>
@@ -81,6 +68,6 @@
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #waitDlg"></div>
   <script th:inline="javascript">
-	  initialise();
+  	initialise();
   </script>
 </body>

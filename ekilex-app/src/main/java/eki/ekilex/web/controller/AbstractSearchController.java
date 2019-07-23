@@ -109,6 +109,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	public List<Classifier> getDefinitionTypes() {
 		return commonDataService.getDefinitionTypes();
 	}
+
 	@ModelAttribute("allLexemePos")
 	public List<Classifier> getLexemePos() {
 		return commonDataService.getPoses();
@@ -142,16 +143,6 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	@ModelAttribute("iso2languages")
 	public Map<String, String> getIso2Languages() {
 		return commonDataService.getLanguagesIso2Map();
-	}
-
-
-	protected SessionBean getSessionBean(Model model) {
-		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
-		if (sessionBean == null) {
-			sessionBean = new SessionBean();
-			model.addAttribute(SESSION_BEAN, sessionBean);
-		}
-		return sessionBean;
 	}
 
 	protected void initSearchForms(Model model) {

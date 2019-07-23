@@ -64,7 +64,6 @@ public class DatasetController implements WebConstant {
 	@GetMapping(DATASETS_URI)
 	public String list(Model model) {
 
-		logger.debug("Fetching all datasets");
 		List<Dataset> datasets = datasetService.getDatasets();
 
 		EkiUser currentUser = userService.getAuthenticatedUser();
@@ -100,6 +99,7 @@ public class DatasetController implements WebConstant {
 	public String updateDataset(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
 
 		logger.debug("Updating dataset, name : {}", datasetFormData.getName());
+
 		datasetService.updateDataset(datasetFormData);
 
 		return REDIRECT_PREF + DATASETS_URI;
@@ -121,6 +121,7 @@ public class DatasetController implements WebConstant {
 	@GetMapping(REST_SERVICES_URI + VALIDATE_CREATE_DATASET_URI + "/{datasetCode}")
 	@ResponseBody
 	public String validateCreateDataset(@PathVariable("datasetCode") String datasetCode) {
+
 		if (datasetService.datasetCodeExists(datasetCode)) {
 			logger.debug("Trying to create dataset with existing code '{}'.", datasetCode);
 			return "CODE_EXISTS";
@@ -140,14 +141,14 @@ public class DatasetController implements WebConstant {
 
 	@ModelAttribute("origins")
 	public List<Origin> getOrigins() {
-		return commonDataService.getAllOrigins();
+		return commonDataService.getDomainOrigins();
 	}
 
 	@GetMapping(REST_SERVICES_URI + ORIGIN_DOMAINS_URI + "/{originCode}")
 	@ResponseBody
 	public String getOriginDomains(@PathVariable String originCode) throws Exception {
 
-		List<Classifier> originDomains = datasetService.findDomainsByOrigin(originCode);
+		List<Classifier> originDomains = datasetService.getDomains(originCode);
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(originDomains);

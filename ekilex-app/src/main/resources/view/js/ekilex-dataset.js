@@ -49,7 +49,7 @@ function initialise() {
 		let selectedOriginCode = $(this).find('option').eq(clickedIndex).val();
 		let isOriginSelected = isSelected;
 
-		let domainsSelect = $(this).closest('form').find('[name="selectedDomains"]');
+		let domainsSelect = $(this).closest('form').find('[name="domains"]');
 		let previousDomainsValue = domainsSelect.val();
 
 		if (isOriginSelected) {
@@ -66,11 +66,11 @@ function initialise() {
 	});
 
 	$(document).on('hide.bs.modal ', ".edit-dataset-dialog", function(e) {
-		emptyClassifSelect($(this), "selectedLanguages");
-		emptyClassifSelect($(this), "selectedProcessStates");
+		emptyClassifSelect($(this), "languages");
+		emptyClassifSelect($(this), "processStates");
 		emptyClassifSelect($(this), "origins");
 
-		let domains = $(this).find('select[name="selectedDomains"]');
+		let domains = $(this).find('select[name="domains"]');
 		emptyAndDisableSelect(domains);
 	});
 
@@ -88,8 +88,8 @@ function initialise() {
 			thisForm.find('input[name="public"]').attr('checked', dataset.public);
 			thisForm.find('input[name="visible"]').attr('checked', dataset.visible);
 
-			markSelectedClassifiers(thisForm, "selectedLanguages", dataset.selectedLanguages);
-			markSelectedClassifiers(thisForm, "selectedProcessStates", dataset.selectedProcessStates);
+			markSelectedClassifiers(thisForm, "languages", dataset.languages);
+			markSelectedClassifiers(thisForm, "processStates", dataset.processStates);
 			markClassifierDomains(thisForm, dataset);
 
 		}).fail(function(data) {
@@ -145,7 +145,7 @@ function populateDomains(domainsSelect, originCode, previousDomainsValue) {
 function markClassifierDomains(thisForm, dataset) {
 
 	if (dataset.origins != null) {
-		let domainsSelect = thisForm.find('select[name="selectedDomains"]');
+		let domainsSelect = thisForm.find('select[name="domains"]');
 		domainsSelect.attr("disabled", false);
 		let originSelect = thisForm.find('select[name="origins"]');
 		$.each(dataset.origins, function (key, origin) {
@@ -155,7 +155,7 @@ function markClassifierDomains(thisForm, dataset) {
 		});
 		originSelect.selectpicker('refresh');
 
-		let previousDomainsIds = dataset.selectedDomains.map(domain => domain.jsonStr);
+		let previousDomainsIds = dataset.domains.map(domain => domain.jsonStr);
 		originSelect.find('option:selected').each(function () {
 			let originCode = $(this).val();
 			populateDomains(domainsSelect, originCode, previousDomainsIds);

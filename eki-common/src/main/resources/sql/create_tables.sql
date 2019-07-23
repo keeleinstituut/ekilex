@@ -420,9 +420,9 @@ alter sequence dataset_permission_id_seq restart with 10000;
 -- kasutaja profiil
 create table eki_user_profile
 (
-	id bigserial primary key,
-	user_id bigint references eki_user(id) on delete cascade not null,
-	recent_dataset_permission_id bigint references dataset_permission(id)
+  id bigserial primary key,
+  user_id bigint references eki_user(id) on delete cascade not null,
+  recent_dataset_permission_id bigint references dataset_permission(id)
 );
 alter sequence eki_user_profile_id_seq restart with 10000;
 

@@ -8,7 +8,6 @@ import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
-import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
@@ -558,23 +557,6 @@ public class PermissionDbService implements SystemConstant {
 				.where(DATASET_PERMISSION.ID.eq(id))
 				.fetchSingleInto(DatasetPermission.class);
 
-	}
-
-	public Long getLastChosenPermissionId(Long userId) {
-
-		return create
-				.select(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID)
-				.from(EKI_USER_PROFILE)
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.fetchOneInto(Long.class);
-	}
-
-	public void setLastChosenPermissionId(Long permissionId, Long userId) {
-
-		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID, permissionId)
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.execute();
 	}
 
 }
