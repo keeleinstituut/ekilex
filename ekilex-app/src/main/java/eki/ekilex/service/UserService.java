@@ -269,9 +269,9 @@ public class UserService implements WebConstant {
 		EkiUser currentUser = getAuthenticatedUser();
 		DatasetPermission datasetPermission = permissionDbService.getDatasetPermission(permissionId);
 		if (datasetPermission == null) {
-			userDbService.setRecentDatasetPermission(currentUser.getId(), permissionId);
-		} else {
 			userDbService.setRecentDatasetPermission(currentUser.getId(), null);
+		} else {
+			userDbService.setRecentDatasetPermission(currentUser.getId(), permissionId);
 		}
 		return datasetPermission;
 	}
