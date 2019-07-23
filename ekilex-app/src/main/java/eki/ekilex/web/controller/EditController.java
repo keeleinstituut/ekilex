@@ -620,8 +620,8 @@ public class EditController implements WebConstant {
 		return valuePrese;
 	}
 
-	@GetMapping(WORD_JOIN_URI + "/{wordId}")
-	public String showWordJoin(@PathVariable("wordId") Long wordId, Model model) {
+	@GetMapping(WORD_JOIN_URI)
+	public String showWordJoin(@RequestParam("wordId") Long wordId, @RequestParam(name = "meaningId", required = false) Long meaningId, Model model) {
 
 		List<String> datasetCodes = commonDataService.getDatasetCodes();
 		WordDetails firstWordDetails = commonDataService.getWordDetails(wordId, datasetCodes);
@@ -632,20 +632,29 @@ public class EditController implements WebConstant {
 		List<Classifier> wordGenders = commonDataService.getGenders();
 		List<Classifier> wordAspects = commonDataService.getAspects();
 
+		String backUrl;
+		if (meaningId != null) {
+			backUrl = MEANING_BACK_URI + "/" + meaningId;
+		} else {
+			backUrl = WORD_BACK_URI + "/" + firstWordId;
+		}
+
 		model.addAttribute("firstWordDetails", firstWordDetails);
 		model.addAttribute("firstWordId", firstWordId);
 		model.addAttribute("wordDetailsList", wordDetailsList);
 		model.addAttribute("wordGenders", wordGenders);
 		model.addAttribute("wordAspects", wordAspects);
+		model.addAttribute("backUrl", backUrl);
 		return WORD_JOIN_PAGE;
 	}
 
 	@PostMapping(WORD_JOIN_URI)
-	public String joinWords(@RequestParam("firstWordId") Long firstWordId, @RequestParam("secondWordId") Long secondWordId) {
+	public String joinWords(@RequestParam("firstWordId") Long firstWordId, @RequestParam("secondWordId") Long secondWordId,
+			@RequestParam("backUrl") String backUrl) {
 
 		logger.debug("Joining words, firstWordId: \"{}\", secondWordId: \"{}\"", firstWordId, secondWordId);
 		compositionService.joinWords(firstWordId, secondWordId);
-		return "redirect:" + WORD_BACK_URI + "/" + firstWordId;
+		return "redirect:" + backUrl;
 	}
 
 	@ModelAttribute("iso2languages")

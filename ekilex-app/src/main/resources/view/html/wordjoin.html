@@ -8,7 +8,7 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary text-light" th:href="@{'/wordback/' + ${firstWordId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary text-light" th:href="@{${backUrl}}">Tagasi</a>
       </p>
     </div>
 
@@ -45,6 +45,7 @@
                 <form th:action="@{/wordjoin}" method="post">
                   <input type="hidden" name="firstWordId" th:value="${firstWordId}">
                   <input type="hidden" name="secondWordId" th:value="${wordDetails.word.wordId}">
+                  <input type="hidden" name="backUrl" th:value="${backUrl}">
                   <button type="button" class="btn btn-primary btn-sm"
                           data-toggle="join-confirm"
                           data-placement="right"

@@ -63,6 +63,8 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "order_by")
 	private Long orderBy;
 
+	private Boolean affixoid;
+
 	private List<Classifier> wordTypes;
 
 	private List<Classifier> pos;
@@ -223,6 +225,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
 		this.lexemeProcessStateCode = lexemeProcessStateCode;
+	}
+
+	public Boolean isAffixoid() {
+		return affixoid;
+	}
+
+	public void setAffixoid(Boolean affixoid) {
+		this.affixoid = affixoid;
 	}
 
 	public List<Classifier> getWordTypes() {

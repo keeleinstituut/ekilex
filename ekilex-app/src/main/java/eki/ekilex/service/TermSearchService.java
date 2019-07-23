@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DbConstant;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -39,7 +40,7 @@ import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @Component
-public class TermSearchService extends AbstractSearchService {
+public class TermSearchService extends AbstractSearchService implements DbConstant {
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
@@ -179,10 +180,12 @@ public class TermSearchService extends AbstractSearchService {
 			String dataset = lexeme.getDataset();
 			dataset = datasetNameMap.get(dataset);
 			String levels = composeLevels(lexeme);
+			boolean isAffixoid = isAffixoid(wordTypes);
 
 			lexeme.setLevels(levels);
 			lexeme.setDataset(dataset);
 			lexeme.setWordTypes(wordTypes);
+			lexeme.setAffixoid(isAffixoid);
 			lexeme.setPos(lexemePos);
 			lexeme.setDerivs(lexemeDerivs);
 			lexeme.setRegisters(lexemeRegisters);
@@ -236,5 +239,12 @@ public class TermSearchService extends AbstractSearchService {
 			}
 		}
 		return levels;
+	}
+
+	private boolean isAffixoid(List<Classifier> wordTypes) {
+
+		boolean isAffixoid = wordTypes.stream()
+				.anyMatch(type -> type.getCode().equals(WORD_TYPE_CODE_PREFIXOID) || type.getCode().equals(WORD_TYPE_CODE_SUFFIXOID));
+		return isAffixoid;
 	}
 }
