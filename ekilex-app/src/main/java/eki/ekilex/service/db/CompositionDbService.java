@@ -4,6 +4,7 @@ import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -19,6 +20,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
@@ -26,6 +28,7 @@ import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static org.jooq.impl.DSL.field;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
+import eki.common.constant.FormMode;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
@@ -599,4 +603,29 @@ public class CompositionDbService implements DbConstant {
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
+
+	public boolean wordHasForms(Long wordId) {
+
+		return create
+				.select(field(DSL.count(FORM.ID).gt(0)).as("has_forms"))
+				.from(PARADIGM, FORM)
+				.where(
+						PARADIGM.WORD_ID.eq(wordId)
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.FORM.name())))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public void joinParadigms(Long firstWordId, Long secondWordId) {
+
+		create.delete(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(firstWordId))
+				.execute();
+
+		create.update(PARADIGM)
+				.set(PARADIGM.WORD_ID, firstWordId)
+				.where(PARADIGM.WORD_ID.eq(secondWordId))
+				.execute();
+	}
+
 }
