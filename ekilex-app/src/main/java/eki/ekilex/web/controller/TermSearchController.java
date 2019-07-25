@@ -134,8 +134,8 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		return TERM_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
-	@PostMapping(UPDATE_TERM_PAGING_URI)
-	public String updatePaging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
+	@PostMapping(TERM_PAGING_URI)
+	public String paging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
 			@RequestParam("direction") String direction) throws Exception {
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);

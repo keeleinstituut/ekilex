@@ -58,7 +58,7 @@ function initialise() {
 
 	$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg("Palun oodake, andmete uuendamine on pooleli");
-		let url = applicationUrl + "update_term_paging";
+		let url = applicationUrl + "term_paging";
 		let button = $(this);
 		let direction = button.data("direction");
 		let form = button.closest('form');

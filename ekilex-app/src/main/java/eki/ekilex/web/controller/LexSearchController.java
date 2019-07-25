@@ -199,8 +199,8 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
-	@PostMapping(UPDATE_LEX_PAGING_URI)
-	public String updatePaging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
+	@PostMapping(LEX_PAGING_URI)
+	public String paging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
 			@RequestParam("direction") String direction) throws Exception {
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);

@@ -90,7 +90,7 @@ function initialise() {
 
 	$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg("Palun oodake, andmete uuendamine on pooleli");
-		let url = applicationUrl + "update_lex_paging";
+		let url = applicationUrl + "lex_paging";
 		let button = $(this);
 		let direction = button.data("direction");
 		let form = button.closest('form');
