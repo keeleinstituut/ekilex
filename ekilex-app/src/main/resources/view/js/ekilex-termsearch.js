@@ -69,9 +69,7 @@ function initialise() {
 			data: form.serialize(),
 			method: 'POST',
 		}).done(function (data) {
-			setTimeout(function () {
-				closeWaitDlg();
-			}, 500);
+			closeWaitDlg();
 			$('#results_div').html(data);
 			$('#results_div').parent().scrollTop(0);
 			$('#details_div').empty();
