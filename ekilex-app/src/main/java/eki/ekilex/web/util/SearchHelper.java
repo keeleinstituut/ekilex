@@ -41,16 +41,15 @@ public class SearchHelper {
 	private static final String CRITERION = "crit";
 	private static final String CRITERION_VALUE = "val";
 	private static final String CRITERION_CLASSIFIER = "cla";
-	private static final String FETCH_ALL = "fetchall";
 
 	@Autowired
 	protected CommonDataService commonDataService;
 
 	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
-		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, false);
+		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null);
 	}
 
-	public String composeSearchUri(String searchMode, List<String> datasets, String simpleSearchFilter, SearchFilter detailSearchFilter, boolean fetchAll) {
+	public String composeSearchUri(String searchMode, List<String> datasets, String simpleSearchFilter, SearchFilter detailSearchFilter) {
 
 		StringBuffer uriBuf = new StringBuffer();
 
@@ -138,12 +137,6 @@ public class SearchHelper {
 			}
 		}
 
-		// fetch all
-		if (fetchAll) {
-			uriBuf.append(PATH_SEPARATOR);
-			uriBuf.append(FETCH_ALL);
-		}
-
 		return uriBuf.toString();
 	}
 
@@ -162,15 +155,11 @@ public class SearchHelper {
 		List<String> selectedDatasets = null;
 		String simpleSearchFilter = null;
 		SearchFilter detailSearchFilter = null;
-		boolean fetchAll = false;
 
 		String[] uriParts = StringUtils.split(searchUri, PATH_SEPARATOR);
 
 		for (int uriPartIndex = 0; uriPartIndex < uriParts.length; uriPartIndex++) {
 			String uriPart = uriParts[uriPartIndex];
-			if (StringUtils.equals(FETCH_ALL, uriPart)) {
-				fetchAll = true;
-			}
 			if (uriPartIndex == uriParts.length - 1) {
 				break;
 			}
@@ -263,7 +252,7 @@ public class SearchHelper {
 		if (detailSearchFilter == null) {
 			detailSearchFilter = initSearchFilter();
 		}
-		return new SearchUriData(isValid, searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, fetchAll);
+		return new SearchUriData(isValid, searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
 	}
 
 	public SearchFilter initSearchFilter() {

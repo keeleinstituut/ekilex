@@ -40,6 +40,8 @@ public interface WebConstant {
 
 	String TERM_SEARCH_URI = "/termsearch";
 
+	String TERM_COMPONENTS_PAGE = "termcomp";
+
 	String WORD_DETAILS_URI = "/worddetails";
 
 	String MEANING_DETAILS_URI = "/meaningdetails";

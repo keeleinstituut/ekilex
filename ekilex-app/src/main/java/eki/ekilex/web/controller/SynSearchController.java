@@ -59,7 +59,6 @@ public class SynSearchController extends AbstractSearchController {
 			@RequestParam(name = "searchMode", required = false) String searchMode,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
-			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
 			Model model) throws Exception {
 
 		SessionBean sessionBean = getSessionBean(model);
@@ -72,7 +71,7 @@ public class SynSearchController extends AbstractSearchController {
 
 		List<String> roleDatasetCode = getDatasetCodeFromRole(sessionBean);
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasetCode, simpleSearchFilter, detailSearchFilter, fetchAll);
+		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasetCode, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + SYN_SEARCH_URI + searchUri;
 	}
 
@@ -98,7 +97,7 @@ public class SynSearchController extends AbstractSearchController {
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = searchUriData.isFetchAll();
+		boolean fetchAll = false;
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {

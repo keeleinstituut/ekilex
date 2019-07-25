@@ -38,13 +38,6 @@ function initialise() {
 		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
 
-	$(document).on('click', '#show-all-btn', function(e) {
-		e.preventDefault();
-		let fetchAll = $('#fetchAll');
-		fetchAll.val(true);
-		fetchAll.closest('form').find('button[type="submit"]').trigger('click');
-	});
-
 	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
 		let dlg = $(this);
 		let link = $(e.relatedTarget);

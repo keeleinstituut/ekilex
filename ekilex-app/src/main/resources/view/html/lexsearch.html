@@ -37,10 +37,7 @@
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
         <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
           <div class="card-body p-2">
-<!--            TODO commented out temporarily. Undo or remove completely after receiving feedback-->
-<!--            <a href="/" id="show-all-btn">-->
-              <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
-<!--            </a>-->
+            <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
             <table id="results" class="table table-striped mb-0">
               <tr th:each="word : ${wordsResult.words}">
                 <td class="p-0">

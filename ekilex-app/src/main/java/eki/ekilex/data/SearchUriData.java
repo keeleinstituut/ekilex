@@ -18,15 +18,12 @@ public class SearchUriData extends AbstractDataObject {
 
 	private SearchFilter detailSearchFilter;
 
-	private boolean fetchAll;
-
-	public SearchUriData(boolean valid, String searchMode, List<String> selectedDatasets, String simpleSearchFilter, SearchFilter detailSearchFilter, boolean fetchAll) {
+	public SearchUriData(boolean valid, String searchMode, List<String> selectedDatasets, String simpleSearchFilter, SearchFilter detailSearchFilter) {
 		this.valid = valid;
 		this.searchMode = searchMode;
 		this.selectedDatasets = selectedDatasets;
 		this.simpleSearchFilter = simpleSearchFilter;
 		this.detailSearchFilter = detailSearchFilter;
-		this.fetchAll = fetchAll;
 	}
 
 	public boolean isValid() {
@@ -49,7 +46,4 @@ public class SearchUriData extends AbstractDataObject {
 		return detailSearchFilter;
 	}
 
-	public boolean isFetchAll() {
-		return fetchAll;
-	}
 }

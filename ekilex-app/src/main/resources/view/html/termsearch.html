@@ -62,50 +62,8 @@
 
     <div class="row no-gutters mt-2">
       <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;">
-        <div class="card shadow" th:if="${meaningsResult.resultExist}">
-          <div class="card-body p-2">
-            <div>
-<!--              TODO commented out temporarily. Undo or remove completely after receiving feedback-->
-<!--              <a href="javascript:void(0);" id="show-all-btn">-->
-                <span th:text="${'Mõisteid : ' + meaningsResult.meaningCount}"></span>
-                &nbsp;|&nbsp;
-                <span th:text="${'Termineid : ' + meaningsResult.wordCount}"></span>
-<!--              </a>-->
-            </div>
-            <hr />
-            <div id="results" class="w-100">
-              <div th:each="termMeaning,termMeaningIter : ${meaningsResult.termMeanings}" th:class="${termMeaningIter.last} ? '' : 'border-bottom'">
-                <div>
-                  <button type="button" class="btn btn-link pt-0" th:data-id="${termMeaning.meaningId}" name="detailsBtn">
-                    <th:block th:if="${termMeaning.mainWord != null}">
-                      <span th:text="${termMeaning.mainWord.word}" class="ttl">EuropeAid</span>
-                      <span th:text="${termMeaning.mainWord.homonymNr}" th:if="${termMeaning.mainWord.homonymNr > 0}"></span>
-                      <span th:text="${'(' + iso2languages[termMeaning.mainWord.wordLang] + ')'}"></span>
-                    </th:block>
-                    <span th:if="${termMeaning.mainWord == null}" th:text="${termMeaning.conceptId}" class="ttl">23648236</span>
-                  </button>
-                  <span class="float-right" style="padding: 15px">
-                    <span th:id="${'meaning_select_point_' + termMeaning.meaningId}" class="fa fa-play" style="display: none"></span>
-                    <span th:id="${'meaning_select_wait_' + termMeaning.meaningId}" class="fa fa-refresh fa-spin" style="display: none"></span>
-                  </span>
-                  <div style="position:relative; top: -10px; padding-left: 10px" th:if="${termMeaning.mainWord != null}">
-                    <small>
-                      <span th:text="${termMeaning.mainWord.datasetCodesWrapup}"></span>
-                    </small>
-                  </div>
-                  <div th:if="${not #lists.isEmpty(termMeaning.otherWords)}" class="other-words" style="margin-top: -10px">
-                    <ul class="mb-1">
-                      <li th:each="otherWord : ${termMeaning.otherWords}">
-                        <span th:text="${otherWord.word}"></span>
-                        <span th:text="${otherWord.homonymNr}"></span>
-                        <span th:text="${'(' + iso2languages[otherWord.wordLang] + ')'}"></span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div id="results_div" class="card shadow" th:if="${meaningsResult.resultExist}">
+          <div th:replace="termcomp :: search_result"></div>
         </div>
       </div>
       <div class="col-9" style="height: calc(100vh - 14rem); overflow-y: auto; overflow-x: hidden;">
@@ -1034,6 +992,7 @@
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #confirmDlg"></div>
+  <div th:replace="common :: #waitDlg"></div>
   <div th:replace="sourcedialog :: add_source_dlg('term_search')"></div>
 
   <script th:inline="javascript">

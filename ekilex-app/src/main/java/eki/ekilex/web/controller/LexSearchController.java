@@ -63,7 +63,6 @@ public class LexSearchController extends AbstractSearchController {
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
-			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
 			Model model) throws Exception {
 
 		SessionBean sessionBean = getSessionBean(model);
@@ -75,7 +74,7 @@ public class LexSearchController extends AbstractSearchController {
 		}
 		selectedDatasets = sessionBean.getSelectedDatasets();
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, fetchAll);
+		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
@@ -101,7 +100,7 @@ public class LexSearchController extends AbstractSearchController {
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = searchUriData.isFetchAll();
+		boolean fetchAll = false;
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {

@@ -30,11 +30,6 @@ function initialise() {
 		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
 
-	$(document).on('click', '#show-all-btn', function() {
-		$('#fetchAll').val(true);
-		$('#fetchAll').closest('form').find('button[type="submit"]').trigger('click');
-	});
-
 	$(document).on('click', '[name="lang-collapse-btn"]', function() {
 		var lang = $(this).attr("data-lang");
 		var itemData = {
@@ -59,6 +54,31 @@ function initialise() {
 			openAlertDlg("Mõiste dubleerimine ebaõnnestus");
 			console.log(data);
 		});
+	});
+
+	$(document).on('click', '[name="pagingBtn"]', function() {
+		openWaitDlg("Palun oodake, andmete uuendamine on pooleli");
+		let url = applicationUrl + "update_term_paging";
+		let button = $(this);
+		let direction = button.data("direction");
+		let form = button.closest('form');
+		form.find('input[name="direction"]').val(direction);
+
+		$.ajax({
+			url: url,
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function (data) {
+			closeWaitDlg();
+			$('#results_div').html(data);
+			$('#results_div').parent().scrollTop(0);
+			$('#details_div').empty();
+		}).fail(function (data) {
+			console.log(data);
+			closeWaitDlg();
+			openAlertDlg('Lehekülje muutmine ebaõnnestus');
+		});
+
 	});
 
 	$(document).on('change', '#meaning-other-words-visible-check', function() {

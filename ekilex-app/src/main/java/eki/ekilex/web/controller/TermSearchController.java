@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Meaning;
@@ -33,7 +34,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class TermSearchController extends AbstractSearchController {
+public class TermSearchController extends AbstractSearchController implements SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermSearchController.class);
 
@@ -41,7 +42,7 @@ public class TermSearchController extends AbstractSearchController {
 	private TermSearchService termSearchService;
 
 	@RequestMapping(value = TERM_SEARCH_URI, method = RequestMethod.GET)
-	public String initSearch(Model model) throws Exception {
+	public String initSearch(Model model) {
 
 		initSearchForms(model);
 
@@ -55,7 +56,6 @@ public class TermSearchController extends AbstractSearchController {
 	public String termSearch(
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "searchMode", required = false) String searchMode,
-			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
 			@RequestParam(name = "resultLang", required = false) String resultLang,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
@@ -70,7 +70,7 @@ public class TermSearchController extends AbstractSearchController {
 		}
 		selectedDatasets = sessionBean.getSelectedDatasets();
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, fetchAll);
+		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}
 
@@ -98,13 +98,13 @@ public class TermSearchController extends AbstractSearchController {
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = searchUriData.isFetchAll();
+		boolean fetchAll = false;
 
 		MeaningsResult meaningsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			meaningsResult = termSearchService.getMeanings(detailSearchFilter, selectedDatasets, resultLang, fetchAll);
+			meaningsResult = termSearchService.getMeanings(detailSearchFilter, selectedDatasets, resultLang, fetchAll, DEFAULT_OFFSET);
 		} else {
-			meaningsResult = termSearchService.getMeanings(simpleSearchFilter, selectedDatasets, resultLang, fetchAll);
+			meaningsResult = termSearchService.getMeanings(simpleSearchFilter, selectedDatasets, resultLang, fetchAll, DEFAULT_OFFSET);
 		}
 		boolean noResults = meaningsResult.getMeaningCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -112,6 +112,7 @@ public class TermSearchController extends AbstractSearchController {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("meaningsResult", meaningsResult);
 		model.addAttribute("noResults", noResults);
+		model.addAttribute("searchUri", searchUri);
 
 		return TERM_SEARCH_PAGE;
 	}
@@ -131,5 +132,39 @@ public class TermSearchController extends AbstractSearchController {
 		model.addAttribute("meaningId", meaningId);
 
 		return TERM_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
+	}
+
+	@PostMapping("/update_term_paging")
+	public String updatePaging(Model model, @RequestParam("offset") Integer offset, @RequestParam("searchUri") String searchUri,
+			@RequestParam("direction") String direction) throws Exception {
+
+		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
+
+		SessionBean sessionBean = getSessionBean(model);
+		String resultLang = sessionBean.getResultLang();
+		String searchMode = searchUriData.getSearchMode();
+		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
+		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
+		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		boolean fetchAll = false;
+
+
+		if ("next".equals(direction)) {
+			offset += MAX_RESULTS_LIMIT;
+		} else if ("previous".equals(direction)) {
+			offset -= MAX_RESULTS_LIMIT;
+		}
+
+		MeaningsResult meaningsResult;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			meaningsResult = termSearchService.getMeanings(detailSearchFilter, selectedDatasets, resultLang, fetchAll, offset);
+		} else {
+			meaningsResult = termSearchService.getMeanings(simpleSearchFilter, selectedDatasets, resultLang, fetchAll, offset);
+		}
+
+		meaningsResult.setOffset(offset);
+		model.addAttribute("meaningsResult", meaningsResult);
+		model.addAttribute("searchUri", searchUri);
+		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
 	}
 }

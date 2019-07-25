@@ -6,6 +6,8 @@ public interface SystemConstant {
 
 	int MAX_RESULTS_LIMIT = 50;
 
+	int DEFAULT_OFFSET = 0;
+
 	long UPDATE_STAT_DATA_DELAY = 10 * 60 * 1000;
 
 	long CACHE_EVICT_DELAY_5MIN = 5 * 60 * 1000;

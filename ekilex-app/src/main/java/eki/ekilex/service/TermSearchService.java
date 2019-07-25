@@ -46,7 +46,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	private TermSearchDbService termSearchDbService;
 
 	@Transactional
-	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll) {
+	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, Integer offset) {
 
 		List<TermMeaning> termMeanings;
 		int meaningCount;
@@ -57,7 +57,8 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll);
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService
+					.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
 			meaningCount = termSearchDbService.countMeanings(searchFilter, searchDatasetsRestriction);
 			wordCount = termSearchDbService.countWords(searchFilter, searchDatasetsRestriction, resultLang);
@@ -68,11 +69,19 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaningsResult.setWordCount(wordCount);
 		meaningsResult.setTermMeanings(termMeanings);
 		meaningsResult.setResultExist(resultExist);
+
+		boolean showPaging = meaningCount > MAX_RESULTS_LIMIT;
+		meaningsResult.setShowPaging(showPaging);
+		if (showPaging) {
+			setPagingData(offset, meaningCount, meaningsResult);
+		}
+
 		return meaningsResult;
 	}
 
 	@Transactional
-	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll) throws Exception {
+	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, Integer offset)
+			throws Exception {
 
 		List<TermMeaning> termMeanings;
 		int meaningCount;
@@ -83,7 +92,8 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll);
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService
+					.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
 			meaningCount = termSearchDbService.countMeanings(searchFilter, searchDatasetsRestriction);
 			wordCount = termSearchDbService.countWords(searchFilter, searchDatasetsRestriction, resultLang);
@@ -94,6 +104,13 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaningsResult.setWordCount(wordCount);
 		meaningsResult.setTermMeanings(termMeanings);
 		meaningsResult.setResultExist(resultExist);
+
+		boolean showPaging = meaningCount > MAX_RESULTS_LIMIT;
+		meaningsResult.setShowPaging(showPaging);
+		if (showPaging) {
+			setPagingData(offset, meaningCount, meaningsResult);
+		}
+
 		return meaningsResult;
 	}
 
@@ -239,6 +256,19 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 			}
 		}
 		return levels;
+	}
+
+	private void setPagingData(Integer offset, int meaningCount, MeaningsResult meaningsResult) {
+
+		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
+		int totalPages = (meaningCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
+		boolean previousPageExists = currentPage > 1;
+		boolean nextPageExists = currentPage < totalPages;
+
+		meaningsResult.setCurrentPage(currentPage);
+		meaningsResult.setTotalPages(totalPages);
+		meaningsResult.setPreviousPageExists(previousPageExists);
+		meaningsResult.setNextPageExists(nextPageExists);
 	}
 
 	private boolean isAffixoid(List<Classifier> wordTypes) {
