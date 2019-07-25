@@ -42,7 +42,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
 			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
-			WordsResult words = getWords(cleanedUpFilter, selectedDatasetCodes, true);
+			WordsResult words = getWords(cleanedUpFilter, selectedDatasetCodes, true, DEFAULT_OFFSET);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {
@@ -81,7 +81,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchFilter)) {
-			WordsResult words = getWords(searchFilter, selectedDatasetCodes, false);
+			WordsResult words = getWords(searchFilter, selectedDatasetCodes, false, DEFAULT_OFFSET);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				for (Word word : words.getWords()) {
 					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);
@@ -106,7 +106,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	public List<WordDescript> getWordDescripts(String searchFilter, List<String> datasets, Long excludingMeaningId) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
-		WordsResult words = getWords(searchFilter, datasets, true);
+		WordsResult words = getWords(searchFilter, datasets, true, DEFAULT_OFFSET);
 		List<WordDescript> wordDescripts = new ArrayList<>();
 		for (Word word : words.getWords()) {
 			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);

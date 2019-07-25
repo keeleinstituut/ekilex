@@ -88,6 +88,33 @@ function initialise() {
 		});
 	});
 
+	$(document).on('click', '[name="pagingBtn"]', function() {
+		openWaitDlg("Palun oodake, andmete uuendamine on pooleli");
+		let url = applicationUrl + "update_lex_paging";
+		let button = $(this);
+		let direction = button.data("direction");
+		let form = button.closest('form');
+		form.find('input[name="direction"]').val(direction);
+
+		$.ajax({
+			url: url,
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function (data) {
+			setTimeout(function () {
+				closeWaitDlg();
+			}, 500);
+			$('#results_div').html(data);
+			$('#results_div').parent().scrollTop(0);
+			$('#details_div').empty();
+		}).fail(function (data) {
+			console.log(data);
+			closeWaitDlg();
+			openAlertDlg('Lehekülje muutmine ebaõnnestus');
+		});
+
+	});
+
 	let detailButtons = $('#results').find('[name="detailsBtn"]');
 	if (detailButtons.length === 1) {
 		detailButtons.trigger('click');

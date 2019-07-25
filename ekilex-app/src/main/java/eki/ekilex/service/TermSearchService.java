@@ -46,7 +46,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	private TermSearchDbService termSearchDbService;
 
 	@Transactional
-	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, Integer offset) {
+	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) {
 
 		List<TermMeaning> termMeanings;
 		int meaningCount;
@@ -80,7 +80,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	}
 
 	@Transactional
-	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, Integer offset)
+	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset)
 			throws Exception {
 
 		List<TermMeaning> termMeanings;
@@ -258,7 +258,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		return levels;
 	}
 
-	private void setPagingData(Integer offset, int meaningCount, MeaningsResult meaningsResult) {
+	private void setPagingData(int offset, int meaningCount, MeaningsResult meaningsResult) {
 
 		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
 		int totalPages = (meaningCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;

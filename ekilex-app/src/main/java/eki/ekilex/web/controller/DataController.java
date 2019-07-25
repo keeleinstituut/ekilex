@@ -77,7 +77,7 @@ public class DataController implements SystemConstant, WebConstant {
 
 		boolean fetchAll = true;
 		List<String> datasets = parseDatasets(datasetsStr);
-		WordsResult results = lexSearchService.getWords(word, datasets, fetchAll);
+		WordsResult results = lexSearchService.getWords(word, datasets, fetchAll, DEFAULT_OFFSET);
 		return results;
 	}
 

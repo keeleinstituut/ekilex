@@ -86,14 +86,15 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) throws Exception {
+	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset)
+			throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, fetchAll);
+		return execute(w1, p, wordCondition, fetchAll, offset);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -279,13 +280,13 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return negativeExistCriteria;
 	}
 
-	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll) {
+	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, fetchAll);
+		return execute(word, paradigm, where, fetchAll, offset);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
@@ -322,7 +323,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return where;
 	}
 
-	private List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, boolean fetchAll) {
+	private List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, boolean fetchAll, int offset) {
 
 		Form f1 = FORM.as("f1");
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
@@ -390,7 +391,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		if (fetchAll) {
 			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
 		} else {
-			return create.selectFrom(ww).limit(MAX_RESULTS_LIMIT).fetchInto(eki.ekilex.data.Word.class);
+			return create.selectFrom(ww).limit(MAX_RESULTS_LIMIT).offset(offset).fetchInto(eki.ekilex.data.Word.class);
 		}
 	}
 

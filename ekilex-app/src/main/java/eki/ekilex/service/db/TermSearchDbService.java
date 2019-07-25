@@ -61,7 +61,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 	// simple search
 
 	public List<TermMeaningWordTuple> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll,
-			Integer offset) {
+			int offset) {
 
 		Meaning m1 = MEANING.as("m1");
 		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
@@ -111,7 +111,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 	// detail search
 
 	public List<TermMeaningWordTuple> getMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang,
-			boolean fetchAll, Integer offset) throws Exception {
+			boolean fetchAll, int offset) throws Exception {
 
 		Meaning m1 = MEANING.as("m1");
 		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
@@ -402,7 +402,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// common search
 
-	private List<TermMeaningWordTuple> executeFetch(Meaning m1, Condition meaningCondition, String resultLang, boolean fetchAll, Integer offset) {
+	private List<TermMeaningWordTuple> executeFetch(Meaning m1, Condition meaningCondition, String resultLang, boolean fetchAll, int offset) {
 
 		int limit = MAX_RESULTS_LIMIT;
 		if (fetchAll) {

@@ -35,33 +35,8 @@
 
     <div class="row no-gutters mt-2" th:unless="${noResults}">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
-          <div class="card-body p-2">
-            <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
-            <table id="results" class="table table-striped mb-0">
-              <tr th:each="word : ${wordsResult.words}">
-                <td class="p-0">
-                  <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="detailsBtn">
-                    <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>
-                    <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-                    <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
-                  </button>
-                  <span class="float-right" style="padding: 15px">
-                    <span th:id="${'word_select_point_' + word.wordId}" class="fa fa-play" style="display: none"></span>
-                    <span th:id="${'word_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
-                  </span>
-                  <div style="position:relative; top: -10px; padding-left: 10px">
-                    <small>
-                      <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
-                        <span th:text="${wordDatasetCode}"></span>
-                        <span th:unless="${wordDatasetIter.last}">,</span>
-                      </span>
-                    </small>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
+        <div id="results_div" class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
+          <div th:replace="lexcomp :: search_result"></div>
         </div>
       </div>
       <div class="col-9" style="height: calc(100vh - 12rem); overflow-y: auto;">
@@ -1179,6 +1154,7 @@
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #confirmDlg"></div>
+  <div th:replace="common :: #waitDlg"></div>
   <div th:replace="sourcedialog :: add_source_dlg('lex_search')"></div>
 
   <script th:inline="javascript">

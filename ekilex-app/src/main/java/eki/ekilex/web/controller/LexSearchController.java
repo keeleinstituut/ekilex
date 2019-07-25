@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.SourceType;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
@@ -36,7 +37,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexSearchController extends AbstractSearchController {
+public class LexSearchController extends AbstractSearchController implements SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(LexSearchController.class);
 
@@ -104,9 +105,9 @@ public class LexSearchController extends AbstractSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -114,6 +115,7 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("noResults", noResults);
+		model.addAttribute("searchUri", searchUri);
 
 		return LEX_SEARCH_PAGE;
 	}
@@ -125,7 +127,7 @@ public class LexSearchController extends AbstractSearchController {
 			Model model) {
 		logger.debug("word search ajax {}", searchFilter);
 
-		WordsResult result = lexSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false);
+		WordsResult result = lexSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false, DEFAULT_OFFSET);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
@@ -195,6 +197,37 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("details", details);
 
 		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
+	}
+
+	@PostMapping(UPDATE_LEX_PAGING_URI)
+	public String updatePaging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
+			@RequestParam("direction") String direction) throws Exception {
+
+		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
+
+		String searchMode = searchUriData.getSearchMode();
+		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
+		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
+		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		boolean fetchAll = false;
+
+		if ("next".equals(direction)) {
+			offset += MAX_RESULTS_LIMIT;
+		} else if ("previous".equals(direction)) {
+			offset -= MAX_RESULTS_LIMIT;
+		}
+
+		WordsResult wordsResult;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll, offset);
+		} else {
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll, offset);
+		}
+
+		wordsResult.setOffset(offset);
+		model.addAttribute("wordsResult", wordsResult);
+		model.addAttribute("searchUri", searchUri);
+		return LEX_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
 	}
 
 }

@@ -2,9 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.data.AbstractDataObject;
-
-public class WordsResult extends AbstractDataObject {
+public class WordsResult extends PagingResult {
 
 	private static final long serialVersionUID = 1L;
 

@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
 import eki.common.service.TextDecorationService;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -51,7 +52,7 @@ import eki.ekilex.web.util.SearchHelper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class EditController implements WebConstant {
+public class EditController implements WebConstant, SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(EditController.class);
 
@@ -512,7 +513,7 @@ public class EditController implements WebConstant {
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
 			List<String> allDatasets = commonDataService.getDatasetCodes();
-			WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true);
+			WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true, DEFAULT_OFFSET);
 			if (words.getTotalCount() == 0) {
 				cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
 			} else {
