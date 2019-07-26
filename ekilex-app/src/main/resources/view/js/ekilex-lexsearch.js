@@ -38,13 +38,6 @@ function initialise() {
 		postJson(applicationUrl + 'update_ordering', orderingData);
 	});
 
-	$(document).on('click', '#show-all-btn', function(e) {
-		e.preventDefault();
-		let fetchAll = $('#fetchAll');
-		fetchAll.val(true);
-		fetchAll.closest('form').find('button[type="submit"]').trigger('click');
-	});
-
 	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
 		let dlg = $(this);
 		let link = $(e.relatedTarget);
@@ -93,6 +86,31 @@ function initialise() {
 			openAlertDlg("Tähenduse lisamine ebaõnnestus");
 			console.log(data);
 		});
+	});
+
+	$(document).on('click', '[name="pagingBtn"]', function() {
+		openWaitDlg("Palun oodake, andmete uuendamine on pooleli");
+		let url = applicationUrl + "lex_paging";
+		let button = $(this);
+		let direction = button.data("direction");
+		let form = button.closest('form');
+		form.find('input[name="direction"]').val(direction);
+
+		$.ajax({
+			url: url,
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function (data) {
+			closeWaitDlg();
+			$('#results_div').html(data);
+			$('#results_div').parent().scrollTop(0);
+			$('#details_div').empty();
+		}).fail(function (data) {
+			console.log(data);
+			closeWaitDlg();
+			openAlertDlg('Lehekülje muutmine ebaõnnestus');
+		});
+
 	});
 
 	let detailButtons = $('#results').find('[name="detailsBtn"]');

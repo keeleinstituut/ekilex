@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchFilter;
@@ -36,7 +37,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SynSearchController extends AbstractSearchController {
+public class SynSearchController extends AbstractSearchController implements SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SynSearchController.class);
 
@@ -59,7 +60,6 @@ public class SynSearchController extends AbstractSearchController {
 			@RequestParam(name = "searchMode", required = false) String searchMode,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
-			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
 			Model model) throws Exception {
 
 		SessionBean sessionBean = getSessionBean(model);
@@ -72,7 +72,7 @@ public class SynSearchController extends AbstractSearchController {
 
 		List<String> roleDatasetCode = getDatasetCodeFromRole(sessionBean);
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasetCode, simpleSearchFilter, detailSearchFilter, fetchAll);
+		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasetCode, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + SYN_SEARCH_URI + searchUri;
 	}
 
@@ -98,13 +98,13 @@ public class SynSearchController extends AbstractSearchController {
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = searchUriData.isFetchAll();
+		boolean fetchAll = false;
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = synSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -172,7 +172,7 @@ public class SynSearchController extends AbstractSearchController {
 			Model model) {
 		logger.debug("word search ajax {}", searchFilter);
 
-		WordsResult result = synSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false);
+		WordsResult result = synSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false, DEFAULT_OFFSET);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());

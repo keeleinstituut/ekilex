@@ -27,7 +27,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 	private LexSearchDbService lexSearchDbService;
 
 	@Transactional
-	public WordsResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, boolean fetchAll) throws Exception {
+	public WordsResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, boolean fetchAll, int offset) throws Exception {
 
 		List<Word> words;
 		int wordCount;
@@ -36,7 +36,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, fetchAll);
+			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, fetchAll, offset);
 			wordCount = words.size();
 			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
@@ -45,11 +45,17 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		WordsResult result = new WordsResult();
 		result.setWords(words);
 		result.setTotalCount(wordCount);
+
+		boolean showPaging = wordCount > MAX_RESULTS_LIMIT;
+		result.setShowPaging(showPaging);
+		if (showPaging) {
+			setPagingData(offset, wordCount, result);
+		}
 		return result;
 	}
 
 	@Transactional
-	public WordsResult getWords(String searchFilter, List<String> selectedDatasetCodes, boolean fetchAll) {
+	public WordsResult getWords(String searchFilter, List<String> selectedDatasetCodes, boolean fetchAll, int offset) {
 
 		List<Word> words;
 		int wordCount;
@@ -58,16 +64,34 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, fetchAll);
+			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, fetchAll, offset);
 			wordCount = words.size();
-			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT || offset > DEFAULT_OFFSET) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}
 		WordsResult result = new WordsResult();
 		result.setWords(words);
 		result.setTotalCount(wordCount);
+
+		boolean showPaging = wordCount > MAX_RESULTS_LIMIT;
+		result.setShowPaging(showPaging);
+		if (showPaging) {
+			setPagingData(offset, wordCount, result);
+		}
 		return result;
+	}
+
+	private void setPagingData(int offset, int wordCount, WordsResult result) {
+		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
+		int totalPages = (wordCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
+		boolean previousPageExists = currentPage > 1;
+		boolean nextPageExists = currentPage < totalPages;
+
+		result.setCurrentPage(currentPage);
+		result.setTotalPages(totalPages);
+		result.setPreviousPageExists(previousPageExists);
+		result.setNextPageExists(nextPageExists);
 	}
 
 }

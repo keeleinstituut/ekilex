@@ -122,7 +122,6 @@
     </div>
   </div>
   <div data-name="dialogContent" th:fragment="syn_word_search_result">
-
     <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
       <div class="card-body p-2">
         <span th:text="${'Kokku leiti : ' + totalCount}"></span>
@@ -188,8 +187,6 @@
       </div>
     </div>
   </div>
-
-
   <div class="form-group row eki-editor" th:fragment="eki_editor_elem(showButtons)">
     <div class="col-md-12 pb-3" th:if="${showButtons}">
       <div class="float-right">
@@ -220,6 +217,29 @@
                     th:selected="${permDataUtil.isRoleSelected(sessionBean, datasetPermission)}"/>
           </th:block>
         </select>
+      </div>
+    </form>
+  </th:block>
+  <th:block th:fragment="paging(pagingResult)">
+    <hr/>
+    <form th:action="@{/update_paging}" method="post">
+      <input type="hidden" name="offset" th:value="${pagingResult.offset}">
+      <input type="hidden" name="searchUri" th:value="${searchUri}">
+      <input type="hidden" name="direction">
+      <div class="d-flex justify-content-center">
+        <button name="pagingBtn" type="button" class="btn badge mr-2"
+                title="Eelmine lehekülg"
+                data-direction="previous"
+                th:if="${pagingResult.previousPageExists}">
+          <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
+        </button>
+        <span th:text="${pagingResult.currentPage + ' / ' + pagingResult.totalPages}"></span>
+        <button name="pagingBtn" type="button" class="btn badge ml-2"
+                title="Järgmine lehekülg"
+                data-direction="next"
+                th:if="${pagingResult.nextPageExists}">
+          <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
+        </button>
       </div>
     </form>
   </th:block>

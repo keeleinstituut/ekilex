@@ -60,11 +60,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// simple search
 
-	public List<TermMeaningWordTuple> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll) {
+	public List<TermMeaningWordTuple> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll,
+			int offset) {
 
 		Meaning m1 = MEANING.as("m1");
 		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
-		return executeFetch(m1, meaningCondition, resultLang, fetchAll);
+		return executeFetch(m1, meaningCondition, resultLang, fetchAll, offset);
 	}
 
 	public int countMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
@@ -109,11 +110,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// detail search
 
-	public List<TermMeaningWordTuple> getMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll) throws Exception {
+	public List<TermMeaningWordTuple> getMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang,
+			boolean fetchAll, int offset) throws Exception {
 
 		Meaning m1 = MEANING.as("m1");
 		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
-		return executeFetch(m1, meaningCondition, resultLang, fetchAll);
+		return executeFetch(m1, meaningCondition, resultLang, fetchAll, offset);
 	}
 
 	public int countMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -400,7 +402,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// common search
 
-	private List<TermMeaningWordTuple> executeFetch(Meaning m1, Condition meaningCondition, String resultLang, boolean fetchAll) {
+	private List<TermMeaningWordTuple> executeFetch(Meaning m1, Condition meaningCondition, String resultLang, boolean fetchAll, int offset) {
 
 		int limit = MAX_RESULTS_LIMIT;
 		if (fetchAll) {
@@ -476,6 +478,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						mwv.HOMONYM_NR,
 						DSL.field("concept_id::int"))
 				.limit(limit)
+				.offset(offset)
 				.asTable("mmw");
 
 		Lexeme l2 = LEXEME.as("l2");

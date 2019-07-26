@@ -36,9 +36,17 @@ public interface WebConstant {
 
 	String LEX_SEARCH_URI = "/lexsearch";
 
+	String LEX_PAGING_URI = "/lex_paging";
+
+	String LEX_COMPONENTS_PAGE = "lexcomp";
+
 	String TERM_SEARCH_PAGE = "termsearch";
 
 	String TERM_SEARCH_URI = "/termsearch";
+
+	String TERM_PAGING_URI = "/term_paging";
+
+	String TERM_COMPONENTS_PAGE = "termcomp";
 
 	String WORD_DETAILS_URI = "/worddetails";
 

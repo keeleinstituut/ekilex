@@ -16,6 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.service.db.TermSearchDbService;
@@ -24,7 +25,7 @@ import eki.ekilex.service.db.TermSearchDbService;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
 @Transactional
-public class TermSearchServiceTest {
+public class TermSearchServiceTest implements SystemConstant {
 
 	@Autowired
 	private TestEnvInitialiser testEnvInitialiser;
@@ -47,7 +48,8 @@ public class TermSearchServiceTest {
 		String resultLang = null;
 		boolean fetchAll = true;
 
-		List<TermMeaningWordTuple> termMeanings = termSearchDbService.getMeanings(wordWithMetaCharacters, searchDatasetsRestriction, resultLang, fetchAll);
+		List<TermMeaningWordTuple> termMeanings = termSearchDbService
+				.getMeanings(wordWithMetaCharacters, searchDatasetsRestriction, resultLang, fetchAll, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 20, termMeanings.size());
 	}

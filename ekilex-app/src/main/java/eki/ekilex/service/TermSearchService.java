@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DbConstant;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -39,13 +40,13 @@ import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @Component
-public class TermSearchService extends AbstractSearchService {
+public class TermSearchService extends AbstractSearchService implements DbConstant {
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
 
 	@Transactional
-	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll) {
+	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) {
 
 		List<TermMeaning> termMeanings;
 		int meaningCount;
@@ -56,7 +57,8 @@ public class TermSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll);
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService
+					.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
 			meaningCount = termSearchDbService.countMeanings(searchFilter, searchDatasetsRestriction);
 			wordCount = termSearchDbService.countWords(searchFilter, searchDatasetsRestriction, resultLang);
@@ -67,11 +69,19 @@ public class TermSearchService extends AbstractSearchService {
 		meaningsResult.setWordCount(wordCount);
 		meaningsResult.setTermMeanings(termMeanings);
 		meaningsResult.setResultExist(resultExist);
+
+		boolean showPaging = meaningCount > MAX_RESULTS_LIMIT;
+		meaningsResult.setShowPaging(showPaging);
+		if (showPaging) {
+			setPagingData(offset, meaningCount, meaningsResult);
+		}
+
 		return meaningsResult;
 	}
 
 	@Transactional
-	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll) throws Exception {
+	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset)
+			throws Exception {
 
 		List<TermMeaning> termMeanings;
 		int meaningCount;
@@ -82,7 +92,8 @@ public class TermSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll);
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService
+					.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
 			meaningCount = termSearchDbService.countMeanings(searchFilter, searchDatasetsRestriction);
 			wordCount = termSearchDbService.countWords(searchFilter, searchDatasetsRestriction, resultLang);
@@ -93,6 +104,13 @@ public class TermSearchService extends AbstractSearchService {
 		meaningsResult.setWordCount(wordCount);
 		meaningsResult.setTermMeanings(termMeanings);
 		meaningsResult.setResultExist(resultExist);
+
+		boolean showPaging = meaningCount > MAX_RESULTS_LIMIT;
+		meaningsResult.setShowPaging(showPaging);
+		if (showPaging) {
+			setPagingData(offset, meaningCount, meaningsResult);
+		}
+
 		return meaningsResult;
 	}
 
@@ -179,10 +197,12 @@ public class TermSearchService extends AbstractSearchService {
 			String dataset = lexeme.getDataset();
 			dataset = datasetNameMap.get(dataset);
 			String levels = composeLevels(lexeme);
+			boolean isAffixoid = isAffixoid(wordTypes);
 
 			lexeme.setLevels(levels);
 			lexeme.setDataset(dataset);
 			lexeme.setWordTypes(wordTypes);
+			lexeme.setAffixoid(isAffixoid);
 			lexeme.setPos(lexemePos);
 			lexeme.setDerivs(lexemeDerivs);
 			lexeme.setRegisters(lexemeRegisters);
@@ -236,5 +256,25 @@ public class TermSearchService extends AbstractSearchService {
 			}
 		}
 		return levels;
+	}
+
+	private void setPagingData(int offset, int meaningCount, MeaningsResult meaningsResult) {
+
+		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
+		int totalPages = (meaningCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
+		boolean previousPageExists = currentPage > 1;
+		boolean nextPageExists = currentPage < totalPages;
+
+		meaningsResult.setCurrentPage(currentPage);
+		meaningsResult.setTotalPages(totalPages);
+		meaningsResult.setPreviousPageExists(previousPageExists);
+		meaningsResult.setNextPageExists(nextPageExists);
+	}
+
+	private boolean isAffixoid(List<Classifier> wordTypes) {
+
+		boolean isAffixoid = wordTypes.stream()
+				.anyMatch(type -> type.getCode().equals(WORD_TYPE_CODE_PREFIXOID) || type.getCode().equals(WORD_TYPE_CODE_SUFFIXOID));
+		return isAffixoid;
 	}
 }

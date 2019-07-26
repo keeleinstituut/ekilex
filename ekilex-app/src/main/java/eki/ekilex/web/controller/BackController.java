@@ -50,8 +50,8 @@ public class BackController implements WebConstant {
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping(MEANING_BACK_URI + "/{meanigId}")
-	public String meaningBack(@PathVariable("meanigId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	@GetMapping(MEANING_BACK_URI + "/{meaningId}")
+	public String meaningBack(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, sessionBean.getSelectedDatasets());
 		String searchUri = searchHelper.composeSearchUri(sessionBean.getSelectedDatasets(), firstWordValue);
