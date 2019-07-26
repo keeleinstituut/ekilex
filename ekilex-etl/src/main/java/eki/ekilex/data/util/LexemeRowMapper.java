@@ -3,8 +3,10 @@ package eki.ekilex.data.util;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.RowMapper;
 
+import eki.common.constant.Complexity;
 import eki.ekilex.data.transform.Lexeme;
 
 public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexeme> {
@@ -23,6 +25,11 @@ public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexe
 		Integer level3 = rs.getObject("level3", Integer.class);
 		String valueStateCode = rs.getString("value_state_code");
 		String processStateCode = rs.getString("process_state_code");
+		String complexityStr = rs.getString("complexity");
+		Complexity complexity = null;
+		if (StringUtils.isNotBlank(complexityStr)) {
+			complexity = Complexity.valueOf(complexityStr);
+		}
 		Long orderBy = rs.getObject("order_by", Long.class);
 
 		Lexeme lexeme = new Lexeme();
@@ -37,6 +44,7 @@ public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexe
 		lexeme.setLevel3(level3);
 		lexeme.setValueStateCode(valueStateCode);
 		lexeme.setProcessStateCode(processStateCode);
+		lexeme.setComplexity(complexity);
 		lexeme.setOrderBy(orderBy);
 		return lexeme;
 	}

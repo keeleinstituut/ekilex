@@ -31,7 +31,17 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 	}
 
 	@Override
-	public Complexity getComplexity() {
+	public Complexity getLexemeComplexity() {
+		return null;
+	}
+
+	@Override
+	public Complexity getDefinitionComplexity() {
+		return null;
+	}
+
+	@Override
+	public Complexity getFreeformComplexity() {
 		return Complexity.DEFAULT;
 	}
 

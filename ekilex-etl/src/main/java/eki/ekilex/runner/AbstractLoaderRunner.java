@@ -64,7 +64,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private TextDecorationService textDecorationService;
 
 	abstract String getDataset();
-	abstract Complexity getComplexity();
+	abstract Complexity getLexemeComplexity();
+	abstract Complexity getDefinitionComplexity();
+	abstract Complexity getFreeformComplexity();
 	abstract void deleteDatasetData() throws Exception;
 	abstract void initialise() throws Exception;
 
@@ -802,7 +804,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		String dataset = getDataset();
 		String valueClean = cleanEkiEntityMarkup(value);
-		Complexity complexity = getComplexity();
+		Complexity complexity = getDefinitionComplexity();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaningId", meaningId);
@@ -868,11 +870,16 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		String dataset = getDataset();
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
+		Complexity complexity = lexeme.getComplexity();
+		if (complexity == null) {
+			complexity = getLexemeComplexity();
+		}
 
 		Map<String, Object> valueParamMap = new HashMap<>();
 		valueParamMap.put("word_id", wordId);
 		valueParamMap.put("meaning_id", meaningId);
 		valueParamMap.put("dataset_code", dataset);
+		valueParamMap.put("complexity", complexity.name());
 		populateLexemeValueParamMap(lexeme, valueParamMap);
 		Long lexemeId = basicDbService.create(LEXEME, valueParamMap);
 		String processStateCode = (String) valueParamMap.get("process_state_code");
@@ -885,11 +892,16 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		String dataset = getDataset();
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
+		Complexity complexity = lexeme.getComplexity();
+		if (complexity == null) {
+			complexity = getLexemeComplexity();
+		}
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", wordId);
 		criteriaParamMap.put("meaning_id", meaningId);
 		criteriaParamMap.put("dataset_code", dataset);
+		criteriaParamMap.put("complexity", complexity.name());
 		Long lexemeId = basicDbService.createIfNotExists(LEXEME, criteriaParamMap);
 		lexeme.setLexemeId(lexemeId);
 		if (lexemeId != null) {
@@ -1091,7 +1103,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {
 
-		Complexity complexity = getComplexity();
+		Complexity complexity = getFreeformComplexity();
 
 		Long freeformId = createFreeformTextOrDate(null, freeformType, value, lang, complexity);
 

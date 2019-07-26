@@ -126,7 +126,17 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	}
 
 	@Override
-	public Complexity getComplexity() {
+	public Complexity getLexemeComplexity() {
+		return null;
+	}
+
+	@Override
+	public Complexity getDefinitionComplexity() {
+		return null;
+	}
+
+	@Override
+	public Complexity getFreeformComplexity() {
 		return null;
 	}
 
@@ -444,6 +454,15 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			sumProcessStateCode = processStateCodeCandidates.get(0);
 		}
 
+		// sum complexity
+		boolean isSimpleComplexity = allLexemes.stream().anyMatch(lexeme -> Objects.equals(Complexity.SIMPLE, lexeme.getComplexity()));
+		Complexity complexity;
+		if (isSimpleComplexity) {
+			complexity = Complexity.SIMPLE;
+		} else {
+			complexity = Complexity.DETAIL;
+		}
+
 		LexemeExt sumLexeme = new LexemeExt();
 		sumLexeme.setWordId(wordId);
 		sumLexeme.setMeaningId(meaningId);
@@ -454,6 +473,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		sumLexeme.setLevel3(sumLevel3);
 		sumLexeme.setValueStateCode(sumValueStateCode);
 		sumLexeme.setProcessStateCode(sumProcessStateCode);
+		sumLexeme.setComplexity(complexity);
 
 		return sumLexeme;
 	}
@@ -1173,6 +1193,11 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			Integer level3 = rs.getObject("level3", Integer.class);
 			String valueStateCode = rs.getString("value_state_code");
 			String processStateCode = rs.getString("process_state_code");
+			String complexityStr = rs.getString("complexity");
+			Complexity complexity = null;
+			if (StringUtils.isNotBlank(complexityStr)) {
+				complexity = Complexity.valueOf(complexityStr);
+			}
 			Long orderBy = rs.getObject("order_by", Long.class);
 
 			LexemeExt lexeme = new LexemeExt();
@@ -1187,6 +1212,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			lexeme.setLevel3(level3);
 			lexeme.setValueStateCode(valueStateCode);
 			lexeme.setProcessStateCode(processStateCode);
+			lexeme.setComplexity(complexity);
 			lexeme.setOrderBy(orderBy);
 			return lexeme;
 		}

@@ -1,5 +1,6 @@
 package eki.ekilex.data.transform;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class Lexeme extends AbstractDataObject {
@@ -27,6 +28,8 @@ public class Lexeme extends AbstractDataObject {
 	private String valueStateCode;
 
 	private String processStateCode;
+
+	private Complexity complexity;
 
 	private Long orderBy;
 
@@ -116,6 +119,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setProcessStateCode(String processStateCode) {
 		this.processStateCode = processStateCode;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public Long getOrderBy() {

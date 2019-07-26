@@ -112,7 +112,17 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Override
-	public Complexity getComplexity() {
+	public Complexity getLexemeComplexity() {
+		return Complexity.DETAIL;
+	}
+
+	@Override
+	public Complexity getDefinitionComplexity() {
+		return Complexity.SIMPLE2;
+	}
+
+	@Override
+	public Complexity getFreeformComplexity() {
 		return Complexity.SIMPLE2;
 	}
 

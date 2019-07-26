@@ -85,7 +85,17 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	@Override
-	public Complexity getComplexity() {
+	public Complexity getLexemeComplexity() {
+		return Complexity.DETAIL;
+	}
+
+	@Override
+	public Complexity getDefinitionComplexity() {
+		return Complexity.DETAIL2;
+	}
+
+	@Override
+	public Complexity getFreeformComplexity() {
 		return Complexity.DETAIL2;
 	}
 

@@ -12,12 +12,14 @@ drop view if exists view_ww_lexeme_relation;
 drop view if exists view_ww_meaning_relation;
 drop view if exists view_ww_lexical_decision_data;
 drop view if exists view_ww_similarity_judgement_data;
+drop type if exists type_public_note;
+drop type if exists type_grammar;
+drop type if exists type_government;
 drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
 drop type if exists type_colloc_member;
-drop type if exists type_word_etym;--remove later
 drop type if exists type_word_etym_relation;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
@@ -29,13 +31,12 @@ drop table if exists game_nonword;
 drop table if exists freeform_source_link;
 drop table if exists definition_source_link;
 drop table if exists lexeme_source_link;
-drop table if exists word_source_link;-- remove later
 drop table if exists word_etymology_source_link;
 drop table if exists lex_colloc;
 drop table if exists lex_colloc_rel_group;
 drop table if exists lex_colloc_pos_group;
 drop table if exists lex_relation;
-drop table if exists lexeme_frequency cascade;--for now until name takeover is complete everywhere
+drop table if exists lexeme_frequency;
 drop table if exists lexeme_lifecycle_log;
 drop table if exists lexeme_process_log;
 drop table if exists lexeme_freeform;

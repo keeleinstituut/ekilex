@@ -103,7 +103,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Override
-	public Complexity getComplexity() {
+	public Complexity getLexemeComplexity() {
+		return Complexity.SIMPLE;
+	}
+
+	@Override
+	public Complexity getDefinitionComplexity() {
+		return Complexity.SIMPLE1;
+	}
+
+	@Override
+	public Complexity getFreeformComplexity() {
 		return Complexity.SIMPLE1;
 	}
 

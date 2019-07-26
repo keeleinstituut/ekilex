@@ -83,7 +83,17 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	@Override
-	public Complexity getComplexity() {
+	public Complexity getLexemeComplexity() {
+		return Complexity.DETAIL;
+	}
+
+	@Override
+	public Complexity getDefinitionComplexity() {
+		return Complexity.DETAIL1;
+	}
+
+	@Override
+	public Complexity getFreeformComplexity() {
 		return Complexity.DETAIL1;
 	}
 

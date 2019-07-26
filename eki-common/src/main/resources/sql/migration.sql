@@ -29,3 +29,10 @@ create index eki_user_profile_user_id_idx on eki_user(id);
 create index eki_user_profile_recent_dataset_permission_id_idx on dataset_permission(id);
 
 insert into eki_user_profile (user_id) (select eki_user.id from eki_user);
+
+-- 25.07.19
+alter table lexeme add column complexity varchar(100) null;
+update lexeme set complexity = 'SIMPLE' where dataset_code = 'psv';
+update lexeme set complexity = 'DETAIL' where dataset_code in ('ss1', 'qq2', 'ev2');
+update lexeme set complexity = 'DEFAULT' where complexity is null;
+alter table lexeme alter column complexity set not null;
