@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements Record7<String, String, String, String, Boolean, Boolean, Long> {
 
-    private static final long serialVersionUID = -1340511242;
+    private static final long serialVersionUID = 1752158356;
 
     /**
      * Setter for <code>public.dataset.code</code>.
@@ -45,44 +45,44 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
     }
 
     /**
-     * Setter for <code>public.dataset.name</code>.
-     */
-    public void setName(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.dataset.name</code>.
-     */
-    public String getName() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>public.dataset.description</code>.
-     */
-    public void setDescription(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.dataset.description</code>.
-     */
-    public String getDescription() {
-        return (String) get(2);
-    }
-
-    /**
      * Setter for <code>public.dataset.type</code>.
      */
     public void setType(String value) {
-        set(3, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.dataset.type</code>.
      */
     public String getType() {
+        return (String) get(1);
+    }
+
+    /**
+     * Setter for <code>public.dataset.name</code>.
+     */
+    public void setName(String value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.dataset.name</code>.
+     */
+    public String getName() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>public.dataset.description</code>.
+     */
+    public void setDescription(String value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.dataset.description</code>.
+     */
+    public String getDescription() {
         return (String) get(3);
     }
 
@@ -173,7 +173,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public Field<String> field2() {
-        return Dataset.DATASET.NAME;
+        return Dataset.DATASET.TYPE;
     }
 
     /**
@@ -181,7 +181,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public Field<String> field3() {
-        return Dataset.DATASET.DESCRIPTION;
+        return Dataset.DATASET.NAME;
     }
 
     /**
@@ -189,7 +189,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public Field<String> field4() {
-        return Dataset.DATASET.TYPE;
+        return Dataset.DATASET.DESCRIPTION;
     }
 
     /**
@@ -229,7 +229,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public String component2() {
-        return getName();
+        return getType();
     }
 
     /**
@@ -237,7 +237,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public String component3() {
-        return getDescription();
+        return getName();
     }
 
     /**
@@ -245,7 +245,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public String component4() {
-        return getType();
+        return getDescription();
     }
 
     /**
@@ -285,7 +285,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public String value2() {
-        return getName();
+        return getType();
     }
 
     /**
@@ -293,7 +293,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public String value3() {
-        return getDescription();
+        return getName();
     }
 
     /**
@@ -301,7 +301,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public String value4() {
-        return getType();
+        return getDescription();
     }
 
     /**
@@ -342,7 +342,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public DatasetRecord value2(String value) {
-        setName(value);
+        setType(value);
         return this;
     }
 
@@ -351,7 +351,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public DatasetRecord value3(String value) {
-        setDescription(value);
+        setName(value);
         return this;
     }
 
@@ -360,7 +360,7 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
      */
     @Override
     public DatasetRecord value4(String value) {
-        setType(value);
+        setDescription(value);
         return this;
     }
 
@@ -420,13 +420,13 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
     /**
      * Create a detached, initialised DatasetRecord
      */
-    public DatasetRecord(String code, String name, String description, String type, Boolean isVisible, Boolean isPublic, Long orderBy) {
+    public DatasetRecord(String code, String type, String name, String description, Boolean isVisible, Boolean isPublic, Long orderBy) {
         super(Dataset.DATASET);
 
         set(0, code);
-        set(1, name);
-        set(2, description);
-        set(3, type);
+        set(1, type);
+        set(2, name);
+        set(3, description);
         set(4, isVisible);
         set(5, isPublic);
         set(6, orderBy);

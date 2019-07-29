@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.service.TextDecorationService;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.ProcessLog;
 import eki.ekilex.service.db.ProcessDbService;
@@ -21,6 +22,9 @@ public class ProcessService {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	TextDecorationService textDecorationService;
 
 	@Transactional
 	public List<ProcessLog> getLogForMeaning(Long meaningId) {
@@ -53,21 +57,23 @@ public class ProcessService {
 			recentProcessStateCode += PROCESS_STATE_DELETED_MESSAGE;
 		}
 
-		processDbService.createLexemeProcessLog(lexemeId, userName, datasetCode, recentProcessStateCode, processStateCode);
+		processDbService.createLexemeProcessLog(lexemeId, userName, datasetCode, recentProcessStateCode, null, processStateCode);
 	}
 
 	@Transactional
-	public void createMeaningProcessLog(Long meaningId, String dataset, String value) {
+	public void createMeaningProcessLog(Long meaningId, String dataset, String commentPrese) {
 
 		String userName = userService.getAuthenticatedUser().getName();
-		processDbService.createMeaningProcessLog(meaningId, dataset, userName, value);
+		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
+		processDbService.createMeaningProcessLog(meaningId, dataset, userName, comment, commentPrese);
 	}
 
 	@Transactional
-	public void createWordProcessLog(Long wordId, String dataset, String value) {
+	public void createWordProcessLog(Long wordId, String dataset, String commentPrese) {
 
 		String userName = userService.getAuthenticatedUser().getName();
-		processDbService.createWordProcessLog(wordId, dataset, userName, value);
+		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
+		processDbService.createWordProcessLog(wordId, dataset, userName, comment, commentPrese);
 	}
 
 	@Transactional

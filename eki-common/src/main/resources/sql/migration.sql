@@ -36,3 +36,6 @@ update lexeme set complexity = 'SIMPLE' where dataset_code = 'psv';
 update lexeme set complexity = 'DETAIL' where dataset_code in ('ss1', 'qq2', 'ev2');
 update lexeme set complexity = 'DEFAULT' where complexity is null;
 alter table lexeme alter column complexity set not null;
+
+-- 29.07.19
+alter table process_log add column comment_prese text null;

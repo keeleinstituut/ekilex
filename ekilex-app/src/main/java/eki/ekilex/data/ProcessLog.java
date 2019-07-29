@@ -14,6 +14,8 @@ public class ProcessLog extends AbstractDataObject {
 
 	private String comment;
 
+	private String commentPrese;
+
 	private String processStateCode;
 
 	private String datasetCode;
@@ -40,6 +42,14 @@ public class ProcessLog extends AbstractDataObject {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public String getCommentPrese() {
+		return commentPrese;
+	}
+
+	public void setCommentPrese(String commentPrese) {
+		this.commentPrese = commentPrese;
 	}
 
 	public String getProcessStateCode() {
