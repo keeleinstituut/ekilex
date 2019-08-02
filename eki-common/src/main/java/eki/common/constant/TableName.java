@@ -28,6 +28,7 @@ public interface TableName {
 	String WORD_ETYMOLOGY = "word_etymology";
 	String WORD_ETYMOLOGY_RELATION = "word_etymology_relation";
 	String WORD_ETYMOLOGY_SOURCE_LINK = "word_etymology_source_link";
+	String WORD_GROUP_MEMBER = "word_group_member";
 	String WORD_RELATION = "word_relation";
 	String WORD_RELATION_GROUP = "word_group";
 	String WORD_RELATION_GROUP_MEMBER = "word_group_member";
