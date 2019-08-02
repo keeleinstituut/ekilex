@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DbConstant;
+import eki.common.data.Count;
 
 @Component
 public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant {
@@ -97,9 +98,24 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 	@Transactional
 	public void execute(String mergedLexDatasetCode, boolean doReports) throws Exception {
 
-		// TODO countsMap
+		this.doReports = doReports;
+		start();
 
 		Map<String, List<Long>> joinCandidates = getJoinCandidates(mergedLexDatasetCode);
+
+		int wordCount = joinCandidates.values().stream()
+				.mapToInt(List::size)
+				.sum();
+		int valueCount = joinCandidates.size();
+		logger.debug("Merging {} candidate words with {} different word values", wordCount, valueCount);
+
+		Count candidateMergedWithSuperHomonymCount = new Count();
+		Count candidateMergedWithAnotherCandidateCount = new Count();
+		Count candidateNotMergedCount = new Count();
+
+		long wordValueCounter = 0;
+		long progressIndicator = valueCount / Math.min(valueCount, 100);
+
 		for (Map.Entry<String, List<Long>> joinCandidate : joinCandidates.entrySet()) {
 			String wordValue = joinCandidate.getKey();
 			List<Long> candidateWordIds = joinCandidate.getValue();
@@ -112,25 +128,33 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 					Long firstWordId = candidateWordIds.get(0);
 					for (Long secondWordId : candidateWordIds.subList(1, candidateCount)) {
 						joinWords(firstWordId, secondWordId);
+						candidateMergedWithAnotherCandidateCount.increment();
 					}
+					candidateMergedWithAnotherCandidateCount.increment();
+				} else {
+					candidateNotMergedCount.increment();
 				}
 			} else if (joinableHomonyms.size() == 1) {
 				Long firstWordId = joinableHomonyms.get(0);
 				for (Long secondWordId : candidateWordIds) {
 					joinWords(firstWordId, secondWordId);
+					candidateMergedWithSuperHomonymCount.increment();
 				}
 			} else {
-				// do nothing, only log
+				candidateNotMergedCount.increment();
 			}
 
+			wordValueCounter++;
+			if (wordValueCounter % progressIndicator == 0) {
+				long progressPercent = wordValueCounter / progressIndicator;
+				logger.debug("{}% - {} word values iterated", progressPercent, wordValueCounter);
+			}
 		}
 
-		this.doReports = doReports;
-
-		if (doReports) {
-			// TODO
-		}
-
+		logger.debug("{} candidate words merged with super", candidateMergedWithSuperHomonymCount.getValue());
+		logger.debug("{} candidate words merged with another candidate", candidateMergedWithAnotherCandidateCount.getValue());
+		logger.debug("{} candidate words not merged", candidateNotMergedCount.getValue());
+		end();
 	}
 
 	private Map<String, List<Long>> getJoinCandidates(String mergedLexDatasetCode) throws SQLException {
