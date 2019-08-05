@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 559749172;
+    private static final long serialVersionUID = 2021454286;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -111,6 +111,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.process_state_code</code>.
      */
     public final TableField<LexemeRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.lexeme.complexity</code>.
+     */
+    public final TableField<LexemeRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme.order_by</code>.

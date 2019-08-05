@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = 1586891519;
+    private static final long serialVersionUID = 588215112;
 
     /**
      * The reference instance of <code>public.eki_user</code>
@@ -101,6 +101,16 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
      * The column <code>public.eki_user.created</code>.
      */
     public final TableField<EkiUserRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>public.eki_user.is_reviewed</code>.
+     */
+    public final TableField<EkiUserRecord, Boolean> IS_REVIEWED = createField("is_reviewed", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.eki_user.review_comment</code>.
+     */
+    public final TableField<EkiUserRecord, String> REVIEW_COMMENT = createField("review_comment", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.eki_user</code> table reference

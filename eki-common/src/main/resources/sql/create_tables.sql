@@ -8,6 +8,8 @@ create table eki_user
   recovery_key varchar(60),
   is_admin boolean default false,
   is_enabled boolean,
+  is_reviewed boolean,
+  review_comment text,
   created timestamp not null default statement_timestamp(),
   unique(email)
 );

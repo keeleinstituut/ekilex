@@ -39,3 +39,7 @@ alter table lexeme alter column complexity set not null;
 
 -- 29.07.19
 alter table process_log add column comment_prese text null;
+
+-- 05.08.19
+alter table eki_user add column is_reviewed boolean;
+alter table eki_user add column review_comment text;
