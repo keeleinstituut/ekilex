@@ -123,16 +123,4 @@ public class ProcessController implements WebConstant {
 
 		return "{}";
 	}
-
-	@PostMapping("/delete_lexeme_process_state")
-	@ResponseBody
-	public String deleteLexemeProcessState(@RequestParam("lexemeId") Long lexemeId) {
-
-		logger.debug("Deleting process state for lexeme \"{}\"", lexemeId);
-		processService.createLexemeProcessLog(lexemeId, null);
-		processService.updateLexemeProcessState(lexemeId, null);
-
-		return "{}";
-	}
-
 }

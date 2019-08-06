@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCalc {
@@ -58,6 +59,9 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 
 	@Column(name = "lexeme_process_state_code")
 	private String lexemeProcessStateCode;
+
+	@Column(name = "lexeme_complexity")
+	private Complexity complexity;
 
 	@Column(name = "gender_code")
 	private String genderCode;
@@ -243,6 +247,14 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 
 	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
 		this.lexemeProcessStateCode = lexemeProcessStateCode;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public String getGenderCode() {

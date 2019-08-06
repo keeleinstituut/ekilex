@@ -204,6 +204,7 @@
                         sec:authorize="${#vars.isLexemeCrudGranted}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
+                <th:block th:replace="lexcomp :: lexeme_complexity"></th:block>
                 <th:block th:replace="lexcomp :: lexeme_process_state"></th:block>
                 <th:block th:replace="lexcomp :: lexeme_value_state"></th:block>
                 <th:block th:replace="lexcomp :: lexeme_grammar"></th:block>

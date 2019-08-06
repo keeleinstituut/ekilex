@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class Lexeme extends AbstractDataObject {
@@ -59,6 +60,9 @@ public class Lexeme extends AbstractDataObject {
 
 	@Column(name = "lexeme_process_state_code")
 	private String lexemeProcessStateCode;
+
+	@Column(name = "lexeme_complexity")
+	private Complexity complexity;
 
 	@Column(name = "order_by")
 	private Long orderBy;
@@ -227,7 +231,15 @@ public class Lexeme extends AbstractDataObject {
 		this.lexemeProcessStateCode = lexemeProcessStateCode;
 	}
 
-	public Boolean isAffixoid() {
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
+	}
+
+	public Boolean getAffixoid() {
 		return affixoid;
 	}
 

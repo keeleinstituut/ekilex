@@ -597,6 +597,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						lfreq.as("lexeme_frequencies"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
+						l.COMPLEXITY.as("lexeme_complexity"),
 						l.ORDER_BY)
 				.from(f, p, w, l)
 				.where(

@@ -708,6 +708,7 @@
               <div>
                 <hr />
                 <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
+                <div th:replace="termcomp :: lexeme_complexity"></div>
                 <div th:replace="termcomp :: lexeme_process_state"></div>
                 <div th:replace="termcomp :: lexeme_value_state"></div>
                 <div th:replace="termcomp :: word_gender"></div>
