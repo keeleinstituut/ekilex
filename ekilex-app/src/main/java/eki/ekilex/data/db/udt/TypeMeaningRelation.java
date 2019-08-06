@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
 
-    private static final long serialVersionUID = -31854748;
+    private static final long serialVersionUID = -1561115113;
 
     /**
      * The reference instance of <code>public.type_meaning_relation</code>
@@ -73,6 +73,11 @@ public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
      * The attribute <code>public.type_meaning_relation.homonym_nr</code>.
      */
     public static final UDTField<TypeMeaningRelationRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_MEANING_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_meaning_relation.complexity</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_RELATION, "");
 
     /**
      * The attribute <code>public.type_meaning_relation.meaning_rel_type_code</code>.

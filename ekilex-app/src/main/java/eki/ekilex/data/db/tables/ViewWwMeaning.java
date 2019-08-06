@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
 
-    private static final long serialVersionUID = -279335735;
+    private static final long serialVersionUID = -852637591;
 
     /**
      * The reference instance of <code>public.view_ww_meaning</code>
@@ -54,6 +54,11 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
      * The column <code>public.view_ww_meaning.meaning_id</code>.
      */
     public final TableField<ViewWwMeaningRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_meaning.complexity</code>.
+     */
+    public final TableField<ViewWwMeaningRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_meaning.domain_codes</code>.

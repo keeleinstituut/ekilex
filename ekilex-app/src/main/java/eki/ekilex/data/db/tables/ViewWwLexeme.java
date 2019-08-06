@@ -6,6 +6,9 @@ package eki.ekilex.data.db.tables;
 
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwLexemeRecord;
+import eki.ekilex.data.db.udt.records.TypeGovernmentRecord;
+import eki.ekilex.data.db.udt.records.TypeGrammarRecord;
+import eki.ekilex.data.db.udt.records.TypePublicNoteRecord;
 import eki.ekilex.data.db.udt.records.TypeUsageRecord;
 
 import javax.annotation.Generated;
@@ -34,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -30399991;
+    private static final long serialVersionUID = 454460626;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme</code>
@@ -65,16 +68,6 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
     public final TableField<ViewWwLexemeRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.view_ww_lexeme.dataset_code</code>.
-     */
-    public final TableField<ViewWwLexemeRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
-
-    /**
-     * The column <code>public.view_ww_lexeme.ds_order_by</code>.
-     */
-    public final TableField<ViewWwLexemeRecord, Long> DS_ORDER_BY = createField("ds_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
      * The column <code>public.view_ww_lexeme.level1</code>.
      */
     public final TableField<ViewWwLexemeRecord, Integer> LEVEL1 = createField("level1", org.jooq.impl.SQLDataType.INTEGER, this, "");
@@ -88,6 +81,11 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
      * The column <code>public.view_ww_lexeme.level3</code>.
      */
     public final TableField<ViewWwLexemeRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.view_ww_lexeme.complexity</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.lex_order_by</code>.
@@ -117,17 +115,17 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
     /**
      * The column <code>public.view_ww_lexeme.public_notes</code>.
      */
-    public final TableField<ViewWwLexemeRecord, String[]> PUBLIC_NOTES = createField("public_notes", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwLexemeRecord, TypePublicNoteRecord[]> PUBLIC_NOTES = createField("public_notes", eki.ekilex.data.db.udt.TypePublicNote.TYPE_PUBLIC_NOTE.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.grammars</code>.
      */
-    public final TableField<ViewWwLexemeRecord, String[]> GRAMMARS = createField("grammars", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwLexemeRecord, TypeGrammarRecord[]> GRAMMARS = createField("grammars", eki.ekilex.data.db.udt.TypeGrammar.TYPE_GRAMMAR.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.governments</code>.
      */
-    public final TableField<ViewWwLexemeRecord, String[]> GOVERNMENTS = createField("governments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwLexemeRecord, TypeGovernmentRecord[]> GOVERNMENTS = createField("governments", eki.ekilex.data.db.udt.TypeGovernment.TYPE_GOVERNMENT.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.usages</code>.

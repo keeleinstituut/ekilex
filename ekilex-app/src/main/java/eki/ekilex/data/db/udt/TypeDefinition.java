@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
 
-    private static final long serialVersionUID = -2071577673;
+    private static final long serialVersionUID = -1079740577;
 
     /**
      * The reference instance of <code>public.type_definition</code>
@@ -70,9 +70,9 @@ public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
     public static final UDTField<TypeDefinitionRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_DEFINITION, "");
 
     /**
-     * The attribute <code>public.type_definition.dataset_code</code>.
+     * The attribute <code>public.type_definition.complexity</code>.
      */
-    public static final UDTField<TypeDefinitionRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), TYPE_DEFINITION, "");
+    public static final UDTField<TypeDefinitionRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_DEFINITION, "");
 
     /**
      * No further instances allowed

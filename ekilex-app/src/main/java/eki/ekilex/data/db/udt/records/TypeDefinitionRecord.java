@@ -27,7 +27,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> implements Record6<Long, Long, String, String, String, String> {
 
-    private static final long serialVersionUID = -1896750192;
+    private static final long serialVersionUID = -1327382077;
 
     /**
      * Setter for <code>public.type_definition.lexeme_id</code>.
@@ -100,16 +100,16 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
     }
 
     /**
-     * Setter for <code>public.type_definition.dataset_code</code>.
+     * Setter for <code>public.type_definition.complexity</code>.
      */
-    public void setDatasetCode(String value) {
+    public void setComplexity(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>public.type_definition.dataset_code</code>.
+     * Getter for <code>public.type_definition.complexity</code>.
      */
-    public String getDatasetCode() {
+    public String getComplexity() {
         return (String) get(5);
     }
 
@@ -178,7 +178,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
      */
     @Override
     public Field<String> field6() {
-        return TypeDefinition.DATASET_CODE;
+        return TypeDefinition.COMPLEXITY;
     }
 
     /**
@@ -226,7 +226,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
      */
     @Override
     public String component6() {
-        return getDatasetCode();
+        return getComplexity();
     }
 
     /**
@@ -274,7 +274,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
      */
     @Override
     public String value6() {
-        return getDatasetCode();
+        return getComplexity();
     }
 
     /**
@@ -327,7 +327,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
      */
     @Override
     public TypeDefinitionRecord value6(String value) {
-        setDatasetCode(value);
+        setComplexity(value);
         return this;
     }
 
@@ -359,7 +359,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
     /**
      * Create a detached, initialised TypeDefinitionRecord
      */
-    public TypeDefinitionRecord(Long lexemeId, Long meaningId, String value, String valuePrese, String lang, String datasetCode) {
+    public TypeDefinitionRecord(Long lexemeId, Long meaningId, String value, String valuePrese, String lang, String complexity) {
         super(TypeDefinition.TYPE_DEFINITION);
 
         set(0, lexemeId);
@@ -367,6 +367,6 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
         set(2, value);
         set(3, valuePrese);
         set(4, lang);
-        set(5, datasetCode);
+        set(5, complexity);
     }
 }

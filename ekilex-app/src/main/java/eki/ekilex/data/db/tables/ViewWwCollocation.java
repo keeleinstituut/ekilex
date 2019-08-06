@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
 
-    private static final long serialVersionUID = 1278390078;
+    private static final long serialVersionUID = 157953484;
 
     /**
      * The reference instance of <code>public.view_ww_collocation</code>
@@ -58,26 +58,6 @@ public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
      * The column <code>public.view_ww_collocation.word_id</code>.
      */
     public final TableField<ViewWwCollocationRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_ww_collocation.dataset_code</code>.
-     */
-    public final TableField<ViewWwCollocationRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
-
-    /**
-     * The column <code>public.view_ww_collocation.level1</code>.
-     */
-    public final TableField<ViewWwCollocationRecord, Integer> LEVEL1 = createField("level1", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.view_ww_collocation.level2</code>.
-     */
-    public final TableField<ViewWwCollocationRecord, Integer> LEVEL2 = createField("level2", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.view_ww_collocation.level3</code>.
-     */
-    public final TableField<ViewWwCollocationRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.view_ww_collocation.pos_group_id</code>.

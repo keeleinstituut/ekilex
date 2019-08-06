@@ -120,8 +120,11 @@ import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.TypeCollocMember;
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
+import eki.ekilex.data.db.udt.TypeGovernment;
+import eki.ekilex.data.db.udt.TypeGrammar;
 import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
+import eki.ekilex.data.db.udt.TypePublicNote;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWord;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
@@ -153,7 +156,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1072284771;
+    private static final long serialVersionUID = 1929832438;
 
     /**
      * The reference instance of <code>public</code>
@@ -987,8 +990,11 @@ public class Public extends SchemaImpl {
             TypeCollocMember.TYPE_COLLOC_MEMBER,
             TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
+            TypeGovernment.TYPE_GOVERNMENT,
+            TypeGrammar.TYPE_GRAMMAR,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,
+            TypePublicNote.TYPE_PUBLIC_NOTE,
             TypeUsage.TYPE_USAGE,
             TypeWord.TYPE_WORD,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
