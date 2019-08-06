@@ -191,6 +191,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return word;
 	}
 
+	protected String cleanEkiElementMarkup(String originalText) {
+		return textDecorationService.cleanEkiElementMarkup(originalText);
+	}
+
 	protected String cleanEkiEntityMarkup(String originalText) {
 		return textDecorationService.cleanEkiEntityMarkup(originalText);
 	}
@@ -804,6 +808,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		String dataset = getDataset();
 		String valueClean = cleanEkiEntityMarkup(value);
+		valueClean = cleanEkiElementMarkup(valueClean);
 		Complexity complexity = getDefinitionComplexity();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -1016,7 +1021,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			tableRowParamMap.put("event_on", eventOn);
 		}
 		if (StringUtils.isNotBlank(comment)) {
-			tableRowParamMap.put("comment", comment);
+			String commentClean = cleanEkiEntityMarkup(comment);
+			String commentPrese = convertEkiEntityMarkup(comment);
+			tableRowParamMap.put("comment", commentClean);
+			tableRowParamMap.put("comment_prese", commentPrese);
 		}
 		if (StringUtils.isNotBlank(processStateCode)) {
 			tableRowParamMap.put("process_state_code", processStateCode);
@@ -1026,12 +1034,17 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return processLogId;
 	}
 
-	protected void updateProcessLogText(Long processLogId, String value) throws Exception {
+	protected void updateProcessLogText(Long processLogId, String comment) throws Exception {
+
+		String commentClean = cleanEkiEntityMarkup(comment);
+		commentClean = cleanEkiElementMarkup(commentClean);
+		String commentPrese = convertEkiEntityMarkup(comment);
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("id", processLogId);
 		Map<String, Object> valueParamMap = new HashMap<>();
-		valueParamMap.put("comment", value);
+		valueParamMap.put("comment", commentClean);
+		valueParamMap.put("comment_prese", commentPrese);
 		basicDbService.update(PROCESS_LOG, criteriaParamMap, valueParamMap);
 	}
 
@@ -1068,11 +1081,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected Long createLexemeProcessLog(Long lexemeId, String comment) throws Exception {
 		String datasetCode = getDataset();
 		return createLexemeProcessLog(lexemeId, null, null, comment, null, datasetCode);
-	}
-
-	protected Long createLexemeProcessLog(Long lexemeId, String eventBy, Timestamp eventOn, String comment) throws Exception {
-		String datasetCode = getDataset();
-		return createLexemeProcessLog(lexemeId, eventBy, eventOn, comment, null, datasetCode);
 	}
 
 	protected Long createLexemeProcessLog(Long lexemeId, String eventBy, Timestamp eventOn, String comment, String processStateCode, String datasetCode) throws Exception {
@@ -1249,6 +1257,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected void updateFreeformText(Long freeformId, String value) throws Exception {
 
 		String valueClean = cleanEkiEntityMarkup(value);
+		valueClean = cleanEkiElementMarkup(valueClean);
 		String valuePrese = convertEkiEntityMarkup(value);
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();

@@ -87,11 +87,11 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
 		}
-		String cleanText = RegExUtils.removePattern(originalText, "<[^>]*>");
+		String cleanText = RegExUtils.removePattern(originalText, "<[/]?eki-[^>]*>");
 		return cleanText;
 	}
 
-	public String cleanEkiElementHtmlMarkup(String originalText) {
+	public String cleanHtmlMarkup(String originalText) {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
 		}

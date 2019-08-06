@@ -15,4 +15,8 @@ public interface DbConstant {
 	String IGNORE_QUERY_LOG = "'ignore query log'";
 
 	String FORCE_QUERY_LOG = "'force query log'";
+
+	String DATASET_TYPE_TERM = "TERM";
+
+	String LANGUAGE_CODE_EST = "est";
 }

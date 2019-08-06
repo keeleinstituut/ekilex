@@ -30,11 +30,11 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 }
 
 function isSourcePropertyFormValid(form) {
-	validateRequiredFormField(form, 'textarea', 'valueText');
+	validateRequiredSourceFormField(form, 'textarea', 'valueText');
 	return form.find(".error-show").length == 0;
 }
 
-function validateRequiredFormField(form, type, fieldName) {
+function validateRequiredSourceFormField(form, type, fieldName) {
 	var fieldElement = form.find(type + "[name=" + fieldName + "]");
 	if (fieldElement.val() === null || fieldElement.val() == "") {
 		fieldElement.siblings(".errors").find(".alert-danger").addClass("error-show");
@@ -93,7 +93,7 @@ function initialiseAddNewProperty() {
 
 	$(document).on("click", ":button[name='addPropertyGroupBtn']", function () {
 		let sourcePropertyGroupElement = $("#source_property_element").find('[name="sourcePropertyGroup"]').last();
-		createAndAttachCopyFromLastItem(sourcePropertyGroupElement);
+		createAndAttachCopyFromLastSourceItem(sourcePropertyGroupElement);
 		displayButtons();
 	});
 
@@ -109,7 +109,7 @@ function displayButtons() {
 	});
 }
 
-function createAndAttachCopyFromLastItem(parentElement) {
+function createAndAttachCopyFromLastSourceItem(parentElement) {
 	let copyOfLastElement = parentElement.clone();
 	copyOfLastElement.find('textArea').val(null);
 	parentElement.after(copyOfLastElement);
@@ -142,8 +142,8 @@ $(document).on("click", "#addSourceSubmitBtn", function () {
 });
 
 function isNewSourceFormValid(form) {
-	validateRequiredFormField(form, 'input', 'sourceName');
-	validateRequiredFormField(form, 'select', 'sourceType');
+	validateRequiredSourceFormField(form, 'input', 'sourceName');
+	validateRequiredSourceFormField(form, 'select', 'sourceType');
 	return form.find(".error-show").length == 0;
 }
 

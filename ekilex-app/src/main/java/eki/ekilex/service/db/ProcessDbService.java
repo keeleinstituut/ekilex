@@ -31,6 +31,7 @@ public class ProcessDbService {
 						PROCESS_LOG.EVENT_BY,
 						PROCESS_LOG.EVENT_ON,
 						PROCESS_LOG.COMMENT,
+						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE,
 						PROCESS_LOG.DATASET_CODE)
 				.from(MEANING_PROCESS_LOG, PROCESS_LOG)
@@ -50,6 +51,7 @@ public class ProcessDbService {
 						PROCESS_LOG.EVENT_BY,
 						PROCESS_LOG.EVENT_ON,
 						PROCESS_LOG.COMMENT,
+						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE,
 						PROCESS_LOG.DATASET_CODE)
 				.from(WORD_PROCESS_LOG, PROCESS_LOG)
@@ -75,6 +77,7 @@ public class ProcessDbService {
 						PROCESS_LOG.EVENT_BY,
 						PROCESS_LOG.EVENT_ON,
 						PROCESS_LOG.COMMENT,
+						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE,
 						PROCESS_LOG.DATASET_CODE)
 				.from(
@@ -89,6 +92,7 @@ public class ProcessDbService {
 								PROCESS_LOG.EVENT_BY,
 								PROCESS_LOG.EVENT_ON,
 								PROCESS_LOG.COMMENT,
+								PROCESS_LOG.COMMENT_PRESE,
 								PROCESS_LOG.PROCESS_STATE_CODE,
 								PROCESS_LOG.DATASET_CODE)
 						.from(
@@ -116,6 +120,7 @@ public class ProcessDbService {
 						PROCESS_LOG.EVENT_BY,
 						PROCESS_LOG.EVENT_ON,
 						PROCESS_LOG.COMMENT,
+						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE,
 						PROCESS_LOG.DATASET_CODE)
 				.from(
@@ -130,6 +135,7 @@ public class ProcessDbService {
 								PROCESS_LOG.EVENT_BY,
 								PROCESS_LOG.EVENT_ON,
 								PROCESS_LOG.COMMENT,
+								PROCESS_LOG.COMMENT_PRESE,
 								PROCESS_LOG.PROCESS_STATE_CODE,
 								PROCESS_LOG.DATASET_CODE)
 						.from(
@@ -157,21 +163,21 @@ public class ProcessDbService {
 		return lexemeData;
 	}
 
-	public void createLexemeProcessLog(Long lexemeId, String eventBy, String datasetCode, String comment, String processStateCode) {
+	public void createLexemeProcessLog(Long lexemeId, String eventBy, String datasetCode, String comment, String commentPrese, String processStateCode) {
 
-		Long processLogId = createProcessLog(eventBy, datasetCode, comment, processStateCode);
+		Long processLogId = createProcessLog(eventBy, datasetCode, comment, commentPrese, processStateCode);
 		createLexemeProcessLog(lexemeId, processLogId);
 	}
 
-	public void createMeaningProcessLog(Long meaningId, String dataset, String eventBy, String comment) {
+	public void createMeaningProcessLog(Long meaningId, String dataset, String eventBy, String comment, String commentPrese) {
 
-		Long processLogId = createProcessLog(eventBy, dataset, comment, null);
+		Long processLogId = createProcessLog(eventBy, dataset, comment, commentPrese, null);
 		createMeaningProcessLog(meaningId, processLogId);
 	}
 
-	public void createWordProcessLog(Long wordId, String dataset, String eventBy, String comment) {
+	public void createWordProcessLog(Long wordId, String dataset, String eventBy, String comment, String commentPrese) {
 
-		Long processLogId = createProcessLog(eventBy, dataset, comment, null);
+		Long processLogId = createProcessLog(eventBy, dataset, comment, commentPrese, null);
 		createWordProcessLog(wordId, processLogId);
 	}
 
@@ -184,7 +190,7 @@ public class ProcessDbService {
 				.execute();
 	}
 
-	private Long createProcessLog(String eventBy, String datasetCode, String comment, String processStateCode) {
+	private Long createProcessLog(String eventBy, String datasetCode, String comment, String commentPrese, String processStateCode) {
 
 		Long processLogId = create
 				.insertInto(
@@ -192,11 +198,13 @@ public class ProcessDbService {
 						PROCESS_LOG.EVENT_BY,
 						PROCESS_LOG.DATASET_CODE,
 						PROCESS_LOG.COMMENT,
+						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE)
 				.values(
 						eventBy,
 						datasetCode,
 						comment,
+						commentPrese,
 						processStateCode)
 				.returning(PROCESS_LOG.ID)
 				.fetchOne()

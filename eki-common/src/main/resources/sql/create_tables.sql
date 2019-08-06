@@ -8,6 +8,8 @@ create table eki_user
   recovery_key varchar(60),
   is_admin boolean default false,
   is_enabled boolean,
+  is_reviewed boolean,
+  review_comment text,
   created timestamp not null default statement_timestamp(),
   unique(email)
 );
@@ -478,6 +480,7 @@ create table process_log
 	event_by text not null,
 	event_on timestamp not null default statement_timestamp(),
 	comment text null,
+	comment_prese text null,
 	process_state_code varchar(100) references process_state(code) null,
 	dataset_code varchar(10) references dataset(code) not null
 );

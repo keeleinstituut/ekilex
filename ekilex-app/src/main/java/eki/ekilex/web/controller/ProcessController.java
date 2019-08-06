@@ -77,10 +77,10 @@ public class ProcessController implements WebConstant {
 	public String createMeaningProcessLog(@RequestBody CreateItemRequest itemData) {
 
 		Long meaningId = itemData.getId();
-		String value = itemData.getValue();
+		String commentPrese = itemData.getValue();
 		String dataset = itemData.getDataset();
 		logger.debug("Creating process log for meaning \"{}\"", meaningId);
-		processService.createMeaningProcessLog(meaningId, dataset, value);
+		processService.createMeaningProcessLog(meaningId, dataset, commentPrese);
 
 		return "{}";
 	}
@@ -90,10 +90,10 @@ public class ProcessController implements WebConstant {
 	public String createWordProcessLog(@RequestBody CreateItemRequest itemData) {
 
 		Long wordId = itemData.getId();
-		String value = itemData.getValue();
+		String commentPrese = itemData.getValue();
 		String dataset = itemData.getDataset();
 		logger.debug("Creating process log for word \"{}\"", wordId);
-		processService.createWordProcessLog(wordId, dataset, value);
+		processService.createWordProcessLog(wordId, dataset, commentPrese);
 
 		return "{}";
 	}

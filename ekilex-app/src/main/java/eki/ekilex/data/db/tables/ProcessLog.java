@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProcessLog extends TableImpl<ProcessLogRecord> {
 
-    private static final long serialVersionUID = 2103476678;
+    private static final long serialVersionUID = -237579678;
 
     /**
      * The reference instance of <code>public.process_log</code>
@@ -76,6 +76,11 @@ public class ProcessLog extends TableImpl<ProcessLogRecord> {
      * The column <code>public.process_log.comment</code>.
      */
     public final TableField<ProcessLogRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.process_log.comment_prese</code>.
+     */
+    public final TableField<ProcessLogRecord, String> COMMENT_PRESE = createField("comment_prese", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.process_log.process_state_code</code>.
