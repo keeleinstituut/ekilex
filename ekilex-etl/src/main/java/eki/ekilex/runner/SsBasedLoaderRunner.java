@@ -555,7 +555,10 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected class LexemeToWordData {
+		String reportingId;
+		Long meaningId;
 		Long lexemeId;
+		Long wordId;
 		String word;
 		String displayForm;
 		String vocalForm;
@@ -564,18 +567,17 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String relationType;
 		List<String> governments = new ArrayList<>();
 		List<Usage> usages = new ArrayList<>();
-		String reportingId;
 		List<String> wordTypeCodes = new ArrayList<>();
-		Long meaningId;
-		String register;
-		String aspect;
-		Long wordId;
+		List<String> registerCodes = new ArrayList<>();
 		List<String> sources = new ArrayList<>();
+		String aspect;
 		Float corpFrequency;
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
+			newData.meaningId = this.meaningId;
 			newData.lexemeId = this.lexemeId;
+			newData.wordId = this.wordId;
 			newData.word = this.word;
 			newData.displayForm = this.displayForm;
 			newData.vocalForm = this.vocalForm;
@@ -586,11 +588,9 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
 			newData.wordTypeCodes.addAll(this.wordTypeCodes);
-			newData.meaningId = this.meaningId;
-			newData.register = this.register;
-			newData.aspect = this.aspect;
-			newData.wordId = this.wordId;
+			newData.registerCodes.addAll(this.registerCodes);
 			newData.sources.addAll(sources);
+			newData.aspect = this.aspect;
 			newData.corpFrequency = this.corpFrequency;
 			return newData;
 		}

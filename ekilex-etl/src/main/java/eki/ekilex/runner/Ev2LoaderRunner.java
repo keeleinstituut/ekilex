@@ -615,8 +615,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				for (String government : russianWordData.governments) {
 					createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government);
 				}
-				if (isNotBlank(russianWordData.register)) {
-					saveRegisters(lexemeId, Collections.singletonList(russianWordData.register), russianWordData.word);
+				if (CollectionUtils.isNotEmpty(russianWordData.registerCodes)) {
+					saveRegisters(lexemeId, russianWordData.registerCodes, russianWordData.word);
 				}
 				for (String source : russianWordData.sources) {
 					SourceType sourceType = StringUtils.startsWith(source, "http") ? SourceType.DOCUMENT : SourceType.UNKNOWN;
@@ -949,13 +949,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			wordData.displayForm = srcWord;
 			wordData.reportingId = reportingId;
 			wordData.vocalForm = vocalForm;
-			wordData.register = extractAsString(wordGroupNode, registerExp);
+			wordData.registerCodes.addAll(extractCleanValues(wordGroupNode, registerExp));
 			wordData.governments.addAll(extractCleanValues(wordGroupNode, governmentExp));
 			wordData.sources.addAll(extractOriginalValues(wordGroupNode, sourceExp));
 			wordData.corpFrequency = extractAsFloat(wordGroupNode, corpFrequencyExp);
-			String domainCode = extractAsString(wordGroupNode, domainExp);
-			if (domainCode != null) {
-				additionalDomains.add(domainCode);
+			List<String> domainCodes = extractCleanValues(wordGroupNode, domainExp);
+			if (CollectionUtils.isNotEmpty(domainCodes)) {
+				additionalDomains.addAll(domainCodes);
 			}
 			boolean wordHasAspectPair = isNotBlank(srcAspectWord);
 			if (wordHasAspectPair || wordContainsAspect(srcWord) || isVerb) {
@@ -978,7 +978,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					aspectData.displayForm = srcAspectWord;
 					aspectData.aspect = calculateAspect(srcAspectWord);
 					aspectData.reportingId = reportingId;
-					aspectData.register = wordData.register;
+					aspectData.registerCodes.addAll(wordData.registerCodes);
 					aspectData.governments.addAll(wordData.governments);
 					dataList.add(aspectData);
 					List<LexemeToWordData> aspectGroup = new ArrayList<>();
