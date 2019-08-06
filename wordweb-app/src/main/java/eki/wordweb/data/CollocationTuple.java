@@ -2,6 +2,7 @@ package eki.wordweb.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class CollocationTuple extends AbstractDataObject {
@@ -29,6 +30,8 @@ public class CollocationTuple extends AbstractDataObject {
 	private List<String> collocUsages;
 
 	private List<TypeCollocMember> collocMembers;
+
+	private Complexity complexity;
 
 	private boolean invalid;
 
@@ -118,6 +121,14 @@ public class CollocationTuple extends AbstractDataObject {
 
 	public void setCollocMembers(List<TypeCollocMember> collocMembers) {
 		this.collocMembers = collocMembers;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public boolean isInvalid() {

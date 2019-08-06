@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
 
-    private static final long serialVersionUID = -1495242359;
+    private static final long serialVersionUID = -1179231238;
 
     /**
      * The reference instance of <code>public.type_word_relation</code>
@@ -65,14 +65,14 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
     public static final UDTField<TypeWordRelationRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_WORD_RELATION, "");
 
     /**
+     * The attribute <code>public.type_word_relation.complexity</code>.
+     */
+    public static final UDTField<TypeWordRelationRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD_RELATION, "");
+
+    /**
      * The attribute <code>public.type_word_relation.word_type_codes</code>.
      */
     public static final UDTField<TypeWordRelationRecord, String[]> WORD_TYPE_CODES = createField("word_type_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_RELATION, "");
-
-    /**
-     * The attribute <code>public.type_word_relation.dataset_codes</code>.
-     */
-    public static final UDTField<TypeWordRelationRecord, String[]> DATASET_CODES = createField("dataset_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_RELATION, "");
 
     /**
      * The attribute <code>public.type_word_relation.word_rel_type_code</code>.

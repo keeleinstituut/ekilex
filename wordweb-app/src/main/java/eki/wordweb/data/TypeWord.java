@@ -1,5 +1,7 @@
 package eki.wordweb.data;
 
+import eki.common.constant.Complexity;
+
 public class TypeWord extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
@@ -12,7 +14,7 @@ public class TypeWord extends WordTypeData {
 
 	private String lang;
 
-	private String datasetCode;
+	private Complexity complexity;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -46,12 +48,12 @@ public class TypeWord extends WordTypeData {
 		this.lang = lang;
 	}
 
-	public String getDatasetCode() {
-		return datasetCode;
+	public Complexity getComplexity() {
+		return complexity;
 	}
 
-	public void setDatasetCode(String datasetCode) {
-		this.datasetCode = datasetCode;
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 }

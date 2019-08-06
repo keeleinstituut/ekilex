@@ -82,10 +82,10 @@ from (select w.id as word_id,
                                  group by wt.word_id) mw_word_type_codes,
                                 l2.order_by mw_lex_order_by
                          from lexeme l1
-                           left outer join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id
-                           left outer join word w2 on w2.id = l2.word_id
-                           left outer join paradigm p2 on p2.word_id = w2.id
-                           left outer join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
+                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id
+                           inner join word w2 on w2.id = l2.word_id
+                           inner join paradigm p2 on p2.word_id = w2.id
+                           inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
                          where l1.dataset_code = 'sss') mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
@@ -103,7 +103,7 @@ from (select w.id as word_id,
                                 d.complexity,
                                 d.order_by d_order_by
                          from lexeme l
-                           left outer join definition d on d.meaning_id = l.meaning_id
+                           inner join definition d on d.meaning_id = l.meaning_id
                          where l.dataset_code = 'sss') wd
                    group by wd.word_id) wd
                on wd.word_id = w.word_id;

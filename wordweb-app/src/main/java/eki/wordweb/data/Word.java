@@ -2,6 +2,7 @@ package eki.wordweb.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
 
 public class Word extends WordTypeData {
@@ -12,11 +13,11 @@ public class Word extends WordTypeData {
 
 	private String word;
 
-	private Integer homonymNr;
-
 	private String wordClass;
 
 	private String lang;
+
+	private Integer homonymNr;
 
 	private String morphCode;
 
@@ -28,11 +29,7 @@ public class Word extends WordTypeData {
 
 	private Classifier aspect;
 
-	private List<Classifier> summarisedPoses;
-
-	private WordEtymology wordEtymology;
-
-	private List<String> datasetCodes;
+	private Complexity complexity;
 
 	private Integer meaningCount;
 
@@ -43,6 +40,10 @@ public class Word extends WordTypeData {
 	private List<TypeDefinition> definitions;
 
 	private String definitionsWrapup;
+
+	private List<Classifier> summarisedPoses;
+
+	private WordEtymology wordEtymology;
 
 	private List<TypeWordRelation> relatedWords;
 
@@ -76,14 +77,6 @@ public class Word extends WordTypeData {
 		this.word = word;
 	}
 
-	public Integer getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
-	}
-
 	public String getWordClass() {
 		return wordClass;
 	}
@@ -98,6 +91,14 @@ public class Word extends WordTypeData {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 
 	public String getMorphCode() {
@@ -140,28 +141,12 @@ public class Word extends WordTypeData {
 		this.aspect = aspect;
 	}
 
-	public List<Classifier> getSummarisedPoses() {
-		return summarisedPoses;
+	public Complexity getComplexity() {
+		return complexity;
 	}
 
-	public void setSummarisedPoses(List<Classifier> summarisedPoses) {
-		this.summarisedPoses = summarisedPoses;
-	}
-
-	public WordEtymology getWordEtymology() {
-		return wordEtymology;
-	}
-
-	public void setWordEtymology(WordEtymology wordEtymology) {
-		this.wordEtymology = wordEtymology;
-	}
-
-	public List<String> getDatasetCodes() {
-		return datasetCodes;
-	}
-
-	public void setDatasetCodes(List<String> datasetCodes) {
-		this.datasetCodes = datasetCodes;
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public Integer getMeaningCount() {
@@ -202,6 +187,22 @@ public class Word extends WordTypeData {
 
 	public void setDefinitionsWrapup(String definitionsWrapup) {
 		this.definitionsWrapup = definitionsWrapup;
+	}
+
+	public List<Classifier> getSummarisedPoses() {
+		return summarisedPoses;
+	}
+
+	public void setSummarisedPoses(List<Classifier> summarisedPoses) {
+		this.summarisedPoses = summarisedPoses;
+	}
+
+	public WordEtymology getWordEtymology() {
+		return wordEtymology;
+	}
+
+	public void setWordEtymology(WordEtymology wordEtymology) {
+		this.wordEtymology = wordEtymology;
 	}
 
 	public List<TypeWordRelation> getRelatedWords() {

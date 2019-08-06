@@ -20,8 +20,6 @@ public interface SystemConstant {
 
 	String CACHE_KEY_CLASSIF = "classif";
 
-	String CACHE_KEY_DATASET = "dataset";
-
 	String CACHE_KEY_CORPORA = "corpora";
 
 	String UNKNOWN_FORM_CODE = "??";

@@ -3,6 +3,7 @@ package eki.wordweb.data;
 import java.util.List;
 import java.util.Map;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
@@ -14,10 +15,6 @@ public class Lexeme extends AbstractDataObject {
 
 	private Long meaningId;
 
-	private String datasetCode;
-
-	private String datasetName;
-
 	private Integer level1;
 
 	private Integer level2;
@@ -25,6 +22,8 @@ public class Lexeme extends AbstractDataObject {
 	private Integer level3;
 
 	private String levels;
+
+	private Complexity complexity;
 
 	private List<String> adviceNotes;
 
@@ -96,22 +95,6 @@ public class Lexeme extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
-	public String getDatasetCode() {
-		return datasetCode;
-	}
-
-	public void setDatasetCode(String datasetCode) {
-		this.datasetCode = datasetCode;
-	}
-
-	public String getDatasetName() {
-		return datasetName;
-	}
-
-	public void setDatasetName(String datasetName) {
-		this.datasetName = datasetName;
-	}
-
 	public Integer getLevel1() {
 		return level1;
 	}
@@ -142,6 +125,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLevels(String levels) {
 		this.levels = levels;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public List<String> getAdviceNotes() {

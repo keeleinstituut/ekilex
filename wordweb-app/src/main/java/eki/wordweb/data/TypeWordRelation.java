@@ -1,7 +1,6 @@
 package eki.wordweb.data;
 
-import java.util.List;
-
+import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
 
 public class TypeWordRelation extends WordTypeData {
@@ -16,7 +15,7 @@ public class TypeWordRelation extends WordTypeData {
 
 	private Integer homonymNr;
 
-	private List<String> datasetCodes;
+	private Complexity complexity;
 
 	private String wordRelTypeCode;
 
@@ -54,12 +53,12 @@ public class TypeWordRelation extends WordTypeData {
 		this.homonymNr = homonymNr;
 	}
 
-	public List<String> getDatasetCodes() {
-		return datasetCodes;
+	public Complexity getComplexity() {
+		return complexity;
 	}
 
-	public void setDatasetCodes(List<String> datasetCodes) {
-		this.datasetCodes = datasetCodes;
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public String getWordRelTypeCode() {

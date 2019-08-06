@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = -1216254188;
+    private static final long serialVersionUID = -592998964;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -67,11 +67,6 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.lang</code>.
      */
     public final TableField<MviewWwFormRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_form.dataset_codes</code>.
-     */
-    public final TableField<MviewWwFormRecord, String[]> DATASET_CODES = createField("dataset_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_form.paradigm_id</code>.

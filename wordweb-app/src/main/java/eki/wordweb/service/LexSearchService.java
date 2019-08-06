@@ -56,31 +56,19 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	@Autowired
 	private ConversionUtil conversionUtil;
 
-	private Map<String, String[]> languagesDatasetMap;
-
 	@Override
 	public void afterPropertiesSet() {
-
-		languagesDatasetMap = new HashMap<>();
-		languagesDatasetMap.put("est-est-detail", new String[] {"ss1", "kol"});
-		languagesDatasetMap.put("est-est-simple", new String[] {"psv", "kol"});
-		languagesDatasetMap.put("est-rus-detail", new String[] {"ev2"});
-		languagesDatasetMap.put("est-rus-simple", new String[] {"qq2"});
-		languagesDatasetMap.put("rus-est-detail", new String[] {"ev2"});
-		languagesDatasetMap.put("rus-est-simple", new String[] {"qq2"});
 	}
 
 	@Transactional
 	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
 
-		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
-		String primaryDataset = datasets[0];
-		List<Word> allWords = lexSearchDbService.getWords(searchWord, sourceLang, primaryDataset);
+		Complexity complexity = getComplexity(searchMode);
+		List<Word> allWords = lexSearchDbService.getWords(searchWord, sourceLang, complexity);
 		boolean isForcedSearchMode = false;
 		if (CollectionUtils.isEmpty(allWords) && StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
-			datasets = getDatasets(sourceLang, destinLang, SEARCH_MODE_DETAIL);
-			primaryDataset = datasets[0];
-			allWords = lexSearchDbService.getWords(searchWord, sourceLang, primaryDataset);
+			complexity = getComplexity(SEARCH_MODE_DETAIL);
+			allWords = lexSearchDbService.getWords(searchWord, sourceLang, complexity);
 			if (CollectionUtils.isNotEmpty(allWords)) {
 				searchMode = SEARCH_MODE_DETAIL;
 				isForcedSearchMode = true;
@@ -88,7 +76,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		}
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		conversionUtil.setAffixoidFlags(allWords);
-		conversionUtil.composeHomonymWrapups(allWords, destinLang, datasets);
+		conversionUtil.composeHomonymWrapups(allWords, destinLang, complexity);
 		conversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
@@ -103,9 +91,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	@Transactional
 	public Map<String, List<String>> getWordsByPrefix(String wordPrefix, String sourceLang, String destinLang, int limit) {
 
-		String[] datasets = getDatasets(sourceLang, destinLang, SEARCH_MODE_DETAIL);
-		String primaryDataset = datasets[0];
-		Map<String, List<WordOrForm>> results = lexSearchDbService.getWordsByPrefix(wordPrefix, sourceLang, primaryDataset, limit);
+		Map<String, List<WordOrForm>> results = lexSearchDbService.getWordsByPrefix(wordPrefix, sourceLang, limit);
 		List<WordOrForm> prefWordsResult = results.get("prefWords");
 		List<WordOrForm> formWordsResult = results.get("formWords");
 		List<String> prefWords, formWords;
@@ -136,11 +122,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	public WordData getWordData(Long wordId, String sourceLang, String destinLang, String displayLang, String searchMode) {
 
 		// query params
-		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
-		Complexity complexity = null;
-		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-			complexity = Complexity.SIMPLE;
-		}
+		Complexity complexity = getComplexity(searchMode);
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		if (Complexity.SIMPLE.equals(complexity)) {
 			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
@@ -153,10 +135,10 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymologyTuples(wordId);
 		conversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.getWordRelationTuples(wordId);
-		conversionUtil.composeWordRelations(word, wordRelationTuples, datasets, displayLang);
-		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.getLexemeDetailsTuples(wordId, datasets);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, datasets);
-		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, datasets, complexity);
+		conversionUtil.composeWordRelations(word, wordRelationTuples, complexity, displayLang);
+		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.getLexemeDetailsTuples(wordId, complexity);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, complexity);
+		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, complexity);
 		compensateNullWords(wordId, collocTuples);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.getWordForms(wordId, maxDisplayLevel);
@@ -232,7 +214,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 			long nrOfLexemesWithSameLevel1 = lexemes.stream()
 					.filter(otherLexeme ->
 							otherLexeme.getLevel1().equals(lexeme.getLevel1())
-									&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
+									&& otherLexeme.getComplexity().equals(lexeme.getComplexity()))
 					.count();
 			if (nrOfLexemesWithSameLevel1 == 1) {
 				levels = String.valueOf(lexeme.getLevel1());
@@ -241,7 +223,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 						.filter(otherLexeme ->
 								otherLexeme.getLevel1().equals(lexeme.getLevel1())
 										&& otherLexeme.getLevel2().equals(lexeme.getLevel2())
-										&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
+										&& otherLexeme.getComplexity().equals(lexeme.getComplexity()))
 						.count();
 				if (nrOfLexemesWithSameLevel2 == 1) {
 					int level2 = max(lexeme.getLevel2() - 1, 0);
@@ -255,9 +237,11 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		});
 	}
 
-	private String[] getDatasets(String sourceLang, String destinLang, String searchMode) {
-		String datasetKey = sourceLang + "-" + destinLang + "-" + searchMode;
-		String[] datasets = languagesDatasetMap.get(datasetKey);
-		return datasets;
+	private Complexity getComplexity(String searchMode) {
+		Complexity complexity = null;
+		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
+			complexity = Complexity.SIMPLE;
+		}
+		return complexity;
 	}
 }

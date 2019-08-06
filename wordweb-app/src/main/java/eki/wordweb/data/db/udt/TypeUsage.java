@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeUsage extends UDTImpl<TypeUsageRecord> {
 
-    private static final long serialVersionUID = -23028622;
+    private static final long serialVersionUID = 1556121537;
 
     /**
      * The reference instance of <code>public.type_usage</code>
@@ -58,6 +58,11 @@ public class TypeUsage extends UDTImpl<TypeUsageRecord> {
      * The attribute <code>public.type_usage.usage_lang</code>.
      */
     public static final UDTField<TypeUsageRecord, String> USAGE_LANG = createField("usage_lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_USAGE, "");
+
+    /**
+     * The attribute <code>public.type_usage.complexity</code>.
+     */
+    public static final UDTField<TypeUsageRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage_type_code</code>.

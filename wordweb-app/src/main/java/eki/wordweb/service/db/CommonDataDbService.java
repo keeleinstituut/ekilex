@@ -1,7 +1,6 @@
 package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_CLASSIFIER;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +10,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Record1;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,25 +25,6 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Autowired
 	private DSLContext create;
-
-	@Cacheable(value = CACHE_KEY_DATASET, key = "{#code, #lang}")
-	public String getDatasetName(String code, String lang) {
-
-		if (StringUtils.isBlank(code)) {
-			return null;
-		}
-		Record1<String> result = create
-				.select(MVIEW_WW_DATASET.NAME)
-				.from(MVIEW_WW_DATASET)
-				.where(
-						MVIEW_WW_DATASET.CODE.eq(code)
-						.and(MVIEW_WW_DATASET.LANG.eq(lang)))
-				.fetchOne();
-		if (result == null) {
-			return null;
-		}
-		return result.into(String.class);
-	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #origin, #code, #lang}")
 	public Classifier getClassifier(ClassifierName name, String origin, String code, String lang) {

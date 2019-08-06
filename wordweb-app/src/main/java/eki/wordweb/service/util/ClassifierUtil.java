@@ -62,9 +62,6 @@ public class ClassifierUtil {
 	public void applyClassifiers(LexemeDetailsTuple tuple, Lexeme lexeme, String displayLang) {
 		List<Classifier> classifiers;
 		List<String> classifierCodes;
-		String datasetCode = tuple.getDatasetCode();
-		String datasetName = getDatasetName(datasetCode, displayLang);
-		lexeme.setDatasetName(datasetName);
 		classifierCodes = tuple.getRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
 		lexeme.setRegisters(classifiers);
@@ -151,14 +148,6 @@ public class ClassifierUtil {
 		String classifierCode = tuple.getPosGroupCode();
 		Classifier classifier = getClassifier(ClassifierName.POS_GROUP, classifierCode, displayLang);
 		collocPosGroup.setPosGroup(classifier);
-	}
-
-	private String getDatasetName(String code, String lang) {
-		String name = commonDataDbService.getDatasetName(code, lang);
-		if (StringUtils.isBlank(name)) {
-			name = code;
-		}
-		return name;
 	}
 
 	private Classifier getClassifier(ClassifierName name, String code, String lang) {

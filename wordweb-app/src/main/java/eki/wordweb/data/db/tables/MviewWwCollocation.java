@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
 
-    private static final long serialVersionUID = -1205793702;
+    private static final long serialVersionUID = -310163162;
 
     /**
      * The reference instance of <code>public.mview_ww_collocation</code>
@@ -63,26 +63,6 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
      * The column <code>public.mview_ww_collocation.word_id</code>.
      */
     public final TableField<MviewWwCollocationRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_collocation.dataset_code</code>.
-     */
-    public final TableField<MviewWwCollocationRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
-
-    /**
-     * The column <code>public.mview_ww_collocation.level1</code>.
-     */
-    public final TableField<MviewWwCollocationRecord, Integer> LEVEL1 = createField("level1", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.mview_ww_collocation.level2</code>.
-     */
-    public final TableField<MviewWwCollocationRecord, Integer> LEVEL2 = createField("level2", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.mview_ww_collocation.level3</code>.
-     */
-    public final TableField<MviewWwCollocationRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.pos_group_id</code>.
@@ -195,7 +175,7 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_COLLOCATION_COMPLEXITY_IDX, Indexes.MVIEW_WW_COLLOCATION_DATASET_CODE_IDX, Indexes.MVIEW_WW_COLLOCATION_LEXEME_ID_IDX, Indexes.MVIEW_WW_COLLOCATION_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_COLLOCATION_COMPLEXITY_IDX, Indexes.MVIEW_WW_COLLOCATION_LEXEME_ID_IDX, Indexes.MVIEW_WW_COLLOCATION_WORD_ID_IDX);
     }
 
     /**

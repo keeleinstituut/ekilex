@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 2126031246;
+    private static final long serialVersionUID = 118385529;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -66,11 +66,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.mview_ww_word.homonym_nr</code>.
-     */
-    public final TableField<MviewWwWordRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.mview_ww_word.word_class</code>.
      */
     public final TableField<MviewWwWordRecord, String> WORD_CLASS = createField("word_class", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
@@ -79,6 +74,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.lang</code>.
      */
     public final TableField<MviewWwWordRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.homonym_nr</code>.
+     */
+    public final TableField<MviewWwWordRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_word.word_type_codes</code>.
@@ -101,9 +101,9 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.mview_ww_word.dataset_codes</code>.
+     * The column <code>public.mview_ww_word.complexity</code>.
      */
-    public final TableField<MviewWwWordRecord, String[]> DATASET_CODES = createField("dataset_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_word.meaning_count</code>.

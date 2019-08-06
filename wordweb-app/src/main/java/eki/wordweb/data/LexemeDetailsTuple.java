@@ -2,6 +2,7 @@ package eki.wordweb.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class LexemeDetailsTuple extends AbstractDataObject {
@@ -12,13 +13,13 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 
 	private Long meaningId;
 
-	private String datasetCode;
-
 	private Integer level1;
 
 	private Integer level2;
 
 	private Integer level3;
+
+	private Complexity complexity;
 
 	private List<String> registerCodes;
 
@@ -70,14 +71,6 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
-	public String getDatasetCode() {
-		return datasetCode;
-	}
-
-	public void setDatasetCode(String datasetCode) {
-		this.datasetCode = datasetCode;
-	}
-
 	public Integer getLevel1() {
 		return level1;
 	}
@@ -100,6 +93,14 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 
 	public void setLevel3(Integer level3) {
 		this.level3 = level3;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public List<String> getRegisterCodes() {
