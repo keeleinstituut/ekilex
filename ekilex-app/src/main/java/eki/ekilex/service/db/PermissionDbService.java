@@ -35,6 +35,7 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record5;
 import org.jooq.SelectSelectStep;
+import org.jooq.SortField;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,7 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
+import eki.common.constant.OrderingType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -59,7 +61,16 @@ public class PermissionDbService implements SystemConstant {
 		create = context;
 	}
 
-	public List<EkiUserPermData> getUsers() {
+	public List<EkiUserPermData> getUsers(OrderingType orderBy) {
+
+		SortField<?> orderByField;
+		if (orderBy == OrderingType.NAME) {
+			orderByField = EKI_USER.NAME.asc();
+		} else if (orderBy == OrderingType.DATE) {
+			orderByField = EKI_USER.CREATED.asc();
+		} else {
+			orderByField = EKI_USER.NAME.asc();
+		}
 
 		Field<Boolean> enablePendingField = field(
 				EKI_USER.IS_ENABLED.isNull()
@@ -81,7 +92,7 @@ public class PermissionDbService implements SystemConstant {
 						EKI_USER.CREATED.as("created_on"),
 						enablePendingField.as("enable_pending"))
 				.from(EKI_USER)
-				.orderBy(EKI_USER.ID)
+				.orderBy(orderByField)
 				.fetchInto(EkiUserPermData.class);
 	}
 
