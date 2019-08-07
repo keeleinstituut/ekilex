@@ -80,7 +80,7 @@
         <span class="pt-0">
           <span th:text="${meaningWord.value}"></span>
           <span th:text="${meaningWord.homonymNumber}"></span>
-          <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
+          <span th:text="${'( ' + iso2languages[meaningWord.language] + ' )'}"></span>
         </span>
         <span th:unless="${meaningWordIter.last}">|</span>
       </span>

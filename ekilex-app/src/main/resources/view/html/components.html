@@ -13,7 +13,7 @@
                 <div class="btn btn-custom pt-0">
                   <span th:text="${word.value}" class="ttl">vorm 1</span>
                   <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-                  <span th:text="${'(' + word.language + ')'}"></span>
+                  <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
                 </div>
                 <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2" th:data-word-id="${word.wordId}">Lisa</button>
                 <div class="ml-3 mb-2" style="margin-top: -6px;">
@@ -51,7 +51,7 @@
                     <span class="pt-0" style="color: #007bff;">
                       <span th:text="${meaningWord.value}"></span>
                       <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
+                      <span th:text="${'( ' + iso2languages[meaningWord.language] + ' )'}"></span>
                     </span>
                     <span th:unless="${meaningWordIter.last}">|</span>
                   </th:block>
@@ -85,7 +85,7 @@
                   </span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <span class="pt-0" style="color: #007bff;"
-                          th:text="${meaningWord.value + ' ' + meaningWord.homonymNumber + ' ( ' + meaningWord.language + ' )'}"> </span>
+                          th:text="${meaningWord.value + ' ' + meaningWord.homonymNumber + ' ( ' + iso2languages[meaningWord.language] + ' )'}"> </span>
                     <span th:unless="${meaningWordIter.last}">|</span>
                   </th:block>
                 </div>
@@ -132,7 +132,7 @@
                 <div class="btn btn-custom pt-0">
                   <span th:text="${word.value}" class="ttl">vorm 1</span>
                   <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-                  <span th:text="${'(' + word.language + ')'}"></span>
+                  <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
                 </div>
                 <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2" th:data-word-id="${word.wordId}"
                         th:disabled="${wordExists}" th:title="${wordExists ? 'Keelend on juba sünonüümide hulgas' : ''}">Lisa</button>

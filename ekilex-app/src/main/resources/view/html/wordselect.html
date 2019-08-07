@@ -40,7 +40,7 @@
           <div>
             <span th:text="${wordDescript.word.value}" class="ttl"></span>
             <span th:text="${wordDescript.word.homonymNumber}" class="ttl"></span>
-            <span th:text="${'(' + wordDescript.word.language + ')'}"></span>
+            <span th:text="${'(' + iso2languages[wordDescript.word.language] + ')'}"></span>
             <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${wordDescript.word.wordId} + '/' + ${meaningId} + '/' + ${returnPage}}">Vali</a>
             <span class="float-right">
               <th:block th:each="code, codeIter : ${wordDescript.word.datasetCodes}">
@@ -56,7 +56,7 @@
                 <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                   <span th:text="${meaningWord.value}"></span>
                   <span th:text="${meaningWord.homonymNumber}"></span>
-                  <span th:text="${'(' + meaningWord.language + ')'}"></span>
+                  <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                   <span th:unless="${meaningWordIter.last}">,</span>
                 </span>
               </th:block>

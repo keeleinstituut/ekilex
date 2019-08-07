@@ -1,4 +1,4 @@
-select word.id word_id
+select distinct(word.id) word_id
 from form, paradigm, word
 where form.value = :wordValue
 	and form.mode = 'WORD'

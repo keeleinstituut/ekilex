@@ -1,11 +1,12 @@
 $(document).on("click", ":input[name='userEnableCheck']", function() {
 	var userId = $(this).data('id');
 	var enable = $(this).is(':checked');
+	var orderBy = $(this).data('order-by');
 	var userEnableUrl;
 	if (enable == true) {
-		userEnableUrl = applicationUrl + 'permissions/enable/' + userId;
+		userEnableUrl = applicationUrl + 'permissions/enable/' + userId + '/' + orderBy;
 	} else {
-		userEnableUrl = applicationUrl + 'permissions/disable/' + userId;
+		userEnableUrl = applicationUrl + 'permissions/disable/' + userId + '/' + orderBy;
 	}
 	$.get(userEnableUrl).done(function(data) {
 		var permissionsArea = $('#permissionsArea');
@@ -19,11 +20,12 @@ $(document).on("click", ":input[name='userEnableCheck']", function() {
 $(document).on("click", ":input[name='userAdminCheck']", function() {
 	var userId = $(this).data('id');
 	var enable = $(this).is(':checked');
+	var orderBy = $(this).data('order-by');
 	var setAdminUrl;
 	if (enable == true) {
-		setAdminUrl = applicationUrl + 'permissions/setadmin/' + userId;
+		setAdminUrl = applicationUrl + 'permissions/setadmin/' + userId + '/' + orderBy;
 	} else {
-		setAdminUrl = applicationUrl + 'permissions/remadmin/' + userId;
+		setAdminUrl = applicationUrl + 'permissions/remadmin/' + userId + '/' + orderBy;
 	}
 	$.get(setAdminUrl).done(function(data) {
 		var permissionsArea = $('#permissionsArea');
@@ -37,11 +39,12 @@ $(document).on("click", ":input[name='userAdminCheck']", function() {
 $(document).on("click", ":input[name='userReviewedCheck']", function() {
 	var userId = $(this).data('id');
 	var reviewed = $(this).is(':checked');
+	var orderBy = $(this).data('order-by');
 	var setReviewedUrl;
 	if (reviewed == true) {
-		setReviewedUrl = applicationUrl + 'permissions/setreviewed/' + userId;
+		setReviewedUrl = applicationUrl + 'permissions/setreviewed/' + userId + '/' + orderBy;
 	} else {
-		setReviewedUrl = applicationUrl + 'permissions/remreviewed/' + userId;
+		setReviewedUrl = applicationUrl + 'permissions/remreviewed/' + userId + '/' + orderBy;
 	}
 	$.get(setReviewedUrl).done(function(data) {
 		var permissionsArea = $('#permissionsArea');
@@ -72,8 +75,8 @@ $(document).on("change", ".perm-dataset-code", function() {
 	});
 });
 
-function deleteDatasetPermission(datasetPermId) {
-	var deleteDatasetPermUrl = applicationUrl + 'permissions/deletedatasetperm/' + datasetPermId;
+function deleteDatasetPermission(datasetPermId, orderBy) {
+	var deleteDatasetPermUrl = applicationUrl + 'permissions/deletedatasetperm/' + datasetPermId + '/' + orderBy;
 	$.get(deleteDatasetPermUrl).done(function(data) {
 		var permissionsArea = $('#permissionsArea');
 		permissionsArea.replaceWith(data);
