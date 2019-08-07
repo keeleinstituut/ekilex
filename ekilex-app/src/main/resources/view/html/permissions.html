@@ -20,8 +20,22 @@
               <table class="table table-striped m-0 p-0 table-hover">
                 <tr>
                   <th class="m-1 p-1"></th>
-                  <th class="m-1 p-1">Kuupäev</th>
-                  <th class="m-1 p-1">Nimi</th>
+                  <th class="m-1 p-1">
+                    <a class="btn badge badge-light"
+                       title="Sorteeri kuupäeva järgi"
+                       th:href="@{'/permissions?orderBy=DATE'}">
+                      <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                    </a>
+                    Kuupäev
+                  </th>
+                  <th class="m-1 p-1">
+                    <a class="btn badge badge-light"
+                       title="Sorteeri nime järgi"
+                       th:href="@{'/permissions?orderBy=NAME'}">
+                      <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                    </a>
+                    Nimi
+                  </th>
                   <th class="m-1 p-1">E-post</th>
                   <th class="m-1 p-1 text-center">Admin</th>
                   <th class="m-1 p-1 text-center">Lubatud</th>
@@ -48,6 +62,7 @@
                       <input type="checkbox"
                              class="form-check-input"
                              th:data-id="${userPerm.id}"
+                             th:data-order-by="${orderBy}"
                              name="userAdminCheck"
                              th:checked="${userPerm.admin}"
                              th:disabled="${(#authentication.principal.id == userPerm.id) || (!#authentication.principal.admin)}"/>
@@ -56,6 +71,7 @@
                       <input type="checkbox"
                              class="form-check-input"
                              th:data-id="${userPerm.id}"
+                             th:data-order-by="${orderBy}"
                              name="userEnableCheck"
                              th:checked="${userPerm.enabled}"
                              th:disabled="${#authentication.principal.id == userPerm.id}"/>
@@ -64,6 +80,7 @@
                       <input type="checkbox"
                              class="form-check-input"
                              th:data-id="${userPerm.id}"
+                             th:data-order-by="${orderBy}"
                              name="userReviewedCheck"
                              th:checked="${userPerm.reviewed}"
                              th:disabled="${#authentication.principal.id == userPerm.id}"/>
@@ -87,7 +104,7 @@
                         </button>
                         <a class="btn badge badge-warning"
                            title="Kustuta kommentaar"
-                           th:href="@{'/permissions/deletereviewcomment/' + ${userPerm.id}}"
+                           th:href="@{'/permissions/deletereviewcomment/' + ${userPerm.id} + '/' + ${orderBy}}"
                            sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </a>
@@ -122,6 +139,7 @@
                           </span>
                           <button class="btn badge badge-warning"
                                   th:data-id="${datasetPerm.id}"
+                                  th:data-order-by="${orderBy}"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
                                   sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
@@ -151,8 +169,9 @@
                 btnCancelLabel: 'Ei',
                 title: 'Palun kinnita kustutamine',
                 onConfirm: function () {
-                  var datasetPermId = $(this).data('id');
-                  deleteDatasetPermission(datasetPermId);
+                  let datasetPermId = $(this).data('id');
+                  let orderBy = $(this).data('order-by');
+                  deleteDatasetPermission(datasetPermId, orderBy);
                 }
               });
               $('[data-toggle=send-mail-confirm]').confirmation({

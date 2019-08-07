@@ -7,6 +7,7 @@
       <div class="modal-content">
         <form th:action="@{/permissions/adddatasetperm}" method="post">
           <input type="hidden" name="userId" th:value="${userPerm.id}"/>
+          <input type="hidden" name="orderBy" th:value="${orderBy}"/>
           <div class="modal-body">
             <div class="form-group row">
               <div class="col-10">
@@ -63,6 +64,7 @@
       <div class="modal-content">
         <form th:action="@{/permissions/updatereviewcomment}" method="post">
           <input type="hidden" name="userId" th:value="${userPerm.id}"/>
+          <input type="hidden" name="orderBy" th:value="${orderBy}"/>
           <div class="modal-body">
             <div class="form-group row">
               <div class="col-md-12">
