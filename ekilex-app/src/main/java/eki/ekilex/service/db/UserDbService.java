@@ -127,6 +127,14 @@ public class UserDbService extends AbstractDbService {
 		create.update(EKI_USER).set(EKI_USER.IS_ADMIN, isAdmin).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
+	public void setReviewed(Long userId, boolean isReviewed) {
+		create.update(EKI_USER).set(EKI_USER.IS_REVIEWED, isReviewed).where(EKI_USER.ID.eq(userId)).execute();
+	}
+
+	public void updateReviewComment(Long userId, String reviewComment) {
+		create.update(EKI_USER).set(EKI_USER.REVIEW_COMMENT, reviewComment).where(EKI_USER.ID.eq(userId)).execute();
+	}
+
 	public List<String> getAdminEmails() {
 
 		return create

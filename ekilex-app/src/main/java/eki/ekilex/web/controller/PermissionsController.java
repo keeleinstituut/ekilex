@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
@@ -27,6 +25,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.MaintenanceService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -85,6 +84,20 @@ public class PermissionsController extends AbstractPageController {
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
+	@GetMapping(PERMISSIONS_URI + "/setreviewed/{userId}")
+	public String setReviewed(@PathVariable("userId") Long userId, Model model) {
+		userService.setReviewed(userId, true);
+		populateUserPermDataModel(model);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/remreviewed/{userId}")
+	public String remReviewed(@PathVariable("userId") Long userId, Model model) {
+		userService.setReviewed(userId, false);
+		populateUserPermDataModel(model);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
+	}
+
 	@PostMapping(PERMISSIONS_URI + "/adddatasetperm")
 	public String addDatasetPerm(
 			@RequestParam("userId") Long userId,
@@ -106,9 +119,16 @@ public class PermissionsController extends AbstractPageController {
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	private void populateUserPermDataModel(Model model) {
-		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions();
-		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
+	@PostMapping(PERMISSIONS_URI + "/updatereviewcomment")
+	public String updateReviewComment(@RequestParam("userId") Long userId, @RequestParam("reviewComment") String reviewComment) {
+		userService.updateReviewComment(userId, reviewComment);
+		return "redirect:" + PERMISSIONS_URI;
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/deletereviewcomment/{userId}")
+	public String deleteReviewComment(@PathVariable("userId") Long userId) {
+		userService.updateReviewComment(userId, null);
+		return "redirect:" + PERMISSIONS_URI;
 	}
 
 	@ResponseBody
@@ -135,5 +155,10 @@ public class PermissionsController extends AbstractPageController {
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(userLanguages);
 
+	}
+
+	private void populateUserPermDataModel(Model model) {
+		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions();
+		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
 	}
 }

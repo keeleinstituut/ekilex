@@ -63,6 +63,7 @@ public class PermissionDbService implements SystemConstant {
 
 		Field<Boolean> enablePendingField = field(
 				EKI_USER.IS_ENABLED.isNull()
+						.andNot(EKI_USER.IS_REVIEWED.isTrue())
 						.andExists(DSL
 								.select(EKI_USER_APPLICATION.ID)
 								.from(EKI_USER_APPLICATION)
@@ -75,6 +76,9 @@ public class PermissionDbService implements SystemConstant {
 						EKI_USER.EMAIL,
 						EKI_USER.IS_ADMIN.as("admin"),
 						EKI_USER.IS_ENABLED.as("enabled"),
+						EKI_USER.IS_REVIEWED.as("reviewed"),
+						EKI_USER.REVIEW_COMMENT,
+						EKI_USER.CREATED.as("created_on"),
 						enablePendingField.as("enable_pending"))
 				.from(EKI_USER)
 				.orderBy(EKI_USER.ID)

@@ -20,10 +20,13 @@
               <table class="table table-striped m-0 p-0 table-hover">
                 <tr>
                   <th class="m-1 p-1"></th>
+                  <th class="m-1 p-1">Kuupäev</th>
                   <th class="m-1 p-1">Nimi</th>
                   <th class="m-1 p-1">E-post</th>
                   <th class="m-1 p-1 text-center">Admin</th>
                   <th class="m-1 p-1 text-center">Lubatud</th>
+                  <th class="m-1 p-1 text-center">Tegeletud</th>
+                  <th class="m-1 p-1">Kommentaar</th>
                   <th class="m-1 p-1">Avaldused</th>
                   <th class="m-1 p-1" colspan="3">Load</th>
                 </tr>
@@ -31,6 +34,9 @@
                   <tr>
                     <td class="m-1 p-1 text-center">
                       <span th:if="${userPerm.enablePending}" class="fa fa-circle"></span>
+                    </td>
+                    <td class="m-1 p-1">
+                      <span th:text="${#dates.format(userPerm.createdOn, 'dd.MM.yyyy')}"></span>
                     </td>
                     <td class="m-1 p-1">
                       <span th:text="${userPerm.name}"></span>
@@ -52,7 +58,40 @@
                              th:data-id="${userPerm.id}"
                              name="userEnableCheck"
                              th:checked="${userPerm.enabled}"
-                             th:disabled="${(#authentication.principal.id == userPerm.id) || (!#authentication.principal.admin)}"/>
+                             th:disabled="${#authentication.principal.id == userPerm.id}"/>
+                    </td>
+                    <td class="m-1 p-1 text-center">
+                      <input type="checkbox"
+                             class="form-check-input"
+                             th:data-id="${userPerm.id}"
+                             name="userReviewedCheck"
+                             th:checked="${userPerm.reviewed}"
+                             th:disabled="${#authentication.principal.id == userPerm.id}"/>
+                    </td>
+                    <td class="m-1 p-1">
+                      <div th:replace="permdialog :: edit_review_comment_dlg"></div>
+                      <button type="button" class="btn badge badge-success" title="Lisa kommentaar"
+                              data-toggle="modal"
+                              th:data-target="${'#editReviewCommentDlg_' + userPerm.id}"
+                              sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
+                              th:if="${#strings.isEmpty(userPerm.reviewComment)}">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                      <div class="invisible-buttons" th:unless="${#strings.isEmpty(userPerm.reviewComment)}">
+                        <span th:text="${userPerm.reviewComment}"></span>
+                        <button type="button" class="btn badge badge-primary" title="Muuda"
+                                data-toggle="modal"
+                                th:data-target="${'#editReviewCommentDlg_' + userPerm.id}"
+                                sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <a class="btn badge badge-warning"
+                           title="Kustuta kommentaar"
+                           th:href="@{'/permissions/deletereviewcomment/' + ${userPerm.id}}"
+                           sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </a>
+                      </div>
                     </td>
                     <td class="m-1 p-1">
                       <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>

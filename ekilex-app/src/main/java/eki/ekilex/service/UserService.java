@@ -199,10 +199,19 @@ public class UserService implements WebConstant {
 		userDbService.setAdmin(userId, isAdmin);
 	}
 
-	@PreAuthorize("principal.admin")
 	@Transactional
 	public void enableUser(Long userId, boolean enable) {
 		userDbService.enableUser(userId, enable);
+	}
+
+	@Transactional
+	public void setReviewed(Long userId, boolean isReviewed) {
+		userDbService.setReviewed(userId, isReviewed);
+	}
+
+	@Transactional
+	public void updateReviewComment(Long userId, String reviewComment) {
+		userDbService.updateReviewComment(userId, reviewComment);
 	}
 
 	public boolean isActiveUser(EkiUser user) {

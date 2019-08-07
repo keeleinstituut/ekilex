@@ -58,5 +58,25 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editReviewCommentDlg_' + userPerm.id}" class="modal" role="dialog" th:fragment="edit_review_comment_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/permissions/updatereviewcomment}" method="post">
+          <input type="hidden" name="userId" th:value="${userPerm.id}"/>
+          <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="4" name="reviewComment" th:text="${userPerm.reviewComment}"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

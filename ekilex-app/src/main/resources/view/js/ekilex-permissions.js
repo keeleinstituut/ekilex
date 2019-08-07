@@ -34,6 +34,24 @@ $(document).on("click", ":input[name='userAdminCheck']", function() {
 	});
 });
 
+$(document).on("click", ":input[name='userReviewedCheck']", function() {
+	var userId = $(this).data('id');
+	var reviewed = $(this).is(':checked');
+	var setReviewedUrl;
+	if (reviewed == true) {
+		setReviewedUrl = applicationUrl + 'permissions/setreviewed/' + userId;
+	} else {
+		setReviewedUrl = applicationUrl + 'permissions/remreviewed/' + userId;
+	}
+	$.get(setReviewedUrl).done(function(data) {
+		var permissionsArea = $('#permissionsArea');
+		permissionsArea.replaceWith(data);
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg('Viga!');
+	});
+});
+
 $(document).on("change", ".perm-dataset-code", function() {
 	var datasetCode = $(this).val();
 	var $languages = $(this).closest('form').find('[name="authLang"]');
