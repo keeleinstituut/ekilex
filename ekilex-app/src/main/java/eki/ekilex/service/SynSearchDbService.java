@@ -52,11 +52,9 @@ public class SynSearchDbService extends AbstractSearchDbService {
 										.and(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
 												.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
 								.leftOuterJoin(opposite)
-								.on(
-									opposite.WORD2_ID.eq(WORD_RELATION.WORD1_ID))
-										.and(opposite.WORD1_ID.eq(WORD_RELATION.WORD2_ID)
-										.and(opposite.WORD_REL_TYPE_CODE.eq(WORD_RELATION.WORD_REL_TYPE_CODE))
-								)
+								.on(opposite.WORD2_ID.eq(WORD_RELATION.WORD1_ID))
+								.and(opposite.WORD1_ID.eq(WORD_RELATION.WORD2_ID)
+										.and(opposite.WORD_REL_TYPE_CODE.eq(WORD_RELATION.WORD_REL_TYPE_CODE)))
 								.leftOuterJoin(WORD_RELATION_PARAM).on(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(WORD_RELATION.ID)),
 						WORD,
 						PARADIGM,
@@ -72,20 +70,18 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynRelationParamTuple.class);
 	}
 
-
 	public List<WordSynLexeme> getWordSynLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create.select(
-					WORD.ID.as("word_id"),
-					LEXEME.ID.as("lexeme_id"),
-					LEXEME.MEANING_ID,
-					LEXEME.DATASET_CODE.as("dataset"),
-					LEXEME.LEVEL1,
-					LEXEME.LEVEL2,
-					LEXEME.LEVEL3
-				)
+				WORD.ID.as("word_id"),
+				LEXEME.ID.as("lexeme_id"),
+				LEXEME.MEANING_ID,
+				LEXEME.DATASET_CODE.as("dataset"),
+				LEXEME.LEVEL1,
+				LEXEME.LEVEL2,
+				LEXEME.LEVEL3)
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
 				.where(
 						WORD.ID.eq(wordId)
@@ -95,13 +91,11 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
-								.and(dsWhere)
-				)
+								.and(dsWhere))
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
 				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetchInto(WordSynLexeme.class);
 	}
-
 
 	public void changeRelationStatus(Long id, String status) {
 		create.update(WORD_RELATION)
@@ -110,21 +104,17 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.execute();
 	}
 
-	public void createLexeme(Long wordId, Long meaningId, String datasetCode, Long existingLexemeId
-			//,
-	//		Integer level1, Integer level2, Integer level3, String processStateCode, String valueStateCode, String frequencyGroupCode, BigDecimal corpusFrequency
-		) {
+	public void createLexeme(Long wordId, Long meaningId, String datasetCode, Long existingLexemeId) {
 		create.insertInto(LEXEME,
 				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE,
-				LEXEME.PROCESS_STATE_CODE, LEXEME.VALUE_STATE_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY)
-				.select(create.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode),
-						LEXEME.PROCESS_STATE_CODE, LEXEME.VALUE_STATE_CODE
-						, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY
-						).from(LEXEME).where(LEXEME.ID.eq(existingLexemeId))
-				).execute();
-
+				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+				LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+				.select(DSL.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode),
+						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(existingLexemeId)))
+				.execute();
 	}
 
 	public WordSynDetails getSelectedWord(Long wordId) {

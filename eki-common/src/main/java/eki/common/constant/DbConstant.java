@@ -8,6 +8,8 @@ public interface DbConstant {
 
 	String PROCESS_STATE_IN_WORK = "koostamisel";
 
+	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
+
 	String WORD_TYPE_CODE_PREFIXOID = "pf";
 
 	String WORD_TYPE_CODE_SUFFIXOID = "sf";

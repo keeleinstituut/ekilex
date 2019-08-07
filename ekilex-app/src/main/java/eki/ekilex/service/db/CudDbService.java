@@ -406,8 +406,10 @@ public class CudDbService implements DbConstant {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		}
 		create
-				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE)
-				.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK)
+				.insertInto(
+						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
+						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+				.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
 				.execute();
 		return wordId;
 	}
@@ -639,8 +641,10 @@ public class CudDbService implements DbConstant {
 			}
 		}
 		Long lexemeId = create
-					.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE)
-					.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK)
+					.insertInto(
+							LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
+							LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+					.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
 					.returning(LEXEME.ID)
 					.fetchOne()
 					.getId();
