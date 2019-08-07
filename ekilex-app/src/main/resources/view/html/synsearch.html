@@ -26,7 +26,7 @@
 
     <div class="row no-gutters mt-2" th:unless="${noResults}">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
+        <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}" data-activation-keycode="49">
           <div class="card-body p-2">
             <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
             <table id="results" class="table table-striped mb-0">
@@ -67,7 +67,7 @@
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
-          <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
+          <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}" data-activation-keycode="50"
                th:data-lexeme-id="${lexeme.lexemeId}"
                th:with="
                isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
@@ -129,7 +129,7 @@
           </div>
         </div>
         <div class="col-4 pr-2">
-          <div class="card shadow mb-2">
+          <div class="card shadow mb-2" data-activation-keycode="51">
             <div class="card-body pt-0 pb-0">
               <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
                 <button type="button" class="btn badge badge-success"

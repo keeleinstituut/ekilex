@@ -88,6 +88,31 @@ function initialise() {
 		});
 	}
 
+	function checkKey(e) {
+		e = e || window.event;
+		console.log(e.keyCode);
+		// 1 - 3
+		if (e.keyCode >= 49 && e.keyCode <= 51) {
+			$('.card, .shadow').each(function (e) {
+				$(this).css({'pointer-events' : 'none', 'opacity' : 0.4})
+			});
+
+			let activatedDiv = $('div[data-activation-keycode="' + e.keyCode + '"]');
+			activatedDiv.css({'pointer-events' : 'auto', 'opacity' : 1});
+		}
+		if (e.keyCode == 27) { //
+			$('.card, .shadow').each(function (e) {
+				$(this).css({'pointer-events' : 'auto', 'opacity' : 1})
+			});
+		}
+
+		if (e.keyCode == 40) { // arrow up
+			//alert("aa");
+		}
+	}
+
+	$(document).on('keydown', checkKey);
+
 }
 
 
