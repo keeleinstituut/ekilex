@@ -111,17 +111,15 @@ public class SynSearchDbService extends AbstractSearchDbService {
 	}
 
 	public void createLexeme(Long wordId, Long meaningId, String datasetCode, Long existingLexemeId
-			//,
-	//		Integer level1, Integer level2, Integer level3, String processStateCode, String valueStateCode, String frequencyGroupCode, BigDecimal corpusFrequency
 		) {
 		create.insertInto(LEXEME,
 				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE,
 				LEXEME.PROCESS_STATE_CODE, LEXEME.VALUE_STATE_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY)
+				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.COMPLEXITY)
 				.select(create.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode),
 						LEXEME.PROCESS_STATE_CODE, LEXEME.VALUE_STATE_CODE
 						, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY
+						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.COMPLEXITY
 						).from(LEXEME).where(LEXEME.ID.eq(existingLexemeId))
 				).execute();
 
