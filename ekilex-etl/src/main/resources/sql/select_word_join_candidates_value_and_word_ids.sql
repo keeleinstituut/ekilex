@@ -1,4 +1,4 @@
-select form.value as value, array_agg(distinct(word.id)) as word_ids
+select form.value as value, array_agg(distinct word.id) as word_ids
 from word, paradigm, form
 where word.lang = :lang
 	and paradigm.word_id = word.id
