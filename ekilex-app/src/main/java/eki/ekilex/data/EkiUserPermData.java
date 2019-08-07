@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
@@ -17,6 +18,12 @@ public class EkiUserPermData extends AbstractDataObject {
 	private boolean admin;
 
 	private Boolean enabled;
+
+	private Boolean reviewed;
+
+	private String reviewComment;
+
+	private Timestamp createdOn;
 
 	private boolean enablePending;
 
@@ -62,6 +69,30 @@ public class EkiUserPermData extends AbstractDataObject {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public Boolean getReviewed() {
+		return reviewed;
+	}
+
+	public void setReviewed(Boolean reviewed) {
+		this.reviewed = reviewed;
+	}
+
+	public String getReviewComment() {
+		return reviewComment;
+	}
+
+	public void setReviewComment(String reviewComment) {
+		this.reviewComment = reviewComment;
+	}
+
+	public Timestamp getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(Timestamp createdOn) {
+		this.createdOn = createdOn;
 	}
 
 	public boolean isEnablePending() {
