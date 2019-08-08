@@ -26,12 +26,12 @@
 
     <div class="row no-gutters mt-2" th:unless="${noResults}">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}" data-activation-keycode="49">
+        <div class="card shadow navigate-panel" th:if="${not #lists.isEmpty(wordsResult.words)}" data-activation-keycode="49">
           <div class="card-body p-2">
             <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
             <table id="results" class="table table-striped mb-0">
-              <tr th:each="word : ${wordsResult.words}">
-                <td class="p-0">
+              <tr th:each="word, wordIter : ${wordsResult.words}">
+                <td class="p-0 navigate-item" th:data-navigate-index="${wordIter.index}">
                   <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="synDetailsBtn">
                     <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>
                     <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
@@ -67,8 +67,10 @@
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
-          <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}" data-activation-keycode="50"
+          <div class="navigate-panel" data-activation-keycode="50">
+            <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme, lexemeIter : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
                th:data-lexeme-id="${lexeme.lexemeId}"
+               th:data-navigate-index="${lexemeIter.index}"
                th:with="
                isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
                isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}
@@ -127,9 +129,12 @@
               </div>
             </div>
           </div>
+          </div>
         </div>
+
+
         <div class="col-4 pr-2">
-          <div class="card shadow mb-2" data-activation-keycode="51">
+          <div class="navigate-panel card mb-2" data-activation-keycode="51">
             <div class="card-body pt-0 pb-0">
               <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
                 <button type="button" class="btn badge badge-success"
@@ -141,8 +146,9 @@
 
               <div th:if="${!#lists.isEmpty(details.relations)}">
                 <table width="100%" class="orderable" data-op-code="word_relation">
-                  <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}">
-                    <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-word-id="${synRelation.wordId}" >
+                  <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}"
+                      th:data-navigate-index="${relationIter.index}">
+                    <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-word-id="${synRelation.wordId}">
                       <span>
                         <i class="fa fa-list" aria-hidden="true"></i>
                       </span>

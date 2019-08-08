@@ -93,22 +93,61 @@ function initialise() {
 		console.log(e.keyCode);
 		// 1 - 3
 		if (e.keyCode >= 49 && e.keyCode <= 51) {
-			$('.card, .shadow').each(function (e) {
-				$(this).css({'pointer-events' : 'none', 'opacity' : 0.4})
+			$('.navigate-panel').each(function (e) {
+				$(this).addClass('navigate-disabled-panel');
+				$(this).removeAttr('data-active-panel');
 			});
 
 			let activatedDiv = $('div[data-activation-keycode="' + e.keyCode + '"]');
-			activatedDiv.css({'pointer-events' : 'auto', 'opacity' : 1});
+
+			activatedDiv.removeClass('navigate-disabled-panel');
+			activatedDiv.attr('data-active-panel', true);
+
+			let selectedItem = activatedDiv.find('.navigate-selected');
+
+			if (selectedItem.length == 0) {
+				let itemToSelect;
+				if (e.keyCode == 49) {
+					let selectedWordId = $('#syn_details_div').data('id');
+					console.log('selected word Id ' + selectedWordId);
+					itemToSelect = $('#syn_select_point_' + selectedWordId).closest('.navigate-item');
+				} else {
+					itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
+				}
+				itemToSelect.addClass('navigate-selected');
+			}
+
 		}
-		if (e.keyCode == 27) { //
-			$('.card, .shadow').each(function (e) {
-				$(this).css({'pointer-events' : 'auto', 'opacity' : 1})
+		if (e.keyCode == 27) { //esc
+			$('.navigate-panel').each(function (e) {
+				$(this).removeClass('navigate-disabled-panel');
+				$(this).removeAttr('data-active-panel');
+				$(this).find('[data-navigate-index]').removeClass('navigate-selected');
 			});
 		}
 
-		if (e.keyCode == 40) { // arrow up
-			//alert("aa");
+		if (e.keyCode == 38 || e.keyCode == 40) { // arrows
+			let isGoDown = (e.keyCode == 40);
+			let activeDiv = $('div[data-active-panel]');
+			let selectedItem = activeDiv.find('.navigate-selected');
+
+			if (selectedItem.length != 0) {
+				let selectedIndex = parseInt(selectedItem.attr('data-navigate-index'));
+				console.log("selected index " + selectedIndex);
+
+				let newIndex = isGoDown ? selectedIndex + 1 : selectedIndex -1;
+				console.log("new index " + newIndex);
+				let newItem = activeDiv.find('[data-navigate-index="' + newIndex + '"]');
+
+				if (newItem.length !=0) {
+					console.log("new item found");
+					newItem.addClass('navigate-selected');
+					selectedItem.removeClass('navigate-selected');
+				}
+			}
 		}
+
+
 	}
 
 	$(document).on('keydown', checkKey);
