@@ -45,6 +45,16 @@
       </div>
     </div>
   </div>
+  <div class="hidden-buttons row" th:fragment="data_ids">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Identifikaatorid</span>
+    </div>
+    <div class="col pl-0">
+      <span class="pl-1 pr-1" th:text="'W' + ${lexeme.wordId}"></span>
+      <span class="pl-1 pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
+      <span class="pl-1 pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
+    </div>
+  </div>
   <div class="hidden-buttons row" th:if="${lexeme.complexity != null}" th:fragment="lexeme_complexity">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Detailsus</span>
