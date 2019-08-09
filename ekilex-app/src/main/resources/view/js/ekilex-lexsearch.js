@@ -1,5 +1,6 @@
 function initialise() {
 	$(document).on("click", ":button[name='detailsBtn']", function() {
+		openWaitDlg();
 		let id = $(this).data('id');
 		let isRestoreDisplayState = this.hasAttribute('data-refresh');
 		let openLexemes = [];
@@ -22,8 +23,10 @@ function initialise() {
 			}
 			$("#word_select_wait_" + id).hide();
 			$("#word_select_point_" + id).show();
+			closeWaitDlg();
 		}).fail(function(data) {
 			console.log(data);
+			closeWaitDlg();
 			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 		});
 	});

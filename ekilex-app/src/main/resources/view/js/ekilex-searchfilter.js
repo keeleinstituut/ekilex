@@ -52,6 +52,7 @@ function initialiseSearchForm() {
 	});
 
 	$('#searchForm').submit(function(e){
+		openWaitDlg();
 		let currentSearchMode = $('#searchMode').val();
 		let isSearchFilterValid = $('#isSearchFilterValid').val();
 		if (currentSearchMode === 'SIMPLE' && isSearchFilterValid === 'false') {

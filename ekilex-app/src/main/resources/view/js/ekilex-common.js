@@ -484,7 +484,7 @@ function openWaitDlg(message) {
 
 function closeWaitDlg() {
 	let isModalOpened = $("#waitDlg").hasClass('show');
-	let timeout = 0;
+	let timeout = 100;
 	if (!isModalOpened) {
 		timeout = 500;
 	}

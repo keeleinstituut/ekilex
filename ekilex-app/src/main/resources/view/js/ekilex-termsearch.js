@@ -1,6 +1,7 @@
 // add on click handlers to details buttons in search result table
 function initialise() {
 	$(document).on("click", ":button[name='detailsBtn']", function() {
+		openWaitDlg();
 		var id = $(this).data('id');
 		var isRestoreScrollPos = this.hasAttribute('data-refresh');
 		$("[id^='meaning_select_point_']").hide();
@@ -14,8 +15,10 @@ function initialise() {
 			}
 			$("#meaning_select_wait_" + id).hide();
 			$("#meaning_select_point_" + id).show();
+			closeWaitDlg();
 		}).fail(function(data) {
 			console.log(data);
+			closeWaitDlg();
 			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 		});
 	});
