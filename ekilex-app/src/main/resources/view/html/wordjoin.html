@@ -22,6 +22,9 @@
           <div th:if="${firstWordDetails != null}">
             <span th:utext="${firstWordDetails.word.value}" class="ttl"></span>
             <span th:text="${firstWordDetails.word.homonymNumber}" th:if="${firstWordDetails.word.homonymNumber > 0}"></span>
+            <div th:if="${firstWordFirstDefinitionValue != null}">
+              <span th:utext="${firstWordFirstDefinitionValue}"></span>
+            </div>
             <th:block th:replace=":: gender(${firstWordDetails})"></th:block>
             <th:block th:replace=":: word_types(${firstWordDetails})"></th:block>
             <th:block th:replace=":: aspect_code(${firstWordDetails})"></th:block>
