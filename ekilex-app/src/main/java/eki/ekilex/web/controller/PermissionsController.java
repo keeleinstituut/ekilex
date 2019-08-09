@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
-import eki.common.constant.OrderingType;
+import eki.common.constant.OrderingField;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.EkiUser;
@@ -35,7 +35,7 @@ public class PermissionsController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(PermissionsController.class);
 
-	private static final OrderingType DEFAULT_ORDER_BY = OrderingType.NAME;
+	private static final OrderingField DEFAULT_ORDER_BY = OrderingField.NAME;
 
 	@Autowired
 	private UserService userService;
@@ -50,7 +50,7 @@ public class PermissionsController extends AbstractPageController {
 	private MaintenanceService maintenanceService;
 
 	@GetMapping(PERMISSIONS_URI)
-	public String permissions(@RequestParam(name = "orderBy", required = false) OrderingType orderBy, Model model) {
+	public String permissions(@RequestParam(name = "orderBy", required = false) OrderingField orderBy, Model model) {
 		EkiUser user = userService.getAuthenticatedUser();
 		if (!user.isDatasetOwnershipExist() && !user.isAdmin()) {
 			return "redirect:" + HOME_URI;
@@ -60,42 +60,42 @@ public class PermissionsController extends AbstractPageController {
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/enable/{userId}/{orderBy}")
-	public String enable(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingType orderBy, Model model) {
+	public String enable(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 		userService.enableUser(userId, true);
 		populateUserPermDataModel(model, orderBy);
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/disable/{userId}/{orderBy}")
-	public String disable(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingType orderBy, Model model) {
+	public String disable(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 		userService.enableUser(userId, false);
 		populateUserPermDataModel(model, orderBy);
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/setadmin/{userId}/{orderBy}")
-	public String setAdmin(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingType orderBy, Model model) {
+	public String setAdmin(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 		userService.setAdmin(userId, true);
 		populateUserPermDataModel(model, orderBy);
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/remadmin/{userId}/{orderBy}")
-	public String remAdmin(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingType orderBy, Model model) {
+	public String remAdmin(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 		userService.setAdmin(userId, false);
 		populateUserPermDataModel(model, orderBy);
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/setreviewed/{userId}/{orderBy}")
-	public String setReviewed(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingType orderBy, Model model) {
+	public String setReviewed(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 		userService.setReviewed(userId, true);
 		populateUserPermDataModel(model, orderBy);
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/remreviewed/{userId}/{orderBy}")
-	public String remReviewed(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingType orderBy, Model model) {
+	public String remReviewed(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 		userService.setReviewed(userId, false);
 		populateUserPermDataModel(model, orderBy);
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
@@ -108,7 +108,7 @@ public class PermissionsController extends AbstractPageController {
 			@RequestParam(value = "authItem", required = false) AuthorityItem authItem,
 			@RequestParam(value = "authOp", required = false) AuthorityOperation authOp,
 			@RequestParam(value = "authLang", required = false) String authLang,
-			@RequestParam("orderBy") OrderingType orderBy) {
+			@RequestParam("orderBy") OrderingField orderBy) {
 
 		permissionService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
 		String redirectUri = createRedirectUri(orderBy);
@@ -116,7 +116,7 @@ public class PermissionsController extends AbstractPageController {
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/deletedatasetperm/{datasetPermissionId}/{orderBy}")
-	public String deleteDatasetPerm(@PathVariable("datasetPermissionId") Long datasetPermissionId, @PathVariable("orderBy") OrderingType orderBy, Model model) {
+	public String deleteDatasetPerm(@PathVariable("datasetPermissionId") Long datasetPermissionId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 		permissionService.deleteDatasetPermission(datasetPermissionId);
 		populateUserPermDataModel(model, orderBy);
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
@@ -124,7 +124,7 @@ public class PermissionsController extends AbstractPageController {
 
 	@PostMapping(PERMISSIONS_URI + "/updatereviewcomment")
 	public String updateReviewComment(@RequestParam("userId") Long userId, @RequestParam("reviewComment") String reviewComment,
-			@RequestParam("orderBy") OrderingType orderBy) {
+			@RequestParam("orderBy") OrderingField orderBy) {
 
 		userService.updateReviewComment(userId, reviewComment);
 		String redirectUri = createRedirectUri(orderBy);
@@ -132,7 +132,7 @@ public class PermissionsController extends AbstractPageController {
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/deletereviewcomment/{userId}/{orderBy}")
-	public String deleteReviewComment(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingType orderBy) {
+	public String deleteReviewComment(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy) {
 		userService.updateReviewComment(userId, null);
 		String redirectUri = createRedirectUri(orderBy);
 		return "redirect:" + redirectUri;
@@ -163,7 +163,7 @@ public class PermissionsController extends AbstractPageController {
 		return jsonMapper.writeValueAsString(userLanguages);
 	}
 
-	private void populateUserPermDataModel(Model model, OrderingType orderBy) {
+	private void populateUserPermDataModel(Model model, OrderingField orderBy) {
 
 		if (orderBy == null) {
 			orderBy = DEFAULT_ORDER_BY;
@@ -173,7 +173,7 @@ public class PermissionsController extends AbstractPageController {
 		model.addAttribute("orderBy", orderBy);
 	}
 
-	private String createRedirectUri(@RequestParam("orderBy") OrderingType orderBy) {
+	private String createRedirectUri(@RequestParam("orderBy") OrderingField orderBy) {
 		return PERMISSIONS_URI + "?orderBy=" + orderBy.name();
 	}
 }

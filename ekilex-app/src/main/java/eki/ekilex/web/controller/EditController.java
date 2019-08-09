@@ -635,9 +635,9 @@ public class EditController implements WebConstant, SystemConstant {
 
 		String backUrl;
 		if (meaningId != null) {
-			backUrl = MEANING_BACK_URI + "/" + meaningId;
+			backUrl = WORD_VALUE_BACK_URI + "/" + firstWordValue + "/" + RETURN_PAGE_TERM_SEARCH;
 		} else {
-			backUrl = WORD_BACK_URI + "/" + firstWordId;
+			backUrl = WORD_VALUE_BACK_URI + "/" + firstWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
 		}
 
 		model.addAttribute("firstWordDetails", firstWordDetails);

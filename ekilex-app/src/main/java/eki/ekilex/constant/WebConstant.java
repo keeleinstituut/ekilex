@@ -192,6 +192,8 @@ public interface WebConstant {
 
 	String MEANING_BACK_URI = "/meaningback";
 
+	String WORD_VALUE_BACK_URI = "/wordvalueback";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";

@@ -21,6 +21,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
@@ -541,47 +542,56 @@ public class CompositionDbService implements DbConstant {
 		return clonedFreeform.getId();
 	}
 
-	public void joinWordData(Long firstWordId, Long secondWordId) {
+	public void joinWordData(Long wordId, Long sourceWordId) {
 
 		create.update(WORD_RELATION)
-				.set(WORD_RELATION.WORD1_ID, firstWordId)
-				.where(WORD_RELATION.WORD1_ID.eq(secondWordId))
+				.set(WORD_RELATION.WORD1_ID, wordId)
+				.where(WORD_RELATION.WORD1_ID.eq(sourceWordId))
 				.execute();
 
 		create.update(WORD_RELATION)
-				.set(WORD_RELATION.WORD2_ID, firstWordId)
-				.where(WORD_RELATION.WORD2_ID.eq(secondWordId))
+				.set(WORD_RELATION.WORD2_ID, wordId)
+				.where(WORD_RELATION.WORD2_ID.eq(sourceWordId))
 				.execute();
 
 		create.update(WORD_GROUP_MEMBER)
-				.set(WORD_GROUP_MEMBER.WORD_ID, firstWordId)
-				.where(WORD_GROUP_MEMBER.WORD_ID.eq(secondWordId))
+				.set(WORD_GROUP_MEMBER.WORD_ID, wordId)
+				.where(WORD_GROUP_MEMBER.WORD_ID.eq(sourceWordId))
 				.execute();
 
 		create.update(WORD_ETYMOLOGY)
-				.set(WORD_ETYMOLOGY.WORD_ID, firstWordId)
-				.where(WORD_ETYMOLOGY.WORD_ID.eq(secondWordId))
+				.set(WORD_ETYMOLOGY.WORD_ID, wordId)
+				.where(WORD_ETYMOLOGY.WORD_ID.eq(sourceWordId))
 				.execute();
 
 		create.update(WORD_ETYMOLOGY_RELATION)
-				.set(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID, firstWordId)
-				.where(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID.eq(secondWordId))
+				.set(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID, wordId)
+				.where(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID.eq(sourceWordId))
 				.execute();
 
 		create.update(WORD_WORD_TYPE)
-				.set(WORD_WORD_TYPE.WORD_ID, firstWordId)
-				.where(WORD_WORD_TYPE.WORD_ID.eq(secondWordId))
+				.set(WORD_WORD_TYPE.WORD_ID, wordId)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(sourceWordId))
 				.execute();
 
 		create.update(WORD_PROCESS_LOG)
-				.set(WORD_PROCESS_LOG.WORD_ID, firstWordId)
-				.where(WORD_PROCESS_LOG.WORD_ID.eq(secondWordId))
+				.set(WORD_PROCESS_LOG.WORD_ID, wordId)
+				.where(WORD_PROCESS_LOG.WORD_ID.eq(sourceWordId))
 				.execute();
 
 		create.update(WORD_LIFECYCLE_LOG)
-				.set(WORD_LIFECYCLE_LOG.WORD_ID, firstWordId)
-				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(secondWordId))
+				.set(WORD_LIFECYCLE_LOG.WORD_ID, wordId)
+				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(sourceWordId))
 				.execute();
+	}
+
+	public Integer getWordHomonymNum(Long wordId) {
+
+		return create.
+				select(WORD.HOMONYM_NR)
+				.from(WORD)
+				.where(WORD.ID.eq(wordId))
+				.fetchOneInto(Integer.class);
 	}
 
 	public Integer getWordLexemesMaxFirstLevel(Long wordId) {
@@ -616,15 +626,15 @@ public class CompositionDbService implements DbConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public void joinParadigms(Long firstWordId, Long secondWordId) {
+	public void joinParadigms(Long wordId, Long sourceWordId) {
 
 		create.delete(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(firstWordId))
+				.where(PARADIGM.WORD_ID.eq(wordId))
 				.execute();
 
 		create.update(PARADIGM)
-				.set(PARADIGM.WORD_ID, firstWordId)
-				.where(PARADIGM.WORD_ID.eq(secondWordId))
+				.set(PARADIGM.WORD_ID, wordId)
+				.where(PARADIGM.WORD_ID.eq(sourceWordId))
 				.execute();
 	}
 
