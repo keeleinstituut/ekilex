@@ -471,15 +471,20 @@ function openConfirmDlg(confirmQuestion, callback) {
 	});
 }
 
-function openWaitDlg(message = "Palun oodake") {
-	$("#waitMessage").text(message);
+function openWaitDlg(message) {
+	if (message) {
+		$("#waitMessageDiv").show();
+		$("#waitMessage").text(message);
+	} else {
+		$("#waitMessageDiv").hide();
+	}
 	$("#waitDlg").modal("show");
 	$("body").css("cursor", "progress");
 }
 
 function closeWaitDlg() {
 	let isModalOpened = $("#waitDlg").hasClass('show');
-	let timeout = 0;
+	let timeout = 100;
 	if (!isModalOpened) {
 		timeout = 500;
 	}

@@ -44,7 +44,7 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
-import eki.common.constant.OrderingType;
+import eki.common.constant.OrderingField;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -61,12 +61,12 @@ public class PermissionDbService implements SystemConstant {
 		create = context;
 	}
 
-	public List<EkiUserPermData> getUsers(OrderingType orderBy) {
+	public List<EkiUserPermData> getUsers(OrderingField orderBy) {
 
 		SortField<?> orderByField;
-		if (orderBy == OrderingType.NAME) {
+		if (orderBy == OrderingField.NAME) {
 			orderByField = EKI_USER.NAME.asc();
-		} else if (orderBy == OrderingType.DATE) {
+		} else if (orderBy == OrderingField.DATE) {
 			orderByField = EKI_USER.CREATED.asc();
 		} else {
 			orderByField = EKI_USER.NAME.asc();

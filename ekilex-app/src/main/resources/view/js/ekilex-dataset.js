@@ -23,7 +23,6 @@ function initialise() {
 		openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
 		let thisForm = $(this).closest('form');
 		thisForm.submit();
-		closeWaitDlg();
 	});
 
 	$('.delete-dataset-confirm').confirmation({

@@ -209,52 +209,60 @@ public class CompositionService extends AbstractService {
 	}
 
 	@Transactional
-	public void joinWords(Long firstWordId, Long secondWordId) {
+	public Long joinWords(Long firstWordId, Long secondWordId) {
 
 		String wordValue = commonDataDbService.getWordValue(firstWordId);
-		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, firstWordId, wordValue, wordValue);
+
+		Integer firstWordHomonymNum = compositionDbService.getWordHomonymNum(firstWordId);
+		Integer secondWordHomonymNum = compositionDbService.getWordHomonymNum(secondWordId);
+		Long wordId = firstWordHomonymNum <= secondWordHomonymNum ? firstWordId : secondWordId;
+		Long sourceWordId = secondWordHomonymNum >= firstWordHomonymNum? secondWordId : firstWordId;
+
+		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue, wordValue);
 		createLifecycleLog(logData);
 
-		compositionDbService.joinWordData(firstWordId, secondWordId);
-		joinLexemeData(firstWordId, secondWordId);
-		joinParadigms(firstWordId, secondWordId);
-		cudDbService.deleteWord(secondWordId);
+		compositionDbService.joinWordData(wordId, sourceWordId);
+		joinLexemeData(wordId, sourceWordId);
+		joinParadigms(wordId, sourceWordId);
+		cudDbService.deleteWord(sourceWordId);
+
+		return wordId;
 	}
 
-	private void joinLexemeData(Long firstWordId, Long secondWordId) {
+	private void joinLexemeData(Long wordId, Long sourceWordId) {
 
-		List<LexemeRecord> secondWordLexemes = compositionDbService.getWordLexemes(secondWordId);
-		for (LexemeRecord secondWordLexeme : secondWordLexemes) {
-			Long secondWordLexemeId = secondWordLexeme.getId();
-			Long secondWordLexemeMeaningId = secondWordLexeme.getMeaningId();
-			String secondWordLexemeDatasetCode = secondWordLexeme.getDatasetCode();
+		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
+		for (LexemeRecord sourceWordLexeme : sourceWordLexemes) {
+			Long sourceWordLexemeId = sourceWordLexeme.getId();
+			Long sourceWordLexemeMeaningId = sourceWordLexeme.getMeaningId();
+			String sourceWordLexemeDatasetCode = sourceWordLexeme.getDatasetCode();
 
-			Long firstWordLexemeId = compositionDbService.getLexemeId(firstWordId, secondWordLexemeMeaningId, secondWordLexemeDatasetCode);
-			boolean lexemeExists = firstWordLexemeId != null;
+			Long wordLexemeId = compositionDbService.getLexemeId(wordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
+			boolean lexemeExists = wordLexemeId != null;
 
 			if (lexemeExists) {
-				boolean isOnlyLexemeForMeaning = commonDataDbService.isOnlyLexemeForMeaning(secondWordLexemeId);
-				cudDbService.deleteLexeme(secondWordLexemeId);
+				boolean isOnlyLexemeForMeaning = commonDataDbService.isOnlyLexemeForMeaning(sourceWordLexemeId);
+				cudDbService.deleteLexeme(sourceWordLexemeId);
 				if (isOnlyLexemeForMeaning) {
-					cudDbService.deleteMeaning(secondWordLexemeMeaningId);
+					cudDbService.deleteMeaning(sourceWordLexemeMeaningId);
 				}
 			} else {
-				Integer currentMaxLevel = compositionDbService.getWordLexemesMaxFirstLevel(firstWordId);
+				Integer currentMaxLevel = compositionDbService.getWordLexemesMaxFirstLevel(wordId);
 				int level1 = currentMaxLevel + 1;
-				compositionDbService.updateLexemeWordIdAndLevels(secondWordLexemeId, firstWordId, level1, DEFAULT_LEXEME_LEVEL, DEFAULT_LEXEME_LEVEL);
+				compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, wordId, level1, DEFAULT_LEXEME_LEVEL, DEFAULT_LEXEME_LEVEL);
 			}
 		}
 	}
 
-	private void joinParadigms(Long firstWordId, Long secondWordId) {
+	private void joinParadigms(Long wordId, Long sourceWordId) {
 
-		boolean firstWordHasForms = compositionDbService.wordHasForms(firstWordId);
-		if (firstWordHasForms) {
+		boolean wordHasForms = compositionDbService.wordHasForms(wordId);
+		if (wordHasForms) {
 			return;
 		}
-		boolean secondWordHasForms = compositionDbService.wordHasForms(secondWordId);
-		if (secondWordHasForms) {
-			compositionDbService.joinParadigms(firstWordId, secondWordId);
+		boolean sourceWordHasForms = compositionDbService.wordHasForms(sourceWordId);
+		if (sourceWordHasForms) {
+			compositionDbService.joinParadigms(wordId, sourceWordId);
 		}
 	}
 

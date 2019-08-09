@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,7 @@ import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
@@ -629,19 +631,21 @@ public class EditController implements WebConstant, SystemConstant {
 		Word firstWord = firstWordDetails.getWord();
 		Long firstWordId = firstWord.getWordId();
 		String firstWordValue = firstWord.getValue();
+		String firstWordFirstDefinitionValue = getFirstDefinitionValue(firstWordDetails);
 		List<WordDetails> wordDetailsList = commonDataService.getWordDetailsOfJoinCandidates(firstWordValue, wordId);
 		List<Classifier> wordGenders = commonDataService.getGenders();
 		List<Classifier> wordAspects = commonDataService.getAspects();
 
 		String backUrl;
 		if (meaningId != null) {
-			backUrl = MEANING_BACK_URI + "/" + meaningId;
+			backUrl = WORD_VALUE_BACK_URI + "/" + firstWordValue + "/" + RETURN_PAGE_TERM_SEARCH;
 		} else {
-			backUrl = WORD_BACK_URI + "/" + firstWordId;
+			backUrl = WORD_VALUE_BACK_URI + "/" + firstWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
 		}
 
 		model.addAttribute("firstWordDetails", firstWordDetails);
 		model.addAttribute("firstWordId", firstWordId);
+		model.addAttribute("firstWordFirstDefinitionValue", firstWordFirstDefinitionValue);
 		model.addAttribute("wordDetailsList", wordDetailsList);
 		model.addAttribute("wordGenders", wordGenders);
 		model.addAttribute("wordAspects", wordAspects);
@@ -661,5 +665,19 @@ public class EditController implements WebConstant, SystemConstant {
 	@ModelAttribute("iso2languages")
 	public Map<String, String> getIso2Languages() {
 		return commonDataService.getLanguagesIso2Map();
+	}
+
+	private String getFirstDefinitionValue(WordDetails wordDetails) {
+
+		Optional<WordLexeme> wordLexemeWithDefinition = wordDetails.getLexemes().stream()
+				.filter(lex -> lex.getDefinitions().get(0) != null)
+				.findFirst();
+
+		if (wordLexemeWithDefinition.isPresent()) {
+			String wordFirstDefinitionValue = wordLexemeWithDefinition.get().getDefinitions().get(0).getValue();
+			return wordFirstDefinitionValue;
+		} else {
+			return null;
+		}
 	}
 }
