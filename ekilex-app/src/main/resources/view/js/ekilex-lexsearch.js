@@ -89,7 +89,7 @@ function initialise() {
 	});
 
 	$(document).on('click', '[name="pagingBtn"]', function() {
-		openWaitDlg("Palun oodake, andmete uuendamine on pooleli");
+		openWaitDlg();
 		let url = applicationUrl + "lex_paging";
 		let button = $(this);
 		let direction = button.data("direction");
