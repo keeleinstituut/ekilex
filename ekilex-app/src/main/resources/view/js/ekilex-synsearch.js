@@ -110,6 +110,7 @@ function initialise() {
 	}
 
 	function checkKey(e) {
+		//TODO refactor all this
 		var tag = e.target.tagName.toLowerCase();
 		if ( tag == 'input' || tag == 'textarea') {
 			return;
