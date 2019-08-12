@@ -122,4 +122,14 @@ public abstract class AbstractPageController implements WebConstant {
 	public List<Complexity> getComplexities() {
 		return Arrays.asList(Complexity.values());
 	}
+
+	@ModelAttribute("wordGenders")
+	public List<Classifier> getWordGenders() {
+		return commonDataService.getGenders();
+	}
+
+	@ModelAttribute("wordAspects")
+	public List<Classifier> getWordAspect() {
+		return commonDataService.getAspects();
+	}
 }
