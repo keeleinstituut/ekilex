@@ -1,5 +1,5 @@
 package eki.common.constant;
 
-public enum OrderingType {
+public enum OrderingField {
 	NAME, DATE
 }

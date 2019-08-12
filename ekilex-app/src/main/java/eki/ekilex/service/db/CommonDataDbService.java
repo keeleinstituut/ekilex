@@ -781,6 +781,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.and(POS_LABEL.CODE.eq(LEXEME_POS.POS_CODE))
 								.and(POS_LABEL.LANG.eq(classifierLabelLang))
 								.and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.orderBy(LEXEME_POS.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -797,6 +798,8 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.and(DERIV_LABEL.CODE.eq(LEXEME_DERIV.DERIV_CODE))
 								.and(DERIV_LABEL.LANG.eq(classifierLabelLang))
 								.and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				//TODO apply once the order by field appears
+				//.orderBy(LEXEME_DERIV.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -813,6 +816,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.and(REGISTER_LABEL.CODE.eq(LEXEME_REGISTER.REGISTER_CODE))
 								.and(REGISTER_LABEL.LANG.eq(classifierLabelLang))
 								.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.orderBy(LEXEME_REGISTER.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -827,7 +831,8 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.where(
 						LEXEME_REGION.LEXEME_ID.eq(lexemeId)
 								.and(REGION.CODE.eq(LEXEME_REGION.REGION_CODE)))
-				.orderBy(REGION.ORDER_BY)
+				//TODO apply once the order by field appears
+				//.orderBy(LEXEME_REGION.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 

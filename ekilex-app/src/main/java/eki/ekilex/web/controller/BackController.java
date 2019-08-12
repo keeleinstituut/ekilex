@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -58,5 +59,21 @@ public class BackController implements WebConstant {
 
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}
+
+	@GetMapping(WORD_VALUE_BACK_URI + "/{wordValue}/{returnPage}")
+	public String wordValueBack(@PathVariable("wordValue") String wordValue, @PathVariable("returnPage") String returnPage,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		String searchUri = searchHelper.composeSearchUri(sessionBean.getSelectedDatasets(), wordValue);
+		String redirectUri = "";
+		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
+			redirectUri = LEX_SEARCH_URI + searchUri;
+		} else if (StringUtils.equals(returnPage, RETURN_PAGE_TERM_SEARCH)) {
+			redirectUri = TERM_SEARCH_URI + searchUri;
+		}
+
+		return "redirect:" + redirectUri;
+	}
+
 
 }

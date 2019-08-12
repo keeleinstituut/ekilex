@@ -37,6 +37,7 @@ import eki.ekilex.data.transform.Freeform;
 import eki.ekilex.data.transform.FreeformSourceLink;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.LexemeClassifier;
+import eki.ekilex.data.transform.LexemeCollocationGroupTuple;
 import eki.ekilex.data.transform.LexemeCollocationTuple;
 import eki.ekilex.data.transform.LexemeFrequency;
 import eki.ekilex.data.transform.LexemeLifecycleLog;
@@ -50,6 +51,7 @@ import eki.ekilex.data.util.CollocationRowMapper;
 import eki.ekilex.data.util.FreeformRowMapper;
 import eki.ekilex.data.util.FreeformSourceLinkRowMapper;
 import eki.ekilex.data.util.LexemeClassifierRowMapper;
+import eki.ekilex.data.util.LexemeCollocationGroupTupleRowMapper;
 import eki.ekilex.data.util.LexemeCollocationTupleRowMapper;
 import eki.ekilex.data.util.LexemeFrequencyRowMapper;
 import eki.ekilex.data.util.LexemeLifecycleLogRowMapper;
@@ -77,6 +79,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 	private static final String SQL_SELECT_LEXEME_COLLOC_TUPLES_FOR_DATASETS_PATH = "sql/select_lexeme_colloc_tuples_for_datasets.sql";
 
+	private static final String SQL_SELECT_LEXEME_COLLOC_GROUP_TUPLES_FOR_DATASETS_PATH = "sql/select_lexeme_colloc_group_tuples_for_datasets.sql";
+
 	private static final String SQL_SELECT_LEXEME_LIFECYCLE_LOGS_FOR_DATASETS_PATH = "sql/select_lexeme_lifecycle_logs_for_datasets.sql";
 
 	private static final String SQL_SELECT_LEXEME_PROCESS_LOGS_FOR_DATASETS_PATH = "sql/select_lexeme_process_logs_for_datasets.sql";
@@ -88,6 +92,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	private String sqlSelectCollocationsForDatasets;
 
 	private String sqlSelectLexemeCollocTuplesForDatasets;
+
+	private String sqlSelectLexemeCollocGroupTuplesForDatasets;
 
 	private String sqlSelectLexemeLifecycleLogsForDatasets;
 
@@ -167,6 +173,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_COLLOC_TUPLES_FOR_DATASETS_PATH);
 		sqlSelectLexemeCollocTuplesForDatasets = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_COLLOC_GROUP_TUPLES_FOR_DATASETS_PATH);
+		sqlSelectLexemeCollocGroupTuplesForDatasets = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_LIFECYCLE_LOGS_FOR_DATASETS_PATH);
 		sqlSelectLexemeLifecycleLogsForDatasets = getContent(resourceFileInputStream);
@@ -251,7 +260,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		// post handling collocations
 		List<Collocation> collocations = getCollocations(lexemeMergeDatasets);
 		List<LexemeCollocationTuple> lexemeCollocationTuples = getLexemeCollocationTuples(lexemeMergeDatasets);
-		createLexemeCollocations(sumLexemeIdMap, collocations, lexemeCollocationTuples, countsMap);
+		List<LexemeCollocationGroupTuple> lexemeCollocationGroupTuples = getLexemeCollocationGroupTuples(lexemeMergeDatasets);
+		createLexemeCollocations(sumLexemeIdMap, collocations, lexemeCollocationTuples, lexemeCollocationGroupTuples, countsMap);
 
 		// post handling lexeme lifecycle logs
 		List<LexemeLifecycleLog> lexemeLifecycleLogs = getLexemeLifecycleLogs(lexemeMergeDatasets);
@@ -618,6 +628,14 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		return lexemeCollocationTuples;
 	}
 
+	private List<LexemeCollocationGroupTuple> getLexemeCollocationGroupTuples(List<String> lexemeMergeDatasets) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("datasetCodes", lexemeMergeDatasets);
+		List<LexemeCollocationGroupTuple> lexemeCollocationGroupTuples = basicDbService.getResults(sqlSelectLexemeCollocGroupTuplesForDatasets, paramMap, new LexemeCollocationGroupTupleRowMapper());
+		return lexemeCollocationGroupTuples;
+	}
+
 	private List<LexemeLifecycleLog> getLexemeLifecycleLogs(List<String> lexemeMergeDatasets) throws Exception {
 
 		Map<String, Object> paramMap = new HashMap<>();
@@ -908,7 +926,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	}
 
 	private void createLexemeCollocations(
-			Map<Long, Long> sumLexemeIdMap, List<Collocation> collocations, List<LexemeCollocationTuple> lexemeCollocationTuples, Map<String, Count> countsMap) throws Exception {
+			Map<Long, Long> sumLexemeIdMap, List<Collocation> collocations, List<LexemeCollocationTuple> lexemeCollocationTuples,
+			List<LexemeCollocationGroupTuple> lexemeCollocationGroupTuples, Map<String, Count> countsMap) throws Exception {
 
 		logger.debug("Creating collocations and associated lexeme bindings");
 
@@ -933,20 +952,16 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			sumCollocationCount.increment();
 		}
 
-		Map<Long, Long> lexCollocIdMap = new HashMap<>();
 		Map<Long, Long> lexCollocPosGroupIdMap = new HashMap<>();
 		Map<Long, Long> lexCollocRelGroupIdMap = new HashMap<>();
 
-		for (LexemeCollocationTuple tuple : lexemeCollocationTuples) {
+		for (LexemeCollocationGroupTuple tuple : lexemeCollocationGroupTuples) {
 
 			Long sourceLexemeId = tuple.getLexemeId();
-			Long sourceCollocId = tuple.getCollocationId();
-			Long sourceLexCollocId = tuple.getLexCollocId();
+			Long targetLexemeId = sumLexemeIdMap.get(sourceLexemeId);
 			Long sourcePosGroupId = tuple.getPosGroupId();
 			Long sourceRelGroupId = tuple.getRelGroupId();
 
-			Long targetLexemeId = sumLexemeIdMap.get(sourceLexemeId);
-			Long targetCollocId = collocIdMap.get(sourceCollocId);
 			Long targetPosGroupId = null;
 			Long targetRelGroupId = null;
 
@@ -973,18 +988,27 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 					sumLexemeCollocRelGroupCount.increment();
 				}
 			}
+		}
 
-			Long targetLexCollocId = lexCollocIdMap.get(sourceLexCollocId);
-			if (targetLexCollocId == null) {
-				String memberForm = tuple.getMemberForm();
-				String conjunct = tuple.getConjunct();
-				Float weight = tuple.getWeight();
-				Integer memberOrder = tuple.getMemberOrder();
-				Integer groupOrder = tuple.getGroupOrder();
-				targetLexCollocId = createLexemeCollocation(targetLexemeId, targetRelGroupId, targetCollocId, memberForm, conjunct, weight, memberOrder, groupOrder);
-				lexCollocIdMap.put(sourceLexCollocId, targetLexCollocId);
-				sumLexemeCollocCount.increment();
-			}
+		Map<Long, Long> lexCollocIdMap = new HashMap<>();
+
+		for (LexemeCollocationTuple tuple : lexemeCollocationTuples) {
+
+			Long sourceLexemeId = tuple.getLexemeId();
+			Long sourceLexCollocId = tuple.getLexCollocId();
+			Long sourceRelGroupId = tuple.getRelGroupId();
+			Long sourceCollocId = tuple.getCollocationId();
+			Long targetLexemeId = sumLexemeIdMap.get(sourceLexemeId);
+			Long targetCollocId = collocIdMap.get(sourceCollocId);
+			Long targetRelGroupId = lexCollocRelGroupIdMap.get(sourceRelGroupId);
+			String memberForm = tuple.getMemberForm();
+			String conjunct = tuple.getConjunct();
+			Float weight = tuple.getWeight();
+			Integer memberOrder = tuple.getMemberOrder();
+			Integer groupOrder = tuple.getGroupOrder();
+			Long targetLexCollocId = createLexemeCollocation(targetLexemeId, targetRelGroupId, targetCollocId, memberForm, conjunct, weight, memberOrder, groupOrder);
+			lexCollocIdMap.put(sourceLexCollocId, targetLexCollocId);
+			sumLexemeCollocCount.increment();
 		}
 
 		logger.debug("Done with collocations");

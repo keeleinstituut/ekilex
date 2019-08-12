@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
-import eki.common.constant.OrderingType;
+import eki.common.constant.OrderingField;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -38,7 +38,7 @@ public class PermissionService implements SystemConstant {
 	private EmailService emailService;
 
 	@Transactional
-	public List<EkiUserPermData> getEkiUserPermissions(OrderingType orderBy) {
+	public List<EkiUserPermData> getEkiUserPermissions(OrderingField orderBy) {
 
 		List<EkiUserPermData> users = permissionDbService.getUsers(orderBy);
 		for (EkiUserPermData user : users) {

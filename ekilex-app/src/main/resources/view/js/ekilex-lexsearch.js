@@ -1,5 +1,6 @@
 function initialise() {
 	$(document).on("click", ":button[name='detailsBtn']", function() {
+		openWaitDlg();
 		let id = $(this).data('id');
 		let isRestoreDisplayState = this.hasAttribute('data-refresh');
 		let openLexemes = [];
@@ -22,8 +23,10 @@ function initialise() {
 			}
 			$("#word_select_wait_" + id).hide();
 			$("#word_select_point_" + id).show();
+			closeWaitDlg();
 		}).fail(function(data) {
 			console.log(data);
+			closeWaitDlg();
 			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 		});
 	});
@@ -89,7 +92,7 @@ function initialise() {
 	});
 
 	$(document).on('click', '[name="pagingBtn"]', function() {
-		openWaitDlg("Palun oodake, andmete uuendamine on pooleli");
+		openWaitDlg();
 		let url = applicationUrl + "lex_paging";
 		let button = $(this);
 		let direction = button.data("direction");
