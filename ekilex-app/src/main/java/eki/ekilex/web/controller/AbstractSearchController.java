@@ -75,19 +75,9 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return commonDataService.getMorphs();
 	}
 
-	@ModelAttribute("wordGenders")
-	public List<Classifier> getWordGenders() {
-		return commonDataService.getGenders();
-	}
-
 	@ModelAttribute("wordTypes")
 	public List<Classifier> getWordTypes() {
 		return commonDataService.getWordTypes();
-	}
-
-	@ModelAttribute("wordAspects")
-	public List<Classifier> getWordAspect() {
-		return commonDataService.getAspects();
 	}
 
 	@ModelAttribute("wordRelationTypes")

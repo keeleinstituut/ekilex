@@ -24,6 +24,8 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<WordGroup> wordGroups;
 
+	private String firstDefinitionValue;
+
 	public WordDetails() {
 	}
 
@@ -89,5 +91,13 @@ public class WordDetails extends AbstractDataObject {
 
 	public void setWordSynRelations(List<SynRelation> wordSynRelations) {
 		this.wordSynRelations = wordSynRelations;
+	}
+
+	public String getFirstDefinitionValue() {
+		return firstDefinitionValue;
+	}
+
+	public void setFirstDefinitionValue(String firstDefinitionValue) {
+		this.firstDefinitionValue = firstDefinitionValue;
 	}
 }
