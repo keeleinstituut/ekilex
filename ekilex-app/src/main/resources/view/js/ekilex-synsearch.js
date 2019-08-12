@@ -1,11 +1,33 @@
 function initialise() {
+	$(document).on("click", ":button[name='manualEditBtn']", function() {
+		$('.navigate-panel').each(function (e) {
+			$(this).addClass('navigate-disabled-panel');
+			$(this).removeAttr('data-active-panel');
+		});
+
+		let activatedDiv = $('div[data-panel-index="3"]');
+		activatedDiv.attr('data-active-panel', true);
+		activatedDiv.removeClass('navigate-disabled-panel');
+		itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
+		itemToSelect.addClass('navigate-selected');
+
+		$(this).attr('disabled', true);
+
+	});
+
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 		let id = $(this).data('id');
+		let markedSynWordId = $(document).find('.navigate-marked').children(':first').data('word-id');
 
 		$("[id^='syn_select_point_']").hide();
 		$("[id^='syn_select_wait_']").hide();
 		$("#syn_select_wait_" + id).show();
-		$.get(applicationUrl + 'syn_worddetails/' + id).done(function(data) {
+		let detailsUrl = applicationUrl + 'syn_worddetails/' + id;
+		if (markedSynWordId != undefined) {
+			detailsUrl += '?markedSynWordId=' + markedSynWordId;
+		}
+
+		$.get(detailsUrl).done(function(data) {
 			let detailsDiv = $('#syn_details_div');
 			detailsDiv.replaceWith(data);
 			$("#syn_select_wait_" + id).hide();
@@ -37,7 +59,6 @@ function initialise() {
 					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId;
 					let callbackFunc = () => $('#refresh-details').trigger('click');
 					doPostRelationChange(actionUrl, callbackFunc);
-
 				}
 			});
 
@@ -97,48 +118,66 @@ function initialise() {
 		let PANEL_KEYCODES = {"49": "1", "50": "2", "51" : "3"};
 		let DISABLED_PANEL_CLASS = 'navigate-disabled-panel';
 		let NAVIGATE_SELECTED_CLASS = 'navigate-selected';
+		let NAVIGATE_DECLINED_CLASS = 'navigate-declined';
 
 
 		e = e || window.event;
 		//console.log(e.keyCode);
+
 		// 1 - 3
 		if (e.keyCode >= 49 && e.keyCode <= 51) {
-			$('.navigate-panel').each(function (e) {
-				$(this).addClass(DISABLED_PANEL_CLASS);
-				$(this).removeAttr('data-active-panel');
-			});
+			let synDetailsClicked = $("#syn_details_div").html() != '';
 
-			let activatedDiv = $('div[data-panel-index="' + PANEL_KEYCODES[e.keyCode] + '"]');
+			if (synDetailsClicked || e.keyCode == 49) {
+				$('.navigate-panel').each(function (e) {
+					$(this).addClass(DISABLED_PANEL_CLASS);
+					$(this).removeAttr('data-active-panel');
+				});
 
-			activatedDiv.removeClass(DISABLED_PANEL_CLASS);
-			activatedDiv.attr('data-active-panel', true);
+				let activatedDiv = $('div[data-panel-index="' + PANEL_KEYCODES[e.keyCode] + '"]');
 
-			let selectedItem = activatedDiv.find('.navigate-selected');
+				activatedDiv.removeClass(DISABLED_PANEL_CLASS);
+				activatedDiv.attr('data-active-panel', true);
 
-			if (selectedItem.length == 0) {
-				console.log("-- no selected item --");
-				let itemToSelect;
-				if (e.keyCode == 49) {
-					let selectedWordId = $('#syn_details_div').data('id');
-					console.log('selected word Id ' + selectedWordId);
-					itemToSelect = $('#syn_select_point_' + selectedWordId).closest('.navigate-item');
-				} else {
-					itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
+				let selectedItem = activatedDiv.find('.navigate-selected');
+
+				if (selectedItem.length == 0) {
+					console.log("-- no selected item --");
+					let itemToSelect;
+					if (e.keyCode == 49) {
+						let selectedWordId = $('#syn_details_div').data('id');
+						console.log('selected word Id ' + selectedWordId);
+						if (selectedWordId != undefined) {
+							itemToSelect = $('#syn_select_point_' + selectedWordId).closest('.navigate-item');
+						} else {
+							itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
+						}
+					} else {
+						itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
+					}
+					itemToSelect.addClass(NAVIGATE_SELECTED_CLASS);
+
 				}
-				itemToSelect.addClass(NAVIGATE_SELECTED_CLASS);
 			}
 
 		}
+
 		if (e.keyCode == 27) { //esc
 			$('.navigate-panel').each(function (e) {
 				$(this).removeClass(DISABLED_PANEL_CLASS);
+				$(this).removeAttr('data-navigate-selected-word-id');
 				$(this).removeAttr('data-active-panel');
 				$(this).find('[data-navigate-index]').removeClass(NAVIGATE_SELECTED_CLASS);
+				$(this).find('.' + NAVIGATE_DECLINED_CLASS).each(function () {$(this).removeClass(NAVIGATE_DECLINED_CLASS)});
+				$(this).find('.navigate-marked').removeClass('navigate-marked');
+				$(this).find(":button[name='manualEditBtn']").removeAttr('disabled');
+				$('#selectedSynDiv').hide();
 			});
 		}
 
 		if (e.keyCode == 38 || e.keyCode == 40) { // arrows
 			let activeDiv = $('div[data-active-panel]');
+			let panelIndex = activeDiv.data('panel-index');
 			let selectedItem = activeDiv.find('.' + NAVIGATE_SELECTED_CLASS);
 
 			if (selectedItem.length != 0) {
@@ -154,8 +193,19 @@ function initialise() {
 
 				if (newItem.length !=0) {
 					console.log("new item found");
+
+					if (panelIndex == "2") {
+						let currentSynWordId = activeDiv.data('navigate-selected-word-id');
+						console.log("********** currentSynWordId " + currentSynWordId);
+						let lexemeExists = newItem.find('input.meaning-word-id[value="' + currentSynWordId + '"]').length != 0;
+						 if (lexemeExists) {
+							 newItem.addClass(NAVIGATE_DECLINED_CLASS);
+						 }
+					}
 					newItem.addClass(NAVIGATE_SELECTED_CLASS);
+
 					selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
+					selectedItem.removeClass(NAVIGATE_DECLINED_CLASS);
 				}
 			}
 		}
@@ -168,7 +218,12 @@ function initialise() {
 			let panelIndex = activeDiv.data('panel-index');
 
 			if (panelIndex == "3") {
-				selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
+
+				activeDiv.find('.navigate-marked').each(function () {
+					$(this).removeClass('navigate-marked');
+				});
+
+				//selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
 				selectedItem.addClass('navigate-marked');
 
 				activeDiv.addClass(DISABLED_PANEL_CLASS);
@@ -181,7 +236,12 @@ function initialise() {
 				activatedDiv.attr('data-active-panel', true);
 
 				let wordId = selectedItem.children(':first').attr('data-word-id');
+				let word = selectedItem.children(':first').attr('data-word');
+
 				console.log(' -- - word id ' + wordId);
+				console.log(' -- - word  ' + word);
+				$('#selectedSynDiv').show();
+				$('#selectedSynDiv').html(word);
 
 				activatedDiv.data('navigate-selected-word-id', wordId);
 
@@ -189,11 +249,47 @@ function initialise() {
 
 				if (selectedLexemeItem.length == 0) {
 					console.log("-- no selected item --");
-					let itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
-					itemToSelect.addClass(NAVIGATE_SELECTED_CLASS);
+					selectedLexemeItem = activatedDiv.find('[data-navigate-index="0"]');
+					selectedLexemeItem.addClass(NAVIGATE_SELECTED_CLASS);
+				}
+
+				//
+				let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+				if (lexemeExists) {
+					selectedLexemeItem.addClass(NAVIGATE_DECLINED_CLASS);
 				}
 
 
+			} else if (panelIndex == "2") {
+				if (!selectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
+					let wordId = activeDiv.data('navigate-selected-word-id');
+					if (wordId != undefined) {
+
+						let lexemeId = selectedItem.data('lexeme-id');
+						let meaningId = selectedItem.data('meaning-id');
+
+						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId;
+						let callbackFunc = () => $('#refresh-details').trigger('click');
+
+						// let callbackFunction = function (markedItem) {
+						// 	$('#refresh-details').trigger('click');
+						// 	markedItem.addClass("navigate-marked");
+						// };
+
+						doPostRelationChange(actionUrl, callbackFunc);
+						// let markedItem = $('div[data-panel-index="3"]').find('.navigate-marked');
+						// doPostKeyboard(actionUrl, callbackFunction, markedItem);
+
+					} else {
+						openAlertDlg("Vali paremalt tulbast sõna.");
+					}
+
+				} else {
+					openAlertDlg("Lekseem on olemas.");
+				}
+			} else if (panelIndex == "1") {
+				$(document).find('.navigate-marked').removeClass('navigate-marked');
+				selectedItem.find('button[name="synDetailsBtn"]').trigger('click');
 			}
 		}
 

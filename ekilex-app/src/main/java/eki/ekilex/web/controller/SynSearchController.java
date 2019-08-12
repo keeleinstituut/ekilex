@@ -117,7 +117,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping(SYN_WORD_DETAILS_URI + "/{wordId}")
-	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	public String details(@PathVariable("wordId") Long wordId, @RequestParam(required = false) Long markedSynWordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);
 
@@ -125,6 +125,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, dataSetCode);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
+		model.addAttribute("markedSynWordId", markedSynWordId);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}

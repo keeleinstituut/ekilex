@@ -67,7 +67,8 @@
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
-          <div class="navigate-panel" data-panel-index="2">
+          <div id="selectedSynDiv" class="card shadow alert-warning" style="display: none"></div>
+          <div class="navigate-panel" data-panel-index="2" th:classappend="${markedSynWordId != null ? 'navigate-disabled-panel': ''}">
             <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme, lexemeIter : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
                th:data-lexeme-id="${lexeme.lexemeId}"
                th:data-navigate-index="${lexemeIter.index}"
@@ -84,7 +85,7 @@
                   </span>
 
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                    <input type="text" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
+                    <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
                       <span th:text="${meaningWord.homonymNumber}"></span>
@@ -134,7 +135,7 @@
 
 
         <div class="col-4 pr-2">
-          <div class="navigate-panel card mb-2" data-panel-index="3">
+          <div class="navigate-panel card mb-2" data-panel-index="3" th:attrappend="data-active-panel=${markedSynWordId != null}?'true'">
             <div class="card-body pt-0 pb-0">
               <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
                 <button type="button" class="btn badge badge-success"
@@ -143,12 +144,16 @@
                         th:data-target="${'#addSynRelationDlg_' + wordId}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
+              <button type="button" class="btn badge badge-secondary"
+                      th:title="#{syn.manual.mode}" name="manualEditBtn">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
 
               <div th:if="${!#lists.isEmpty(details.relations)}">
                 <table width="100%" class="orderable" data-op-code="word_relation">
                   <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}"
-                      th:data-navigate-index="${relationIter.index}">
-                    <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-word-id="${synRelation.wordId}">
+                      th:data-navigate-index="${relationIter.index}" th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-selected' : ''}">
+                    <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-word-id="${synRelation.wordId}" th:data-word="${synRelation.word}">
                       <span>
                         <i class="fa fa-list" aria-hidden="true"></i>
                       </span>

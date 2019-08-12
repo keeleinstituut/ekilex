@@ -47,8 +47,7 @@
     background : #ffc107;
     font-size : large;
 }
+
 .navigate-declined {
-    outline: 2px solid lightskyblue;
     background : lightgray;
-    font-size : large;
 }
