@@ -41,3 +41,14 @@
     pointer-events : none;
     opacity : 0.4;
 }
+
+.navigate-marked {
+    outline: 2px solid lightskyblue;
+    background : #ffc107;
+    font-size : large;
+}
+.navigate-declined {
+    outline: 2px solid lightskyblue;
+    background : lightgray;
+    font-size : large;
+}

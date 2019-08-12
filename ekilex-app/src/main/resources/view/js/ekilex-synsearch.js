@@ -89,23 +89,34 @@ function initialise() {
 	}
 
 	function checkKey(e) {
+		var tag = e.target.tagName.toLowerCase();
+		if ( tag == 'input' || tag == 'textarea') {
+			return;
+		}
+
+		let PANEL_KEYCODES = {"49": "1", "50": "2", "51" : "3"};
+		let DISABLED_PANEL_CLASS = 'navigate-disabled-panel';
+		let NAVIGATE_SELECTED_CLASS = 'navigate-selected';
+
+
 		e = e || window.event;
-		console.log(e.keyCode);
+		//console.log(e.keyCode);
 		// 1 - 3
 		if (e.keyCode >= 49 && e.keyCode <= 51) {
 			$('.navigate-panel').each(function (e) {
-				$(this).addClass('navigate-disabled-panel');
+				$(this).addClass(DISABLED_PANEL_CLASS);
 				$(this).removeAttr('data-active-panel');
 			});
 
-			let activatedDiv = $('div[data-activation-keycode="' + e.keyCode + '"]');
+			let activatedDiv = $('div[data-panel-index="' + PANEL_KEYCODES[e.keyCode] + '"]');
 
-			activatedDiv.removeClass('navigate-disabled-panel');
+			activatedDiv.removeClass(DISABLED_PANEL_CLASS);
 			activatedDiv.attr('data-active-panel', true);
 
 			let selectedItem = activatedDiv.find('.navigate-selected');
 
 			if (selectedItem.length == 0) {
+				console.log("-- no selected item --");
 				let itemToSelect;
 				if (e.keyCode == 49) {
 					let selectedWordId = $('#syn_details_div').data('id');
@@ -114,36 +125,75 @@ function initialise() {
 				} else {
 					itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
 				}
-				itemToSelect.addClass('navigate-selected');
+				itemToSelect.addClass(NAVIGATE_SELECTED_CLASS);
 			}
 
 		}
 		if (e.keyCode == 27) { //esc
 			$('.navigate-panel').each(function (e) {
-				$(this).removeClass('navigate-disabled-panel');
+				$(this).removeClass(DISABLED_PANEL_CLASS);
 				$(this).removeAttr('data-active-panel');
-				$(this).find('[data-navigate-index]').removeClass('navigate-selected');
+				$(this).find('[data-navigate-index]').removeClass(NAVIGATE_SELECTED_CLASS);
 			});
 		}
 
 		if (e.keyCode == 38 || e.keyCode == 40) { // arrows
-			let isGoDown = (e.keyCode == 40);
 			let activeDiv = $('div[data-active-panel]');
-			let selectedItem = activeDiv.find('.navigate-selected');
+			let selectedItem = activeDiv.find('.' + NAVIGATE_SELECTED_CLASS);
 
 			if (selectedItem.length != 0) {
+				console.log("-- selected item found --");
+
+				let indexIncrement = (e.keyCode == 40 ? 1 : -1);
 				let selectedIndex = parseInt(selectedItem.attr('data-navigate-index'));
 				console.log("selected index " + selectedIndex);
 
-				let newIndex = isGoDown ? selectedIndex + 1 : selectedIndex -1;
+				let newIndex = selectedIndex + indexIncrement;
 				console.log("new index " + newIndex);
 				let newItem = activeDiv.find('[data-navigate-index="' + newIndex + '"]');
 
 				if (newItem.length !=0) {
 					console.log("new item found");
-					newItem.addClass('navigate-selected');
-					selectedItem.removeClass('navigate-selected');
+					newItem.addClass(NAVIGATE_SELECTED_CLASS);
+					selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
 				}
+			}
+		}
+
+		if (e.keyCode == 13) {
+			e.preventDefault();
+			let activeDiv = $('div[data-active-panel]');
+			let selectedItem = activeDiv.find('.' + NAVIGATE_SELECTED_CLASS);
+
+			let panelIndex = activeDiv.data('panel-index');
+
+			if (panelIndex == "3") {
+				selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
+				selectedItem.addClass('navigate-marked');
+
+				activeDiv.addClass(DISABLED_PANEL_CLASS);
+				activeDiv.removeAttr('data-active-panel');
+
+
+				let activatedDiv = $('div[data-panel-index="2"]');
+
+				activatedDiv.removeClass(DISABLED_PANEL_CLASS);
+				activatedDiv.attr('data-active-panel', true);
+
+				let wordId = selectedItem.children(':first').attr('data-word-id');
+				console.log(' -- - word id ' + wordId);
+
+				activatedDiv.data('navigate-selected-word-id', wordId);
+
+				let selectedLexemeItem = activatedDiv.find('.navigate-selected');
+
+				if (selectedLexemeItem.length == 0) {
+					console.log("-- no selected item --");
+					let itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
+					itemToSelect.addClass(NAVIGATE_SELECTED_CLASS);
+				}
+
+
 			}
 		}
 

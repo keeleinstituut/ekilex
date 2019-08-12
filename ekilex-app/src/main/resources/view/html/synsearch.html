@@ -26,7 +26,7 @@
 
     <div class="row no-gutters mt-2" th:unless="${noResults}">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div class="card shadow navigate-panel" th:if="${not #lists.isEmpty(wordsResult.words)}" data-activation-keycode="49">
+        <div class="card shadow navigate-panel" th:if="${not #lists.isEmpty(wordsResult.words)}" data-panel-index="1">
           <div class="card-body p-2">
             <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
             <table id="results" class="table table-striped mb-0">
@@ -67,7 +67,7 @@
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
-          <div class="navigate-panel" data-activation-keycode="50">
+          <div class="navigate-panel" data-panel-index="2">
             <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme, lexemeIter : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
                th:data-lexeme-id="${lexeme.lexemeId}"
                th:data-navigate-index="${lexemeIter.index}"
@@ -84,7 +84,7 @@
                   </span>
 
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                    <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
+                    <input type="text" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
                       <span th:text="${meaningWord.homonymNumber}"></span>
@@ -134,7 +134,7 @@
 
 
         <div class="col-4 pr-2">
-          <div class="navigate-panel card mb-2" data-activation-keycode="51">
+          <div class="navigate-panel card mb-2" data-panel-index="3">
             <div class="card-body pt-0 pb-0">
               <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
                 <button type="button" class="btn badge badge-success"
