@@ -1,10 +1,10 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -120,15 +120,15 @@ public class LexEditController implements WebConstant {
 	@PostMapping("/duplicatelexeme/{lexemeId}")
 	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
-		Optional<Long> clonedLexeme = Optional.empty();
+		List<Long> clonedLexemeIds = new ArrayList<>();
 		try {
-			clonedLexeme = compositionService.optionalDuplicateLexemeAndMeaning(lexemeId);
+			clonedLexemeIds = compositionService.duplicateLexeme(lexemeId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
 
 		Map<String, String> response = new HashMap<>();
-		if (clonedLexeme.isPresent()) {
+		if (CollectionUtils.isNotEmpty(clonedLexemeIds)) {
 			response.put("message", "Lekseemi duplikaat lisatud");
 			response.put("status", "ok");
 		} else {

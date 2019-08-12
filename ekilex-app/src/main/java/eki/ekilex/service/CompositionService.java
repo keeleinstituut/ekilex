@@ -53,8 +53,8 @@ public class CompositionService extends AbstractService {
 	}
 
 	@Transactional
-	public Optional<Long> optionalDuplicateLexemeAndMeaning(Long lexemeId) {
-		return Optional.of(duplicateLexemeAndMeaning(lexemeId));
+	public List<Long> duplicateLexeme(Long lexemeId) {
+		return duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId);
 	}
 
 	@Transactional
@@ -85,12 +85,22 @@ public class CompositionService extends AbstractService {
 		return duplicateLexemeId;
 	}
 
-	private Long duplicateLexemeAndMeaning(Long lexemeId) {
-	
+	private List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId) {
+
+		List<Long> duplicateLexemeIds = new ArrayList<>();
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
-		Long duplicateMeaningId = duplicateMeaningData(lexeme.getMeaningId());
-		Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId);
-		return duplicateLexemeId;
+		String datasetCode = lexeme.getDatasetCode();
+		Long meaningId = lexeme.getMeaningId();
+
+		Long duplicateMeaningId = duplicateMeaningData(meaningId);
+
+		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, datasetCode);
+		meaningLexemes.forEach(meaningLexeme -> {
+			Long duplicateLexemeId = duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId);
+			duplicateLexemeIds.add(duplicateLexemeId);
+		});
+
+		return duplicateLexemeIds;
 	}
 
 	private Long duplicateMeaningWithLexemes(Long meaningId) {
