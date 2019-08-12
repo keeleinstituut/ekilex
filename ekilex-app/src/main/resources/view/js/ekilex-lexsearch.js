@@ -70,6 +70,7 @@ function initialise() {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {
 				openMessageDlg(response.message);
+				refreshDetails();
 			} else {
 				openAlertDlg(response.message);
 			}
@@ -85,6 +86,7 @@ function initialise() {
 		$.post(url).done(function(data) {
 			var response = JSON.parse(data);
 			openMessageDlg(response.message);
+			refreshDetails();
 		}).fail(function(data) {
 			openAlertDlg("Tähenduse lisamine ebaõnnestus");
 			console.log(data);
@@ -172,6 +174,11 @@ function toggleLexeme(e) {
 	let elementToShow = $('[data-toggle-name=' + targetName + ']');
 	elementToClose.addClass('d-none');
 	elementToShow.removeClass('d-none');
+}
+
+function refreshDetails() {
+	var refreshButton = $('#refresh-details');
+	refreshButton.trigger('click');
 }
 
 function doNewSearch() {

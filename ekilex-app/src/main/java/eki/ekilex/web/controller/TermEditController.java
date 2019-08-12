@@ -108,7 +108,9 @@ public class TermEditController implements WebConstant {
 
 		Map<String, String> response = new HashMap<>();
 		if (clonedMeaning.isPresent()) {
+			Long duplicateMeaningId = clonedMeaning.get();
 			response.put("message", "Mõiste duplikaat lisatud");
+			response.put("duplicateMeaningId", String.valueOf(duplicateMeaningId));
 			response.put("status", "ok");
 		} else {
 			response.put("message", "Duplikaadi lisamine ebaõnnestus");
