@@ -122,7 +122,7 @@ public class LexEditController implements WebConstant {
 
 		List<Long> clonedLexemeIds = new ArrayList<>();
 		try {
-			clonedLexemeIds = compositionService.duplicateLexeme(lexemeId);
+			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
