@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -670,7 +671,7 @@ public class EditController implements WebConstant, SystemConstant {
 	private String getFirstDefinitionValue(WordDetails wordDetails) {
 
 		Optional<WordLexeme> wordLexemeWithDefinition = wordDetails.getLexemes().stream()
-				.filter(lex -> lex.getDefinitions().get(0) != null)
+				.filter(lex -> CollectionUtils.isNotEmpty(lex.getDefinitions()) && Objects.nonNull(lex.getDefinitions().get(0).getValue()))
 				.findFirst();
 
 		if (wordLexemeWithDefinition.isPresent()) {
