@@ -21,7 +21,7 @@
     <div class="card shadow">
       <div class="card-body p-2">
         <form id="searchForm" th:action="@{/lexsearch}" method="post">
-          <th:block th:replace="search :: search_form('lex_search', true)"></th:block>
+          <th:block th:replace="search :: search_form('lex_search')"></th:block>
         </form>
       </div>
     </div>
