@@ -1,5 +1,6 @@
 function initialise() {
 	$(document).on("click", ":button[name='manualEditBtn']", function() {
+		//TODO refactor
 		$('.navigate-panel').each(function (e) {
 			$(this).addClass('navigate-disabled-panel');
 			$(this).removeAttr('data-active-panel');
@@ -121,21 +122,36 @@ function initialise() {
 		let NAVIGATE_SELECTED_CLASS = 'navigate-selected';
 		let NAVIGATE_DECLINED_CLASS = 'navigate-declined';
 
+		let activeDiv = $('div[data-active-panel]');
+		let activePanelIndex = activeDiv.data('panel-index');
 
 		e = e || window.event;
-		//console.log(e.keyCode);
+		console.log(e.keyCode);
 
 		// 1 - 3
-		if (e.keyCode >= 49 && e.keyCode <= 51) {
-			let synDetailsClicked = $("#syn_details_div").html() != '';
+		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
+			let synDetailsVisible = $("#syn_details_div").html() != '';
 
-			if (synDetailsClicked || e.keyCode == 49) {
+			if (synDetailsVisible || e.keyCode == 49) {
 				$('.navigate-panel').each(function (e) {
 					$(this).addClass(DISABLED_PANEL_CLASS);
 					$(this).removeAttr('data-active-panel');
 				});
 
-				let activatedDiv = $('div[data-panel-index="' + PANEL_KEYCODES[e.keyCode] + '"]');
+				let selectedPanelIndex = "1";
+
+				if (activePanelIndex != undefined) {
+					selectedPanelIndex = parseInt(activePanelIndex);
+				}
+				if (e.keyCode == 37 && selectedPanelIndex > 1) {
+					selectedPanelIndex--;
+				} else if (e.keyCode == 39 && selectedPanelIndex < 3) {
+					selectedPanelIndex++;
+				} else {
+					selectedPanelIndex = PANEL_KEYCODES[e.keyCode];
+				}
+				console.log("selected index " + selectedPanelIndex);
+				let activatedDiv = $('div[data-panel-index="' + selectedPanelIndex + '"]');
 
 				activatedDiv.removeClass(DISABLED_PANEL_CLASS);
 				activatedDiv.attr('data-active-panel', true);
