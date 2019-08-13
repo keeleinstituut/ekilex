@@ -165,7 +165,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 					itemData.wordTypeCodes.clear();
 					itemData.wordTypeCodes.add(defaultWordType);
 				}
-				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, null, itemData.wordTypeCodes, itemData.vocalForm);
+				WordData newWord = createDefaultWordFrom(itemData.word, lang, null, itemData.displayForm, itemData.vocalForm, itemData.wordTypeCodes, null, null);
 				context.importedWords.add(newWord);
 				newWordCount.increment();
 				wordId = newWord.id;
@@ -225,10 +225,10 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected WordData createDefaultWordFrom(
-			String wordValue, String displayForm, String lang, String displayMorph, String aspectCode, List<String> wordTypeCodes, String vocalForm) throws Exception {
+			String wordValue, String lang, String guid, String displayForm, String vocalForm, List<String> wordTypeCodes, String displayMorph, String aspectCode) throws Exception {
 
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
-		Word word = new Word(wordValue, lang, null, null, displayForm, vocalForm, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
+		Word word = new Word(wordValue, lang, homonymNr, guid, DEFAULT_WORD_MORPH_CODE, null, null, displayForm, vocalForm, wordTypeCodes);
 		word.setDisplayMorph(displayMorph);
 		word.setAspectCode(aspectCode);
 		WordData createdWord = new WordData();
@@ -352,6 +352,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String wordValue = cleanUpWord(wordDisplayForm);
 		wordData.value = wordValue;
 		wordData.language = dataLang;
+		wordData.guid = guid;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 
 		String wordVocalForm = null;
@@ -362,7 +363,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, DEFAULT_WORD_MORPH_CODE, guid, wordData.wordTypeCodes);
+		Word word = new Word(wordValue, dataLang, homonymNr, guid, DEFAULT_WORD_MORPH_CODE, null, null, wordDisplayForm, wordVocalForm, wordData.wordTypeCodes);
 
 		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
@@ -544,6 +545,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String value;
 		int homonymNr = 0;
 		String headword;
+		String guid;
 		List<String> wordTypeCodes = new ArrayList<>();
 		List<String> posCodes = new ArrayList<>();
 		List<String> grammars = new ArrayList<>();

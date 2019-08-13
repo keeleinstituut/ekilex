@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -178,7 +179,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			processArticleComments(articleNode, newWords);
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(headword, contentNode, newWords, context);
+				processArticleContent(headword, guid, contentNode, newWords, context);
 				processVariants(newWords);
 			}
 			context.importedWords.addAll(newWords);
@@ -442,13 +443,13 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Derivatives processing done.");
 	}
 
-	private List<WordData> processSubWords(Node node, Context context, String headword) throws Exception {
-		List<WordData> subWords = extractSubWords(node, headword);
+	private List<WordData> processSubWords(Node node, Context context, String headword, String guid) throws Exception {
+		List<WordData> subWords = extractSubWords(node, headword, guid);
 		if (!subWords.isEmpty()) {
 			for (WordData subWord: subWords) {
 				subWord.id = getWordIdFor(subWord.value, subWord.homonymNr, context.importedWords, subWord.value);
 				if (subWord.id == null) {
-					WordData newWord = createDefaultWordFrom(subWord.value, subWord.displayForm, dataLang, subWord.displayMorph, null, subWord.wordTypeCodes, null);
+					WordData newWord = createDefaultWordFrom(subWord.value, dataLang, subWord.guid, subWord.displayForm, null, subWord.wordTypeCodes, subWord.displayMorph, null);
 					newWord.homonymNr = subWord.homonymNr;
 					context.importedWords.add(newWord);
 					subWord.id = newWord.id;
@@ -460,7 +461,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private Long createWordWithLexeme(Context context, WordData wordData) throws Exception {
 
-		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, null, wordData.wordTypeCodes, null);
+		WordData newWord = createDefaultWordFrom(wordData.value, dataLang, wordData.guid, wordData.value, null, wordData.wordTypeCodes, wordData.displayMorph, null);
 		newWord.homonymNr = wordData.homonymNr;
 		context.importedWords.add(newWord);
 
@@ -508,6 +509,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processArticleContent(
 			String headword,
+			String guid,
 			Element contentNode,
 			List<WordData> newWords,
 			Context context) throws Exception {
@@ -532,7 +534,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 			int lexemeLevel2 = 0;
 			for (Node meaningGroupNode : meanigGroupNodes) {
-				List<WordData> subWords = processSubWords(meaningGroupNode, context, headword);
+				List<WordData> subWords = processSubWords(meaningGroupNode, context, headword, guid);
 				if (!subWords.isEmpty()) {
 					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, null, meaningNrForGroup, headword);
 					if (!createdLexemIds.isEmpty()) {
@@ -1016,9 +1018,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				derivative.id = mainWord.id;
 				derivative.headword = mainWord.headword;
 				derivative.value = cleanUpWord(wordNode.getTextTrim());
-				if (((Element)wordGroupNode).attributeValue(homonymNrAttr) != null) {
-					derivative.homonymNr = Integer.parseInt(((Element)wordGroupNode).attributeValue(homonymNrAttr));
+				String homonymNrStr = wordNode.attributeValue(homonymNrAttr);
+				if (StringUtils.isNotBlank(homonymNrStr)) {
+					derivative.homonymNr = Integer.parseInt(homonymNrStr);
 				}
+				derivative.guid = mainWord.guid;
 				Element frequencyGroupNode = (Element) node.selectSingleNode(frequencyGroupExp);
 				if (frequencyGroupNode != null) {
 					derivative.frequencyGroup = frequencyGroupCodes.get(frequencyGroupNode.getTextTrim());
@@ -1031,7 +1035,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return derivatives;
 	}
 
-	private List<WordData> extractSubWords(Node node, String headword) {
+	private List<WordData> extractSubWords(Node node, String headword, String guid) {
 
 		final String subWordExp = "s:mmg/s:mm";
 		final String frequencyGroupExp = "s:mmg/s:msag";
@@ -1063,6 +1067,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			if (subWordElement.attributeValue(homonymNrAttr) != null) {
 				subWord.homonymNr = Integer.parseInt(subWordElement.attributeValue(homonymNrAttr));
 			}
+			subWord.guid = guid;
 			if (subWordElement.hasMixedContent()) {
 				Element governmentNode = (Element) subWordNode.selectSingleNode(governmentExp);
 				if (governmentNode != null) {

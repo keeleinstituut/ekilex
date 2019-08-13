@@ -245,7 +245,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 
 					homonymNr = getWordMaxHomonymNr(term, lang);
 					homonymNr++;
-					wordObj = new Word(term, lang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, termWordTypeCodes);
+					wordObj = new Word(term, lang, homonymNr, null, DEFAULT_WORD_MORPH_CODE, null, null, null, null, termWordTypeCodes);
 					wordId = createOrSelectWord(wordObj, null, null);
 
 					//lexeme

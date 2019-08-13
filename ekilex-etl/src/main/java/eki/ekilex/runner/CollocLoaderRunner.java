@@ -1006,7 +1006,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			collocMemberUniqueDummyHomonymCount.increment();
 			Map<String, Object> tableRowParamMap;
 
-			Long wordId = basicDbService.create(WORD);
+			tableRowParamMap = new HashMap<>();
+			tableRowParamMap.put("lang", dataLang);
+			Long wordId = basicDbService.create(WORD, tableRowParamMap);
+
 			tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("word_id", wordId);
 			Long paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
@@ -1149,7 +1152,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		int homonymNr = getWordMaxHomonymNr(word, dataLang);
 		homonymNr++;
-		Word wordObj = new Word(word, dataLang, homonymNr, morphCode, guid);
+		Word wordObj = new Word(word, dataLang, homonymNr, guid, morphCode);
 		wordObj.setDisplayMorph(wordDisplayMorph);
 		Long wordId = createOrSelectWord(wordObj, null, ssGuidMap, ssWordCount, reusedWordCount);
 		wordObj.setId(wordId);

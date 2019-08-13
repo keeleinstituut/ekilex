@@ -827,7 +827,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		if (word.isPresent()) {
 			return word.get();
 		} else {
-			WordData newWord = createDefaultWordFrom(wordValue, wordDisplayForm, wordLanguage, null, aspect, null, vocalForm);
+			WordData newWord = createDefaultWordFrom(wordValue, wordLanguage, null, wordDisplayForm, vocalForm, null, null, aspect);
 			context.importedWords.add(newWord);
 			return newWord;
 		}
