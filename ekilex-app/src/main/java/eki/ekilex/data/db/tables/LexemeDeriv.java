@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
 
-    private static final long serialVersionUID = 1375709850;
+    private static final long serialVersionUID = 267596837;
 
     /**
      * The reference instance of <code>public.lexeme_deriv</code>
@@ -70,6 +70,11 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
      * The column <code>public.lexeme_deriv.deriv_code</code>.
      */
     public final TableField<LexemeDerivRecord, String> DERIV_CODE = createField("deriv_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme_deriv.order_by</code>.
+     */
+    public final TableField<LexemeDerivRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_deriv_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.lexeme_deriv</code> table reference
