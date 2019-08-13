@@ -35,16 +35,3 @@ eki-link {
 	color: #004F87;
 	cursor: pointer;
 }
-
-eki-disabled {
-	pointer-events: none;
-	opacity: 0.4;
-}
-
-eki-outline {
-	/*height: 100px;*/
-	/*width: 100px;*/
-	/*background: black;*/
-	/*color: white;*/
-	outline: thick solid #00ff00;
-}
