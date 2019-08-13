@@ -2,7 +2,6 @@ package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -652,8 +651,4 @@ public class EditController extends AbstractPageController implements SystemCons
 		return "redirect:" + backUrl;
 	}
 
-	@ModelAttribute("iso2languages")
-	public Map<String, String> getIso2Languages() {
-		return commonDataService.getLanguagesIso2Map();
-	}
 }
