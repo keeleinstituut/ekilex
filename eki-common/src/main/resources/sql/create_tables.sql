@@ -840,6 +840,7 @@ create table lexeme_deriv
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   deriv_code varchar(100) references deriv(code) not null,
+  order_by bigserial,
   unique(lexeme_id, deriv_code)
 );
 alter sequence lexeme_deriv_id_seq restart with 10000;
@@ -849,6 +850,7 @@ create table lexeme_region
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   region_code varchar(100) references region(code) not null,
+  order_by bigserial,
   unique(lexeme_id, region_code)
 );
 alter sequence lexeme_region_id_seq restart with 10000;
@@ -859,6 +861,7 @@ create table lexeme_freeform
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   freeform_id bigint references freeform(id) on delete cascade not null,
+  order_by bigserial,
   unique(lexeme_id, freeform_id)
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;

@@ -88,7 +88,7 @@ public class EditController implements WebConstant, SystemConstant {
 
 		logger.debug("Add new item : {}", itemData);
 
-		String valuePrese = textDecorationService.cleanHtmlMarkup(itemData.getValue());
+		String valuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(itemData.getValue());
 
 		switch (itemData.getOpCode()) {
 		case "definition":
@@ -205,7 +205,7 @@ public class EditController implements WebConstant, SystemConstant {
 	@PostMapping(UPDATE_ITEM_URI)
 	public String updateItem(@RequestBody UpdateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		String valuePrese = textDecorationService.cleanHtmlMarkup(itemData.getValue());
+		String valuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(itemData.getValue());
 
 		logger.debug("Update operation for {}", itemData.getOpCode());
 		switch (itemData.getOpCode()) {
@@ -617,7 +617,7 @@ public class EditController implements WebConstant, SystemConstant {
 	@ResponseBody
 	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String valuePrese) {
 
-		valuePrese = textDecorationService.cleanHtmlMarkup(valuePrese);
+		valuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(valuePrese);
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, valuePrese);
 		cudService.updateWordValue(wordId, valuePrese);
 		return valuePrese;

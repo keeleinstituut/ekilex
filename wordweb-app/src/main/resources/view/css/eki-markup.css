@@ -10,6 +10,10 @@ eki-highlight {
 	font-weight: bold;
 }
 
+eki-stress {
+	font-weight: bold;
+}
+
 eki-sub {
 	vertical-align: sub;
 	font-size: 70%;

@@ -12,10 +12,13 @@ public class TextDecorationDescriptor extends AbstractDataObject {
 
 	private String postDecoration;
 
-	public TextDecorationDescriptor(Pattern entityMatchPattern, String preDecoration, String postDecoration) {
+	private int applyMethod;
+
+	public TextDecorationDescriptor(Pattern entityMatchPattern, String preDecoration, String postDecoration, int applyMethod) {
 		this.entityMatchPattern = entityMatchPattern;
 		this.preDecoration = preDecoration;
 		this.postDecoration = postDecoration;
+		this.applyMethod = applyMethod;
 	}
 
 	public Pattern getEntityMatchPattern() {
@@ -28,6 +31,10 @@ public class TextDecorationDescriptor extends AbstractDataObject {
 
 	public String getPostDecoration() {
 		return postDecoration;
+	}
+
+	public int getApplyMethod() {
+		return applyMethod;
 	}
 
 }

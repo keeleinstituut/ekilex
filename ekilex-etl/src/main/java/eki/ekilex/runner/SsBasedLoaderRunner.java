@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ClassifierName;
+import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
@@ -81,11 +83,14 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		registerCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STYYP);
 	}
 
-	protected void saveRegisters(Long lexemeId, List<String> lexemeRegisterCodes, String reportingId) throws Exception {
+	protected void saveRegisters(Long lexemeId, List<String> lexemeRegisterCodes, String headword) throws Exception {
+		if (CollectionUtils.isEmpty(lexemeRegisterCodes)) {
+			return;
+		}
 		for (String registerCode : lexemeRegisterCodes) {
 			String ekilexRegisterCode = registerCodes.get(registerCode);
 			if (ekilexRegisterCode == null) {
-				writeToLogFile(reportingId, "Tundmatu registri kood", registerCode);
+				writeToLogFile(headword, "Tundmatu registri kood", registerCode);
 			} else {
 				createLexemeRegister(lexemeId, ekilexRegisterCode);
 			}
@@ -119,7 +124,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return existingMeaning.orElse(null);
 	}
 
-	protected boolean validateMeaning(WordToMeaningData meaningData, List<String> definitions, String reportingId) throws Exception {
+	protected boolean validateMeaning(WordToMeaningData meaningData, List<String> definitions, String headword) throws Exception {
 
 		if (meaningData.meaningDefinitions.isEmpty() || definitions.isEmpty()) {
 			return true;
@@ -129,8 +134,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		if (Objects.equals(meaningDefinition, definition)) {
 			return true;
 		}
-		//		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
-		writeToLogFile(MEANINGS_REPORT_NAME, reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
+		writeToLogFile(MEANINGS_REPORT_NAME, headword, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
 		return false;
 	}
 
@@ -168,7 +172,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				if (!reportingPaused) {
 					//logger.debug("new word created : {}", itemData.word);
 				}
-				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
+				writeToLogFile(itemData.headword, logMessage, itemData.word);
 			} else {
 				//logger.debug("word found ; {}", existingWord.get().value);
 				wordId = existingWord.get().id;
@@ -208,6 +212,13 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		if (additionalDomains != null) {
 			domainCodes.addAll(additionalDomains);
 		}
+		saveDomains(meaningId, domainCodes);
+	}
+
+	protected void saveDomains(Long meaningId, List<String> domainCodes) throws Exception {
+		if (CollectionUtils.isEmpty(domainCodes)) {
+			return;
+		}
 		for (String domainCode : domainCodes) {
 			createMeaningDomain(meaningId, DOMAIN_ORIGIN_EKI_GENERIC, domainCode);
 		}
@@ -228,7 +239,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	protected List<LexemeToWordData> extractLexemeMetadata(Node node, String lexemeMetadataExp, String relationTypeAttr, String reportingId) throws Exception {
+	protected List<LexemeToWordData> extractLexemeMetadata(Node node, String lexemeMetadataExp, String relationTypeAttr, String headword) throws Exception {
 
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
@@ -245,7 +256,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
 			lexemeMetadata.displayForm = cleanEkiEntityMarkup(metadataElement.getTextTrim());
 			lexemeMetadata.word = cleanUpWord(lexemeMetadata.displayForm);
-			lexemeMetadata.reportingId = reportingId;
+			lexemeMetadata.headword = headword;
 			String lexemeLevel1AttrValue = metadataElement.attributeValue(lexemeLevel1Attr);
 			if (StringUtils.isBlank(lexemeLevel1AttrValue)) {
 				lexemeMetadata.lexemeLevel1 = defaultLexemeLevel1;
@@ -264,7 +275,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				String mappedWordTypeCode = wordTypes.get(wordTypeAttrValue);
 				if (mappedWordTypeCode == null) {
 					logger.debug("unknown word type {}", wordTypeAttrValue);
-					writeToLogFile(reportingId, "Tundmatu märksõnaliik", wordTypeAttrValue);
+					writeToLogFile(headword, "Tundmatu märksõnaliik", wordTypeAttrValue);
 				} else {
 					lexemeMetadata.wordTypeCodes.add(mappedWordTypeCode);
 				}
@@ -379,13 +390,13 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return extractCleanValues(node, wordPosCodeExp);
 	}
 
-	protected String extractReportingId(Node node) {
+	protected String extractHeadword(Node node) {
 
-		String reportingIdExp = xpathExpressions().get("reportingId");
+		String headwordExp = xpathExpressions().get("headword");
 
-		Element reportingIdNode = (Element) node.selectSingleNode(reportingIdExp);
-		String reportingId = reportingIdNode != null ? cleanUpWord(reportingIdNode.getTextTrim()) : "";
-		return reportingId;
+		Element headwordNode = (Element) node.selectSingleNode(headwordExp);
+		String headword = headwordNode != null ? cleanUpWord(headwordNode.getTextTrim()) : "";
+		return headword;
 	}
 
 	protected String extractGuid(Node node, String articleGuidExp) {
@@ -437,13 +448,13 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return cleanedWord;
 	}
 
-	protected void writeToLogFile(String reportingId, String message, String values) throws Exception {
-		writeToLogFile(null, reportingId, message, values);
+	protected void writeToLogFile(String headword, String message, String values) throws Exception {
+		writeToLogFile(null, headword, message, values);
 	}
 
-	protected void writeToLogFile(String reportFile, String reportingId, String message, String values) throws Exception {
+	protected void writeToLogFile(String reportFile, String headword, String message, String values) throws Exception {
 		if (doReports && !reportingPaused) {
-			String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(reportingId, message, values));
+			String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(headword, message, values));
 			if (reportFile == null) {
 				reportComposer.append(logMessage);
 			} else {
@@ -484,7 +495,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			boolean directionFromLexemeToWord) throws Exception {
 
 		for (LexemeToWordData itemData : items) {
-			Long wordId = getWordIdFor(itemData.word, itemData.homonymNr, context.importedWords, itemData.reportingId);
+			Long wordId = getWordIdFor(itemData.word, itemData.homonymNr, context.importedWords, itemData.headword);
 			if (wordId != null) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("wordId", wordId);
@@ -501,7 +512,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 						}
 					} else {
 						logger.debug("Lexeme not found for word : {}, lexeme level1 : {}.", itemData.word, itemData.lexemeLevel1);
-						writeToLogFile(itemData.reportingId, logMessage, itemData.word + ", level1 " + itemData.lexemeLevel1);
+						writeToLogFile(itemData.headword, logMessage, itemData.word + ", level1 " + itemData.lexemeLevel1);
 					}
 				} catch (Exception e) {
 					logger.error("{} | {} | {}", e.getMessage(), itemData.word, wordId);
@@ -510,7 +521,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	protected Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
+	protected Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String headword) throws Exception {
 
 		Long wordId = null;
 		Optional<WordData> matchingWord = words.stream().filter(w -> w.value.equals(wordValue) && w.homonymNr == homonymNr).findFirst();
@@ -521,29 +532,36 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			if (!reportingPaused) {
 				//logger.debug("No matching word was found for: \"{}\", word: \"{}\", homonym: \"{}\"", reportingId, wordValue, homonymNr);
 			}
-			writeToLogFile(reportingId, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
+			writeToLogFile(headword, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
 		}
 		return wordId;
 	}
 
-	protected class WordData {
+	protected class WordData extends AbstractDataObject {
+		private static final long serialVersionUID = 1L;
+
 		Long id;
 		String value;
 		int homonymNr = 0;
-		String reportingId;
+		String headword;
 		List<String> wordTypeCodes = new ArrayList<>();
 		List<String> posCodes = new ArrayList<>();
-		String frequencyGroup;
 		List<String> grammars = new ArrayList<>();
-		Long meaningId;
 		List<String> governments = new ArrayList<>();
+		List<String> registerCodes = new ArrayList<>();
+		List<String> domainCodes = new ArrayList<>();
+		String frequencyGroup;
 		String displayMorph;
 		int level1 = 1;
 		String language;
 		String displayForm;
+		Long meaningId;
+		String mnr;
 	}
 
-	protected class WordToMeaningData {
+	protected class WordToMeaningData extends AbstractDataObject {
+		private static final long serialVersionUID = 1L;
+
 		String word;
 		int homonymNr = 0;
 		int lexemeLevel1 = 1;
@@ -554,8 +572,10 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		int meaningLevel1 = 1;
 	}
 
-	protected class LexemeToWordData {
-		String reportingId;
+	protected class LexemeToWordData extends AbstractDataObject {
+		private static final long serialVersionUID = 1L;
+
+		String headword;
 		Long meaningId;
 		Long lexemeId;
 		Long wordId;
@@ -585,7 +605,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.homonymNr = this.homonymNr;
 			newData.relationType = this.relationType;
 			newData.governments.addAll(this.governments);
-			newData.reportingId = this.reportingId;
+			newData.headword = this.headword;
 			newData.usages.addAll(this.usages);
 			newData.wordTypeCodes.addAll(this.wordTypeCodes);
 			newData.registerCodes.addAll(this.registerCodes);
@@ -601,7 +621,9 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<WordData> words = new ArrayList<>();
 	}
 
-	protected class Context {
+	protected class Context extends AbstractDataObject {
+		private static final long serialVersionUID = 1L;
+
 		Count ssWordCount = new Count();
 		Count ssMeaningCount = new Count();
 		Count reusedWordCount = new Count();

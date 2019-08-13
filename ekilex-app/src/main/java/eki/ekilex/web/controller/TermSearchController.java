@@ -148,7 +148,6 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean fetchAll = false;
 
-
 		if ("next".equals(direction)) {
 			offset += MAX_RESULTS_LIMIT;
 		} else if ("previous".equals(direction)) {
