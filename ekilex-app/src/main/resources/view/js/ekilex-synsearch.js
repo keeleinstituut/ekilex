@@ -1,16 +1,20 @@
 function initialise() {
+	var NAVIGATE_SELECTED_CLASS = 'navigate-selected';
+	var NAVIGATE_DECLINED_CLASS = 'navigate-declined';
+	var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
+
 	$(document).on("click", ":button[name='manualEditBtn']", function() {
 		//TODO refactor
 		$('.navigate-panel').each(function (e) {
-			$(this).addClass('navigate-disabled-panel');
+			//$(this).addClass('navigate-disabled-panel');
 			$(this).removeAttr('data-active-panel');
 		});
 
 		let activatedDiv = $('div[data-panel-index="3"]');
 		activatedDiv.attr('data-active-panel', true);
-		activatedDiv.removeClass('navigate-disabled-panel');
 		itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
 		itemToSelect.addClass('navigate-selected');
+		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 
 		$(this).attr('disabled', true);
 
@@ -19,6 +23,11 @@ function initialise() {
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 		let id = $(this).data('id');
 		let markedSynWordId = $(document).find('.navigate-marked').children(':first').data('word-id');
+		$('#synSearchResultsDiv').find('.navigate-selected').each(function () {$(this).removeClass('navigate-selected');});
+		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
+
+		$(this).parent().addClass('navigate-selected');
+		$(this).parent().attr('data-navigate-selected', true);
 
 		$("[id^='syn_select_point_']").hide();
 		$("[id^='syn_select_wait_']").hide();
@@ -62,6 +71,7 @@ function initialise() {
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
 			});
+
 
 		}).fail(function(data) {
 			console.log(data);
@@ -110,6 +120,60 @@ function initialise() {
 		});
 	}
 
+	function isDisabledItem(activeDiv, navigateItem) {
+		let panelIndex = activeDiv.attr('data-panel-index');
+
+		if (panelIndex == "2") {
+			let wordId = activeDiv.data('navigate-selected-word-id');
+
+			return  navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+		}
+		return false;
+	}
+	function unActivateItem(selectedItem, unSelect) {
+
+		if (selectedItem != undefined) {
+			selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
+			selectedItem.removeClass(NAVIGATE_DECLINED_CLASS);
+
+			if (unSelect) {
+				selectedItem.removeAttr(NAVIGATE_SELECTED_ATTR);
+			}
+		}
+	}
+
+	function findSelectedNavigateItem(activeDiv) {
+		let selectedItem = activeDiv.find('[' + NAVIGATE_SELECTED_ATTR + ']');
+
+		if (selectedItem.length == 0) {
+			selectedItem = activeDiv.find('[data-navigate-index="0"]');
+		}
+
+		return selectedItem;
+
+	}
+
+	function isValidPanelChangeKeyPress(keyCode) {
+		let synDetailsVisible = $("#syn_details_div").html() != '';
+
+		if (!synDetailsVisible) {
+			return false;
+		}
+
+		let currentActiveDiv = $('div[data-active-panel]');
+		let currentActivePanelIndex = currentActiveDiv.data('panel-index');
+
+		if (keyCode == 37 || keyCode == 39) {
+
+			if (currentActivePanelIndex != undefined) {
+				let currentIndex = parseInt(currentActivePanelIndex);
+				return ((currentIndex > 1 && keyCode == 37) || (currentIndex < 3 && keyCode == 39));
+			}
+		}
+
+		return true;
+	}
+
 	function checkKey(e) {
 		//TODO refactor all this
 		var tag = e.target.tagName.toLowerCase();
@@ -117,203 +181,135 @@ function initialise() {
 			return;
 		}
 
-		let PANEL_KEYCODES = {"49": "1", "50": "2", "51" : "3"};
-		let DISABLED_PANEL_CLASS = 'navigate-disabled-panel';
-		let NAVIGATE_SELECTED_CLASS = 'navigate-selected';
-		let NAVIGATE_DECLINED_CLASS = 'navigate-declined';
-
-		let activeDiv = $('div[data-active-panel]');
-		let activePanelIndex = activeDiv.data('panel-index');
+		let currentActiveDiv = $('div[data-active-panel]');
+		let currentActivePanelIndex = currentActiveDiv.data('panel-index');
+		let currentSelectedItem = currentActiveDiv.find('[data-navigate-selected]');
+		let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
 
 		e = e || window.event;
-		console.log(e.keyCode);
+		//console.log(e.keyCode);
 
-		// 1 - 3
-		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
-			let synDetailsVisible = $("#syn_details_div").html() != '';
+		if (e.keyCode == 38 || e.keyCode == 40) { // arrows up down
 
-			if (synDetailsVisible || e.keyCode == 49) {
-				$('.navigate-panel').each(function (e) {
-					$(this).addClass(DISABLED_PANEL_CLASS);
-					$(this).removeAttr('data-active-panel');
-				});
+			if (currentSelectedItem.length != 0) {
+				let indexIncrement = (e.keyCode == 40 ? 1 : -1);
+				let newIndex = currentSelectedIndex + indexIncrement;
+				let newItem = currentActiveDiv.find('[data-navigate-index="' + newIndex + '"]');
 
-				let selectedPanelIndex = "1";
-
-				if (activePanelIndex != undefined) {
-					selectedPanelIndex = parseInt(activePanelIndex);
+				if (newItem.length != 0) {
+					newItem.addClass(isDisabledItem(currentActiveDiv, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
+					unActivateItem(currentSelectedItem, true);
 				}
-				if (e.keyCode == 37 && selectedPanelIndex > 1) {
-					selectedPanelIndex--;
-				} else if (e.keyCode == 39 && selectedPanelIndex < 3) {
-					selectedPanelIndex++;
+			}
+		}
+
+		// 1 - 3, arrows left-right
+		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
+			if (isValidPanelChangeKeyPress(e.keyCode)) {
+				$('div[data-panel-index]').each(function () {$(this).removeAttr('data-active-panel');});
+
+				let selectedPanelIndex = 1;
+				let PANEL_KEYCODES = {"49": "1", "50": "2", "51" : "3"};
+
+				let isArrowKey = e.keyCode == 37 || e.keyCode == 39;
+				if (isArrowKey) {
+					if (currentActivePanelIndex != undefined) {
+						selectedPanelIndex = parseInt(currentActivePanelIndex);
+						if (e.keyCode == 37 && selectedPanelIndex > 1) {
+							selectedPanelIndex--;
+						} else if (e.keyCode == 39 && selectedPanelIndex < 3) {
+							selectedPanelIndex++;
+						}
+					}
 				} else {
 					selectedPanelIndex = PANEL_KEYCODES[e.keyCode];
 				}
-				console.log("selected index " + selectedPanelIndex);
-				let activatedDiv = $('div[data-panel-index="' + selectedPanelIndex + '"]');
+				unActivateItem(currentSelectedItem, false);
 
-				activatedDiv.removeClass(DISABLED_PANEL_CLASS);
+				let activatedDiv = $('div[data-panel-index="' + selectedPanelIndex + '"]');
 				activatedDiv.attr('data-active-panel', true);
 
-				let selectedItem = activatedDiv.find('.navigate-selected');
+				let selectedItem = findSelectedNavigateItem(activatedDiv);
+				let isDisabled = isDisabledItem(activatedDiv, selectedItem);
 
-				if (selectedItem.length == 0) {
-					console.log("-- no selected item --");
-					let itemToSelect;
-					if (e.keyCode == 49) {
-						let selectedWordId = $('#syn_details_div').data('id');
-						console.log('selected word Id ' + selectedWordId);
-						if (selectedWordId != undefined) {
-							itemToSelect = $('#syn_select_point_' + selectedWordId).closest('.navigate-item');
-						} else {
-							itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
-						}
-					} else {
-						itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
-					}
-					itemToSelect.addClass(NAVIGATE_SELECTED_CLASS);
-
-				}
+				selectedItem.addClass(isDisabled ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+				selectedItem.attr('data-navigate-selected', true);
 			}
 
 		}
 
 		if (e.keyCode == 27) { //esc
-			$('.navigate-panel').each(function (e) {
-				$(this).removeClass(DISABLED_PANEL_CLASS);
+			$('.navigate-panel').each(function () {
 				$(this).removeAttr('data-navigate-selected-word-id');
 				$(this).removeAttr('data-active-panel');
-				$(this).find('[data-navigate-index]').removeClass(NAVIGATE_SELECTED_CLASS);
-				$(this).find('.' + NAVIGATE_DECLINED_CLASS).each(function () {$(this).removeClass(NAVIGATE_DECLINED_CLASS)});
+				$(this).find('[data-navigate-index]').each(function () {
+					unActivateItem($(this), true);
+				});
+
 				$(this).find('.navigate-marked').removeClass('navigate-marked');
+
 				$(this).find(":button[name='manualEditBtn']").removeAttr('disabled');
-				$('#selectedSynDiv').hide();
+
+				$(document).find('input[name="simpleSearchFilter"]').val('').focus();
 			});
 		}
 
-		if (e.keyCode == 38 || e.keyCode == 40) { // arrows
-			let activeDiv = $('div[data-active-panel]');
-			let panelIndex = activeDiv.data('panel-index');
-			let selectedItem = activeDiv.find('.' + NAVIGATE_SELECTED_CLASS);
 
-			if (selectedItem.length != 0) {
-				console.log("-- selected item found --");
-
-				let indexIncrement = (e.keyCode == 40 ? 1 : -1);
-				let selectedIndex = parseInt(selectedItem.attr('data-navigate-index'));
-				console.log("selected index " + selectedIndex);
-
-				let newIndex = selectedIndex + indexIncrement;
-				console.log("new index " + newIndex);
-				let newItem = activeDiv.find('[data-navigate-index="' + newIndex + '"]');
-
-				if (newItem.length !=0) {
-					console.log("new item found");
-
-					if (panelIndex == "2") {
-						let currentSynWordId = activeDiv.data('navigate-selected-word-id');
-						console.log("********** currentSynWordId " + currentSynWordId);
-						let lexemeExists = newItem.find('input.meaning-word-id[value="' + currentSynWordId + '"]').length != 0;
-						 if (lexemeExists) {
-							 newItem.addClass(NAVIGATE_DECLINED_CLASS);
-						 }
-					}
-					newItem.addClass(NAVIGATE_SELECTED_CLASS);
-
-					selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
-					selectedItem.removeClass(NAVIGATE_DECLINED_CLASS);
-				}
-			}
-		}
 
 		if (e.keyCode == 13) {
 			e.preventDefault();
-			let activeDiv = $('div[data-active-panel]');
-			let selectedItem = activeDiv.find('.' + NAVIGATE_SELECTED_CLASS);
 
-			let panelIndex = activeDiv.data('panel-index');
+			if (currentActivePanelIndex == "3") {
 
-			if (panelIndex == "3") {
-
-				activeDiv.find('.navigate-marked').each(function () {
-					$(this).removeClass('navigate-marked');
-				});
-
-				//selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
-				selectedItem.addClass('navigate-marked');
-
-				activeDiv.addClass(DISABLED_PANEL_CLASS);
-				activeDiv.removeAttr('data-active-panel');
-
+				currentActiveDiv.find('.navigate-marked').each(function () {$(this).removeClass('navigate-marked');});
+				currentSelectedItem.addClass('navigate-marked');
+				currentActiveDiv.removeAttr('data-active-panel');
+				let wordId = currentSelectedItem.children(':first').attr('data-word-id');
 
 				let activatedDiv = $('div[data-panel-index="2"]');
-
-				activatedDiv.removeClass(DISABLED_PANEL_CLASS);
 				activatedDiv.attr('data-active-panel', true);
-
-				let wordId = selectedItem.children(':first').attr('data-word-id');
-				let word = selectedItem.children(':first').attr('data-word');
-
-				console.log(' -- - word id ' + wordId);
-				console.log(' -- - word  ' + word);
-				$('#selectedSynDiv').show();
-				$('#selectedSynDiv').html(word);
-
 				activatedDiv.data('navigate-selected-word-id', wordId);
 
-				let selectedLexemeItem = activatedDiv.find('.navigate-selected');
+				let selectedLexemeItem = findSelectedNavigateItem(activatedDiv);
 
-				if (selectedLexemeItem.length == 0) {
-					console.log("-- no selected item --");
-					selectedLexemeItem = activatedDiv.find('[data-navigate-index="0"]');
-					selectedLexemeItem.addClass(NAVIGATE_SELECTED_CLASS);
-				}
-
-				//
 				let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
-				if (lexemeExists) {
-					selectedLexemeItem.addClass(NAVIGATE_DECLINED_CLASS);
-				}
 
+				selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+				selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
 
-			} else if (panelIndex == "2") {
-				if (!selectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-					let wordId = activeDiv.data('navigate-selected-word-id');
+			} else if (currentActivePanelIndex == "2") {
+				if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
+					let wordId = currentActiveDiv.data('navigate-selected-word-id');
 					if (wordId != undefined) {
 
-						let lexemeId = selectedItem.data('lexeme-id');
-						let meaningId = selectedItem.data('meaning-id');
+						let lexemeId = currentSelectedItem.data('lexeme-id');
+						let meaningId = currentSelectedItem.data('meaning-id');
 
 						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId;
 						let callbackFunc = () => $('#refresh-details').trigger('click');
 
-						// let callbackFunction = function (markedItem) {
-						// 	$('#refresh-details').trigger('click');
-						// 	markedItem.addClass("navigate-marked");
-						// };
-
 						doPostRelationChange(actionUrl, callbackFunc);
-						// let markedItem = $('div[data-panel-index="3"]').find('.navigate-marked');
-						// doPostKeyboard(actionUrl, callbackFunction, markedItem);
 
 					} else {
-						openAlertDlg("Vali paremalt tulbast sõna.");
+						openAlertDlg("Seose tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
 					}
 
 				} else {
-					openAlertDlg("Lekseem on olemas.");
+					openAlertDlg("Seos on juba olemas.");
 				}
-			} else if (panelIndex == "1") {
+			} else if (currentActivePanelIndex == "1") {
 				$(document).find('.navigate-marked').removeClass('navigate-marked');
-				selectedItem.find('button[name="synDetailsBtn"]').trigger('click');
+				currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
 			}
 		}
-
-
 	}
 
 	$(document).on('keydown', checkKey);
+
+	if ($('#synSearchResultsDiv').html() == undefined) {
+		$(document).find('input[name="simpleSearchFilter"]').focus();
+	}
 
 }
 

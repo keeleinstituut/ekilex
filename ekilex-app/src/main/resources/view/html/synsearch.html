@@ -26,12 +26,14 @@
 
     <div class="row no-gutters mt-2" th:unless="${noResults}">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div class="card shadow navigate-panel" th:if="${not #lists.isEmpty(wordsResult.words)}" data-panel-index="1">
+        <div class="card shadow navigate-panel" th:if="${not #lists.isEmpty(wordsResult.words)}" data-panel-index="1" id="synSearchResultsDiv" th:attrappend="data-active-panel=${markedSynWordId == null}?'true'">
           <div class="card-body p-2">
             <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
             <table id="results" class="table table-striped mb-0">
               <tr th:each="word, wordIter : ${wordsResult.words}">
-                <td class="p-0 navigate-item" th:data-navigate-index="${wordIter.index}">
+                <td class="p-0 navigate-item" th:data-navigate-index="${wordIter.index}"
+                    th:attrappend="data-navigate-selected=${wordIter.index == 0}?'true'"
+                    th:classappend="${wordIter.index == 0 ? 'navigate-selected': ''}">
                   <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="synDetailsBtn">
                     <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>
                     <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
@@ -67,8 +69,9 @@
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="row no-gutters">
         <div class="col-8 pr-2">
-          <div id="selectedSynDiv" class="card shadow alert-warning" style="display: none"></div>
-          <div class="navigate-panel" data-panel-index="2" th:classappend="${markedSynWordId != null ? 'navigate-disabled-panel': ''}">
+          <div class="navigate-panel" data-panel-index="2"
+               th:attrappend="data-navigate-selected-word-id=${markedSynWordId != null}?${markedSynWordId}">
+
             <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme, lexemeIter : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
                th:data-lexeme-id="${lexeme.lexemeId}"
                th:data-navigate-index="${lexemeIter.index}"
@@ -144,7 +147,7 @@
                         th:data-target="${'#addSynRelationDlg_' + wordId}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-              <button type="button" class="btn badge badge-secondary"
+              <button type="button" class="btn badge badge-secondary" th:disabled="${markedSynWordId != null}"
                       th:title="#{syn.manual.mode}" name="manualEditBtn">
                 <i class="fa fa-edit" aria-hidden="true"></i>
               </button>
@@ -152,7 +155,8 @@
               <div th:if="${!#lists.isEmpty(details.relations)}">
                 <table width="100%" class="orderable" data-op-code="word_relation">
                   <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}"
-                      th:data-navigate-index="${relationIter.index}" th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-selected' : ''}">
+                      th:data-navigate-index="${relationIter.index}" th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-marked' : ''}"
+                      th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.wordId}?'true'">
                     <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-word-id="${synRelation.wordId}" th:data-word="${synRelation.word}">
                       <span>
                         <i class="fa fa-list" aria-hidden="true"></i>
