@@ -155,6 +155,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Found {} ss words", context.ssWordCount.getValue());
 		logger.debug("Found {} ss meanings", context.ssMeaningCount.getValue());
 		logger.debug("Found {} multiple meanings in group", context.multipleMeaningsGroupCount.getValue());
+		logger.debug("Found {} word groups with repeating members", context.repeatingWordGroupMembersCount.getValue());
 
 		end();
 	}
@@ -701,10 +702,18 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 		for (List<LexemeToWordData> aspectGroup : aspectGroups) {
 			List<Long> memberIds = aspectGroup.stream().map(w -> w.wordId).collect(toList());
+			List<Long> distinctMemberIds = memberIds.stream().distinct().collect(Collectors.toList());
+			boolean repeatingMembers = memberIds.size() != distinctMemberIds.size();
+			if (repeatingMembers) {
+				context.repeatingWordGroupMembersCount.increment();
+			}
 			if (hasNoWordRelationGroupWithMembers(WordRelationGroupType.ASPECTS, memberIds)) {
-				Long wordGroup = createWordRelationGroup(WordRelationGroupType.ASPECTS);
+				Long wordGroupId = createWordRelationGroup(WordRelationGroupType.ASPECTS);
 				for (LexemeToWordData wordData : aspectGroup) {
-					createWordRelationGroupMember(wordGroup, wordData.wordId);
+					Map<String, Object> params = new HashMap<>();
+					params.put("word_group_id", wordGroupId);
+					params.put("word_id", wordData.wordId);
+					basicDbService.createIfNotExists(WORD_RELATION_GROUP_MEMBER, params);
 				}
 			}
 		}
@@ -1155,6 +1164,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<MeaningReferenceData> meaningReferences = new ArrayList<>();
 		List<LexemeToWordData> abbreviationFullWordsRus = new ArrayList<>();
 		Count multipleMeaningsGroupCount = new Count();
+		Count repeatingWordGroupMembersCount = new Count();
 	}
 
 	protected class MeaningReferenceData {
