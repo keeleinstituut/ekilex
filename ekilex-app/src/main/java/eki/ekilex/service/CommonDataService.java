@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -354,6 +355,7 @@ public class CommonDataService extends AbstractWordSearchService {
 
 		lexemes.forEach(lexeme -> populateLexeme(lexeme, searchDatasetsRestriction, datasetNameMap));
 		lexemeLevelCalcUtil.combineLevels(lexemes);
+		String firstDefinitionValue = getFirstDefinitionValue(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);
@@ -363,6 +365,7 @@ public class CommonDataService extends AbstractWordSearchService {
 		wordDetails.setWordRelations(wordRelations);
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setWordGroups(wordGroups);
+		wordDetails.setFirstDefinitionValue(firstDefinitionValue);
 
 		return wordDetails;
 	}
@@ -469,5 +472,19 @@ public class CommonDataService extends AbstractWordSearchService {
 
 	private List<String> cleanUpVocalForms(List<String> vocalForms) {
 		return vocalForms.stream().filter(Objects::nonNull).collect(toList());
+	}
+
+	private String getFirstDefinitionValue(List<WordLexeme> wordLexemes) {
+
+		Optional<WordLexeme> wordLexemeWithDefinition = wordLexemes.stream()
+				.filter(lex -> CollectionUtils.isNotEmpty(lex.getDefinitions()) && Objects.nonNull(lex.getDefinitions().get(0)))
+				.findFirst();
+
+		if (wordLexemeWithDefinition.isPresent()) {
+			String wordFirstDefinitionValue = wordLexemeWithDefinition.get().getDefinitions().get(0).getValue();
+			return wordFirstDefinitionValue;
+		} else {
+			return null;
+		}
 	}
 }

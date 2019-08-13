@@ -22,8 +22,8 @@
           <div th:if="${firstWordDetails != null}">
             <span th:utext="${firstWordDetails.word.value}" class="ttl"></span>
             <span th:text="${firstWordDetails.word.homonymNumber}" th:if="${firstWordDetails.word.homonymNumber > 0}"></span>
-            <div th:if="${firstWordFirstDefinitionValue != null}">
-              <span th:utext="${firstWordFirstDefinitionValue}"></span>
+            <div th:if="${firstWordDetails.firstDefinitionValue != null}">
+              <span th:utext="${firstWordDetails.firstDefinitionValue}"></span>
             </div>
             <th:block th:replace=":: gender(${firstWordDetails})"></th:block>
             <th:block th:replace=":: word_types(${firstWordDetails})"></th:block>
@@ -46,13 +46,13 @@
               <span th:text="${wordDetails.word.homonymNumber}" th:if="${wordDetails.word.homonymNumber > 0}" class="ml-2"></span>
               <div class="ml-4">
                 <form th:action="@{/wordjoin}" method="post">
-                  <input type="hidden" name="firstWordId" th:value="${firstWordId}">
+                  <input type="hidden" name="firstWordId" th:value="${firstWordDetails.word.wordId}">
                   <input type="hidden" name="secondWordId" th:value="${wordDetails.word.wordId}">
                   <input type="hidden" name="backUrl" th:value="${backUrl}">
                   <button type="button" class="btn btn-primary btn-sm"
                           data-toggle="join-confirm"
                           data-placement="right"
-                          th:if="${wordDetails.word.wordId != firstWordId}"
+                          th:if="${wordDetails.word.wordId != firstWordDetails.word.wordId}"
                           sec:authorize="${#vars.isWordCrudGranted}">Ühenda
                   </button>
                 </form>

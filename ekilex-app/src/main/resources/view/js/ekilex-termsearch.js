@@ -50,6 +50,10 @@ function initialise() {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {
 				openMessageDlg(response.message);
+				let duplicateMeaningId = response.duplicateMeaningId;
+				setTimeout(function() {
+					window.location = applicationUrl + 'meaningback/' + duplicateMeaningId;
+				}, 1500);
 			} else {
 				openAlertDlg(response.message);
 			}

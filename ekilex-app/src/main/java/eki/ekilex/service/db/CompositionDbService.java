@@ -77,6 +77,11 @@ public class CompositionDbService implements DbConstant {
 		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId)).fetch();
 	}
 
+
+	public List<LexemeRecord> getMeaningLexemes(Long meaningId, String datasetCode) {
+		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.eq(datasetCode))).fetch();
+	}
+
 	public List<LexemeRecord> getWordLexemes(Long wordId) {
 		return create.selectFrom(LEXEME).where(LEXEME.WORD_ID.eq(wordId)).fetch();
 	}
