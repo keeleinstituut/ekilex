@@ -64,7 +64,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	@Override
 	protected Map<String, String> xpathExpressions() {
 		Map<String, String> experssions = new HashMap<>();
-		experssions.put("reportingId", "s:P/s:mg/s:m"); // use first word as id for reporting
+		experssions.put("headword", "s:P/s:mg/s:m"); // use first word as id for reporting
 		experssions.put("word", "s:m");
 		experssions.put("wordDisplayMorph", "s:vk");
 		experssions.put("wordVocalForm", "s:hld");
@@ -169,28 +169,28 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String articleGuidExp = "s:G";
 
 		String guid = extractGuid(articleNode, articleGuidExp);
-		String reportingId = extractReportingId(articleNode);
+		String headword = extractHeadword(articleNode);
 		if (articleHasMeanings(articleNode)) {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			processArticleHeader(reportingId, headerNode, newWords, context, guid);
+			processArticleHeader(headword, headerNode, newWords, context, guid);
 			extractLogDataAndCreateLifecycleLog(articleNode, newWords);
 			processArticleComments(articleNode, newWords);
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(reportingId, contentNode, newWords, context);
+				processArticleContent(headword, contentNode, newWords, context);
 				processVariants(newWords);
 			}
 			context.importedWords.addAll(newWords);
 		} else {
 			//logger.debug("Article does not have meanings, skipping : {}", reportingId);
-			writeToLogFile(reportingId, "Artikkel ei sisalda mõisteid", "");
+			writeToLogFile(headword, "Artikkel ei sisalda mõisteid", "");
 		}
 	}
 
 	private boolean articleHasMeanings(Node articleNode) {
 		final String meaningGroupNodeExp = "s:S/s:tp/s:tg";
-		return !articleNode.selectNodes(meaningGroupNodeExp).isEmpty();
+		return articleNode.selectSingleNode(meaningGroupNodeExp) != null;
 	}
 
 	private void processSeries(Context context, Node headerNode, List<WordData> newWords) throws Exception {
@@ -345,7 +345,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			boolean hasFullWord = context.abbreviationFullWords.stream().anyMatch(a -> a.word.equals(abbreviationFullWord));
 			if (!hasFullWord) {
 				//logger.debug("{} : Abbreviation '{}' do not have connected full word, tag <s:lhx> is missing", abbreviation.reportingId, abbreviation.word);
-				writeToLogFile(abbreviation.reportingId, "Lühend ei ole seotud täis nimega, tag <s:lhx> puudub.", abbreviation.word);
+				writeToLogFile(abbreviation.headword, "Lühend ei ole seotud täis nimega, tag <s:lhx> puudub.", abbreviation.word);
 			}
 		}
 
@@ -427,7 +427,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		reportingPaused = true;
 		Count newWordsCounter = new Count();
 		for (WordData derivative : context.derivativeWords) {
-			Long derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, context.importedWords, derivative.reportingId);
+			Long derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, context.importedWords, derivative.headword);
 			if (derivativeId != null) {
 				//logger.debug("derivative found for {} : {}", derivative.reportingId, derivative.value);
 			} else {
@@ -442,8 +442,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Derivatives processing done.");
 	}
 
-	private List<WordData> processSubWords(Node node, Context context, String reportingId) throws Exception {
-		List<WordData> subWords = extractSubWords(node, reportingId);
+	private List<WordData> processSubWords(Node node, Context context, String headword) throws Exception {
+		List<WordData> subWords = extractSubWords(node, headword);
 		if (!subWords.isEmpty()) {
 			for (WordData subWord: subWords) {
 				subWord.id = getWordIdFor(subWord.value, subWord.homonymNr, context.importedWords, subWord.value);
@@ -498,7 +498,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		writeToLogFile("Märksõna ühendite töötlus <s:ps>", "", "");
 
 		for (WordData unionWord : context.unionWords) {
-			Long wordId = getWordIdFor(unionWord.value, unionWord.homonymNr, context.importedWords, unionWord.reportingId);
+			Long wordId = getWordIdFor(unionWord.value, unionWord.homonymNr, context.importedWords, unionWord.headword);
 			if (wordId != null) {
 				createWordRelation(wordId, unionWord.id, WORD_RELATION_UNION);
 			}
@@ -507,7 +507,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private void processArticleContent(
-			String reportingId,
+			String headword,
 			Element contentNode,
 			List<WordData> newWords,
 			Context context) throws Exception {
@@ -532,9 +532,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 			int lexemeLevel2 = 0;
 			for (Node meaningGroupNode : meanigGroupNodes) {
-				List<WordData> subWords = processSubWords(meaningGroupNode, context, reportingId);
+				List<WordData> subWords = processSubWords(meaningGroupNode, context, headword);
 				if (!subWords.isEmpty()) {
-					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, null, meaningNrForGroup, reportingId);
+					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, null, meaningNrForGroup, headword);
 					if (!createdLexemIds.isEmpty()) {
 						lexemeLevel2++;
 						for (WordData newWord : newWords) {
@@ -547,7 +547,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					}
 				} else {
 					lexemeLevel2++;
-					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, conceptId, meaningNrForGroup, reportingId);
+					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, conceptId, meaningNrForGroup, headword);
 				}
 			}
 		}
@@ -561,7 +561,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			int lexemeLevel2,
 			String conceptId,
 			String meaningNrForGroup,
-			String reportingId) throws Exception {
+			String headword) throws Exception {
 
 		final String meaningPosCodeExp = "s:grg/s:sl";
 		final String meaningNrAttr = "tahendusnr";
@@ -578,11 +578,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<String> definitionsToAdd = new ArrayList<>();
 		List<String> definitionsToCache = new ArrayList<>();
 
-		List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, reportingId);
-		List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
-		List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, reportingId);
-		List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
-		List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
+		List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, headword);
+		List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, headword);
+		List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, headword);
+		List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, headword);
+		List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, headword);
 		List<LexemeToWordData> connectedWords =
 				Stream.of(
 						meaningSynonyms.stream(),
@@ -598,7 +598,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			definitionsToCache.addAll(definitions);
 		} else {
 			meaningId = meaningData.meaningId;
-			validateMeaning(meaningData, definitions, reportingId);
+			validateMeaning(meaningData, definitions, headword);
 			definitionsToAdd = definitions.stream().filter(def -> !meaningData.meaningDefinitions.contains(def)).collect(toList());
 			meaningData.meaningDefinitions.addAll(definitionsToAdd);
 			definitionsToCache.addAll(meaningData.meaningDefinitions);
@@ -608,12 +608,12 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				createOrSelectDefinition(meaningId, definition, dataLang);
 			}
 			if (definitionsToAdd.size() > 1) {
-				writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
+				writeToLogFile(DESCRIPTIONS_REPORT_NAME, headword, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 			}
 		}
-		List<WordToMeaningData> meaningAntonyms = extractAntonyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
+		List<WordToMeaningData> meaningAntonyms = extractAntonyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, headword);
 		context.antonyms.addAll(meaningAntonyms);
-		List<WordToMeaningData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
+		List<WordToMeaningData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, headword);
 		context.cohyponyms.addAll(meaningCohyponyms);
 		cacheMeaningRelatedData(context, meaningId, definitionsToCache, lexemeLevel1,
 				newWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningLatinTerms);
@@ -644,9 +644,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				createdLexemeIds.add(lexemeId);
 				createUsages(lexemeId, usages, dataLang);
 				saveGovernments(meaningGroupNode, lexemeId, newWordData);
-				savePosCodes(lexemeId, newWordData, meaningPosCodes, reportingId);
+				savePosCodes(lexemeId, newWordData, meaningPosCodes, headword);
 				saveGrammars(meaningGroupNode, lexemeId, newWordData);
-				saveRegisters(lexemeId, registers, reportingId);
+				saveRegisters(lexemeId, registers, headword);
 				saveAdviceNotes(lexemeId, adviceNotes);
 				savePublicNotes(lexemeId, publicNotes);
 				for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
@@ -798,28 +798,28 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return logData;
 	}
 
-	private List<LexemeToWordData> extractLatinTerms(Node node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractLatinTerms(Node node, String headword) throws Exception {
 
 		final String latinTermExp = "s:lig/s:ld";
-		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
+		return extractLexemeMetadata(node, latinTermExp, null, headword);
 	}
 
-	private List<LexemeToWordData> extractTokens(Node node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractTokens(Node node, String headword) throws Exception {
 
 		final String tokenExp = "s:lig/s:ths";
-		return extractLexemeMetadata(node, tokenExp, null, reportingId);
+		return extractLexemeMetadata(node, tokenExp, null, headword);
 	}
 
-	private List<LexemeToWordData> extractAbbreviations(Node node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractAbbreviations(Node node, String headword) throws Exception {
 
 		final String abbreviationExp = "s:lig/s:lyh";
-		return extractLexemeMetadata(node, abbreviationExp, null, reportingId);
+		return extractLexemeMetadata(node, abbreviationExp, null, headword);
 	}
 
-	private List<LexemeToWordData> extractAbbreviationFullWords(Node node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractAbbreviationFullWords(Node node, String headword) throws Exception {
 
 		final String abbreviationFullWordExp = "s:dg/s:lhx";
-		return extractLexemeMetadata(node, abbreviationFullWordExp, null, reportingId);
+		return extractLexemeMetadata(node, abbreviationFullWordExp, null, headword);
 	}
 
 	private void saveGrammars(Node node, Long lexemeId, WordData wordData) throws Exception {
@@ -832,7 +832,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosCodes(Long lexemeId, WordData newWordData, List<String> meaningPosCodes, String reportingId) {
+	private void savePosCodes(Long lexemeId, WordData newWordData, List<String> meaningPosCodes, String headword) {
 
 		Set<String> lexemePosCodes = new HashSet<>();
 		try {
@@ -841,7 +841,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				if (lexemePosCodes.size() > 1) {
 					String posCodesStr = String.join(",", lexemePosCodes);
 					//logger.debug("Found more than one POS code <s:mg/s:sl> : {} : {}", reportingId, posCodesStr);
-					writeToLogFile(reportingId, "Märksõna juures leiti rohkem kui üks sõnaliik <s:mg/s:sl>", posCodesStr);
+					writeToLogFile(headword, "Märksõna juures leiti rohkem kui üks sõnaliik <s:mg/s:sl>", posCodesStr);
 				}
 			} else {
 				lexemePosCodes.addAll(meaningPosCodes);
@@ -882,7 +882,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return governments;
 	}
 
-	private void processArticleHeader(String reportingId, Node headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
+	private void processArticleHeader(String headword, Node headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
 
 		final String wordGroupExp = "s:mg";
 		final String wordGrammarPosCodesExp = "s:grg/s:sl";
@@ -894,7 +894,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 			for (int index = 0; index < numberOfWordsInGroup; index++) {
 				WordData wordData = new WordData();
-				wordData.reportingId = reportingId;
+				wordData.headword = headword;
 				Word word = extractWordData(wordGroupNode, wordData, guid, index);
 				if (word != null) {
 					List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
@@ -902,7 +902,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				}
 
 				if (index == 0) {
-					List<WordData> unionWordsOfTheWord = extractUnionWords(wordGroupNode, wordData.id, reportingId);
+					List<WordData> unionWordsOfTheWord = extractUnionWords(wordGroupNode, wordData.id, headword);
 					context.unionWords.addAll(unionWordsOfTheWord);
 				}
 
@@ -918,28 +918,28 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		processDerivativesInHeaderNode(context, headerNode, newWords);
 	}
 
-	private List<WordToMeaningData> extractCohyponyms(Node node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
+	private List<WordToMeaningData> extractCohyponyms(Node node, Long meaningId, WordData wordData, int level1, String headword) throws Exception {
 
 		final String cohyponymExp = "s:ssh/s:khy";
 
-		List<LexemeToWordData> cohyponyms = extractLexemeMetadata(node, cohyponymExp, null, reportingId);
+		List<LexemeToWordData> cohyponyms = extractLexemeMetadata(node, cohyponymExp, null, headword);
 		cohyponyms.forEach(cohyponym -> cohyponym.meaningId = meaningId);
 		return convertToMeaningData(cohyponyms, wordData, level1, Collections.emptyList());
 	}
 
-	private List<WordToMeaningData> extractAntonyms(Node node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
+	private List<WordToMeaningData> extractAntonyms(Node node, Long meaningId, WordData wordData, int level1, String headword) throws Exception {
 
 		final String antonymExp = "s:ssh/s:ant";
 
-		List<LexemeToWordData> antonyms = extractLexemeMetadata(node, antonymExp, null, reportingId);
+		List<LexemeToWordData> antonyms = extractLexemeMetadata(node, antonymExp, null, headword);
 		antonyms.forEach(antonym -> antonym.meaningId = meaningId);
 		return convertToMeaningData(antonyms, wordData, level1, Collections.emptyList());
 	}
 
-	private List<LexemeToWordData> extractSynonyms(Node node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractSynonyms(Node node, String headword) throws Exception {
 
 		final String synonymExp = "s:ssh/s:syn";
-		return extractLexemeMetadata(node, synonymExp, null, reportingId);
+		return extractLexemeMetadata(node, synonymExp, null, headword);
 	}
 
 	private List<String> extractAdviceNotes(Node node) {
@@ -1014,7 +1014,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				WordData derivative = new WordData();
 				derivative.id = mainWord.id;
-				derivative.reportingId = mainWord.reportingId;
+				derivative.headword = mainWord.headword;
 				derivative.value = cleanUpWord(wordNode.getTextTrim());
 				if (((Element)wordGroupNode).attributeValue(homonymNrAttr) != null) {
 					derivative.homonymNr = Integer.parseInt(((Element)wordGroupNode).attributeValue(homonymNrAttr));
@@ -1031,7 +1031,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return derivatives;
 	}
 
-	private List<WordData> extractSubWords(Node node, String reportingId) {
+	private List<WordData> extractSubWords(Node node, String headword) {
 
 		final String subWordExp = "s:mmg/s:mm";
 		final String frequencyGroupExp = "s:mmg/s:msag";
@@ -1049,7 +1049,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (displayMorphNode != null) {
 			displayMorph = displayMorpCodes.get(displayMorphNode.getTextTrim());
 			if (displayMorph == null) {
-				logger.warn("Unknown display morph code : {} : {}", displayMorphNode.getTextTrim(), reportingId);
+				logger.warn("Unknown display morph code : {} : {}", displayMorphNode.getTextTrim(), headword);
 			}
 		}
 
@@ -1076,7 +1076,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return subWords;
 	}
 
-	private List<WordData> extractUnionWords(Node node, Long wordId, String reportingId) {
+	private List<WordData> extractUnionWords(Node node, Long wordId, String headword) {
 
 		final String unionWordExp = "s:ps";
 		final String homonymNrAttr = "i";
@@ -1088,7 +1088,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			WordData unionWord = new WordData();
 			unionWord.id = wordId;
 			unionWord.value = cleanUpWord(unionWordElement.getTextTrim());
-			unionWord.reportingId = reportingId;
+			unionWord.headword = headword;
 			if (unionWordElement.attributeValue(homonymNrAttr) != null) {
 				unionWord.homonymNr = Integer.parseInt(unionWordElement.attributeValue(homonymNrAttr));
 			}

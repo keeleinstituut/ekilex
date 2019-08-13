@@ -58,7 +58,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private static Logger logger = LoggerFactory.getLogger(AbstractLoaderRunner.class);
 
 	@Autowired
-	private UnifiedLoaderQueries sqls;
+	protected UnifiedLoaderQueries sqls;
 
 	@Autowired
 	private TextDecorationService textDecorationService;

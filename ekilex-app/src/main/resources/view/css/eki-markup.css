@@ -7,6 +7,10 @@ eki-highlight {
 	font-weight: bold;
 }
 
+eki-stress {
+	font-weight: bold;
+}
+
 .word-value eki-highlight {
 	font-weight: normal;
 }

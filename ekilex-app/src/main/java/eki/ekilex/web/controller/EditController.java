@@ -2,7 +2,6 @@ package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -86,7 +85,7 @@ public class EditController extends AbstractPageController implements SystemCons
 
 		logger.debug("Add new item : {}", itemData);
 
-		String valuePrese = textDecorationService.cleanHtmlMarkup(itemData.getValue());
+		String valuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(itemData.getValue());
 
 		switch (itemData.getOpCode()) {
 		case "definition":
@@ -203,7 +202,7 @@ public class EditController extends AbstractPageController implements SystemCons
 	@PostMapping(UPDATE_ITEM_URI)
 	public String updateItem(@RequestBody UpdateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		String valuePrese = textDecorationService.cleanHtmlMarkup(itemData.getValue());
+		String valuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(itemData.getValue());
 
 		logger.debug("Update operation for {}", itemData.getOpCode());
 		switch (itemData.getOpCode()) {
@@ -615,7 +614,7 @@ public class EditController extends AbstractPageController implements SystemCons
 	@ResponseBody
 	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String valuePrese) {
 
-		valuePrese = textDecorationService.cleanHtmlMarkup(valuePrese);
+		valuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(valuePrese);
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, valuePrese);
 		cudService.updateWordValue(wordId, valuePrese);
 		return valuePrese;
@@ -652,8 +651,4 @@ public class EditController extends AbstractPageController implements SystemCons
 		return "redirect:" + backUrl;
 	}
 
-	@ModelAttribute("iso2languages")
-	public Map<String, String> getIso2Languages() {
-		return commonDataService.getLanguagesIso2Map();
-	}
 }

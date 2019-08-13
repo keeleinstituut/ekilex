@@ -8,6 +8,8 @@ public interface TextDecoration {
 
 	CodeValue HIGHLIGHT = new CodeValue("eki-highlight", "Esiletõstetud märksõna");
 
+	CodeValue STRESS = new CodeValue("eki-stress", "Rõhk");
+
 	CodeValue SUB = new CodeValue("eki-sub", "Alaindeks");
 
 	CodeValue SUP = new CodeValue("eki-sup", "Ülaindeks");
@@ -17,6 +19,6 @@ public interface TextDecoration {
 	CodeValue LINK = new CodeValue("eki-link", "Viide");
 
 	CodeValue[] EKI_MARKUP_ELEMENTS = new CodeValue[] {
-			FOREIGN, HIGHLIGHT, SUB, SUP, META, LINK
+			FOREIGN, HIGHLIGHT, STRESS, SUB, SUP, META, LINK
 	};
 }
