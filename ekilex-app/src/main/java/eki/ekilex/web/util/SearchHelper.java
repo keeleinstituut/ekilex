@@ -26,6 +26,7 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.UserService;
 
 @Component
 public class SearchHelper {
@@ -44,6 +45,9 @@ public class SearchHelper {
 
 	@Autowired
 	protected CommonDataService commonDataService;
+
+	@Autowired
+	protected UserService userService;
 
 	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
 		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null);

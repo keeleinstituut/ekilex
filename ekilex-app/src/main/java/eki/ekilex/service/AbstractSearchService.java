@@ -26,7 +26,7 @@ public abstract class AbstractSearchService extends AbstractService implements S
 	private PermissionDbService permissionDbService;
 
 	@Autowired
-	private UserService userService;
+	protected UserService userService;
 
 	protected SearchDatasetsRestriction composeDatasetsRestriction(List<String> selectedDatasetCodes) {
 

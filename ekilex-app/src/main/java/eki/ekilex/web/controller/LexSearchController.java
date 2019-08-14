@@ -68,12 +68,12 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(selectedDatasets, simpleSearchFilter, detailSearchFilter, null, sessionBean, model);
+		formDataCleanup(selectedDatasets, detailSearchFilter, null, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		selectedDatasets = sessionBean.getSelectedDatasets();
+		selectedDatasets = getUserPreferredDatasetsCodes();
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
@@ -121,13 +121,12 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping("/wordsearchajax")
-	public String searchWordAjax(
-			@RequestParam String searchFilter,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+	public String searchWordAjax(@RequestParam String searchFilter, Model model) {
+
 		logger.debug("word search ajax {}", searchFilter);
 
-		WordsResult result = lexSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false, DEFAULT_OFFSET);
+		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+		WordsResult result = lexSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
@@ -135,10 +134,8 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping("/lexemesearchajax")
-	public String searchLexemeAjax(
-			@RequestParam String searchFilter,
-			@RequestParam Long lexemeId,
-			Model model) {
+	public String searchLexemeAjax(@RequestParam String searchFilter, @RequestParam Long lexemeId, Model model) {
+
 		logger.debug("lexeme search ajax {}, lexeme {}", searchFilter, lexemeId);
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
@@ -150,13 +147,12 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping("/meaningsearchajax")
-	public String searchMeaningAjax(
-			@RequestParam String searchFilter,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+	public String searchMeaningAjax(@RequestParam String searchFilter, Model model) {
+
 		logger.debug("meaning search ajax {}", searchFilter);
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, sessionBean.getSelectedDatasets());
+		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, selectedDatasets);
 		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();
 		for (WordLexeme lexeme : lexemes) {
@@ -171,10 +167,8 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping("/personsearchajax")
-	public String searchPersonsAjax(
-			@RequestParam String searchFilter,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+	public String searchPersonsAjax(@RequestParam String searchFilter, Model model) {
+
 		logger.debug("person search ajax {}", searchFilter);
 
 		List<Source> sources = sourceService.getSources(searchFilter, SourceType.PERSON);
@@ -184,11 +178,11 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
-	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	public String details(@PathVariable("wordId") Long wordId, Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);
 
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}

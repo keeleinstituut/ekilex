@@ -217,6 +217,7 @@ public class Indexes {
     public static final Index LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY = Indexes0.LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY;
     public static final Index LEX_RELATION_LEXEME2_ID_IDX = Indexes0.LEX_RELATION_LEXEME2_ID_IDX;
     public static final Index LEX_RELATION_PKEY = Indexes0.LEX_RELATION_PKEY;
+    public static final Index LEXEME_COMPLEXITY_IDX = Indexes0.LEXEME_COMPLEXITY_IDX;
     public static final Index LEXEME_DATASET_CODE_IDX = Indexes0.LEXEME_DATASET_CODE_IDX;
     public static final Index LEXEME_MEANING_ID_IDX = Indexes0.LEXEME_MEANING_ID_IDX;
     public static final Index LEXEME_PKEY = Indexes0.LEXEME_PKEY;
@@ -450,6 +451,7 @@ public class Indexes {
         public static Index LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY = Internal.createIndex("lex_relation_lexeme1_id_lexeme2_id_lex_rel_type_code_key", LexRelation.LEX_RELATION, new OrderField[] { LexRelation.LEX_RELATION.LEXEME1_ID, LexRelation.LEX_RELATION.LEXEME2_ID, LexRelation.LEX_RELATION.LEX_REL_TYPE_CODE }, true);
         public static Index LEX_RELATION_LEXEME2_ID_IDX = Internal.createIndex("lex_relation_lexeme2_id_idx", LexRelation.LEX_RELATION, new OrderField[] { LexRelation.LEX_RELATION.LEXEME2_ID }, false);
         public static Index LEX_RELATION_PKEY = Internal.createIndex("lex_relation_pkey", LexRelation.LEX_RELATION, new OrderField[] { LexRelation.LEX_RELATION.ID }, true);
+        public static Index LEXEME_COMPLEXITY_IDX = Internal.createIndex("lexeme_complexity_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.COMPLEXITY }, false);
         public static Index LEXEME_DATASET_CODE_IDX = Internal.createIndex("lexeme_dataset_code_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.DATASET_CODE }, false);
         public static Index LEXEME_MEANING_ID_IDX = Internal.createIndex("lexeme_meaning_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.MEANING_ID }, false);
         public static Index LEXEME_PKEY = Internal.createIndex("lexeme_pkey", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.ID }, true);

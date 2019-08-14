@@ -64,7 +64,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(null, simpleSearchFilter, detailSearchFilter, null, sessionBean, model);
+		formDataCleanup(null, detailSearchFilter, null, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -117,7 +117,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping(SYN_WORD_DETAILS_URI + "/{wordId}")
-	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	public String details(@PathVariable("wordId") Long wordId, @RequestParam(required = false) Long markedSynWordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);
 
@@ -125,6 +125,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, dataSetCode);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
+		model.addAttribute("markedSynWordId", markedSynWordId);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
@@ -168,11 +169,11 @@ public class SynSearchController extends AbstractSearchController implements Sys
 			@RequestParam(required = false) List<Long> excludedIds,
 			@RequestParam(required = false) String language,
 			@RequestParam(required = false) String morphCode,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 		logger.debug("word search ajax {}", searchFilter);
 
-		WordsResult result = synSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false, DEFAULT_OFFSET);
+		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+		WordsResult result = synSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());

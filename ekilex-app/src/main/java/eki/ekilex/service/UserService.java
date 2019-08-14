@@ -76,6 +76,11 @@ public class UserService implements WebConstant {
 		return user;
 	}
 
+	@Transactional
+	public EkiUserProfile getUserProfile(Long userId) {
+		return userDbService.getUserProfile(userId);
+	}
+
 	public void updateUserSecurityContext() {
 
 		String userEmail = getAuthenticatedUser().getEmail();
@@ -283,6 +288,13 @@ public class UserService implements WebConstant {
 			userDbService.setRecentDatasetPermission(currentUser.getId(), permissionId);
 		}
 		return datasetPermission;
+	}
+
+	@Transactional
+	public void updateUserPreferredDatasets(List<String> selectedDatasets) {
+
+		Long userId = getAuthenticatedUser().getId();
+		userDbService.updatePreferredDatasets(selectedDatasets, userId);
 	}
 
 }

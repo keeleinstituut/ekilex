@@ -169,4 +169,14 @@ public class UserDbService extends AbstractDbService {
 				.where(EKI_USER_APPLICATION.USER_ID.eq(userId))
 				.fetchInto(EkiUserApplication.class);
 	}
+
+	public void updatePreferredDatasets(List<String> selectedDatasets, Long userId) {
+
+		String[] selectedDatasetsArray = selectedDatasets.toArray(new String[0]);
+		create
+				.update(EKI_USER_PROFILE)
+				.set(EKI_USER_PROFILE.PREFERRED_DATASETS, selectedDatasetsArray)
+				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
+				.execute();
+	}
 }

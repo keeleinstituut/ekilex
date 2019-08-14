@@ -524,7 +524,7 @@ public class EditController extends AbstractPageController implements SystemCons
 				attributes.addFlashAttribute("meaningId", meaningId);
 				return "redirect:" + WORD_SELECT_URI;
 			}
-			List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+			List<String> selectedDatasets = getUserPreferredDatasetsCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
 			}
@@ -552,7 +552,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
-			List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+			List<String> selectedDatasets = getUserPreferredDatasetsCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
 			}
@@ -596,7 +596,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		cudService.createLexeme(wordId, dataset, meaningId);
 		Word word = commonDataService.getWord(wordId);
 		String wordValue = word.getValue();
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
 		if (!selectedDatasets.contains(dataset)) {
 			selectedDatasets.add(dataset);
 		}

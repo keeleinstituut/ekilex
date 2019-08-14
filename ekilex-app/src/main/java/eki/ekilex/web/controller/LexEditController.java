@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.web.bean.SessionBean;
@@ -33,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexEditController implements WebConstant {
+public class LexEditController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LexEditController.class);
 
@@ -46,9 +45,6 @@ public class LexEditController implements WebConstant {
 	@Autowired
 	private CompositionService compositionService;
 
-	@Autowired
-	private CommonDataService commonDataService;
-
 	@GetMapping("/lexjoin/{lexemeId}")
 	public String show(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
@@ -59,16 +55,12 @@ public class LexEditController implements WebConstant {
 	}
 
 	@PostMapping("/lexjoin/{lexemeId}")
-	public String search(
-			@PathVariable("lexemeId") Long lexemeId,
-			@RequestParam(name = "searchFilter", required = false) String searchFilter,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+	public String search(@PathVariable("lexemeId") Long lexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
-		if (CollectionUtils.isNotEmpty(sessionBean.getSelectedDatasets())) {
-			datasets = sessionBean.getSelectedDatasets();
+		if (CollectionUtils.isNotEmpty(getUserPreferredDatasetsCodes())) {
+			datasets = getUserPreferredDatasetsCodes();
 		}
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets);
 		model.addAttribute("sourceLexeme", lexeme);
@@ -79,11 +71,7 @@ public class LexEditController implements WebConstant {
 	}
 
 	@GetMapping("/lexjoin/{lexemeId}/{lexemeId2}")
-	public String join(
-			@PathVariable("lexemeId") Long lexemeId,
-			@PathVariable("lexemeId2") Long lexemeId2,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+	public String join(@PathVariable("lexemeId") Long lexemeId, @PathVariable("lexemeId2") Long lexemeId2, Model model) {
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		List<String> validationMessages = compositionService.validateLexemeJoin(lexemeId, lexemeId2);
@@ -94,24 +82,22 @@ public class LexEditController implements WebConstant {
 		}
 		compositionService.joinLexemes(lexemeId, lexemeId2);
 
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		List<String> datasets = getUserPreferredDatasetsCodes();
 		String firstWordValue = lexeme.getWords()[0];
-		String searchUri = searchHelper.composeSearchUri(selectedDatasets, firstWordValue);
+		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping("/lexseparate/{lexemeId}")
-	public String separate(
-			@PathVariable("lexemeId") Long lexemeId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String separate(@PathVariable("lexemeId") Long lexemeId) {
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		compositionService.separateLexemeMeanings(lexemeId);
 
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		List<String> datasets = getUserPreferredDatasetsCodes();
 		String firstWordValue = lexeme.getWords()[0];
-		String searchUri = searchHelper.composeSearchUri(selectedDatasets, firstWordValue);
+		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}

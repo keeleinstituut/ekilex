@@ -21,11 +21,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
-import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class TermEditController implements WebConstant {
+public class TermEditController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermEditController.class);
 
@@ -49,13 +47,11 @@ public class TermEditController implements WebConstant {
 	@Autowired
 	private CompositionService compositionService;
 
-	@Autowired
-	private CommonDataService commonDataService;
-
 	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
-	public String show(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	public String show(@PathVariable("meaningId") Long meaningId, Model model) {
 
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, sessionBean.getSelectedDatasets());
+		List<String> datasets = getUserPreferredDatasetsCodes();
+		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, datasets);
 		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", null);
 		model.addAttribute("meaningId", meaningId);
@@ -64,33 +60,27 @@ public class TermEditController implements WebConstant {
 	}
 
 	@PostMapping(MEANING_JOIN_URI + "/{meaningId}")
-	public String search(
-			@PathVariable("meaningId") Long meaningId,
-			@RequestParam(name = "searchFilter", required = false) String searchFilter,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+	public String search(@PathVariable("meaningId") Long meaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
 
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, sessionBean.getSelectedDatasets());
+		List<String> datasets = getUserPreferredDatasetsCodes();
+		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, datasets);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets);
 		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("meaningId", meaningId);
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, sessionBean.getSelectedDatasets());
 		model.addAttribute("meaningLexemes", lexemes);
 
 		return MEANING_JOIN_PAGE;
 	}
 
 	@GetMapping(MEANING_JOIN_URI + "/{meaningId}/{meaningId2}")
-	public String join(
-			@PathVariable("meaningId") Long meaningId,
-			@PathVariable("meaningId2") Long sourceMeaningId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String join(@PathVariable("meaningId") Long meaningId, @PathVariable("meaningId2") Long sourceMeaningId) {
 
 		compositionService.joinMeanings(meaningId, sourceMeaningId);
 
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
-		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId, selectedDatasets);
-		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+		List<String> datasets = getUserPreferredDatasetsCodes();
+		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
+		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
 
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}

@@ -22,6 +22,7 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +38,9 @@ public abstract class AbstractSearchController extends AbstractPageController {
 
 	@Autowired
 	protected SearchHelper searchHelper;
+
+	@Autowired
+	protected UserService userService;
 
 	@ModelAttribute("domains")
 	public Map<String, List<Classifier>> getDomainsInUse() {
@@ -138,10 +142,10 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	protected void initSearchForms(Model model) {
 
 		SessionBean sessionBean = getSessionBean(model);
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			List<String> allDatasetCodes = commonDataService.getDatasetCodes();
-			sessionBean.setSelectedDatasets(allDatasetCodes);
+			userService.updateUserPreferredDatasets(allDatasetCodes);
 		}
 		if (CollectionUtils.isEmpty(sessionBean.getLanguagesOrder())) {
 			List<Classifier> allLanguages = commonDataService.getLanguages();
@@ -167,19 +171,18 @@ public abstract class AbstractSearchController extends AbstractPageController {
 
 	protected void formDataCleanup(
 			List<String> selectedDatasets,
-			String simpleSearchFilter,
 			SearchFilter detailSearchFilter,
 			String resultLang,
-			SessionBean sessionBean, Model model) throws Exception {
+			SessionBean sessionBean) throws Exception {
 
 		List<String> allDatasetCodes = commonDataService.getDatasetCodes();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = sessionBean.getSelectedDatasets();
+			selectedDatasets = getUserPreferredDatasetsCodes();
 			if (CollectionUtils.isEmpty(selectedDatasets)) {
-				sessionBean.setSelectedDatasets(allDatasetCodes);
+				userService.updateUserPreferredDatasets(allDatasetCodes);
 			}
 		} else {
-			sessionBean.setSelectedDatasets(selectedDatasets);
+			userService.updateUserPreferredDatasets(selectedDatasets);
 		}
 		sessionBean.setResultLang(resultLang);
 

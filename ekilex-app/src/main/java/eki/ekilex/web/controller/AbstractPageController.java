@@ -21,6 +21,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
@@ -48,6 +49,13 @@ public abstract class AbstractPageController implements WebConstant {
 			model.addAttribute(SESSION_BEAN, sessionBean);
 		}
 		return sessionBean;
+	}
+
+	protected List<String> getUserPreferredDatasetsCodes() {
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		EkiUserProfile userProfile = userService.getUserProfile(userId);
+		return userProfile.getPreferredDatasets();
 	}
 
 	@ModelAttribute("allDatasets")
@@ -93,6 +101,13 @@ public abstract class AbstractPageController implements WebConstant {
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
 		return permissionService.getUserDatasetPermissions(userId);
+	}
+
+	@ModelAttribute("userProfile")
+	public EkiUserProfile getUserProfile() {
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		return userService.getUserProfile(userId);
 	}
 
 	@ModelAttribute("iso2languages")
