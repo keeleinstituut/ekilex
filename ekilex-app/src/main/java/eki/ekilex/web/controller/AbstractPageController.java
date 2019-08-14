@@ -51,6 +51,13 @@ public abstract class AbstractPageController implements WebConstant {
 		return sessionBean;
 	}
 
+	protected List<String> getUserPreferredDatasetsCodes() {
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		EkiUserProfile userProfile = userService.getUserProfile(userId);
+		return userProfile.getPreferredDatasets();
+	}
+
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {
 		return commonDataService.getDatasets();
@@ -98,7 +105,9 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@ModelAttribute("userProfile")
 	public EkiUserProfile getUserProfile() {
-		return userService.getUserProfile();
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		return userService.getUserProfile(userId);
 	}
 
 	@ModelAttribute("iso2languages")

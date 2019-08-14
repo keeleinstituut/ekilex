@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = -839967873;
+    private static final long serialVersionUID = 731816415;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -72,9 +72,9 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     public final TableField<EkiUserProfileRecord, Long> RECENT_DATASET_PERMISSION_ID = createField("recent_dataset_permission_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.eki_user_profile.selected_datasets</code>.
+     * The column <code>public.eki_user_profile.preferred_datasets</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> SELECTED_DATASETS = createField("selected_datasets", org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_DATASETS = createField("preferred_datasets", org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.eki_user_profile</code> table reference

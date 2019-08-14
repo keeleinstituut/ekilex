@@ -77,11 +77,8 @@ public class UserService implements WebConstant {
 	}
 
 	@Transactional
-	public EkiUserProfile getUserProfile() {
-
-		Long userId = getAuthenticatedUser().getId();
-		EkiUserProfile userProfile = userDbService.getUserProfile(userId);
-		return userProfile;
+	public EkiUserProfile getUserProfile(Long userId) {
+		return userDbService.getUserProfile(userId);
 	}
 
 	public void updateUserSecurityContext() {
@@ -294,10 +291,10 @@ public class UserService implements WebConstant {
 	}
 
 	@Transactional
-	public void updateUserSelectedDatasets(List<String> selectedDatasets) {
+	public void updateUserPreferredDatasets(List<String> selectedDatasets) {
 
 		Long userId = getAuthenticatedUser().getId();
-		userDbService.updateSelectedDatasets(selectedDatasets, userId);
+		userDbService.updatePreferredDatasets(selectedDatasets, userId);
 	}
 
 }

@@ -49,12 +49,6 @@ public class SearchHelper {
 	@Autowired
 	protected UserService userService;
 
-	public String composeSearchUri(String simpleSearchFilter) {
-
-		List<String> selectedDatasets = userService.getUserProfile().getSelectedDatasets();
-		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, selectedDatasets, simpleSearchFilter, null);
-	}
-
 	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
 		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null);
 	}

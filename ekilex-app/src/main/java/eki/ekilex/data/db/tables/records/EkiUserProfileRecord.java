@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileRecord> implements Record4<Long, Long, Long, String[]> {
 
-    private static final long serialVersionUID = -1621008044;
+    private static final long serialVersionUID = -1391078144;
 
     /**
      * Setter for <code>public.eki_user_profile.id</code>.
@@ -73,16 +73,16 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
     }
 
     /**
-     * Setter for <code>public.eki_user_profile.selected_datasets</code>.
+     * Setter for <code>public.eki_user_profile.preferred_datasets</code>.
      */
-    public void setSelectedDatasets(String... value) {
+    public void setPreferredDatasets(String... value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.eki_user_profile.selected_datasets</code>.
+     * Getter for <code>public.eki_user_profile.preferred_datasets</code>.
      */
-    public String[] getSelectedDatasets() {
+    public String[] getPreferredDatasets() {
         return (String[]) get(3);
     }
 
@@ -147,7 +147,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public Field<String[]> field4() {
-        return EkiUserProfile.EKI_USER_PROFILE.SELECTED_DATASETS;
+        return EkiUserProfile.EKI_USER_PROFILE.PREFERRED_DATASETS;
     }
 
     /**
@@ -179,7 +179,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public String[] component4() {
-        return getSelectedDatasets();
+        return getPreferredDatasets();
     }
 
     /**
@@ -211,7 +211,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public String[] value4() {
-        return getSelectedDatasets();
+        return getPreferredDatasets();
     }
 
     /**
@@ -246,7 +246,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public EkiUserProfileRecord value4(String... value) {
-        setSelectedDatasets(value);
+        setPreferredDatasets(value);
         return this;
     }
 
@@ -276,12 +276,12 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
     /**
      * Create a detached, initialised EkiUserProfileRecord
      */
-    public EkiUserProfileRecord(Long id, Long userId, Long recentDatasetPermissionId, String[] selectedDatasets) {
+    public EkiUserProfileRecord(Long id, Long userId, Long recentDatasetPermissionId, String[] preferredDatasets) {
         super(EkiUserProfile.EKI_USER_PROFILE);
 
         set(0, id);
         set(1, userId);
         set(2, recentDatasetPermissionId);
-        set(3, selectedDatasets);
+        set(3, preferredDatasets);
     }
 }

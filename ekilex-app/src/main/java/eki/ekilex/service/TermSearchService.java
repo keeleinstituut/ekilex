@@ -115,18 +115,16 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	}
 
 	@Transactional
-	public String getMeaningFirstWordValue(Long meaningId) {
+	public String getMeaningFirstWordValue(Long meaningId, List<String> datasets) {
 
-		List<String> selectedDatasets = userService.getUserProfile().getSelectedDatasets();
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasets);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
 		return termSearchDbService.getMeaningFirstWord(meaningId, searchDatasetsRestriction);
 	}
 
 	@Transactional
-	public Long getMeaningFirstLexemeId(Long meaningId) {
+	public Long getMeaningFirstLexemeId(Long meaningId, List<String> datasets) {
 
-		List<String> selectedDatasets = userService.getUserProfile().getSelectedDatasets();
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasets);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
 		return termSearchDbService.getMeaningFirstLexemeId(meaningId, searchDatasetsRestriction);
 	}
 

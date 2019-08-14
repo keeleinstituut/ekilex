@@ -21,11 +21,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
-import eki.ekilex.service.UserService;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class TermEditController implements WebConstant {
+public class TermEditController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermEditController.class);
 
@@ -49,16 +47,11 @@ public class TermEditController implements WebConstant {
 	@Autowired
 	private CompositionService compositionService;
 
-	@Autowired
-	private CommonDataService commonDataService;
-
-	@Autowired
-	private UserService userService;
-
 	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
 	public String show(@PathVariable("meaningId") Long meaningId, Model model) {
 
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId);
+		List<String> datasets = getUserPreferredDatasetsCodes();
+		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, datasets);
 		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", null);
 		model.addAttribute("meaningId", meaningId);
@@ -69,9 +62,9 @@ public class TermEditController implements WebConstant {
 	@PostMapping(MEANING_JOIN_URI + "/{meaningId}")
 	public String search(@PathVariable("meaningId") Long meaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
 
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId);
-		List<String> selectedDatasets = userService.getUserProfile().getSelectedDatasets();
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, selectedDatasets);
+		List<String> datasets = getUserPreferredDatasetsCodes();
+		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, datasets);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets);
 		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("meaningId", meaningId);
@@ -85,8 +78,9 @@ public class TermEditController implements WebConstant {
 
 		compositionService.joinMeanings(meaningId, sourceMeaningId);
 
-		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId);
-		String searchUri = searchHelper.composeSearchUri(wordValue);
+		List<String> datasets = getUserPreferredDatasetsCodes();
+		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
+		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
 
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}

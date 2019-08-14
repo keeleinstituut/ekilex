@@ -172,7 +172,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 			Model model) {
 		logger.debug("word search ajax {}", searchFilter);
 
-		List<String> selectedDatasets = userService.getUserProfile().getSelectedDatasets();
+		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
 		WordsResult result = synSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
