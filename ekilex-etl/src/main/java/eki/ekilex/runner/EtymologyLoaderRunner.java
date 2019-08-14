@@ -287,7 +287,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 						List<Node> etymLangNodes = etymRelNode.selectNodes(etymLangExp);
 						if (CollectionUtils.isEmpty(etymLangNodes)) {
 							logger.debug("Missing lang for \"{}\" - \"{}\"", headwords, etymWordsWrapup);
-							appendToReport(REPORT_MISSING_ETYM_LANG, headwords, etymWordsWrapup);
+							appendToReport(REPORT_MISSING_ETYM_LANG, "Keeleelement puudub", headwords, etymWordsWrapup, "-");
 						}
 						Element etymRelCommentNode = (Element) etymRelNode.selectSingleNode(etymCommentExp);
 						String etymRelComment = null;
@@ -353,6 +353,10 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 									Element etymLangElement = (Element) etymLangNode;
 									String etymLang = etymLangElement.getTextTrim();
 									String mappedEtymLangCode = languageConversionMap.get(etymLang);
+									if (StringUtils.isBlank(mappedEtymLangCode)) {
+										logger.debug("Unknown lang for \"{}\" - \"{}\" - \"{}\"", headwords, word, etymLang);
+										appendToReport(REPORT_MISSING_ETYM_LANG, "Tundmatu keelekood", headwords, word, etymLang);
+									}
 									int homonymNr = getWordMaxHomonymNr(word, mappedEtymLangCode);
 									homonymNr++;
 									Long word2Id = createWordParadigmForm(word, DEFAULT_WORD_MORPH_CODE, homonymNr, mappedEtymLangCode);

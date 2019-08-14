@@ -1051,6 +1051,7 @@ create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index lexeme_dataset_code_idx on lexeme(dataset_code);
 create index lexeme_process_state_code_idx on lexeme(process_state_code);
+create index lexeme_complexity_idx on lexeme(complexity);
 create index definition_meaning_id_idx on definition(meaning_id);
 create index definition_lang_idx on definition(lang);
 create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);

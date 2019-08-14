@@ -480,7 +480,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		createdWord.value = wordValue;
 		createdWord.wordTypeCodes = wordTypeCodes;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
+		Word word = new Word(wordValue, dataLang, homonymNr, null, DEFAULT_WORD_MORPH_CODE, null, null, null, null, wordTypeCodes);
 		createdWord.id = createOrSelectWord(word, null, null);
 		return createdWord;
 	}
@@ -1359,7 +1359,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 		String wordMorphCode = extractWordMorphCode(wordValue, wordGroupNode);
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode, guid, wordData.wordTypeCodes);
+		Word word = new Word(wordValue, dataLang, homonymNr, guid, wordMorphCode, null, null, wordDisplayForm, null, wordData.wordTypeCodes);
 
 		Node wordDisplayMorphNode = wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
 
-    private static final long serialVersionUID = 1719968602;
+    private static final long serialVersionUID = 1777746965;
 
     /**
      * The reference instance of <code>public.lexeme_region</code>
@@ -70,6 +70,11 @@ public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
      * The column <code>public.lexeme_region.region_code</code>.
      */
     public final TableField<LexemeRegionRecord, String> REGION_CODE = createField("region_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme_region.order_by</code>.
+     */
+    public final TableField<LexemeRegionRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_region_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.lexeme_region</code> table reference

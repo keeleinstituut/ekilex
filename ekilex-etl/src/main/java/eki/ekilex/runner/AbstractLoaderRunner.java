@@ -1362,11 +1362,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return basicDbService.create(WORD_RELATION_GROUP, params);
 	}
 
-	protected Long createWordRelationGroupMember(Long groupId, Long lexemeId) throws Exception {
+	protected Long createWordRelationGroupMember(Long groupId, Long wordId) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("word_group_id", groupId);
-		params.put("word_id", lexemeId);
+		params.put("word_id", wordId);
 		return basicDbService.create(WORD_RELATION_GROUP_MEMBER, params);
 	}
 

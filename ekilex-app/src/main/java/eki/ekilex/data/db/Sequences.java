@@ -224,9 +224,19 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_DERIV_ID_SEQ = new SequenceImpl<Long>("lexeme_deriv_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.lexeme_deriv_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_DERIV_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_deriv_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.lexeme_freeform_id_seq</code>
      */
     public static final Sequence<Long> LEXEME_FREEFORM_ID_SEQ = new SequenceImpl<Long>("lexeme_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lexeme_freeform_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_FREEFORM_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_freeform_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.lexeme_frequency_id_seq</code>
@@ -267,6 +277,11 @@ public class Sequences {
      * The sequence <code>public.lexeme_region_id_seq</code>
      */
     public static final Sequence<Long> LEXEME_REGION_ID_SEQ = new SequenceImpl<Long>("lexeme_region_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lexeme_region_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_REGION_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_region_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.lexeme_register_id_seq</code>

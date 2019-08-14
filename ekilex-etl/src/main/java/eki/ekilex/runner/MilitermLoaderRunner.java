@@ -180,7 +180,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 				int homonymNr = getWordMaxHomonymNr(term, lang);
 				homonymNr++;
-				Word word = new Word(term, lang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
+				Word word = new Word(term, lang, homonymNr, null, DEFAULT_WORD_MORPH_CODE, null, null, null, null, null);
 				Long wordId = createOrSelectWord(word, null, null);
 
 				Lexeme lexeme = new Lexeme();

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
 
-    private static final long serialVersionUID = -1366641307;
+    private static final long serialVersionUID = -1691301674;
 
     /**
      * The reference instance of <code>public.lexeme_freeform</code>
@@ -70,6 +70,11 @@ public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
      * The column <code>public.lexeme_freeform.freeform_id</code>.
      */
     public final TableField<LexemeFreeformRecord, Long> FREEFORM_ID = createField("freeform_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme_freeform.order_by</code>.
+     */
+    public final TableField<LexemeFreeformRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_freeform_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.lexeme_freeform</code> table reference
