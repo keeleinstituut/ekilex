@@ -40,12 +40,15 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 
 	private static final int SURROUND_CHAR_BY_MARKUP = 2;
 
-	private List<TextDecorationDescriptor> ekiMarkupDescriptors;
+	private List<TextDecorationDescriptor> allEkiMarkupDescriptors;
+
+	private List<TextDecorationDescriptor> uniLangEkiMarkupDescriptors;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
-		ekiMarkupDescriptors = new ArrayList<>();
+		allEkiMarkupDescriptors = new ArrayList<>();
+		uniLangEkiMarkupDescriptors = new ArrayList<>();
 
 		Pattern entityMatchPattern;
 		String preDecoration, postDecoration;
@@ -55,49 +58,55 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		preDecoration = asXmlElemStart(FOREIGN);
 		postDecoration = asXmlElemEnd(FOREIGN);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, REPLACE_MARKUP);
-		ekiMarkupDescriptors.add(textDecorationDescriptor);
+		allEkiMarkupDescriptors.add(textDecorationDescriptor);
+		uniLangEkiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_HIGHLIGHT);
 		preDecoration = asXmlElemStart(HIGHLIGHT);
 		postDecoration = asXmlElemEnd(HIGHLIGHT);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, REPLACE_MARKUP);
-		ekiMarkupDescriptors.add(textDecorationDescriptor);
+		allEkiMarkupDescriptors.add(textDecorationDescriptor);
+		uniLangEkiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_SUB);
 		preDecoration = asXmlElemStart(SUB);
 		postDecoration = asXmlElemEnd(SUB);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, REPLACE_MARKUP);
-		ekiMarkupDescriptors.add(textDecorationDescriptor);
+		allEkiMarkupDescriptors.add(textDecorationDescriptor);
+		uniLangEkiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_SUP);
 		preDecoration = asXmlElemStart(SUP);
 		postDecoration = asXmlElemEnd(SUP);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, REPLACE_MARKUP);
-		ekiMarkupDescriptors.add(textDecorationDescriptor);
+		allEkiMarkupDescriptors.add(textDecorationDescriptor);
+		uniLangEkiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_META_V);
 		preDecoration = asXmlElemStart(META) + "~" + asXmlElemEnd(META);
 		postDecoration = null;
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, REPLACE_MARKUP);
-		ekiMarkupDescriptors.add(textDecorationDescriptor);
+		allEkiMarkupDescriptors.add(textDecorationDescriptor);
+		uniLangEkiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_META_ETC);
 		preDecoration = asXmlElemStart(META);
 		postDecoration = asXmlElemEnd(META);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, REPLACE_MARKUP);
-		ekiMarkupDescriptors.add(textDecorationDescriptor);
+		allEkiMarkupDescriptors.add(textDecorationDescriptor);
+		uniLangEkiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_RUSSIAN_STRESS_1);
 		preDecoration = asXmlElemStart(STRESS);
 		postDecoration = asXmlElemEnd(STRESS);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, SURROUND_CHAR_BY_MARKUP);
-		ekiMarkupDescriptors.add(textDecorationDescriptor);
+		allEkiMarkupDescriptors.add(textDecorationDescriptor);
 
 		entityMatchPattern = Pattern.compile(EKI_MARKUP_PATTERN_RUSSIAN_STRESS_2);
 		preDecoration = asXmlElemStart(STRESS);
 		postDecoration = asXmlElemEnd(STRESS);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, SURROUND_CHAR_BY_MARKUP);
-		ekiMarkupDescriptors.add(textDecorationDescriptor);
+		allEkiMarkupDescriptors.add(textDecorationDescriptor);
 	}
 
 	public String cleanEkiElementMarkup(String originalText) {
@@ -117,10 +126,24 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 	}
 
 	public String cleanEkiEntityMarkup(String originalText) {
+		return cleanEkiEntityMarkup(originalText, false);
+	}
+
+	public String cleanEkiEntityMarkupSkipStress(String originalText) {
+		return cleanEkiEntityMarkup(originalText, true);
+	}
+
+	private String cleanEkiEntityMarkup(String originalText, boolean skipStress) {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
 		}
 		String convertedText = new String(originalText);
+		List<TextDecorationDescriptor> ekiMarkupDescriptors;
+		if (skipStress) {
+			ekiMarkupDescriptors = new ArrayList<>(uniLangEkiMarkupDescriptors);
+		} else {
+			ekiMarkupDescriptors = new ArrayList<>(allEkiMarkupDescriptors);
+		}
 		Pattern pattern;
 		int applyMethod;
 		for (TextDecorationDescriptor textDecorationDescriptor : ekiMarkupDescriptors) {
@@ -147,7 +170,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		String postDecoration;
 		int applyMethod;
 
-		for (TextDecorationDescriptor textDecorationDescriptor : ekiMarkupDescriptors) {
+		for (TextDecorationDescriptor textDecorationDescriptor : allEkiMarkupDescriptors) {
 			pattern = textDecorationDescriptor.getEntityMatchPattern();
 			preDecoration = textDecorationDescriptor.getPreDecoration();
 			postDecoration = textDecorationDescriptor.getPostDecoration();

@@ -155,7 +155,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Found {} ss words", context.ssWordCount.getValue());
 		logger.debug("Found {} ss meanings", context.ssMeaningCount.getValue());
 		logger.debug("Found {} multiple meanings in group", context.multipleMeaningsGroupCount.getValue());
-		logger.debug("Found {} word groups with repeating members", context.repeatingWordGroupMembersCount.getValue());
 
 		end();
 	}
@@ -431,7 +430,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 					List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 					for (Node transalationGroupNode : translationGroupNodes) {
-						String russianWord = extractAsString(transalationGroupNode, translationValueExp);
+						String russianWord = extractCleanValue(transalationGroupNode, translationValueExp);
 						WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null, null);
 						List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 						Lexeme russianLexeme = new Lexeme();
@@ -702,18 +701,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 		for (List<LexemeToWordData> aspectGroup : aspectGroups) {
 			List<Long> memberIds = aspectGroup.stream().map(w -> w.wordId).collect(toList());
-			List<Long> distinctMemberIds = memberIds.stream().distinct().collect(Collectors.toList());
-			boolean repeatingMembers = memberIds.size() != distinctMemberIds.size();
-			if (repeatingMembers) {
-				context.repeatingWordGroupMembersCount.increment();
-			}
 			if (hasNoWordRelationGroupWithMembers(WordRelationGroupType.ASPECTS, memberIds)) {
 				Long wordGroupId = createWordRelationGroup(WordRelationGroupType.ASPECTS);
 				for (LexemeToWordData wordData : aspectGroup) {
-					Map<String, Object> params = new HashMap<>();
-					params.put("word_group_id", wordGroupId);
-					params.put("word_id", wordData.wordId);
-					basicDbService.createIfNotExists(WORD_RELATION_GROUP_MEMBER, params);
+					createWordRelationGroupMember(wordGroupId, wordData.wordId);
 				}
 			}
 		}
@@ -794,7 +785,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 							List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 							for (Node transalationGroupNode : translationGroupNodes) {
-								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
+								String russianWord = extractCleanValue(transalationGroupNode, translationValueExp);
 								WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null, null);
 								List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 								boolean createNewRussianLexeme = true;
@@ -1010,13 +1001,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<LexemeToWordData> dataList = new ArrayList<>();
 		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
 		for (Node wordGroupNode : wordGroupNodes) {
-			String srcWord = extractAsString(wordGroupNode, wordExp);
+			String srcWord = extractCleanValueSkipStress(wordGroupNode, wordExp);
 			String cleanWord = cleanUpWord(srcWord);
 			if (isBlank(cleanWord)) {
 				continue;
 			}
-			String vocalForm = extractAsString(wordGroupNode, vocalFormExp);
-			String srcAspectWord = extractAsString(wordGroupNode, aspectValueExp);
+			String vocalForm = extractCleanValue(wordGroupNode, vocalFormExp);
+			String srcAspectWord = extractCleanValueSkipStress(wordGroupNode, aspectValueExp);
 			LexemeToWordData wordData = new LexemeToWordData();
 			wordData.word = cleanWord;
 			wordData.displayForm = srcWord;
@@ -1025,7 +1016,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			wordData.registerCodes.addAll(extractCleanValues(wordGroupNode, registerExp));
 			wordData.governments.addAll(extractCleanValues(wordGroupNode, governmentExp));
 			wordData.sources.addAll(extractOriginalValues(wordGroupNode, sourceExp));
-			wordData.corpFrequency = extractAsFloat(wordGroupNode, corpFrequencyExp);
+			wordData.corpFrequency = extractFloat(wordGroupNode, corpFrequencyExp);
 			List<String> domainCodes = extractCleanValues(wordGroupNode, domainExp);
 			if (CollectionUtils.isNotEmpty(domainCodes)) {
 				additionalDomains.addAll(domainCodes);
@@ -1099,20 +1090,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return logData;
 	}
 
-	private Float extractAsFloat(Node node, String xpathExp) {
-		String numberAsString = extractAsString(node, xpathExp);
-		if (numberAsString == null) {
-			return null;
-		} else {
-			String cleanNumberString = numberAsString.replace(",", "");
-			try {
-				return Float.parseFloat(cleanNumberString);
-			} catch (NumberFormatException ignored) {
-				return null;
-			}
-		}
-	}
-
 	private boolean wordContainsAspect(String word) {
 		return word.endsWith("[*]") || word.endsWith("*");
 	}
@@ -1126,9 +1103,28 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return ASPECT_NESOV;
 	}
 
-	private String extractAsString(Node node, String xpathExp) {
+	private String extractCleanValueSkipStress(Node node, String xpathExp) {
+		Element wordNode = (Element) node.selectSingleNode(xpathExp);
+		return wordNode == null || isRestricted(wordNode) ? null : cleanEkiEntityMarkupSkipStress(wordNode.getTextTrim());
+	}
+
+	private String extractCleanValue(Node node, String xpathExp) {
 		Element wordNode = (Element) node.selectSingleNode(xpathExp);
 		return wordNode == null || isRestricted(wordNode) ? null : cleanEkiEntityMarkup(wordNode.getTextTrim());
+	}
+
+	private Float extractFloat(Node node, String xpathExp) {
+		String numberAsString = extractCleanValue(node, xpathExp);
+		if (numberAsString == null) {
+			return null;
+		} else {
+			String cleanNumberString = numberAsString.replace(",", "");
+			try {
+				return Float.parseFloat(cleanNumberString);
+			} catch (NumberFormatException ignored) {
+				return null;
+			}
+		}
 	}
 
 	private List<Map<String, Object>> getWordsInSs1(String word) {
@@ -1164,7 +1160,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<MeaningReferenceData> meaningReferences = new ArrayList<>();
 		List<LexemeToWordData> abbreviationFullWordsRus = new ArrayList<>();
 		Count multipleMeaningsGroupCount = new Count();
-		Count repeatingWordGroupMembersCount = new Count();
 	}
 
 	protected class MeaningReferenceData {

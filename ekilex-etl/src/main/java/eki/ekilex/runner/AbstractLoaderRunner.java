@@ -199,6 +199,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return textDecorationService.cleanEkiEntityMarkup(originalText);
 	}
 
+	protected String cleanEkiEntityMarkupSkipStress(String originalText) {
+		return textDecorationService.cleanEkiEntityMarkupSkipStress(originalText);
+	}
+
 	protected String convertEkiEntityMarkup(String originalText) {
 		return textDecorationService.convertEkiEntityMarkup(originalText);
 	}
