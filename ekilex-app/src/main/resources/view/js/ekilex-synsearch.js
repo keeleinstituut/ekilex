@@ -125,7 +125,7 @@ function initialise() {
 		let panelIndex = activeDiv.attr('data-panel-index');
 
 		if (panelIndex == "2") {
-			let wordId = activeDiv.data('navigate-selected-word-id');
+			let wordId = activeDiv.data('marked-word-id');
 
 			return  navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
 		}
@@ -177,8 +177,14 @@ function initialise() {
 
 	function checkKey(e) {
 		//TODO refactor all this
+
+
 		var tag = e.target.tagName.toLowerCase();
 		if ( tag == 'input' || tag == 'textarea') {
+			return;
+		}
+
+		if (($(".modal").data('bs.modal') || {})._isShown) {
 			return;
 		}
 
@@ -242,7 +248,7 @@ function initialise() {
 
 		if (e.keyCode == 27) { //esc
 			$('.navigate-panel').each(function () {
-				$(this).removeAttr('data-navigate-selected-word-id');
+				$(this).removeAttr('data-marked-word-id');
 				$(this).removeAttr('data-active-panel');
 				$(this).find('[data-navigate-index]').each(function () {
 					unActivateItem($(this), true);
@@ -270,7 +276,7 @@ function initialise() {
 
 				let activatedDiv = $('div[data-panel-index="2"]');
 				activatedDiv.attr('data-active-panel', true);
-				activatedDiv.data('navigate-selected-word-id', wordId);
+				activatedDiv.data('marked-word-id', wordId);
 
 				let selectedLexemeItem = findSelectedNavigateItem(activatedDiv);
 
@@ -281,7 +287,7 @@ function initialise() {
 
 			} else if (currentActivePanelIndex == "2") {
 				if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-					let wordId = currentActiveDiv.data('navigate-selected-word-id');
+					let wordId = currentActiveDiv.data('marked-word-id');
 					if (wordId != undefined) {
 
 						let lexemeId = currentSelectedItem.data('lexeme-id');
