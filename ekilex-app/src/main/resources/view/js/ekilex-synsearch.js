@@ -15,6 +15,7 @@ function initialise() {
 		itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
 		itemToSelect.addClass('navigate-selected');
 		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
+		itemToSelect.find('button').focus();
 
 		$(this).attr('disabled', true);
 
@@ -187,7 +188,7 @@ function initialise() {
 		let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
 
 		e = e || window.event;
-		//console.log(e.keyCode);
+		console.log(e.keyCode);
 
 		if (e.keyCode == 38 || e.keyCode == 40) { // arrows up down
 
