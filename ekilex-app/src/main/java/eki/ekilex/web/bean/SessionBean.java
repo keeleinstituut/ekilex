@@ -10,8 +10,6 @@ public class SessionBean extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<String> selectedDatasets;
-
 	private String resultLang;
 
 	private List<ClassifierSelect> languagesOrder;
@@ -21,14 +19,6 @@ public class SessionBean extends AbstractDataObject {
 	private String newWordSelectedMorphCode;
 
 	private DatasetPermission userRole;
-
-	public List<String> getSelectedDatasets() {
-		return selectedDatasets;
-	}
-
-	public void setSelectedDatasets(List<String> selectedDatasets) {
-		this.selectedDatasets = selectedDatasets;
-	}
 
 	public String getResultLang() {
 		return resultLang;

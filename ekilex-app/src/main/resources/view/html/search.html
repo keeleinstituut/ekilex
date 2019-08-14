@@ -224,7 +224,9 @@
 
 <th:block th:fragment="dataset_select">
   <button class="btn btn-sm btn-secondary" type="button" data-toggle="modal" data-target="#datasetSelectDlg" aria-expanded="false" aria-controls="dataset_select">
-    Sõnastiku valik
+    <span>Valitud sõnakogusid: </span>
+    <span th:if="${#lists.isEmpty(userProfile.selectedDatasets)}">0</span>
+    <span th:if="${not #lists.isEmpty(userProfile.selectedDatasets)}" th:text="${#lists.size(userProfile.selectedDatasets)}"></span>
   </button>
   <div id="datasetSelectDlg" class="modal" role="dialog">
     <div class="modal-dialog" role="document">
@@ -235,7 +237,7 @@
             <div class="mt-3" style="max-height: calc(100vh - 14rem); overflow-y: auto;">
               <div class="form-check mt-1" th:each="dataset : ${allDatasets}">
                 <input class="form-check-input" type="checkbox" th:value="${dataset.code}" th:name="selectedDatasets"
-                       th:checked="${#lists.contains(sessionBean.selectedDatasets, dataset.code)}">
+                       th:checked="${not #lists.isEmpty(userProfile.selectedDatasets) && #lists.contains(userProfile.selectedDatasets, dataset.code)}">
                 <label class="form-check-label" th:text="${dataset.name}">Default checkbox</label>
               </div>
             </div>

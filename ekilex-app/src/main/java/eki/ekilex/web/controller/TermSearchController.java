@@ -63,12 +63,12 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(selectedDatasets, simpleSearchFilter, detailSearchFilter, resultLang, sessionBean, model);
+		formDataCleanup(selectedDatasets, detailSearchFilter, resultLang, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		selectedDatasets = sessionBean.getSelectedDatasets();
+		selectedDatasets = userService.getUserProfile().getSelectedDatasets();
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
@@ -122,7 +122,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		logger.debug("Requesting meaning {} details", meaningId);
 
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		List<String> selectedDatasets = userService.getUserProfile().getSelectedDatasets();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}

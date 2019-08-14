@@ -64,7 +64,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(null, simpleSearchFilter, detailSearchFilter, null, sessionBean, model);
+		formDataCleanup(null, detailSearchFilter, null, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -169,11 +169,11 @@ public class SynSearchController extends AbstractSearchController implements Sys
 			@RequestParam(required = false) List<Long> excludedIds,
 			@RequestParam(required = false) String language,
 			@RequestParam(required = false) String morphCode,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 		logger.debug("word search ajax {}", searchFilter);
 
-		WordsResult result = synSearchService.getWords(searchFilter, sessionBean.getSelectedDatasets(), false, DEFAULT_OFFSET);
+		List<String> selectedDatasets = userService.getUserProfile().getSelectedDatasets();
+		WordsResult result = synSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());

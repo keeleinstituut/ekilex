@@ -25,7 +25,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
-import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.service.UserService;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,10 +52,13 @@ public class TermEditController implements WebConstant {
 	@Autowired
 	private CommonDataService commonDataService;
 
-	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
-	public String show(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	@Autowired
+	private UserService userService;
 
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, sessionBean.getSelectedDatasets());
+	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
+	public String show(@PathVariable("meaningId") Long meaningId, Model model) {
+
+		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId);
 		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", null);
 		model.addAttribute("meaningId", meaningId);
@@ -64,33 +67,26 @@ public class TermEditController implements WebConstant {
 	}
 
 	@PostMapping(MEANING_JOIN_URI + "/{meaningId}")
-	public String search(
-			@PathVariable("meaningId") Long meaningId,
-			@RequestParam(name = "searchFilter", required = false) String searchFilter,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+	public String search(@PathVariable("meaningId") Long meaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
 
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, sessionBean.getSelectedDatasets());
+		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId);
+		List<String> selectedDatasets = userService.getUserProfile().getSelectedDatasets();
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, selectedDatasets);
 		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("meaningId", meaningId);
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, sessionBean.getSelectedDatasets());
 		model.addAttribute("meaningLexemes", lexemes);
 
 		return MEANING_JOIN_PAGE;
 	}
 
 	@GetMapping(MEANING_JOIN_URI + "/{meaningId}/{meaningId2}")
-	public String join(
-			@PathVariable("meaningId") Long meaningId,
-			@PathVariable("meaningId2") Long sourceMeaningId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String join(@PathVariable("meaningId") Long meaningId, @PathVariable("meaningId2") Long sourceMeaningId) {
 
 		compositionService.joinMeanings(meaningId, sourceMeaningId);
 
-		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
-		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId, selectedDatasets);
-		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId);
+		String searchUri = searchHelper.composeSearchUri(wordValue);
 
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}

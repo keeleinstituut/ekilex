@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 574604657;
+    private static final long serialVersionUID = 1285548420;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -180,7 +180,7 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_LEXEME_ID_IDX, Indexes.MVIEW_WW_LEXEME_MEANING_ID_IDX, Indexes.MVIEW_WW_LEXEME_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_COMPLEXITY_IDX, Indexes.MVIEW_WW_LEXEME_LEXEME_ID_IDX, Indexes.MVIEW_WW_LEXEME_MEANING_ID_IDX, Indexes.MVIEW_WW_LEXEME_WORD_ID_IDX);
     }
 
     /**

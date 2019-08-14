@@ -21,6 +21,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
@@ -93,6 +94,11 @@ public abstract class AbstractPageController implements WebConstant {
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
 		return permissionService.getUserDatasetPermissions(userId);
+	}
+
+	@ModelAttribute("userProfile")
+	public EkiUserProfile getUserProfile() {
+		return userService.getUserProfile();
 	}
 
 	@ModelAttribute("iso2languages")
