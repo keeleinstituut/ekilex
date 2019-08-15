@@ -287,7 +287,7 @@ function initialise() {
 
 			} else if (currentActivePanelIndex == "2") {
 				if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-					let wordId = currentActiveDiv.data('marked-word-id');
+					let wordId = currentActiveDiv.data('marked-word-id'); //TODO move to a hidden field ?
 					if (wordId != undefined) {
 
 						let lexemeId = currentSelectedItem.data('lexeme-id');
@@ -299,11 +299,11 @@ function initialise() {
 						doPostRelationChange(actionUrl, callbackFunc);
 
 					} else {
-						openAlertDlg("Seose tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
+						openAlertDlg("Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
 					}
 
 				} else {
-					openAlertDlg("Seos on juba olemas.");
+					openAlertDlg("Ilmik on juba olemas.");
 				}
 			} else if (currentActivePanelIndex == "1") {
 				$(document).find('.navigate-marked').removeClass('navigate-marked');

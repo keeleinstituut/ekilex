@@ -19,7 +19,16 @@
         </form>
       </div>
     </div>
-
+    <div class="alert alert-info">
+      Tulpade vahel ja üles alla liikumiseks töötavad nooleklahvid.
+      Klahv ENTER töötab eri tulpades järgmiselt:
+      <ul>
+        <li>Vasakul: valitud otsingutulemuse detailide kuvamine</li>
+        <li>Paremal: valitud sünonüümi märkimine</li>
+        <li>Keskel: Paremal tulbas märgitud sünonüümi ilmikukga sidumine</li>
+      </ul>
+      Klahv ESC eemaldab markeeringud ja liigtab kursori otsingu kasti.
+    </div>
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>
     </div>
@@ -67,11 +76,11 @@
     <div th:data-id="${wordId}" id="syn_details_div"
          th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
+
       <div class="row no-gutters">
         <div class="col-8 pr-2">
           <div class="navigate-panel" data-panel-index="2"
                th:attrappend="data-marked-word-id=${markedSynWordId != null}?${markedSynWordId}">
-
             <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme, lexemeIter : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
                th:data-lexeme-id="${lexeme.lexemeId}"
                th:data-navigate-index="${lexemeIter.index}"
