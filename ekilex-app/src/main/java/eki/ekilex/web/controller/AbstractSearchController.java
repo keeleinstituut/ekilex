@@ -142,11 +142,6 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	protected void initSearchForms(Model model) {
 
 		SessionBean sessionBean = getSessionBean(model);
-		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
-		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			List<String> allDatasetCodes = commonDataService.getDatasetCodes();
-			userService.updateUserPreferredDatasets(allDatasetCodes);
-		}
 		if (CollectionUtils.isEmpty(sessionBean.getLanguagesOrder())) {
 			List<Classifier> allLanguages = commonDataService.getLanguages();
 			List<ClassifierSelect> languagesOrder = convert(allLanguages);
@@ -175,13 +170,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 			String resultLang,
 			SessionBean sessionBean) throws Exception {
 
-		List<String> allDatasetCodes = commonDataService.getDatasetCodes();
-		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = getUserPreferredDatasetsCodes();
-			if (CollectionUtils.isEmpty(selectedDatasets)) {
-				userService.updateUserPreferredDatasets(allDatasetCodes);
-			}
-		} else {
+		if (CollectionUtils.isNotEmpty(selectedDatasets)) {
 			userService.updateUserPreferredDatasets(selectedDatasets);
 		}
 		sessionBean.setResultLang(resultLang);

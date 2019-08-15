@@ -123,9 +123,6 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		logger.debug("Requesting meaning {} details", meaningId);
 
 		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
-		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = commonDataService.getDatasetCodes();
-		}
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder);
 		model.addAttribute("meaning", meaning);
