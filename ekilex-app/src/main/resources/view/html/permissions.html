@@ -21,20 +21,22 @@
                 <tr>
                   <th class="m-1 p-1"></th>
                   <th class="m-1 p-1">
-                    <a class="btn badge badge-light"
-                       title="Sorteeri kuupäeva järgi"
-                       th:href="@{'/permissions?orderBy=DATE'}">
-                      <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
-                    </a>
-                    Kuupäev
+                    <form th:action="@{/permissions}" method="post">
+                      <input type="hidden" name="orderBy" value="DATE">
+                      <button type="submit" class="btn badge badge-light">
+                        <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                      </button>
+                      Kuupäev
+                    </form>
                   </th>
                   <th class="m-1 p-1">
-                    <a class="btn badge badge-light"
-                       title="Sorteeri nime järgi"
-                       th:href="@{'/permissions?orderBy=NAME'}">
-                      <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
-                    </a>
-                    Nimi
+                    <form th:action="@{/permissions}" method="post">
+                      <input type="hidden" name="orderBy" value="NAME">
+                      <button type="submit" class="btn badge badge-light">
+                        <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                      </button>
+                      Nimi
+                    </form>
                   </th>
                   <th class="m-1 p-1">E-post</th>
                   <th class="m-1 p-1 text-center">Admin</th>
