@@ -19,15 +19,15 @@
         </form>
       </div>
     </div>
-    <div class="alert alert-info">
-      Tulpade vahel ja üles alla liikumiseks töötavad nooleklahvid.
+    <div class="alert alert-info" th:if="${wordsResult.totalCount >0}">
+      Tulpade vahel ja üles alla liikumiseks töötavad nooleklahvid.<br/>
       Klahv ENTER töötab eri tulpades järgmiselt:
       <ul>
         <li>Vasakul: valitud otsingutulemuse detailide kuvamine</li>
         <li>Paremal: valitud sünonüümi märkimine</li>
-        <li>Keskel: Paremal tulbas märgitud sünonüümi ilmikukga sidumine</li>
+        <li>Keskel: Paremal tulbas märgitud sünonüümi valitud ilmikuga sidumine</li>
       </ul>
-      Klahv ESC eemaldab markeeringud ja liigtab kursori otsingu kasti.
+      Klahv ESC eemaldab markeeringud ja liigutab kursori otsingu kasti.
     </div>
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>
