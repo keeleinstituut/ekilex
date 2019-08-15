@@ -19,7 +19,7 @@ public class WordMerger extends AbstractLoader {
 			initDefault();
 
 			WordMergerRunner wordMergerRunner = getComponent(WordMergerRunner.class);
-			String mergedLexDatasetCode = confService.getMandatoryConfProperty("lex.merge.name");
+			String mergedLexDatasetCode = confService.getMandatoryConfProperty("word.merge.merged.dataset");
 			boolean doReports = confService.doReports();
 
 			wordMergerRunner.execute(mergedLexDatasetCode, doReports);
