@@ -138,4 +138,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		return wordDescripts;
 	}
 
+	@Transactional
+	public Long getLexemeId(Long wordId, Long meaningId, String datasetCode) {
+		return lexSearchDbService.getLexemeId(wordId, meaningId, datasetCode);
+	}
 }

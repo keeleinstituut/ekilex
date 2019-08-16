@@ -1,7 +1,6 @@
 package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,5 +140,13 @@ public class LexEditController extends AbstractPageController {
 	@ModelAttribute("iso2languages")
 	public Map<String, String> getIso2Languages() {
 		return commonDataService.getLanguagesIso2Map();
+	}
+
+	@GetMapping("/getlexemeid/{wordId}/{meaningId}/{datasetCode}")
+	@ResponseBody
+	public String getLexemeId(@PathVariable("wordId") Long wordId, @PathVariable("meaningId") Long meaningId, @PathVariable("datasetCode") String datasetCode) {
+
+		Long lexemeId = lexSearchService.getLexemeId(wordId, meaningId, datasetCode);
+		return String.valueOf(lexemeId);
 	}
 }

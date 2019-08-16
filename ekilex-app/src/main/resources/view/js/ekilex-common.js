@@ -545,6 +545,21 @@ function initWordValueEditorDlg(dlg) {
 	});
 }
 
+function deleteMeaningWordLexeme() {
+	let opName = "delete";
+	let opCode = "lexeme";
+	let wordId = $(this).data("word-id");
+	let meaningId = $(this).data("meaning-id");
+	let datasetCode = $(this).data("dataset-code");
+	let successCallbackName = $(this).attr("data-callback");
+	let successCallbackFunc = () => eval(successCallbackName)($(this));
+
+	let getLexemeIdUrl = applicationUrl + 'getlexemeid/' + wordId + '/' + meaningId + '/' + datasetCode;
+	$.get(getLexemeIdUrl).done(function(lexemeId) {
+		executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
+	});
+}
+
 function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) {
 	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
 	var confirmationOpUrl = applicationUrl + "confirm_op";

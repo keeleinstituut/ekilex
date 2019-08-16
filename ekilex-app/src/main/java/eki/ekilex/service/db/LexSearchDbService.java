@@ -742,4 +742,16 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(CollocationTuple.class);
 	}
 
+	public Long getLexemeId(Long wordId, Long meaningId, String datasetCode) {
+
+		return create
+				.select(LEXEME.ID)
+				.from(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
 }
