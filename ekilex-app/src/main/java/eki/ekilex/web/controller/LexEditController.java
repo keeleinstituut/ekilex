@@ -58,10 +58,7 @@ public class LexEditController extends AbstractPageController {
 	public String search(@PathVariable("lexemeId") Long lexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
-		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
-		if (CollectionUtils.isNotEmpty(getUserPreferredDatasetsCodes())) {
-			datasets = getUserPreferredDatasetsCodes();
-		}
+		List<String> datasets = getUserPreferredDatasetsCodes();
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets);
 		model.addAttribute("sourceLexeme", lexeme);
 		model.addAttribute("searchFilter", searchFilter);

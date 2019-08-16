@@ -151,7 +151,7 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 			}
 		}
 
-		logger.debug("{} candidate words merged with super", candidateMergedWithSuperHomonymCount.getValue());
+		logger.debug("{} candidate words merged with {} dataset", candidateMergedWithSuperHomonymCount.getValue(), mergedLexDatasetCode);
 		logger.debug("{} candidate words merged with another candidate", candidateMergedWithAnotherCandidateCount.getValue());
 		logger.debug("{} candidate words not merged", candidateNotMergedCount.getValue());
 		end();
