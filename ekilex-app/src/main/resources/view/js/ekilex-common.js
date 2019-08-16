@@ -28,7 +28,9 @@ function doPostDelete(deleteUrl, callbackFunc) {
 function submitDialog(e, dlg, failMessage, callback = $.noop) {
 	e.preventDefault();
 	let theForm = dlg.find('form');
+	console.log("   here");
 	if (!checkRequiredFields(theForm)) {
+		console.log("   BAD");
 		return;
 	}
 
@@ -65,11 +67,15 @@ function alignAndFocus(e, dlg) {
 	}
 }
 
-$(document).on("change", ".required-field", function() {
+// Do not change the selector to '.required-field' as it causes selectpicker to fire change event twice
+$(document).on("change", "input.required-field, select.required-field", function() {
+	let isSelectPicker = $(this).hasClass('classifier-select');
+	let markableField = isSelectPicker ? $(this).parent() : $(this);
+
 	if ($(this).val()) {
-		$(this).removeClass('is-invalid');
+		markableField.removeClass('is-invalid');
 	} else {
-		$(this).addClass('is-invalid');
+		markableField.addClass('is-invalid');
 	}
 
 	let errorSmallElem = $(this).closest('.form-group').find('.field-error');
@@ -143,6 +149,11 @@ function executeDelete(deleteUrl) {
 }
 
 function initAddMultiDataDlg(theDlg) {
+
+	theDlg.find('select.classifier-select').off('changed.bs.select').on('changed.bs.select', function(e) {
+		theDlg.find('[name=value]').val($(this).val());
+	});
+
 	theDlg.find('.value-select').off('change').on('change', function(e) {
 		theDlg.find('[name=value]').val($(this).val());
 	});
@@ -253,22 +264,25 @@ function initNewWordDlg() {
 	});
 }
 
-/**
- * Checks if field value is empty and marks with error style if it is.
- * If any f fields is empty returns false
- * @param fld
- */
 function checkRequiredFields(thisForm) {
 
 	let isValid = true;
-	let requiredFields = thisForm.find('.required-field:not(:hidden)');
+
+	// Do not change the selector to '.required-field' as it causes selectpicker to fire change event twice
+	let requiredFields = thisForm.find('input.required-field:not(:hidden), select.required-field:not(:hidden)');
+
 	requiredFields.each(function() {
+		let isSelectPicker = $(this).hasClass('classifier-select');
+		let markableField = isSelectPicker ? $(this).parent() : $(this);
+
 		let fldVal = $(this).val();
+
 		if (!fldVal) {
-			$(this).addClass('is-invalid');
+			console.log(' bad html ' + markableField.html());
+			markableField.addClass('is-invalid');
 			isValid = false;
 		} else {
-			$(this).removeClass('is-invalid');
+			markableField.removeClass('is-invalid');
 		}
 	});
 	return isValid;
@@ -570,3 +584,10 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) 
 		openAlertDlg("Kustutamine ebaõnnestus");
 	});
 }
+
+function initClassifierAutocomplete() {
+	$('.classifier-select').selectpicker({
+		width : '100%'
+	});
+}
+

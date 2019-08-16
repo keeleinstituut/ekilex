@@ -15,6 +15,7 @@ function initialise() {
 			let scrollPos = detailsDiv.scrollTop();
 			detailsDiv.replaceWith(data);
 			initLexemeToggleButtons();
+			initClassifierAutocomplete();
 			if (isRestoreDisplayState) {
 				detailsDiv.scrollTop(scrollPos);
 				openLexemes.forEach(function(lexemeName) {
@@ -124,6 +125,7 @@ function initialise() {
 	}
 
 	initNewWordDlg();
+	initClassifierAutocomplete();
 }
 
 function initLexemeLevelsDlg(editDlg) {

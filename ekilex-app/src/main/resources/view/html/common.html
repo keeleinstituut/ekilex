@@ -24,8 +24,8 @@
     <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap-select.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
   </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
@@ -119,7 +119,7 @@
             </div>
             <div class="form-group row">
               <div class="col-md-8">
-                <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
+                <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:selected="${language.code == sessionBean.newWordSelectedLanguage}" th:text="${language.value}">language</option>
                 </select>
