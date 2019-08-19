@@ -141,12 +141,4 @@ public class LexEditController extends AbstractPageController {
 	public Map<String, String> getIso2Languages() {
 		return commonDataService.getLanguagesIso2Map();
 	}
-
-	@GetMapping("/getlexemeid/{wordId}/{meaningId}/{datasetCode}")
-	@ResponseBody
-	public String getLexemeId(@PathVariable("wordId") Long wordId, @PathVariable("meaningId") Long meaningId, @PathVariable("datasetCode") String datasetCode) {
-
-		Long lexemeId = lexSearchService.getLexemeId(wordId, meaningId, datasetCode);
-		return String.valueOf(lexemeId);
-	}
 }

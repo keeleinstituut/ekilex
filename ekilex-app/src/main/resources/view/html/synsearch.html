@@ -104,11 +104,9 @@
                         <span th:text="${meaningWord.homonymNumber}"></span>
                         <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-word-id="${meaningWord.wordId}"
-                                th:data-meaning-id="${lexeme.meaningId}"
-                                th:data-dataset-code="${lexeme.datasetCode}"
-                                data-callback="doNewSearch"
-                                data-toggle="deleteMeaningWordLexeme"
+                                th:data-id="${meaningWord.lexemeId}"
+                                data-callback="refreshDetails"
+                                data-toggle="deleteLexemeAndWordAndMeaning"
                                 sec:authorize="${#vars.isLexemeCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
@@ -234,11 +232,11 @@
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>
     <script>
-		$('[data-toggle=deleteMeaningWordLexeme]').confirmation({
+		$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
 			btnOkLabel : 'Jah',
 			btnCancelLabel : 'Ei',
 			title : 'Kinnita vaste ilmiku kustutamine',
-			onConfirm : deleteMeaningWordLexeme
+			onConfirm : deleteLexemeAndWordAndMeaning
 		});
     </script>
   </th:block>
