@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.data.Word;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -61,7 +61,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
 
-		List<Word> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
+		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);

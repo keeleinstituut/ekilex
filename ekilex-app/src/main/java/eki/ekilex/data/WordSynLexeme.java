@@ -19,7 +19,7 @@ public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevel
 	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
-	private List<Word> meaningWords;
+	private List<MeaningWord> meaningWords;
 
 	@Column(name = "level1")
 	private Integer level1;
@@ -49,11 +49,11 @@ public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevel
 		this.lexemeId = lexemeId;
 	}
 
-	public List<Word> getMeaningWords() {
+	public List<MeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
 
-	public void setMeaningWords(List<Word> meaningWords) {
+	public void setMeaningWords(List<MeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
 	}
 

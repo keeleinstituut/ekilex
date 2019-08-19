@@ -320,4 +320,7 @@ function initialise() {
 
 }
 
-
+function refreshDetails() {
+	var refreshButton = $('#refresh-details');
+	refreshButton.trigger('click');
+}

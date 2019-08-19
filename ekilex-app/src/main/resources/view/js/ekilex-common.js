@@ -559,6 +559,16 @@ function initWordValueEditorDlg(dlg) {
 	});
 }
 
+function deleteLexemeAndWordAndMeaning() {
+	var opName = "delete";
+	var opCode = "lexeme";
+	var lexemeId = $(this).attr("data-id");
+	var successCallbackName = $(this).attr("data-callback");
+	let successCallbackFunc = () => eval(successCallbackName)($(this));
+
+	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
+}
+
 function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) {
 	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
 	var confirmationOpUrl = applicationUrl + "confirm_op";

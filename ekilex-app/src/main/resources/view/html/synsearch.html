@@ -98,10 +98,19 @@
 
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
-                    <div class="btn-custom">
-                      <span th:text="${meaningWord.value}"></span>
-                      <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                    <div class="hidden-buttons">
+                      <div class="btn-custom">
+                        <span th:text="${meaningWord.value}"></span>
+                        <span th:text="${meaningWord.homonymNumber}"></span>
+                        <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${meaningWord.lexemeId}"
+                                data-callback="refreshDetails"
+                                data-toggle="deleteLexemeAndWordAndMeaning"
+                                sec:authorize="${#vars.isLexemeCrudGranted}">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </div>
                     </div>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
@@ -222,9 +231,18 @@
     <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>
+    <script>
+		$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
+			btnOkLabel : 'Jah',
+			btnCancelLabel : 'Ei',
+			title : 'Kinnita vaste ilmiku kustutamine',
+			onConfirm : deleteLexemeAndWordAndMeaning
+		});
+    </script>
   </th:block>
 
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #confirmDlg"></div>
 
   <script th:inline="javascript">
 	  initialise();
