@@ -28,9 +28,7 @@ function doPostDelete(deleteUrl, callbackFunc) {
 function submitDialog(e, dlg, failMessage, callback = $.noop) {
 	e.preventDefault();
 	let theForm = dlg.find('form');
-	console.log("   here");
 	if (!checkRequiredFields(theForm)) {
-		console.log("   BAD");
 		return;
 	}
 
@@ -196,6 +194,9 @@ function initSelectDlg(selectDlg) {
 	selectControl.off('click').on('click', function(e) {
 		submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
 	});
+	selectControl.off('changed.bs.select').on('changed.bs.select', function(e) {
+		submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+	});
 	selectControl.off('keydown').on('keydown', function(e) {
 		if (e.key === "Enter") {
 			submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
@@ -278,7 +279,6 @@ function checkRequiredFields(thisForm) {
 		let fldVal = $(this).val();
 
 		if (!fldVal) {
-			console.log(' bad html ' + markableField.html());
 			markableField.addClass('is-invalid');
 			isValid = false;
 		} else {

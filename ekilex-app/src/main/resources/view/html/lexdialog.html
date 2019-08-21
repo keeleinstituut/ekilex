@@ -10,7 +10,7 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="id2" th:value="${lexeme.meaningId}">
             <input type="hidden" name="id3" th:value="${wordId}">
-<input type="text" name="value">
+            <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-6">
                 <select required class="form-control lex-data-select required-field" name="opCode">
@@ -956,11 +956,11 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_meaning_domain_dlg">
+  <div th:id="${'editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal" role="dialog" th:fragment="edit_meaning_domain_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
+          <div class="modal-body select-dlg">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_domain">
             <input type="hidden" name="currentValue" th:value="${classif.toIdString()}">
