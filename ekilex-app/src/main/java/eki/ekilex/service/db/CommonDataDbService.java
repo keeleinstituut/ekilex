@@ -798,8 +798,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.and(DERIV_LABEL.CODE.eq(LEXEME_DERIV.DERIV_CODE))
 								.and(DERIV_LABEL.LANG.eq(classifierLabelLang))
 								.and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				//TODO apply once the order by field appears
-				//.orderBy(LEXEME_DERIV.ORDER_BY)
+				.orderBy(LEXEME_DERIV.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -831,8 +830,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.where(
 						LEXEME_REGION.LEXEME_ID.eq(lexemeId)
 								.and(REGION.CODE.eq(LEXEME_REGION.REGION_CODE)))
-				//TODO apply once the order by field appears
-				//.orderBy(LEXEME_REGION.ORDER_BY)
+				.orderBy(LEXEME_REGION.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 

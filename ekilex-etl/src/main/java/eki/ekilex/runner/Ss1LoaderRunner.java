@@ -206,9 +206,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<WordSeries> seriesForWords = findSeriesForWords(context, newWords);
 		// no series groups, so its first word in series, create group add words and store it for later use
 		if (seriesForWords.isEmpty()) {
-			Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
+			Long wordGroup = createWordGroup(WordRelationGroupType.SERIES);
 			for (WordData wordData : newWords) {
-				createWordRelationGroupMember(wordGroup, wordData.id);
+				createWordGroupMember(wordGroup, wordData.id);
 			}
 			WordSeries series = new WordSeries();
 			series.groupId = wordGroup;
@@ -218,7 +218,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			// series groups found, so its next word in group, add it to group
 			for (WordSeries series : seriesForWords) {
 				for (WordData wordData : newWords) {
-					createWordRelationGroupMember(series.groupId, wordData.id);
+					createWordGroupMember(series.groupId, wordData.id);
 				}
 			}
 		}
@@ -267,9 +267,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processVariants(List<WordData> newWords) throws Exception {
 		if (isVariant(newWords)) {
-			Long wordGroup = createWordRelationGroup(WordRelationGroupType.VARIANTS);
+			Long wordGroup = createWordGroup(WordRelationGroupType.VARIANTS);
 			for (WordData wordData : newWords) {
-				createWordRelationGroupMember(wordGroup, wordData.id);
+				createWordGroupMember(wordGroup, wordData.id);
 			}
 		}
 	}

@@ -222,8 +222,7 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 						w2.ASPECT_CODE.as("meaning_word_aspect_code"),
 						lr.RELATED_LEXEMES)
 				.from(l1
-						.leftOuterJoin(l2).on(
-								l2Join)
+						.leftOuterJoin(l2).on(l2Join)
 						.leftOuterJoin(w2).on(l2.WORD_ID.eq(w2.WORD_ID))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l1.LEXEME_ID)))
 				.where(where)
@@ -325,8 +324,7 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 						MVIEW_WW_FORM.AUDIO_FILE,
 						MVIEW_WW_FORM.ORDER_BY)
 				.from(MVIEW_WW_FORM)
-				.where(
-						where)
+				.where(where)
 				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.ORDER_BY, MVIEW_WW_FORM.FORM_ID)
 				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
 	}

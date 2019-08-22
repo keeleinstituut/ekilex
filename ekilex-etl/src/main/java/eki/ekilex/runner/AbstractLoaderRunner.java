@@ -2,7 +2,6 @@ package eki.ekilex.runner;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.Normalizer;
@@ -140,22 +139,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		deleteFloatingData();
 		t2 = System.currentTimeMillis();
 		long timeMillis = t2 - t1;
-		long secondMillis = 1000;
-		long minuteMillis = 60000;
-		String timeLog;
-		if (timeMillis < secondMillis) {
-			timeLog = timeMillis + " millis";
-		} else if (timeMillis < minuteMillis) {
-			float timeSeconds = (float) timeMillis / (float) secondMillis;
-			BigDecimal timeSecondsRound = new BigDecimal(timeSeconds);
-			timeSecondsRound = timeSecondsRound.setScale(2, BigDecimal.ROUND_HALF_UP);
-			timeLog = timeSecondsRound.toString() + " seconds";
-		} else {
-			float timeMinutes = (float) timeMillis / (float) minuteMillis;
-			BigDecimal timeMinutesRound = new BigDecimal(timeMinutes);
-			timeMinutesRound = timeMinutesRound.setScale(2, BigDecimal.ROUND_HALF_UP);
-			timeLog = timeMinutesRound.toString() + " minutes";
-		}
+		String timeLog = toReadableFormat(timeMillis);
 		logger.debug("Done loading \"{}\" in {}", getDataset(), timeLog);
 		if (reportComposer != null) {
 			reportComposer.end();
@@ -1359,19 +1343,19 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return MapUtils.isEmpty(basicDbService.queryForMap(sqls.getSqlSelectWordGroupWithMembers(), params));
 	}
 
-	protected Long createWordRelationGroup(WordRelationGroupType groupType) throws Exception {
+	protected Long createWordGroup(WordRelationGroupType groupType) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("word_rel_type_code", groupType.name());
-		return basicDbService.create(WORD_RELATION_GROUP, params);
+		return basicDbService.create(WORD_GROUP, params);
 	}
 
-	protected Long createWordRelationGroupMember(Long groupId, Long wordId) throws Exception {
+	protected Long createWordGroupMember(Long groupId, Long wordId) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("word_group_id", groupId);
 		params.put("word_id", wordId);
-		return basicDbService.create(WORD_RELATION_GROUP_MEMBER, params);
+		return basicDbService.create(WORD_GROUP_MEMBER, params);
 	}
 
 	protected void createWordRelation(Long wordId1, Long wordId2, String relationType) throws Exception {
