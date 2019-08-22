@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -52,10 +53,16 @@ public abstract class AbstractPageController implements WebConstant {
 	}
 
 	protected List<String> getUserPreferredDatasetsCodes() {
+
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userService.getUserProfile(userId);
-		return userProfile.getPreferredDatasets();
+		List<String> datasets = userProfile.getPreferredDatasets();
+		if (CollectionUtils.isEmpty(datasets)) {
+			datasets = commonDataService.getDatasetCodes();
+			userService.updateUserPreferredDatasets(datasets);
+		}
+		return datasets;
 	}
 
 	@ModelAttribute("allDatasets")

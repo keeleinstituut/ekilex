@@ -184,13 +184,3 @@ function refreshDetails() {
 function doNewSearch() {
 	$('#simple_search_filter').find('button[type=submit]').trigger('click');
 }
-
-function deleteLexemeAndWordAndMeaning() {
-	var opName = "delete";
-	var opCode = "lexeme";
-	var lexemeId = $(this).attr("data-id");
-	var successCallbackName = $(this).attr("data-callback");
-	let successCallbackFunc = () => eval(successCallbackName)($(this));
-
-	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
-}

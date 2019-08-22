@@ -135,11 +135,20 @@
                   </span>
                   <span class="pl-1 pr-1" th:if="${lexeme.wordDisplayMorphCode != null}" th:text="'[' + ${lexeme.wordDisplayMorphCode} + ']'"></span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                    <button type="button" class="btn btn-link pl-0 pr-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
-                      <span th:text="${meaningWord.value}"></span>
-                      <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
-                    </button>
+                    <div class="hidden-buttons">
+                      <button type="button" class="btn btn-link pl-0 pr-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
+                        <span th:text="${meaningWord.value}"></span>
+                        <span th:text="${meaningWord.homonymNumber}"></span>
+                        <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-id="${meaningWord.lexemeId}"
+                              data-callback="refreshDetails"
+                              data-toggle="deleteLexemeAndWordAndMeaning"
+                              sec:authorize="${#vars.isLexemeCrudGranted}">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </div>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
                 </div>
@@ -1149,7 +1158,7 @@
 			title : 'Kinnita kustutamine',
 			onConfirm : deleteLexemeAndWordAndMeaning
 		});
-	</script>
+    </script>
   </th:block>
 
   <div th:replace="common :: newWordDlg('lex_search')"></div>

@@ -49,6 +49,7 @@ import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchCriterion;
@@ -526,16 +527,17 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchSingleInto(WordLexeme.class);
 	}
 
-	public List<eki.ekilex.data.Word> getMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public List<MeaningWord> getMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create
 				.select(
 						WORD.ID.as("word_id"),
-						FORM.VALUE.as("word"),
+						FORM.VALUE,
 						WORD.HOMONYM_NR,
-						WORD.LANG)
+						WORD.LANG.as("language"),
+						LEXEME.ID.as("lexeme_id"))
 				.from(LEXEME, WORD, PARADIGM, FORM)
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
@@ -545,9 +547,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(meaningId))
 								.and(dsWhere))
-				.groupBy(WORD.ID, FORM.VALUE)
+				.groupBy(WORD.ID, FORM.VALUE, LEXEME.ID)
 				.orderBy(FORM.VALUE)
-				.fetchInto(eki.ekilex.data.Word.class);
+				.fetchInto(MeaningWord.class);
 	}
 
 	public List<Relation> getWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -741,5 +743,4 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.orderBy(c.ID, lc2.MEMBER_ORDER)
 				.fetchInto(CollocationTuple.class);
 	}
-
 }

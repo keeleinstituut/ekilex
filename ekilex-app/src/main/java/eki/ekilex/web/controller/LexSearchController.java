@@ -183,9 +183,6 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		logger.debug("Requesting details by word {}", wordId);
 
 		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
-		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = commonDataService.getDatasetCodes();
-		}
 		WordDetails details = commonDataService.getWordDetails(wordId, selectedDatasets);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
