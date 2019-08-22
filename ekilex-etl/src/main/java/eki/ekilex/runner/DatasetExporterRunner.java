@@ -89,7 +89,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		sqlSelectQueryCache = new HashMap<String, String>();
 		tablesHierarchyPaths = new HashSet<String>();
 
-		tablesHierarchyPaths.add(composePath(transportService.toLowerCase(DATASET)));
+		tablesHierarchyPaths.add(composePath(DATASET));
 
 		tablesHierarchyPaths.add(composePath(WORD));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_GUID));

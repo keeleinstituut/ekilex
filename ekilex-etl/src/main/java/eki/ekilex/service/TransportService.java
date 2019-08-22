@@ -69,8 +69,6 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 	@Transactional
 	public void initialize() throws Exception {
 
-		logger.debug("Loading tables descriptions...");
-
 		String[] supportedTableNamesArr = new String[] {
 				DATASET,
 				MEANING, MEANING_FREEFORM, MEANING_NR, MEANING_DOMAIN, MEANING_RELATION, MEANING_LIFECYCLE_LOG, MEANING_PROCESS_LOG,
@@ -115,7 +113,7 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		List<SimpleTableColumn> uniqueConstraintTablesColumns = basicDbService.getResults(sqlSelectUniqueConstraintTableColumns, paramMap, new SimpleTableColumnRowMapper());
 		this.uniqueConstraintsColumnsMap = mapTablesUniqueConstraintsColumns(uniqueConstraintTablesColumns);
 
-		logger.debug("...done");
+		logger.debug("Tables descriptions collected");
 	}
 
 	public List<String> getSupportedTableNames() {
@@ -190,11 +188,11 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		return tablesUniqueConstraintsColumnsMap;
 	}
 
-	public String composeFullTableColumnName(String tableName, String columnName) {
+	private String composeFullTableColumnName(String tableName, String columnName) {
 		return tableName + "." + columnName;
 	}
 
-	public String[] toLowerCase(String... values) {
+	private String[] toLowerCase(String... values) {
 		for (int valueIndex = 0; valueIndex < values.length; valueIndex++) {
 			values[valueIndex] = values[valueIndex].toLowerCase();
 		}
