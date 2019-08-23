@@ -4,15 +4,17 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriUtils;
 
 import eki.wordweb.constant.CollocMemberGroup;
+import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.web.bean.SessionBean;
 
 @Component
-public class ViewUtil implements WebConstant {
+public class ViewUtil implements WebConstant, SystemConstant {
 
 	public String getTooltipHtml(DisplayColloc colloc) {
 
@@ -79,7 +81,8 @@ public class ViewUtil implements WebConstant {
 		String sourceLang = sessionBean.getSourceLang();
 		String destinLang = sessionBean.getDestinLang();
 		String searchMode = sessionBean.getSearchMode();
-		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + word + "/" + homonymNr;
+		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
+		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + encodedWord + "/" + homonymNr;
 		return uri;
 	}
 
@@ -87,7 +90,8 @@ public class ViewUtil implements WebConstant {
 		String sourceLang = sessionBean.getSourceLang();
 		String destinLang = sessionBean.getDestinLang();
 		String searchMode = sessionBean.getSearchMode();
-		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + word;
+		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
+		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + encodedWord;
 		return uri;
 	}
 
@@ -95,7 +99,8 @@ public class ViewUtil implements WebConstant {
 		String sourceLang = sessionBean.getDestinLang();
 		String destinLang = sessionBean.getSourceLang();
 		String searchMode = sessionBean.getSearchMode();
-		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + word + "/" + homonymNr;
+		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
+		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + encodedWord + "/" + homonymNr;
 		return uri;
 	}
 }
