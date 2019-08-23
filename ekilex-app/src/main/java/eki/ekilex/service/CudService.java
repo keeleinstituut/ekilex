@@ -180,6 +180,13 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
+	public void updateLexemeComplexity(Long lexemeId, String complexity) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.COMPLEXITY, lexemeId, complexity);
+		createLifecycleLog(logData);
+		cudDbService.updateLexemeComplexity(lexemeId, complexity);
+	}
+
+	@Transactional
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		Long lexemePosId = cudDbService.updateLexemePos(lexemeId, currentPos, newPos);
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, currentPos, newPos);

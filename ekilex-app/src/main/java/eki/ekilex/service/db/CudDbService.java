@@ -312,6 +312,13 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
+	public void updateLexemeComplexity(Long lexemeId, String complexity) {
+		create.update(LEXEME)
+				.set(LEXEME.COMPLEXITY, complexity)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
 	public Long updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		Long lexemePosId = create
 				.update(LEXEME_POS)
