@@ -978,16 +978,16 @@
           </div>
         </div>
       </th:block>
+      <script th:replace="common :: confirmations"></script>
+      <script>
+		  $('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({
+			  btnOkLabel: 'Jah',
+			  btnCancelLabel: 'Ei',
+			  title: 'Kinnita kustutamine',
+			  onConfirm: deleteMeaningAndLexemesAndWords
+		  });
+      </script>
     </div>
-    <script th:replace="common :: confirmations"></script>
-    <script>
-		$('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({
-			btnOkLabel: 'Jah',
-			btnCancelLabel: 'Ei',
-			title: 'Kinnita kustutamine',
-			onConfirm: deleteMeaningAndLexemesAndWords
-		});
-    </script>
   </th:block>
 
   <div th:replace="common :: newWordDlg('term_search')"></div>
