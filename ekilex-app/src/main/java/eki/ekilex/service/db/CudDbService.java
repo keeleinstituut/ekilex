@@ -171,6 +171,15 @@ public class CudDbService implements DbConstant {
 		return meaningDomainRecord.getId();
 	}
 
+	public String getImageTitle(Long imageId) {
+		return create
+				.select(FREEFORM.VALUE_TEXT)
+				.from(FREEFORM)
+				.where(FREEFORM.PARENT_ID.eq(imageId)
+						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
+				.fetchOneInto(String.class);
+	}
+
 	public void updateFreeformTextValue(Long id, String value, String valuePrese) {
 		create.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, value)
