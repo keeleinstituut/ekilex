@@ -30,8 +30,7 @@ public interface TableName {
 	String WORD_ETYMOLOGY_SOURCE_LINK = "word_etymology_source_link";
 	String WORD_GROUP_MEMBER = "word_group_member";
 	String WORD_RELATION = "word_relation";
-	String WORD_RELATION_GROUP = "word_group";
-	String WORD_RELATION_GROUP_MEMBER = "word_group_member";
+	String WORD_GROUP = "word_group";
 	String WORD_LIFECYCLE_LOG = "word_lifecycle_log";
 	String WORD_PROCESS_LOG = "word_process_log";
 	String LEXEME = "lexeme";
@@ -67,7 +66,7 @@ public interface TableName {
 	String COLLOCATION = "collocation";
 	String COLLOCATION_FREEFORM = "collocation_freeform";
 	String LIFECYCLE_LOG = "lifecycle_log";
-	String GAME_NONWORD = "game_nonword";
 	String PROCESS_LOG = "process_log";
 	String PROCESS_LOG_SOURCE_LINK = "process_log_source_link";
+	String GAME_NONWORD = "game_nonword";
 }

@@ -69,3 +69,7 @@ $(document).on("show.bs.modal", "[id^=editWordAspectDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editLexemeLevelsDlg_]", function() {
 	initLexemeLevelsDlg($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=editLexemeComplexityDlg_]", function() {
+	initSelectDlg($(this));
+});

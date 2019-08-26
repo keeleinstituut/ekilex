@@ -225,6 +225,19 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			}
 		}
 
+		boolean isSynonymFilter = StringUtils.equals(sourceLang, destinLang);
+		boolean isWordMatchFilter = !isSynonymFilter;
+		/*
+		lexemes = lexemes.stream().filter(lexeme -> {
+			if (isSynonymFilter && CollectionUtils.isNotEmpty(lexeme.get)) {
+				
+			} else if (isWordMatchFilter) {
+				
+			}
+			return false;
+		}).collect(Collectors.toList());
+		*/
+
 		List<Classifier> summarisedPoses = new ArrayList<>();
 
 		for (Lexeme lexeme : lexemes) {
@@ -236,7 +249,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			if (CollectionUtils.isNotEmpty(lexeme.getPoses())) {
 				summarisedPoses.addAll(lexeme.getPoses());
 			}
-			boolean isMissingMatchWords = CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords()) && !StringUtils.equals(sourceLang, destinLang);
+			boolean isMissingMatchWords = isWordMatchFilter && CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords());
 			lexeme.setMissingMatchWords(isMissingMatchWords);
 			filterMeaningWords(lexeme, allRelatedWordValues);
 			List<String> existingCollocationValues = new ArrayList<>();

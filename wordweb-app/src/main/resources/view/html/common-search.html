@@ -94,7 +94,8 @@
         <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
       </div>
       <button class="show-more" aria-expanded="false"
-              th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+              th:data-see-more="#{button.see.more}"
+              th:data-see-less="#{button.see.less}"
               th:unless="${#lists.isEmpty(sentences)}">
         <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
         <span th:text="#{button.see.more}"></span>

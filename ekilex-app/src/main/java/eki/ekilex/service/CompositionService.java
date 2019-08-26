@@ -75,6 +75,7 @@ public class CompositionService extends AbstractService {
 	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId) {
 		Long duplicateMeaningId = cudDbService.createMeaning();
 		Long duplicateLexemeId = compositionDbService.cloneEmptyLexeme(lexemeId, duplicateMeaningId);
+		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
 		String userName = userService.getAuthenticatedUser().getName();
 		String targetLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(duplicateLexemeId);
 
@@ -108,8 +109,9 @@ public class CompositionService extends AbstractService {
 	}
 
 	private Long duplicateLexemeData(Long lexemeId, Long meaningId) {
-		
+
 		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, meaningId);
+		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
 		compositionDbService.cloneLexemeDerivs(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeFreeforms(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemePoses(lexemeId, duplicateLexemeId);
@@ -288,4 +290,41 @@ public class CompositionService extends AbstractService {
 		}
 	}
 
+	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) {
+
+		LexemeRecord duplicatedLexeme = compositionDbService.getLexeme(duplicateLexemeId);
+		Integer level1 = duplicatedLexeme.getLevel1();
+		Integer level2 = duplicatedLexeme.getLevel2();
+		Integer level3 = duplicatedLexeme.getLevel3();
+		Long wordId = duplicatedLexeme.getWordId();
+
+		if (level3 > 1) {
+			List<LexemeRecord> lexemesWithLargerLevel3 = compositionDbService.getLexemesWithLargerLevel3(wordId, level1, level2, level3);
+			int increasedDuplicatedLexemeLevel3 = level3 + 1;
+			compositionDbService.updateLexemeLevel3(duplicateLexemeId, increasedDuplicatedLexemeLevel3);
+			for (LexemeRecord lexeme : lexemesWithLargerLevel3) {
+				Long lexemeId = lexeme.getId();
+				int increasedLevel3 = lexeme.getLevel3() + 1;
+				compositionDbService.updateLexemeLevel2(lexemeId, increasedLevel3);
+			}
+		} else if (level2 > 1) {
+			List<LexemeRecord> lexemesWithLargerLevel2 = compositionDbService.getLexemesWithLargerLevel2(wordId, level1, level2);
+			int increasedDuplicatedLexemeLevel2 = level2 + 1;
+			compositionDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
+			for (LexemeRecord lexeme : lexemesWithLargerLevel2) {
+				Long lexemeId = lexeme.getId();
+				int increasedLevel2 = lexeme.getLevel2() + 1;
+				compositionDbService.updateLexemeLevel2(lexemeId, increasedLevel2);
+			}
+		} else {
+			List<LexemeRecord> lexemesWithLargerLevel1 = compositionDbService.getLexemesWithLargerLevel1(wordId, level1);
+			int increasedDuplicatedLexemeLevel1 = level1 + 1;
+			compositionDbService.updateLexemeLevel1(duplicateLexemeId, increasedDuplicatedLexemeLevel1);
+			for (LexemeRecord lexeme : lexemesWithLargerLevel1) {
+				Long lexemeId = lexeme.getId();
+				int increasedLevel1 = lexeme.getLevel1() + 1;
+				compositionDbService.updateLexemeLevel1(lexemeId, increasedLevel1);
+			}
+		}
+	}
 }

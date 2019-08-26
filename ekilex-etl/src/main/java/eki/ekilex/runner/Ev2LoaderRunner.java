@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -265,17 +264,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 		extractLogDataAndCreateLifecycleLog(articleNode, newWords);
 		context.importedWords.addAll(newWords);
-	}
-
-	private void storeMeaningReference(Context context, WordData refWord, List<WordData> targetWords, Node articleNode) {
-		String key = generateRefKey(refWord);
-		if (!context.referencesToMeanings.containsKey(key)) {
-			context.referencesToMeanings.put(key, new MeaningReferenceData());
-		}
-		context.referencesToMeanings.get(key).words.addAll(targetWords);
-		if (articleNode != null) {
-			context.referencesToMeanings.get(key).articleNodes.add(articleNode);
-		}
 	}
 
 	private Long getMeaningIdOfTheFirstLexeme(Long wordId) throws Exception {
@@ -633,7 +621,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String meaningNrAttr = "tahendusnr";
 		final String meaningBlockExp = "x:tp";
 		final String meaningGroupExp = "x:tg";
-		final String meaningDefinitionExp = "x:dg/x:d";
+		//not gonna
+		//final String meaningDefinitionExp = "x:dg/x:d";
 		final String registerExp = "x:dg/x:s";
 		final String domainExp = "x:dg/x:v";
 
@@ -702,9 +691,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		for (List<LexemeToWordData> aspectGroup : aspectGroups) {
 			List<Long> memberIds = aspectGroup.stream().map(w -> w.wordId).collect(toList());
 			if (hasNoWordRelationGroupWithMembers(WordRelationGroupType.ASPECTS, memberIds)) {
-				Long wordGroupId = createWordRelationGroup(WordRelationGroupType.ASPECTS);
+				Long wordGroupId = createWordGroup(WordRelationGroupType.ASPECTS);
 				for (LexemeToWordData wordData : aspectGroup) {
-					createWordRelationGroupMember(wordGroupId, wordData.wordId);
+					createWordGroupMember(wordGroupId, wordData.wordId);
 				}
 			}
 		}
@@ -833,10 +822,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private String cleanRussianTranslation(String usageValue) {
-		return replaceChars(usageValue, "\"", "");
-	}
-
 	private void cacheMeaningRelatedData(
 			Context context, Long meaningId, List<String> definitions, WordData keyword, int level1,
 			List<LexemeToWordData> latinTerms,
@@ -921,12 +906,14 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<Usage> usages = new ArrayList<>();
 		List<Node> usageBlockNodes = node.selectNodes(usageBlockExp);
 		for (Node usageBlockNode : usageBlockNodes) {
-			if (isRestricted(usageBlockNode))
+			if (isRestricted(usageBlockNode)) {
 				continue;
+			}
 			List<Node> usageGroupNodes = usageBlockNode.selectNodes(usageGroupExp);
 			for (Node usageGroupNode : usageGroupNodes) {
-				if (isRestricted(usageGroupNode))
+				if (isRestricted(usageGroupNode)) {
 					continue;
+				}
 				List<String> usageOriginalValues = extractOriginalValues(usageGroupNode, usageExp);
 				List<String> usageDefinitionValues = extractOriginalValues(usageGroupNode, usageDefinitionExp);
 				List<UsageTranslation> usageTranslations = extractUsageTranslations(usageGroupNode);
@@ -958,7 +945,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<String> translationValues = extractOriginalValues(node, usageTranslationExp);
 		for (String translationValue : translationValues) {
 			UsageTranslation translation = new UsageTranslation();
-			translation.setValue(cleanRussianTranslation(translationValue));
+			translation.setValue(translationValue);
 			translation.setLang(LANG_RUS);
 			translations.add(translation);
 		}

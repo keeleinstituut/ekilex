@@ -14,11 +14,11 @@ public class Count extends AbstractDataObject {
 		this.value = 0;
 	}
 
-	public void increment() {
+	public synchronized void increment() {
 		this.value++;
 	}
 
-	public void increment(int byMuch) {
+	public synchronized void increment(int byMuch) {
 		this.value += byMuch;
 	}
 

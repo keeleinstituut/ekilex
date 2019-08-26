@@ -152,6 +152,7 @@ public class LifecycleLogDbServiceHelper {
 						LEXEME.LEVEL3,
 						LEXEME.VALUE_STATE_CODE,
 						LEXEME.PROCESS_STATE_CODE,
+						LEXEME.COMPLEXITY,
 						LEXEME.ORDER_BY,
 						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value")
 						)
