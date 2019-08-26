@@ -326,7 +326,7 @@
             <input type="hidden" name="value">
             <input type="hidden" name="opCode" value="meaning_domain">
             <div class="col-md-12">
-              <select required class="form-control value-select">
+              <select required class="form-control classifier-select" data-live-search="true">
                 <option value="" hidden disabled selected>vali väärtus...</option>
                 <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
@@ -346,11 +346,11 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
+          <div class="modal-body" style="overflow: auto">
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_domain">
             <input type="hidden" name="currentValue" th:value="${classif.toIdString()}">
-            <select class="form-control" name="value">
+            <select class="form-control classifier-select" name="value" data-live-search="true">
               <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
