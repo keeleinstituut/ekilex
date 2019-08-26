@@ -185,19 +185,6 @@ public class CompositionService extends AbstractService {
 	}
 
 	@Transactional
-	public List<String> validateLexemeJoin(Long lexemeId, Long lexemeId2) {
-		List<String> validationMessages = new ArrayList<>();
-		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
-		LexemeRecord lexeme2 = compositionDbService.getLexeme(lexemeId2);
-		if (lexeme.getDatasetCode().equals(lexeme2.getDatasetCode()) && lexeme.getWordId().equals(lexeme2.getWordId())) {
-			if (!Objects.equals(lexeme.getFrequencyGroupCode(), lexeme2.getFrequencyGroupCode())) {
-				validationMessages.add("Ilmikute sagedusrühmad on erinevad.");
-			}
-		}
-		return validationMessages;
-	}
-
-	@Transactional
 	public void joinLexemes(Long lexemeId, Long lexemeId2) {
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
 		LexemeRecord lexeme2 = compositionDbService.getLexeme(lexemeId2);
