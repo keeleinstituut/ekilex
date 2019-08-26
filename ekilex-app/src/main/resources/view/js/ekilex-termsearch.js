@@ -128,6 +128,14 @@ function initialise() {
 	}
 
 	initNewWordDlg();
+	//alert('hei');
+	$('#definitionPermLanguageSelect')
+		.selectpicker({
+			width : '100%'
+
+		});
+
+	initClassifierAutocomplete();
 }
 
 function refreshDetails() {

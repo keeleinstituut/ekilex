@@ -597,7 +597,8 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) 
 
 function initClassifierAutocomplete() {
 	$('.classifier-select').selectpicker({
-		width : '100%'
+		width : '100%',
+		container: 'body'
 	});
 }
 
