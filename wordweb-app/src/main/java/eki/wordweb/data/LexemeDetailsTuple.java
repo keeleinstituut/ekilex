@@ -29,17 +29,17 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 
 	private List<String> adviceNotes;
 
-	private List<String> publicNotes;
+	private List<TypePublicNote> publicNotes;
 
-	private List<String> grammars;
+	private List<TypeGrammar> grammars;
 
-	private List<String> governments;
+	private List<TypeGovernment> governments;
 
 	private List<TypeUsage> usages;
 
 	private List<String> meaningLexemeRegisterCodes;
 
-	private List<String> meaningLexemeGovernments;
+	private List<TypeGovernment> meaningLexemeGovernments;
 
 	private Long meaningWordId;
 
@@ -135,27 +135,27 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 		this.adviceNotes = adviceNotes;
 	}
 
-	public List<String> getPublicNotes() {
+	public List<TypePublicNote> getPublicNotes() {
 		return publicNotes;
 	}
 
-	public void setPublicNotes(List<String> publicNotes) {
+	public void setPublicNotes(List<TypePublicNote> publicNotes) {
 		this.publicNotes = publicNotes;
 	}
 
-	public List<String> getGrammars() {
+	public List<TypeGrammar> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<String> grammars) {
+	public void setGrammars(List<TypeGrammar> grammars) {
 		this.grammars = grammars;
 	}
 
-	public List<String> getGovernments() {
+	public List<TypeGovernment> getGovernments() {
 		return governments;
 	}
 
-	public void setGovernments(List<String> governments) {
+	public void setGovernments(List<TypeGovernment> governments) {
 		this.governments = governments;
 	}
 
@@ -175,11 +175,11 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 		this.meaningLexemeRegisterCodes = meaningLexemeRegisterCodes;
 	}
 
-	public List<String> getMeaningLexemeGovernments() {
+	public List<TypeGovernment> getMeaningLexemeGovernments() {
 		return meaningLexemeGovernments;
 	}
 
-	public void setMeaningLexemeGovernments(List<String> meaningLexemeGovernments) {
+	public void setMeaningLexemeGovernments(List<TypeGovernment> meaningLexemeGovernments) {
 		this.meaningLexemeGovernments = meaningLexemeGovernments;
 	}
 

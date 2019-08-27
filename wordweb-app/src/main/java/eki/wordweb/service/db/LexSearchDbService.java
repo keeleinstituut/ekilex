@@ -50,10 +50,11 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 	@Autowired
 	private DSLContext create;
 
-	public List<Word> getWords(String searchFilter, String lang, Complexity complexity) {
+	public List<Word> getWords(String searchFilter, String sourceLang, String destinLang, Complexity complexity) {
 
 		String searchFilterLower = StringUtils.lowerCase(searchFilter);
-		Condition where = MVIEW_WW_WORD.LANG.eq(lang)
+		Condition where = MVIEW_WW_WORD.LANG.eq(sourceLang)
+				.and(DSL.condition("{0} = any({1})", DSL.val(destinLang), MVIEW_WW_WORD.LEX_LANGS))
 				.and(DSL.exists(DSL.select(MVIEW_WW_FORM.WORD_ID)
 						.from(MVIEW_WW_FORM)
 						.where(MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)

@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = -1562276264;
+    private static final long serialVersionUID = 2103406381;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -114,6 +114,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.meaning_words</code>.
      */
     public final TableField<MviewWwWordRecord, TypeWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.wordweb.data.db.udt.TypeWord.TYPE_WORD.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.lex_langs</code>.
+     */
+    public final TableField<MviewWwWordRecord, String[]> LEX_LANGS = createField("lex_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word.definitions</code>.

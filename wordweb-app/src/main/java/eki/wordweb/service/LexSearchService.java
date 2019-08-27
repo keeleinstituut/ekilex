@@ -64,11 +64,11 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
 
 		Complexity complexity = getComplexity(searchMode);
-		List<Word> allWords = lexSearchDbService.getWords(searchWord, sourceLang, complexity);
+		List<Word> allWords = lexSearchDbService.getWords(searchWord, sourceLang, destinLang, complexity);
 		boolean isForcedSearchMode = false;
 		if (CollectionUtils.isEmpty(allWords) && StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
 			complexity = getComplexity(SEARCH_MODE_DETAIL);
-			allWords = lexSearchDbService.getWords(searchWord, sourceLang, complexity);
+			allWords = lexSearchDbService.getWords(searchWord, sourceLang, destinLang, complexity);
 			if (CollectionUtils.isNotEmpty(allWords)) {
 				searchMode = SEARCH_MODE_DETAIL;
 				isForcedSearchMode = true;
@@ -140,7 +140,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, complexity);
 		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, complexity);
 		compensateNullWords(wordId, collocTuples);
-		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, complexity, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();
