@@ -216,7 +216,8 @@
                     </div>
                   </div>
                   <button class="show-more" aria-expanded="false" name="colloc-usages-btn"
-                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:data-see-more="#{button.see.more}"
+                          th:data-see-less="#{button.see.less}"
                           th:if="${lexeme.moreUsages}">
                     <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
                     <span th:text="#{button.see.more}"></span>
@@ -413,7 +414,8 @@
                         </th:block>
                       </div>
                       <button class="show-more" aria-expanded="false" name="colloc-expand-btn"
-                              th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}">
+                              th:data-see-more="#{button.see.more}"
+                              th:data-see-less="#{button.see.less}">
                         <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
                         <span th:text="#{button.see.more}"></span>
                       </button>
@@ -514,7 +516,8 @@
                     </div>
                   </div>
                   <button class="show-more" aria-expanded="false"
-                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:data-see-more="#{button.see.more}"
+                          th:data-see-less="#{button.see.less}"
                           th:if="${paradigm.expandable}">
                     <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
                     <span th:text="#{button.see.more}"></span>
@@ -570,7 +573,8 @@
                     </div>
                   </div>
                   <button class="show-more" aria-expanded="false"
-                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:data-see-more="#{button.see.more}"
+                          th:data-see-less="#{button.see.less}"
                           th:if="${wordData.word.moreWordRelations}">
                     <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
                     <span th:text="#{button.see.more}"></span>

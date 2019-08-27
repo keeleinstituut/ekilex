@@ -51,6 +51,13 @@
     </div>
     <div class="col pl-0">
       <span th:text="#{'enum.complexity.' + ${lexeme.complexity}}"></span>
+      <button type="button" class="btn badge badge-primary"
+              title="Muuda"
+              data-toggle="modal"
+              th:data-target="${'#editLexemeComplexityDlg_' + lexeme.lexemeId}"
+              sec:authorize="${#vars.isLexemeCrudGranted}">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
     </div>
   </div>
   <div class="hidden-buttons row" th:if="${lexeme.lexemeProcessStateCode != null}" th:fragment="lexeme_process_state">

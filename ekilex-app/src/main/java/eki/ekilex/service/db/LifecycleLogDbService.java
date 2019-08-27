@@ -305,6 +305,12 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.COMPLEXITY.equals(property)) {
+				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+				String recent = (String) entityData.get("complexity");
+				logData.setRecent(recent);
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			} else if (LifecycleProperty.POS.equals(property)) {
 				Long lexemeId = create
 						.select(LEXEME_POS.LEXEME_ID)

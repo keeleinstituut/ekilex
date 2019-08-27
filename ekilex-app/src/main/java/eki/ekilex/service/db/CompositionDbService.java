@@ -77,7 +77,6 @@ public class CompositionDbService implements DbConstant {
 		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId)).fetch();
 	}
 
-
 	public List<LexemeRecord> getMeaningLexemes(Long meaningId, String datasetCode) {
 		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.eq(datasetCode))).fetch();
 	}
@@ -111,6 +110,33 @@ public class CompositionDbService implements DbConstant {
 				.limit(1)
 				.fetchOneInto(String.class);
 		return definition;
+	}
+
+	public List<LexemeRecord> getLexemesWithLargerLevel1(Long wordId, Integer level1) {
+		return create
+				.selectFrom(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.LEVEL1.gt(level1)))
+				.fetch();
+	}
+
+	public List<LexemeRecord> getLexemesWithLargerLevel2(Long wordId, Integer level1, Integer level2) {
+		return create
+				.selectFrom(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.LEVEL1.eq(level1))
+						.and(LEXEME.LEVEL2.gt(level2)))
+				.fetch();
+	}
+
+	public List<LexemeRecord> getLexemesWithLargerLevel3(Long wordId, Integer level1, Integer level2, Integer level3) {
+		return create
+				.selectFrom(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.LEVEL1.eq(level1))
+						.and(LEXEME.LEVEL2.eq(level2))
+						.and(LEXEME.LEVEL3.gt(level3)))
+				.fetch();
 	}
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
@@ -290,14 +316,9 @@ public class CompositionDbService implements DbConstant {
 	public Long cloneLexeme(Long lexemeId, Long meaningId) {
 
 		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
-		Integer level1 = lexeme.getLevel1();
-		int calculatedLevel2 = calculateLevel2(lexeme);
 		LexemeRecord clonedLexeme = lexeme.copy();
 		clonedLexeme.setMeaningId(meaningId);
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
-		clonedLexeme.setLevel1(level1);
-		clonedLexeme.setLevel2(calculatedLevel2);
-		clonedLexeme.setLevel3(1);
 		clonedLexeme.store();
 		return clonedLexeme.getId();
 	}
@@ -305,16 +326,11 @@ public class CompositionDbService implements DbConstant {
 	public Long cloneEmptyLexeme(Long lexemeId, Long meaningId) {
 
 		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
-		Integer level1 = lexeme.getLevel1();
-		int calculatedLevel2 = calculateLevel2(lexeme);
 		LexemeRecord clonedLexeme = lexeme.copy();
 		clonedLexeme.setMeaningId(meaningId);
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
 		clonedLexeme.changed(LEXEME.FREQUENCY_GROUP_CODE, false);
 		clonedLexeme.changed(LEXEME.CORPUS_FREQUENCY, false);
-		clonedLexeme.setLevel1(level1);
-		clonedLexeme.setLevel2(calculatedLevel2);
-		clonedLexeme.setLevel3(1);
 		clonedLexeme.setProcessStateCode(PROCESS_STATE_IN_WORK);
 		clonedLexeme.store();
 		return clonedLexeme.getId();
@@ -401,14 +417,6 @@ public class CompositionDbService implements DbConstant {
 			clonedRelation.changed(LEX_RELATION.ORDER_BY, false);
 			clonedRelation.store();
 		});
-	}
-
-	private int calculateLevel2(LexemeRecord lexeme) {
-
-		Result<LexemeRecord> lexemes = create.selectFrom(LEXEME)
-				.where(LEXEME.WORD_ID.eq(lexeme.getWordId()).and(LEXEME.LEVEL1.eq(lexeme.getLevel1())))
-				.fetch();
-		return lexemes.stream().mapToInt(LexemeRecord::getLevel2).max().orElse(0) + 1;
 	}
 
 	public Long cloneMeaning(Long meaningId) {
@@ -643,4 +651,27 @@ public class CompositionDbService implements DbConstant {
 				.execute();
 	}
 
+	public void updateLexemeLevel1(Long lexemeId, Integer level1) {
+
+		create.update(LEXEME)
+				.set(LEXEME.LEVEL1, level1)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void updateLexemeLevel2(Long lexemeId, Integer level2) {
+
+		create.update(LEXEME)
+				.set(LEXEME.LEVEL2, level2)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void updateLexemeLevel3(Long lexemeId, Integer level3) {
+
+		create.update(LEXEME)
+				.set(LEXEME.LEVEL3, level3)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
 }

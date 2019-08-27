@@ -180,6 +180,13 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
+	public void updateLexemeComplexity(Long lexemeId, String complexity) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.COMPLEXITY, lexemeId, complexity);
+		createLifecycleLog(logData);
+		cudDbService.updateLexemeComplexity(lexemeId, complexity);
+	}
+
+	@Transactional
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		Long lexemePosId = cudDbService.updateLexemePos(lexemeId, currentPos, newPos);
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, currentPos, newPos);
@@ -292,7 +299,8 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void updateImageTitle(Long imageId, String valuePrese) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
+		String recent = cudDbService.getImageTitle(imageId);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, recent, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateImageTitle(imageId, value);
@@ -768,7 +776,8 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteImageTitle(Long imageId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, null);
+		String recent = cudDbService.getImageTitle(imageId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, recent, null);
 		createLifecycleLog(logData);
 		cudDbService.deleteImageTitle(imageId);
 

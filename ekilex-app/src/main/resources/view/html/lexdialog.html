@@ -1077,5 +1077,24 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editLexemeComplexityDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_complexity_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_complexity">
+            <select class="form-control" name="value">
+              <option th:each="complexity : ${complexities}"
+                      th:value="${complexity}"
+                      th:selected="${complexity == lexeme.complexity}"
+                      th:text="#{'enum.complexity.' + ${complexity}}">
+              </option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

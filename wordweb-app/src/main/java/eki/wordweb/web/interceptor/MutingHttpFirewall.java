@@ -16,6 +16,7 @@ public class MutingHttpFirewall extends StrictHttpFirewall {
 
 	public MutingHttpFirewall() {
 		super();
+		setAllowUrlEncodedSlash(true);
 	}
 
 	@Override

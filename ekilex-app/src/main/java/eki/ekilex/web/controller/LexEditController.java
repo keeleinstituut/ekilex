@@ -70,12 +70,6 @@ public class LexEditController extends AbstractPageController {
 	public String join(@PathVariable("lexemeId") Long lexemeId, @PathVariable("lexemeId2") Long lexemeId2, Model model) {
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
-		List<String> validationMessages = compositionService.validateLexemeJoin(lexemeId, lexemeId2);
-		if (!validationMessages.isEmpty()) {
-			model.addAttribute("sourceLexeme", lexeme);
-			model.addAttribute("validationMessages", validationMessages);
-			return LEX_JOIN_PAGE;
-		}
 		compositionService.joinLexemes(lexemeId, lexemeId2);
 
 		List<String> datasets = getUserPreferredDatasetsCodes();
