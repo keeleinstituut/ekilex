@@ -16,6 +16,7 @@ function initialise() {
 			$("#meaning_select_wait_" + id).hide();
 			$("#meaning_select_point_" + id).show();
 			closeWaitDlg();
+			initClassifierAutocomplete();
 		}).fail(function(data) {
 			console.log(data);
 			closeWaitDlg();
@@ -128,6 +129,7 @@ function initialise() {
 	}
 
 	initNewWordDlg();
+	initClassifierAutocomplete();
 }
 
 function refreshDetails() {
