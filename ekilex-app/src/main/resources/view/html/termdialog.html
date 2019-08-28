@@ -346,7 +346,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
-          <div class="modal-body" style="overflow: auto">
+          <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_domain">
             <input type="hidden" name="currentValue" th:value="${classif.toIdString()}">
