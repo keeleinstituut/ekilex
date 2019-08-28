@@ -294,7 +294,9 @@ public class SearchHelper {
 		if (CollectionUtils.isNotEmpty(criteriaGroups)) {
 			for (SearchCriterionGroup criteriaGroup : criteriaGroups) {
 				for (SearchCriterion criteria : criteriaGroup.getSearchCriteria()) {
-					if (SearchOperand.NOT_EXISTS.equals(criteria.getSearchOperand()) || criteria.getSearchValue() != null) {
+					if (criteria.getSearchValue() != null) {
+						return true;
+					} else if (SearchOperand.NOT_EXISTS.equals(criteria.getSearchOperand())) {
 						return true;
 					}
 				}
