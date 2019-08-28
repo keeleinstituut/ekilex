@@ -197,6 +197,9 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 
 			Long lexemeId = tuple.getLexemeId();
 			Lexeme lexeme = lexemeMap.get(lexemeId);
+			if (lexeme == null) {
+				continue;
+			}
 			populateMeaning(lexeme, tuple, complexity, displayLang);
 			populateRelatedMeanings(lexeme, tuple, displayLang);
 		}
@@ -205,6 +208,9 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 
 			Long lexemeId = tuple.getLexemeId();
 			Lexeme lexeme = lexemeMap.get(lexemeId);
+			if (lexeme == null) {
+				continue;
+			}
 
 			CollocationPosGroup collocPosGroup = populateCollocPosGroup(lexeme, tuple, collocPosGroupMap, displayLang);
 			CollocationRelGroup collocRelGroup = populateCollocRelGroup(collocPosGroup, tuple, collocRelGroupMap);
