@@ -130,7 +130,8 @@ function initialiseDetailSearch() {
 		let searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
 		if (searchKeyVal == 'DOMAIN' && searchOperandVal == 'NOT_EXISTS') {
 			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
+			searchValueElement.parent().prop('hidden', true);
+			searchValueElement.selectpicker('refresh');
 		} else {
 			replaceSearchValueElement(searchKeyVal, searchValueElement);
 		}
