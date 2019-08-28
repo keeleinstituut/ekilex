@@ -20,7 +20,7 @@ public class MeaningWord extends WordTypeData {
 
 	private List<Classifier> registers;
 
-	private List<String> governments;
+	private List<TypeGovernment> governments;
 
 	private boolean emphasiseMatch;
 
@@ -74,11 +74,11 @@ public class MeaningWord extends WordTypeData {
 		this.registers = registers;
 	}
 
-	public List<String> getGovernments() {
+	public List<TypeGovernment> getGovernments() {
 		return governments;
 	}
 
-	public void setGovernments(List<String> governments) {
+	public void setGovernments(List<TypeGovernment> governments) {
 		this.governments = governments;
 	}
 

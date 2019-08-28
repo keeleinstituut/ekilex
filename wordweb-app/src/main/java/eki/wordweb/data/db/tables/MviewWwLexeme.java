@@ -7,6 +7,9 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
+import eki.wordweb.data.db.udt.records.TypeGovernmentRecord;
+import eki.wordweb.data.db.udt.records.TypeGrammarRecord;
+import eki.wordweb.data.db.udt.records.TypePublicNoteRecord;
 import eki.wordweb.data.db.udt.records.TypeUsageRecord;
 
 import java.util.Arrays;
@@ -39,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 1285548420;
+    private static final long serialVersionUID = 556195651;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -117,17 +120,17 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     /**
      * The column <code>public.mview_ww_lexeme.public_notes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> PUBLIC_NOTES = createField("public_notes", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, TypePublicNoteRecord[]> PUBLIC_NOTES = createField("public_notes", eki.wordweb.data.db.udt.TypePublicNote.TYPE_PUBLIC_NOTE.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.grammars</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> GRAMMARS = createField("grammars", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, TypeGrammarRecord[]> GRAMMARS = createField("grammars", eki.wordweb.data.db.udt.TypeGrammar.TYPE_GRAMMAR.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.governments</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> GOVERNMENTS = createField("governments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, TypeGovernmentRecord[]> GOVERNMENTS = createField("governments", eki.wordweb.data.db.udt.TypeGovernment.TYPE_GOVERNMENT.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.usages</code>.

@@ -27,11 +27,11 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<String> adviceNotes;
 
-	private List<String> publicNotes;
+	private List<TypePublicNote> publicNotes;
 
-	private List<String> grammars;
+	private List<TypeGrammar> grammars;
 
-	private List<String> governments;
+	private List<TypeGovernment> governments;
 
 	private List<TypeUsage> usages;
 
@@ -54,6 +54,8 @@ public class Lexeme extends AbstractDataObject {
 	private List<String> learnerComments;
 
 	private List<TypeDefinition> definitions;
+
+	private List<MeaningWord> allMeaningWords;
 
 	private List<MeaningWord> meaningWords;
 
@@ -143,27 +145,27 @@ public class Lexeme extends AbstractDataObject {
 		this.adviceNotes = adviceNotes;
 	}
 
-	public List<String> getPublicNotes() {
+	public List<TypePublicNote> getPublicNotes() {
 		return publicNotes;
 	}
 
-	public void setPublicNotes(List<String> publicNotes) {
+	public void setPublicNotes(List<TypePublicNote> publicNotes) {
 		this.publicNotes = publicNotes;
 	}
 
-	public List<String> getGrammars() {
+	public List<TypeGrammar> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<String> grammars) {
+	public void setGrammars(List<TypeGrammar> grammars) {
 		this.grammars = grammars;
 	}
 
-	public List<String> getGovernments() {
+	public List<TypeGovernment> getGovernments() {
 		return governments;
 	}
 
-	public void setGovernments(List<String> governments) {
+	public void setGovernments(List<TypeGovernment> governments) {
 		this.governments = governments;
 	}
 
@@ -253,6 +255,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setDefinitions(List<TypeDefinition> definitions) {
 		this.definitions = definitions;
+	}
+
+	public List<MeaningWord> getAllMeaningWords() {
+		return allMeaningWords;
+	}
+
+	public void setAllMeaningWords(List<MeaningWord> allMeaningWords) {
+		this.allMeaningWords = allMeaningWords;
 	}
 
 	public List<MeaningWord> getMeaningWords() {
