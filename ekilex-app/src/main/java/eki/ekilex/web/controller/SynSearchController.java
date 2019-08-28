@@ -48,6 +48,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	public String initSearch(Model model) throws Exception {
 
 		initSearchForms(model);
+		resetUserRole(model);
 
 		WordsResult wordsResult = new WordsResult();
 		model.addAttribute("wordsResult", wordsResult);
@@ -81,6 +82,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		// if redirect from login arrives
 		initSearchForms(model);
+		resetUserRole(model);
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYN_SEARCH_URI);
 		logger.debug(searchUri);

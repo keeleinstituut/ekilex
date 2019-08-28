@@ -20,6 +20,7 @@ import eki.ekilex.constant.SearchKey;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
@@ -138,6 +139,15 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	@ModelAttribute("iso2languages")
 	public Map<String, String> getIso2Languages() {
 		return commonDataService.getLanguagesIso2Map();
+	}
+
+	protected void resetUserRole(Model model) {
+
+		SessionBean sessionBean = getSessionBean(model);
+		if (sessionBean.getUserRole() == null) {
+			EkiUser user = userService.getAuthenticatedUser();
+			sessionBean.setUserRole(user.getRecentRole());
+		}
 	}
 
 	protected void initSearchForms(Model model) {
