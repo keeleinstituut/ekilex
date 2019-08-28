@@ -92,7 +92,7 @@
               </select>
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
                 <option value="">Kõik keeled</option>
                 <option th:each="language : ${allLanguages}"
                         th:value="${language.code}"
@@ -101,7 +101,7 @@
               </select>
             </div>
             <div class="col-6" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true"
                       th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS'}">
                 <option value="">Kõik valdkonnad</option>
                 <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
@@ -185,7 +185,7 @@
           <input type="text" class="form-control">
         </div>
         <div name="LANGUAGE" class="col-3">
-          <select class="form-control">
+          <select class="form-control" data-live-search="true">
             <option value="" selected>Kõik keeled</option>
             <option th:each="language : ${allLanguages}"
                     th:value="${language.code}"
@@ -193,7 +193,7 @@
           </select>
         </div>
         <div name="DOMAIN" class="col-6">
-          <select class="form-control">
+          <select class="form-control" data-live-search="true">
             <option value="" selected>Kõik valdkonnad</option>
             <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
               <option th:each="domain : ${origin.getValue()}"

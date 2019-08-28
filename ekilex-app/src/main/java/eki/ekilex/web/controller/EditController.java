@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriUtils;
 
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
@@ -631,12 +632,13 @@ public class EditController extends AbstractPageController implements SystemCons
 		Word firstWord = firstWordDetails.getWord();
 		String firstWordValue = firstWord.getValue();
 		List<WordDetails> wordDetailsList = commonDataService.getWordDetailsOfJoinCandidates(firstWordValue, wordId);
+		String encodedWordValue = UriUtils.encode(firstWordValue, UTF_8);
 
 		String backUrl;
 		if (meaningId != null) {
-			backUrl = WORD_VALUE_BACK_URI + "/" + firstWordValue + "/" + RETURN_PAGE_TERM_SEARCH;
+			backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_TERM_SEARCH;
 		} else {
-			backUrl = WORD_VALUE_BACK_URI + "/" + firstWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
+			backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
 		}
 
 		model.addAttribute("firstWordDetails", firstWordDetails);

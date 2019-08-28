@@ -28,7 +28,7 @@
               <div class="row align-items-center">
                 <label class="col-auto col-form-label">Tulemused:</label>
                 <div class="col-auto">
-                  <select id="resultLang" name="resultLang" class="form-control">
+                  <select id="resultLang" name="resultLang" class="form-control classifier-select" data-live-search="true">
                     <option value="">Kõik keeled</option>
                     <option
                         th:each="lang : ${allLanguages}"
@@ -196,7 +196,7 @@
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn badge badge-success"
-                                title="Lisa märkus"
+                                title="eenmalda Lisa märkus"
                                 data-toggle="modal"
                                 th:data-target="${'#addDefinitionPublicNoteDlg_' + definition.id}"
                                 sec:authorize="${#vars.isDefinitionCrudGranted}">
