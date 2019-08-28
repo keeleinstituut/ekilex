@@ -30,7 +30,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);
-		web.httpFirewall(new MutingHttpFirewall());
+		MutingHttpFirewall firewall = new MutingHttpFirewall();
+		firewall.setAllowUrlEncodedSlash(true);
+		firewall.setAllowUrlEncodedPercent(true);
+		web.httpFirewall(firewall);
 	}
 
 }
