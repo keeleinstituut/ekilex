@@ -32,7 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		super.configure(web);
 		MutingHttpFirewall firewall = new MutingHttpFirewall();
 		firewall.setAllowUrlEncodedSlash(true);
-		firewall.setAllowUrlEncodedPercent(true);
 		web.httpFirewall(firewall);
 	}
 
