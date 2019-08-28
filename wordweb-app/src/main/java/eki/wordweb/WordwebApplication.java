@@ -56,6 +56,7 @@ public class WordwebApplication {
 			ajpConnector.setSecure(false);
 			ajpConnector.setAllowTrace(false);
 			ajpConnector.setScheme("http");
+			ajpConnector.setURIEncoding(StandardCharsets.UTF_8.name());
 			tomcat.addAdditionalTomcatConnectors(ajpConnector);
 		}
 		return tomcat;
