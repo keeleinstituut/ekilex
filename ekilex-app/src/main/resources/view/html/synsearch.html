@@ -20,14 +20,16 @@
       </div>
     </div>
     <div class="alert alert-info" th:if="${wordsResult.totalCount >0}">
-      Tulpade vahel ja üles alla liikumiseks töötavad nooleklahvid.<br/>
-      Klahv ENTER töötab eri tulpades järgmiselt:
+      Tulpade vahel ja üles alla liikumiseks töötavad <strong>nooleklahvid</strong>.<br/>
+      Klahv <strong>ENTER</strong> töötab eri tulpades järgmiselt:
       <ul>
         <li>Vasakul: valitud otsingutulemuse detailide kuvamine</li>
         <li>Paremal: valitud sünonüümi märkimine</li>
         <li>Keskel: Paremal tulbas märgitud sünonüümi valitud ilmikuga sidumine</li>
       </ul>
-      Klahv ESC eemaldab markeeringud ja liigutab kursori otsingu kasti.
+      Klahv <strong>ESC</strong> eemaldab markeeringud ja liigutab kursori otsingu kasti.<br/>
+
+      Klahvid <strong>'1', '2' ja '3'</strong> töötavad kiirklahvidena kolme tulba valimiseks
     </div>
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>
@@ -156,7 +158,7 @@
 
 
         <div class="col-4 pr-2">
-          <div class="navigate-panel card mb-2" data-panel-index="3" th:attrappend="data-active-panel=${markedSynWordId != null}?'true'">
+          <div class="navigate-panel card mb-2" data-panel-index="3" th:attrappend="data-active-panel=${markedSynWordId != null}?'true'" style="position: fixed">
             <div class="card-body pt-0 pb-0">
               <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
                 <button type="button" class="btn badge badge-success"
