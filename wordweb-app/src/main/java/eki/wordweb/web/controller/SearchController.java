@@ -227,7 +227,7 @@ public class SearchController extends AbstractController {
 
 	private String composeSearchUri(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
 
-		String encodedSearchWord = UriUtils.encodePathSegment(searchWord, SystemConstant.UTF_8);
+		String encodedSearchWord = UriUtils.encode(searchWord, SystemConstant.UTF_8);
 		String searchUri = SEARCH_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + searchMode + "/" + encodedSearchWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
