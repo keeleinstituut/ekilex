@@ -347,10 +347,8 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 	}
 
 	private void populateMeaning(Lexeme lexeme, LexemeMeaningTuple tuple, Complexity complexity, String displayLang) {
-		lexeme.setImageFiles(tuple.getImageFiles());
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
-		lexeme.setLearnerComments(tuple.getLearnerComments());
 
 		List<TypeDefinition> definitions = tuple.getDefinitions();
 		lexeme.setDefinitions(definitions);
@@ -358,6 +356,10 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			if (CollectionUtils.isNotEmpty(definitions)) {
 				definitions = definitions.stream().filter(definition -> StringUtils.startsWith(definition.getComplexity().name(), complexity.name())).collect(Collectors.toList());
 				lexeme.setDefinitions(definitions);
+			}
+			if (Complexity.SIMPLE.equals(complexity)) {
+				lexeme.setImageFiles(tuple.getImageFiles());
+				lexeme.setLearnerComments(tuple.getLearnerComments());
 			}
 		}
 
