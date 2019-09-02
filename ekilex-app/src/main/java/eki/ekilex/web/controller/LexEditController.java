@@ -67,7 +67,7 @@ public class LexEditController extends AbstractPageController {
 	}
 
 	@GetMapping("/lexjoin/{lexemeId}/{lexemeId2}")
-	public String join(@PathVariable("lexemeId") Long lexemeId, @PathVariable("lexemeId2") Long lexemeId2, Model model) {
+	public String join(@PathVariable("lexemeId") Long lexemeId, @PathVariable("lexemeId2") Long lexemeId2) {
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		compositionService.joinLexemes(lexemeId, lexemeId2);
@@ -115,7 +115,6 @@ public class LexEditController extends AbstractPageController {
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(response);
 	}
-
 
 	@ResponseBody
 	@PostMapping("/duplicateemptylexeme/{lexemeId}")

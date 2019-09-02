@@ -36,13 +36,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
+import eki.ekilex.data.IdPair;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
@@ -139,42 +142,38 @@ public class CompositionDbService implements DbConstant {
 				.fetch();
 	}
 
-	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
+	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
 
-		LexemeRecord lexeme = create.fetchOne(LEXEME, LEXEME.ID.eq(lexemeId));
-		LexemeRecord sourceLexeme = create.fetchOne(LEXEME, LEXEME.ID.eq(sourceLexemeId));
-		if (lexeme.getWordId().equals(sourceLexeme.getWordId()) && lexeme.getDatasetCode().equals(sourceLexeme.getDatasetCode())) {
-			joinLexemes(lexemeId, sourceLexemeId);
-		}
-		joinMeanings(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
-	}
-
-	//TODO this is not viable solution when meanings share common words
-	public boolean joinMeanings(Long meaningId, Long sourceMeaningId) {
-
-		Meaning m1 = MEANING.as("m1");
-		Meaning m2 = MEANING.as("m2");
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
-		Boolean commonWordsExist = create
-									.select(DSL.field(DSL.count(m1.ID).gt(0)))
-									.from(m1, l1)
-									.where(
-											m1.ID.eq(meaningId)
-											.and(l1.MEANING_ID.eq(m1.ID))
-											.andExists(DSL
-													.select(m2.ID)
-													.from(m2, l2)
-													.where(
-															m2.ID.eq(sourceMeaningId)
-															.and(l2.MEANING_ID.eq(m2.ID))
-															.and(l2.WORD_ID.eq(l1.WORD_ID)))
-													)
-											)
-									.fetchOneInto(Boolean.class);
-		if (commonWordsExist) {
-			return false;
-		}
+		Meaning m1 = MEANING.as("m1");
+		Meaning m2 = MEANING.as("m2");
+
+		SelectConditionStep<Record1<Long>> wordIds = DSL.
+				selectDistinct(l1.WORD_ID)
+				.from(l1, m1)
+				.where(l1.MEANING_ID.eq(meaningId)
+						.and(l1.MEANING_ID.eq(m1.ID))
+						.andExists(DSL
+								.select(l2.ID)
+								.from(l2, m2)
+								.where(m2.ID.eq(sourceMeaningId)
+										.and(l2.MEANING_ID.eq(m2.ID))
+										.and(l2.WORD_ID.eq(l1.WORD_ID)))));
+
+		return create
+				.select(l1.ID.as("id1"), l2.ID.as("id2"))
+				.from(l1, l2)
+				.where(l1.WORD_ID.in(wordIds)
+						.and(l2.WORD_ID.eq(l1.WORD_ID))
+						.and(l1.MEANING_ID.eq(meaningId))
+						.and(l2.MEANING_ID.eq(sourceMeaningId))
+						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))
+				.fetchInto(IdPair.class);
+	}
+
+	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
+
 		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
 		joinMeaningDefinitions(meaningId, sourceMeaningId);
 		joinMeaningDomains(meaningId, sourceMeaningId);
@@ -182,7 +181,6 @@ public class CompositionDbService implements DbConstant {
 		joinMeaningRelations(meaningId, sourceMeaningId);
 		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, meaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
-		return true;
 	}
 
 	public void joinLexemes(Long lexemeId, Long sourceLexemeId) {
