@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,8 +28,6 @@ import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
 public abstract class AbstractSearchController extends AbstractPageController {
-
-	private static final Logger logger = LoggerFactory.getLogger(AbstractSearchController.class);
 
 	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
 

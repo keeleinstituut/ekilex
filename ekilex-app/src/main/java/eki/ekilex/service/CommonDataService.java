@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
@@ -330,9 +329,8 @@ public class CommonDataService extends AbstractWordSearchService {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
 		if (lexeme != null) {
-			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(singletonList(lexeme.getDatasetCode()));
 			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-			populateLexeme(lexeme, searchDatasetsRestriction, datasetNameMap);
+			populateLexeme(lexeme, datasetNameMap);
 		}
 		return lexeme;
 	}
@@ -354,7 +352,7 @@ public class CommonDataService extends AbstractWordSearchService {
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
 
-		lexemes.forEach(lexeme -> populateLexeme(lexeme, searchDatasetsRestriction, datasetNameMap));
+		lexemes.forEach(lexeme -> populateLexeme(lexeme, datasetNameMap));
 		lexemeLevelCalcUtil.combineLevels(lexemes);
 		String firstDefinitionValue = getFirstDefinitionValue(lexemes);
 
@@ -392,7 +390,7 @@ public class CommonDataService extends AbstractWordSearchService {
 		return wordDetailsList;
 	}
 
-	private void populateLexeme(WordLexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction, Map<String, String> datasetNameMap) {
+	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
@@ -400,14 +398,13 @@ public class CommonDataService extends AbstractWordSearchService {
 		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
 		lexeme.setDataset(datasetName);
 
-		Long wordId = lexeme.getWordId();
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 
 		List<String> vocalForms = lexeme.getVocalForms();
 		vocalForms = cleanUpVocalForms(vocalForms);
 
-		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
+		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
