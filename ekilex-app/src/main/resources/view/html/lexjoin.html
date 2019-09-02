@@ -21,7 +21,7 @@
 
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
-          <th:block th:replace=":: lexeme_deatails(${sourceLexeme}, ${sourceLexeme})"></th:block>
+          <th:block th:replace=":: lexeme_details(${sourceLexeme}, ${sourceLexeme})"></th:block>
         </div>
       </div>
 
@@ -59,7 +59,7 @@
 
         <div class="card-body" th:if="${not #lists.isEmpty(lexemes)}">
           <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="lexeme : ${lexemes}">
-            <th:block th:replace=":: lexeme_deatails(${lexeme}, ${sourceLexeme})"></th:block>
+            <th:block th:replace=":: lexeme_details(${lexeme}, ${sourceLexeme})"></th:block>
           </div>
         </div>
       </th:block>
@@ -68,7 +68,7 @@
 
   </div>
 
-  <th:block th:fragment="lexeme_deatails(lexeme, lexemeToJoin)" th:if="${lexeme != null}">
+  <th:block th:fragment="lexeme_details(lexeme, lexemeToJoin)" th:if="${lexeme != null}">
     <div>
       <span>
         <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
