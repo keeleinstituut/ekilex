@@ -14,6 +14,8 @@ public interface DbConstant {
 
 	String WORD_TYPE_CODE_SUFFIXOID = "sf";
 
+	String WORD_TYPE_CODE_ABBREVIATION = "l";
+
 	String IGNORE_QUERY_LOG = "'ignore query log'";
 
 	String FORCE_QUERY_LOG = "'force query log'";

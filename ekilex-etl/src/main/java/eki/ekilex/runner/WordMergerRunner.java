@@ -93,6 +93,7 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		excludedWordTypeCodes = new ArrayList<>();
 		excludedWordTypeCodes.add(WORD_TYPE_CODE_PREFIXOID);
 		excludedWordTypeCodes.add(WORD_TYPE_CODE_SUFFIXOID);
+		excludedWordTypeCodes.add(WORD_TYPE_CODE_ABBREVIATION);
 	}
 
 	@Transactional
