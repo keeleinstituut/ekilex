@@ -726,7 +726,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Long meaningFreeformId = createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
 			String semanticTypeGroup = ((Element)semanticTypeNode).attributeValue(semanticTypeGroupAttr);
 			if (isNotBlank(semanticTypeGroup)) {
-				createFreeformTextOrDate(meaningFreeformId, FreeformType.SEMANTIC_TYPE_GROUP, semanticTypeGroup, null, null);
+				createFreeformTextEkiMarkup(meaningFreeformId, FreeformType.SEMANTIC_TYPE_GROUP, semanticTypeGroup, null, null);
 			}
 		}
 

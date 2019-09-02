@@ -981,7 +981,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
-					Long usageDefinitionId = createFreeformTextOrDate(usageId, FreeformType.USAGE_DEFINITION, usageDefinition, dataLang, null);
+					Long usageDefinitionId = createFreeformTextEkiMarkup(usageId, FreeformType.USAGE_DEFINITION, usageDefinition, dataLang, null);
 					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, usageDefinitionId, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, usageDefinition);
 				}
 			}
@@ -989,7 +989,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
 					String usageTranslationValue = usageTranslation.getValue();
 					String usageTranslationLang = usageTranslation.getLang();
-					Long usageTranslationId = createFreeformTextOrDate(usageId, FreeformType.USAGE_TRANSLATION, usageTranslationValue, usageTranslationLang, null);
+					Long usageTranslationId = createFreeformTextEkiMarkup(usageId, FreeformType.USAGE_TRANSLATION, usageTranslationValue, usageTranslationLang, null);
 					createLifecycleLog(
 							LifecycleLogOwner.LEXEME, lexemeId, usageTranslationId, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, usageTranslationValue);
 				}
@@ -1101,7 +1101,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		Complexity complexity = getFreeformComplexity();
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, lang, complexity);
+		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, lang, complexity);
+		if (freeformId == null) {
+			return null;
+		}
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -1116,7 +1119,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, valueText, valuePrese, lang, complexity);
+		Long freeformId = createFreeformText(null, freeformType, valueText, valuePrese, lang, complexity);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -1147,8 +1150,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null, null);
-
+		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, null, null);
+		if (freeformId == null) {
+			return null;
+		}
+		
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("freeform_id", freeformId);
@@ -1172,7 +1178,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null, null);
+		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, null, null);
+		if (freeformId == null) {
+			return null;
+		}
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("definition_id", definitionId);
@@ -1182,7 +1191,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
-	protected Long createFreeformTextOrDate(Long parentId, FreeformType freeformType, Object value, String lang, Complexity complexity) throws Exception {
+	protected Long createFreeformTextEkiMarkup(Long parentId, FreeformType freeformType, String value, String lang, Complexity complexity) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
@@ -1190,17 +1199,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			tableRowParamMap.put("parent_id", parentId);
 		}
 		if (value != null) {
-			if (value instanceof String) {
-				String valueStr = (String) value;
-				String valueClean = cleanEkiEntityMarkup(valueStr);
-				String valuePrese = convertEkiEntityMarkup(valueStr);
-				tableRowParamMap.put("value_text", valueClean);
-				tableRowParamMap.put("value_prese", valuePrese);
-			} else if (value instanceof Timestamp) {
-				tableRowParamMap.put("value_date", value);
-			} else {
-				throw new Exception("Not yet supported freeform data type " + value);
-			}
+			String valueStr = (String) value;
+			String valueClean = cleanEkiEntityMarkup(valueStr);
+			String valuePrese = convertEkiEntityMarkup(valueStr);
+			tableRowParamMap.put("value_text", valueClean);
+			tableRowParamMap.put("value_prese", valuePrese);
 		}
 		if (StringUtils.isNotBlank(lang)) {
 			tableRowParamMap.put("lang", lang);
@@ -1212,7 +1215,24 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
-	private Long createFreeformTextOrDate(Long parentId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity) throws Exception {
+	private Long createFreeformTextOrTimestamp(FreeformType freeformType, Object value, String lang, Complexity complexity) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		Long freeformId = null;
+		if (value instanceof String) {
+			String valueStr = (String) value;
+			freeformId = createFreeformTextEkiMarkup(null, freeformType, valueStr, lang, complexity);
+		} else if (value instanceof Timestamp) {
+			Timestamp valueTs = (Timestamp) value;
+			freeformId = createFreeformDate(null, freeformType, valueTs, null);
+		} else {
+			throw new Exception("Not yet supported freeform data type " + value);
+		}
+		return freeformId;
+	}
+
+	protected Long createFreeformText(Long parentId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
@@ -1224,6 +1244,21 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		if (StringUtils.isNotBlank(lang)) {
 			tableRowParamMap.put("lang", lang);
 		}
+		if (complexity != null) {
+			tableRowParamMap.put("complexity", complexity.name());
+		}
+		Long freeformId = basicDbService.create(FREEFORM, tableRowParamMap);
+		return freeformId;
+	}
+
+	protected Long createFreeformDate(Long parentId, FreeformType freeformType, Timestamp value, Complexity complexity) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("type", freeformType.name());
+		if (parentId != null) {
+			tableRowParamMap.put("parent_id", parentId);
+		}
+		tableRowParamMap.put("value_date", value);
 		if (complexity != null) {
 			tableRowParamMap.put("complexity", complexity.name());
 		}
@@ -1478,7 +1513,19 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createSourceFreeform(Long sourceId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrDate(null, freeformType, value, null, null);
+		if (value == null) {
+			return null;
+		}
+		Long freeformId = null;
+		if (value instanceof String) {
+			String valueStr = (String) value;
+			freeformId = createFreeformTextEkiMarkup(null, freeformType, valueStr, null, null);
+		} else if (value instanceof Timestamp) {
+			Timestamp valueTs = (Timestamp) value;
+			freeformId = createFreeformDate(null, freeformType, valueTs, null);
+		} else {
+			throw new Exception("Not yet supported freeform data type " + value);
+		}
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("source_id", sourceId);
