@@ -150,6 +150,10 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE, SOURCE_FREEFORM));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE, SOURCE_FREEFORM, FREEFORM));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP, LEX_COLLOC_REL_GROUP));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC, COLLOCATION));
 	}
 
 	@Transactional
