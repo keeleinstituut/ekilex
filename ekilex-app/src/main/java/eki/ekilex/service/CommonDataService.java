@@ -101,6 +101,7 @@ public class CommonDataService extends AbstractWordSearchService {
 	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
 		List<Classifier> domains = commonDataDbService.getDomainsInUse();
+		domains = conversionUtil.removeClassifierDuplicates(domains);
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
