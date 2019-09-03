@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SynMeaningWord;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
@@ -70,7 +71,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynRelationParamTuple.class);
 	}
 
-	public List<WordSynLexeme> getWordSynLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	//FIXME - change inverted parameter
+	public List<WordSynLexeme> getWordSynLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String excludedSynLexemeType) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -79,6 +81,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				LEXEME.ID.as("lexeme_id"),
 				LEXEME.MEANING_ID,
 				LEXEME.DATASET_CODE.as("dataset"),
+				LEXEME.TYPE,
 				LEXEME.LEVEL1,
 				LEXEME.LEVEL2,
 				LEXEME.LEVEL3)
@@ -91,6 +94,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
+								.and(LEXEME.TYPE.notEqual(DSL.val(excludedSynLexemeType)))
 								.and(dsWhere))
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
 				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
@@ -104,14 +108,14 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.execute();
 	}
 
-	public void createLexeme(Long wordId, Long meaningId, String datasetCode, Long existingLexemeId) {
+	public void createLexeme(Long wordId, Long meaningId, String datasetCode, Long existingLexemeId, String type) {
 		create.insertInto(LEXEME,
 				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE,
 				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-				LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+				LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY, LEXEME.TYPE)
 				.select(DSL.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode),
 						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY, DSL.val(type))
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(existingLexemeId)))
 				.execute();
@@ -136,4 +140,31 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.groupBy(WORD.ID)
 				.fetchOneInto(WordSynDetails.class);
 	}
+
+	public List<SynMeaningWord> getSynMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+
+		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
+
+		return create
+				.select(
+						WORD.ID.as("word_id"),
+						FORM.VALUE,
+						WORD.HOMONYM_NR,
+						WORD.LANG.as("language"),
+						LEXEME.ID.as("lexeme_id"),
+						LEXEME.TYPE.as("lexeme_type"))
+				.from(LEXEME, WORD, PARADIGM, FORM)
+				.where(
+						FORM.PARADIGM_ID.eq(PARADIGM.ID)
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(WORD.ID.ne(sourceWordId))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(dsWhere))
+				.groupBy(WORD.ID, FORM.VALUE, LEXEME.ID)
+				.orderBy(FORM.VALUE)
+				.fetchInto(SynMeaningWord.class);
+	}
+
 }

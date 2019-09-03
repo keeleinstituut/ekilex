@@ -10,15 +10,14 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
-import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SynMeaningWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
-import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
@@ -26,11 +25,10 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	private static final String RAW_RELATION_CODE = "raw";
 
-	@Autowired
-	private SynSearchDbService synSearchDbService;
+	private static final String SYN_LEXEME_TYPE_CODE = "SECONDARY";
 
 	@Autowired
-	private LexSearchDbService lexSearchDbService;
+	private SynSearchDbService synSearchDbService;
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
@@ -40,7 +38,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 
-		List<WordSynLexeme> synLexemes = synSearchDbService.getWordSynLexemes(wordId, searchDatasetsRestriction);
+		List<WordSynLexeme> synLexemes = synSearchDbService.getWordSynLexemes(wordId, searchDatasetsRestriction, SYN_LEXEME_TYPE_CODE);
 		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, searchDatasetsRestriction));
 		lexemeLevelCalcUtil.combineLevels(synLexemes);
 
@@ -61,7 +59,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
 
-		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
+		List<SynMeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(wordId, meaningId, searchDatasetsRestriction);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
@@ -85,7 +83,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public void createSynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId) {
-		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, existingLexemeId);
+		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, existingLexemeId, SYN_LEXEME_TYPE_CODE);
 	}
 
 }

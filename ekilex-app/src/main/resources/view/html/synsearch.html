@@ -97,14 +97,13 @@
                   <span th:if="${lexeme.levels != null}" class="pl-1 pr-1">
                     <span th:text="${lexeme.levels}"></span>
                   </span>
-
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                     <div class="hidden-buttons">
                       <div class="btn-custom">
-                        <span th:text="${meaningWord.value}"></span>
+                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: green' : ''}" th:text="${meaningWord.value}"></span>
                         <span th:text="${meaningWord.homonymNumber}"></span>
-                        <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: green' : ''}"  th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${meaningWord.lexemeId}"
                                 data-callback="refreshDetails"
@@ -158,7 +157,7 @@
 
 
         <div class="col-4 pr-2">
-          <div class="navigate-panel card mb-2" data-panel-index="3" th:attrappend="data-active-panel=${markedSynWordId != null}?'true'" style="position: fixed">
+          <div class="navigate-panel card mb-2" data-panel-index="3" th:attrappend="data-active-panel=${markedSynWordId != null}?'true'">
             <div class="card-body pt-0 pb-0">
               <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
                 <button type="button" class="btn badge badge-success"
