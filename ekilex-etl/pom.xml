@@ -553,7 +553,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>${project.basedir}/envresources/prod</directory>
+						<directory>${project.basedir}/envresources/prodc</directory>
 					</resource>
 				</resources>
 				<plugins>
