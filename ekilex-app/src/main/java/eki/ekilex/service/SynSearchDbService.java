@@ -23,6 +23,10 @@ import eki.ekilex.data.SynMeaningWord;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
+import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.service.db.AbstractSearchDbService;
 
@@ -141,29 +145,35 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchOneInto(WordSynDetails.class);
 	}
 
-	public List<SynMeaningWord> getSynMeaningWords(Long sourceWordId, Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public List<SynMeaningWord> getSynMeaningWords(Long lexemeId) {
 
-		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Word w2 = WORD.as("w2");
+		Paradigm p2 = PARADIGM.as("p2");
+		Form f2 = FORM.as("f2");
 
 		return create
 				.select(
-						WORD.ID.as("word_id"),
-						FORM.VALUE,
-						WORD.HOMONYM_NR,
-						WORD.LANG.as("language"),
-						LEXEME.ID.as("lexeme_id"),
-						LEXEME.TYPE.as("lexeme_type"))
-				.from(LEXEME, WORD, PARADIGM, FORM)
+						w2.ID.as("word_id"),
+						f2.VALUE,
+						w2.HOMONYM_NR,
+						w2.LANG.as("language"),
+						l2.ID.as("lexeme_id"),
+						l2.TYPE.as("lexeme_type"))
+				.from(l1, l2, w2, p2, f2)
 				.where(
-						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-								.and(WORD.ID.ne(sourceWordId))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(dsWhere))
-				.groupBy(WORD.ID, FORM.VALUE, LEXEME.ID)
-				.orderBy(FORM.VALUE)
+						l1.ID.eq(lexemeId)
+								.and(l2.MEANING_ID.eq(l1.MEANING_ID))
+								.and(l2.ID.ne(l1.ID))
+								.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
+								.and(l2.WORD_ID.eq(w2.ID))
+								.and(p2.WORD_ID.eq(w2.ID))
+								.and(f2.PARADIGM_ID.eq(p2.ID))
+								.and(f2.MODE.eq(FormMode.WORD.name()))
+				)
+				.groupBy(w2.ID, f2.VALUE, l2.ID)
+				.orderBy(f2.VALUE)
 				.fetchInto(SynMeaningWord.class);
 	}
 

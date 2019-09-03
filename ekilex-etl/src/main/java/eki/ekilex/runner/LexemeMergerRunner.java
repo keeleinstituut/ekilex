@@ -727,9 +727,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		for (Freeform freeform : freeforms) {
 			if (freeform.getValueText() != null) {
-				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueText(), freeform.getLangCode(), freeform.getComplexity());
+				createFreeformText(parentId, freeform.getType(), freeform.getValueText(), freeform.getValuePrese(), freeform.getLangCode(), freeform.getComplexity());
 			} else if (freeform.getValueDate() != null) {
-				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode(), freeform.getComplexity());
+				createFreeformDate(parentId, freeform.getType(), freeform.getValueDate(), freeform.getComplexity());
 			}
 		}
 	}

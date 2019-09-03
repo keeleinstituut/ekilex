@@ -39,7 +39,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordSynLexemes(wordId, searchDatasetsRestriction, SYN_LEXEME_TYPE_CODE);
-		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, searchDatasetsRestriction));
+		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme));
 		lexemeLevelCalcUtil.combineLevels(synLexemes);
 
 		List<SynRelationParamTuple> relationTuples =
@@ -53,13 +53,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		return wordDetails;
 	}
 
-	private void populateSynLexeme(WordSynLexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction) {
+	private void populateSynLexeme(WordSynLexeme lexeme) {
 
 		Long lexemeId = lexeme.getLexemeId();
-		Long wordId = lexeme.getWordId();
 		Long meaningId = lexeme.getMeaningId();
 
-		List<SynMeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(wordId, meaningId, searchDatasetsRestriction);
+		List<SynMeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);

@@ -3,8 +3,6 @@ package eki.ekilex.web.controller;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -18,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.OrderingField;
@@ -29,14 +29,11 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.MaintenanceService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class PermissionsController extends AbstractPageController {
-
-	private static final Logger logger = LoggerFactory.getLogger(PermissionsController.class);
 
 	private static final OrderingField DEFAULT_ORDER_BY = OrderingField.NAME;
 
