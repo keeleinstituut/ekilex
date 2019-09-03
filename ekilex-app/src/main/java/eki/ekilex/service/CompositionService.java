@@ -245,11 +245,7 @@ public class CompositionService extends AbstractService {
 			boolean lexemeExists = wordLexemeId != null;
 
 			if (lexemeExists) {
-				boolean isOnlyLexemeForMeaning = commonDataDbService.isOnlyLexemeForMeaning(sourceWordLexemeId);
-				cudDbService.deleteLexeme(sourceWordLexemeId);
-				if (isOnlyLexemeForMeaning) {
-					cudDbService.deleteMeaning(sourceWordLexemeMeaningId);
-				}
+				compositionDbService.joinLexemes(wordLexemeId, sourceWordLexemeId);
 			} else {
 				Integer currentMaxLevel = compositionDbService.getWordLexemesMaxFirstLevel(wordId);
 				int level1 = currentMaxLevel + 1;
