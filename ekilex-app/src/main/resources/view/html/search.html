@@ -108,7 +108,7 @@
                   <option th:each="domain : ${origin.getValue()}"
                           th:value="${domain.toIdString()}"
                           th:selected="${criteria.searchValue == domain}"
-                          th:text="${strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                          th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
                           th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                 </optgroup>
               </select>
