@@ -421,7 +421,7 @@ public class PermissionDbService implements SystemConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForDefinition(Long userId, Long definitionId, String datasetCode, String lang) {
+	public boolean isGrantedForDefinition(Long definitionId, String datasetCode, String lang) {
 
 		Condition langCond;
 		if (StringUtils.isBlank(lang)) {
