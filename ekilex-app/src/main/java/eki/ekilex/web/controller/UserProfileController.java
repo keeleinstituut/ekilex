@@ -36,6 +36,6 @@ public class UserProfileController extends AbstractPageController {
 
 		EkiUser user = userService.getAuthenticatedUser();
 		userService.submitAdditionalUserApplication(user, selectedDatasets, applicationComment);
-		return "redirect:" + USER_PROFILE_PAGE;
+		return "redirect:" + USER_PROFILE_URI;
 	}
 }
