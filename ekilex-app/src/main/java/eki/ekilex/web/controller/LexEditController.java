@@ -24,7 +24,6 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
-import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

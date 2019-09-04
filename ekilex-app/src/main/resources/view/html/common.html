@@ -60,11 +60,14 @@
                    th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></div>
             </th:block>
           </th:block>
-          <form th:action="@{/dologout}" method="post">
-            <button type="submit" class="btn btn-info">
-              <span th:text="${#authentication.name}">Kusti Tähetark</span>
-            </button>
-          </form>
+          <div class="dropdown">
+            <button class="btn btn-info" type="button" data-toggle="dropdown" th:text="${#authentication.name}"></button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" th:href="@{/userprofile}">Kasutaja profiil</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="@{/dologout}">Logi välja</a>
+            </div>
+          </div>
         </th:block>
       </div>
     </nav>

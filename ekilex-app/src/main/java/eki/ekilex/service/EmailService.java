@@ -41,6 +41,9 @@ public class EmailService {
 	private static final String APPLICATION_SUBMIT_SUBJECT = "Ekilexi kasutaja õiguste taotlus";
 	private static final String APPLICATION_SUBMIT_TEMPLATE = "application-submit";
 
+	private static final String ADDITIONAL_APPLICATION_SUBMIT_SUBJECT = "Ekilexi kasutaja õiguste juurdetaotlemine";
+	private static final String ADDITIONAL_APPLICATION_SUBMIT_TEMPLATE = "additional-application-submit";
+
 	private static final String USER_PERMISSIONS_SUBJECT = "Ekilexi kasutaja õiguste nimekiri";
 	private static final String USER_PERMISSIONS_TEMPLATE = "user-permissions";
 
@@ -80,7 +83,7 @@ public class EmailService {
 		sendTextEmail(email, PASSWORD_RECOVERY_SUBJECT, PASSWORD_RECOVERY_TEMPLATE, context);
 	}
 
-	public void sendApplicationSubmitEmail(List<String> emails, EkiUser user, List<String> datasets, String comment) {
+	public void sendApplicationSubmitEmail(List<String> emails, EkiUser user, List<String> datasets, String comment, boolean isAdditionalApplication) {
 
 		String joinedDatasets = null;
 		if (CollectionUtils.isNotEmpty(datasets)) {
@@ -91,7 +94,11 @@ public class EmailService {
 		context.setVariable("userEmail", user.getEmail());
 		context.setVariable("datasets", joinedDatasets);
 		context.setVariable("comment", comment);
-		sendTextEmail(emails, Collections.emptyList(), APPLICATION_SUBMIT_SUBJECT, APPLICATION_SUBMIT_TEMPLATE, context);
+		if (isAdditionalApplication) {
+			sendTextEmail(emails, Collections.emptyList(), ADDITIONAL_APPLICATION_SUBMIT_SUBJECT, ADDITIONAL_APPLICATION_SUBMIT_TEMPLATE, context);
+		} else {
+			sendTextEmail(emails, Collections.emptyList(), APPLICATION_SUBMIT_SUBJECT, APPLICATION_SUBMIT_TEMPLATE, context);
+		}
 	}
 
 	public void sendPermissionsEmail(EkiUser receiver, EkiUser sender) {
