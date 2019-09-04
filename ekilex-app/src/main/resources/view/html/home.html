@@ -19,7 +19,8 @@
         <p>
           <a th:href="@{/termsearch}">Terminoloogide otsing</a>
         </p>
-        <p>
+        <!-- FIXME put back -->
+        <p th:if="${1 == 2}">
           <a th:href="@{/synsearch}" th:if="${sessionBean.userRole != null}">Sünonüümide otsing</a>
           <span th:if="${sessionBean.userRole == null}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</span>
         </p>
