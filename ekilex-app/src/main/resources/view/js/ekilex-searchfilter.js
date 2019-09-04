@@ -164,7 +164,7 @@ function initialiseDetailSearch() {
 		}
 
 		if (isAutofillElement) {
-			copyOfValueTemplate.selectpicker({width: '100%'});
+			copyOfValueTemplate.selectpicker({width: '100%'})
 		}
 
 	}
