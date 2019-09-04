@@ -49,6 +49,8 @@ import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
@@ -510,7 +512,21 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	}
 
 	public List<DefinitionRefTuple> getMeaningDefinitionRefTuples(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+		return getMeaningDefinitionRefTuples(meaningId, null, classifierLabelLang, classifierLabelTypeCode);
+	}
 
+	public List<DefinitionRefTuple> getMeaningDefinitionRefTuples(Long meaningId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
+		if (StringUtils.isNotBlank(datasetCode)) {
+			where = where.and(DSL
+					.exists(DSL
+							.select(DEFINITION_DATASET.DEFINITION_ID)
+							.from(DEFINITION_DATASET)
+							.where(
+									DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)
+											.and(DEFINITION_DATASET.DATASET_CODE.eq(datasetCode)))));
+		}
 		return create
 				.select(
 						DEFINITION.ID.as("definition_id"),
@@ -531,13 +547,12 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						DEFINITION_SOURCE_LINK.VALUE.as("source_link_value"))
 				.from(
 						DEFINITION
-								.leftOuterJoin(DEFINITION_SOURCE_LINK).on(
-										DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
+								.leftOuterJoin(DEFINITION_SOURCE_LINK).on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
 								.leftOuterJoin(DEFINITION_TYPE_LABEL).on(
 										DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_LABEL.CODE)
 												.and(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang))
 												.and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
-				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.where(where)
 				.orderBy(DEFINITION.ORDER_BY)
 				.fetchInto(DefinitionRefTuple.class);
 	}

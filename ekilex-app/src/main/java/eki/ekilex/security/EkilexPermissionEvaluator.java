@@ -91,7 +91,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 			}
 		} else if (StringUtils.equals(LifecycleEntity.DEFINITION.name(), targetType)) {
 			if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
-				isPermGranted = permissionDbService.isGrantedForDefinition(userId, entityId, providedDatasetCode, providedAuthLang);
+				isPermGranted = permissionDbService.isGrantedForDefinition(entityId, providedDatasetCode, providedAuthLang);
 			}
 		} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
 			if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
