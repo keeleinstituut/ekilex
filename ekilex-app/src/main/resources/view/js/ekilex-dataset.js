@@ -39,10 +39,6 @@ function initialise() {
 		$('#codeExistsError').hide();
 	});
 
-	//TODO test
-	// $('.classifier-select').selectpicker({
-	// 	width : '100%'
-	// });
 	initClassifierAutocomplete();
 
 	// selector by class does not work for some reason

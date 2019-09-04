@@ -107,7 +107,7 @@
                 <select required class="form-control required-field classifier-select" data-live-search="true">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}" th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                   </optgroup>
                 </select>
               </div>
@@ -968,7 +968,8 @@
               <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
-                        th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
+                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                        th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
                         th:selected="${domain.toIdString() == classif.toIdString()}">domain</option>
               </optgroup>
             </select>
