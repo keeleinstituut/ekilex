@@ -43,7 +43,8 @@
       <div class="navbar-nav" th:if="${activeItem}">
         <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
         <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-        <a class="nav-item nav-link" th:if="${sessionBean.userRole != null}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
+        <!-- FIXME remove fake condition -->
+        <a class="nav-item nav-link" th:if="${sessionBean.userRole != null && 1==2}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
         <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#"
            sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)"
            th:if="${activeItem == 'lex' || activeItem == 'term'}">
