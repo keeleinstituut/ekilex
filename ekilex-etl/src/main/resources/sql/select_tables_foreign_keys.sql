@@ -11,7 +11,7 @@ and   tc.constraint_name = ccu.constraint_name
 and   tc.constraint_type = :constraintTypeFk
 and   col.table_name = ccu.table_name
 and   col.column_name = ccu.column_name
---and   kcu.column_name not in (:ignoreFks)
+and   kcu.column_name not in (:ignoreFks)
 and   col.table_name in (:tableNames)
 order by col.table_name,
          col.ordinal_position

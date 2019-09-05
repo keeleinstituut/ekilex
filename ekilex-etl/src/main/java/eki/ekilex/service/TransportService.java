@@ -99,10 +99,10 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		this.tablesColumnsMapForExport = mapTablesColumns(allTablesColumns, Arrays.asList(ignoreColumnNamesForExport));
 		this.tablesColumnsMapForImport = mapTablesColumns(allTablesColumns, Arrays.asList(ignoreColumnNamesForImport));
 
+		String[] ignoreForeignKeys = new String[] {"word2_id", "meaning2_id", "lexeme2_id"};
 		paramMap.clear();
 		paramMap.put("constraintTypeFk", "FOREIGN KEY");
-		// add when necessary
-		//paramMap.put("ignoreFks", Arrays.asList(ignoreForeignKeys));
+		paramMap.put("ignoreFks", Arrays.asList(ignoreForeignKeys));
 		paramMap.put("tableNames", supportedTableNames);
 		List<ForeignKey> allForeignKeys = basicDbService.getResults(sqlSelectTablesForeignKeys, paramMap, new ForeignKeyRowMapper());
 		this.referringForeignKeysMap = mapTablesForeignKeys(allForeignKeys);
