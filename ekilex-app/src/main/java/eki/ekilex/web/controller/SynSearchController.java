@@ -188,4 +188,9 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
 	}
 
+
+	@ModelAttribute("fake")
+	public void init() throws Exception {
+		throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+	}
 }

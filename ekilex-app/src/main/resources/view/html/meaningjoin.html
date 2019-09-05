@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},_)">
   <title th:text="#{meaning.join.title}">EKILEX tähenduste ühendamine</title>
 </head>
@@ -68,7 +68,9 @@
 
   </div>
 
-  <th:block th:fragment="meaning_deatails(lexeme, meaningId)" th:if="${lexeme != null}">
+  <th:block th:fragment="meaning_deatails(lexeme, meaningId)"
+            th:if="${lexeme != null}"
+            th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
     <div>
       <span>
         <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
@@ -91,7 +93,7 @@
          data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite tähendused ühendada ?" data-btn-ok-label="Jah" data-btn-cancel-label="Ei"
          th:href="@{'/meaningjoin/' + ${meaningId} + '/' + ${lexeme.meaningId}}"
          th:if="${lexeme.meaningId != meaningId}"
-        >Ühenda</a>
+         sec:authorize="${#vars.isMeaningCrudGranted}">Ühenda</a>
       <b th:text="${lexeme.dataset}" class="float-right"></b>
     </div>
     <div th:if="${not #lists.isEmpty(lexeme.definitions)}">

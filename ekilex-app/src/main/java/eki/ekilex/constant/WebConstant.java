@@ -22,6 +22,8 @@ public interface WebConstant {
 
 	String APPLY_URI = "/apply";
 
+	String REAPPLY_URI = "/reapply";
+
 	String PERMISSIONS_PAGE = "permissions";
 
 	String PERMISSIONS_URI = "/permissions";
@@ -185,6 +187,10 @@ public interface WebConstant {
 	String SYN_CREATE_LEXEME = "/syn_create_lexeme";
 
 	String SYN_SEARCH_WORDS = "/syn_search_words";
+
+	String USER_PROFILE_PAGE = "userprofile";
+
+	String USER_PROFILE_URI = "/userprofile";
 
 	String WORD_BACK_URI = "/wordback";
 

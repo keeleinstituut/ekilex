@@ -229,14 +229,28 @@ public class UserService implements WebConstant {
 
 	@Transactional
 	public void submitUserApplication(EkiUser user, List<String> datasets, String comment) {
+		createUserApplication(user, datasets, comment);
+		List<String> adminEmails = userDbService.getAdminEmails();
+		boolean isAdditionalApplication = false;
+		emailService.sendApplicationSubmitEmail(adminEmails, user, datasets, comment, isAdditionalApplication);
+	}
+
+	@Transactional
+	public void submitAdditionalUserApplication(EkiUser user, List<String> datasets, String comment) {
+		createUserApplication(user, datasets, comment);
+		List<String> adminEmails = userDbService.getAdminEmails();
+		boolean isAdditionalApplication = true;
+		emailService.sendApplicationSubmitEmail(adminEmails, user, datasets, comment, isAdditionalApplication);
+	}
+
+	private void createUserApplication(EkiUser user, List<String> datasets, String comment) {
+
 		String[] datasetArr = null;
 		if (CollectionUtils.isNotEmpty(datasets)) {
 			datasetArr = datasets.toArray(new String[datasets.size()]);
 		}
 		Long userId = user.getId();
 		userDbService.createUserApplication(userId, datasetArr, comment);
-		List<String> adminEmails = userDbService.getAdminEmails();
-		emailService.sendApplicationSubmitEmail(adminEmails, user, datasets, comment);
 	}
 
 	@Transactional
