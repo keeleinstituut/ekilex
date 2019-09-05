@@ -155,7 +155,7 @@
             </div>
             <div th:id="${'meaning_domain_' + meaningId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
-                <select required class="form-control value-select required-field term-domain-select">
+                <select required class="form-control classifier-select required-field term-domain-select" data-live-search="true">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}" th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
