@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.8-SNAPSHOT</version>
+		<version>1.8</version>
 	</parent>
 
 	<groupId>eki.common</groupId>
 	<artifactId>eki-common</artifactId>
-	<version>1.8-SNAPSHOT</version>
+	<version>1.8</version>
 	<packaging>jar</packaging>
 
 	<name>Ekilex/Eve Commons</name>
