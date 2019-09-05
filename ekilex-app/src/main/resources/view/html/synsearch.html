@@ -101,9 +101,9 @@
                     <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                     <div class="hidden-buttons">
                       <div class="btn-custom">
-                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: green' : ''}" th:text="${meaningWord.value}"></span>
+                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${meaningWord.value}"></span>
                         <span th:text="${meaningWord.homonymNumber}"></span>
-                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: green' : ''}"  th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"  th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${meaningWord.lexemeId}"
                                 data-callback="refreshDetails"
