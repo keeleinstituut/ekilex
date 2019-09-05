@@ -48,6 +48,7 @@ import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -590,14 +591,33 @@ public class CompositionDbService implements DbConstant {
 
 	private void joinWordRelations(Long wordId, Long sourceWordId) {
 
-		create.update(WORD_RELATION)
-				.set(WORD_RELATION.WORD1_ID, wordId)
-				.where(WORD_RELATION.WORD1_ID.eq(sourceWordId))
+		WordRelation wr1 = WORD_RELATION.as("wr1");
+		WordRelation wr2 = WORD_RELATION.as("wr2");
+
+		create.update(wr1)
+				.set(wr1.WORD1_ID, wordId)
+				.where(
+						wr1.WORD1_ID.eq(sourceWordId))
+				.andNotExists(DSL
+						.select(wr2.ID)
+						.from(wr2)
+						.where(
+								wr2.WORD1_ID.eq(wordId)
+								.and(wr2.WORD2_ID.eq(wr1.WORD2_ID))
+								.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
 				.execute();
 
-		create.update(WORD_RELATION)
-				.set(WORD_RELATION.WORD2_ID, wordId)
-				.where(WORD_RELATION.WORD2_ID.eq(sourceWordId))
+		create.update(wr1)
+				.set(wr1.WORD2_ID, wordId)
+				.where(
+						wr1.WORD2_ID.eq(sourceWordId))
+				.andNotExists(DSL
+						.select(wr2.ID)
+						.from(wr2)
+						.where(
+								wr2.WORD2_ID.eq(wordId)
+										.and(wr2.WORD1_ID.eq(wr1.WORD1_ID))
+										.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
 				.execute();
 	}
 
