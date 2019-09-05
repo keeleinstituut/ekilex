@@ -305,8 +305,8 @@ public class CompositionDbService implements DbConstant {
 		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(lexemeMeaningId)).fetch();
 		definitions.forEach(d -> {
 			create
-					.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG, DEFINITION.DEFINITION_TYPE_CODE)
-					.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang(), d.getDefinitionTypeCode())
+					.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG, DEFINITION.DEFINITION_TYPE_CODE, DEFINITION.COMPLEXITY)
+					.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang(), d.getDefinitionTypeCode(), d.getComplexity())
 					.execute();
 		});
 	}
@@ -555,15 +555,7 @@ public class CompositionDbService implements DbConstant {
 
 	public void joinWordData(Long wordId, Long sourceWordId) {
 
-		create.update(WORD_RELATION)
-				.set(WORD_RELATION.WORD1_ID, wordId)
-				.where(WORD_RELATION.WORD1_ID.eq(sourceWordId))
-				.execute();
-
-		create.update(WORD_RELATION)
-				.set(WORD_RELATION.WORD2_ID, wordId)
-				.where(WORD_RELATION.WORD2_ID.eq(sourceWordId))
-				.execute();
+		joinWordRelations(wordId, sourceWordId);
 
 		create.update(WORD_GROUP_MEMBER)
 				.set(WORD_GROUP_MEMBER.WORD_ID, wordId)
@@ -593,6 +585,19 @@ public class CompositionDbService implements DbConstant {
 		create.update(WORD_LIFECYCLE_LOG)
 				.set(WORD_LIFECYCLE_LOG.WORD_ID, wordId)
 				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(sourceWordId))
+				.execute();
+	}
+
+	private void joinWordRelations(Long wordId, Long sourceWordId) {
+
+		create.update(WORD_RELATION)
+				.set(WORD_RELATION.WORD1_ID, wordId)
+				.where(WORD_RELATION.WORD1_ID.eq(sourceWordId))
+				.execute();
+
+		create.update(WORD_RELATION)
+				.set(WORD_RELATION.WORD2_ID, wordId)
+				.where(WORD_RELATION.WORD2_ID.eq(sourceWordId))
 				.execute();
 	}
 
