@@ -48,6 +48,7 @@ import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -305,8 +306,8 @@ public class CompositionDbService implements DbConstant {
 		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(lexemeMeaningId)).fetch();
 		definitions.forEach(d -> {
 			create
-					.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG, DEFINITION.DEFINITION_TYPE_CODE)
-					.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang(), d.getDefinitionTypeCode())
+					.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG, DEFINITION.DEFINITION_TYPE_CODE, DEFINITION.COMPLEXITY)
+					.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang(), d.getDefinitionTypeCode(), d.getComplexity())
 					.execute();
 		});
 	}
@@ -555,15 +556,7 @@ public class CompositionDbService implements DbConstant {
 
 	public void joinWordData(Long wordId, Long sourceWordId) {
 
-		create.update(WORD_RELATION)
-				.set(WORD_RELATION.WORD1_ID, wordId)
-				.where(WORD_RELATION.WORD1_ID.eq(sourceWordId))
-				.execute();
-
-		create.update(WORD_RELATION)
-				.set(WORD_RELATION.WORD2_ID, wordId)
-				.where(WORD_RELATION.WORD2_ID.eq(sourceWordId))
-				.execute();
+		joinWordRelations(wordId, sourceWordId);
 
 		create.update(WORD_GROUP_MEMBER)
 				.set(WORD_GROUP_MEMBER.WORD_ID, wordId)
@@ -593,6 +586,38 @@ public class CompositionDbService implements DbConstant {
 		create.update(WORD_LIFECYCLE_LOG)
 				.set(WORD_LIFECYCLE_LOG.WORD_ID, wordId)
 				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(sourceWordId))
+				.execute();
+	}
+
+	private void joinWordRelations(Long wordId, Long sourceWordId) {
+
+		WordRelation wr1 = WORD_RELATION.as("wr1");
+		WordRelation wr2 = WORD_RELATION.as("wr2");
+
+		create.update(wr1)
+				.set(wr1.WORD1_ID, wordId)
+				.where(
+						wr1.WORD1_ID.eq(sourceWordId))
+				.andNotExists(DSL
+						.select(wr2.ID)
+						.from(wr2)
+						.where(
+								wr2.WORD1_ID.eq(wordId)
+								.and(wr2.WORD2_ID.eq(wr1.WORD2_ID))
+								.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
+				.execute();
+
+		create.update(wr1)
+				.set(wr1.WORD2_ID, wordId)
+				.where(
+						wr1.WORD2_ID.eq(sourceWordId))
+				.andNotExists(DSL
+						.select(wr2.ID)
+						.from(wr2)
+						.where(
+								wr2.WORD2_ID.eq(wordId)
+										.and(wr2.WORD1_ID.eq(wr1.WORD1_ID))
+										.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
 				.execute();
 	}
 

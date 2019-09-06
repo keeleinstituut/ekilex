@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.8-SNAPSHOT</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>ekilex-etl</artifactId>
-	<version>1.8-SNAPSHOT</version>
+	<version>1.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Ekilex Extract-Transform-Load</name>
