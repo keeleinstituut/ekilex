@@ -75,7 +75,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynRelationParamTuple.class);
 	}
 
-	//FIXME - change inverted parameter
+	//FIXME - change inverted parameter andremove NULL condition
 	public List<WordSynLexeme> getWordSynLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String excludedSynLexemeType) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
@@ -98,7 +98,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
-								.and(LEXEME.TYPE.notEqual(DSL.val(excludedSynLexemeType)))
+								.and(LEXEME.TYPE.isNull().or(LEXEME.TYPE.notEqual(DSL.val(excludedSynLexemeType))))
 								.and(dsWhere))
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
 				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
