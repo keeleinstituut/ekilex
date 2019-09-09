@@ -114,6 +114,8 @@ public interface WebConstant {
 
 	String CREATE_HOMONYM_URI = "/create_homonym";
 
+	String CREATE_RELATIONS_URI = "/create_relations";
+
 	String CREATE_ITEM_URI = "/create_item";
 
 	String UPDATE_ITEM_URI = "/update_item";

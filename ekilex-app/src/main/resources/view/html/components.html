@@ -15,7 +15,7 @@
                   <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
                   <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
                 </div>
-                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2" th:data-word-id="${word.wordId}">Lisa</button>
+                <input name="selectedIds" type="checkbox" class="float-right mt-2 mr-2" th:value="${word.wordId}"/>
                 <div class="ml-3 mb-2" style="margin-top: -6px;">
                   <small>
                     <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
@@ -28,6 +28,7 @@
             </tr>
           </table>
         </div>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled>Lisa valitud seosed</button>
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
@@ -41,7 +42,6 @@
           <table class="table table-striped mb-0">
             <tr th:each="lexeme : ${lexemesFoundBySearch}">
               <td class="p-0">
-                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2" th:data-lexeme-id="${lexeme.lexemeId}">Lisa</button>
                 <div>
                   <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
                     <span th:text="${word}"></span>
@@ -55,6 +55,7 @@
                     </span>
                     <span th:unless="${meaningWordIter.last}">|</span>
                   </th:block>
+                  <input name="selectedIds" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.lexemeId}"/>
                   <small th:if="${lexeme.levels != null}" th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
@@ -64,6 +65,7 @@
             </tr>
           </table>
         </div>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled>Lisa valitud seosed</button>
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(lexemesFoundBySearch)}">
@@ -77,7 +79,6 @@
           <table class="table table-striped mb-0">
             <tr th:each="lexeme : ${lexemesFoundBySearch}">
               <td class="p-0">
-                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2" th:data-meaning-id="${lexeme.meaningId}">Lisa</button>
                 <div>
                   <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
                     <span th:text="${word}"></span>
@@ -88,6 +89,7 @@
                           th:text="${meaningWord.value + ' ' + meaningWord.homonymNumber + ' ( ' + iso2languages[meaningWord.language] + ' )'}"> </span>
                     <span th:unless="${meaningWordIter.last}">|</span>
                   </th:block>
+                  <input name="selectedIds" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.meaningId}"/>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
                   <span th:text="${lexeme.definitions.get(0).value}"></span>
@@ -96,6 +98,7 @@
             </tr>
           </table>
         </div>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled>Lisa valitud seosed</button>
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(lexemesFoundBySearch)}">

@@ -54,7 +54,7 @@ $(document).on("show.bs.modal", "[id^=editUsageDefinitionDlg_]", function(e) {
 });
 
 $(document).on("show.bs.modal", "[id^=addWordRelationDlg_]", function() {
-	initAddWordRelationDlg($(this));
+	initMultiselectRelationDlg($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addWordProcessLogDlg_]", function(e) {

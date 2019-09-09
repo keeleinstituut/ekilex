@@ -154,15 +154,6 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "lexeme_grammar":
 			cudService.createLexemeGrammar(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
-		case "word_relation":
-			cudService.createWordRelation(itemData.getId(), itemData.getId2(), valuePrese);
-			break;
-		case "lexeme_relation":
-			cudService.createLexemeRelation(itemData.getId(), itemData.getId2(), valuePrese);
-			break;
-		case "meaning_relation":
-			cudService.createMeaningRelation(itemData.getId(), itemData.getId2(), valuePrese);
-			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), valuePrese);
 			break;
@@ -654,6 +645,30 @@ public class EditController extends AbstractPageController implements SystemCons
 		logger.debug("Joining words, firstWordId: \"{}\", secondWordId: \"{}\"", firstWordId, secondWordId);
 		compositionService.joinWords(firstWordId, secondWordId);
 		return "redirect:" + backUrl;
+	}
+
+	@PostMapping(CREATE_RELATIONS_URI)
+	@ResponseBody
+	public String createRelations(
+			@RequestParam("opCode") String opCode,
+			@RequestParam("relationType") String relationType,
+			@RequestParam("id1") Long id1,
+			@RequestParam(name = "selectedIds", required = false) List<Long> ids) {
+
+		for (Long id2 : ids) {
+			switch (opCode) {
+			case "meaning_relation":
+				cudService.createMeaningRelation(id1, id2, relationType);
+				break;
+			case "lexeme_relation":
+				cudService.createLexemeRelation(id1, id2, relationType);
+				break;
+			case "word_relation":
+				cudService.createWordRelation(id1, id2, relationType);
+				break;
+			}
+		}
+		return "OK";
 	}
 
 }
