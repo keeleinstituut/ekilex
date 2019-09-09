@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +44,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 	public String initSearch(Model model) {
 
 		initSearchForms(model);
+		resetUserRole(model);
 
 		MeaningsResult meaningsResult = new MeaningsResult();
 		model.addAttribute("meaningsResult", meaningsResult);
@@ -79,6 +79,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		// if redirect from login arrives
 		initSearchForms(model);
+		resetUserRole(model);
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), TERM_SEARCH_URI);
 		logger.debug(searchUri);

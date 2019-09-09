@@ -2,9 +2,6 @@ package eki.ekilex.web.util;
 
 import static java.util.Arrays.asList;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriUtils;
 
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -120,6 +118,8 @@ public class SearchHelper {
 								if (StringUtils.isEmpty(origin)) {
 									origin = EMPTY_VALUE;
 								}
+								origin = encode(origin);
+								String code = encode(classif.getCode());
 								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(CRITERION_CLASSIFIER);
 								uriBuf.append(PATH_SEPARATOR);
@@ -127,7 +127,7 @@ public class SearchHelper {
 								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(origin);
 								uriBuf.append(PATH_SEPARATOR);
-								uriBuf.append(classif.getCode());
+								uriBuf.append(code);
 							} else {
 								critValue = encode(critValue);
 								uriBuf.append(PATH_SEPARATOR);
@@ -229,8 +229,8 @@ public class SearchHelper {
 						break;
 					}
 					String classifName = uriParts[uriPartIndex + 4];
-					String classifOrigin = uriParts[uriPartIndex + 5];
-					String classifCode = uriParts[uriPartIndex + 6];
+					String classifOrigin = decode(uriParts[uriPartIndex + 5]);
+					String classifCode = decode(uriParts[uriPartIndex + 6]);
 					if (StringUtils.equals(EMPTY_VALUE, classifOrigin)) {
 						classifOrigin = null;
 					}
@@ -296,6 +296,8 @@ public class SearchHelper {
 				for (SearchCriterion criteria : criteriaGroup.getSearchCriteria()) {
 					if (criteria.getSearchValue() != null) {
 						return true;
+					} else if (SearchOperand.NOT_EXISTS.equals(criteria.getSearchOperand())) {
+						return true;
 					}
 				}
 			}
@@ -304,18 +306,10 @@ public class SearchHelper {
 	}
 
 	private String encode(String value) {
-		try {
-			value = URLEncoder.encode(value, SystemConstant.UTF_8);
-		} catch (UnsupportedEncodingException e) {
-		}
-		return value;
+		return UriUtils.encode(value, SystemConstant.UTF_8);
 	}
 
 	private String decode(String value) {
-		try {
-			value = URLDecoder.decode(value, SystemConstant.UTF_8);
-		} catch (UnsupportedEncodingException e) {
-		}
-		return value;
+		return UriUtils.decode(value, SystemConstant.UTF_8);
 	}
 }

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,9 +55,17 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 
 	private static final String SQL_SELECT_WORDS_FOR_DATASET =
 			"select w.* from " + WORD + " w "
-			+ "where exists (select l.id from " + LEXEME + " l "
+			+ "where exists ("
+			+ "select l.id from " + LEXEME + " l "
 			+ "where l.word_id = w.id and l.dataset_code = :datasetCode) "
 			+ "order by w.id";
+
+	private static final String SQL_SELECT_PARADIGMS_FOR_DATASET =
+			"select p.* from " + PARADIGM + " p "
+			+ "where exists ("
+			+ "select l.id from " + LEXEME + " l "
+			+ "where l.word_id = p.word_id and l.dataset_code = :datasetCode) "
+			+ "order by p.id";
 
 	private static final String SQL_SELECT_LEXEMES_FOR_DATASET =
 			"select l.* from " + LEXEME + " l where l.dataset_code = :datasetCode "
@@ -64,7 +73,8 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 
 	private static final String SQL_SELECT_MEANINGS_FOR_DATASET =
 			"select m.* from " + MEANING + " m "
-			+ "where exists (select l.id from " + LEXEME + " l "
+			+ "where exists ("
+			+ "select l.id from " + LEXEME + " l "
 			+ "where l.meaning_id = m.id and l.dataset_code = :datasetCode) "
 			+ "order by m.id";
 
@@ -77,6 +87,8 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 
 	private Set<String> tablesHierarchyPaths;
 
+	private List<String> rootTables;
+
 	private Count totalRecordCount;
 
 	@Override
@@ -87,8 +99,15 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		totalRecordCount = new Count();
 
 		sqlSelectQueryCache = new HashMap<String, String>();
-		tablesHierarchyPaths = new HashSet<String>();
 
+		rootTables = new ArrayList<>();
+		rootTables.add(DATASET.toLowerCase());
+		rootTables.add(WORD.toLowerCase());
+		rootTables.add(PARADIGM.toLowerCase());
+		rootTables.add(MEANING.toLowerCase());
+		rootTables.add(LEXEME.toLowerCase());
+
+		tablesHierarchyPaths = new HashSet<String>();
 		tablesHierarchyPaths.add(composePath(DATASET));
 
 		tablesHierarchyPaths.add(composePath(WORD));
@@ -101,14 +120,15 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(WORD, WORD_LIFECYCLE_LOG, LIFECYCLE_LOG));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_PROCESS_LOG));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_PROCESS_LOG, PROCESS_LOG));
-		tablesHierarchyPaths.add(composePath(WORD, PARADIGM));
-		tablesHierarchyPaths.add(composePath(WORD, PARADIGM, FORM));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_RELATION));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK, SOURCE));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK, SOURCE, SOURCE_FREEFORM));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK, SOURCE, SOURCE_FREEFORM, FREEFORM));
+
+		tablesHierarchyPaths.add(composePath(PARADIGM));
+		tablesHierarchyPaths.add(composePath(PARADIGM, FORM));
 
 		tablesHierarchyPaths.add(composePath(MEANING));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_NR));
@@ -150,6 +170,10 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE, SOURCE_FREEFORM));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE, SOURCE_FREEFORM, FREEFORM));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP, LEX_COLLOC_REL_GROUP));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC, COLLOCATION));
 	}
 
 	@Transactional
@@ -160,7 +184,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
-		String exportEntryName = datasetCode + ".json";
 		String exportFileName = datasetCode + ".zip";
 		String exportFilePath = exportFolder + exportFileName;
 		File exportFile = new File(exportFilePath);
@@ -174,23 +197,38 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		FileOutputStream exportFileOutputStream = new FileOutputStream(exportFile);
 		BufferedOutputStream exportBufferedOutputStream = new BufferedOutputStream(exportFileOutputStream);
 		ZipOutputStream jsonZipOutputStream = new ZipOutputStream(exportBufferedOutputStream);
-		ZipEntry zipEntry = new ZipEntry(exportEntryName);
-		jsonZipOutputStream.putNextEntry(zipEntry);
+
+		ObjectMapper objectMapper = new ObjectMapper();
 		JsonFactory jsonFactory = new JsonFactory();
 		JsonGenerator jsonGenerator = jsonFactory.createGenerator(jsonZipOutputStream);
-		ObjectMapper objectMapper = new ObjectMapper();
 		jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
 		jsonGenerator.setCodec(objectMapper);
 
-		compose(datasetCode, jsonGenerator);
+		ZipEntry zipEntry;
+		String exportEntryName;
+		List<Map<String, Object>> tableRows;
+		for (String rootTableName : rootTables) {
+			tableRows = getTableRows(datasetCode, rootTableName);
+			if (CollectionUtils.isEmpty(tableRows)) {
+				continue;
+			}
+			exportEntryName = rootTableName + ".json";
+			zipEntry = new ZipEntry(exportEntryName);
+			jsonZipOutputStream.putNextEntry(zipEntry);
+			jsonGenerator.writeStartObject();
+			if (tableRows.size() == 1) {
+				Map<String, Object> tableRow = tableRows.get(0);
+				appendToRoot(rootTableName, tableRow, jsonGenerator);
+			} else {
+				appendToRoot(rootTableName, tableRows, jsonGenerator);
+			}
+			jsonGenerator.writeEndObject();
+			jsonGenerator.flush();
+			jsonZipOutputStream.closeEntry();
+		}
 
-		jsonGenerator.flush();
 		jsonGenerator.close();
 		jsonZipOutputStream.flush();
-		try {
-			jsonZipOutputStream.closeEntry();
-		} catch (Exception e) {
-		}
 		jsonZipOutputStream.close();
 		exportBufferedOutputStream.flush();
 		exportBufferedOutputStream.close();
@@ -204,33 +242,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		logger.debug("Total exported record count {}", totalRecordCount.getValue());
 
 		logger.debug("Dataset \"{}\" export completed at {}", datasetCode, timeLog);
-	}
-
-	private void compose(String datasetCode, JsonGenerator jsonGenerator) throws Exception {
-
-		String tableName;
-		Map<String, Object> tableRow;
-		List<Map<String, Object>> tableRows;
-
-		jsonGenerator.writeStartObject();
-
-		tableName = DATASET.toLowerCase();
-		tableRow = getDataset(datasetCode);
-		appendToRoot(tableName, tableRow, jsonGenerator);
-
-		tableName = WORD.toLowerCase();
-		tableRows = getDatasetWords(datasetCode);
-		appendToRoot(tableName, tableRows, jsonGenerator);
-
-		tableName = MEANING.toLowerCase();
-		tableRows = getDatasetMeanings(datasetCode);
-		appendToRoot(tableName, tableRows, jsonGenerator);
-
-		tableName = LEXEME.toLowerCase();
-		tableRows = getDatasetLexemes(datasetCode);
-		appendToRoot(tableName, tableRows, jsonGenerator);
-
-		jsonGenerator.writeEndObject();
 	}
 
 	private void appendToRoot(String tableName, Map<String, Object> tableRow, JsonGenerator jsonGenerator) throws IOException, Exception {
@@ -337,36 +348,25 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		jsonGenerator.writeEndObject();
 	}
 
-	private Map<String, Object> getDataset(String datasetCode) {
+	private List<Map<String, Object>> getTableRows(String datasetCode, String tableName) throws Exception {
 
+		String sql;
+		if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
+			sql = SQL_SELECT_DATASET;
+		} else if (StringUtils.equalsIgnoreCase(WORD, tableName)) {
+			sql = SQL_SELECT_WORDS_FOR_DATASET;
+		} else if (StringUtils.equalsIgnoreCase(PARADIGM, tableName)) {
+			sql = SQL_SELECT_PARADIGMS_FOR_DATASET;
+		} else if (StringUtils.equalsIgnoreCase(MEANING, tableName)) {
+			sql = SQL_SELECT_MEANINGS_FOR_DATASET;
+		} else if (StringUtils.equalsIgnoreCase(LEXEME, tableName)) {
+			sql = SQL_SELECT_LEXEMES_FOR_DATASET;
+		} else {
+			return null;
+		}
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("datasetCode", datasetCode);
-		List<Map<String, Object>> tableRows = basicDbService.queryList(SQL_SELECT_DATASET, paramMap);
-		Map<String, Object> tableRow = tableRows.get(0);
-		return tableRow;
-	}
-
-	private List<Map<String, Object>> getDatasetWords(String datasetCode) {
-
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("datasetCode", datasetCode);
-		List<Map<String, Object>> tableRows = basicDbService.queryList(SQL_SELECT_WORDS_FOR_DATASET, paramMap);
-		return tableRows;
-	}
-
-	private List<Map<String, Object>> getDatasetMeanings(String datasetCode) {
-
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("datasetCode", datasetCode);
-		List<Map<String, Object>> tableRows = basicDbService.queryList(SQL_SELECT_MEANINGS_FOR_DATASET, paramMap);
-		return tableRows;
-	}
-
-	private List<Map<String, Object>> getDatasetLexemes(String datasetCode) {
-
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("datasetCode", datasetCode);
-		List<Map<String, Object>> tableRows = basicDbService.queryList(SQL_SELECT_LEXEMES_FOR_DATASET, paramMap);
+		List<Map<String, Object>> tableRows = basicDbService.queryList(sql, paramMap);
 		return tableRows;
 	}
 

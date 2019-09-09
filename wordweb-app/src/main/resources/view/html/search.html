@@ -100,7 +100,7 @@
       </div>
     </div>
     <div class="word-details"></div>
-    <div id="main" role="main" class="row word-details" th:fragment="worddetails" th:if="${not #lists.isEmpty(wordData.lexemes)}">
+    <div role="main" class="row word-details" th:fragment="worddetails" th:if="${not #lists.isEmpty(wordData.lexemes)}">
       <div class="col-12 content-panel d-md-block">
         <div class="row">
           <div class="col-12 content-title">
@@ -145,7 +145,7 @@
                       <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </th:block>
                     <span class="lexeme" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:text="${grammar + (grammarIter.last ? '' : ', ')}"></span>
+                      <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:text="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                     </span>
                   </div>
                   <div class="definition-row definition-area">
@@ -180,7 +180,7 @@
                                 th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"
                                 class="type-three"></span>
                           <th:block th:if="${not #lists.isEmpty(meaningWord.governments)}">
-                            <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government + (govIter.last ? '' : ', ')}"></span>
+                            <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
                           </th:block>
                           <th:block th:if="${not #lists.isEmpty(meaningWord.registers)}">
                             <span class="type-two" th:each="register,regIter : ${meaningWord.registers}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
@@ -194,7 +194,7 @@
                 </div>
                 <div class="col-12 dependencies">
                   <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-1 rekts-est">
-                    <i th:each="government,iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
+                    <i th:each="government,iter : ${lexeme.governments}" th:text="${government.value + (iter.last ? '' : ', ')}"> </i>
                   </div>
                   <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}">
@@ -216,7 +216,8 @@
                     </div>
                   </div>
                   <button class="show-more" aria-expanded="false" name="colloc-usages-btn"
-                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:data-see-more="#{button.see.more}"
+                          th:data-see-less="#{button.see.less}"
                           th:if="${lexeme.moreUsages}">
                     <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
                     <span th:text="#{button.see.more}"></span>
@@ -268,7 +269,7 @@
                         <b th:text="#{label.public.note}">Hea teada</b>
                       </div>
                       <div class="col-12">
-                        <div th:each="note : ${lexeme.publicNotes}" th:utext="${note}"></div>
+                        <div th:each="note : ${lexeme.publicNotes}" th:utext="${note.value}"></div>
                       </div>
                     </div>
                   </div>
@@ -413,7 +414,8 @@
                         </th:block>
                       </div>
                       <button class="show-more" aria-expanded="false" name="colloc-expand-btn"
-                              th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}">
+                              th:data-see-more="#{button.see.more}"
+                              th:data-see-less="#{button.see.less}">
                         <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
                         <span th:text="#{button.see.more}"></span>
                       </button>
@@ -514,7 +516,8 @@
                     </div>
                   </div>
                   <button class="show-more" aria-expanded="false"
-                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:data-see-more="#{button.see.more}"
+                          th:data-see-less="#{button.see.less}"
                           th:if="${paradigm.expandable}">
                     <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
                     <span th:text="#{button.see.more}"></span>
@@ -570,7 +573,8 @@
                     </div>
                   </div>
                   <button class="show-more" aria-expanded="false"
-                          th:attr="data-see-more=#{button.see.more},data-see-less=#{button.see.less}"
+                          th:data-see-more="#{button.see.more}"
+                          th:data-see-less="#{button.see.less}"
                           th:if="${wordData.word.moreWordRelations}">
                     <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
                     <span th:text="#{button.see.more}"></span>

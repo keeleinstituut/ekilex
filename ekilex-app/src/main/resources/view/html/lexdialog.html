@@ -104,10 +104,10 @@
             </div>
             <div th:id="${'meaning_domain_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
-                <select required class="form-control value-select required-field">
+                <select required class="form-control required-field classifier-select" data-live-search="true">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}" th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                   </optgroup>
                 </select>
               </div>
@@ -235,7 +235,7 @@
             </div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required id="definitionPermLanguageSelect" class="form-control required-field" name="language">
+                <select required id="definitionPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true"  name="language">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
@@ -583,8 +583,8 @@
             <div class="value-group" data-id="usage_translation">
               <div class="form-group row">
                 <div class="col-md-4">
-                  <select required class="form-control" name="language">
-                    <option value="" hidden disabled selected>vali väärtus...</option>
+                  <select required class="form-control classifier-select" name="language" data-live-search="true">
+                    <option value="" hidden disabled selected>vali keel...</option>
                     <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
                   </select>
                 </div>
@@ -956,19 +956,20 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_meaning_domain_dlg">
+  <div th:id="${'editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal" role="dialog" th:fragment="edit_meaning_domain_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
+          <div class="modal-body select-dlg">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_domain">
             <input type="hidden" name="currentValue" th:value="${classif.toIdString()}">
-            <select class="form-control" name="value">
+            <select class="form-control classifier-select" name="value" data-live-search="true">
               <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
-                        th:text="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
+                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                        th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
                         th:selected="${domain.toIdString() == classif.toIdString()}">domain</option>
               </optgroup>
             </select>

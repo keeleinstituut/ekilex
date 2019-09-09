@@ -85,6 +85,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 	private static final String SQL_SELECT_LEXEME_PROCESS_LOGS_FOR_DATASETS_PATH = "sql/select_lexeme_process_logs_for_datasets.sql";
 
+	private static final String SQL_INSERT_DEFINITION_DATASET_WHERE_NOT_EXISTS_PATH = "sql/insert_definition_dataset_where_not_exists.sql";
+
 	private String sqlSelectWordLexemeMeaningIds;
 
 	private String sqlSelectLexemeFreeforms;
@@ -98,6 +100,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 	private String sqlSelectLexemeLifecycleLogsForDatasets;
 
 	private String sqlSelectLexemeProcessLogsForDatasets;
+
+	private String sqlInsertDefinitionDatasetWhereNotExists;
 
 	private String sqlSelectLexeme = "select * from " + LEXEME + " where id = :id";
 
@@ -182,6 +186,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_PROCESS_LOGS_FOR_DATASETS_PATH);
 		sqlSelectLexemeProcessLogsForDatasets = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_INSERT_DEFINITION_DATASET_WHERE_NOT_EXISTS_PATH);
+		sqlInsertDefinitionDatasetWhereNotExists = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
@@ -271,6 +278,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		List<LexemeProcessLog> lexemeProcessLogs = getLexemeProcessLogs(lexemeMergeDatasets);
 		createLexemeProcessLogs(sumLexemeIdMap, lexemeProcessLogs, countsMap);
 
+		// post handling definition datasets
+		appendMergeDatasetToDefinitions(lexemeMergeName, countsMap);
+
 		logCounts(countsMap);
 
 		if (reportComposer != null) {
@@ -301,6 +311,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Count sumLexemeCollocRelGroupCount = new Count();
 		Count sumLexemeLifecycleLogCount = new Count();
 		Count sumLexemeProcessLogCount = new Count();
+		Count sumDefinitionCount = new Count();
 
 		Map<String, Count> countsMap = new HashMap<>();
 		countsMap.put("wordMeaningPairCount", wordMeaningPairCount);
@@ -322,6 +333,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		countsMap.put("sumLexemeCollocRelGroupCount", sumLexemeCollocRelGroupCount);
 		countsMap.put("sumLexemeLifecycleLogCount", sumLexemeLifecycleLogCount);
 		countsMap.put("sumLexemeProcessLogCount", sumLexemeProcessLogCount);
+		countsMap.put("sumDefinitionCount", sumDefinitionCount);
 
 		return countsMap;
 	}
@@ -347,6 +359,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Count sumLexemeCollocRelGroupCount = countsMap.get("sumLexemeCollocRelGroupCount");
 		Count sumLexemeLifecycleLogCount = countsMap.get("sumLexemeLifecycleLogCount");
 		Count sumLexemeProcessLogCount = countsMap.get("sumLexemeProcessLogCount");
+		Count sumDefinitionCount = countsMap.get("sumDefinitionCount");
 
 		logger.info("Collected {} word meaning pairs", wordMeaningPairCount.getValue());
 		logger.info("Collected {} lexemes to sum", summableLexemeCount.getValue());
@@ -367,6 +380,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		logger.info("Created {} lexeme colloc rel groups", sumLexemeCollocRelGroupCount.getValue());
 		logger.info("Created {} lexeme lifecycle logs", sumLexemeLifecycleLogCount.getValue());
 		logger.info("Created {} lexeme process logs", sumLexemeProcessLogCount.getValue());
+		logger.info("Associated {} definitions", sumDefinitionCount.getValue());
 	}
 
 	private LexemeExt composeSumLexeme(WordMeaningPair wordMeaningPair, List<LexemeExt> allLexemes,
@@ -727,9 +741,9 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		for (Freeform freeform : freeforms) {
 			if (freeform.getValueText() != null) {
-				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueText(), freeform.getLangCode(), freeform.getComplexity());
+				createFreeformText(parentId, freeform.getType(), freeform.getValueText(), freeform.getValuePrese(), freeform.getLangCode(), freeform.getComplexity());
 			} else if (freeform.getValueDate() != null) {
-				createFreeformTextOrDate(parentId, freeform.getType(), freeform.getValueDate(), freeform.getLangCode(), freeform.getComplexity());
+				createFreeformDate(parentId, freeform.getType(), freeform.getValueDate(), freeform.getComplexity());
 			}
 		}
 	}
@@ -1115,6 +1129,17 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		}
 
 		logger.debug("Done with lexeme process logs");
+	}
+
+	private void appendMergeDatasetToDefinitions(String lexemeMergeName, Map<String, Count> countsMap) {
+
+		logger.debug("Appending merge dataset to definitions");
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("datasetCode", lexemeMergeName);
+		int definitionCount = basicDbService.executeScript(sqlInsertDefinitionDatasetWhereNotExists, paramMap);
+		Count sumDefinitionCount = countsMap.get("sumDefinitionCount");
+		sumDefinitionCount.increment(definitionCount);
 	}
 
 	private void appendToReport(String reportName, Object ... reportCells) throws Exception {

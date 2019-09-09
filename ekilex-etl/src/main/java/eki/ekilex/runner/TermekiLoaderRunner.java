@@ -566,7 +566,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 			String heading = (String) image.get("heading");
 			if (StringUtils.isNotBlank(heading)) {
-				createFreeformTextOrDate(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null, null);
+				createFreeformTextEkiMarkup(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null, null);
 			}
 
 			Integer extSourceId = (Integer) image.get("source_id");

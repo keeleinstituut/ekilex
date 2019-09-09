@@ -27,4 +27,4 @@ where word.lang = :lang
 		from word_word_type
 		where word_word_type.word_id = word.id
 			and word_word_type.word_type_code in (:excludedWordTypeCodes))
-group by(form.value)
+group by form.value

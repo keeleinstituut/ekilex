@@ -734,7 +734,7 @@ alter sequence meaning_freeform_id_seq restart with 10000;
 create table definition
 (
   id bigserial primary key,
-  meaning_id bigint references meaning(id) not null,
+  meaning_id bigint references meaning(id) on delete cascade not null,
   definition_type_code varchar(100) references definition_type(code) not null,
   value text not null,
   value_prese text not null,
@@ -799,6 +799,8 @@ create table lexeme
   value_state_code varchar(100) references value_state(code) null,
   process_state_code varchar(100) references process_state(code) null,
   complexity varchar(100) not null,
+  -- TODO type not null ???
+  type varchar(50),
   order_by bigserial,
   unique(word_id, meaning_id, dataset_code)
 );

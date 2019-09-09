@@ -57,6 +57,7 @@ dblink(
 	complexity varchar(100),
 	meaning_count integer,
 	meaning_words type_word array,
+	lex_langs char(3) array,
 	definitions type_definition array
 );
 
@@ -128,9 +129,9 @@ dblink(
 	pos_codes varchar(100) array,
 	deriv_codes varchar(100) array,
 	advice_notes text array,
-	public_notes text array,
-	grammars text array,
-	governments text array,
+	public_notes type_public_note array,
+	grammars type_grammar array,
+	governments type_government array,
 	usages type_usage array
 );
 

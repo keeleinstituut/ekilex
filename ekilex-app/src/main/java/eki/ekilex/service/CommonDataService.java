@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
@@ -96,12 +95,13 @@ public class CommonDataService extends AbstractWordSearchService {
 	@Transactional
 	public Map<String, String> getLanguagesIso2Map() {
 		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_ISO2).stream()
-				.collect(Collectors.toMap(Classifier::getCode, c-> StringUtils.isNotBlank(c.getValue()) ? c.getValue() : c.getCode()));
+				.collect(Collectors.toMap(Classifier::getCode, classifier -> StringUtils.isNotBlank(classifier.getValue()) ? classifier.getValue() : classifier.getCode()));
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
 		List<Classifier> domains = commonDataDbService.getDomainsInUse();
+		domains = conversionUtil.removeClassifierDuplicates(domains);
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
@@ -330,9 +330,8 @@ public class CommonDataService extends AbstractWordSearchService {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
 		if (lexeme != null) {
-			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(singletonList(lexeme.getDatasetCode()));
 			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-			populateLexeme(lexeme, searchDatasetsRestriction, datasetNameMap);
+			populateLexeme(lexeme, datasetNameMap);
 		}
 		return lexeme;
 	}
@@ -354,7 +353,7 @@ public class CommonDataService extends AbstractWordSearchService {
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
 
-		lexemes.forEach(lexeme -> populateLexeme(lexeme, searchDatasetsRestriction, datasetNameMap));
+		lexemes.forEach(lexeme -> populateLexeme(lexeme, datasetNameMap));
 		lexemeLevelCalcUtil.combineLevels(lexemes);
 		String firstDefinitionValue = getFirstDefinitionValue(lexemes);
 
@@ -392,29 +391,26 @@ public class CommonDataService extends AbstractWordSearchService {
 		return wordDetailsList;
 	}
 
-	private void populateLexeme(WordLexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction, Map<String, String> datasetNameMap) {
+	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
 
-		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
-		lexeme.setDataset(datasetName);
-
-		Long wordId = lexeme.getWordId();
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
-
+		String datasetCode = lexeme.getDatasetCode();
 		List<String> vocalForms = lexeme.getVocalForms();
 		vocalForms = cleanUpVocalForms(vocalForms);
 
-		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(wordId, meaningId, searchDatasetsRestriction);
+		String datasetName = datasetNameMap.get(datasetCode);
+		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
 		meaningDomains = conversionUtil.removeOrderedClassifierDuplicates(meaningDomains);
 		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
@@ -436,6 +432,7 @@ public class CommonDataService extends AbstractWordSearchService {
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 
+		lexeme.setDataset(datasetName);
 		lexeme.setPos(lexemePos);
 		lexeme.setDerivs(lexemeDerivs);
 		lexeme.setRegisters(lexemeRegisters);

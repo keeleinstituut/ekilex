@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +50,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	public String initSearch(Model model) throws Exception {
 
 		initSearchForms(model);
+		resetUserRole(model);
 
 		WordsResult wordsResult = new WordsResult();
 		model.addAttribute("wordsResult", wordsResult);
@@ -84,6 +84,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		// if redirect from login arrives
 		initSearchForms(model);
+		resetUserRole(model);
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), LEX_SEARCH_URI);
 		logger.debug(searchUri);

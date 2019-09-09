@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},_)">
+<title th:text="#{user.profile.title}">Kasutaja profiil</title>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Olemasolevad õigused</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped m-0 p-0 table-hover">
+          <tr>
+            <th class="m-1 p-1" style="width: 10%">Sõnakogu kood</th>
+            <th class="m-1 p-1" style="width: 70%">Sõnakogu nimetus</th>
+            <th class="m-1 p-1" style="width: 20%">Õigus</th>
+          </tr>
+          <th:block th:each="datasetPermission : ${userDatasetPermissions}">
+            <tr>
+              <td class="m-1 p-1">
+                <span th:text="${datasetPermission.datasetCode}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <span th:text="${datasetPermission.datasetName}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <span th:text="#{|authorityoperation.${datasetPermission.authOperation}|}"></span>
+              </td>
+            </tr>
+          </th:block>
+        </table>
+      </div>
+    </div>
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Esitatud õiguste taotlused
+          <button class="btn btn-primary pull-right" title="Esita uus taotlus" data-toggle="modal" data-target="#addApplicationDlg">Esita uus taotlus</button>
+        </h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped m-0 p-0 table-hover">
+          <tr>
+            <th class="m-1 p-1" style="width: 10%">Esitamise aeg</th>
+            <th class="m-1 p-1" style="width: 40%">Taotluses märgitud sõnakogude koodid</th>
+            <th class="m-1 p-1" style="width: 50%">Kommentaar</th>
+          </tr>
+          <th:block th:each="userApplication : ${userApplications}">
+            <tr>
+              <td class="m-1 p-1">
+                <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <span th:text="${userApplication.datasetCodes}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <span th:text="${userApplication.comment}"></span>
+              </td>
+            </tr>
+          </th:block>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="addApplicationDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form th:action="@{/reapply}" method="post">
+            <div class="row no-gutters">
+              <label class="col-10 ml-5 col-form-label">Taotluse kommentaar</label>
+              <div class="col-10 ml-5">
+                <textarea class="form-control md-textarea" rows="3" name="applicationComment"></textarea>
+              </div>
+            </div>
+            <div class="row no-gutters">
+              <span class="col-10 mt-3 ml-5">
+                <a class="btn btn-outline-secondary" data-toggle="collapse" href="#datasetsSelection" role="button" aria-expanded="false" aria-controls="datasetsSelection">
+                  <span>Märgi sõnakogud, millele soovid õigusi</span>
+                </a>
+              </span>
+            </div>
+            <div class="mt-3 collapse" id="datasetsSelection">
+              <th:block th:each="dataset : ${allDatasets}">
+                <div class="row no-gutters">
+                  <span class="col-1 text-right">
+                    <input type="checkbox" name="selectedDatasets" th:value="${dataset.code}" />
+                  </span>
+                  <span th:text="${dataset.code}" class="col-1 text-center"></span>
+                  <span th:text="${dataset.name}" class="col-10"></span>
+                </div>
+              </th:block>
+            </div>
+            <div class="row">
+              <div class="col mt-3 ml-5">
+                <button type="submit" class="btn btn-primary">Saada taotlus</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

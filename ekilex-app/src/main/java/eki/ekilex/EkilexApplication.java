@@ -31,6 +31,7 @@ public class EkilexApplication {
 	Duration sessionTimeout;
 
 	public static void main(String[] args) {
+		System.setProperty("org.jooq.no-logo", "true");
 		SpringApplication.run(EkilexApplication.class, args);
 	}
 

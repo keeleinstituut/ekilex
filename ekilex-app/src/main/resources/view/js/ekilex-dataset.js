@@ -39,9 +39,7 @@ function initialise() {
 		$('#codeExistsError').hide();
 	});
 
-	$('.classifier-select').selectpicker({
-		width : '100%'
-	});
+	initClassifierAutocomplete();
 
 	// selector by class does not work for some reason
 	$(document).on("changed.bs.select", "#datasetEditOriginsSelect, #datasetAddOriginsSelect", function(e, clickedIndex, isSelected, oldValue) {

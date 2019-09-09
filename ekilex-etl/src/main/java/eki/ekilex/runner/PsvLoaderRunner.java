@@ -1167,13 +1167,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					createFreeformClassifier(governmentId, FreeformType.GOVERNMENT_TYPE, government.getType());
 				}
 				if (isNotBlank(governmentPlacement)) {
-					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_PLACEMENT, governmentPlacement, null, null);
+					createFreeformTextEkiMarkup(governmentId, FreeformType.GOVERNMENT_PLACEMENT, governmentPlacement, null, null);
 				}
 				if (isNotBlank(government.getVariant())) {
-					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_VARIANT, government.getVariant(), null, null);
+					createFreeformTextEkiMarkup(governmentId, FreeformType.GOVERNMENT_VARIANT, government.getVariant(), null, null);
 				}
 				if (isNotBlank(government.getOptional())) {
-					createFreeformTextOrDate(governmentId, FreeformType.GOVERNMENT_OPTIONAL, government.getOptional(), null, null);
+					createFreeformTextEkiMarkup(governmentId, FreeformType.GOVERNMENT_OPTIONAL, government.getOptional(), null, null);
 				}
 			}
 		}

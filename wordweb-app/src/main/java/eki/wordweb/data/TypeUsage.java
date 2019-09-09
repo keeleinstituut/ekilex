@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
@@ -19,6 +20,9 @@ public class TypeUsage extends AbstractDataObject {
 
 	@Column(name = "usage_lang")
 	private String usageLang;
+
+	@Column(name = "complexity")
+	private Complexity complexity;
 
 	@Column(name = "usage_type_code")
 	private String usageTypeCode;
@@ -58,6 +62,14 @@ public class TypeUsage extends AbstractDataObject {
 
 	public void setUsageLang(String usageLang) {
 		this.usageLang = usageLang;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public String getUsageTypeCode() {

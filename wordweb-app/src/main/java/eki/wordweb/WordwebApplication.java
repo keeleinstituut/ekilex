@@ -32,6 +32,7 @@ public class WordwebApplication {
 
 	public static void main(String[] args) {
 		System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true");
+		System.setProperty("org.jooq.no-logo", "true");
 		SpringApplication.run(WordwebApplication.class, args);
 	}
 
@@ -55,6 +56,7 @@ public class WordwebApplication {
 			ajpConnector.setSecure(false);
 			ajpConnector.setAllowTrace(false);
 			ajpConnector.setScheme("http");
+			ajpConnector.setURIEncoding(StandardCharsets.UTF_8.name());
 			tomcat.addAdditionalTomcatConnectors(ajpConnector);
 		}
 		return tomcat;

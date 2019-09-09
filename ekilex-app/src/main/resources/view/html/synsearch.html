@@ -20,14 +20,16 @@
       </div>
     </div>
     <div class="alert alert-info" th:if="${wordsResult.totalCount >0}">
-      Tulpade vahel ja üles alla liikumiseks töötavad nooleklahvid.<br/>
-      Klahv ENTER töötab eri tulpades järgmiselt:
+      Tulpade vahel ja üles alla liikumiseks töötavad <strong>nooleklahvid</strong>.<br/>
+      Klahv <strong>ENTER</strong> töötab eri tulpades järgmiselt:
       <ul>
         <li>Vasakul: valitud otsingutulemuse detailide kuvamine</li>
         <li>Paremal: valitud sünonüümi märkimine</li>
         <li>Keskel: Paremal tulbas märgitud sünonüümi valitud ilmikuga sidumine</li>
       </ul>
-      Klahv ESC eemaldab markeeringud ja liigutab kursori otsingu kasti.
+      Klahv <strong>ESC</strong> eemaldab markeeringud ja liigutab kursori otsingu kasti.<br/>
+
+      Klahvid <strong>'1', '2' ja '3'</strong> töötavad kiirklahvidena kolme tulba valimiseks
     </div>
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>
@@ -95,14 +97,13 @@
                   <span th:if="${lexeme.levels != null}" class="pl-1 pr-1">
                     <span th:text="${lexeme.levels}"></span>
                   </span>
-
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                     <div class="hidden-buttons">
                       <div class="btn-custom">
-                        <span th:text="${meaningWord.value}"></span>
+                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${meaningWord.value}"></span>
                         <span th:text="${meaningWord.homonymNumber}"></span>
-                        <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"  th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${meaningWord.lexemeId}"
                                 data-callback="refreshDetails"

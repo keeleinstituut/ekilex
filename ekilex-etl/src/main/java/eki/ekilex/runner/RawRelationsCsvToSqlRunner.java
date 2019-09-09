@@ -18,7 +18,7 @@ public class RawRelationsCsvToSqlRunner extends AbstractClassifierRunner {
 
 	private final static String OUTPUT_FILE_EXTENSION = ".sql";
 
-	private static final String INSERT_RAW_RELATION_TEMPLATE = "insert into word_relation (word1_id, word2_id, word_rel_type_code, relation_status) values (${word1_id}, ${word2_id}, 'raw', 'UNDEFINED');";
+	private static final String INSERT_RAW_RELATION_TEMPLATE = "insert into word_relation (word1_id, word2_id, word_rel_type_code, relation_status) values (${word1_id}, ${word2_id}, 'raw', 'UNDEFINED') on conflict do nothing;";
 	private static final String INSERT_RELATION_PARAM_TEMPLATE = "insert into word_relation_param (word_relation_id, name, value) select id, '${name}', '${value}' from word_relation where word1_id = ${word1_id} and word2_id = ${word2_id} and word_rel_type_code = 'raw';";
 
 	private String inputFileFullPath;

@@ -155,7 +155,7 @@
                 </div>
                 <div>
                   <a class="btn btn-sm btn-primary"
-                     title="Ühenda ilmikud"
+                     title="Ühenda tähendused"
                      th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}"
                      sec:authorize="${#vars.isLexemeCrudGranted}">Ühenda</a>
                   <a class="btn btn-sm btn-primary"
@@ -1150,16 +1150,16 @@
           </div>
         </div>
       </div>
+      <script th:replace="common :: confirmations"></script>
+      <script>
+		  $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
+			  btnOkLabel : 'Jah',
+			  btnCancelLabel : 'Ei',
+			  title : 'Kinnita kustutamine',
+			  onConfirm : deleteLexemeAndWordAndMeaning
+		  });
+      </script>
     </div>
-    <script th:replace="common :: confirmations"></script>
-    <script>
-		$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei',
-			title : 'Kinnita kustutamine',
-			onConfirm : deleteLexemeAndWordAndMeaning
-		});
-    </script>
   </th:block>
 
   <div th:replace="common :: newWordDlg('lex_search')"></div>

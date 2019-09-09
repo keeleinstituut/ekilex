@@ -24,7 +24,6 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
-import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,10 +44,15 @@ public class LexEditController extends AbstractPageController {
 	private CompositionService compositionService;
 
 	@GetMapping("/lexjoin/{lexemeId}")
-	public String show(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	public String show(@PathVariable("lexemeId") Long lexemeId, Model model) {
 
-		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(lexemeId));
-		model.addAttribute("searchFilter", null);
+		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
+		String defaultSearchFilter = lexeme.getWords()[0];
+		List<String> datasets = getUserPreferredDatasetsCodes();
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(defaultSearchFilter, datasets);
+		model.addAttribute("sourceLexeme", lexeme);
+		model.addAttribute("searchFilter", defaultSearchFilter);
+		model.addAttribute("lexemes", lexemes);
 
 		return LEX_JOIN_PAGE;
 	}
@@ -67,15 +71,9 @@ public class LexEditController extends AbstractPageController {
 	}
 
 	@GetMapping("/lexjoin/{lexemeId}/{lexemeId2}")
-	public String join(@PathVariable("lexemeId") Long lexemeId, @PathVariable("lexemeId2") Long lexemeId2, Model model) {
+	public String join(@PathVariable("lexemeId") Long lexemeId, @PathVariable("lexemeId2") Long lexemeId2) {
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
-		List<String> validationMessages = compositionService.validateLexemeJoin(lexemeId, lexemeId2);
-		if (!validationMessages.isEmpty()) {
-			model.addAttribute("sourceLexeme", lexeme);
-			model.addAttribute("validationMessages", validationMessages);
-			return LEX_JOIN_PAGE;
-		}
 		compositionService.joinLexemes(lexemeId, lexemeId2);
 
 		List<String> datasets = getUserPreferredDatasetsCodes();
@@ -121,7 +119,6 @@ public class LexEditController extends AbstractPageController {
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(response);
 	}
-
 
 	@ResponseBody
 	@PostMapping("/duplicateemptylexeme/{lexemeId}")

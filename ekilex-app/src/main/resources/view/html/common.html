@@ -24,8 +24,8 @@
     <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap-select.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
   </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
@@ -59,11 +59,14 @@
                    th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></div>
             </th:block>
           </th:block>
-          <form th:action="@{/dologout}" method="post">
-            <button type="submit" class="btn btn-info">
-              <span th:text="${#authentication.name}">Kusti Tähetark</span>
-            </button>
-          </form>
+          <div class="dropdown">
+            <button class="btn btn-info" type="button" data-toggle="dropdown" th:text="${#authentication.name}"></button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" th:href="@{/userprofile}">Kasutaja profiil</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="@{/dologout}">Logi välja</a>
+            </div>
+          </div>
         </th:block>
       </div>
     </nav>
@@ -119,7 +122,7 @@
             </div>
             <div class="form-group row">
               <div class="col-md-8">
-                <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
+                <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:selected="${language.code == sessionBean.newWordSelectedLanguage}" th:text="${language.value}">language</option>
                 </select>

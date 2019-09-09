@@ -115,9 +115,11 @@
                     <td class="m-1 p-1">
                       <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
                       <th:block th:each="userApplication,userApplicationIter : ${userPerm.applications}">
-                        <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
-                        <span th:if="${userApplication.datasetCodes != null}" th:text="${userApplication.datasetCodes}"></span>
-                        <span th:if="${!#strings.isEmpty(userApplication.comment)}" th:text="${userApplication.comment}"></span>
+                        <div>
+                          <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
+                          <span th:if="${userApplication.datasetCodes != null}" th:text="${userApplication.datasetCodes}"></span>
+                          <span th:if="${!#strings.isEmpty(userApplication.comment)}" th:text="${userApplication.comment}"></span>
+                        </div>
                       </th:block>
                     </td>
                     <td class="m-1 p-1 text-center">

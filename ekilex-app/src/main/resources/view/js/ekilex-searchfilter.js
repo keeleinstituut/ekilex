@@ -130,7 +130,8 @@ function initialiseDetailSearch() {
 		let searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
 		if (searchKeyVal == 'DOMAIN' && searchOperandVal == 'NOT_EXISTS') {
 			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
+			searchValueElement.parent().prop('hidden', true);
+			searchValueElement.selectpicker('refresh');
 		} else {
 			replaceSearchValueElement(searchKeyVal, searchValueElement);
 		}
@@ -139,33 +140,56 @@ function initialiseDetailSearch() {
 	function replaceSearchValueElement(searchKeyVal, searchValueElement) {
 		let templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
 		let copyOfValueTemplate = $(templateElement.html());
+
+		let isAutofillElement = copyOfValueTemplate.attr('data-live-search') != undefined;
+		let previousElementWasAutofill = searchValueElement.parent().hasClass('bootstrap-select');
+
 		if (copyOfValueTemplate.hasClass('date')) {
 			copyOfValueTemplate.children().attr('name', searchValueElement.attr('name'));
 		} else {
 			copyOfValueTemplate.attr('name', searchValueElement.attr('name'));
 		}
-		searchValueElement.closest('div').not('.date').attr('class', templateElement.attr('class'));
-		if (searchValueElement.parent().hasClass('date')) {
+
+		if (previousElementWasAutofill) {
+			searchValueElement.closest('div').parent().attr('class', templateElement.attr('class'));
+		} else {
+			searchValueElement.closest('div').not('.date').attr('class', templateElement.attr('class'));
+
+		}
+
+		if (searchValueElement.parent().hasClass('date') || previousElementWasAutofill) {
 			searchValueElement.parent().replaceWith(copyOfValueTemplate);
 		} else {
 			searchValueElement.replaceWith(copyOfValueTemplate);
 		}
+
+		if (isAutofillElement) {
+			copyOfValueTemplate.selectpicker({width: '100%'})
+		}
+
 	}
 
 	$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
+
 		let detailGroupElement = $(this).closest('[name="detailGroup"]');
 		let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
 		initCondition(addedConditionElement);
 	});
 
 	$(document).on("click", ":button[name='addDetailGroupBtn']", function() {
+
 		let detailSearchElement = $("#detail_search_filter");
 		let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
 		initConditionGroup(addedGroupElement);
 	});
+
+	$('[data-live-search="true"]:not(:hidden)').each(function () {
+		$(this).selectpicker({width: '100%'});
+	})
 }
 
 function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
+
 	let lastElement = parentElement.find('[name="' + itemName + '"]').last();
 	let copyOfLastElement = lastElement.clone();
 	let oldIndex = copyOfLastElement.data('index');

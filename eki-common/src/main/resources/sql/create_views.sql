@@ -30,6 +30,7 @@ select w.word_id,
        end complexity,
        mc.meaning_count,
        mw.meaning_words,
+       ll.lex_langs,
        wd.definitions
 from (select w.id as word_id,
              array_to_string(array_agg(distinct f.value),',','*') as word,
@@ -87,6 +88,38 @@ from (select w.id as word_id,
                            inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
                          where l1.dataset_code = 'sss') mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
+  left outer join (select ll.word_id,
+                          array_agg(distinct ll.lang) lex_langs
+                   from ((select l1.word_id,
+                                 w2.lang
+                          from lexeme l1
+                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id
+                            inner join word w2 on w2.id = l2.word_id
+                          where l1.dataset_code = 'sss')
+                          union all
+                          (select l.word_id,
+                                  u.lang
+                          from lexeme l,
+                               lexeme_freeform lff,
+                               freeform u
+                          where l.dataset_code = 'sss'
+                          and lff.lexeme_id = l.id
+                          and lff.freeform_id = u.id
+                          and u.type = 'USAGE')
+                          union all
+                          (select l.word_id,
+                                  ut.lang
+                          from lexeme l,
+                               lexeme_freeform lff,
+                               freeform u,
+                               freeform ut
+                          where l.dataset_code = 'sss'
+                          and lff.lexeme_id = l.id
+                          and lff.freeform_id = u.id
+                          and u.type = 'USAGE'
+                          and ut.parent_id = u.id
+                          and ut.type = 'USAGE_TRANSLATION')) ll
+                   group by ll.word_id) ll on ll.word_id = w.word_id
   left outer join (select wd.word_id,
                           array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.value_prese,wd.lang,wd.complexity)::type_definition order by wd.level1,wd.level2,wd.level3,wd.lex_order_by,wd.d_order_by) definitions
                    from (select l.word_id,

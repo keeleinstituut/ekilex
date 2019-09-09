@@ -8,16 +8,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
@@ -25,11 +26,8 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractSearchController extends AbstractPageController {
-
-	private static final Logger logger = LoggerFactory.getLogger(AbstractSearchController.class);
 
 	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
 
@@ -137,6 +135,15 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	@ModelAttribute("iso2languages")
 	public Map<String, String> getIso2Languages() {
 		return commonDataService.getLanguagesIso2Map();
+	}
+
+	protected void resetUserRole(Model model) {
+
+		SessionBean sessionBean = getSessionBean(model);
+		if (sessionBean.getUserRole() == null) {
+			EkiUser user = userService.getAuthenticatedUser();
+			sessionBean.setUserRole(user.getRecentRole());
+		}
 	}
 
 	protected void initSearchForms(Model model) {
