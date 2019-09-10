@@ -3,6 +3,7 @@
 /.classpath
 /.project
 
+.cache
 # Dependency directories
 node_modules/
 
