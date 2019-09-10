@@ -365,20 +365,58 @@ function initRelationDialogLogic(addDlg, idElementName) {
 	});
 }
 
-function initAddMeaningRelationDlg(addDlg) {
-	addDlg.find('.form-control').val(null);
-	addDlg.find('[data-name=dialogContent]').html(null);
-	let selectElem = addDlg.find('select');
-	selectElem.val(selectElem.find('option').first().val());
-	initRelationDialogLogic(addDlg, 'meaning-id');
-}
+function initMultiselectRelationDlg(dlg) {
 
-function initAddLexemeRelationDlg(addDlg) {
-	addDlg.find('.form-control').val(null);
-	addDlg.find('[data-name=dialogContent]').html(null);
-	let selectElem = addDlg.find('select');
+	dlg.find('.form-control').val(null);
+	dlg.find('[data-name=dialogContent]').html(null);
+	let selectElem = dlg.find('select');
 	selectElem.val(selectElem.find('option').first().val());
-	initRelationDialogLogic(addDlg, 'lexeme-id');
+
+	dlg.find('button[type="submit"]').off('click').on('click', function(e) {
+		e.preventDefault();
+		let searchBtn = $(this);
+		let content = searchBtn.html();
+		searchBtn.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+		let searchForm = $(this).closest('form');
+		let searchUrl = searchForm.attr('action') + '?' + searchForm.serialize();
+
+		$.get(searchUrl).done(function(data) {
+			dlg.find('[data-name=dialogContent]').replaceWith(data);
+			let addRelationsBtn = dlg.find('button[name="addRelationsBtn"]');
+
+			dlg.find('input[name="selectedIds"]').on('change', function() {
+				addRelationsBtn.prop('disabled', !$('input[name="selectedIds"]:checked').length);
+			});
+
+			addRelationsBtn.off('click').on('click', function(e) {
+				e.preventDefault();
+				let selectRelationsForm = addRelationsBtn.closest('form');
+				if (checkRequiredFields(selectRelationsForm)) {
+					$.ajax({
+						url: selectRelationsForm.attr('action'),
+						data: selectRelationsForm.serialize(),
+						method: 'POST',
+					}).done(function(data) {
+						dlg.modal('hide');
+						refreshDetails();
+					}).fail(function(data) {
+						dlg.modal('hide');
+						console.log(data);
+						openAlertDlg('Seoste lisamine ebaõnnestus');
+					});
+				}
+			});
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg('Viga!');
+		}).always(function() {
+			searchBtn.html(content);
+		});
+	});
+
+	dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+		dlg.find('.form-control').first().focus();
+	});
 }
 
 function initAddSynRelationDlg(addDlg) {

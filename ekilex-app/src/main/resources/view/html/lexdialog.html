@@ -383,13 +383,12 @@
               </div>
             </div>
           </form>
-          <form th:action="@{/create_item}" method="post">
-            <input type="hidden" name="id" th:value="${lexeme.meaningId}">
+          <form th:action="@{/create_relations}" method="post">
+            <input type="hidden" name="id1" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_relation">
-            <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control required-field" name="value">
+                <select required class="form-control required-field" name="relationType">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -694,13 +693,12 @@
               </div>
             </div>
           </form>
-          <form th:action="@{/create_item}" method="post">
-            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+          <form th:action="@{/create_relations}" method="post">
+            <input type="hidden" name="id1" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_relation">
-            <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control required-field" name="value">
+                <select required class="form-control required-field" name="relationType">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${lexemeRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -733,13 +731,12 @@
               </div>
             </div>
           </form>
-          <form th:action="@{/create_item}" method="post">
-            <input type="hidden" name="id" th:value="${wordId}">
+          <form th:action="@{/create_relations}" method="post">
+            <input type="hidden" name="id1" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_relation">
-            <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control required-field" name="value">
+                <select required class="form-control required-field" name="relationType">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${wordRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
