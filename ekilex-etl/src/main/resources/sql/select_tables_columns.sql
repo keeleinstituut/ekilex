@@ -24,6 +24,7 @@ from information_schema.columns col
                         information_schema.constraint_column_usage ccu
                    where tc.constraint_name = kcu.constraint_name
                    and   tc.constraint_name = ccu.constraint_name
+                   and   kcu.column_name like ('%' || ccu.column_name)
                    and   tc.constraint_type = :constraintTypeFk) fksubq on fksubq.table_name = col.table_name and fksubq.column_name = col.column_name
 where col.table_name in (:tableNames)
 order by col.table_name,

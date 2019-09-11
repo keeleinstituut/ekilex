@@ -5,9 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,8 +80,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 	@Autowired
 	private TransportService transportService;
 
-	private DateFormat timestampFormat;
-
 	private Map<String, String> sqlSelectQueryCache;
 
 	private Set<String> tablesHierarchyPaths;
@@ -93,8 +90,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-
-		timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		totalRecordCount = new Count();
 
@@ -135,7 +130,9 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_DOMAIN));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_RELATION));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_LIFECYCLE_LOG));
+		tablesHierarchyPaths.add(composePath(MEANING, MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_PROCESS_LOG));
+		tablesHierarchyPaths.add(composePath(MEANING, MEANING_PROCESS_LOG, PROCESS_LOG));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK));
@@ -196,7 +193,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		}
 		FileOutputStream exportFileOutputStream = new FileOutputStream(exportFile);
 		BufferedOutputStream exportBufferedOutputStream = new BufferedOutputStream(exportFileOutputStream);
-		ZipOutputStream jsonZipOutputStream = new ZipOutputStream(exportBufferedOutputStream);
+		ZipOutputStream jsonZipOutputStream = new ZipOutputStream(exportBufferedOutputStream, Charset.forName(UTF_8));
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonFactory jsonFactory = new JsonFactory();
@@ -429,7 +426,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 			return array.getArray();
 		} else if (value instanceof Timestamp) {
 			Timestamp timestamp = (Timestamp) value;
-			return timestampFormat.format(timestamp);
+			return transportService.format(timestamp);
 		}
 		return value;
 	}

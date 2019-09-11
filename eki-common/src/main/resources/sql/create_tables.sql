@@ -1111,7 +1111,7 @@ create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
 create index lexeme_pos_pos_code_idx on lexeme_pos(pos_code);
 create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
 create index lexeme_region_lexeme_id_idx on lexeme_region(lexeme_id);
-create index meaning_domain_lexeme_id_idx on meaning_domain(meaning_id);
+create index meaning_domain_meaning_id_idx on meaning_domain(meaning_id);
 create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
 create index word_lifecycle_log_log_id_idx on word_lifecycle_log(lifecycle_log_id);
 create index word_process_log_word_id_idx on word_process_log(word_id);
