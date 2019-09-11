@@ -105,29 +105,6 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		this.referringForeignKeysMap = mapTablesForeignKeys(allForeignKeys);
 
 		logger.debug("Tables descriptions collected");
-
-		//tempLog();
-	}
-
-	//FIXME remove later
-	@Deprecated
-	private void tempLog() {
-		Map<String, TableColumn> tableColMap;
-		String[] testTableNames = new String[] {"meaning_lifecycle_log", "meaning_process_log"};
-
-		for (String testTableName : testTableNames) {
-			System.out.println("----------> " + testTableName);
-			System.out.println("col map");
-			tableColMap = tablesColumnsMapForImport.get(testTableName);
-			tableColMap.forEach((k, v) -> System.out.println(k + "=" + v));
-			System.out.println("fks");
-			List<ForeignKey> fks = referringForeignKeysMap.get(testTableName);
-			if (fks == null) {
-				System.out.println("no fks");
-			} else {
-				fks.forEach(System.out::println);
-			}
-		}
 	}
 
 	public String format(Timestamp timestamp) {
