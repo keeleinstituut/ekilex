@@ -1017,6 +1017,27 @@ create table feedback_log_comment
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
 
+create table temp_ds_import_pk_map
+(
+  id bigserial primary key,
+  import_code varchar(100) not null,
+  created_on timestamp not null default statement_timestamp(),
+  table_name text not null,
+  source_pk bigint not null,
+  target_pk bigint not null
+);
+alter sequence temp_ds_import_pk_map_id_seq restart with 10000;
+
+create table temp_ds_import_queue
+(
+  id bigserial primary key,
+  import_code varchar(100) not null,
+  created_on timestamp not null default statement_timestamp(),
+  table_name text not null,
+  content text not null  
+);
+alter sequence temp_ds_import_queue_id_seq restart with 10000;
+
 --- indexes
 create index eki_user_profile_user_id_idx on eki_user(id);
 create index eki_user_profile_recent_dataset_permission_id_idx on dataset_permission(id);
@@ -1132,6 +1153,12 @@ create index lifecycle_log_event_on_id_idx on lifecycle_log(event_on);
 create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
 create index process_log_source_link_process_log_id_idx on process_log_source_link(process_log_id);
 create index process_log_source_link_source_id_idx on process_log_source_link(source_id);
+create index temp_ds_import_pk_map_import_code_idx on temp_ds_import_pk_map(import_code);
+create index temp_ds_import_pk_map_table_name_idx on temp_ds_import_pk_map(table_name);
+create index temp_ds_import_pk_map_source_pk_idx on temp_ds_import_pk_map(source_pk);
+create index temp_ds_import_pk_map_target_pk_idx on temp_ds_import_pk_map(target_pk);
+create index temp_ds_import_queue_import_code_idx on temp_ds_import_queue(import_code);
+create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_name);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));
