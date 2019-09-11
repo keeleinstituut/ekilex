@@ -19,7 +19,7 @@ public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevel
 	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
-	private List<MeaningWord> meaningWords;
+	private List<SynMeaningWord> meaningWords;
 
 	@Column(name = "level1")
 	private Integer level1;
@@ -35,6 +35,9 @@ public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevel
 	@Column(name = "dataset")
 	private String datasetCode;
 
+	@Column(name = "type")
+	private String type;
+
 	private List<Definition> definitions;
 
 	private List<Classifier> pos;
@@ -47,14 +50,6 @@ public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevel
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
-	}
-
-	public List<MeaningWord> getMeaningWords() {
-		return meaningWords;
-	}
-
-	public void setMeaningWords(List<MeaningWord> meaningWords) {
-		this.meaningWords = meaningWords;
 	}
 
 	public Integer getLevel1() {
@@ -136,5 +131,21 @@ public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevel
 
 	public void setDatasetCode(String datasetCode) {
 		this.datasetCode = datasetCode;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public List<SynMeaningWord> getMeaningWords() {
+		return meaningWords;
+	}
+
+	public void setMeaningWords(List<SynMeaningWord> meaningWords) {
+		this.meaningWords = meaningWords;
 	}
 }

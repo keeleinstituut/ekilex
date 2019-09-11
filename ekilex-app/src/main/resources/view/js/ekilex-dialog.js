@@ -27,7 +27,7 @@ $(document).on("show.bs.modal", "[id^=editUsageDlg_]", function(e) {
 });
 
 $(document).on("show.bs.modal", "[id^=addLexemeRelationDlg_]", function() {
-	initAddLexemeRelationDlg($(this));
+	initMultiselectRelationDlg($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addLexemePublicNoteDlg_]", function(e) {
@@ -90,7 +90,7 @@ $(document).on("show.bs.modal", "[id^=editMeaningDomainDlg_]", function() {
 });
 
 $(document).on("show.bs.modal", "[id^=addMeaningRelationDlg_]", function() {
-	initAddMeaningRelationDlg($(this));
+	initMultiselectRelationDlg($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addLearnerCommentDlg_]", function(e) {

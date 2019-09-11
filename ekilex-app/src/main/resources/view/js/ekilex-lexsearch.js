@@ -146,14 +146,6 @@ function initLexemeLevelsDlg(editDlg) {
 	});
 }
 
-function initAddWordRelationDlg(addDlg) {
-	addDlg.find('.form-control').val(null);
-	addDlg.find('[data-name=dialogContent]').html(null);
-	let selectElem = addDlg.find('select');
-	selectElem.val(selectElem.find('option').first().val());
-	initRelationDialogLogic(addDlg, 'word-id');
-}
-
 function initUsageAuthorDlg(addDlg) {
 	addDlg.find('.form-control').val(null);
 	addDlg.find('[data-name=dialogContent]').html(null);

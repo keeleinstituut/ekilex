@@ -6,6 +6,7 @@
   </th:block>
 </head>
 <body class="body-with-navbar">
+<h1>Test uuus</h1>
   <th:block th:replace="common :: nav_bar"></th:block>
   <div class="container-fluid">
     <div class="card mt-4 shadow">
@@ -19,10 +20,10 @@
         <p>
           <a th:href="@{/termsearch}">Terminoloogide otsing</a>
         </p>
-        <!--<p>-->
-          <!--<a th:href="@{/synsearch}" th:if="${sessionBean.userRole != null}">Sünonüümide otsing</a>-->
-          <!--<span th:if="${sessionBean.userRole == null}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</span>-->
-        <!--</p>-->
+        <p>
+          <a th:href="@{/synsearch}" th:if="${sessionBean.userRole != null}">Sünonüümide otsing</a>
+          <span th:if="${sessionBean.userRole == null}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</span>
+        </p>
         <p>
           <a th:href="@{/sourcesearch}">Allikate otsing</a>
         </p>

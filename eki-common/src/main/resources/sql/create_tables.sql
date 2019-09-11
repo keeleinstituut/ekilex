@@ -799,6 +799,8 @@ create table lexeme
   value_state_code varchar(100) references value_state(code) null,
   process_state_code varchar(100) references process_state(code) null,
   complexity varchar(100) not null,
+  -- TODO type not null ???
+  type varchar(50),
   order_by bigserial,
   unique(word_id, meaning_id, dataset_code)
 );

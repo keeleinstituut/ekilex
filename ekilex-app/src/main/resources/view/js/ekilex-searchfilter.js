@@ -221,6 +221,7 @@ function initCondition(conditionElement) {
 
 function validateSearchFilter(searchFilter) {
 	if (searchFilter === '*') {
+		closeWaitDlg();
 		openMessageDlg('Palun täiendage otsingu parameetrit.');
 		return false;
 	}
