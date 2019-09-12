@@ -1,0 +1,13 @@
+//Import custom variables
+@import "variables";
+
+//Import bootstrap files
+@import "../../../../node_modules/bootstrap/scss/bootstrap.scss";
+
+//Import custom styles
+@import "font-awesome";
+@import "common-styles";
+@import "ekilex-editor";
+@import "eki-markup";
+@import "bootstrap-select";
+@import "jquery-ui.min";

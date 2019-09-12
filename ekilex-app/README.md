@@ -2,6 +2,7 @@
 First make sure you have the following installed on your computer
 * [Node.js](https://nodejs.org/en/)
 * [npm.js](https://www.npmjs.com/)
+NB! If you install Node then you get npm automatically. No need to install npm separately.
 
 If you have node and npm installed, then
 * using you command line tool (Terminal on OSX or CMD on Windows) navigate to the folder `ekilex-app` 
@@ -18,9 +19,11 @@ You do this by first entering `Ctr+C` to your command line and then calling `npm
 
 ## About package.json
 package.json holds all the scripts needed for front end development
-* **clean-and-copy-html** – as the name suggests, it runs the clean html and copy-html command
-* **clean-fonts**, **clean-html**, **clean-img** – prepare folder for new files by first deleting it. This way if a file does not exist in src folder then it won't be in the target folder. Uses **clean-dir** package
-* **copy-html**, **copy-img**, **copy-fonts** – Copy html, img or font files to  the target folder so that the Spring server could serve them. Uses **ncp** package
+* **clean-and-copy-assets** – command that deletes all the contents from **target/view** folder and then copies content from **src/view** folder to **target/view**. Run this if you have added fonts or images or javascript
+* **clean-assets**, **copy-assets** – commands used by **clean-and-copy-assets** command. 
+* **clean-and-copy-html** – as the name suggests, it runs the clean-html and copy-html command
+* **clean-and-copy-css** – same thing as clean-and-copy-html but for css. They are two separate commands so they could be used in separate **watch** commands
+* **clean-html**, **copy-html** – clean deletes **target/view/html** contents and **copy-html** copies html from source to target
 * **css** – command for calling all the .scss commands in sequence
 * **css-compile** – compiles **.scss** in to **.css**. Takes one .scss file as input and compiles it directly to the target folder. Uses **node-sass** package
 * **css-stylelint** – lints **.scss** files for code style errors. It uses Bootstrap style lint settings. Settings for style lint are in the `.stylelintrc` file
@@ -32,7 +35,11 @@ You can run all these scripts one by one. For example `npm run css-compile` woul
 
 ## Theming Bootstrap
 We use **npm** to add Bootstrap to our project. And we use **.scss** to write styles.
-Bootstrap is imported to our styles in the `src/main/resources/view/styles.scss` file.
+Bootstrap is imported to our styles in the `src/main/resources/scss/styles.scss` file.
 We use scss variables to override bootstrap default values. Variables are located in the` _variables.scss` partial. 
 
 Read more here [https://getbootstrap.com/docs/4.3/getting-started/theming/](https://getbootstrap.com/docs/4.3/getting-started/theming/)
+
+##Writing new styles
+If you want to add new styles then you should do your work in the `src/main/resources/scss/` folder. All styles should be in `.scss` files and imported in to the `styles.scss` file.
+**styles.scss** is then compiled in to `styles.css` which is then used in production. No changes should be made to **.css** files as they will be lost when generating styles from **.scss**
