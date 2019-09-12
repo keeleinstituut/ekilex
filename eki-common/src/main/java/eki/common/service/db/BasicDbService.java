@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -230,6 +231,12 @@ public class BasicDbService extends AbstractDbService {
 
 	public void update(String tableName, Map<String, Object> criteriaParamMap, Map<String, Object> valueParamMap) throws Exception {
 
+		final String critParamPrefix = "crit_";
+		final String valParamPrefix = "val_";
+		Map<String, Object> renamedCritParamMap = criteriaParamMap.entrySet().stream()
+				.collect(Collectors.toMap(entry -> critParamPrefix + entry.getKey(), entry -> entry.getValue()));
+		Map<String, Object> renamedValParamMap = valueParamMap.entrySet().stream()
+				.collect(Collectors.toMap(entry -> valParamPrefix + entry.getKey(), entry -> entry.getValue()));
 		List<String> criteriaFieldNames = new ArrayList<>(criteriaParamMap.keySet());
 		List<String> valueFieldNames = new ArrayList<>(valueParamMap.keySet());
 		StringBuffer sqlQueryBuf = new StringBuffer();
@@ -243,6 +250,7 @@ public class BasicDbService extends AbstractDbService {
 			String fieldName = valueFieldNames.get(fieldIndex);
 			sqlQueryBuf.append(fieldName);
 			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(valParamPrefix);			
 			sqlQueryBuf.append(fieldName);
 		}
 		sqlQueryBuf.append(" where ");
@@ -253,11 +261,12 @@ public class BasicDbService extends AbstractDbService {
 			String fieldName = criteriaFieldNames.get(fieldIndex);
 			sqlQueryBuf.append(fieldName);
 			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(critParamPrefix);
 			sqlQueryBuf.append(fieldName);
 		}
 		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.putAll(criteriaParamMap);
-		paramMap.putAll(valueParamMap);
+		paramMap.putAll(renamedCritParamMap);
+		paramMap.putAll(renamedValParamMap);
 
 		String sqlQueryStr = sqlQueryBuf.toString();
 
