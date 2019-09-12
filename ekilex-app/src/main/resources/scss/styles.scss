@@ -5,9 +5,10 @@
 @import "../../../../node_modules/bootstrap/scss/bootstrap.scss";
 
 //Import custom styles
-@import "font-awesome";
-@import "common-styles";
-@import "ekilex-editor";
-@import "eki-markup";
-@import "bootstrap-select";
-@import "jquery-ui.min";
+@import "font-awesome.scss";
+@import "common-styles.scss";
+@import "ekilex-editor.scss";
+@import "eki-markup.scss";
+@import "bootstrap-select.scss";
+@import "jquery-ui.min.scss";
+@import "index.scss";
