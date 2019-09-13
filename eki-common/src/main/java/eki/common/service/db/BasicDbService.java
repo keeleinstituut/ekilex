@@ -250,7 +250,7 @@ public class BasicDbService extends AbstractDbService {
 			String fieldName = valueFieldNames.get(fieldIndex);
 			sqlQueryBuf.append(fieldName);
 			sqlQueryBuf.append(" = :");
-			sqlQueryBuf.append(valParamPrefix);			
+			sqlQueryBuf.append(valParamPrefix);
 			sqlQueryBuf.append(fieldName);
 		}
 		sqlQueryBuf.append(" where ");
@@ -277,8 +277,8 @@ public class BasicDbService extends AbstractDbService {
 
 		final String critParamPrefix = "crit_";
 		final String valParamPrefix = "val_";
-		final String alias = tableName;
-		final String alias2 = tableName + "2";
+		final String tableAlias1 = tableName + "1";
+		final String tableAlias2 = tableName + "2";
 		Map<String, Object> renamedCritParamMap = criteriaParamMap.entrySet().stream()
 				.collect(Collectors.toMap(entry -> critParamPrefix + entry.getKey(), entry -> entry.getValue()));
 		Map<String, Object> renamedValParamMap = valueParamMap.entrySet().stream()
@@ -289,7 +289,7 @@ public class BasicDbService extends AbstractDbService {
 		sqlQueryBuf.append("update ");
 		sqlQueryBuf.append(tableName);
 		sqlQueryBuf.append(" ");
-		sqlQueryBuf.append(alias);
+		sqlQueryBuf.append(tableAlias1);
 		sqlQueryBuf.append(" set ");
 		for (int fieldIndex = 0; fieldIndex < valueFieldNames.size(); fieldIndex++) {
 			if (fieldIndex > 0) {
@@ -313,13 +313,13 @@ public class BasicDbService extends AbstractDbService {
 			sqlQueryBuf.append(fieldName);
 		}
 		sqlQueryBuf.append(" and not exists (select ");
-		sqlQueryBuf.append(alias2);
+		sqlQueryBuf.append(tableAlias2);
 		sqlQueryBuf.append(".id from ");
 		sqlQueryBuf.append(tableName);
 		sqlQueryBuf.append(" ");
-		sqlQueryBuf.append(alias2);
+		sqlQueryBuf.append(tableAlias2);
 		sqlQueryBuf.append(" where ");
-		sqlQueryBuf.append(alias2);
+		sqlQueryBuf.append(tableAlias2);
 		sqlQueryBuf.append(".");
 		for (int fieldIndex = 0; fieldIndex < valueFieldNames.size(); fieldIndex++) {
 			if (fieldIndex > 0) {
@@ -333,11 +333,11 @@ public class BasicDbService extends AbstractDbService {
 		}
 		for (String field : notExistsFields) {
 			sqlQueryBuf.append(" and ");
-			sqlQueryBuf.append(alias2);
+			sqlQueryBuf.append(tableAlias2);
 			sqlQueryBuf.append(".");
 			sqlQueryBuf.append(field);
 			sqlQueryBuf.append(" = ");
-			sqlQueryBuf.append(alias);
+			sqlQueryBuf.append(tableAlias1);
 			sqlQueryBuf.append(".");
 			sqlQueryBuf.append(field);
 		}
