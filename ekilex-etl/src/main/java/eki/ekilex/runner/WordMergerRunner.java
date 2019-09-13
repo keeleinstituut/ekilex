@@ -236,13 +236,9 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		criteriaParamMap.put("word_id", secondWordId);
 		valueParamMap = new HashMap<>();
 		valueParamMap.put("word_id", firstWordId);
-		basicDbService.update(WORD_WORD_TYPE, criteriaParamMap, valueParamMap);
-
-		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word_id", secondWordId);
-		valueParamMap = new HashMap<>();
-		valueParamMap.put("word_id", firstWordId);
-		basicDbService.update(WORD_WORD_TYPE, criteriaParamMap, valueParamMap);
+		List<String> notExistsFields = new ArrayList<>();
+		notExistsFields.add("word_type_code");
+		basicDbService.updateIfNotExists(WORD_WORD_TYPE, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", secondWordId);
@@ -283,6 +279,7 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 			boolean lexemeExists = firstWordLexeme != null;
 
 			if (lexemeExists) {
+				// TODO kas selline olukord tekib siin? või ainult liideses
 				boolean isOnlyLexemeForMeaning = isOnlyLexemeForMeaning(secondWordLexemeId);
 				deleteLexeme(secondWordLexemeId);
 				if (isOnlyLexemeForMeaning) {
