@@ -273,6 +273,84 @@ public class BasicDbService extends AbstractDbService {
 		jdbcTemplate.update(sqlQueryStr, paramMap);
 	}
 
+	public void updateIfNotExists(String tableName, Map<String, Object> criteriaParamMap, Map<String, Object> valueParamMap, List<String> notExistsFields) throws Exception {
+
+		final String critParamPrefix = "crit_";
+		final String valParamPrefix = "val_";
+		final String alias = tableName;
+		final String alias2 = tableName + "2";
+		Map<String, Object> renamedCritParamMap = criteriaParamMap.entrySet().stream()
+				.collect(Collectors.toMap(entry -> critParamPrefix + entry.getKey(), entry -> entry.getValue()));
+		Map<String, Object> renamedValParamMap = valueParamMap.entrySet().stream()
+				.collect(Collectors.toMap(entry -> valParamPrefix + entry.getKey(), entry -> entry.getValue()));
+		List<String> criteriaFieldNames = new ArrayList<>(criteriaParamMap.keySet());
+		List<String> valueFieldNames = new ArrayList<>(valueParamMap.keySet());
+		StringBuffer sqlQueryBuf = new StringBuffer();
+		sqlQueryBuf.append("update ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" ");
+		sqlQueryBuf.append(alias);
+		sqlQueryBuf.append(" set ");
+		for (int fieldIndex = 0; fieldIndex < valueFieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlQueryBuf.append(", ");
+			}
+			String fieldName = valueFieldNames.get(fieldIndex);
+			sqlQueryBuf.append(fieldName);
+			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(valParamPrefix);
+			sqlQueryBuf.append(fieldName);
+		}
+		sqlQueryBuf.append(" where ");
+		for (int fieldIndex = 0; fieldIndex < criteriaFieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlQueryBuf.append(" and ");
+			}
+			String fieldName = criteriaFieldNames.get(fieldIndex);
+			sqlQueryBuf.append(fieldName);
+			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(critParamPrefix);
+			sqlQueryBuf.append(fieldName);
+		}
+		sqlQueryBuf.append(" and not exists (select ");
+		sqlQueryBuf.append(alias2);
+		sqlQueryBuf.append(".id from ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" ");
+		sqlQueryBuf.append(alias2);
+		sqlQueryBuf.append(" where ");
+		sqlQueryBuf.append(alias2);
+		sqlQueryBuf.append(".");
+		for (int fieldIndex = 0; fieldIndex < valueFieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlQueryBuf.append(", ");
+			}
+			String fieldName = valueFieldNames.get(fieldIndex);
+			sqlQueryBuf.append(fieldName);
+			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(valParamPrefix);
+			sqlQueryBuf.append(fieldName);
+		}
+		for (String field : notExistsFields) {
+			sqlQueryBuf.append(" and ");
+			sqlQueryBuf.append(alias2);
+			sqlQueryBuf.append(".");
+			sqlQueryBuf.append(field);
+			sqlQueryBuf.append(" = ");
+			sqlQueryBuf.append(alias);
+			sqlQueryBuf.append(".");
+			sqlQueryBuf.append(field);
+		}
+		sqlQueryBuf.append(")");
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.putAll(renamedCritParamMap);
+		paramMap.putAll(renamedValParamMap);
+
+		String sqlQueryStr = sqlQueryBuf.toString();
+
+		jdbcTemplate.update(sqlQueryStr, paramMap);
+	}
+
 	public void delete(String tableName, Long id) {
 
 		String sqlQueryStr = "delete from " + tableName + " where id = :id";
