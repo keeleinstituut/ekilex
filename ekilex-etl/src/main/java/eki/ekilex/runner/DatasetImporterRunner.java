@@ -17,7 +17,12 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -56,8 +61,13 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			+ "from " + IMPORT_PK_MAP + " "
 			+ "where "
 			+ "import_code = :importCode "
-			+ "and table_name = :fkTableName "
-			+ "and source_pk = :fkValue";
+			+ "and table_name = :pkTableName "
+			+ "and source_pk = :pkValue";
+
+	private static final String EKI_LINK_TEXT_FRAGMENT = "<eki-link link-type='meaning_link'";
+
+	private static final String[] TABLE_NAMES_THAT_PREREQUISIT_PARENT_DATA = new String[] {
+			DEFINITION, LEXEME_RELATION, MEANING_RELATION, WORD_RELATION, WORD_ETYMOLOGY_RELATION};
 
 	@Autowired
 	private TransportService transportService;
@@ -72,8 +82,8 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		String importCode = CodeGenerator.generateUniqueId();
 		Context context = new Context(importCode, sourceDatasetCode, targetDatasetCode);
 
-		logger.debug("Starting import \"{}\" from \"{}\"", importCode, importFilePath);
-		logger.debug("Target dataset is \"{}\"", targetDatasetCode);
+		logger.info("Starting import \"{}\" from \"{}\"", importCode, importFilePath);
+		logger.info("Target dataset is \"{}\"", targetDatasetCode);
 
 		File zippedImportFile = new File(importFilePath);
 		ZipFile zipFile = new ZipFile(zippedImportFile);
@@ -91,15 +101,15 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			zipEntryStream = zipFile.getInputStream(zipEntry);
 			jsonInputStream = new BufferedInputStream(zipEntryStream);
 			String zipEntryName = zipEntry.getName();
-			logger.debug("Starting on file entry \"{}\"", zipEntryName);
+			logger.info("Starting on file entry \"{}\"", zipEntryName);
 			t1 = System.currentTimeMillis();
 			rootData = objectMapper.readValue(jsonInputStream, Object.class);
 			extractRoot(context, rootData);
 			t2 = System.currentTimeMillis();
 			long timeMillis = t2 - t1;
 			String timeLog = toReadableFormat(timeMillis);
-			logger.debug("File entry resolved at {}", timeLog);
-			logger.debug("Current record count {}, queue count {}", context.getCreatedRecordCount().getValue(), context.getUnresolvedRecordCount().getValue());
+			logger.info("File entry resolved at {}", timeLog);
+			logger.info("Current record count {}, queue count {}", context.getCreatedRecordCount().getValue(), context.getUnresolvedRecordCount().getValue());
 			jsonInputStream.close();
 			zipEntryStream.close();
 		}
@@ -107,11 +117,13 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 		resolveQueue(context);
 
-		logger.debug("In total created {} records", context.getCreatedRecordCount().getValue());
-		logger.debug("Recursively resolved {} records", context.getRecursivelyResolvedRecordCount().getValue());
-		logger.debug("Remaining unresolved {} records", context.getUnresolvedRecordCount().getValue());
+		logger.info("In total created {} records", context.getCreatedRecordCount().getValue());
+		logger.info("Recursively resolved {} records", context.getRecursivelyResolvedRecordCount().getValue());
+		logger.info("Remaining unresolved {} records", context.getUnresolvedRecordCount().getValue());
+		logger.info("Resolved {} meaning links", context.getResolvedMeaningLinkCount().getValue());
+		logger.info("Unresolved {} meaning links", context.getUnresolvedMeaningLinkCount().getValue());
 
-		logger.debug("Done with import");
+		logger.info("Done with import");
 	}
 
 	private void extractRoot(Context context, Object rootData) throws Exception {
@@ -149,9 +161,16 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 	private void saveTablesData(Context context, String tableName, Map<String, Object> dataMap, Long queueId) throws Exception {
 
-		if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
-			dataMap = compensateMissingFields(DATASET, dataMap);
+		List<String> supportedTableNames = transportService.getImportTableNames();
+		boolean forceToQueue = ArrayUtils.contains(TABLE_NAMES_THAT_PREREQUISIT_PARENT_DATA, tableName) && (queueId == null);
+		if (!supportedTableNames.contains(tableName)) {
+			return;
+		} else if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
+			dataMap = compensateFieldsAndData(context, DATASET, dataMap);
 			createDataset(context, dataMap);
+		} else if (forceToQueue) {
+			createQueue(context.getImportCode(), tableName, dataMap);
+			return;
 		} else {
 			handleCurrentData(context, tableName, dataMap, queueId);
 		}
@@ -179,11 +198,14 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 				if (MapUtils.isEmpty(truncDataMap)) {
 					targetId = basicDbService.create(tableName);
 				} else {
-					truncDataMap = compensateMissingFields(tableName, truncDataMap);
+					truncDataMap = compensateFieldsAndData(context, tableName, truncDataMap);
 					targetId = basicDbService.create(tableName, truncDataMap);
 				}
 				context.getCreatedRecordCount().increment();
-				createPkMap(importCode, tableName, sourceId, targetId);
+				List<Object> pkMapping = getPkMapping(importCode, tableName, sourceId);
+				if (CollectionUtils.isEmpty(pkMapping)) {
+					createPkMap(importCode, tableName, sourceId, targetId);
+				}
 			} else {
 				basicDbService.createWithoutId(tableName, truncDataMap);
 				context.getCreatedRecordCount().increment();
@@ -207,7 +229,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		if (CollectionUtils.isEmpty(referringForeignKeys)) {
 			return;
 		}
-		List<String> supportedTableNames = transportService.getSupportedTableNames();
+		List<String> supportedTableNames = transportService.getImportTableNames();
 		for (ForeignKey referringForeignKey : referringForeignKeys) {
 			String fkTableName = referringForeignKey.getFkTableName();
 			if (!supportedTableNames.contains(fkTableName)) {
@@ -237,25 +259,28 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 	private void resolveQueue(Context context) throws Exception {
 
+		
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("import_code", context.getImportCode());
 		List<Map<String, Object>> queueResults = basicDbService.selectAll(IMPORT_QUEUE, paramMap);
 		if (CollectionUtils.isEmpty(queueResults)) {
-			logger.debug("No leftovers");
+			logger.info("Clean import, no leftovers. Good!");
 			return;
 		}
-		int remainingUnresolvedRecordCount = queueResults.size();
-		List<String> unresolvedTableNames = queueResults.stream().map(rowMap -> rowMap.get("table_name").toString()).distinct().collect(Collectors.toList());
+		List<String> unresolvedTableNames = queueResults.stream().map(queueRow -> (String) queueRow.get("table_name")).distinct().collect(Collectors.toList());
+		List<Long> queueIds = queueResults.stream().map(queueRow -> (Long) queueRow.get("id")).sorted().collect(Collectors.toList());
+		String queueSignature = queueIds.toString();
+		int queueBatchSize = queueResults.size();
 
-		if (remainingUnresolvedRecordCount == context.getRecentUnresolvedRecordCount()) {
-			logger.debug("There are still {} records that could not be imported. Interrupting recursion", remainingUnresolvedRecordCount);
-			logger.debug("Remaining unimported data is in tables: {}", unresolvedTableNames);
+		if (StringUtils.equals(queueSignature, context.getRecentQueueSignature())) {
+			logger.info("There are still {} records that could not be imported. Interrupting recursion", queueBatchSize);
+			logger.info("Remaining unimported data is in tables: {}", unresolvedTableNames);
 			deleteTempData(context);
 			return;
 		}
-		logger.debug("Attempting to resolve {} queue records", remainingUnresolvedRecordCount);
-		logger.debug("Unresolved data is in tables: {}", unresolvedTableNames);
-		context.setRecentUnresolvedRecordCount(remainingUnresolvedRecordCount);
+		logger.info("Attempting to resolve {} queue batch", queueBatchSize);
+		logger.info("Queue data is in tables: {}", unresolvedTableNames);
+		context.setRecentQueueSignature(queueSignature);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		for (Map<String, Object> queueRow : queueResults) {
@@ -353,7 +378,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		if (MapUtils.isEmpty(fkColumnsMap)) {
 			fkReassignSuccess = true;
 		} else {
-			List<String> supportedTableNames = transportService.getSupportedTableNames();
+			List<String> supportedTableNames = transportService.getImportTableNames();
 			Map<String, Object> tempFkMap = new HashMap<>();
 			int fksCovered = 0;
 			for (TableColumn tableFkColumn : fkColumnsMap.values()) {
@@ -365,26 +390,22 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 					continue;
 				}
 				Object mappedPkValue = null;
-				if (StringUtils.equalsIgnoreCase(DATASET, fkTableName)) {
+				if (!supportedTableNames.contains(fkTableName)) {
+					mappedPkValue = columnValue;
+				} else if (StringUtils.equalsIgnoreCase(DATASET, fkTableName)) {
 					String columnValueStr = columnValue.toString();
 					if (StringUtils.equals(columnValueStr, sourceDatasetCode)) {
 						mappedPkValue = targetDatasetCode;
 					} else {
 						mappedPkValue = columnValue;
 					}
-				} else if (!supportedTableNames.contains(fkTableName)) {
-					mappedPkValue = columnValue;
 				} else {
-					Map<String, Object> paramMap = new HashMap<>();
-					paramMap.put("importCode", importCode);
-					paramMap.put("fkTableName", fkTableName);
-					paramMap.put("fkValue", columnValue);
-					List<Object> results = basicDbService.queryList(SQL_SELECT_MAPPED_PK, paramMap, Object.class);
-					if (CollectionUtils.isEmpty(results)) {
+					List<Object> pkMapping = getPkMapping(importCode, fkTableName, columnValue);
+					if (CollectionUtils.isEmpty(pkMapping)) {
 						missingReference = true;
 						break;
 					} else {
-						mappedPkValue = results.get(0);
+						mappedPkValue = pkMapping.get(0);
 					}
 				}
 				if (mappedPkValue != null) {
@@ -402,7 +423,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		return fkReassignResult;
 	}
 
-	private Map<String, Object> compensateMissingFields(String tableName, Map<String, Object> dataMap) {
+	private Map<String, Object> compensateFieldsAndData(Context context, String tableName, Map<String, Object> dataMap) {
 		Map<String, Object> dataMapCopy = new HashMap<>(dataMap);
 		if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
 			if (!dataMapCopy.containsKey("type")) {
@@ -412,8 +433,40 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			if (!dataMapCopy.containsKey("complexity")) {
 				dataMapCopy.put("complexity", LEXEME_COMPLEXITY_COMPENSATION);
 			}
+		} else if (StringUtils.equalsIgnoreCase(DEFINITION, tableName)) {
+			String definitionValuePrese = (String) dataMap.get("value_prese");
+			if (StringUtils.contains(definitionValuePrese, EKI_LINK_TEXT_FRAGMENT)) {
+				String importCode = context.getImportCode();
+				Document definitionValueDoc = Jsoup.parse(definitionValuePrese);
+				Elements ekiLinks = definitionValueDoc.select("eki-link[link-type='meaning_link']");
+				for (Element ekiLink : ekiLinks) {
+					String sourceLinkIdStr = ekiLink.attr("link-id");
+					Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
+					String targetLinkId;
+					List<Object> pkMapping = getPkMapping(importCode, MEANING.toLowerCase(), sourceLinkId);
+					if (CollectionUtils.isEmpty(pkMapping)) {
+						targetLinkId = sourceLinkIdStr;
+						context.getUnresolvedMeaningLinkCount().increment();
+					} else {
+						targetLinkId = pkMapping.get(0).toString();
+						context.getResolvedMeaningLinkCount().increment();
+					}
+					ekiLink.attr("link-id", targetLinkId);
+				}
+				definitionValuePrese = definitionValueDoc.html();
+				dataMapCopy.put("value_prese", definitionValuePrese);
+			}
 		}
 		return dataMapCopy;
+	}
+
+	private List<Object> getPkMapping(String importCode, String pkTableName, Object pkValue) {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("importCode", importCode);
+		paramMap.put("pkTableName", pkTableName);
+		paramMap.put("pkValue", pkValue);
+		List<Object> results = basicDbService.queryList(SQL_SELECT_MAPPED_PK, paramMap, Object.class);
+		return results;
 	}
 
 	private void createDataset(Context context, Map<String, Object> dataMap) throws Exception {
@@ -456,11 +509,11 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 		sql = "delete from " + IMPORT_PK_MAP + " where import_code = :importCode";
 		rowCount = basicDbService.executeScript(sql, paramMap);
-		logger.debug("Deleted {} rows from {}", rowCount, IMPORT_PK_MAP);
+		logger.info("Deleted {} rows from {}", rowCount, IMPORT_PK_MAP);
 
 		sql = "delete from " + IMPORT_QUEUE + " where import_code = :importCode";
 		rowCount = basicDbService.executeScript(sql, paramMap);
-		logger.debug("Deleted {} rows from {}", rowCount, IMPORT_QUEUE);
+		logger.info("Deleted {} rows from {}", rowCount, IMPORT_QUEUE);
 	}
 
 	/*
@@ -573,7 +626,11 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 		private Count unresolvedRecordCount;
 
-		private int recentUnresolvedRecordCount;
+		private Count resolvedMeaningLinkCount;
+
+		private Count unresolvedMeaningLinkCount;
+
+		private String recentQueueSignature;
 
 		public Context(String importCode, String sourceDatasetCode, String targetDatasetCode) {
 			this.importCode = importCode;
@@ -582,7 +639,9 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			this.createdRecordCount = new Count();
 			this.recursivelyResolvedRecordCount = new Count();
 			this.unresolvedRecordCount = new Count();
-			this.recentUnresolvedRecordCount = 0;
+			this.resolvedMeaningLinkCount = new Count();
+			this.unresolvedMeaningLinkCount = new Count();
+			this.recentQueueSignature = null;
 		}
 
 		public String getImportCode() {
@@ -609,12 +668,20 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			return unresolvedRecordCount;
 		}
 
-		public int getRecentUnresolvedRecordCount() {
-			return recentUnresolvedRecordCount;
+		public Count getResolvedMeaningLinkCount() {
+			return resolvedMeaningLinkCount;
 		}
 
-		public void setRecentUnresolvedRecordCount(int recentUnresolvedRecordCount) {
-			this.recentUnresolvedRecordCount = recentUnresolvedRecordCount;
+		public Count getUnresolvedMeaningLinkCount() {
+			return unresolvedMeaningLinkCount;
+		}
+
+		public void setRecentQueueSignature(String recentQueueSignature) {
+			this.recentQueueSignature = recentQueueSignature;
+		}
+
+		public String getRecentQueueSignature() {
+			return recentQueueSignature;
 		}
 	}
 }

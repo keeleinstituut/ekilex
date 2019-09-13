@@ -39,7 +39,9 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 
 	private DateFormat timestampFormat;
 
-	private List<String> supportedTableNames;
+	private List<String> exportTableNames;
+
+	private List<String> importTableNames;
 
 	private Map<String, Map<String, TableColumn>> tablesColumnsMapForExport;
 
@@ -67,26 +69,30 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 	@Transactional
 	public void initialize() throws Exception {
 
-		String[] supportedTableNamesArr = new String[] {
-				DATASET, FREEFORM, SOURCE,
+		String[] importTableNamesArr = new String[] {
+				DATASET, FREEFORM,
 				WORD, WORD_GUID, WORD_WORD_TYPE, WORD_ETYMOLOGY, WORD_ETYMOLOGY_RELATION, WORD_ETYMOLOGY_SOURCE_LINK, WORD_RELATION,
 				WORD_GROUP_MEMBER, WORD_GROUP, WORD_LIFECYCLE_LOG, WORD_PROCESS_LOG,
 				MEANING, MEANING_FREEFORM, MEANING_NR, MEANING_DOMAIN, MEANING_RELATION, MEANING_LIFECYCLE_LOG, MEANING_PROCESS_LOG,
 				LEXEME, LEXEME_FREEFORM, LEXEME_POS, LEXEME_DERIV, LEXEME_REGISTER, LEXEME_REGION, LEXEME_FREQUENCY, LEXEME_RELATION,
 				LEXEME_SOURCE_LINK, LEXEME_LIFECYCLE_LOG, LEXEME_PROCESS_LOG, LEX_COLLOC, LEX_COLLOC_POS_GROUP, LEX_COLLOC_REL_GROUP,
 				DEFINITION, DEFINITION_FREEFORM, DEFINITION_SOURCE_LINK, DEFINITION_DATASET,
-				COLLOCATION, COLLOCATION_FREEFORM, PARADIGM, FORM, FORM_FREQUENCY,
+				COLLOCATION, PARADIGM, FORM, FORM_FREQUENCY,
 				LIFECYCLE_LOG, PROCESS_LOG, PROCESS_LOG_SOURCE_LINK,
-				FREEFORM_SOURCE_LINK, SOURCE_FREEFORM};
-		supportedTableNamesArr = toLowerCase(supportedTableNamesArr);
-		this.supportedTableNames = Arrays.asList(supportedTableNamesArr);
+				FREEFORM_SOURCE_LINK};
+
+		importTableNamesArr = toLowerCase(importTableNamesArr);
+		this.importTableNames = Arrays.asList(importTableNamesArr);
+		this.exportTableNames = new ArrayList<>(importTableNames);
+		this.exportTableNames.add(SOURCE.toLowerCase());
+		this.exportTableNames.add(SOURCE_FREEFORM.toLowerCase());
 
 		Map<String, Object> paramMap = new HashMap<>();
 
 		paramMap.clear();
 		paramMap.put("constraintTypePk", "PRIMARY KEY");
 		paramMap.put("constraintTypeFk", "FOREIGN KEY");
-		paramMap.put("tableNames", supportedTableNames);
+		paramMap.put("tableNames", exportTableNames);
 		List<TableColumn> allTablesColumns = basicDbService.getResults(sqlSelectTablesColumns, paramMap, new TableColumnRowMapper());
 
 		// use composeFullTableColumnName(TABLE_NAME, "column_name") when necessary
@@ -100,7 +106,7 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		paramMap.clear();
 		paramMap.put("constraintTypeFk", "FOREIGN KEY");
 		paramMap.put("ignoreFks", Arrays.asList(ignoreForeignKeys));
-		paramMap.put("tableNames", supportedTableNames);
+		paramMap.put("tableNames", exportTableNames);
 		List<ForeignKey> allForeignKeys = basicDbService.getResults(sqlSelectTablesForeignKeys, paramMap, new ForeignKeyRowMapper());
 		this.referringForeignKeysMap = mapTablesForeignKeys(allForeignKeys);
 
@@ -116,8 +122,12 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		return new Timestamp(timestampMs);
 	}
 
-	public List<String> getSupportedTableNames() {
-		return supportedTableNames;
+	public List<String> getExportTableNames() {
+		return exportTableNames;
+	}
+
+	public List<String> getImportTableNames() {
+		return importTableNames;
 	}
 
 	public Map<String, Map<String, TableColumn>> getTablesColumnsMapForExport() {

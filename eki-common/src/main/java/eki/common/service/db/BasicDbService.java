@@ -85,6 +85,20 @@ public class BasicDbService extends AbstractDbService {
 		return result;
 	}
 
+	public List<Map<String, Object>> selectAll(String tableName, Map<String, Object> paramMap, int limit) throws Exception {
+
+		String sqlQueryStr = parseSelectSql(tableName, paramMap);
+		sqlQueryStr = sqlQueryStr + " limit " + limit;
+
+		List<Map<String, Object>> result;
+		try {
+			result = jdbcTemplate.queryForList(sqlQueryStr, paramMap);
+		} catch (EmptyResultDataAccessException e) {
+			result = Collections.emptyList();
+		}
+		return result;
+	}
+
 	private String parseSelectSql(String tableName, Map<String, Object> paramMap) {
 		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
 		StringBuffer sqlScriptBuf = new StringBuffer();

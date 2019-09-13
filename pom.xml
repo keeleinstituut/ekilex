@@ -179,6 +179,12 @@
 				<artifactId>javax.el</artifactId>
 				<version>3.0.0</version>
 			</dependency>
+			<!-- html parsing -->
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>1.12.1</version>
+			</dependency>
 			<!-- mail -->
 			<dependency>
 				<groupId>javax.mail</groupId>

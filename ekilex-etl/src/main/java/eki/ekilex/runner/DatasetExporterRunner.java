@@ -66,6 +66,19 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 			+ "where l.word_id = p.word_id and l.dataset_code = :datasetCode) "
 			+ "order by p.id";
 
+	private static final String SQL_SELECT_COLLOCATIONS_FOR_DATASET =
+			"select c.* from " + COLLOCATION + " c "
+			+ "where exists ("
+			+ "select l.id "
+			+ "from "
+			+ LEXEME + " l, "
+			+ LEX_COLLOC + " lc "
+			+ "where "
+			+ "lc.collocation_id = c.id "
+			+ "and lc.lexeme_id = l.id "
+			+ "and l.dataset_code = :datasetCode) "
+			+ "order by c.id";
+
 	private static final String SQL_SELECT_LEXEMES_FOR_DATASET =
 			"select l.* from " + LEXEME + " l where l.dataset_code = :datasetCode "
 			+ "order by l.id";
@@ -100,6 +113,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		rootTables.add(WORD.toLowerCase());
 		rootTables.add(PARADIGM.toLowerCase());
 		rootTables.add(MEANING.toLowerCase());
+		rootTables.add(COLLOCATION.toLowerCase());
 		rootTables.add(LEXEME.toLowerCase());
 
 		tablesHierarchyPaths = new HashSet<String>();
@@ -148,6 +162,8 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_FREEFORM, FREEFORM));
 
+		tablesHierarchyPaths.add(composePath(COLLOCATION));
+
 		tablesHierarchyPaths.add(composePath(LEXEME));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_POS));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_DERIV));
@@ -170,13 +186,12 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP, LEX_COLLOC_REL_GROUP));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC));
-		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC, COLLOCATION));
 	}
 
 	@Transactional
 	public void execute(String datasetCode, String exportFolder) throws Exception {
 
-		logger.debug("Starting dataset \"{}\" export...", datasetCode);
+		logger.info("Starting dataset \"{}\" export...", datasetCode);
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -210,6 +225,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 				continue;
 			}
 			exportEntryName = rootTableName + ".json";
+			logger.info("Starting on file entry \"{}\"", exportEntryName);
 			zipEntry = new ZipEntry(exportEntryName);
 			jsonZipOutputStream.putNextEntry(zipEntry);
 			jsonGenerator.writeStartObject();
@@ -236,9 +252,9 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		long timeMillis = t2 - t1;
 		String timeLog = toReadableFormat(timeMillis);
 
-		logger.debug("Total exported record count {}", totalRecordCount.getValue());
+		logger.info("Total exported record count {}", totalRecordCount.getValue());
 
-		logger.debug("Dataset \"{}\" export completed at {}", datasetCode, timeLog);
+		logger.info("Dataset \"{}\" export completed at {}", datasetCode, timeLog);
 	}
 
 	private void appendToRoot(String tableName, Map<String, Object> tableRow, JsonGenerator jsonGenerator) throws IOException, Exception {
@@ -283,7 +299,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		if (!desiredPaths.contains(currentPath)) {
 			return;
 		}
-		List<String> supportedTableNames = transportService.getSupportedTableNames();
+		List<String> supportedTableNames = transportService.getExportTableNames();
 		if (!supportedTableNames.contains(tableName)) {
 			logger.error("Export of this table is not supported: \"{}\"", tableName);
 			return;
@@ -356,6 +372,8 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 			sql = SQL_SELECT_PARADIGMS_FOR_DATASET;
 		} else if (StringUtils.equalsIgnoreCase(MEANING, tableName)) {
 			sql = SQL_SELECT_MEANINGS_FOR_DATASET;
+		} else if (StringUtils.equalsIgnoreCase(COLLOCATION, tableName)) {
+			sql = SQL_SELECT_COLLOCATIONS_FOR_DATASET;
 		} else if (StringUtils.equalsIgnoreCase(LEXEME, tableName)) {
 			sql = SQL_SELECT_LEXEMES_FOR_DATASET;
 		} else {
