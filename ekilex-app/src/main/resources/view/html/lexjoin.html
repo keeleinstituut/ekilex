@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(~{::title},_)">
-  <title th:text="#{lexeme.join.title}">EKILEX tähenduste ühendamine</title>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{lexeme.join.title}">EKILEX tähenduste ühendamine</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-lexjoin.js}"></script>
+</th:block>
 </head>
 <body class="body-with-navbar">
 
@@ -10,7 +13,7 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary text-light" th:href="@{'/lexback/' + ${sourceLexeme.lexemeId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary text-light" th:href="@{'/lexback/' + ${targetLexeme.lexemeId}}">Tagasi</a>
       </p>
     </div>
 
@@ -21,7 +24,7 @@
 
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
-          <th:block th:replace=":: lexeme_details(${sourceLexeme}, ${sourceLexeme})"></th:block>
+          <th:block th:replace=":: lexeme_details(${targetLexeme}, ${targetLexeme})"></th:block>
         </div>
       </div>
 
@@ -36,7 +39,7 @@
 
       <th:block th:if="${#lists.isEmpty(validationMessages)}">
         <div class="card-body">
-          <form th:action="@{'/lexjoin/' + ${sourceLexeme.lexemeId}}" method="post">
+          <form th:action="@{'/lexjoin/' + ${targetLexeme.lexemeId}}" method="post">
             <div class="form-row" name="searchFilter">
               <div class="col-12">
                 <div class="form-group row">
@@ -53,48 +56,64 @@
           </form>
         </div>
 
-        <div class="card-body" th:if="${#lists.isEmpty(lexemes) && (searchFilter != null)}">
+        <div class="card-body" th:if="${#lists.isEmpty(sourceLexemes) && (searchFilter != null)}">
           <span th:text="#{lexjoin.not.found}">Not found.</span>
         </div>
 
-        <div class="card-body" th:if="${not #lists.isEmpty(lexemes)}">
-          <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="lexeme : ${lexemes}">
-            <th:block th:replace=":: lexeme_details(${lexeme}, ${sourceLexeme})"></th:block>
-          </div>
+        <div class="card-body" th:if="${not #lists.isEmpty(sourceLexemes)}">
+          <form th:action="@{/lexjoin}" method="post">
+            <input type="hidden" name="targetLexemeId" th:value="${targetLexeme.lexemeId}">
+            <div class="row mb-4">
+              <div class="col">
+                <button type="button" class="btn btn-primary" id="joinLexemesBtn"
+                        data-toggle="join-confirm"
+                        data-placement="right"
+                        disabled>Ühenda valitud tähendused
+                </button>
+              </div>
+            </div>
+            <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="sourceLexeme : ${sourceLexemes}">
+              <th:block th:replace=":: lexeme_details(${sourceLexeme}, ${targetLexeme})"></th:block>
+            </div>
+          </form>
         </div>
       </th:block>
-
     </div>
-
   </div>
 
-  <th:block th:fragment="lexeme_details(lexeme, lexemeToJoin)" th:if="${lexeme != null}">
-    <div>
-      <span>
-        <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-          <span th:text="${word}"></span>
-          <span th:unless="${wordIter.last}">,&nbsp;</span>
+  <th:block th:fragment="lexeme_details(lexeme, targetLexeme)"
+            th:if="${lexeme != null}"
+            th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
+    <div class="row">
+      <div class="col col-w2rem">
+        <input name="sourceLexemeIds" type="checkbox" class="mt-2"
+               th:value="${lexeme.lexemeId}"
+               th:if="${lexeme.meaningId != targetLexeme.meaningId}"
+               sec:authorize="${#vars.isMeaningCrudGranted}"/>
+        <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetLexeme.meaningId}" checked="checked" th:disabled="true"/>
+      </div>
+      <div class="col">
+        <span>
+          <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
+            <span th:text="${word}"></span>
+            <span th:unless="${wordIter.last}">,&nbsp;</span>
+          </span>
+          &nbsp;
         </span>
-        &nbsp;
-      </span>
-      <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-        <span class="pt-0">
-          <span th:text="${meaningWord.value}"></span>
-          <span th:text="${meaningWord.homonymNumber}"></span>
-          <span th:text="${'( ' + iso2languages[meaningWord.language] + ' )'}"></span>
+        <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+          <span class="pt-0">
+            <span th:text="${meaningWord.value}"></span>
+            <span th:text="${meaningWord.homonymNumber}"></span>
+            <span th:text="${'( ' + iso2languages[meaningWord.language] + ' )'}"></span>
+          </span>
+          <span th:unless="${meaningWordIter.last}">|</span>
         </span>
-        <span th:unless="${meaningWordIter.last}">|</span>
-      </span>
-      <span th:if="${lexeme.levels != null}">
-        <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
-      </span>
-      <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
-      <a class="btn btn-primary"
-         data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite tähendused ühendada ?" data-btn-ok-label="Jah" data-btn-cancel-label="Ei"
-         th:href="@{'/lexjoin/' + ${lexemeToJoin.lexemeId}} + '/' + ${lexeme.lexemeId}"
-         th:if="${lexeme.meaningId != lexemeToJoin.meaningId}"
-        >Ühenda</a>
-      <b th:text="${lexeme.dataset}" class="float-right"></b>
+        <span th:if="${lexeme.levels != null}">
+          <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
+        </span>
+        <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
+        <b th:text="${lexeme.dataset}" class="float-right"></b>
+      </div>
     </div>
     <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
       <hr />
@@ -136,7 +155,7 @@
         </tr>
         <tr th:each="usageTranslation : ${usage.translations}">
           <td>
-            <span th:text="${usageTranslation.value}"></span>
+            <span th:utext="${usageTranslation.value}"></span>
           </td>
         </tr>
         <tr th:each="usageDefinition : ${usage.definitions}">
@@ -149,7 +168,15 @@
   </th:block>
 
   <script th:inline="javascript">
-    $('[data-toggle="confirmation"]').confirmation()
+	  initialise();
+	  $('[data-toggle=join-confirm]').confirmation({
+		  btnOkLabel: 'Jah',
+		  btnCancelLabel: 'Ei',
+		  title: 'Kas olete kindel, et soovite tähendused ühendada?',
+		  onConfirm: function() {
+			  $(this).closest('form').submit();
+		  }
+	  });
   </script>
 </body>
 </html>

@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -37,7 +38,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
 
 	@Transactional
-	public List<WordLexeme> getWordLexemesWithMinimalData(String searchWord, List<String> selectedDatasetCodes) {
+	public List<WordLexeme> getWordLexemesWithMinimalData(String searchWord, List<String> selectedDatasetCodes, Optional<Integer> wordHomonymNumber, Long excludedMeaningId) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
@@ -47,7 +48,13 @@ public class LexSearchService extends AbstractWordSearchService {
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {
+					if (wordHomonymNumber.isPresent()) {
+						if (!word.getHomonymNumber().equals(wordHomonymNumber.get())) {
+							continue;
+						}
+					}
 					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);
+					wordLexemes.removeIf(lex -> lex.getMeaningId().equals(excludedMeaningId));
 					wordLexemes.forEach(lexeme -> {
 						Long lexemeId = lexeme.getLexemeId();
 						Long meaningId = lexeme.getMeaningId();

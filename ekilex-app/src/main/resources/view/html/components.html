@@ -15,7 +15,7 @@
                   <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
                   <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
                 </div>
-                <input name="selectedIds" type="checkbox" class="float-right mt-2 mr-2" th:value="${word.wordId}"/>
+                <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${word.wordId}"/>
                 <div class="ml-3 mb-2" style="margin-top: -6px;">
                   <small>
                     <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
@@ -55,7 +55,7 @@
                     </span>
                     <span th:unless="${meaningWordIter.last}">|</span>
                   </th:block>
-                  <input name="selectedIds" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.lexemeId}"/>
+                  <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.lexemeId}"/>
                   <small th:if="${lexeme.levels != null}" th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
@@ -89,7 +89,7 @@
                           th:text="${meaningWord.value + ' ' + meaningWord.homonymNumber + ' ( ' + iso2languages[meaningWord.language] + ' )'}"> </span>
                     <span th:unless="${meaningWordIter.last}">|</span>
                   </th:block>
-                  <input name="selectedIds" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.meaningId}"/>
+                  <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.meaningId}"/>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
                   <span th:text="${lexeme.definitions.get(0).value}"></span>

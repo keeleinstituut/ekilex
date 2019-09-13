@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="common :: common_header(~{::title},_)">
-  <title th:text="#{meaning.join.title}">EKILEX tähenduste ühendamine</title>
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{meaning.join.title}">EKILEX tähenduste ühendamine</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-meaningjoin.js}"></script>
+</th:block>
 </head>
 <body class="body-with-navbar">
 
@@ -10,7 +13,7 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary text-light" th:href="@{'/meaningback/' + ${meaningId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary text-light" th:href="@{'/meaningback/' + ${targetMeaningId}}">Tagasi</a>
       </p>
     </div>
 
@@ -21,7 +24,7 @@
 
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
-          <th:block th:replace=":: meaning_deatails(${sourceLexeme}, ${meaningId})"></th:block>
+          <th:block th:replace=":: meaning_details(${targetMeaningLexeme}, ${targetMeaningId})"></th:block>
         </div>
       </div>
 
@@ -36,7 +39,7 @@
 
       <th:block th:if="${#lists.isEmpty(validationMessages)}">
         <div class="card-body">
-          <form th:action="@{'/meaningjoin/' + ${meaningId}}" method="post">
+          <form th:action="@{'/meaningjoin/' + ${targetMeaningId}}" method="post">
             <div class="form-row" name="searchFilter">
               <div class="col-12">
                 <div class="form-group row">
@@ -53,48 +56,61 @@
           </form>
         </div>
 
-        <div class="card-body" th:if="${(searchFilter != null) && #lists.isEmpty(meaningLexemes)}">
+        <div class="card-body" th:if="${(searchFilter != null) && #lists.isEmpty(sourceMeaningLexemes)}">
           <span th:text="#{lexjoin.not.found}">Not found.</span>
         </div>
 
-        <div class="card-body" th:if="${not #lists.isEmpty(meaningLexemes)}">
-          <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="lexeme : ${meaningLexemes}">
-            <th:block th:replace=":: meaning_deatails(${lexeme}, ${meaningId})"></th:block>
-          </div>
+        <div class="card-body" th:if="${not #lists.isEmpty(sourceMeaningLexemes)}">
+          <form th:action="@{/meaningjoin}" method="post">
+            <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
+            <div class="row mb-4">
+              <div class="col">
+                <button type="button" class="btn btn-primary" id="joinMeaningsBtn"
+                        data-toggle="join-confirm"
+                        data-placement="right" disabled>Ühenda valitud tähendused
+                </button>
+              </div>
+            </div>
+            <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="sourceMeaningLexeme : ${sourceMeaningLexemes}">
+              <th:block th:replace=":: meaning_details(${sourceMeaningLexeme}, ${targetMeaningId})"></th:block>
+            </div>
+          </form>
         </div>
       </th:block>
-
     </div>
-
   </div>
 
-  <th:block th:fragment="meaning_deatails(lexeme, meaningId)"
+  <th:block th:fragment="meaning_details(lexeme, targetMeaningId)"
             th:if="${lexeme != null}"
             th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
-    <div>
-      <span>
-        <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-          <span th:text="${word}"></span>
-          <span th:unless="${wordIter.last}">,</span>
+    <div class="row">
+      <div class="col col-w2rem">
+        <input name="sourceMeaningIds" type="checkbox" class="mt-2"
+               th:value="${lexeme.meaningId}"
+               th:if="${lexeme.meaningId != targetMeaningId}"
+               sec:authorize="${#vars.isMeaningCrudGranted}"/>
+        <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetMeaningId}" checked="checked" th:disabled="true"/>
+      </div>
+      <div class="col">
+        <span>
+          <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
+            <span th:text="${word}"></span>
+            <span th:unless="${wordIter.last}">,</span>
+          </span>
         </span>
-      </span>
-      <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-        <span class="pt-0">
-          <span th:text="${meaningWord.value}"></span>
-          <span th:text="${meaningWord.homonymNumber}"></span>
-          <span th:text="${'( ' + iso2languages[meaningWord.language] + ' )'}"></span>
+        <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+          <span class="pt-0">
+            <span th:text="${meaningWord.value}"></span>
+            <span th:text="${meaningWord.homonymNumber}"></span>
+            <span th:text="${'( ' + iso2languages[meaningWord.language] + ' )'}"></span>
+          </span>
+          <span th:unless="${meaningWordIter.last}">|</span>
         </span>
-        <span th:unless="${meaningWordIter.last}">|</span>
-      </span>
-      <span th:if="${lexeme.levels != null}">
-        <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
-      </span>
-      <a class="btn btn-primary"
-         data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite tähendused ühendada ?" data-btn-ok-label="Jah" data-btn-cancel-label="Ei"
-         th:href="@{'/meaningjoin/' + ${meaningId} + '/' + ${lexeme.meaningId}}"
-         th:if="${lexeme.meaningId != meaningId}"
-         sec:authorize="${#vars.isMeaningCrudGranted}">Ühenda</a>
-      <b th:text="${lexeme.dataset}" class="float-right"></b>
+        <span th:if="${lexeme.levels != null}">
+          <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
+        </span>
+        <b th:text="${lexeme.dataset}" class="float-right"></b>
+      </div>
     </div>
     <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
       <hr />
@@ -108,7 +124,15 @@
   </th:block>
 
   <script th:inline="javascript">
-    $('[data-toggle="confirmation"]').confirmation()
+	  initialise();
+	  $('[data-toggle=join-confirm]').confirmation({
+		  btnOkLabel: 'Jah',
+		  btnCancelLabel: 'Ei',
+		  title: 'Kas olete kindel, et soovite tähendused ühendada?',
+		  onConfirm: function() {
+			  $(this).closest('form').submit();
+		  }
+	  });
   </script>
 </body>
 </html>

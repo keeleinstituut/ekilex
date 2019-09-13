@@ -279,7 +279,6 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 			boolean lexemeExists = firstWordLexeme != null;
 
 			if (lexemeExists) {
-				// TODO kas selline olukord tekib siin? või ainult liideses
 				boolean isOnlyLexemeForMeaning = isOnlyLexemeForMeaning(secondWordLexemeId);
 				deleteLexeme(secondWordLexemeId);
 				if (isOnlyLexemeForMeaning) {

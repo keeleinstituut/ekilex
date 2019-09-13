@@ -5,16 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -47,39 +48,41 @@ public class TermEditController extends AbstractPageController {
 	@Autowired
 	private CompositionService compositionService;
 
-	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
-	public String show(@PathVariable("meaningId") Long meaningId, Model model) {
+	@RequestMapping(MEANING_JOIN_URI + "/{targetMeaningId}")
+	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
 
 		List<String> datasets = getUserPreferredDatasetsCodes();
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, datasets);
-		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
-		model.addAttribute("searchFilter", null);
-		model.addAttribute("meaningId", meaningId);
+		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(targetMeaningId, datasets);
+		WordLexeme targetMeaningLexeme = commonDataService.getWordLexeme(meaningFirstLexemeId);
+		String targetLexemeWord = targetMeaningLexeme.getWords()[0];
+		if (searchFilter == null) {
+			searchFilter = targetLexemeWord;
+		}
 
-		return MEANING_JOIN_PAGE;
-	}
+		Optional<Integer> wordHomonymNumber;
+		if (StringUtils.equals(searchFilter, targetLexemeWord)) {
+			Integer sourceHomonymNumber = targetMeaningLexeme.getWordHomonymNumber();
+			wordHomonymNumber = Optional.of(sourceHomonymNumber);
+		} else {
+			wordHomonymNumber = Optional.empty();
+		}
 
-	@PostMapping(MEANING_JOIN_URI + "/{meaningId}")
-	public String search(@PathVariable("meaningId") Long meaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
-
-		List<String> datasets = getUserPreferredDatasetsCodes();
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, datasets);
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets);
-		model.addAttribute("sourceLexeme", commonDataService.getWordLexeme(meaningFirstLexemeId));
+		List<WordLexeme> sourceMeaningLexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets, wordHomonymNumber, targetMeaningId);
 		model.addAttribute("searchFilter", searchFilter);
-		model.addAttribute("meaningId", meaningId);
-		model.addAttribute("meaningLexemes", lexemes);
+		model.addAttribute("targetMeaningId", targetMeaningId);
+		model.addAttribute("targetMeaningLexeme", targetMeaningLexeme);
+		model.addAttribute("sourceMeaningLexemes", sourceMeaningLexemes);
 
 		return MEANING_JOIN_PAGE;
 	}
 
-	@GetMapping(MEANING_JOIN_URI + "/{meaningId}/{meaningId2}")
-	public String join(@PathVariable("meaningId") Long meaningId, @PathVariable("meaningId2") Long sourceMeaningId) {
+	@PostMapping(MEANING_JOIN_URI)
+	public String join(@RequestParam("targetMeaningId") Long targetMeaningId, @RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds) {
 
-		compositionService.joinMeanings(meaningId, sourceMeaningId);
+		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds);
 
 		List<String> datasets = getUserPreferredDatasetsCodes();
-		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
+		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, datasets);
 		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
 
 		return "redirect:" + TERM_SEARCH_URI + searchUri;

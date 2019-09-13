@@ -384,8 +384,9 @@ function initMultiselectRelationDlg(dlg) {
 			dlg.find('[data-name=dialogContent]').replaceWith(data);
 			let addRelationsBtn = dlg.find('button[name="addRelationsBtn"]');
 
-			dlg.find('input[name="selectedIds"]').on('change', function() {
-				addRelationsBtn.prop('disabled', !$('input[name="selectedIds"]:checked').length);
+			let idsChk = dlg.find('input[name="ids"]');
+			idsChk.on('change', function() {
+				addRelationsBtn.prop('disabled', !idsChk.filter(":checked").length);
 			});
 
 			addRelationsBtn.off('click').on('click', function(e) {
