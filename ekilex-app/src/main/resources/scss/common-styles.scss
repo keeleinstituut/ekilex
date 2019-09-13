@@ -205,14 +205,19 @@ input:checked+.slider:before {
 	margin-top: 0.2rem;
 }
 
-.col-w13rem {
-	flex: 0 0 13rem;
-	max-width: 13rem;
+.col-w2rem {
+	flex: 0 0 2rem;
+	max-width: 2rem;
 }
 
 .col-w7rem {
 	flex: 0 0 7rem;
 	max-width: 7rem;
+}
+
+.col-w13rem {
+	flex: 0 0 13rem;
+	max-width: 13rem;
 }
 
 .row > hr {

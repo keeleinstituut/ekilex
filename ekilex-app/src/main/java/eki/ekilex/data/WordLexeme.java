@@ -26,6 +26,9 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 	@Column(name = "word_id")
 	private Long wordId;
 
+	@Column(name = "word_homonym_number")
+	private Integer wordHomonymNumber;
+
 	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
@@ -151,6 +154,14 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public Integer getWordHomonymNumber() {
+		return wordHomonymNumber;
+	}
+
+	public void setWordHomonymNumber(Integer wordHomonymNumber) {
+		this.wordHomonymNumber = wordHomonymNumber;
 	}
 
 	public Long getLexemeId() {

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -43,39 +46,39 @@ public class LexEditController extends AbstractPageController {
 	@Autowired
 	private CompositionService compositionService;
 
-	@GetMapping("/lexjoin/{lexemeId}")
-	public String show(@PathVariable("lexemeId") Long lexemeId, Model model) {
+	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
+	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
 
-		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
-		String defaultSearchFilter = lexeme.getWords()[0];
 		List<String> datasets = getUserPreferredDatasetsCodes();
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(defaultSearchFilter, datasets);
-		model.addAttribute("sourceLexeme", lexeme);
-		model.addAttribute("searchFilter", defaultSearchFilter);
-		model.addAttribute("lexemes", lexemes);
+		WordLexeme targetLexeme = commonDataService.getWordLexeme(targetLexemeId);
+		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
+		String targetLexemeWord = targetLexeme.getWords()[0];
+		if (searchFilter == null) {
+			searchFilter = targetLexemeWord;
+		}
 
-		return LEX_JOIN_PAGE;
-	}
+		Optional<Integer> wordHomonymNumber;
+		if (StringUtils.equals(searchFilter, targetLexemeWord)) {
+			Integer sourceHomonymNumber = targetLexeme.getWordHomonymNumber();
+			wordHomonymNumber = Optional.of(sourceHomonymNumber);
+		} else {
+			wordHomonymNumber = Optional.empty();
+		}
 
-	@PostMapping("/lexjoin/{lexemeId}")
-	public String search(@PathVariable("lexemeId") Long lexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
-
-		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
-		List<String> datasets = getUserPreferredDatasetsCodes();
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets);
-		model.addAttribute("sourceLexeme", lexeme);
+		List<WordLexeme> sourceLexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets, wordHomonymNumber, sourceLexemeMeaningId);
+		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);
-		model.addAttribute("lexemes", lexemes);
+		model.addAttribute("sourceLexemes", sourceLexemes);
 
 		return LEX_JOIN_PAGE;
 	}
 
-	@GetMapping("/lexjoin/{lexemeId}/{lexemeId2}")
-	public String join(@PathVariable("lexemeId") Long lexemeId, @PathVariable("lexemeId2") Long lexemeId2) {
+	@PostMapping(LEX_JOIN_URI)
+	public String join(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds) {
 
-		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
-		compositionService.joinLexemes(lexemeId, lexemeId2);
+		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds);
 
+		WordLexeme lexeme = commonDataService.getWordLexeme(targetLexemeId);
 		List<String> datasets = getUserPreferredDatasetsCodes();
 		String firstWordValue = lexeme.getWords()[0];
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);

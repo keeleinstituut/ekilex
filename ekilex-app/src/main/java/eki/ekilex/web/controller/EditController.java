@@ -639,11 +639,10 @@ public class EditController extends AbstractPageController implements SystemCons
 	}
 
 	@PostMapping(WORD_JOIN_URI)
-	public String joinWords(@RequestParam("firstWordId") Long firstWordId, @RequestParam("secondWordId") Long secondWordId,
+	public String joinWords(@RequestParam("targetWordId") Long targetWordId, @RequestParam("sourceWordIds") List<Long> sourceWordIds,
 			@RequestParam("backUrl") String backUrl) {
 
-		logger.debug("Joining words, firstWordId: \"{}\", secondWordId: \"{}\"", firstWordId, secondWordId);
-		compositionService.joinWords(firstWordId, secondWordId);
+		compositionService.joinWords(targetWordId, sourceWordIds);
 		return "redirect:" + backUrl;
 	}
 
@@ -653,7 +652,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			@RequestParam("opCode") String opCode,
 			@RequestParam("relationType") String relationType,
 			@RequestParam("id1") Long id1,
-			@RequestParam(name = "selectedIds", required = false) List<Long> ids) {
+			@RequestParam("ids") List<Long> ids) {
 
 		for (Long id2 : ids) {
 			switch (opCode) {

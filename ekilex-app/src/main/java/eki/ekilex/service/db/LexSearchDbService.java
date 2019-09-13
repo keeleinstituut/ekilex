@@ -476,6 +476,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
 				WORD.GENDER_CODE,
 				WORD.ASPECT_CODE.as("word_aspect_code"),
+				WORD.HOMONYM_NR.as("word_homonym_number"),
 				LEXEME.ID.as("lexeme_id"),
 				LEXEME.MEANING_ID,
 				LEXEME.DATASET_CODE.as("dataset"),

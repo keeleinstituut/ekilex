@@ -68,6 +68,8 @@ public interface WebConstant {
 
 	String WW_FEEDBACK_PAGE = "wwfeedback";
 
+	String LEX_JOIN_URI = "/lexjoin";
+
 	String LEX_JOIN_PAGE = "lexjoin";
 
 	String MEANING_JOIN_URI = "/meaningjoin";
