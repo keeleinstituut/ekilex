@@ -212,13 +212,11 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			}
 			if (queueExists) {
 				deleteQueue(queueId);
-				context.getUnresolvedRecordCount().decrement();
 				context.getRecursivelyResolvedRecordCount().increment();
 			}
 		} else if (fkReassignResult.isMissingReference()) {
 			if (!queueExists) {
 				createQueue(importCode, tableName, dataMap);
-				context.getUnresolvedRecordCount().increment();
 			}
 		}
 	}
@@ -259,12 +257,12 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 	private void resolveQueue(Context context) throws Exception {
 
-		
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("import_code", context.getImportCode());
 		List<Map<String, Object>> queueResults = basicDbService.selectAll(IMPORT_QUEUE, paramMap);
 		if (CollectionUtils.isEmpty(queueResults)) {
 			logger.info("Clean import, no leftovers. Good!");
+			deleteCurrentPkMap(context);
 			return;
 		}
 		List<String> unresolvedTableNames = queueResults.stream().map(queueRow -> (String) queueRow.get("table_name")).distinct().collect(Collectors.toList());
@@ -275,7 +273,8 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		if (StringUtils.equals(queueSignature, context.getRecentQueueSignature())) {
 			logger.info("There are still {} records that could not be imported. Interrupting recursion", queueBatchSize);
 			logger.info("Remaining unimported data is in tables: {}", unresolvedTableNames);
-			deleteTempData(context);
+			deleteCurrentPkMap(context);
+			deleteCurrentQueue(context);
 			return;
 		}
 		logger.info("Attempting to resolve {} queue batch", queueBatchSize);
@@ -283,12 +282,24 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		context.setRecentQueueSignature(queueSignature);
 
 		ObjectMapper objectMapper = new ObjectMapper();
+
+		long queueRowCounter = 0;
+		long progressIndicator = queueBatchSize / Math.min(queueBatchSize, 100);
+
 		for (Map<String, Object> queueRow : queueResults) {
+
 			Long queueId = (Long) queueRow.get("id");
 			String tableName = (String) queueRow.get("table_name");
 			String content = (String) queueRow.get("content");
 			Object data = objectMapper.readValue(content, Object.class);
 			extractTablesData(context, tableName, data, queueId);
+
+			// progress
+			queueRowCounter++;
+			if (queueRowCounter % progressIndicator == 0) {
+				long progressPercent = queueRowCounter / progressIndicator;
+				logger.debug("{}% - {} queue rows iterated", progressPercent, queueRowCounter);
+			}
 		}
 
 		resolveQueue(context);
@@ -499,21 +510,25 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		basicDbService.delete(IMPORT_QUEUE, queueId);
 	}
 
-	private void deleteTempData(Context context) {
+	private void deleteCurrentPkMap(Context context) {
 
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("importCode", context.getImportCode());
 
-		String sql;
-		int rowCount;
-
-		sql = "delete from " + IMPORT_PK_MAP + " where import_code = :importCode";
-		rowCount = basicDbService.executeScript(sql, paramMap);
+		String sql = "delete from " + IMPORT_PK_MAP + " where import_code = :importCode";
+		int rowCount = basicDbService.executeScript(sql, paramMap);
 		logger.info("Deleted {} rows from {}", rowCount, IMPORT_PK_MAP);
+	}
 
-		sql = "delete from " + IMPORT_QUEUE + " where import_code = :importCode";
-		rowCount = basicDbService.executeScript(sql, paramMap);
+	private void deleteCurrentQueue(Context context) {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("importCode", context.getImportCode());
+
+		String sql = "delete from " + IMPORT_QUEUE + " where import_code = :importCode";
+		int rowCount = basicDbService.executeScript(sql, paramMap);
 		logger.info("Deleted {} rows from {}", rowCount, IMPORT_QUEUE);
+		context.getUnresolvedRecordCount().increment(rowCount);
 	}
 
 	/*
