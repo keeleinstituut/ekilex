@@ -18,8 +18,20 @@ public class MaintenanceService implements SystemConstant {
 	@PreAuthorize("principal.admin")
 	public void clearCache() {
 
+		clearClassifCache();
+		clearDatasetCache();
+		clearUserCache();
+	}
+
+	private void clearClassifCache() {
 		cacheManager.getCache(CACHE_KEY_CLASSIF).clear();
+	}
+
+	public void clearDatasetCache() {
 		cacheManager.getCache(CACHE_KEY_DATASET).clear();
+	}
+
+	private void clearUserCache() {
 		cacheManager.getCache(CACHE_KEY_USER).clear();
 	}
 

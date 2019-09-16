@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DOMAIN;
+import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -48,8 +49,6 @@ public class DatasetDbService {
 				.from(DATASET)
 				.orderBy(DATASET.NAME)
 				.fetchInto(Dataset.class);
-
-
 		return datasets;
 
 	}
@@ -132,7 +131,6 @@ public class DatasetDbService {
 		// delete process log
 		create.deleteFrom(PROCESS_LOG).where(PROCESS_LOG.DATASET_CODE.eq(datasetCode)).execute();
 
-
 		// delete dataset
 		create.delete(DATASET).where(DATASET.CODE.eq(datasetCode)).execute();
 	}
@@ -143,7 +141,6 @@ public class DatasetDbService {
 						.from(DATASET)
 						.where(DATASET.CODE.equalIgnoreCase(datasetCode)));
 	}
-
 
 	public Dataset getDataset(String code) {
 
@@ -192,27 +189,33 @@ public class DatasetDbService {
 
 	public void removeDatasetFromAllClassifiers(ClassifierName classifierName, String datasetCode) {
 
-		String[] datasetCodes = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
 			create.update(LANGUAGE)
 					.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode)))
-					.where(LANGUAGE.DATASETS.contains(datasetCodes))
+					.where(DSL.val(datasetCode).eq(DSL.any(LANGUAGE.DATASETS)))
 					.execute();
 
 		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
 			create.update(PROCESS_STATE)
 					.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayRemove(PROCESS_STATE.DATASETS, datasetCode)))
-					.where(PROCESS_STATE.DATASETS.contains(datasetCodes))
+					.where(DSL.val(datasetCode).eq(DSL.any(PROCESS_STATE.DATASETS)))
 					.execute();
 
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 			create.update(DOMAIN)
 					.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayRemove(DOMAIN.DATASETS, datasetCode)))
-					.where(DOMAIN.DATASETS.contains(datasetCodes))
+					.where(DSL.val(datasetCode).eq(DSL.any(DOMAIN.DATASETS)))
 					.execute();
-
 		} else {
 			throw new UnsupportedOperationException();
 		}
+	}
+
+	public void removeDatasetFromUserProfile(String datasetCode) {
+
+		create.update(EKI_USER_PROFILE)
+				.set(EKI_USER_PROFILE.PREFERRED_DATASETS, DSL.field(PostgresDSL.arrayRemove(EKI_USER_PROFILE.PREFERRED_DATASETS, datasetCode)))
+				.where(DSL.val(datasetCode).eq(DSL.any(EKI_USER_PROFILE.PREFERRED_DATASETS)))
+				.execute();
 	}
 }

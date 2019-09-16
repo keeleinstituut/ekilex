@@ -49,6 +49,14 @@ public class PermissionsController extends AbstractPageController {
 	@Autowired
 	private MaintenanceService maintenanceService;
 
+	@ResponseBody
+	@GetMapping(PERMISSIONS_URI + "/clearcache")
+	public String clearCache() {
+
+		maintenanceService.clearCache();
+		return "OK";
+	}
+
 	@GetMapping(PERMISSIONS_URI)
 	public String permissions(@ModelAttribute("orderBy") String orderByStr, Model model) {
 
@@ -158,14 +166,6 @@ public class PermissionsController extends AbstractPageController {
 		userService.updateReviewComment(userId, null);
 		attributes.addFlashAttribute("orderBy", orderBy);
 		return "redirect:" + PERMISSIONS_URI;
-	}
-
-	@ResponseBody
-	@GetMapping(PERMISSIONS_URI + "/clearcache")
-	public String clearCache() {
-
-		maintenanceService.clearCache();
-		return "OK";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/sendpermissionsemail/{userEmail}")

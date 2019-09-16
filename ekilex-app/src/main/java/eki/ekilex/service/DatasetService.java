@@ -33,6 +33,9 @@ public class DatasetService implements SystemConstant {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
+	@Autowired
+	private MaintenanceService maintenanceService;
+
 	@Transactional
 	public List<Dataset> getDatasets() {
 		return datasetDbService.getDatasets();
@@ -65,12 +68,14 @@ public class DatasetService implements SystemConstant {
 	public void createDataset(Dataset dataset) {
 		datasetDbService.createDataset(dataset);
 		addDatasetToSelectedClassifiers(dataset);
+		maintenanceService.clearDatasetCache();
 	}
 
 	@Transactional
 	public void updateDataset(Dataset dataset) {
 		datasetDbService.updateDataset(dataset);
 		updateDatasetSelectedClassifiers(dataset);
+		maintenanceService.clearDatasetCache();
 	}
 
 	private void updateDatasetSelectedClassifiers(Dataset dataset) {
@@ -81,8 +86,10 @@ public class DatasetService implements SystemConstant {
 	@Transactional
 	public void deleteDataset(String datasetCode) {
 		removeDatasetFromAllClassifiers(datasetCode);
+		datasetDbService.removeDatasetFromUserProfile(datasetCode);
 		permissionDbService.deleteDatasetPermissions(datasetCode);
 		datasetDbService.deleteDataset(datasetCode);
+		maintenanceService.clearDatasetCache();
 	}
 
 	@Transactional
