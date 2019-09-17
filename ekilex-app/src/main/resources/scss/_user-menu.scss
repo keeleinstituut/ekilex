@@ -1,0 +1,19 @@
+.user-menu{
+  border-left: 1px solid $blue-300;
+  &-btn{
+    max-width: 200px;
+    padding-right: $spacer * 1.5;
+    padding-bottom: $spacer * .25;
+    color: $gray-200;
+    @include border-radius(0);
+    &::after{
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+    }
+  }
+  &-content{
+    width: 300px;
+  }
+}

@@ -15362,6 +15362,12 @@ footer p {
   width: 100%;
 }
 
+@media (min-width: 992px) {
+  .main-navigation {
+    height: 3rem;
+  }
+}
+
 .side-menu {
   z-index: 1;
 }
@@ -15380,7 +15386,7 @@ footer p {
 .side-menu-btn {
   position: relative;
   z-index: 2;
-  height: 2rem;
+  height: 3rem;
   border-right: 1px solid #3173b8;
   border-radius: 0;
 }
@@ -15392,7 +15398,7 @@ footer p {
 
 .side-menu-content {
   width: 232px;
-  height: calc(100vh - 32px);
+  height: calc(100vh - 48px);
   margin: 0;
   background: #fff;
   border: 0;
@@ -15424,5 +15430,28 @@ footer p {
   height: 100%;
   content: "";
   background: #a0dcf8;
+}
+
+.user-menu {
+  border-left: 1px solid #3173b8;
+}
+
+.user-menu-btn {
+  max-width: 200px;
+  padding-right: 1.5rem;
+  padding-bottom: 0.25rem;
+  color: #ccd9e0;
+  border-radius: 0;
+}
+
+.user-menu-btn::after {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.user-menu-content {
+  width: 300px;
 }
 /*# sourceMappingURL=styles.css.map */

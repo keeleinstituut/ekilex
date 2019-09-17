@@ -15,7 +15,7 @@
   &-btn{
     position: relative;
     z-index: 2;
-    height: $spacer * 2;
+    height: $spacer * 3;
     border-right: 1px solid $blue-300;
     @include border-radius(0);
     .show &{
@@ -25,7 +25,7 @@
   }
   &-content{
     width: 232px;
-    height: calc(100vh - 32px);
+    height: calc(100vh - 48px);
     margin: 0;
     background: $white;
     border: 0;
