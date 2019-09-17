@@ -1,0 +1,59 @@
+.side-menu {
+  z-index: 1;
+  &.show{
+    &::after{
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      content: "";
+      background: $modal-backdrop-bg;
+      opacity: $modal-backdrop-opacity;
+    }
+  }
+  &-btn{
+    position: relative;
+    z-index: 2;
+    height: $spacer * 2;
+    border-right: 1px solid $blue-300;
+    @include border-radius(0);
+    .show &{
+      background: $blue-400;
+      border-right-color: $blue-400;
+    }
+  }
+  &-content{
+    width: 232px;
+    height: calc(100vh - 32px);
+    margin: 0;
+    background: $white;
+    border: 0;
+    @include border-radius(0);
+  }
+  &-header{
+    padding-top: $padding-y-base;
+    padding-bottom: $padding-y-base;
+    background: $gray-100;
+  }
+  &-item{
+    position: relative;
+    padding-right: $spacer * 1.5;
+    padding-left: $spacer * 1.5;
+    &:active,
+    &.active{
+      color: $gray-400;
+      background: $white;
+    }
+    &:active::before,
+    &.active::before{
+      position: absolute;
+      top: 0;
+      left: $spacer;
+      width: 2px;
+      height: 100%;
+      content: "";
+      background: $blue-100;
+    }
+  }
+}

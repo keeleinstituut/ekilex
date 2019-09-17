@@ -4,6 +4,8 @@
 //Import bootstrap files
 @import "../../../../node_modules/bootstrap/scss/bootstrap.scss";
 
+
+
 //Import custom styles
 @import "font-awesome.scss";
 @import "common-styles.scss";
@@ -12,3 +14,4 @@
 @import "bootstrap-select.scss";
 @import "jquery-ui.min.scss";
 @import "index.scss";
+@import "side-menu";

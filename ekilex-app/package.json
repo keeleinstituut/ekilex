@@ -10,7 +10,7 @@
 
     "clean-and-copy-css": "npm-run-all clean-css  copy-css",
     "clean-css": "cleandir target/classes/view/css",
-    "copy-css": "ncp src/main/resources/view/html target/classes/view/css ",
+    "copy-css": "ncp src/main/resources/view/css target/classes/view/css ",
 
     "clean-and-copy-html": "npm-run-all clean-html  copy-html",
     "clean-html": "cleandir target/classes/view/html",
