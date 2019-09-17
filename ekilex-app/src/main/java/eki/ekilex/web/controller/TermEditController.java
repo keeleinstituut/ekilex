@@ -51,8 +51,11 @@ public class TermEditController extends AbstractPageController {
 	@RequestMapping(MEANING_JOIN_URI + "/{targetMeaningId}")
 	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
 
-		List<String> datasets = getUserPreferredDatasetsCodes();
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(targetMeaningId, datasets);
+		Long userId = userService.getAuthenticatedUser().getId();
+		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
+
+		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(targetMeaningId, userPreferredDatasetCodes);
 		WordLexeme targetMeaningLexeme = commonDataService.getWordLexeme(meaningFirstLexemeId);
 		String targetLexemeWord = targetMeaningLexeme.getWords()[0];
 		if (searchFilter == null) {
@@ -67,7 +70,9 @@ public class TermEditController extends AbstractPageController {
 			wordHomonymNumber = Optional.empty();
 		}
 
-		List<WordLexeme> sourceMeaningLexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets, wordHomonymNumber, targetMeaningId);
+		List<WordLexeme> sourceMeaningLexemes = lexSearchService
+				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, wordHomonymNumber, targetMeaningId);
+
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("targetMeaningId", targetMeaningId);
 		model.addAttribute("targetMeaningLexeme", targetMeaningLexeme);
@@ -81,7 +86,7 @@ public class TermEditController extends AbstractPageController {
 
 		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds);
 
-		List<String> datasets = getUserPreferredDatasetsCodes();
+		List<String> datasets = getUserPreferredDatasetCodes();
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, datasets);
 		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
 

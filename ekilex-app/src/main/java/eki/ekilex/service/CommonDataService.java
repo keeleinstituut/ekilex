@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,7 +27,6 @@ import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
-import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
@@ -371,24 +371,24 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordDetails> getWordDetailsOfJoinCandidates(String wordValue, Long wordIdToExclude) {
+	public List<WordDetails> getWordDetailsOfJoinCandidates(String wordValue, Long wordIdToExclude, List<String> userPreferredDatasetCodes,
+			List<String> userPermDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
-		List<Dataset> userPermDatasets = permissionDbService.getUserPermDatasets(userId);
-		List<String> userPermDatasetCodes = userPermDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
-
 		List<Long> wordIds = commonDataDbService.getNonaffixoidWordIds(wordValue);
 		wordIds.remove(wordIdToExclude);
-		wordIds.removeIf(wordId -> !permissionDbService.isGrantedForWord(wordId, userPermDatasetCodes));
+		wordIds.removeIf(wordId -> !permissionDbService.isGrantedForWord(wordId, userPreferredDatasetCodes));
 
 		for (Long wordId : wordIds) {
-			WordDetails wordDetails = getWordDetails(wordId, userPermDatasetCodes);
+			WordDetails wordDetails = getWordDetails(wordId, userPreferredDatasetCodes);
 			wordDetailsList.add(wordDetails);
 		}
 
-		return wordDetailsList;
+		List<WordDetails> sortedWordDetailsList = wordDetailsList.stream()
+				.sorted(Comparator.comparing(wordDetails -> !permissionDbService.isGrantedForWord(wordDetails.getWord().getWordId(), userPermDatasetCodes)))
+				.collect(Collectors.toList());
+
+		return sortedWordDetailsList;
 	}
 
 	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {

@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -52,11 +53,13 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<Dataset> getUserPermDatasets(Long userId) {
+	public List<String> getUserPermDatasetCodes(Long userId) {
 		if (userId == null) {
 			return Collections.emptyList();
 		}
-		return permissionDbService.getUserPermDatasets(userId);
+		List<Dataset> userPermDatasets = permissionDbService.getUserPermDatasets(userId);
+		List<String> userPermDatasetCodes = userPermDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+		return userPermDatasetCodes;
 	}
 
 	@Transactional

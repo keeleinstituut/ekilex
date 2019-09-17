@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
+import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
@@ -37,8 +39,12 @@ public class LexSearchService extends AbstractWordSearchService {
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
 
+	@Autowired
+	private PermissionDbService permissionDbService;
+
 	@Transactional
-	public List<WordLexeme> getWordLexemesWithMinimalData(String searchWord, List<String> selectedDatasetCodes, Optional<Integer> wordHomonymNumber, Long excludedMeaningId) {
+	public List<WordLexeme> getWordLexemesOfJoinCandidates(String searchWord, List<String> selectedDatasetCodes, List<String> userPermDatasetCodes,
+			Optional<Integer> wordHomonymNumber, Long excludedMeaningId) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
@@ -80,7 +86,10 @@ public class LexSearchService extends AbstractWordSearchService {
 				}
 			}
 		}
-		return lexemes;
+		List<WordLexeme> sortedLexemes = lexemes.stream()
+				.sorted(Comparator.comparing(lexeme -> !permissionDbService.isGrantedForMeaning(lexeme.getMeaningId(), userPermDatasetCodes)))
+				.collect(Collectors.toList());
+		return sortedLexemes;
 	}
 
 	@Transactional
