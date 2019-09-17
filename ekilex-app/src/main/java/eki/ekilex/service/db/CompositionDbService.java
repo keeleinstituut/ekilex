@@ -49,6 +49,7 @@ import eki.ekilex.data.IdPair;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -573,10 +574,7 @@ public class CompositionDbService implements DbConstant {
 				.where(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID.eq(sourceWordId))
 				.execute();
 
-		create.update(WORD_WORD_TYPE)
-				.set(WORD_WORD_TYPE.WORD_ID, wordId)
-				.where(WORD_WORD_TYPE.WORD_ID.eq(sourceWordId))
-				.execute();
+		joinWordTypeCodes(wordId, sourceWordId);
 
 		create.update(WORD_PROCESS_LOG)
 				.set(WORD_PROCESS_LOG.WORD_ID, wordId)
@@ -618,6 +616,21 @@ public class CompositionDbService implements DbConstant {
 								wr2.WORD2_ID.eq(wordId)
 										.and(wr2.WORD1_ID.eq(wr1.WORD1_ID))
 										.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
+				.execute();
+	}
+
+	private void joinWordTypeCodes(Long wordId, Long sourceWordId) {
+		WordWordType wwt1 = WORD_WORD_TYPE.as("wwt1");
+		WordWordType wwt2 = WORD_WORD_TYPE.as("wwt2");
+
+		create.update(wwt1)
+				.set(wwt1.WORD_ID, wordId)
+				.where(wwt1.WORD_ID.eq(sourceWordId))
+				.andNotExists(DSL
+						.select(wwt2.ID)
+						.from(wwt2)
+						.where(wwt2.WORD_ID.eq(wordId)
+								.and(wwt2.WORD_TYPE_CODE.eq(wwt1.WORD_TYPE_CODE))))
 				.execute();
 	}
 
