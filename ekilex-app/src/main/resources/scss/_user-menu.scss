@@ -1,17 +1,20 @@
 .user-menu{
   border-left: 1px solid $blue-300;
   &-btn{
+    position: relative;
     max-width: 200px;
-    padding-right: $spacer * 1.5;
+    padding-right: $spacer * 2;
     padding-bottom: $spacer * .25;
-    color: $gray-200;
     @include border-radius(0);
     &::after{
       position: absolute;
       top: 50%;
-      right: 0;
+      right: $spacer * .5;
       transform: translateY(-50%);
     }
+  }
+  &-active-role{
+    color: $gray-200;
   }
   &-content{
     width: 300px;

@@ -15437,18 +15437,22 @@ footer p {
 }
 
 .user-menu-btn {
+  position: relative;
   max-width: 200px;
-  padding-right: 1.5rem;
+  padding-right: 2rem;
   padding-bottom: 0.25rem;
-  color: #ccd9e0;
   border-radius: 0;
 }
 
 .user-menu-btn::after {
   position: absolute;
   top: 50%;
-  right: 0;
+  right: 0.5rem;
   transform: translateY(-50%);
+}
+
+.user-menu-active-role {
+  color: #ccd9e0;
 }
 
 .user-menu-content {

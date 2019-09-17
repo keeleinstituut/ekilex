@@ -65,12 +65,12 @@
         <th:block sec:authorize="isAuthenticated()">
 
           <div class="dropdown user-menu">
-            <button class="btn btn-primary dropdown-toggle user-menu-btn text-right" type="button" data-toggle="dropdown" >
+            <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown" >
               <span class="d-flex flex-wrap">
                 <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
                 <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
                   <th:block th:with="selectedRole = ${sessionBean.userRole}">
-                    <small class="w-100 text-truncate" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
+                    <small class="w-100 text-truncate user-menu-active-role" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
                            th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
 
                     </small>
