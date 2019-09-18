@@ -22,14 +22,15 @@ package.json holds all the scripts needed for front end development
 * **clean-and-copy-assets** – command that deletes all the contents from **target/view** folder and then copies content from **src/view** folder to **target/view**. Run this if you have added fonts or images or javascript
 * **clean-assets**, **copy-assets** – commands used by **clean-and-copy-assets** command. 
 * **clean-and-copy-html** – as the name suggests, it runs the clean-html and copy-html command
-* **clean-and-copy-css** – same thing as clean-and-copy-html but for css. They are two separate commands so they could be used in separate **watch** commands
+* **clean-and-copy-css**, **clean-and-copy-js** – same thing as clean-and-copy-html but for css and js. They are two separate commands so they could be used in separate **watch** commands
 * **clean-html**, **copy-html** – clean deletes **target/view/html** contents and **copy-html** copies html from source to target
+* **clean-js**, **copy-js** – clean deletes **target/view/js** contents and **copy-js** copies js from source to target
 * **css** – command for calling all the .scss commands in sequence
 * **css-compile** – compiles **.scss** in to **.css**. Takes one .scss file as input and compiles it directly to the target folder. Uses **node-sass** package
 * **css-stylelint** – lints **.scss** files for code style errors. It uses Bootstrap style lint settings. Settings for style lint are in the `.stylelintrc` file
 * **css-prefix** - automatically adds all vendor prefixes to css. Uses **postcss** package and **autoprefixer** plugin. It also uses settings that are located in `build/postcss.config.js`. This uses the css file in the target folder as input
 * **watch** – starts nodemonitor for **.scss** and **.html** files. If any file is updated then it executes a specified command.
-* **watch-css**, **watch-html** – scripts for monitoring folders and files for changes and then executing another script. Used in **watch** script
+* **watch-css**, **watch-html** , **watch-js** – scripts for monitoring folders and files for changes and then executing another script. Used in **watch** script
 
 You can run all these scripts one by one. For example `npm run css-compile` would just run the compile command and create a new .css file in the target folder
 

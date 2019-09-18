@@ -64,7 +64,7 @@
       <div class="navbar-nav ml-auto">
         <th:block sec:authorize="isAuthenticated()">
 
-          <div class="dropdown user-menu">
+          <div id="userMenuDropDown" class="dropdown user-menu">
             <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown" >
               <span class="d-flex flex-wrap">
                 <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
