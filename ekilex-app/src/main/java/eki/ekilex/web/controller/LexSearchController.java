@@ -73,7 +73,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		selectedDatasets = getUserPreferredDatasetsCodes();
+		selectedDatasets = getUserPreferredDatasetCodes();
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
@@ -126,7 +126,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("word search ajax {}", searchFilter);
 
-		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		WordsResult result = lexSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
@@ -152,7 +152,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("meaning search ajax {}", searchFilter);
 
-		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, selectedDatasets);
 		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();
@@ -183,7 +183,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("Requesting details by word {}", wordId);
 
-		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		WordDetails details = commonDataService.getWordDetails(wordId, selectedDatasets);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);

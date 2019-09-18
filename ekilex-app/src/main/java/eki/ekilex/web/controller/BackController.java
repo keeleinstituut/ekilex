@@ -30,7 +30,7 @@ public class BackController extends AbstractPageController {
 	@GetMapping(WORD_BACK_URI + "/{wordId}")
 	public String wordBack(@PathVariable("wordId") Long wordId) {
 
-		List<String> datasets = getUserPreferredDatasetsCodes();
+		List<String> datasets = getUserPreferredDatasetCodes();
 		Word word = commonDataService.getWord(wordId);
 		String wordValue = word.getValue();
 		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
@@ -41,7 +41,7 @@ public class BackController extends AbstractPageController {
 	@GetMapping(LEX_BACK_URI + "/{lexemeId}")
 	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId) {
 
-		List<String> datasets = getUserPreferredDatasetsCodes();
+		List<String> datasets = getUserPreferredDatasetCodes();
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		String firstWordValue = lexeme.getWords()[0];
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
@@ -52,7 +52,7 @@ public class BackController extends AbstractPageController {
 	@GetMapping(MEANING_BACK_URI + "/{meaningId}")
 	public String meaningBack(@PathVariable("meaningId") Long meaningId) {
 
-		List<String> datasets = getUserPreferredDatasetsCodes();
+		List<String> datasets = getUserPreferredDatasetCodes();
 		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 
@@ -62,7 +62,7 @@ public class BackController extends AbstractPageController {
 	@GetMapping(WORD_VALUE_BACK_URI + "/{wordValue}/{returnPage}")
 	public String wordValueBack(@PathVariable("wordValue") String wordValue, @PathVariable("returnPage") String returnPage) {
 
-		List<String> datasets = getUserPreferredDatasetsCodes();
+		List<String> datasets = getUserPreferredDatasetCodes();
 		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
 		String redirectUri = "";
 		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {

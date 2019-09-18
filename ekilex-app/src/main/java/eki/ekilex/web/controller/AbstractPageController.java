@@ -52,7 +52,7 @@ public abstract class AbstractPageController implements WebConstant {
 		return sessionBean;
 	}
 
-	protected List<String> getUserPreferredDatasetsCodes() {
+	protected List<String> getUserPreferredDatasetCodes() {
 
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
