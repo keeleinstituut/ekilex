@@ -76,6 +76,8 @@ public interface WebConstant {
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
 
+	String VALIDATE_MEANING_JOIN_URI = "/validatemeaningjoin";
+
 	String WORD_JOIN_URI = "/wordjoin";
 
 	String WORD_JOIN_PAGE = "wordjoin";
