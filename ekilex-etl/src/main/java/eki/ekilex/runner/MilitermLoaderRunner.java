@@ -347,6 +347,12 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		Element valueNode;
 		String valueStr;
 
+		valueNode = (Element) conceptGroupNode.selectSingleNode(conceptExp);
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, valueStr);
+		}
+
 		valueNodes = conceptGroupNode.selectNodes(noteExp);
 		for (Node publicNoteValueNode : valueNodes) {
 			valueStr = ((Element) publicNoteValueNode).getTextTrim();
