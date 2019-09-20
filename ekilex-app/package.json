@@ -10,19 +10,24 @@
 
     "clean-and-copy-css": "npm-run-all clean-css  copy-css",
     "clean-css": "cleandir target/classes/view/css",
-    "copy-css": "ncp src/main/resources/view/html target/classes/view/css ",
+    "copy-css": "ncp src/main/resources/view/css target/classes/view/css ",
 
     "clean-and-copy-html": "npm-run-all clean-html  copy-html",
     "clean-html": "cleandir target/classes/view/html",
     "copy-html": "ncp src/main/resources/view/html target/classes/view/html ",
 
+    "clean-and-copy-js": "npm-run-all clean-js  copy-js",
+    "clean-js": "cleandir target/classes/view/js",
+    "copy-js": "ncp src/main/resources/view/js target/classes/view/js ",
+
     "css": "npm-run-all --continue-on-error css-lint-stylelint css-compile css-prefix clean-and-copy-css",
     "css-compile": "node-sass --output-style expanded --source-map true --source-map-contents true --precision 6 src/main/resources/scss/styles.scss src/main/resources/view/css/styles.css",
     "css-lint-stylelint": "stylelint \"src/main/resources/scss/*.scss\" --cache --cache-location .cache/.stylelintcache",
     "css-prefix": "postcss --config build/postcss.config.js --replace \"src/main/resources/view/css/*.css\"",
-    "watch": "npm-run-all --parallel watch-css watch-html",
+    "watch": "npm-run-all --parallel watch-css watch-html watch-js",
     "watch-css": "nodemon --watch src/main/resources/scss/ --ext scss --exec \"npm run css\"",
-    "watch-html": "nodemon --watch src/main/resources/view/html/ --ext html --exec \"npm run clean-and-copy-html\""
+    "watch-html": "nodemon --watch src/main/resources/view/html/ --ext html --exec \"npm run clean-and-copy-html\"",
+    "watch-js": "nodemon --watch src/main/resources/view/js/ --ext js --exec \"npm run clean-and-copy-js\""
   },
   "author": "TripleDev OÜ",
   "license": "",

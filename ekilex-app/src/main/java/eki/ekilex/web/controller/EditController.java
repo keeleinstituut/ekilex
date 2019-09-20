@@ -519,7 +519,7 @@ public class EditController extends AbstractPageController implements SystemCons
 				attributes.addFlashAttribute("meaningId", meaningId);
 				return "redirect:" + WORD_SELECT_URI;
 			}
-			List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
 			}
@@ -547,7 +547,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
-			List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
 			}
@@ -591,7 +591,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		cudService.createLexeme(wordId, dataset, meaningId);
 		Word word = commonDataService.getWord(wordId);
 		String wordValue = word.getValue();
-		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		if (!selectedDatasets.contains(dataset)) {
 			selectedDatasets.add(dataset);
 		}
@@ -618,19 +618,24 @@ public class EditController extends AbstractPageController implements SystemCons
 	@GetMapping(WORD_JOIN_URI)
 	public String showWordJoin(@RequestParam("wordId") Long wordId, @RequestParam(name = "meaningId", required = false) Long meaningId, Model model) {
 
-		List<String> datasetCodes = commonDataService.getDatasetCodes();
-		WordDetails firstWordDetails = commonDataService.getWordDetails(wordId, datasetCodes);
+		Long userId = userService.getAuthenticatedUser().getId();
+		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
+		List<String> allDatasetCodes = commonDataService.getDatasetCodes();
+		WordDetails firstWordDetails = commonDataService.getWordDetails(wordId, allDatasetCodes);
 		Word firstWord = firstWordDetails.getWord();
 		String firstWordValue = firstWord.getValue();
-		List<WordDetails> wordDetailsList = commonDataService.getWordDetailsOfJoinCandidates(firstWordValue, wordId);
-		String encodedWordValue = UriUtils.encode(firstWordValue, UTF_8);
 
+		String encodedWordValue = UriUtils.encode(firstWordValue, UTF_8);
 		String backUrl;
 		if (meaningId != null) {
 			backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_TERM_SEARCH;
 		} else {
 			backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
 		}
+
+		List<WordDetails> wordDetailsList = commonDataService
+				.getWordDetailsOfJoinCandidates(firstWordValue, wordId, userPreferredDatasetCodes, userPermDatasetCodes);
 
 		model.addAttribute("firstWordDetails", firstWordDetails);
 		model.addAttribute("wordDetailsList", wordDetailsList);

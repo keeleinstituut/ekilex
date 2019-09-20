@@ -242,6 +242,11 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		return meaning;
 	}
 
+	@Transactional
+	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
+		return termSearchDbService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
+	}
+
 	private String composeLevels(Lexeme lexeme) {
 
 		Integer level1 = lexeme.getLevel1();

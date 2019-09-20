@@ -26,39 +26,64 @@
     <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap-select.min.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ekilex-home.js}"></script>
   </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
   </th:block>
   <th:block th:fragment="nav_bar">
-    <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
-      <a class="navbar-brand" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
-      <div class="navbar-nav" th:if="${activeItem}">
-        <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
-        <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-        <a class="nav-item nav-link" th:if="${sessionBean.userRole != null}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
-        <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#"
-           sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)"
-           th:if="${activeItem == 'lex' || activeItem == 'term'}">
-          <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
-        </a>
+    <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary main-navigation">
+      <div class="dropdown side-menu">
+        <button type="button" class="btn btn-primary ml-n3 side-menu-btn" id="sideMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr-2" aria-hidden="true"></i><span th:text="${(activeItem == 'lex') ? 'Leksikograafid' : (activeItem == 'term') ? 'Terminoloogid' : (activeItem == 'syn') ? 'Sünonüümid': (activeItem == 'source') ? 'Allikate otsing': (activeItem == 'datasets') ? 'Sõnakogude haldus': (activeItem == 'permissions') ? 'Kasutajaõiguste haldus' : (activeItem == 'wwfeedback') ? 'Sõnaveebi tagasiside' :'Rakenduse valik'}">Aktiivne rakendus</span></button>
+        <div id="sideMenu" class="side-menu-content dropdown-menu ml-n3" aria-labelledby="sideMenuButton">
+          <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex <small class="text-muted ml-auto" th:text="${'v.'+appData.appVersion}">1.0.0</small></a>
+          <div>
+            <div class="dropdown-header">Rakenduse valik</div>
+            <div th:if="${activeItem}">
+              <a class="dropdown-item side-menu-item " th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
+              <a class="dropdown-item side-menu-item" th:if="${sessionBean.userRole != null}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" sec:authorize="${#authentication.principal.datasetOwnershipExist or authentication.principal.admin}" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
+              <div class="dropdown-divider"></div>
+            </div>
+          </div>
+        </div>
       </div>
+      <button type="button" class="btn btn-primary rounded-0" data-toggle="modal" data-target="#newWordDlg"
+         sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)"
+         th:if="${activeItem == 'lex' || activeItem == 'term'}">
+        <i class="fa fa-plus mr-2" aria-hidden="true"></i><span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
+      </button>
+
+
       <div class="navbar-nav ml-auto">
         <th:block sec:authorize="isAuthenticated()">
-          <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
-            <th:block th:with="selectedRole = ${sessionBean.userRole}">
-              <div class="text-white mr-5 mt-2"
-                   th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
-                   th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></div>
-            </th:block>
-          </th:block>
-          <div class="dropdown">
-            <button class="btn btn-info" type="button" data-toggle="dropdown" th:text="${#authentication.name}"></button>
-            <div class="dropdown-menu dropdown-menu-right">
+
+          <div id="userMenuDropDown" class="dropdown user-menu">
+            <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown" >
+              <span class="d-flex flex-wrap">
+                <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
+                <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+                  <th:block th:with="selectedRole = ${sessionBean.userRole}">
+                    <small class="w-100 text-truncate user-menu-active-role" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
+                           th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
+
+                    </small>
+                  </th:block>
+                </th:block>
+              </span>
+
+            </button>
+            <div class="dropdown-menu dropdown-menu-right user-menu-content">
               <a class="dropdown-item" th:href="@{/userprofile}">Kasutaja profiil</a>
+              <th:block th:replace="components :: change_role(verticalLayout = true)" sec:authorize="${#authentication.principal.datasetPermissionsExist && !#authentication.principal.hasSingleDatasetPermission}"></th:block>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" th:href="@{/dologout}">Logi välja</a>
+              <a class="dropdown-item" th:href="@{/dologout}">Logi välja <i class="fa fa-sign-out" aria-hidden="true"></i></a>
             </div>
           </div>
         </th:block>

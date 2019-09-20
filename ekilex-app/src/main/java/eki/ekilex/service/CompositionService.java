@@ -210,21 +210,12 @@ public class CompositionService extends AbstractService {
 		Long targetMeaningId = targetLexeme.getMeaningId();
 		Long sourceMeaningId = sourceLexeme.getMeaningId();
 
-		if (targetLexeme.getWordId().equals(sourceLexeme.getWordId())) {
-			updateLexemeLevels(sourceLexemeId, "delete");
-			String lexemeLogEntrySource = StringUtils.joinWith(".", sourceLexeme.getLevel1(), sourceLexeme.getLevel2(), sourceLexeme.getLevel3());
-			String lexemeLogEntryTarget = StringUtils.joinWith(".", targetLexeme.getLevel1(), targetLexeme.getLevel2(), targetLexeme.getLevel3());
-			LogData lexemeLogData = new LogData(
-					LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, targetLexemeId, lexemeLogEntrySource, lexemeLogEntryTarget);
-			createLifecycleLog(lexemeLogData);
-		}
-		String meaningLogEntrySource = compositionDbService.getFirstDefinitionOfMeaning(sourceMeaningId);
-		String meaningLogEntryTarget = compositionDbService.getFirstDefinitionOfMeaning(targetMeaningId);
-		LogData meaningLogData = new LogData(
-				LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, targetMeaningId, meaningLogEntrySource, meaningLogEntryTarget);
-		createLifecycleLog(meaningLogData);
+		String logEntrySource = compositionDbService.getFirstDefinitionOfMeaning(sourceMeaningId);
+		String logEntryTarget = compositionDbService.getFirstDefinitionOfMeaning(targetMeaningId);
+		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, targetMeaningId, logEntrySource,
+				logEntryTarget);
+		createLifecycleLog(logData);
 
-		compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
 	}
@@ -344,15 +335,25 @@ public class CompositionService extends AbstractService {
 		}
 	}
 
-	private void joinMeaningsCommonWordsLexemes(Long meaningId, Long sourceMeaningId) {
-		List<IdPair> meaningsCommonWordsLexemeIdPairs = compositionDbService.getMeaningsCommonWordsLexemeIdPairs(meaningId, sourceMeaningId);
+	private void joinMeaningsCommonWordsLexemes(Long targetMeaningId, Long sourceMeaningId) {
+		List<IdPair> meaningsCommonWordsLexemeIdPairs = compositionDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);
 		boolean meaningsShareCommonWord = CollectionUtils.isNotEmpty(meaningsCommonWordsLexemeIdPairs);
 		if (meaningsShareCommonWord) {
 			for (IdPair lexemeIdPair : meaningsCommonWordsLexemeIdPairs) {
-				Long lexemeId = lexemeIdPair.getId1();
+				Long targetLexemeId = lexemeIdPair.getId1();
 				Long sourceLexemeId = lexemeIdPair.getId2();
+				LexemeRecord targetLexeme = compositionDbService.getLexeme(targetLexemeId);
+				LexemeRecord sourceLexeme = compositionDbService.getLexeme(sourceLexemeId);
+
 				updateLexemeLevels(sourceLexemeId, "delete");
-				compositionDbService.joinLexemes(lexemeId, sourceLexemeId);
+
+				String logEntrySource = StringUtils.joinWith(".", sourceLexeme.getLevel1(), sourceLexeme.getLevel2(), sourceLexeme.getLevel3());
+				String logEntryTarget = StringUtils.joinWith(".", targetLexeme.getLevel1(), targetLexeme.getLevel2(), targetLexeme.getLevel3());
+				LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, targetLexemeId, logEntrySource,
+						logEntryTarget);
+				createLifecycleLog(logData);
+
+				compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
 			}
 		}
 	}

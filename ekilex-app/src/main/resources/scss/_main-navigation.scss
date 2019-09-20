@@ -1,0 +1,5 @@
+.main-navigation{
+  @include media-breakpoint-up(lg){
+    height: $spacer * 3;
+  }
+}

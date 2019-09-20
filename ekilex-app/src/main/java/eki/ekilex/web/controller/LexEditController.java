@@ -47,9 +47,13 @@ public class LexEditController extends AbstractPageController {
 	private CompositionService compositionService;
 
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
-	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
+	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
+			Model model) {
 
-		List<String> datasets = getUserPreferredDatasetsCodes();
+		Long userId = userService.getAuthenticatedUser().getId();
+		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
+
 		WordLexeme targetLexeme = commonDataService.getWordLexeme(targetLexemeId);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWords()[0];
@@ -65,7 +69,9 @@ public class LexEditController extends AbstractPageController {
 			wordHomonymNumber = Optional.empty();
 		}
 
-		List<WordLexeme> sourceLexemes = lexSearchService.getWordLexemesWithMinimalData(searchFilter, datasets, wordHomonymNumber, sourceLexemeMeaningId);
+		List<WordLexeme> sourceLexemes = lexSearchService
+				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, wordHomonymNumber, sourceLexemeMeaningId);
+
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sourceLexemes", sourceLexemes);
@@ -79,7 +85,7 @@ public class LexEditController extends AbstractPageController {
 		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds);
 
 		WordLexeme lexeme = commonDataService.getWordLexeme(targetLexemeId);
-		List<String> datasets = getUserPreferredDatasetsCodes();
+		List<String> datasets = getUserPreferredDatasetCodes();
 		String firstWordValue = lexeme.getWords()[0];
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 
@@ -92,7 +98,7 @@ public class LexEditController extends AbstractPageController {
 		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
 		compositionService.separateLexemeMeanings(lexemeId);
 
-		List<String> datasets = getUserPreferredDatasetsCodes();
+		List<String> datasets = getUserPreferredDatasetCodes();
 		String firstWordValue = lexeme.getWords()[0];
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 

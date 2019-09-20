@@ -1,3 +1,12 @@
+$gray-100: #ecf0f2 !default;
+$gray-200: #ccd9e0 !default;
+$gray-300: #8a98a5 !default;
+$gray-400: #5d606e !default;
+$gray-900: #3f3f3f !default;
+$gray-1000: #0e1013 !default;
+
+$white: #fff !default;
+
 $blue-100: #a0dcf8 !default;
 $blue-200: #5aabe0 !default;
 $blue-300: #3173b8 !default;
@@ -5,3 +14,13 @@ $blue-400: #005aa9 !default;
 $blue-900: #00377a !default;
 
 $primary:   $blue-400 !default;
+
+$font-size-base: .875rem !default; //14px // Assumes the browser default, typically `16px`
+
+$navbar-padding-y: 0 !default;
+
+$padding-y-base: .322rem !default;//vertical padding for 32px high elements
+$input-btn-padding-y: $padding-y-base !default;
+$nav-link-padding-y: $padding-y-base !default;
+
+$dropdown-item-padding-x: 1rem !default;

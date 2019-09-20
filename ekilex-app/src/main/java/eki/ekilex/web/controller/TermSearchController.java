@@ -68,7 +68,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		selectedDatasets = getUserPreferredDatasetsCodes();
+		selectedDatasets = getUserPreferredDatasetCodes();
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
@@ -123,7 +123,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		logger.debug("Requesting meaning {} details", meaningId);
 
-		List<String> selectedDatasets = getUserPreferredDatasetsCodes();
+		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder);
 		model.addAttribute("meaning", meaning);
