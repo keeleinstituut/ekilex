@@ -82,7 +82,7 @@ public class TermEditController extends AbstractPageController {
 		Map<String, String> response = new HashMap<>();
 		List<Long> allMeaningIds = new ArrayList<>(sourceMeaningIds);
 		allMeaningIds.add(targetMeaningId);
-		Map<String, Integer[]> invalidWords = termSearchService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
+		Map<String, Integer[]> invalidWords = commonDataService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
 
 		if (MapUtils.isNotEmpty(invalidWords)) {
 			String message = "Tähendusi ei saa ühendada, sest ühendatavatel tähendustel on järgnevad samakujulised, aga erineva homonüüminumbriga keelendid:";

@@ -166,16 +166,14 @@
       </table>
     </div>
   </th:block>
-
+  <div th:replace="common :: #alertDlg"></div>
   <script th:inline="javascript">
 	  initialise();
 	  $('[data-toggle=join-confirm]').confirmation({
 		  btnOkLabel: 'Jah',
 		  btnCancelLabel: 'Ei',
 		  title: 'Kas olete kindel, et soovite tähendused ühendada?',
-		  onConfirm: function() {
-			  $(this).closest('form').submit();
-		  }
+		  onConfirm: joinLexemes
 	  });
   </script>
 </body>

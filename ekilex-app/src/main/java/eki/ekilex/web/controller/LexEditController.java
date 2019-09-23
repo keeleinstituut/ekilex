@@ -2,11 +2,13 @@ package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +77,47 @@ public class LexEditController extends AbstractPageController {
 		model.addAttribute("sourceLexemes", sourceLexemes);
 
 		return LEX_JOIN_PAGE;
+	}
+
+	@PostMapping(VALIDATE_LEX_JOIN_URI)
+	@ResponseBody
+	public String validateJoin(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds)
+			throws Exception {
+
+		Map<String, String> response = new HashMap<>();
+
+		List<Long> meaningIds = new ArrayList<>();
+		Long targeLexemeMeaningId = lexSearchService.getMeaningId(targetLexemeId);
+		meaningIds.add(targeLexemeMeaningId);
+		sourceLexemeIds.forEach(lexemeId -> {
+			Long meaningId = lexSearchService.getMeaningId(lexemeId);
+			meaningIds.add(meaningId);
+		});
+		Map<String, Integer[]> invalidWords = commonDataService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
+
+		if (MapUtils.isNotEmpty(invalidWords)) {
+			String message = "Tähendusi ei saa ühendada, sest ühendatavatel tähendustel on järgnevad samakujulised, aga erineva homonüüminumbriga keelendid:";
+
+			Iterator<Map.Entry<String, Integer[]>> wordIterator = invalidWords.entrySet().iterator();
+			while (wordIterator.hasNext()) {
+				String wordValue = wordIterator.next().getKey();
+				message += " " + wordValue;
+				wordIterator.remove();
+				if (wordIterator.hasNext()) {
+					message += ",";
+				} else {
+					message += ".";
+				}
+			}
+
+			message += " Palun ühendage enne tähenduste ühendamist need homonüümid.";
+			response.put("status", "invalid");
+			response.put("message", message);
+		} else {
+			response.put("status", "valid");
+		}
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(response);
 	}
 
 	@PostMapping(LEX_JOIN_URI)

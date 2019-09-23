@@ -13,7 +13,6 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +26,6 @@ import org.jooq.Record6;
 import org.jooq.SelectHavingStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -629,29 +627,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
 				.limit(1)
 				.fetchSingleInto(String.class);
-	}
-
-	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
-
-		Field<String> wordValue = FORM.VALUE.as("word_value");
-		Field<Integer[]> homonymNumbers = DSL.arrayAggDistinct(WORD.HOMONYM_NR).as("homonym_numbers");
-
-		Table<Record2<String, Integer[]>> wv = DSL
-				.select(wordValue, homonymNumbers)
-				.from(LEXEME, WORD, PARADIGM, FORM)
-				.where(
-						LEXEME.MEANING_ID.in(meaningIds)
-								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(FORM.VALUE)
-				.asTable("wv");
-
-		return create
-				.selectFrom(wv)
-				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
-				.fetchMap(wordValue, homonymNumbers);
 	}
 
 	public List<Long> getMeaningIds(String searchFilter, SearchDatasetsRestriction userPrefDatasetCodes) {

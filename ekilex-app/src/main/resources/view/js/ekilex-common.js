@@ -469,8 +469,6 @@ function initAddSynRelationDlg(addDlg) {
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		addDlg.find('.form-control').first().focus();
 	});
-
-
 }
 
 function decorateSourceLinks() {
@@ -638,6 +636,26 @@ function initClassifierAutocomplete() {
 	$('.classifier-select').selectpicker({
 		width : '100%',
 		container: 'body'
+	});
+}
+
+function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
+	$.ajax({
+		url: validateJoinUrl,
+		data: joinForm.serialize(),
+		method: 'POST',
+	}).done(function(data) {
+		let response = JSON.parse(data);
+		if (response.status === 'valid') {
+			joinForm.submit();
+		} else if (response.status === 'invalid') {
+			openAlertDlg(response.message);
+		} else {
+			openAlertDlg(failMessage);
+		}
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg(failMessage);
 	});
 }
 

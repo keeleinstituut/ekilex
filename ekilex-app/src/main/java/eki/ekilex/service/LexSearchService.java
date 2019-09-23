@@ -157,4 +157,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		}
 		return wordDescripts;
 	}
+
+	@Transactional
+	public Long getMeaningId(Long lexemeId) {
+		return lexSearchDbService.getMeaningId(lexemeId);
+	}
 }

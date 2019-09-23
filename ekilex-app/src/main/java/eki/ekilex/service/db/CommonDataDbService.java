@@ -53,10 +53,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record5;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -1042,6 +1044,29 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 										.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
 										.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
 				.fetchInto(Long.class);
+	}
+
+	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
+
+		Field<String> wordValue = FORM.VALUE.as("word_value");
+		Field<Integer[]> homonymNumbers = DSL.arrayAggDistinct(WORD.HOMONYM_NR).as("homonym_numbers");
+
+		Table<Record2<String, Integer[]>> wv = DSL
+				.select(wordValue, homonymNumbers)
+				.from(LEXEME, WORD, PARADIGM, FORM)
+				.where(
+						LEXEME.MEANING_ID.in(meaningIds)
+								.and(WORD.ID.eq(LEXEME.WORD_ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.groupBy(FORM.VALUE)
+				.asTable("wv");
+
+		return create
+				.selectFrom(wv)
+				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
+				.fetchMap(wordValue, homonymNumbers);
 	}
 
 }

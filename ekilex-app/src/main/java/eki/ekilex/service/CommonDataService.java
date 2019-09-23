@@ -65,9 +65,6 @@ public class CommonDataService extends AbstractWordSearchService {
 	protected ConversionUtil conversionUtil;
 
 	@Autowired
-	private UserService userService;
-
-	@Autowired
 	private PermissionDbService permissionDbService;
 
 	@Autowired
@@ -481,5 +478,10 @@ public class CommonDataService extends AbstractWordSearchService {
 		} else {
 			return null;
 		}
+	}
+
+	@Transactional
+	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
+		return commonDataDbService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
 	}
 }
