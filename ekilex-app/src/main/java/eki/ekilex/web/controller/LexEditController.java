@@ -50,8 +50,6 @@ public class LexEditController extends AbstractPageController {
 	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
-		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
 
 		WordLexeme targetLexeme = commonDataService.getWordLexeme(targetLexemeId);
@@ -70,7 +68,7 @@ public class LexEditController extends AbstractPageController {
 		}
 
 		List<WordLexeme> sourceLexemes = lexSearchService
-				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, wordHomonymNumber, sourceLexemeMeaningId);
+				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, wordHomonymNumber, sourceLexemeMeaningId);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);

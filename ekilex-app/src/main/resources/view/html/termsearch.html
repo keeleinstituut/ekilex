@@ -763,7 +763,7 @@
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
-                <div th:if="${not #lists.isEmpty(lexeme.usages)}" class="col pl-0">
+                <div class="col pl-0">
                   <div th:each="usage : ${lexeme.usages}"
                        th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
                     <div th:replace="termdialog :: edit_usage_dlg"></div>

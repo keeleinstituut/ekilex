@@ -631,24 +631,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchSingleInto(String.class);
 	}
 
-	public Long getMeaningFirstLexemeId(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
-
-		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
-
-		return create
-				.select(LEXEME.ID)
-				.from(FORM, PARADIGM, LEXEME)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-								.and(dsWhere))
-				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
-				.limit(1)
-				.fetchSingleInto(Long.class);
-	}
-
 	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
 
 		Field<String> wordValue = FORM.VALUE.as("word_value");
@@ -670,6 +652,17 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.selectFrom(wv)
 				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
 				.fetchMap(wordValue, homonymNumbers);
+	}
+
+	public List<Long> getMeaningIds(String searchFilter, SearchDatasetsRestriction userPrefDatasetCodes) {
+
+		Meaning m1 = MEANING.as("m1");
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, userPrefDatasetCodes);
+		return create
+				.select(m1.ID.as("meaning_id"))
+				.from(m1)
+				.where(meaningCondition)
+				.fetchInto(Long.class);
 	}
 
 }

@@ -24,7 +24,7 @@
 
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
-          <th:block th:replace=":: meaning_details(${targetMeaningLexeme}, ${targetMeaningId})"></th:block>
+          <th:block th:replace=":: meaning_details(${targetMeaning})"></th:block>
         </div>
       </div>
 
@@ -56,11 +56,11 @@
           </form>
         </div>
 
-        <div class="card-body" th:if="${(searchFilter != null) && #lists.isEmpty(sourceMeaningLexemes)}">
+        <div class="card-body" th:if="${(searchFilter != null) && #lists.isEmpty(sourceMeanings)}">
           <span th:text="#{lexjoin.not.found}">Not found.</span>
         </div>
 
-        <div class="card-body" th:if="${not #lists.isEmpty(sourceMeaningLexemes)}">
+        <div class="card-body" th:if="${not #lists.isEmpty(sourceMeanings)}">
           <form th:action="@{/meaningjoin}" method="post">
             <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
             <div class="row mb-4">
@@ -71,8 +71,8 @@
                 </button>
               </div>
             </div>
-            <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="sourceMeaningLexeme : ${sourceMeaningLexemes}">
-              <th:block th:replace=":: meaning_details(${sourceMeaningLexeme}, ${targetMeaningId})"></th:block>
+            <div style="width: 95%" class="border border-dark rounded mb-2 p-2" name="meaning" th:each="sourceMeaning : ${sourceMeanings}">
+              <th:block th:replace=":: meaning_details(${sourceMeaning})"></th:block>
             </div>
           </form>
         </div>
@@ -80,47 +80,103 @@
     </div>
   </div>
 
-  <th:block th:fragment="meaning_details(lexeme, targetMeaningId)"
-            th:if="${lexeme != null}"
-            th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
+  <th:block th:fragment="meaning_details(meaning)"
+            th:if="${meaning != null}"
+            th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.meaning.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
     <div class="row">
       <div class="col col-w2rem">
         <input name="sourceMeaningIds" type="checkbox" class="mt-2"
-               th:value="${lexeme.meaningId}"
-               th:if="${lexeme.meaningId != targetMeaningId}"
+               th:value="${meaning.meaningId}"
+               th:if="${meaning.meaningId != targetMeaningId}"
                sec:authorize="${#vars.isMeaningCrudGranted}"/>
-        <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetMeaningId}" checked="checked" th:disabled="true"/>
-      </div>
-      <div class="col">
-        <span>
-          <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-            <span th:text="${word}"></span>
-            <span th:unless="${wordIter.last}">,</span>
-          </span>
-        </span>
-        <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-          <span class="pt-0">
-            <span th:text="${meaningWord.value}"></span>
-            <span th:text="${meaningWord.homonymNumber}"></span>
-            <span th:text="${'( ' + iso2languages[meaningWord.language] + ' )'}"></span>
-          </span>
-          <span th:unless="${meaningWordIter.last}">|</span>
-        </span>
-        <span th:if="${lexeme.levels != null}">
-          <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
-        </span>
-        <b th:text="${lexeme.dataset}" class="float-right"></b>
+        <input type="checkbox" class="mt-2" th:if="${meaning.meaningId == targetMeaningId}" checked="checked" th:disabled="true"/>
       </div>
     </div>
-    <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
-      <hr />
-      <span class="lbl">Seletused</span>
-      <table>
-        <tr th:each="definition : ${lexeme.definitions}">
-          <td th:utext="${definition.value}"></td>
-        </tr>
-      </table>
+    <div class="row" th:if="${not #lists.isEmpty(meaning.definitionLangGroups)}">
+      <div class="col-1 pr-0">
+        <span class="lbl">Seletused</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
+          <div th:each="definition, itemIter: ${definitionLangGroup.definitions}">
+            <div style="display: list-item; position: absolute"></div>
+            <div th:utext="${definition.value}"></div>
+          </div>
+        </th:block>
+      </div>
     </div>
+    <div class="row" th:if="${not #lists.isEmpty(meaning.publicNotes)}">
+      <div class="col-1 pr-0">
+        <span class="lbl">Märkused</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="publicNote : ${meaning.publicNotes}">
+          <div style="display: list-item; position: absolute"></div>
+          <div th:utext="${publicNote.valuePrese}"></div>
+        </th:block>
+      </div>
+    </div>
+    <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
+      <div class="border rounded mb-2 p-2" th:each="lexeme : ${lexemeLangGroup.lexemes}">
+        <div>
+          <span th:utext="${lexeme.word}" class="font-weight-bold"></span>
+          <span th:text="${lexeme.homonymNumber}"></span>
+          <span th:text="${'(' + iso2languages[lexeme.wordLang] + ')'}" class="ml-2"></span>
+          <b class="float-right" th:text="${lexeme.dataset}"></b>
+        </div>
+        <div class="row">
+          <div class="col-1 pr-0">
+            <span class="lbl">Identifikaatorid</span>
+          </div>
+          <div class="col pl-0">
+            <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
+            <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
+            <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
+          </div>
+        </div>
+        <div class="row" th:if="${lexeme.lexemeProcessStateCode != null}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Haldusolek</span>
+          </div>
+          <div class="col pl-0">
+            <span th:text="${lexeme.lexemeProcessStateCode}"></span>
+          </div>
+        </div>
+        <div class="row" th:if="${lexeme.lexemeValueStateCode != null}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Väärtusolek</span>
+          </div>
+          <div class="col pl-0">
+            <span th:text="${lexeme.lexemeValueStateCode}"></span>
+          </div>
+        </div>
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.wordTypes)}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Sõna tüüp</span>
+          </div>
+          <div class="col pl-0">
+            <span th:each="classif,classifIter : ${lexeme.wordTypes}">
+              <span th:text="${classif.code}"></span>
+              <th:block th:unless="${classif.code == classif.value}">
+                -
+                <span th:text="${classif.value}"></span>
+              </th:block>
+            </span>
+          </div>
+        </div>
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Kasutusnäited</span>
+          </div>
+          <div class="col pl-0">
+            <th:block th:each="usage : ${lexeme.usages}">
+              <div style="display: list-item; position: absolute"></div>
+              <div th:utext="${usage.value}"></div>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </th:block>
   </th:block>
   <div th:replace="common :: #alertDlg"></div>
   <script th:inline="javascript">

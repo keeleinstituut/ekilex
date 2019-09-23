@@ -43,14 +43,14 @@ public class LexSearchService extends AbstractWordSearchService {
 	private PermissionDbService permissionDbService;
 
 	@Transactional
-	public List<WordLexeme> getWordLexemesOfJoinCandidates(String searchWord, List<String> selectedDatasetCodes, List<String> userPermDatasetCodes,
-			Optional<Integer> wordHomonymNumber, Long excludedMeaningId) {
+	public List<WordLexeme> getWordLexemesOfJoinCandidates(String searchWord, List<String> userPrefDatasetCodes, Optional<Integer> wordHomonymNumber,
+			Long excludedMeaningId) {
 
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
 			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
-			WordsResult words = getWords(cleanedUpFilter, selectedDatasetCodes, true, DEFAULT_OFFSET);
+			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, true, DEFAULT_OFFSET);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {
@@ -86,10 +86,9 @@ public class LexSearchService extends AbstractWordSearchService {
 				}
 			}
 		}
-		List<WordLexeme> sortedLexemes = lexemes.stream()
-				.sorted(Comparator.comparing(lexeme -> !permissionDbService.isGrantedForMeaning(lexeme.getMeaningId(), userPermDatasetCodes)))
-				.collect(Collectors.toList());
-		return sortedLexemes;
+		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
+		lexemes.sort(Comparator.comparing(lexeme -> !permissionDbService.isGrantedForMeaning(lexeme.getMeaningId(), userPermDatasetCodes)));
+		return lexemes;
 	}
 
 	@Transactional

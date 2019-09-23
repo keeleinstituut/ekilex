@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @Component
@@ -44,6 +46,9 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
+
+	@Autowired
+	private PermissionDbService permissionDbService;
 
 	@Transactional
 	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) {
@@ -122,27 +127,17 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	}
 
 	@Transactional
-	public Long getMeaningFirstLexemeId(Long meaningId, List<String> datasets) {
-
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
-		return termSearchDbService.getMeaningFirstLexemeId(meaningId, searchDatasetsRestriction);
-	}
-
-	@Transactional
 	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
 
-		final String classifierLabelLang = "est";
-		final String classifierLabelTypeDescrip = "descrip";
-		final String classifierLabelTypeFull = "full";
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
 		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		for (Definition definition : definitions) {
@@ -161,7 +156,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		List<Image> images = conversionUtil.composeMeaningImages(imageSourceTuples);
 		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningPublicNoteSourceTuples(meaningId);
 		List<Note> meaningPublicNotes = conversionUtil.composeNotes(meaningPublicNoteSourceTuples);
-		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
+		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
@@ -170,20 +165,20 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		for (Long lexemeId : lexemeIds) {
 
 			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId);
-			List<Classifier> wordTypes = commonDataDbService.getWordTypes(lexeme.getWordId(), classifierLabelLang, classifierLabelTypeDescrip);
-			List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-			List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-			List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+			List<Classifier> wordTypes = commonDataDbService.getWordTypes(lexeme.getWordId(), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<Classifier> lexemeRegions = commonDataDbService.getLexemeRegions(lexemeId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			List<NoteSourceTuple> lexemePublicNoteSourceTuples = commonDataDbService.getLexemePublicNoteSourceTuples(lexemeId);
 			List<Note> lexemePublicNotes = conversionUtil.composeNotes(lexemePublicNoteSourceTuples);
 			List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<SourceLink> lexemeRefLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
-			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
+			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 
 			boolean classifiersExist =
 					StringUtils.isNotBlank(lexeme.getWordGenderCode())
@@ -245,6 +240,68 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	@Transactional
 	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
 		return termSearchDbService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
+	}
+
+	@Transactional
+	public List<Meaning> getMeaningsOfJoinCandidates(String searchFilter, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes,
+			List<ClassifierSelect> languagesOrder, Long excludedMeaningId) {
+
+		if (StringUtils.isBlank(searchFilter)) {
+			return Collections.emptyList();
+		} else {
+			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
+			List<Long> meaningIds = termSearchDbService.getMeaningIds(searchFilter, searchDatasetsRestriction);
+			meaningIds.remove(excludedMeaningId);
+			meaningIds.removeIf(meaningId -> !permissionDbService.isGrantedForMeaning(meaningId, userPrefDatasetCodes));
+			meaningIds.sort(Comparator.comparing(meaningId -> !permissionDbService.isGrantedForMeaning(meaningId, userPermDatasetCodes)));
+
+			List<Meaning> meanings= new ArrayList<>();
+			meaningIds.forEach(meaningId -> {
+				Meaning meaning = getMeaningJoinData(meaningId, userPrefDatasetCodes, languagesOrder);
+				meanings.add(meaning);
+			});
+			return meanings;
+		}
+	}
+
+	@Transactional
+	public Meaning getMeaningJoinData(Long meaningId, List<String> userPrefDatasetCodes, List<ClassifierSelect> languagesOrder) {
+
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name()};
+		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
+		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
+
+		List<DefinitionRefTuple> definitionRefTuples =
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
+		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
+
+		List<Long> lexemeIds = meaning.getLexemeIds();
+		List<Lexeme> lexemes = new ArrayList<>();
+		for (Long lexemeId : lexemeIds) {
+			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId);
+			List<Classifier> wordTypes = commonDataDbService.getWordTypes(lexeme.getWordId(), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
+					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
+			String dataset = lexeme.getDataset();
+			dataset = datasetNameMap.get(dataset);
+
+			lexeme.setDataset(dataset);
+			lexeme.setWordTypes(wordTypes);
+			lexeme.setUsages(usages);
+			lexemes.add(lexeme);
+		}
+		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
+
+		meaning.setDefinitionLangGroups(definitionLangGroups);
+		meaning.setFreeforms(meaningFreeforms);
+		meaning.setLexemeLangGroups(lexemeLangGroups);
+
+		return meaning;
 	}
 
 	private String composeLevels(Lexeme lexeme) {
