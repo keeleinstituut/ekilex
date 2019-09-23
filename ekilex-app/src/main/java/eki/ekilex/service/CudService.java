@@ -325,7 +325,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode) {
-		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
+ 		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
 		if (wordRelationGroupType.isPresent()) {
 			boolean doLogging = false;
 			String previousLogValue = null;
@@ -347,7 +347,7 @@ public class CudService extends AbstractService {
 				List<Map<String, Object>> wordRelationGroupMembers = cudDbService.getWordRelationGroupMembers(groupId);
 				String logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 				for (Map<String, Object> member : wordRelationGroupMembers) {
-					Long memberId = (Long) member.get("memberId");
+					Long memberId = (Long) member.get("id");
 					LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION_GROUP_MEMBER, LifecycleProperty.VALUE, memberId,
 							previousLogValue, logValue);
 					createLifecycleLog(logData);
