@@ -40,14 +40,14 @@
           <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex <small class="text-muted ml-auto" th:text="${'v.'+appData.appVersion}">1.0.0</small></a>
           <div>
             <div class="dropdown-header">Rakenduse valik</div>
-            <div th:if="${activeItem}">
+            <div>
               <a class="dropdown-item side-menu-item " th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
               <a class="dropdown-item side-menu-item" th:if="${sessionBean.userRole != null}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" sec:authorize="${#authentication.principal.datasetOwnershipExist or authentication.principal.admin}" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" sec:authorize="${isAuthenticated() && (#authentication.principal.datasetOwnershipExist or authentication.principal.admin)}" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
               <div class="dropdown-divider"></div>
             </div>
