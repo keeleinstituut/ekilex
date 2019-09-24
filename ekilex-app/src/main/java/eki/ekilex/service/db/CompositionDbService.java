@@ -47,6 +47,7 @@ import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
@@ -187,7 +188,19 @@ public class CompositionDbService implements DbConstant {
 
 	public void joinLexemes(Long lexemeId, Long sourceLexemeId) {
 
-		create.update(LEXEME_SOURCE_LINK).set(LEXEME_SOURCE_LINK.LEXEME_ID, lexemeId).where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(sourceLexemeId)).execute();
+		LexemeSourceLink lsl1 = LEXEME_SOURCE_LINK.as("lsl1");
+		LexemeSourceLink lsl2 = LEXEME_SOURCE_LINK.as("lsl2");
+		create.update(lsl1)
+				.set(lsl1.LEXEME_ID, lexemeId)
+				.where(lsl1.LEXEME_ID.eq(sourceLexemeId))
+				.andNotExists(DSL
+						.select(lsl2.ID)
+						.from(lsl2)
+						.where(lsl2.LEXEME_ID.eq(lexemeId)
+								.and(lsl2.TYPE.eq(lsl1.TYPE))
+								.and(lsl2.VALUE.eq(lsl1.VALUE))))
+				.execute();
+
 		create.update(LEXEME_REGISTER)
 				.set(LEXEME_REGISTER.LEXEME_ID, lexemeId)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(sourceLexemeId)

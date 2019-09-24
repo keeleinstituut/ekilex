@@ -325,7 +325,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode) {
- 		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
+		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
 		if (wordRelationGroupType.isPresent()) {
 			boolean doLogging = false;
 			String previousLogValue = null;
