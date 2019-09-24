@@ -11,10 +11,11 @@
     <hr />
     <div id="results" class="w-100">
       <div th:each="termMeaning,termMeaningIter : ${meaningsResult.meanings}" th:class="${termMeaningIter.last} ? '' : 'border-bottom'">
-        <button type="button" class="btn btn-link ml-2" th:data-id="${termMeaning.meaningId}" name="detailsBtn" style="text-decoration:none; color:inherit;">
+        <button type="button" name="detailsBtn" th:data-id="${termMeaning.meaningId}" class="btn btn-link ml-2" style="text-decoration:none; color:inherit;">
           <th:block th:if="${termMeaning.meaningWordsExist}">
-            <div th:each="meaningWord : ${termMeaning.meaningWords}" class="row">
-              <span th:text="${meaningWord.word}" class="ml-1" th:style="${meaningWord.matchingWord ? 'font-weight: bold;' : ''}"></span>
+            <div th:each="meaningWord : ${termMeaning.meaningWords}" class="row" th:classappend="${meaningWord.matchingWord ? '' : 'other-word'}">
+              <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}"
+                    class="ml-1" th:style="${meaningWord.matchingWord ? 'font-weight: bold;' : ''}"></span>
               <span th:text="${meaningWord.homonymNr}" class="ml-1"></span>
               <span th:text="${'(' + iso2languages[meaningWord.lang] + ')'}" class="ml-1"></span>
               <span class="ml-1 ctxt" style="margin-top: 2px;">
@@ -25,12 +26,11 @@
               </span>
             </div>
           </th:block>
-          <th:block th:if="${!termMeaning.meaningWordsExist}">
-            <ul class="mb-1">
-              <li th:each="conceptId : ${termMeaning.conceptIds}">
-                <span th:text="${conceptId}"></span>
-              </li>
-            </ul>
+          <th:block th:if="${!termMeaning.meaningWordsExist && termMeaning.conceptIdsExist}">
+            <div th:text="${#strings.listJoin(termMeaning.conceptIds, ',')}"></div>
+          </th:block>
+          <th:block th:if="${!termMeaning.meaningWordsExist && !termMeaning.conceptIdsExist}">
+            <div>???</div>
           </th:block>
         </button>
         <span class="float-right" style="padding: 15px">

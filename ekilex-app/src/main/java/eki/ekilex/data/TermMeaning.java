@@ -4,7 +4,6 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-//TODO rename after fully operational
 public class TermMeaning extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -14,6 +13,8 @@ public class TermMeaning extends AbstractDataObject {
 	private List<String> conceptIds;
 
 	private List<TypeTermMeaningWord> meaningWords;
+
+	private boolean conceptIdsExist;
 
 	private boolean meaningWordsExist;
 
@@ -39,6 +40,14 @@ public class TermMeaning extends AbstractDataObject {
 
 	public void setMeaningWords(List<TypeTermMeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
+	}
+
+	public boolean isConceptIdsExist() {
+		return conceptIdsExist;
+	}
+
+	public void setConceptIdsExist(boolean conceptIdsExist) {
+		this.conceptIdsExist = conceptIdsExist;
 	}
 
 	public boolean isMeaningWordsExist() {

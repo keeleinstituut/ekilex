@@ -15,15 +15,15 @@
                 <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
               </button>
               <span class="float-right" style="padding: 15px">
-                    <span th:id="${'word_select_point_' + word.wordId}" class="fa fa-play" style="display: none"></span>
-                    <span th:id="${'word_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
-                  </span>
-              <div style="position:relative; top: -10px; padding-left: 10px">
+                <span th:id="${'word_select_point_' + word.wordId}" class="fa fa-play" style="display: none"></span>
+                <span th:id="${'word_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+              </span>
+              <div style="position: relative; top: -10px; padding-left: 10px">
                 <small>
-                      <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
-                        <span th:text="${wordDatasetCode}"></span>
-                        <span th:unless="${wordDatasetIter.last}">,</span>
-                      </span>
+                  <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
+                    <span th:text="${wordDatasetCode}"></span>
+                    <span th:unless="${wordDatasetIter.last}">,</span>
+                  </span>
                 </small>
               </div>
             </td>

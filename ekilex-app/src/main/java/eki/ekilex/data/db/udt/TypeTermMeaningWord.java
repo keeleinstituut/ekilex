@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeTermMeaningWord extends UDTImpl<TypeTermMeaningWordRecord> {
 
-    private static final long serialVersionUID = -2044757501;
+    private static final long serialVersionUID = -690185390;
 
     /**
      * The reference instance of <code>public.type_term_meaning_word</code>
@@ -65,14 +65,19 @@ public class TypeTermMeaningWord extends UDTImpl<TypeTermMeaningWordRecord> {
     public static final UDTField<TypeTermMeaningWordRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_TERM_MEANING_WORD, "");
 
     /**
-     * The attribute <code>public.type_term_meaning_word.matching_word</code>.
+     * The attribute <code>public.type_term_meaning_word.word_type_codes</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Boolean> MATCHING_WORD = createField("matching_word", org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, String[]> WORD_TYPE_CODES = createField("word_type_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.dataset_codes</code>.
      */
     public static final UDTField<TypeTermMeaningWordRecord, String[]> DATASET_CODES = createField("dataset_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_TERM_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_term_meaning_word.matching_word</code>.
+     */
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> MATCHING_WORD = createField("matching_word", org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * No further instances allowed

@@ -12,6 +12,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.util.List;
 
@@ -21,9 +22,9 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
+import org.jooq.Record10;
 import org.jooq.Record2;
 import org.jooq.Record3;
-import org.jooq.Record9;
 import org.jooq.SelectHavingStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.Table;
@@ -53,6 +54,7 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
 
 @Component
@@ -426,6 +428,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Dataset ds = DATASET.as("ds");
 		Freeform ff = FREEFORM.as("ff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		WordWordType wt = WORD_WORD_TYPE.as("wt");
+
+		SelectHavingStep<Record1<String[]>> wts = DSL
+				.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
+				.from(wt).where(wt.WORD_ID.eq(wo.ID))
+				.groupBy(wt.WORD_ID);
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -447,7 +455,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewo = wherewo.and(wo.LANG.eq(resultLang));
 		}
 
-		Table<Record9<Long, Long, String, Long, String, Integer, String, Boolean, String[]>> mm = DSL
+		Table<Record10<Long,Long,String,Long,String,Integer,String,String[],String[],Boolean>> mm = DSL
 				.select(
 						m.field("id", Long.class),
 						pm.WORD_ID.as("order_by_word_id"),
@@ -456,8 +464,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						fo.VALUE.as("word"),
 						wo.HOMONYM_NR,
 						wo.LANG,
-						DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class)))).as("matching_word"),
-						DSL.field(wds).as("dataset_codes"))
+						DSL.field(wts).as("word_type_codes"),
+						DSL.field(wds).as("dataset_codes"),
+						DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class)))).as("matching_word")
+						)
 				.from(m
 						.innerJoin(pm).on(pm.WORD_ID.eq(m.field("order_by_word_id", Long.class)))
 						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name())))
@@ -482,8 +492,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						+ "m.word,"
 						+ "m.homonym_nr,"
 						+ "m.lang,"
-						+ "m.matching_word,"
-						+ "m.dataset_codes)::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
+						+ "m.word_type_codes,"
+						+ "m.dataset_codes,"
+						+ "m.matching_word"
+						+ ")::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
 
 		int limit = MAX_RESULTS_LIMIT;
 		if (fetchAll) {

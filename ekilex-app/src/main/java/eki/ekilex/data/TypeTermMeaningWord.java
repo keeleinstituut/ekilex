@@ -14,9 +14,15 @@ public class TypeTermMeaningWord extends AbstractDataObject {
 
 	private String lang;
 
-	private boolean matchingWord;
+	private String[] wordTypeCodes;
 
 	private String[] datasetCodes;
+
+	private boolean matchingWord;
+
+	private boolean prefixoid;
+
+	private boolean suffixoid;
 
 	public Long getWordId() {
 		return wordId;
@@ -50,12 +56,12 @@ public class TypeTermMeaningWord extends AbstractDataObject {
 		this.lang = lang;
 	}
 
-	public boolean isMatchingWord() {
-		return matchingWord;
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
 	}
 
-	public void setMatchingWord(boolean matchingWord) {
-		this.matchingWord = matchingWord;
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
 	}
 
 	public String[] getDatasetCodes() {
@@ -64,6 +70,30 @@ public class TypeTermMeaningWord extends AbstractDataObject {
 
 	public void setDatasetCodes(String[] datasetCodes) {
 		this.datasetCodes = datasetCodes;
+	}
+
+	public boolean isMatchingWord() {
+		return matchingWord;
+	}
+
+	public void setMatchingWord(boolean matchingWord) {
+		this.matchingWord = matchingWord;
+	}
+
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
 	}
 
 }

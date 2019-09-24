@@ -91,9 +91,9 @@ function initialise() {
 
 	$(document).on('change', '#meaning-other-words-visible-check', function() {
 		if (this.checked) {
-			$(".other-words").fadeIn();
+			$(".other-word").fadeIn();
 		} else {
-			$(".other-words").fadeOut();
+			$(".other-word").fadeOut();
 		}
 	});
 

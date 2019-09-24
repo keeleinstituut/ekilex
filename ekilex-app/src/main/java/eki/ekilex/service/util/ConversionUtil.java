@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,9 +74,17 @@ public class ConversionUtil implements DbConstant {
 
 		termMeanings.forEach(termMeaning -> {
 			List<TypeTermMeaningWord> meaningWords = termMeaning.getMeaningWords().stream().filter(meaningWord -> meaningWord.getWordId() != null).collect(Collectors.toList());
+			meaningWords.forEach(meaningWord -> {
+				boolean isPrefixoid = ArrayUtils.contains(meaningWord.getWordTypeCodes(), WORD_TYPE_CODE_PREFIXOID);
+				boolean isSuffixoid = ArrayUtils.contains(meaningWord.getWordTypeCodes(), WORD_TYPE_CODE_SUFFIXOID);
+				meaningWord.setPrefixoid(isPrefixoid);
+				meaningWord.setSuffixoid(isSuffixoid);
+			});
 			boolean meaningWordsExist = CollectionUtils.isNotEmpty(meaningWords);
+			boolean conceptIdsExist = CollectionUtils.isNotEmpty(termMeaning.getConceptIds());
 			termMeaning.setMeaningWords(meaningWords);
 			termMeaning.setMeaningWordsExist(meaningWordsExist);
+			termMeaning.setConceptIdsExist(conceptIdsExist);
 		});
 	}
 
