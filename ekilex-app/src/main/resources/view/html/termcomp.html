@@ -10,11 +10,11 @@
     </div>
     <hr />
     <div id="results" class="w-100">
-      <div th:each="termMeaning,termMeaningIter : ${meaningsResult.meanings}" th:class="${termMeaningIter.last} ? '' : 'border-bottom'">
-        <button type="button" class="btn btn-link ml-2" th:data-id="${termMeaning.meaningId}" name="detailsBtn" style="text-decoration:none; color:inherit;">
+      <div th:each="termMeaning,termMeaningIter : ${meaningsResult.meanings}" class="d-flex flex-row flex-nowrap" th:classappend="${termMeaningIter.last} ? '' : 'border-bottom'">
+        <button type="button" class="btn btn-block pl-4" th:data-id="${termMeaning.meaningId}" name="detailsBtn" style="text-decoration:none; color:inherit;">
           <th:block th:if="${termMeaning.meaningWordsExist}">
             <div th:each="meaningWord : ${termMeaning.meaningWords}" class="row">
-              <span th:text="${meaningWord.word}" class="ml-1" th:style="${meaningWord.matchingWord ? 'font-weight: bold;' : ''}"></span>
+              <span th:text="${meaningWord.word}" class="ml-1" th:classappend="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
               <span th:text="${meaningWord.homonymNr}" class="ml-1"></span>
               <span th:text="${'(' + iso2languages[meaningWord.lang] + ')'}" class="ml-1"></span>
               <span class="ml-1 ctxt" style="margin-top: 2px;">
@@ -33,10 +33,10 @@
             </ul>
           </th:block>
         </button>
-        <span class="float-right" style="padding: 15px">
+        <div class="result-right" style="padding: 15px">
           <span th:id="${'meaning_select_point_' + termMeaning.meaningId}" class="fa fa-play" style="display: none"></span>
           <span th:id="${'meaning_select_wait_' + termMeaning.meaningId}" class="fa fa-refresh fa-spin" style="display: none"></span>
-        </span>
+        </div>
       </div>
       <div th:if="${meaningsResult.showPaging}">
         <div th:replace="components :: paging(${meaningsResult})"></div>

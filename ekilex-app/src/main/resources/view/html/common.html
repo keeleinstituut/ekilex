@@ -40,7 +40,7 @@
           <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex <small class="text-muted ml-auto" th:text="${'v.'+appData.appVersion}">1.0.0</small></a>
           <div>
             <div class="dropdown-header">Rakenduse valik</div>
-            <div th:if="${activeItem}">
+            <div th:if="${activeItem}" >
               <a class="dropdown-item side-menu-item " th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
               <a class="dropdown-item side-menu-item" th:if="${sessionBean.userRole != null}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
