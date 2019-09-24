@@ -451,8 +451,9 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return create
 				.select(
 						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT.as("freeform_value_text"),
-						FREEFORM.VALUE_PRESE.as("freeform_value_prese"),
+						FREEFORM.VALUE_TEXT.as("value_text"),
+						FREEFORM.VALUE_PRESE.as("value_prese"),
+						FREEFORM.COMPLEXITY.as("complexity"),
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
@@ -564,8 +565,9 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return create
 				.select(
 						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT.as("freeform_value_text"),
-						FREEFORM.VALUE_PRESE.as("freeform_value_prese"),
+						FREEFORM.VALUE_TEXT.as("value_text"),
+						FREEFORM.VALUE_PRESE.as("value_prese"),
+						FREEFORM.COMPLEXITY.as("complexity"),
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
@@ -769,8 +771,9 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return create
 				.select(
 						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT.as("freeform_value_text"),
-						FREEFORM.VALUE_PRESE.as("freeform_value_prese"),
+						FREEFORM.VALUE_TEXT.as("value_text"),
+						FREEFORM.VALUE_PRESE.as("value_prese"),
+						FREEFORM.COMPLEXITY.as("complexity"),
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),

@@ -404,6 +404,7 @@ public class ConversionUtil implements DbConstant {
 				note.setId(noteId);
 				note.setValueText(tuple.getValueText());
 				note.setValuePrese(tuple.getValuePrese());
+				note.setComplexity(tuple.getComplexity());
 				noteMap.put(noteId, note);
 				notes.add(note);
 			} else {

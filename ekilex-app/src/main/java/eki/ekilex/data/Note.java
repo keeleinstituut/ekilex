@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class Note extends AbstractDataObject {
@@ -13,6 +14,8 @@ public class Note extends AbstractDataObject {
 	private String valueText;
 
 	private String valuePrese;
+
+	private Complexity complexity;
 
 	private List<SourceLink> sourceLinks;
 
@@ -38,6 +41,14 @@ public class Note extends AbstractDataObject {
 
 	public void setValuePrese(String valuePrese) {
 		this.valuePrese = valuePrese;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public List<SourceLink> getSourceLinks() {

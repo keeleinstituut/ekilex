@@ -216,11 +216,11 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateLexemePublicNote(Long id, String valuePrese) {
+	public void updateLexemePublicNote(Long id, String valuePrese, Complexity complexity) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		cudDbService.updateFreeformTextValue(id, value, valuePrese);
+		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
 	}
 
 	@Transactional
@@ -437,9 +437,9 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createLexemePublicNote(Long lexemeId, String valuePrese) {
+	public void createLexemePublicNote(Long lexemeId, String valuePrese, Complexity complexity) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long lexemeFreeformId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese);
+		Long lexemeFreeformId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese, complexity);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
 		createLifecycleLog(logData);
 	}

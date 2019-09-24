@@ -696,11 +696,12 @@ public class CudDbService implements DbConstant {
 				.getId();
 	}
 
-	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese) {
+	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese, Complexity complexity) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+		freeform.setComplexity(complexity.name());
 		freeform.store();
 	
 		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
