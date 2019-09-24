@@ -24,7 +24,9 @@ import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record9;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
+import org.jooq.SelectJoinStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -426,11 +428,14 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Freeform ff = FREEFORM.as("ff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 
-		SelectHavingStep<Record1<String[]>> wds = DSL
-				.select(DSL.arrayAggDistinct(lds.DATASET_CODE))
+		SelectConditionStep<Record3<Long, String, Long>> wdsf = DSL
+				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
 				.from(lds, ds)
-				.where(lds.WORD_ID.eq(wo.ID).and(lds.DATASET_CODE.eq(ds.CODE)))
-				.groupBy(lds.WORD_ID);
+				.where(lds.WORD_ID.eq(wo.ID).and(lds.DATASET_CODE.eq(ds.CODE)));
+
+		SelectJoinStep<Record1<String[]>> wds = DSL
+				.select(DSL.arrayAgg(wdsf.field("dataset_code", String.class)).orderBy(wdsf.field("order_by")))
+				.from(wdsf);
 
 		Condition wherelods = composeLexemeDatasetsCondition(lo, searchDatasetsRestriction);
 
