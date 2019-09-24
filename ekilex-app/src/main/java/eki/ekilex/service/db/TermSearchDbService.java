@@ -24,7 +24,6 @@ import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record9;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.Table;
@@ -428,10 +427,14 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Freeform ff = FREEFORM.as("ff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 
-		SelectConditionStep<Record3<Long, String, Long>> wdsf = DSL
+		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
 				.from(lds, ds)
-				.where(lds.WORD_ID.eq(wo.ID).and(lds.DATASET_CODE.eq(ds.CODE)));
+				.where(
+						lds.WORD_ID.eq(wo.ID)
+						.and(lds.MEANING_ID.eq(m.field("id", Long.class)))
+						.and(lds.DATASET_CODE.eq(ds.CODE)))
+				.asTable("wdsf");
 
 		SelectJoinStep<Record1<String[]>> wds = DSL
 				.select(DSL.arrayAgg(wdsf.field("dataset_code", String.class)).orderBy(wdsf.field("order_by")))
@@ -474,7 +477,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.groupBy(mff.MEANING_ID);
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
-				.field("array_agg(row ("
+				.field("array_agg(distinct row ("
 						+ "m.word_id,"
 						+ "m.word,"
 						+ "m.homonym_nr,"
