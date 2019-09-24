@@ -9,6 +9,9 @@ update lexeme set type = 'PRIMARY' where type is null;
 
 -- TODO change lexeme.type not nullable
 
+-- 24.09.2019 wrapper type for term search results projection 
+create type type_term_meaning_word as (word_id bigint, word text, homonym_nr integer, lang char(3), matching_word boolean, dataset_codes varchar(10) array);
+
 -- 24.09.2019 only required when using dataset importer
 drop table if exists temp_ds_import_pk_map cascade;
 create table temp_ds_import_pk_map
