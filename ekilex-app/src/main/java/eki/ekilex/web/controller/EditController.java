@@ -522,6 +522,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
+				userService.updateUserPreferredDatasets(selectedDatasets);
 			}
 			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
@@ -550,6 +551,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
+				userService.updateUserPreferredDatasets(selectedDatasets);
 			}
 			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
@@ -594,6 +596,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		if (!selectedDatasets.contains(dataset)) {
 			selectedDatasets.add(dataset);
+			userService.updateUserPreferredDatasets(selectedDatasets);
 		}
 		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
