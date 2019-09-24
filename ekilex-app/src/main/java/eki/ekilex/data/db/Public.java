@@ -83,6 +83,8 @@ import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
+import eki.ekilex.data.db.tables.TempDsImportPkMap;
+import eki.ekilex.data.db.tables.TempDsImportQueue;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -125,6 +127,7 @@ import eki.ekilex.data.db.udt.TypeGrammar;
 import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypePublicNote;
+import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWord;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
@@ -156,7 +159,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1640545814;
+    private static final long serialVersionUID = -1557717167;
 
     /**
      * The reference instance of <code>public</code>
@@ -559,6 +562,16 @@ public class Public extends SchemaImpl {
     public final SourceLifecycleLog SOURCE_LIFECYCLE_LOG = eki.ekilex.data.db.tables.SourceLifecycleLog.SOURCE_LIFECYCLE_LOG;
 
     /**
+     * The table <code>public.temp_ds_import_pk_map</code>.
+     */
+    public final TempDsImportPkMap TEMP_DS_IMPORT_PK_MAP = eki.ekilex.data.db.tables.TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP;
+
+    /**
+     * The table <code>public.temp_ds_import_queue</code>.
+     */
+    public final TempDsImportQueue TEMP_DS_IMPORT_QUEUE = eki.ekilex.data.db.tables.TempDsImportQueue.TEMP_DS_IMPORT_QUEUE;
+
+    /**
      * The table <code>public.usage_type</code>.
      */
     public final UsageType USAGE_TYPE = eki.ekilex.data.db.tables.UsageType.USAGE_TYPE;
@@ -833,6 +846,8 @@ public class Public extends SchemaImpl {
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.SOURCE_LIFECYCLE_LOG_ID_SEQ,
+            Sequences.TEMP_DS_IMPORT_PK_MAP_ID_SEQ,
+            Sequences.TEMP_DS_IMPORT_QUEUE_ID_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
@@ -945,6 +960,8 @@ public class Public extends SchemaImpl {
             Source.SOURCE,
             SourceFreeform.SOURCE_FREEFORM,
             SourceLifecycleLog.SOURCE_LIFECYCLE_LOG,
+            TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
+            TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
             UsageType.USAGE_TYPE,
             UsageTypeLabel.USAGE_TYPE_LABEL,
             ValueState.VALUE_STATE,
@@ -998,6 +1015,7 @@ public class Public extends SchemaImpl {
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypePublicNote.TYPE_PUBLIC_NOTE,
+            TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,
             TypeWord.TYPE_WORD,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,

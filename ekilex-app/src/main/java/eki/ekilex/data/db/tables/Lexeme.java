@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 311002606;
+    private static final long serialVersionUID = -1067196056;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -118,14 +118,14 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     public final TableField<LexemeRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>public.lexeme.order_by</code>.
-     */
-    public final TableField<LexemeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
-
-    /**
      * The column <code>public.lexeme.type</code>.
      */
     public final TableField<LexemeRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.lexeme.order_by</code>.
+     */
+    public final TableField<LexemeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.lexeme</code> table reference

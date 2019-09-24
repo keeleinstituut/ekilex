@@ -484,87 +484,90 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		return w1Where.and(DSL.or(wllExist, lllExist));
 	}
 
-	protected Condition applyLexMeaningLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition m1Where, Condition w1Where) throws Exception {
+	protected Condition applyLexMeaningLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition wherem1, Condition wherew1) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_ON) && c.getSearchValue() != null)
 				.collect(toList());
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return w1Where;
+			return wherew1;
 		}
 
 		MeaningLifecycleLog mll = MEANING_LIFECYCLE_LOG.as("mll");
 		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
 		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
 
-		Condition mllCondition = m1Where.and(mll.MEANING_ID.eq(l1.MEANING_ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID)));
-		Condition lllCondition = m1Where.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
+		Condition condmll = wherem1.and(mll.MEANING_ID.eq(l1.MEANING_ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID)));
+		Condition condlll = wherem1.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			mllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, mllCondition, false);
-			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition, false);
+			condmll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condmll, false);
+			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condlll, false);
 		}
 
-		Condition mllExist = DSL.exists(DSL.select(mll.ID).from(m1, l1, ll, mll).where(mllCondition));
-		Condition lllExist = DSL.exists(DSL.select(lll.ID).from(m1, l1, ll, lll).where(lllCondition));
+		Condition existml = DSL.exists(DSL
+				.select(mll.ID).from(m1, l1, ll, mll).where(condmll)
+				.unionAll(DSL.select(lll.ID).from(m1, l1, ll, lll).where(condlll)));
 
-		return w1Where.and(DSL.or(mllExist, lllExist));
+		return wherew1.and(existml);
 	}
 
-	protected Condition applyTermWordLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Word w1, Condition w1Where, Condition m1Where) throws Exception {
+	protected Condition applyTermWordLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Word w1, Condition wherel1) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_ON) && c.getSearchValue() != null)
 				.collect(toList());
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return m1Where;
+			return wherel1;
 		}
 
 		WordLifecycleLog wll = WORD_LIFECYCLE_LOG.as("wll");
 		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
 		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
 
-		Condition wllCondition = w1Where.and(wll.WORD_ID.eq(w1.ID).and(wll.LIFECYCLE_LOG_ID.eq(ll.ID)));
-		Condition lllCondition = w1Where.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
+		Condition condwll = wll.WORD_ID.eq(w1.ID).and(wll.LIFECYCLE_LOG_ID.eq(ll.ID));
+		Condition condlll = lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			wllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, wllCondition, false);
-			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition, false);
+			condwll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condwll, false);
+			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condlll, false);
 		}
 
-		Condition wllExist = DSL.exists(DSL.select(wll.ID).from(w1, l1, ll, wll).where(wllCondition));
-		Condition lllExist = DSL.exists(DSL.select(lll.ID).from(w1, l1, ll, lll).where(lllCondition));
+		Condition existwl = DSL.exists(DSL
+				.select(wll.ID).from(ll, wll).where(condwll)
+				.unionAll(DSL.select(lll.ID).from(ll, lll).where(condlll)));
 
-		return m1Where.and(DSL.or(wllExist, lllExist));
+		return wherel1.and(existwl);
 	}
 
-	protected Condition applyTermMeaningLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Condition l1Where, Condition m1Where) throws Exception {
+	protected Condition applyTermMeaningLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition wherel1) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_ON) && c.getSearchValue() != null)
 				.collect(toList());
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return m1Where;
+			return wherel1;
 		}
 
 		MeaningLifecycleLog mll = MEANING_LIFECYCLE_LOG.as("mll");
 		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
 		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
 
-		Condition mllCondition = l1Where.and(mll.MEANING_ID.eq(l1.MEANING_ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID)));
-		Condition lllCondition = l1Where.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
+		Condition condmll = mll.MEANING_ID.eq(m1.ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID));
+		Condition condlll = lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			mllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, mllCondition, false);
-			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition, false);
+			condmll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condmll, false);
+			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condlll, false);
 		}
 
-		Condition mllExist = DSL.exists(DSL.select(mll.ID).from(l1, ll, mll).where(mllCondition));
-		Condition lllExist = DSL.exists(DSL.select(lll.ID).from(l1, ll, lll).where(lllCondition));
+		Condition existml = DSL.exists(DSL
+				.select(mll.ID).from(ll, mll).where(condmll)
+				.unionAll(DSL.select(lll.ID).from(ll, lll).where(condlll)));
 
-		return m1Where.and(DSL.or(mllExist, lllExist));
+		return wherel1.and(existml);
 	}
 }

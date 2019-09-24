@@ -4,17 +4,18 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
+//TODO rename after fully operational
 public class TermMeaning extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long meaningId;
 
-	private String conceptId;
+	private List<String> conceptIds;
 
-	private TermMeaningWord mainWord;
+	private List<TypeTermMeaningWord> meaningWords;
 
-	private List<TermMeaningWord> otherWords;
+	private boolean meaningWordsExist;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -24,28 +25,28 @@ public class TermMeaning extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
-	public String getConceptId() {
-		return conceptId;
+	public List<String> getConceptIds() {
+		return conceptIds;
 	}
 
-	public void setConceptId(String conceptId) {
-		this.conceptId = conceptId;
+	public void setConceptIds(List<String> conceptIds) {
+		this.conceptIds = conceptIds;
 	}
 
-	public TermMeaningWord getMainWord() {
-		return mainWord;
+	public List<TypeTermMeaningWord> getMeaningWords() {
+		return meaningWords;
 	}
 
-	public void setMainWord(TermMeaningWord mainWord) {
-		this.mainWord = mainWord;
+	public void setMeaningWords(List<TypeTermMeaningWord> meaningWords) {
+		this.meaningWords = meaningWords;
 	}
 
-	public List<TermMeaningWord> getOtherWords() {
-		return otherWords;
+	public boolean isMeaningWordsExist() {
+		return meaningWordsExist;
 	}
 
-	public void setOtherWords(List<TermMeaningWord> otherWords) {
-		this.otherWords = otherWords;
+	public void setMeaningWordsExist(boolean meaningWordsExist) {
+		this.meaningWordsExist = meaningWordsExist;
 	}
 
 }

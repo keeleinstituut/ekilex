@@ -48,8 +48,7 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.TermMeaning;
-import eki.ekilex.data.TermMeaningWord;
-import eki.ekilex.data.TermMeaningWordTuple;
+import eki.ekilex.data.TypeTermMeaningWord;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
@@ -70,74 +69,14 @@ public class ConversionUtil implements DbConstant {
 		return classifier.isPresent() ? classifier.get().getValue() : code;
 	}
 
-	public List<TermMeaning> composeTermMeanings(List<TermMeaningWordTuple> termMeaningWordTuples) {
+	public void cleanTermMeanings(List<TermMeaning> termMeanings) {
 
-		List<TermMeaning> termMeanings = new ArrayList<>();
-
-		Map<Long, TermMeaning> termMeaningMap = new HashMap<>();
-		Map<Long, TermMeaningWord> termMeaningMainWordMap = new HashMap<>();
-		Map<Long, TermMeaningWord> termMeaningOtherWordMap = new HashMap<>();
-
-		TermMeaningWord termMeaningMainWord;
-
-		for (TermMeaningWordTuple tuple : termMeaningWordTuples) {
-
-			Long meaningId = tuple.getMeaningId();
-			TermMeaning termMeaning = termMeaningMap.get(meaningId);
-			if (termMeaning == null) {
-				termMeaning = new TermMeaning();
-				termMeaning.setMeaningId(meaningId);
-				termMeaning.setConceptId(tuple.getConceptId());
-				termMeaning.setMainWord(null);
-				termMeaning.setOtherWords(new ArrayList<>());
-				termMeanings.add(termMeaning);
-				termMeaningMap.put(meaningId, termMeaning);
-			}
-
-			Long mainWordId = tuple.getMainWordId();
-			if (mainWordId != null) {
-				termMeaningMainWord = termMeaningMainWordMap.get(mainWordId);
-				if (termMeaningMainWord == null) {
-					termMeaningMainWord = new TermMeaningWord();
-					termMeaningMainWord.setMeaningId(meaningId);
-					termMeaningMainWord.setWordId(tuple.getMainWordId());
-					termMeaningMainWord.setWord(tuple.getMainWord());
-					termMeaningMainWord.setHomonymNr(tuple.getMainWordHomonymNr());
-					termMeaningMainWord.setWordLang(tuple.getMainWordLang());
-					termMeaningMainWord.setDatasetCodesWrapup(tuple.getMainWordDatasetCodesWrapup());
-					termMeaningMainWordMap.put(mainWordId, termMeaningMainWord);
-				}
-				termMeaning.setMainWord(termMeaningMainWord);
-			}
-
-			Long otherWordId = tuple.getOtherWordId();
-			if (otherWordId != null) {
-				TermMeaningWord termMeaningOtherWord = termMeaningOtherWordMap.get(otherWordId);
-				if (termMeaningOtherWord == null) {
-					termMeaningOtherWord = new TermMeaningWord();
-					termMeaningOtherWord.setMeaningId(meaningId);
-					termMeaningOtherWord.setWordId(tuple.getOtherWordId());
-					termMeaningOtherWord.setWord(tuple.getOtherWord());
-					termMeaningOtherWord.setHomonymNr(tuple.getOtherWordHomonymNr());
-					termMeaningOtherWord.setWordLang(tuple.getOtherWordLang());
-					termMeaningOtherWord.setOrderBy(tuple.getOtherWordOrderBy());
-					termMeaningOtherWord.setDatasetCodesWrapup(tuple.getOtherWordDatasetCodesWrapup());
-					termMeaningOtherWordMap.put(otherWordId, termMeaningOtherWord);
-				}
-				List<TermMeaningWord> termMeaningOtherWords = termMeaning.getOtherWords();
-				if (!termMeaningOtherWords.contains(termMeaningOtherWord)) {
-					termMeaningOtherWords.add(termMeaningOtherWord);
-				}
-			}
-		}
-
-		for (TermMeaning termMeaning : termMeanings) {
-			if ((termMeaning.getMainWord() == null) && StringUtils.isBlank(termMeaning.getConceptId())) {
-				termMeaning.setConceptId("#");
-			}
-			termMeaning.getOtherWords().sort(Comparator.comparing(TermMeaningWord::getOrderBy));
-		}
-		return termMeanings;
+		termMeanings.forEach(termMeaning -> {
+			List<TypeTermMeaningWord> meaningWords = termMeaning.getMeaningWords().stream().filter(meaningWord -> meaningWord.getWordId() != null).collect(Collectors.toList());
+			boolean meaningWordsExist = CollectionUtils.isNotEmpty(meaningWords);
+			termMeaning.setMeaningWords(meaningWords);
+			termMeaning.setMeaningWordsExist(meaningWordsExist);
+		});
 	}
 
 	public Classifier classifierFromIdString(String idString) {

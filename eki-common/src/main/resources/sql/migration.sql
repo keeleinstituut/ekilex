@@ -8,3 +8,33 @@ alter table lexeme add column type varchar(50);
 update lexeme set type = 'PRIMARY' where type is null;
 
 -- TODO change lexeme.type not nullable
+
+-- 24.09.2019 only required when using dataset importer
+drop table if exists temp_ds_import_pk_map cascade;
+create table temp_ds_import_pk_map
+(
+  id bigserial primary key,
+  import_code varchar(100) not null,
+  created_on timestamp not null default statement_timestamp(),
+  table_name text not null,
+  source_pk bigint not null,
+  target_pk bigint not null
+);
+
+create index temp_ds_import_pk_map_import_code_idx on temp_ds_import_pk_map(import_code);
+create index temp_ds_import_pk_map_table_name_idx on temp_ds_import_pk_map(table_name);
+create index temp_ds_import_pk_map_source_pk_idx on temp_ds_import_pk_map(source_pk);
+create index temp_ds_import_pk_map_target_pk_idx on temp_ds_import_pk_map(target_pk);
+
+drop table if exists temp_ds_import_queue cascade;
+create table temp_ds_import_queue
+(
+  id bigserial primary key,
+  import_code varchar(100) not null,
+  created_on timestamp not null default statement_timestamp(),
+  table_name text not null,
+  content text not null  
+);
+
+create index temp_ds_import_queue_import_code_idx on temp_ds_import_queue(import_code);
+create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_name);

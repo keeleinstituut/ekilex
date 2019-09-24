@@ -10,7 +10,7 @@ public class MeaningsResult extends PagingResult {
 
 	private int wordCount;
 
-	private List<TermMeaning> termMeanings;
+	private List<TermMeaning> meanings;
 
 	private boolean resultExist;
 
@@ -30,12 +30,12 @@ public class MeaningsResult extends PagingResult {
 		this.wordCount = wordCount;
 	}
 
-	public List<TermMeaning> getTermMeanings() {
-		return termMeanings;
+	public List<TermMeaning> getMeanings() {
+		return meanings;
 	}
 
-	public void setTermMeanings(List<TermMeaning> termMeanings) {
-		this.termMeanings = termMeanings;
+	public void setMeanings(List<TermMeaning> meanings) {
+		this.meanings = meanings;
 	}
 
 	public boolean isResultExist() {

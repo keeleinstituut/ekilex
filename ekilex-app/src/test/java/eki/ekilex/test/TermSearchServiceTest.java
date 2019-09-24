@@ -3,7 +3,6 @@ package eki.ekilex.test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -17,8 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @RunWith(SpringRunner.class)
@@ -48,10 +47,9 @@ public class TermSearchServiceTest implements SystemConstant {
 		String resultLang = null;
 		boolean fetchAll = true;
 
-		List<TermMeaningWordTuple> termMeanings = termSearchDbService
-				.getMeanings(wordWithMetaCharacters, searchDatasetsRestriction, resultLang, fetchAll, DEFAULT_OFFSET);
+		MeaningsResult meaningsResult = termSearchDbService.getMeaningsResult(wordWithMetaCharacters, searchDatasetsRestriction, resultLang, fetchAll, DEFAULT_OFFSET);
 
-		assertEquals("Incorrect count of matches", 20, termMeanings.size());
+		assertEquals("Incorrect count of matches", 20, meaningsResult.getMeaningCount());
 	}
 
 	private SearchDatasetsRestriction createDefaultSearchDatasetsRestriction() {

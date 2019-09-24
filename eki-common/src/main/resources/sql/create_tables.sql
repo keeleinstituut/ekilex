@@ -1,3 +1,5 @@
+create type type_term_meaning_word as (word_id bigint, word text, homonym_nr integer, lang char(3), matching_word boolean, dataset_codes varchar(10) array);
+
 create table eki_user
 (
   id bigserial primary key,

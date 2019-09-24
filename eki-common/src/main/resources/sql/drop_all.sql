@@ -24,6 +24,7 @@ drop type if exists type_word_etym_relation;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
+drop type if exists type_term_meaning_word;
 
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;

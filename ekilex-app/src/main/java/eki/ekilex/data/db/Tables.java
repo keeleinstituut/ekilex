@@ -83,6 +83,8 @@ import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
+import eki.ekilex.data.db.tables.TempDsImportPkMap;
+import eki.ekilex.data.db.tables.TempDsImportQueue;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -528,6 +530,16 @@ public class Tables {
      * The table <code>public.source_lifecycle_log</code>.
      */
     public static final SourceLifecycleLog SOURCE_LIFECYCLE_LOG = eki.ekilex.data.db.tables.SourceLifecycleLog.SOURCE_LIFECYCLE_LOG;
+
+    /**
+     * The table <code>public.temp_ds_import_pk_map</code>.
+     */
+    public static final TempDsImportPkMap TEMP_DS_IMPORT_PK_MAP = eki.ekilex.data.db.tables.TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP;
+
+    /**
+     * The table <code>public.temp_ds_import_queue</code>.
+     */
+    public static final TempDsImportQueue TEMP_DS_IMPORT_QUEUE = eki.ekilex.data.db.tables.TempDsImportQueue.TEMP_DS_IMPORT_QUEUE;
 
     /**
      * The table <code>public.usage_type</code>.

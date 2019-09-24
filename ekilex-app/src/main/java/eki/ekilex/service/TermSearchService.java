@@ -33,8 +33,6 @@ import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.data.TermMeaning;
-import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.service.db.TermSearchDbService;
@@ -48,29 +46,21 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	@Transactional
 	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) {
 
-		List<TermMeaning> termMeanings;
-		int meaningCount;
-		int wordCount;
+		MeaningsResult meaningsResult;
 		if (StringUtils.isBlank(searchFilter)) {
-			termMeanings = Collections.emptyList();
-			meaningCount = 0;
-			wordCount = 0;
+			meaningsResult = new MeaningsResult();
+			meaningsResult.setMeanings(Collections.emptyList());
+			meaningsResult.setMeaningCount(0);
+			meaningsResult.setWordCount(0);
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService
-					.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
-			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
-			meaningCount = termSearchDbService.countMeanings(searchFilter, searchDatasetsRestriction);
-			wordCount = termSearchDbService.countWords(searchFilter, searchDatasetsRestriction, resultLang);
+			meaningsResult = termSearchDbService.getMeaningsResult(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
+			conversionUtil.cleanTermMeanings(meaningsResult.getMeanings());
 		}
+		int meaningCount = meaningsResult.getMeaningCount();
 		boolean resultExist = meaningCount > 0;
-		MeaningsResult meaningsResult = new MeaningsResult();
-		meaningsResult.setMeaningCount(meaningCount);
-		meaningsResult.setWordCount(wordCount);
-		meaningsResult.setTermMeanings(termMeanings);
-		meaningsResult.setResultExist(resultExist);
-
 		boolean showPaging = meaningCount > MAX_RESULTS_LIMIT;
+		meaningsResult.setResultExist(resultExist);
 		meaningsResult.setShowPaging(showPaging);
 		if (showPaging) {
 			setPagingData(offset, meaningCount, meaningsResult);
@@ -80,32 +70,23 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	}
 
 	@Transactional
-	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset)
-			throws Exception {
+	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) throws Exception {
 
-		List<TermMeaning> termMeanings;
-		int meaningCount;
-		int wordCount;
+		MeaningsResult meaningsResult;
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
-			termMeanings = Collections.emptyList();
-			meaningCount = 0;
-			wordCount = 0;
+			meaningsResult = new MeaningsResult();
+			meaningsResult.setMeanings(Collections.emptyList());
+			meaningsResult.setMeaningCount(0);
+			meaningsResult.setWordCount(0);
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService
-					.getMeanings(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
-			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
-			meaningCount = termSearchDbService.countMeanings(searchFilter, searchDatasetsRestriction);
-			wordCount = termSearchDbService.countWords(searchFilter, searchDatasetsRestriction, resultLang);
+			meaningsResult = termSearchDbService.getMeaningsResult(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
+			conversionUtil.cleanTermMeanings(meaningsResult.getMeanings());
 		}
+		int meaningCount = meaningsResult.getMeaningCount();
 		boolean resultExist = meaningCount > 0;
-		MeaningsResult meaningsResult = new MeaningsResult();
-		meaningsResult.setMeaningCount(meaningCount);
-		meaningsResult.setWordCount(wordCount);
-		meaningsResult.setTermMeanings(termMeanings);
-		meaningsResult.setResultExist(resultExist);
-
 		boolean showPaging = meaningCount > MAX_RESULTS_LIMIT;
+		meaningsResult.setResultExist(resultExist);
 		meaningsResult.setShowPaging(showPaging);
 		if (showPaging) {
 			setPagingData(offset, meaningCount, meaningsResult);
@@ -141,8 +122,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
-		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
+		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.getMeaningDefinitionRefTuples(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		for (Definition definition : definitions) {
@@ -176,8 +156,8 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 			List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<Classifier> lexemeRegions = commonDataDbService.getLexemeRegions(lexemeId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
-			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples = commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang,
+					classifierLabelTypeDescrip);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			List<NoteSourceTuple> lexemePublicNoteSourceTuples = commonDataDbService.getLexemePublicNoteSourceTuples(lexemeId);
 			List<Note> lexemePublicNotes = conversionUtil.composeNotes(lexemePublicNoteSourceTuples);
@@ -185,8 +165,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 			List<SourceLink> lexemeRefLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
 
-			boolean classifiersExist =
-					StringUtils.isNotBlank(lexeme.getWordGenderCode())
+			boolean classifiersExist = StringUtils.isNotBlank(lexeme.getWordGenderCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
@@ -221,12 +200,10 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
 
-		boolean contentExists =
-				CollectionUtils.isNotEmpty(definitions)
+		boolean contentExists = CollectionUtils.isNotEmpty(definitions)
 				|| CollectionUtils.isNotEmpty(domains)
 				|| CollectionUtils.isNotEmpty(meaningFreeforms)
-				|| CollectionUtils.isNotEmpty(meaningRelations)
-				;
+				|| CollectionUtils.isNotEmpty(meaningRelations);
 
 		meaning.setDefinitionLangGroups(definitionLangGroups);
 		meaning.setDomains(domains);

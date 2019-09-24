@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.FORM;
@@ -23,7 +24,7 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record3;
-import org.jooq.Record6;
+import org.jooq.Record9;
 import org.jooq.SelectHavingStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -35,11 +36,13 @@ import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
+import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.TermMeaningWordTuple;
+import eki.ekilex.data.TermMeaning;
+import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Form;
@@ -51,96 +54,111 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
 
 @Component
 public class TermSearchDbService extends AbstractSearchDbService {
-
-	private static final String NUMERIC_VALUE_PATTERN = "^([0-9]+[.]?[0-9]*|[.][0-9]+)$";
 
 	@Autowired
 	private DSLContext create;
 
 	// simple search
 
-	public List<TermMeaningWordTuple> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll,
-			int offset) {
+	public MeaningsResult getMeaningsResult(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll, int offset) {
 
-		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
-		return executeFetch(m1, meaningCondition, resultLang, fetchAll, offset);
+		Table<Record3<Long, Long, Long[]>> m = composeFilteredMeaning(searchFilter, searchDatasetsRestriction);
+		List<TermMeaning> meanings = executeFetch(m, searchDatasetsRestriction, resultLang, fetchAll, offset);
+		int meaningCount = executeCountMeanings(m);
+		int wordCount = executeCountWords(m, searchDatasetsRestriction, resultLang);
+
+		MeaningsResult meaningsResult = new MeaningsResult();
+		meaningsResult.setMeanings(meanings);
+		meaningsResult.setMeaningCount(meaningCount);
+		meaningsResult.setWordCount(wordCount);
+
+		return meaningsResult;
 	}
 
-	public int countMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
-
-		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
-		return executeCountMeanings(m1, meaningCondition);
-	}
-
-	public int countWords(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
-
-		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
-		return executeCountWords(m1, meaningCondition, resultLang);
-	}
-
-	private Condition composeMeaningCondition(Meaning m1, String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
+	private Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_").toLowerCase();
 
-		Lexeme l1 = LEXEME.as("l1");
-		Word w1 = WORD.as("w1");
-		Paradigm p1 = PARADIGM.as("p1");
+		Meaning m = MEANING.as("m");
+		Lexeme l = LEXEME.as("l");
+		Paradigm p = PARADIGM.as("p");
+		Word w1 = WORD.as("w");
+		Form f1 = FORM.as("f");
 
-		Condition where1 = FORM.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name());
+		Condition wheref = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
-			where1 = where1.and(FORM.VALUE.lower().like(maskedSearchFilter));
+			wheref = wheref.and(f1.VALUE.lower().like(maskedSearchFilter));
 		} else {
-			where1 = where1.and(FORM.VALUE.lower().equal(maskedSearchFilter));
+			wheref = wheref.and(f1.VALUE.lower().equal(maskedSearchFilter));
 		}
-		Table<Record1<Long>> f1 = DSL
-				.select(FORM.PARADIGM_ID)
-				.from(FORM)
-				.where(where1)
-				.asTable("f1");
 
-		Condition where2 = f1.field("paradigm_id", Long.class).eq(p1.ID).and(p1.WORD_ID.eq(w1.ID)).and(l1.WORD_ID.eq(w1.ID)).and(l1.MEANING_ID.eq(m1.ID));
-		Condition where3 = composeLexemeDatasetsCondition(l1, searchDatasetsRestriction);
-		Condition where = DSL.exists(DSL.select(l1.ID).from(f1, p1, w1, l1).where(where2.and(where3)));
-		return where;
+		Condition wherelds = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
+
+		Table<Record1<Long>> f = DSL
+				.select(f1.PARADIGM_ID)
+				.from(f1)
+				.where(wheref)
+				.asTable("f");
+
+		Table<Record1<Long>> w = DSL
+				.select(w1.ID)
+				.from(f, p, w1)
+				.where(
+						f.field("paradigm_id", Long.class).eq(p.ID)
+								.and(p.WORD_ID.eq(w1.ID))
+								.andExists(DSL
+										.select(l.ID)
+										.from(l)
+										.where(l.WORD_ID.eq(w1.ID).and(wherelds))))
+				.asTable("w");
+
+		Table<Record3<Long, Long, Long[]>> mm = DSL
+				.select(
+						m.ID,
+						DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("order_by_word_id"),
+						DSL.arrayAgg(w.field("id", Long.class)).orderBy(l.ORDER_BY).as("match_word_ids"))
+				.from(m, l, w)
+				.where(
+						l.MEANING_ID.eq(m.ID)
+								.and(l.WORD_ID.eq(w.field("id", Long.class)))
+								.and(wherelds))
+				.groupBy(m.ID)
+				.asTable("m");
+
+		return mm;
 	}
 
 	// detail search
 
-	public List<TermMeaningWordTuple> getMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang,
-			boolean fetchAll, int offset) throws Exception {
+	public MeaningsResult getMeaningsResult(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll, int offset) throws Exception {
 
-		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
-		return executeFetch(m1, meaningCondition, resultLang, fetchAll, offset);
+		Table<Record3<Long, Long, Long[]>> m = composeFilteredMeaning(searchFilter, searchDatasetsRestriction);
+		List<TermMeaning> meanings = executeFetch(m, searchDatasetsRestriction, resultLang, fetchAll, offset);
+		int meaningCount = executeCountMeanings(m);
+		int wordCount = executeCountWords(m, searchDatasetsRestriction, resultLang);
+
+		MeaningsResult meaningsResult = new MeaningsResult();
+		meaningsResult.setMeanings(meanings);
+		meaningsResult.setMeaningCount(meaningCount);
+		meaningsResult.setWordCount(wordCount);
+
+		return meaningsResult;
 	}
 
-	public int countMeanings(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
-
-		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
-		return executeCountMeanings(m1, meaningCondition);
-	}
-
-	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) throws Exception {
-
-		Meaning m1 = MEANING.as("m1");
-		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, searchDatasetsRestriction);
-		return executeCountWords(m1, meaningCondition, resultLang);
-	}
-
-	private Condition composeMeaningCondition(Meaning m1, SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
+	private Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		List<SearchCriterionGroup> criteriaGroups = searchFilter.getCriteriaGroups();
 
-		Lexeme m1ds = LEXEME.as("m1ds");
-		Condition dsFiltWhere = composeLexemeDatasetsCondition(m1ds, searchDatasetsRestriction);
-		Condition where = DSL.exists(DSL.select(m1ds.ID).from(m1ds).where(m1ds.MEANING_ID.eq(m1.ID).and(dsFiltWhere)));
+		Word w1 = WORD.as("w1");
+		Meaning m1 = MEANING.as("m1");
+		Lexeme l = LEXEME.as("l");
+
+		Condition wherem = DSL.trueCondition();
+		Condition wherew = DSL.trueCondition();
 
 		for (SearchCriterionGroup searchCriterionGroup : criteriaGroups) {
 
@@ -154,68 +172,45 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				Form f1 = FORM.as("f1");
 				Paradigm p1 = PARADIGM.as("p1");
-				Word w1 = WORD.as("w1");
 				Lexeme l1 = LEXEME.as("l1");
-				Condition where1 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
+
+				Condition wheref1 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
 						.and(f1.PARADIGM_ID.eq(p1.ID))
-						.and(p1.WORD_ID.eq(w1.ID))
-						.and(l1.WORD_ID.eq(w1.ID))
-						.and(l1.MEANING_ID.eq(m1.ID));
+						.and(p1.WORD_ID.eq(w1.ID));
+				wheref1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, wheref1, true);
+				wheref1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wheref1, false);
+				wherew = wherew.andExists(DSL.select(f1.ID).from(f1, p1).where(wheref1));
 
-				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
-				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
-				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
-
-				where = where.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
-
-				Condition where2 = l1.MEANING_ID.eq(m1.ID).and(l1.WORD_ID.eq(w1.ID));
-				where2 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
-				where = applyTermWordLifecycleLogFilters(searchCriteria, l1, w1, where2, where);
-
-			} else if (SearchEntity.FORM.equals(searchEntity)) {
-
-				// this type of search is not actually available
-
-				Form f1 = FORM.as("f1");
-				Paradigm p1 = PARADIGM.as("p1");
-				Word w1 = WORD.as("w1");
-				Lexeme l1 = LEXEME.as("l1");
-				Condition where1 = f1.PARADIGM_ID.eq(p1.ID)
-						.and(p1.WORD_ID.eq(w1.ID))
-						.and(l1.WORD_ID.eq(w1.ID))
-						.and(l1.MEANING_ID.eq(m1.ID));
-
-				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
-
-				where = where.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
+				Condition wherel1 = l1.WORD_ID.eq(w1.ID);
+				wherel1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, wherel1);
+				wherel1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, wherel1);
+				wherel1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, wherel1);
+				wherel1 = applyTermWordLifecycleLogFilters(searchCriteria, l1, w1, wherel1);
+				wherew = wherew.andExists(DSL.select(l1.ID).from(l1).where(wherel1));
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
 
 				Lexeme l1 = LEXEME.as("l1");
-				Condition where1 = l1.MEANING_ID.eq(m1.ID);
 
-				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where = applyTermMeaningLifecycleLogFilters(searchCriteria, l1, where1, where);
-				where = applyDomainFilters(searchCriteria, m1, where);
+				wherem = applyDomainFilters(searchCriteria, m1, wherem);
+
+				Condition wherel1 = l1.MEANING_ID.eq(m1.ID);
+				wherel1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, wherel1);
+				wherel1 = applyTermMeaningLifecycleLogFilters(searchCriteria, l1, m1, wherel1);
+
+				wherem = wherem.andExists(DSL.select(l1.ID).from(l1).where(wherel1));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
-				Lexeme l1 = LEXEME.as("l1");
 				Definition d1 = DEFINITION.as("d1");
-				Condition where1 = d1.MEANING_ID.eq(m1.ID)
-						.and(l1.MEANING_ID.eq(m1.ID));
 
-				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1, true);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1, false);
-				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
-				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
+				Condition whered1 = d1.MEANING_ID.eq(m1.ID);
+				whered1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, whered1, true);
+				whered1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, whered1, false);
+				whered1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, whered1);
+				whered1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, whered1);
 
-				where = where.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
+				wherem = wherem.andExists(DSL.select(d1.ID).from(d1).where(whered1));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
@@ -223,18 +218,18 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				LexemeFreeform l1ff = LEXEME_FREEFORM.as("l1ff");
 				Freeform u1 = FREEFORM.as("u1");
 
-				Condition where1 = l1.MEANING_ID.eq(m1.ID)
+				Condition wherel1 = l1.WORD_ID.eq(w1.ID)
 						.and(l1ff.LEXEME_ID.eq(l1.ID))
 						.and(l1ff.FREEFORM_ID.eq(u1.ID))
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
 
-				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1, true);
-				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1, false);
-				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
-				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, where1);
+				wherel1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, wherel1);
+				wherel1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, wherel1, true);
+				wherel1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, wherel1, false);
+				wherel1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, wherel1);
+				wherel1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, wherel1);
 
-				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
+				wherew = wherew.andExists(DSL.select(l1.ID).from(l1, l1ff, u1).where(wherel1));
 
 			} else if (SearchEntity.NOTE.equals(searchEntity)) {
 
@@ -270,7 +265,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class))))
 						.asTable("n1");
 
-				where = where.and(DSL.exists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID))));
+				wherem = wherem.andExists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID)));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
@@ -283,7 +278,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1, false);
 
-				where = where.and(DSL.exists(DSL.select(c1.ID).from(m1ff, c1).where(where1)));
+				wherem = wherem.andExists(DSL.select(c1.ID).from(m1ff, c1).where(where1));
 
 			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
 
@@ -292,7 +287,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Lexeme lds = LEXEME.as("lds");
 				Form f1 = FORM.as("f1");
 				Paradigm p1 = PARADIGM.as("p1");
-				Word w1 = WORD.as("w1");
 				MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
 				DefinitionFreeform dff1 = DEFINITION_FREEFORM.as("dff1");
 				LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
@@ -357,192 +351,144 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.unionAll(selectLexemeFreeformSubTypes)
 						.asTable("a1");
 
-				where = where.and(DSL.exists(DSL.select(a1.field("meaning_id")).from(a1).where(a1.field("meaning_id", Long.class).eq(m1.ID))));
+				wherem = wherem.andExists(DSL.select(a1.field("meaning_id")).from(a1).where(a1.field("meaning_id", Long.class).eq(m1.ID)));
 			}
 		}
-		return where;
-	}
 
-	private int executeCountMeanings(Meaning m1, Condition meaningCondition) {
+		Table<Record1<Long>> w = DSL.select(w1.ID).from(w1).where(wherew).asTable("w");
+		Table<Record1<Long>> m = DSL.select(m1.ID).from(m1).where(wherem).asTable("m");
+		Condition wherelds = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
+		Condition wheremlw = l.MEANING_ID.eq(m.field("id", Long.class)).and(l.WORD_ID.eq(w.field("id", Long.class))).and(wherelds);
 
-		Table<Record1<Long>> m = DSL
-				.select(m1.ID.as("meaning_id"))
-				.from(m1)
-				.where(meaningCondition)
+		Table<Record3<Long, Long, Long[]>> mm = DSL
+				.select(
+						m.field("id", Long.class),
+						DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("order_by_word_id"),
+						DSL.arrayAgg(w.field("id", Long.class)).orderBy(l.ORDER_BY).as("match_word_ids"))
+				.from(m, l, w)
+				.where(wheremlw)
+				.groupBy(m.field("id"))
 				.asTable("m");
 
-		int count = create.fetchCount(DSL.selectDistinct(m.field("meaning_id")).from(m));
-		return count;
+		return mm;
 	}
 
-	private int executeCountWords(Meaning m1, Condition meaningCondition, String resultLang) {
+	private int executeCountMeanings(Table<Record3<Long, Long, Long[]>> m) {
 
-		Lexeme l1 = LEXEME.as("l1");
-		Word w1 = WORD.as("w1");
+		return create
+				.fetchCount(DSL
+						.select(m.field("id"))
+						.from(m));
+	}
 
-		Table<Record1<Long>> m = DSL
-				.select(m1.ID.as("meaning_id"))
-				.from(m1)
-				.where(meaningCondition)
-				.asTable("m");
+	private int executeCountWords(Table<Record3<Long, Long, Long[]>> m, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
 
-		Condition where3 = l1.WORD_ID.eq(w1.ID);
+		Lexeme lo = LEXEME.as("lo");
+		Word wo = WORD.as("wo");
+
+		Condition wherewo = wo.ID.eq(lo.WORD_ID);
 		if (StringUtils.isNotBlank(resultLang)) {
-			where3 = where3.and(w1.LANG.eq(resultLang));
+			wherewo = wherewo.and(wo.LANG.eq(resultLang));
 		}
-		Table<Record2<Long, Long>> w = DSL
-				.select(l1.MEANING_ID, l1.WORD_ID)
-				.from(w1, l1)
-				.where(where3)
-				.asTable("w");
 
-		int count = create
-				.fetchCount(DSL.selectDistinct(w.field("word_id"))
-						.from(m.innerJoin(w).on(w.field("meaning_id", Long.class).eq(m.field("meaning_id", Long.class)))));
-		return count;
+		Condition wherelods = composeLexemeDatasetsCondition(lo, searchDatasetsRestriction);
+
+		return create
+				.fetchCount(DSL
+						.select(wo.ID)
+						.from(m
+								.innerJoin(lo).on(lo.MEANING_ID.eq(m.field("id", Long.class)).and(wherelods))
+								.innerJoin(wo).on(wherewo)));
 	}
 
 	// common search
 
-	private List<TermMeaningWordTuple> executeFetch(Meaning m1, Condition meaningCondition, String resultLang, boolean fetchAll, int offset) {
+	private List<TermMeaning> executeFetch(
+			Table<Record3<Long, Long, Long[]>> m,
+			SearchDatasetsRestriction searchDatasetsRestriction,
+			String resultLang, boolean fetchAll, int offset) {
+
+		Lexeme lo = LEXEME.as("lo");
+		Word wo = WORD.as("wo");
+		Paradigm po = PARADIGM.as("po");
+		Form fo = FORM.as("fo");
+		Paradigm pm = PARADIGM.as("pm");
+		Form fm = FORM.as("fm");
+		Lexeme lds = LEXEME.as("lds");
+		Dataset ds = DATASET.as("ds");
+		Freeform ff = FREEFORM.as("ff");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+
+		SelectHavingStep<Record1<String[]>> wds = DSL
+				.select(DSL.arrayAgg(lds.DATASET_CODE).orderBy(ds.ORDER_BY))
+				.from(lds, ds)
+				.where(lds.WORD_ID.eq(wo.ID).and(lds.DATASET_CODE.eq(ds.CODE)))
+				.groupBy(lds.WORD_ID);
+
+		Condition wherelods = composeLexemeDatasetsCondition(lo, searchDatasetsRestriction);
+
+		Condition wherewo = wo.ID.eq(lo.WORD_ID);
+		if (StringUtils.isNotBlank(resultLang)) {
+			wherewo = wherewo.and(wo.LANG.eq(resultLang));
+		}
+
+		Table<Record9<Long, Long, String, Long, String, Integer, String, Boolean, String[]>> mm = DSL
+				.select(
+						m.field("id", Long.class),
+						pm.WORD_ID.as("order_by_word_id"),
+						fm.VALUE.as("order_by_word"),
+						wo.ID.as("word_id"),
+						fo.VALUE.as("word"),
+						wo.HOMONYM_NR,
+						wo.LANG,
+						DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class)))).as("matching_word"),
+						DSL.field(wds).as("dataset_codes"))
+				.from(m
+						.innerJoin(pm).on(pm.WORD_ID.eq(m.field("order_by_word_id", Long.class)))
+						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name())))
+						.leftOuterJoin(lo).on(lo.MEANING_ID.eq(m.field("id", Long.class)).and(wherelods))
+						.leftOuterJoin(wo).on(wherewo)
+						.leftOuterJoin(po).on(po.WORD_ID.eq(wo.ID))
+						.leftOuterJoin(fo).on(fo.PARADIGM_ID.eq(po.ID).and(fo.MODE.eq(FormMode.WORD.name()))))
+				.asTable("m");
+
+		SelectHavingStep<Record1<String[]>> c = DSL
+				.select(DSL.arrayAgg(ff.VALUE_TEXT))
+				.from(mff, ff)
+				.where(
+						mff.MEANING_ID.eq(mm.field("id", Long.class))
+								.and(mff.FREEFORM_ID.eq(ff.ID))
+								.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name())))
+				.groupBy(mff.MEANING_ID);
+
+		Field<TypeTermMeaningWordRecord[]> mw = DSL
+				.field("array_agg(row ("
+						+ "m.word_id,"
+						+ "m.word,"
+						+ "m.homonym_nr,"
+						+ "m.lang,"
+						+ "m.matching_word,"
+						+ "m.dataset_codes)::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
 
 		int limit = MAX_RESULTS_LIMIT;
 		if (fetchAll) {
 			limit = Integer.MAX_VALUE;
 		}
 
-		Lexeme l1 = LEXEME.as("l1");
-		Word w1 = WORD.as("w1");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		Freeform ff = FREEFORM.as("ff");
-
-		Table<Record1<Long>> m = DSL
-				.select(m1.ID.as("meaning_id"))
-				.from(m1)
-				.where(meaningCondition)
-				.asTable("m");
-
-		Condition where3 = l1.WORD_ID.eq(w1.ID);
-		if (StringUtils.isNotBlank(resultLang)) {
-			where3 = where3.and(w1.LANG.eq(resultLang));
-		}
-		Table<Record3<Long, Long, Long>> w = DSL
-				.select(l1.MEANING_ID, l1.WORD_ID, l1.ORDER_BY)
-				.from(w1, l1)
-				.where(where3)
-				.asTable("w");
-
-		Table<Record2<Long, String>> c = DSL
+		return create
 				.select(
-						mff.MEANING_ID,
-						ff.VALUE_TEXT.as("concept_id"))
-				.from(mff, ff)
-				.where(
-						mff.FREEFORM_ID.eq(ff.ID)
-								.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name()))
-								.and(ff.VALUE_TEXT.likeRegex(NUMERIC_VALUE_PATTERN)))
-				.asTable("c");
-
-		Table<Record3<Long, Long, Long>> mw = DSL
-				.select(
-						m.field("meaning_id", Long.class),
-						DSL.field("(array_agg(w.word_id order by w.order_by)) [1]", Long.class).as("word_id"),
-						DSL.field("(array_agg(c.concept_id order by c.concept_id)) [1]", Long.class).as("concept_id"))
-				.from(m
-						.leftOuterJoin(w).on(w.field("meaning_id", Long.class).eq(m.field("meaning_id", Long.class)))
-						.leftOuterJoin(c).on(c.field("meaning_id", Long.class).eq(m.field("meaning_id", Long.class))))
-				.groupBy(m.fields("meaning_id"))
-				.asTable("mw");
-
-		Paradigm mwp = PARADIGM.as("mwp");
-		Word mwv = WORD.as("mwv");
-		Form mwf = FORM.as("mwf");
-
-		Table<Record6<Long, String, Long, String, Integer, String>> mmw = DSL
-				.select(
-						mw.field("meaning_id", Long.class),
-						mw.field("concept_id", String.class),
-						mw.field("word_id", Long.class),
-						DSL.field("(array_agg(distinct mwf.value)) [1]", String.class).as("word"),
-						mwv.HOMONYM_NR,
-						mwv.LANG.as("word_lang"))
-				.from(mw
-						.leftOuterJoin(mwv).on(mwv.ID.eq(mw.field("word_id", Long.class)))
-						.leftOuterJoin(mwp).on(mwp.WORD_ID.eq(mwv.ID))
-						.leftOuterJoin(mwf).on(mwf.PARADIGM_ID.eq(mwp.ID).and(mwf.MODE.eq(FormMode.WORD.name()))))
+						mm.field("id", Long.class).as("meaning_id"),
+						DSL.field(c).as("concept_ids"),
+						mw.as("meaning_words"))
+				.from(mm)
 				.groupBy(
-						mw.field("meaning_id"),
-						mw.field("concept_id"),
-						mw.field("word_id"),
-						mwv.ID)
-				.orderBy(
-						DSL.field(DSL.name("word")),
-						mwv.HOMONYM_NR,
-						DSL.field("concept_id::int"))
+						mm.field("id"),
+						mm.field("order_by_word_id"),
+						mm.field("order_by_word"))
+				.orderBy(mm.field("order_by_word"))
 				.limit(limit)
 				.offset(offset)
-				.asTable("mmw");
-
-		Lexeme l2 = LEXEME.as("l2");
-		Word w2 = WORD.as("w2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
-
-		Condition where4 = l2.WORD_ID.eq(w2.ID).and(p2.WORD_ID.eq(w2.ID)).and(f2.PARADIGM_ID.eq(p2.ID)).and(f2.MODE.eq(FormMode.WORD.name()));
-		if (StringUtils.isNotBlank(resultLang)) {
-			where4 = where4.and(w2.LANG.eq(resultLang));
-		}
-
-		Table<Record6<Long, Long, String, Integer, String, Long>> mow = DSL
-				.select(
-						l2.MEANING_ID,
-						l2.WORD_ID,
-						f2.VALUE.as("word"),
-						w2.HOMONYM_NR,
-						w2.LANG.as("word_lang"),
-						l2.ORDER_BY)
-				.from(l2, w2, p2, f2)
-				.where(where4)
-				.asTable("mow");
-
-		Lexeme l = LEXEME.as("l");
-
-		Field<String> mmwds = DSL
-				.select(DSL.field("array_to_string(array_agg(distinct l.dataset_code order by l.dataset_code), ', ', '*')", String.class))
-				.from(l)
-				.where(l.WORD_ID.eq(mmw.field("word_id", Long.class)))
-				.groupBy(mmw.field("word_id"))
-				.asField("main_word_dataset_codes_wrapup");
-
-		Field<String> mowds = DSL
-				.select(DSL.field("array_to_string(array_agg(distinct l.dataset_code order by l.dataset_code), ', ', '*')", String.class))
-				.from(l)
-				.where(l.WORD_ID.eq(mow.field("word_id", Long.class)))
-				.groupBy(mow.field("word_id"))
-				.asField("other_word_dataset_codes_wrapup");
-
-		List<TermMeaningWordTuple> result = create
-				.select(
-						mmw.field("meaning_id", Long.class),
-						mmw.field("concept_id", String.class),
-						mmw.field("word_id", Long.class).as("main_word_id"),
-						mmw.field("word", String.class).as("main_word"),
-						mmw.field("homonym_nr", Integer.class).as("main_word_homonym_nr"),
-						mmw.field("word_lang", String.class).as("main_word_lang"),
-						mmwds,
-						mow.field("word_id", Long.class).as("other_word_id"),
-						mow.field("word", String.class).as("other_word"),
-						mow.field("homonym_nr", Integer.class).as("other_word_homonym_nr"),
-						mow.field("word_lang", String.class).as("other_word_lang"),
-						mow.field("order_by", Long.class).as("other_word_order_by"),
-						mowds)
-				.from(mmw
-						.leftOuterJoin(mow)
-						.on(mow.field("meaning_id", Long.class).eq(mmw.field("meaning_id", Long.class))
-								.and(mow.field("word_id", Long.class).ne(mmw.field("word_id", Long.class)))))
-				.fetchInto(TermMeaningWordTuple.class);
-
-		return result;
+				.fetchInto(TermMeaning.class);
 	}
 
 	// getters
