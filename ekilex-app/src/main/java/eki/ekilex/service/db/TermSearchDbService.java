@@ -427,7 +427,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 
 		SelectHavingStep<Record1<String[]>> wds = DSL
-				.select(DSL.arrayAgg(lds.DATASET_CODE).orderBy(ds.ORDER_BY))
+				.select(DSL.arrayAggDistinct(lds.DATASET_CODE))
 				.from(lds, ds)
 				.where(lds.WORD_ID.eq(wo.ID).and(lds.DATASET_CODE.eq(ds.CODE)))
 				.groupBy(lds.WORD_ID);
