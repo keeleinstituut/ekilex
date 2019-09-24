@@ -72,6 +72,8 @@ public interface WebConstant {
 
 	String LEX_JOIN_PAGE = "lexjoin";
 
+	String VALIDATE_LEX_JOIN_URI = "/validatelexjoin";
+
 	String MEANING_JOIN_URI = "/meaningjoin";
 
 	String MEANING_JOIN_PAGE = "meaningjoin";

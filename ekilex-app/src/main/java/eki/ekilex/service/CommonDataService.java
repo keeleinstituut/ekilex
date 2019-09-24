@@ -65,9 +65,6 @@ public class CommonDataService extends AbstractWordSearchService {
 	protected ConversionUtil conversionUtil;
 
 	@Autowired
-	private UserService userService;
-
-	@Autowired
 	private PermissionDbService permissionDbService;
 
 	@Autowired
@@ -384,11 +381,8 @@ public class CommonDataService extends AbstractWordSearchService {
 			wordDetailsList.add(wordDetails);
 		}
 
-		List<WordDetails> sortedWordDetailsList = wordDetailsList.stream()
-				.sorted(Comparator.comparing(wordDetails -> !permissionDbService.isGrantedForWord(wordDetails.getWord().getWordId(), userPermDatasetCodes)))
-				.collect(Collectors.toList());
-
-		return sortedWordDetailsList;
+		wordDetailsList.sort(Comparator.comparing(wordDetails -> !permissionDbService.isGrantedForWord(wordDetails.getWord().getWordId(), userPermDatasetCodes)));
+		return wordDetailsList;
 	}
 
 	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
@@ -484,5 +478,10 @@ public class CommonDataService extends AbstractWordSearchService {
 		} else {
 			return null;
 		}
+	}
+
+	@Transactional
+	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
+		return commonDataDbService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
 	}
 }

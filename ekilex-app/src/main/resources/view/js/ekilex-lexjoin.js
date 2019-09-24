@@ -6,3 +6,10 @@ function initialise() {
 		joinBtn.prop('disabled', !idsChk.filter(":checked").length);
 	});
 }
+
+function joinLexemes() {
+	let joinForm = $(this).closest('form');
+	let validateJoinUrl = applicationUrl + "validatelexjoin";
+	let failMessage = "Tähenduste ühendamine ebaõnnestus";
+	validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage);
+}

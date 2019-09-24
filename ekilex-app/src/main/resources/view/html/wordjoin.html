@@ -69,13 +69,8 @@
               <th:block th:replace=":: etymology(${wordDetails})"></th:block>
               <div class="border rounded mb-2 p-2" th:each="lexeme : ${wordDetails.lexemes}">
                 <div class="d-flex align-items-center flex-wrap">
-                  <span th:if="${lexeme.levels != null}"
-                        th:data-id="${lexeme.lexemeId}"
-                        th:data-level1="${lexeme.level1}"
-                        th:data-level2="${lexeme.level2}"
-                        th:data-level3="${lexeme.level3}"
-                        class="pl-1 pr-2">
-                    <span class="bubble">
+                  <span th:if="${lexeme.levels != null}" class="pr-2">
+                    <span class="bubble" th:text="${lexeme.levels}">
                       <span th:text="${lexeme.levels}"></span>
                     </span>
                   </span>

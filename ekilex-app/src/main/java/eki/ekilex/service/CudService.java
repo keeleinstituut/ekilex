@@ -216,11 +216,11 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateLexemePublicNote(Long id, String valuePrese) {
+	public void updateLexemePublicNote(Long id, String valuePrese, Complexity complexity) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		cudDbService.updateFreeformTextValue(id, value, valuePrese);
+		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
 	}
 
 	@Transactional
@@ -347,7 +347,7 @@ public class CudService extends AbstractService {
 				List<Map<String, Object>> wordRelationGroupMembers = cudDbService.getWordRelationGroupMembers(groupId);
 				String logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 				for (Map<String, Object> member : wordRelationGroupMembers) {
-					Long memberId = (Long) member.get("memberId");
+					Long memberId = (Long) member.get("id");
 					LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION_GROUP_MEMBER, LifecycleProperty.VALUE, memberId,
 							previousLogValue, logValue);
 					createLifecycleLog(logData);
@@ -437,9 +437,9 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createLexemePublicNote(Long lexemeId, String valuePrese) {
+	public void createLexemePublicNote(Long lexemeId, String valuePrese, Complexity complexity) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long lexemeFreeformId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese);
+		Long lexemeFreeformId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese, complexity);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_PUBLIC_NOTE, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
 		createLifecycleLog(logData);
 	}

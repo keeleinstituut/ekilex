@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.Meaning;
 import eki.ekilex.service.CompositionService;
-import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
+import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,43 +43,33 @@ public class TermEditController extends AbstractPageController {
 	private TermSearchService termSearchService;
 
 	@Autowired
-	private LexSearchService lexSearchService;
-
-	@Autowired
 	private SearchHelper searchHelper;
 
 	@Autowired
 	private CompositionService compositionService;
 
 	@RequestMapping(MEANING_JOIN_URI + "/{targetMeaningId}")
-	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter, Model model) {
+	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
+			Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
-		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(targetMeaningId, userPreferredDatasetCodes);
-		WordLexeme targetMeaningLexeme = commonDataService.getWordLexeme(meaningFirstLexemeId);
-		String targetLexemeWord = targetMeaningLexeme.getWords()[0];
 		if (searchFilter == null) {
-			searchFilter = targetLexemeWord;
+			String targetMeaningFirstWord = termSearchService.getMeaningFirstWordValue(targetMeaningId, userPreferredDatasetCodes);
+			searchFilter = targetMeaningFirstWord;
 		}
 
-		Optional<Integer> wordHomonymNumber;
-		if (StringUtils.equals(searchFilter, targetLexemeWord)) {
-			Integer sourceHomonymNumber = targetMeaningLexeme.getWordHomonymNumber();
-			wordHomonymNumber = Optional.of(sourceHomonymNumber);
-		} else {
-			wordHomonymNumber = Optional.empty();
-		}
-
-		List<WordLexeme> sourceMeaningLexemes = lexSearchService
-				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, wordHomonymNumber, targetMeaningId);
+		Meaning targetMeaning = termSearchService.getMeaningJoinData(targetMeaningId, userPermDatasetCodes, languagesOrder);
+		List<Meaning> sourceMeanings = termSearchService
+				.getMeaningsOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, languagesOrder, targetMeaningId);
 
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("targetMeaningId", targetMeaningId);
-		model.addAttribute("targetMeaningLexeme", targetMeaningLexeme);
-		model.addAttribute("sourceMeaningLexemes", sourceMeaningLexemes);
+		model.addAttribute("targetMeaning", targetMeaning);
+		model.addAttribute("sourceMeanings", sourceMeanings);
 
 		return MEANING_JOIN_PAGE;
 	}
@@ -92,7 +82,7 @@ public class TermEditController extends AbstractPageController {
 		Map<String, String> response = new HashMap<>();
 		List<Long> allMeaningIds = new ArrayList<>(sourceMeaningIds);
 		allMeaningIds.add(targetMeaningId);
-		Map<String, Integer[]> invalidWords = termSearchService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
+		Map<String, Integer[]> invalidWords = commonDataService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
 
 		if (MapUtils.isNotEmpty(invalidWords)) {
 			String message = "Tähendusi ei saa ühendada, sest ühendatavatel tähendustel on järgnevad samakujulised, aga erineva homonüüminumbriga keelendid:";

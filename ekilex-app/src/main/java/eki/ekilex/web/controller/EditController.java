@@ -166,7 +166,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.createMeaningLearnerComment(itemData.getId(), valuePrese, itemData.getLanguage());
 			break;
 		case "lexeme_public_note":
-			cudService.createLexemePublicNote(itemData.getId(), valuePrese);
+			cudService.createLexemePublicNote(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
 		case "meaning_public_note":
 			cudService.createMeaningPublicNote(itemData.getId(), valuePrese);
@@ -263,7 +263,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.updateMeaningLearnerComment(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_public_note":
-			cudService.updateLexemePublicNote(itemData.getId(), valuePrese);
+			cudService.updateLexemePublicNote(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
 		case "meaning_public_note":
 			cudService.updateMeaningPublicNote(itemData.getId(), valuePrese);
@@ -522,6 +522,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
+				userService.updateUserPreferredDatasets(selectedDatasets);
 			}
 			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
@@ -550,6 +551,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
+				userService.updateUserPreferredDatasets(selectedDatasets);
 			}
 			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
@@ -594,6 +596,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		if (!selectedDatasets.contains(dataset)) {
 			selectedDatasets.add(dataset);
+			userService.updateUserPreferredDatasets(selectedDatasets);
 		}
 		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
