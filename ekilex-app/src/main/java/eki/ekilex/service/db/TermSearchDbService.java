@@ -13,6 +13,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.Tables.LANGUAGE;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
@@ -98,6 +100,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Paradigm p = PARADIGM.as("p");
 		Word w1 = WORD.as("w");
 		Form f1 = FORM.as("f");
+		Language wl = LANGUAGE.as("wl");
 
 		Condition wheref = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
@@ -114,23 +117,24 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.where(wheref)
 				.asTable("f");
 
-		Table<Record1<Long>> w = DSL
-				.select(w1.ID)
-				.from(f, p, w1)
+		Table<Record2<Long,Long>> w = DSL
+				.select(w1.ID, wl.ORDER_BY)
+				.from(f, p, w1, wl)
 				.where(
 						f.field("paradigm_id", Long.class).eq(p.ID)
-								.and(p.WORD_ID.eq(w1.ID))
-								.andExists(DSL
-										.select(l.ID)
-										.from(l)
-										.where(l.WORD_ID.eq(w1.ID).and(wherelds))))
+						.and(p.WORD_ID.eq(w1.ID))
+						.and(wl.CODE.eq(w1.LANG))
+						.andExists(DSL
+								.select(l.ID)
+								.from(l)
+								.where(l.WORD_ID.eq(w1.ID).and(wherelds))))
 				.asTable("w");
 
 		Table<Record3<Long, Long, Long[]>> mm = DSL
 				.select(
 						m.ID,
-						DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("order_by_word_id"),
-						DSL.arrayAgg(w.field("id", Long.class)).orderBy(l.ORDER_BY).as("match_word_ids"))
+						DSL.field("(array_agg(w.id order by w.order_by, l.order_by)) [1]", Long.class).as("order_by_word_id"),
+						DSL.arrayAgg(w.field("id", Long.class)).orderBy(w.field("order_by"), l.ORDER_BY).as("match_word_ids"))
 				.from(m, l, w)
 				.where(
 						l.MEANING_ID.eq(m.ID)
@@ -166,6 +170,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Word w1 = WORD.as("w1");
 		Meaning m1 = MEANING.as("m1");
 		Lexeme l = LEXEME.as("l");
+		Language wl = LANGUAGE.as("wl");
 
 		Condition wherem = DSL.trueCondition();
 		Condition wherew = DSL.trueCondition();
@@ -365,7 +370,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			}
 		}
 
-		Table<Record1<Long>> w = DSL.select(w1.ID).from(w1).where(wherew).asTable("w");
+		Table<Record2<Long,Long>> w = DSL.select(w1.ID, wl.ORDER_BY).from(w1, wl).where(wl.CODE.eq(w1.LANG).and(wherew)).asTable("w");
 		Table<Record1<Long>> m = DSL.select(m1.ID).from(m1).where(wherem).asTable("m");
 		Condition wherelds = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
 		Condition wheremlw = l.MEANING_ID.eq(m.field("id", Long.class)).and(l.WORD_ID.eq(w.field("id", Long.class))).and(wherelds);
@@ -373,8 +378,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Table<Record3<Long, Long, Long[]>> mm = DSL
 				.select(
 						m.field("id", Long.class),
-						DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("order_by_word_id"),
-						DSL.arrayAgg(w.field("id", Long.class)).orderBy(l.ORDER_BY).as("match_word_ids"))
+						DSL.field("(array_agg(w.id order by w.order_by, l.order_by)) [1]", Long.class).as("order_by_word_id"),
+						DSL.arrayAgg(w.field("id", Long.class)).orderBy(w.field("order_by"), l.ORDER_BY).as("match_word_ids"))
 				.from(m, l, w)
 				.where(wheremlw)
 				.groupBy(m.field("id"))
