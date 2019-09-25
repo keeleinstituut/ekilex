@@ -8,227 +8,218 @@
 <body>
 
 <th:block th:fragment="search_form(searchPageName)">
-  <div class="form-row">
-    <div class="col-12">
-      <div class="row">
-        <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
-        <input type="hidden" id="isSearchFilterValid" value="false">
-        <div class="col-1">
-          <button type="button" class="btn btn-sm btn-secondary" id="searchModeBtn"
-                  th:text="${searchMode == 'SIMPLE'} ? #{'search.mode.DETAIL'} : #{'search.mode.SIMPLE'}">search toggle</button>
-        </div>
-        <div class="col-4" th:if="${!#lists.isEmpty(allDatasets)}" th:insert="~{::dataset_select}"></div>
-      </div>
-    </div>
-  </div>
+  <div class="d-flex flex-row flex-nowrap">
+  <div class="flex-shrink-0 flex-grow-0 pr-2"  th:if="${!#lists.isEmpty(allDatasets)}" th:insert="~{::dataset_select}"></div>
+
+  <div class="tab-content w-100">
   <th:block th:replace="::detail_search(${searchPageName})"></th:block>
   <th:block th:replace="::simple_search"></th:block>
+  </div>
+  </div>
   <script th:inline="javascript">
       initialiseSearchForm()
   </script>
 </th:block>
 
-<th:block th:fragment="simple_search">
-  <div class="form-row pt-2" id="simple_search_filter" th:hidden="${searchMode != 'SIMPLE'}">
-    <div class="col-12">
-      <div class="row align-items-center">
-        <div class="col-3">
-          <input type="text" class="form-control" name="simpleSearchFilter" th:value="${simpleSearchFilter}" placeholder="sisesta otsitav vorm">
+  <th:block th:fragment="simple_search">
+    <div class="tab-pane fade show active " id="simple_search_filter" >
+        <div class="d-flex flex-row align-items-center">
+            <input type="text" class="form-control col-2" name="simpleSearchFilter" th:value="${simpleSearchFilter}" placeholder="sisesta otsitav vorm">
+            <button type="submit" class="btn btn-primary px-5 ml-2">Otsi</button>
         </div>
-        <div class="col-2">
-          <button type="submit" class="btn btn-primary">Otsi</button>
-        </div>
-      </div>
     </div>
-  </div>
-</th:block>
+  </th:block>
 
-<th:block th:fragment="detail_search(searchPageName)">
-  <div class="form-row align-items-center" id="detail_search_filter" th:hidden="${searchMode != 'DETAIL'}">
-    <div class="col-10">
-      <div class="row border rounded p-2 m-2" th:each="group, critGroupStat : ${detailSearchFilter.criteriaGroups}" name="detailGroup" th:data-index="${critGroupStat.index}">
-        <div class="col-3 pr-0">
-          <div class="row">
-            <div class="col-8">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].entity'">
-                <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}"
-                        th:value="${entity}"
-                        th:selected="${group.entity == entity}"
-                        th:text="#{|search.entity.${entity.name()}|}"
-                        th:if="${searchPageName == 'lex_search'}">entityName</option>
-                <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
-                        th:value="${entity}"
-                        th:selected="${group.entity == entity}"
-                        th:text="#{|search.entity.${entity.name()}|}"
-                        th:if="${searchPageName == 'term_search'}">entityName</option>
-              </select>
-            </div>
-          <div class="col-4 pl-0">
-            <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailGroupBtn" title="Lisa uus otsitav">
-              <i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn btn-danger btn-sm mt-1" name="removeDetailGroupBtn" title="Eemalda">
-              <i class="fa fa-minus" aria-hidden="true"></i>
-            </button>
-          </div>
-          </div>
-        </div>
-        <div class="col-9 pl-0">
-          <div class="row mb-2" th:each="criteria, critStat: ${group.searchCriteria}" name="detailCondition" th:data-index="${critStat.index}">
-            <div class="col-2">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
-                <option th:each="key : ${group.entity.keys}"
-                        th:value="${key}"
-                        th:selected="${criteria.searchKey == key}"
-                        th:text="#{|search.key.${key.name()}|}">searchKey</option>
-              </select>
-            </div>
-            <div class="col-2">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchOperand'">
-                <option th:each="operand : ${criteria.searchKey.getOperands()}"
-                        th:value="${operand}"
-                        th:selected="${criteria.searchOperand == operand}"
-                        th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
-              </select>
-            </div>
-            <div class="col-3" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
-                <option value="">Kõik keeled</option>
-                <option th:each="language : ${allLanguages}"
-                        th:value="${language.code}"
-                        th:selected="${criteria.searchValue == language.code}"
-                        th:text="${language.value}">language</option>
-              </select>
-            </div>
-            <div class="col-6" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true"
-                      th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS'}">
-                <option value="">Kõik valdkonnad</option>
-                <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
-                  <option th:each="domain : ${origin.getValue()}"
-                          th:value="${domain.toIdString()}"
-                          th:selected="${criteria.searchValue == domain}"
-                          th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                          th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
-                </optgroup>
-              </select>
-            </div>
-            <div class="col-3" th:if="${criteria.searchKey.name() == 'VALUE'}">
-              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
-            </div>
-            <div class="col-3" th:if="${criteria.searchKey.name() == 'ID'}">
-              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
-            </div>
-            <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_REF'}">
-              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
-            </div>
-            <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
-              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
-            </div>
-            <div class="col-3" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_ON'}">
-              <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
-                <span class="input-group-addon">
-                  <i class="fa fa-calendar fa-lg"></i>
-                </span>
+  <th:block th:fragment="detail_search(searchPageName)">
+    <div class="tab-pane fade form-row align-items-center" id="detail_search_filter" >
+      <div class="col-10">
+        <div class="border rounded p-2 m-2" th:each="group, critGroupStat : ${detailSearchFilter.criteriaGroups}" name="detailGroup" th:data-index="${critGroupStat.index}">
+          <div class="col-3 pr-0">
+            <div class="row">
+              <div class="col-8">
+                <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].entity'">
+                  <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}"
+                          th:value="${entity}"
+                          th:selected="${group.entity == entity}"
+                          th:text="#{|search.entity.${entity.name()}|}"
+                          th:if="${searchPageName == 'lex_search'}">entityName</option>
+                  <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
+                          th:value="${entity}"
+                          th:selected="${group.entity == entity}"
+                          th:text="#{|search.entity.${entity.name()}|}"
+                          th:if="${searchPageName == 'term_search'}">entityName</option>
+                </select>
+              </div>
+              <div class="col-4 pl-0">
+                <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailGroupBtn" title="Lisa uus otsitav">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-danger btn-sm mt-1" name="removeDetailGroupBtn" title="Eemalda">
+                  <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
               </div>
             </div>
-            <div class="col-2">
-              <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn btn-danger btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda">
-                <i class="fa fa-minus" aria-hidden="true"></i>
-              </button>
+          </div>
+          <div class="col-9 pl-0">
+            <div class="row mb-2" th:each="criteria, critStat: ${group.searchCriteria}" name="detailCondition" th:data-index="${critStat.index}">
+              <div class="col-2">
+                <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
+                  <option th:each="key : ${group.entity.keys}"
+                          th:value="${key}"
+                          th:selected="${criteria.searchKey == key}"
+                          th:text="#{|search.key.${key.name()}|}">searchKey</option>
+                </select>
+              </div>
+              <div class="col-2">
+                <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchOperand'">
+                  <option th:each="operand : ${criteria.searchKey.getOperands()}"
+                          th:value="${operand}"
+                          th:selected="${criteria.searchOperand == operand}"
+                          th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
+                </select>
+              </div>
+              <div class="col-3" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
+                <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                  <option value="">Kõik keeled</option>
+                  <option th:each="language : ${allLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${criteria.searchValue == language.code}"
+                          th:text="${language.value}">language</option>
+                </select>
+              </div>
+              <div class="col-6" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
+                <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true"
+                        th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS'}">
+                  <option value="">Kõik valdkonnad</option>
+                  <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
+                    <option th:each="domain : ${origin.getValue()}"
+                            th:value="${domain.toIdString()}"
+                            th:selected="${criteria.searchValue == domain}"
+                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="col-3" th:if="${criteria.searchKey.name() == 'VALUE'}">
+                <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+              </div>
+              <div class="col-3" th:if="${criteria.searchKey.name() == 'ID'}">
+                <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+              </div>
+              <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_REF'}">
+                <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+              </div>
+              <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
+                <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+              </div>
+              <div class="col-3" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_ON'}">
+                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                  <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <span class="input-group-addon">
+                  <i class="fa fa-calendar fa-lg"></i>
+                </span>
+                </div>
+              </div>
+              <div class="col-2">
+                <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-danger btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda">
+                  <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div id="searchKeyTemplates" hidden>
-        <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}" th:if="${searchPageName == 'lex_search'}">
-          <select th:name="${entity}">
-            <option th:each="key : ${entity.getKeys()}"
-                    th:value="${key}"
-                    th:text="#{|search.key.${key.name()}|}">searchKey</option>
-          </select>
-        </div>
-        <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}" th:if="${searchPageName == 'term_search'}">
-          <select th:name="${entity}">
-            <option th:each="key : ${entity.getKeys()}"
-                    th:value="${key}"
-                    th:text="#{|search.key.${key.name()}|}">searchKey</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="searchOperandTemplates" hidden>
-        <div th:each="key : ${T(eki.ekilex.constant.SearchKey).values()}">
-          <select th:name="${key}">
-            <option th:each="operand : ${key.getOperands()}"
-                    th:value="${operand}"
-                    th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="searchValueTemplates" hidden>
-        <div name="VALUE" class="col-3">
-          <input type="text" class="form-control">
-        </div>
-        <div name="ID" class="col-3">
-          <input type="text" class="form-control">
-        </div>
-        <div name="SOURCE_REF" class="col-3">
-          <input type="text" class="form-control">
-        </div>
-        <div name="SOURCE_NAME" class="col-3">
-          <input type="text" class="form-control">
-        </div>
-        <div name="LANGUAGE" class="col-3">
-          <select class="form-control" data-live-search="true">
-            <option value="" selected>Kõik keeled</option>
-            <option th:each="language : ${allLanguages}"
-                    th:value="${language.code}"
-                    th:text="${language.value}">language</option>
-          </select>
-        </div>
-        <div name="DOMAIN" class="col-6">
-          <select class="form-control" data-live-search="true">
-            <option value="" selected>Kõik valdkonnad</option>
-            <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
-              <option th:each="domain : ${origin.getValue()}"
-                      th:value="${domain.toIdString()}"
-                      th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                      th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
-            </optgroup>
-          </select>
-        </div>
-        <div name="CREATED_OR_UPDATED_ON" class="col-3">
-          <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-            <input type="text" class="form-control">
-            <span class="input-group-addon">
-              <i class="fa fa-calendar fa-lg"></i>
-            </span>
+        <div id="searchKeyTemplates" hidden>
+          <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}" th:if="${searchPageName == 'lex_search'}">
+            <select th:name="${entity}">
+              <option th:each="key : ${entity.getKeys()}"
+                      th:value="${key}"
+                      th:text="#{|search.key.${key.name()}|}">searchKey</option>
+            </select>
+          </div>
+          <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}" th:if="${searchPageName == 'term_search'}">
+            <select th:name="${entity}">
+              <option th:each="key : ${entity.getKeys()}"
+                      th:value="${key}"
+                      th:text="#{|search.key.${key.name()}|}">searchKey</option>
+            </select>
           </div>
         </div>
-      </div>
 
+        <div id="searchOperandTemplates" hidden>
+          <div th:each="key : ${T(eki.ekilex.constant.SearchKey).values()}">
+            <select th:name="${key}">
+              <option th:each="operand : ${key.getOperands()}"
+                      th:value="${operand}"
+                      th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="searchValueTemplates" hidden>
+          <div name="VALUE" class="col-3">
+            <input type="text" class="form-control">
+          </div>
+          <div name="ID" class="col-3">
+            <input type="text" class="form-control">
+          </div>
+          <div name="SOURCE_REF" class="col-3">
+            <input type="text" class="form-control">
+          </div>
+          <div name="SOURCE_NAME" class="col-3">
+            <input type="text" class="form-control">
+          </div>
+          <div name="LANGUAGE" class="col-3">
+            <select class="form-control" data-live-search="true">
+              <option value="" selected>Kõik keeled</option>
+              <option th:each="language : ${allLanguages}"
+                      th:value="${language.code}"
+                      th:text="${language.value}">language</option>
+            </select>
+          </div>
+          <div name="DOMAIN" class="col-6">
+            <select class="form-control" data-live-search="true">
+              <option value="" selected>Kõik valdkonnad</option>
+              <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
+                <option th:each="domain : ${origin.getValue()}"
+                        th:value="${domain.toIdString()}"
+                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                        th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+              </optgroup>
+            </select>
+          </div>
+          <div name="CREATED_OR_UPDATED_ON" class="col-3">
+            <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+              <input type="text" class="form-control">
+              <span class="input-group-addon">
+              <i class="fa fa-calendar fa-lg"></i>
+            </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary">Otsi</button>
+      </div>
     </div>
-    <div class="col-2">
-      <button type="submit" class="btn btn-primary">Otsi</button>
-    </div>
-  </div>
-  <script th:inline="javascript">
-  	initialiseDetailSearch()
-  </script>
-</th:block>
+    <script th:inline="javascript">
+      initialiseDetailSearch()
+    </script>
+  </th:block>
+
+
+
 
 <th:block th:fragment="dataset_select">
-  <button class="btn btn-sm btn-secondary" type="button" data-toggle="modal" data-target="#datasetSelectDlg" aria-expanded="false" aria-controls="dataset_select">
+  <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#datasetSelectDlg" aria-expanded="false" aria-controls="dataset_select">
     <span>Valitud sõnakogusid: </span>
     <span th:if="${#lists.isEmpty(userProfile.preferredDatasets)}">0</span>
     <span th:if="${not #lists.isEmpty(userProfile.preferredDatasets)}" th:text="${#lists.size(userProfile.preferredDatasets)}"></span>
+    <i class="fa fa-book" aria-hidden="true"></i>
   </button>
   <div id="datasetSelectDlg" class="modal" role="dialog">
     <div class="modal-dialog" role="document">

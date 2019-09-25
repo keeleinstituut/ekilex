@@ -16186,6 +16186,18 @@ footer p {
   }
 }
 
+.main-nav-tabs .nav-link {
+  height: 3rem;
+  padding-top: 1rem;
+  color: #fff;
+  border-top: 0;
+  border-radius: 0;
+}
+
+.main-nav-tabs .nav-link.active {
+  border-color: #fff;
+}
+
 .side-menu {
   z-index: 1;
 }
