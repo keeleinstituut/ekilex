@@ -73,7 +73,7 @@ public class ConversionUtil implements DbConstant {
 	public void cleanTermMeanings(List<TermMeaning> termMeanings) {
 
 		termMeanings.forEach(termMeaning -> {
-			List<TypeTermMeaningWord> meaningWords = termMeaning.getMeaningWords().stream().filter(meaningWord -> meaningWord.getWordId() != null).collect(Collectors.toList());
+			List<TypeTermMeaningWord> meaningWords = termMeaning.getMeaningWords().stream().filter(meaningWord -> meaningWord.getWordId() != null).distinct().collect(Collectors.toList());
 			meaningWords.forEach(meaningWord -> {
 				boolean isPrefixoid = ArrayUtils.contains(meaningWord.getWordTypeCodes(), WORD_TYPE_CODE_PREFIXOID);
 				boolean isSuffixoid = ArrayUtils.contains(meaningWord.getWordTypeCodes(), WORD_TYPE_CODE_SUFFIXOID);
