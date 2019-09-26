@@ -22,30 +22,16 @@ function displayDetailGroupButtons() {
 }
 
 function displaySimpleSearch() {
-	$("#simple_search_filter").prop('hidden', false);
-	$("#detail_search_filter").prop('hidden', true);
 	$('#searchMode').val('SIMPLE');
-	$('#searchModeBtn').text('Detailotsing');
 }
 
 function displayDetailSearch() {
-	$("#simple_search_filter").prop('hidden', true);
-	$("#detail_search_filter").prop('hidden', false);
 	$('#searchMode').val('DETAIL');
-	$('#searchModeBtn').text('Lihtotsing');
-}
-
-function toggleSearch() {
-	let currentSearchMode = $('#searchMode').val();
-	if (currentSearchMode === 'SIMPLE') {
-		displayDetailSearch();
-	} else {
-		displaySimpleSearch();
-	}
 }
 
 function initialiseSearchForm() {
-	$('#searchModeBtn').on('click', toggleSearch);
+	$('#simpleSearchModeBtn').on('click',displaySimpleSearch);
+	$('#detailSearchModeBtn').on('click',displayDetailSearch);
 	let datasetDlg = $('#datasetSelectDlg');
 	datasetDlg.on('shown.bs.modal', () => {
 		datasetDlg.find('.btn').first().focus();

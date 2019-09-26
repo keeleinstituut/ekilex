@@ -1,0 +1,28 @@
+.detail-search{
+  &-group {
+    & + &{
+      margin-top: $spacer;
+    }
+  }
+  &-sub-group{
+    position: relative;
+
+    &::before{
+      position: absolute;
+      top: $spacer;
+      left: -$spacer * .5;
+      display: block;
+      width: $spacer;
+      height: $spacer;
+      content: "";
+      background: $light;
+      transform: rotate(45deg);
+      @include border-bottom-left-radius($border-radius-sm);
+    }
+  }
+  &-sub-row{
+    & + &{
+      border-top: 1px solid $white;
+    }
+  }
+}

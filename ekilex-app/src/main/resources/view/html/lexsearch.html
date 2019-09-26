@@ -15,15 +15,16 @@
 </head>
 <body class="body-with-navbar compacted">
   <th:block th:replace="common :: nav_bar(activeItem = 'lex')"></th:block>
+  <div class="card shadow rounded-0 mt-n3 border-0">
+    <div class="card-body px-2 py-3">
+      <form id="searchForm" th:action="@{/lexsearch}" method="post">
+        <th:block th:replace="search :: search_form('lex_search')"></th:block>
+      </form>
+    </div>
+  </div>
 
   <div class="container-fluid">
-    <div class="card shadow">
-      <div class="card-body p-2">
-        <form id="searchForm" th:action="@{/lexsearch}" method="post">
-          <th:block th:replace="search :: search_form('lex_search')"></th:block>
-        </form>
-      </div>
-    </div>
+
 
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>

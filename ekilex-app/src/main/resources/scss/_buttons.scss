@@ -1,0 +1,3 @@
+.btn-secondary{
+  @include button-variant($gray-100, $gray-200);
+}

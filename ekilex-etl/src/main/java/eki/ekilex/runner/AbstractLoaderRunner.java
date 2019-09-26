@@ -108,6 +108,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String EKI_CLASSIFIER_ETYMPLTYYP = "etympl_tyyp";
 	protected static final String EKI_CLASSIIFER_ETYMKEELTYYP = "etymkeel_tyyp";
 	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
+	protected static final String EKI_CLASSIFIER_VALMIDUS = "valmidus";
 
 	private final static String CREATION_END = "(koostamise lõpp)";
 	private final static String MODIFICATION_END = "(toimetamise lõpp)";
@@ -1335,10 +1336,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		if (StringUtils.isNotBlank(value)) {
 			tableRowParamMap.put("value", value);
 		}
-		Long sourceLinkId = basicDbService.create(LEXEME_SOURCE_LINK, tableRowParamMap);
+		Long sourceLinkId = basicDbService.createIfNotExists(LEXEME_SOURCE_LINK, tableRowParamMap);
 
-		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, sourceLinkId, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value);
-
+		if (sourceLinkId != null) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, sourceLinkId, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value);
+		}
 		return sourceLinkId;
 	}
 
