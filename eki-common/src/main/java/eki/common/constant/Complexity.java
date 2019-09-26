@@ -2,9 +2,11 @@ package eki.common.constant;
 
 public enum Complexity {
 
-	DEFAULT,
-	SIMPLE, DETAIL,
-	SIMPLE1, DETAIL1,
-	SIMPLE2, DETAIL2
-	//other kind of contexts will be added
+	DEFAULT,//term
+	SIMPLE,
+	DETAIL,
+	SIMPLE1,//ps
+	DETAIL1,//ss
+	SIMPLE2,//qq
+	DETAIL2//ev
 }

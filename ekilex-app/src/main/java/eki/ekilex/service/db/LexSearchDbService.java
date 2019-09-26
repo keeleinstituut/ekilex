@@ -125,6 +125,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				Paradigm p1 = Paradigm.PARADIGM.as("p1");
 				Form f1 = Form.FORM.as("f1");
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(f1.PARADIGM_ID.eq(p1.ID))
 						.and(f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
@@ -157,8 +158,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 					Form f2 = Form.FORM.as("f2");
 
 					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
 							.and(l2.WORD_ID.eq(w2.ID))
+							.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 							.and(p2.WORD_ID.eq(w2.ID))
 							.and(f2.PARADIGM_ID.eq(p2.ID))
 							.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
@@ -176,8 +179,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				if (CollectionUtils.isNotEmpty(negativeExistSearchCriteria)) {
 
 					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-							.and(l2.WORD_ID.eq(w2.ID));
+							.and(l2.WORD_ID.eq(w2.ID))
+							.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY));
 
 					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
@@ -192,6 +197,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				Paradigm p1 = Paradigm.PARADIGM.as("p1");
 				Form f1 = Form.FORM.as("f1");
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(f1.PARADIGM_ID.eq(p1.ID));
 
@@ -205,7 +211,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 				Lexeme l1 = LEXEME.as("l1");
 				Meaning m1 = MEANING.as("m1");
-				Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.MEANING_ID.eq(m1.ID));
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where = applyDomainFilters(searchCriteria, l1, m1, where1, where);
@@ -217,6 +225,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				Meaning m1 = MEANING.as("m1");
 				Definition d1 = DEFINITION.as("d1");
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l1.MEANING_ID.eq(m1.ID))
 						.and(d1.MEANING_ID.eq(m1.ID));
 
@@ -235,6 +244,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				Freeform u1 = FREEFORM.as("u1");
 
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l1ff.LEXEME_ID.eq(l1.ID))
 						.and(l1ff.FREEFORM_ID.eq(u1.ID))
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
@@ -256,6 +266,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				MeaningFreeform m1ff = MEANING_FREEFORM.as("m1ff");
 				Freeform c1 = FREEFORM.as("c1");
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l1.MEANING_ID.eq(m1.ID))
 						.and(m1ff.MEANING_ID.eq(m1.ID))
 						.and(m1ff.FREEFORM_ID.eq(c1.ID))
@@ -347,7 +358,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Field<String[]> dscf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE))
 				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class)))
+				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class)).and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(w.field("word_id")));
 
 		Field<String[]> wtf = DSL.field(DSL
@@ -402,16 +413,14 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.MODE.eq(FormMode.WORD.name())))).on(paradigm.WORD_ID.eq(word.ID));
 
 		Table<Record1<Long>> w = create
-				.select(
-						word.ID.as("word_id"))
+				.select(word.ID.as("word_id"))
 				.from(from)
 				.where(where)
 				.groupBy(word.ID)
 				.asTable("w");
 
 		Table<?> ww = create
-				.select(
-						w.field("word_id"))
+				.select(w.field("word_id"))
 				.from(w)
 				.asTable("ww");
 
@@ -505,6 +514,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(dsWhere)
 				)
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
@@ -549,6 +559,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
 						.and(l2.ID.ne(l1.ID))
 						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
+						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l2.WORD_ID.eq(w2.ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
@@ -745,6 +756,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(lc2.LEXEME_ID.eq(l2.ID))
 								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
 								.and(l2.WORD_ID.eq(p2.WORD_ID))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(f2.PARADIGM_ID.eq(p2.ID))
 								.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
 				.orderBy(c.ID, lc2.MEMBER_ORDER)

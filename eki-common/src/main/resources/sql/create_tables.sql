@@ -793,6 +793,8 @@ create table lexeme
   word_id bigint references word(id) not null,
   meaning_id bigint references meaning(id) not null,
   dataset_code varchar(10) references dataset(code) not null,
+  -- TODO type not null ???
+  type varchar(50),
   frequency_group_code varchar(100) references frequency_group(code) null,
   corpus_frequency numeric,--TODO will be moved to lexeme_frequency table later
   level1 integer default 0,
@@ -801,8 +803,6 @@ create table lexeme
   value_state_code varchar(100) references value_state(code) null,
   process_state_code varchar(100) references process_state(code) null,
   complexity varchar(100) not null,
-  -- TODO type not null ???
-  type varchar(50),
   order_by bigserial,
   unique(word_id, meaning_id, dataset_code)
 );
@@ -1076,6 +1076,7 @@ create index meaning_nr_mnr_idx on meaning_nr(mnr);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index lexeme_dataset_code_idx on lexeme(dataset_code);
+create index lexeme_type_idx on lexeme(type);
 create index lexeme_process_state_code_idx on lexeme(process_state_code);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index definition_meaning_id_idx on definition(meaning_id);

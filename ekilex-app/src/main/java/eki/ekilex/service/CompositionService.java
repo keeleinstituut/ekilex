@@ -306,7 +306,7 @@ public class CompositionService extends AbstractService {
 		Long wordId = duplicatedLexeme.getWordId();
 
 		if (level3 > 1) {
-			List<LexemeRecord> lexemesWithLargerLevel3 = compositionDbService.getLexemesWithLargerLevel3(wordId, level1, level2, level3);
+			List<LexemeRecord> lexemesWithLargerLevel3 = compositionDbService.getLexemesWithHigherLevel3(wordId, level1, level2, level3);
 			int increasedDuplicatedLexemeLevel3 = level3 + 1;
 			compositionDbService.updateLexemeLevel3(duplicateLexemeId, increasedDuplicatedLexemeLevel3);
 			for (LexemeRecord lexeme : lexemesWithLargerLevel3) {
@@ -315,7 +315,7 @@ public class CompositionService extends AbstractService {
 				compositionDbService.updateLexemeLevel2(lexemeId, increasedLevel3);
 			}
 		} else if (level2 > 1) {
-			List<LexemeRecord> lexemesWithLargerLevel2 = compositionDbService.getLexemesWithLargerLevel2(wordId, level1, level2);
+			List<LexemeRecord> lexemesWithLargerLevel2 = compositionDbService.getLexemesWithHigherLevel2(wordId, level1, level2);
 			int increasedDuplicatedLexemeLevel2 = level2 + 1;
 			compositionDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
 			for (LexemeRecord lexeme : lexemesWithLargerLevel2) {
@@ -324,7 +324,7 @@ public class CompositionService extends AbstractService {
 				compositionDbService.updateLexemeLevel2(lexemeId, increasedLevel2);
 			}
 		} else {
-			List<LexemeRecord> lexemesWithLargerLevel1 = compositionDbService.getLexemesWithLargerLevel1(wordId, level1);
+			List<LexemeRecord> lexemesWithLargerLevel1 = compositionDbService.getLexemesWithHigherLevel1(wordId, level1);
 			int increasedDuplicatedLexemeLevel1 = level1 + 1;
 			compositionDbService.updateLexemeLevel1(duplicateLexemeId, increasedDuplicatedLexemeLevel1);
 			for (LexemeRecord lexeme : lexemesWithLargerLevel1) {

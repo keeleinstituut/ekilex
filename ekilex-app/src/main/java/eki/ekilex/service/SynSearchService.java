@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.LexemeType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -25,8 +26,6 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	private static final String RAW_RELATION_CODE = "raw";
 
-	private static final String SYN_LEXEME_TYPE_CODE = "SECONDARY";
-
 	@Autowired
 	private SynSearchDbService synSearchDbService;
 
@@ -38,7 +37,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 
-		List<WordSynLexeme> synLexemes = synSearchDbService.getWordSynLexemes(wordId, searchDatasetsRestriction, SYN_LEXEME_TYPE_CODE);
+		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction);
 		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme));
 		lexemeLevelCalcUtil.combineLevels(synLexemes);
 
@@ -46,7 +45,7 @@ public class SynSearchService extends AbstractWordSearchService {
 				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
 		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
 
-		WordSynDetails wordDetails = synSearchDbService.getSelectedWord(wordId);
+		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
 
@@ -82,8 +81,8 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public void createSynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId) {
-		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, existingLexemeId, SYN_LEXEME_TYPE_CODE);
+	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId) {
+		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
 	}
 
 }

@@ -378,7 +378,8 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.select(LEXEME.ID)
 								.from(LEXEME)
 								.where(
-										LEXEME.WORD_ID.eq(WORD.ID))))
+										LEXEME.WORD_ID.eq(WORD.ID)
+										.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
 				.groupBy(WORD.ID)
 				.fetchOneInto(Word.class);
 	}
@@ -610,6 +611,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.and(MEANING_RELATION.MEANING2_ID.eq(MEANING.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
@@ -878,6 +880,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
 								.and(LEX_RELATION.LEXEME2_ID.eq(LEXEME.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
@@ -947,7 +950,10 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						LEXEME.MEANING_ID,
 						LEXEME.ID.as("lexeme_id"))
 				.from(LEXEME)
-				.where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchInto(WordLexemeMeaningIdTuple.class);
 	}
 
@@ -1040,7 +1046,9 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.andExists(DSL
 										.select(LEXEME.ID)
 										.from(LEXEME)
-										.where(LEXEME.WORD_ID.eq(WORD.ID)))
+										.where(
+												LEXEME.WORD_ID.eq(WORD.ID)
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))))
 								.andNotExists(DSL
 										.select(WORD_WORD_TYPE.ID)
 										.from(WORD_WORD_TYPE)
@@ -1059,6 +1067,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.from(LEXEME, WORD, PARADIGM, FORM)
 				.where(
 						LEXEME.MEANING_ID.in(meaningIds)
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(WORD.ID.eq(LEXEME.WORD_ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))

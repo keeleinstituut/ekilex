@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
@@ -872,6 +873,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		valueParamMap.put("word_id", wordId);
 		valueParamMap.put("meaning_id", meaningId);
 		valueParamMap.put("dataset_code", dataset);
+		valueParamMap.put("type", LexemeType.PRIMARY.name());
 		valueParamMap.put("complexity", complexity.name());
 		populateLexemeValueParamMap(lexeme, valueParamMap);
 		Long lexemeId = basicDbService.create(LEXEME, valueParamMap);
@@ -894,6 +896,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		criteriaParamMap.put("word_id", wordId);
 		criteriaParamMap.put("meaning_id", meaningId);
 		criteriaParamMap.put("dataset_code", dataset);
+		criteriaParamMap.put("type", LexemeType.PRIMARY.name());
 		criteriaParamMap.put("complexity", complexity.name());
 		Long lexemeId = basicDbService.createIfNotExists(LEXEME, criteriaParamMap);
 		lexeme.setLexemeId(lexemeId);

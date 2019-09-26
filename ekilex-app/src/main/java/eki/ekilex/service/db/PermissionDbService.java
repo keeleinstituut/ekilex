@@ -43,6 +43,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
+import eki.common.constant.DbConstant;
 import eki.common.constant.FreeformType;
 import eki.common.constant.OrderingField;
 import eki.ekilex.constant.SystemConstant;
@@ -53,7 +54,7 @@ import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.EkiUserProfile;
 
 @Component
-public class PermissionDbService implements SystemConstant {
+public class PermissionDbService implements SystemConstant, DbConstant {
 
 	private DSLContext create;
 
@@ -266,6 +267,7 @@ public class PermissionDbService implements SystemConstant {
 				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.andExists(DSL
 										.select(DATASET_PERMISSION.ID)
 										.from(DATASET_PERMISSION)
@@ -282,7 +284,9 @@ public class PermissionDbService implements SystemConstant {
 		Table<Record1<Integer>> la = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId))
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(LEXEME.WORD_ID)
 				.asTable("la");
 
@@ -298,7 +302,8 @@ public class PermissionDbService implements SystemConstant {
 				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
-								.and(LEXEME.DATASET_CODE.in(datasetCodes))))
+								.and(LEXEME.DATASET_CODE.in(datasetCodes))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))))
 				.where(WORD.ID.eq(wordId))
 				.groupBy(WORD.ID)
 				.asTable("lp");
@@ -306,7 +311,9 @@ public class PermissionDbService implements SystemConstant {
 		Table<Record1<Integer>> la = DSL
 				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId))
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(LEXEME.WORD_ID)
 				.asTable("la");
 
@@ -322,6 +329,7 @@ public class PermissionDbService implements SystemConstant {
 				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.andExists(DSL
 										.select(DATASET_PERMISSION.ID)
 										.from(DATASET_PERMISSION)
@@ -337,7 +345,9 @@ public class PermissionDbService implements SystemConstant {
 		Table<Record1<Integer>> la = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(LEXEME)
-				.where(LEXEME.MEANING_ID.eq(meaningId))
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(LEXEME.MEANING_ID)
 				.asTable("la");
 
@@ -358,7 +368,8 @@ public class PermissionDbService implements SystemConstant {
 										.select(LEXEME.ID)
 										.from(LEXEME)
 										.where(LEXEME.MEANING_ID.eq(MEANING.ID)
-												.and(LEXEME.DATASET_CODE.eq(datasetCode)))))
+												.and(LEXEME.DATASET_CODE.eq(datasetCode))
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
 				.fetchSingleInto(Boolean.class);
 	}
 
@@ -368,7 +379,8 @@ public class PermissionDbService implements SystemConstant {
 				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
-								.and(LEXEME.DATASET_CODE.in(datasetCodes))))
+								.and(LEXEME.DATASET_CODE.in(datasetCodes))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))))
 				.where(MEANING.ID.eq(meaningId))
 				.groupBy(MEANING.ID)
 				.asTable("lp");
@@ -376,7 +388,9 @@ public class PermissionDbService implements SystemConstant {
 		Table<Record1<Integer>> la = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
 				.from(LEXEME)
-				.where(LEXEME.MEANING_ID.eq(meaningId))
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(LEXEME.MEANING_ID)
 				.asTable("la");
 
@@ -397,6 +411,7 @@ public class PermissionDbService implements SystemConstant {
 				.from(LEXEME)
 				.where(
 						LEXEME.ID.eq(lexemeId)
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.andExists(DSL
 										.select(DATASET_PERMISSION.ID)
 										.from(DATASET_PERMISSION)
@@ -413,7 +428,10 @@ public class PermissionDbService implements SystemConstant {
 		return create
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.where(
+						LEXEME.ID.eq(lexemeId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchSingleInto(Boolean.class);
 	}
 

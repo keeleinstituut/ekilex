@@ -29,6 +29,7 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
@@ -39,7 +40,7 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.SourceFreeform;
 
 @Component
-public class LifecycleLogDbServiceHelper {
+public class LifecycleLogDbServiceHelper implements DbConstant {
 
 	public Map<String, Object> getFirstDepthFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
@@ -325,10 +326,11 @@ public class LifecycleLogDbServiceHelper {
 				.select(FORM.VALUE)
 				.from(LEXEME)
 				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
-				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID).and(FORM.MODE.eq(FormMode.WORD.name())))
 				.where(
 						LEXEME.MEANING_ID.eq(entityId)
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						)
 				.fetch(0, String.class);
 		return result;
 	}

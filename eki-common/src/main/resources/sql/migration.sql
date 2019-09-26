@@ -42,3 +42,8 @@ create table temp_ds_import_queue
 
 create index temp_ds_import_queue_import_code_idx on temp_ds_import_queue(import_code);
 create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_name);
+
+-- 26.09.2019
+update lexeme set type = 'PRIMARY' where type is null;
+create index lexeme_type_idx on lexeme(type);
+

@@ -80,15 +80,28 @@ public class CompositionDbService implements DbConstant {
 	}
 
 	public List<LexemeRecord> getMeaningLexemes(Long meaningId) {
-		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId)).fetch();
+		return create
+				.selectFrom(LEXEME).where(
+					LEXEME.MEANING_ID.eq(meaningId)
+					.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.fetch();
 	}
 
 	public List<LexemeRecord> getMeaningLexemes(Long meaningId, String datasetCode) {
-		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.eq(datasetCode))).fetch();
+		return create
+				.selectFrom(LEXEME).where(
+					LEXEME.MEANING_ID.eq(meaningId)
+					.and(LEXEME.DATASET_CODE.eq(datasetCode))
+					.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.fetch();
 	}
 
 	public List<LexemeRecord> getWordLexemes(Long wordId) {
-		return create.selectFrom(LEXEME).where(LEXEME.WORD_ID.eq(wordId)).fetch();
+		return create
+				.selectFrom(LEXEME).where(
+					LEXEME.WORD_ID.eq(wordId)
+					.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.fetch();
 	}
 
 	public Long getLexemeId(Long wordId, Long meaningId, String datasetCode) {
@@ -98,7 +111,8 @@ public class CompositionDbService implements DbConstant {
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}
@@ -118,30 +132,33 @@ public class CompositionDbService implements DbConstant {
 		return definition;
 	}
 
-	public List<LexemeRecord> getLexemesWithLargerLevel1(Long wordId, Integer level1) {
+	public List<LexemeRecord> getLexemesWithHigherLevel1(Long wordId, Integer level1) {
 		return create
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.LEVEL1.gt(level1)))
+						.and(LEXEME.LEVEL1.gt(level1))
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetch();
 	}
 
-	public List<LexemeRecord> getLexemesWithLargerLevel2(Long wordId, Integer level1, Integer level2) {
+	public List<LexemeRecord> getLexemesWithHigherLevel2(Long wordId, Integer level1, Integer level2) {
 		return create
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.LEVEL1.eq(level1))
-						.and(LEXEME.LEVEL2.gt(level2)))
+						.and(LEXEME.LEVEL2.gt(level2))
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetch();
 	}
 
-	public List<LexemeRecord> getLexemesWithLargerLevel3(Long wordId, Integer level1, Integer level2, Integer level3) {
+	public List<LexemeRecord> getLexemesWithHigherLevel3(Long wordId, Integer level1, Integer level2, Integer level3) {
 		return create
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.LEVEL1.eq(level1))
 						.and(LEXEME.LEVEL2.eq(level2))
-						.and(LEXEME.LEVEL3.gt(level3)))
+						.and(LEXEME.LEVEL3.gt(level3))
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetch();
 	}
 
@@ -156,11 +173,14 @@ public class CompositionDbService implements DbConstant {
 				selectDistinct(l1.WORD_ID)
 				.from(l1, m1)
 				.where(l1.MEANING_ID.eq(meaningId)
-						.and(l1.MEANING_ID.eq(m1.ID))
+						.and(
+								l1.MEANING_ID.eq(m1.ID)
+								.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.andExists(DSL
 								.select(l2.ID)
 								.from(l2, m2)
 								.where(m2.ID.eq(sourceMeaningId)
+										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(l2.MEANING_ID.eq(m2.ID))
 										.and(l2.WORD_ID.eq(l1.WORD_ID)))));
 
@@ -168,10 +188,12 @@ public class CompositionDbService implements DbConstant {
 				.select(l1.ID.as("id1"), l2.ID.as("id2"))
 				.from(l1, l2)
 				.where(l1.WORD_ID.in(wordIds)
-						.and(l2.WORD_ID.eq(l1.WORD_ID))
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
 						.and(l1.MEANING_ID.eq(meaningId))
 						.and(l2.MEANING_ID.eq(sourceMeaningId))
-						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))
+						.and(l2.WORD_ID.eq(l1.WORD_ID))
+						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchInto(IdPair.class);
 	}
 
@@ -661,7 +683,9 @@ public class CompositionDbService implements DbConstant {
 		return create
 				.select(DSL.max(LEXEME.LEVEL1))
 				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId))
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchOneInto(Integer.class);
 	}
 

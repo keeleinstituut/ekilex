@@ -89,7 +89,8 @@ public class CudDbService implements DbConstant {
 				.where(
 						l1.ID.eq(lexemeId)
 								.and(l1.WORD_ID.eq(l2.WORD_ID))
-								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))
+								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.orderBy(l2.LEVEL1, l2.LEVEL2, l2.LEVEL3)
 				.fetchInto(WordLexeme.class);
 	}
@@ -262,12 +263,12 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public void updateLexemeLevels(Long id, Integer level1, Integer level2, Integer level3) {
+	public void updateLexemeLevels(Long lexemeId, Integer level1, Integer level2, Integer level3) {
 		create.update(LEXEME)
 				.set(LEXEME.LEVEL1, level1)
 				.set(LEXEME.LEVEL2, level2)
 				.set(LEXEME.LEVEL3, level3)
-				.where(LEXEME.ID.eq(id))
+				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
@@ -423,9 +424,10 @@ public class CudDbService implements DbConstant {
 		}
 		create
 				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
+						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
+				.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
+						1, 1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
 				.execute();
 		return wordId;
 	}
@@ -649,7 +651,8 @@ public class CudDbService implements DbConstant {
 					.where(
 							LEXEME.WORD_ID.eq(wordId)
 							.and(LEXEME.DATASET_CODE.eq(datasetCode))
-							.and(LEXEME.MEANING_ID.eq(meaningId)))
+							.and(LEXEME.MEANING_ID.eq(meaningId))
+							.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 					.fetchOptionalInto(Long.class)
 					.orElse(null);
 			if (existingLexemeId != null) {
@@ -658,9 +661,10 @@ public class CudDbService implements DbConstant {
 		}
 		Long lexemeId = create
 					.insertInto(
-							LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
+							LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 							LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
-					.values(meaningId, wordId, datasetCode, 1, 1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
+					.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
+							1, 1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
 					.returning(LEXEME.ID)
 					.fetchOne()
 					.getId();
