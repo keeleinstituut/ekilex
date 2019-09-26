@@ -57,10 +57,12 @@ public interface TermLoaderConstant extends TableName {
 	String entryClassExp = "system[@type='entryClass']";
 	String processStateExp = "descripGrp/descrip[@type='Staatus']";
 	String meaningTypeExp = "descripGrp/descrip[@type='Mõistetüüp']";
+	String readinessProcessStateExp = "descripGrp/descrip[@type='Valmidus']";
 	String createdByExp = "transacGrp/transac[@type='origination']";
 	String createdOnExp = "transacGrp[transac/@type='origination']/date";
 	String modifiedByExp = "transacGrp/transac[@type='modification']";
 	String modifiedOnExp = "transacGrp[transac/@type='modification']/date";
+	String legacyIdExp = "descripGrp/descrip[@type='id']";
 	String ltbIdExp = "descripGrp/descrip[@type='ID-number']";
 	String ltbSourceExp = "descripGrp/descrip[@type='Päritolu']";
 	String noteExp = "descripGrp/descrip[@type='Märkus']";

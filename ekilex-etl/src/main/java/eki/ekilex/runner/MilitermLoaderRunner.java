@@ -8,9 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -26,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
@@ -48,9 +51,29 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private final static String MEANING_RELATION_UNSPECIFIED = "määramata";
 
+	private final static String OVERLAP_PROCESS_LOG_PREFIX = "Kattuvus: ";
+
+	private final static String LEGACY_ID_PROCESS_LOG_PREFIX = "KMin id: ";
+
+	private final static String LTB_SOURCE_PROCESS_LOG_PREFIX = "Päritolu: ";
+
 	private DateFormat defaultDateFormat;
 
 	private Map<Long, List<RelationPart>> meaningRelationPartsMap;
+
+	private Map<String, String> lexemeValueStateCodes;
+
+	private Map<String, String> meaningAndLexemeProcessStateCodes;
+
+	private Map<String, String> registerConversionMap;
+
+	private Map<String, String> meaningSemanticTypeMap;
+
+	private Map<String, String> lexemePosCodeMap;
+
+	private Map<String, String> wordTypeCodes;
+
+	private Set<String> ignoredValues;
 
 	private Count illegalMeaningRelationReferenceValueCount;
 
@@ -83,8 +106,41 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 	}
 
 	@Override
-	public void initialise() {
+	public void initialise() throws Exception {
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
+
+		Map<String, String> tempCodes;
+
+		lexemeValueStateCodes = new HashMap<>();
+		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.VALUE_STATE.name());
+		lexemeValueStateCodes.putAll(tempCodes);
+		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.VALUE_STATE.name());
+		lexemeValueStateCodes.putAll(tempCodes);
+
+		meaningAndLexemeProcessStateCodes = new HashMap<>();
+		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
+		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
+		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VALMIDUS, ClassifierName.PROCESS_STATE.name());
+		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
+
+		registerConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.REGISTER.name());
+
+		ignoredValues = new HashSet<>();
+		ignoredValues.add("ülekantud");
+		ignoredValues.add("termin");
+
+		meaningSemanticTypeMap = new HashMap<>();
+		meaningSemanticTypeMap.put("ametinimetus", "amet");
+		meaningSemanticTypeMap.put("käsklus", "käsklus");
+		meaningSemanticTypeMap.put("üksus", "üksus");
+		meaningSemanticTypeMap.put("organisatsioon", "organisatsioon");
+		meaningSemanticTypeMap.put("auaste", "auaste");
+
+		lexemePosCodeMap = new HashMap<>();
+		lexemePosCodeMap.put("verbitüüpi", "v");
+		lexemePosCodeMap.put("termin;verbitüüpi", "v");
+
+		wordTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.WORD_TYPE.name());
 	}
 
 	@Transactional
@@ -151,14 +207,14 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 		String term;
 		String lang;
+		List<String> termWordTypeCodes;
 		List<String> listValues = extractListValues(conceptGroupNode);
-		List<Node> ltbSourceValueNodes = conceptGroupNode.selectNodes(ltbSourceExp);
+		List<Node> readinessProcessStateValueNodes = conceptGroupNode.selectNodes(readinessProcessStateExp);
+		List<Node> meaningTypeValueNodes = conceptGroupNode.selectNodes(meaningTypeExp);
 
 		Long meaningId = createMeaning();
-		extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode, fileName);
+		extractAndSaveMeaningData(meaningId, conceptGroupNode, fileName);
 		createMeaningLifecycleLog(meaningId, conceptGroupNode);
-
-		extractListValues(conceptGroupNode);
 
 		List<Node> langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 		for (Node langGroupNode : langGroupNodes) {
@@ -178,9 +234,19 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				Element termValueNode = (Element) termGroupNode.selectSingleNode(termExp);
 				term = termValueNode.getTextTrim();
 
+				termWordTypeCodes = new ArrayList<>();
+				Element valueStateElement = (Element) termGroupNode.selectSingleNode(valueStateExp);
+				if (valueStateElement != null) {
+					String value = valueStateElement.getTextTrim();
+					if (wordTypeCodes.containsKey(value)) {
+						String wordTypeCode = wordTypeCodes.get(value);
+						termWordTypeCodes.add(wordTypeCode);
+					}
+				}
+
 				int homonymNr = getWordMaxHomonymNr(term, lang);
 				homonymNr++;
-				Word word = new Word(term, lang, homonymNr, null, DEFAULT_WORD_MORPH_CODE, null, null, null, null, null);
+				Word word = new Word(term, lang, homonymNr, null, DEFAULT_WORD_MORPH_CODE, null, null, null, null, termWordTypeCodes);
 				Long wordId = createOrSelectWord(word, null, null);
 
 				Lexeme lexeme = new Lexeme();
@@ -190,11 +256,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				createLexemeLifecycleLog(lexemeId, termGroupNode, term);
 
 				saveListValueFreeforms(lang, listValues, lexemeId);
-
-				for (Node ltbSourceValueNode : ltbSourceValueNodes) {
-					List<Content> sources = extractContentAndRefs(ltbSourceValueNode, lang, term, false);
-					saveLexemeSourceLinks(lexemeId, sources, term, fileName);
-				}
 
 				List<Node> sourceValueNodes = termGroupNode.selectNodes(sourceExp);
 				for (Node sourceValueNode : sourceValueNodes) {
@@ -208,10 +269,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeDefinition, fileName);
 				}
 
-				Element coincidentValueNode = (Element) termGroupNode.selectSingleNode(overlapExp);
-				if (coincidentValueNode != null) {
-					String coincidentValue = coincidentValueNode.getTextTrim();
-					createLexemeProcessLog(lexemeId, coincidentValue);
+				Element overlapValueNode = (Element) termGroupNode.selectSingleNode(overlapExp);
+				if (overlapValueNode != null) {
+					String overlapLogComment = OVERLAP_PROCESS_LOG_PREFIX + overlapValueNode.getTextTrim();
+					createLexemeProcessLog(lexemeId, overlapLogComment);
 				}
 
 				List<Node> regionValueNodes = termGroupNode.selectNodes(regionExp);
@@ -260,6 +321,68 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				for (Node explanationValueNode : explanationValueNodes) {
 					List<Content> sources = extractContentAndRefs(explanationValueNode, lang, term, true);
 					saveDefinitionsAndSourceLinks(meaningId, sources, term, definitionTypeCodeExplanation, fileName);
+				}
+
+				Element valueStateNode = (Element) termGroupNode.selectSingleNode(valueStateExp);
+				if (valueStateNode != null) {
+					String value = valueStateNode.getTextTrim();
+					if (lexemeValueStateCodes.containsKey(value)) {
+						Map<String, Object> criteriaParamMap = new HashMap<>();
+						criteriaParamMap.put("id", lexemeId);
+
+						Map<String, Object> valueParamMap = new HashMap<>();
+						String lexemeValueStateCode = lexemeValueStateCodes.get(value);
+						valueParamMap.put("value_state_code", lexemeValueStateCode);
+
+						basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
+					} else if (wordTypeCodes.containsKey(value)) {
+						// ok, handled elsewhere
+					} else {
+						logger.warn("Incorrect 'Keelenditüüp' lexeme value state reference: \"{}\"", value);
+					}
+				}
+
+				for (Node readinessProcessStateValueNode : readinessProcessStateValueNodes) {
+					String value = ((Element) readinessProcessStateValueNode).getTextTrim();
+					if (meaningAndLexemeProcessStateCodes.containsKey(value)) {
+						String processStateCode = meaningAndLexemeProcessStateCodes.get(value);
+						updateLexemeProcessState(lexemeId, processStateCode);
+					} else if (ignoredValues.contains(value)) {
+						// do nothing
+					} else {
+						logger.warn("Incorrect 'Valmidus' lexeme process state reference: \"{}\"", value);
+					}
+				}
+
+				for (Node meaningTypeValueNode : meaningTypeValueNodes) {
+					String value = ((Element) meaningTypeValueNode).getTextTrim();
+					if (lexemePosCodeMap.containsKey(value)) {
+						String posCode = lexemePosCodeMap.get(value);
+						createLexemePos(lexemeId, posCode);
+					}
+				}
+
+				List<Node> valueNodes = termGroupNode.selectNodes(processStateExp);
+				for (Node processStateValueNode : valueNodes) {
+					String value = ((Element) processStateValueNode).getTextTrim();
+					if (meaningAndLexemeProcessStateCodes.containsKey(value)) {
+						String processStateCode = meaningAndLexemeProcessStateCodes.get(value);
+						updateLexemeProcessState(lexemeId, processStateCode);
+					} else if (lexemeValueStateCodes.containsKey(value)) {
+						Map<String, Object> criteriaParamMap = new HashMap<>();
+						criteriaParamMap.put("id", lexemeId);
+
+						Map<String, Object> valueParamMap = new HashMap<>();
+						String lexemeValueStateCode = lexemeValueStateCodes.get(value);
+						valueParamMap.put("value_state_code", lexemeValueStateCode);
+
+						basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
+					} else if (registerConversionMap.containsKey(value)) {
+						String lexemeRegister = registerConversionMap.get(value);
+						createLexemeRegister(lexemeId, lexemeRegister);
+					} else {
+						logger.warn("Incorrect 'Staatus' reference: \"{}\"", value);
+					}
 				}
 			}
 		}
@@ -341,7 +464,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void extractAndSaveMeaningFreeforms(Long meaningId, Node conceptGroupNode, String fileName) throws Exception {
+	private void extractAndSaveMeaningData(Long meaningId, Node conceptGroupNode, String fileName) throws Exception {
 
 		List<Node> valueNodes;
 		Element valueNode;
@@ -377,6 +500,39 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		for (Node imageValueNode : valueNodes) {
 			valueStr = ((Element) imageValueNode).getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, valueStr);
+		}
+
+		valueNodes = conceptGroupNode.selectNodes(legacyIdExp);
+		for (Node legacyIdNode : valueNodes) {
+			valueStr = ((Element)legacyIdNode).getTextTrim();
+			String legacyIdLogComment = LEGACY_ID_PROCESS_LOG_PREFIX + valueStr;
+			createMeaningProcessLog(meaningId, legacyIdLogComment);
+		}
+
+		valueNodes = conceptGroupNode.selectNodes(ltbSourceExp);
+		for (Node ltbSourceValueNode : valueNodes) {
+			StringBuilder ltbSourceLogComment = new StringBuilder(LTB_SOURCE_PROCESS_LOG_PREFIX);
+			Iterator<Node> ltbSourceNodeIter = ((Element) ltbSourceValueNode).nodeIterator();
+			while (ltbSourceNodeIter.hasNext()) {
+				Node ltbSourceNode = ltbSourceNodeIter.next();
+				ltbSourceLogComment.append(ltbSourceNode.getText());
+			}
+			createMeaningProcessLog(meaningId, ltbSourceLogComment.toString());
+		}
+
+		valueNodes = conceptGroupNode.selectNodes(meaningTypeExp);
+		for (Node meaningTypeValueNode : valueNodes) {
+			String value = ((Element) meaningTypeValueNode).getTextTrim();
+			if (meaningSemanticTypeMap.containsKey(value)) {
+				String semanticType = meaningSemanticTypeMap.get(value);
+				createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
+			} else if (lexemePosCodeMap.containsKey(value)) {
+				// ok, handled elsewhere
+			} else if (ignoredValues.contains(value)) {
+				// do nothing
+			} else {
+				logger.warn("Incorrect 'Mõistetüüp' reference: \"{}\"", value);
+			}
 		}
 	}
 
