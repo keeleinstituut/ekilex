@@ -30,4 +30,7 @@ public interface TermSourceLoaderConstant {
 	String sourcePublicationPlaceExp = "descripGrp/descrip[@type='Ilmumiskoht']";
 	String sourcePublicationNameExp = "descripGrp/descrip[@type='Väljaande nimi, nr']";
 	String sourceNoteExp = "descripGrp/descrip[@type='Märkus']";
+	String sourceExplanationExp = "descripGrp/descrip[@type='Selgitus']";
+	String sourceArticleTitleExp = "descripGrp/descrip[@type='Artikli pealkiri']";
+	String sourceArticleAuthorExp = "descripGrp/descrip[@type='Artikli autor']";
 }
