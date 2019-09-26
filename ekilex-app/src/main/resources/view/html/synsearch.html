@@ -1,252 +1,244 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{syn.search.title}">EKILEX otsing</title>
-<th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-searchfilter.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-synsearch.js}"></script>
-</th:block>
+    <title th:text="#{syn.search.title}">EKILEX otsing</title>
+    <th:block th:fragment="links">
+        <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
+        <script type="text/javascript" th:src="@{/view/js/ekilex-searchfilter.js}"></script>
+        <script type="text/javascript" th:src="@{/view/js/ekilex-synsearch.js}"></script>
+    </th:block>
 </head>
 <body class="body-with-navbar compacted">
-  <th:block th:replace="common :: nav_bar(activeItem = 'syn')"></th:block>
-  <div class="card shadow rounded-0 mt-n3 border-0">
+<th:block th:replace="common :: nav_bar(activeItem = 'syn')"></th:block>
+<div class="card shadow rounded-0 mt-n3 border-0">
     <div class="card-body px-2 py-3">
-      <form th:action="@{/synsearch}" method="post">
-        <th:block th:replace="search ::simple_search"></th:block>
-      </form>
+        <form th:action="@{/synsearch}" method="post">
+            <th:block th:replace="search ::simple_search"></th:block>
+        </form>
     </div>
-  </div>
-  <div class="container-fluid">
+</div>
+<div class="container-fluid">
 
-    <div class="alert alert-info" th:if="${wordsResult.totalCount >0}">
-      Tulpade vahel ja üles alla liikumiseks töötavad <strong>nooleklahvid</strong>.<br/>
-      Klahv <strong>ENTER</strong> töötab eri tulpades järgmiselt:
-      <ul>
-        <li>Vasakul: valitud otsingutulemuse detailide kuvamine</li>
-        <li>Paremal: valitud sünonüümi märkimine</li>
-        <li>Keskel: Paremal tulbas märgitud sünonüümi valitud ilmikuga sidumine</li>
-      </ul>
-      Klahv <strong>ESC</strong> eemaldab markeeringud ja liigutab kursori otsingu kasti.<br/>
+    <div class="alert alert-info d-none" th:if="${wordsResult.totalCount >0}">
+        Tulpade vahel ja üles alla liikumiseks töötavad <strong>nooleklahvid</strong>.<br/>
+        Klahv <strong>ENTER</strong> töötab eri tulpades järgmiselt:
+        <ul>
+            <li>Vasakul: valitud otsingutulemuse detailide kuvamine</li>
+            <li>Paremal: valitud sünonüümi märkimine</li>
+            <li>Keskel: Paremal tulbas märgitud sünonüümi valitud ilmikuga sidumine</li>
+        </ul>
+        Klahv <strong>ESC</strong> eemaldab markeeringud ja liigutab kursori otsingu kasti.<br/>
 
-      Klahvid <strong>'1', '2' ja '3'</strong> töötavad kiirklahvidena kolme tulba valimiseks
+        Klahvid <strong>'1', '2' ja '3'</strong> töötavad kiirklahvidena kolme tulba valimiseks
     </div>
     <div class="mt-4 float-left" th:if="${noResults}">
-      <div th:text="#{lex.not.found}">Not found.</div>
+        <div th:text="#{lex.not.found}">Not found.</div>
     </div>
 
-    <div class="row no-gutters mt-2" th:unless="${noResults}">
-      <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div class="card shadow navigate-panel" th:if="${not #lists.isEmpty(wordsResult.words)}" data-panel-index="1" id="synSearchResultsDiv" th:attrappend="data-active-panel=${markedSynWordId == null}?'true'">
-          <div class="card-body p-2">
-            <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
-            <table id="results" class="table table-striped mb-0">
-              <tr th:each="word, wordIter : ${wordsResult.words}">
-                <td class="p-0 navigate-item" th:data-navigate-index="${wordIter.index}"
-                    th:attrappend="data-navigate-selected=${wordIter.index == 0}?'true'"
-                    th:classappend="${wordIter.index == 0 ? 'navigate-selected': ''}">
-                  <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="synDetailsBtn">
-                    <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>
-                    <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-                    <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
-                  </button>
-                  <span class="float-right" style="padding: 15px">
+    <div class="row no-gutters mt-3" th:unless="${noResults}">
+        <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
+            <div class="card shadow navigate-panel" th:if="${not #lists.isEmpty(wordsResult.words)}"
+                 data-panel-index="1" id="synSearchResultsDiv"
+                 th:attrappend="data-active-panel=${markedSynWordId == null}?'true'">
+                <div class="card-body p-2">
+                    <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
+                    <table id="results" class="table table-striped mb-0">
+                        <tr th:each="word, wordIter : ${wordsResult.words}">
+                            <td class="p-0 navigate-item" th:data-navigate-index="${wordIter.index}"
+                                th:attrappend="data-navigate-selected=${wordIter.index == 0}?'true'"
+                                th:classappend="${wordIter.index == 0 ? 'navigate-selected': ''}">
+                                <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}"
+                                        name="synDetailsBtn">
+                                    <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}"
+                                          class="ttl">vorm 1</span>
+                                    <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
+                                    <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
+                                </button>
+                                <span class="float-right" style="padding: 15px">
                     <span th:id="${'syn_select_point_' + word.wordId}" class="fa fa-play" style="display: none"></span>
-                    <span th:id="${'syn_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+                    <span th:id="${'syn_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin"
+                          style="display: none"></span>
                   </span>
-                  <div style="position:relative; top: -10px; padding-left: 10px">
-                    <small>
+                                <div style="position:relative; top: -10px; padding-left: 10px">
+                                    <small>
                       <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
                         <span th:text="${wordDatasetCode}"></span>
                         <span th:unless="${wordDatasetIter.last}">,</span>
                       </span>
-                    </small>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
+                                    </small>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-9" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div id="syn_details_div"></div>
-      </div>
+        <div class="col-9" style="height: calc(100vh - 12rem); overflow-y: auto;">
+            <div id="syn_details_div"></div>
+        </div>
     </div>
 
-  </div>
-  <th:block th:fragment="details" th:if="${details != null}">
+</div>
+<th:block th:fragment="details" th:if="${details != null}">
     <div th:data-id="${wordId}" id="syn_details_div"
          th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')}">
-      <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
-
-      <div class="row no-gutters">
-        <div class="col-8 pr-2">
-          <div class="navigate-panel" data-panel-index="2"
-               th:attrappend="data-marked-word-id=${markedSynWordId != null}?${markedSynWordId}">
-            <div class="card shadow mb-2 droppable-lexeme" th:each="lexeme, lexemeIter : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
-               th:data-lexeme-id="${lexeme.lexemeId}"
-               th:data-navigate-index="${lexemeIter.index}"
-               th:with="
-               isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
-               isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}
-               ">
-
-            <div class="card-body" data-lexeme-title>
-              <div class="d-flex flex-row align-items-center flex-wrap">
-                <div class="d-flex align-items-center flex-wrap">
-                  <span th:if="${lexeme.levels != null}" class="pl-1 pr-1">
-                    <span th:text="${lexeme.levels}"></span>
-                  </span>
-                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                    <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
-                    <div class="hidden-buttons">
-                      <div class="btn-custom">
-                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${meaningWord.value}"></span>
-                        <span th:text="${meaningWord.homonymNumber}"></span>
-                        <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"  th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-id="${meaningWord.lexemeId}"
-                                data-callback="refreshDetails"
-                                data-toggle="deleteLexemeAndWordAndMeaning"
-                                sec:authorize="${#vars.isLexemeCrudGranted}">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                      </div>
+        <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
+        <div class="navigate-panel card shadow" data-panel-index="2"
+             th:attrappend="data-marked-word-id=${markedSynWordId != null}?${markedSynWordId}">
+            <div class="card-body px-0">
+                <div class="border-bottom border-light px-2 d-flex flex-row align-items-center">
+                    <h2 th:text="${details.word}" class="mr-3">Aktiivne sõna</h2>
+                    <button type="button" class="btn btn-secondary btn-sm">Tehtud</button>
+                    <div class="ml-auto">
+                        Logid:
+                        <button type="button" class="btn btn-secondary btn-sm">Menetlus <i class="fa fa-plus" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-secondary btn-sm ml-2">Tegevused</button>
                     </div>
-                    <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
-                  </th:block>
                 </div>
-              </div>
-              <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
-                <span th:utext="${lexeme.definitions.get(0).value}"></span>
-              </div>
-            </div>
+                <div class="row no-gutters">
+                    <div class="col-8 pr-2">
+                        <div class="px-3 mb-2 droppable-lexeme border-bottom border-light"
+                             th:each="lexeme, lexemeIter : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
+                             th:data-lexeme-id="${lexeme.lexemeId}"
+                             th:data-navigate-index="${lexemeIter.index}"
+                             th:with="isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')}, isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
 
-            <div class="row" th:if="${not #lists.isEmpty(lexeme.pos)}">
-              <div class="col pl-4">
-                <span th:each="classif,classifIter : ${lexeme.pos}" class="hidden-buttons">
+                            <div data-lexeme-title>
+                                <div class="d-flex flex-row align-items-center flex-wrap">
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <span th:if="${lexeme.levels != null}" class="pl-1 pr-1">
+                                            <span th:text="${lexeme.levels}"></span>
+                                        </span>
+                                        <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                                            <input type="hidden" class="meaning-word-id"
+                                                   th:value="${meaningWord.wordId}"/>
+                                            <div class="hidden-buttons">
+                                                <div class="btn-custom">
+                                                    <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
+                                                          th:text="${meaningWord.value}"></span>
+                                                    <span th:text="${meaningWord.homonymNumber}"></span>
+                                                    <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
+                                                          th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                                                    <button type="button" class="btn badge badge-warning"
+                                                            th:data-id="${meaningWord.lexemeId}"
+                                                            data-callback="refreshDetails"
+                                                            data-toggle="deleteLexemeAndWordAndMeaning"
+                                                            sec:authorize="${#vars.isLexemeCrudGranted}">
+                                                        <i class="fa fa-remove" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+                                    <span th:utext="${lexeme.definitions.get(0).value}"></span>
+                                </div>
+                            </div>
 
-                <span th:text="${classif.code}"></span>
-                <th:block th:unless="${classif.code == classif.value}">
-                  -
-                  <span th:text="${classif.value}"></span>
-                </th:block>
+                            <div class="row" th:if="${not #lists.isEmpty(lexeme.pos)}">
+                                <div class="col pl-4">
+                                    <span th:each="classif,classifIter : ${lexeme.pos}" class="hidden-buttons">
+                                        <span th:text="${classif.code}"></span>
+                                        <th:block th:unless="${classif.code == classif.value}">-<span th:text="${classif.value}"></span></th:block>
+                                        <span th:unless="${classifIter.last}">,</span>
+                                    </span>
+                                </div>
+                            </div>
 
-                  <span th:unless="${classifIter.last}">,</span>
-                </span>
-              </div>
-            </div>
+                            <div class="card-body" th:data-id="${lexeme.lexemeId}">
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
+                                        <div class="col pl-0">
+                                            <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
+                                                <div th:with="usage= ${lexeme.usages[0]}">
+                                                    <div class="col" th:utext="${usage.value}"></div>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
 
-            <div class="card-body" th:data-id="${lexeme.lexemeId}">
-              <div class="d-flex align-items-center flex-wrap">
-                <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
-                  <div class="col pl-0">
-                    <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
-                      <div th:with="usage= ${lexeme.usages[0]}">
-                        <div class="col" th:utext="${usage.value}"></div>
-                      </div>
-                    </th:block>
-                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 pr-2 border-left border-light">
+                        <div class="navigate-panel  mb-2" data-panel-index="3"
+                             th:attrappend="data-active-panel=${markedSynWordId != null}?'true'">
+                            <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
+                            <button type="button" class="btn badge badge-success"
+                                    th:title="#{syn.add.synonym}"
+                                    data-toggle="modal"
+                                    th:data-target="${'#addSynRelationDlg_' + wordId}">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn badge badge-secondary"
+                                    th:disabled="${markedSynWordId != null}"
+                                    th:title="#{syn.manual.mode}" name="manualEditBtn">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+
+                            <div class="px-2" th:if="${!#lists.isEmpty(details.relations)}">
+                                <table width="100%" class="orderable" data-op-code="word_relation">
+                                    <tr th:each="synRelation,relationIter : ${details.relations}"
+                                        th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}"
+                                        th:data-navigate-index="${relationIter.index}"
+                                        th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-marked' : ''}"
+                                        th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.wordId}?'true'">
+                                        <td width="75%" align="left" class="draggable-synonym hidden-buttons"
+                                            th:data-word-id="${synRelation.wordId}"
+                                            th:data-word="${synRelation.word}">
+                                            <span><i class="fa fa-list" aria-hidden="true"></i></span>
+                                            <span th:title="#{|relationstatus.${synRelation.relationStatus}|}"><i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i></span>
+                                            <span class="btn-custom" th:text="${synRelation.word}"/>
+                                            <span class="pull-right">
+                                                <button type="button" th:hidden="${relationIter.first}" class="btn badge badge-secondary order-up" title="Muuda järjestust"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+                                                <button type="button" th:hidden="${relationIter.last}" class="btn badge badge-secondary order-down" title="Muuda järjestust"><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
+                                                <button type="button" class="btn badge badge-success rel-status-btn" th:data-id="${synRelation.id}" data-status="CONFIRMED" title="Kinnita"><i class="fa fa-check" aria-hidden="true"></i></button>
+                                                <button type="button" class="btn badge badge-primary rel-status-btn" th:data-id="${synRelation.id}" data-status="HANDLED" title="Märgi käsitletuks"><i class="fa fa-thumb-tack" aria-hidden="true"></i></button>
+                                                <button type="button" class="btn badge badge-warning rel-status-btn" th:data-id="${synRelation.id}" data-status="DELETED" data-placement="right" title="Kustuta"><i class="fa fa-remove" aria-hidden="true"></i></button>
+                                            </span>
+                                        </td>
+                                        <td width="10%" align="right">
+                                            <span th:if="${synRelation.oppositeRelationStatus != null}">
+                                                <span th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}"><i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i></span>
+                                            </span>
+                                        </td>
+                                        <td align="right">
+                                            <span>
+                                                <button type="button" class="btn badge badge-secondary" data-toggle="modal" th:data-target="${'#synStatsDlg' + synRelation.id}"><i class="fa fa-bar-chart" aria-hidden="true"></i></button>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-              </div>
             </div>
-          </div>
-          </div>
         </div>
-
-
-        <div class="col-4 pr-2">
-          <div class="navigate-panel card mb-2" data-panel-index="3" th:attrappend="data-active-panel=${markedSynWordId != null}?'true'">
-            <div class="card-body pt-0 pb-0">
-              <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
-                <button type="button" class="btn badge badge-success"
-                        th:title="#{syn.add.synonym}"
-                        data-toggle="modal"
-                        th:data-target="${'#addSynRelationDlg_' + wordId}">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-              <button type="button" class="btn badge badge-secondary" th:disabled="${markedSynWordId != null}"
-                      th:title="#{syn.manual.mode}" name="manualEditBtn">
-                <i class="fa fa-edit" aria-hidden="true"></i>
-              </button>
-
-              <div th:if="${!#lists.isEmpty(details.relations)}">
-                <table width="100%" class="orderable" data-op-code="word_relation">
-                  <tr th:each="synRelation,relationIter : ${details.relations}" th:data-id="${synRelation.id}" th:data-orderby="${synRelation.orderBy}"
-                      th:data-navigate-index="${relationIter.index}" th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-marked' : ''}"
-                      th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.wordId}?'true'">
-                    <td width="75%" align="left" class="draggable-synonym hidden-buttons" th:data-word-id="${synRelation.wordId}" th:data-word="${synRelation.word}">
-                      <span>
-                        <i class="fa fa-list" aria-hidden="true"></i>
-                      </span>
-                      <span th:title="#{|relationstatus.${synRelation.relationStatus}|}">
-                        <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i>
-                      </span>
-                      <span class="btn-custom" th:text="${synRelation.word}"/>
-                      <span class="pull-right">
-                        <button type="button" th:hidden="${relationIter.first}" class="btn badge badge-secondary order-up" title="Muuda järjestust">
-                          <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" th:hidden="${relationIter.last}" class="btn badge badge-secondary order-down" title="Muuda järjestust">
-                          <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-success rel-status-btn" th:data-id="${synRelation.id}" data-status="CONFIRMED" title="Kinnita">
-                          <i class="fa fa-check" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-primary rel-status-btn" th:data-id="${synRelation.id}" data-status="HANDLED" title="Märgi käsitletuks">
-                          <i class="fa fa-thumb-tack" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning rel-status-btn" th:data-id="${synRelation.id}" data-status="DELETED" data-placement="right" title="Kustuta">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                      </span>
-                    </td>
-                    <td width="10%" align="right">
-                      <span th:if="${synRelation.oppositeRelationStatus != null}">
-                        <span th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}">
-                          <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i>
-                        </span>
-                      </span>
-                    </td>
-
-                    <td align="right">
-                      <span>
-                        <button type="button" class="btn badge badge-secondary"
-                                data-toggle="modal"
-                                th:data-target="${'#synStatsDlg' + synRelation.id}">
-                              <i class="fa fa-bar-chart" aria-hidden="true"></i>
-                        </button>
-                      </span>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.relations}, ${details.language}, ${details.morphCode})"></div>
     <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
-      <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
+        <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>
     <script>
-		$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei',
-			title : 'Kinnita vaste ilmiku kustutamine',
-			onConfirm : deleteLexemeAndWordAndMeaning
-		});
+        $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
+            btnOkLabel: 'Jah',
+            btnCancelLabel: 'Ei',
+            title: 'Kinnita vaste ilmiku kustutamine',
+            onConfirm: deleteLexemeAndWordAndMeaning
+        });
     </script>
-  </th:block>
+</th:block>
 
-  <div th:replace="common :: #alertDlg"></div>
-  <div th:replace="common :: #confirmDlg"></div>
+<div th:replace="common :: #alertDlg"></div>
+<div th:replace="common :: #confirmDlg"></div>
 
-  <script th:inline="javascript">
-	  initialise();
-  </script>
+<script th:inline="javascript">
+    initialise();
+</script>
 </body>
 </html>

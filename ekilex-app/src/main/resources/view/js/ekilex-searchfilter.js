@@ -21,9 +21,17 @@ function displayDetailGroupButtons() {
 	}
 }
 
+function displaySimpleSearch() {
+	$('#searchMode').val('SIMPLE');
+}
 
+function displayDetailSearch() {
+	$('#searchMode').val('DETAIL');
+}
 
 function initialiseSearchForm() {
+	$('#simpleSearchModeBtn').on('click',displaySimpleSearch);
+	$('#detailSearchModeBtn').on('click',displayDetailSearch);
 	let datasetDlg = $('#datasetSelectDlg');
 	datasetDlg.on('shown.bs.modal', () => {
 		datasetDlg.find('.btn').first().focus();
