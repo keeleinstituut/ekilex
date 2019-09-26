@@ -60,7 +60,7 @@
         <i class="fa fa-plus mr-2" aria-hidden="true"></i><span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
       </button>
 
-      <ul class="main-nav-tabs nav nav-tabs mb-n3 mx-auto align-self-start border-bottom-0">
+      <ul th:if="${searchMode}" class="main-nav-tabs nav nav-tabs mb-n3 mx-auto align-self-start border-bottom-0">
         <li class="nav-item">
           <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active':''" id="simpleSearchModeBtn"
                   th:text="#{'search.mode.SIMPLE'}" data-toggle="tab" href="#simple_search_filter" role="tab" aria-controls="simple_search_filter" aria-selected="true">Lihtotsing</a>
@@ -71,7 +71,7 @@
         </li>
       </ul>
 
-      <div class="navbar-nav ml-auto">
+      <div class="navbar-nav" th:classappend="${searchMode} ? '':'ml-auto'">
         <th:block sec:authorize="isAuthenticated()">
 
           <div id="userMenuDropDown" class="dropdown user-menu">

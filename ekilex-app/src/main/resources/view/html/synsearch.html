@@ -10,15 +10,15 @@
 </head>
 <body class="body-with-navbar compacted">
   <th:block th:replace="common :: nav_bar(activeItem = 'syn')"></th:block>
-
-  <div class="container-fluid">
-    <div class="card shadow">
-      <div class="card-body p-2">
-        <form th:action="@{/synsearch}" method="post">
-          <th:block th:replace="search ::simple_search"></th:block>
-        </form>
-      </div>
+  <div class="card shadow rounded-0 mt-n3 border-0">
+    <div class="card-body px-2 py-3">
+      <form th:action="@{/synsearch}" method="post">
+        <th:block th:replace="search ::simple_search"></th:block>
+      </form>
     </div>
+  </div>
+  <div class="container-fluid">
+
     <div class="alert alert-info" th:if="${wordsResult.totalCount >0}">
       Tulpade vahel ja üles alla liikumiseks töötavad <strong>nooleklahvid</strong>.<br/>
       Klahv <strong>ENTER</strong> töötab eri tulpades järgmiselt:
