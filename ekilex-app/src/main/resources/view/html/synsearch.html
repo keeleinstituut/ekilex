@@ -37,11 +37,13 @@
 
     <div class="row no-gutters mt-3" th:unless="${noResults}">
         <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-            <div class="card shadow navigate-panel" th:if="${not #lists.isEmpty(wordsResult.words)}"
+            <div class="card shadow navigate-panel h-100" th:if="${not #lists.isEmpty(wordsResult.words)}"
                  data-panel-index="1" id="synSearchResultsDiv"
                  th:attrappend="data-active-panel=${markedSynWordId == null}?'true'">
-                <div class="card-body p-2">
-                    <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
+                <div class="card-body p-0">
+                    <div  class="bg-light rounded-top px-2 py-1">
+                        <small th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></small>
+                    </div>
                     <table id="results" class="table table-striped mb-0">
                         <tr th:each="word, wordIter : ${wordsResult.words}">
                             <td class="p-0 navigate-item" th:data-navigate-index="${wordIter.index}"
@@ -96,26 +98,42 @@
                     </div>
                 </div>
                 <div class="row no-gutters">
-                    <div class="col-8 pr-2">
-                        <div class="px-3 mb-2 droppable-lexeme border-bottom border-light"
+                    <div class="col-8">
+                        <div class="px-3 pb-2 mb-2 droppable-lexeme border-bottom border-light"
                              th:each="lexeme, lexemeIter : ${details.lexemes}" th:data-meaning-id="${lexeme.meaningId}"
                              th:data-lexeme-id="${lexeme.lexemeId}"
                              th:data-navigate-index="${lexemeIter.index}"
                              th:with="isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')}, isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
 
                             <div data-lexeme-title>
-                                <div class="d-flex flex-row align-items-center flex-wrap">
-                                    <div class="d-flex align-items-center flex-wrap">
-                                        <span th:if="${lexeme.levels != null}" class="pl-1 pr-1">
-                                            <span th:text="${lexeme.levels}"></span>
-                                        </span>
+                                    <div class="d-flex align-items-start flex-wrap pt-2">
+                                        <span th:if="${lexeme.levels != null}" class="px-2 py-0 bg-light rounded font-weight-bold mr-2" th:text="${lexeme.levels}"> 1</span>
+                                            <p th:if="${not #lists.isEmpty(lexeme.definitions)}" th:utext="${lexeme.definitions.get(0).value}" class="mb-1"></p>
+                                    </div>
+                                    <div class="clasifiers" th:if="${not #lists.isEmpty(lexeme.pos)}">
+                                        <p th:each="classif,classifIter : ${lexeme.pos}" class="mb-0 text-secondary">
+                                            <span th:text="${classif.code}"></span>
+                                            <th:block th:unless="${classif.code == classif.value}">-<span th:text="${classif.value}"></span></th:block>
+                                            <span th:unless="${classifIter.last}">,</span>
+                                        </p>
+                                    </div>
+                                    <div th:data-id="${lexeme.lexemeId}">
+                                        <div class="d-flex  flex-wrap" th:if="${not #lists.isEmpty(lexeme.usages)}">
+                                            <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
+                                                <div th:with="usage= ${lexeme.usages[0]}">
+                                                    <span  th:utext="${usage.value}"></span>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-row">
                                         <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                                             <input type="hidden" class="meaning-word-id"
                                                    th:value="${meaningWord.wordId}"/>
                                             <div class="hidden-buttons">
                                                 <div class="btn-custom">
-                                                    <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
-                                                          th:text="${meaningWord.value}"></span>
+                                                            <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
+                                                                  th:text="${meaningWord.value}"></span>
                                                     <span th:text="${meaningWord.homonymNumber}"></span>
                                                     <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
                                                           th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
@@ -131,53 +149,35 @@
                                             <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                                         </th:block>
                                     </div>
-                                </div>
-                                <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
-                                    <span th:utext="${lexeme.definitions.get(0).value}"></span>
-                                </div>
+
                             </div>
 
-                            <div class="row" th:if="${not #lists.isEmpty(lexeme.pos)}">
-                                <div class="col pl-4">
-                                    <span th:each="classif,classifIter : ${lexeme.pos}" class="hidden-buttons">
-                                        <span th:text="${classif.code}"></span>
-                                        <th:block th:unless="${classif.code == classif.value}">-<span th:text="${classif.value}"></span></th:block>
-                                        <span th:unless="${classifIter.last}">,</span>
-                                    </span>
-                                </div>
-                            </div>
 
-                            <div class="card-body" th:data-id="${lexeme.lexemeId}">
-                                <div class="d-flex align-items-center flex-wrap">
-                                    <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
-                                        <div class="col pl-0">
-                                            <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
-                                                <div th:with="usage= ${lexeme.usages[0]}">
-                                                    <div class="col" th:utext="${usage.value}"></div>
-                                                </div>
-                                            </th:block>
-                                        </div>
-                                    </div>
 
-                                </div>
-                            </div>
+
                         </div>
                     </div>
-                    <div class="col-4 pr-2 border-left border-light">
+                    <div class="col-4 border-left border-light">
                         <div class="navigate-panel  mb-2" data-panel-index="3"
                              th:attrappend="data-active-panel=${markedSynWordId != null}?'true'">
-                            <span class="lbl" th:text="#{syn.candidates.title}">Sünonüümid</span>
-                            <button type="button" class="btn badge badge-success"
-                                    th:title="#{syn.add.synonym}"
-                                    data-toggle="modal"
-                                    th:data-target="${'#addSynRelationDlg_' + wordId}">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn badge badge-secondary"
-                                    th:disabled="${markedSynWordId != null}"
-                                    th:title="#{syn.manual.mode}" name="manualEditBtn">
-                                <i class="fa fa-edit" aria-hidden="true"></i>
-                            </button>
+                            <div class="d-flex bg-light px-2 align-items-center">
+                                <span th:text="#{syn.candidates.title}">Sünonüümid</span>
+                                <div class="ml-auto border-left">
+                                    <button type="button" class="btn btn-light"
+                                            th:title="#{syn.add.synonym}"
+                                            data-toggle="modal"
+                                            th:data-target="${'#addSynRelationDlg_' + wordId}">
+                                        <i class="action-icon fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-light"
+                                            th:disabled="${markedSynWordId != null}"
+                                            th:title="#{syn.manual.mode}" name="manualEditBtn">
+                                        <i class="action-icon fa fa-edit" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+
 
                             <div class="px-2" th:if="${!#lists.isEmpty(details.relations)}">
                                 <table width="100%" class="orderable" data-op-code="word_relation">
