@@ -1,0 +1,14 @@
+.search-result{
+  &-status{
+    top: 0;
+    right: $spacer;
+  }
+}
+
+.search-result-item{
+  &.active{
+    .search-result-btn{
+      color: $white;
+    }
+  }
+}

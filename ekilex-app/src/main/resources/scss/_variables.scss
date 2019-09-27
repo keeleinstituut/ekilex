@@ -17,7 +17,17 @@ $primary:   $blue-400 !default;
 
 $font-size-base: .875rem !default; //14px // Assumes the browser default, typically `16px`
 
+$h1-font-size:                $font-size-base * 1.857 !default;
+$h2-font-size:                $font-size-base * 1.642 !default;
+$h3-font-size:                $font-size-base * 1.428 !default;
+$h4-font-size:                $font-size-base * 1.285 !default;
+$h5-font-size:                $font-size-base * 1.142 !default;
+$h6-font-size:                $font-size-base !default;
+
+$body-bg: $gray-100 !default;
+
 $navbar-padding-y: 0 !default;
+$nav-tabs-link-active-bg: $white !default;
 
 $padding-y-base: .322rem !default;//vertical padding for 32px high elements
 $input-btn-padding-y: $padding-y-base !default;
@@ -27,8 +37,11 @@ $dropdown-item-padding-x: 1rem !default;
 
 $input-color: $gray-400 !default;
 $input-border-color: $gray-300 !default;
+$form-check-input-bg: $white !default;
 
 $text-muted: $gray-300 !default;
 
 $icon-btn-color: $gray-300 !default;
 $input-group-addon-bg: $gray-100 !default;
+
+

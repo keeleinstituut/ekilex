@@ -1,4 +1,5 @@
 .main-navigation{
+  z-index: $zindex-fixed;
   @include media-breakpoint-up(lg){
     height: $spacer * 3;
   }
