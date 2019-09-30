@@ -306,6 +306,11 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
+	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
+		return commonDataDbService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
+	}
+
+	@Transactional
 	public List<String> getWordsToBeDeleted(Long meaningId, String datasetCode) {
 
 		List<String> wordsToBeDeleted = new ArrayList<>();
@@ -489,10 +494,5 @@ public class CommonDataService extends AbstractWordSearchService {
 		} else {
 			return null;
 		}
-	}
-
-	@Transactional
-	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
-		return commonDataDbService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
 	}
 }

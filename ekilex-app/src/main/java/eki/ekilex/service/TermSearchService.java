@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -17,6 +18,7 @@ import eki.common.constant.DbConstant;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -223,12 +225,12 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 			List<Long> meaningIds = termSearchDbService.getMeaningIds(searchFilter, searchDatasetsRestriction);
 			meaningIds.remove(excludedMeaningId);
-			meaningIds.removeIf(meaningId -> !permissionDbService.isGrantedForMeaning(meaningId, userPrefDatasetCodes));
+			meaningIds.removeIf(meaningId -> !containsDatasetLexeme(meaningId, userPrefDatasetCodes));
 			meaningIds.sort(Comparator.comparing(meaningId -> !permissionDbService.isGrantedForMeaning(meaningId, userPermDatasetCodes)));
 
 			List<Meaning> meanings= new ArrayList<>();
 			meaningIds.forEach(meaningId -> {
-				Meaning meaning = getMeaningJoinData(meaningId, userPrefDatasetCodes, languagesOrder);
+				Meaning meaning = getMeaningJoinData(meaningId, languagesOrder);
 				meanings.add(meaning);
 			});
 			return meanings;
@@ -236,12 +238,14 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	}
 
 	@Transactional
-	public Meaning getMeaningJoinData(Long meaningId, List<String> userPrefDatasetCodes, List<ClassifierSelect> languagesOrder) {
+	public Meaning getMeaningJoinData(Long meaningId, List<ClassifierSelect> languagesOrder) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name()};
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+		List<Dataset> allDatasets = commonDataDbService.getDatasets();
+		List<String> allDatasetCodes = allDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
 
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(allDatasetCodes);
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
 
 		List<DefinitionRefTuple> definitionRefTuples =
@@ -273,6 +277,16 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 
 		return meaning;
+	}
+
+	private boolean containsDatasetLexeme(Long meaningId, List<String> datasetCodes) {
+
+		for (String datasetCode : datasetCodes) {
+			if (permissionDbService.isGrantedForMeaning(meaningId, datasetCode)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private String composeLevels(Lexeme lexeme) {
