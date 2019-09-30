@@ -12,8 +12,12 @@ import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
+import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEX_COLLOC;
+import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -46,6 +50,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
+import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
@@ -210,6 +215,112 @@ public class CompositionDbService implements DbConstant {
 
 	public void joinLexemes(Long lexemeId, Long sourceLexemeId) {
 
+		joinLexemeCollocations(lexemeId, sourceLexemeId);
+		joinLexemeSourceLinks(lexemeId, sourceLexemeId);
+		joinLexemeRegisters(lexemeId, sourceLexemeId);
+		joinLexemePos(lexemeId, sourceLexemeId);
+		joinLexemeFreeforms(lexemeId, sourceLexemeId);
+		joinLexemeDerivs(lexemeId, sourceLexemeId);
+		joinLexemeRegions(lexemeId, sourceLexemeId);
+		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, lexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
+		create.update(LEXEME_PROCESS_LOG).set(LEXEME_PROCESS_LOG.LEXEME_ID, lexemeId).where(LEXEME_PROCESS_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
+		joinLexemeRelations(lexemeId, sourceLexemeId);
+		create.delete(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).execute();
+	}
+
+	private void joinLexemeCollocations(Long lexemeId, Long sourceLexemeId) {
+
+		LexColloc lc1 = LEX_COLLOC.as("lc1");
+		LexColloc lc2 = LEX_COLLOC.as("lc2");
+		create.update(lc1)
+				.set(lc1.LEXEME_ID, lexemeId)
+				.where(lc1.LEXEME_ID.eq(sourceLexemeId))
+				.andNotExists(DSL
+						.select(lc2.ID)
+						.from(lc2)
+						.where(lc2.LEXEME_ID.eq(lexemeId)
+								.and(lc2.COLLOCATION_ID.eq(lc1.COLLOCATION_ID))))
+				.execute();
+
+		create.update(LEX_COLLOC_POS_GROUP).set(LEX_COLLOC_POS_GROUP.LEXEME_ID, lexemeId).where(LEX_COLLOC_POS_GROUP.LEXEME_ID.eq(sourceLexemeId)).execute();
+	}
+
+	private void joinLexemeRegions(Long lexemeId, Long sourceLexemeId) {
+
+		create.update(LEXEME_REGION)
+				.set(LEXEME_REGION.LEXEME_ID, lexemeId)
+				.where(LEXEME_REGION.LEXEME_ID.eq(sourceLexemeId)
+						.and(LEXEME_REGION.REGION_CODE.notIn(
+								DSL.select(LEXEME_REGION.REGION_CODE).from(LEXEME_REGION).where(LEXEME_REGION.LEXEME_ID.eq(lexemeId)))))
+				.execute();
+	}
+
+	private void joinLexemeRelations(Long lexemeId, Long sourceLexemeId) {
+
+		create.update(LEX_RELATION).set(LEX_RELATION.LEXEME1_ID, lexemeId).where(LEX_RELATION.LEXEME1_ID.eq(sourceLexemeId)).execute();
+		create.update(LEX_RELATION).set(LEX_RELATION.LEXEME2_ID, lexemeId).where(LEX_RELATION.LEXEME2_ID.eq(sourceLexemeId)).execute();
+	}
+
+	private void joinLexemeDerivs(Long lexemeId, Long sourceLexemeId) {
+
+		create.update(LEXEME_DERIV)
+				.set(LEXEME_DERIV.LEXEME_ID, lexemeId)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(sourceLexemeId)
+						.and(LEXEME_DERIV.DERIV_CODE.notIn(
+								DSL.select(LEXEME_DERIV.DERIV_CODE).from(LEXEME_DERIV).where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)))))
+				.execute();
+	}
+
+	private void joinLexemeFreeforms(Long lexemeId, Long sourceLexemeId) {
+
+		Result<FreeformRecord> lexemeFreeforms = create.selectFrom(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))))
+				.fetch();
+		Result<FreeformRecord> sourceLexemeFreeforms = create.selectFrom(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))))
+				.fetch();
+
+		List<Long> nonDublicateFreeformIds = sourceLexemeFreeforms.stream()
+				.filter(slf -> lexemeFreeforms.stream()
+						.noneMatch(
+								lf -> lf.getType().equals(slf.getType()) &&
+								((Objects.nonNull(lf.getValueText()) && lf.getValueText().equals(slf.getValueText())) ||
+								(Objects.nonNull(lf.getValueNumber()) && lf.getValueNumber().equals(slf.getValueNumber())) ||
+								(Objects.nonNull(lf.getClassifCode()) && lf.getClassifCode().equals(slf.getClassifCode())) ||
+								(Objects.nonNull(lf.getValueDate()) && lf.getValueDate().equals(slf.getValueDate())))))
+				.map(FreeformRecord::getId)
+				.collect(Collectors.toList());
+
+		create.update(LEXEME_FREEFORM)
+				.set(LEXEME_FREEFORM.LEXEME_ID, lexemeId)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)
+						.and(LEXEME_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
+				.execute();
+
+		create.delete(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)).execute();
+	}
+
+	private void joinLexemePos(Long lexemeId, Long sourceLexemeId) {
+
+		create.update(LEXEME_POS)
+				.set(LEXEME_POS.LEXEME_ID, lexemeId)
+				.where(LEXEME_POS.LEXEME_ID.eq(sourceLexemeId)
+						.and(LEXEME_POS.POS_CODE.notIn(
+								DSL.select(LEXEME_POS.POS_CODE).from(LEXEME_POS).where(LEXEME_POS.LEXEME_ID.eq(lexemeId))))).execute();
+	}
+
+	private void joinLexemeRegisters(Long lexemeId, Long sourceLexemeId) {
+
+		create.update(LEXEME_REGISTER)
+				.set(LEXEME_REGISTER.LEXEME_ID, lexemeId)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(sourceLexemeId)
+						.and(LEXEME_REGISTER.REGISTER_CODE.notIn(
+								DSL.select(LEXEME_REGISTER.REGISTER_CODE).from(LEXEME_REGISTER).where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)))))
+				.execute();
+	}
+
+	private void joinLexemeSourceLinks(Long lexemeId, Long sourceLexemeId) {
+
 		LexemeSourceLink lsl1 = LEXEME_SOURCE_LINK.as("lsl1");
 		LexemeSourceLink lsl2 = LEXEME_SOURCE_LINK.as("lsl2");
 		create.update(lsl1)
@@ -222,30 +333,6 @@ public class CompositionDbService implements DbConstant {
 								.and(lsl2.TYPE.eq(lsl1.TYPE))
 								.and(lsl2.VALUE.eq(lsl1.VALUE))))
 				.execute();
-
-		create.update(LEXEME_REGISTER)
-				.set(LEXEME_REGISTER.LEXEME_ID, lexemeId)
-				.where(LEXEME_REGISTER.LEXEME_ID.eq(sourceLexemeId)
-						.and(LEXEME_REGISTER.REGISTER_CODE.notIn(
-								DSL.select(LEXEME_REGISTER.REGISTER_CODE).from(LEXEME_REGISTER).where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)))))
-				.execute();
-		create.update(LEXEME_POS)
-				.set(LEXEME_POS.LEXEME_ID, lexemeId)
-				.where(LEXEME_POS.LEXEME_ID.eq(sourceLexemeId)
-						.and(LEXEME_POS.POS_CODE.notIn(
-								DSL.select(LEXEME_POS.POS_CODE).from(LEXEME_POS).where(LEXEME_POS.LEXEME_ID.eq(lexemeId)))))
-				.execute(); // <-unique
-		create.update(LEXEME_FREEFORM).set(LEXEME_FREEFORM.LEXEME_ID, lexemeId).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)).execute(); // <- ??
-		create.update(LEXEME_DERIV)
-				.set(LEXEME_DERIV.LEXEME_ID, lexemeId)
-				.where(LEXEME_DERIV.LEXEME_ID.eq(sourceLexemeId)
-						.and(LEXEME_DERIV.DERIV_CODE.notIn(
-								DSL.select(LEXEME_DERIV.DERIV_CODE).from(LEXEME_DERIV).where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)))))
-				.execute();
-		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, lexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
-		create.update(LEX_RELATION).set(LEX_RELATION.LEXEME1_ID, lexemeId).where(LEX_RELATION.LEXEME1_ID.eq(sourceLexemeId)).execute();
-		create.update(LEX_RELATION).set(LEX_RELATION.LEXEME2_ID, lexemeId).where(LEX_RELATION.LEXEME2_ID.eq(sourceLexemeId)).execute();
-		create.delete(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).execute();
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {
