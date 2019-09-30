@@ -306,6 +306,11 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
+	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
+		return commonDataDbService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
+	}
+
+	@Transactional
 	public List<String> getWordsToBeDeleted(Long meaningId, String datasetCode) {
 
 		List<String> wordsToBeDeleted = new ArrayList<>();
@@ -372,17 +377,28 @@ public class CommonDataService extends AbstractWordSearchService {
 			List<String> userPermDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
+		List<String> allDatasetCodes = getDatasetCodes();
 		List<Long> wordIds = commonDataDbService.getNonaffixoidWordIds(wordValue);
 		wordIds.remove(wordIdToExclude);
-		wordIds.removeIf(wordId -> !permissionDbService.isGrantedForWord(wordId, userPreferredDatasetCodes));
 
 		for (Long wordId : wordIds) {
-			WordDetails wordDetails = getWordDetails(wordId, userPreferredDatasetCodes);
+			WordDetails wordDetails = getWordDetails(wordId, allDatasetCodes);
 			wordDetailsList.add(wordDetails);
 		}
 
+		wordDetailsList.removeIf(wordDetails -> !containsDatasetLexeme(wordDetails.getLexemes(), userPreferredDatasetCodes));
 		wordDetailsList.sort(Comparator.comparing(wordDetails -> !permissionDbService.isGrantedForWord(wordDetails.getWord().getWordId(), userPermDatasetCodes)));
 		return wordDetailsList;
+	}
+
+	private boolean containsDatasetLexeme(List<WordLexeme> lexemes, List<String> datasetCodes) {
+
+		for (WordLexeme lexeme : lexemes) {
+			if (datasetCodes.contains(lexeme.getDatasetCode())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
@@ -478,10 +494,5 @@ public class CommonDataService extends AbstractWordSearchService {
 		} else {
 			return null;
 		}
-	}
-
-	@Transactional
-	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
-		return commonDataDbService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
 	}
 }
