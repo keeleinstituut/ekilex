@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ import eki.wordweb.data.Collocation;
 import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationRelGroup;
 import eki.wordweb.data.CollocationTuple;
+import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
@@ -63,12 +65,17 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void composeHomonymWrapups(List<Word> words, String destinLang, Complexity complexity) {
+	public void composeHomonymWrapups(List<Word> words, DataFilter dataFilter) {
+
+		String destinLang = dataFilter.getDestinLang();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
+		Complexity dataComplexity = dataFilter.getDataComplexity();
+
 		for (Word word : words) {
 			List<TypeWord> meaningWords = word.getMeaningWords();
 			if (CollectionUtils.isNotEmpty(meaningWords)) {
 				List<TypeWord> primaryMeaningWords = meaningWords.stream()
-						.filter(meaningWord -> getComplexityFilter(meaningWord.getComplexity(), complexity))
+						.filter(meaningWord -> meaningWord.getLexComplexity().equals(lexComplexity))
 						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(primaryMeaningWords)) {
 					TypeWord firstMeaningWord = primaryMeaningWords.get(0);
@@ -96,7 +103,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			List<TypeDefinition> definitions = word.getDefinitions();
 			if (CollectionUtils.isNotEmpty(definitions)) {
 				List<TypeDefinition> primaryDefinitions = definitions.stream()
-						.filter(definition -> getComplexityFilter(definition.getComplexity(), complexity))
+						.filter(definition -> definition.getComplexity().equals(dataComplexity))
 						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(primaryDefinitions)) {
 					TypeDefinition firstDefinition = primaryDefinitions.get(0);
@@ -168,8 +175,13 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			List<LexemeDetailsTuple> lexemeDetailsTuples,
 			List<LexemeMeaningTuple> lexemeMeaningTuples,
 			List<CollocationTuple> collocTuples,
-			Complexity complexity,
-			String sourceLang, String destinLang, String displayLang) {
+			DataFilter dataFilter,
+			String displayLang) {
+
+		String sourceLang = dataFilter.getSourceLang();
+		String destinLang = dataFilter.getDestinLang(); 
+		Complexity lexComplexity = dataFilter.getLexComplexity();
+		Complexity dataComplexity = dataFilter.getDataComplexity();
 
 		Long wordId = word.getWordId();
 		List<Lexeme> lexemes = new ArrayList<>();
@@ -183,10 +195,10 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			Long lexemeId = tuple.getLexemeId();
 			Lexeme lexeme = lexemeMap.get(lexemeId);
 			if (lexeme == null) {
-				lexeme = composeLexeme(lexemeId, tuple, complexity, displayLang);
+				lexeme = composeLexeme(lexemeId, tuple, dataComplexity, displayLang);
 				lexemeMap.put(lexemeId, lexeme);
 				lexemes.add(lexeme);
-				populateUsages(lexeme, tuple, complexity, displayLang);
+				populateUsages(lexeme, tuple, dataComplexity, displayLang);
 				populateRelatedLexemes(lexeme, tuple, displayLang);
 				meaningWordIds = new ArrayList<>();
 			}
@@ -200,7 +212,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			if (lexeme == null) {
 				continue;
 			}
-			populateMeaning(lexeme, tuple, complexity, displayLang);
+			populateMeaning(lexeme, tuple, lexComplexity, dataComplexity, displayLang);
 			populateRelatedMeanings(lexeme, tuple, displayLang);
 		}
 
@@ -265,7 +277,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		return lexemes;
 	}
 
-	private Lexeme composeLexeme(Long lexemeId, LexemeDetailsTuple tuple, Complexity complexity, String displayLang) {
+	private Lexeme composeLexeme(Long lexemeId, LexemeDetailsTuple tuple, Complexity dataComplexity, String displayLang) {
 		Lexeme lexeme = new Lexeme();
 		lexeme.setLexemeId(lexemeId);
 		lexeme.setMeaningId(tuple.getMeaningId());
@@ -288,19 +300,17 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		lexeme.setPublicNotes(publicNotes);
 		lexeme.setGrammars(grammars);
 		lexeme.setGovernments(governments);
-		if (complexity != null) {
-			if (CollectionUtils.isNotEmpty(publicNotes)) {
-				publicNotes = publicNotes.stream().filter(publicNote -> StringUtils.startsWith(publicNote.getComplexity().name(), complexity.name())).collect(Collectors.toList());
-				lexeme.setPublicNotes(publicNotes);
-			}
-			if (CollectionUtils.isNotEmpty(grammars)) {
-				grammars = grammars.stream().filter(grammar -> StringUtils.startsWith(grammar.getComplexity().name(), complexity.name())).collect(Collectors.toList());
-				lexeme.setGrammars(grammars);
-			}
-			if (CollectionUtils.isNotEmpty(governments)) {
-				governments = governments.stream().filter(government -> StringUtils.startsWith(government.getComplexity().name(), complexity.name())).collect(Collectors.toList());
-				lexeme.setGovernments(governments);
-			}
+		if (CollectionUtils.isNotEmpty(publicNotes)) {
+			publicNotes = publicNotes.stream().filter(publicNote -> publicNote.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
+			lexeme.setPublicNotes(publicNotes);
+		}
+		if (CollectionUtils.isNotEmpty(grammars)) {
+			grammars = grammars.stream().filter(grammar -> grammar.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
+			lexeme.setGrammars(grammars);
+		}
+		if (CollectionUtils.isNotEmpty(governments)) {
+			governments = governments.stream().filter(government -> government.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
+			lexeme.setGovernments(governments);
 		}
 
 		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
@@ -346,32 +356,30 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		meaningWordIds.add(meaningWordId);
 	}
 
-	private void populateMeaning(Lexeme lexeme, LexemeMeaningTuple tuple, Complexity complexity, String displayLang) {
+	private void populateMeaning(Lexeme lexeme, LexemeMeaningTuple tuple, Complexity lexComplexity, Complexity dataComplexity, String displayLang) {
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 
 		List<TypeDefinition> definitions = tuple.getDefinitions();
 		lexeme.setDefinitions(definitions);
-		if (complexity != null) {
-			if (CollectionUtils.isNotEmpty(definitions)) {
-				definitions = definitions.stream().filter(definition -> StringUtils.startsWith(definition.getComplexity().name(), complexity.name())).collect(Collectors.toList());
-				lexeme.setDefinitions(definitions);
-			}
-			if (Complexity.SIMPLE.equals(complexity)) {
-				lexeme.setImageFiles(tuple.getImageFiles());
-				lexeme.setLearnerComments(tuple.getLearnerComments());
-			}
+		if (CollectionUtils.isNotEmpty(definitions)) {
+			definitions = definitions.stream().filter(definition -> definition.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
+			lexeme.setDefinitions(definitions);
+		}
+		if (Complexity.SIMPLE.equals(lexComplexity)) {
+			lexeme.setImageFiles(tuple.getImageFiles());
+			lexeme.setLearnerComments(tuple.getLearnerComments());
 		}
 
 		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
 	}
 
-	private void populateUsages(Lexeme lexeme, LexemeDetailsTuple tuple, Complexity complexity, String displayLang) {
+	private void populateUsages(Lexeme lexeme, LexemeDetailsTuple tuple, Complexity dataComplexity, String displayLang) {
 		List<TypeUsage> usages = tuple.getUsages();
 		lexeme.setUsages(usages);
 		if (CollectionUtils.isNotEmpty(usages)) {
-			if (complexity != null) {
-				usages = usages.stream().filter(usage -> StringUtils.startsWith(usage.getComplexity().name(), complexity.name())).collect(Collectors.toList());
+			if (dataComplexity != null) {
+				usages = usages.stream().filter(usage -> usage.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
 				lexeme.setUsages(usages);
 			}
 			for (TypeUsage usage : usages) {
@@ -846,7 +854,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		return etymLevelBuf.toString();
 	}
 
-	public void composeWordRelations(Word word, List<WordRelationTuple> wordRelationTuples, Complexity complexity, String displayLang) {
+	public void composeWordRelations(Word word, List<WordRelationTuple> wordRelationTuples, Complexity lexComplexity, String displayLang) {
 
 		if (CollectionUtils.isEmpty(wordRelationTuples)) {
 			return;
@@ -859,7 +867,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			List<TypeWordRelation> relatedWords = tuple.getRelatedWords();
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				relatedWords = relatedWords.stream()
-						.filter(relation -> getComplexityFilter(relation.getComplexity(), complexity))
+						.filter(relation -> ArrayUtils.contains(relation.getLexComplexities(), lexComplexity))
 						.collect(Collectors.toList());
 			}
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
@@ -903,7 +911,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			List<TypeWordRelation> wordGroupMembers = tuple.getWordGroupMembers();
 			if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
 				wordGroupMembers = wordGroupMembers.stream()
-						.filter(member -> getComplexityFilter(member.getComplexity(), complexity))
+						.filter(member -> ArrayUtils.contains(member.getLexComplexities(), lexComplexity))
 						.collect(Collectors.toList());
 			}
 			if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
@@ -1121,19 +1129,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 				&& CollectionUtils.isEmpty(lexeme.getOtherLangMatchWords())
 				&& CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords())
 				&& CollectionUtils.isEmpty(lexeme.getCollocationPosGroups());
-	}
-
-	private boolean getComplexityFilter(Complexity dataComplexity, Complexity filtComplexity) {
-		if (filtComplexity == null) {
-			return true;
-		}
-		if (dataComplexity == null) {
-			return false;
-		}
-		String dataComplexityStr = dataComplexity.name();
-		String filtComplexityStr = filtComplexity.name();
-		boolean isMatch = StringUtils.startsWith(dataComplexityStr, filtComplexityStr);
-		return isMatch;
 	}
 
 }

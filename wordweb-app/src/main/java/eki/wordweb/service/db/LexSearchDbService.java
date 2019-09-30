@@ -25,11 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FormMode;
 import eki.common.constant.Complexity;
 import eki.common.constant.DbConstant;
+import eki.common.constant.FormMode;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
+import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
@@ -38,6 +39,7 @@ import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
+import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
@@ -50,36 +52,42 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 	@Autowired
 	private DSLContext create;
 
-	public List<Word> getWords(String searchFilter, String sourceLang, String destinLang, Complexity complexity) {
+	public List<Word> getWords(String searchWord, DataFilter dataFilter) {
 
-		String searchFilterLower = StringUtils.lowerCase(searchFilter);
-		Condition where = MVIEW_WW_WORD.LANG.eq(sourceLang)
-				.and(DSL.condition("{0} = any({1})", DSL.val(destinLang), MVIEW_WW_WORD.LEX_LANGS))
-				.and(DSL.exists(DSL.select(MVIEW_WW_FORM.WORD_ID)
-						.from(MVIEW_WW_FORM)
-						.where(MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)
-								.and(MVIEW_WW_FORM.FORM.lower().eq(searchFilterLower)))));
-		if (complexity != null) {
-			where = where.and(MVIEW_WW_WORD.COMPLEXITY.eq(complexity.name()));
-		}
+		String sourceLang = dataFilter.getSourceLang();
+		String destinLang = dataFilter.getDestinLang();
+		Complexity dataComplexity = dataFilter.getDataComplexity();
+
+		MviewWwWord w = MVIEW_WW_WORD.as("w");
+		MviewWwForm f = MVIEW_WW_FORM.as("f");
+
+		String searchWordLower = StringUtils.lowerCase(searchWord);
+		Condition where = w.LANG.eq(sourceLang)
+				.andExists(DSL
+						.select(f.WORD_ID)
+						.from(f)
+						.where(f.WORD_ID.eq(w.WORD_ID)
+								.and(f.FORM.lower().eq(searchWordLower))))
+				.and(DSL.condition("{0} = any({1})", DSL.val(destinLang), w.LEX_LANGS))
+				.and(DSL.condition("{0} = any({1})", DSL.val(dataComplexity.name()), w.DATA_COMPLEXITIES));
+
 		return create
 				.select(
-						MVIEW_WW_WORD.WORD_ID,
-						MVIEW_WW_WORD.WORD,
-						MVIEW_WW_WORD.WORD_CLASS,
-						MVIEW_WW_WORD.LANG,
-						MVIEW_WW_WORD.HOMONYM_NR,
-						MVIEW_WW_WORD.WORD_TYPE_CODES,
-						MVIEW_WW_WORD.MORPH_CODE,
-						MVIEW_WW_WORD.DISPLAY_MORPH_CODE,
-						MVIEW_WW_WORD.ASPECT_CODE,
-						MVIEW_WW_WORD.COMPLEXITY,
-						MVIEW_WW_WORD.MEANING_COUNT,
-						MVIEW_WW_WORD.MEANING_WORDS,
-						MVIEW_WW_WORD.DEFINITIONS)
-				.from(MVIEW_WW_WORD)
+						w.WORD_ID,
+						w.WORD,
+						w.WORD_CLASS,
+						w.LANG,
+						w.HOMONYM_NR,
+						w.WORD_TYPE_CODES,
+						w.MORPH_CODE,
+						w.DISPLAY_MORPH_CODE,
+						w.ASPECT_CODE,
+						w.MEANING_COUNT,
+						w.MEANING_WORDS,
+						w.DEFINITIONS)
+				.from(w)
 				.where(where)
-				.orderBy(MVIEW_WW_WORD.LANG, MVIEW_WW_WORD.HOMONYM_NR)
+				.orderBy(w.LANG, w.HOMONYM_NR)
 				.fetch()
 				.into(Word.class);
 	}
@@ -133,7 +141,6 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 						MVIEW_WW_WORD.MORPH_CODE,
 						MVIEW_WW_WORD.DISPLAY_MORPH_CODE,
 						MVIEW_WW_WORD.ASPECT_CODE,
-						MVIEW_WW_WORD.COMPLEXITY,
 						MVIEW_WW_WORD.MEANING_COUNT,
 						MVIEW_WW_WORD.MEANING_WORDS,
 						MVIEW_WW_WORD.DEFINITIONS)
@@ -189,12 +196,9 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 
 		Condition l2Join = l2.MEANING_ID.eq(l1.MEANING_ID)
 				.and(l2.LEXEME_ID.ne(l1.LEXEME_ID))
-				.and(l2.WORD_ID.ne(l1.WORD_ID));
-		Condition where = l1.WORD_ID.eq(wordId);
-		if (complexity != null) {
-			l2Join = l2Join.and(l2.COMPLEXITY.eq(complexity.name()));
-			where = where.and(l1.COMPLEXITY.eq(complexity.name()));
-		}
+				.and(l2.WORD_ID.ne(l1.WORD_ID))
+				.and(l2.COMPLEXITY.eq(complexity.name()));
+		Condition where = l1.WORD_ID.eq(wordId).and(l1.COMPLEXITY.eq(complexity.name()));
 		return create
 				.select(
 						l1.LEXEME_ID,
@@ -243,10 +247,8 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
 		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
 
-		Condition where = l.WORD_ID.eq(wordId);
-		if (complexity != null) {
-			where = where.and(l.COMPLEXITY.eq(complexity.name()));
-		}
+		Condition where = l.WORD_ID.eq(wordId).and(l.COMPLEXITY.eq(complexity.name()));
+
 		return create
 				.select(
 						l.LEXEME_ID,
@@ -269,10 +271,7 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 
 	public List<CollocationTuple> getCollocations(Long wordId, Complexity complexity) {
 
-		Condition where = MVIEW_WW_COLLOCATION.WORD_ID.eq(wordId);
-		if (complexity != null) {
-			where = where.and(MVIEW_WW_COLLOCATION.COMPLEXITY.eq(complexity.name()));
-		}
+		Condition where = MVIEW_WW_COLLOCATION.WORD_ID.eq(wordId).and(MVIEW_WW_COLLOCATION.COMPLEXITY.eq(complexity.name()));
 
 		return create
 				.select(

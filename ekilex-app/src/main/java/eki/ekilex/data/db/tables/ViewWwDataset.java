@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
 
-    private static final long serialVersionUID = 973582079;
+    private static final long serialVersionUID = -757421731;
 
     /**
      * The reference instance of <code>public.view_ww_dataset</code>
@@ -64,10 +64,9 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
     public final TableField<ViewWwDatasetRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
+     * The column <code>public.view_ww_dataset.lang</code>.
      */
-    @java.lang.Deprecated
-    public final TableField<ViewWwDatasetRecord, Object> LANG = createField("lang", org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"unknown\""), this, "");
+    public final TableField<ViewWwDatasetRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.view_ww_dataset.order_by</code>.

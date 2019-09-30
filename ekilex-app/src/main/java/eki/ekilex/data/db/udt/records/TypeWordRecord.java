@@ -27,7 +27,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRecord extends UDTRecordImpl<TypeWordRecord> implements Record6<Long, Long, String, String, String, String[]> {
 
-    private static final long serialVersionUID = 1152660642;
+    private static final long serialVersionUID = 743628305;
 
     /**
      * Setter for <code>public.type_word.lexeme_id</code>.
@@ -86,16 +86,16 @@ public class TypeWordRecord extends UDTRecordImpl<TypeWordRecord> implements Rec
     }
 
     /**
-     * Setter for <code>public.type_word.complexity</code>.
+     * Setter for <code>public.type_word.lex_complexity</code>.
      */
-    public void setComplexity(String value) {
+    public void setLexComplexity(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.type_word.complexity</code>.
+     * Getter for <code>public.type_word.lex_complexity</code>.
      */
-    public String getComplexity() {
+    public String getLexComplexity() {
         return (String) get(4);
     }
 
@@ -170,7 +170,7 @@ public class TypeWordRecord extends UDTRecordImpl<TypeWordRecord> implements Rec
      */
     @Override
     public Field<String> field5() {
-        return TypeWord.COMPLEXITY;
+        return TypeWord.LEX_COMPLEXITY;
     }
 
     /**
@@ -218,7 +218,7 @@ public class TypeWordRecord extends UDTRecordImpl<TypeWordRecord> implements Rec
      */
     @Override
     public String component5() {
-        return getComplexity();
+        return getLexComplexity();
     }
 
     /**
@@ -266,7 +266,7 @@ public class TypeWordRecord extends UDTRecordImpl<TypeWordRecord> implements Rec
      */
     @Override
     public String value5() {
-        return getComplexity();
+        return getLexComplexity();
     }
 
     /**
@@ -318,7 +318,7 @@ public class TypeWordRecord extends UDTRecordImpl<TypeWordRecord> implements Rec
      */
     @Override
     public TypeWordRecord value5(String value) {
-        setComplexity(value);
+        setLexComplexity(value);
         return this;
     }
 
@@ -359,14 +359,14 @@ public class TypeWordRecord extends UDTRecordImpl<TypeWordRecord> implements Rec
     /**
      * Create a detached, initialised TypeWordRecord
      */
-    public TypeWordRecord(Long lexemeId, Long meaningId, String value, String lang, String complexity, String[] wordTypeCodes) {
+    public TypeWordRecord(Long lexemeId, Long meaningId, String value, String lang, String lexComplexity, String[] wordTypeCodes) {
         super(TypeWord.TYPE_WORD);
 
         set(0, lexemeId);
         set(1, meaningId);
         set(2, value);
         set(3, lang);
-        set(4, complexity);
+        set(4, lexComplexity);
         set(5, wordTypeCodes);
     }
 }

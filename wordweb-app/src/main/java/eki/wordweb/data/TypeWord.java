@@ -14,7 +14,7 @@ public class TypeWord extends WordTypeData {
 
 	private String lang;
 
-	private Complexity complexity;
+	private Complexity lexComplexity;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -48,12 +48,12 @@ public class TypeWord extends WordTypeData {
 		this.lang = lang;
 	}
 
-	public Complexity getComplexity() {
-		return complexity;
+	public Complexity getLexComplexity() {
+		return lexComplexity;
 	}
 
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
+	public void setLexComplexity(Complexity lexComplexity) {
+		this.lexComplexity = lexComplexity;
 	}
 
 }

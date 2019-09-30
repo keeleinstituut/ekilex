@@ -69,7 +69,6 @@ public class Indexes {
     public static final Index MVIEW_WW_LEXEME_RELATION_LEXEME_ID_IDX = Indexes0.MVIEW_WW_LEXEME_RELATION_LEXEME_ID_IDX;
     public static final Index MVIEW_WW_MEANING_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_MEANING_ID_IDX;
     public static final Index MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX;
-    public static final Index MVIEW_WW_WORD_COMPLEXITY_IDX = Indexes0.MVIEW_WW_WORD_COMPLEXITY_IDX;
     public static final Index MVIEW_WW_WORD_LANG_IDX = Indexes0.MVIEW_WW_WORD_LANG_IDX;
     public static final Index MVIEW_WW_WORD_VALUE_IDX = Indexes0.MVIEW_WW_WORD_VALUE_IDX;
     public static final Index MVIEW_WW_WORD_VALUE_PREFIX_IDX = Indexes0.MVIEW_WW_WORD_VALUE_PREFIX_IDX;
@@ -118,7 +117,6 @@ public class Indexes {
         public static Index MVIEW_WW_LEXEME_RELATION_LEXEME_ID_IDX = Internal.createIndex("mview_ww_lexeme_relation_lexeme_id_idx", MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION, new OrderField[] { MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION.LEXEME_ID }, false);
         public static Index MVIEW_WW_MEANING_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_meaning_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.MEANING_ID }, false);
         public static Index MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_relation_meaning_id_idx", MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION, new OrderField[] { MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION.MEANING_ID }, false);
-        public static Index MVIEW_WW_WORD_COMPLEXITY_IDX = Internal.createIndex("mview_ww_word_complexity_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.COMPLEXITY }, false);
         public static Index MVIEW_WW_WORD_LANG_IDX = Internal.createIndex("mview_ww_word_lang_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.LANG }, false);
         public static Index MVIEW_WW_WORD_VALUE_IDX = Internal.createIndex("mview_ww_word_value_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD }, false);
         public static Index MVIEW_WW_WORD_VALUE_PREFIX_IDX = Internal.createIndex("mview_ww_word_value_prefix_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD }, false);

@@ -27,7 +27,7 @@ drop type if exists type_meaning_relation;
 -- CREATE EXTENSION dblink;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
 
-create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), complexity varchar(100), word_type_codes varchar(100) array);
+create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), lex_complexity varchar(100), word_type_codes varchar(100) array);
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
@@ -36,7 +36,7 @@ create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
-create type type_word_relation as (word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), word_type_codes varchar(100) array, word_rel_type_code varchar(100));
+create type type_word_relation as (word_id bigint, word text, word_lang char(3), homonym_nr integer, lex_complexities varchar(100) array, word_type_codes varchar(100) array, word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), meaning_rel_type_code varchar(100));
 
@@ -54,10 +54,10 @@ dblink(
 	morph_code varchar(100),
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
-	complexity varchar(100),
+	lex_langs char(3) array,
+	data_complexities varchar(100) array,
 	meaning_count integer,
 	meaning_words type_word array,
-	lex_langs char(3) array,
 	definitions type_definition array
 );
 
@@ -238,7 +238,6 @@ create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
 create index mview_ww_word_value_prefix_idx on mview_ww_word (word text_pattern_ops);
 create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(word) text_pattern_ops);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
-create index mview_ww_word_complexity_idx on mview_ww_word (complexity);
 create index mview_ww_as_word_word_id_idx on mview_ww_as_word (word_id);
 create index mview_ww_as_word_value_idx on mview_ww_as_word (as_word);
 create index mview_ww_as_word_value_lower_idx on mview_ww_as_word (lower(as_word));

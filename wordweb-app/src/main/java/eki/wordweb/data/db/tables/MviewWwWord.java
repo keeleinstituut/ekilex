@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 2103406381;
+    private static final long serialVersionUID = -2099339561;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -101,9 +101,14 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.mview_ww_word.complexity</code>.
+     * The column <code>public.mview_ww_word.lex_langs</code>.
      */
-    public final TableField<MviewWwWordRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwWordRecord, String[]> LEX_LANGS = createField("lex_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.data_complexities</code>.
+     */
+    public final TableField<MviewWwWordRecord, String[]> DATA_COMPLEXITIES = createField("data_complexities", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word.meaning_count</code>.
@@ -114,11 +119,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.meaning_words</code>.
      */
     public final TableField<MviewWwWordRecord, TypeWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.wordweb.data.db.udt.TypeWord.TYPE_WORD.getDataType().getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.mview_ww_word.lex_langs</code>.
-     */
-    public final TableField<MviewWwWordRecord, String[]> LEX_LANGS = createField("lex_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word.definitions</code>.
@@ -171,7 +171,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_COMPLEXITY_IDX, Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
     }
 
     /**

@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
 
-    private static final long serialVersionUID = 1337352888;
+    private static final long serialVersionUID = 1534945086;
 
     /**
      * The reference instance of <code>public.type_word_relation</code>
@@ -65,9 +65,9 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
     public static final UDTField<TypeWordRelationRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_WORD_RELATION, "");
 
     /**
-     * The attribute <code>public.type_word_relation.complexity</code>.
+     * The attribute <code>public.type_word_relation.lex_complexities</code>.
      */
-    public static final UDTField<TypeWordRelationRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD_RELATION, "");
+    public static final UDTField<TypeWordRelationRecord, String[]> LEX_COMPLEXITIES = createField("lex_complexities", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_RELATION, "");
 
     /**
      * The attribute <code>public.type_word_relation.word_type_codes</code>.

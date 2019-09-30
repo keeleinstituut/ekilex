@@ -224,6 +224,7 @@ public class Indexes {
     public static final Index LEXEME_MEANING_ID_IDX = Indexes0.LEXEME_MEANING_ID_IDX;
     public static final Index LEXEME_PKEY = Indexes0.LEXEME_PKEY;
     public static final Index LEXEME_PROCESS_STATE_CODE_IDX = Indexes0.LEXEME_PROCESS_STATE_CODE_IDX;
+    public static final Index LEXEME_TYPE_IDX = Indexes0.LEXEME_TYPE_IDX;
     public static final Index LEXEME_WORD_ID_IDX = Indexes0.LEXEME_WORD_ID_IDX;
     public static final Index LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = Indexes0.LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY;
     public static final Index LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = Indexes0.LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY;
@@ -466,6 +467,7 @@ public class Indexes {
         public static Index LEXEME_MEANING_ID_IDX = Internal.createIndex("lexeme_meaning_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.MEANING_ID }, false);
         public static Index LEXEME_PKEY = Internal.createIndex("lexeme_pkey", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.ID }, true);
         public static Index LEXEME_PROCESS_STATE_CODE_IDX = Internal.createIndex("lexeme_process_state_code_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.PROCESS_STATE_CODE }, false);
+        public static Index LEXEME_TYPE_IDX = Internal.createIndex("lexeme_type_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.TYPE }, false);
         public static Index LEXEME_WORD_ID_IDX = Internal.createIndex("lexeme_word_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID }, false);
         public static Index LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = Internal.createIndex("lexeme_word_id_meaning_id_dataset_code_key", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID, Lexeme.LEXEME.MEANING_ID, Lexeme.LEXEME.DATASET_CODE }, true);
         public static Index LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = Internal.createIndex("lexeme_deriv_lexeme_id_deriv_code_key", LexemeDeriv.LEXEME_DERIV, new OrderField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID, LexemeDeriv.LEXEME_DERIV.DERIV_CODE }, true);

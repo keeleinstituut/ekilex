@@ -2,7 +2,6 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
 
 public class Word extends WordTypeData {
@@ -28,8 +27,6 @@ public class Word extends WordTypeData {
 	private String aspectCode;
 
 	private Classifier aspect;
-
-	private Complexity complexity;
 
 	private Integer meaningCount;
 
@@ -139,14 +136,6 @@ public class Word extends WordTypeData {
 
 	public void setAspect(Classifier aspect) {
 		this.aspect = aspect;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public Integer getMeaningCount() {

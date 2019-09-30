@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = -1751706325;
+    private static final long serialVersionUID = -460726253;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -96,9 +96,14 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
     public final TableField<ViewWwWordRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.view_ww_word.complexity</code>.
+     * The column <code>public.view_ww_word.lex_langs</code>.
      */
-    public final TableField<ViewWwWordRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwWordRecord, String[]> LEX_LANGS = createField("lex_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_word.data_complexities</code>.
+     */
+    public final TableField<ViewWwWordRecord, String[]> DATA_COMPLEXITIES = createField("data_complexities", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word.meaning_count</code>.
@@ -109,11 +114,6 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
      * The column <code>public.view_ww_word.meaning_words</code>.
      */
     public final TableField<ViewWwWordRecord, TypeWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.ekilex.data.db.udt.TypeWord.TYPE_WORD.getDataType().getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.view_ww_word.lex_langs</code>.
-     */
-    public final TableField<ViewWwWordRecord, String[]> LEX_LANGS = createField("lex_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word.definitions</code>.

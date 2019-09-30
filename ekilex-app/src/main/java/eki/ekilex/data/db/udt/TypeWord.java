@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWord extends UDTImpl<TypeWordRecord> {
 
-    private static final long serialVersionUID = -674953332;
+    private static final long serialVersionUID = -980007284;
 
     /**
      * The reference instance of <code>public.type_word</code>
@@ -65,9 +65,9 @@ public class TypeWord extends UDTImpl<TypeWordRecord> {
     public static final UDTField<TypeWordRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_WORD, "");
 
     /**
-     * The attribute <code>public.type_word.complexity</code>.
+     * The attribute <code>public.type_word.lex_complexity</code>.
      */
-    public static final UDTField<TypeWordRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD, "");
+    public static final UDTField<TypeWordRecord, String> LEX_COMPLEXITY = createField("lex_complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD, "");
 
     /**
      * The attribute <code>public.type_word.word_type_codes</code>.

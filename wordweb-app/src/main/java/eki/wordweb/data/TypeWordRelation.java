@@ -15,7 +15,7 @@ public class TypeWordRelation extends WordTypeData {
 
 	private Integer homonymNr;
 
-	private Complexity complexity;
+	private Complexity[] lexComplexities;
 
 	private String wordRelTypeCode;
 
@@ -53,12 +53,12 @@ public class TypeWordRelation extends WordTypeData {
 		this.homonymNr = homonymNr;
 	}
 
-	public Complexity getComplexity() {
-		return complexity;
+	public Complexity[] getLexComplexities() {
+		return lexComplexities;
 	}
 
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
+	public void setLexComplexities(Complexity[] lexComplexities) {
+		this.lexComplexities = lexComplexities;
 	}
 
 	public String getWordRelTypeCode() {

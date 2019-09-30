@@ -23,6 +23,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.Complexity;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
+import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
@@ -63,12 +64,12 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	@Transactional
 	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
 
-		Complexity complexity = getComplexity(searchMode);
-		List<Word> allWords = lexSearchDbService.getWords(searchWord, sourceLang, destinLang, complexity);
+		DataFilter dataFilter = getDataFilter(sourceLang, destinLang, searchMode);
+		List<Word> allWords = lexSearchDbService.getWords(searchWord, dataFilter);
 		boolean isForcedSearchMode = false;
 		if (CollectionUtils.isEmpty(allWords) && StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
-			complexity = getComplexity(SEARCH_MODE_DETAIL);
-			allWords = lexSearchDbService.getWords(searchWord, sourceLang, destinLang, complexity);
+			dataFilter = getDataFilter(sourceLang, destinLang, SEARCH_MODE_DETAIL);
+			allWords = lexSearchDbService.getWords(searchWord, dataFilter);
 			if (CollectionUtils.isNotEmpty(allWords)) {
 				searchMode = SEARCH_MODE_DETAIL;
 				isForcedSearchMode = true;
@@ -76,7 +77,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		}
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		conversionUtil.setAffixoidFlags(allWords);
-		conversionUtil.composeHomonymWrapups(allWords, destinLang, complexity);
+		conversionUtil.composeHomonymWrapups(allWords, dataFilter);
 		conversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
@@ -122,11 +123,9 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	public WordData getWordData(Long wordId, String sourceLang, String destinLang, String displayLang, String searchMode) {
 
 		// query params
-		Complexity complexity = getComplexity(searchMode);
-		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		if (Complexity.SIMPLE.equals(complexity)) {
-			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		}
+		DataFilter dataFilter = getDataFilter(sourceLang, destinLang, searchMode);
+		Integer maxDisplayLevel = dataFilter.getMaxDisplayLevel();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
 
 		// queries and transformations
 		Word word = lexSearchDbService.getWord(wordId);
@@ -135,12 +134,12 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymologyTuples(wordId);
 		conversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.getWordRelationTuples(wordId);
-		conversionUtil.composeWordRelations(word, wordRelationTuples, complexity, displayLang);
-		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.getLexemeDetailsTuples(wordId, complexity);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, complexity);
-		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, complexity);
+		conversionUtil.composeWordRelations(word, wordRelationTuples, lexComplexity, displayLang);
+		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.getLexemeDetailsTuples(wordId, lexComplexity);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, lexComplexity);
+		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, lexComplexity);
 		compensateNullWords(wordId, collocTuples);
-		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, complexity, sourceLang, destinLang, displayLang);
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, dataFilter, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();
@@ -237,11 +236,33 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		});
 	}
 
-	private Complexity getComplexity(String searchMode) {
-		Complexity complexity = null;
-		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-			complexity = Complexity.SIMPLE;
+	//falling back to dataset-based filtering, not cool at all...
+	private DataFilter getDataFilter(String sourceLang, String destinLang, String searchMode) {
+		Complexity lexComplexity = null;
+		try {
+			lexComplexity = Complexity.valueOf(searchMode.toUpperCase());
+		} catch (Exception e) {
+			//not interested
 		}
-		return complexity;
+		String complexityIndex = "";
+		if (StringUtils.equals(sourceLang, "est") && StringUtils.equals(destinLang, "est")) {
+			complexityIndex = "1";
+		} else if (StringUtils.equals(sourceLang, "est") && StringUtils.equals(destinLang, "rus")) {
+			complexityIndex = "2";
+		} else if (StringUtils.equals(sourceLang, "rus") && StringUtils.equals(destinLang, "est")) {
+			complexityIndex = "2";
+		}
+		Complexity dataComplexity = null;
+		try {
+			dataComplexity = Complexity.valueOf(lexComplexity.name() + complexityIndex);
+		} catch (Exception e) {
+			//not interested
+		}
+		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
+		if (Complexity.SIMPLE.equals(lexComplexity)) {
+			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
+		}
+		DataFilter dataFilter = new DataFilter(sourceLang, destinLang, lexComplexity, dataComplexity, maxDisplayLevel);
+		return dataFilter;
 	}
 }
