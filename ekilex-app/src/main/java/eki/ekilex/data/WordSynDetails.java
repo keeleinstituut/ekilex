@@ -19,27 +19,11 @@ public class WordSynDetails extends AbstractDataObject {
 	private List<SynRelation> relations;
 
 	public String getWord() {
-        		return word;
-    }
-
-    public void setWord(String word) {
-        		this.word = word;
-    }
-
-	public List<SynRelation> getRelations() {
-		return relations;
+		return word;
 	}
 
-	public void setRelations(List<SynRelation> relations) {
-		this.relations = relations;
-	}
-
-	public List<WordSynLexeme> getLexemes() {
-		return lexemes;
-	}
-
-	public void setLexemes(List<WordSynLexeme> lexemes) {
-		this.lexemes = lexemes;
+	public void setWord(String word) {
+		this.word = word;
 	}
 
 	public String getLanguage() {
@@ -57,4 +41,21 @@ public class WordSynDetails extends AbstractDataObject {
 	public void setMorphCode(String morphCode) {
 		this.morphCode = morphCode;
 	}
+
+	public List<WordSynLexeme> getLexemes() {
+		return lexemes;
+	}
+
+	public void setLexemes(List<WordSynLexeme> lexemes) {
+		this.lexemes = lexemes;
+	}
+
+	public List<SynRelation> getRelations() {
+		return relations;
+	}
+
+	public void setRelations(List<SynRelation> relations) {
+		this.relations = relations;
+	}
+
 }
