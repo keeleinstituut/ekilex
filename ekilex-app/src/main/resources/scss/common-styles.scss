@@ -1,6 +1,6 @@
 /* stylelint-disable */
 html, body {
-	min-height: 100%;
+	height: 100%;
 }
 
 th {
@@ -141,12 +141,8 @@ input:checked+.slider:before {
 .body-with-navbar {
 	height: 100vh;
 	padding-top: 4rem;
-	background: #eaeaea;
 }
 
-.body-with-navbar .card {
-	border-radius: 0.5rem;
-}
 
 .body-with-navbar hr {
 	margin-bottom: 0.5rem;

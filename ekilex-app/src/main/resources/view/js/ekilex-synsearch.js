@@ -24,13 +24,12 @@ function initialise() {
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 		let id = $(this).data('id');
 		let markedSynWordId = $(document).find('.navigate-marked').children(':first').data('word-id');
-		$('#synSearchResultsDiv').find('.navigate-selected').each(function () {$(this).removeClass('navigate-selected');});
+		$('#synSearchResultsDiv').find('.navigate-selected').each(function () {$(this).removeClass('navigate-selected active');});
 		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
 
-		$(this).parent().addClass('navigate-selected');
+		$(this).parent().addClass('navigate-selected active');
 		$(this).parent().attr('data-navigate-selected', true);
 
-		$("[id^='syn_select_point_']").hide();
 		$("[id^='syn_select_wait_']").hide();
 		$("#syn_select_wait_" + id).show();
 		let detailsUrl = applicationUrl + 'syn_worddetails/' + id;
@@ -42,7 +41,7 @@ function initialise() {
 			let detailsDiv = $('#syn_details_div');
 			detailsDiv.replaceWith(data);
 			$("#syn_select_wait_" + id).hide();
-			$("#syn_select_point_" + id).show();
+			$('[data-toggle="tooltip"]').tooltip();
 
 			$(document).find('.draggable-synonym').draggable({ revert: "invalid" });
 
