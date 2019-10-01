@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
@@ -24,6 +25,7 @@ import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
@@ -825,11 +827,17 @@ public class CudDbService implements DbConstant {
 	}
 
 	public void deleteWord(Long wordId) {
-		create.delete(WORD_LIFECYCLE_LOG)
-				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(wordId))
+		create.delete(LIFECYCLE_LOG)
+				.where(LIFECYCLE_LOG.ID.in(DSL
+						.select(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
+						.from(WORD_LIFECYCLE_LOG)
+						.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(wordId))))
 				.execute();
-		create.delete(WORD_PROCESS_LOG)
-				.where(WORD_PROCESS_LOG.WORD_ID.eq(wordId))
+		create.delete(PROCESS_LOG)
+				.where(PROCESS_LOG.ID.in(DSL
+						.select(WORD_PROCESS_LOG.PROCESS_LOG_ID)
+						.from(WORD_PROCESS_LOG)
+						.where(WORD_PROCESS_LOG.WORD_ID.eq(wordId))))
 				.execute();
 		create.delete(WORD)
 				.where(WORD.ID.eq(wordId))
@@ -861,14 +869,23 @@ public class CudDbService implements DbConstant {
 	}
 
 	public void deleteLexeme(Long lexemeId) {
-		create.delete(LEXEME_LIFECYCLE_LOG)
-				.where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(lexemeId))
+		create.delete(LIFECYCLE_LOG)
+				.where(LIFECYCLE_LOG.ID.in(DSL
+						.select(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
+						.from(LEXEME_LIFECYCLE_LOG)
+						.where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(lexemeId))))
 				.execute();
-		create.delete(LEXEME_PROCESS_LOG)
-				.where(LEXEME_PROCESS_LOG.LEXEME_ID.eq(lexemeId))
+		create.delete(PROCESS_LOG)
+				.where(PROCESS_LOG.ID.in(DSL
+						.select(LEXEME_PROCESS_LOG.PROCESS_LOG_ID)
+						.from(LEXEME_PROCESS_LOG)
+						.where(LEXEME_PROCESS_LOG.LEXEME_ID.eq(lexemeId))))
 				.execute();
 		create.delete(FREEFORM)
-				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))))
+				.where(FREEFORM.ID.in(DSL
+						.select(LEXEME_FREEFORM.FREEFORM_ID)
+						.from(LEXEME_FREEFORM)
+						.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))))
 				.execute();
 		create.delete(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -943,11 +960,17 @@ public class CudDbService implements DbConstant {
 		}
 		deleteMeaningFreeforms(meaningId);
 
-		create.delete(MEANING_LIFECYCLE_LOG)
-				.where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(meaningId))
+		create.delete(LIFECYCLE_LOG)
+				.where(LIFECYCLE_LOG.ID.in(DSL
+						.select(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
+						.from(MEANING_LIFECYCLE_LOG)
+						.where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(meaningId))))
 				.execute();
-		create.delete(MEANING_PROCESS_LOG)
-				.where(MEANING_PROCESS_LOG.MEANING_ID.eq(meaningId))
+		create.delete(PROCESS_LOG)
+				.where(PROCESS_LOG.ID.in(DSL
+						.select(MEANING_PROCESS_LOG.PROCESS_LOG_ID)
+						.from(MEANING_PROCESS_LOG)
+						.where(MEANING_PROCESS_LOG.MEANING_ID.eq(meaningId))))
 				.execute();
 		create.delete(MEANING)
 				.where(MEANING.ID.eq(meaningId))
