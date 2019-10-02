@@ -56,10 +56,13 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 
 		String sourceLang = dataFilter.getSourceLang();
 		String destinLang = dataFilter.getDestinLang();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
 		Complexity dataComplexity = dataFilter.getDataComplexity();
+		String[] filtComplexities = new String[] {lexComplexity.name(), dataComplexity.name()};
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
+		Table<?> lc = DSL.unnest(w.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 
 		String searchWordLower = StringUtils.lowerCase(searchWord);
 		Condition where = w.LANG.eq(sourceLang)
@@ -68,8 +71,11 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 						.from(f)
 						.where(f.WORD_ID.eq(w.WORD_ID)
 								.and(f.FORM.lower().eq(searchWordLower))))
-				.and(DSL.condition("{0} = any({1})", DSL.val(destinLang), w.LEX_LANGS))
-				.and(DSL.condition("{0} = any({1})", DSL.val(dataComplexity.name()), w.DATA_COMPLEXITIES));
+				.andExists(DSL
+						.selectFrom(lc)
+						.where(
+								lc.field("lang", String.class).eq(destinLang)
+								.and(lc.field("complexity", String.class).in(filtComplexities))));
 
 		return create
 				.select(
@@ -187,18 +193,29 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 				.into(WordRelationTuple.class);
 	}
 
-	public List<LexemeDetailsTuple> getLexemeDetailsTuples(Long wordId, Complexity complexity) {
+	public List<LexemeDetailsTuple> getLexemeDetailsTuples(Long wordId, DataFilter dataFilter) {
+
+		String destinLang = dataFilter.getDestinLang();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
+		Complexity dataComplexity = dataFilter.getDataComplexity();
+		String[] filtComplexities = new String[] {lexComplexity.name(), dataComplexity.name()};
 
 		MviewWwLexeme l1 = MVIEW_WW_LEXEME.as("l1");
 		MviewWwLexeme l2 = MVIEW_WW_LEXEME.as("l2");
 		MviewWwWord w2 = MVIEW_WW_WORD.as("w2");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
+		Table<?> lc = DSL.unnest(l1.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 
 		Condition l2Join = l2.MEANING_ID.eq(l1.MEANING_ID)
 				.and(l2.LEXEME_ID.ne(l1.LEXEME_ID))
 				.and(l2.WORD_ID.ne(l1.WORD_ID))
-				.and(l2.COMPLEXITY.eq(complexity.name()));
-		Condition where = l1.WORD_ID.eq(wordId).and(l1.COMPLEXITY.eq(complexity.name()));
+				.and(l2.COMPLEXITY.eq(lexComplexity.name()));
+
+		Condition where = l1.WORD_ID.eq(wordId)
+				.andExists(DSL
+						.selectFrom(lc)
+						.where(lc.field("lang", String.class).eq(destinLang)
+								.and(lc.field("complexity", String.class).in(filtComplexities))));
 		return create
 				.select(
 						l1.LEXEME_ID,
@@ -241,13 +258,23 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 				.into(LexemeDetailsTuple.class);
 	}
 
-	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId, Complexity complexity) {
+	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId, DataFilter dataFilter) {
+
+		String destinLang = dataFilter.getDestinLang();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
+		Complexity dataComplexity = dataFilter.getDataComplexity();
+		String[] filtComplexities = new String[] {lexComplexity.name(), dataComplexity.name()};
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
 		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
+		Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 
-		Condition where = l.WORD_ID.eq(wordId).and(l.COMPLEXITY.eq(complexity.name()));
+		Condition where = l.WORD_ID.eq(wordId)
+				.andExists(DSL
+						.selectFrom(lc)
+						.where(lc.field("lang", String.class).eq(destinLang)
+								.and(lc.field("complexity", String.class).in(filtComplexities))));
 
 		return create
 				.select(

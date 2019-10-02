@@ -7,6 +7,7 @@ package eki.ekilex.data.db.tables;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwWordRecord;
 import eki.ekilex.data.db.udt.records.TypeDefinitionRecord;
+import eki.ekilex.data.db.udt.records.TypeLangComplexityRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRecord;
 
 import javax.annotation.Generated;
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = -460726253;
+    private static final long serialVersionUID = -1051160034;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -96,14 +97,9 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
     public final TableField<ViewWwWordRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.view_ww_word.lex_langs</code>.
+     * The column <code>public.view_ww_word.lang_complexitites</code>.
      */
-    public final TableField<ViewWwWordRecord, String[]> LEX_LANGS = createField("lex_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.view_ww_word.data_complexities</code>.
-     */
-    public final TableField<ViewWwWordRecord, String[]> DATA_COMPLEXITIES = createField("data_complexities", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<ViewWwWordRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITITES = createField("lang_complexitites", eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word.meaning_count</code>.

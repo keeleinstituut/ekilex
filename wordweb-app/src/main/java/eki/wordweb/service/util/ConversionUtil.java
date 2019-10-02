@@ -233,8 +233,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			}
 		}
 
-		lexemes = filterLexemes(lexemes, sourceLang, destinLang);
-
 		List<TypeWordRelation> relatedWords = word.getRelatedWords();
 		List<String> allRelatedWordValues = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(relatedWords)) {
@@ -278,6 +276,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 	}
 
 	private Lexeme composeLexeme(Long lexemeId, LexemeDetailsTuple tuple, Complexity dataComplexity, String displayLang) {
+
 		Lexeme lexeme = new Lexeme();
 		lexeme.setLexemeId(lexemeId);
 		lexeme.setMeaningId(tuple.getMeaningId());
@@ -437,37 +436,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType = relatedMeanings.stream().collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningRelType));
 			lexeme.setRelatedMeaningsByType(relatedMeaningsByType);
 		}
-	}
-
-	private List<Lexeme> filterLexemes(List<Lexeme> lexemes, String sourceLang, String destinLang) {
-
-		boolean isSynonymFilter = StringUtils.equals(sourceLang, destinLang);
-		boolean isWordMatchFilter = !isSynonymFilter;
-
-		List<Lexeme> filteredLexemes = lexemes.stream().filter(lexeme -> {
-			List<MeaningWord> allMeaningWords = lexeme.getAllMeaningWords();
-			if (isSynonymFilter && CollectionUtils.isEmpty(lexeme.getAllMeaningWords())) {
-				return true;
-			}
-			if (isWordMatchFilter && CollectionUtils.isNotEmpty(lexeme.getUsages())) {
-				boolean translationsExist = lexeme.getUsages().stream().anyMatch(usage -> CollectionUtils.isNotEmpty(usage.getUsageTranslations()));
-				if (translationsExist) {
-					return true;
-				}
-			}
-			boolean meaningWordFilterMatch = allMeaningWords.stream().anyMatch(meaningWord -> {
-				if (isSynonymFilter && StringUtils.equals(sourceLang, meaningWord.getLang())) {
-					return true;
-				}
-				if (isWordMatchFilter && StringUtils.equals(destinLang, meaningWord.getLang())) {
-					return true;
-				}
-				return false;
-			});
-			return meaningWordFilterMatch;
-		}).collect(Collectors.toList());
-
-		return filteredLexemes;
 	}
 
 	private CollocationPosGroup populateCollocPosGroup(Lexeme lexeme, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap, String displayLang) {

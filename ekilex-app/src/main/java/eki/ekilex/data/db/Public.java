@@ -124,6 +124,7 @@ import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
 import eki.ekilex.data.db.udt.TypeGovernment;
 import eki.ekilex.data.db.udt.TypeGrammar;
+import eki.ekilex.data.db.udt.TypeLangComplexity;
 import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypePublicNote;
@@ -159,7 +160,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1557717167;
+    private static final long serialVersionUID = 1598440465;
 
     /**
      * The reference instance of <code>public</code>
@@ -1012,6 +1013,7 @@ public class Public extends SchemaImpl {
             TypeDomain.TYPE_DOMAIN,
             TypeGovernment.TYPE_GOVERNMENT,
             TypeGrammar.TYPE_GRAMMAR,
+            TypeLangComplexity.TYPE_LANG_COMPLEXITY,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypePublicNote.TYPE_PUBLIC_NOTE,

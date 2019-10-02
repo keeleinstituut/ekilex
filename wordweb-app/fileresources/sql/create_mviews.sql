@@ -13,6 +13,7 @@ drop materialized view if exists mview_ww_meaning_relation;
 drop type if exists type_public_note;
 drop type if exists type_grammar;
 drop type if exists type_government;
+drop type if exists type_lang_complexity;
 drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
@@ -28,6 +29,7 @@ drop type if exists type_meaning_relation;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
 
 create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), lex_complexity varchar(100), word_type_codes varchar(100) array);
+create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
@@ -54,8 +56,7 @@ dblink(
 	morph_code varchar(100),
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
-	lex_langs char(3) array,
-	data_complexities varchar(100) array,
+	lang_complexities type_lang_complexity array,
 	meaning_count integer,
 	meaning_words type_word array,
 	definitions type_definition array
@@ -132,7 +133,8 @@ dblink(
 	public_notes type_public_note array,
 	grammars type_grammar array,
 	governments type_government array,
-	usages type_usage array
+	usages type_usage array,
+	lang_complexities type_lang_complexity array
 );
 
 create materialized view mview_ww_collocation as

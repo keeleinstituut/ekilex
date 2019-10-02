@@ -9,6 +9,7 @@ import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeGovernment;
 import eki.wordweb.data.db.udt.TypeGrammar;
+import eki.wordweb.data.db.udt.TypeLangComplexity;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
 import eki.wordweb.data.db.udt.TypePublicNote;
@@ -57,6 +58,11 @@ public class UDTs {
      * The type <code>public.type_grammar</code>
      */
     public static TypeGrammar TYPE_GRAMMAR = eki.wordweb.data.db.udt.TypeGrammar.TYPE_GRAMMAR;
+
+    /**
+     * The type <code>public.type_lang_complexity</code>
+     */
+    public static TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
 
     /**
      * The type <code>public.type_lexeme_relation</code>

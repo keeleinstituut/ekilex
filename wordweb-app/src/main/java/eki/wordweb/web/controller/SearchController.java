@@ -146,6 +146,7 @@ public class SearchController extends AbstractController {
 		String sourceLang = sessionBean.getSourceLang();
 		String destinLang = sessionBean.getDestinLang();
 		String searchMode = sessionBean.getSearchMode();
+
 		WordData wordData = lexSearchService.getWordData(wordId, sourceLang, destinLang, DISPLAY_LANG, searchMode);
 		model.addAttribute("wordData", wordData);
 

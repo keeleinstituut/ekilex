@@ -793,8 +793,7 @@ create table lexeme
   word_id bigint references word(id) not null,
   meaning_id bigint references meaning(id) not null,
   dataset_code varchar(10) references dataset(code) not null,
-  -- TODO type not null ???
-  type varchar(50),
+  type varchar(50) not null,
   frequency_group_code varchar(100) references frequency_group(code) null,
   corpus_frequency numeric,--TODO will be moved to lexeme_frequency table later
   level1 integer default 0,

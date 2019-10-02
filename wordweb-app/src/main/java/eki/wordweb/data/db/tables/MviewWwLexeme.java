@@ -9,6 +9,7 @@ import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
 import eki.wordweb.data.db.udt.records.TypeGovernmentRecord;
 import eki.wordweb.data.db.udt.records.TypeGrammarRecord;
+import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.data.db.udt.records.TypePublicNoteRecord;
 import eki.wordweb.data.db.udt.records.TypeUsageRecord;
 
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 556195651;
+    private static final long serialVersionUID = -1153292661;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -136,6 +137,11 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.usages</code>.
      */
     public final TableField<MviewWwLexemeRecord, TypeUsageRecord[]> USAGES = createField("usages", eki.wordweb.data.db.udt.TypeUsage.TYPE_USAGE.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.lang_complexities</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField("lang_complexities", eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_lexeme</code> table reference

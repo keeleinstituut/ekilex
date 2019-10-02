@@ -9,6 +9,7 @@ import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
 import eki.ekilex.data.db.udt.TypeGovernment;
 import eki.ekilex.data.db.udt.TypeGrammar;
+import eki.ekilex.data.db.udt.TypeLangComplexity;
 import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypePublicNote;
@@ -58,6 +59,11 @@ public class UDTs {
      * The type <code>public.type_grammar</code>
      */
     public static TypeGrammar TYPE_GRAMMAR = eki.ekilex.data.db.udt.TypeGrammar.TYPE_GRAMMAR;
+
+    /**
+     * The type <code>public.type_lang_complexity</code>
+     */
+    public static TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
 
     /**
      * The type <code>public.type_lexeme_relation</code>

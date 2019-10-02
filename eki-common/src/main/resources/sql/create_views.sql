@@ -1,4 +1,5 @@
 create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), lex_complexity varchar(100), word_type_codes varchar(100) array);
+create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
@@ -23,8 +24,7 @@ select w.word_id,
        w.morph_code,
        w.display_morph_code,
        w.aspect_code,
-       ll.lex_langs,
-       lc.data_complexities,
+       lc.lang_complexities,
        mc.meaning_count,
        mw.meaning_words,
        wd.definitions
@@ -80,27 +80,30 @@ from (select w.id as word_id,
                            inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
                          where l1.dataset_code = 'sss') mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
-  left outer join (select ll.word_id,
-                          array_agg(distinct ll.lang) lex_langs
+  left outer join (select lc.word_id,
+                          array_agg(distinct row(lc.lang, lc.complexity)::type_lang_complexity) lang_complexities
                    from ((select l1.word_id,
-                                 w2.lang
+                                 w2.lang,
+                                 l2.complexity
                           from lexeme l1
-                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id
+                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
                             inner join word w2 on w2.id = l2.word_id
                           where l1.dataset_code = 'sss')
                           union all
                           (select l.word_id,
-                                  u.lang
+                                  ff.lang,
+                                  ff.complexity
                           from lexeme l,
                                lexeme_freeform lff,
-                               freeform u
+                               freeform ff
                           where l.dataset_code = 'sss'
                           and lff.lexeme_id = l.id
-                          and lff.freeform_id = u.id
-                          and u.type = 'USAGE')
+                          and lff.freeform_id = ff.id
+                          and ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
                           union all
                           (select l.word_id,
-                                  ut.lang
+                                  ut.lang,
+                                  u.complexity
                           from lexeme l,
                                lexeme_freeform lff,
                                freeform u,
@@ -110,31 +113,25 @@ from (select w.id as word_id,
                           and lff.freeform_id = u.id
                           and u.type = 'USAGE'
                           and ut.parent_id = u.id
-                          and ut.type = 'USAGE_TRANSLATION')) ll
-                   group by ll.word_id) ll on ll.word_id = w.word_id
-  left outer join (select lc.word_id,
-                          array_agg(distinct lc.complexity) data_complexities
-                   from ((select l.word_id,
-                                 l.complexity
-                          from lexeme l
-                          where l.dataset_code = 'sss')
+                          and ut.type = 'USAGE_TRANSLATION')
                           union all
                           (select l.word_id,
-                                  u.complexity
-                          from lexeme l,
-                               lexeme_freeform lff,
-                               freeform u
-                          where l.dataset_code = 'sss'
-                          and lff.lexeme_id = l.id
-                          and lff.freeform_id = u.id
-                          and u.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
-                          union all
-                          (select l.word_id,
+                                  d.lang,
                                   d.complexity
                           from lexeme l,
                                definition d
                           where l.dataset_code = 'sss'
-                          and l.meaning_id = d.meaning_id)) lc
+                          and l.meaning_id = d.meaning_id)
+                          union all
+                          (select r.word1_id word_id,
+                                  w2.lang,
+                                  l2.complexity
+                          from word_relation r,
+                               lexeme l2,
+                               word w2
+                          where w2.id = r.word2_id
+                          and l2.word_id = w2.id
+                          and l2.dataset_code = 'sss')) lc
                    group by lc.word_id) lc on lc.word_id = w.word_id
   left outer join (select wd.word_id,
                           array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.value_prese,wd.lang,wd.complexity)::type_definition order by wd.level1,wd.level2,wd.level3,wd.lex_order_by,wd.d_order_by) definitions
@@ -294,7 +291,8 @@ select l.id lexeme_id,
        pnote.public_notes,
        gramm.grammars,
        gov.governments,
-       usg.usages
+       usg.usages,
+       lc.lang_complexities
 from lexeme l
   left outer join (select l_reg.lexeme_id,
                           array_agg(l_reg.register_code order by l_reg.order_by) register_codes
@@ -316,21 +314,21 @@ from lexeme l
                    and   ff.type = 'ADVICE_NOTE'
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row(ff.value_prese,ff.complexity)::type_public_note order by ff.order_by) public_notes
+                          array_agg(row (ff.value_prese,ff.complexity)::type_public_note order by ff.order_by) public_notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'PUBLIC_NOTE'
                    group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row(ff.value_text,ff.complexity)::type_grammar order by ff.order_by) grammars
+                          array_agg(row (ff.value_text,ff.complexity)::type_grammar order by ff.order_by) grammars
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GRAMMAR'
                    group by lf.lexeme_id) gramm on gramm.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row(ff.value_text,ff.complexity)::type_government order by ff.order_by) governments
+                          array_agg(row (ff.value_text,ff.complexity)::type_government order by ff.order_by) governments
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -339,7 +337,7 @@ from lexeme l
   left outer join (select u.lexeme_id,
                           array_agg(row (u.usage,u.usage_prese,u.usage_lang,u.complexity,u.usage_type_code,u.usage_translations,u.usage_definitions,u.usage_authors)::type_usage order by u.order_by) usages
                    from (select lf.lexeme_id,
-                                u.value_text usage,
+                                u.value_text USAGE,
                                 u.value_prese usage_prese,
                                 u.lang usage_lang,
                                 u.complexity,
@@ -376,6 +374,79 @@ from lexeme l
                                                           group by s.id) uas on uas.id = uasl.source_id
                                             group by uasl.freeform_id) ua on ua.usage_id = u.id) u
                    group by u.lexeme_id) usg on usg.lexeme_id = l.id
+  left outer join (select lc.id,
+                          array_agg(distinct row (lc.lang,lc.complexity)::type_lang_complexity) lang_complexities
+                   from ((select l1.id,
+                                 w2.lang,
+                                 l2.complexity
+                          from lexeme l1
+                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
+                            inner join word w2 on w2.id = l2.word_id)
+                          union all
+                          (select l.id,
+                                 ff.lang,
+                                 ff.complexity
+                          from lexeme l,
+                               lexeme_freeform lff,
+                               freeform ff
+                          where lff.lexeme_id = l.id
+                          and   lff.freeform_id = ff.id
+                          and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
+                          union all
+                          (select l.id,
+                                 ut.lang,
+                                 u.complexity
+                          from lexeme l,
+                               lexeme_freeform lff,
+                               freeform u,
+                               freeform ut
+                          where lff.lexeme_id = l.id
+                          and   lff.freeform_id = u.id
+                          and   u.type = 'USAGE'
+                          and   ut.parent_id = u.id
+                          and   ut.type = 'USAGE_TRANSLATION')
+                          union all
+                          (select l.id,
+                                 d.lang,
+                                 d.complexity
+                          from lexeme l,
+                               definition d
+                          where l.meaning_id = d.meaning_id)
+                          union all
+                          (select l1.id,
+                                 w2.lang,
+                                 l2.complexity
+                          from lex_relation r,
+                               lexeme l1,
+                               lexeme l2,
+                               word w2
+                          where r.lexeme1_id = l1.id
+                          and   r.lexeme2_id = l2.id
+                          and   l2.dataset_code = l1.dataset_code
+                          and   w2.id = l2.word_id)
+                          union all
+                          (select l1.id,
+                                 w1.lang,
+                                 l1.complexity
+                          from lexeme l1,
+                               word w1
+                          where w1.id = l1.word_id
+                          and   not exists (select l2.id
+                                            from lexeme l2
+                                            where l2.meaning_id = l1.meaning_id
+                                            and   l2.dataset_code = l1.dataset_code
+                                            and   l2.id != l1.id)
+                          and   not exists (select d.id
+                                            from definition d
+                                            where d.meaning_id = l1.meaning_id)
+                          and   not exists (select ff.id
+                                            from lexeme_freeform lff,
+                                                 freeform ff
+                                            where lff.lexeme_id = l1.id
+                                            and   lff.freeform_id = ff.id
+                                            and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE')))) lc
+                   group by lc.id) lc
+               on lc.id = l.id
 where l.dataset_code = 'sss'
 order by l.id;
 

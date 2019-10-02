@@ -25,6 +25,7 @@ import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeGovernment;
 import eki.wordweb.data.db.udt.TypeGrammar;
+import eki.wordweb.data.db.udt.TypeLangComplexity;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
 import eki.wordweb.data.db.udt.TypePublicNote;
@@ -59,7 +60,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -329371907;
+    private static final long serialVersionUID = 2093063495;
 
     /**
      * The reference instance of <code>public</code>
@@ -218,6 +219,7 @@ public class Public extends SchemaImpl {
             TypeDomain.TYPE_DOMAIN,
             TypeGovernment.TYPE_GOVERNMENT,
             TypeGrammar.TYPE_GRAMMAR,
+            TypeLangComplexity.TYPE_LANG_COMPLEXITY,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypePublicNote.TYPE_PUBLIC_NOTE,
