@@ -65,15 +65,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 	@Autowired
 	private DSLContext create;
 
-	public List<Long> getMeaningIds(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
-
-		Table<Record3<Long, Long, Long[]>> m = composeFilteredMeaning(searchFilter, searchDatasetsRestriction);
-		return create
-				.select(m.field("id", Long.class).as("meaning_id"))
-				.from(m)
-				.fetchInto(Long.class);
-	}
-
 	// simple search
 
 	public MeaningsResult getMeaningsResult(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll, int offset) {
@@ -639,6 +630,54 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
 				.limit(1)
 				.fetchSingleInto(String.class);
+	}
+
+	public List<eki.ekilex.data.Meaning> getMeaningsOfJoinCandidates(String searchFilter, List<String> userPrefDatasetCodes,
+			List<String> userPermDatasetCodes, Long excludedMeaningId) {
+
+		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_").toLowerCase();
+
+		Meaning m = MEANING.as("m");
+		Lexeme l = LEXEME.as("l");
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+
+		Condition whereFormValue;
+		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
+			whereFormValue = f.VALUE.lower().like(maskedSearchFilter);
+		} else {
+			whereFormValue = f.VALUE.lower().equal(maskedSearchFilter);
+		}
+
+		Table<Record1<Long>> mid = DSL
+				.selectDistinct(m.ID.as("meaning_id"))
+				.from(m, l, w, p, f)
+				.where(
+						m.ID.ne(excludedMeaningId)
+								.and(l.MEANING_ID.eq(m.ID))
+								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(l.DATASET_CODE.in(userPrefDatasetCodes))
+								.and(w.ID.eq(l.WORD_ID))
+								.and(p.WORD_ID.eq(w.ID))
+								.and(f.PARADIGM_ID.eq(p.ID))
+								.and(f.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()))
+								.and(whereFormValue))
+				.asTable("mid");
+
+		return create
+				.select(
+						MEANING.ID.as("meaning_id"),
+						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
+				.from(MEANING, LEXEME, mid)
+				.where(
+						MEANING.ID.eq(mid.field("meaning_id", Long.class))
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
+				.groupBy(MEANING.ID)
+				.fetchInto(eki.ekilex.data.Meaning.class);
 	}
 
 }

@@ -121,4 +121,10 @@ public class PermissionService implements SystemConstant {
 		return permissionDbService.isGrantedForMeaning(meaningId, datasetCode);
 	}
 
+	@Transactional
+	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId) {
+
+		Long userId = userService.getAuthenticatedUser().getId();
+		return permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
+	}
 }

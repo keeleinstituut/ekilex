@@ -47,6 +47,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			Long excludedMeaningId) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
+		Long userId = userService.getAuthenticatedUser().getId();
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
 			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
@@ -86,8 +87,7 @@ public class LexSearchService extends AbstractWordSearchService {
 				}
 			}
 		}
-		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
-		lexemes.sort(Comparator.comparing(lexeme -> !permissionDbService.isGrantedForMeaning(lexeme.getMeaningId(), userPermDatasetCodes)));
+		lexemes.sort(Comparator.comparing(lexeme -> !permissionDbService.isMeaningAnyLexemeCrudGranted(userId, lexeme.getMeaningId())));
 		return lexemes;
 	}
 

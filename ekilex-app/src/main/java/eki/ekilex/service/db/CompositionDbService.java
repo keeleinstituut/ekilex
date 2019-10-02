@@ -23,6 +23,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -210,6 +211,7 @@ public class CompositionDbService implements DbConstant {
 		joinMeaningFreeforms(meaningId, sourceMeaningId);
 		joinMeaningRelations(meaningId, sourceMeaningId);
 		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, meaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
+		create.update(MEANING_PROCESS_LOG).set(MEANING_PROCESS_LOG.MEANING_ID, meaningId).where(MEANING_PROCESS_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
 	}
 

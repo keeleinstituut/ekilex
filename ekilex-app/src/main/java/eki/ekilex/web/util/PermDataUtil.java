@@ -58,4 +58,7 @@ public class PermDataUtil {
 		return isGrantedForMeaning;
 	}
 
+	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId) {
+		return permissionService.isMeaningAnyLexemeCrudGranted(meaningId);
+	}
 }

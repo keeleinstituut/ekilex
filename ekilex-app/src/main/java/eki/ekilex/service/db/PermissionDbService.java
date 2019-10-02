@@ -373,30 +373,22 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForMeaning(Long meaningId, List<String> datasetCodes) {
-
-		Table<Record1<Integer>> lp = DSL
-				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
-				.from(MEANING.leftOuterJoin(LEXEME).on(
-						LEXEME.MEANING_ID.eq(MEANING.ID)
-								.and(LEXEME.DATASET_CODE.in(datasetCodes))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))))
-				.where(MEANING.ID.eq(meaningId))
-				.groupBy(MEANING.ID)
-				.asTable("lp");
-
-		Table<Record1<Integer>> la = DSL
-				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
-				.from(LEXEME)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(LEXEME.MEANING_ID)
-				.asTable("la");
+	public boolean isMeaningAnyLexemeCrudGranted(Long userId, Long meaningId) {
 
 		return create
-				.select(field(lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class))).as("is_granted"))
-				.from(lp, la)
+				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
+				.from(MEANING.leftOuterJoin(LEXEME).on(
+						LEXEME.MEANING_ID.eq(MEANING.ID)
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.andExists(DSL
+										.select(DATASET_PERMISSION.ID)
+										.from(DATASET_PERMISSION)
+										.where(
+												DATASET_PERMISSION.USER_ID.eq(userId)
+														.and(DATASET_PERMISSION.AUTH_OPERATION.in(AuthorityOperation.CRUD.name(), AuthorityOperation.OWN.name()))
+														.and(DATASET_PERMISSION.AUTH_ITEM.eq(AuthorityItem.DATASET.name()))
+														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))))))
+				.where(MEANING.ID.eq(meaningId))
 				.fetchSingleInto(Boolean.class);
 	}
 

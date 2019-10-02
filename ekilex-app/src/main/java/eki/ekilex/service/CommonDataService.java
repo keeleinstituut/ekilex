@@ -373,32 +373,19 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordDetails> getWordDetailsOfJoinCandidates(String wordValue, Long wordIdToExclude, List<String> userPreferredDatasetCodes,
+	public List<WordDetails> getWordDetailsOfJoinCandidates(String wordValue, Long wordIdToExclude, List<String> userPrefDatasetCodes,
 			List<String> userPermDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
 		List<String> allDatasetCodes = getDatasetCodes();
-		List<Long> wordIds = commonDataDbService.getNonaffixoidWordIds(wordValue);
-		wordIds.remove(wordIdToExclude);
+		List<Long> wordIds = commonDataDbService.getWordIdsOfJoinCandidates(wordValue, userPrefDatasetCodes, userPermDatasetCodes, wordIdToExclude);
+		wordIds.sort(Comparator.comparing(wordId -> !permissionDbService.isGrantedForWord(wordId, userPermDatasetCodes)));
 
 		for (Long wordId : wordIds) {
 			WordDetails wordDetails = getWordDetails(wordId, allDatasetCodes);
 			wordDetailsList.add(wordDetails);
 		}
-
-		wordDetailsList.removeIf(wordDetails -> !containsDatasetLexeme(wordDetails.getLexemes(), userPreferredDatasetCodes));
-		wordDetailsList.sort(Comparator.comparing(wordDetails -> !permissionDbService.isGrantedForWord(wordDetails.getWord().getWordId(), userPermDatasetCodes)));
 		return wordDetailsList;
-	}
-
-	private boolean containsDatasetLexeme(List<WordLexeme> lexemes, List<String> datasetCodes) {
-
-		for (WordLexeme lexeme : lexemes) {
-			if (datasetCodes.contains(lexeme.getDatasetCode())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {

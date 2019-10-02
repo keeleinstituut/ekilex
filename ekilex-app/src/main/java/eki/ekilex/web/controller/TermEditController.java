@@ -62,7 +62,7 @@ public class TermEditController extends AbstractPageController {
 			searchFilter = targetMeaningFirstWord;
 		}
 
-		Meaning targetMeaning = termSearchService.getMeaningJoinData(targetMeaningId, languagesOrder);
+		Meaning targetMeaning = termSearchService.getMeaningOfJoinTarget(targetMeaningId, languagesOrder);
 		List<Meaning> sourceMeanings = termSearchService
 				.getMeaningsOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, languagesOrder, targetMeaningId);
 
