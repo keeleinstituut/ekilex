@@ -373,33 +373,6 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForMeaning(Long meaningId, List<String> datasetCodes) {
-
-		Table<Record1<Integer>> lp = DSL
-				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
-				.from(MEANING.leftOuterJoin(LEXEME).on(
-						LEXEME.MEANING_ID.eq(MEANING.ID)
-								.and(LEXEME.DATASET_CODE.in(datasetCodes))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))))
-				.where(MEANING.ID.eq(meaningId))
-				.groupBy(MEANING.ID)
-				.asTable("lp");
-
-		Table<Record1<Integer>> la = DSL
-				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
-				.from(LEXEME)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(LEXEME.MEANING_ID)
-				.asTable("la");
-
-		return create
-				.select(field(lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class))).as("is_granted"))
-				.from(lp, la)
-				.fetchSingleInto(Boolean.class);
-	}
-
 	public boolean isMeaningAnyLexemeCrudGranted(Long userId, Long meaningId) {
 
 		return create
