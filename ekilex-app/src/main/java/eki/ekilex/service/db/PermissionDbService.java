@@ -400,6 +400,25 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public boolean isMeaningAnyLexemeCrudGranted(Long userId, Long meaningId) {
+
+		return create
+				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
+				.from(MEANING.leftOuterJoin(LEXEME).on(
+						LEXEME.MEANING_ID.eq(MEANING.ID)
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.andExists(DSL
+										.select(DATASET_PERMISSION.ID)
+										.from(DATASET_PERMISSION)
+										.where(
+												DATASET_PERMISSION.USER_ID.eq(userId)
+														.and(DATASET_PERMISSION.AUTH_OPERATION.in(AuthorityOperation.CRUD.name(), AuthorityOperation.OWN.name()))
+														.and(DATASET_PERMISSION.AUTH_ITEM.eq(AuthorityItem.DATASET.name()))
+														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))))))
+				.where(MEANING.ID.eq(meaningId))
+				.fetchSingleInto(Boolean.class);
+	}
+
 	/*
 	 * currently not used. remove?
 	 * isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, requiredAuthItem.name(), requiredAuthOps);

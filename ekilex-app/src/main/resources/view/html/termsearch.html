@@ -103,7 +103,7 @@
               <a class="btn btn-primary btn-sm"
                  th:href="@{'/meaningjoin/' + ${meaningId}}"
                  title="Tähenduste ühendamine"
-                 sec:authorize="${#vars.isMeaningCrudGranted}">Ühenda</a>
+                 sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaningId)">Ühenda</a>
               <button id="duplicateMeaningBtn"
                       title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
                       class="btn btn-primary btn-sm"

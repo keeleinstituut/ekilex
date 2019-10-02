@@ -13,7 +13,7 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary text-light" th:href="@{'/lexback/' + ${targetLexeme.lexemeId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary" th:href="@{'/lexback/' + ${targetLexeme.lexemeId}}">Tagasi</a>
       </p>
     </div>
 
@@ -81,15 +81,13 @@
     </div>
   </div>
 
-  <th:block th:fragment="lexeme_details(lexeme, targetLexeme)"
-            th:if="${lexeme != null}"
-            th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
+  <th:block th:fragment="lexeme_details(lexeme, targetLexeme)" th:if="${lexeme != null}">
     <div class="row">
       <div class="col col-w2rem">
         <input name="sourceLexemeIds" type="checkbox" class="mt-2"
                th:value="${lexeme.lexemeId}"
                th:if="${lexeme.meaningId != targetLexeme.meaningId}"
-               sec:authorize="${#vars.isMeaningCrudGranted}"/>
+               sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)"/>
         <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetLexeme.meaningId}" checked="checked" th:disabled="true"/>
       </div>
       <div class="col">

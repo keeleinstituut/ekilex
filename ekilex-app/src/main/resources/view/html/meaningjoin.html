@@ -13,11 +13,11 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary text-light" th:href="@{'/meaningback/' + ${targetMeaningId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary" th:href="@{'/meaningback/' + ${targetMeaningId}}">Tagasi</a>
       </p>
     </div>
 
-    <div class="card shadow mt-4">
+    <div class="card shadow mt-4" id="details_div">
       <div class="card-header">
         <h5 class="card-title" th:text="#{meaning.join.title}">Tähenduste ühendamine</h5>
       </div>
@@ -80,16 +80,22 @@
     </div>
   </div>
 
-  <th:block th:fragment="meaning_details(meaning)"
-            th:if="${meaning != null}"
-            th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.meaning.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
+  <th:block th:fragment="meaning_details(meaning)" th:if="${meaning != null}">
     <div class="row">
       <div class="col col-w2rem">
         <input name="sourceMeaningIds" type="checkbox" class="mt-2"
                th:value="${meaning.meaningId}"
                th:if="${meaning.meaningId != targetMeaningId}"
-               sec:authorize="${#vars.isMeaningCrudGranted}"/>
+               sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaning.meaningId)"/>
         <input type="checkbox" class="mt-2" th:if="${meaning.meaningId == targetMeaningId}" checked="checked" th:disabled="true"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-1 pr-0">
+        <span class="lbl">ID</span>
+      </div>
+      <div class="col pl-0">
+        <span th:text="${meaning.meaningId}"></span>
       </div>
     </div>
     <div class="row" th:if="${not #lists.isEmpty(meaning.definitionLangGroups)}">
@@ -100,7 +106,33 @@
         <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
           <div th:each="definition, itemIter: ${definitionLangGroup.definitions}">
             <div style="display: list-item; position: absolute"></div>
-            <div th:utext="${definition.value}"></div>
+            <div>
+              <span th:utext="${definition.value}"></span>
+              <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
+              <span th:each="sourceLink : ${definition.sourceLinks}">
+                [
+                <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                ]
+              </span>
+            </div>
+          </div>
+        </th:block>
+      </div>
+    </div>
+    <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}">
+      <div class="col-1 pr-0">
+        <span class="lbl">Valdkonnad</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="classif,classifIter : ${meaning.domains}">
+          <div style="display: list-item; position: absolute"></div>
+          <div>
+            <span th:text="${classif.code}"></span>
+            <th:block th:unless="${classif.code == classif.value}">
+              -
+              <span th:text="${classif.value}"></span>
+            </th:block>
           </div>
         </th:block>
       </div>
@@ -113,6 +145,19 @@
         <th:block th:each="publicNote : ${meaning.publicNotes}">
           <div style="display: list-item; position: absolute"></div>
           <div th:utext="${publicNote.valuePrese}"></div>
+        </th:block>
+      </div>
+    </div>
+    <div class="row" th:if="${not #lists.isEmpty(meaning.freeforms)}">
+      <div class="col-1 pr-0">
+        <span class="lbl">Concept id</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="freeform : ${meaning.freeforms}">
+          <div th:if="${freeform.type.toString() == 'CONCEPT_ID'}">
+            <div style="display: list-item; position: absolute"></div>
+            <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
+          </div>
         </th:block>
       </div>
     </div>
@@ -164,6 +209,21 @@
             </span>
           </div>
         </div>
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Allikaviited</span>
+          </div>
+          <div class="col pl-0">
+            <th:block th:each="sourceLink : ${lexeme.sourceLinks}">
+              [
+              <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+              <span th:if="${sourceLink.name != null}">
+                <span th:text="${sourceLink.name}"></span>
+                </span>
+              ]
+            </th:block>
+          </div>
+        </div>
         <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
           <div class="col-1 pr-0">
             <span class="lbl">Kasutusnäited</span>
@@ -171,7 +231,28 @@
           <div class="col pl-0">
             <th:block th:each="usage : ${lexeme.usages}">
               <div style="display: list-item; position: absolute"></div>
-              <div th:utext="${usage.value}"></div>
+              <div>
+                <span th:utext="${usage.value}"></span>
+                <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
+                <span th:if="${not #lists.isEmpty(usage.authors)}">
+                  (
+                  <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
+                    <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
+                    <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></a>
+                    <span th:if="${sourceLink.name != null}">
+                      <span th:text="${sourceLink.name}"></span>
+                    </span>
+                    <span th:unless="${sourceLinkIter.last}">, </span>
+                  </span>
+                  )
+                </span>
+                <span th:each="sourceLink : ${usage.sourceLinks}">
+                  [
+                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                  <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                  ]
+                </span>
+              </div>
             </th:block>
           </div>
         </div>
@@ -179,6 +260,7 @@
     </th:block>
   </th:block>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #sourceDetailsDlg"></div>
   <script th:inline="javascript">
 	  initialise();
 	  $('[data-toggle=join-confirm]').confirmation({
@@ -187,6 +269,7 @@
 		  title: 'Kas olete kindel, et soovite tähendused ühendada?',
 		  onConfirm: joinMeanings
 	  });
+	  decorateSourceLinks();
   </script>
 </body>
 </html>
