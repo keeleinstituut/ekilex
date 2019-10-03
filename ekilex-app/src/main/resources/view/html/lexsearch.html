@@ -54,7 +54,8 @@
           <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}"
                th:with="
                isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
-               isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}
+               isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')},
+               isMeaningAnyLexemeCrudGranted=${#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)}
                ">
 
             <div th:replace="lexdialog :: add_lexeme_process_state_dlg"></div>
@@ -174,8 +175,7 @@
                           data-toggle="modal"
                           data-target="#newWordDlg"
                           th:data-meaning-id="${lexeme.meaningId}"
-                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and
-                          #vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)">Uus keelend</button>
+                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">Uus keelend</button>
                   <button th:id="${'duplicateEmptyLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
                           title="Loo uus ilmik ja tähendus"
                           th:data-lexeme-id="${lexeme.lexemeId}"
@@ -226,7 +226,7 @@
                 <th:block th:replace="lexcomp :: lexeme_register"></th:block>
                 <th:block th:replace="lexcomp :: meaning_domain"></th:block>
               </div>
-              <div class="row" th:if="${not #lists.isEmpty(lexeme.definitions)}">
+              <div class="row">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Seletused</span>
@@ -234,7 +234,7 @@
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addDefinitionDlg_' + lexeme.lexemeId}"
-                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">
+                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
