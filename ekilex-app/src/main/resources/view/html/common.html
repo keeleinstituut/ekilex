@@ -34,7 +34,8 @@
   </th:block>
   <th:block th:fragment="nav_bar">
     <nav class="navbar navbar-expand-md navbar-dark bg-primary main-navigation" th:classappend="${activeItem != 'syn'} ? 'fixed-top' :''">
-      <div class="dropdown side-menu">
+      <span th:if="${activeItem == 'home'}" class="text-white">Ekilex <small class="pl-2" th:text="${'v.'+appData.appVersion}">1.0.0</small></span>
+      <div th:if="${activeItem != 'home'}" class="dropdown side-menu">
         <button type="button" class="btn btn-primary ml-n3 side-menu-btn" id="sideMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr-2" aria-hidden="true"></i><span th:text="${(activeItem == 'lex') ? 'Leksikograafid' : (activeItem == 'term') ? 'Terminoloogid' : (activeItem == 'syn') ? 'Sünonüümid': (activeItem == 'source') ? 'Allikate otsing': (activeItem == 'datasets') ? 'Sõnakogude haldus': (activeItem == 'permissions') ? 'Kasutajaõiguste haldus' : (activeItem == 'wwfeedback') ? 'Sõnaveebi tagasiside' :'Rakenduse valik'}">Aktiivne rakendus</span></button>
         <div id="sideMenu" class="side-menu-content dropdown-menu ml-n3" aria-labelledby="sideMenuButton">
           <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex <small class="text-muted ml-auto" th:text="${'v.'+appData.appVersion}">1.0.0</small></a>
@@ -90,9 +91,25 @@
 
             </button>
             <div class="dropdown-menu dropdown-menu-right user-menu-content">
-              <a class="dropdown-item" th:href="@{/userprofile}">Kasutaja profiil</a>
-              <th:block th:replace="components :: change_role(verticalLayout = true)" sec:authorize="${#authentication.principal.datasetPermissionsExist && !#authentication.principal.hasSingleDatasetPermission}"></th:block>
+
+                <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+                  <th:block th:with="selectedRole = ${sessionBean.userRole}">
+                    <div>
+                      <div class="dropdown-header pb-0">Aktiivne roll</div>
+                      <div class="px-3 d-flex flex-row">
+                      <span class="pr-3" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
+                            th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
+                      </span>
+                      <a th:href="@{/home}" class="text-nowrap" ><i class="fa fa-pencil" aria-hidden="true"></i> Vaheta</a>
+                      </div>
+                    </div>
+                  </th:block>
+                </th:block>
+
+
+
               <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="@{/userprofile}">Kasutaja profiili haldus <i class="fa fa-user" aria-hidden="true"></i></a>
               <a class="dropdown-item" th:href="@{/dologout}">Logi välja <i class="fa fa-sign-out" aria-hidden="true"></i></a>
             </div>
           </div>
