@@ -91,7 +91,7 @@
         <div class="navigate-panel card shadow h-100" data-panel-index="2"
              th:attrappend="data-marked-word-id=${markedSynWordId != null}?${markedSynWordId}">
             <div class="card-body p-0 d-flex flex-column h-100">
-                <div class="border-bottom border-light px-2 d-flex flex-row align-items-center py-2">
+                <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
                     <h1 th:text="${details.word}" class="mr-3 mb-0">Aktiivne sõna</h1>
                     <button type="button" class="btn btn-secondary btn-compact">Märgi tehtuks</button>
                     <div class="ml-auto d-flex align-items-center flex-row">
@@ -205,15 +205,15 @@
                                         th:data-navigate-index="${relationIter.index}"
                                         th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-marked' : ''}"
                                         th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.wordId}?'true'"
-                                        class="d-flex flex-row hidden-buttons"
+                                        class="d-flex flex-row hidden-buttons align-items-center"
                                     >
                                         <span><i class="fa fa-list" aria-hidden="true"></i></span>
                                         <div  class="draggable-synonym  mr-auto"
                                             th:data-word-id="${synRelation.wordId}"
                                             th:data-word="${synRelation.word}">
 
-                                            <span th:title="#{|relationstatus.${synRelation.relationStatus}|}"><i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i></span>
-                                            <span class="btn-custom" th:text="${synRelation.word}"/>
+                                            <span th:title="#{|relationstatus.${synRelation.relationStatus}|}" data-toggle="tooltip" class="px-2"><i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i></span>
+                                            <a href="#" th:text="${synRelation.word}" ></a>
 
                                         </div>
                                         <span >
@@ -223,11 +223,9 @@
                                                 <button type="button" class="btn badge badge-primary rel-status-btn" th:data-id="${synRelation.id}" data-status="HANDLED" title="Märgi käsitletuks"><i class="fa fa-thumb-tack" aria-hidden="true"></i></button>
                                                 <button type="button" class="btn badge badge-warning rel-status-btn" th:data-id="${synRelation.id}" data-status="DELETED" data-placement="right" title="Kustuta"><i class="fa fa-remove" aria-hidden="true"></i></button>
                                             </span>
-                                            <span th:if="${synRelation.oppositeRelationStatus != null}">
-                                                <span th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}"><i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i></span>
-                                            </span>
-                                         <button type="button" class="btn badge badge-secondary" data-toggle="modal" th:data-target="${'#synStatsDlg' + synRelation.id}"><i class="fa fa-bar-chart" aria-hidden="true"></i></button>
 
+                                        <button type="button" class="btn btn-sm" data-toggle="modal" th:data-target="${'#synStatsDlg' + synRelation.id}"><i class="fa fa-bar-chart action-icon" aria-hidden="true"></i></button>
+                                        <span th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}" data-toggle="tooltip" class="border-left border-light pl-2"><i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i></span>
                                     </li>
                                 </ul>
                             </div>
