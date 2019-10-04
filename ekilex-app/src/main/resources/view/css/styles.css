@@ -1369,16 +1369,16 @@ pre code {
 .table td {
   padding: 0.75rem;
   vertical-align: top;
-  border-top: 1px solid #8a98a5;
+  border-top: 1px solid #ccd9e0;
 }
 
 .table thead th {
   vertical-align: bottom;
-  border-bottom: 2px solid #8a98a5;
+  border-bottom: 2px solid #ccd9e0;
 }
 
 .table tbody + tbody {
-  border-top: 2px solid #8a98a5;
+  border-top: 2px solid #ccd9e0;
 }
 
 .table-sm th,
@@ -1387,12 +1387,12 @@ pre code {
 }
 
 .table-bordered {
-  border: 1px solid #8a98a5;
+  border: 1px solid #ccd9e0;
 }
 
 .table-bordered th,
 .table-bordered td {
-  border: 1px solid #8a98a5;
+  border: 1px solid #ccd9e0;
 }
 
 .table-bordered thead th,
@@ -1616,7 +1616,7 @@ pre code {
 .table .thead-light th {
   color: #495057;
   background-color: #ccd9e0;
-  border-color: #8a98a5;
+  border-color: #ccd9e0;
 }
 
 .table-dark {
@@ -5565,7 +5565,7 @@ a.close.disabled {
   align-items: flex-start;
   justify-content: space-between;
   padding: 1rem 1rem;
-  border-bottom: 1px solid #8a98a5;
+  border-bottom: 1px solid #ccd9e0;
   border-top-left-radius: 0.3rem;
   border-top-right-radius: 0.3rem;
 }
@@ -5591,7 +5591,7 @@ a.close.disabled {
   align-items: center;
   justify-content: flex-end;
   padding: 1rem;
-  border-top: 1px solid #8a98a5;
+  border-top: 1px solid #ccd9e0;
   border-bottom-right-radius: 0.3rem;
   border-bottom-left-radius: 0.3rem;
 }
@@ -6286,23 +6286,23 @@ button.bg-dark:focus {
 }
 
 .border {
-  border: 1px solid #8a98a5 !important;
+  border: 1px solid #ccd9e0 !important;
 }
 
 .border-top {
-  border-top: 1px solid #8a98a5 !important;
+  border-top: 1px solid #ccd9e0 !important;
 }
 
 .border-right {
-  border-right: 1px solid #8a98a5 !important;
+  border-right: 1px solid #ccd9e0 !important;
 }
 
 .border-bottom {
-  border-bottom: 1px solid #8a98a5 !important;
+  border-bottom: 1px solid #ccd9e0 !important;
 }
 
 .border-left {
-  border-left: 1px solid #8a98a5 !important;
+  border-left: 1px solid #ccd9e0 !important;
 }
 
 .border-0 {
@@ -9536,11 +9536,11 @@ a.text-dark:hover, a.text-dark:focus {
   .table-dark td,
   .table-dark thead th,
   .table-dark tbody + tbody {
-    border-color: #8a98a5;
+    border-color: #ccd9e0;
   }
   .table .thead-dark th {
     color: inherit;
-    border-color: #8a98a5;
+    border-color: #ccd9e0;
   }
 }
 
@@ -12734,7 +12734,7 @@ input:checked + .slider:before {
 
 .btn-custom {
   font-weight: 400;
-  color: #007bff;
+  color: #005aa9;
   background-color: transparent;
   cursor: auto !important;
 }
