@@ -165,7 +165,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		String datasetCode = getDatasetCodeFromRole(sessionBean).get(0);
 
 		synSearchService.createSecondarySynLexeme(meaningId, wordId, datasetCode, lexemeId);
-		
+
 		synSearchService.changeRelationStatus(relationId, RelationStatus.HANDLED.name());
 
 		return "{}";

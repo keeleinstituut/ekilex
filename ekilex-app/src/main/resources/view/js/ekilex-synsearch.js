@@ -69,7 +69,7 @@ function initialise() {
 					let wordId = ui.draggable.data('word-id');
 
 					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
-					alert(actionUrl);
+
 					let callbackFunc = () => $('#refresh-details').trigger('click');
 					doPostRelationChange(actionUrl, callbackFunc);
 				}

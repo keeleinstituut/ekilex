@@ -48,3 +48,5 @@ update lexeme set type = 'PRIMARY' where type is null;
 alter table lexeme alter column type set not null;
 create index lexeme_type_idx on lexeme(type);
 
+-- 07.10.2019
+update word_relation set relation_status = 'HANDLED' where relation_status = 'CONFIRMED';
