@@ -144,7 +144,7 @@
           <div class="row">
             <div class="col pr-0 col-w13rem">
               <span class="lbl">Seletused</span>
-              <button type="button" class="btn badge badge-success" title="Lisa uus"
+              <button type="button" class="btn badge badge-success float-right mr-2" title="Lisa uus"
                       data-toggle="modal"
                       th:data-target="${'#addDefinitionDlg_' + meaningId}"
                       sec:authorize="#vars.isMeaningLexemeCrudGranted">
@@ -311,7 +311,7 @@
             <hr />
             <div class="col pr-0 col-w13rem">
               <span class="lbl">Õppekommentaarid
-                <button type="button" class="btn badge badge-success"
+                <button type="button" class="btn badge badge-success float-right mr-2"
                         title="Lisa uus"
                         data-toggle="modal"
                         th:data-target="${'#addLearnerCommentDlg_' + meaningId}"
@@ -354,7 +354,7 @@
             <hr />
             <div class="col pr-0 col-w13rem">
                   <span class="lbl">Märkused
-                    <button type="button" class="btn badge badge-success"
+                    <button type="button" class="btn badge badge-success float-right mr-2"
                             title="Lisa uus"
                             data-toggle="modal"
                             th:data-target="${'#addMeaningPublicNoteDlg_' + meaningId}"
@@ -367,7 +367,7 @@
               <th:block th:each="publicNote : ${meaning.publicNotes}">
                 <div th:replace="termdialog :: edit_meaning_public_note_dlg"></div>
                 <div th:replace="termdialog :: add_meaning_public_note_source_link_dlg"></div>
-                <div class="invisible-buttons action-buttons-anchor mw-90">
+                <div class="invisible-buttons action-buttons-anchor mw-90 ml-3">
                   <div style="display: list-item; position: absolute"></div>
                   <span th:utext="${publicNote.valuePrese}"></span>
                   <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
@@ -559,7 +559,7 @@
             <hr />
             <div class="col pr-0 col-w13rem">
               <span class="lbl">Tähenduse seosed</span>
-              <button type="button" class="btn badge badge-success"
+              <button type="button" class="btn badge badge-success float-right mr-2"
                       title="Lisa seos"
                       data-toggle="modal"
                       th:data-target="${'#addMeaningRelationDlg_' + meaningId}"
@@ -726,7 +726,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Allikaviide</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-2"
                           title="Lisa allikaviide"
                           data-toggle="modal"
                           th:data-target="${'#addLexemeSourceLinkDlg_' + lexeme.lexemeId}"
@@ -757,7 +757,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Kasutusnäited</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-2"
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addUsageDlg_' + lexeme.lexemeId}"
@@ -770,7 +770,7 @@
                        th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
                     <div th:replace="termdialog :: edit_usage_dlg"></div>
                     <div th:replace="termdialog :: add_usage_source_link_dlg"></div>
-                    <div class="invisible-buttons action-buttons-anchor mw-90">
+                    <div class="invisible-buttons action-buttons-anchor mw-90 ml-3">
                       <div style="display: list-item; position: absolute"></div>
                       <span th:utext="${usage.value}"></span>
                       <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
@@ -845,7 +845,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Ilmiku seosed</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-2"
                           title="Lisa seos"
                           data-toggle="modal"
                           th:data-target="${'#addLexemeRelationDlg_' + lexeme.lexemeId}"
@@ -883,7 +883,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Märkused
-                    <button type="button" class="btn badge badge-success"
+                    <button type="button" class="btn badge badge-success float-right mr-2"
                             title="Lisa uus"
                             data-toggle="modal"
                             th:data-target="${'#addLexemePublicNoteDlg_' + lexeme.lexemeId}"
@@ -896,7 +896,7 @@
                   <th:block th:each="publicNote : ${lexeme.publicNotes}">
                     <div th:replace="termdialog :: edit_lexeme_public_note_dlg"></div>
                     <div th:replace="termdialog :: add_lexeme_public_note_source_link_dlg"></div>
-                    <div class="invisible-buttons action-buttons-anchor mw-90">
+                    <div class="invisible-buttons action-buttons-anchor mw-90 ml-3">
                       <div style="display: list-item; position: absolute"></div>
                       <span th:utext="${publicNote.valuePrese}"></span>
                         <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">

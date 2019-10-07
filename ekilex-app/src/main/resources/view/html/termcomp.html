@@ -275,7 +275,7 @@
   <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}" th:fragment="meaning_domain">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Valdkonnad</span>
-      <button type="button" class="btn badge badge-success" title="Lisa uus"
+      <button type="button" class="btn badge badge-success float-right mr-2" title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addMeaningDomainDlg_' + meaningId}"
               sec:authorize="#vars.isMeaningCrudGranted">
