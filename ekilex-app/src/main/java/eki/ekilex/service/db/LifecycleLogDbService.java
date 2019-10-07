@@ -609,7 +609,10 @@ public class LifecycleLogDbService {
 					FreeformType freeformType = FreeformType.valueOf(property.name());
 					Map<String, Object> entityData = helper.getSourceFreeformData(create, entityId, freeformType);
 					String recent = (String) entityData.get("value");
+					Long sourceId = (Long) entityData.get("source_id");
 					logData.setRecent(recent);
+					entityId = sourceId;
+					logData.setEntityId(entityId);
 					if (!logData.isValueChanged()) {
 						if (logData.isUpdateEvent()) {
 							return;
