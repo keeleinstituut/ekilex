@@ -146,8 +146,7 @@
                 <select required class="form-control meaning-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="meaning_domain" sec:authorize="#vars.isMeaningCrudGranted">Valdkond</option>
-                  <option value="addDefinitionDlg"
-                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">Mõiste seletus</option>
+                  <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
                   <option value="addLearnerCommentDlg" sec:authorize="#vars.isMeaningCrudGranted">Õppekommentaar</option>
                   <option value="addMeaningPublicNoteDlg" sec:authorize="#vars.isMeaningCrudGranted">Märkus</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.isMeaningCrudGranted">Tähenduse seos</option>

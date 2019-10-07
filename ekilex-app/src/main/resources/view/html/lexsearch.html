@@ -55,6 +55,7 @@
                th:with="
                isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
                isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')},
+               isMeaningLexemeCrudGranted=${#vars.permDataUtil.isMeaningLexemeCrudGranted(#vars.lexeme.meaningId, #vars.sessionBean)},
                isMeaningAnyLexemeCrudGranted=${#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)}
                ">
 
@@ -234,7 +235,7 @@
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addDefinitionDlg_' + lexeme.lexemeId}"
-                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">
+                          sec:authorize="#vars.isMeaningLexemeCrudGranted">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>

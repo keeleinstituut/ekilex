@@ -49,7 +49,7 @@ public class PermDataUtil {
 		return userRole.getDatasetCode();
 	}
 
-	public boolean isLexemeDeleteGrantedForMeaning(Long meaningId, SessionBean sessionBean) {
+	public boolean isMeaningLexemeCrudGranted(Long meaningId, SessionBean sessionBean) {
 		if (sessionBean == null) {
 			return false;
 		}
