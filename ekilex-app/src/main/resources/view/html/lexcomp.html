@@ -155,6 +155,12 @@
   <div class="row" th:if="${not #lists.isEmpty(lexeme.pos)}" th:fragment="lexeme_pos">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Sõnaliik</span>
+      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addLexemePosDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.isLexemeCrudGranted">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
       <span th:each="classif,classifIter : ${lexeme.pos}" class="hidden-buttons">

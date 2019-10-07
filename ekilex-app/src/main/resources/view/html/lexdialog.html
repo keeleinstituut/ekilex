@@ -926,6 +926,31 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLexemePosDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_pos_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_pos">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="pos : ${allLexemePos}" th:value="${pos.code}" th:text="${pos.value}">pos</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_pos_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

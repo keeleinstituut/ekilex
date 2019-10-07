@@ -73,3 +73,7 @@ $(document).on("show.bs.modal", "[id^=editLexemeLevelsDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editLexemeComplexityDlg_]", function() {
 	initSelectDlg($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=addLexemePosDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});
