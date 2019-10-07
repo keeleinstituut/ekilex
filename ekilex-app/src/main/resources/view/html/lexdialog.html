@@ -18,7 +18,7 @@
                   <option value="addLexemeProcessStateDlg" sec:authorize="#vars.isLexemeCrudGranted">Haldusolek</option>
                   <option value="lexeme_value_state" sec:authorize="#vars.isLexemeCrudGranted">Väärtusolek</option>
                   <option value="lexeme_frequency_group" sec:authorize="#vars.isLexemeCrudGranted">Sagedusrühm</option>
-                  <option value="addDefinitionDlg" sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">Tähenduse seletus</option>
+                  <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Tähenduse seletus</option>
                   <option value="addUsageDlg" sec:authorize="#vars.isLexemeCrudGranted">Kasutusnäide</option>
                   <option value="lexeme_pos" sec:authorize="#vars.isLexemeCrudGranted">Sõnaliik</option>
                   <option value="lexeme_deriv" sec:authorize="#vars.isLexemeCrudGranted">Tuletuskood</option>

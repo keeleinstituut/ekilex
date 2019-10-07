@@ -29,6 +29,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.LookupService;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,13 +49,17 @@ public class LexEditController extends AbstractPageController {
 	@Autowired
 	private CompositionService compositionService;
 
+	@Autowired
+	private LookupService lookupService;
+
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
 	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model) {
 
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
+		Long userId = userService.getAuthenticatedUser().getId();
 
-		WordLexeme targetLexeme = commonDataService.getWordLexeme(targetLexemeId);
+		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWords()[0];
 		if (searchFilter == null) {
@@ -69,8 +74,8 @@ public class LexEditController extends AbstractPageController {
 			wordHomonymNumber = Optional.empty();
 		}
 
-		List<WordLexeme> sourceLexemes = lexSearchService
-				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, wordHomonymNumber, sourceLexemeMeaningId);
+		List<WordLexeme> sourceLexemes = lookupService
+				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, wordHomonymNumber, sourceLexemeMeaningId, userId);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);
@@ -87,13 +92,13 @@ public class LexEditController extends AbstractPageController {
 		Map<String, String> response = new HashMap<>();
 
 		List<Long> meaningIds = new ArrayList<>();
-		Long targeLexemeMeaningId = lexSearchService.getMeaningId(targetLexemeId);
+		Long targeLexemeMeaningId = lookupService.getMeaningId(targetLexemeId);
 		meaningIds.add(targeLexemeMeaningId);
 		sourceLexemeIds.forEach(lexemeId -> {
-			Long meaningId = lexSearchService.getMeaningId(lexemeId);
+			Long meaningId = lookupService.getMeaningId(lexemeId);
 			meaningIds.add(meaningId);
 		});
-		Map<String, Integer[]> invalidWords = commonDataService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
+		Map<String, Integer[]> invalidWords = lookupService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
 
 		if (MapUtils.isNotEmpty(invalidWords)) {
 			String message = "Tähendusi ei saa ühendada, sest ühendatavatel tähendustel on järgnevad samakujulised, aga erineva homonüüminumbriga keelendid:";
@@ -125,7 +130,7 @@ public class LexEditController extends AbstractPageController {
 
 		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds);
 
-		WordLexeme lexeme = commonDataService.getWordLexeme(targetLexemeId);
+		WordLexeme lexeme = lexSearchService.getWordLexeme(targetLexemeId);
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String firstWordValue = lexeme.getWords()[0];
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
@@ -136,7 +141,7 @@ public class LexEditController extends AbstractPageController {
 	@GetMapping("/lexseparate/{lexemeId}")
 	public String separate(@PathVariable("lexemeId") Long lexemeId) {
 
-		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		compositionService.separateLexemeMeanings(lexemeId);
 
 		List<String> datasets = getUserPreferredDatasetCodes();
@@ -150,9 +155,10 @@ public class LexEditController extends AbstractPageController {
 	@PostMapping("/duplicatelexeme/{lexemeId}")
 	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
+		String userName = userService.getAuthenticatedUser().getName();
 		List<Long> clonedLexemeIds = new ArrayList<>();
 		try {
-			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId);
+			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId, userName);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
@@ -174,7 +180,8 @@ public class LexEditController extends AbstractPageController {
 	@PostMapping("/duplicateemptylexeme/{lexemeId}")
 	public String duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
-		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId);
+		String userName = userService.getAuthenticatedUser().getName();
+		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, userName);
 
 		Map<String, String> response = new HashMap<>();
 		response.put("message", "Uus tähendus loodud");

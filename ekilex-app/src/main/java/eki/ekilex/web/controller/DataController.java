@@ -94,7 +94,7 @@ public class DataController implements SystemConstant, WebConstant {
 		}
 		Long wordId = Long.valueOf(wordIdStr);
 		List<String> datasets = parseDatasets(datasetsStr);
-		WordDetails result = commonDataService.getWordDetails(wordId, datasets);
+		WordDetails result = lexSearchService.getWordDetails(wordId, datasets);
 		return result;
 	}
 

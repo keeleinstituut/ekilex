@@ -570,6 +570,30 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(MeaningWord.class);
 	}
 
+	public eki.ekilex.data.Word getWord(Long wordId) {
+		return create.select(
+				WORD.ID.as("word_id"),
+				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word"),
+				WORD.HOMONYM_NR,
+				WORD.LANG,
+				WORD.WORD_CLASS,
+				WORD.GENDER_CODE,
+				WORD.ASPECT_CODE)
+				.from(WORD, PARADIGM, FORM)
+				.where(WORD.ID.eq(wordId)
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
+						.andExists(DSL
+								.select(LEXEME.ID)
+								.from(LEXEME)
+								.where(
+										LEXEME.WORD_ID.eq(WORD.ID)
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+				.groupBy(WORD.ID)
+				.fetchOneInto(eki.ekilex.data.Word.class);
+	}
+
 	public List<Relation> getWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordGroupMember wgrm1 = WORD_GROUP_MEMBER.as("wgrm1");
