@@ -207,7 +207,7 @@
                                             <span class="pull-right">
                                                 <button type="button" th:hidden="${relationIter.first}" class="btn badge badge-secondary order-up" title="Muuda järjestust"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
                                                 <button type="button" th:hidden="${relationIter.last}" class="btn badge badge-secondary order-down" title="Muuda järjestust"><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
-                                                <button type="button" class="btn badge badge-success rel-status-btn" th:data-id="${synRelation.id}" data-status="CONFIRMED" title="Kinnita"><i class="fa fa-check" aria-hidden="true"></i></button>
+                                                <button type="button" class="btn badge badge-success rel-status-btn" th:data-id="${synRelation.id}" data-status="UNDEFINED" title="Märgi mittetegeletuks"><i class="fa fa-question" aria-hidden="true"></i></button>
                                                 <button type="button" class="btn badge badge-primary rel-status-btn" th:data-id="${synRelation.id}" data-status="HANDLED" title="Märgi käsitletuks"><i class="fa fa-thumb-tack" aria-hidden="true"></i></button>
                                                 <button type="button" class="btn badge badge-warning rel-status-btn" th:data-id="${synRelation.id}" data-status="DELETED" data-placement="right" title="Kustuta"><i class="fa fa-remove" aria-hidden="true"></i></button>
                                             </span>
