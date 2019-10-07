@@ -38,7 +38,7 @@
       <div th:if="${activeItem != 'home'}" class="dropdown side-menu">
         <button type="button" class="btn btn-primary ml-n3 side-menu-btn" id="sideMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr-2" aria-hidden="true"></i><span th:text="${(activeItem == 'lex') ? 'Leksikograafid' : (activeItem == 'term') ? 'Terminoloogid' : (activeItem == 'syn') ? 'Sünonüümid': (activeItem == 'source') ? 'Allikate otsing': (activeItem == 'datasets') ? 'Sõnakogude haldus': (activeItem == 'permissions') ? 'Kasutajaõiguste haldus' : (activeItem == 'wwfeedback') ? 'Sõnaveebi tagasiside' :'Rakenduse valik'}">Aktiivne rakendus</span></button>
         <div id="sideMenu" class="side-menu-content dropdown-menu ml-n3" aria-labelledby="sideMenuButton">
-          <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex <small class="text-muted ml-auto" th:text="${'v.'+appData.appVersion}">1.0.0</small></a>
+          <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex <small class="text-secondary ml-auto" th:text="${'v.'+appData.appVersion}">1.0.0</small></a>
           <div>
             <div class="dropdown-header">Rakenduse valik</div>
             <div>
@@ -71,7 +71,11 @@
                   th:text="#{'search.mode.DETAIL'}" data-toggle="tab" href="#detail_search_filter" role="tab" aria-controls="simple_search_filter" aria-selected="true">Detailotsing</a>
         </li>
       </ul>
-
+      <th:block th:if="${activeItem == 'syn'}">
+        <button class="btn btn-primary mr-3" type="button" data-toggle="modal" data-target="#synoTutorialModal">
+          <i class="fa fa-question-circle-o" aria-hidden="true"></i> Kasutusjuhend
+        </button>
+      </th:block>
       <div class="navbar-nav" th:classappend="${searchMode} ? '':'ml-auto'">
         <th:block sec:authorize="isAuthenticated()">
 

@@ -43,7 +43,13 @@ function initialise() {
 			$("#syn_select_wait_" + id).hide();
 			$('[data-toggle="tooltip"]').tooltip();
 
-			$(document).find('.draggable-synonym').draggable({ revert: "invalid" });
+			$(document).find('.draggable-synonym').draggable({
+				revert: "invalid",
+				appendTo:"body",
+				containment: "window",
+				helper: "clone",
+				handle: ".handle"
+			});
 
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {

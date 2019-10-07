@@ -10,6 +10,7 @@
       "border-bottom-right-radius",
       "border-bottom-left-radius",
       "transition"
-    ]
+    ],
+    "scss/dollar-variable-default": null
   }
 }
