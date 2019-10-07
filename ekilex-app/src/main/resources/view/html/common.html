@@ -48,9 +48,19 @@
            th:if="${activeItem == 'lex' || activeItem == 'term'}">
           <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
         </a>
+        <a class="nav-item nav-link" target="terminikirje-kontrollnimekiri" href="https://portaal.eki.ee/tegevusvaldkonnad/2490-terminikirje-kontrollnimekiri.html"
+           sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)"
+           th:if="${activeItem == 'term'}">
+          <span>Terminikirje kontrollnimekiri</span>
+        </a>
       </div>
       <div class="navbar-nav ml-auto">
         <th:block sec:authorize="isAuthenticated()">
+          <div class="mr-5">
+            <a class="nav-item nav-link" href="mailto:kasutajatugi@ekilex.ee">
+              <i class="fa fa-fw fa-envelope"></i> Abi
+            </a>
+          </div>
           <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
             <th:block th:with="selectedRole = ${sessionBean.userRole}">
               <div class="text-white mr-5 mt-2"
