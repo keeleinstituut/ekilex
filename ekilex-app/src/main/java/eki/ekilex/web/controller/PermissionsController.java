@@ -172,7 +172,8 @@ public class PermissionsController extends AbstractPageController {
 	@ResponseBody
 	public String sendPermissionsEmail(@PathVariable("userEmail") String userEmail) {
 
-		permissionService.sendPermissionsEmail(userEmail);
+		EkiUser sender = userService.getAuthenticatedUser();
+		permissionService.sendPermissionsEmail(userEmail, sender);
 		return "OK";
 	}
 

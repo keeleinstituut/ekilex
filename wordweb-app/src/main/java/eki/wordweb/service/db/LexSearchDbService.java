@@ -196,6 +196,7 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 	public List<LexemeDetailsTuple> getLexemeDetailsTuples(Long wordId, DataFilter dataFilter) {
 
 		String destinLang = dataFilter.getDestinLang();
+		String[] supportedDestinDataLangs = new String[] {destinLang, LANGUAGE_CODE_LAT};
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 		Complexity dataComplexity = dataFilter.getDataComplexity();
 		String[] filtComplexities = new String[] {lexComplexity.name(), dataComplexity.name()};
@@ -245,7 +246,7 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 						lr.RELATED_LEXEMES)
 				.from(l1
 						.leftOuterJoin(l2).on(l2Join)
-						.leftOuterJoin(w2).on(l2.WORD_ID.eq(w2.WORD_ID))
+						.leftOuterJoin(w2).on(l2.WORD_ID.eq(w2.WORD_ID).and(w2.LANG.in(supportedDestinDataLangs)))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l1.LEXEME_ID)))
 				.where(where)
 				.orderBy(

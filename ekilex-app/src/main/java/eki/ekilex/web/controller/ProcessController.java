@@ -20,6 +20,7 @@ import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.ProcessLog;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.service.ProcessService;
+import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
@@ -30,6 +31,9 @@ public class ProcessController implements WebConstant {
 
 	@Autowired
 	private ProcessService processService;
+
+	@Autowired
+	private UserService userService;
 
 	@GetMapping("/meaningprocesslog:{meaningId}")
 	public String meaningProcessLogLink(@PathVariable("meaningId") Long meaningId, Model model) {
@@ -75,11 +79,12 @@ public class ProcessController implements WebConstant {
 	@ResponseBody
 	public String createMeaningProcessLog(@RequestBody CreateItemRequest itemData) {
 
+		String userName = userService.getAuthenticatedUser().getName();
 		Long meaningId = itemData.getId();
 		String commentPrese = itemData.getValue();
 		String dataset = itemData.getDataset();
 		logger.debug("Creating process log for meaning \"{}\"", meaningId);
-		processService.createMeaningProcessLog(meaningId, dataset, commentPrese);
+		processService.createMeaningProcessLog(meaningId, dataset, commentPrese, userName);
 
 		return "{}";
 	}
@@ -88,11 +93,12 @@ public class ProcessController implements WebConstant {
 	@ResponseBody
 	public String createWordProcessLog(@RequestBody CreateItemRequest itemData) {
 
+		String userName = userService.getAuthenticatedUser().getName();
 		Long wordId = itemData.getId();
 		String commentPrese = itemData.getValue();
 		String dataset = itemData.getDataset();
 		logger.debug("Creating process log for word \"{}\"", wordId);
-		processService.createWordProcessLog(wordId, dataset, commentPrese);
+		processService.createWordProcessLog(wordId, dataset, commentPrese, userName);
 
 		return "{}";
 	}
@@ -101,10 +107,11 @@ public class ProcessController implements WebConstant {
 	@ResponseBody
 	public String createLexemeProcessState(@RequestBody CreateItemRequest itemData) {
 
+		String userName = userService.getAuthenticatedUser().getName();
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 		logger.debug("Creating process state for lexeme \"{}\"", lexemeId);
-		processService.createLexemeProcessLog(lexemeId, processStateCode);
+		processService.createLexemeProcessLog(lexemeId, processStateCode, userName);
 		processService.updateLexemeProcessState(lexemeId, processStateCode);
 
 		return "{}";
@@ -114,10 +121,11 @@ public class ProcessController implements WebConstant {
 	@ResponseBody
 	public String updateLexemeProcessState(@RequestBody UpdateItemRequest itemData) {
 
+		String userName = userService.getAuthenticatedUser().getName();
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 		logger.debug("Updating process state for lexeme \"{}\"", lexemeId);
-		processService.createLexemeProcessLog(lexemeId, processStateCode);
+		processService.createLexemeProcessLog(lexemeId, processStateCode, userName);
 		processService.updateLexemeProcessState(lexemeId, processStateCode);
 
 		return "{}";

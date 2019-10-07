@@ -44,6 +44,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.LookupService;
 import eki.ekilex.service.SourceService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
@@ -79,6 +80,9 @@ public class EditController extends AbstractPageController implements SystemCons
 
 	@Autowired
 	private CompositionService compositionService;
+
+	@Autowired
+	private LookupService lookupService;
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
@@ -359,7 +363,7 @@ public class EditController extends AbstractPageController implements SystemCons
 				}
 				boolean isOnlyLexemesForWords = commonDataService.isOnlyLexemesForWords(id, datasetCode);
 				if (isOnlyLexemesForWords) {
-					List<String> wordsToDelete = commonDataService.getWordsToBeDeleted(id, datasetCode);
+					List<String> wordsToDelete = lookupService.getWordsToBeDeleted(id, datasetCode);
 					String joinedWords = StringUtils.join(wordsToDelete, ", ");
 
 					question = "Valitud mõiste kustutamisel jäävad järgnevad terminid mõisteta: ";
@@ -591,7 +595,7 @@ public class EditController extends AbstractPageController implements SystemCons
 
 		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
 		cudService.createLexeme(wordId, dataset, meaningId);
-		Word word = commonDataService.getWord(wordId);
+		Word word = lexSearchService.getWord(wordId);
 		String wordValue = word.getValue();
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		if (!selectedDatasets.contains(dataset)) {
@@ -624,8 +628,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
-		List<String> allDatasetCodes = commonDataService.getDatasetCodes();
-		WordDetails firstWordDetails = commonDataService.getWordDetails(wordId, allDatasetCodes);
+		WordDetails firstWordDetails = lookupService.getWordJoinDetails(wordId);
 		Word firstWord = firstWordDetails.getWord();
 		String firstWordValue = firstWord.getValue();
 
@@ -637,7 +640,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
 		}
 
-		List<WordDetails> wordDetailsList = commonDataService
+		List<WordDetails> wordDetailsList = lookupService
 				.getWordDetailsOfJoinCandidates(firstWordValue, wordId, userPreferredDatasetCodes, userPermDatasetCodes);
 
 		model.addAttribute("firstWordDetails", firstWordDetails);

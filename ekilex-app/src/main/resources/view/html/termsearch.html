@@ -73,7 +73,8 @@
 
   <th:block th:fragment="details" th:if="${meaning != null}">
     <div th:data-id="${meaningId}" id="details_div"
-         th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
+         th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.meaningId, ''MEANING'', ''DATASET:CRUD'')')},
+                  isMeaningAnyLexemeCrudGranted=${#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaningId)}">
 
         <div th:replace="termdialog :: add_meaning_data_dlg"></div>
         <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
@@ -103,7 +104,7 @@
               <a class="btn btn-primary btn-sm"
                  th:href="@{'/meaningjoin/' + ${meaningId}}"
                  title="Tähenduste ühendamine"
-                 sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaningId)">Ühenda</a>
+                 sec:authorize="#vars.isMeaningAnyLexemeCrudGranted">Ühenda</a>
               <button id="duplicateMeaningBtn"
                       title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
                       class="btn btn-primary btn-sm"
@@ -113,7 +114,7 @@
                       data-toggle="modal"
                       data-target="#newWordDlg"
                       th:data-meaning-id="${meaningId}"
-                      sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">Uus termin</button>
+                      sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">Uus termin</button>
               <button class="btn btn-warning font-weight-bold btn-sm" type="button"
                       th:data-id="${meaningId}"
                       data-callback="doNewSearch"
@@ -145,7 +146,7 @@
               <button type="button" class="btn badge badge-success" title="Lisa uus"
                       data-toggle="modal"
                       th:data-target="${'#addDefinitionDlg_' + meaningId}"
-                      sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)">
+                      sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </div>
@@ -854,9 +855,9 @@
                 <div class="col pl-0">
                   <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                     <tr th:each="relation, itemIter : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-                      <td class="action-column">
+                      <div class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isLexemeCrudGranted}"></th:block>
-                      </td>
+                      </div>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
                           <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>

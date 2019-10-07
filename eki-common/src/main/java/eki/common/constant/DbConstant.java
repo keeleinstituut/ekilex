@@ -25,4 +25,6 @@ public interface DbConstant {
 	String DATASET_TYPE_TERM = "TERM";
 
 	String LANGUAGE_CODE_EST = "est";
+
+	String LANGUAGE_CODE_LAT = "lat";
 }

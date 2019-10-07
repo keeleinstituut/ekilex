@@ -26,6 +26,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.service.CompositionService;
+import eki.ekilex.service.LookupService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
@@ -48,6 +49,9 @@ public class TermEditController extends AbstractPageController {
 	@Autowired
 	private CompositionService compositionService;
 
+	@Autowired
+	private LookupService lookupService;
+
 	@RequestMapping(MEANING_JOIN_URI + "/{targetMeaningId}")
 	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
@@ -62,9 +66,9 @@ public class TermEditController extends AbstractPageController {
 			searchFilter = targetMeaningFirstWord;
 		}
 
-		Meaning targetMeaning = termSearchService.getMeaningOfJoinTarget(targetMeaningId, languagesOrder);
-		List<Meaning> sourceMeanings = termSearchService
-				.getMeaningsOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, languagesOrder, targetMeaningId);
+		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(targetMeaningId, languagesOrder);
+		List<Meaning> sourceMeanings = lookupService
+				.getMeaningsOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, languagesOrder, targetMeaningId, userId);
 
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("targetMeaningId", targetMeaningId);
@@ -82,7 +86,7 @@ public class TermEditController extends AbstractPageController {
 		Map<String, String> response = new HashMap<>();
 		List<Long> allMeaningIds = new ArrayList<>(sourceMeaningIds);
 		allMeaningIds.add(targetMeaningId);
-		Map<String, Integer[]> invalidWords = commonDataService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
+		Map<String, Integer[]> invalidWords = lookupService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
 
 		if (MapUtils.isNotEmpty(invalidWords)) {
 			String message = "Tähendusi ei saa ühendada, sest ühendatavatel tähendustel on järgnevad samakujulised, aga erineva homonüüminumbriga keelendid:";
@@ -125,9 +129,10 @@ public class TermEditController extends AbstractPageController {
 	@PostMapping("/duplicatemeaning/{meaningId}")
 	public String duplicateMeaning(@PathVariable("meaningId") Long meaningId) throws JsonProcessingException {
 
+		String userName = userService.getAuthenticatedUser().getName();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
-			clonedMeaning = compositionService.optionalDuplicateMeaning(meaningId);
+			clonedMeaning = compositionService.optionalDuplicateMeaning(meaningId, userName);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
