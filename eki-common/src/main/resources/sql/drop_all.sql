@@ -13,10 +13,11 @@ drop view if exists view_ww_meaning_relation;
 drop view if exists view_ww_lexical_decision_data;
 drop view if exists view_ww_similarity_judgement_data;
 drop type if exists type_public_note;
+drop type if exists type_meaning_word;
 drop type if exists type_grammar;
 drop type if exists type_government;
 drop type if exists type_lang_complexity;
-drop type if exists type_word;
+drop type if exists type_word;--remove later
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;

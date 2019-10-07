@@ -1,4 +1,3 @@
-create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), lex_complexity varchar(100), word_type_codes varchar(100) array);
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
@@ -7,6 +6,19 @@ create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
+create type type_meaning_word as (
+				lexeme_id bigint,
+				meaning_id bigint,
+				mw_lexeme_id bigint,
+				mw_lex_complexity varchar(100),
+				mw_lex_governments type_government array,
+				mw_lex_register_codes varchar(100) array,
+				word_id bigint,
+				word text,
+				homonym_nr integer,
+				lang char(3),
+				word_type_codes varchar(100) array,
+				aspect_code varchar(100));
 create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), homonym_nr integer, lex_complexities varchar(100) array, word_type_codes varchar(100) array, word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), lex_rel_type_code varchar(100));
@@ -60,21 +72,45 @@ from (select w.id as word_id,
                    from word_word_type wt
                    group by wt.word_id) wt on wt.word_id = w.word_id
   left outer join (select mw.word_id,
-                          array_agg(row (mw.hw_lex_id,mw.hw_meaning_id,mw.mw_value,mw.mw_lang,mw.mw_lex_complexity,mw.mw_word_type_codes)::type_word order by mw.hw_lex_level1,mw.hw_lex_level2,mw.hw_lex_level3,mw.hw_lex_order_by,mw.mw_lex_order_by) meaning_words
+                          array_agg(row (
+                          	mw.lexeme_id,
+                          	mw.meaning_id,
+                          	mw.mw_lex_id,
+                          	mw.mw_lex_complexity,
+                          	null,
+                          	null,
+                          	mw.mw_word_id,
+                          	mw.mw_word,
+                          	mw.mw_homonym_nr,
+                          	mw.mw_lang,
+                          	mw.mw_word_type_codes,
+                          	mw.mw_aspect_code
+                          )::type_meaning_word
+                          order by
+                          mw.hw_lex_level1,
+                          mw.hw_lex_level2,
+                          mw.hw_lex_level3,
+                          mw.hw_lex_order_by,
+                          mw.mw_lex_order_by
+                          ) meaning_words
                    from (select l1.word_id,
-                                l1.id hw_lex_id,
-                                l1.meaning_id hw_meaning_id,
+                                l1.id lexeme_id,
+                                l1.meaning_id,
                                 l1.level1 hw_lex_level1,
                                 l1.level2 hw_lex_level2,
                                 l1.level3 hw_lex_level3,
                                 l1.order_by hw_lex_order_by,
-                                f2.value mw_value,
-                                w2.lang mw_lang,
+                                l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
+                                w2.id mw_word_id,
+                                f2.value mw_word,
+                                w2.homonym_nr mw_homonym_nr,
+                                w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
                                  from word_word_type wt
                                  where wt.word_id = w2.id
                                  group by wt.word_id) mw_word_type_codes,
+                                w2.aspect_code mw_aspect_code,
                                 l2.order_by mw_lex_order_by
                          from lexeme l1
                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id and l2.dataset_code = 'sss'
@@ -297,6 +333,8 @@ as
 select l.id lexeme_id,
        l.word_id,
        l.meaning_id,
+       ds.type dataset_type,
+       l.dataset_code,
        l.level1,
        l.level2,
        l.level3,
@@ -305,6 +343,7 @@ select l.id lexeme_id,
        l_reg.register_codes,
        l_pos.pos_codes,
        l_der.deriv_codes,
+       mw.meaning_words,
        anote.advice_notes,
        pnote.public_notes,
        gramm.grammars,
@@ -312,6 +351,7 @@ select l.id lexeme_id,
        usg.usages,
        lc.lang_complexities
 from lexeme l
+  inner join dataset ds on ds.code = l.dataset_code
   left outer join (select l_reg.lexeme_id,
                           array_agg(l_reg.register_code order by l_reg.order_by) register_codes
                    from lexeme_register l_reg
@@ -352,6 +392,66 @@ from lexeme l
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GOVERNMENT'
                    group by lf.lexeme_id) gov on gov.lexeme_id = l.id
+  left outer join (select mw.lexeme_id,
+                          array_agg(row (
+                          	mw.lexeme_id,
+                          	mw.meaning_id,
+                          	mw.mw_lex_id,
+                          	mw.mw_lex_complexity,
+                          	mw.mw_lex_governments,
+                          	mw.mw_lex_register_codes,
+                          	mw.mw_word_id,
+                          	mw.mw_word,
+                          	mw.mw_homonym_nr,
+                          	mw.mw_lang,
+                          	mw.mw_word_type_codes,
+                          	mw.mw_aspect_code
+                          )::type_meaning_word
+                          order by
+                          mw.hw_lex_level1,
+                          mw.hw_lex_level2,
+                          mw.hw_lex_level3,
+                          mw.hw_lex_order_by,
+                          mw.mw_lex_order_by
+                          ) meaning_words
+                   from (select l1.word_id,
+                                l1.id lexeme_id,
+                                l1.meaning_id,
+                                l1.level1 hw_lex_level1,
+                                l1.level2 hw_lex_level2,
+                                l1.level3 hw_lex_level3,
+                                l1.order_by hw_lex_order_by,
+                                l2.id mw_lex_id,
+                                l2.complexity mw_lex_complexity,
+                                (select array_agg(row (ff.value_text,ff.complexity)::type_government order by ff.order_by)
+			                     from lexeme_freeform lf,
+			                          freeform ff
+			                     where lf.lexeme_id = l2.id
+			                     and   lf.freeform_id = ff.id
+			                     and   ff.type = 'GOVERNMENT'
+			                     group by lf.lexeme_id) mw_lex_governments,
+                                (select array_agg(l_reg.register_code order by l_reg.order_by)
+                   				 from lexeme_register l_reg
+                   				 where l_reg.lexeme_id = l2.id
+                   				 group by l_reg.lexeme_id) mw_lex_register_codes,
+                                w2.id mw_word_id,
+                                f2.value mw_word,
+                                w2.homonym_nr mw_homonym_nr,
+                                w2.lang mw_lang,
+                                (select array_agg(wt.word_type_code order by wt.order_by)
+                                 from word_word_type wt
+                                 where wt.word_id = w2.id
+                                 group by wt.word_id) mw_word_type_codes,
+                                w2.aspect_code mw_aspect_code,
+                                l2.order_by mw_lex_order_by
+                         from lexeme l1
+                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id and l2.dataset_code = 'sss'
+                           inner join word w2 on w2.id = l2.word_id
+                           inner join paradigm p2 on p2.word_id = w2.id
+                           inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
+                         where l1.dataset_code = 'sss'
+                         and l1.type = 'PRIMARY') mw
+                   group by mw.lexeme_id) mw on mw.lexeme_id = l.id
   left outer join (select u.lexeme_id,
                           array_agg(row (u.usage,u.usage_prese,u.usage_lang,u.complexity,u.usage_type_code,u.usage_translations,u.usage_definitions,u.usage_authors)::type_usage order by u.order_by) usages
                    from (select lf.lexeme_id,
@@ -898,7 +998,6 @@ create view view_ww_dataset
        'est'::char(3) as lang,
        order_by
      from dataset
-     where code = 'sss'
      order by order_by
     );
 

@@ -159,9 +159,9 @@
                   </div>
                   <div class="col-lg meaning-meta pl-0">
                     <div class="synonyms">
-                      <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
+                      <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.sourceLangMeaningWords)}">
                         <span th:text="#{label.same.as}">sama mis</span>
-                        <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                        <span th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}">
                           <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
                             <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '') + (meaningWordIter.last ? '' : ', ')}">tee</span>
                           </a>
@@ -179,11 +179,11 @@
                           <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
                                 th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"
                                 class="type-three"></span>
-                          <th:block th:if="${not #lists.isEmpty(meaningWord.governments)}">
-                            <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
+                          <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
+                            <span class="type-one" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
                           </th:block>
-                          <th:block th:if="${not #lists.isEmpty(meaningWord.registers)}">
-                            <span class="type-two" th:each="register,regIter : ${meaningWord.registers}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                          <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
+                            <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
                         <span th:unless="${meaningWordIter.last}" class="pr-1">,</span>

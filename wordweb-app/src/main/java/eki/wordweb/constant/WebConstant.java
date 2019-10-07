@@ -11,6 +11,8 @@ public interface WebConstant {
 
 	String EMPHASISE_DESTIN_LANG = "lat";
 
+	String ADDITIONAL_DESTIN_LANG = "lat";
+
 	String[] SUPPORTED_LANGUAGES = new String[] {"est", "rus"};
 
 	String HOME_PAGE = "index";
