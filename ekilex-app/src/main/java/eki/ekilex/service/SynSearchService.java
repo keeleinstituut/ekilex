@@ -37,29 +37,29 @@ public class SynSearchService extends AbstractWordSearchService {
 	public WordSynDetails getWordSynDetails(Long wordId, List<String> selectedDatasetCodes) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction);
-		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme));
+		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, wordDetails.getLanguage()));
 		lexemeLevelCalcUtil.combineLevels(synLexemes);
 
 		List<SynRelationParamTuple> relationTuples =
 				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
 		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
 
-		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
 
 		return wordDetails;
 	}
 
-	private void populateSynLexeme(WordSynLexeme lexeme) {
+	private void populateSynLexeme(WordSynLexeme lexeme, String language) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
 
-		List<SynMeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId);
+		List<SynMeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, language);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);

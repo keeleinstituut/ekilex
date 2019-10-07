@@ -148,7 +148,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchOneInto(WordSynDetails.class);
 	}
 
-	public List<SynMeaningWord> getSynMeaningWords(Long lexemeId) {
+	public List<SynMeaningWord> getSynMeaningWords(Long lexemeId, String languageCode) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -175,6 +175,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(p2.WORD_ID.eq(w2.ID))
 								.and(f2.PARADIGM_ID.eq(p2.ID))
 								.and(f2.MODE.eq(FormMode.WORD.name()))
+								.and(w2.LANG.eq(languageCode))
 				)
 				.groupBy(w2.ID, f2.VALUE, l2.ID)
 				.orderBy(f2.VALUE)
