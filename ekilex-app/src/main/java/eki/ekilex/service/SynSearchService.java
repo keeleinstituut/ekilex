@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.LexemeType;
+import eki.common.constant.RelationStatus;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -81,8 +82,14 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId) {
+	public void createSecondarySynLexemeAndChangeRelStatus(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) {
 		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
+
+		SynRelation relation = synSearchDbService.getSynRelation(relationId);
+
+		if (RelationStatus.UNDEFINED.equals(relation.getRelationStatus())) {
+			synSearchDbService.changeRelationStatus(relationId, RelationStatus.HANDLED.name());
+		}
 	}
 
 }

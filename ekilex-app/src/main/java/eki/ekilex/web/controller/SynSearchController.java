@@ -155,15 +155,15 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		return "{}";
 	}
 
-	@PostMapping(SYN_CREATE_LEXEME + "/{meaningId}/{wordId}/{lexemeId}")
+	@PostMapping(SYN_CREATE_LEXEME + "/{meaningId}/{wordId}/{lexemeId}/{relationId}")
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@ResponseBody
-	public String createSynLexeme(@PathVariable Long meaningId, @PathVariable Long wordId, @PathVariable Long lexemeId, Model model) {
-		logger.debug("Adding lexeme to syn candidate word Id {}, meaning Id {} , existing lexeme Id {}", wordId, meaningId, lexemeId);
+	public String createSynLexeme(@PathVariable Long meaningId, @PathVariable Long wordId, @PathVariable Long lexemeId, @PathVariable Long relationId, Model model) {
+		logger.debug("Adding lexeme to syn candidate word Id {}, meaning Id {} , existing lexeme Id {}, relation Id {}", wordId, meaningId, lexemeId, relationId);
 		SessionBean sessionBean = getSessionBean(model);
 		String datasetCode = getDatasetCodeFromRole(sessionBean).get(0);
 
-		synSearchService.createSecondarySynLexeme(meaningId, wordId, datasetCode, lexemeId);
+		synSearchService.createSecondarySynLexemeAndChangeRelStatus(meaningId, wordId, datasetCode, lexemeId, relationId);
 		return "{}";
 	}
 

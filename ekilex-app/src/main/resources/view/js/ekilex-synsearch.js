@@ -62,11 +62,14 @@ function initialise() {
 					"ui-droppable-hover": "ui-state-hover"
 				},
 				drop: function (event, ui) {
+					let relationId = ui.draggable.parent().data('id');
+					console.log('relation id ' + relationId)
 					let meaningId = $(this).data('meaning-id');
 					let lexemeId = $(this).data('lexeme-id');
 					let wordId = ui.draggable.data('word-id');
 
-					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId;
+					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
+					alert(actionUrl);
 					let callbackFunc = () => $('#refresh-details').trigger('click');
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
@@ -193,16 +196,18 @@ function initialise() {
 		let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
 
 		e = e || window.event;
-		//console.log(e.keyCode);
+		console.log(e.keyCode);
 
 		if (e.keyCode == 38 || e.keyCode == 40) { // arrows up down
 
 			if (currentSelectedItem.length != 0) {
+				console.log('currentSelectedITem exists');
 				let indexIncrement = (e.keyCode == 40 ? 1 : -1);
 				let newIndex = currentSelectedIndex + indexIncrement;
 				let newItem = currentActiveDiv.find('[data-navigate-index="' + newIndex + '"]');
 
 				if (newItem.length != 0) {
+					console.log('navItem exists');
 					newItem.addClass(isDisabledItem(currentActiveDiv, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
 					unActivateItem(currentSelectedItem, true);
@@ -248,6 +253,7 @@ function initialise() {
 		if (e.keyCode == 27) { //esc
 			$('.navigate-panel').each(function () {
 				$(this).removeAttr('data-marked-word-id');
+				$(this).removeAttr('data-marked-relation-id'); //TODO refactor
 				$(this).removeAttr('data-active-panel');
 				$(this).find('[data-navigate-index]').each(function () {
 					unActivateItem($(this), true);
@@ -271,11 +277,15 @@ function initialise() {
 				currentActiveDiv.find('.navigate-marked').each(function () {$(this).removeClass('navigate-marked');});
 				currentSelectedItem.addClass('navigate-marked');
 				currentActiveDiv.removeAttr('data-active-panel');
+				//TODO refactor
 				let wordId = currentSelectedItem.children(':first').attr('data-word-id');
+				let relationId = currentSelectedItem.attr('data-id');
 
 				let activatedDiv = $('div[data-panel-index="2"]');
 				activatedDiv.attr('data-active-panel', true);
+
 				activatedDiv.data('marked-word-id', wordId);
+				activatedDiv.data('marked-relation-id', relationId);
 
 				let selectedLexemeItem = findSelectedNavigateItem(activatedDiv);
 
@@ -286,13 +296,16 @@ function initialise() {
 
 			} else if (currentActivePanelIndex == "2") {
 				if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-					let wordId = currentActiveDiv.data('marked-word-id'); //TODO move to a hidden field ?
+					let wordId = currentActiveDiv.data('marked-word-id'); //TODO move to a hidden field ? - add a marked attribute to the marked element
+					let relationId = currentActiveDiv.data('marked-relation-id'); //TODO Refactor
+
 					if (wordId != undefined) {
 
 						let lexemeId = currentSelectedItem.data('lexeme-id');
 						let meaningId = currentSelectedItem.data('meaning-id');
 
-						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId;
+						//TODO - test
+						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
 						let callbackFunc = () => $('#refresh-details').trigger('click');
 
 						doPostRelationChange(actionUrl, callbackFunc);
