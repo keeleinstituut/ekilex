@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.util.SearchHelper;
 
@@ -27,11 +28,14 @@ public class BackController extends AbstractPageController {
 	@Autowired
 	private SearchHelper searchHelper;
 
+	@Autowired
+	private LexSearchService lexSearchService;
+
 	@GetMapping(WORD_BACK_URI + "/{wordId}")
 	public String wordBack(@PathVariable("wordId") Long wordId) {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
-		Word word = commonDataService.getWord(wordId);
+		Word word = lexSearchService.getWord(wordId);
 		String wordValue = word.getValue();
 		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
 
@@ -42,7 +46,7 @@ public class BackController extends AbstractPageController {
 	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId) {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
-		WordLexeme lexeme = commonDataService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		String firstWordValue = lexeme.getWords()[0];
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 

@@ -27,9 +27,6 @@ import eki.ekilex.service.db.UserDbService;
 public class PermissionService implements SystemConstant {
 
 	@Autowired
-	private UserService userService;
-
-	@Autowired
 	private UserDbService userDbService;
 
 	@Autowired
@@ -100,9 +97,8 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public void sendPermissionsEmail(String userEmail) {
+	public void sendPermissionsEmail(String userEmail, EkiUser sender) {
 
-		EkiUser sender = userService.getAuthenticatedUser();
 		EkiUser receiver = userDbService.getUserByEmail(userEmail);
 		Long receiverId = receiver.getId();
 		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(receiverId);
@@ -122,9 +118,8 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId) {
+	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId, Long userId) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
 		return permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
 	}
 }

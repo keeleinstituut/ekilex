@@ -21,6 +21,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Feedback;
 import eki.ekilex.data.FeedbackComment;
 import eki.ekilex.service.FeedbackService;
+import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
@@ -31,6 +32,9 @@ public class WordwebFeedbackController implements WebConstant {
 
 	@Autowired
 	private FeedbackService feedbackService;
+
+	@Autowired
+	private UserService userService;
 
 	@GetMapping(WW_FEEDBACK_URI)
 	public String openPage(Model model) {
@@ -60,10 +64,11 @@ public class WordwebFeedbackController implements WebConstant {
 			@RequestBody Map<String, String> requestBody,
 			Model model) {
 
+		String userName = userService.getAuthenticatedUser().getName();
 		Long feedbackId = Long.valueOf(requestBody.get("feedbackId"));
 		String comment = requestBody.get("comment");
 
-		feedbackService.createFeedbackComment(feedbackId, comment);
+		feedbackService.createFeedbackComment(feedbackId, comment, userName);
 
 		populateFeedbackModel(feedbackId, model);
 

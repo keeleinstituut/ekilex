@@ -289,9 +289,9 @@
              th:data-orderby="${classif.orderBy}"
              class="hidden-buttons">
           <div class="row">
-            <td class="action-column">
+            <div class="action-column">
               <th:block th:replace="common :: ordering_buttons(${classifIter})" sec:authorize="#vars.isMeaningCrudGranted"></th:block>
-            </td>
+            </div>
             <div class="col">
               <span th:replace="termdialog :: edit_meaning_domain_dlg"></span>
               <span th:text="${classif.code}"></span>

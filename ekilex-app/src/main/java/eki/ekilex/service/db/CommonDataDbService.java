@@ -53,13 +53,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record2;
 import org.jooq.Record3;
-import org.jooq.Record4;
 import org.jooq.Record5;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -82,7 +79,6 @@ import eki.ekilex.data.Origin;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
@@ -359,41 +355,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.from(originDomains)
 				.orderBy(originDomains.field("value"))
 				.fetchInto(Classifier.class);
-	}
-
-	public Word getWord(Long wordId) {
-		return create.select(
-				WORD.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word"),
-				WORD.HOMONYM_NR,
-				WORD.LANG,
-				WORD.WORD_CLASS,
-				WORD.GENDER_CODE,
-				WORD.ASPECT_CODE)
-				.from(WORD, PARADIGM, FORM)
-				.where(WORD.ID.eq(wordId)
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
-						.andExists(DSL
-								.select(LEXEME.ID)
-								.from(LEXEME)
-								.where(
-										LEXEME.WORD_ID.eq(WORD.ID)
-										.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
-				.groupBy(WORD.ID)
-				.fetchOneInto(Word.class);
-	}
-
-	public String getWordValue(Long wordId) {
-		return create
-				.select(FORM.VALUE)
-				.from(FORM, PARADIGM)
-				.where(
-						PARADIGM.WORD_ID.eq(wordId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.fetchOneInto(String.class);
 	}
 
 	public List<Classifier> getWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -943,21 +904,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
-	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIds(Long meaningId, String datasetCode) {
-
-		return create
-				.select(
-						LEXEME.WORD_ID,
-						LEXEME.MEANING_ID,
-						LEXEME.ID.as("lexeme_id"))
-				.from(LEXEME)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.fetchInto(WordLexemeMeaningIdTuple.class);
-	}
-
 	public WordLexemeMeaningIdTuple geWordLexemeMeaningId(Long lexemeId) {
 
 		return create
@@ -1033,67 +979,4 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 		return noOtherMeaningsExist;
 	}
-
-	public List<Long> getWordIdsOfJoinCandidates(String wordValue, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes, Long wordIdToExclude) {
-
-		Table<Record4<Long, Long, String, String>> wl = DSL
-				.select(
-						WORD.ID.as("word_id"),
-						LEXEME.ID.as("lexeme_id"),
-						LEXEME.DATASET_CODE.as("dataset_code"),
-						LEXEME.PROCESS_STATE_CODE.as("process_state_code"))
-				.from(WORD, PARADIGM, FORM, LEXEME)
-				.where(
-						FORM.VALUE.like(wordValue)
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(WORD.ID.ne(wordIdToExclude))
-								.andExists(DSL
-										.select(LEXEME.ID)
-										.from(LEXEME)
-										.where(
-												LEXEME.WORD_ID.eq(WORD.ID)
-														.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-														.and(LEXEME.DATASET_CODE.in(userPrefDatasetCodes))))
-								.andNotExists(DSL
-										.select(WORD_WORD_TYPE.ID)
-										.from(WORD_WORD_TYPE)
-										.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
-										.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
-				.asTable("wl");
-
-		return create
-				.selectDistinct(wl.field("word_id"))
-				.from(wl)
-				.where(wl.field("process_state_code", String.class).eq(PROCESS_STATE_PUBLIC)
-						.or(wl.field("dataset_code", String.class).in(userPermDatasetCodes)))
-				.fetchInto(Long.class);
-	}
-
-	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
-
-		Field<String> wordValue = FORM.VALUE.as("word_value");
-		Field<Integer[]> homonymNumbers = DSL.arrayAggDistinct(WORD.HOMONYM_NR).as("homonym_numbers");
-
-		Table<Record2<String, Integer[]>> wv = DSL
-				.select(wordValue, homonymNumbers)
-				.from(LEXEME, WORD, PARADIGM, FORM)
-				.where(
-						LEXEME.MEANING_ID.in(meaningIds)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(FORM.VALUE)
-				.asTable("wv");
-
-		return create
-				.selectFrom(wv)
-				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
-				.fetchMap(wordValue, homonymNumbers);
-	}
-
 }

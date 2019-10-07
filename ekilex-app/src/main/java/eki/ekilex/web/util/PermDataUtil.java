@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 
 @Component
@@ -12,6 +13,9 @@ public class PermDataUtil {
 
 	@Autowired
 	protected PermissionService permissionService;
+
+	@Autowired
+	private UserService userService;
 
 	public boolean isRoleSelected(SessionBean sessionBean) {
 		if (sessionBean == null) {
@@ -59,6 +63,7 @@ public class PermDataUtil {
 	}
 
 	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId) {
-		return permissionService.isMeaningAnyLexemeCrudGranted(meaningId);
+		Long userId = userService.getAuthenticatedUser().getId();
+		return permissionService.isMeaningAnyLexemeCrudGranted(meaningId, userId);
 	}
 }

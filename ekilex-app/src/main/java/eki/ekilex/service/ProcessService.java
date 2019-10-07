@@ -21,9 +21,6 @@ public class ProcessService {
 	private ProcessDbService processDbService;
 
 	@Autowired
-	private UserService userService;
-
-	@Autowired
 	TextDecorationService textDecorationService;
 
 	@Transactional
@@ -47,9 +44,8 @@ public class ProcessService {
 	}
 
 	@Transactional
-	public void createLexemeProcessLog(Long lexemeId, String processStateCode) {
+	public void createLexemeProcessLog(Long lexemeId, String processStateCode, String userName) {
 
-		String userName = userService.getAuthenticatedUser().getName();
 		LexemeData lexemeData = processDbService.getLexemeData(lexemeId);
 		String datasetCode = lexemeData.getDatasetCode();
 		String recentProcessStateCode = lexemeData.getProcessStateCode();
@@ -61,17 +57,15 @@ public class ProcessService {
 	}
 
 	@Transactional
-	public void createMeaningProcessLog(Long meaningId, String dataset, String commentPrese) {
+	public void createMeaningProcessLog(Long meaningId, String dataset, String commentPrese, String userName) {
 
-		String userName = userService.getAuthenticatedUser().getName();
 		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
 		processDbService.createMeaningProcessLog(meaningId, dataset, userName, comment, commentPrese);
 	}
 
 	@Transactional
-	public void createWordProcessLog(Long wordId, String dataset, String commentPrese) {
+	public void createWordProcessLog(Long wordId, String dataset, String commentPrese, String userName) {
 
-		String userName = userService.getAuthenticatedUser().getName();
 		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
 		processDbService.createWordProcessLog(wordId, dataset, userName, comment, commentPrese);
 	}

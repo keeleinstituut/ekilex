@@ -27,6 +27,7 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CudDbService;
+import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetPermissionsExist")
@@ -44,6 +45,9 @@ public class CudService extends AbstractService {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
+
+	@Autowired
+	private LookupDbService lookupDbService;
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
@@ -722,7 +726,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteMeaningAndLexemes(Long meaningId, String datasetCode) {
 
-		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = commonDataDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 			deleteLexeme(lexemeId);

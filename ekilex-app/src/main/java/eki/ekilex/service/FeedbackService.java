@@ -29,9 +29,6 @@ public class FeedbackService {
 	@Autowired
 	private FeedbackDbService feedbackDbService;
 
-	@Autowired
-	private UserService userService;
-
 	@Transactional
 	public List<Feedback> getFeedbackLog() {
 		List<Feedback> feedbacks = feedbackDbService.getFeedback();
@@ -51,8 +48,7 @@ public class FeedbackService {
 	}
 
 	@Transactional
-	public void createFeedbackComment(Long feedbackId, String comment) {
-		String userName = userService.getAuthenticatedUser().getName();
+	public void createFeedbackComment(Long feedbackId, String comment, String userName) {
 		feedbackDbService.createFeedbackComment(feedbackId, comment, userName);
 	}
 
