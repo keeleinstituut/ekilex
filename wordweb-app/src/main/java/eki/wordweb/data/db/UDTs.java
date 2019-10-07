@@ -12,9 +12,9 @@ import eki.wordweb.data.db.udt.TypeGrammar;
 import eki.wordweb.data.db.udt.TypeLangComplexity;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
+import eki.wordweb.data.db.udt.TypeMeaningWord;
 import eki.wordweb.data.db.udt.TypePublicNote;
 import eki.wordweb.data.db.udt.TypeUsage;
-import eki.wordweb.data.db.udt.TypeWord;
 import eki.wordweb.data.db.udt.TypeWordEtymRelation;
 import eki.wordweb.data.db.udt.TypeWordRelation;
 
@@ -75,6 +75,11 @@ public class UDTs {
     public static TypeMeaningRelation TYPE_MEANING_RELATION = eki.wordweb.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION;
 
     /**
+     * The type <code>public.type_meaning_word</code>
+     */
+    public static TypeMeaningWord TYPE_MEANING_WORD = eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
+
+    /**
      * The type <code>public.type_public_note</code>
      */
     public static TypePublicNote TYPE_PUBLIC_NOTE = eki.wordweb.data.db.udt.TypePublicNote.TYPE_PUBLIC_NOTE;
@@ -83,11 +88,6 @@ public class UDTs {
      * The type <code>public.type_usage</code>
      */
     public static TypeUsage TYPE_USAGE = eki.wordweb.data.db.udt.TypeUsage.TYPE_USAGE;
-
-    /**
-     * The type <code>public.type_word</code>
-     */
-    public static TypeWord TYPE_WORD = eki.wordweb.data.db.udt.TypeWord.TYPE_WORD;
 
     /**
      * The type <code>public.type_word_etym_relation</code>

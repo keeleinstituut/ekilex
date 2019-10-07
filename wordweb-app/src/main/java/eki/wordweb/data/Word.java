@@ -30,7 +30,7 @@ public class Word extends WordTypeData {
 
 	private Integer meaningCount;
 
-	private List<TypeWord> meaningWords;
+	private List<TypeMeaningWord> meaningWords;
 
 	private String meaningWordsWrapup;
 
@@ -146,11 +146,11 @@ public class Word extends WordTypeData {
 		this.meaningCount = meaningCount;
 	}
 
-	public List<TypeWord> getMeaningWords() {
+	public List<TypeMeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
 
-	public void setMeaningWords(List<TypeWord> meaningWords) {
+	public void setMeaningWords(List<TypeMeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
 	}
 
