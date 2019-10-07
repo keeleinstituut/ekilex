@@ -193,6 +193,12 @@
   <div class="row" th:if="${not #lists.isEmpty(lexeme.derivs)}" th:fragment="lexeme_derivative">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Tuletuskood</span>
+      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addLexemeDerivDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.isLexemeCrudGranted">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
       <span th:each="classif,classifIter : ${lexeme.derivs}" class="hidden-buttons">
@@ -225,6 +231,12 @@
   <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}" th:fragment="lexeme_register">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Register</span>
+      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addLexemeRegisterDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.isLexemeCrudGranted">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
       <span th:each="classif,classifIter : ${lexeme.registers}" class="hidden-buttons">
@@ -257,6 +269,12 @@
   <div class="row" th:if="${not #lists.isEmpty(lexeme.meaningDomains)}" th:fragment="meaning_domain">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Valdkonnad</span>
+      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addMeaningDomainDlg_' + lexeme.meaningId}"
+              sec:authorize="#vars.isMeaningCrudGranted">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
       <div class="orderable" data-op-code="meaning_domain">

@@ -967,6 +967,31 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLexemeDerivDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_deriv_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_deriv">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="deriv : ${allLexemeDerivs}" th:value="${deriv.code}" th:text="${deriv.value}">deriv</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_deriv_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -983,6 +1008,31 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLexemeRegisterDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_register_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_register">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_register_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -994,6 +1044,36 @@
             <select class="form-control" name="value">
               <option th:each="item : ${allLexemeRegisters}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">value</option>
             </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningDomainDlg_' + lexeme.meaningId}" class="modal" role="dialog" th:fragment="add_meaning_domain_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id2" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="opCode" value="meaning_domain">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <select required class="form-control required-field classifier-select" data-live-search="true">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
+                    <option th:each="domain : ${origin.getValue()}"
+                            th:value="${domain.toIdString()}"
+                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
       </div>
