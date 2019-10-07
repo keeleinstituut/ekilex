@@ -55,6 +55,7 @@
                th:with="
                isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
                isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')},
+               isMeaningLexemeCrudGranted=${#vars.permDataUtil.isMeaningLexemeCrudGranted(#vars.lexeme.meaningId, #vars.sessionBean)},
                isMeaningAnyLexemeCrudGranted=${#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)}
                ">
 
@@ -234,7 +235,7 @@
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addDefinitionDlg_' + lexeme.lexemeId}"
-                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">
+                          sec:authorize="#vars.isMeaningLexemeCrudGranted">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -814,9 +815,9 @@
                 <div class="col pl-0">
                   <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                     <tr th:each="relation, itemIter : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-                      <div class="action-column">
+                      <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isLexemeCrudGranted}"></th:block>
-                      </div>
+                      </td>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
                           <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
@@ -1002,9 +1003,9 @@
               </button>
               <table class="orderable" th:data-op-code="word_relation" th:if="${not #lists.isEmpty(details.wordRelations)}">
                 <tr th:each="relation, itemIter : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-                  <div class="action-column">
+                  <td class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isWordCrudGranted}"></th:block>
-                  </div>
+                  </td>
                   <td class="invisible-buttons">
                     <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
                       <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
