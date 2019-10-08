@@ -26,7 +26,8 @@ public enum ClassifierName {
 	POS_GROUP(true),
 	ASPECT(true),
 	DEFINITION_TYPE(true),
-	REGION(false)
+	REGION(false),
+	SEMANTIC_TYPE(true)
 	;
 
 	private boolean hasLabel;

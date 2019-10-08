@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RawRelationsCsvToSqlRunner extends AbstractClassifierRunner {
 
-	private static Logger logger = LoggerFactory.getLogger(ClassifierCsvToSqlRunner.class);
+	private static Logger logger = LoggerFactory.getLogger(RawRelationsCsvToSqlRunner.class);
 
 	private final static String OUTPUT_FILE_EXTENSION = ".sql";
 

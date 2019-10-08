@@ -1636,6 +1636,236 @@ register	uudis	uudissõna	est	wordweb
 register	van	vananenud	est	wordweb
 register	vulg	vulgaarne	est	wordweb
 register	kõnek	kõnekeelne	est	wordweb
+semantic_type	abstr	abstraktne entiteet (nt üksus, suhe, süsteem)	est	descrip
+semantic_type	abstr	abstract entity	eng	descrip
+semantic_type	abstr/konkr	abstr/konkr entiteet (nt vahend, võttestik, teatav süsteem, meetod)	est	descrip
+semantic_type	abstr/konkr	abstract/concrete entity	eng	descrip
+semantic_type	abstr/konkr_omadus	esilduva omadusega abstr/konkr entiteet	est	descrip
+semantic_type	abstr/konkr_omadus	abstr/concr_property	eng	descrip
+semantic_type	abstr_asend/suund	asend, suund, siht (abstr)	est	descrip
+semantic_type	abstr_asend/suund	position, direction, target	eng	descrip
+semantic_type	ADV_aeg	(nt nüüd, eile)	est	descrip
+semantic_type	ADV_aste	(nt väga, äärmiselt)	est	descrip
+semantic_type	ADV_koht	(nt üles, ette)	est	descrip
+semantic_type	ADV_modaalsus	rõhuadverb (nt võib-olla, tõtt-öelda)	est	descrip
+semantic_type	ADV_põhjus	(nt järelikult)	est	descrip
+semantic_type	ADV_seisund	seisundiadverb (nt kinni, lahti, välja)	est	descrip
+semantic_type	ADV_tulemus	märgib lõpetatust või tulemuslikkust, saavutust (nt välja, ära)	est	descrip
+semantic_type	ADV_viis	(nt aeglaselt, hästi)	est	descrip
+semantic_type	aeg	ajalõik, piiratud või piiramata kestus	est	descrip
+semantic_type	aeg	time	eng	descrip
+semantic_type	aeg_aastaaeg	aastaaeg (4 aastaaega)	est	descrip
+semantic_type	aeg_aastaaeg	time_season	eng	descrip
+semantic_type	aeg_kuu	kuu (12 kuud)	est	descrip
+semantic_type	aeg_kuu	time_month	eng	descrip
+semantic_type	aeg_nädalapäev	nädalapäev (7 päeva)	est	descrip
+semantic_type	aeg_nädalapäev	time_day	eng	descrip
+semantic_type	aeg_tähtpäev	tähtpäev, püha (nt küünlapäev, võidupäev)	est	descrip
+semantic_type	aeg_tähtpäev	time_holiday	eng	descrip
+semantic_type	ese	ese, objekt	est	descrip
+semantic_type	ese	artefact, object	eng	descrip
+semantic_type	ese_anum	anum, nõu, mahuti	est	descrip
+semantic_type	ese_anum	artefact_vessel	eng	descrip
+semantic_type	ese_instru	tööriist, sõiduvahend jt	est	descrip
+semantic_type	ese_instru	artefact_instrument, vehicle	eng	descrip
+semantic_type	ese_kunst	kunstiteos, käsitöö, kunstilooming	est	descrip
+semantic_type	ese_kunst	artefact_piece of art, handicraft	eng	descrip
+semantic_type	ese_raha	rahaühik, rahasumma vm vara	est	descrip
+semantic_type	ese_raha	artefact_money	eng	descrip
+semantic_type	ese_riie	riietusese, rõivas, ka jalats	est	descrip
+semantic_type	ese_riie	artefact_clothing	eng	descrip
+semantic_type	ese_semio	teos, sõnaline (märgiline) toode, programm jm	est	descrip
+semantic_type	ese_semio	artefact_semiotical	eng	descrip
+semantic_type	ese_semio_Piibli raamat	Piibli raamat (Koguja raamat)	est	descrip
+semantic_type	ese_semio_Piibli raamat	artefact_semiotical_parts of the Bible	eng	descrip
+semantic_type	esitus	info, teave, nimetus, märk jt	est	descrip
+semantic_type	esitus	representation	eng	descrip
+semantic_type	esitus_arv	arv, number, arvuline näitaja (nt viies, kolmandik)	est	descrip
+semantic_type	esitus_arv	representation_number	eng	descrip
+semantic_type	esitus_info	info, teave jt (nt aadress, andmed)	est	descrip
+semantic_type	esitus_info	representation_information, content	eng	descrip
+semantic_type	esitus_keel	(grammatiline) keeleüksus, keeletermin	est	descrip
+semantic_type	esitus_keel	representation_(grammatical) unit of language, linguistic term	eng	descrip
+semantic_type	esitus_keel_suhtlus	suhtlusüksus, kõnetlussõna, sõimusõna jms (nt braavo, härra, kurat)	est	descrip
+semantic_type	esitus_keel_suhtlus	representation_unit of communication	eng	descrip
+semantic_type	esitus_keel_täht	täht, häälik	est	descrip
+semantic_type	esitus_keel_täht	representation_letter, sound	eng	descrip
+semantic_type	esitus_kujutis	pilt, sümbol, kujutis, märk	est	descrip
+semantic_type	esitus_kujutis	representation_image, symbol	eng	descrip
+semantic_type	esitus_mõõt	mõõde, mõõt, mõõtühik, suurus, pikkus jt	est	descrip
+semantic_type	esitus_mõõt	representation_quantity_definite	eng	descrip
+semantic_type	esitus_tiitel	seisuse, teaduskraadi nimetus, aunimetus	est	descrip
+semantic_type	esitus_tiitel	representation_title	eng	descrip
+semantic_type	esitus_tähis	tähis, sümbol, märk (nt O, g)	est	descrip
+semantic_type	esitus_tähis	representation_symbol	eng	descrip
+semantic_type	inimene	inimolend, isik, indiviid	est	descrip
+semantic_type	inimene	human, person	eng	descrip
+semantic_type	in_elukutse	elukutse, amet	est	descrip
+semantic_type	in_elukutse	profession	eng	descrip
+semantic_type	in_müt	üleloomulik olend, muinasjututegelane vm (nt Punamütsike)	est	descrip
+semantic_type	in_müt	human_mythological	eng	descrip
+semantic_type	in_omadus	esilduva omadusega inimene	est	descrip
+semantic_type	in_omadus	human_his property	eng	descrip
+semantic_type	in_rahvas	teatud rahva esindaja, rahvas, inimrühm	est	descrip
+semantic_type	in_rahvas	human_nation	eng	descrip
+semantic_type	in_rahvas_keel	mingi rahvuse keel, keele nimetus	est	descrip
+semantic_type	in_rahvas_keel	human_nation_language	eng	descrip
+semantic_type	in_roll	esilduva rolliga olend, mõttesuuna, sotsiaalse staatuse esindaja	est	descrip
+semantic_type	in_roll	human_role	eng	descrip
+semantic_type	in_sugulane	teatava sugulussuhte esindaja	est	descrip
+semantic_type	in_sugulane	human_relative	eng	descrip
+semantic_type	in_tegija	agent, tegevuse tegija, seisundis olija	est	descrip
+semantic_type	in_tegija	human_agent of the activity, subject	eng	descrip
+semantic_type	kehaosa	inimese (ja looma) kehaosa	est	descrip
+semantic_type	kehaosa	body part	eng	descrip
+semantic_type	kehaosa_loom	looma kehaosa	est	descrip
+semantic_type	kehaosa_loom	body part_animal	eng	descrip
+semantic_type	kogus	n-ö puhas kogusesõna, kogus (mis tahes asja)	est	descrip
+semantic_type	kogus	amount	eng	descrip
+semantic_type	koht	ruumi, pinna, joone punkt või piirkond, asukoht	est	descrip
+semantic_type	koht	place	eng	descrip
+semantic_type	koht_ala	maa-ala, piirkond	est	descrip
+semantic_type	koht_ala	place_territorium	eng	descrip
+semantic_type	koht_asutus	asutus, institutsioon, teatav üksus	est	descrip
+semantic_type	koht_asutus	institution	eng	descrip
+semantic_type	koht_geogr	kohanimi, geopoliitiline koht	est	descrip
+semantic_type	koht_geogr	place name	eng	descrip
+semantic_type	koht_geogr_maailmajagu	maailmajagu	est	descrip
+semantic_type	koht_geogr_maailmajagu	place name	eng	descrip
+semantic_type	koht_geogr_veekogu	ookean, meri, jõgi jm veekogud	est	descrip
+semantic_type	koht_geogr_veekogu	place name_seas et al	eng	descrip
+semantic_type	koht_hoone	rajatis, (suurem) ehitis	est	descrip
+semantic_type	koht_hoone	place_building	eng	descrip
+semantic_type	koht_kehaosa	kehapiirkond (ka loomal)	est	descrip
+semantic_type	koht_kehaosa	place_body part	eng	descrip
+semantic_type	koht_loodus	looduslik piirkond, pinnavorm	est	descrip
+semantic_type	koht_loodus	place_nature	eng	descrip
+semantic_type	koht_suund/asend	suund, asupaik	est	descrip
+semantic_type	koht_suund/asend	place_direction, location	eng	descrip
+semantic_type	konkr	konkreetne entiteet	est	descrip
+semantic_type	konkr	concrete entity	eng	descrip
+semantic_type	konkr_omadus	esilduva omadusega konkreetne entiteet	est	descrip
+semantic_type	konkr_omadus	concrete entity_its property	eng	descrip
+semantic_type	loom	loom	est	descrip
+semantic_type	loom	animal	eng	descrip
+semantic_type	loom_kala	kala	est	descrip
+semantic_type	loom_kala	animal_fish	eng	descrip
+semantic_type	loom_liik	liik/tüüp/rühm loomi	est	descrip
+semantic_type	loom_liik	animal_kind/type/group of	eng	descrip
+semantic_type	loom_lind	lind	est	descrip
+semantic_type	loom_lind	animal_bird	eng	descrip
+semantic_type	loom_omadus	esilduva omadusega loom	est	descrip
+semantic_type	loom_omadus	animal_its property	eng	descrip
+semantic_type	loom_putukas	putukas, mardikas, lülijalgne	est	descrip
+semantic_type	loom_putukas	animal_insect	eng	descrip
+semantic_type	materjal/aine	materjal, aine, sh keemiline element	est	descrip
+semantic_type	materjal/aine	material/substance, incl. chemical elements	eng	descrip
+semantic_type	nähtus	asjade muutumine ajas, see, mis ilmneb, tekib	est	descrip
+semantic_type	nähtus	phenomenon	eng	descrip
+semantic_type	nähtus_füüs	füüsikaline nähtus (nt heli)	est	descrip
+semantic_type	nähtus_füüs	phenomenon_physical	eng	descrip
+semantic_type	nähtus_loodus	loodusnähtus, loomulik, isetekkeline nähtus	est	descrip
+semantic_type	nähtus_loodus	phenomenon_nature, natural kind	eng	descrip
+semantic_type	nähtus_psühh	tunne, psüühikaga seotud nähtus, kognitiivne fakt	est	descrip
+semantic_type	nähtus_psühh	phenomenon_psychological, emotion	eng	descrip
+semantic_type	objekt	objekt	est	descrip
+semantic_type	objekt	object	eng	descrip
+semantic_type	objekt_loodus	looduslik, loomulik objekt	est	descrip
+semantic_type	objekt_loodus	object_natural	eng	descrip
+semantic_type	objekt_loodus_tähtkuju	tähtkujud (Kaljukits)	est	descrip
+semantic_type	objekt_loodus_tähtkuju	object_natural	eng	descrip
+semantic_type	omadus	omadus, iseloomulik tunnus	est	descrip
+semantic_type	omadus	property	eng	descrip
+semantic_type	omadus_abstr	abstraktne omadus (nt väärtus)	est	descrip
+semantic_type	omadus_abstr	property_abstract	eng	descrip
+semantic_type	omadus_aeg	ajaga seotud omadus (nt suvine, eilne)	est	descrip
+semantic_type	omadus_aeg	property_time	eng	descrip
+semantic_type	omadus_füüs	füüsikaline omadus (mass, kõrgus, kiirus, heli, värv jne)	est	descrip
+semantic_type	omadus_füüs	physical property (weight, speed, height, sound, colour, etc)	eng	descrip
+semantic_type	omadus_füüs_värv	värv, värvus	est	descrip
+semantic_type	omadus_füüs_värv	colour	eng	descrip
+semantic_type	omadus_koht	koha, asendi, suunaga seotud omadus (nt aknapoolne)	est	descrip
+semantic_type	omadus_koht	property_location	eng	descrip
+semantic_type	omadus_kval	sisuline omadus, hinnang (nt hea)	est	descrip
+semantic_type	omadus_kval	qualitative property	eng	descrip
+semantic_type	omadus_psühh	psüühikaga (tunnetega, tajuga) seotud omadus	est	descrip
+semantic_type	omadus_psühh	property_psychological, cognitive, emotional	eng	descrip
+semantic_type	omadus_vanus	vanust kirjeldav omadus	est	descrip
+semantic_type	organism	organism, elusolend	est	descrip
+semantic_type	organism	living being	eng	descrip
+semantic_type	seisund	olek, seis teataval ajahetkel, üldine olukord	est	descrip
+semantic_type	seisund	state	eng	descrip
+semantic_type	seisund_haigus	haiguslik seisund	est	descrip
+semantic_type	seisund_haigus	state_illness, disease	eng	descrip
+semantic_type	seisund_füüs	(asjade) füüsiline seisund	est	descrip
+semantic_type	seisund_füüs	state_physical	eng	descrip
+semantic_type	sündmus	aja, koha ja tegevusega piiritletud sündmus, juhtum	est	descrip
+semantic_type	sündmus	event	eng	descrip
+semantic_type	taim	taim, taimestik	est	descrip
+semantic_type	taim	plant, flora	eng	descrip
+semantic_type	taim_liik	liik/tüüp/rühm taimi	est	descrip
+semantic_type	taim_liik	plant_kind/type/group of	eng	descrip
+semantic_type	taim_omadus	esilduva omadusega taim	est	descrip
+semantic_type	taim_omadus	plant_its property	eng	descrip
+semantic_type	taim_seen	seen	est	descrip
+semantic_type	taim_seen	plant_mushroom	eng	descrip
+semantic_type	taim_õis	taime õis koos varrega	est	descrip
+semantic_type	taim_õis	plant_flower together with its stalk	eng	descrip
+semantic_type	tegevus	tegevus, protsess	est	descrip
+semantic_type	tegevus	activity, process	eng	descrip
+semantic_type	tegevus_kõnetegu	kõnetegu, suhtlusakt (nt käsk, palve, hüüatus)	est	descrip
+semantic_type	tegevus_kõnetegu	activity_speech act	eng	descrip
+semantic_type	tegevus_muutus	seisundit/olekut muutev tegevus	est	descrip
+semantic_type	tegevus_muutus	activity_change	eng	descrip
+semantic_type	tegevus_mäng	sportmäng, lauamäng jt	est	descrip
+semantic_type	tegevus_mäng	activity_game	eng	descrip
+semantic_type	tegevus_tegu	tegevuse üksikjuhtum, toiming, tegevuse tulemus	est	descrip
+semantic_type	tegevus_tegu	activity_act, action	eng	descrip
+semantic_type	toit	toit, söök, toiduaine	est	descrip
+semantic_type	toit	food	eng	descrip
+semantic_type	toit_jook	jook, vedelik joomiseks	est	descrip
+semantic_type	toit_jook	food_drink	eng	descrip
+semantic_type	toit_maitseaine	maitseaine, vürts	est	descrip
+semantic_type	toit_maitseaine	food_spice	eng	descrip
+semantic_type	toit_vili	taime osa toiduna	est	descrip
+semantic_type	toit_vili	food_seed of the plant	eng	descrip
+semantic_type	vald	valdkond, eriala, tegevusala	est	descrip
+semantic_type	vald	domain, speciality	eng	descrip
+semantic_type	VERB_abstr	abstraktse sisuga tegevus	est	descrip
+semantic_type	VERB_abstr	verb_abstract	eng	descrip
+semantic_type	VERB_aeg	ajaga seostuv tegevus (nt kestma)	est	descrip
+semantic_type	VERB_aeg	verb_time	eng	descrip
+semantic_type	VERB_alustama	mingit tegevust alustama, inhoatiivne verb (nt panema)	est	descrip
+semantic_type	VERB_alustama	verb_inchoative	eng	descrip
+semantic_type	VERB_grammatiline	grammatilise funktsiooniga verb (nt tugiverb, abiverb)	est	descrip
+semantic_type	VERB_liigutama	liigutama, liigutusega tegema, liikuma panema (nt andma)	est	descrip
+semantic_type	VERB_liigutama	verb_cause to move	eng	descrip
+semantic_type	VERB_liikuma	mingil viisil liikuma ühest kohast teise (nt lendama)	est	descrip
+semantic_type	VERB_liikuma	verb_move	eng	descrip
+semantic_type	VERB_liikuma/liigutama	liikuma, liigutama (nt lendama)	est	descrip
+semantic_type	VERB_liikuma/liigutama	verb_move	eng	descrip
+semantic_type	VERB_modaalsus	võimalikkus, vajalikkus, tõenäosus (nt võima, tohtima, tarvitsema)	est	descrip
+semantic_type	VERB_modaalsus	verb_modality	eng	descrip
+semantic_type	VERB_muutus	muutuma (nii et seisund muutub), teisenema (nt haigestuma, lõhkuma, sulama)	est	descrip
+semantic_type	VERB_muutus	verb_change, transition	eng	descrip
+semantic_type	VERB_muutust põhjustama	muutma, (seisundi) muutust põhjustama	est	descrip
+semantic_type	VERB_muutust põhjustama	verb_cause change	eng	descrip
+semantic_type	VERB_nähtus	heli tekitama, kõlama, loodusnähtus jm	est	descrip
+semantic_type	VERB_nähtus	verb_act_phenomenon	eng	descrip
+semantic_type	VERB_seisund	olema, paiknema, asetsema; ka haigusseisund (nt asetsema, valutama)	est	descrip
+semantic_type	VERB_seisund	verb_be/exist, verb_state	eng	descrip
+semantic_type	VERB_psühh	psüühikaga seotud tegevus	est	descrip
+semantic_type	VERB_psühh	verb_psychological state	eng	descrip
+semantic_type	VERB_psühh_emots	emotsioon (nt rõõmustama, vihkama)	est	descrip
+semantic_type	VERB_psühh_mõistus	teadma, mõistma (nt käsitlema, taipama)	est	descrip
+semantic_type	VERB_psühh_mõistus	verb_know	eng	descrip
+semantic_type	VERB_suhtlus	suuline või kirjalik suhtlus jm kõneaktid (nt käskima, kirjutama)	est	descrip
+semantic_type	VERB_suhtlus	verb_act_communication	eng	descrip
+semantic_type	VERB_tegevus	tegevus/protsess üldiselt, mingit tegevust sooritama (nt lööma)	est	descrip
+semantic_type	VERB_tegevus	verb_perform/do, verb_ execute	eng	descrip
+semantic_type	VERB_toimuma	toimuma, aset leidma, juhtuma (nt sattuma, juhtuma)	est	descrip
+semantic_type	VERB_toimuma	verb_happen	eng	descrip
+semantic_type	VERB_toituma	sööma, jooma, toiduga tegelema	est	descrip
 usage_type	ls	liitsõna	est	descrip
 usage_type	ls	compound	eng	descrip
 usage_type	Vs	vanasõna	est	descrip
