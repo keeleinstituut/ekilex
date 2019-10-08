@@ -129,6 +129,23 @@ create table register_label
   unique(code, lang, type)
 );
 
+-- semantiline tüüp
+create table semantic_type
+(
+	code varchar(100) primary key,
+	datasets varchar(10) array not null,
+	order_by bigserial
+);
+
+create table semantic_type_label
+(
+	code varchar(100) references register(code) on delete cascade not null,
+	value text not null,
+	lang char(3) references language(code) not null,
+	type varchar(10) references label_type(code) not null,
+	unique(code, lang, type)
+);
+
 -- sõnasort
 create table word_type
 (
@@ -706,6 +723,16 @@ create table meaning_domain
 );
 alter sequence meaning_domain_id_seq restart with 10000;
 
+create table meaning_semantic_type
+(
+	id bigserial primary key,
+	meaning_id bigint references meaning(id) on delete cascade not null,
+	semantic_type_code varchar(100) references semantic_type(code) not null,
+	order_by bigserial,
+	unique(meaning_id, semantic_type_code)
+);
+alter sequence meaning_semantic_type_id_seq restart with 10000;
+
 create table meaning_lifecycle_log
 (
   id bigserial primary key,
@@ -1137,6 +1164,7 @@ create index lexeme_pos_pos_code_idx on lexeme_pos(pos_code);
 create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
 create index lexeme_region_lexeme_id_idx on lexeme_region(lexeme_id);
 create index meaning_domain_meaning_id_idx on meaning_domain(meaning_id);
+create index meaning_semantic_type_meaning_id_idx on meaning_semantic_type(meaning_id);
 create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
 create index word_lifecycle_log_log_id_idx on word_lifecycle_log(lifecycle_log_id);
 create index word_process_log_word_id_idx on word_process_log(word_id);
