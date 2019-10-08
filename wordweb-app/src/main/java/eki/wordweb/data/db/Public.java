@@ -28,9 +28,9 @@ import eki.wordweb.data.db.udt.TypeGrammar;
 import eki.wordweb.data.db.udt.TypeLangComplexity;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
+import eki.wordweb.data.db.udt.TypeMeaningWord;
 import eki.wordweb.data.db.udt.TypePublicNote;
 import eki.wordweb.data.db.udt.TypeUsage;
-import eki.wordweb.data.db.udt.TypeWord;
 import eki.wordweb.data.db.udt.TypeWordEtymRelation;
 import eki.wordweb.data.db.udt.TypeWordRelation;
 
@@ -60,7 +60,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 2093063495;
+    private static final long serialVersionUID = -763014359;
 
     /**
      * The reference instance of <code>public</code>
@@ -222,9 +222,9 @@ public class Public extends SchemaImpl {
             TypeLangComplexity.TYPE_LANG_COMPLEXITY,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,
+            TypeMeaningWord.TYPE_MEANING_WORD,
             TypePublicNote.TYPE_PUBLIC_NOTE,
             TypeUsage.TYPE_USAGE,
-            TypeWord.TYPE_WORD,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
             TypeWordRelation.TYPE_WORD_RELATION);
     }

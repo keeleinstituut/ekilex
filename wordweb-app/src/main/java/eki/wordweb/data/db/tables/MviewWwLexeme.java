@@ -10,6 +10,7 @@ import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
 import eki.wordweb.data.db.udt.records.TypeGovernmentRecord;
 import eki.wordweb.data.db.udt.records.TypeGrammarRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
+import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 import eki.wordweb.data.db.udt.records.TypePublicNoteRecord;
 import eki.wordweb.data.db.udt.records.TypeUsageRecord;
 
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -1153292661;
+    private static final long serialVersionUID = -1753892625;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -112,6 +113,11 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.deriv_codes</code>.
      */
     public final TableField<MviewWwLexemeRecord, String[]> DERIV_CODES = createField("deriv_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.meaning_words</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, TypeMeaningWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.advice_notes</code>.

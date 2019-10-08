@@ -21,6 +21,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynMeaningWord;
+import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
@@ -76,7 +77,6 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynRelationParamTuple.class);
 	}
 
-	//FIXME - change inverted parameter andremove NULL condition
 	public List<WordSynLexeme> getWordPrimarySynonymLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
@@ -148,7 +148,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchOneInto(WordSynDetails.class);
 	}
 
-	public List<SynMeaningWord> getSynMeaningWords(Long lexemeId) {
+	public List<SynMeaningWord> getSynMeaningWords(Long lexemeId, String languageCode) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -175,10 +175,23 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(p2.WORD_ID.eq(w2.ID))
 								.and(f2.PARADIGM_ID.eq(p2.ID))
 								.and(f2.MODE.eq(FormMode.WORD.name()))
+								.and(w2.LANG.eq(languageCode))
 				)
 				.groupBy(w2.ID, f2.VALUE, l2.ID)
 				.orderBy(f2.VALUE)
 				.fetchInto(SynMeaningWord.class);
+	}
+
+	public SynRelation getSynRelation(Long id) {
+		return create
+				.select(
+						WORD_RELATION.ID,
+						WORD_RELATION.WORD1_ID.as("word_id"),
+						WORD_RELATION.RELATION_STATUS
+				)
+				.from(WORD_RELATION)
+				.where(WORD_RELATION.ID.eq(id))
+				.fetchOneInto(SynRelation.class);
 	}
 
 }

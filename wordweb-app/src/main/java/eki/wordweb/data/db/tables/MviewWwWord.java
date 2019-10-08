@@ -9,7 +9,7 @@ import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
 import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
-import eki.wordweb.data.db.udt.records.TypeWordRecord;
+import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = -1668697442;
+    private static final long serialVersionUID = -1249496775;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -114,7 +114,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     /**
      * The column <code>public.mview_ww_word.meaning_words</code>.
      */
-    public final TableField<MviewWwWordRecord, TypeWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.wordweb.data.db.udt.TypeWord.TYPE_WORD.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRecord, TypeMeaningWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word.definitions</code>.

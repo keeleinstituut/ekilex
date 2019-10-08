@@ -15,12 +15,11 @@ import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
-import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
+import eki.wordweb.data.TypeMeaningWord;
 import eki.wordweb.data.TypeUsage;
 import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
@@ -59,31 +58,31 @@ public class ClassifierUtil {
 		return classifierCode;
 	}
 
-	public void applyClassifiers(LexemeDetailsTuple tuple, Lexeme lexeme, String displayLang) {
+	public void applyClassifiers(Lexeme lexeme, String displayLang) {
 		List<Classifier> classifiers;
 		List<String> classifierCodes;
-		classifierCodes = tuple.getRegisterCodes();
+		classifierCodes = lexeme.getRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
 		lexeme.setRegisters(classifiers);
-		classifierCodes = tuple.getPosCodes();
+		classifierCodes = lexeme.getPosCodes();
 		classifiers = getClassifiers(ClassifierName.POS, classifierCodes, displayLang);
 		lexeme.setPoses(classifiers);
-		classifierCodes = tuple.getDerivCodes();
+		classifierCodes = lexeme.getDerivCodes();
 		classifiers = getClassifiers(ClassifierName.DERIV, classifierCodes, displayLang);
 		lexeme.setDerivs(classifiers);
 	}
 
-	public void applyClassifiers(LexemeDetailsTuple tuple, MeaningWord meaningWord, String displayLang) {
+	public void applyClassifiers(TypeMeaningWord meaningWord, String displayLang) {
 		String classifierCode;
 		List<String> classifierCodes;
 		Classifier classifier;
 		List<Classifier> classifiers;
-		classifierCode = tuple.getMeaningWordAspectCode();
+		classifierCode = meaningWord.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		meaningWord.setAspect(classifier);
-		classifierCodes = tuple.getMeaningLexemeRegisterCodes();
+		classifierCodes = meaningWord.getMwLexRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
-		meaningWord.setRegisters(classifiers);
+		meaningWord.setMwLexRegisters(classifiers);
 	}
 
 	public void applyClassifiers(LexemeMeaningTuple tuple, Lexeme lexeme, String displayLang) {

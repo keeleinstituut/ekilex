@@ -23,6 +23,7 @@ import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
+import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
@@ -40,32 +41,32 @@ public class CompositionService extends AbstractService {
 	private CommonDataDbService commonDataDbService;
 
 	@Autowired
+	private LookupDbService lookupDbService;
+
+	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
 
 	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;
 
-	@Autowired
-	private UserService userService;
-
 	@Transactional
-	public Optional<Long> optionalDuplicateMeaning(Long meaningId) {
-		return Optional.of(duplicateMeaningWithLexemes(meaningId));
+	public Optional<Long> optionalDuplicateMeaning(Long meaningId, String userName) {
+		return Optional.of(duplicateMeaningWithLexemes(meaningId, userName));
 	}
 
 	@Transactional
-	public List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId) {
+	public List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId, String userName) {
 
 		List<Long> duplicateLexemeIds = new ArrayList<>();
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
 		String datasetCode = lexeme.getDatasetCode();
 		Long meaningId = lexeme.getMeaningId();
 
-		Long duplicateMeaningId = duplicateMeaningData(meaningId);
+		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
 
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, datasetCode);
 		meaningLexemes.forEach(meaningLexeme -> {
-			Long duplicateLexemeId = duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId);
+			Long duplicateLexemeId = duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId, userName);
 			duplicateLexemeIds.add(duplicateLexemeId);
 		});
 
@@ -73,11 +74,10 @@ public class CompositionService extends AbstractService {
 	}
 
 	@Transactional
-	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId) {
+	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId, String userName) {
 		Long duplicateMeaningId = cudDbService.createMeaning();
 		Long duplicateLexemeId = compositionDbService.cloneEmptyLexeme(lexemeId, duplicateMeaningId);
 		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
-		String userName = userService.getAuthenticatedUser().getName();
 		String targetLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(duplicateLexemeId);
 
 		LogData meaningLogData = new LogData();
@@ -101,15 +101,15 @@ public class CompositionService extends AbstractService {
 		return duplicateLexemeId;
 	}
 
-	private Long duplicateMeaningWithLexemes(Long meaningId) {
+	private Long duplicateMeaningWithLexemes(Long meaningId, String userName) {
 
-		Long duplicateMeaningId = duplicateMeaningData(meaningId);
+		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId);
-		meaningLexemes.forEach(meaningLexeme -> duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId));
+		meaningLexemes.forEach(meaningLexeme -> duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId, userName));
 		return duplicateMeaningId;
 	}
 
-	private Long duplicateLexemeData(Long lexemeId, Long meaningId) {
+	private Long duplicateLexemeData(Long lexemeId, Long meaningId, String userName) {
 
 		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, meaningId);
 		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
@@ -119,7 +119,6 @@ public class CompositionService extends AbstractService {
 		compositionDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeSoureLinks(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeRelations(lexemeId, duplicateLexemeId);
-		String userName = userService.getAuthenticatedUser().getName();
 		String sourceLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(lexemeId);
 		String targetLexemeDescription = lifecycleLogDbService.getExtendedLexemeDescription(duplicateLexemeId);
 
@@ -136,14 +135,13 @@ public class CompositionService extends AbstractService {
 		return duplicateLexemeId;
 	}
 
-	private Long duplicateMeaningData(Long meaningId) {
+	private Long duplicateMeaningData(Long meaningId, String userName) {
 
 		Long duplicateMeaningId = compositionDbService.cloneMeaning(meaningId);
 		compositionDbService.cloneMeaningDomains(meaningId, duplicateMeaningId);
 		compositionDbService.cloneMeaningRelations(meaningId, duplicateMeaningId);
 		compositionDbService.cloneMeaningFreeforms(meaningId, duplicateMeaningId);
 		duplicateMeaningDefinitions(meaningId, duplicateMeaningId);
-		String userName = userService.getAuthenticatedUser().getName();
 		String targetMeaningDescription = lifecycleLogDbService.getCombinedMeaningDefinitions(duplicateMeaningId);
 
 		LogData logData = new LogData();
@@ -230,7 +228,7 @@ public class CompositionService extends AbstractService {
 
 	private Long joinWords(Long firstWordId, Long secondWordId) {
 
-		String wordValue = commonDataDbService.getWordValue(firstWordId);
+		String wordValue = lookupDbService.getWordValue(firstWordId);
 
 		Integer firstWordHomonymNum = compositionDbService.getWordHomonymNum(firstWordId);
 		Integer secondWordHomonymNum = compositionDbService.getWordHomonymNum(secondWordId);

@@ -37,9 +37,15 @@ public class Lexeme extends AbstractDataObject {
 
 	private boolean moreUsages;
 
+	private List<String> registerCodes;
+
 	private List<Classifier> registers;
 
+	private List<String> posCodes;
+
 	private List<Classifier> poses;
+
+	private List<String> derivCodes;
 
 	private List<Classifier> derivs;
 
@@ -55,13 +61,13 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<TypeDefinition> definitions;
 
-	private List<MeaningWord> allMeaningWords;
+	private List<TypeMeaningWord> meaningWords;
 
-	private List<MeaningWord> meaningWords;
+	private List<TypeMeaningWord> sourceLangMeaningWords;
 
-	private List<MeaningWord> destinLangMatchWords;
+	private List<TypeMeaningWord> destinLangMatchWords;
 
-	private List<MeaningWord> otherLangMatchWords;
+	private List<TypeMeaningWord> otherLangMatchWords;
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
@@ -185,6 +191,14 @@ public class Lexeme extends AbstractDataObject {
 		this.moreUsages = moreUsages;
 	}
 
+	public List<String> getRegisterCodes() {
+		return registerCodes;
+	}
+
+	public void setRegisterCodes(List<String> registerCodes) {
+		this.registerCodes = registerCodes;
+	}
+
 	public List<Classifier> getRegisters() {
 		return registers;
 	}
@@ -193,12 +207,28 @@ public class Lexeme extends AbstractDataObject {
 		this.registers = registers;
 	}
 
+	public List<String> getPosCodes() {
+		return posCodes;
+	}
+
+	public void setPosCodes(List<String> posCodes) {
+		this.posCodes = posCodes;
+	}
+
 	public List<Classifier> getPoses() {
 		return poses;
 	}
 
 	public void setPoses(List<Classifier> poses) {
 		this.poses = poses;
+	}
+
+	public List<String> getDerivCodes() {
+		return derivCodes;
+	}
+
+	public void setDerivCodes(List<String> derivCodes) {
+		this.derivCodes = derivCodes;
 	}
 
 	public List<Classifier> getDerivs() {
@@ -257,35 +287,35 @@ public class Lexeme extends AbstractDataObject {
 		this.definitions = definitions;
 	}
 
-	public List<MeaningWord> getAllMeaningWords() {
-		return allMeaningWords;
-	}
-
-	public void setAllMeaningWords(List<MeaningWord> allMeaningWords) {
-		this.allMeaningWords = allMeaningWords;
-	}
-
-	public List<MeaningWord> getMeaningWords() {
+	public List<TypeMeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
 
-	public void setMeaningWords(List<MeaningWord> meaningWords) {
+	public void setMeaningWords(List<TypeMeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
 	}
 
-	public List<MeaningWord> getDestinLangMatchWords() {
+	public List<TypeMeaningWord> getSourceLangMeaningWords() {
+		return sourceLangMeaningWords;
+	}
+
+	public void setSourceLangMeaningWords(List<TypeMeaningWord> sourceLangMeaningWords) {
+		this.sourceLangMeaningWords = sourceLangMeaningWords;
+	}
+
+	public List<TypeMeaningWord> getDestinLangMatchWords() {
 		return destinLangMatchWords;
 	}
 
-	public void setDestinLangMatchWords(List<MeaningWord> destinLangMatchWords) {
+	public void setDestinLangMatchWords(List<TypeMeaningWord> destinLangMatchWords) {
 		this.destinLangMatchWords = destinLangMatchWords;
 	}
 
-	public List<MeaningWord> getOtherLangMatchWords() {
+	public List<TypeMeaningWord> getOtherLangMatchWords() {
 		return otherLangMatchWords;
 	}
 
-	public void setOtherLangMatchWords(List<MeaningWord> otherLangMatchWords) {
+	public void setOtherLangMatchWords(List<TypeMeaningWord> otherLangMatchWords) {
 		this.otherLangMatchWords = otherLangMatchWords;
 	}
 
@@ -360,4 +390,5 @@ public class Lexeme extends AbstractDataObject {
 	public void setEmptyLexeme(boolean emptyLexeme) {
 		this.emptyLexeme = emptyLexeme;
 	}
+
 }

@@ -2,10 +2,8 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -18,7 +16,6 @@ import eki.common.constant.DbConstant;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -38,7 +35,6 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @Component
@@ -46,9 +42,6 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
-
-	@Autowired
-	private PermissionDbService permissionDbService;
 
 	@Transactional
 	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) {
@@ -213,73 +206,6 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaning.setGroupedRelations(groupedRelations);
 
 		return meaning;
-	}
-
-	@Transactional
-	public Meaning getMeaningOfJoinTarget(Long meaningId, List<ClassifierSelect> languagesOrder) {
-
-		List<Dataset> allDatasets = commonDataDbService.getDatasets();
-		List<String> allDatasetCodes = allDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
-
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(allDatasetCodes);
-		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
-		composeMeaningJoinData(meaning, languagesOrder);
-		return meaning;
-	}
-
-	@Transactional
-	public List<Meaning> getMeaningsOfJoinCandidates(String searchFilter, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes,
-			List<ClassifierSelect> languagesOrder, Long excludedMeaningId) {
-
-		if (StringUtils.isBlank(searchFilter)) {
-			return Collections.emptyList();
-		} else {
-			Long userId = userService.getAuthenticatedUser().getId();
-			List<Meaning> meanings = termSearchDbService.getMeaningsOfJoinCandidates(searchFilter, userPrefDatasetCodes, userPermDatasetCodes, excludedMeaningId);
-			meanings.sort(Comparator.comparing(meaning -> !permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaning.getMeaningId())));
-			meanings.forEach(meaning -> composeMeaningJoinData(meaning, languagesOrder));
-			return meanings;
-		}
-	}
-
-	private void composeMeaningJoinData(Meaning meaning, List<ClassifierSelect> languagesOrder) {
-
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name()};
-		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-		Long meaningId = meaning.getMeaningId();
-
-		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
-		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
-		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId);
-		domains = conversionUtil.removeOrderedClassifierDuplicates(domains);
-		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
-
-		List<Long> lexemeIds = meaning.getLexemeIds();
-		List<Lexeme> lexemes = new ArrayList<>();
-		for (Long lexemeId : lexemeIds) {
-			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId);
-			List<Classifier> wordTypes = commonDataDbService.getWordTypes(lexeme.getWordId(), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-			List<SourceLink> lexemeRefLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
-			String dataset = lexeme.getDataset();
-			dataset = datasetNameMap.get(dataset);
-
-			lexeme.setDataset(dataset);
-			lexeme.setWordTypes(wordTypes);
-			lexeme.setUsages(usages);
-			lexeme.setSourceLinks(lexemeRefLinks);
-			lexemes.add(lexeme);
-		}
-		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
-
-		meaning.setDefinitionLangGroups(definitionLangGroups);
-		meaning.setDomains(domains);
-		meaning.setFreeforms(meaningFreeforms);
-		meaning.setLexemeLangGroups(lexemeLangGroups);
 	}
 
 	private String composeLevels(Lexeme lexeme) {

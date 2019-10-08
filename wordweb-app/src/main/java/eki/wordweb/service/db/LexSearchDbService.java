@@ -32,7 +32,7 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.LexemeDetailsTuple;
+import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
@@ -193,70 +193,50 @@ public class LexSearchDbService implements DbConstant, SystemConstant {
 				.into(WordRelationTuple.class);
 	}
 
-	public List<LexemeDetailsTuple> getLexemeDetailsTuples(Long wordId, DataFilter dataFilter) {
+	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {
 
 		String destinLang = dataFilter.getDestinLang();
-		String[] supportedDestinDataLangs = new String[] {destinLang, LANGUAGE_CODE_LAT};
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 		Complexity dataComplexity = dataFilter.getDataComplexity();
 		String[] filtComplexities = new String[] {lexComplexity.name(), dataComplexity.name()};
 
-		MviewWwLexeme l1 = MVIEW_WW_LEXEME.as("l1");
-		MviewWwLexeme l2 = MVIEW_WW_LEXEME.as("l2");
-		MviewWwWord w2 = MVIEW_WW_WORD.as("w2");
+		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
-		Table<?> lc = DSL.unnest(l1.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
+		Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 
-		Condition l2Join = l2.MEANING_ID.eq(l1.MEANING_ID)
-				.and(l2.LEXEME_ID.ne(l1.LEXEME_ID))
-				.and(l2.WORD_ID.ne(l1.WORD_ID))
-				.and(l2.COMPLEXITY.eq(lexComplexity.name()));
-
-		Condition where = l1.WORD_ID.eq(wordId)
+		Condition where = l.WORD_ID.eq(wordId)
 				.andExists(DSL
 						.selectFrom(lc)
 						.where(lc.field("lang", String.class).eq(destinLang)
 								.and(lc.field("complexity", String.class).in(filtComplexities))));
 		return create
 				.select(
-						l1.LEXEME_ID,
-						l1.WORD_ID,
-						l1.MEANING_ID,
-						l1.LEVEL1,
-						l1.LEVEL2,
-						l1.LEVEL3,
-						l1.COMPLEXITY,
-						l1.LEX_ORDER_BY,
-						l1.REGISTER_CODES,
-						l1.POS_CODES,
-						l1.DERIV_CODES,
-						l1.ADVICE_NOTES,
-						l1.PUBLIC_NOTES,
-						l1.GRAMMARS,
-						l1.GOVERNMENTS,
-						l1.USAGES,
-						l2.GOVERNMENTS.as("meaning_lexeme_governments"),
-						l2.REGISTER_CODES.as("meaning_lexeme_register_codes"),
-						w2.WORD_ID.as("meaning_word_id"),
-						w2.WORD.as("meaning_word"),
-						w2.HOMONYM_NR.as("meaning_word_homonym_nr"),
-						w2.LANG.as("meaning_word_lang"),
-						w2.WORD_TYPE_CODES.as("meaning_word_type_codes"),
-						w2.ASPECT_CODE.as("meaning_word_aspect_code"),
+						l.LEXEME_ID,
+						l.MEANING_ID,
+						l.LEVEL1,
+						l.LEVEL2,
+						l.LEVEL3,
+						l.COMPLEXITY,
+						l.LEX_ORDER_BY,
+						l.REGISTER_CODES,
+						l.POS_CODES,
+						l.DERIV_CODES,
+						l.MEANING_WORDS,
+						l.ADVICE_NOTES,
+						l.PUBLIC_NOTES,
+						l.GRAMMARS,
+						l.GOVERNMENTS,
+						l.USAGES,
 						lr.RELATED_LEXEMES)
-				.from(l1
-						.leftOuterJoin(l2).on(l2Join)
-						.leftOuterJoin(w2).on(l2.WORD_ID.eq(w2.WORD_ID).and(w2.LANG.in(supportedDestinDataLangs)))
-						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l1.LEXEME_ID)))
+				.from(l.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
 				.orderBy(
-						l1.LEVEL1,
-						l1.LEVEL2,
-						l1.LEVEL3,
-						l1.LEX_ORDER_BY,
-						l2.LEX_ORDER_BY)
+						l.LEVEL1,
+						l.LEVEL2,
+						l.LEVEL3,
+						l.LEX_ORDER_BY)
 				.fetch()
-				.into(LexemeDetailsTuple.class);
+				.into(Lexeme.class);
 	}
 
 	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId, DataFilter dataFilter) {

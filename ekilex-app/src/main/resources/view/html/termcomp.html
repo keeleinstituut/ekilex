@@ -275,7 +275,7 @@
   <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}" th:fragment="meaning_domain">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Valdkonnad</span>
-      <button type="button" class="btn badge badge-success" title="Lisa uus"
+      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addMeaningDomainDlg_' + meaningId}"
               sec:authorize="#vars.isMeaningCrudGranted">
@@ -289,9 +289,9 @@
              th:data-orderby="${classif.orderBy}"
              class="hidden-buttons">
           <div class="row">
-            <td class="action-column">
+            <div class="action-column">
               <th:block th:replace="common :: ordering_buttons(${classifIter})" sec:authorize="#vars.isMeaningCrudGranted"></th:block>
-            </td>
+            </div>
             <div class="col">
               <span th:replace="termdialog :: edit_meaning_domain_dlg"></span>
               <span th:text="${classif.code}"></span>

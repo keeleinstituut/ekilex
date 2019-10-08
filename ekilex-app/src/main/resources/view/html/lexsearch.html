@@ -55,15 +55,20 @@
                th:with="
                isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
                isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')},
+               isMeaningLexemeCrudGranted=${#vars.permDataUtil.isMeaningLexemeCrudGranted(#vars.lexeme.meaningId, #vars.sessionBean)},
                isMeaningAnyLexemeCrudGranted=${#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)}
                ">
 
             <div th:replace="lexdialog :: add_lexeme_process_state_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_data_dlg"></div>
+            <div th:replace="lexdialog :: add_lexeme_pos_dlg"></div>
+            <div th:replace="lexdialog :: add_lexeme_deriv_dlg"></div>
+            <div th:replace="lexdialog :: add_lexeme_register_dlg"></div>
             <div th:replace="lexdialog :: add_definition_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_source_link_dlg"></div>
             <div th:replace="lexdialog :: add_learner_comment_dlg"></div>
             <div th:replace="lexdialog :: add_meaning_relation_dlg"></div>
+            <div th:replace="lexdialog :: add_meaning_domain_dlg"></div>
             <div th:replace="lexdialog :: add_government_dlg"></div>
             <div th:replace="lexdialog :: add_usage_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_public_note_dlg"></div>
@@ -230,11 +235,11 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Seletused</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addDefinitionDlg_' + lexeme.lexemeId}"
-                          sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">
+                          sec:authorize="#vars.isMeaningLexemeCrudGranted">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -286,7 +291,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Allikaviide</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa allikaviide"
                           data-toggle="modal"
                           th:data-target="${'#addLexemeSourceLinkDlg_' + lexeme.lexemeId}"
@@ -317,7 +322,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Õppekommentaarid</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addLearnerCommentDlg_' + lexeme.lexemeId}"
@@ -487,7 +492,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Tähenduse seosed</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa seos"
                           data-toggle="modal"
                           th:data-target="${'#addMeaningRelationDlg_' + lexeme.lexemeId}"
@@ -525,7 +530,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Rektsioon
-                    <button type="button" class="btn badge badge-success"
+                    <button type="button" class="btn badge badge-success float-right mr-4"
                             title="Lisa uus"
                             data-toggle="modal"
                             th:data-target="${'#addGovernmentDlg_' + lexeme.lexemeId}"
@@ -565,7 +570,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Kasutusnäited</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addUsageDlg_' + lexeme.lexemeId}"
@@ -738,7 +743,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Märkused
-                    <button type="button" class="btn badge badge-success"
+                    <button type="button" class="btn badge badge-success float-right mr-4"
                             title="Lisa uus"
                             data-toggle="modal"
                             th:data-target="${'#addLexemePublicNoteDlg_' + lexeme.lexemeId}"
@@ -803,7 +808,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Ilmiku seosed</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa seos"
                           data-toggle="modal"
                           th:data-target="${'#addLexemeRelationDlg_' + lexeme.lexemeId}"

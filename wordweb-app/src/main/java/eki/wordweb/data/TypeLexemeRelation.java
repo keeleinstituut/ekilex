@@ -1,5 +1,6 @@
 package eki.wordweb.data;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
@@ -16,6 +17,8 @@ public class TypeLexemeRelation extends AbstractDataObject {
 	private String wordLang;
 
 	private Integer homonymNr;
+
+	private Complexity complexity;
 
 	private String lexRelTypeCode;
 
@@ -59,6 +62,14 @@ public class TypeLexemeRelation extends AbstractDataObject {
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public String getLexRelTypeCode() {
