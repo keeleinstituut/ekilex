@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
-import eki.common.constant.RelationStatus;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
@@ -164,9 +163,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		SessionBean sessionBean = getSessionBean(model);
 		String datasetCode = getDatasetCodeFromRole(sessionBean).get(0);
 
-		synSearchService.createSecondarySynLexeme(meaningId, wordId, datasetCode, lexemeId);
-
-		synSearchService.changeRelationStatus(relationId, RelationStatus.HANDLED.name());
+		synSearchService.createSecondarySynLexeme(meaningId, wordId, datasetCode, lexemeId, relationId);
 
 		return "{}";
 	}
