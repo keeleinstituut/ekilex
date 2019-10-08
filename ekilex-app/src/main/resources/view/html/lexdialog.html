@@ -83,7 +83,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -97,7 +97,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -250,7 +250,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                          th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -421,7 +421,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                          th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -452,7 +452,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == government.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -482,7 +482,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                          th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -550,7 +550,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == usage.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -653,7 +653,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                          th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -681,7 +681,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == publicNote.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -879,6 +879,38 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLexemeGrammarDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_grammar_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_grammar">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control required-field" name="value">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}" class="modal" role="dialog" th:fragment="edit_lexeme_grammar_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -897,7 +929,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == grammar.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>

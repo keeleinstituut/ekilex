@@ -101,6 +101,12 @@
   <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Grammatika</span>
+      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addLexemeGrammarDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.isLexemeCrudGranted">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
