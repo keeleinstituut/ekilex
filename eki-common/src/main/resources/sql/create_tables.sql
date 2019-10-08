@@ -139,7 +139,7 @@ create table semantic_type
 
 create table semantic_type_label
 (
-	code varchar(100) references register(code) on delete cascade not null,
+	code varchar(100) references semantic_type(code) on delete cascade not null,
 	value text not null,
 	lang char(3) references language(code) not null,
 	type varchar(10) references label_type(code) not null,
