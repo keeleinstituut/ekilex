@@ -16,6 +16,7 @@ public enum LifecycleProperty {
 	DATASET,
 	WORD_TYPE,
 	ASPECT,
+	VOCAL_FORM,
 	VALUE_STATE,
 	SOURCE_TYPE,
 	PROCESS_STATE,

@@ -152,9 +152,4 @@ public class TermEditController extends AbstractPageController {
 		return jsonMapper.writeValueAsString(response);
 	}
 
-	@ModelAttribute("iso2languages")
-	public Map<String, String> getIso2Languages() {
-		return commonDataService.getLanguagesIso2Map();
-	}
-
 }

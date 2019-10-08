@@ -155,10 +155,16 @@
               <div class="col-md-6">
                 <select required class="form-control word-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="word_vocal_form">Hääldus</option>
                   <option value="word_gender">Sugu</option>
                   <option value="word_type">Sõna tüüp</option>
                   <option value="word_aspect">Aspekt</option>
                 </select>
+              </div>
+            </div>
+            <div th:id="${'word_vocal_form_' + wordId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-12">
+                <input type="text" class="form-control required-field" name="value">
               </div>
             </div>
             <div th:id="${'word_gender_' + wordId}" class="form-group row value-group" style="display: none">
@@ -798,6 +804,27 @@
           </div>
           <div class="modal-footer">
             <button name="saveWordValueBtn" type="button" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordVocalFormDlg_' + wordId}" class="modal" role="dialog" th:fragment="edit_word_vocal_form_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_vocal_form">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control required-field" name="value" th:value="${details.word.vocalForm}">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>

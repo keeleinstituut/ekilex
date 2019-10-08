@@ -179,8 +179,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
-		List<String> vocalForms = lexeme.getVocalForms();
-		vocalForms = cleanUpVocalForms(vocalForms);
 
 		String datasetName = datasetNameMap.get(datasetCode);
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
@@ -231,7 +229,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setGrammars(lexemeGrammars);
 		lexeme.setCollocationPosGroups(collocationPosGroups);
 		lexeme.setSecondaryCollocations(secondaryCollocations);
-		lexeme.setVocalForms(vocalForms);
 		lexeme.setSourceLinks(lexemeSourceLinks);
 		lexeme.setGroupedMeaningRelations(groupedMeaningRelations);
 
@@ -248,7 +245,4 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
 	}
 
-	private List<String> cleanUpVocalForms(List<String> vocalForms) {
-		return vocalForms.stream().filter(Objects::nonNull).collect(toList());
-	}
 }
