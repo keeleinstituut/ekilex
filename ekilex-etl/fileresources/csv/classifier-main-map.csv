@@ -798,6 +798,8 @@ st_tyyp	st_tyyp	aeg_nädalapäev	nädalapäev (7 päeva)	et	semantic_type	aeg_n�
 st_tyyp	st_tyyp	aeg_nädalapäev	time_day	en	semantic_type	aeg_nädalapäev
 st_tyyp	st_tyyp	aeg_tähtpäev	tähtpäev, püha (nt küünlapäev, võidupäev)	et	semantic_type	aeg_tähtpäev
 st_tyyp	st_tyyp	aeg_tähtpäev	time_holiday	en	semantic_type	aeg_tähtpäev
+st_tyyp	st_tyyp	amet	amet	et	semantic_type	amet
+st_tyyp	st_tyyp	auaste	auaste	et	semantic_type	auaste
 st_tyyp	st_tyyp	ese	ese, objekt	et	semantic_type	ese
 st_tyyp	st_tyyp	ese	artefact, object	en	semantic_type	ese
 st_tyyp	st_tyyp	ese_anum	anum, nõu, mahuti	et	semantic_type	ese_anum
@@ -882,6 +884,7 @@ st_tyyp	st_tyyp	konkr	konkreetne entiteet	et	semantic_type	konkr
 st_tyyp	st_tyyp	konkr	concrete entity	en	semantic_type	konkr
 st_tyyp	st_tyyp	konkr_omadus	esilduva omadusega konkreetne entiteet	et	semantic_type	konkr_omadus
 st_tyyp	st_tyyp	konkr_omadus	concrete entity_its property	en	semantic_type	konkr_omadus
+st_tyyp	st_tyyp	käsklus	käsklus	et	semantic_type	käsklus
 st_tyyp	st_tyyp	loom	loom	et	semantic_type	loom
 st_tyyp	st_tyyp	loom	animal	en	semantic_type	loom
 st_tyyp	st_tyyp	loom_kala	kala	et	semantic_type	loom_kala
@@ -927,6 +930,7 @@ st_tyyp	st_tyyp	omadus_kval	qualitative property	en	semantic_type	omadus_kval
 st_tyyp	st_tyyp	omadus_psühh	psüühikaga (tunnetega, tajuga) seotud omadus	et	semantic_type	omadus_psühh
 st_tyyp	st_tyyp	omadus_psühh	property_psychological, cognitive, emotional	en	semantic_type	omadus_psühh
 st_tyyp	st_tyyp	omadus_vanus	vanust kirjeldav omadus	et	semantic_type	omadus_vanus
+st_tyyp	st_tyyp	organisatsioon	organisatsioon	et	semantic_type	organisatsioon
 st_tyyp	st_tyyp	organism	organism, elusolend	et	semantic_type	organism
 st_tyyp	st_tyyp	organism	living being	en	semantic_type	organism
 st_tyyp	st_tyyp	seisund	olek, seis teataval ajahetkel, üldine olukord	et	semantic_type	seisund
@@ -1002,6 +1006,7 @@ st_tyyp	st_tyyp	VERB_tegevus	verb_perform/do, verb_ execute	en	semantic_type	VER
 st_tyyp	st_tyyp	VERB_toimuma	toimuma, aset leidma, juhtuma (nt sattuma, juhtuma)	et	semantic_type	VERB_toimuma
 st_tyyp	st_tyyp	VERB_toimuma	verb_happen	en	semantic_type	VERB_toimuma
 st_tyyp	st_tyyp	VERB_toituma	sööma, jooma, toiduga tegelema	et	semantic_type	VERB_toituma
+st_tyyp	st_tyyp	üksus	üksus	et	semantic_type	üksus
 sta_tyyp	sta_tyyp	{grp}	rühm, grupp, kogum (kogumõiste)	et	-	-
 sta_tyyp	sta_tyyp	{grp}	group of sth/sb	en	-	-
 sta_tyyp	sta_tyyp	{kogus}	kogus	et	-	-

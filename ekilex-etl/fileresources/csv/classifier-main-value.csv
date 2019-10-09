@@ -1662,6 +1662,8 @@ semantic_type	aeg_nädalapäev	nädalapäev (7 päeva)	est	descrip
 semantic_type	aeg_nädalapäev	time_day	eng	descrip
 semantic_type	aeg_tähtpäev	tähtpäev, püha (nt küünlapäev, võidupäev)	est	descrip
 semantic_type	aeg_tähtpäev	time_holiday	eng	descrip
+semantic_type	amet	amet	est	descrip
+semantic_type	auaste	auaste	est	descrip
 semantic_type	ese	ese, objekt	est	descrip
 semantic_type	ese	artefact, object	eng	descrip
 semantic_type	ese_anum	anum, nõu, mahuti	est	descrip
@@ -1746,6 +1748,7 @@ semantic_type	konkr	konkreetne entiteet	est	descrip
 semantic_type	konkr	concrete entity	eng	descrip
 semantic_type	konkr_omadus	esilduva omadusega konkreetne entiteet	est	descrip
 semantic_type	konkr_omadus	concrete entity_its property	eng	descrip
+semantic_type	käsklus	käsklus	est	descrip
 semantic_type	loom	loom	est	descrip
 semantic_type	loom	animal	eng	descrip
 semantic_type	loom_kala	kala	est	descrip
@@ -1791,6 +1794,7 @@ semantic_type	omadus_kval	qualitative property	eng	descrip
 semantic_type	omadus_psühh	psüühikaga (tunnetega, tajuga) seotud omadus	est	descrip
 semantic_type	omadus_psühh	property_psychological, cognitive, emotional	eng	descrip
 semantic_type	omadus_vanus	vanust kirjeldav omadus	est	descrip
+semantic_type	organisatsioon	organisatsioon	est	descrip
 semantic_type	organism	organism, elusolend	est	descrip
 semantic_type	organism	living being	eng	descrip
 semantic_type	seisund	olek, seis teataval ajahetkel, üldine olukord	est	descrip
@@ -1866,6 +1870,7 @@ semantic_type	VERB_tegevus	verb_perform/do, verb_ execute	eng	descrip
 semantic_type	VERB_toimuma	toimuma, aset leidma, juhtuma (nt sattuma, juhtuma)	est	descrip
 semantic_type	VERB_toimuma	verb_happen	eng	descrip
 semantic_type	VERB_toituma	sööma, jooma, toiduga tegelema	est	descrip
+semantic_type	üksus	üksus	est	descrip
 usage_type	ls	liitsõna	est	descrip
 usage_type	ls	compound	eng	descrip
 usage_type	Vs	vanasõna	est	descrip
