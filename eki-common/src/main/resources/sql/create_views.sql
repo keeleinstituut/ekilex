@@ -52,14 +52,18 @@ from (select w.id as word_id,
              (select count(l.id) > 0
 	          from lexeme l,
 	               dataset ds
-	          where l.word_id = w.id
+	          where l.type = 'PRIMARY'
+	          and   l.word_id = w.id
 	          and   ds.code = l.dataset_code
+	          and   ds.is_public = true
 	          and   ds.type = 'LEX') lex_dataset_exists,
 	         (select count(l.id) > 0
 	          from lexeme l,
 	               dataset ds
-	          where l.word_id = w.id
+	          where l.type = 'PRIMARY'
+	          and   l.word_id = w.id
 	          and   ds.code = l.dataset_code
+	          and   ds.is_public = true
 	          and   ds.type = 'TERM') term_dataset_exists
       from word as w
         join paradigm as p on p.word_id = w.id
@@ -69,9 +73,9 @@ from (select w.id as word_id,
                          dataset ds
                     where l.word_id = w.id
                     --and l.dataset_code = 'sss'
+                    and l.type = 'PRIMARY'
                     and ds.code = l.dataset_code
-                    and ds.is_public = true
-                    and l.type = 'PRIMARY')
+                    and ds.is_public = true)
       group by w.id) as w
   left outer join (select wt.word_id,
                           array_agg(wt.word_type_code order by wt.order_by) word_type_codes
