@@ -7,9 +7,10 @@ function initialise() {
 		$('.d-none[data-lexeme-title]').each(function(index, item) {
 			openLexemes.push($(item).data('toggle-name'));
 		});
-		$("[id^='word_select_point_']").hide();
 		$("[id^='word_select_wait_']").hide();
 		$("#word_select_wait_" + id).show();
+		$('#results_div .list-group-item').removeClass('active');
+		$(this).parent().addClass('active');
 		$.get(applicationUrl + 'worddetails/' + id).done(function(data) {
 			let detailsDiv = $('#details_div');
 			let scrollPos = detailsDiv.scrollTop();
@@ -23,8 +24,8 @@ function initialise() {
 				})
 			}
 			$("#word_select_wait_" + id).hide();
-			$("#word_select_point_" + id).show();
 			closeWaitDlg();
+			$('[data-toggle="tooltip"]').tooltip();
 		}).fail(function(data) {
 			console.log(data);
 			closeWaitDlg();
