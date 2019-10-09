@@ -84,6 +84,6 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) {
 		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
-		synSearchDbService.changeRelationStatus(relationId, RelationStatus.HANDLED.name());
+		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
 	}
 }

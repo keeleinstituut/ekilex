@@ -3,6 +3,6 @@ package eki.common.constant;
 public enum RelationStatus {
 
 	UNDEFINED,
-	HANDLED,
+	PROCESSED,
 	DELETED;
 }

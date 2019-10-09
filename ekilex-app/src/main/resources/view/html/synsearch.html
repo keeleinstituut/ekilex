@@ -257,13 +257,13 @@
                                                         class="btn btn-xs  btn-secondary order-down "
                                                         title="Muuda järjestust"><i class="fa fa-arrow-down"
                                                                                     aria-hidden="true"></i></button>
-                                                <button type="button" class="btn  btn-xs btn-success rel-status-btn "
-                                                        th:data-id="${synRelation.id}" data-status="CONFIRMED"
-                                                        title="Kinnita"><i class="fa fa-check"
+                                                <button type="button" class="btn  btn-xs btn-primary rel-status-btn "
+                                                        th:data-id="${synRelation.id}" data-status="UNDEFINED"
+                                                        title="Märgi mittetegeletuks"><i class="fa fa-question"
                                                                            aria-hidden="true"></i></button>
-                                                <button type="button" class="btn btn-xs btn-primary rel-status-btn"
-                                                        th:data-id="${synRelation.id}" data-status="HANDLED"
-                                                        title="Märgi käsitletuks"><i class="fa fa-thumb-tack"
+                                                <button type="button" class="btn btn-xs btn-success rel-status-btn"
+                                                        th:data-id="${synRelation.id}" data-status="PROCESSED"
+                                                        title="Märgi käsitletuks"><i class="fa fa-check"
                                                                                      aria-hidden="true"></i></button>
                                                 <button type="button" class="btn btn-xs btn-danger rel-status-btn"
                                                         th:data-id="${synRelation.id}" data-status="DELETED"
