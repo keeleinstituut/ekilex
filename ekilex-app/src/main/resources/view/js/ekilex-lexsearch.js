@@ -25,6 +25,7 @@ function initialise() {
 			}
 			$("#word_select_wait_" + id).hide();
 			closeWaitDlg();
+			$('[data-toggle="tooltip"]').tooltip();
 		}).fail(function(data) {
 			console.log(data);
 			closeWaitDlg();
