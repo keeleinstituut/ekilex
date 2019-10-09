@@ -119,7 +119,9 @@ public class CommonDataDbService implements SystemConstant {
 		List<Classifier> classifiers = new ArrayList<>();
 		for (TypeDomain originCodeTuple : codes) {
 			Classifier classifier = getClassifier(name, originCodeTuple.getOrigin(), originCodeTuple.getCode(), lang);
-			classifiers.add(classifier);
+			if (classifier != null) {
+				classifiers.add(classifier);
+			}
 		}
 		return classifiers;
 	}
