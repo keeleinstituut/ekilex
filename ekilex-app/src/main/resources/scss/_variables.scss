@@ -1,4 +1,4 @@
-$gray-100: #ecf0f2 !default;
+$gray-100: #ecf0f2;
 $gray-200: #ccd9e0;
 $gray-300: #8a98a5;
 $gray-400: #5d606e;
@@ -13,9 +13,20 @@ $blue-300: #3173b8;
 $blue-400: #005aa9;
 $blue-900: #00377a;
 
+$red-100: #ffb9b9;
+$red-400: #ec0138;
+
+$green-100: #a9eeb4;
+$green-400: #00892e;
+
+$blue: $blue-400;
+$red: $red-400;
+$green: $green-400;
+
 $primary:   $blue-400;
 
 $font-size-base: .875rem; //14px // Assumes the browser default, typically `16px`
+$font-size-sm: $font-size-base * .857;//12px
 
 $h1-font-size:                $font-size-base * 1.857;
 $h2-font-size:                $font-size-base * 1.642;
@@ -46,5 +57,3 @@ $input-group-addon-bg: $gray-100;
 
 $border-color: $gray-200;
 $text-muted: $gray-200;
-
-

@@ -10,3 +10,10 @@
 .btn-compact{
   padding: 0 $spacer * .5;
 }
+
+.btn-xs{
+  padding: 0 $spacer * .25;
+  font-size: $btn-font-size-sm;
+  @include border-radius($btn-border-radius-sm);
+}
+
