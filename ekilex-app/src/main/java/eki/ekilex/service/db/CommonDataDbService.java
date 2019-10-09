@@ -910,8 +910,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.select(
 						LEXEME.WORD_ID,
 						LEXEME.MEANING_ID,
-						LEXEME.ID.as("lexeme_id"),
-						LEXEME.TYPE.as("lexeme_type"))
+						LEXEME.ID.as("lexeme_id"))
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(WordLexemeMeaningIdTuple.class);

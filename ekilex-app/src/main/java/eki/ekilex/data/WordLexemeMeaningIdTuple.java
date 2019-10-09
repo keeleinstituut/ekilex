@@ -1,6 +1,5 @@
 package eki.ekilex.data;
 
-import eki.common.constant.LexemeType;
 import eki.common.data.AbstractDataObject;
 
 public class WordLexemeMeaningIdTuple extends AbstractDataObject {
@@ -12,8 +11,6 @@ public class WordLexemeMeaningIdTuple extends AbstractDataObject {
 	private Long meaningId;
 
 	private Long lexemeId;
-
-	private LexemeType lexemeType;
 
 	public Long getWordId() {
 		return wordId;
@@ -39,11 +36,4 @@ public class WordLexemeMeaningIdTuple extends AbstractDataObject {
 		this.lexemeId = lexemeId;
 	}
 
-	public LexemeType getLexemeType() {
-		return lexemeType;
-	}
-
-	public void setLexemeType(LexemeType lexemeType) {
-		this.lexemeType = lexemeType;
-	}
 }

@@ -13,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
@@ -625,9 +624,8 @@ public class CudService extends AbstractService {
 
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
 		createLifecycleLog(logData);
-		if (LexemeType.PRIMARY.equals(wordLexemeMeaningId.getLexemeType())) {
-			updateLexemeLevels(lexemeId, "delete");
-		}
+		updateLexemeLevels(lexemeId, "delete");
+
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
 			deleteMeaning(meaningId);

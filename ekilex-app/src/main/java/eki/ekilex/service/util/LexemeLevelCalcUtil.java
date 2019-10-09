@@ -4,6 +4,7 @@ import static java.lang.Math.max;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -54,7 +55,12 @@ public class LexemeLevelCalcUtil {
 
 	public void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {
 
-		WordLexeme lexemeToMove = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst().get();
+		Optional<WordLexeme> lexemeOptional = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst();
+		if (!lexemeOptional.isPresent()) {
+			return;
+		}
+
+		WordLexeme lexemeToMove = lexemeOptional.get();
 		int lexemePos = lexemes.indexOf(lexemeToMove);
 		int levelToChange = getLevelToChange(lexemes, lexemeToMove);
 		switch (action) {
