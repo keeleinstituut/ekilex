@@ -14,8 +14,6 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 
 	protected static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 10;
 
-	protected static final char LANGUAGE_PAIR_SEPARATOR = '-';
-
 	@Value("${speech.recognition.service.url:}")
 	protected String speechRecognitionServiceUrl;
 
@@ -39,6 +37,9 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 			sessionBean = createSessionBean(model);
 		} else {
 			sessionBean = getSessionBean(model);
+		}
+		if (StringUtils.isBlank(sessionBean.getDatasetType())) {
+			sessionBean.setDatasetType(DEFAULT_DATASET_TYPE);
 		}
 		if (StringUtils.isBlank(sessionBean.getSourceLang())) {
 			sessionBean.setSourceLang(DEFAULT_SOURCE_LANG);

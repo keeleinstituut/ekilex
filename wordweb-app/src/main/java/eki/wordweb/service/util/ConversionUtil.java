@@ -119,6 +119,47 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		}
 	}
 
+	public void composeHomonymWrapups(List<Word> words) {
+
+		for (Word word : words) {
+			List<TypeMeaningWord> meaningWords = word.getMeaningWords();
+			if (CollectionUtils.isNotEmpty(meaningWords)) {
+				TypeMeaningWord firstMeaningWord = meaningWords.get(0);
+				if (StringUtils.isNotBlank(firstMeaningWord.getWord())) {
+					Long lexemeId = firstMeaningWord.getLexemeId();
+					List<String> meaningWordValues = meaningWords.stream()
+							.filter(meaningWord -> meaningWord.getLexemeId().equals(lexemeId))
+							.map(meaningWord -> {
+								if (meaningWord.isPrefixoid()) {
+									return meaningWord.getWord() + "-";
+								} else if (meaningWord.isSuffixoid()) {
+									return "-" + meaningWord.getWord();
+								} else {
+									return meaningWord.getWord();
+								}
+							})
+							.distinct()
+							.collect(Collectors.toList());
+					String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
+					word.setMeaningWordsWrapup(meaningWordsWrapup);
+				}
+			}
+			List<TypeDefinition> definitions = word.getDefinitions();
+			if (CollectionUtils.isNotEmpty(definitions)) {
+				TypeDefinition firstDefinition = definitions.get(0);
+				if (StringUtils.isNotBlank(firstDefinition.getValue())) {
+					Long lexemeId = firstDefinition.getLexemeId();
+					List<String> definitionValues = definitions.stream()
+							.filter(definition -> definition.getLexemeId().equals(lexemeId))
+							.map(TypeDefinition::getValue)
+							.collect(Collectors.toList());
+					String definitionsWrapup = StringUtils.join(definitionValues, ", ");
+					word.setDefinitionsWrapup(definitionsWrapup);
+				}
+			}
+		}
+	}
+
 	public void setAffixoidFlags(List<? extends WordTypeData> words) {
 
 		for (WordTypeData word : words) {
@@ -257,8 +298,66 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		word.setSinglePos(isSinglePos);
 	}
 
+	public void enrich(Word word, List<Lexeme> lexemes, List<LexemeMeaningTuple> lexemeMeaningTuples, String displayLang) {
+
+		Map<Long, Lexeme> lexemeMap = new HashMap<>();
+
+		for (Lexeme lexeme : lexemes) {
+
+			lexemeMap.put(lexeme.getLexemeId(), lexeme);
+			populateLexeme(lexeme, null, displayLang);
+			populateUsages(lexeme, null, displayLang);
+			populateRelatedLexemes(lexeme, null, displayLang);
+			populateMeaningWords(lexeme, displayLang);
+		}
+
+		for (LexemeMeaningTuple tuple : lexemeMeaningTuples) {
+
+			Long lexemeId = tuple.getLexemeId();
+			Lexeme lexeme = lexemeMap.get(lexemeId);
+			if (lexeme == null) {
+				continue;
+			}
+			populateMeaning(lexeme, tuple, displayLang);
+			populateRelatedMeanings(lexeme, tuple, displayLang);
+		}
+
+		List<TypeWordRelation> relatedWords = word.getRelatedWords();
+		List<String> allRelatedWordValues = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(relatedWords)) {
+			List<String> relatedWordValues = relatedWords.stream().map(TypeWordRelation::getWord).distinct().collect(Collectors.toList());
+			allRelatedWordValues.addAll(relatedWordValues);
+		}
+		List<WordGroup> wordGroups = word.getWordGroups();
+		if (CollectionUtils.isNotEmpty(wordGroups)) {
+			for (WordGroup wordGroup : wordGroups) {
+				List<String> relatedWordValues = wordGroup.getWordGroupMembers().stream().map(TypeWordRelation::getWord).distinct().collect(Collectors.toList());
+				allRelatedWordValues.addAll(relatedWordValues);
+			}
+		}
+
+		List<Classifier> summarisedPoses = new ArrayList<>();
+
+		for (Lexeme lexeme : lexemes) {
+			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
+			lexeme.setEmptyLexeme(isEmptyLexeme);
+			if (isEmptyLexeme) {
+				continue;
+			}
+			if (CollectionUtils.isNotEmpty(lexeme.getPoses())) {
+				summarisedPoses.addAll(lexeme.getPoses());
+			}
+			filterMeaningWords(lexeme, allRelatedWordValues);
+		}
+		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
+		boolean isSinglePos = CollectionUtils.size(summarisedPoses) == 1;
+		word.setSummarisedPoses(summarisedPoses);
+		word.setSinglePos(isSinglePos);
+	}
+
 	private void populateLexeme(Lexeme lexeme, Complexity dataComplexity, String displayLang) {
 
+		lexeme.setSourceLangMeaningWords(new ArrayList<>());
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setOtherLangMatchWords(new ArrayList<>());
 		lexeme.setCollocationPosGroups(new ArrayList<>());
@@ -266,15 +365,15 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		List<TypePublicNote> publicNotes = lexeme.getPublicNotes();
 		List<TypeGrammar> grammars = lexeme.getGrammars();
 		List<TypeGovernment> governments = lexeme.getGovernments();
-		if (CollectionUtils.isNotEmpty(publicNotes)) {
+		if (CollectionUtils.isNotEmpty(publicNotes) && (dataComplexity != null)) {
 			publicNotes = publicNotes.stream().filter(publicNote -> publicNote.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
 			lexeme.setPublicNotes(publicNotes);
 		}
-		if (CollectionUtils.isNotEmpty(grammars)) {
+		if (CollectionUtils.isNotEmpty(grammars) && (dataComplexity != null)) {
 			grammars = grammars.stream().filter(grammar -> grammar.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
 			lexeme.setGrammars(grammars);
 		}
-		if (CollectionUtils.isNotEmpty(governments)) {
+		if (CollectionUtils.isNotEmpty(governments) && (dataComplexity != null)) {
 			governments = governments.stream().filter(government -> government.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
 			lexeme.setGovernments(governments);
 		}
@@ -320,7 +419,26 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		}
 	}
 
+	private void populateMeaningWords(Lexeme lexeme, String displayLang) {
+
+		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
+		if (CollectionUtils.isEmpty(meaningWords)) {
+			return;
+		}
+
+		for (TypeMeaningWord meaningWord : meaningWords) {
+			classifierUtil.applyClassifiers(meaningWord, displayLang);
+			setWordTypeFlags(meaningWord);
+			boolean additionalDataExists = (meaningWord.getAspect() != null)
+					|| CollectionUtils.isNotEmpty(meaningWord.getMwLexRegisters())
+					|| CollectionUtils.isNotEmpty(meaningWord.getMwLexGovernments());
+			meaningWord.setAdditionalDataExists(additionalDataExists);
+			lexeme.getSourceLangMeaningWords().add(meaningWord);
+		}
+	}
+
 	private void populateMeaning(Lexeme lexeme, LexemeMeaningTuple tuple, Complexity lexComplexity, Complexity dataComplexity, String displayLang) {
+
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 
@@ -334,7 +452,16 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			lexeme.setImageFiles(tuple.getImageFiles());
 			lexeme.setLearnerComments(tuple.getLearnerComments());
 		}
+		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
+	}
 
+	private void populateMeaning(Lexeme lexeme, LexemeMeaningTuple tuple, String displayLang) {
+
+		lexeme.setDefinitions(tuple.getDefinitions());
+		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
+		lexeme.setSemanticTypes(tuple.getSemanticTypes());
+		lexeme.setImageFiles(tuple.getImageFiles());
+		lexeme.setLearnerComments(tuple.getLearnerComments());
 		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
 	}
 
@@ -343,8 +470,10 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		if (CollectionUtils.isEmpty(usages)) {
 			return;
 		}
-		usages = usages.stream().filter(usage -> usage.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
-		lexeme.setUsages(usages);
+		if (dataComplexity != null) {
+			usages = usages.stream().filter(usage -> usage.getComplexity().equals(dataComplexity)).collect(Collectors.toList());
+			lexeme.setUsages(usages);
+		}
 		for (TypeUsage usage : usages) {
 			usage.setUsageAuthors(new ArrayList<>());
 			classifierUtil.applyClassifiers(usage, displayLang);
@@ -372,8 +501,10 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		if (CollectionUtils.isEmpty(relatedLexemes)) {
 			return;
 		}
-		relatedLexemes = relatedLexemes.stream().filter(relatedLexeme -> relatedLexeme.getComplexity().equals(lexComplexity)).collect(Collectors.toList());
-		lexeme.setRelatedLexemes(relatedLexemes);
+		if (lexComplexity != null) {
+			relatedLexemes = relatedLexemes.stream().filter(relatedLexeme -> relatedLexeme.getComplexity().equals(lexComplexity)).collect(Collectors.toList());
+			lexeme.setRelatedLexemes(relatedLexemes);
+		}
 		for (TypeLexemeRelation lexemeRelation : relatedLexemes) {
 			classifierUtil.applyClassifiers(lexemeRelation, displayLang);
 		}
@@ -796,7 +927,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		word.setRelatedWords(new ArrayList<>());
 		for (WordRelationTuple tuple : wordRelationTuples) {
 			List<TypeWordRelation> relatedWords = tuple.getRelatedWords();
-			if (CollectionUtils.isNotEmpty(relatedWords)) {
+			if (CollectionUtils.isNotEmpty(relatedWords) && (lexComplexity != null)) {
 				relatedWords = relatedWords.stream()
 						.filter(relation -> ArrayUtils.contains(relation.getLexComplexities(), lexComplexity))
 						.collect(Collectors.toList());
@@ -840,7 +971,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 				}
 			}
 			List<TypeWordRelation> wordGroupMembers = tuple.getWordGroupMembers();
-			if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
+			if (CollectionUtils.isNotEmpty(wordGroupMembers) && (lexComplexity != null)) {
 				wordGroupMembers = wordGroupMembers.stream()
 						.filter(member -> ArrayUtils.contains(member.getLexComplexities(), lexComplexity))
 						.collect(Collectors.toList());
@@ -1048,6 +1179,16 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 				paradigmGroup.setForms2(groupedForms);
 			}
 		}
+	}
+
+	public List<String> collectImages(List<Lexeme> lexemes) {
+		List<String> allImageFiles = new ArrayList<>();
+		lexemes.forEach(lexeme -> {
+			if (CollectionUtils.isNotEmpty(lexeme.getImageFiles())) {
+				allImageFiles.addAll(lexeme.getImageFiles());
+			}
+		});
+		return allImageFiles;
 	}
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {

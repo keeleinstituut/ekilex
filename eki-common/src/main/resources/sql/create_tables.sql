@@ -1069,6 +1069,8 @@ alter sequence temp_ds_import_queue_id_seq restart with 10000;
 --- indexes
 create index eki_user_profile_user_id_idx on eki_user(id);
 create index eki_user_profile_recent_dataset_permission_id_idx on dataset_permission(id);
+create index dataset_code_idx on dataset(code);
+create index dataset_type_idx on dataset(type);
 create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
 create index dataset_perm_user_id_idx on dataset_permission(user_id);
 create index form_value_idx on form(value);

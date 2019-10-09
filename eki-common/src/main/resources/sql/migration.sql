@@ -48,8 +48,13 @@ update lexeme set type = 'PRIMARY' where type is null;
 alter table lexeme alter column type set not null;
 create index lexeme_type_idx on lexeme(type);
 
+-- 8.10.2019
+create index dataset_code_idx on dataset(code);
+create index dataset_type_idx on dataset(type);
+
 -- 07.10.2019
 update word_relation set relation_status = 'HANDLED' where relation_status = 'CONFIRMED';
 
 -- 09.10.2019
 update word_relation set relation_status = 'PROCESSED' where relation_status = 'HANDLED';
+

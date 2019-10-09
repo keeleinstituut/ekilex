@@ -405,17 +405,37 @@ $(document).on("click", "#stop-rec-btn", function (e) {
 	});
 });
 
-$(document).on("click", "#toggle-simple", function (e) {
+$(document).on("click", "#toggle-lex", function (e) {
+	$("#lang-select-container").removeAttr("hidden");
+	$("#detail-toggle-container").removeAttr("hidden");
+	var datasetType = $("input[name='datasetType']").val();
+	if (datasetType === "term") {
+		$("input[name='datasetType']").val("lex");
+		$(this).addClass("active");
+		$("#toggle-term").removeClass("active");
+		clickSearchIfInputExists();
+	}
+});
 
+$(document).on("click", "#toggle-term", function (e) {
+	$("#lang-select-container").attr("hidden", "true");
+	$("#detail-toggle-container").attr("hidden", "true");
+	var datasetType = $("input[name='datasetType']").val();
+	if (datasetType === "lex") {
+		$("input[name='datasetType']").val("term");
+		$(this).addClass("active");
+		$("#toggle-lex").removeClass("active");
+		clickSearchIfInputExists();
+	}
+});
+
+$(document).on("click", "#toggle-simple", function (e) {
 	var searchMode = $("input[name='searchMode']").val();
 	if (searchMode === "detail") {
 		$("input[name='searchMode']").val("simple");
 		$(this).addClass("active");
 		$("#toggle-detail").removeClass("active");
-		var tempSearchWord = $("input[name='searchWord']").val();
-		if (tempSearchWord) {
-			$("#search-btn").click();
-		}
+		clickSearchIfInputExists();
 	}
 });
 
@@ -425,9 +445,13 @@ $(document).on("click", "#toggle-detail", function (e) {
 		$("input[name='searchMode']").val("detail");
 		$(this).addClass("active");
 		$("#toggle-simple").removeClass("active");
-		var tempSearchWord = $("input[name='searchWord']").val();
-		if (tempSearchWord) {
-			$("#search-btn").click();
-		}
+		clickSearchIfInputExists();
 	}
 });
+
+function clickSearchIfInputExists() {
+	var tempSearchWord = $("input[name='searchWord']").val();
+	if (tempSearchWord) {
+		$("#search-btn").click();
+	}
+}

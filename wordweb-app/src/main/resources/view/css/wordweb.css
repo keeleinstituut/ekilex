@@ -8,6 +8,16 @@
 	cursor: pointer;
 }
 
+#dataset-type-toggle-container {
+	width: 160px;
+	height: 32px;
+	position: relative;
+	border-radius: 6px;
+	overflow: hidden;
+	user-select: none;
+	cursor: pointer;
+}
+
 .inner-container {
 	position: absolute;
 	left: 0;

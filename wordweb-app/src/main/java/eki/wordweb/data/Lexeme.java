@@ -15,6 +15,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private Long meaningId;
 
+	private String datasetName;
+
 	private Integer level1;
 
 	private Integer level2;
@@ -101,6 +103,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public String getDatasetName() {
+		return datasetName;
+	}
+
+	public void setDatasetName(String datasetName) {
+		this.datasetName = datasetName;
 	}
 
 	public Integer getLevel1() {

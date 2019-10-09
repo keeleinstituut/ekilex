@@ -2,7 +2,6 @@ package eki.wordweb.service;
 
 import static java.lang.Math.max;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import javax.transaction.Transactional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +39,7 @@ import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.ConversionUtil;
 
 @Component
-public class LexSearchService implements InitializingBean, SystemConstant {
+public class LexSearchService implements SystemConstant {
 
 	private static final Integer DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL = 3;
 
@@ -55,10 +53,6 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
-
-	@Override
-	public void afterPropertiesSet() {
-	}
 
 	@Transactional
 	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
@@ -89,7 +83,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	}
 
 	@Transactional
-	public Map<String, List<String>> getWordsByPrefix(String wordPrefix, String sourceLang, String destinLang, int limit) {
+	public Map<String, List<String>> getWordsByPrefix(String wordPrefix, String sourceLang, int limit) {
 
 		Map<String, List<WordOrForm>> results = lexSearchDbService.getWordsByPrefix(wordPrefix, sourceLang, limit);
 		List<WordOrForm> prefWordsResult = results.get("prefWords");
@@ -141,12 +135,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		conversionUtil.enrich(word, lexemes, lexemeMeaningTuples, collocTuples, dataFilter, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
-		List<String> allImageFiles = new ArrayList<>();
-		lexemes.forEach(lexeme -> {
-			if (CollectionUtils.isNotEmpty(lexeme.getImageFiles())) {
-				allImageFiles.addAll(lexeme.getImageFiles());
-			}
-		});
+		List<String> allImageFiles = conversionUtil.collectImages(lexemes);
 
 		// resulting flags
 		String firstAvailableVocalForm = null;
