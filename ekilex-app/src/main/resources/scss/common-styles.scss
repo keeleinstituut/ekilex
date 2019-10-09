@@ -156,7 +156,7 @@ input:checked+.slider:before {
 
 .btn-custom {
 	font-weight: 400;
-	color: #007bff;
+	color: $link-color;
 	background-color: transparent;
 	cursor: auto !important;
 }
@@ -221,11 +221,7 @@ input:checked+.slider:before {
 	width: 100%;
 }
 
-.btn-xs {
-	padding: 0;
-	border: 0;
-	vertical-align: initial;
-}
+
 
 .action-buttons-anchor {
 	position: relative;

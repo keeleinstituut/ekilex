@@ -84,7 +84,7 @@ public class CudDbService implements DbConstant {
 		return wordWordTypeRecord.getId();
 	}
 
-	public List<WordLexeme> getWordLexemes(Long lexemeId) {
+	public List<WordLexeme> getWordPrimaryLexemes(Long lexemeId) {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		return create
@@ -298,6 +298,16 @@ public class CudDbService implements DbConstant {
 		create.update(FORM)
 				.set(FORM.VALUE, value)
 				.set(FORM.VALUE_PRESE, valuePrese)
+				.from(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.execute();
+	}
+
+	public void updateWordVocalForm(Long wordId, String vocalForm) {
+		create.update(FORM)
+				.set(FORM.VOCAL_FORM, vocalForm)
 				.from(PARADIGM)
 				.where(PARADIGM.WORD_ID.eq(wordId)
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))

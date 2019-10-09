@@ -1,19 +1,19 @@
 function initialise() {
-	var NAVIGATE_SELECTED_CLASS = 'navigate-selected';
-	var NAVIGATE_DECLINED_CLASS = 'navigate-declined';
+	var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-active-item';
+	var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 	var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 
 	$(document).on("click", ":button[name='manualEditBtn']", function() {
 		//TODO refactor
 		$('.navigate-panel').each(function (e) {
 			//$(this).addClass('navigate-disabled-panel');
-			$(this).removeAttr('data-active-panel');
+			$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-active-list');
 		});
 
 		let activatedDiv = $('div[data-panel-index="3"]');
-		activatedDiv.attr('data-active-panel', true);
+		activatedDiv.attr('data-active-panel', true).addClass('keyboard-nav-active-list');
 		itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
-		itemToSelect.addClass('navigate-selected');
+		itemToSelect.addClass('keyboard-nav-active-item');
 		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 		itemToSelect.find('button').focus();
 
@@ -24,7 +24,7 @@ function initialise() {
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 		let id = $(this).data('id');
 		let markedSynWordId = $(document).find('.navigate-marked').children(':first').data('word-id');
-		$('#synSearchResultsDiv').find('.navigate-selected').each(function () {$(this).removeClass('navigate-selected active');});
+		$('#synSearchResultsDiv').find('.keyboard-nav-active-item').each(function () {$(this).removeClass('keyboard-nav-active-item active');});
 		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
 
 		$(this).parent().addClass('navigate-selected active');
@@ -43,7 +43,13 @@ function initialise() {
 			$("#syn_select_wait_" + id).hide();
 			$('[data-toggle="tooltip"]').tooltip();
 
-			$(document).find('.draggable-synonym').draggable({ revert: "invalid" });
+			$(document).find('.draggable-synonym').draggable({
+				revert: "invalid",
+				appendTo:"body",
+				containment: "window",
+				helper: "clone",
+				handle: ".handle"
+			});
 
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {
@@ -62,11 +68,14 @@ function initialise() {
 					"ui-droppable-hover": "ui-state-hover"
 				},
 				drop: function (event, ui) {
+					let relationId = ui.draggable.parent().data('id');
+					console.log('relation id ' + relationId)
 					let meaningId = $(this).data('meaning-id');
 					let lexemeId = $(this).data('lexeme-id');
 					let wordId = ui.draggable.data('word-id');
 
-					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId;
+					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
+
 					let callbackFunc = () => $('#refresh-details').trigger('click');
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
@@ -193,16 +202,18 @@ function initialise() {
 		let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
 
 		e = e || window.event;
-		//console.log(e.keyCode);
+		console.log(e.keyCode);
 
 		if (e.keyCode == 38 || e.keyCode == 40) { // arrows up down
 
 			if (currentSelectedItem.length != 0) {
+				console.log('currentSelectedITem exists');
 				let indexIncrement = (e.keyCode == 40 ? 1 : -1);
 				let newIndex = currentSelectedIndex + indexIncrement;
 				let newItem = currentActiveDiv.find('[data-navigate-index="' + newIndex + '"]');
 
 				if (newItem.length != 0) {
+					console.log('navItem exists');
 					newItem.addClass(isDisabledItem(currentActiveDiv, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
 					unActivateItem(currentSelectedItem, true);
@@ -213,7 +224,7 @@ function initialise() {
 		// 1 - 3, arrows left-right
 		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
 			if (isValidPanelChangeKeyPress(e.keyCode)) {
-				$('div[data-panel-index]').each(function () {$(this).removeAttr('data-active-panel');});
+				$('div[data-panel-index]').each(function () {$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-active-list');});
 
 				let selectedPanelIndex = 1;
 				let PANEL_KEYCODES = {"49": "1", "50": "2", "51" : "3"};
@@ -234,7 +245,7 @@ function initialise() {
 				unActivateItem(currentSelectedItem, false);
 
 				let activatedDiv = $('div[data-panel-index="' + selectedPanelIndex + '"]');
-				activatedDiv.attr('data-active-panel', true);
+				activatedDiv.attr('data-active-panel', true).addClass('keyboard-nav-active-list');
 
 				let selectedItem = findSelectedNavigateItem(activatedDiv);
 				let isDisabled = isDisabledItem(activatedDiv, selectedItem);
@@ -248,6 +259,7 @@ function initialise() {
 		if (e.keyCode == 27) { //esc
 			$('.navigate-panel').each(function () {
 				$(this).removeAttr('data-marked-word-id');
+				$(this).removeAttr('data-marked-relation-id'); //TODO refactor
 				$(this).removeAttr('data-active-panel');
 				$(this).find('[data-navigate-index]').each(function () {
 					unActivateItem($(this), true);
@@ -271,11 +283,15 @@ function initialise() {
 				currentActiveDiv.find('.navigate-marked').each(function () {$(this).removeClass('navigate-marked');});
 				currentSelectedItem.addClass('navigate-marked');
 				currentActiveDiv.removeAttr('data-active-panel');
+				//TODO refactor
 				let wordId = currentSelectedItem.children(':first').attr('data-word-id');
+				let relationId = currentSelectedItem.attr('data-id');
 
 				let activatedDiv = $('div[data-panel-index="2"]');
 				activatedDiv.attr('data-active-panel', true);
+
 				activatedDiv.data('marked-word-id', wordId);
+				activatedDiv.data('marked-relation-id', relationId);
 
 				let selectedLexemeItem = findSelectedNavigateItem(activatedDiv);
 
@@ -286,13 +302,16 @@ function initialise() {
 
 			} else if (currentActivePanelIndex == "2") {
 				if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-					let wordId = currentActiveDiv.data('marked-word-id'); //TODO move to a hidden field ?
+					let wordId = currentActiveDiv.data('marked-word-id'); //TODO move to a hidden field ? - add a marked attribute to the marked element
+					let relationId = currentActiveDiv.data('marked-relation-id'); //TODO Refactor
+
 					if (wordId != undefined) {
 
 						let lexemeId = currentSelectedItem.data('lexeme-id');
 						let meaningId = currentSelectedItem.data('meaning-id');
 
-						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId;
+						//TODO - test
+						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
 						let callbackFunc = () => $('#refresh-details').trigger('click');
 
 						doPostRelationChange(actionUrl, callbackFunc);

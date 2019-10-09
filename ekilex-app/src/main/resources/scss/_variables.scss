@@ -1,47 +1,59 @@
-$gray-100: #ecf0f2 !default;
-$gray-200: #ccd9e0 !default;
-$gray-300: #8a98a5 !default;
-$gray-400: #5d606e !default;
-$gray-900: #3f3f3f !default;
-$gray-1000: #0e1013 !default;
+$gray-100: #ecf0f2;
+$gray-200: #ccd9e0;
+$gray-300: #8a98a5;
+$gray-400: #5d606e;
+$gray-900: #3f3f3f;
+$gray-1000: #0e1013;
 
-$white: #fff !default;
+$white: #fff;
 
-$blue-100: #a0dcf8 !default;
-$blue-200: #5aabe0 !default;
-$blue-300: #3173b8 !default;
-$blue-400: #005aa9 !default;
-$blue-900: #00377a !default;
+$blue-100: #a0dcf8;
+$blue-200: #5aabe0;
+$blue-300: #3173b8;
+$blue-400: #005aa9;
+$blue-900: #00377a;
 
-$primary:   $blue-400 !default;
+$red-100: #ffb9b9;
+$red-400: #ec0138;
 
-$font-size-base: .875rem !default; //14px // Assumes the browser default, typically `16px`
+$green-100: #a9eeb4;
+$green-400: #00892e;
 
-$h1-font-size:                $font-size-base * 1.857 !default;
-$h2-font-size:                $font-size-base * 1.642 !default;
-$h3-font-size:                $font-size-base * 1.428 !default;
-$h4-font-size:                $font-size-base * 1.285 !default;
-$h5-font-size:                $font-size-base * 1.142 !default;
-$h6-font-size:                $font-size-base !default;
+$blue: $blue-400;
+$red: $red-400;
+$green: $green-400;
 
-$body-bg: $gray-100 !default;
+$primary:   $blue-400;
 
-$navbar-padding-y: 0 !default;
-$nav-tabs-link-active-bg: $white !default;
+$font-size-base: .875rem; //14px // Assumes the browser default, typically `16px`
+$font-size-sm: $font-size-base * .857;//12px
 
-$padding-y-base: .322rem !default;//vertical padding for 32px high elements
-$input-btn-padding-y: $padding-y-base !default;
-$nav-link-padding-y: $padding-y-base !default;
+$h1-font-size:                $font-size-base * 1.857;
+$h2-font-size:                $font-size-base * 1.642;
+$h3-font-size:                $font-size-base * 1.428;
+$h4-font-size:                $font-size-base * 1.285;
+$h5-font-size:                $font-size-base * 1.142;
+$h6-font-size:                $font-size-base;
 
-$dropdown-item-padding-x: 1rem !default;
+$body-bg: $gray-100;
 
-$input-color: $gray-400 !default;
-$input-border-color: $gray-300 !default;
-$form-check-input-bg: $white !default;
+$navbar-padding-y: 0;
+$nav-tabs-link-active-bg: $white;
 
-$text-muted: $gray-300 !default;
+$padding-y-base: .322rem;//vertical padding for 32px high elements
+$input-btn-padding-y: $padding-y-base;
+$nav-link-padding-y: $padding-y-base;
 
-$icon-btn-color: $gray-300 !default;
-$input-group-addon-bg: $gray-100 !default;
+$dropdown-item-padding-x: 1rem;
 
+$input-color: $gray-400;
+$input-border-color: $gray-300;
+$form-check-input-bg: $white;
 
+$text-muted: $gray-300;
+
+$icon-btn-color: $gray-300;
+$input-group-addon-bg: $gray-100;
+
+$border-color: $gray-200;
+$text-muted: $gray-200;

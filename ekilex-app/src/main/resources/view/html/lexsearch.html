@@ -61,10 +61,15 @@
 
             <div th:replace="lexdialog :: add_lexeme_process_state_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_data_dlg"></div>
+            <div th:replace="lexdialog :: add_lexeme_pos_dlg"></div>
+            <div th:replace="lexdialog :: add_lexeme_deriv_dlg"></div>
+            <div th:replace="lexdialog :: add_lexeme_register_dlg"></div>
+            <div th:replace="lexdialog :: add_lexeme_grammar_dlg"></div>
             <div th:replace="lexdialog :: add_definition_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_source_link_dlg"></div>
             <div th:replace="lexdialog :: add_learner_comment_dlg"></div>
             <div th:replace="lexdialog :: add_meaning_relation_dlg"></div>
+            <div th:replace="lexdialog :: add_meaning_domain_dlg"></div>
             <div th:replace="lexdialog :: add_government_dlg"></div>
             <div th:replace="lexdialog :: add_usage_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_public_note_dlg"></div>
@@ -198,14 +203,6 @@
                 </div>
               </div>
 
-              <div th:if="${!#lists.isEmpty(lexeme.vocalForms)}">
-                <span class="lbl">Hääldus</span>
-                <span th:each="vocalForm,vocalFormIter : ${lexeme.vocalForms}">
-                    <span th:text="${vocalForm}"></span>
-                    <span th:unless="${vocalFormIter.last}">,&nbsp;</span>
-                </span>
-              </div>
-
               <div>
                 <hr />
                 <span class="lbl" th:unless="${lexeme.lexemeOrMeaningClassifiersExist}">Ilmiku omadused</span>
@@ -231,7 +228,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Seletused</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addDefinitionDlg_' + lexeme.lexemeId}"
@@ -287,7 +284,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Allikaviide</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa allikaviide"
                           data-toggle="modal"
                           th:data-target="${'#addLexemeSourceLinkDlg_' + lexeme.lexemeId}"
@@ -318,7 +315,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Õppekommentaarid</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addLearnerCommentDlg_' + lexeme.lexemeId}"
@@ -488,7 +485,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Tähenduse seosed</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa seos"
                           data-toggle="modal"
                           th:data-target="${'#addMeaningRelationDlg_' + lexeme.lexemeId}"
@@ -526,7 +523,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Rektsioon
-                    <button type="button" class="btn badge badge-success"
+                    <button type="button" class="btn badge badge-success float-right mr-4"
                             title="Lisa uus"
                             data-toggle="modal"
                             th:data-target="${'#addGovernmentDlg_' + lexeme.lexemeId}"
@@ -566,7 +563,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Kasutusnäited</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa uus"
                           data-toggle="modal"
                           th:data-target="${'#addUsageDlg_' + lexeme.lexemeId}"
@@ -739,7 +736,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Märkused
-                    <button type="button" class="btn badge badge-success"
+                    <button type="button" class="btn badge badge-success float-right mr-4"
                             title="Lisa uus"
                             data-toggle="modal"
                             th:data-target="${'#addLexemePublicNoteDlg_' + lexeme.lexemeId}"
@@ -804,7 +801,7 @@
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Ilmiku seosed</span>
-                  <button type="button" class="btn badge badge-success"
+                  <button type="button" class="btn badge badge-success float-right mr-4"
                           title="Lisa seos"
                           data-toggle="modal"
                           th:data-target="${'#addLexemeRelationDlg_' + lexeme.lexemeId}"
@@ -953,6 +950,7 @@
           <div th:replace="lexdialog :: edit_word_value_dlg"></div>
           <div th:replace="lexdialog :: edit_word_gender_dlg"></div>
           <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
+          <div th:replace="lexdialog :: edit_word_vocal_form_dlg"></div>
           <div class="card shadow pt-3 mb-2">
             <div class="card-body pt-0 pb-0 d-flex">
               <div class="invisible-buttons">
@@ -987,6 +985,7 @@
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </div>
+              <div th:replace="lexcomp :: word_vocal_form"></div>
               <div th:replace="lexcomp :: word_gender"></div>
               <div th:replace="lexcomp :: word_type"></div>
               <div th:replace="lexcomp :: word_aspect"></div>

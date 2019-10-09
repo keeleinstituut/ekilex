@@ -55,11 +55,18 @@ public class CudService extends AbstractService {
 	// --- UPDATE ---
 
 	@Transactional
-	public void updateWordValue(Long id, String valuePrese) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, id, valuePrese);
+	public void updateWordValue(Long wordId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		cudDbService.updateWordValue(id, value, valuePrese);
+		cudDbService.updateWordValue(wordId, value, valuePrese);
+	}
+
+	@Transactional
+	public void updateWordVocalForm(Long wordId, String vocalForm) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VOCAL_FORM, wordId, vocalForm);
+		createLifecycleLog(logData);
+		cudDbService.updateWordVocalForm(wordId, vocalForm);
 	}
 
 	@Transactional
@@ -152,7 +159,7 @@ public class CudService extends AbstractService {
 			return;
 		}
 
-		List<WordLexeme> lexemes = cudDbService.getWordLexemes(lexemeId);
+		List<WordLexeme> lexemes = cudDbService.getWordPrimaryLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
@@ -618,6 +625,7 @@ public class CudService extends AbstractService {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
 		createLifecycleLog(logData);
 		updateLexemeLevels(lexemeId, "delete");
+
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
 			deleteMeaning(meaningId);

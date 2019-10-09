@@ -408,6 +408,12 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createWordLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.VOCAL_FORM.equals(property)) {
+				Map<String, Object> entityData = helper.getWordData(create, entityId);
+				String recent = (String) entityData.get("vocal_form");
+				logData.setRecent(recent);
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createWordLifecycleLog(entityId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.MEANING.equals(entity)) {
 			if (LifecycleProperty.DOMAIN.equals(property)) {
@@ -609,7 +615,10 @@ public class LifecycleLogDbService {
 					FreeformType freeformType = FreeformType.valueOf(property.name());
 					Map<String, Object> entityData = helper.getSourceFreeformData(create, entityId, freeformType);
 					String recent = (String) entityData.get("value");
+					Long sourceId = (Long) entityData.get("source_id");
 					logData.setRecent(recent);
+					entityId = sourceId;
+					logData.setEntityId(entityId);
 					if (!logData.isValueChanged()) {
 						if (logData.isUpdateEvent()) {
 							return;

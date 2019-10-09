@@ -73,3 +73,27 @@ $(document).on("show.bs.modal", "[id^=editLexemeLevelsDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editLexemeComplexityDlg_]", function() {
 	initSelectDlg($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=addLexemePosDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addLexemeDerivDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addLexemeRegisterDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addMeaningDomainDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addLexemeGrammarDlg_]", function() {
+	initGenericTextEditDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editWordVocalFormDlg_]", function() {
+	initGenericTextEditDlg($(this));
+});

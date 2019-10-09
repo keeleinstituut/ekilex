@@ -772,236 +772,241 @@ src_tyyp	src_tyyp	leksm	LEKS märksõna	et	-	-
 src_tyyp	src_tyyp	leksm	LEKS headword	en	-	-
 src_tyyp	src_tyyp	lekstp	LEKS tähendus	et	-	-
 src_tyyp	src_tyyp	lekstp	LEKS sense	en	-	-
-st_tyyp	st_tyyp	abstr	abstraktne entiteet (nt üksus, suhe, süsteem)	et	-	-
-st_tyyp	st_tyyp	abstr	abstract entity	en	-	-
-st_tyyp	st_tyyp	abstr/konkr	abstr/konkr entiteet (nt vahend, võttestik, teatav süsteem, meetod)	et	-	-
-st_tyyp	st_tyyp	abstr/konkr	abstract/concrete entity	en	-	-
-st_tyyp	st_tyyp	abstr/konkr_omadus	esilduva omadusega abstr/konkr entiteet	et	-	-
-st_tyyp	st_tyyp	abstr/konkr_omadus	abstr/concr_property	en	-	-
-st_tyyp	st_tyyp	abstr_asend/suund	asend, suund, siht (abstr)	et	-	-
-st_tyyp	st_tyyp	abstr_asend/suund	position, direction, target	en	-	-
-st_tyyp	st_tyyp	ADV_aeg	(nt nüüd, eile)	et	-	-
-st_tyyp	st_tyyp	ADV_aste	(nt väga, äärmiselt)	et	-	-
-st_tyyp	st_tyyp	ADV_koht	(nt üles, ette)	et	-	-
-st_tyyp	st_tyyp	ADV_modaalsus	rõhuadverb (nt võib-olla, tõtt-öelda)	et	-	-
-st_tyyp	st_tyyp	ADV_põhjus	(nt järelikult)	et	-	-
-st_tyyp	st_tyyp	ADV_seisund	seisundiadverb (nt kinni, lahti, välja)	et	-	-
-st_tyyp	st_tyyp	ADV_tulemus	märgib lõpetatust või tulemuslikkust, saavutust (nt välja, ära)	et	-	-
-st_tyyp	st_tyyp	ADV_viis	(nt aeglaselt, hästi)	et	-	-
-st_tyyp	st_tyyp	aeg	ajalõik, piiratud või piiramata kestus	et	-	-
-st_tyyp	st_tyyp	aeg	time	en	-	-
-st_tyyp	st_tyyp	aeg_aastaaeg	aastaaeg (4 aastaaega)	et	-	-
-st_tyyp	st_tyyp	aeg_aastaaeg	time_season	en	-	-
-st_tyyp	st_tyyp	aeg_kuu	kuu (12 kuud)	et	-	-
-st_tyyp	st_tyyp	aeg_kuu	time_month	en	-	-
-st_tyyp	st_tyyp	aeg_nädalapäev	nädalapäev (7 päeva)	et	-	-
-st_tyyp	st_tyyp	aeg_nädalapäev	time_day	en	-	-
-st_tyyp	st_tyyp	aeg_tähtpäev	tähtpäev, püha (nt küünlapäev, võidupäev)	et	-	-
-st_tyyp	st_tyyp	aeg_tähtpäev	time_holiday	en	-	-
-st_tyyp	st_tyyp	ese	ese, objekt	et	-	-
-st_tyyp	st_tyyp	ese	artefact, object	en	-	-
-st_tyyp	st_tyyp	ese_anum	anum, nõu, mahuti	et	-	-
-st_tyyp	st_tyyp	ese_anum	artefact_vessel	en	-	-
-st_tyyp	st_tyyp	ese_instru	tööriist, sõiduvahend jt	et	-	-
-st_tyyp	st_tyyp	ese_instru	artefact_instrument, vehicle	en	-	-
-st_tyyp	st_tyyp	ese_kunst	kunstiteos, käsitöö, kunstilooming	et	-	-
-st_tyyp	st_tyyp	ese_kunst	artefact_piece of art, handicraft	en	-	-
-st_tyyp	st_tyyp	ese_raha	rahaühik, rahasumma vm vara	et	-	-
-st_tyyp	st_tyyp	ese_raha	artefact_money	en	-	-
-st_tyyp	st_tyyp	ese_riie	riietusese, rõivas, ka jalats	et	-	-
-st_tyyp	st_tyyp	ese_riie	artefact_clothing	en	-	-
-st_tyyp	st_tyyp	ese_semio	teos, sõnaline (märgiline) toode, programm jm	et	-	-
-st_tyyp	st_tyyp	ese_semio	artefact_semiotical	en	-	-
-st_tyyp	st_tyyp	ese_semio_Piibli raamat	Piibli raamat (Koguja raamat)	et	-	-
-st_tyyp	st_tyyp	ese_semio_Piibli raamat	artefact_semiotical_parts of the Bible	en	-	-
-st_tyyp	st_tyyp	esitus	info, teave, nimetus, märk jt	et	-	-
-st_tyyp	st_tyyp	esitus	representation	en	-	-
-st_tyyp	st_tyyp	esitus_arv	arv, number, arvuline näitaja (nt viies, kolmandik)	et	-	-
-st_tyyp	st_tyyp	esitus_arv	representation_number	en	-	-
-st_tyyp	st_tyyp	esitus_info	info, teave jt (nt aadress, andmed)	et	-	-
-st_tyyp	st_tyyp	esitus_info	representation_information, content	en	-	-
-st_tyyp	st_tyyp	esitus_keel	(grammatiline) keeleüksus, keeletermin	et	-	-
-st_tyyp	st_tyyp	esitus_keel	representation_(grammatical) unit of language, linguistic term	en	-	-
-st_tyyp	st_tyyp	esitus_keel_suhtlus	suhtlusüksus, kõnetlussõna, sõimusõna jms (nt braavo, härra, kurat)	et	-	-
-st_tyyp	st_tyyp	esitus_keel_suhtlus	representation_unit of communication	en	-	-
-st_tyyp	st_tyyp	esitus_keel_täht	täht, häälik	et	-	-
-st_tyyp	st_tyyp	esitus_keel_täht	representation_letter, sound	en	-	-
-st_tyyp	st_tyyp	esitus_kujutis	pilt, sümbol, kujutis, märk	et	-	-
-st_tyyp	st_tyyp	esitus_kujutis	representation_image, symbol	en	-	-
-st_tyyp	st_tyyp	esitus_mõõt	mõõde, mõõt, mõõtühik, suurus, pikkus jt	et	-	-
-st_tyyp	st_tyyp	esitus_mõõt	representation_quantity_definite	en	-	-
-st_tyyp	st_tyyp	esitus_tiitel	seisuse, teaduskraadi nimetus, aunimetus	et	-	-
-st_tyyp	st_tyyp	esitus_tiitel	representation_title	en	-	-
-st_tyyp	st_tyyp	esitus_tähis	tähis, sümbol, märk (nt O, g)	et	-	-
-st_tyyp	st_tyyp	esitus_tähis	representation_symbol	en	-	-
-st_tyyp	st_tyyp	inimene	inimolend, isik, indiviid	et	-	-
-st_tyyp	st_tyyp	inimene	human, person	en	-	-
-st_tyyp	st_tyyp	in_elukutse	elukutse, amet	et	-	-
-st_tyyp	st_tyyp	in_elukutse	profession	en	-	-
-st_tyyp	st_tyyp	in_müt	üleloomulik olend, muinasjututegelane vm (nt Punamütsike)	et	-	-
-st_tyyp	st_tyyp	in_müt	human_mythological	en	-	-
-st_tyyp	st_tyyp	in_omadus	esilduva omadusega inimene	et	-	-
-st_tyyp	st_tyyp	in_omadus	human_his property	en	-	-
-st_tyyp	st_tyyp	in_rahvas	teatud rahva esindaja, rahvas, inimrühm	et	-	-
-st_tyyp	st_tyyp	in_rahvas	human_nation	en	-	-
-st_tyyp	st_tyyp	in_rahvas_keel	mingi rahvuse keel, keele nimetus	et	-	-
-st_tyyp	st_tyyp	in_rahvas_keel	human_nation_language	en	-	-
-st_tyyp	st_tyyp	in_roll	esilduva rolliga olend, mõttesuuna, sotsiaalse staatuse esindaja	et	-	-
-st_tyyp	st_tyyp	in_roll	human_role	en	-	-
-st_tyyp	st_tyyp	in_sugulane	teatava sugulussuhte esindaja	et	-	-
-st_tyyp	st_tyyp	in_sugulane	human_relative	en	-	-
-st_tyyp	st_tyyp	in_tegija	agent, tegevuse tegija, seisundis olija	et	-	-
-st_tyyp	st_tyyp	in_tegija	human_agent of the activity, subject	en	-	-
-st_tyyp	st_tyyp	kehaosa	inimese (ja looma) kehaosa	et	-	-
-st_tyyp	st_tyyp	kehaosa	body part	en	-	-
-st_tyyp	st_tyyp	kehaosa_loom	looma kehaosa	et	-	-
-st_tyyp	st_tyyp	kehaosa_loom	body part_animal	en	-	-
-st_tyyp	st_tyyp	kogus	n-ö puhas kogusesõna, kogus (mis tahes asja)	et	-	-
-st_tyyp	st_tyyp	kogus	amount	en	-	-
-st_tyyp	st_tyyp	koht	ruumi, pinna, joone punkt või piirkond, asukoht	et	-	-
-st_tyyp	st_tyyp	koht	place	en	-	-
-st_tyyp	st_tyyp	koht_ala	maa-ala, piirkond	et	-	-
-st_tyyp	st_tyyp	koht_ala	place_territorium	en	-	-
-st_tyyp	st_tyyp	koht_asutus	asutus, institutsioon, teatav üksus	et	-	-
-st_tyyp	st_tyyp	koht_asutus	institution	en	-	-
-st_tyyp	st_tyyp	koht_geogr	kohanimi, geopoliitiline koht	et	-	-
-st_tyyp	st_tyyp	koht_geogr	place name	en	-	-
-st_tyyp	st_tyyp	koht_geogr_maailmajagu	maailmajagu	et	-	-
-st_tyyp	st_tyyp	koht_geogr_maailmajagu	place name	en	-	-
-st_tyyp	st_tyyp	koht_geogr_veekogu	ookean, meri, jõgi jm veekogud	et	-	-
-st_tyyp	st_tyyp	koht_geogr_veekogu	place name_seas et al	en	-	-
-st_tyyp	st_tyyp	koht_hoone	rajatis, (suurem) ehitis	et	-	-
-st_tyyp	st_tyyp	koht_hoone	place_building	en	-	-
-st_tyyp	st_tyyp	koht_kehaosa	kehapiirkond (ka loomal)	et	-	-
-st_tyyp	st_tyyp	koht_kehaosa	place_body part	en	-	-
-st_tyyp	st_tyyp	koht_loodus	looduslik piirkond, pinnavorm	et	-	-
-st_tyyp	st_tyyp	koht_loodus	place_nature	en	-	-
-st_tyyp	st_tyyp	koht_suund/asend	suund, asupaik	et	-	-
-st_tyyp	st_tyyp	koht_suund/asend	place_direction, location	en	-	-
-st_tyyp	st_tyyp	konkr	konkreetne entiteet	et	-	-
-st_tyyp	st_tyyp	konkr	concrete entity	en	-	-
-st_tyyp	st_tyyp	konkr_omadus	esilduva omadusega konkreetne entiteet	et	-	-
-st_tyyp	st_tyyp	konkr_omadus	concrete entity_its property	en	-	-
-st_tyyp	st_tyyp	loom	loom	et	-	-
-st_tyyp	st_tyyp	loom	animal	en	-	-
-st_tyyp	st_tyyp	loom_kala	kala	et	-	-
-st_tyyp	st_tyyp	loom_kala	animal_fish	en	-	-
-st_tyyp	st_tyyp	loom_liik	liik/tüüp/rühm loomi	et	-	-
-st_tyyp	st_tyyp	loom_liik	animal_kind/type/group of	en	-	-
-st_tyyp	st_tyyp	loom_lind	lind	et	-	-
-st_tyyp	st_tyyp	loom_lind	animal_bird	en	-	-
-st_tyyp	st_tyyp	loom_omadus	esilduva omadusega loom	et	-	-
-st_tyyp	st_tyyp	loom_omadus	animal_its property	en	-	-
-st_tyyp	st_tyyp	loom_putukas	putukas, mardikas, lülijalgne	et	-	-
-st_tyyp	st_tyyp	loom_putukas	animal_insect	en	-	-
-st_tyyp	st_tyyp	materjal/aine	materjal, aine, sh keemiline element	et	-	-
-st_tyyp	st_tyyp	materjal/aine	material/substance, incl. chemical elements	en	-	-
-st_tyyp	st_tyyp	nähtus	asjade muutumine ajas, see, mis ilmneb, tekib	et	-	-
-st_tyyp	st_tyyp	nähtus	phenomenon	en	-	-
-st_tyyp	st_tyyp	nähtus_füüs	füüsikaline nähtus (nt heli)	et	-	-
-st_tyyp	st_tyyp	nähtus_füüs	phenomenon_physical	en	-	-
-st_tyyp	st_tyyp	nähtus_loodus	loodusnähtus, loomulik, isetekkeline nähtus	et	-	-
-st_tyyp	st_tyyp	nähtus_loodus	phenomenon_nature, natural kind	en	-	-
-st_tyyp	st_tyyp	nähtus_psühh	tunne, psüühikaga seotud nähtus, kognitiivne fakt	et	-	-
-st_tyyp	st_tyyp	nähtus_psühh	phenomenon_psychological, emotion	en	-	-
-st_tyyp	st_tyyp	objekt	objekt	et	-	-
-st_tyyp	st_tyyp	objekt	object	en	-	-
-st_tyyp	st_tyyp	objekt_loodus	looduslik, loomulik objekt	et	-	-
-st_tyyp	st_tyyp	objekt_loodus	object_natural	en	-	-
-st_tyyp	st_tyyp	objekt_loodus_tähtkuju	tähtkujud (Kaljukits)	et	-	-
-st_tyyp	st_tyyp	objekt_loodus_tähtkuju	object_natural	en	-	-
-st_tyyp	st_tyyp	omadus	omadus, iseloomulik tunnus	et	-	-
-st_tyyp	st_tyyp	omadus	property	en	-	-
-st_tyyp	st_tyyp	omadus_abstr	abstraktne omadus (nt väärtus)	et	-	-
-st_tyyp	st_tyyp	omadus_abstr	property_abstract	en	-	-
-st_tyyp	st_tyyp	omadus_aeg	ajaga seotud omadus (nt suvine, eilne)	et	-	-
-st_tyyp	st_tyyp	omadus_aeg	property_time	en	-	-
-st_tyyp	st_tyyp	omadus_füüs	füüsikaline omadus (mass, kõrgus, kiirus, heli, värv jne)	et	-	-
-st_tyyp	st_tyyp	omadus_füüs	physical property (weight, speed, height, sound, colour, etc)	en	-	-
-st_tyyp	st_tyyp	omadus_füüs_värv	värv, värvus	et	-	-
-st_tyyp	st_tyyp	omadus_füüs_värv	colour	en	-	-
-st_tyyp	st_tyyp	omadus_koht	koha, asendi, suunaga seotud omadus (nt aknapoolne)	et	-	-
-st_tyyp	st_tyyp	omadus_koht	property_location	en	-	-
-st_tyyp	st_tyyp	omadus_kval	sisuline omadus, hinnang (nt hea)	et	-	-
-st_tyyp	st_tyyp	omadus_kval	qualitative property	en	-	-
-st_tyyp	st_tyyp	omadus_psühh	psüühikaga (tunnetega, tajuga) seotud omadus	et	-	-
-st_tyyp	st_tyyp	omadus_psühh	property_psychological, cognitive, emotional	en	-	-
-st_tyyp	st_tyyp	omadus_vanus	vanust kirjeldav omadus	et	-	-
-st_tyyp	st_tyyp	organism	organism, elusolend	et	-	-
-st_tyyp	st_tyyp	organism	living being	en	-	-
-st_tyyp	st_tyyp	seisund	olek, seis teataval ajahetkel, üldine olukord	et	-	-
-st_tyyp	st_tyyp	seisund	state	en	-	-
-st_tyyp	st_tyyp	seisund_haigus	haiguslik seisund	et	-	-
-st_tyyp	st_tyyp	seisund_haigus	state_illness, disease	en	-	-
-st_tyyp	st_tyyp	seisund_füüs	(asjade) füüsiline seisund	et	-	-
-st_tyyp	st_tyyp	seisund_füüs	state_physical	en	-	-
-st_tyyp	st_tyyp	sündmus	aja, koha ja tegevusega piiritletud sündmus, juhtum	et	-	-
-st_tyyp	st_tyyp	sündmus	event	en	-	-
-st_tyyp	st_tyyp	taim	taim, taimestik	et	-	-
-st_tyyp	st_tyyp	taim	plant, flora	en	-	-
-st_tyyp	st_tyyp	taim_liik	liik/tüüp/rühm taimi	et	-	-
-st_tyyp	st_tyyp	taim_liik	plant_kind/type/group of	en	-	-
-st_tyyp	st_tyyp	taim_omadus	esilduva omadusega taim	et	-	-
-st_tyyp	st_tyyp	taim_omadus	plant_its property	en	-	-
-st_tyyp	st_tyyp	taim_seen	seen	et	-	-
-st_tyyp	st_tyyp	taim_seen	plant_mushroom	en	-	-
-st_tyyp	st_tyyp	taim_õis	taime õis koos varrega	et	-	-
-st_tyyp	st_tyyp	taim_õis	plant_flower together with its stalk	en	-	-
-st_tyyp	st_tyyp	tegevus	tegevus, protsess	et	-	-
-st_tyyp	st_tyyp	tegevus	activity, process	en	-	-
-st_tyyp	st_tyyp	tegevus_kõnetegu	kõnetegu, suhtlusakt (nt käsk, palve, hüüatus)	et	-	-
-st_tyyp	st_tyyp	tegevus_kõnetegu	activity_speech act	en	-	-
-st_tyyp	st_tyyp	tegevus_muutus	seisundit/olekut muutev tegevus	et	-	-
-st_tyyp	st_tyyp	tegevus_muutus	activity_change	en	-	-
-st_tyyp	st_tyyp	tegevus_mäng	sportmäng, lauamäng jt	et	-	-
-st_tyyp	st_tyyp	tegevus_mäng	activity_game	en	-	-
-st_tyyp	st_tyyp	tegevus_tegu	tegevuse üksikjuhtum, toiming, tegevuse tulemus	et	-	-
-st_tyyp	st_tyyp	tegevus_tegu	activity_act, action	en	-	-
-st_tyyp	st_tyyp	toit	toit, söök, toiduaine	et	-	-
-st_tyyp	st_tyyp	toit	food	en	-	-
-st_tyyp	st_tyyp	toit_jook	jook, vedelik joomiseks	et	-	-
-st_tyyp	st_tyyp	toit_jook	food_drink	en	-	-
-st_tyyp	st_tyyp	toit_maitseaine	maitseaine, vürts	et	-	-
-st_tyyp	st_tyyp	toit_maitseaine	food_spice	en	-	-
-st_tyyp	st_tyyp	toit_vili	taime osa toiduna	et	-	-
-st_tyyp	st_tyyp	toit_vili	food_seed of the plant	en	-	-
-st_tyyp	st_tyyp	vald	valdkond, eriala, tegevusala	et	-	-
-st_tyyp	st_tyyp	vald	domain, speciality	en	-	-
-st_tyyp	st_tyyp	VERB_abstr	abstraktse sisuga tegevus	et	-	-
-st_tyyp	st_tyyp	VERB_abstr	verb_abstract	en	-	-
-st_tyyp	st_tyyp	VERB_aeg	ajaga seostuv tegevus (nt kestma)	et	-	-
-st_tyyp	st_tyyp	VERB_aeg	verb_time	en	-	-
-st_tyyp	st_tyyp	VERB_alustama	mingit tegevust alustama, inhoatiivne verb (nt panema)	et	-	-
-st_tyyp	st_tyyp	VERB_alustama	verb_inchoative	en	-	-
-st_tyyp	st_tyyp	VERB_grammatiline	grammatilise funktsiooniga verb (nt tugiverb, abiverb)	et	-	-
-st_tyyp	st_tyyp	VERB_liigutama	liigutama, liigutusega tegema, liikuma panema (nt andma)	et	-	-
-st_tyyp	st_tyyp	VERB_liigutama	verb_cause to move	en	-	-
-st_tyyp	st_tyyp	VERB_liikuma	mingil viisil liikuma ühest kohast teise (nt lendama)	et	-	-
-st_tyyp	st_tyyp	VERB_liikuma	verb_move	en	-	-
-st_tyyp	st_tyyp	VERB_liikuma/liigutama	liikuma, liigutama (nt lendama)	et	-	-
-st_tyyp	st_tyyp	VERB_liikuma/liigutama	verb_move	en	-	-
-st_tyyp	st_tyyp	VERB_modaalsus	võimalikkus, vajalikkus, tõenäosus (nt võima, tohtima, tarvitsema)	et	-	-
-st_tyyp	st_tyyp	VERB_modaalsus	verb_modality	en	-	-
-st_tyyp	st_tyyp	VERB_muutus	muutuma (nii et seisund muutub), teisenema (nt haigestuma, lõhkuma, sulama)	et	-	-
-st_tyyp	st_tyyp	VERB_muutus	verb_change, transition	en	-	-
-st_tyyp	st_tyyp	VERB_muutust põhjustama	muutma, (seisundi) muutust põhjustama	et	-	-
-st_tyyp	st_tyyp	VERB_muutust põhjustama	verb_cause change	en	-	-
-st_tyyp	st_tyyp	VERB_nähtus	heli tekitama, kõlama, loodusnähtus jm	et	-	-
-st_tyyp	st_tyyp	VERB_nähtus	verb_act_phenomenon	en	-	-
-st_tyyp	st_tyyp	VERB_seisund	olema, paiknema, asetsema; ka haigusseisund (nt asetsema, valutama)	et	-	-
-st_tyyp	st_tyyp	VERB_seisund	verb_be/exist, verb_state	en	-	-
-st_tyyp	st_tyyp	VERB_psühh	psüühikaga seotud tegevus	et	-	-
-st_tyyp	st_tyyp	VERB_psühh	verb_psychological state	en	-	-
-st_tyyp	st_tyyp	VERB_psühh_emots	emotsioon (nt rõõmustama, vihkama)	et	-	-
-st_tyyp	st_tyyp	VERB_psühh_mõistus	teadma, mõistma (nt käsitlema, taipama)	et	-	-
-st_tyyp	st_tyyp	VERB_psühh_mõistus	verb_know	en	-	-
-st_tyyp	st_tyyp	VERB_suhtlus	suuline või kirjalik suhtlus jm kõneaktid (nt käskima, kirjutama)	et	-	-
-st_tyyp	st_tyyp	VERB_suhtlus	verb_act_communication	en	-	-
-st_tyyp	st_tyyp	VERB_tegevus	tegevus/protsess üldiselt, mingit tegevust sooritama (nt lööma)	et	-	-
-st_tyyp	st_tyyp	VERB_tegevus	verb_perform/do, verb_ execute	en	-	-
-st_tyyp	st_tyyp	VERB_toimuma	toimuma, aset leidma, juhtuma (nt sattuma, juhtuma)	et	-	-
-st_tyyp	st_tyyp	VERB_toimuma	verb_happen	en	-	-
-st_tyyp	st_tyyp	VERB_toituma	sööma, jooma, toiduga tegelema	et	-	-
+st_tyyp	st_tyyp	abstr	abstraktne entiteet (nt üksus, suhe, süsteem)	et	semantic_type	abstr
+st_tyyp	st_tyyp	abstr	abstract entity	en	semantic_type	abstr
+st_tyyp	st_tyyp	abstr/konkr	abstr/konkr entiteet (nt vahend, võttestik, teatav süsteem, meetod)	et	semantic_type	abstr/konkr
+st_tyyp	st_tyyp	abstr/konkr	abstract/concrete entity	en	semantic_type	abstr/konkr
+st_tyyp	st_tyyp	abstr/konkr_omadus	esilduva omadusega abstr/konkr entiteet	et	semantic_type	abstr/konkr_omadus
+st_tyyp	st_tyyp	abstr/konkr_omadus	abstr/concr_property	en	semantic_type	abstr/konkr_omadus
+st_tyyp	st_tyyp	abstr_asend/suund	asend, suund, siht (abstr)	et	semantic_type	abstr_asend/suund
+st_tyyp	st_tyyp	abstr_asend/suund	position, direction, target	en	semantic_type	abstr_asend/suund
+st_tyyp	st_tyyp	ADV_aeg	(nt nüüd, eile)	et	semantic_type	ADV_aeg
+st_tyyp	st_tyyp	ADV_aste	(nt väga, äärmiselt)	et	semantic_type	ADV_aste
+st_tyyp	st_tyyp	ADV_koht	(nt üles, ette)	et	semantic_type	ADV_koht
+st_tyyp	st_tyyp	ADV_modaalsus	rõhuadverb (nt võib-olla, tõtt-öelda)	et	semantic_type	ADV_modaalsus
+st_tyyp	st_tyyp	ADV_põhjus	(nt järelikult)	et	semantic_type	ADV_põhjus
+st_tyyp	st_tyyp	ADV_seisund	seisundiadverb (nt kinni, lahti, välja)	et	semantic_type	ADV_seisund
+st_tyyp	st_tyyp	ADV_tulemus	märgib lõpetatust või tulemuslikkust, saavutust (nt välja, ära)	et	semantic_type	ADV_tulemus
+st_tyyp	st_tyyp	ADV_viis	(nt aeglaselt, hästi)	et	semantic_type	ADV_viis
+st_tyyp	st_tyyp	aeg	ajalõik, piiratud või piiramata kestus	et	semantic_type	aeg
+st_tyyp	st_tyyp	aeg	time	en	semantic_type	aeg
+st_tyyp	st_tyyp	aeg_aastaaeg	aastaaeg (4 aastaaega)	et	semantic_type	aeg_aastaaeg
+st_tyyp	st_tyyp	aeg_aastaaeg	time_season	en	semantic_type	aeg_aastaaeg
+st_tyyp	st_tyyp	aeg_kuu	kuu (12 kuud)	et	semantic_type	aeg_kuu
+st_tyyp	st_tyyp	aeg_kuu	time_month	en	semantic_type	aeg_kuu
+st_tyyp	st_tyyp	aeg_nädalapäev	nädalapäev (7 päeva)	et	semantic_type	aeg_nädalapäev
+st_tyyp	st_tyyp	aeg_nädalapäev	time_day	en	semantic_type	aeg_nädalapäev
+st_tyyp	st_tyyp	aeg_tähtpäev	tähtpäev, püha (nt küünlapäev, võidupäev)	et	semantic_type	aeg_tähtpäev
+st_tyyp	st_tyyp	aeg_tähtpäev	time_holiday	en	semantic_type	aeg_tähtpäev
+st_tyyp	st_tyyp	amet	amet	et	semantic_type	amet
+st_tyyp	st_tyyp	auaste	auaste	et	semantic_type	auaste
+st_tyyp	st_tyyp	ese	ese, objekt	et	semantic_type	ese
+st_tyyp	st_tyyp	ese	artefact, object	en	semantic_type	ese
+st_tyyp	st_tyyp	ese_anum	anum, nõu, mahuti	et	semantic_type	ese_anum
+st_tyyp	st_tyyp	ese_anum	artefact_vessel	en	semantic_type	ese_anum
+st_tyyp	st_tyyp	ese_instru	tööriist, sõiduvahend jt	et	semantic_type	ese_instru
+st_tyyp	st_tyyp	ese_instru	artefact_instrument, vehicle	en	semantic_type	ese_instru
+st_tyyp	st_tyyp	ese_kunst	kunstiteos, käsitöö, kunstilooming	et	semantic_type	ese_kunst
+st_tyyp	st_tyyp	ese_kunst	artefact_piece of art, handicraft	en	semantic_type	ese_kunst
+st_tyyp	st_tyyp	ese_raha	rahaühik, rahasumma vm vara	et	semantic_type	ese_raha
+st_tyyp	st_tyyp	ese_raha	artefact_money	en	semantic_type	ese_raha
+st_tyyp	st_tyyp	ese_riie	riietusese, rõivas, ka jalats	et	semantic_type	ese_riie
+st_tyyp	st_tyyp	ese_riie	artefact_clothing	en	semantic_type	ese_riie
+st_tyyp	st_tyyp	ese_semio	teos, sõnaline (märgiline) toode, programm jm	et	semantic_type	ese_semio
+st_tyyp	st_tyyp	ese_semio	artefact_semiotical	en	semantic_type	ese_semio
+st_tyyp	st_tyyp	ese_semio_Piibli raamat	Piibli raamat (Koguja raamat)	et	semantic_type	ese_semio_Piibli raamat
+st_tyyp	st_tyyp	ese_semio_Piibli raamat	artefact_semiotical_parts of the Bible	en	semantic_type	ese_semio_Piibli raamat
+st_tyyp	st_tyyp	esitus	info, teave, nimetus, märk jt	et	semantic_type	esitus
+st_tyyp	st_tyyp	esitus	representation	en	semantic_type	esitus
+st_tyyp	st_tyyp	esitus_arv	arv, number, arvuline näitaja (nt viies, kolmandik)	et	semantic_type	esitus_arv
+st_tyyp	st_tyyp	esitus_arv	representation_number	en	semantic_type	esitus_arv
+st_tyyp	st_tyyp	esitus_info	info, teave jt (nt aadress, andmed)	et	semantic_type	esitus_info
+st_tyyp	st_tyyp	esitus_info	representation_information, content	en	semantic_type	esitus_info
+st_tyyp	st_tyyp	esitus_keel	(grammatiline) keeleüksus, keeletermin	et	semantic_type	esitus_keel
+st_tyyp	st_tyyp	esitus_keel	representation_(grammatical) unit of language, linguistic term	en	semantic_type	esitus_keel
+st_tyyp	st_tyyp	esitus_keel_suhtlus	suhtlusüksus, kõnetlussõna, sõimusõna jms (nt braavo, härra, kurat)	et	semantic_type	esitus_keel_suhtlus
+st_tyyp	st_tyyp	esitus_keel_suhtlus	representation_unit of communication	en	semantic_type	esitus_keel_suhtlus
+st_tyyp	st_tyyp	esitus_keel_täht	täht, häälik	et	semantic_type	esitus_keel_täht
+st_tyyp	st_tyyp	esitus_keel_täht	representation_letter, sound	en	semantic_type	esitus_keel_täht
+st_tyyp	st_tyyp	esitus_kujutis	pilt, sümbol, kujutis, märk	et	semantic_type	esitus_kujutis
+st_tyyp	st_tyyp	esitus_kujutis	representation_image, symbol	en	semantic_type	esitus_kujutis
+st_tyyp	st_tyyp	esitus_mõõt	mõõde, mõõt, mõõtühik, suurus, pikkus jt	et	semantic_type	esitus_mõõt
+st_tyyp	st_tyyp	esitus_mõõt	representation_quantity_definite	en	semantic_type	esitus_mõõt
+st_tyyp	st_tyyp	esitus_tiitel	seisuse, teaduskraadi nimetus, aunimetus	et	semantic_type	esitus_tiitel
+st_tyyp	st_tyyp	esitus_tiitel	representation_title	en	semantic_type	esitus_tiitel
+st_tyyp	st_tyyp	esitus_tähis	tähis, sümbol, märk (nt O, g)	et	semantic_type	esitus_tähis
+st_tyyp	st_tyyp	esitus_tähis	representation_symbol	en	semantic_type	esitus_tähis
+st_tyyp	st_tyyp	inimene	inimolend, isik, indiviid	et	semantic_type	inimene
+st_tyyp	st_tyyp	inimene	human, person	en	semantic_type	inimene
+st_tyyp	st_tyyp	in_elukutse	elukutse, amet	et	semantic_type	in_elukutse
+st_tyyp	st_tyyp	in_elukutse	profession	en	semantic_type	in_elukutse
+st_tyyp	st_tyyp	in_müt	üleloomulik olend, muinasjututegelane vm (nt Punamütsike)	et	semantic_type	in_müt
+st_tyyp	st_tyyp	in_müt	human_mythological	en	semantic_type	in_müt
+st_tyyp	st_tyyp	in_omadus	esilduva omadusega inimene	et	semantic_type	in_omadus
+st_tyyp	st_tyyp	in_omadus	human_his property	en	semantic_type	in_omadus
+st_tyyp	st_tyyp	in_rahvas	teatud rahva esindaja, rahvas, inimrühm	et	semantic_type	in_rahvas
+st_tyyp	st_tyyp	in_rahvas	human_nation	en	semantic_type	in_rahvas
+st_tyyp	st_tyyp	in_rahvas_keel	mingi rahvuse keel, keele nimetus	et	semantic_type	in_rahvas_keel
+st_tyyp	st_tyyp	in_rahvas_keel	human_nation_language	en	semantic_type	in_rahvas_keel
+st_tyyp	st_tyyp	in_roll	esilduva rolliga olend, mõttesuuna, sotsiaalse staatuse esindaja	et	semantic_type	in_roll
+st_tyyp	st_tyyp	in_roll	human_role	en	semantic_type	in_roll
+st_tyyp	st_tyyp	in_sugulane	teatava sugulussuhte esindaja	et	semantic_type	in_sugulane
+st_tyyp	st_tyyp	in_sugulane	human_relative	en	semantic_type	in_sugulane
+st_tyyp	st_tyyp	in_tegija	agent, tegevuse tegija, seisundis olija	et	semantic_type	in_tegija
+st_tyyp	st_tyyp	in_tegija	human_agent of the activity, subject	en	semantic_type	in_tegija
+st_tyyp	st_tyyp	kehaosa	inimese (ja looma) kehaosa	et	semantic_type	kehaosa
+st_tyyp	st_tyyp	kehaosa	body part	en	semantic_type	kehaosa
+st_tyyp	st_tyyp	kehaosa_loom	looma kehaosa	et	semantic_type	kehaosa_loom
+st_tyyp	st_tyyp	kehaosa_loom	body part_animal	en	semantic_type	kehaosa_loom
+st_tyyp	st_tyyp	kogus	n-ö puhas kogusesõna, kogus (mis tahes asja)	et	semantic_type	kogus
+st_tyyp	st_tyyp	kogus	amount	en	semantic_type	kogus
+st_tyyp	st_tyyp	koht	ruumi, pinna, joone punkt või piirkond, asukoht	et	semantic_type	koht
+st_tyyp	st_tyyp	koht	place	en	semantic_type	koht
+st_tyyp	st_tyyp	koht_ala	maa-ala, piirkond	et	semantic_type	koht_ala
+st_tyyp	st_tyyp	koht_ala	place_territorium	en	semantic_type	koht_ala
+st_tyyp	st_tyyp	koht_asutus	asutus, institutsioon, teatav üksus	et	semantic_type	koht_asutus
+st_tyyp	st_tyyp	koht_asutus	institution	en	semantic_type	koht_asutus
+st_tyyp	st_tyyp	koht_geogr	kohanimi, geopoliitiline koht	et	semantic_type	koht_geogr
+st_tyyp	st_tyyp	koht_geogr	place name	en	semantic_type	koht_geogr
+st_tyyp	st_tyyp	koht_geogr_maailmajagu	maailmajagu	et	semantic_type	koht_geogr_maailmajagu
+st_tyyp	st_tyyp	koht_geogr_maailmajagu	place name	en	semantic_type	koht_geogr_maailmajagu
+st_tyyp	st_tyyp	koht_geogr_veekogu	ookean, meri, jõgi jm veekogud	et	semantic_type	koht_geogr_veekogu
+st_tyyp	st_tyyp	koht_geogr_veekogu	place name_seas et al	en	semantic_type	koht_geogr_veekogu
+st_tyyp	st_tyyp	koht_hoone	rajatis, (suurem) ehitis	et	semantic_type	koht_hoone
+st_tyyp	st_tyyp	koht_hoone	place_building	en	semantic_type	koht_hoone
+st_tyyp	st_tyyp	koht_kehaosa	kehapiirkond (ka loomal)	et	semantic_type	koht_kehaosa
+st_tyyp	st_tyyp	koht_kehaosa	place_body part	en	semantic_type	koht_kehaosa
+st_tyyp	st_tyyp	koht_loodus	looduslik piirkond, pinnavorm	et	semantic_type	koht_loodus
+st_tyyp	st_tyyp	koht_loodus	place_nature	en	semantic_type	koht_loodus
+st_tyyp	st_tyyp	koht_suund/asend	suund, asupaik	et	semantic_type	koht_suund/asend
+st_tyyp	st_tyyp	koht_suund/asend	place_direction, location	en	semantic_type	koht_suund/asend
+st_tyyp	st_tyyp	konkr	konkreetne entiteet	et	semantic_type	konkr
+st_tyyp	st_tyyp	konkr	concrete entity	en	semantic_type	konkr
+st_tyyp	st_tyyp	konkr_omadus	esilduva omadusega konkreetne entiteet	et	semantic_type	konkr_omadus
+st_tyyp	st_tyyp	konkr_omadus	concrete entity_its property	en	semantic_type	konkr_omadus
+st_tyyp	st_tyyp	käsklus	käsklus	et	semantic_type	käsklus
+st_tyyp	st_tyyp	loom	loom	et	semantic_type	loom
+st_tyyp	st_tyyp	loom	animal	en	semantic_type	loom
+st_tyyp	st_tyyp	loom_kala	kala	et	semantic_type	loom_kala
+st_tyyp	st_tyyp	loom_kala	animal_fish	en	semantic_type	loom_kala
+st_tyyp	st_tyyp	loom_liik	liik/tüüp/rühm loomi	et	semantic_type	loom_liik
+st_tyyp	st_tyyp	loom_liik	animal_kind/type/group of	en	semantic_type	loom_liik
+st_tyyp	st_tyyp	loom_lind	lind	et	semantic_type	loom_lind
+st_tyyp	st_tyyp	loom_lind	animal_bird	en	semantic_type	loom_lind
+st_tyyp	st_tyyp	loom_omadus	esilduva omadusega loom	et	semantic_type	loom_omadus
+st_tyyp	st_tyyp	loom_omadus	animal_its property	en	semantic_type	loom_omadus
+st_tyyp	st_tyyp	loom_putukas	putukas, mardikas, lülijalgne	et	semantic_type	loom_putukas
+st_tyyp	st_tyyp	loom_putukas	animal_insect	en	semantic_type	loom_putukas
+st_tyyp	st_tyyp	materjal/aine	materjal, aine, sh keemiline element	et	semantic_type	materjal/aine
+st_tyyp	st_tyyp	materjal/aine	material/substance, incl. chemical elements	en	semantic_type	materjal/aine
+st_tyyp	st_tyyp	nähtus	asjade muutumine ajas, see, mis ilmneb, tekib	et	semantic_type	nähtus
+st_tyyp	st_tyyp	nähtus	phenomenon	en	semantic_type	nähtus
+st_tyyp	st_tyyp	nähtus_füüs	füüsikaline nähtus (nt heli)	et	semantic_type	nähtus_füüs
+st_tyyp	st_tyyp	nähtus_füüs	phenomenon_physical	en	semantic_type	nähtus_füüs
+st_tyyp	st_tyyp	nähtus_loodus	loodusnähtus, loomulik, isetekkeline nähtus	et	semantic_type	nähtus_loodus
+st_tyyp	st_tyyp	nähtus_loodus	phenomenon_nature, natural kind	en	semantic_type	nähtus_loodus
+st_tyyp	st_tyyp	nähtus_psühh	tunne, psüühikaga seotud nähtus, kognitiivne fakt	et	semantic_type	nähtus_psühh
+st_tyyp	st_tyyp	nähtus_psühh	phenomenon_psychological, emotion	en	semantic_type	nähtus_psühh
+st_tyyp	st_tyyp	objekt	objekt	et	semantic_type	objekt
+st_tyyp	st_tyyp	objekt	object	en	semantic_type	objekt
+st_tyyp	st_tyyp	objekt_loodus	looduslik, loomulik objekt	et	semantic_type	objekt_loodus
+st_tyyp	st_tyyp	objekt_loodus	object_natural	en	semantic_type	objekt_loodus
+st_tyyp	st_tyyp	objekt_loodus_tähtkuju	tähtkujud (Kaljukits)	et	semantic_type	objekt_loodus_tähtkuju
+st_tyyp	st_tyyp	objekt_loodus_tähtkuju	object_natural	en	semantic_type	objekt_loodus_tähtkuju
+st_tyyp	st_tyyp	omadus	omadus, iseloomulik tunnus	et	semantic_type	omadus
+st_tyyp	st_tyyp	omadus	property	en	semantic_type	omadus
+st_tyyp	st_tyyp	omadus_abstr	abstraktne omadus (nt väärtus)	et	semantic_type	omadus_abstr
+st_tyyp	st_tyyp	omadus_abstr	property_abstract	en	semantic_type	omadus_abstr
+st_tyyp	st_tyyp	omadus_aeg	ajaga seotud omadus (nt suvine, eilne)	et	semantic_type	omadus_aeg
+st_tyyp	st_tyyp	omadus_aeg	property_time	en	semantic_type	omadus_aeg
+st_tyyp	st_tyyp	omadus_füüs	füüsikaline omadus (mass, kõrgus, kiirus, heli, värv jne)	et	semantic_type	omadus_füüs
+st_tyyp	st_tyyp	omadus_füüs	physical property (weight, speed, height, sound, colour, etc)	en	semantic_type	omadus_füüs
+st_tyyp	st_tyyp	omadus_füüs_värv	värv, värvus	et	semantic_type	omadus_füüs_värv
+st_tyyp	st_tyyp	omadus_füüs_värv	colour	en	semantic_type	omadus_füüs_värv
+st_tyyp	st_tyyp	omadus_koht	koha, asendi, suunaga seotud omadus (nt aknapoolne)	et	semantic_type	omadus_koht
+st_tyyp	st_tyyp	omadus_koht	property_location	en	semantic_type	omadus_koht
+st_tyyp	st_tyyp	omadus_kval	sisuline omadus, hinnang (nt hea)	et	semantic_type	omadus_kval
+st_tyyp	st_tyyp	omadus_kval	qualitative property	en	semantic_type	omadus_kval
+st_tyyp	st_tyyp	omadus_psühh	psüühikaga (tunnetega, tajuga) seotud omadus	et	semantic_type	omadus_psühh
+st_tyyp	st_tyyp	omadus_psühh	property_psychological, cognitive, emotional	en	semantic_type	omadus_psühh
+st_tyyp	st_tyyp	omadus_vanus	vanust kirjeldav omadus	et	semantic_type	omadus_vanus
+st_tyyp	st_tyyp	organisatsioon	organisatsioon	et	semantic_type	organisatsioon
+st_tyyp	st_tyyp	organism	organism, elusolend	et	semantic_type	organism
+st_tyyp	st_tyyp	organism	living being	en	semantic_type	organism
+st_tyyp	st_tyyp	seisund	olek, seis teataval ajahetkel, üldine olukord	et	semantic_type	seisund
+st_tyyp	st_tyyp	seisund	state	en	semantic_type	seisund
+st_tyyp	st_tyyp	seisund_haigus	haiguslik seisund	et	semantic_type	seisund_haigus
+st_tyyp	st_tyyp	seisund_haigus	state_illness, disease	en	semantic_type	seisund_haigus
+st_tyyp	st_tyyp	seisund_füüs	(asjade) füüsiline seisund	et	semantic_type	seisund_füüs
+st_tyyp	st_tyyp	seisund_füüs	state_physical	en	semantic_type	seisund_füüs
+st_tyyp	st_tyyp	sündmus	aja, koha ja tegevusega piiritletud sündmus, juhtum	et	semantic_type	sündmus
+st_tyyp	st_tyyp	sündmus	event	en	semantic_type	sündmus
+st_tyyp	st_tyyp	taim	taim, taimestik	et	semantic_type	taim
+st_tyyp	st_tyyp	taim	plant, flora	en	semantic_type	taim
+st_tyyp	st_tyyp	taim_liik	liik/tüüp/rühm taimi	et	semantic_type	taim_liik
+st_tyyp	st_tyyp	taim_liik	plant_kind/type/group of	en	semantic_type	taim_liik
+st_tyyp	st_tyyp	taim_omadus	esilduva omadusega taim	et	semantic_type	taim_omadus
+st_tyyp	st_tyyp	taim_omadus	plant_its property	en	semantic_type	taim_omadus
+st_tyyp	st_tyyp	taim_seen	seen	et	semantic_type	taim_seen
+st_tyyp	st_tyyp	taim_seen	plant_mushroom	en	semantic_type	taim_seen
+st_tyyp	st_tyyp	taim_õis	taime õis koos varrega	et	semantic_type	taim_õis
+st_tyyp	st_tyyp	taim_õis	plant_flower together with its stalk	en	semantic_type	taim_õis
+st_tyyp	st_tyyp	tegevus	tegevus, protsess	et	semantic_type	tegevus
+st_tyyp	st_tyyp	tegevus	activity, process	en	semantic_type	tegevus
+st_tyyp	st_tyyp	tegevus_kõnetegu	kõnetegu, suhtlusakt (nt käsk, palve, hüüatus)	et	semantic_type	tegevus_kõnetegu
+st_tyyp	st_tyyp	tegevus_kõnetegu	activity_speech act	en	semantic_type	tegevus_kõnetegu
+st_tyyp	st_tyyp	tegevus_muutus	seisundit/olekut muutev tegevus	et	semantic_type	tegevus_muutus
+st_tyyp	st_tyyp	tegevus_muutus	activity_change	en	semantic_type	tegevus_muutus
+st_tyyp	st_tyyp	tegevus_mäng	sportmäng, lauamäng jt	et	semantic_type	tegevus_mäng
+st_tyyp	st_tyyp	tegevus_mäng	activity_game	en	semantic_type	tegevus_mäng
+st_tyyp	st_tyyp	tegevus_tegu	tegevuse üksikjuhtum, toiming, tegevuse tulemus	et	semantic_type	tegevus_tegu
+st_tyyp	st_tyyp	tegevus_tegu	activity_act, action	en	semantic_type	tegevus_tegu
+st_tyyp	st_tyyp	toit	toit, söök, toiduaine	et	semantic_type	toit
+st_tyyp	st_tyyp	toit	food	en	semantic_type	toit
+st_tyyp	st_tyyp	toit_jook	jook, vedelik joomiseks	et	semantic_type	toit_jook
+st_tyyp	st_tyyp	toit_jook	food_drink	en	semantic_type	toit_jook
+st_tyyp	st_tyyp	toit_maitseaine	maitseaine, vürts	et	semantic_type	toit_maitseaine
+st_tyyp	st_tyyp	toit_maitseaine	food_spice	en	semantic_type	toit_maitseaine
+st_tyyp	st_tyyp	toit_vili	taime osa toiduna	et	semantic_type	toit_vili
+st_tyyp	st_tyyp	toit_vili	food_seed of the plant	en	semantic_type	toit_vili
+st_tyyp	st_tyyp	vald	valdkond, eriala, tegevusala	et	semantic_type	vald
+st_tyyp	st_tyyp	vald	domain, speciality	en	semantic_type	vald
+st_tyyp	st_tyyp	VERB_abstr	abstraktse sisuga tegevus	et	semantic_type	VERB_abstr
+st_tyyp	st_tyyp	VERB_abstr	verb_abstract	en	semantic_type	VERB_abstr
+st_tyyp	st_tyyp	VERB_aeg	ajaga seostuv tegevus (nt kestma)	et	semantic_type	VERB_aeg
+st_tyyp	st_tyyp	VERB_aeg	verb_time	en	semantic_type	VERB_aeg
+st_tyyp	st_tyyp	VERB_alustama	mingit tegevust alustama, inhoatiivne verb (nt panema)	et	semantic_type	VERB_alustama
+st_tyyp	st_tyyp	VERB_alustama	verb_inchoative	en	semantic_type	VERB_alustama
+st_tyyp	st_tyyp	VERB_grammatiline	grammatilise funktsiooniga verb (nt tugiverb, abiverb)	et	semantic_type	VERB_grammatiline
+st_tyyp	st_tyyp	VERB_liigutama	liigutama, liigutusega tegema, liikuma panema (nt andma)	et	semantic_type	VERB_liigutama
+st_tyyp	st_tyyp	VERB_liigutama	verb_cause to move	en	semantic_type	VERB_liigutama
+st_tyyp	st_tyyp	VERB_liikuma	mingil viisil liikuma ühest kohast teise (nt lendama)	et	semantic_type	VERB_liikuma
+st_tyyp	st_tyyp	VERB_liikuma	verb_move	en	semantic_type	VERB_liikuma
+st_tyyp	st_tyyp	VERB_liikuma/liigutama	liikuma, liigutama (nt lendama)	et	semantic_type	VERB_liikuma/liigutama
+st_tyyp	st_tyyp	VERB_liikuma/liigutama	verb_move	en	semantic_type	VERB_liikuma/liigutama
+st_tyyp	st_tyyp	VERB_modaalsus	võimalikkus, vajalikkus, tõenäosus (nt võima, tohtima, tarvitsema)	et	semantic_type	VERB_modaalsus
+st_tyyp	st_tyyp	VERB_modaalsus	verb_modality	en	semantic_type	VERB_modaalsus
+st_tyyp	st_tyyp	VERB_muutus	muutuma (nii et seisund muutub), teisenema (nt haigestuma, lõhkuma, sulama)	et	semantic_type	VERB_muutus
+st_tyyp	st_tyyp	VERB_muutus	verb_change, transition	en	semantic_type	VERB_muutus
+st_tyyp	st_tyyp	VERB_muutust põhjustama	muutma, (seisundi) muutust põhjustama	et	semantic_type	VERB_muutust põhjustama
+st_tyyp	st_tyyp	VERB_muutust põhjustama	verb_cause change	en	semantic_type	VERB_muutust põhjustama
+st_tyyp	st_tyyp	VERB_nähtus	heli tekitama, kõlama, loodusnähtus jm	et	semantic_type	VERB_nähtus
+st_tyyp	st_tyyp	VERB_nähtus	verb_act_phenomenon	en	semantic_type	VERB_nähtus
+st_tyyp	st_tyyp	VERB_seisund	olema, paiknema, asetsema; ka haigusseisund (nt asetsema, valutama)	et	semantic_type	VERB_seisund
+st_tyyp	st_tyyp	VERB_seisund	verb_be/exist, verb_state	en	semantic_type	VERB_seisund
+st_tyyp	st_tyyp	VERB_psühh	psüühikaga seotud tegevus	et	semantic_type	VERB_psühh
+st_tyyp	st_tyyp	VERB_psühh	verb_psychological state	en	semantic_type	VERB_psühh
+st_tyyp	st_tyyp	VERB_psühh_emots	emotsioon (nt rõõmustama, vihkama)	et	semantic_type	VERB_psühh_emots
+st_tyyp	st_tyyp	VERB_psühh_mõistus	teadma, mõistma (nt käsitlema, taipama)	et	semantic_type	VERB_psühh_mõistus
+st_tyyp	st_tyyp	VERB_psühh_mõistus	verb_know	en	semantic_type	VERB_psühh_mõistus
+st_tyyp	st_tyyp	VERB_suhtlus	suuline või kirjalik suhtlus jm kõneaktid (nt käskima, kirjutama)	et	semantic_type	VERB_suhtlus
+st_tyyp	st_tyyp	VERB_suhtlus	verb_act_communication	en	semantic_type	VERB_suhtlus
+st_tyyp	st_tyyp	VERB_tegevus	tegevus/protsess üldiselt, mingit tegevust sooritama (nt lööma)	et	semantic_type	VERB_tegevus
+st_tyyp	st_tyyp	VERB_tegevus	verb_perform/do, verb_ execute	en	semantic_type	VERB_tegevus
+st_tyyp	st_tyyp	VERB_toimuma	toimuma, aset leidma, juhtuma (nt sattuma, juhtuma)	et	semantic_type	VERB_toimuma
+st_tyyp	st_tyyp	VERB_toimuma	verb_happen	en	semantic_type	VERB_toimuma
+st_tyyp	st_tyyp	VERB_toituma	sööma, jooma, toiduga tegelema	et	semantic_type	VERB_toituma
+st_tyyp	st_tyyp	üksus	üksus	et	semantic_type	üksus
 sta_tyyp	sta_tyyp	{grp}	rühm, grupp, kogum (kogumõiste)	et	-	-
 sta_tyyp	sta_tyyp	{grp}	group of sth/sb	en	-	-
 sta_tyyp	sta_tyyp	{kogus}	kogus	et	-	-

@@ -83,7 +83,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -97,7 +97,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -155,10 +155,16 @@
               <div class="col-md-6">
                 <select required class="form-control word-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="word_vocal_form">Hääldus</option>
                   <option value="word_gender">Sugu</option>
                   <option value="word_type">Sõna tüüp</option>
                   <option value="word_aspect">Aspekt</option>
                 </select>
+              </div>
+            </div>
+            <div th:id="${'word_vocal_form_' + wordId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-12">
+                <input type="text" class="form-control required-field" name="value">
               </div>
             </div>
             <div th:id="${'word_gender_' + wordId}" class="form-group row value-group" style="display: none">
@@ -250,7 +256,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                          th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -421,7 +427,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                          th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -452,7 +458,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == government.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -482,7 +488,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                          th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -550,7 +556,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == usage.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -653,7 +659,7 @@
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value</option>
+                          th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -681,7 +687,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == publicNote.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -804,6 +810,27 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editWordVocalFormDlg_' + wordId}" class="modal" role="dialog" th:fragment="edit_word_vocal_form_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_vocal_form">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control required-field" name="value" th:value="${details.word.vocalForm}">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editWordGenderDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_gender_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -879,6 +906,38 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLexemeGrammarDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_grammar_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_grammar">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control required-field" name="value">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
+                  <option th:each="complexity : ${complexities}"
+                          th:value="${complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}" class="modal" role="dialog" th:fragment="edit_lexeme_grammar_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -897,7 +956,7 @@
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == grammar.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">>value
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -926,6 +985,31 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLexemePosDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_pos_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_pos">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="pos : ${allLexemePos}" th:value="${pos.code}" th:text="${pos.value}">pos</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_pos_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -937,6 +1021,31 @@
             <select class="form-control" name="value">
               <option th:each="item : ${allLexemePos}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">lexeme pos</option>
             </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addLexemeDerivDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_deriv_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_deriv">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="deriv : ${allLexemeDerivs}" th:value="${deriv.code}" th:text="${deriv.value}">deriv</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
       </div>
@@ -958,6 +1067,31 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLexemeRegisterDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_register_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_register">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_register_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -969,6 +1103,36 @@
             <select class="form-control" name="value">
               <option th:each="item : ${allLexemeRegisters}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">value</option>
             </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningDomainDlg_' + lexeme.meaningId}" class="modal" role="dialog" th:fragment="add_meaning_domain_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id2" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="opCode" value="meaning_domain">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <select required class="form-control required-field classifier-select" data-live-search="true">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
+                    <option th:each="domain : ${origin.getValue()}"
+                            th:value="${domain.toIdString()}"
+                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
       </div>
