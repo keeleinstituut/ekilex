@@ -1,3 +1,5 @@
+-- upgrade from ver 1.8.0 to 1.9.0
+
 create table semantic_type
 (
 	code varchar(100) primary key,
@@ -394,3 +396,4 @@ insert into meaning_semantic_type (meaning_id, semantic_type_code)
 from meaning_freeform mff, freeform ff
 where mff.freeform_id = ff.id
   and ff.type = 'SEMANTIC_TYPE');
+
