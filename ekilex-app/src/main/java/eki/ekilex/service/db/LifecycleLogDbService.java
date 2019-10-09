@@ -408,6 +408,12 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createWordLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.VOCAL_FORM.equals(property)) {
+				Map<String, Object> entityData = helper.getWordData(create, entityId);
+				String recent = (String) entityData.get("vocal_form");
+				logData.setRecent(recent);
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createWordLifecycleLog(entityId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.MEANING.equals(entity)) {
 			if (LifecycleProperty.DOMAIN.equals(property)) {

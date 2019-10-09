@@ -14,6 +14,9 @@ public class Word extends AbstractDataObject {
 	@Column(name = "word")
 	private String value;
 
+	@Column(name = "vocal_form")
+	private String vocalForm;
+
 	@Column(name = "homonym_nr")
 	private Integer homonymNumber;
 
@@ -58,6 +61,14 @@ public class Word extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getVocalForm() {
+		return vocalForm;
+	}
+
+	public void setVocalForm(String vocalForm) {
+		this.vocalForm = vocalForm;
 	}
 
 	public Integer getHomonymNumber() {

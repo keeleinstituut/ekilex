@@ -132,11 +132,6 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return DEFAULT_DEFINITION_TYPE_CODE;
 	}
 
-	@ModelAttribute("iso2languages")
-	public Map<String, String> getIso2Languages() {
-		return commonDataService.getLanguagesIso2Map();
-	}
-
 	protected void resetUserRole(Model model) {
 
 		SessionBean sessionBean = getSessionBean(model);

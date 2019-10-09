@@ -101,6 +101,12 @@
   <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Grammatika</span>
+      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addLexemeGrammarDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.isLexemeCrudGranted">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
@@ -313,6 +319,29 @@
           </div>
         </span>
       </div>
+    </div>
+  </div>
+  <div class="row mr-0 hidden-buttons" th:unless="${#strings.isEmpty(details.word.vocalForm)}" th:fragment="word_vocal_form">
+    <div class="col pr-0 col-w7rem">
+      <span class="lbl">Hääldus</span>
+    </div>
+    <div class="col pl-0">
+      <span th:text="${details.word.vocalForm}"></span>
+      <button type="button" class="btn badge badge-primary"
+              title="Muuda"
+              data-toggle="modal"
+              th:data-target="${'#editWordVocalFormDlg_' + wordId}"
+              sec:authorize="${#vars.isWordCrudGranted}">
+        <i class="fa fa-edit" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn badge badge-warning"
+              th:data-id="${wordId}"
+              th:data-op-code="word_vocal_form"
+              data-toggle="delete-confirm"
+              data-placement="right"
+              sec:authorize="${#vars.isWordCrudGranted}">
+        <i class="fa fa-remove" aria-hidden="true"></i>
+      </button>
     </div>
   </div>
   <div class="row mr-0 hidden-buttons" th:if="${details.word.genderCode != null}" th:fragment="word_gender">
