@@ -1,6 +1,7 @@
 package eki.wordweb.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import eki.wordweb.service.CorporaServiceEst;
 import eki.wordweb.service.CorporaServiceRus;
 import eki.wordweb.service.LexSearchService;
 import eki.wordweb.service.StatDataCollector;
+import eki.wordweb.service.TermSearchService;
 import eki.wordweb.web.bean.SessionBean;
 import eki.wordweb.web.util.UserAgentUtil;
 
@@ -41,6 +43,9 @@ public class SearchController extends AbstractController {
 
 	@Autowired
 	private LexSearchService lexSearchService;
+
+	@Autowired
+	private TermSearchService termSearchService;
 
 	@Autowired
 	private CorporaServiceEst corporaServiceEst;
@@ -64,6 +69,7 @@ public class SearchController extends AbstractController {
 
 	@PostMapping(SEARCH_URI)
 	public String searchWords(
+			@RequestParam(name = "datasetType") String datasetType,
 			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "sourceLang") String sourceLang,
 			@RequestParam(name = "destinLang") String destinLang,
@@ -73,15 +79,15 @@ public class SearchController extends AbstractController {
 		if (StringUtils.isBlank(searchWord)) {
 			return "redirect:" + SEARCH_PAGE;
 		}
-		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, null, searchMode);
+		String searchUri = composeSearchUri(datasetType, searchWord, sourceLang, destinLang, null, searchMode);
 
 		return "redirect:" + searchUri;
 	}
 
 	@GetMapping({
-		SEARCH_URI + "/{langPair}/{searchMode}/{searchWord}/{homonymNr}",
-		SEARCH_URI + "/{langPair}/{searchMode}/{searchWord}"})
-	public String searchWordsByUri(
+			SEARCH_URI + LEX_URI + "/{langPair}/{searchMode}/{searchWord}/{homonymNr}",
+			SEARCH_URI + LEX_URI + "/{langPair}/{searchMode}/{searchWord}"})
+	public String searchLexWordsByUri(
 			@PathVariable(name = "langPair") String langPair,
 			@PathVariable(name = "searchMode") String searchMode,
 			@PathVariable(name = "searchWord") String searchWord,
@@ -98,8 +104,9 @@ public class SearchController extends AbstractController {
 		}
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
-		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr, searchMode);
+		SearchFilter searchFilter = validateLexSearch(langPair, searchWord, homonymNrStr, searchMode);
 		sessionBean.setLastSearchWord(searchWord);
+		sessionBean.setDatasetType(DATASET_TYPE_LEX);
 
 		if (sessionBeanNotPresent) {
 			//to get rid of the sessionid in the url
@@ -126,28 +133,81 @@ public class SearchController extends AbstractController {
 		return SEARCH_PAGE;
 	}
 
+	@GetMapping({
+			SEARCH_URI + TERM_URI + "/{searchWord}/{homonymNr}",
+			SEARCH_URI + TERM_URI + "/{searchWord}"})
+	public String searchTermWordsByUri(
+			@PathVariable(name = "searchWord") String searchWord,
+			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
+			HttpServletRequest request,
+			Model model) {
+
+		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
+		SessionBean sessionBean;
+		if (sessionBeanNotPresent) {
+			sessionBean = createSessionBean(model);
+		} else {
+			sessionBean = getSessionBean(model);
+		}
+
+		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
+		SearchFilter searchFilter = validateTermSearch(searchWord, homonymNrStr);
+		sessionBean.setLastSearchWord(searchWord);
+		sessionBean.setDatasetType(DATASET_TYPE_TERM);
+
+		if (sessionBeanNotPresent) {
+			//to get rid of the sessionid in the url
+			return "redirect:" + searchFilter.getSearchUri();
+		} else if (!searchFilter.isValid()) {
+			return "redirect:" + searchFilter.getSearchUri();
+		}
+
+		Integer homonymNr = searchFilter.getHomonymNr();
+
+		WordsData wordsData = termSearchService.getWords(searchWord, homonymNr);
+		populateSearchModel(searchWord, wordsData, model);
+
+		return SEARCH_PAGE;
+	}
+
 	@GetMapping(value = "/prefix/{sourceLang}/{destinLang}/{wordPrefix}", produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public Map<String, List<String>> searchWordsByPrefix(
 			@PathVariable("sourceLang") String sourceLang,
 			@PathVariable("destinLang") String destinLang,
-			@PathVariable("wordPrefix") String wordPrefix) {
+			@PathVariable("wordPrefix") String wordPrefix,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		Map<String, List<String>> searchResultCandidates = lexSearchService.getWordsByPrefix(wordPrefix, sourceLang, destinLang, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		String datasetType = sessionBean.getDatasetType();
+		Map<String, List<String>> searchResultCandidates = new HashMap<>();
+		if (StringUtils.equals(datasetType, DATASET_TYPE_LEX)) {
+			searchResultCandidates = lexSearchService.getWordsByPrefix(wordPrefix, sourceLang, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		} else if (StringUtils.equals(datasetType, DATASET_TYPE_TERM)) {
+			searchResultCandidates = termSearchService.getWordsByPrefix(wordPrefix, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		}
 		return searchResultCandidates;
 	}
 
-	@GetMapping("/worddetails/{wordId}")
+	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
 	public String wordDetails(
 			@PathVariable("wordId") Long wordId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
-		String sourceLang = sessionBean.getSourceLang();
-		String destinLang = sessionBean.getDestinLang();
-		String searchMode = sessionBean.getSearchMode();
+		String datasetType = sessionBean.getDatasetType();
+		WordData wordData = new WordData();
 
-		WordData wordData = lexSearchService.getWordData(wordId, sourceLang, destinLang, DISPLAY_LANG, searchMode);
+		if (StringUtils.equals(datasetType, DATASET_TYPE_LEX)) {
+
+			String sourceLang = sessionBean.getSourceLang();
+			String destinLang = sessionBean.getDestinLang();
+			String searchMode = sessionBean.getSearchMode();
+			wordData = lexSearchService.getWordData(wordId, sourceLang, destinLang, DISPLAY_LANG, searchMode);
+
+		} else if (StringUtils.equals(datasetType, DATASET_TYPE_TERM)) {
+
+			wordData = termSearchService.getWordData(wordId, DISPLAY_LANG);
+		}
 		model.addAttribute("wordData", wordData);
 
 		return SEARCH_PAGE + " :: worddetails";
@@ -169,7 +229,7 @@ public class SearchController extends AbstractController {
 		return "common-search :: korp";
 	}
 
-	private SearchFilter validate(String langPair, String searchWord, String homonymNrStr, String searchMode) {
+	private SearchFilter validateLexSearch(String langPair, String searchWord, String homonymNrStr, String searchMode) {
 
 		boolean isValid = true;
 		String[] languages = StringUtils.split(langPair, LANGUAGE_PAIR_SEPARATOR);
@@ -212,7 +272,7 @@ public class SearchController extends AbstractController {
 			searchMode = SEARCH_MODE_DETAIL;
 		}
 
-		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, homonymNr, searchMode);
+		String searchUri = composeSearchUri(DATASET_TYPE_LEX, searchWord, sourceLang, destinLang, homonymNr, searchMode);
 
 		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setSearchWord(searchWord);
@@ -226,10 +286,43 @@ public class SearchController extends AbstractController {
 		return searchFilter;
 	}
 
-	private String composeSearchUri(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
+	private SearchFilter validateTermSearch(String searchWord, String homonymNrStr) {
 
-		String encodedSearchWord = UriUtils.encode(searchWord, SystemConstant.UTF_8);
-		String searchUri = SEARCH_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + searchMode + "/" + encodedSearchWord;
+		boolean isValid = true;
+
+		Integer homonymNr;
+
+		if (StringUtils.isBlank(homonymNrStr)) {
+			homonymNr = 1;
+			isValid = isValid & false;
+		} else if (!StringUtils.isNumeric(homonymNrStr)) {
+			homonymNr = 1;
+			isValid = isValid & false;
+		} else {
+			homonymNr = new Integer(homonymNrStr);
+			isValid = isValid & true;
+		}
+
+		String searchUri = composeSearchUri(DATASET_TYPE_TERM, searchWord, null, null, homonymNr, null);
+
+		SearchFilter searchFilter = new SearchFilter();
+		searchFilter.setSearchWord(searchWord);
+		searchFilter.setHomonymNr(homonymNr);
+		searchFilter.setSearchUri(searchUri);
+		searchFilter.setValid(isValid);
+
+		return searchFilter;
+	}
+
+	private String composeSearchUri(String datasetType, String word, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
+
+		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
+		String searchUri = null;
+		if (StringUtils.equals(datasetType, DATASET_TYPE_LEX)) {
+			searchUri = SEARCH_URI + LEX_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + searchMode + "/" + encodedWord;
+		} else if (StringUtils.equals(datasetType, DATASET_TYPE_TERM)) {
+			searchUri = SEARCH_URI + TERM_URI + "/" + encodedWord;
+		}
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}

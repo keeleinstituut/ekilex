@@ -78,11 +78,11 @@ public class ViewUtil implements WebConstant, SystemConstant {
 	}
 
 	public String getSearchUri(SessionBean sessionBean, String word, Integer homonymNr) {
+		
 		String sourceLang = sessionBean.getSourceLang();
 		String destinLang = sessionBean.getDestinLang();
 		String searchMode = sessionBean.getSearchMode();
-		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
-		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + encodedWord + "/" + homonymNr;
+		String uri = composeSearchUri(sessionBean, word, sourceLang, destinLang, homonymNr, searchMode);
 		return uri;
 	}
 
@@ -90,8 +90,7 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		String sourceLang = sessionBean.getSourceLang();
 		String destinLang = sessionBean.getDestinLang();
 		String searchMode = sessionBean.getSearchMode();
-		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
-		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + encodedWord;
+		String uri = composeSearchUri(sessionBean, word, sourceLang, destinLang, null, searchMode);
 		return uri;
 	}
 
@@ -99,8 +98,23 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		String sourceLang = sessionBean.getDestinLang();
 		String destinLang = sessionBean.getSourceLang();
 		String searchMode = sessionBean.getSearchMode();
-		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
-		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + encodedWord + "/" + homonymNr;
+		String uri = composeSearchUri(sessionBean, word, sourceLang, destinLang, homonymNr, searchMode);
 		return uri;
+	}
+
+	private String composeSearchUri(SessionBean sessionBean, String word, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
+
+		String datasetType = sessionBean.getDatasetType();
+		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
+		String searchUri = null;
+		if (StringUtils.equals(datasetType, DATASET_TYPE_LEX)) {
+			searchUri = SEARCH_URI + LEX_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + searchMode + "/" + encodedWord;
+		} else if (StringUtils.equals(datasetType, DATASET_TYPE_TERM)) {
+			searchUri = SEARCH_URI + TERM_URI + "/" + encodedWord;
+		}
+		if (homonymNr != null) {
+			searchUri += "/" + homonymNr;
+		}
+		return searchUri;
 	}
 }

@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -1753892625;
+    private static final long serialVersionUID = 1655689382;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -73,6 +73,16 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.meaning_id</code>.
      */
     public final TableField<MviewWwLexemeRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.dataset_type</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String> DATASET_TYPE = createField("dataset_type", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.dataset_code</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.level1</code>.
@@ -195,7 +205,7 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_COMPLEXITY_IDX, Indexes.MVIEW_WW_LEXEME_LEXEME_ID_IDX, Indexes.MVIEW_WW_LEXEME_MEANING_ID_IDX, Indexes.MVIEW_WW_LEXEME_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_COMPLEXITY_IDX, Indexes.MVIEW_WW_LEXEME_DATASET_TYPE_IDX, Indexes.MVIEW_WW_LEXEME_LEXEME_ID_IDX, Indexes.MVIEW_WW_LEXEME_MEANING_ID_IDX, Indexes.MVIEW_WW_LEXEME_WORD_ID_IDX);
     }
 
     /**

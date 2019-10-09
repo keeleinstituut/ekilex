@@ -48,3 +48,6 @@ update lexeme set type = 'PRIMARY' where type is null;
 alter table lexeme alter column type set not null;
 create index lexeme_type_idx on lexeme(type);
 
+-- 8.10.2019
+create index dataset_code_idx on dataset(code);
+create index dataset_type_idx on dataset(type);

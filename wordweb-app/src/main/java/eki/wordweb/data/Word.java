@@ -28,8 +28,6 @@ public class Word extends WordTypeData {
 
 	private Classifier aspect;
 
-	private Integer meaningCount;
-
 	private List<TypeMeaningWord> meaningWords;
 
 	private String meaningWordsWrapup;
@@ -136,14 +134,6 @@ public class Word extends WordTypeData {
 
 	public void setAspect(Classifier aspect) {
 		this.aspect = aspect;
-	}
-
-	public Integer getMeaningCount() {
-		return meaningCount;
-	}
-
-	public void setMeaningCount(Integer meaningCount) {
-		this.meaningCount = meaningCount;
 	}
 
 	public List<TypeMeaningWord> getMeaningWords() {

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = -1249496775;
+    private static final long serialVersionUID = -166423533;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -107,11 +107,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField("lang_complexities", eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_word.meaning_count</code>.
-     */
-    public final TableField<MviewWwWordRecord, Integer> MEANING_COUNT = createField("meaning_count", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.mview_ww_word.meaning_words</code>.
      */
     public final TableField<MviewWwWordRecord, TypeMeaningWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD.getDataType().getArrayDataType(), this, "");
@@ -120,6 +115,16 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.definitions</code>.
      */
     public final TableField<MviewWwWordRecord, TypeDefinitionRecord[]> DEFINITIONS = createField("definitions", eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.lex_dataset_exists</code>.
+     */
+    public final TableField<MviewWwWordRecord, Boolean> LEX_DATASET_EXISTS = createField("lex_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.term_dataset_exists</code>.
+     */
+    public final TableField<MviewWwWordRecord, Boolean> TERM_DATASET_EXISTS = createField("term_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * Create a <code>public.mview_ww_word</code> table reference
@@ -167,7 +172,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_LEX_DATASET_EXISTS_IDX, Indexes.MVIEW_WW_WORD_TERM_DATASET_EXISTS_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
     }
 
     /**

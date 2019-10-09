@@ -6,6 +6,8 @@ public class SessionBean extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private String datasetType;
+
 	private String sourceLang;
 
 	private String destinLang;
@@ -13,6 +15,14 @@ public class SessionBean extends AbstractDataObject {
 	private String searchMode;
 
 	private String lastSearchWord;
+
+	public String getDatasetType() {
+		return datasetType;
+	}
+
+	public void setDatasetType(String datasetType) {
+		this.datasetType = datasetType;
+	}
 
 	public String getSourceLang() {
 		return sourceLang;

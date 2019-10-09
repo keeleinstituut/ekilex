@@ -7,6 +7,7 @@
       <form th:action="@{/search}" th:method="post">
         <div>
           <input type="text" id="search" role="search" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
+          <input type="hidden" name="datasetType" th:value="${sessionBean.datasetType}" />
           <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
           <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
           <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
@@ -26,9 +27,24 @@
       </form>
     </div>
   </th:block>
-  <!-- lang filter -->
+
+  <th:block th:fragment="dataset-type-filter">
+    <div id="dataset-type-toggle-container" class="detail-toggle-container">
+      <div class="inner-container">
+        <div tabindex="0" role="button" class="toggle" id="toggle-lex"
+             th:classappend="${sessionBean.datasetType == 'lex' ? 'active' : ''}">
+          <p>Üldkeel</p>
+        </div>
+        <div tabindex="0" role="button" class="toggle" id="toggle-term"
+             th:classappend="${sessionBean.datasetType == 'term' ? 'active' : ''}">
+          <p>Oskuskeel</p>
+        </div>
+      </div>
+    </div>
+  </th:block>
+
   <th:block th:fragment="lang-filter">
-    <div class="search-lang dropdown">
+    <div id="lang-select-container" class="search-lang dropdown" th:hidden="${sessionBean.datasetType != 'lex'}">
       <button id="lang-selector-btn" th:aria-label="#{aria.search.searchlanguages}" class="btn btn-light lang-btn float-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span id="source-lang-lbl">eesti</span>
         <span class="icon icon-arrow-right"></span>
@@ -56,15 +72,16 @@
       </form>
     </div>
   </th:block>
+
   <th:block th:fragment="detail-filter">
-    <div id="detail-toggle-container" class="detail-toggle-container">
+    <div id="detail-toggle-container" class="detail-toggle-container" th:hidden="${sessionBean.datasetType != 'lex'}">
       <div class="inner-container">
         <div tabindex="0" th:aria-label="#{aria.search.detail.detail}" role="button" class="toggle" id="toggle-detail" 
-            th:classappend="${sessionBean.searchMode == 'detail' ? 'active' : ''}">
+             th:classappend="${sessionBean.searchMode == 'detail' ? 'active' : ''}">
           <p th:text="#{button.label.detail}">Detailne</p>
         </div>
         <div tabindex="0" th:aria-label="#{aria.search.detail.simple}" role="button" class="toggle" id="toggle-simple" 
-            th:classappend="${sessionBean.searchMode == 'simple' ? 'active' : ''}">
+             th:classappend="${sessionBean.searchMode == 'simple' ? 'active' : ''}">
           <p th:text="#{button.label.simple}">Lihtne</p>
         </div>
       </div>

@@ -4,6 +4,10 @@ public interface SystemConstant {
 
 	String UTF_8 = "UTF-8";
 
+	String DATASET_TYPE_LEX = "lex";
+
+	String DATASET_TYPE_TERM = "term";
+
 	String SEARCH_MODE_SIMPLE = "simple";
 
 	String SEARCH_MODE_DETAIL = "detail";

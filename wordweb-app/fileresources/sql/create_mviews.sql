@@ -70,9 +70,10 @@ dblink(
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
 	lang_complexities type_lang_complexity array,
-	meaning_count integer,
 	meaning_words type_meaning_word array,
-	definitions type_definition array
+	definitions type_definition array,
+	lex_dataset_exists boolean,
+	term_dataset_exists boolean
 );
 
 create materialized view mview_ww_as_word as
@@ -117,7 +118,6 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_meaning') as meaning(
 	meaning_id bigint,
-	complexity varchar(100),
 	domain_codes type_domain array,
 	image_files text array,
 	systematic_polysemy_patterns text array,
@@ -134,6 +134,8 @@ dblink(
 	lexeme_id bigint,
 	word_id bigint,
 	meaning_id bigint,
+	dataset_type varchar(10),
+	dataset_code varchar(10),
 	level1 integer,
 	level2 integer,
 	level3 integer,
@@ -231,7 +233,6 @@ dblink(
 	code varchar(10),
 	name text,
 	description text,
-	lang char(3),
 	order_by bigint
 );
 
@@ -254,6 +255,8 @@ create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
 create index mview_ww_word_value_prefix_idx on mview_ww_word (word text_pattern_ops);
 create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(word) text_pattern_ops);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
+create index mview_ww_word_lex_dataset_exists_idx on mview_ww_word (lex_dataset_exists);
+create index mview_ww_word_term_dataset_exists_idx on mview_ww_word (term_dataset_exists);
 create index mview_ww_as_word_word_id_idx on mview_ww_as_word (word_id);
 create index mview_ww_as_word_value_idx on mview_ww_as_word (as_word);
 create index mview_ww_as_word_value_lower_idx on mview_ww_as_word (lower(as_word));
@@ -271,6 +274,7 @@ create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
 create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
 create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
+create index mview_ww_lexeme_dataset_type_idx on mview_ww_lexeme (dataset_type);
 create index mview_ww_lexeme_complexity_idx on mview_ww_lexeme (complexity);
 create index mview_ww_collocation_lexeme_id_idx on mview_ww_collocation (lexeme_id);
 create index mview_ww_collocation_word_id_idx on mview_ww_collocation (word_id);
