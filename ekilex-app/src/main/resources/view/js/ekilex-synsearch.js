@@ -24,10 +24,10 @@ function initialise() {
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 		let id = $(this).data('id');
 		let markedSynWordId = $(document).find('.navigate-marked').children(':first').data('word-id');
-		$('#synSearchResultsDiv').find('.keyboard-nav-active-item').each(function () {$(this).removeClass('keyboard-nav-active-item active');});
+		$('#synSearchResultsDiv').find('.list-group-item').each(function () {$(this).removeClass('keyboard-nav-active-item active');});
 		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
 
-		$(this).parent().addClass('navigate-selected active');
+		$(this).parent().addClass('active');
 		$(this).parent().attr('data-navigate-selected', true);
 
 		$("[id^='syn_select_wait_']").hide();
