@@ -13,7 +13,7 @@
   <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.et.min.js}"></script>
 </th:block>
 </head>
-<body class="body-with-navbar compacted">
+<body class="body-with-navbar compacted d-flex flex-column">
   <th:block th:replace="common :: nav_bar(activeItem = 'lex')"></th:block>
   <div class="card shadow rounded-0 mt-n3 border-0">
     <div class="card-body px-2 py-3">
@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <div class="container-fluid">
+  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100">
 
 
     <div class="mt-4 float-left" th:if="${noResults}">
@@ -33,9 +33,9 @@
       <div th:text="#{lex.search.invalid}"></div>
     </div>
 
-    <div class="row no-gutters mt-2" th:unless="${noResults}">
-      <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div id="results_div" class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
+    <div class="row no-gutters py-3 flex-grow-1 h-100" th:unless="${noResults}">
+      <div class="col-3 pr-2 h-100" >
+        <div id="results_div" class="card shadow navigate-panel h-100 d-flex flex-column" th:if="${not #lists.isEmpty(wordsResult.words)}">
           <div th:replace="lexcomp :: search_result"></div>
         </div>
       </div>
