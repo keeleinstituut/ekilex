@@ -156,7 +156,7 @@ input:checked+.slider:before {
 
 .btn-custom {
 	font-weight: 400;
-	color: #007bff;
+	color: $link-color;
 	background-color: transparent;
 	cursor: auto !important;
 }

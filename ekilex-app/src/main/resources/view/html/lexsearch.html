@@ -64,6 +64,7 @@
             <div th:replace="lexdialog :: add_lexeme_pos_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_deriv_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_register_dlg"></div>
+            <div th:replace="lexdialog :: add_lexeme_grammar_dlg"></div>
             <div th:replace="lexdialog :: add_definition_dlg"></div>
             <div th:replace="lexdialog :: add_lexeme_source_link_dlg"></div>
             <div th:replace="lexdialog :: add_learner_comment_dlg"></div>
@@ -200,14 +201,6 @@
                 <div class="ml-auto">
                   <b th:text="${lexeme.dataset}"></b>
                 </div>
-              </div>
-
-              <div th:if="${!#lists.isEmpty(lexeme.vocalForms)}">
-                <span class="lbl">Hääldus</span>
-                <span th:each="vocalForm,vocalFormIter : ${lexeme.vocalForms}">
-                    <span th:text="${vocalForm}"></span>
-                    <span th:unless="${vocalFormIter.last}">,&nbsp;</span>
-                </span>
               </div>
 
               <div>
@@ -957,6 +950,7 @@
           <div th:replace="lexdialog :: edit_word_value_dlg"></div>
           <div th:replace="lexdialog :: edit_word_gender_dlg"></div>
           <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
+          <div th:replace="lexdialog :: edit_word_vocal_form_dlg"></div>
           <div class="card shadow pt-3 mb-2">
             <div class="card-body pt-0 pb-0 d-flex">
               <div class="invisible-buttons">
@@ -991,6 +985,7 @@
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </div>
+              <div th:replace="lexcomp :: word_vocal_form"></div>
               <div th:replace="lexcomp :: word_gender"></div>
               <div th:replace="lexcomp :: word_type"></div>
               <div th:replace="lexcomp :: word_aspect"></div>

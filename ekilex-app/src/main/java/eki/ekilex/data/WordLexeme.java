@@ -14,9 +14,6 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 	@Column(name = "words")
 	private String[] words;
 
-	@Column(name = "vocal_forms")
-	private List<String> vocalForms;
-
 	@Column(name = "word_lang")
 	private String wordLang;
 
@@ -122,14 +119,6 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 
 	public void setWords(String[] words) {
 		this.words = words;
-	}
-
-	public List<String> getVocalForms() {
-		return vocalForms;
-	}
-
-	public void setVocalForms(List<String> vocalForms) {
-		this.vocalForms = vocalForms;
 	}
 
 	public String getWordLang() {
