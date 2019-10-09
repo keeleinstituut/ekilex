@@ -84,7 +84,7 @@ public class CudDbService implements DbConstant {
 		return wordWordTypeRecord.getId();
 	}
 
-	public List<WordLexeme> getWordLexemes(Long lexemeId) {
+	public List<WordLexeme> getWordPrimaryLexemes(Long lexemeId) {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		return create

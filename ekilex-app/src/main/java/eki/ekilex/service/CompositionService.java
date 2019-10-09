@@ -285,7 +285,7 @@ public class CompositionService extends AbstractService {
 			return;
 		}
 
-		List<WordLexeme> lexemes = cudDbService.getWordLexemes(lexemeId);
+		List<WordLexeme> lexemes = cudDbService.getWordPrimaryLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
