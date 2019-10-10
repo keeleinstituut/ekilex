@@ -173,7 +173,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name()};
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
 
 		Long lexemeId = lexeme.getLexemeId();
