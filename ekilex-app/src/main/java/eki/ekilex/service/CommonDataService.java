@@ -155,6 +155,11 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
+	public List<Classifier> getSemanticTypes() {
+		return commonDataDbService.getSemanticTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
 	public List<Classifier> getClassifiers(ClassifierName classifierName) {
 		if (classifierName == null) {
 			return null;
@@ -206,6 +211,9 @@ public class CommonDataService extends AbstractWordSearchService {
 		}
 		if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
 			return getProcessStates();
+		}
+		if (ClassifierName.SEMANTIC_TYPE.equals(classifierName)) {
+			return getSemanticTypes();
 		}
 		return null;
 	}

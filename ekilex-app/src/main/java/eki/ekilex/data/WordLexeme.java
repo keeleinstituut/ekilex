@@ -77,6 +77,8 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 
 	private List<Classifier> registers;
 
+	private List<Classifier> meaningSemanticTypes;
+
 	private List<OrderedClassifier> meaningDomains;
 
 	private List<MeaningWord> meaningWords;
@@ -303,6 +305,14 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 
 	public void setRegisters(List<Classifier> registers) {
 		this.registers = registers;
+	}
+
+	public List<Classifier> getMeaningSemanticTypes() {
+		return meaningSemanticTypes;
+	}
+
+	public void setMeaningSemanticTypes(List<Classifier> meaningSemanticTypes) {
+		this.meaningSemanticTypes = meaningSemanticTypes;
 	}
 
 	public List<OrderedClassifier> getMeaningDomains() {

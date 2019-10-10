@@ -11,6 +11,7 @@ import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
@@ -434,6 +435,14 @@ public class LifecycleLogDbService {
 						.from(MEANING_FREEFORM)
 						.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
 						.fetchSingleInto(Long.class);
+				createMeaningLifecycleLog(meaningId, lifecycleLogId);
+			} else if (LifecycleProperty.SEMANTIC_TYPE.equals(property)) {
+				Long meaningId = create
+						.select(MEANING_SEMANTIC_TYPE.MEANING_ID)
+						.from(MEANING_SEMANTIC_TYPE)
+						.where(MEANING_SEMANTIC_TYPE.ID.eq(entityId))
+						.fetchSingleInto(Long.class);
+				Long lifecycleLogId = createLifecycleLog(logData);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.LEXEME_SOURCE_LINK.equals(entity)) {

@@ -190,6 +190,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
@@ -214,6 +215,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setPos(lexemePos);
 		lexeme.setDerivs(lexemeDerivs);
 		lexeme.setRegisters(lexemeRegisters);
+		lexeme.setMeaningSemanticTypes(meaningSemanticTypes);
 		lexeme.setMeaningWords(meaningWords);
 		lexeme.setMeaningDomains(meaningDomains);
 		lexeme.setDefinitions(definitions);
