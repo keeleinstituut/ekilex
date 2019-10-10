@@ -97,11 +97,3 @@ $(document).on("show.bs.modal", "[id^=addLexemeGrammarDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editWordVocalFormDlg_]", function() {
 	initGenericTextEditDlg($(this));
 });
-
-$(document).on("show.bs.modal", "[id^=addSemanticTypeDlg_]", function() {
-	initAddMultiDataDlg($(this));
-});
-
-$(document).on("show.bs.modal", "[id^=editSemanticTypeDlg_]", function() {
-	initSelectDlg($(this));
-});

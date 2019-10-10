@@ -22,6 +22,8 @@ public class Meaning extends AbstractDataObject {
 
 	private List<OrderedClassifier> domains;
 
+	private List<Classifier> semanticTypes;
+
 	private List<FreeForm> freeforms;
 
 	private List<FreeForm> learnerComments;
@@ -74,6 +76,14 @@ public class Meaning extends AbstractDataObject {
 
 	public void setDomains(List<OrderedClassifier> domains) {
 		this.domains = domains;
+	}
+
+	public List<Classifier> getSemanticTypes() {
+		return semanticTypes;
+	}
+
+	public void setSemanticTypes(List<Classifier> semanticTypes) {
+		this.semanticTypes = semanticTypes;
 	}
 
 	public List<FreeForm> getFreeforms() {

@@ -123,6 +123,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId);
+		List<Classifier> semanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		domains = conversionUtil.removeOrderedClassifierDuplicates(domains);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> learnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
@@ -189,6 +190,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
 
+		// TODO is this used anywhere?
 		boolean contentExists = CollectionUtils.isNotEmpty(definitions)
 				|| CollectionUtils.isNotEmpty(domains)
 				|| CollectionUtils.isNotEmpty(meaningFreeforms)
@@ -196,6 +198,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 		meaning.setDefinitionLangGroups(definitionLangGroups);
 		meaning.setDomains(domains);
+		meaning.setSemanticTypes(semanticTypes);
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setLearnerComments(learnerComments);
 		meaning.setImages(images);

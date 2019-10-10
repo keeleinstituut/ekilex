@@ -29,7 +29,7 @@
                   <option value="addLexemeRelationDlg" sec:authorize="#vars.isLexemeCrudGranted">Ilmiku seos</option>
                   <option value="addLexemePublicNoteDlg" sec:authorize="#vars.isLexemeCrudGranted">Ilmiku märkus</option>
                   <option value="meaning_domain" sec:authorize="#vars.isMeaningCrudGranted">Valdkond</option>
-                  <option value="semantic_type" sec:authorize="#vars.isMeaningCrudGranted">Semantiline tüüp</option>
+                  <option value="meaning_semantic_type" sec:authorize="#vars.isMeaningCrudGranted">Semantiline tüüp</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.isMeaningCrudGranted">Tähenduse seos</option>
                   <option value="addLearnerCommentDlg" sec:authorize="#vars.isMeaningCrudGranted">Õppekommentaar</option>
                 </select>
@@ -113,7 +113,7 @@
                 </select>
               </div>
             </div>
-            <div th:id="${'semantic_type_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+            <div th:id="${'meaning_semantic_type_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
@@ -1169,13 +1169,13 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addSemanticTypeDlg_' + lexeme.meaningId}" class="modal" role="dialog" th:fragment="add_semantic_type_dlg">
+  <div th:id="${'addMeaningSemanticTypeDlg_' + lexeme.meaningId}" class="modal" role="dialog" th:fragment="add_meaning_semantic_type_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id2" th:value="${lexeme.meaningId}">
-            <input type="hidden" name="opCode" value="semantic_type">
+            <input type="hidden" name="opCode" value="meaning_semantic_type">
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-8">
@@ -1194,13 +1194,13 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editSemanticTypeDlg_' + lexeme.meaningId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_semantic_type_dlg">
+  <div th:id="${'editMeaningSemanticTypeDlg_' + lexeme.meaningId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_meaning_semantic_type_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
-            <input type="hidden" name="opCode" value="semantic_type">
+            <input type="hidden" name="opCode" value="meaning_semantic_type">
             <input type="hidden" name="currentValue" th:value="${classif.code}">
             <select class="form-control" name="value">
               <option th:each="semanticType : ${semanticTypes}" th:value="${semanticType.code}" th:text="${semanticType.code}" th:selected="${semanticType.code == classif.code}">semanticType</option>
