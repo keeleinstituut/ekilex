@@ -325,12 +325,8 @@
       </div>
     </div>
   </div>
-  <div class="row mr-0 hidden-buttons" th:unless="${#strings.isEmpty(details.word.vocalForm)}" th:fragment="word_vocal_form">
-    <div class="col pr-0 col-w7rem">
-      <span class="lbl">Hääldus</span>
-    </div>
-    <div class="col pl-0">
-      <span th:text="${details.word.vocalForm}"></span>
+  <div class="hidden-buttons" th:unless="${#strings.isEmpty(details.word.vocalForm)}" th:fragment="word_vocal_form">
+      <span th:text="'['+${details.word.vocalForm}+']'" data-toggle="tooltip" title="Hääldus"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"
@@ -346,14 +342,9 @@
               sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
-    </div>
   </div>
-  <div class="row mr-0 hidden-buttons" th:if="${details.word.genderCode != null}" th:fragment="word_gender">
-    <div class="col pr-0 col-w7rem">
-      <span class="lbl">Sugu</span>
-    </div>
-    <div class="col pl-0">
-      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.genderCode, wordGenders)}"></span>
+  <div class=" hidden-buttons" th:if="${details.word.genderCode != null}" th:fragment="word_gender">
+      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.genderCode, wordGenders)}" data-toggle="tooltip" title="Sugu"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"
@@ -369,14 +360,9 @@
               sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
-    </div>
   </div>
-  <div class="row mr-0" th:if="${not #lists.isEmpty(details.wordTypes)}" th:fragment="word_type">
-    <div class="col pr-0 col-w7rem">
-      <span class="lbl">Sõna tüüp</span>
-    </div>
-    <div class="col pl-0">
-      <span th:each="classif,classifIter : ${details.wordTypes}" class="hidden-buttons">
+  <div th:if="${not #lists.isEmpty(details.wordTypes)}" th:fragment="word_type">
+      <span th:each="classif,classifIter : ${details.wordTypes}" data-toggle="tooltip" title="Sõna tüüp" class="hidden-buttons">
         <span th:replace="lexdialog :: edit_word_type_dlg"></span>
         <span th:text="${classif.code}"></span>
         <th:block th:unless="${classif.code == classif.value}">
@@ -400,14 +386,9 @@
         </button>
         <span th:unless="${classifIter.last}">,</span>
       </span>
-    </div>
   </div>
-  <div class="row mr-0 hidden-buttons" th:if="${details.word.aspectCode != null}" th:fragment="word_aspect">
-    <div class="col pr-0 col-w7rem">
-      <span class="lbl">Aspekt</span>
-    </div>
-    <div class="col pl-0">
-      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.aspectCode, wordAspects)}"></span>
+  <div class="hidden-buttons" th:if="${details.word.aspectCode != null}" th:fragment="word_aspect">
+      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.aspectCode, wordAspects)}" data-toggle="tooltip" title="Aspekt"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"
@@ -423,7 +404,6 @@
               sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
-    </div>
   </div>
 </body>
 </html>
