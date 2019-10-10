@@ -106,7 +106,8 @@ from (select w.id as word_id,
                           mw.hw_lex_order_by,
                           mw.mw_lex_order_by
                           ) meaning_words
-                   from (select l1.word_id,
+                   from (select distinct
+                                l1.word_id,
                                 l1.id lexeme_id,
                                 l1.meaning_id,
                                 l1.level1 hw_lex_level1,
@@ -468,7 +469,8 @@ from lexeme l
                           mw.hw_lex_order_by,
                           mw.mw_lex_order_by
                           ) meaning_words
-                   from (select l1.word_id,
+                   from (select distinct
+                                l1.word_id,
                                 l1.id lexeme_id,
                                 l1.meaning_id,
                                 l1.level1 hw_lex_level1,

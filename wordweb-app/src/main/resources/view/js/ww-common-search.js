@@ -15,7 +15,7 @@ $(document).ready(function () {
 		if (selectedHomonymItem.get().length == 0) {
 			selectedHomonymItem = $(".homonym-item:first");
 		}
-		selectedHomonymItem.delay(1250).queue(function () {}).trigger('click');
+		selectedHomonymItem.delay(500).queue(function () {}).trigger('click');
 		selectedHomonymItem.addClass("animation-target");
 	}
 
@@ -326,6 +326,22 @@ function sendToWebSocket(audioBlob) {
 	}
 }
 
+$(document).on("click", "#start-rec-btn", function (e) {
+	$('#start-rec-btn').prop('hidden', 'hidden');
+	$('#stop-rec-btn').prop('hidden', null);
+	$('.search-btn').prop('disabled', true);
+	startRecording();
+});
+
+$(document).on("click", "#stop-rec-btn", function (e) {
+	$('#stop-rec-btn').prop('hidden', 'hidden');
+	$('#start-rec-btn').prop('hidden', null);
+	$('.search-btn').prop('disabled', false);
+	stopRecording(function (audioBlob) {
+		sendToWebSocket(audioBlob);
+	});
+});
+
 $(document).on("click", "#clear-search-btn", function (e) {
 	window.location = currentPage;
 });
@@ -384,25 +400,7 @@ $(document).on("click", "button[name='destin-lang-btn']", function (e) {
 
 $(document).on("click", "button[id='lang-sel-complete-btn']", function (e) {
 	$("#lang-selector-btn").click();
-	if ($("input[name='searchWord']").val()) {
-		$("#search-btn").click();
-	}
-});
-
-$(document).on("click", "#start-rec-btn", function (e) {
-	$('#start-rec-btn').prop('hidden', 'hidden');
-	$('#stop-rec-btn').prop('hidden', null);
-	$('.search-btn').prop('disabled', true);
-	startRecording();
-});
-
-$(document).on("click", "#stop-rec-btn", function (e) {
-	$('#stop-rec-btn').prop('hidden', 'hidden');
-	$('#start-rec-btn').prop('hidden', null);
-	$('.search-btn').prop('disabled', false);
-	stopRecording(function (audioBlob) {
-		sendToWebSocket(audioBlob);
-	});
+	clickSearchIfInputExists();
 });
 
 $(document).on("click", "#toggle-lex", function (e) {

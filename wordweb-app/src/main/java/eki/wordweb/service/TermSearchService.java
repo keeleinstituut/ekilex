@@ -9,14 +9,21 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.constant.WebConstant;
+import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
+import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordsData;
@@ -25,7 +32,7 @@ import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.ConversionUtil;
 
 @Component
-public class TermSearchService implements SystemConstant {
+public class TermSearchService implements SystemConstant, WebConstant {
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
@@ -71,17 +78,41 @@ public class TermSearchService implements SystemConstant {
 		Word word = termSearchDbService.getWord(wordId);
 		classifierUtil.applyClassifiers(word, displayLang);
 		conversionUtil.setWordTypeFlags(word);
+		List<WordEtymTuple> wordEtymTuples = termSearchDbService.getWordEtymologyTuples(wordId);
+		conversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		List<WordRelationTuple> wordRelationTuples = termSearchDbService.getWordRelationTuples(wordId);
 		conversionUtil.composeWordRelations(word, wordRelationTuples, null, displayLang);
 		List<Lexeme> lexemes = termSearchDbService.getLexemes(wordId);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = termSearchDbService.getLexemeMeaningTuples(wordId);
 		conversionUtil.enrich(word, lexemes, lexemeMeaningTuples, displayLang);
+		Map<Long, List<Form>> paradigmFormsMap = termSearchDbService.getWordForms(wordId, SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL);
+		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allImageFiles = conversionUtil.collectImages(lexemes);
+
+		// resulting flags
+		String firstAvailableVocalForm = null;
+		String firstAvailableAudioFile = null;
+		boolean isUnknownForm = false;
+		if (MapUtils.isNotEmpty(paradigmFormsMap)) {
+			Form firstAvailableWordForm = paradigmFormsMap.values().stream()
+					.filter(forms -> forms.stream().anyMatch(form -> form.getMode().equals(FormMode.WORD)))
+					.map(forms -> forms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst().orElse(null))
+					.findFirst().orElse(null);
+			if (firstAvailableWordForm != null) {
+				firstAvailableVocalForm = firstAvailableWordForm.getVocalForm();
+				firstAvailableAudioFile = firstAvailableWordForm.getAudioFile();
+				isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstAvailableWordForm.getMorphCode());
+			}
+		}
 
 		WordData wordData = new WordData();
 		wordData.setWord(word);
 		wordData.setLexemes(lexemes);
+		wordData.setParadigms(paradigms);
 		wordData.setImageFiles(allImageFiles);
+		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
+		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
+		wordData.setUnknownForm(isUnknownForm);
 		return wordData;
 	}
 }

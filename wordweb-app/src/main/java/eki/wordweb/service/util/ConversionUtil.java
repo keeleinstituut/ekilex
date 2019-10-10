@@ -198,14 +198,19 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 
 	public void selectHomonym(List<Word> words, Integer homonymNr) {
 
-		if (homonymNr == null) {
+		if (CollectionUtils.isEmpty(words)) {
 			return;
 		}
-		for (Word word : words) {
-			if (homonymNr.equals(word.getHomonymNr())) {
-				word.setSelected(true);
-				break;
+		boolean homonymNrExists = words.stream().anyMatch(word -> word.getHomonymNr().equals(homonymNr));
+		if (homonymNrExists) {
+			for (Word word : words) {
+				if (homonymNr.equals(word.getHomonymNr())) {
+					word.setSelected(true);
+					break;
+				}
 			}
+		} else {
+			words.get(0).setSelected(true);
 		}
 	}
 

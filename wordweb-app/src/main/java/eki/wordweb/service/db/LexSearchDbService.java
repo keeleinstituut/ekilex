@@ -8,7 +8,6 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYMOLOGY;
 
 import java.util.List;
 import java.util.Map;
@@ -27,11 +26,9 @@ import eki.common.constant.DatasetType;
 import eki.common.constant.FormMode;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
-import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
-import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.db.tables.MviewWwAsWord;
@@ -42,7 +39,6 @@ import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
-import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 
 @Component
 public class LexSearchDbService extends AbstractSearchDbService {
@@ -131,30 +127,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.selectDistinct(woft.field("value"), woft.field("group"))
 				.from(woft)
 				.fetchGroups("group", WordOrForm.class);
-	}
-
-	public List<WordEtymTuple> getWordEtymologyTuples(Long wordId) {
-
-		MviewWwWordEtymology we = MVIEW_WW_WORD_ETYMOLOGY.as("we");
-
-		return create
-				.select(
-						we.WORD_ID,
-						we.WORD_ETYM_ID,
-						we.WORD_ETYM_WORD_ID,
-						we.WORD_ETYM_WORD,
-						we.WORD_ETYM_WORD_LANG,
-						we.WORD_ETYM_WORD_MEANING_WORDS,
-						we.ETYMOLOGY_TYPE_CODE,
-						we.ETYMOLOGY_YEAR,
-						we.WORD_ETYM_COMMENT,
-						we.WORD_ETYM_IS_QUESTIONABLE,
-						we.WORD_ETYM_SOURCES,
-						we.WORD_ETYM_RELATIONS)
-				.from(we)
-				.where(we.WORD_ID.eq(wordId))
-				.orderBy(we.WORD_ETYM_ORDER_BY)
-				.fetchInto(WordEtymTuple.class);
 	}
 
 	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {
@@ -272,39 +244,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						c.COLLOC_ID)
 				.fetch()
 				.into(CollocationTuple.class);
-	}
-
-	public Map<Long, List<Form>> getWordForms(Long wordId, Integer maxDisplayLevel) {
-
-		MviewWwForm f = MVIEW_WW_FORM.as("f");
-
-		Condition where = f.WORD_ID.eq(wordId).and(f.MODE.in(FormMode.WORD.name(), FormMode.FORM.name()));
-		if (maxDisplayLevel != null) {
-			where = where.and(f.DISPLAY_LEVEL.le(maxDisplayLevel));
-		}
-
-		return create
-				.select(
-						f.PARADIGM_ID,
-						f.INFLECTION_TYPE,
-						f.FORM_ID,
-						f.MODE,
-						f.MORPH_GROUP1,
-						f.MORPH_GROUP2,
-						f.MORPH_GROUP3,
-						f.DISPLAY_LEVEL,
-						f.MORPH_CODE,
-						f.MORPH_EXISTS,
-						f.FORM,
-						f.COMPONENTS,
-						f.DISPLAY_FORM,
-						f.VOCAL_FORM,
-						f.AUDIO_FILE,
-						f.ORDER_BY)
-				.from(f)
-				.where(where)
-				.orderBy(f.PARADIGM_ID, f.ORDER_BY, f.FORM_ID)
-				.fetchGroups(f.PARADIGM_ID, Form.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_NULL_WORD, key = "{#wordId, #tokens}")
