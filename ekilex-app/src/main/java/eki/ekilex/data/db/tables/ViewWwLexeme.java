@@ -8,6 +8,8 @@ import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwLexemeRecord;
 import eki.ekilex.data.db.udt.records.TypeGovernmentRecord;
 import eki.ekilex.data.db.udt.records.TypeGrammarRecord;
+import eki.ekilex.data.db.udt.records.TypeLangComplexityRecord;
+import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 import eki.ekilex.data.db.udt.records.TypePublicNoteRecord;
 import eki.ekilex.data.db.udt.records.TypeUsageRecord;
 
@@ -37,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 454460626;
+    private static final long serialVersionUID = -1031324209;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme</code>
@@ -66,6 +68,16 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
      * The column <code>public.view_ww_lexeme.meaning_id</code>.
      */
     public final TableField<ViewWwLexemeRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_lexeme.dataset_type</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, String> DATASET_TYPE = createField("dataset_type", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+
+    /**
+     * The column <code>public.view_ww_lexeme.dataset_code</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.level1</code>.
@@ -108,6 +120,11 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
     public final TableField<ViewWwLexemeRecord, String[]> DERIV_CODES = createField("deriv_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
+     * The column <code>public.view_ww_lexeme.meaning_words</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, TypeMeaningWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.ekilex.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD.getDataType().getArrayDataType(), this, "");
+
+    /**
      * The column <code>public.view_ww_lexeme.advice_notes</code>.
      */
     public final TableField<ViewWwLexemeRecord, String[]> ADVICE_NOTES = createField("advice_notes", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
@@ -131,6 +148,11 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
      * The column <code>public.view_ww_lexeme.usages</code>.
      */
     public final TableField<ViewWwLexemeRecord, TypeUsageRecord[]> USAGES = createField("usages", eki.ekilex.data.db.udt.TypeUsage.TYPE_USAGE.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_lexeme.lang_complexities</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField("lang_complexities", eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.view_ww_lexeme</code> table reference

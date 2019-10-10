@@ -67,6 +67,7 @@ import eki.ekilex.data.db.tables.MeaningProcessLog;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
+import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
@@ -80,6 +81,8 @@ import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
+import eki.ekilex.data.db.tables.SemanticType;
+import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
@@ -452,6 +455,11 @@ public class Tables {
     public static final MeaningRelation MEANING_RELATION = eki.ekilex.data.db.tables.MeaningRelation.MEANING_RELATION;
 
     /**
+     * The table <code>public.meaning_semantic_type</code>.
+     */
+    public static final MeaningSemanticType MEANING_SEMANTIC_TYPE = eki.ekilex.data.db.tables.MeaningSemanticType.MEANING_SEMANTIC_TYPE;
+
+    /**
      * The table <code>public.morph</code>.
      */
     public static final Morph MORPH = eki.ekilex.data.db.tables.Morph.MORPH;
@@ -515,6 +523,16 @@ public class Tables {
      * The table <code>public.register_label</code>.
      */
     public static final RegisterLabel REGISTER_LABEL = eki.ekilex.data.db.tables.RegisterLabel.REGISTER_LABEL;
+
+    /**
+     * The table <code>public.semantic_type</code>.
+     */
+    public static final SemanticType SEMANTIC_TYPE = eki.ekilex.data.db.tables.SemanticType.SEMANTIC_TYPE;
+
+    /**
+     * The table <code>public.semantic_type_label</code>.
+     */
+    public static final SemanticTypeLabel SEMANTIC_TYPE_LABEL = eki.ekilex.data.db.tables.SemanticTypeLabel.SEMANTIC_TYPE_LABEL;
 
     /**
      * The table <code>public.source</code>.
