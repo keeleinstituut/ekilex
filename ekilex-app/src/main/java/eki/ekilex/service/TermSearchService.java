@@ -190,12 +190,6 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
 
-		// TODO is this used anywhere?
-		boolean contentExists = CollectionUtils.isNotEmpty(definitions)
-				|| CollectionUtils.isNotEmpty(domains)
-				|| CollectionUtils.isNotEmpty(meaningFreeforms)
-				|| CollectionUtils.isNotEmpty(meaningRelations);
-
 		meaning.setDefinitionLangGroups(definitionLangGroups);
 		meaning.setDomains(domains);
 		meaning.setSemanticTypes(semanticTypes);
@@ -205,7 +199,6 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaning.setPublicNotes(meaningPublicNotes);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
-		meaning.setContentExists(contentExists);
 		meaning.setGroupedRelations(groupedRelations);
 
 		return meaning;
