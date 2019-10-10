@@ -26,6 +26,8 @@ public class WordDetails extends AbstractDataObject {
 
 	private String firstDefinitionValue;
 
+	private Integer wordProcessLogCount;
+
 	public WordDetails() {
 	}
 
@@ -99,5 +101,13 @@ public class WordDetails extends AbstractDataObject {
 
 	public void setFirstDefinitionValue(String firstDefinitionValue) {
 		this.firstDefinitionValue = firstDefinitionValue;
+	}
+
+	public Integer getWordProcessLogCount() {
+		return wordProcessLogCount;
+	}
+
+	public void setWordProcessLogCount(Integer wordProcessLogCount) {
+		this.wordProcessLogCount = wordProcessLogCount;
 	}
 }

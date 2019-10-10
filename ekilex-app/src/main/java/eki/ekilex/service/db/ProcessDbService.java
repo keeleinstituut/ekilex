@@ -64,6 +64,15 @@ public class ProcessDbService {
 		return results;
 	}
 
+	public Integer getLogCountForWord(Long wordId) {
+
+		return create
+				.fetchCount(DSL
+						.select(WORD_PROCESS_LOG.ID)
+						.from(WORD_PROCESS_LOG)
+						.where(WORD_PROCESS_LOG.WORD_ID.eq(wordId)));
+	}
+
 	public List<ProcessLog> getLogForLexemeAndMeaning(Long lexemeId) {
 
 		Table<Record1<Long>> m = DSL
