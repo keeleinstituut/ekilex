@@ -116,3 +116,11 @@ $(document).on("show.bs.modal", "[id^=editImageTitleDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
+
+$(document).on("show.bs.modal", "[id^=addMeaningSemanticTypeDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editMeaningSemanticTypeDlg_]", function() {
+	initSelectDlg($(this));
+});

@@ -320,6 +320,44 @@
       </div>
     </div>
   </div>
+  <div class="row" th:if="${not #lists.isEmpty(meaning.semanticTypes)}" th:fragment="meaning_semantic_type">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Semantiline tüüp</span>
+      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addMeaningSemanticTypeDlg_' + meaningId}"
+              sec:authorize="#vars.isMeaningCrudGranted">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="col pl-0">
+      <span th:each="classif,classifIter : ${meaning.semanticTypes}" class="hidden-buttons">
+        <span th:replace="termdialog :: edit_meaning_semantic_type_dlg"></span>
+        <span th:text="${classif.code}"></span>
+        <th:block th:unless="${classif.code == classif.value}">
+          -
+          <span th:text="${classif.value}"></span>
+        </th:block>
+        <button type="button" class="btn badge badge-primary"
+                title="Muuda"
+                data-toggle="modal"
+                th:data-target="${'#editMeaningSemanticTypeDlg_' + meaningId + '_' + classifIter.index}"
+                sec:authorize="${#vars.isMeaningCrudGranted}">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-id="${meaningId}"
+                data-op-code="meaning_semantic_type"
+                th:data-value="${classif.code}"
+                data-toggle="delete-confirm"
+                data-placement="right"
+                sec:authorize="${#vars.isMeaningCrudGranted}">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <span th:unless="${classifIter.last}">,</span>
+      </span>
+    </div>
+  </div>
   <div class="row mr-0 hidden-buttons" th:if="${lexeme.wordGenderCode != null}" th:fragment="word_gender">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Sugu</span>

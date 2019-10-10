@@ -105,7 +105,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	@Transactional
 	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder) {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name()};
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
@@ -123,6 +123,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId);
+		List<Classifier> semanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		domains = conversionUtil.removeOrderedClassifierDuplicates(domains);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> learnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
@@ -189,20 +190,15 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
 
-		boolean contentExists = CollectionUtils.isNotEmpty(definitions)
-				|| CollectionUtils.isNotEmpty(domains)
-				|| CollectionUtils.isNotEmpty(meaningFreeforms)
-				|| CollectionUtils.isNotEmpty(meaningRelations);
-
 		meaning.setDefinitionLangGroups(definitionLangGroups);
 		meaning.setDomains(domains);
+		meaning.setSemanticTypes(semanticTypes);
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setLearnerComments(learnerComments);
 		meaning.setImages(images);
 		meaning.setPublicNotes(meaningPublicNotes);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
-		meaning.setContentExists(contentExists);
 		meaning.setGroupedRelations(groupedRelations);
 
 		return meaning;

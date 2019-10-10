@@ -24,6 +24,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -65,6 +66,7 @@ import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
+import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
 import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.tables.records.WordGroupRecord;
 import eki.ekilex.data.db.tables.records.WordRelationRecord;
@@ -180,6 +182,12 @@ public class CudDbService implements DbConstant {
 		return meaningDomainRecord.getId();
 	}
 
+	public Long getMeaningSemanticTypeId(Long meaningId, String semanticTypeCode) {
+		MeaningSemanticTypeRecord meaningSemanticTypeRecord = create
+				.fetchOne(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId).and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)));
+		return meaningSemanticTypeRecord.getId();
+	}
+
 	public String getImageTitle(Long imageId) {
 		return create
 				.select(FREEFORM.VALUE_TEXT)
@@ -187,6 +195,15 @@ public class CudDbService implements DbConstant {
 				.where(FREEFORM.PARENT_ID.eq(imageId)
 						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
 				.fetchOneInto(String.class);
+	}
+
+	public List<SynRelation> getWordRelations(Long wordId, String relTypeCode) {
+		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
+				.from(WORD_RELATION)
+				.where(WORD_RELATION.WORD1_ID.eq(wordId))
+				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
+				.orderBy(WORD_RELATION.ORDER_BY)
+				.fetchInto(SynRelation.class);
 	}
 
 	public void updateFreeformTextValue(Long id, String value, String valuePrese) {
@@ -406,6 +423,17 @@ public class CudDbService implements DbConstant {
 		return meaningDomainId;
 	}
 
+	public Long updateMeaningSemanticType(Long meaningId, String currentSemanticType, String newSemanticType) {
+		Long meaningSemanticTypeId = create
+				.update(MEANING_SEMANTIC_TYPE)
+				.set(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE, newSemanticType)
+				.where(MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId).and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(currentSemanticType)))
+				.returning(MEANING_SEMANTIC_TYPE.ID)
+				.fetchOne()
+				.getId();
+		return meaningSemanticTypeId;
+	}
+
 	public void updateImageTitle(Long imageFreeformId, String title) {
 		create
 				.update(FREEFORM)
@@ -413,6 +441,14 @@ public class CudDbService implements DbConstant {
 				.set(FREEFORM.VALUE_PRESE, title)
 				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
 						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
+				.execute();
+	}
+
+	public void updateWordRelationOrderBy(Long relationId, Long orderBy) {
+		create
+				.update(WORD_RELATION)
+				.set(WORD_RELATION.ORDER_BY, orderBy)
+				.where(WORD_RELATION.ID.eq(relationId))
 				.execute();
 	}
 
@@ -656,6 +692,24 @@ public class CudDbService implements DbConstant {
 		meaningFreeform.store();
 	
 		return freeform.getId();
+	}
+
+	public Long createMeaningSemanticType(Long meaningId, String semanticTypeCode) {
+		Long meaningSemanticTypeCodeId = create
+				.select(MEANING_SEMANTIC_TYPE.ID).from(MEANING_SEMANTIC_TYPE)
+				.where(MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId)
+						.and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)))
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (meaningSemanticTypeCodeId == null) {
+			meaningSemanticTypeCodeId = create
+					.insertInto(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID, MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE)
+					.values(meaningId, semanticTypeCode)
+					.returning(MEANING_SEMANTIC_TYPE.ID)
+					.fetchOne()
+					.getId();
+		}
+		return meaningSemanticTypeCodeId;
 	}
 
 	public Long createLexeme(Long wordId, String datasetCode, Long meaningId) {
@@ -999,6 +1053,19 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
+	public void deleteMeaningSemanticType(Long meaningSemanticTypeId) {
+		create.delete(MEANING_SEMANTIC_TYPE)
+				.where(MEANING_SEMANTIC_TYPE.ID.eq(meaningSemanticTypeId))
+				.execute();
+	}
+
+	public void deleteImageTitle(Long imageFreeformId) {
+		create.delete(FREEFORM)
+				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
+						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
+				.execute();
+	}
+
 	private List<Long> getMeaningDefinitionIds(Long meaningId) {
 		return create
 				.select(DEFINITION.ID)
@@ -1025,13 +1092,6 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public void deleteImageTitle(Long imageFreeformId) {
-		create.delete(FREEFORM)
-				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
-						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
-				.execute();
-	}
-
 	public SynRelation addSynRelation(Long word1Id, Long word2Id, String relationType, String relatonStatus) {
 		return create.insertInto(WORD_RELATION,
 					WORD_RELATION.WORD1_ID,
@@ -1042,23 +1102,6 @@ public class CudDbService implements DbConstant {
 				.returning()
 				.fetchOne()
 				.into(SynRelation.class);
-	}
-
-	public List<SynRelation> getWordRelations(Long wordId, String relTypeCode) {
-		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
-				.from(WORD_RELATION)
-				.where(WORD_RELATION.WORD1_ID.eq(wordId))
-				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
-				.orderBy(WORD_RELATION.ORDER_BY)
-				.fetchInto(SynRelation.class);
-	}
-
-	public void updateWordRelationOrderBy(Long relationId, Long orderBy) {
-		create
-				.update(WORD_RELATION)
-				.set(WORD_RELATION.ORDER_BY, orderBy)
-				.where(WORD_RELATION.ID.eq(relationId))
-				.execute();
 	}
 
 }

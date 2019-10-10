@@ -173,7 +173,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name()};
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
 
 		Long lexemeId = lexeme.getLexemeId();
@@ -190,6 +190,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
@@ -214,6 +215,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setPos(lexemePos);
 		lexeme.setDerivs(lexemeDerivs);
 		lexeme.setRegisters(lexemeRegisters);
+		lexeme.setMeaningSemanticTypes(meaningSemanticTypes);
 		lexeme.setMeaningWords(meaningWords);
 		lexeme.setMeaningDomains(meaningDomains);
 		lexeme.setDefinitions(definitions);
@@ -240,6 +242,7 @@ public class LexSearchService extends AbstractWordSearchService {
 						|| CollectionUtils.isNotEmpty(lexemeDerivs)
 						|| CollectionUtils.isNotEmpty(lexemeRegisters)
 						|| CollectionUtils.isNotEmpty(meaningDomains)
+						|| CollectionUtils.isNotEmpty(meaningSemanticTypes)
 						|| CollectionUtils.isNotEmpty(lexemeGrammars)
 						|| CollectionUtils.isNotEmpty(lexeme.getLexemeFrequencies());
 		lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);

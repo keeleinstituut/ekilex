@@ -359,6 +359,16 @@ public class Sequences {
     public static final Sequence<Long> MEANING_RELATION_ORDER_BY_SEQ = new SequenceImpl<Long>("meaning_relation_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.meaning_semantic_type_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_SEMANTIC_TYPE_ID_SEQ = new SequenceImpl<Long>("meaning_semantic_type_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.meaning_semantic_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> MEANING_SEMANTIC_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("meaning_semantic_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.morph_order_by_seq</code>
      */
     public static final Sequence<Long> MORPH_ORDER_BY_SEQ = new SequenceImpl<Long>("morph_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -407,6 +417,11 @@ public class Sequences {
      * The sequence <code>public.register_order_by_seq</code>
      */
     public static final Sequence<Long> REGISTER_ORDER_BY_SEQ = new SequenceImpl<Long>("register_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.semantic_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> SEMANTIC_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("semantic_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.source_freeform_id_seq</code>

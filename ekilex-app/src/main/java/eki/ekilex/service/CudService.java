@@ -308,6 +308,13 @@ public class CudService extends AbstractService {
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
+	public void updateMeaningSemanticType(Long meaningId, String currentSemanticType, String newSemanticType) {
+		Long meaningSemanticTypeId = cudDbService.updateMeaningSemanticType(meaningId, currentSemanticType, newSemanticType);
+		LogData logData = new LogData(
+				LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.SEMANTIC_TYPE, meaningSemanticTypeId, currentSemanticType, newSemanticType);
+		createLifecycleLog(logData);
+	}
+
 	@Transactional
 	public void updateImageTitle(Long imageId, String valuePrese) {
 		String recent = cudDbService.getImageTitle(imageId);
@@ -499,6 +506,14 @@ public class CudService extends AbstractService {
 		Long meaningFreeformId = cudDbService.createMeaningPublicNote(meaningId, value, valuePrese);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_PUBLIC_NOTE, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
 		createLifecycleLog(logData);
+	}
+
+	@Transactional
+	public void createMeaningSemanticType(Long meaningId, String semanticTypeCode) {
+		Long meaningSemanticTypeId = cudDbService.createMeaningSemanticType(meaningId, semanticTypeCode);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.SEMANTIC_TYPE, meaningSemanticTypeId, semanticTypeCode);
+		createLifecycleLog(logData);
+
 	}
 
 	@Transactional
@@ -755,6 +770,17 @@ public class CudService extends AbstractService {
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
 			createLifecycleLog(logData);
 			cudDbService.deleteMeaningDomain(meaningDomainId);
+		}
+	}
+
+	@Transactional
+	public void deleteMeaningSemanticType(Long meaningId, String semanticTypeCode) {
+		if (StringUtils.isNotBlank(semanticTypeCode)) {
+			Long meaningSemanticTypeId = cudDbService.getMeaningSemanticTypeId(meaningId, semanticTypeCode);
+			LogData logData = new LogData(
+					LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.SEMANTIC_TYPE, meaningSemanticTypeId, semanticTypeCode, null);
+			createLifecycleLog(logData);
+			cudDbService.deleteMeaningSemanticType(meaningSemanticTypeId);
 		}
 	}
 
