@@ -53,6 +53,7 @@ from (select w.id as word_id,
 	          from lexeme l,
 	               dataset ds
 	          where l.type = 'PRIMARY'
+	          and   l.process_state_code = 'avalik'
 	          and   l.word_id = w.id
 	          and   ds.code = l.dataset_code
 	          and   ds.is_public = true
@@ -61,6 +62,7 @@ from (select w.id as word_id,
 	          from lexeme l,
 	               dataset ds
 	          where l.type = 'PRIMARY'
+	          and   l.process_state_code = 'avalik'
 	          and   l.word_id = w.id
 	          and   ds.code = l.dataset_code
 	          and   ds.is_public = true
@@ -74,6 +76,7 @@ from (select w.id as word_id,
                     where l.word_id = w.id
                     --and l.dataset_code = 'sss'
                     and l.type = 'PRIMARY'
+                    and l.process_state_code = 'avalik'
                     and ds.code = l.dataset_code
                     and ds.is_public = true)
       group by w.id) as w
@@ -125,13 +128,18 @@ from (select w.id as word_id,
                          from lexeme l1
                            inner join dataset l1ds on l1ds.code = l1.dataset_code
                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id --and l2.dataset_code = 'sss'
+                           inner join dataset l2ds on l2ds.code = l2.dataset_code
                            inner join word w2 on w2.id = l2.word_id
                            inner join paradigm p2 on p2.word_id = w2.id
                            inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
                          where 
                          --l1.dataset_code = 'sss'
                          l1.type = 'PRIMARY'
-                         and l1ds.is_public = true) mw
+                         and l1.process_state_code = 'avalik'
+                         and l1ds.is_public = true
+                         and l2.type = 'PRIMARY'
+                         and l2.process_state_code = 'avalik'
+                         and l2ds.is_public = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select lc.word_id,
                           array_agg(distinct row(lc.lang, lc.complexity)::type_lang_complexity) lang_complexities
@@ -146,7 +154,10 @@ from (select w.id as word_id,
                           where 
                           --l1.dataset_code = 'sss'
                           l1.type = 'PRIMARY'
+                          and l1.process_state_code = 'avalik'
                           and l1ds.is_public = true
+                          and l2.type = 'PRIMARY'
+                          and l2.process_state_code = 'avalik'
                           and l2ds.is_public = true)
                           union all
                           (select l.word_id,
@@ -159,6 +170,7 @@ from (select w.id as word_id,
                           where 
                           --l.dataset_code = 'sss'
                           l.type = 'PRIMARY'
+                          and l.process_state_code = 'avalik'
                           and ds.code = l.dataset_code
                           and ds.is_public = true
                           and lff.lexeme_id = l.id
@@ -176,6 +188,7 @@ from (select w.id as word_id,
                           where 
                           --l.dataset_code = 'sss'
                           l.type = 'PRIMARY'
+                          and l.process_state_code = 'avalik'
                           and ds.code = l.dataset_code
                           and ds.is_public = true
                           and lff.lexeme_id = l.id
@@ -193,6 +206,7 @@ from (select w.id as word_id,
                           where 
                           --l.dataset_code = 'sss'
                           l.type = 'PRIMARY'
+                          and l.process_state_code = 'avalik'
                           and ds.code = l.dataset_code
                           and ds.is_public = true
                           and l.meaning_id = d.meaning_id)
@@ -208,6 +222,7 @@ from (select w.id as word_id,
                           and l2.word_id = w2.id
                           --and l2.dataset_code = 'sss'
                           and l2.type = 'PRIMARY'
+                          and l2.process_state_code = 'avalik'
                           and ds.code = l2.dataset_code
                           and ds.is_public = true
                           and r.word_rel_type_code != 'raw')) lc
@@ -232,6 +247,7 @@ from (select w.id as word_id,
                          where 
                          --l.dataset_code = 'sss'
                          l.type = 'PRIMARY'
+                         and l.process_state_code = 'avalik'
                          and ds.is_public = true) wd
                    group by wd.word_id) wd
                on wd.word_id = w.word_id;
@@ -257,6 +273,7 @@ and   exists (select l.id
               where l.word_id = w.id
               --and l.dataset_code = 'sss'
               and l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
               and ds.code = l.dataset_code
               and ds.is_public = true);
 
@@ -297,6 +314,7 @@ and   exists (select l.id
               where l.word_id = w.id 
               --and l.dataset_code = 'sss'
               and l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
               and ds.code = l.dataset_code
               and ds.is_public = true)
 order by p.id,
@@ -321,6 +339,7 @@ from (select m.id
                     where l.meaning_id = m.id 
                     --and l.dataset_code = 'sss'
                     and l.type = 'PRIMARY'
+                    and l.process_state_code = 'avalik'
                     and ds.code = l.dataset_code
                     and ds.is_public = true)) m
   left outer join (select m_dom.meaning_id,
@@ -330,7 +349,7 @@ from (select m.id
   left outer join (select d.meaning_id,
                           array_agg(row (null,d.meaning_id,d.value,d.value_prese,d.lang,d.complexity)::type_definition order by d.order_by) definitions
                    from definition d
-                   where d.complexity in ('SIMPLE1', 'SIMPLE2', 'DETAIL1', 'DETAIL2')
+                   --where d.complexity in ('SIMPLE1', 'SIMPLE2', 'DETAIL1', 'DETAIL2')
                    group by d.meaning_id) d on d.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value_text order by ff.order_by) image_files
@@ -489,7 +508,10 @@ from lexeme l
                          where 
                          --l1.dataset_code = 'sss'
                          l1.type = 'PRIMARY'
+                         and l1.process_state_code = 'avalik'
                          and l1ds.is_public = true
+                         and l2.type = 'PRIMARY'
+                         and l2.process_state_code = 'avalik'
                          and l2ds.is_public = true) mw
                    group by mw.lexeme_id) mw on mw.lexeme_id = l.id
   left outer join (select u.lexeme_id,
@@ -539,11 +561,14 @@ from lexeme l
                                  l2.complexity
                           from lexeme l1
                             inner join dataset l1ds on l1ds.code = l1.dataset_code
-                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id and l2.type = 'PRIMARY'
+                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
                             inner join dataset l2ds on l2ds.code = l2.dataset_code
                             inner join word w2 on w2.id = l2.word_id
                           where l1.type = 'PRIMARY'
+                          and   l1.process_state_code = 'avalik'
                           and   l1ds.is_public = true
+                          and   l2.type = 'PRIMARY'
+                          and   l2.process_state_code = 'avalik'
                           and   l2ds.is_public = true)
                           union all
                           (select l.id,
@@ -554,6 +579,7 @@ from lexeme l
                                freeform ff,
                                dataset ds
                           where l.type = 'PRIMARY'
+                          and   l.process_state_code = 'avalik'
                           and   ds.code = l.dataset_code
                           and   ds.is_public = true
                           and   lff.lexeme_id = l.id
@@ -569,6 +595,7 @@ from lexeme l
                                freeform ut,
                                dataset ds
                           where l.type = 'PRIMARY'
+                          and   l.process_state_code = 'avalik'
                           and   ds.code = l.dataset_code
                           and   ds.is_public = true
                           and   lff.lexeme_id = l.id
@@ -583,7 +610,8 @@ from lexeme l
                           from lexeme l,
                                definition d,
                                dataset ds
-                          where l.type = 'PRIMARY' 
+                          where l.type = 'PRIMARY'
+                          and   l.process_state_code = 'avalik'
                           and   l.meaning_id = d.meaning_id
                           and   ds.code = l.dataset_code
                           and   ds.is_public = true)
@@ -598,12 +626,14 @@ from lexeme l
                                dataset l1ds,
                                dataset l2ds
                           where l1.type = 'PRIMARY'
+                          and   l1.process_state_code = 'avalik'
                           and   l1ds.code = l1.dataset_code
                           and   l1ds.is_public = true
                           and   r.lexeme1_id = l1.id
                           and   r.lexeme2_id = l2.id
                           and   l2.dataset_code = l1.dataset_code
                           and   l2.type = 'PRIMARY'
+                          and   l2.process_state_code = 'avalik'
                           and   l2ds.code = l2.dataset_code
                           and   l2ds.is_public = true
                           and   w2.id = l2.word_id)
@@ -614,9 +644,11 @@ from lexeme l
                           from lexeme l1,
                                word w1,
                                dataset l1ds
-                          where w1.id = l1.word_id
+                          where l1.type = 'PRIMARY'
+                          and   l1.process_state_code = 'avalik'
                           and   l1ds.code = l1.dataset_code
                           and   l1ds.is_public = true
+                          and   w1.id = l1.word_id
                           and   not exists (select l2.id
                                             from lexeme l2,
                                                  dataset l2ds
@@ -624,6 +656,7 @@ from lexeme l
                                             and   l2.dataset_code = l1.dataset_code
                                             and   l2.id != l1.id
                                             and   l2.type = 'PRIMARY'
+                                            and   l2.process_state_code = 'avalik'
                                             and   l2ds.code = l2.dataset_code
                                             and   l2ds.is_public = true)
                           and   not exists (select d.id
@@ -640,6 +673,7 @@ from lexeme l
 where 
 --l.dataset_code = 'sss'
 l.type = 'PRIMARY'
+and l.process_state_code = 'avalik'
 and ds.is_public = true
 order by l.id;
 
@@ -677,6 +711,7 @@ from collocation as c
                    form as f2,
                    dataset as l2ds
               where l2.type = 'PRIMARY'
+              and   l2.process_state_code = 'avalik'
               and   l2ds.code = l2.dataset_code
               and   l2ds.is_public = true
               and   l2.word_id = w2.id
@@ -688,6 +723,7 @@ from collocation as c
 where 
 --l1.dataset_code = 'sss'
 l1.type = 'PRIMARY'
+and l1.process_state_code = 'avalik'
 and l1ds.is_public = true
 group by l1.id,
          c.id,
@@ -761,10 +797,12 @@ from word_etym_recursion rec
                    and   l2.meaning_id = m.id
                    and   l1.word_id != l2.word_id
                    and   l1.type = 'PRIMARY'
+                   and   l1.process_state_code = 'avalik'
                    and   l1ds.code = l1.dataset_code
                    and   l1ds.is_public = true
                    and   l2.dataset_code = 'ety'
                    and   l2.type = 'PRIMARY'
+                   and   l2.process_state_code = 'avalik'
                    and   l2ds.code = l2.dataset_code
                    and   l2ds.is_public = true
                    and   l2.word_id = w2.id
@@ -814,6 +852,7 @@ from word w
                                          where lc.word_id = w2.id
                                          --and lc.dataset_code = 'sss'
                                          and lc.type = 'PRIMARY'
+                                         and lc.process_state_code = 'avalik'
                                          and ds.code = lc.dataset_code
                                          and ds.is_public = true
                                          group by lc.word_id) as lex_complexities,
@@ -832,11 +871,12 @@ from word w
                                        where exists (select l.id
                                                      from lexeme as l,
                                                           dataset ds
-                                                     where l.word_id = w.id
+                                                     where l.type = 'PRIMARY'
+                                                     and   l.process_state_code = 'avalik'
                                                      --and l.dataset_code = 'sss'
-                                                     and ds.code = l.dataset_code
-                                                     and ds.is_public = true
-                                                     and l.type = 'PRIMARY')
+                                                     and   ds.code = l.dataset_code
+                                                     and   ds.is_public = true
+                                                     and   l.word_id = w.id)
                                        group by w.id) as w2
                                  where r.word2_id = w2.id
                                  and r.word_rel_type_code != 'raw') wr on wr.word1_id = w1.id
@@ -858,6 +898,7 @@ from word w
                                  where lc.word_id = w2.id
                                  --and lc.dataset_code = 'sss'
                                  and lc.type = 'PRIMARY'
+                                 and lc.process_state_code = 'avalik'
                                  and ds.code = lc.dataset_code
                                  and ds.is_public = true
                                  group by lc.word_id) as lex_complexities,
@@ -880,6 +921,7 @@ from word w
                                              where l.word_id = w.id
                                              --and l.dataset_code = 'sss'
                                              and l.type = 'PRIMARY'
+                                             and l.process_state_code = 'avalik'
                                              and ds.code = l.dataset_code
                                              and ds.is_public = true)
                                group by w.id) as w2,
@@ -901,6 +943,7 @@ and   exists (select l.id
               where l.word_id = w.id
               --and l.dataset_code = 'sss'
               and l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
               and ds.code = l.dataset_code
               and ds.is_public = true);
 
@@ -927,6 +970,7 @@ from lex_relation r
               and   p2.word_id = w2.id
               and   l2.word_id = w2.id
               and   l2.type = 'PRIMARY'
+              and   l2.process_state_code = 'avalik'
               and   l2ds.code = l2.dataset_code
               and   l2ds.is_public = true
               group by l2.id,
@@ -938,6 +982,7 @@ where exists (select l1.id
               where l1.id = r.lexeme1_id
               --and l1.dataset_code = 'sss'
               and l1.type = 'PRIMARY'
+              and l1.process_state_code = 'avalik'
               and l1ds.code = l1.dataset_code
               and l1ds.is_public = true)
 group by r.lexeme1_id;
@@ -968,6 +1013,7 @@ from meaning m1,
       and   l2.word_id = w2.id
       --and   l2.dataset_code = 'sss'
       and   l2.type = 'PRIMARY'
+      and   l2.process_state_code = 'avalik'
       and   l2ds.code = l2.dataset_code
       and   l2ds.is_public = true) m2
 where r.meaning1_id = m1.id
@@ -978,6 +1024,7 @@ and   exists (select l1.id
               where l1.meaning_id = m1.id
               --and l1.dataset_code = 'sss'
               and l1.type = 'PRIMARY'
+              and l1.process_state_code = 'avalik'
               and l1ds.code = l1.dataset_code
               and l1ds.is_public = true)
 group by m1.id;
@@ -1007,6 +1054,7 @@ from ((select w.word,
                            and   l.complexity = 'SIMPLE'
                            and   l.dataset_code = 'sss'
                            and   l.type = 'PRIMARY'
+                           and   l.process_state_code = 'avalik'
                            and   ds.code = l.dataset_code
                            and   ds.is_public = true)
              and   f.value not like '% %'
