@@ -95,14 +95,14 @@
     <div id="headerLinks">
       <div class="header-links" role="navbar">
         <div class="dropdown lang-btn">
-          <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle d-none" id="langDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            EST
+          <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="langDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span th:text="#{menu.current.lang}"></span>
             <span class="icon icon-chevron-left"></span>
           </a>
           <div class="dropdown-menu" data-target="langDropdownMenuButton" aria-expanded="true" aria-labelledby="langDropdownMenuButton">
-            <a role="link" class="dropdown-item" href="#">EST</a>
-            <a role="link" class="dropdown-item" href="#">RUS</a>
-            <a role="link" class="dropdown-item" href="#">ENG</a>
+            <a role="link" class="dropdown-item" href="?lang=et">EST</a>
+            <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
+            <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
           </div>
         </div>
         <button class="btn menu-btn float-right clear-both" data-toggle="collapse" data-target="#headerLinks">
