@@ -310,7 +310,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<mainClass>eki.ekilex.manual.RawRelationCsvToSql</mainClass>
+							<mainClass>eki.ekilex.manual.RawRelationCsvToSqlGenerator</mainClass>
 							<cleanupDaemonThreads>false</cleanupDaemonThreads>
 						</configuration>
 					</plugin>

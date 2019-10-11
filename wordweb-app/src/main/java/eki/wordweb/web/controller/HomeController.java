@@ -1,5 +1,7 @@
 package eki.wordweb.web.controller;
 
+import java.util.Locale;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,9 +47,9 @@ public class HomeController extends AbstractController {
 	}
 
 	@GetMapping(ABOUT_URI)
-	public String about(Model model) {
+	public String about(Model model, Locale locale) {
 		populateGlobalData(model);
-		return ABOUT_PAGE;
+		return ABOUT_PAGE + "_" + locale.getLanguage();
 	}
 
 	@GetMapping(REGULATIONS_URI)

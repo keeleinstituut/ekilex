@@ -12,18 +12,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RawRelationsCsvToSqlRunner extends AbstractClassifierRunner {
+public class RawRelationsCsvToSqlGeneratorRunner extends AbstractClassifierRunner {
 
-	private static Logger logger = LoggerFactory.getLogger(RawRelationsCsvToSqlRunner.class);
+	private static Logger logger = LoggerFactory.getLogger(RawRelationsCsvToSqlGeneratorRunner.class);
 
 	private final static String OUTPUT_FILE_EXTENSION = ".sql";
 
 	private static final String INSERT_RAW_RELATION_TEMPLATE = "insert into word_relation (word1_id, word2_id, word_rel_type_code, relation_status) values (${word1_id}, ${word2_id}, 'raw', 'UNDEFINED') on conflict do nothing;";
 	private static final String INSERT_RELATION_PARAM_TEMPLATE = "insert into word_relation_param (word_relation_id, name, value) select id, '${name}', '${value}' from word_relation where word1_id = ${word1_id} and word2_id = ${word2_id} and word_rel_type_code = 'raw';";
 
-	private String inputFileFullPath;
-
-	public void execute() throws Exception {
+	public void execute(String inputFileFullPath) throws Exception {
 		File rawRelationCsvFile = new File(inputFileFullPath);
 		logger.info("Reading file {}", inputFileFullPath);
 		if (!rawRelationCsvFile.exists()) {
@@ -51,11 +49,11 @@ public class RawRelationsCsvToSqlRunner extends AbstractClassifierRunner {
 			insertRawRelationsBuf.append(insertParamSql).append('\n');
 		}
 
-		writeToFile(insertRawRelationsBuf);
+		writeToFile(inputFileFullPath, insertRawRelationsBuf);
 
 	}
 
-	private void writeToFile(StringBuffer insertRelationsBuf) throws Exception {
+	private void writeToFile(String inputFileFullPath, StringBuffer insertRelationsBuf) throws Exception {
 
 		String outputFileName = StringUtils.substringBefore(inputFileFullPath, ".") + OUTPUT_FILE_EXTENSION;
 
@@ -97,7 +95,4 @@ public class RawRelationsCsvToSqlRunner extends AbstractClassifierRunner {
 
 	}
 
-	public void setInputFileFullPath(String inputFileFullPath) {
-		this.inputFileFullPath = inputFileFullPath;
-	}
 }
