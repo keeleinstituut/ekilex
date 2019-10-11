@@ -16409,4 +16409,14 @@ footer p {
 .keyboard-nav-active-item {
   outline: 2px solid #ec0138;
 }
+
+.badge-counter {
+  font-size: 0.749875rem;
+}
+
+.btn-compact .badge-top-left {
+  position: absolute;
+  top: -0.5rem;
+  left: -0.5rem;
+}
 /*# sourceMappingURL=styles.css.map */

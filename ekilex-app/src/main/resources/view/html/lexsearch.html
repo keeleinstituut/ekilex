@@ -63,7 +63,7 @@
                       data-toggle="modal"
                       th:data-target="${'#editWordValueDlg_' + wordId}"
                       sec:authorize="${#vars.isWordCrudGranted}">
-                <i class="fa fa-edit" aria-hidden="true"></i>
+                <i class="fa fa-pencil" aria-hidden="true"></i>
               </button>
               <div class="ml-2">
                 <form th:action="@{/wordjoin}" method="get">
@@ -83,9 +83,9 @@
                   <a th:href="@{'/wordprocesslog:' + ${wordId}}"
                      data-toggle="modal"
                      data-target="#processLogDlg"
-                     class="btn btn-secondary btn-compact"
+                     class="btn btn-secondary btn-compact position-relative"
                      sec:authorize="${#vars.isWordCrudGranted}"
-                  >Menetlus</a>
+                  >Menetlus <span class="badge badge-danger badge-counter badge-top-left">•</span></a>
                   <button type="button" class="btn btn-secondary btn-compact px-0"
                           data-toggle="modal"
                           th:data-target="${'#addWordProcessLogDlg_' + wordId}"
@@ -127,6 +127,13 @@
               <div th:replace="lexcomp :: word_gender"></div>
               <div th:replace="lexcomp :: word_type"></div>
               <div th:replace="lexcomp :: word_aspect"></div>
+              <button type="button" class="ml-2 btn btn-secondary btn-compact"
+                      title="Lisa omadus"
+                      data-toggle="modal"
+                      th:data-target="${'#addWordDataDlg_' + wordId}"
+                      sec:authorize="${#vars.isWordCrudGranted}">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
 
@@ -1064,17 +1071,6 @@
           <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
           <div th:replace="lexdialog :: edit_word_vocal_form_dlg"></div>
           <div class="pt-3 mb-2">
-            <div class="card-body pt-0 pb-0">
-              <div class="lbl mb-2">Keelendi omadused
-                <button type="button" class="btn badge badge-success"
-                        title="Lisa omadus"
-                        data-toggle="modal"
-                        th:data-target="${'#addWordDataDlg_' + wordId}"
-                        sec:authorize="${#vars.isWordCrudGranted}">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
             <div class="card-body pt-0 pb-0">
               <span class="lbl">Keelendi seosed</span>
               <button type="button" class="btn badge badge-success"

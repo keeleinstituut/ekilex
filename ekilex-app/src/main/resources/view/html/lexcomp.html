@@ -325,7 +325,7 @@
       </div>
     </div>
   </div>
-  <div class="hidden-buttons" th:unless="${#strings.isEmpty(details.word.vocalForm)}" th:fragment="word_vocal_form">
+  <div class="hidden-buttons mr-2" th:unless="${#strings.isEmpty(details.word.vocalForm)}" th:fragment="word_vocal_form">
       <span th:text="'['+${details.word.vocalForm}+']'" data-toggle="tooltip" title="Hääldus"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
@@ -343,7 +343,7 @@
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
   </div>
-  <div class=" hidden-buttons" th:if="${details.word.genderCode != null}" th:fragment="word_gender">
+  <div class=" hidden-buttons mr-2" th:if="${details.word.genderCode != null}" th:fragment="word_gender">
       <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.genderCode, wordGenders)}" data-toggle="tooltip" title="Sugu"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
@@ -361,7 +361,7 @@
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
   </div>
-  <div th:if="${not #lists.isEmpty(details.wordTypes)}" th:fragment="word_type">
+  <div class="mr-2" th:if="${not #lists.isEmpty(details.wordTypes)}" th:fragment="word_type">
       <span th:each="classif,classifIter : ${details.wordTypes}" data-toggle="tooltip" title="Sõna tüüp" class="hidden-buttons">
         <span th:replace="lexdialog :: edit_word_type_dlg"></span>
         <span th:text="${classif.code}"></span>
@@ -387,7 +387,7 @@
         <span th:unless="${classifIter.last}">,</span>
       </span>
   </div>
-  <div class="hidden-buttons" th:if="${details.word.aspectCode != null}" th:fragment="word_aspect">
+  <div class="hidden-buttons mr-2" th:if="${details.word.aspectCode != null}" th:fragment="word_aspect">
       <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.aspectCode, wordAspects)}" data-toggle="tooltip" title="Aspekt"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
