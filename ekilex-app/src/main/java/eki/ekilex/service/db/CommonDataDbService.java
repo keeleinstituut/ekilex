@@ -31,12 +31,14 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.PROCESS_STATE;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
@@ -373,6 +375,18 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getSemanticTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.SEMANTIC_TYPE),
+						SEMANTIC_TYPE_LABEL.CODE,
+						SEMANTIC_TYPE_LABEL.VALUE)
+				.from(SEMANTIC_TYPE_LABEL)
+				.where(SEMANTIC_TYPE_LABEL.LANG.eq(classifierLabelLang).and(SEMANTIC_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.fetchInto(Classifier.class);
+	}
+
 	public List<FreeForm> getMeaningFreeforms(Long meaningId, String... excludeTypes) {
 		return create
 				.select(
@@ -579,6 +593,23 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.orderBy(MEANING_RELATION.ORDER_BY)
 				.fetchInto(Relation.class);
+	}
+
+	public List<Classifier> getMeaningSemanticTypes(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.SEMANTIC_TYPE),
+						SEMANTIC_TYPE_LABEL.CODE,
+						SEMANTIC_TYPE_LABEL.VALUE)
+				.from(MEANING_SEMANTIC_TYPE, SEMANTIC_TYPE_LABEL)
+				.where(
+						MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId)
+								.and(SEMANTIC_TYPE_LABEL.CODE.eq(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE))
+								.and(SEMANTIC_TYPE_LABEL.LANG.eq(classifierLabelLang))
+								.and(SEMANTIC_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.orderBy(MEANING_SEMANTIC_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
 	}
 
 	public List<FreeForm> getLexemeFreeforms(Long lexemeId, String... excludedTypes) {

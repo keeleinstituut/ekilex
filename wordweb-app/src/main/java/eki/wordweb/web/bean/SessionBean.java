@@ -14,7 +14,11 @@ public class SessionBean extends AbstractDataObject {
 
 	private String searchMode;
 
-	private String lastSearchWord;
+	private String searchWord;
+
+	private String recentWord;
+
+	private Integer recentHomonymNr;
 
 	public String getDatasetType() {
 		return datasetType;
@@ -48,12 +52,28 @@ public class SessionBean extends AbstractDataObject {
 		this.searchMode = searchMode;
 	}
 
-	public String getLastSearchWord() {
-		return lastSearchWord;
+	public String getSearchWord() {
+		return searchWord;
 	}
 
-	public void setLastSearchWord(String lastSearchWord) {
-		this.lastSearchWord = lastSearchWord;
+	public void setSearchWord(String searchWord) {
+		this.searchWord = searchWord;
+	}
+
+	public String getRecentWord() {
+		return recentWord;
+	}
+
+	public void setRecentWord(String recentWord) {
+		this.recentWord = recentWord;
+	}
+
+	public Integer getRecentHomonymNr() {
+		return recentHomonymNr;
+	}
+
+	public void setRecentHomonymNr(Integer recentHomonymNr) {
+		this.recentHomonymNr = recentHomonymNr;
 	}
 
 }

@@ -8,7 +8,7 @@ import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwWordRecord;
 import eki.ekilex.data.db.udt.records.TypeDefinitionRecord;
 import eki.ekilex.data.db.udt.records.TypeLangComplexityRecord;
-import eki.ekilex.data.db.udt.records.TypeWordRecord;
+import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 
 import javax.annotation.Generated;
 
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = -1051160034;
+    private static final long serialVersionUID = 1554849157;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -97,24 +97,29 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
     public final TableField<ViewWwWordRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.view_ww_word.lang_complexitites</code>.
+     * The column <code>public.view_ww_word.lang_complexities</code>.
      */
-    public final TableField<ViewWwWordRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITITES = createField("lang_complexitites", eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.view_ww_word.meaning_count</code>.
-     */
-    public final TableField<ViewWwWordRecord, Long> MEANING_COUNT = createField("meaning_count", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwWordRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField("lang_complexities", eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word.meaning_words</code>.
      */
-    public final TableField<ViewWwWordRecord, TypeWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.ekilex.data.db.udt.TypeWord.TYPE_WORD.getDataType().getArrayDataType(), this, "");
+    public final TableField<ViewWwWordRecord, TypeMeaningWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.ekilex.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word.definitions</code>.
      */
     public final TableField<ViewWwWordRecord, TypeDefinitionRecord[]> DEFINITIONS = createField("definitions", eki.ekilex.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_word.lex_dataset_exists</code>.
+     */
+    public final TableField<ViewWwWordRecord, Boolean> LEX_DATASET_EXISTS = createField("lex_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.view_ww_word.term_dataset_exists</code>.
+     */
+    public final TableField<ViewWwWordRecord, Boolean> TERM_DATASET_EXISTS = createField("term_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * Create a <code>public.view_ww_word</code> table reference

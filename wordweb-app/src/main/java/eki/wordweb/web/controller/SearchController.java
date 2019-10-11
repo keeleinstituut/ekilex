@@ -26,6 +26,7 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CorporaSentence;
 import eki.wordweb.data.SearchFilter;
+import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.CorporaServiceEst;
@@ -34,7 +35,6 @@ import eki.wordweb.service.LexSearchService;
 import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.service.TermSearchService;
 import eki.wordweb.web.bean.SessionBean;
-import eki.wordweb.web.util.UserAgentUtil;
 
 @ConditionalOnWebApplication
 @Controller
@@ -55,9 +55,6 @@ public class SearchController extends AbstractController {
 
 	@Autowired
 	private StatDataCollector statDataCollector;
-
-	@Autowired
-	private UserAgentUtil userAgentUtil;
 
 	@GetMapping(SEARCH_URI)
 	public String home(Model model) {
@@ -104,8 +101,10 @@ public class SearchController extends AbstractController {
 		}
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
-		SearchFilter searchFilter = validateLexSearch(langPair, searchWord, homonymNrStr, searchMode);
-		sessionBean.setLastSearchWord(searchWord);
+		String recentWord = sessionBean.getRecentWord();
+		Integer recentHomonymNr = sessionBean.getRecentHomonymNr();
+		SearchFilter searchFilter = validateLexSearch(langPair, searchWord, homonymNrStr, searchMode, recentWord, recentHomonymNr);
+		sessionBean.setSearchWord(searchWord);
 		sessionBean.setDatasetType(DATASET_TYPE_LEX);
 
 		if (sessionBeanNotPresent) {
@@ -152,7 +151,7 @@ public class SearchController extends AbstractController {
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
 		SearchFilter searchFilter = validateTermSearch(searchWord, homonymNrStr);
-		sessionBean.setLastSearchWord(searchWord);
+		sessionBean.setSearchWord(searchWord);
 		sessionBean.setDatasetType(DATASET_TYPE_TERM);
 
 		if (sessionBeanNotPresent) {
@@ -209,8 +208,17 @@ public class SearchController extends AbstractController {
 			wordData = termSearchService.getWordData(wordId, DISPLAY_LANG);
 		}
 		model.addAttribute("wordData", wordData);
+		populateRecent(sessionBean, wordData);
 
 		return SEARCH_PAGE + " :: worddetails";
+	}
+
+	private void populateRecent(SessionBean sessionBean, WordData wordData) {
+		Word word = wordData.getWord();
+		String wordValue = word.getWord();
+		Integer homonymNr = word.getHomonymNr();
+		sessionBean.setRecentWord(wordValue);
+		sessionBean.setRecentHomonymNr(homonymNr);
 	}
 
 	@GetMapping("/korp/{lang}/{sentence}")
@@ -229,7 +237,8 @@ public class SearchController extends AbstractController {
 		return "common-search :: korp";
 	}
 
-	private SearchFilter validateLexSearch(String langPair, String searchWord, String homonymNrStr, String searchMode) {
+	private SearchFilter validateLexSearch(
+			String langPair, String searchWord, String homonymNrStr, String searchMode, String recentSearchWord, Integer recentHomonymNr) {
 
 		boolean isValid = true;
 		String[] languages = StringUtils.split(langPair, LANGUAGE_PAIR_SEPARATOR);
@@ -259,8 +268,13 @@ public class SearchController extends AbstractController {
 			isValid = isValid & false;
 		}
 		if (StringUtils.isBlank(homonymNrStr)) {
-			homonymNr = 1;
-			isValid = isValid & false;
+			if (isValid && StringUtils.equals(searchWord, recentSearchWord)) {
+				homonymNr = recentHomonymNr;
+				isValid = isValid & true;
+			} else {
+				homonymNr = 1;
+				isValid = isValid & false;
+			}
 		} else if (!StringUtils.isNumeric(homonymNrStr)) {
 			homonymNr = 1;
 			isValid = isValid & false;
@@ -328,5 +342,4 @@ public class SearchController extends AbstractController {
 		}
 		return searchUri;
 	}
-
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
@@ -39,11 +40,7 @@ import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.ConversionUtil;
 
 @Component
-public class LexSearchService implements SystemConstant {
-
-	private static final Integer DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL = 3;
-
-	private static final Integer SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL = 2;
+public class LexSearchService implements SystemConstant, WebConstant {
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;

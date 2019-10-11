@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
 
-    private static final long serialVersionUID = -757421731;
+    private static final long serialVersionUID = 584789173;
 
     /**
      * The reference instance of <code>public.view_ww_dataset</code>
@@ -62,11 +62,6 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
      * The column <code>public.view_ww_dataset.description</code>.
      */
     public final TableField<ViewWwDatasetRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.view_ww_dataset.lang</code>.
-     */
-    public final TableField<ViewWwDatasetRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.view_ww_dataset.order_by</code>.

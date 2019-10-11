@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dataset extends TableImpl<DatasetRecord> {
 
-    private static final long serialVersionUID = -925086165;
+    private static final long serialVersionUID = 778617046;
 
     /**
      * The reference instance of <code>public.dataset</code>
@@ -137,7 +137,7 @@ public class Dataset extends TableImpl<DatasetRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DATASET_PKEY);
+        return Arrays.<Index>asList(Indexes.DATASET_CODE_IDX, Indexes.DATASET_PKEY, Indexes.DATASET_TYPE_IDX);
     }
 
     /**

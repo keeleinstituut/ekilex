@@ -127,6 +127,11 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return commonDataService.getValueStates();
 	}
 
+	@ModelAttribute("semanticTypes")
+	public List<Classifier> getSemanticTypes() {
+		return commonDataService.getSemanticTypes();
+	}
+
 	@ModelAttribute("defaultDefinitionTypeCode")
 	public String getDefaultDefinitionTypeCode() {
 		return DEFAULT_DEFINITION_TYPE_CODE;

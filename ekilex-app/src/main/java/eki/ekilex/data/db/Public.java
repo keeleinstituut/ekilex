@@ -67,6 +67,7 @@ import eki.ekilex.data.db.tables.MeaningProcessLog;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
+import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
@@ -80,6 +81,8 @@ import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
+import eki.ekilex.data.db.tables.SemanticType;
+import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
@@ -127,10 +130,10 @@ import eki.ekilex.data.db.udt.TypeGrammar;
 import eki.ekilex.data.db.udt.TypeLangComplexity;
 import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
+import eki.ekilex.data.db.udt.TypeMeaningWord;
 import eki.ekilex.data.db.udt.TypePublicNote;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
-import eki.ekilex.data.db.udt.TypeWord;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
 import eki.ekilex.data.db.udt.TypeWordRelation;
 
@@ -160,7 +163,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1598440465;
+    private static final long serialVersionUID = 2043277562;
 
     /**
      * The reference instance of <code>public</code>
@@ -483,6 +486,11 @@ public class Public extends SchemaImpl {
     public final MeaningRelation MEANING_RELATION = eki.ekilex.data.db.tables.MeaningRelation.MEANING_RELATION;
 
     /**
+     * The table <code>public.meaning_semantic_type</code>.
+     */
+    public final MeaningSemanticType MEANING_SEMANTIC_TYPE = eki.ekilex.data.db.tables.MeaningSemanticType.MEANING_SEMANTIC_TYPE;
+
+    /**
      * The table <code>public.morph</code>.
      */
     public final Morph MORPH = eki.ekilex.data.db.tables.Morph.MORPH;
@@ -546,6 +554,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.register_label</code>.
      */
     public final RegisterLabel REGISTER_LABEL = eki.ekilex.data.db.tables.RegisterLabel.REGISTER_LABEL;
+
+    /**
+     * The table <code>public.semantic_type</code>.
+     */
+    public final SemanticType SEMANTIC_TYPE = eki.ekilex.data.db.tables.SemanticType.SEMANTIC_TYPE;
+
+    /**
+     * The table <code>public.semantic_type_label</code>.
+     */
+    public final SemanticTypeLabel SEMANTIC_TYPE_LABEL = eki.ekilex.data.db.tables.SemanticTypeLabel.SEMANTIC_TYPE_LABEL;
 
     /**
      * The table <code>public.source</code>.
@@ -834,6 +852,8 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_REL_TYPE_ORDER_BY_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
+            Sequences.MEANING_SEMANTIC_TYPE_ID_SEQ,
+            Sequences.MEANING_SEMANTIC_TYPE_ORDER_BY_SEQ,
             Sequences.MORPH_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
             Sequences.POS_GROUP_ORDER_BY_SEQ,
@@ -844,6 +864,7 @@ public class Public extends SchemaImpl {
             Sequences.PROCESS_STATE_ORDER_BY_SEQ,
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
+            Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.SOURCE_LIFECYCLE_LOG_ID_SEQ,
@@ -945,6 +966,7 @@ public class Public extends SchemaImpl {
             MeaningRelType.MEANING_REL_TYPE,
             MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
             MeaningRelation.MEANING_RELATION,
+            MeaningSemanticType.MEANING_SEMANTIC_TYPE,
             Morph.MORPH,
             MorphLabel.MORPH_LABEL,
             Paradigm.PARADIGM,
@@ -958,6 +980,8 @@ public class Public extends SchemaImpl {
             Region.REGION,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
+            SemanticType.SEMANTIC_TYPE,
+            SemanticTypeLabel.SEMANTIC_TYPE_LABEL,
             Source.SOURCE,
             SourceFreeform.SOURCE_FREEFORM,
             SourceLifecycleLog.SOURCE_LIFECYCLE_LOG,
@@ -1016,10 +1040,10 @@ public class Public extends SchemaImpl {
             TypeLangComplexity.TYPE_LANG_COMPLEXITY,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,
+            TypeMeaningWord.TYPE_MEANING_WORD,
             TypePublicNote.TYPE_PUBLIC_NOTE,
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,
-            TypeWord.TYPE_WORD,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
             TypeWordRelation.TYPE_WORD_RELATION);
     }

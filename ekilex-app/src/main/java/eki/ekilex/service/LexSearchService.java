@@ -1,12 +1,10 @@
 package eki.ekilex.service;
 
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -45,6 +43,7 @@ import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
+import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
@@ -52,6 +51,9 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
+	
+	@Autowired
+	private ProcessDbService processDbService;
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
@@ -72,6 +74,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
+		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 
 		lexemes.forEach(lexeme -> populateLexeme(lexeme, datasetNameMap));
 		lexemeLevelCalcUtil.combineLevels(lexemes);
@@ -84,6 +87,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setWordRelations(wordRelations);
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setWordGroups(wordGroups);
+		wordDetails.setWordProcessLogCount(wordProcessLogCount);
 
 		return wordDetails;
 	}
@@ -173,7 +177,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name()};
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
 
 		Long lexemeId = lexeme.getLexemeId();
@@ -190,6 +194,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
@@ -214,6 +219,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setPos(lexemePos);
 		lexeme.setDerivs(lexemeDerivs);
 		lexeme.setRegisters(lexemeRegisters);
+		lexeme.setMeaningSemanticTypes(meaningSemanticTypes);
 		lexeme.setMeaningWords(meaningWords);
 		lexeme.setMeaningDomains(meaningDomains);
 		lexeme.setDefinitions(definitions);
@@ -240,6 +246,7 @@ public class LexSearchService extends AbstractWordSearchService {
 						|| CollectionUtils.isNotEmpty(lexemeDerivs)
 						|| CollectionUtils.isNotEmpty(lexemeRegisters)
 						|| CollectionUtils.isNotEmpty(meaningDomains)
+						|| CollectionUtils.isNotEmpty(meaningSemanticTypes)
 						|| CollectionUtils.isNotEmpty(lexemeGrammars)
 						|| CollectionUtils.isNotEmpty(lexeme.getLexemeFrequencies());
 		lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);

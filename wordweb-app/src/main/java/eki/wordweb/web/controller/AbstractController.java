@@ -1,14 +1,19 @@
 package eki.wordweb.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.web.bean.SessionBean;
+import eki.wordweb.web.util.UserAgentUtil;
 
 public abstract class AbstractController implements WebConstant, SystemConstant {
 
@@ -19,6 +24,15 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 
 	@Value("${wordweb.feedback.service.url:}")
 	protected String feedbackServiceUrl;
+
+	@Autowired
+	protected UserAgentUtil userAgentUtil;
+
+	@ModelAttribute(IE_USER_FLAG_KEY)
+	public boolean isIeUser(HttpServletRequest request) {
+		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
+		return isIeUser;
+	}
 
 	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 

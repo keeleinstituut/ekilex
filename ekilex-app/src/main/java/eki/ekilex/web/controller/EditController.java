@@ -189,6 +189,9 @@ public class EditController extends AbstractPageController implements SystemCons
 			String datasetCode = sessionBean.getUserRole().getDatasetCode();
 			cudService.createWordAndSynRelation(itemData.getId(), itemData.getValue(), datasetCode, itemData.getLanguage(), itemData.getItemType());
 			break;
+		case "meaning_semantic_type":
+			cudService.createMeaningSemanticType(itemData.getId2(), valuePrese);
+			break;
 		}
 		return "{}";
 	}
@@ -280,6 +283,9 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "image_title":
 			cudService.updateImageTitle(itemData.getId(), valuePrese);
+			break;
+		case "meaning_semantic_type":
+			cudService.updateMeaningSemanticType(itemData.getId(), itemData.getCurrentValue(), valuePrese);
 			break;
 		}
 		return "{}";
@@ -490,6 +496,9 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "image_title":
 			cudService.deleteImageTitle(id);
+			break;
+		case "meaning_semantic_type":
+			cudService.deleteMeaningSemanticType(id, valueToDelete);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
 			cudService.deleteDefinitionSourceLink(id);

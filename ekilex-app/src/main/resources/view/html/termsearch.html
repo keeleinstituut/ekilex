@@ -84,6 +84,7 @@
         <div th:replace="termdialog :: add_meaning_public_note_dlg"></div>
         <div th:replace="termdialog :: add_meaning_process_log_dlg"></div>
         <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
+        <div th:replace="termdialog :: add_meaning_semantic_type_dlg"></div>
 
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
       <div class="card mb-2 shadow" style="border-style: dotted; border-width: 4px; border-color: #aaa">
@@ -141,6 +142,7 @@
             </div>
           </div>
           <div th:replace="termcomp :: meaning_domain"></div>
+          <div th:replace="termcomp :: meaning_semantic_type"></div>
           <div class="row">
             <div class="col pr-0 col-w13rem">
               <span class="lbl">Seletused</span>

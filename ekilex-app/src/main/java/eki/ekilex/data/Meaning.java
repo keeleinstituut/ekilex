@@ -22,6 +22,8 @@ public class Meaning extends AbstractDataObject {
 
 	private List<OrderedClassifier> domains;
 
+	private List<Classifier> semanticTypes;
+
 	private List<FreeForm> freeforms;
 
 	private List<FreeForm> learnerComments;
@@ -33,8 +35,6 @@ public class Meaning extends AbstractDataObject {
 	private List<Relation> relations;
 
 	private List<List<Relation>> groupedRelations;
-
-	private boolean contentExists;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -76,6 +76,14 @@ public class Meaning extends AbstractDataObject {
 		this.domains = domains;
 	}
 
+	public List<Classifier> getSemanticTypes() {
+		return semanticTypes;
+	}
+
+	public void setSemanticTypes(List<Classifier> semanticTypes) {
+		this.semanticTypes = semanticTypes;
+	}
+
 	public List<FreeForm> getFreeforms() {
 		return freeforms;
 	}
@@ -114,14 +122,6 @@ public class Meaning extends AbstractDataObject {
 
 	public void setRelations(List<Relation> relations) {
 		this.relations = relations;
-	}
-
-	public boolean isContentExists() {
-		return contentExists;
-	}
-
-	public void setContentExists(boolean contentExists) {
-		this.contentExists = contentExists;
 	}
 
 	public List<List<Relation>> getGroupedRelations() {
