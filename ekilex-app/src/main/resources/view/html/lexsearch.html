@@ -53,18 +53,22 @@
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="border-bottom px-2  py-2">
             <div class="d-flex flex-row align-items-center">
+              <div class="hover-actions-container hover-actions-container-outline">
+                <h1 th:id="${'word-value-' + wordId}" th:utext="${details.word.value}" class="mb-0">Aktiivne
+                  sõna</h1>
+                <div class="hover-actions hover-actions-bottom-right">
+                  <button type="button"
+                          class="btn btn-compact btn-secondary"
+                          title="Muuda"
+                          data-toggle="modal"
+                          th:data-target="${'#editWordValueDlg_' + wordId}"
+                          sec:authorize="${#vars.isWordCrudGranted}">
+                    <i class="fa fa-pencil action-icon" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
 
 
-              <h1 th:id="${'word-value-' + wordId}" th:utext="${details.word.value}" class="mr-3 mb-0">Aktiivne
-                sõna</h1>
-              <button type="button"
-                      class="btn btn-compact btn-secondary"
-                      title="Muuda"
-                      data-toggle="modal"
-                      th:data-target="${'#editWordValueDlg_' + wordId}"
-                      sec:authorize="${#vars.isWordCrudGranted}">
-                <i class="fa fa-pencil" aria-hidden="true"></i>
-              </button>
               <div class="ml-2">
                 <form th:action="@{/wordjoin}" method="get">
                   <input type="hidden" name="wordId" th:value="${details.word.wordId}">
@@ -83,14 +87,17 @@
                   <a th:href="@{'/wordprocesslog:' + ${wordId}}"
                      data-toggle="modal"
                      data-target="#processLogDlg"
-                     class="btn btn-secondary btn-compact position-relative"
+                     class="btn btn-secondary btn-compact position-relative pr-1"
                      sec:authorize="${#vars.isWordCrudGranted}"
-                  >Menetlus <span class="badge badge-danger badge-counter badge-top-left">•</span></a>
+                  ><span class="d-block" data-toggle="tooltip" title="Vaata kommentaare">
+                    Kommentaarid <span class="badge badge-counter" th:text="${details.wordProcessLogCount}" th:classappend="${details.wordProcessLogCount > 0}?'badge-danger':'badge-secondary'">0</span>
+                  </span>
+                  </a>
                   <button type="button" class="btn btn-secondary btn-compact px-0"
                           data-toggle="modal"
                           th:data-target="${'#addWordProcessLogDlg_' + wordId}"
                           sec:authorize="${#vars.isWordCrudGranted}"
-                  ><i class="action-icon fa fa-plus px-2" aria-hidden="true" title="Lisa kirje menetluse logisse"
+                  ><i class="action-icon fa fa-plus px-2 d-block" aria-hidden="true" title="Lisa kommentaar"
                       data-toggle="tooltip"></i></button>
 
                 </div>
@@ -127,13 +134,6 @@
               <div th:replace="lexcomp :: word_gender"></div>
               <div th:replace="lexcomp :: word_type"></div>
               <div th:replace="lexcomp :: word_aspect"></div>
-              <button type="button" class="ml-2 btn btn-secondary btn-compact"
-                      title="Lisa omadus"
-                      data-toggle="modal"
-                      th:data-target="${'#addWordDataDlg_' + wordId}"
-                      sec:authorize="${#vars.isWordCrudGranted}">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
             </div>
           </div>
 
@@ -173,19 +173,15 @@
             <div th:replace="lexdialog :: edit_lexeme_levels_dlg"></div>
             <div th:replace="lexdialog :: edit_lexeme_complexity_dlg"></div>
 
-            <div class="lexeme-inner" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}" data-lexeme-title>
-              <div class="d-flex flex-row flex-nowrap">
-                <div class="d-flex flex-column">
-                  <div class="d-flex align-items-center flex-wrap">
-                  <span th:if="${lexeme.levels != null}"
-                        th:data-id="${lexeme.lexemeId}"
-                        th:data-level1="${lexeme.level1}"
-                        th:data-level2="${lexeme.level2}"
-                        th:data-level3="${lexeme.level3}"
-                        class="pl-1 pr-2">
-                    <span class="bubble">
-                      <span th:text="${lexeme.levels}"></span>
-                    </span>
+            <div class="lexeme-inner" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}" data-lexeme-title th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-4': ''">
+              <div class="d-flex flex-row flex-nowrap align-items-start">
+                 <div class="d-flex flex-row flex-wrap">
+                    <span th:if="${lexeme.levels != null}"
+                          th:data-id="${lexeme.lexemeId}"
+                          th:data-level1="${lexeme.level1}"
+                          th:data-level2="${lexeme.level2}"
+                          th:data-level3="${lexeme.level3}"
+                          class="px-2 py-0 bg-light rounded font-weight-bold mr-2" th:text="${lexeme.levels}">
                   </span>
                     <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                       <div class="btn-custom">
@@ -196,19 +192,22 @@
                       <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                     </th:block>
                   </div>
+
+
+                  <div class="ml-auto d-flex flex-row align-items-center">
+                    <b th:text="${lexeme.dataset}" class="mr-2"></b>
+                    <button type="button" class="btn btn-secondary btn-sm btn-toggle" title="Näita detaile"
+                            th:data-toggle-target="${'lexBody_' + lexeme.lexemeId}">
+                      <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="d-flex flex-column">
+                  <div class="d-flex align-items-center flex-wrap">
                   <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
                     <span th:utext="${lexeme.definitions.get(0).value}"></span>
                   </div>
                 </div>
-
-                <div class="ml-auto">
-                  <b th:text="${lexeme.dataset}"></b>
-                  <button type="button" class="btn btn-secondary btn-sm btn-toggle" title="Näita detaile"
-                          th:data-toggle-target="${'lexBody_' + lexeme.lexemeId}">
-                    <i class="fa fa-angle-down" aria-hidden="true"></i>
-                  </button>
-                </div>
-
               </div>
             </div>
             <div class="card-body d-none" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}"
