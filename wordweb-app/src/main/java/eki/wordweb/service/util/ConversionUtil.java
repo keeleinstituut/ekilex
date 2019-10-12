@@ -313,7 +313,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			populateLexeme(lexeme, null, displayLang);
 			populateUsages(lexeme, null, displayLang);
 			populateRelatedLexemes(lexeme, null, displayLang);
-			populateMeaningWords(lexeme, displayLang);
+			populateMeaningWords(word, lexeme, displayLang);
 		}
 
 		for (LexemeMeaningTuple tuple : lexemeMeaningTuples) {
@@ -424,12 +424,14 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		}
 	}
 
-	private void populateMeaningWords(Lexeme lexeme, String displayLang) {
+	private void populateMeaningWords(Word word, Lexeme lexeme, String displayLang) {
 
 		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
 		if (CollectionUtils.isEmpty(meaningWords)) {
 			return;
 		}
+
+		String wordLang = word.getLang();
 
 		for (TypeMeaningWord meaningWord : meaningWords) {
 			classifierUtil.applyClassifiers(meaningWord, displayLang);
@@ -438,7 +440,11 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 					|| CollectionUtils.isNotEmpty(meaningWord.getMwLexRegisters())
 					|| CollectionUtils.isNotEmpty(meaningWord.getMwLexGovernments());
 			meaningWord.setAdditionalDataExists(additionalDataExists);
-			lexeme.getSourceLangMeaningWords().add(meaningWord);
+			if (StringUtils.equals(wordLang, meaningWord.getLang())) {
+				lexeme.getSourceLangMeaningWords().add(meaningWord);				
+			} else {
+				lexeme.getDestinLangMatchWords().add(meaningWord);
+			}
 		}
 	}
 
