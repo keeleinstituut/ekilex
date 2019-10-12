@@ -33,11 +33,11 @@
       <div class="inner-container">
         <div tabindex="0" role="button" class="toggle" id="toggle-lex"
              th:classappend="${sessionBean.datasetType == 'lex' ? 'active' : ''}">
-          <p>Üldkeel</p>
+          <p th:text="#{button.label.lex}">Üldkeel</p>
         </div>
         <div tabindex="0" role="button" class="toggle" id="toggle-term"
              th:classappend="${sessionBean.datasetType == 'term' ? 'active' : ''}">
-          <p>Oskuskeel</p>
+          <p th:text="#{button.label.term}">Oskuskeel</p>
         </div>
       </div>
     </div>

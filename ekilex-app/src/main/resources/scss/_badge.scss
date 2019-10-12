@@ -1,0 +1,10 @@
+.badge-counter{
+  min-width: 18px;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-light;
+}
+.btn-compact .badge-top-left{
+  position: absolute;
+  top: -$spacer * .5;
+  left: -$spacer * .5;
+}

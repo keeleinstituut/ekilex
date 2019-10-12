@@ -161,17 +161,6 @@ input:checked+.slider:before {
 	cursor: auto !important;
 }
 
-.btn-toggle {
-	font-size: large;
-	border-radius: 1rem;
-	margin-top: -14px;
-	margin-right: -14px;
-	padding: 0 2px;
-}
-
-.btn-toggle i {
-	width: 1rem;
-}
 
 .table-condensed th,
 .table-condensed td {
@@ -180,11 +169,6 @@ input:checked+.slider:before {
 
 .compacted .card-body {
 	padding: 0.5rem;
-}
-
-.compacted .btn-toggle {
-	margin-top: -6px;
-	margin-right: -6px;
 }
 
 .compacted th, .compacted td {

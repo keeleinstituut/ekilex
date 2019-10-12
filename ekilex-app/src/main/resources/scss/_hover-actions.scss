@@ -1,7 +1,36 @@
+.hover-actions-container{
+  position: relative;
+}
+
 .hover-actions-container:hover .hover-actions{
   display: block;
 }
 
+.hover-actions-container-outline:hover{
+  border: 1px solid $gray-200;
+  @include border-radius($input-border-radius);
+  &::after{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: $zindex-dropdown;
+    width: 100%;
+    height: 100%;
+    content: "";
+  }
+}
+
 .hover-actions{
   display: none;
+}
+
+.hover-actions-bottom-right{
+  position: absolute;
+  top: calc(100% - 1px);
+  right: 0;
+  z-index: $zindex-dropdown + 1;
+}
+
+.hover-actions-bottom-right .btn{
+  @include border-top-radius(0);
 }
