@@ -54,7 +54,7 @@
                th:href="@{/lexsearch}">Leksikograafid</a>
             <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}"
                th:href="@{/termsearch}">Terminoloogid</a>
-            <a class="dropdown-item side-menu-item" th:if="${sessionBean.userRole != null}"
+            <a class="dropdown-item side-menu-item" th:if="${sessionBean != null && sessionBean.userRole != null}"
                th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
             <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}"
                th:href="@{/sourcesearch}">Allikate otsing</a>
