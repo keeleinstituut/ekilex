@@ -89,6 +89,8 @@ gender	o	other	eng	descrip
 gender	o	muu	est	descrip
 gender	m	masculine	eng	descrip
 gender	m	meessugu	est	descrip
+gender	mf	meessugu ja naissugu	est	descrip
+gender	mn	meessugu ja kesksugu	est	descrip
 gender	n	kesksugu	est	wordweb
 gender	m	meessugu	est	wordweb
 gender	o	muu	est	wordweb
@@ -1388,6 +1390,19 @@ morph	KvtPrPsN	polevat	est	descrip
 morph	KvtPtPsN	polnuvat	est	descrip
 morph	KndPrPsN	poleks	est	descrip
 morph	KndPtPsN	polnuks	est	descrip
+morph	sing, nomn	sing, nomn	est	descrip
+morph	pl, nomn	pl, nomn	est	descrip
+morph	sing, gent	sing, gent	est	descrip
+morph	sing	sing	est	descrip
+morph	pl	pl	est	descrip
+morph	nomn	nomn	est	descrip
+morph	gent	gent	est	descrip
+morph	gerundiiv	gerundiiv	est	descrip
+morph	infinitiiv, imperf	infinitiiv, imperf	est	descrip
+morph	infinitiiv, perf	infinitiiv, perf	est	descrip
+morph	infinitiiv, imperf, impe	infinitiiv, imperf, impe	est	descrip
+morph	infinitiiv, perf, impe	infinitiiv, perf, impe	est	descrip
+morph	infinitiiv, imperf, perf	infinitiiv, imperf, perf	est	descrip
 morph	SgAll	ainsuse alaleütlev	est	wordweb
 morph	SgAbl	ainsuse alaltütlev	est	wordweb
 morph	SgAd	ainsuse alalütlev	est	wordweb

@@ -397,3 +397,37 @@ from meaning_freeform mff, freeform ff
 where mff.freeform_id = ff.id
   and ff.type = 'SEMANTIC_TYPE');
 
+insert into morph (code, datasets) values ('sing, nomn', '{}');
+insert into morph (code, datasets) values ('pl, nomn', '{}');
+insert into morph (code, datasets) values ('sing, gent', '{}');
+insert into morph (code, datasets) values ('sing', '{}');
+insert into morph (code, datasets) values ('pl', '{}');
+insert into morph (code, datasets) values ('nomn', '{}');
+insert into morph (code, datasets) values ('gent', '{}');
+insert into morph (code, datasets) values ('gerundiiv', '{}');
+insert into morph (code, datasets) values ('infinitiiv, imperf', '{}');
+insert into morph (code, datasets) values ('infinitiiv, perf', '{}');
+insert into morph (code, datasets) values ('infinitiiv, imperf, impe', '{}');
+insert into morph (code, datasets) values ('infinitiiv, perf, impe', '{}');
+insert into morph (code, datasets) values ('infinitiiv, imperf, perf', '{}');
+
+insert into morph_label (code, value, lang, type) values ('sing, nomn', 'sing, nomn', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('pl, nomn', 'pl, nomn', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('sing, gent', 'sing, gent', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('sing', 'sing', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('pl', 'pl', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('nomn', 'nomn', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('gent', 'gent', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('gerundiiv', 'gerundiiv', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('infinitiiv, imperf', 'infinitiiv, imperf', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('infinitiiv, perf', 'infinitiiv, perf', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('infinitiiv, imperf, impe', 'infinitiiv, imperf, impe', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('infinitiiv, perf, impe', 'infinitiiv, perf, impe', 'est', 'descrip');
+insert into morph_label (code, value, lang, type) values ('infinitiiv, imperf, perf', 'infinitiiv, imperf, perf', 'est', 'descrip');
+
+insert into gender (code, datasets) values ('mf', '{}');
+insert into gender (code, datasets) values ('mn', '{}');
+
+insert into gender_label (code, value, lang, type) values ('mf', 'meessugu ja naissugu', 'est', 'descrip');
+insert into gender_label (code, value, lang, type) values ('mn', 'meessugu ja kesksugu', 'est', 'descrip');
+
