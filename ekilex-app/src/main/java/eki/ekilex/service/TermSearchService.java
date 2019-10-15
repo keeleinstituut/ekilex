@@ -157,7 +157,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 			List<NoteSourceTuple> lexemePublicNoteSourceTuples = commonDataDbService.getLexemePublicNoteSourceTuples(lexemeId);
 			List<Note> lexemePublicNotes = conversionUtil.composeNotes(lexemePublicNoteSourceTuples);
 			List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
-			List<SourceLink> lexemeRefLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
+			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 
 			boolean classifiersExist = StringUtils.isNotBlank(lexeme.getWordGenderCode())
@@ -188,7 +188,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 			lexeme.setUsages(usages);
 			lexeme.setGrammars(lexemeGrammars);
 			lexeme.setClassifiersExist(classifiersExist);
-			lexeme.setSourceLinks(lexemeRefLinks);
+			lexeme.setSourceLinks(lexemeSourceLinks);
 			lexeme.setLexemeRelations(lexemeRelations);
 			lexemes.add(lexeme);
 		}

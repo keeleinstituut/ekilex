@@ -59,16 +59,29 @@ public class MaintenanceService implements SystemConstant {
 	@Transactional
 	public void deleteFloatingData() {
 
-		int deletedFreeforms = maintenanceDbService.deleteFloatingFreeforms();
-		int deletedProcessLogs = maintenanceDbService.deleteFloatingProcessLogs();
-		int deletedLifecycleLogs = maintenanceDbService.deleteFloatingLifecycleLogs();
-		int deletedMeanings = maintenanceDbService.deleteFloatingMeanings();
-		int deletedWords = maintenanceDbService.deleteFloatingWords();
+		int deletedFreeformCount = maintenanceDbService.deleteFloatingFreeforms();
+		if (deletedFreeformCount > 0) {
+			logger.debug("Maintenance service deleted {} floating freeforms", deletedFreeformCount);
+		}
 
-		logger.debug("Maintenance service deleted {} floating freeforms", deletedFreeforms);
-		logger.debug("Maintenance service deleted {} floating process logs", deletedProcessLogs);
-		logger.debug("Maintenance service deleted {} floating lifecycle logs", deletedLifecycleLogs);
-		logger.debug("Maintenance service deleted {} floating meanings", deletedMeanings);
-		logger.debug("Maintenance service deleted {} floating words", deletedWords);
+		int deletedProcessLogCount = maintenanceDbService.deleteFloatingProcessLogs();
+		if (deletedProcessLogCount > 0) {
+			logger.debug("Maintenance service deleted {} floating process logs", deletedProcessLogCount);
+		}
+
+		int deletedLifecycleLogCount = maintenanceDbService.deleteFloatingLifecycleLogs();
+		if (deletedLifecycleLogCount > 0) {
+			logger.debug("Maintenance service deleted {} floating lifecycle logs", deletedLifecycleLogCount);
+		}
+
+		int deletedMeaningCount = maintenanceDbService.deleteFloatingMeanings();
+		if (deletedMeaningCount > 0) {
+			logger.debug("Maintenance service deleted {} floating meanings", deletedMeaningCount);
+		}
+
+		int deletedWordCount = maintenanceDbService.deleteFloatingWords();
+		if (deletedWordCount > 0) {
+			logger.debug("Maintenance service deleted {} floating words", deletedWordCount);
+		}
 	}
 }
