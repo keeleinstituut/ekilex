@@ -63,10 +63,12 @@ public class MaintenanceService implements SystemConstant {
 		int deletedProcessLogs = maintenanceDbService.deleteFloatingProcessLogs();
 		int deletedLifecycleLogs = maintenanceDbService.deleteFloatingLifecycleLogs();
 		int deletedMeanings = maintenanceDbService.deleteFloatingMeanings();
+		int deletedWords = maintenanceDbService.deleteFloatingWords();
 
 		logger.debug("Maintenance service deleted {} floating freeforms", deletedFreeforms);
 		logger.debug("Maintenance service deleted {} floating process logs", deletedProcessLogs);
 		logger.debug("Maintenance service deleted {} floating lifecycle logs", deletedLifecycleLogs);
 		logger.debug("Maintenance service deleted {} floating meanings", deletedMeanings);
+		logger.debug("Maintenance service deleted {} floating words", deletedWords);
 	}
 }
