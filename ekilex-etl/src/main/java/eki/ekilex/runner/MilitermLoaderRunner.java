@@ -710,38 +710,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 	private void findSecondRelationPartAndCreateRelations(List<RelationPart> initiatorRelationParts) throws Exception {
 
 		for (RelationPart initiatorRelationPart : initiatorRelationParts) {
-			String possibleRelatedTerm = initiatorRelationPart.getRelatedTerm();
 			Long initialMeaningId = initiatorRelationPart.getMeaningId();
-			List<RelationPart> possibleRelationParts = getMeaningRelationParts(possibleRelatedTerm);
+			String relatedTerm = initiatorRelationPart.getRelatedTerm();
+			List<RelationPart> relationParts = getMeaningRelationParts(relatedTerm);
 
-			if (possibleRelationParts.isEmpty()) {
+			if (relationParts.isEmpty()) {
 				illegalMeaningRelationReferenceValueCount.increment();
-				appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viide tundmatule terminile:",
-						possibleRelatedTerm);
-			} else if (possibleRelationParts.size() == 1) {
-				Long secondMeaningId = possibleRelationParts.get(0).getMeaningId();
-				createMeaningRelation(initialMeaningId, secondMeaningId, MEANING_RELATION_UNSPECIFIED);
+				appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viide tundmatule terminile:", relatedTerm);
 			} else {
-				String initiatorLang = initiatorRelationPart.getLang();
-				if (initiatorLang != null) {
-					List<RelationPart> sameLangRelationParts = new ArrayList<>();
-					for (RelationPart possibleRelationPart : possibleRelationParts) {
-						if (initiatorLang.equals(possibleRelationPart.getLang())) {
-							sameLangRelationParts.add(possibleRelationPart);
-						}
-					}
-					if (sameLangRelationParts.size() == 1) {
-						Long secondMeaningId = sameLangRelationParts.get(0).getMeaningId();
-						createMeaningRelation(initialMeaningId, secondMeaningId, MEANING_RELATION_UNSPECIFIED);
-					} else {
-						illegalMeaningRelationReferenceValueCount.increment();
-						appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viidatud termin kordub:",
-								possibleRelatedTerm);
-					}
-				} else {
-					illegalMeaningRelationReferenceValueCount.increment();
-					appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId),
-							"Viidatud termin kordub, keel ei ole määratud:", possibleRelatedTerm);
+				for (RelationPart relationPart : relationParts) {
+					Long relatedMeaningId = relationPart.getMeaningId();
+					createMeaningRelation(initialMeaningId, relatedMeaningId, MEANING_RELATION_UNSPECIFIED);
 				}
 			}
 		}
