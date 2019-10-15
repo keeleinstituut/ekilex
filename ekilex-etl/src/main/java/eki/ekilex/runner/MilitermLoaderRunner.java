@@ -710,17 +710,35 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 	private void findSecondRelationPartAndCreateRelations(List<RelationPart> initiatorRelationParts) throws Exception {
 
 		for (RelationPart initiatorRelationPart : initiatorRelationParts) {
+			String possibleRelatedTerm = initiatorRelationPart.getRelatedTerm();
 			Long initialMeaningId = initiatorRelationPart.getMeaningId();
-			String relatedTerm = initiatorRelationPart.getRelatedTerm();
-			List<RelationPart> relationParts = getMeaningRelationParts(relatedTerm);
+			List<RelationPart> possibleRelationParts = getMeaningRelationParts(possibleRelatedTerm);
 
-			if (relationParts.isEmpty()) {
+			if (possibleRelationParts.isEmpty()) {
 				illegalMeaningRelationReferenceValueCount.increment();
-				appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viide tundmatule terminile:", relatedTerm);
+				appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viide tundmatule terminile:",
+						possibleRelatedTerm);
+			} else if (possibleRelationParts.size() == 1) {
+				Long secondMeaningId = possibleRelationParts.get(0).getMeaningId();
+				createMeaningRelation(initialMeaningId, secondMeaningId, MEANING_RELATION_UNSPECIFIED);
 			} else {
-				for (RelationPart relationPart : relationParts) {
-					Long relatedMeaningId = relationPart.getMeaningId();
-					createMeaningRelation(initialMeaningId, relatedMeaningId, MEANING_RELATION_UNSPECIFIED);
+				String initiatorLang = initiatorRelationPart.getLang();
+				if (initiatorLang != null) {
+					List<RelationPart> sameLangRelationParts = new ArrayList<>();
+					for (RelationPart possibleRelationPart : possibleRelationParts) {
+						if (initiatorLang.equals(possibleRelationPart.getLang())) {
+							sameLangRelationParts.add(possibleRelationPart);
+						}
+					}
+					for (RelationPart sameLangRelationPart : sameLangRelationParts) {
+						Long relatedSameLangMeaningId = sameLangRelationPart.getMeaningId();
+						createMeaningRelation(initialMeaningId, relatedSameLangMeaningId, MEANING_RELATION_UNSPECIFIED);
+					}
+				} else {
+					for (RelationPart relationPart : possibleRelationParts) {
+						Long relatedMeaningId = relationPart.getMeaningId();
+						createMeaningRelation(initialMeaningId, relatedMeaningId, MEANING_RELATION_UNSPECIFIED);
+					}
 				}
 			}
 		}
