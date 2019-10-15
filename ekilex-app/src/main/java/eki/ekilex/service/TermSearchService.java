@@ -35,6 +35,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @Component
@@ -42,6 +43,9 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
+
+	@Autowired
+	private ProcessDbService processDbService;
 
 	@Transactional
 	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) {
@@ -133,6 +137,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		List<Note> meaningPublicNotes = conversionUtil.composeNotes(meaningPublicNoteSourceTuples);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);
+		Integer meaningProcessLogCount = processDbService.getLogCountForMeaning(meaningId);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();
@@ -200,6 +205,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
 		meaning.setGroupedRelations(groupedRelations);
+		meaning.setMeaningProcessLogCount(meaningProcessLogCount);
 
 		return meaning;
 	}

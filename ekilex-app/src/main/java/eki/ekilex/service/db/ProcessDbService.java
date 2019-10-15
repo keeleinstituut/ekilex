@@ -44,6 +44,15 @@ public class ProcessDbService {
 		return results;
 	}
 
+	public Integer getLogCountForMeaning(Long meaningId) {
+
+		return create
+				.fetchCount(DSL
+						.select(MEANING_PROCESS_LOG.ID)
+						.from(MEANING_PROCESS_LOG)
+						.where(MEANING_PROCESS_LOG.MEANING_ID.eq(meaningId)));
+	}
+
 	public List<ProcessLog> getLogForWord(Long wordId) {
 
 		List<ProcessLog> results = create

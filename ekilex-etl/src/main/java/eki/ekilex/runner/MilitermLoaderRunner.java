@@ -730,18 +730,15 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 							sameLangRelationParts.add(possibleRelationPart);
 						}
 					}
-					if (sameLangRelationParts.size() == 1) {
-						Long secondMeaningId = sameLangRelationParts.get(0).getMeaningId();
-						createMeaningRelation(initialMeaningId, secondMeaningId, MEANING_RELATION_UNSPECIFIED);
-					} else {
-						illegalMeaningRelationReferenceValueCount.increment();
-						appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId), "Viidatud termin kordub:",
-								possibleRelatedTerm);
+					for (RelationPart sameLangRelationPart : sameLangRelationParts) {
+						Long relatedSameLangMeaningId = sameLangRelationPart.getMeaningId();
+						createMeaningRelation(initialMeaningId, relatedSameLangMeaningId, MEANING_RELATION_UNSPECIFIED);
 					}
 				} else {
-					illegalMeaningRelationReferenceValueCount.increment();
-					appendToReport(doReports, REPORT_ILLEGAL_MEANING_RELATION_REF, String.valueOf(initialMeaningId),
-							"Viidatud termin kordub, keel ei ole määratud:", possibleRelatedTerm);
+					for (RelationPart relationPart : possibleRelationParts) {
+						Long relatedMeaningId = relationPart.getMeaningId();
+						createMeaningRelation(initialMeaningId, relatedMeaningId, MEANING_RELATION_UNSPECIFIED);
+					}
 				}
 			}
 		}
