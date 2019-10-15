@@ -36,6 +36,8 @@ public class Meaning extends AbstractDataObject {
 
 	private List<List<Relation>> groupedRelations;
 
+	private Integer meaningProcessLogCount;
+
 	public Long getMeaningId() {
 		return meaningId;
 	}
@@ -132,4 +134,11 @@ public class Meaning extends AbstractDataObject {
 		this.groupedRelations = groupedRelations;
 	}
 
+	public Integer getMeaningProcessLogCount() {
+		return meaningProcessLogCount;
+	}
+
+	public void setMeaningProcessLogCount(Integer meaningProcessLogCount) {
+		this.meaningProcessLogCount = meaningProcessLogCount;
+	}
 }
