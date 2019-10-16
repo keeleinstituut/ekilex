@@ -436,6 +436,14 @@ public class LifecycleLogDbService {
 						.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
 						.fetchSingleInto(Long.class);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
+			}  else if (LifecycleProperty.IMAGE.equals(property)) {
+				Long lifecycleLogId = createLifecycleLog(logData);
+				Long meaningId = create
+						.select(MEANING_FREEFORM.MEANING_ID)
+						.from(MEANING_FREEFORM)
+						.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
+						.fetchSingleInto(Long.class);
+				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			} else if (LifecycleProperty.SEMANTIC_TYPE.equals(property)) {
 				Long meaningId = create
 						.select(MEANING_SEMANTIC_TYPE.MEANING_ID)

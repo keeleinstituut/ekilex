@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -206,6 +207,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaning.setRelations(meaningRelations);
 		meaning.setGroupedRelations(groupedRelations);
 		meaning.setMeaningProcessLogCount(meaningProcessLogCount);
+		meaning.setLastChangedOn(new Timestamp(System.currentTimeMillis())); //FIXME
 
 		return meaning;
 	}
