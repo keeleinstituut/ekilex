@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -37,6 +38,8 @@ public class Meaning extends AbstractDataObject {
 	private List<List<Relation>> groupedRelations;
 
 	private Integer meaningProcessLogCount;
+
+	private Timestamp lastChangedOn;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -140,5 +143,13 @@ public class Meaning extends AbstractDataObject {
 
 	public void setMeaningProcessLogCount(Integer meaningProcessLogCount) {
 		this.meaningProcessLogCount = meaningProcessLogCount;
+	}
+
+	public Timestamp getLastChangedOn() {
+		return lastChangedOn;
+	}
+
+	public void setLastChangedOn(Timestamp lastChangedOn) {
+		this.lastChangedOn = lastChangedOn;
 	}
 }
