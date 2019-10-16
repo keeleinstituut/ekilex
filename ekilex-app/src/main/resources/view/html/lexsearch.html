@@ -485,6 +485,14 @@
                                 sec:authorize="${#vars.isMeaningCrudGranted}">
                           <i class="fa fa-external-link" aria-hidden="true"></i>
                         </button>
+                        <button type="button" class="btn badge badge-warning align-bottom"
+                                title="Kustuta pilt"
+                                data-op-code="meaning_image"
+                                th:data-id="${image.id}"
+                                data-toggle="delete-confirm"
+                                sec:authorize="${#vars.isMeaningCrudGranted}">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
                       </span>
                     </div>
                     <div class="col pl-0" th:if="${#strings.isEmpty(image.title)}">

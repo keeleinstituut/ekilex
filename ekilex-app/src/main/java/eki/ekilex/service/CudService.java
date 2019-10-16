@@ -818,8 +818,15 @@ public class CudService extends AbstractService {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, recent, null);
 		createLifecycleLog(logData);
 		cudDbService.deleteImageTitle(imageId);
-
 	}
+
+	@Transactional
+	public void deleteMeaningImage(Long freeformId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_IMAGE, LifecycleProperty.VALUE, freeformId);
+		createLifecycleLog(logData);
+		cudDbService.deleteFreeform(freeformId);
+	}
+
 
 	@Transactional
 	public void addSynRelation(Long word1Id, Long word2Id) {

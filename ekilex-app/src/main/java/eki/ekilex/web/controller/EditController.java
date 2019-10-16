@@ -482,6 +482,9 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "word_gender":
 			cudService.updateWordGender(id, null);
 			break;
+		case "meaning_image":
+			cudService.deleteMeaningImage(id);
+			break;
 		case "word_type":
 			cudService.deleteWordType(id, valueToDelete);
 			break;
