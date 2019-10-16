@@ -18,7 +18,7 @@
                 <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}"
                       th:class="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
                 <span th:text="${meaningWord.homonymNr}"></span>
-                <span th:text="${'(' + iso2languages[meaningWord.lang] + ')'}"></span>
+                <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
                 <span class="ctxt" style="margin-top: 2px;">
                   <span th:each="datasetCode,itemIter : ${meaningWord.datasetCodes}">
                     <span th:text="${datasetCode}"></span>

@@ -26,7 +26,7 @@
             <input type="checkbox" class="mt-2" checked="checked" th:disabled="true"/>
             <span th:utext="${firstWordDetails.word.value}" class="ttl ml-2"></span>
             <span th:text="${firstWordDetails.word.homonymNumber}" th:if="${firstWordDetails.word.homonymNumber > 0}"></span>
-            <span th:text="${'(' + iso2languages[firstWordDetails.word.language] + ')'}" class="ml-2"></span>
+            <span th:text="${'(' + viewUtil.getLangIso2(firstWordDetails.word.language) + ')'}" class="ml-2"></span>
             <div th:if="${firstWordDetails.firstDefinitionValue != null}">
               <span th:utext="${firstWordDetails.firstDefinitionValue}"></span>
             </div>
@@ -61,7 +61,7 @@
                        sec:authorize="${#vars.isWordCrudGranted}"/>
                 <span th:utext="${wordDetails.word.value}" class="ttl ml-2"></span>
                 <span th:text="${wordDetails.word.homonymNumber}" th:if="${wordDetails.word.homonymNumber > 0}" class="ml-2"></span>
-                <span th:text="${'(' + iso2languages[wordDetails.word.language] + ')'}" class="ml-2"></span>
+                <span th:text="${'(' + viewUtil.getLangIso2(wordDetails.word.language) + ')'}" class="ml-2"></span>
               </div>
               <th:block th:replace=":: gender(${wordDetails})"></th:block>
               <th:block th:replace=":: word_types(${wordDetails})"></th:block>
@@ -78,7 +78,7 @@
                     <div class="btn-custom">
                       <span th:text="${meaningWord.value}"></span>
                       <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                      <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
                     </div>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </th:block>
@@ -177,7 +177,7 @@
               <span class="btn-link">
                 <span th:if="${wordEtymRel.questionable}">?</span>
                 <span th:if="${wordEtymRel.compound}">+</span>
-                <span th:text="${wordEtymRel.relatedWord + ' (' + iso2languages[wordEtymRel.relatedWordLang] + ')'}"></span>
+                <span th:text="${wordEtymRel.relatedWord + ' (' + viewUtil.getLangIso2(wordEtymRel.relatedWordLang) + ')'}"></span>
               </span>
               <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
             </div>

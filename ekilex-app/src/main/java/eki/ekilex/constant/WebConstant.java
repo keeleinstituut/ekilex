@@ -228,6 +228,8 @@ public interface WebConstant {
 
 	String APP_DATA_MODEL_KEY = "appData";
 
+	String VIEW_UTIL_KEY = "viewUtil";
+
 	String PERM_DATA_UTIL_KEY = "permDataUtil";
 
 	String CLASSIFIER_UTIL_KEY = "classifierUtil";

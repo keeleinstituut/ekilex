@@ -187,7 +187,7 @@
                       <div class="btn-custom">
                         <span th:text="${meaningWord.value}"></span>
                         <span th:text="${meaningWord.homonymNumber}"></span>
-                        <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                        <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
                       </div>
                       <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                     </th:block>
@@ -244,7 +244,7 @@
                               name="detailsBtn">
                         <span th:text="${meaningWord.value}"></span>
                         <span th:text="${meaningWord.homonymNumber}"></span>
-                        <span th:text="${'(' + iso2languages[meaningWord.language] + ')'}"></span>
+                        <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
                       </button>
                       <button type="button" class="btn badge badge-warning"
                               th:data-id="${meaningWord.lexemeId}"
@@ -606,7 +606,7 @@
                         <th:block th:each="relation, iter : ${relations}">
                           <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}"
                                   name="detailsBtn">
-                            <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
+                            <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                           </button>
                           <span th:unless="${iter.last}">,</span>
                         </th:block>
@@ -935,7 +935,7 @@
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}"
                                 name="detailsBtn">
-                          <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
+                          <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"
@@ -1088,7 +1088,7 @@
                   </td>
                   <td class="invisible-buttons">
                     <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                      <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
+                      <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                     </button>
                     <button type="button" class="btn badge badge-warning"
                             th:data-id="${relation.id}"
@@ -1146,7 +1146,7 @@
                       <span>
                         <span th:if="${wordEtymRel.questionable}">?</span>
                         <span th:if="${wordEtymRel.compound}">+</span>
-                        <span th:text="${wordEtymRel.relatedWord + ' (' + iso2languages[wordEtymRel.relatedWordLang] + ')'}"></span>
+                        <span th:text="${wordEtymRel.relatedWord + ' (' + viewUtil.getLangIso2(wordEtymRel.relatedWordLang) + ')'}"></span>
                       </span>
                     </button>
                     <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>

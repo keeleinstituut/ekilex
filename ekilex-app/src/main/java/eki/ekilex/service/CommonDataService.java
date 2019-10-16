@@ -46,7 +46,7 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public Map<String, String> getLanguagesIso2Map() {
+	public Map<String, String> getLanguageIso2Map() {
 		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_ISO2).stream()
 				.collect(Collectors.toMap(Classifier::getCode, classifier -> StringUtils.isNotBlank(classifier.getValue()) ? classifier.getValue() : classifier.getCode()));
 	}

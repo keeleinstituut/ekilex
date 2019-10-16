@@ -14,9 +14,8 @@
             <span class="d-flex align-items-center">
               <span class="badge badge-light mr-2" th:text="${word.homonymNumber}"
                     th:if="${word.homonymNumber > 0}"></span>
-              <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}"
-                    >vorm 1</span>
-              <span th:text="${'(' + iso2languages[word.language] + ')'}"></span>
+              <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}">vorm 1</span>
+              <span th:text="${'(' + viewUtil.getLangIso2(word.language) + ')'}"></span>
             </span>
             <small class="d-flex">
                   <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">

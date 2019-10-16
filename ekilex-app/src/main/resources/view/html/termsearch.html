@@ -156,7 +156,7 @@
             <div class="col pl-0">
               <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
                 <div>
-                  <span th:text="${iso2languages[definitionLangGroup.lang]}" class="mr-2"></span>
+                  <span th:text="${viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
                   <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                           th:data-lang="${definitionLangGroup.lang}"
                           th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
@@ -575,7 +575,7 @@
                   <td class="pr-3">
                     <th:block th:each="relation, iter : ${relations}">
                       <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
-                        <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
+                        <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                       </button>
                       <span th:unless="${iter.last}">,</span>
                     </th:block>
@@ -619,7 +619,7 @@
       </div>
       <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
         <div class="ml-2 mt-2 mb-2">
-          <span th:text="${iso2languages[lexemeLangGroup.lang]}" class="mr-2"></span>
+          <span th:text="${viewUtil.getLangIso2(lexemeLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${lexemeLangGroup.lang}"
                   th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}">
@@ -863,7 +863,7 @@
                       </td>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
-                          <span th:text="${relation.word + ' (' + iso2languages[relation.wordLang] + ')'}"></span>
+                          <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"

@@ -3,7 +3,6 @@ package eki.ekilex.web.controller;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -115,11 +114,6 @@ public abstract class AbstractPageController implements WebConstant {
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
 		return userService.getUserProfile(userId);
-	}
-
-	@ModelAttribute("iso2languages")
-	public Map<String, String> getIso2Languages() {
-		return commonDataService.getLanguagesIso2Map();
 	}
 
 	@ModelAttribute("allLanguages")
