@@ -1,6 +1,6 @@
 EKI liik	EKI nimi	EKI kood	EKI väärtus	EKI keel	LEX nimi	LEX kood
-aliik_tyyp	aliik_tyyp	tlk	tõlkija	et	-	-
-aliik_tyyp	aliik_tyyp	tlk	translator	en	-	-
+aliik_tyyp	aliik_tyyp	tlk	tõlkinud	et	-	-
+aliik_tyyp	aliik_tyyp	tlk	translated by	en	-	-
 alt_tyyp	alt_tyyp	v	või	et	-	-
 alt_tyyp	alt_tyyp	tld	tilde	et	-	-
 as_tyyp	as_tyyp	SS1	sõnastiku artikkel	et	-	-
