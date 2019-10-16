@@ -26,8 +26,10 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DbConstant;
+
 @Component
-public class MaintenanceDbService {
+public class MaintenanceDbService implements DbConstant {
 
 	private static final String DATASET_CODE_MAB = "mab";
 
@@ -59,6 +61,7 @@ public class MaintenanceDbService {
 						.select(COLLOCATION_FREEFORM.ID)
 						.from(COLLOCATION_FREEFORM)
 						.where(COLLOCATION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
+				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
@@ -78,6 +81,7 @@ public class MaintenanceDbService {
 						.select(LEXEME_PROCESS_LOG.ID)
 						.from(LEXEME_PROCESS_LOG)
 						.where(LEXEME_PROCESS_LOG.PROCESS_LOG_ID.eq(PROCESS_LOG.ID)))
+				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
@@ -101,6 +105,7 @@ public class MaintenanceDbService {
 						.select(SOURCE_LIFECYCLE_LOG.ID)
 						.from(SOURCE_LIFECYCLE_LOG)
 						.where(SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
+				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
@@ -116,6 +121,7 @@ public class MaintenanceDbService {
 						.select(DEFINITION.ID)
 						.from(DEFINITION)
 						.where(DEFINITION.MEANING_ID.eq(MEANING.ID)))
+				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
@@ -132,6 +138,7 @@ public class MaintenanceDbService {
 						.from(WORD_GUID)
 						.where(WORD_GUID.WORD_ID.eq(WORD.ID)
 								.and(WORD_GUID.DATASET_CODE.eq(DATASET_CODE_MAB))))
+				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
