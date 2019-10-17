@@ -55,7 +55,38 @@ public class LifecycleLogDbService {
 	private LifecycleLogDbServiceHelper helper;
 
 	public List<LifecycleLog> getLogForWord(Long wordId) {
-		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = DSL
+		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = buildWordLogUnionTable(wordId);
+		List<LifecycleLog> results = create
+				.select(
+						ll.field("entity_id", Long.class),
+						ll.field("entity_name", String.class),
+						ll.field("entity_prop", String.class),
+						ll.field("event_type", String.class),
+						ll.field("event_by", String.class),
+						ll.field("event_on", Timestamp.class),
+						ll.field("recent", String.class),
+						ll.field("entry", String.class))
+				.from(ll)
+				.orderBy(ll.field("event_on").desc())
+				.fetchInto(LifecycleLog.class);
+		return results;
+	}
+
+	public Timestamp getLatestLogTimeForWord(Long wordId) {
+		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = buildWordLogUnionTable(wordId);
+
+		Timestamp latestTimestamp = create
+				.select(
+						DSL.max(ll.field("event_on", Timestamp.class))
+				)
+				.from(ll)
+				.fetchSingleInto(Timestamp.class);
+
+		return latestTimestamp;
+	}
+
+	private Table<Record8<Long, String, String, String, String, Timestamp, String, String>> buildWordLogUnionTable(Long wordId) {
+		return DSL
 				.select(
 						LIFECYCLE_LOG.ENTITY_ID,
 						LIFECYCLE_LOG.ENTITY_NAME,
@@ -100,6 +131,24 @@ public class LifecycleLogDbService {
 										.and(LEXEME.MEANING_ID.eq(MEANING_LIFECYCLE_LOG.MEANING_ID))
 										.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
 				.asTable("ll");
+	}
+
+	public Timestamp getLatestLogTimeForMeaning(Long meaningId) {
+		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = buildMeaningLogUnionTable(meaningId);
+
+		Timestamp latestTimestamp = create
+				.select(
+						DSL.max(ll.field("event_on", Timestamp.class))
+				)
+				.from(ll)
+				.fetchSingleInto(Timestamp.class);
+
+		return latestTimestamp;
+	}
+
+	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
+		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = buildMeaningLogUnionTable(meaningId);
+
 		List<LifecycleLog> results = create
 				.select(
 						ll.field("entity_id", Long.class),
@@ -116,8 +165,8 @@ public class LifecycleLogDbService {
 		return results;
 	}
 
-	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
-		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = DSL
+	private Table<Record8<Long, String, String, String, String, Timestamp, String, String>> buildMeaningLogUnionTable(Long meaningId) {
+		return DSL
 				.select(
 						LIFECYCLE_LOG.ENTITY_ID,
 						LIFECYCLE_LOG.ENTITY_NAME,
@@ -162,20 +211,6 @@ public class LifecycleLogDbService {
 								MEANING_LIFECYCLE_LOG.MEANING_ID.eq(meaningId)
 										.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
 				.asTable("ll");
-		List<LifecycleLog> results = create
-				.select(
-						ll.field("entity_id", Long.class),
-						ll.field("entity_name", String.class),
-						ll.field("entity_prop", String.class),
-						ll.field("event_type", String.class),
-						ll.field("event_by", String.class),
-						ll.field("event_on", Timestamp.class),
-						ll.field("recent", String.class),
-						ll.field("entry", String.class))
-				.from(ll)
-				.orderBy(ll.field("event_on").desc())
-				.fetchInto(LifecycleLog.class);
-		return results;
 	}
 
 	public List<LifecycleLog> getLogForSource(Long sourceId) {

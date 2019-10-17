@@ -54,8 +54,7 @@
           <div class="border-bottom px-2  py-2">
             <div class="d-flex flex-row align-items-center">
               <div class="hover-actions-container hover-actions-container-outline">
-                <h1 th:id="${'word-value-' + wordId}" th:utext="${details.word.value}" class="mb-0">Aktiivne
-                  sõna</h1>
+                <h1 th:id="${'word-value-' + wordId}" th:utext="${details.word.value}" class="mb-0">Aktiivne sõna</h1>
                 <div class="hover-actions hover-actions-bottom-right">
                   <button type="button"
                           class="btn btn-compact btn-secondary"
@@ -66,8 +65,9 @@
                     <i class="fa fa-pencil action-icon" aria-hidden="true"></i>
                   </button>
                 </div>
+                <span class="lbl">Viimati muudetud: </span>
+                <span th:text="${#dates.format(details.lastChangedOn, 'dd.MM.yyyy')}"/>
               </div>
-
 
               <div class="ml-2">
                 <form th:action="@{/wordjoin}" method="get">

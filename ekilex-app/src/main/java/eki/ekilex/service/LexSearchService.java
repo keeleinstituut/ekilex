@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
+import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
@@ -57,6 +59,9 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
+
+	@Autowired
+	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes) {
@@ -75,6 +80,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
+		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
 		lexemes.forEach(lexeme -> populateLexeme(lexeme, datasetNameMap));
 		lexemeLevelCalcUtil.combineLevels(lexemes);
@@ -88,6 +94,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setWordGroups(wordGroups);
 		wordDetails.setWordProcessLogCount(wordProcessLogCount);
+		wordDetails.setLastChangedOn(latestLogEventTime);
 
 		return wordDetails;
 	}
