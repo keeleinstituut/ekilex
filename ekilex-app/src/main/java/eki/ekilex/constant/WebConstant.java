@@ -122,6 +122,8 @@ public interface WebConstant {
 
 	String CREATE_RELATIONS_URI = "/create_relations";
 
+	String OPPOSITE_RELATIONS_URI = "/oppositerelations";
+
 	String CREATE_ITEM_URI = "/create_item";
 
 	String UPDATE_ITEM_URI = "/update_item";

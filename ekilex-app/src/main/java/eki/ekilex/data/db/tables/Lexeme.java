@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 178635264;
+    private static final long serialVersionUID = -1788318770;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -76,6 +76,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.dataset_code</code>.
      */
     public final TableField<LexemeRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme.type</code>.
+     */
+    public final TableField<LexemeRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme.frequency_group_code</code>.
@@ -116,11 +121,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.complexity</code>.
      */
     public final TableField<LexemeRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.lexeme.type</code>.
-     */
-    public final TableField<LexemeRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme.order_by</code>.

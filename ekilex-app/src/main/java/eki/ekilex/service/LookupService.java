@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.LifecycleEntity;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
@@ -197,7 +198,7 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public Long getMeaningId(Long lexemeId) {
-		return lexSearchDbService.getMeaningId(lexemeId);
+		return lookupDbService.getMeaningId(lexemeId);
 	}
 
 	@Transactional
@@ -215,6 +216,20 @@ public class LookupService extends AbstractWordSearchService {
 			}
 		}
 		return wordsToBeDeleted;
+	}
+
+	@Transactional
+	public List<Classifier> getOppositeRelations(LifecycleEntity entity, String relationTypeCode) {
+
+		List<Classifier> oppositeRelations = new ArrayList<>();
+		if (LifecycleEntity.WORD.equals(entity)) {
+			oppositeRelations = lookupDbService.getWordOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
+		} else if (LifecycleEntity.LEXEME.equals(entity)) {
+			oppositeRelations = lookupDbService.getLexemeOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
+		} else if (LifecycleEntity.MEANING.equals(entity)) {
+			oppositeRelations = lookupDbService.getMeaningOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		}
+		return oppositeRelations;
 	}
 
 	private void composeMeaningJoinData(Meaning meaning, List<ClassifierSelect> languagesOrder) {

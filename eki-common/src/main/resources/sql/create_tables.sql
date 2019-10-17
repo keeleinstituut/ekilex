@@ -298,7 +298,7 @@ create table process_state
   order_by bigserial
 );
 
--- seose liik
+-- ilmiku seose liik
 create table lex_rel_type
 (
   code varchar(100) primary key,
@@ -315,7 +315,14 @@ create table lex_rel_type_label
   unique(code, lang, type)
 );
 
--- ilmiku seose liik
+create table lex_rel_mapping
+(
+  code1 varchar(100) references lex_rel_type(code) on delete cascade not null,
+  code2 varchar(100) references lex_rel_type(code) on delete cascade not null,
+  unique(code1, code2)
+);
+
+-- keelendi seose liik
 create table word_rel_type
 (
   code varchar(100) primary key,
@@ -330,6 +337,13 @@ create table word_rel_type_label
   lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
+);
+
+create table word_rel_mapping
+(
+  code1 varchar(100) references word_rel_type(code) on delete cascade not null,
+  code2 varchar(100) references word_rel_type(code) on delete cascade not null,
+  unique(code1, code2)
 );
 
 -- tähenduse seose liik
@@ -347,6 +361,13 @@ create table meaning_rel_type_label
   lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
+);
+
+create table meaning_rel_mapping
+(
+  code1 varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  code2 varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  unique(code1, code2)
 );
 
 create table usage_type
@@ -1111,12 +1132,18 @@ create index definition_meaning_id_idx on definition(meaning_id);
 create index definition_lang_idx on definition(lang);
 create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
 create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
+create index meaning_rel_mapping_code1_idx on meaning_rel_mapping(code1);
+create index meaning_rel_mapping_code2_idx on meaning_rel_mapping(code2);
 create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
+create index lex_rel_mapping_code1_idx on lex_rel_mapping(code1);
+create index lex_rel_mapping_code2_idx on lex_rel_mapping(code2);
 create index word_relation_word1_id_idx on word_relation(word1_id);
 create index word_relation_word2_id_idx on word_relation(word2_id);
 create index word_relation_word_rel_type_code_idx on word_relation(word_rel_type_code);
 create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);
+create index word_rel_mapping_code1_idx on word_rel_mapping(code1);
+create index word_rel_mapping_code2_idx on word_rel_mapping(code2);
 create index freeform_parent_id_idx on freeform(parent_id);
 create index freeform_value_text_idx on freeform(value_text);
 create index freeform_value_text_lower_idx on freeform(lower(value_text));

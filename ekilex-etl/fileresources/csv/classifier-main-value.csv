@@ -1916,6 +1916,7 @@ word_rel_type	SERIES	sari	est	full
 word_rel_type	VARIANTS	variandid	est	full
 word_rel_type	ASPECTS	aspektid	est	full
 word_rel_type	ühend	ühend	est	full
+word_rel_type	head	põhisõna	est	full
 word_rel_type	posit	võrdlus	est	wordweb
 word_rel_type	komp	võrdlus	est	wordweb
 word_rel_type	deriv	saab moodustada	est	wordweb
@@ -1925,6 +1926,7 @@ word_rel_type	SERIES	samas sarjas	est	wordweb
 word_rel_type	VARIANTS	variandid	est	wordweb
 word_rel_type	ASPECTS	aspektid	est	wordweb
 word_rel_type	ühend	ühendid	est	wordweb
+word_rel_type	head	põhisõna	est	wordweb
 word_rel_type	raw	Veel sarnaseid sõnu	est	wordweb
 word_rel_type	raw	Veel sarnaseid sõnu	est	full
 word_type	k	kohanimi	est	descrip

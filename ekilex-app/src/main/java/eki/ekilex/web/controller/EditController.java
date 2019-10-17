@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import eki.common.constant.ContentKey;
+import eki.common.constant.LifecycleEntity;
 import eki.common.constant.ReferenceType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
@@ -683,23 +684,40 @@ public class EditController extends AbstractPageController implements SystemCons
 	public String createRelations(
 			@RequestParam("opCode") String opCode,
 			@RequestParam("relationType") String relationType,
+			@RequestParam(name = "oppositeRelationType", required = false) String oppositeRelationType,
 			@RequestParam("id1") Long id1,
 			@RequestParam("ids") List<Long> ids) {
 
+		boolean isOppositeRelationRequired = oppositeRelationType != null;
 		for (Long id2 : ids) {
 			switch (opCode) {
 			case "meaning_relation":
 				cudService.createMeaningRelation(id1, id2, relationType);
+				if (isOppositeRelationRequired) {
+					cudService.createMeaningRelation(id2, id1, oppositeRelationType);
+				}
 				break;
 			case "lexeme_relation":
 				cudService.createLexemeRelation(id1, id2, relationType);
+				if (isOppositeRelationRequired) {
+					cudService.createLexemeRelation(id2, id1, oppositeRelationType);
+				}
 				break;
 			case "word_relation":
 				cudService.createWordRelation(id1, id2, relationType);
+				if (isOppositeRelationRequired) {
+					cudService.createWordRelation(id2, id1, oppositeRelationType);
+				}
 				break;
 			}
 		}
 		return "OK";
+	}
+
+	@PostMapping(OPPOSITE_RELATIONS_URI)
+	@ResponseBody
+	public List<Classifier> getOppositeRelations(@RequestParam("entity") LifecycleEntity entity, @RequestParam("relationType") String relationTypeCode) {
+		return lookupService.getOppositeRelations(entity, relationTypeCode);
 	}
 
 }
