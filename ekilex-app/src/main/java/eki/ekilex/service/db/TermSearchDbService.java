@@ -324,7 +324,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("order_by_word_id"),
 						DSL.arrayAgg(w.field("id", Long.class)).as("match_word_ids"))
 				.from(m, l, w)
-				.where(wheremlw.andExists(DSL.select(DSL.field(FORCE_QUERY_LOG))))//TODO remove
+				.where(wheremlw)
 				.groupBy(m.field("id"))
 				.asTable("m");
 
