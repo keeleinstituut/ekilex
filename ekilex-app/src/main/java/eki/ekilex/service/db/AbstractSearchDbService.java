@@ -2,12 +2,8 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -36,16 +32,12 @@ import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
-import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
-import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordLifecycleLog;
 
 public abstract class AbstractSearchDbService implements SystemConstant, DbConstant {
 
@@ -234,36 +226,41 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		return (Field<String>) searchField;
 	}
 
-	protected Condition applyLexemeSourceFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
+	protected Condition applyLexemeSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
 
-		List<SearchCriterion> sourceCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
 
-		if (CollectionUtils.isEmpty(sourceCriteria)) {
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return condition;
 		}
-		if (SearchKey.SOURCE_NAME.equals(searchKey)) {
-			return applyLexemeSourceNameFilter(sourceCriteria, lexemeIdField, condition);
-		} else if (SearchKey.SOURCE_REF.equals(searchKey)) {
-			return applyLexemeSourceRefFilter(sourceCriteria, lexemeIdField, condition);
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> !crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
+		List<SearchCriterion> notExistsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
+
+		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		Condition sourceCondition = lsl.LEXEME_ID.eq(lexemeIdField);
+
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : existsCriteria) {
+				sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition, true);
+			}
+			condition = condition.and(DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
+		}
+		if (CollectionUtils.isNotEmpty(notExistsCriteria)) {
+			//not existing ref value is not supported
+			//therefore specific crit of not exists operand does not matter
+			condition = condition.and(DSL.notExists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
 		}
 		return condition;
 	}
 
-	private Condition applyLexemeSourceRefFilter(List<SearchCriterion> sourceCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
+	protected Condition applyLexemeSourceNameFilter(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
 
-		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		List<SearchCriterion> filteredCriteria = filterSourceNameCriteria(searchCriteria);
 
-		Condition sourceCondition = lsl.LEXEME_ID.eq(lexemeIdField);
-
-		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition, true);
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
 		}
-		return condition.and(DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
-	}
-
-	private Condition applyLexemeSourceNameFilter(List<SearchCriterion> sourceCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
 
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
 		Source s = Source.SOURCE.as("s");
@@ -276,89 +273,45 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 				.and(sff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
-		for (SearchCriterion criterion : sourceCriteria) {
+		for (SearchCriterion criterion : filteredCriteria) {
 			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
 	}
 
-	protected Condition applyDefinitionSourceFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<Long> definitionIdField, Condition condition) throws Exception {
+	protected Condition applyFreeformSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> freeformIdField, Condition condition) throws Exception {
 
-		List<SearchCriterion> sourceCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
 
-		if (CollectionUtils.isEmpty(sourceCriteria)) {
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return condition;
 		}
-		if (SearchKey.SOURCE_NAME.equals(searchKey)) {
-			return applyDefinitionSourceNameFilter(sourceCriteria, definitionIdField, condition);
-		} else if (SearchKey.SOURCE_REF.equals(searchKey)) {
-			return applyDefinitionSourceRefFilter(sourceCriteria, definitionIdField, condition);
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> !crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
+		List<SearchCriterion> notExistsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
+
+		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		Condition sourceCondition = ffsl.FREEFORM_ID.eq(freeformIdField);
+
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : existsCriteria) {
+				sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ffsl.VALUE, sourceCondition, true);
+			}
+			condition = condition.and(DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition)));
+		}
+		if (CollectionUtils.isNotEmpty(notExistsCriteria)) {
+			condition = condition.and(DSL.notExists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition)));
 		}
 		return condition;
 	}
 
-	private Condition applyDefinitionSourceRefFilter(List<SearchCriterion> sourceCriteria, Field<Long> definitionIdField, Condition condition) throws Exception {
+	protected Condition applyFreeformSourceNameFilter(List<SearchCriterion> searchCriteria, Field<Long> freeformIdField, Condition condition) throws Exception {
 
-		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		List<SearchCriterion> filteredCriteria = filterSourceNameCriteria(searchCriteria);
 
-		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField);
-
-		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition, true);
-		}
-		return condition.and(DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
-	}
-
-	private Condition applyDefinitionSourceNameFilter(List<SearchCriterion> sourceCriteria, Field<Long> definitionIdField, Condition condition) throws Exception {
-
-		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
-		Source s = Source.SOURCE.as("s");
-		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
-		Freeform ff = Freeform.FREEFORM.as("ff");
-
-		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField)
-				.and(dsl.SOURCE_ID.eq(s.ID))
-				.and(sff.SOURCE_ID.eq(s.ID))
-				.and(sff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
-
-		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
-		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
-	}
-
-	protected Condition applyFreeformSourceFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<Long> freeformIdField, Condition condition) throws Exception {
-
-		List<SearchCriterion> sourceCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(sourceCriteria)) {
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return condition;
 		}
-		if (SearchKey.SOURCE_NAME.equals(searchKey)) {
-			return applyFreeformSourceNameFilter(sourceCriteria, freeformIdField, condition);
-		} else if (SearchKey.SOURCE_REF.equals(searchKey)) {
-			return applyFreeformSourceRefFilter(sourceCriteria, freeformIdField, condition);
-		}
-		return condition;
-	}
-
-	private Condition applyFreeformSourceRefFilter(List<SearchCriterion> sourceCriteria, Field<Long> freeformIdField, Condition condition) throws Exception {
-
-		FreeformSourceLink usl = FREEFORM_SOURCE_LINK.as("usl");
-		Condition sourceCondition = usl.FREEFORM_ID.eq(freeformIdField);
-
-		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), usl.VALUE, sourceCondition, true);
-		}
-		return condition.and(DSL.exists(DSL.select(usl.ID).from(usl).where(sourceCondition)));
-	}
-
-	private Condition applyFreeformSourceNameFilter(List<SearchCriterion> sourceCriteria, Field<Long> freeformIdField, Condition condition) throws Exception {
 
 		FreeformSourceLink usl = FREEFORM_SOURCE_LINK.as("usl");
 		Source s = Source.SOURCE.as("s");
@@ -371,10 +324,87 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 				.and(sff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
-		for (SearchCriterion criterion : sourceCriteria) {
+		for (SearchCriterion criterion : filteredCriteria) {
 			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(usl, s, sff, ff).where(sourceCondition)));
+	}
+
+	protected Condition applyDefinitionSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> definitionIdField, Condition condition) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> !crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
+		List<SearchCriterion> notExistsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
+
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField);
+
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : existsCriteria) {
+				sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition, true);
+			}
+			condition = condition.and(DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
+		}
+		if (CollectionUtils.isNotEmpty(notExistsCriteria)) {
+			condition = condition.and(DSL.notExists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
+		}
+		return condition;
+	}
+
+	protected Condition applyDefinitionSourceNameFilter(List<SearchCriterion> searchCriteria, Field<Long> definitionIdField, Condition condition) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterSourceNameCriteria(searchCriteria);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		Source s = Source.SOURCE.as("s");
+		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
+		Freeform ff = Freeform.FREEFORM.as("ff");
+
+		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField)
+				.and(dsl.SOURCE_ID.eq(s.ID))
+				.and(sff.SOURCE_ID.eq(s.ID))
+				.and(sff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
+		}
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
+	}
+
+	private List<SearchCriterion> filterSourceNameCriteria(List<SearchCriterion> searchCriteria) {
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.SOURCE_NAME) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.collect(toList());
+		return filteredCriteria;
+	}
+
+	protected List<SearchCriterion> filterSourceRefCriteria(List<SearchCriterion> searchCriteria) {
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> {
+					if (crit.getSearchKey().equals(SearchKey.SOURCE_REF)) {
+						if (crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)) {
+							return true;
+						} else {
+							if (crit.getSearchValue() == null) {
+								return false;
+							}
+							return isNotBlank(crit.getSearchValue().toString());
+						}
+					}
+					return false;
+				})
+				.collect(toList());
+		return filteredCriteria;
 	}
 
 	protected Condition applyLanguageNotExistFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Lexeme l2, Word w2, Condition w2Where) {
@@ -456,118 +486,4 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		return m1Where;
 	}
 
-	protected Condition applyLexWordLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Condition l1Where, Condition w1Where) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_ON) && c.getSearchValue() != null)
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return w1Where;
-		}
-
-		WordLifecycleLog wll = WORD_LIFECYCLE_LOG.as("wll");
-		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
-		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
-
-		Condition wllCondition = l1Where.and(wll.WORD_ID.eq(l1.WORD_ID).and(wll.LIFECYCLE_LOG_ID.eq(ll.ID)));
-		Condition lllCondition = l1Where.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			wllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, wllCondition, false);
-			lllCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, lllCondition, false);
-		}
-
-		Condition wllExist = DSL.exists(DSL.select(wll.ID).from(l1, ll, wll).where(wllCondition));
-		Condition lllExist = DSL.exists(DSL.select(lll.ID).from(l1, ll, lll).where(lllCondition));
-
-		return w1Where.and(DSL.or(wllExist, lllExist));
-	}
-
-	protected Condition applyLexMeaningLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition wherem1, Condition wherew1) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_ON) && c.getSearchValue() != null)
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return wherew1;
-		}
-
-		MeaningLifecycleLog mll = MEANING_LIFECYCLE_LOG.as("mll");
-		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
-		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
-
-		Condition condmll = wherem1.and(mll.MEANING_ID.eq(l1.MEANING_ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID)));
-		Condition condlll = wherem1.and(lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)));
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			condmll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condmll, false);
-			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condlll, false);
-		}
-
-		Condition existml = DSL.exists(DSL
-				.select(mll.ID).from(m1, l1, ll, mll).where(condmll)
-				.unionAll(DSL.select(lll.ID).from(m1, l1, ll, lll).where(condlll)));
-
-		return wherew1.and(existml);
-	}
-
-	protected Condition applyTermWordLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Word w1, Condition wherel1) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_ON) && c.getSearchValue() != null)
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return wherel1;
-		}
-
-		WordLifecycleLog wll = WORD_LIFECYCLE_LOG.as("wll");
-		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
-		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
-
-		Condition condwll = wll.WORD_ID.eq(w1.ID).and(wll.LIFECYCLE_LOG_ID.eq(ll.ID));
-		Condition condlll = lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID));
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			condwll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condwll, false);
-			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condlll, false);
-		}
-
-		Condition existwl = DSL.exists(DSL
-				.select(wll.ID).from(ll, wll).where(condwll)
-				.unionAll(DSL.select(lll.ID).from(ll, lll).where(condlll)));
-
-		return wherel1.and(existwl);
-	}
-
-	protected Condition applyTermMeaningLifecycleLogFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition wherel1) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_ON) && c.getSearchValue() != null)
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return wherel1;
-		}
-
-		MeaningLifecycleLog mll = MEANING_LIFECYCLE_LOG.as("mll");
-		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
-		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
-
-		Condition condmll = mll.MEANING_ID.eq(m1.ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID));
-		Condition condlll = lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID));
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			condmll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condmll, false);
-			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condlll, false);
-		}
-
-		Condition existml = DSL.exists(DSL
-				.select(mll.ID).from(ll, mll).where(condmll)
-				.unionAll(DSL.select(lll.ID).from(ll, lll).where(condlll)));
-
-		return wherel1.and(existml);
-	}
 }

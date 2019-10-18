@@ -486,4 +486,3 @@ insert into gender (code, datasets) values ('mn', '{}');
 
 insert into gender_label (code, value, lang, type) values ('mf', 'meessugu ja naissugu', 'est', 'descrip');
 insert into gender_label (code, value, lang, type) values ('mn', 'meessugu ja kesksugu', 'est', 'descrip');
-

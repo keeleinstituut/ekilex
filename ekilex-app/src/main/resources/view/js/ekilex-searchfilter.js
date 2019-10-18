@@ -96,7 +96,7 @@ function initialiseDetailSearch() {
 		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKeyVal + '"]').clone();
 		// currently only lexsearch WORD->LANGUAGE->NOT_EXISTS implemented
 		if (searchEntity == 'HEADWORD') {
-			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
+			//operandTemplate.find('option[value="NOT_EXISTS"]').remove();
 		}
 		searchOperandElement.find('option').remove();
 		searchOperandElement.append(operandTemplate.html());
@@ -118,15 +118,19 @@ function initialiseDetailSearch() {
 			searchValueElement.empty();
 			searchValueElement.parent().prop('hidden', true);
 			searchValueElement.selectpicker('refresh');
+		} else if (searchKeyVal == 'SOURCE_REF' && searchOperandVal == 'NOT_EXISTS') {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
 		} else {
+			searchValueElement.prop('hidden', false);
 			replaceSearchValueElement(searchKeyVal, searchValueElement);
 		}
 	});
 
 	function replaceSearchValueElement(searchKeyVal, searchValueElement) {
+
 		let templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
 		let copyOfValueTemplate = $(templateElement.html());
-
 		let isAutofillElement = copyOfValueTemplate.attr('data-live-search') != undefined;
 		let previousElementWasAutofill = searchValueElement.parent().hasClass('bootstrap-select');
 
@@ -140,7 +144,6 @@ function initialiseDetailSearch() {
 			searchValueElement.closest('div').parent().attr('class', templateElement.attr('class'));
 		} else {
 			searchValueElement.closest('div').not('.date').attr('class', templateElement.attr('class'));
-
 		}
 
 		if (searchValueElement.parent().hasClass('date') || previousElementWasAutofill) {
