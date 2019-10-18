@@ -240,9 +240,12 @@
                                             </span>
 
 
-                                            <span th:title="#{|relationstatus.${synRelation.relationStatus}|}"
+                                            <span th:if="${synRelation.relationStatus}" th:title="#{|relationstatus.${synRelation.relationStatus}|}"
                                                   data-toggle="tooltip" class="px-2"><i class="fa"
                                                                                         th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}"
+                                                                                        aria-hidden="true"></i></span>
+                                            <span th:unless="${synRelation.relationStatus}" title="Seos puudub"
+                                                  data-toggle="tooltip" class="px-2"><i class="fa fa-exclamation-triangle text-muted"
                                                                                         aria-hidden="true"></i></span>
                                             <button type="button" class="btn btn-link mr-auto"
                                                     th:text="${synRelation.word}"></button>
@@ -257,13 +260,13 @@
                                                         class="btn btn-xs  btn-secondary order-down "
                                                         title="Muuda järjestust"><i class="fa fa-arrow-down"
                                                                                     aria-hidden="true"></i></button>
-                                                <button type="button" class="btn  btn-xs btn-primary rel-status-btn "
+                                                <button type="button" class="btn  btn-xs btn-secondary rel-status-btn"
                                                         th:data-id="${synRelation.id}" data-status="UNDEFINED"
                                                         title="Märgi mittetegeletuks"><i class="fa fa-question"
                                                                            aria-hidden="true"></i></button>
                                                 <button type="button" class="btn btn-xs btn-success rel-status-btn"
                                                         th:data-id="${synRelation.id}" data-status="PROCESSED"
-                                                        title="Märgi käsitletuks"><i class="fa fa-check"
+                                                        title="Märgi kinnitatuks"><i class="fa fa-check"
                                                                                      aria-hidden="true"></i></button>
                                                 <button type="button" class="btn btn-xs btn-danger rel-status-btn"
                                                         th:data-id="${synRelation.id}" data-status="DELETED"
