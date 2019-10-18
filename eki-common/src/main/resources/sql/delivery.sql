@@ -1,5 +1,19 @@
 -- upgrade from ver 1.8.0 to 1.9.0
 
+begin;
+
+alter table definition_dataset
+  drop constraint definition_dataset_dataset_code_fkey;
+
+alter table definition_dataset
+  add constraint definition_dataset_dataset_code_fkey
+    foreign key (dataset_code)
+      references dataset (code)
+      on update no action
+      on delete cascade;
+
+commit;
+
 create table semantic_type
 (
 	code varchar(100) primary key,

@@ -797,7 +797,7 @@ alter sequence definition_id_seq restart with 10000;
 create table definition_dataset
 (
   definition_id bigint references definition(id) on delete cascade not null,
-  dataset_code varchar(10) references dataset(code) not null,
+  dataset_code varchar(10) references dataset(code) on delete cascade not null,
   primary key (definition_id, dataset_code)
 );
 

@@ -575,3 +575,18 @@ insert into meaning_rel_mapping (code1, code2) values ('ülemmõiste', 'alammõi
 insert into meaning_rel_mapping (code1, code2) values ('alammõiste', 'ülemmõiste');
 insert into meaning_rel_mapping (code1, code2) values ('üldmõiste', 'ainikmõiste');
 insert into meaning_rel_mapping (code1, code2) values ('ainikmõiste', 'üldmõiste');
+
+-- 18.10.2019
+begin;
+
+alter table definition_dataset
+  drop constraint definition_dataset_dataset_code_fkey;
+
+alter table definition_dataset
+  add constraint definition_dataset_dataset_code_fkey
+    foreign key (dataset_code)
+      references dataset (code)
+      on update no action
+      on delete cascade;
+
+commit;
