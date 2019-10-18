@@ -605,6 +605,16 @@
               </table>
             </div>
           </div>
+          <div class="row">
+            <hr/>
+            <div class="col pr-0 col-w13rem">
+              <span class="lbl">Viimati muudetud</span>
+            </div>
+            <div class="col pl-0">
+              <span th:text="${#dates.format(meaning.lastChangedOn, 'dd.MM.yyyy')}"></span>
+            </div>
+          </div>
+
           <div id="meaningLifecycleLogDlg" class="modal" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">

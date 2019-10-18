@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +36,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 
@@ -46,6 +48,9 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 	@Autowired
 	private ProcessDbService processDbService;
+
+	@Autowired
+	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
 	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) {
@@ -138,6 +143,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);
 		Integer meaningProcessLogCount = processDbService.getLogCountForMeaning(meaningId);
+		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForMeaning(meaningId);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();
@@ -206,6 +212,7 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaning.setRelations(meaningRelations);
 		meaning.setGroupedRelations(groupedRelations);
 		meaning.setMeaningProcessLogCount(meaningProcessLogCount);
+		meaning.setLastChangedOn(latestLogEventTime);
 
 		return meaning;
 	}

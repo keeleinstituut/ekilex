@@ -2,9 +2,15 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEX_REL_MAPPING;
+import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_REL_MAPPING;
+import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_REL_MAPPING;
+import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.util.List;
@@ -25,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -172,5 +179,53 @@ public class LookupDbService implements DbConstant {
 										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
 				.groupBy(MEANING.ID)
 				.fetchInto(eki.ekilex.data.Meaning.class);
+	}
+
+	public Long getMeaningId(Long lexemeId) {
+
+		return create
+				.select(LEXEME.MEANING_ID)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(Long.class);
+	}
+
+	public List<Classifier> getLexemeOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+		
+		return create
+				.select(LEX_REL_TYPE_LABEL.CODE, LEX_REL_TYPE_LABEL.VALUE)
+				.from(LEX_REL_MAPPING, LEX_REL_TYPE_LABEL)
+				.where(
+						LEX_REL_MAPPING.CODE1.eq(relationTypeCode)
+								.and(LEX_REL_TYPE_LABEL.CODE.eq(LEX_REL_MAPPING.CODE2))
+								.and(LEX_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
+								.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+				.fetchInto(Classifier.class);
+	}
+
+	public List<Classifier> getWordOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+
+		return create
+				.select(WORD_REL_TYPE_LABEL.CODE, WORD_REL_TYPE_LABEL.VALUE)
+				.from(WORD_REL_MAPPING, WORD_REL_TYPE_LABEL)
+				.where(
+						WORD_REL_MAPPING.CODE1.eq(relationTypeCode)
+								.and(WORD_REL_TYPE_LABEL.CODE.eq(WORD_REL_MAPPING.CODE2))
+								.and(WORD_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
+								.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+				.fetchInto(Classifier.class);
+	}
+
+	public List<Classifier> getMeaningOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+
+		return create
+				.select(MEANING_REL_TYPE_LABEL.CODE, MEANING_REL_TYPE_LABEL.VALUE)
+				.from(MEANING_REL_MAPPING, MEANING_REL_TYPE_LABEL)
+				.where(
+						MEANING_REL_MAPPING.CODE1.eq(relationTypeCode)
+								.and(MEANING_REL_TYPE_LABEL.CODE.eq(MEANING_REL_MAPPING.CODE2))
+								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
+								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+				.fetchInto(Classifier.class);
 	}
 }

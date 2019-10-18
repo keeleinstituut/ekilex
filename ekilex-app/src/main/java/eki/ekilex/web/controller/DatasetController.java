@@ -34,7 +34,6 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
@@ -108,7 +107,7 @@ public class DatasetController implements WebConstant {
 	@PreAuthorize("authentication.principal.datasetPermissionsExist or authentication.principal.admin")
 	@GetMapping(DELETE_DATASET_URI + "/{datasetCode}")
 	@ResponseBody
-	public String deleteDataset(@PathVariable("datasetCode") String datasetCode) throws JsonProcessingException {
+	public String deleteDataset(@PathVariable("datasetCode") String datasetCode) {
 
 		logger.debug("Deleting dataset, code: {}", datasetCode);
 

@@ -822,7 +822,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteMeaningImage(Long freeformId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_IMAGE, LifecycleProperty.VALUE, freeformId);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE, freeformId);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(freeformId);
 	}

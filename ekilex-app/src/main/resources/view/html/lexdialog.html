@@ -409,6 +409,14 @@
                 </select>
               </div>
             </div>
+            <div data-name="oppositeRelation" data-entity="MEANING" class="form-group row" style="display: none">
+              <div class="col-md-6">
+                <label class="col-form-label">vastassuuna seose tüüp
+                  <select required class="form-control required-field" name="oppositeRelationType">
+                  </select>
+                </label>
+              </div>
+            </div>
             <div data-name="dialogContent"></div>
           </form>
         </div>
@@ -740,6 +748,14 @@
                 </select>
               </div>
             </div>
+            <div data-name="oppositeRelation" data-entity="LEXEME" class="form-group row" style="display: none">
+              <div class="col-md-6">
+                <label class="col-form-label">vastassuuna seose tüüp
+                  <select required class="form-control required-field" name="oppositeRelationType">
+                  </select>
+                </label>
+              </div>
+            </div>
             <div data-name="dialogContent"></div>
           </form>
         </div>
@@ -776,6 +792,14 @@
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${wordRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
+              </div>
+            </div>
+            <div data-name="oppositeRelation" data-entity="WORD" class="form-group row" style="display: none">
+              <div class="col-md-6">
+                <label class="col-form-label">vastassuuna seose tüüp
+                  <select required class="form-control required-field" name="oppositeRelationType">
+                  </select>
+                </label>
               </div>
             </div>
             <div data-name="dialogContent"></div>

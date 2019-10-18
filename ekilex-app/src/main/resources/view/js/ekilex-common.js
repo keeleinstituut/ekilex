@@ -369,6 +369,7 @@ function initMultiselectRelationDlg(dlg) {
 
 	dlg.find('.form-control').val(null);
 	dlg.find('[data-name=dialogContent]').html(null);
+	dlg.find('[data-name=oppositeRelation]').hide();
 	let selectElem = dlg.find('select');
 	selectElem.val(selectElem.find('option').first().val());
 
@@ -393,6 +394,7 @@ function initMultiselectRelationDlg(dlg) {
 				e.preventDefault();
 				let selectRelationsForm = addRelationsBtn.closest('form');
 				if (checkRequiredFields(selectRelationsForm)) {
+					selectRelationsForm.find('select[name="oppositeRelationType"]').prop('disabled', false);
 					$.ajax({
 						url: selectRelationsForm.attr('action'),
 						data: selectRelationsForm.serialize(),
@@ -417,6 +419,42 @@ function initMultiselectRelationDlg(dlg) {
 
 	dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		dlg.find('.form-control').first().focus();
+	});
+
+	$(document).on("change", "select[name='relationType']", function() {
+		let relationTypeSelect = $(this);
+		let relationTypeValue = relationTypeSelect.find('option:selected').val();
+		let form = relationTypeSelect.closest('form');
+		let oppositeRelationDiv = form.find('[data-name=oppositeRelation]');
+		let entity = oppositeRelationDiv.data('entity');
+		let oppositeRelationSelect = oppositeRelationDiv.find('select[name="oppositeRelationType"]');
+		let getOppositeClassifiersUrl = applicationUrl + "oppositerelations";
+
+		$.ajax({
+			url: getOppositeClassifiersUrl,
+			data: {entity: entity, relationType: relationTypeValue},
+			method: 'POST',
+		}).done(function(classifiers) {
+			oppositeRelationSelect.children().remove();
+			if (classifiers.length === 0) {
+				oppositeRelationDiv.hide();
+			} else if (classifiers.length === 1) {
+				oppositeRelationSelect.append(new Option(classifiers[0].value, classifiers[0].code));
+				oppositeRelationSelect.attr('disabled', 'disabled');
+				oppositeRelationDiv.show();
+			} else {
+				oppositeRelationSelect.append(new Option('vali väärtus...', '', true, true));
+				oppositeRelationSelect.children("option:selected").attr('disabled', 'disabled').attr('hidden', 'hidden');
+				$.each(classifiers, function(index, classifier) {
+					oppositeRelationSelect.append(new Option(classifier.value, classifier.code));
+				});
+				oppositeRelationSelect.removeAttr('disabled');
+				oppositeRelationDiv.show();
+			}
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg("Viga vastassuuna andmete päringuga!");
+		});
 	});
 }
 

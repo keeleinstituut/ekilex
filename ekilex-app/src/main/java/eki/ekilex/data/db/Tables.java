@@ -44,6 +44,7 @@ import eki.ekilex.data.db.tables.LanguageLabel;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
+import eki.ekilex.data.db.tables.LexRelMapping;
 import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
@@ -64,6 +65,7 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningProcessLog;
+import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
@@ -115,6 +117,7 @@ import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordProcessLog;
+import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -340,6 +343,11 @@ public class Tables {
     public static final LexCollocRelGroup LEX_COLLOC_REL_GROUP = eki.ekilex.data.db.tables.LexCollocRelGroup.LEX_COLLOC_REL_GROUP;
 
     /**
+     * The table <code>public.lex_rel_mapping</code>.
+     */
+    public static final LexRelMapping LEX_REL_MAPPING = eki.ekilex.data.db.tables.LexRelMapping.LEX_REL_MAPPING;
+
+    /**
      * The table <code>public.lex_rel_type</code>.
      */
     public static final LexRelType LEX_REL_TYPE = eki.ekilex.data.db.tables.LexRelType.LEX_REL_TYPE;
@@ -438,6 +446,11 @@ public class Tables {
      * The table <code>public.meaning_process_log</code>.
      */
     public static final MeaningProcessLog MEANING_PROCESS_LOG = eki.ekilex.data.db.tables.MeaningProcessLog.MEANING_PROCESS_LOG;
+
+    /**
+     * The table <code>public.meaning_rel_mapping</code>.
+     */
+    public static final MeaningRelMapping MEANING_REL_MAPPING = eki.ekilex.data.db.tables.MeaningRelMapping.MEANING_REL_MAPPING;
 
     /**
      * The table <code>public.meaning_rel_type</code>.
@@ -693,6 +706,11 @@ public class Tables {
      * The table <code>public.word_process_log</code>.
      */
     public static final WordProcessLog WORD_PROCESS_LOG = eki.ekilex.data.db.tables.WordProcessLog.WORD_PROCESS_LOG;
+
+    /**
+     * The table <code>public.word_rel_mapping</code>.
+     */
+    public static final WordRelMapping WORD_REL_MAPPING = eki.ekilex.data.db.tables.WordRelMapping.WORD_REL_MAPPING;
 
     /**
      * The table <code>public.word_rel_type</code>.

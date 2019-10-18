@@ -486,3 +486,107 @@ insert into gender (code, datasets) values ('mn', '{}');
 
 insert into gender_label (code, value, lang, type) values ('mf', 'meessugu ja naissugu', 'est', 'descrip');
 insert into gender_label (code, value, lang, type) values ('mn', 'meessugu ja kesksugu', 'est', 'descrip');
+
+-- 17.10.2019
+insert into word_rel_type (code, datasets) values ('head', '{}');
+insert into word_rel_type_label (code, value, lang, type) values ('head', 'põhisõna', 'est', 'full');
+insert into word_rel_type_label (code, value, lang, type) values ('head', 'põhisõna', 'est', 'wordweb');
+
+create table lex_rel_mapping
+(
+  code1 varchar(100) references lex_rel_type(code) on delete cascade not null,
+  code2 varchar(100) references lex_rel_type(code) on delete cascade not null,
+  unique(code1, code2)
+);
+
+create table word_rel_mapping
+(
+  code1 varchar(100) references word_rel_type(code) on delete cascade not null,
+  code2 varchar(100) references word_rel_type(code) on delete cascade not null,
+  unique(code1, code2)
+);
+
+create table meaning_rel_mapping
+(
+  code1 varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  code2 varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  unique(code1, code2)
+);
+
+create index lex_rel_mapping_code1_idx on lex_rel_mapping(code1);
+create index lex_rel_mapping_code2_idx on lex_rel_mapping(code2);
+create index word_rel_mapping_code1_idx on word_rel_mapping(code1);
+create index word_rel_mapping_code2_idx on word_rel_mapping(code2);
+create index meaning_rel_mapping_code1_idx on meaning_rel_mapping(code1);
+create index meaning_rel_mapping_code2_idx on meaning_rel_mapping(code2);
+
+insert into word_rel_mapping (code1, code2) values ('posit', 'komp');
+insert into word_rel_mapping (code1, code2) values ('posit', 'superl');
+insert into word_rel_mapping (code1, code2) values ('deriv_base', 'deriv');
+insert into word_rel_mapping (code1, code2) values ('komp', 'posit');
+insert into word_rel_mapping (code1, code2) values ('komp', 'superl');
+insert into word_rel_mapping (code1, code2) values ('superl', 'posit');
+insert into word_rel_mapping (code1, code2) values ('superl', 'komp');
+insert into word_rel_mapping (code1, code2) values ('deriv', 'deriv_base');
+insert into word_rel_mapping (code1, code2) values ('ühend', 'head');
+insert into word_rel_mapping (code1, code2) values ('raw', 'raw');
+insert into lex_rel_mapping (code1, code2) values ('comp', 'head');
+insert into lex_rel_mapping (code1, code2) values ('head', 'comp');
+insert into lex_rel_mapping (code1, code2) values ('head', 'vor');
+insert into lex_rel_mapping (code1, code2) values ('head', 'yvr');
+insert into lex_rel_mapping (code1, code2) values ('head', 'pyh');
+insert into lex_rel_mapping (code1, code2) values ('head', 'yhvt');
+insert into lex_rel_mapping (code1, code2) values ('head', 'lyh');
+insert into lex_rel_mapping (code1, code2) values ('head', 'sub_word');
+insert into lex_rel_mapping (code1, code2) values ('vor', 'head');
+insert into lex_rel_mapping (code1, code2) values ('yvr', 'head');
+insert into lex_rel_mapping (code1, code2) values ('pyh', 'head');
+insert into lex_rel_mapping (code1, code2) values ('yhvt', 'head');
+insert into lex_rel_mapping (code1, code2) values ('tvt:vrd', 'tvt:vrd');
+insert into lex_rel_mapping (code1, code2) values ('tvt:vt ka', 'tvt:vt ka');
+insert into lex_rel_mapping (code1, code2) values ('yvt:vrd', 'yvt:vrd');
+insert into lex_rel_mapping (code1, code2) values ('yvt:vt ka', 'yvt:vt ka');
+insert into lex_rel_mapping (code1, code2) values ('yvt:NB', 'yvt:NB');
+insert into lex_rel_mapping (code1, code2) values ('lyh', 'head');
+insert into lex_rel_mapping (code1, code2) values ('sub_word', 'head');
+insert into meaning_rel_mapping (code1, code2) values ('antonüüm', 'antonüüm');
+insert into meaning_rel_mapping (code1, code2) values ('kaashüponüüm', 'kaashüponüüm');
+insert into meaning_rel_mapping (code1, code2) values ('määramata', 'määramata');
+insert into meaning_rel_mapping (code1, code2) values ('soomõiste', 'liigimõiste');
+insert into meaning_rel_mapping (code1, code2) values ('liigimõiste', 'soomõiste');
+insert into meaning_rel_mapping (code1, code2) values ('tervikumõiste', 'osamõiste');
+insert into meaning_rel_mapping (code1, code2) values ('osamõiste', 'tervikumõiste');
+insert into meaning_rel_mapping (code1, code2) values ('kaasalluv mõiste', 'kaasalluv mõiste');
+insert into meaning_rel_mapping (code1, code2) values ('seotud mõiste', 'seotud mõiste');
+insert into meaning_rel_mapping (code1, code2) values ('põhjus', 'tagajärg');
+insert into meaning_rel_mapping (code1, code2) values ('tagajärg', 'põhjus');
+insert into meaning_rel_mapping (code1, code2) values ('eelnev', 'järgnev');
+insert into meaning_rel_mapping (code1, code2) values ('järgnev', 'eelnev');
+insert into meaning_rel_mapping (code1, code2) values ('vastand', 'vastand');
+insert into meaning_rel_mapping (code1, code2) values ('vahend', 'eesmärk');
+insert into meaning_rel_mapping (code1, code2) values ('eesmärk', 'vahend');
+insert into meaning_rel_mapping (code1, code2) values ('tegevus', 'tegija');
+insert into meaning_rel_mapping (code1, code2) values ('tegija', 'tegevus');
+insert into meaning_rel_mapping (code1, code2) values ('dimensioon', 'mõõtühik');
+insert into meaning_rel_mapping (code1, code2) values ('mõõtühik', 'dimensioon');
+insert into meaning_rel_mapping (code1, code2) values ('tootja', 'toode');
+insert into meaning_rel_mapping (code1, code2) values ('toode', 'tootja');
+insert into meaning_rel_mapping (code1, code2) values ('ülemmõiste', 'alammõiste');
+insert into meaning_rel_mapping (code1, code2) values ('alammõiste', 'ülemmõiste');
+insert into meaning_rel_mapping (code1, code2) values ('üldmõiste', 'ainikmõiste');
+insert into meaning_rel_mapping (code1, code2) values ('ainikmõiste', 'üldmõiste');
+
+-- 18.10.2019
+begin;
+
+alter table definition_dataset
+  drop constraint definition_dataset_dataset_code_fkey;
+
+alter table definition_dataset
+  add constraint definition_dataset_dataset_code_fkey
+    foreign key (dataset_code)
+      references dataset (code)
+      on update no action
+      on delete cascade;
+
+commit;

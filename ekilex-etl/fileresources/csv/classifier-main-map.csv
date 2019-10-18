@@ -1,6 +1,6 @@
 EKI liik	EKI nimi	EKI kood	EKI väärtus	EKI keel	LEX nimi	LEX kood
-aliik_tyyp	aliik_tyyp	tlk	tõlkija	et	-	-
-aliik_tyyp	aliik_tyyp	tlk	translator	en	-	-
+aliik_tyyp	aliik_tyyp	tlk	tõlkinud	et	-	-
+aliik_tyyp	aliik_tyyp	tlk	translated by	en	-	-
 alt_tyyp	alt_tyyp	v	või	et	-	-
 alt_tyyp	alt_tyyp	tld	tilde	et	-	-
 as_tyyp	as_tyyp	SS1	sõnastiku artikkel	et	-	-
@@ -65,17 +65,27 @@ es_tyyp	es_tyyp	gen	genereeritud sünonüüm	et	-	-
 etl_tyyp	etl_tyyp	lo	liitsõna osa	et	-	-
 etymkeel_tyyp	etymkeel_tyyp	abhaasi	abhaasi keel	et	language	abk
 etymkeel_tyyp	etymkeel_tyyp	abhaasi	Abkhaz	en	language	abk
+etymkeel_tyyp	etymkeel_tyyp	abnaki	abnaki keel	et	language	abe
+etymkeel_tyyp	etymkeel_tyyp	abnaki	Abenaki	en	language	abe
 etymkeel_tyyp	etymkeel_tyyp	afrikaani	afrikaani keel	et	language	afr
 etymkeel_tyyp	etymkeel_tyyp	alamsaksa	alamsaksa keel	et	language	qab
 etymkeel_tyyp	etymkeel_tyyp	alamsaksa	Low German	en	language	qab
 etymkeel_tyyp	etymkeel_tyyp	albaania	albaania keel	et	language	sqi
 etymkeel_tyyp	etymkeel_tyyp	albaania	Albanian	en	language	sqi
+etymkeel_tyyp	etymkeel_tyyp	amhari	amhari keel	et	language	amh
+etymkeel_tyyp	etymkeel_tyyp	amhari	Amharic en	language	amh
 etymkeel_tyyp	etymkeel_tyyp	araabia	araabia keel	et	language	ara
 etymkeel_tyyp	etymkeel_tyyp	araabia	Arabic	en	language	ara
+tymkeel_tyyp	etymkeel_tyyp	aramea	aramea	et	language	arc
+etymkeel_tyyp	etymkeel_tyyp	aramea	Aramean	en	language	arc
+etymkeel_tyyp	etymkeel_tyyp	arava	arava	et	language	auf
+etymkeel_tyyp	etymkeel_tyyp	arava	Arawan	en	language	auf
 etymkeel_tyyp	etymkeel_tyyp	aravaki	aravaki	et	language	arw
 etymkeel_tyyp	etymkeel_tyyp	aravaki	Arawak	en	language	arw
 etymkeel_tyyp	etymkeel_tyyp	aserbaidžaani	aserbaidžaani keel	et	language	aze
 etymkeel_tyyp	etymkeel_tyyp	aserbaidžaani	Azerbaijani	en	language	aze
+etymkeel_tyyp	etymkeel_tyyp	assüüria	assüüria keel	et	language	akk
+etymkeel_tyyp	etymkeel_tyyp	assüüria	Akkadian	en	language	akk
 etymkeel_tyyp	etymkeel_tyyp	Austraalia k-d	Austraalia keeled	et	language	qbk
 etymkeel_tyyp	etymkeel_tyyp	Austraalia k-d	Australian languages	en	language	qbk
 etymkeel_tyyp	etymkeel_tyyp	avesta	avesta keel	et	language	ave
@@ -91,6 +101,8 @@ etymkeel_tyyp	etymkeel_tyyp	bengali	bengali keel	et	language	ben
 etymkeel_tyyp	etymkeel_tyyp	bengali	Bengal	en	language	ben
 etymkeel_tyyp	etymkeel_tyyp	berberi	berberi keel	et	language	ber
 etymkeel_tyyp	etymkeel_tyyp	berberi	Berber	en	language	ber
+etymkeel_tyyp	etymkeel_tyyp	bretooni	bretooni keel	et	language	bre
+etymkeel_tyyp	etymkeel_tyyp	bretooni	Breton	en	language	bre
 etymkeel_tyyp	etymkeel_tyyp	dharuki	dharuki	et	language	xdk
 etymkeel_tyyp	etymkeel_tyyp	eenetsi	eenetsi keel	et	language	enh
 etymkeel_tyyp	etymkeel_tyyp	eestirootsi	eestirootsi murre	et	language	qae
@@ -100,6 +112,8 @@ etymkeel_tyyp	etymkeel_tyyp	egiptuse	egiptuse	et	language	egy
 etymkeel_tyyp	etymkeel_tyyp	egiptuse	Egyptian	en	language	egy
 etymkeel_tyyp	etymkeel_tyyp	ersa	ersa keel	et	language	myv
 etymkeel_tyyp	etymkeel_tyyp	ersa	Erzya	en	language	myv
+etymkeel_tyyp	etymkeel_tyyp	eve	eve keel	et	language	ewe
+etymkeel_tyyp	etymkeel_tyyp	eve	Ewe	en	language	ewe
 etymkeel_tyyp	etymkeel_tyyp	etioopia	etioopia keel	et	language	gez
 etymkeel_tyyp	etymkeel_tyyp	eveeni	eveeni keel	et	language	eve
 etymkeel_tyyp	etymkeel_tyyp	evengi	evengi keel	et	language	evn
@@ -115,6 +129,10 @@ etymkeel_tyyp	etymkeel_tyyp	gruusia	gruusia keel	et	language	kat
 etymkeel_tyyp	etymkeel_tyyp	gruusia	Georgian	en	language	kat
 etymkeel_tyyp	etymkeel_tyyp	grööni	grööni keel	et	language	kal
 etymkeel_tyyp	etymkeel_tyyp	grööni	Greenlandic	en	language	kal
+etymkeel_tyyp	etymkeel_tyyp	guaranii	guaranii keel	et	language	gug
+etymkeel_tyyp	etymkeel_tyyp	guaranii	Guarani	en	language	gug
+etymkeel_tyyp	etymkeel_tyyp	gutni	gutni keel	et	language	-
+etymkeel_tyyp	etymkeel_tyyp	gutni	Gutnish	en	language	-
 etymkeel_tyyp	etymkeel_tyyp	handi	handi keel	et	language	kca
 etymkeel_tyyp	etymkeel_tyyp	havai	havai keel	et	language	haw
 etymkeel_tyyp	etymkeel_tyyp	havai	Hawaiian	en	language	haw
@@ -132,11 +150,15 @@ etymkeel_tyyp	etymkeel_tyyp	hispaania	hispaania keel	et	language	spa
 etymkeel_tyyp	etymkeel_tyyp	hispaania	Spanish	en	language	spa
 etymkeel_tyyp	etymkeel_tyyp	hollandi	hollandi keel	et	language	nld
 etymkeel_tyyp	etymkeel_tyyp	hollandi	Dutch	en	language	nld
+etymkeel_tyyp	etymkeel_tyyp	ibo	ibo keel	et	language	ibo
+etymkeel_tyyp	etymkeel_tyyp	ibo	Igbo	en	language	ibo
 etymkeel_tyyp	etymkeel_tyyp	indoeuroopa	indoeuroopa	et	language	ine
 etymkeel_tyyp	etymkeel_tyyp	indoneesia	Indoneesia keel	et	language	ind
 etymkeel_tyyp	etymkeel_tyyp	indoneesia	Indonesian	en	language	ind
 etymkeel_tyyp	etymkeel_tyyp	inglise	inglise keel	et	language	eng
 etymkeel_tyyp	etymkeel_tyyp	inglise	English	en	language	eng
+etymkeel_tyyp	etymkeel_tyyp	inuktituti	inuktituti keel	et	language	ink
+etymkeel_tyyp	etymkeel_tyyp	inuktituti	Inuktituti	en	language	iku
 etymkeel_tyyp	etymkeel_tyyp	islandi	islandi keel	et	language	isl
 etymkeel_tyyp	etymkeel_tyyp	islandi	Icelandic	en	language	isl
 etymkeel_tyyp	etymkeel_tyyp	isuri	isuri keel	et	language	izh
@@ -144,15 +166,27 @@ etymkeel_tyyp	etymkeel_tyyp	itaalia	itaalia keel	et	language	ita
 etymkeel_tyyp	etymkeel_tyyp	itaalia	Italian	en	language	ita
 etymkeel_tyyp	etymkeel_tyyp	jaapani	jaapani keel	et	language	jpn
 etymkeel_tyyp	etymkeel_tyyp	jaapani	Japanese	en	language	jpn
+etymkeel_tyyp	etymkeel_tyyp	jidga	jidga keel	et	language	ydg
+etymkeel_tyyp	etymkeel_tyyp	jidga	Yidgha	en	language	ydg
 etymkeel_tyyp	etymkeel_tyyp	jidiš	jidiši keel	et	language	yid
 etymkeel_tyyp	etymkeel_tyyp	jidiš	Yidish	en	language	yid
+etymkeel_tyyp	etymkeel_tyyp	joruba	joruba keel	et	language	yor
+etymkeel_tyyp	etymkeel_tyyp	yoruba	Yoruba	en	language	yor
+etymkeel_tyyp	etymkeel_tyyp	kabardi kabardi keel	et	language	kab
+etymkeel_tyyp	etymkeel_tyyp	kabardi	Kabardian	en	language	kab
 etymkeel_tyyp	etymkeel_tyyp	kamassi	kamassi keel	et	language	xas
+etymkeel_tyyp	etymkeel_tyyp	kamassi	Kamassian keel	en	language	xas
 etymkeel_tyyp	etymkeel_tyyp	kariibi	kariibi keel	et	language	car
+etymkeel_tyyp	etymkeel_tyyp	kariibi	Caribbean	en	language	car
 etymkeel_tyyp	etymkeel_tyyp	karjala	karjala keel	et	language	krl
 etymkeel_tyyp	etymkeel_tyyp	karjala	Karelian	en	language	krl
 etymkeel_tyyp	etymkeel_tyyp	kasahhi	kasahhi keel	et	language	kaz
 etymkeel_tyyp	etymkeel_tyyp	kasahhi	Kazakh	en	language	kaz
+etymkeel_tyyp	etymkeel_tyyp	kele	kele keel	et	language	keb
+etymkeel_tyyp	etymkeel_tyyp	kele	Kélé	en	language	keb
 etymkeel_tyyp	etymkeel_tyyp	katalaani	katalaani keel	et	language	cat
+etymkeel_tyyp	etymkeel_tyyp	keskhiina	keskhiina keel	et	language	ltc
+etymkeel_tyyp	etymkeel_tyyp	keskhiina	Middle Chinese	en	language	ltc
 etymkeel_tyyp	etymkeel_tyyp	keskhollandi	keskhollandi keel	et	language	dum
 etymkeel_tyyp	etymkeel_tyyp	keskhollandi	Middle Dutch	en	language	dum
 etymkeel_tyyp	etymkeel_tyyp	keskindia	keskindia keel	et	language	qaj
@@ -182,6 +216,8 @@ etymkeel_tyyp	etymkeel_tyyp	kongo	kongo keel	et	language	kon
 etymkeel_tyyp	etymkeel_tyyp	kongo	Kongo	en	language	kon
 etymkeel_tyyp	etymkeel_tyyp	kreeka	kreeka keel	et	language	ell
 etymkeel_tyyp	etymkeel_tyyp	kreeka	Greek	en	language	ell
+etymkeel_tyyp	etymkeel_tyyp	krii	krii keel	et	language	aem
+etymkeel_tyyp	etymkeel_tyyp	krii	Krik	en	language	aem
 etymkeel_tyyp	etymkeel_tyyp	krimmitatari	krimmitatari keel	et	language	crh
 etymkeel_tyyp	etymkeel_tyyp	kõmri	kõmri keel	et	language	cym
 etymkeel_tyyp	etymkeel_tyyp	kõmri	Welsh	en	language	cym
@@ -203,7 +239,11 @@ etymkeel_tyyp	etymkeel_tyyp	läänemeresoome-permi	läänemeresoome-permi	et	lan
 etymkeel_tyyp	etymkeel_tyyp	läänemeresoome-saami	läänemeresoome-saami	et	language	qar
 etymkeel_tyyp	etymkeel_tyyp	läänemeresoome-volga	läänemeresoome-volga	et	language	qas
 etymkeel_tyyp	etymkeel_tyyp	lüüdi	lüüdi keel	et	language	lud
+etymkeel_tyyp	etymkeel_tyyp	lüüdi	Lydian	en	language	lud
+etymkeel_tyyp	etymkeel_tyyp	maaja	maaja keel	et	language	myn
+etymkeel_tyyp	etymkeel_tyyp	maaja	Mayan	en	language	myn
 etymkeel_tyyp	etymkeel_tyyp	malagassi	malagassi keel	et	language	mlg
+etymkeel_tyyp	etymkeel_tyyp	malagassi	Malagasy	en	language	mlg
 etymkeel_tyyp	etymkeel_tyyp	malai	malai keel	et	language	msa
 etymkeel_tyyp	etymkeel_tyyp	malai	Malay	en	language	msa
 etymkeel_tyyp	etymkeel_tyyp	malajalami	malajalami keel	et	language	mal
@@ -211,7 +251,11 @@ etymkeel_tyyp	etymkeel_tyyp	malajalami	Malayalam	en	language	mal
 etymkeel_tyyp	etymkeel_tyyp	maldiivi	maldiivi keel	et	language	div
 etymkeel_tyyp	etymkeel_tyyp	maldiivi	Dhivehi	en	language	div
 etymkeel_tyyp	etymkeel_tyyp	mansi	mansi keel	et	language	mns
+etymkeel_tyyp	etymkeel_tyyp	mansi	Mansi en	language	mns
 etymkeel_tyyp	etymkeel_tyyp	maoori	maoori keel	et	language	mri
+etymkeel_tyyp	etymkeel_tyyp	maoori	Maori	en	language	mri
+etymkeel_tyyp	etymkeel_tyyp	mapudunguni	mapudunguni keel	et	language	arn
+etymkeel_tyyp	etymkeel_tyyp	mapudunguni	Mapuche	en	language	arn
 etymkeel_tyyp	etymkeel_tyyp	mari	mari keel	et	language	chm
 etymkeel_tyyp	etymkeel_tyyp	mari	Mari	en	language	chm
 etymkeel_tyyp	etymkeel_tyyp	meditsiiniladina	meditsiiniladina keelend	et	language	qat
@@ -222,15 +266,30 @@ etymkeel_tyyp	etymkeel_tyyp	mokša	mokša	et	language	mdf
 etymkeel_tyyp	etymkeel_tyyp	mokša	Moksha	en	language	mdf
 etymkeel_tyyp	etymkeel_tyyp	mongoli	mongoli keel	et	language	mon
 etymkeel_tyyp	etymkeel_tyyp	mongoli	Mongolian	en	language	mon
+etymkeel_tyyp	etymkeel_tyyp	mustlaskeel	mustlaskeel keel	et	language	rom
+etymkeel_tyyp	etymkeel_tyyp	mustlaskeel	Romani	en	language	rom
 etymkeel_tyyp	etymkeel_tyyp	nahua	nahua keel	et	language	nah
 etymkeel_tyyp	etymkeel_tyyp	nahua	Nahuatl	en	language	nah
 etymkeel_tyyp	etymkeel_tyyp	nama	nama (endise nimega hotentoti) keel	et	language	naq
 etymkeel_tyyp	etymkeel_tyyp	nama	Khoekhoe (Nama, Hottentot)	en	language	naq
+etymkeel_tyyp	etymkeel_tyyp	narraganseti	narraganseti keel	et	language	xnt
+etymkeel_tyyp	etymkeel_tyyp	narraganseti	Narragansett	en	language	xnt
 etymkeel_tyyp	etymkeel_tyyp	neenetsi	neenetsi keel	et	language	yrk
+etymkeel_tyyp	etymkeel_tyyp	neenetsi	Nenets	en	language	yrk
+etymkeel_tyyp	etymkeel_tyyp	negidali	negidali keel	et	language	neg
+etymkeel_tyyp	etymkeel_tyyp	negidali Negidal	en	language	neg
 etymkeel_tyyp	etymkeel_tyyp	nepaali	nepaali keel	et	language	nep
+etymkeel_tyyp	etymkeel_tyyp	nepaali	Nepal	en	language	nep
 etymkeel_tyyp	etymkeel_tyyp	nganassaani	nganassaani keel	et	language	nio
+etymkeel_tyyp	etymkeel_tyyp	nganassaani	Nganassan	en	language	nio
 etymkeel_tyyp	etymkeel_tyyp	norra	norra keel	et	language	nor
+etymkeel_tyyp	etymkeel_tyyp	norra	Norwegian	en	language	nor
+etymkeel_tyyp	etymkeel_tyyp	odžibvei	odžibvei keel	et	language	oji
+etymkeel_tyyp	etymkeel_tyyp	odžibvei	Ojibwa	en	language	oji
+etymkeel_tyyp	etymkeel_tyyp	orotši	orotši keel	et	language	oac
+etymkeel_tyyp	etymkeel_tyyp	orotši	Oroch	en	language	oac
 etymkeel_tyyp	etymkeel_tyyp	osseedi	osseedi keel	et	language	oss
+etymkeel_tyyp	etymkeel_tyyp	osseedi	Ossetian	en	language	oss
 etymkeel_tyyp	etymkeel_tyyp	poola	poola keel	et	language	pol
 etymkeel_tyyp	etymkeel_tyyp	poola	Polish	en	language	pol
 etymkeel_tyyp	etymkeel_tyyp	portugali	portugali keel	et	language	por
@@ -246,6 +305,8 @@ etymkeel_tyyp	etymkeel_tyyp	pärsia	Persian	en	language	fas
 etymkeel_tyyp	etymkeel_tyyp	rahvaladina	rahvaladina keel	et	language	qav
 etymkeel_tyyp	etymkeel_tyyp	rahvaladina	Vulgar Latin	en	language	qav
 etymkeel_tyyp	etymkeel_tyyp	romaani k-d	romaani keeled	et	language	qbm
+etymkeel_tyyp	etymkeel_tyyp	retoromaani	retoromaani keel	et	language	roh
+etymkeel_tyyp	etymkeel_tyyp	retoromaani	Rhaeto-Romance	en	language	roh
 etymkeel_tyyp	etymkeel_tyyp	rootsi	rootsi keel	et	language	swe
 etymkeel_tyyp	etymkeel_tyyp	rootsi	Swedish	en	language	swe
 etymkeel_tyyp	etymkeel_tyyp	rumeenia	rumeenia keel	et	language	ron
@@ -260,10 +321,14 @@ etymkeel_tyyp	etymkeel_tyyp	saami (Pite)	Pite saami keel	et	language	sje
 etymkeel_tyyp	etymkeel_tyyp	saami (Turja)	turjasaami keel	et	language	sjt
 etymkeel_tyyp	etymkeel_tyyp	saksa	saksa keel	et	language	deu
 etymkeel_tyyp	etymkeel_tyyp	saksa	German	en	language	deu
+etymkeel_tyyp	etymkeel_tyyp	samoa	samoa keel	et	language	smo
+etymkeel_tyyp	etymkeel_tyyp	samoa	Samoan	en	language	smo
 etymkeel_tyyp	etymkeel_tyyp	sarikoli	sarikoli keel	et	language	srh
+etymkeel_tyyp	etymkeel_tyyp	sarikoli	Sarikoli	et	language	srh
 etymkeel_tyyp	etymkeel_tyyp	semi k-d	semi keeled	et	language	qbn
 etymkeel_tyyp	etymkeel_tyyp	serbohorvaadi	serbohorvaadi keel	et	language	hbs
 etymkeel_tyyp	etymkeel_tyyp	siuu	siuu	et	language	dak
+etymkeel_tyyp	etymkeel_tyyp	siuu	Sioux	en	language	dak
 etymkeel_tyyp	etymkeel_tyyp	slaavi k-d	slaavi keeled	et	language	qbo
 etymkeel_tyyp	etymkeel_tyyp	sloveeni	sloveeni keel	et	language	slv
 etymkeel_tyyp	etymkeel_tyyp	soome	soome keel	et	language	fin
@@ -299,26 +364,36 @@ etymkeel_tyyp	etymkeel_tyyp	tšagatai	tšagatai (vanausbeki) keel	et	language	ch
 etymkeel_tyyp	etymkeel_tyyp	tšagatai	Chagatai	en	language	chg
 etymkeel_tyyp	etymkeel_tyyp	tšehhi	tšehhi keel	et	language	ces
 etymkeel_tyyp	etymkeel_tyyp	tšehhi	Czech	en	language	ces
+etymkeel_tyyp	etymkeel_tyyp	tšerokii	tšerokii keel	et	language	chr
+etymkeel_tyyp	etymkeel_tyyp	tšerokii	Cherokee	en	language	chr
 etymkeel_tyyp	etymkeel_tyyp	tšuktši	tšuktši keel	et	language	ckt
 etymkeel_tyyp	etymkeel_tyyp	tšuktši	Chukchi	en	language	ckt
 etymkeel_tyyp	etymkeel_tyyp	tšuvaši	tšuvaši keel	et	language	chv
 etymkeel_tyyp	etymkeel_tyyp	tšuvaši	Chuvash	en	language	chv
 etymkeel_tyyp	etymkeel_tyyp	tupi-guaranii	tupi-guaranii keel	et	language	qax
 etymkeel_tyyp	etymkeel_tyyp	tupi-guaranii	Tupi-Guarani	en	language	qax
+etymkeel_tyyp	etymkeel_tyyp	tupii	tupii keel	et	language	tpw
+etymkeel_tyyp	etymkeel_tyyp	tupii	Tupi	en	language	tpw
 etymkeel_tyyp	etymkeel_tyyp	turgi k-d	turgi keeled	et	language	qbj
 etymkeel_tyyp	etymkeel_tyyp	turgi k-d	Turkic	en	language	qbj
 etymkeel_tyyp	etymkeel_tyyp	türgi	türgi keel	et	language	tur
 etymkeel_tyyp	etymkeel_tyyp	türgi	Turkish	en	language	tur
+etymkeel_tyyp	etymkeel_tyyp	türgi	(osmani) türgi (osmani) keel	et	language	ota
+etymkeel_tyyp	etymkeel_tyyp	türgi	Turkish (Ottoman)	en	language	ota
 etymkeel_tyyp	etymkeel_tyyp	udmurdi	udmurdi keel	et	language	udm
 etymkeel_tyyp	etymkeel_tyyp	udmurdi	Udmurt	en	language	udm
 etymkeel_tyyp	etymkeel_tyyp	uiguuri	uiguuri keel	et	language	uig
 etymkeel_tyyp	etymkeel_tyyp	uiguuri	Uighur	en	language	uig
 etymkeel_tyyp	etymkeel_tyyp	ukraina	ukraina	et	language	ukr
 etymkeel_tyyp	etymkeel_tyyp	ukraina	Ukrainian	en	language	ukr
+etymkeel_tyyp	etymkeel_tyyp	umbundu	umbundu keel	et	language	umb
+etymkeel_tyyp	etymkeel_tyyp	umbundu	Umbundu	en	language	umb
 etymkeel_tyyp	etymkeel_tyyp	ungari	ungari keel	et	language	hun
 etymkeel_tyyp	etymkeel_tyyp	ungari	Hungarian	en	language	hun
 etymkeel_tyyp	etymkeel_tyyp	urdu	urdu keel	et	language	urd
 etymkeel_tyyp	etymkeel_tyyp	urdu	Urdu	en	language	urd
+etymkeel_tyyp	etymkeel_tyyp	usbeki	usbeki keel	et	language	uzb
+etymkeel_tyyp	etymkeel_tyyp	usbeki	Uzbek	en	language	uzb
 etymkeel_tyyp	etymkeel_tyyp	uurali	uurali	et	language	qay
 etymkeel_tyyp	etymkeel_tyyp	uurali	Uralic	en	language	qay
 etymkeel_tyyp	etymkeel_tyyp	uuskreeka	uuskreeka keel	et	language	qaz
@@ -339,6 +414,9 @@ etymkeel_tyyp	etymkeel_tyyp	vanasaksi	Old Saxon	en	language	qbf
 etymkeel_tyyp	etymkeel_tyyp	vanaprantsuse	vanaprantsuse keel	et	language	fro
 etymkeel_tyyp	etymkeel_tyyp	vanaprantsuse	Old French	en	language	fro
 etymkeel_tyyp	etymkeel_tyyp	vanapõhja	vanapõhja keel	et	language	non
+etymkeel_tyyp	etymkeel_tyyp	vanapõhja	Old Norse	en	language	non
+etymkeel_tyyp	etymkeel_tyyp	vanapärsia	vanapärsia keel	et	language	peo
+etymkeel_tyyp	etymkeel_tyyp	vanapärsia	Old Persian	en	language	peo
 etymkeel_tyyp	etymkeel_tyyp	vanarootsi	vanarootsi keel	et	language	qbg
 etymkeel_tyyp	etymkeel_tyyp	vanarootsi	Old Swedish	en	language	qbg
 etymkeel_tyyp	etymkeel_tyyp	vanatürgi	vanatürgi keel	et	language	qbh

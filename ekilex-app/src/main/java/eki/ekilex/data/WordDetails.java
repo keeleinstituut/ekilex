@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
@@ -27,6 +28,8 @@ public class WordDetails extends AbstractDataObject {
 	private String firstDefinitionValue;
 
 	private Integer wordProcessLogCount;
+
+	private Timestamp lastChangedOn;
 
 	public WordDetails() {
 	}
@@ -109,5 +112,13 @@ public class WordDetails extends AbstractDataObject {
 
 	public void setWordProcessLogCount(Integer wordProcessLogCount) {
 		this.wordProcessLogCount = wordProcessLogCount;
+	}
+
+	public Timestamp getLastChangedOn() {
+		return lastChangedOn;
+	}
+
+	public void setLastChangedOn(Timestamp lastChangedOn) {
+		this.lastChangedOn = lastChangedOn;
 	}
 }
