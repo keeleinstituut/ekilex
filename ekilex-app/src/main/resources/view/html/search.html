@@ -48,13 +48,13 @@
                                     <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}"
                                             th:value="${entity}"
                                             th:selected="${group.entity == entity}"
-                                            th:text="#{|search.entity.${entity.name()}|}"
+                                            th:text="#{|lex.search.entity.${entity.name()}|}"
                                             th:if="${searchPageName == 'lex_search'}">entityName
                                     </option>
                                     <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
                                             th:value="${entity}"
                                             th:selected="${group.entity == entity}"
-                                            th:text="#{|search.entity.${entity.name()}|}"
+                                            th:text="#{|term.search.entity.${entity.name()}|}"
                                             th:if="${searchPageName == 'term_search'}">entityName
                                     </option>
                                 </select>
@@ -121,7 +121,8 @@
                             </div>
                             <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_REF'}">
                                 <input type="text" class="form-control" th:value="${criteria.searchValue}"
-                                       th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                                       th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                                       th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS'}">
                             </div>
                             <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
                                 <input type="text" class="form-control" th:value="${criteria.searchValue}"
