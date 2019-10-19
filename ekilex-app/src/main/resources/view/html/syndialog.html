@@ -4,65 +4,50 @@
 
 </head>
 <body>
-  <th:block th:fragment="syn_stats_dlg(synRelation)">
-    <div class="modal" style="position: absolute" role="dialog" th:id="${'synStatsDlg' + synRelation.id}">
-      <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-          <div class="modal-header" style="color: white; background-color: black">
-            <span th:text="${synRelation.word}"/>
-            <span class="pull-right ml-auto"><button type="button" class="btn btn-sm" data-dismiss="modal">X</button></span>
-          </div>
-          <div class="modal-body" style="color: white; background-color: black">
-            <table width="100%">
-              <tr th:each="relationParam : ${synRelation.relationParams}">
-                <td width="50%" th:text="${relationParam.name}"/>
-                <td width="50%" th:text="${relationParam.value}"/>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div th:id="${'addSynRelationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_syn_relation_dlg(wordId, relations, language, morphCode)">
-      <div class="modal-dialog" role="document" style="max-width: 600px;">
-        <div class="modal-content">
-          <div class="modal-body">
-            <form th:action="@{/syn_search_words}">
-              <div class="form-row">
-                <div class="col-12">
-                  <div class="form-group row">
-                    <input type="hidden" name="language" th:value="${language}"/>
-                    <input type="hidden" name="morphCode" th:value="${morphCode}"/>
-                    <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}"/>
+<th:block th:fragment="syn_stats_dlg(synRelation)">
+  <div th:id="${'addSynRelationDlg_' + wordId}" class="modal" role="dialog"
+       th:fragment="add_syn_relation_dlg(wordId, relations, language, morphCode)">
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/syn_search_words}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <input type="hidden" name="language" th:value="${language}"/>
+                  <input type="hidden" name="morphCode" th:value="${morphCode}"/>
+                  <input th:each="relation : ${relations}" type="hidden" name="excludedIds"
+                         th:value="${relation.wordId}"/>
 
-                    <div class="col-8">
-                      <input id="txtSynSearchWord" type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
-                    </div>
-                    <div class="col-2">
-                      <button type="submit" class="btn btn-primary">Otsi</button>
-                    </div>
+                  <div class="col-8">
+                    <input id="txtSynSearchWord" type="text" class="form-control" name="searchFilter"
+                           placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
                   </div>
                 </div>
               </div>
-            </form>
-            <form th:action="@{/create_item}" method="post">
-              <input type="hidden" name="id" th:value="${wordId}"/>
-              <input type="hidden" name="opCode" value="create_raw_relation"/>
-              <input type="hidden" name="id2"/>
-              <div class="form-group row">
-                <div class="col-md-6">
-                </div>
+            </div>
+          </form>
+          <form th:action="@{/create_item}" method="post">
+            <input type="hidden" name="id" th:value="${wordId}"/>
+            <input type="hidden" name="opCode" value="create_raw_relation"/>
+            <input type="hidden" name="id2"/>
+            <div class="form-group row">
+              <div class="col-md-6">
               </div>
-              <div data-name="dialogContent"></div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </div>
     </div>
-  </th:block>
+  </div>
+</th:block>
 
 </body>
 </html>

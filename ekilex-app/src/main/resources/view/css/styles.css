@@ -16452,4 +16452,82 @@ footer p {
   top: -0.5rem;
   left: -0.5rem;
 }
+
+.drag-handle {
+  cursor: move;
+}
+
+.popover-close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  color: #ccd9e0;
+  border-color: #ccd9e0;
+}
+
+.popover-close-btn:hover {
+  color: #3f3f3f;
+  background-color: #ccd9e0;
+  border-color: #ccd9e0;
+}
+
+.popover-close-btn:focus, .popover-close-btn.focus {
+  box-shadow: 0 0 0 0.2rem rgba(204, 217, 224, 0.5);
+}
+
+.popover-close-btn.disabled, .popover-close-btn:disabled {
+  color: #ccd9e0;
+  background-color: transparent;
+}
+
+.popover-close-btn:not(:disabled):not(.disabled):active, .popover-close-btn:not(:disabled):not(.disabled).active,
+.show > .popover-close-btn.dropdown-toggle {
+  color: #3f3f3f;
+  background-color: #ccd9e0;
+  border-color: #ccd9e0;
+}
+
+.popover-close-btn:not(:disabled):not(.disabled):active:focus, .popover-close-btn:not(:disabled):not(.disabled).active:focus,
+.show > .popover-close-btn.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(204, 217, 224, 0.5);
+}
+
+.popover-inverted {
+  color: #ccd9e0;
+  background: #0e1013;
+}
+
+.popover-inverted .popover-header {
+  background: #0e1013;
+}
+
+.popover-inverted .popover-body {
+  color: #ccd9e0;
+}
+
+.popover-inverted.bs-popover-top > .arrow::after, .popover-inverted.bs-popover-auto[x-placement^="top"] > .arrow::after {
+  border-top-color: #0e1013;
+}
+
+.popover-inverted.bs-popover-right > .arrow::after, .popover-inverted.bs-popover-auto[x-placement^="right"] > .arrow::after {
+  border-right-color: #0e1013;
+}
+
+.popover-inverted.bs-popover-bottom > .arrow::after, .popover-inverted.bs-popover-auto[x-placement^="bottom"] > .arrow::after {
+  border-bottom-color: #0e1013;
+}
+
+.popover-inverted.bs-popover-bottom .popover-header::before, .popover-inverted.bs-popover-auto[x-placement^="bottom"] .popover-header::before {
+  border-bottom: 1px solid #0e1013;
+}
+
+.popover-inverted.bs-popover-left > .arrow::after, .popover-inverted.bs-popover-auto[x-placement^="left"] > .arrow::after {
+  border-left-color: #0e1013;
+}
+
+.synonym-statistics-popover {
+  z-index: 1071;
+  min-width: 300px;
+}
 /*# sourceMappingURL=styles.css.map */

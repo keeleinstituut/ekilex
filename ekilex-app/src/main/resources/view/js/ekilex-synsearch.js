@@ -21,6 +21,10 @@ function initialise() {
 
 	});
 
+	$(document).on("click", ".popover-close-btn" , function(){
+		$(this).parents(".popover").popover('hide');
+	});
+
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 		let id = $(this).data('id');
 		let markedSynWordId = $(document).find('.navigate-marked').children(':first').data('word-id');
@@ -42,6 +46,15 @@ function initialise() {
 			detailsDiv.replaceWith(data);
 			$("#syn_select_wait_" + id).hide();
 			$('[data-toggle="tooltip"]').tooltip();
+
+			$('.syn-stats-popover').popover({
+				template:'<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header" ></h3><button type="button" class="bnt btn-sm btn-outline-light border-0  popover-close-btn"><i class="fa fa-close" aria-hidden="true"></i></button></div><div class="popover-body"></div></div>',
+				placement:'top',
+				content: function () {
+					// Get the content from the hidden sibling.
+					return $(this).siblings('.syn-stats-content').html();
+				}
+			});
 
 			$(document).find('.draggable-synonym').draggable({
 				revert: "invalid",
