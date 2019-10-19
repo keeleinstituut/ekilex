@@ -1,11 +1,16 @@
 function initialise() {
+	var KEYBOARD_MODE = false;
 	var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-active-item';
 	var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 	var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 
-	$(document).on("click", ":button[name='manualEditBtn']", function() {
+	//Enter keyboard edit mode
+	$(document).on("click", "#keyboardEditBtn", function() {
+		KEYBOARD_MODE = true;
+		console.log('KEYBOARD_MODE: '+KEYBOARD_MODE);
+		$('body').addClass('keyboard-edit-mode-active');
 		//TODO refactor
-		$('.navigate-panel').each(function (e) {
+		$('.keyboard-nav-list').each(function (e) {
 			//$(this).addClass('navigate-disabled-panel');
 			$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-active-list');
 		});
@@ -197,6 +202,11 @@ function initialise() {
 	}
 
 	function checkKey(e) {
+		if (KEYBOARD_MODE == false){
+			console.log("KEYBOARD MODE NOT ENABLED");
+			return;
+		}
+
 		//TODO refactor all this
 
 
@@ -270,7 +280,7 @@ function initialise() {
 		}
 
 		if (e.keyCode == 27) { //esc
-			$('.navigate-panel').each(function () {
+			$('.keyboard-nav-list').each(function () {
 				$(this).removeAttr('data-marked-word-id');
 				$(this).removeAttr('data-marked-relation-id'); //TODO refactor
 				$(this).removeAttr('data-active-panel');
@@ -278,12 +288,14 @@ function initialise() {
 					unActivateItem($(this), true);
 				});
 
-				$(this).find('.navigate-marked').removeClass('navigate-marked');
+				$(this).find('.keyboard-nav-active-item').removeClass('keyboard-nav-active-item');
 
-				$(this).find(":button[name='manualEditBtn']").removeAttr('disabled');
+				$("#keyboardEditBtn").removeAttr('disabled');
 
 				$(document).find('input[name="simpleSearchFilter"]').val('').focus();
 			});
+			$('body').removeClass('keyboard-edit-mode-active');
+			KEYBOARD_MODE = false;
 		}
 
 
@@ -343,7 +355,11 @@ function initialise() {
 		}
 	}
 
+
 	$(document).on('keydown', checkKey);
+
+
+
 
 	if ($('#synSearchResultsDiv').html() == undefined) {
 		$(document).find('input[name="simpleSearchFilter"]').focus();

@@ -16434,11 +16434,44 @@ footer p {
 }
 
 .keyboard-nav-active-list {
-  outline: 2px solid #ec0138;
+  position: relative;
+  z-index: 1050;
+  background: #fff;
 }
 
 .keyboard-nav-active-item {
-  outline: 2px solid #ec0138;
+  position: relative;
+  z-index: 1;
+}
+
+.keyboard-nav-active-item::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  content: "";
+  border: 2px solid #db8dff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 90, 169, 0.25);
+  border-radius: 3px;
+}
+
+.keyboard-edit-mode-active::after {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  display: block;
+  width: 100vw;
+  height: 100vw;
+  content: "";
+  background: #0e1013;
+  opacity: .3;
 }
 
 .badge-counter {
@@ -16529,5 +16562,9 @@ footer p {
 .synonym-statistics-popover {
   z-index: 1071;
   min-width: 300px;
+}
+
+.ui-draggable-dragging {
+  background: #fff;
 }
 /*# sourceMappingURL=styles.css.map */

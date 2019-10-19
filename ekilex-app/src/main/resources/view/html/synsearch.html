@@ -34,7 +34,7 @@
                     <div  class="bg-light rounded-top px-2 py-1">
                         <small th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></small>
                     </div>
-                    <div class="overflow-auto h-100"  data-panel-index="1" th:attrappend="data-active-panel=${markedSynWordId == null}?'true'">
+                    <div class="overflow-auto h-100 keyboard-nav-list"  data-panel-index="1" th:attrappend="data-active-panel=${markedSynWordId == null}?'true'">
 
 
                     <ul id="results" class="mb-0 pb-3 list-group " >
@@ -128,11 +128,12 @@
                     </div>
                 </div>
                 <div class="row no-gutters h-100">
-                    <div class="col-8 overflow-auto h-100" data-panel-index="2"
+                    <div class="col-8 overflow-auto h-100 keyboard-nav-list" data-panel-index="2"
                          th:attrappend="data-marked-word-id=${markedSynWordId != null}?${markedSynWordId}">
-                        <div class="px-3 pb-2 mb-2 droppable-lexeme border-bottom border-light"
+                        <div class="px-3 droppable-lexeme border-bottom border-light"
 
                              th:each="lexeme, lexemeIter : ${details.lexemes}"
+                             th:classappend="${lexemeIter.first} ? 'pb-2' : 'py-2'"
                              th:data-meaning-id="${lexeme.meaningId}"
                              th:data-lexeme-id="${lexeme.lexemeId}"
                              th:data-navigate-index="${lexemeIter.index}"
@@ -194,9 +195,9 @@
                                 <span th:text="#{syn.candidates.title}">Sünonüümide kandidaadid</span>
                                 <div class="ml-auto d-flex flex-row align-items-center">
                                     <span class="border-left py-2"></span>
-                                    <button type="button" class="btn btn-light px-2 rounded-0"
+                                    <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0"
                                             th:disabled="${markedSynWordId != null}"
-                                             name="manualEditBtn">
+                                             >
                                         <span th:title="#{syn.manual.mode}" data-toggle="tooltip">
                                             <i class="action-icon fa fa-keyboard-o" aria-hidden="true"></i>
                                         </span>
@@ -216,7 +217,7 @@
                             </div>
 
 
-                            <div class="overflow-auto h-100" th:if="${!#lists.isEmpty(details.relations)}"  data-panel-index="3"
+                            <div class="overflow-auto h-100 keyboard-nav-list" th:if="${!#lists.isEmpty(details.relations)}"  data-panel-index="3"
                                  th:attrappend="data-active-panel=${markedSynWordId != null}?'true'">
                                 <ul width="100%" class="orderable list-unstyled p-0" data-op-code="word_relation">
                                     <li th:each="synRelation,relationIter : ${details.relations}"
@@ -226,7 +227,7 @@
                                         th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.wordId}?'true'"
 
                                     >
-                                        <div class="draggable-synonym   d-flex flex-row hover-actions-container align-items-center bg-white pl-1"
+                                        <div class="draggable-synonym   d-flex flex-row hover-actions-container align-items-center pl-1"
                                              th:data-word-id="${synRelation.wordId}"
                                              th:data-word="${synRelation.word}"
                                         >
