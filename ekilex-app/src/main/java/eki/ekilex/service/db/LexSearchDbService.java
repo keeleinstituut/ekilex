@@ -179,7 +179,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
 					where1 = applyValueFilters(SearchKey.VALUE, positiveExistSearchCriteria, f2.VALUE, where1, true);
 					where1 = applyValueFilters(SearchKey.LANGUAGE, positiveExistSearchCriteria, w2.LANG, where1, false);
-					where1 = applyLexemeSourceRefFilter(positiveExistSearchCriteria, l2.ID, where1);//TODO negative exist may occur
+					where1 = applyLexemeSourceRefFilter(positiveExistSearchCriteria, l2.ID, where1);
 					where1 = applyLexemeSourceNameFilter(positiveExistSearchCriteria, l2.ID, where1);
 
 					where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
