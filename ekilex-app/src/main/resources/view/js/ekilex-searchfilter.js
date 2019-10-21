@@ -90,46 +90,55 @@ function initialiseDetailSearch() {
 
 	$(document).on("change", "select[name$='searchKey']", function() {
 
-		let searchKeyVal = $(this).val();
+		let detailConditionElement = $(this).closest('[name="detailCondition"]');
+		let pageName = detailConditionElement.attr("data-page");
+		let searchKey = $(this).val();
 		let searchEntity = $(this).closest('[name="detailGroup"]').find('[name$="entity"]').val();
-		let searchOperandElement = $(this).closest('[name="detailCondition"]').find('[name$="searchOperand"]');
-		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKeyVal + '"]').clone();
-		// currently only lexsearch WORD->LANGUAGE->NOT_EXISTS implemented
-		if (searchEntity == 'HEADWORD') {
-			//operandTemplate.find('option[value="NOT_EXISTS"]').remove();
+		let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
+		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
+		// NOT_EXISTS is not implemented everywhere
+		if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
+			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
+		}
+		if (pageName == 'lex_search' && searchEntity == 'WORD' && searchKey == 'SOURCE_REF') {
+			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
+		}
+		if (pageName == 'term_search' && searchEntity == 'WORD' && searchKey == 'LANGUAGE') {
+			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
 		}
 		searchOperandElement.find('option').remove();
 		searchOperandElement.append(operandTemplate.html());
 		searchOperandElement.val(searchOperandElement.find('option').first().val());
 
 		// should lookup by search key + operand
-		let searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
-		replaceSearchValueElement(searchKeyVal, searchValueElement);
+		let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
+		replaceSearchValueElement(searchKey, searchValueElement);
 	});
 
 	$(document).on("change", "select[name$='searchOperand']", function() {
 
-		let searchOperandVal = $(this).val();
-		let searchKeyElement = $(this).closest('[name="detailCondition"]').find('[name$="searchKey"] option:selected');
-		let searchKeyVal = searchKeyElement.val();
+		let detailConditionElement = $(this).closest('[name="detailCondition"]');
+		let searchOperand = $(this).val();
+		let searchKeyElement = detailConditionElement.find('[name$="searchKey"] option:selected');
+		let searchKey = searchKeyElement.val();
 
-		let searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
-		if (searchKeyVal == 'DOMAIN' && searchOperandVal == 'NOT_EXISTS') {
+		let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
+		if (searchKey == 'DOMAIN' && searchOperand == 'NOT_EXISTS') {
 			searchValueElement.empty();
 			searchValueElement.parent().prop('hidden', true);
 			searchValueElement.selectpicker('refresh');
-		} else if (searchKeyVal == 'SOURCE_REF' && searchOperandVal == 'NOT_EXISTS') {
+		} else if (searchKey == 'SOURCE_REF' && searchOperand == 'NOT_EXISTS') {
 			searchValueElement.empty();
 			searchValueElement.prop('hidden', true);
 		} else {
 			searchValueElement.prop('hidden', false);
-			replaceSearchValueElement(searchKeyVal, searchValueElement);
+			replaceSearchValueElement(searchKey, searchValueElement);
 		}
 	});
 
-	function replaceSearchValueElement(searchKeyVal, searchValueElement) {
+	function replaceSearchValueElement(searchKey, searchValueElement) {
 
-		let templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
+		let templateElement = $('#searchValueTemplates').find('[name="' + searchKey + '"]');
 		let copyOfValueTemplate = $(templateElement.html());
 		let isAutofillElement = copyOfValueTemplate.attr('data-live-search') != undefined;
 		let previousElementWasAutofill = searchValueElement.parent().hasClass('bootstrap-select');
