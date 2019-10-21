@@ -45,6 +45,8 @@ import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 @Component
 public class LifecycleLogDbService {
 
+	private static final String LOADER_USERNAME_PATTERN = "Ekilex%-laadur";
+
 	@Autowired
 	private DSLContext create;
 
@@ -80,6 +82,7 @@ public class LifecycleLogDbService {
 						DSL.max(ll.field("event_on", Timestamp.class))
 				)
 				.from(ll)
+				.where(DSL.not(ll.field("event_by", String.class).like(LOADER_USERNAME_PATTERN)))
 				.fetchSingleInto(Timestamp.class);
 
 		return latestTimestamp;
@@ -141,6 +144,7 @@ public class LifecycleLogDbService {
 						DSL.max(ll.field("event_on", Timestamp.class))
 				)
 				.from(ll)
+				.where(DSL.not(ll.field("event_by", String.class).like(LOADER_USERNAME_PATTERN)))
 				.fetchSingleInto(Timestamp.class);
 
 		return latestTimestamp;
