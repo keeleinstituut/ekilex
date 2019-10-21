@@ -1,0 +1,57 @@
+.popover-close-btn{
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  @include button-outline-variant($gray-200);
+}
+
+.popover-inverted{
+  color: $gray-200;
+  background: $popover-inverted-bg;
+  .popover-header{
+    background: $popover-inverted-bg;
+  }
+  .popover-body{
+    color: $gray-200;
+  }
+
+  &.bs-popover-top {
+    > .arrow {
+      &::after {
+        border-top-color: $popover-inverted-bg;
+      }
+    }
+  }
+
+  &.bs-popover-right {
+    > .arrow {
+      &::after {
+        border-right-color: $popover-inverted-bg;
+      }
+    }
+  }
+  &.bs-popover-bottom {
+    > .arrow {
+      &::after {
+        border-bottom-color: $popover-inverted-bg;
+      }
+    }
+    // This will remove the popover-header's border just below the arrow
+    .popover-header::before {
+      border-bottom: $popover-border-width solid $popover-inverted-bg;
+    }
+  }
+  &.bs-popover-left {
+    > .arrow {
+      &::after {
+        border-left-color: $popover-inverted-bg;
+      }
+    }
+  }
+}
+
+.synonym-statistics-popover{
+  z-index: $zindex-tooltip + 1;
+  min-width: 300px;
+}

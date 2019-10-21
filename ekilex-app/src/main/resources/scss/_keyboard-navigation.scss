@@ -1,6 +1,40 @@
 .keyboard-nav-active-list{
-  outline: 2px solid $red;
+  position: relative;
+  z-index: $zindex-modal;
+  background: $white;
 }
 .keyboard-nav-active-item{
-  outline: 2px solid $red;
+  position: relative;
+  z-index: 1;
+  &::before{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    content: "";
+    border: 2px solid $purple-100;
+    box-shadow: $input-focus-box-shadow;
+    @include border-radius(3px);
+  }
+}
+
+.keyboard-edit-mode-active{
+  &::after{
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: $zindex-modal-backdrop;
+    display: block;
+    width: 100vw;
+    height: 100vw;
+    content: "";
+    background: $gray-1000;
+    opacity: .3;
+  }
 }

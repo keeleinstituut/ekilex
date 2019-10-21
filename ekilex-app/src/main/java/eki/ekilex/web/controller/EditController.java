@@ -688,26 +688,16 @@ public class EditController extends AbstractPageController implements SystemCons
 			@RequestParam("id1") Long id1,
 			@RequestParam("ids") List<Long> ids) {
 
-		boolean isOppositeRelationRequired = oppositeRelationType != null;
 		for (Long id2 : ids) {
 			switch (opCode) {
 			case "meaning_relation":
-				cudService.createMeaningRelation(id1, id2, relationType);
-				if (isOppositeRelationRequired) {
-					cudService.createMeaningRelation(id2, id1, oppositeRelationType);
-				}
+				cudService.createMeaningRelation(id1, id2, relationType, oppositeRelationType);
 				break;
 			case "lexeme_relation":
-				cudService.createLexemeRelation(id1, id2, relationType);
-				if (isOppositeRelationRequired) {
-					cudService.createLexemeRelation(id2, id1, oppositeRelationType);
-				}
+				cudService.createLexemeRelation(id1, id2, relationType, oppositeRelationType);
 				break;
 			case "word_relation":
-				cudService.createWordRelation(id1, id2, relationType);
-				if (isOppositeRelationRequired) {
-					cudService.createWordRelation(id2, id1, oppositeRelationType);
-				}
+				cudService.createWordRelation(id1, id2, relationType, oppositeRelationType);
 				break;
 			}
 		}
