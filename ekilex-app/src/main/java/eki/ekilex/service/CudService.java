@@ -342,7 +342,7 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode) {
+	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode) {
 		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
 		if (wordRelationGroupType.isPresent()) {
 			boolean doLogging = false;
@@ -373,8 +373,13 @@ public class CudService extends AbstractService {
 			}
 		} else {
 			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode);
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
-			createLifecycleLog(logData);
+			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+			createLifecycleLog(relationLogData);
+			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
+				Long oppositeRelationId = cudDbService.createWordRelation(targetWordId, wordId, oppositeRelationTypeCode);
+				LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, oppositeRelationId);
+				createLifecycleLog(oppositeRelationLogData);
+			}
 		}
 	}
 
@@ -463,10 +468,15 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) {
-		Long lexemeRelationId = cudDbService.createLexemeRelation(lexemeId1, lexemeId2, relationType);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
-		createLifecycleLog(logData);
+	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String oppositeRelationType) {
+		Long relationId = cudDbService.createLexemeRelation(lexemeId1, lexemeId2, relationType);
+		LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId, relationType);
+		createLifecycleLog(relationLogData);
+		if (StringUtils.isNotEmpty(oppositeRelationType)) {
+			Long oppositeRelationId = cudDbService.createLexemeRelation(lexemeId2, lexemeId1, oppositeRelationType);
+			LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
+			createLifecycleLog(oppositeRelationLogData);
+		}
 	}
 
 	@Transactional
@@ -486,10 +496,15 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType) {
-		Long meaningRelationId = cudDbService.createMeaningRelation(meaningId1, meaningId2, relationType);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
-		createLifecycleLog(logData);
+	public void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType, String oppositeRelationType) {
+		Long relationId = cudDbService.createMeaningRelation(meaningId1, meaningId2, relationType);
+		LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
+		createLifecycleLog(relationLogData);
+		if (StringUtils.isNotEmpty(oppositeRelationType)) {
+			Long oppositeRelationId = cudDbService.createMeaningRelation(meaningId2, meaningId1, oppositeRelationType);
+			LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
+			createLifecycleLog(oppositeRelationLogData);
+		}
 	}
 
 	@Transactional
