@@ -33,6 +33,9 @@ public class SynRelationParamTuple extends AbstractDataObject {
 	@Column(name= "param_value")
 	private String paramValue;
 
+	@Column(name= "word_homonym_number")
+	private Integer homonymNumber;
+
 	public Long getRelationId() {
 		return relationId;
 	}
@@ -95,5 +98,13 @@ public class SynRelationParamTuple extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public Integer getHomonymNumber() {
+		return homonymNumber;
+	}
+
+	public void setHomonymNumber(Integer homonymNumber) {
+		this.homonymNumber = homonymNumber;
 	}
 }

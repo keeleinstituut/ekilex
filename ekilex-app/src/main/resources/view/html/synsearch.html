@@ -253,7 +253,7 @@
                                   data-placement="right" title="Kustuta"><i class="fa fa-remove"
                                                                             aria-hidden="true"></i></button>
                         </div>
-                        <span class="badge badge-light ml-2" data-toggle="tooltip" title="Homonüümi number">1</span>
+                        <span th:if="${synRelation.otherHomonymsExist}" class="badge badge-light ml-2" data-toggle="tooltip" title="Homonüümi number" th:text="${synRelation.homonymNumber}"></span>
                         <button type="button" class="btn btn-sm px-0 syn-stats-popover" data-toggle="popover" th:data-title="${synRelation.word}"
                                 data-html="true">
                           <i class="fa fa-bar-chart action-icon px-2 d-block" aria-hidden="true" data-toggle="tooltip" data-placement="bottom"

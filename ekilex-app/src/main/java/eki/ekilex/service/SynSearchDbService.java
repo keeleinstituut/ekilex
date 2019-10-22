@@ -21,7 +21,6 @@ import eki.common.constant.FormMode;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynMeaningWord;
-import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
@@ -47,6 +46,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.selectDistinct(
 						WORD_RELATION.ID.as("relation_id"),
 						WORD.ID.as("word_id"),
+						WORD.HOMONYM_NR.as("word_homonym_number"),
 						FORM.VALUE.as("word"),
 						WORD_RELATION.RELATION_STATUS.as("relation_status"),
 						opposite.RELATION_STATUS.as("opposite_relation_status"),
@@ -182,16 +182,18 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynMeaningWord.class);
 	}
 
-	public SynRelation getSynRelation(Long id) {
-		return create
-				.select(
-						WORD_RELATION.ID,
-						WORD_RELATION.WORD1_ID.as("word_id"),
-						WORD_RELATION.RELATION_STATUS
-				)
-				.from(WORD_RELATION)
-				.where(WORD_RELATION.ID.eq(id))
-				.fetchOneInto(SynRelation.class);
+	public Integer getExistingFormOtherHomonymsCount(String formValue, Integer existingHomonym) {
+		return
+				create
+						.select(DSL.count(DSL.val(1)))
+						.from(FORM, PARADIGM, WORD)
+						.where(
+								FORM.PARADIGM_ID.eq(PARADIGM.ID))
+									.and(PARADIGM.WORD_ID.eq(WORD.ID))
+									.and(FORM.VALUE.eq(formValue))
+									.and(
+											DSL.not(WORD.HOMONYM_NR.eq(existingHomonym))
+									)
+						.fetchSingleInto(Integer.class);
 	}
-
 }

@@ -23,6 +23,10 @@ public class SynRelation extends AbstractDataObject {
 
 	private List<RelationParam> relationParams;
 
+	private Integer homonymNumber;
+
+	private boolean otherHomonymsExist;
+
 	public Long getId() {
 		return id;
 	}
@@ -77,5 +81,21 @@ public class SynRelation extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public Integer getHomonymNumber() {
+		return homonymNumber;
+	}
+
+	public void setHomonymNumber(Integer homonymNumber) {
+		this.homonymNumber = homonymNumber;
+	}
+
+	public boolean isOtherHomonymsExist() {
+		return otherHomonymsExist;
+	}
+
+	public void setOtherHomonymsExist(boolean otherHomonymsExist) {
+		this.otherHomonymsExist = otherHomonymsExist;
 	}
 }
