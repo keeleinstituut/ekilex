@@ -31,19 +31,3 @@
     height: 8em;
     overflow: auto;
 }
-
-
-.navigate-disabled-panel {
-    pointer-events : none;
-    opacity : 0.4;
-}
-
-.navigate-marked {
-    outline: 2px solid lightskyblue;
-    background : #ffc107;
-    font-size : large;
-}
-
-.navigate-declined {
-    background : lightgray;
-}
