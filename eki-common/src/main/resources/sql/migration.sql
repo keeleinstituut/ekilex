@@ -590,3 +590,6 @@ alter table definition_dataset
       on delete cascade;
 
 commit;
+
+-- 22.10.19
+create index lifecycle_log_event_by_idx on lifecycle_log(event_by);

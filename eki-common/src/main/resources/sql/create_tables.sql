@@ -1209,6 +1209,7 @@ create index lexeme_process_log_log_id_idx on lexeme_process_log(process_log_id)
 create index source_lifecycle_log_source_id_idx on source_lifecycle_log(source_id);
 create index source_lifecycle_log_log_id_idx on source_lifecycle_log(lifecycle_log_id);
 create index lifecycle_log_event_on_id_idx on lifecycle_log(event_on);
+create index lifecycle_log_event_by_idx on lifecycle_log(event_by);
 create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
 create index process_log_source_link_process_log_id_idx on process_log_source_link(process_log_id);
 create index process_log_source_link_source_id_idx on process_log_source_link(source_id);

@@ -532,3 +532,5 @@ insert into meaning_rel_mapping (code1, code2) values ('ülemmõiste', 'alammõi
 insert into meaning_rel_mapping (code1, code2) values ('alammõiste', 'ülemmõiste');
 insert into meaning_rel_mapping (code1, code2) values ('üldmõiste', 'ainikmõiste');
 insert into meaning_rel_mapping (code1, code2) values ('ainikmõiste', 'üldmõiste');
+
+create index lifecycle_log_event_by_idx on lifecycle_log(event_by);
