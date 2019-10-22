@@ -44,7 +44,7 @@
                                         <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}">vorm 1</span>
                                         <span th:text="${'(' + viewUtil.getLangIso2(word.language) + ')'}"></span>
                                     </span>
-                    <span class="d-flex">
+                    <span class="d-flex align-items-start">
                       <small>
                         <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
                           <span th:text="${wordDatasetCode}"></span>
