@@ -9,9 +9,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -47,7 +49,11 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 
 	private Map<String, Map<String, TableColumn>> tablesColumnsMapForImport;
 
-	private Map<String, List<ForeignKey>> referringForeignKeysMap;
+	private Map<String, List<ForeignKey>> referringForeignKeysMapForExport;
+
+	private Map<String, List<ForeignKey>> referringForeignKeysMapForImport;
+
+	private Map<String, List<String>> referringTableNamesMapForImport;
 
 	private Map<String, List<String>> uniqueConstraintsColumnsMap;
 
@@ -67,7 +73,7 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 	}
 
 	@Transactional
-	public void initialize() throws Exception {
+	public void initialise() throws Exception {
 
 		String[] importTableNamesArr = new String[] {
 				DATASET, FREEFORM,
@@ -99,16 +105,26 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		String[] ignoreColumnNamesForExport = new String[] {};
 		String[] ignoreColumnNamesForImport = new String[] {};
 		ignoreColumnNamesForExport = toLowerCase(ignoreColumnNamesForExport);
+		ignoreColumnNamesForImport = toLowerCase(ignoreColumnNamesForImport);
 		this.tablesColumnsMapForExport = mapTablesColumns(allTablesColumns, Arrays.asList(ignoreColumnNamesForExport));
 		this.tablesColumnsMapForImport = mapTablesColumns(allTablesColumns, Arrays.asList(ignoreColumnNamesForImport));
 
+		List<ForeignKey> foreignKeys;
 		String[] ignoreForeignKeys = new String[] {"word2_id", "meaning2_id", "lexeme2_id"};
 		paramMap.clear();
 		paramMap.put("constraintTypeFk", "FOREIGN KEY");
 		paramMap.put("ignoreFks", Arrays.asList(ignoreForeignKeys));
 		paramMap.put("tableNames", exportTableNames);
-		List<ForeignKey> allForeignKeys = basicDbService.getResults(sqlSelectTablesForeignKeys, paramMap, new ForeignKeyRowMapper());
-		this.referringForeignKeysMap = mapTablesForeignKeys(allForeignKeys);
+		foreignKeys = basicDbService.getResults(sqlSelectTablesForeignKeys, paramMap, new ForeignKeyRowMapper());
+		this.referringForeignKeysMapForExport = mapTablesForeignKeys(foreignKeys);
+
+		paramMap.clear();
+		paramMap.put("constraintTypeFk", "FOREIGN KEY");
+		paramMap.put("ignoreFks", Arrays.asList("nothing"));
+		paramMap.put("tableNames", importTableNames);
+		foreignKeys = basicDbService.getResults(sqlSelectTablesForeignKeys, paramMap, new ForeignKeyRowMapper());
+		this.referringForeignKeysMapForImport = mapTablesForeignKeys(foreignKeys);
+		this.referringTableNamesMapForImport = mapReferringTableNames(foreignKeys);
 
 		logger.debug("Tables descriptions collected");
 	}
@@ -138,23 +154,37 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		return tablesColumnsMapForImport;
 	}
 
-	public Map<String, List<ForeignKey>> getReferringForeignKeysMap() {
-		return referringForeignKeysMap;
+	public Map<String, List<ForeignKey>> getReferringForeignKeysMapForExport() {
+		return referringForeignKeysMapForExport;
+	}
+
+	public Map<String, List<ForeignKey>> getReferringForeignKeysMapForImport() {
+		return referringForeignKeysMapForImport;
+	}
+
+	public Map<String, List<String>> getReferringTableNamesMapForImport() {
+		return referringTableNamesMapForImport;
 	}
 
 	public Map<String, List<String>> getUniqueConstraintsColumnsMap() {
 		return uniqueConstraintsColumnsMap;
 	}
 
+	public List<String> getReferredTableNames(Map<String, TableColumn> tableColumnsMap) {
+		return tableColumnsMap.values().stream()
+				.filter(tableColumn -> StringUtils.isNotEmpty(tableColumn.getFkTableName()))
+				.map(TableColumn::getFkTableName).collect(Collectors.toList());
+	}
+
 	private Map<String, Map<String, TableColumn>> mapTablesColumns(List<TableColumn> tablesColumns, List<String> ignoreColumnNames) {
 
-		Map<String, Map<String, TableColumn>> tablesColumnsMap = new HashMap<String, Map<String, TableColumn>>();
+		Map<String, Map<String, TableColumn>> tablesColumnsMap = new HashMap<>();
 		for (TableColumn tableColumn : tablesColumns) {
 			String tableName = tableColumn.getTableName();
 			String columnName = tableColumn.getColumnName();
 			Map<String, TableColumn> tableColumnsMap = tablesColumnsMap.get(tableName);
 			if (tableColumnsMap == null) {
-				tableColumnsMap = new OrderedMap<String, TableColumn>();
+				tableColumnsMap = new OrderedMap<>();
 				tablesColumnsMap.put(tableName, tableColumnsMap);
 			}
 			String fullTableColumnName = composeFullTableColumnName(tableName, columnName);
@@ -168,17 +198,35 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 
 	private Map<String, List<ForeignKey>> mapTablesForeignKeys(List<ForeignKey> tablesForeignKeys) {
 
-		Map<String, List<ForeignKey>> tablesForeignKeysMap = new HashMap<String, List<ForeignKey>>();
+		Map<String, List<ForeignKey>> tablesForeignKeysMap = new HashMap<>();
 		for (ForeignKey foreignKey : tablesForeignKeys) {
 			String pkTableName = foreignKey.getPkTableName();
 			List<ForeignKey> tableForeignKeys = tablesForeignKeysMap.get(pkTableName);
 			if (tableForeignKeys == null) {
-				tableForeignKeys = new ArrayList<ForeignKey>();
+				tableForeignKeys = new ArrayList<>();
 				tablesForeignKeysMap.put(pkTableName, tableForeignKeys);
 			}
 			tableForeignKeys.add(foreignKey);
 		}
 		return tablesForeignKeysMap;
+	}
+
+	private Map<String, List<String>> mapReferringTableNames(List<ForeignKey> tablesForeignKeys) {
+
+		Map<String, List<String>> tablesForeignKeyTablesMap = new HashMap<>();
+		for (ForeignKey foreignKey : tablesForeignKeys) {
+			String pkTableName = foreignKey.getPkTableName();
+			List<String> tableForeignKeyTables = tablesForeignKeyTablesMap.get(pkTableName);
+			if (tableForeignKeyTables == null) {
+				tableForeignKeyTables = new ArrayList<>();
+				tablesForeignKeyTablesMap.put(pkTableName, tableForeignKeyTables);
+			}
+			String fkTableName = foreignKey.getFkTableName();
+			if (!tableForeignKeyTables.contains(fkTableName)) {
+				tableForeignKeyTables.add(fkTableName);
+			}
+		}
+		return tablesForeignKeyTablesMap;
 	}
 
 	private String composeFullTableColumnName(String tableName, String columnName) {

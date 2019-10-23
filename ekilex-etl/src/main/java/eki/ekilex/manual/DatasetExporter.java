@@ -22,7 +22,7 @@ public class DatasetExporter extends AbstractLoader {
 
 			DatasetExporterRunner runner = getComponent(DatasetExporterRunner.class);
 			TransportService transportService = getComponent(TransportService.class);
-			transportService.initialize();
+			transportService.initialise();
 
 			String datasetCode = ConsolePromptUtil.promptStringValue("Please specify dataset to be exported? (dataset code)");
 			String datasetExportFolder = ConsolePromptUtil.promptDataFolderPath("Please specify folder for export file? (/path/of/file/)");

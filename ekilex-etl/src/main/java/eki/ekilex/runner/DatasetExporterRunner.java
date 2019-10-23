@@ -259,14 +259,14 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 
 	private void appendToRoot(String tableName, Map<String, Object> tableRow, JsonGenerator jsonGenerator) throws IOException, Exception {
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForExport().get(tableName);
-		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMap().get(tableName);
+		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMapForExport().get(tableName);
 		jsonGenerator.writeFieldName(tableName);
 		populate(tableName, null, tablesHierarchyPaths, tableRow, tableColumnsMap, referringForeignKeys, jsonGenerator);
 	}
 
 	private void appendToRoot(String tableName, List<Map<String, Object>> tableRows, JsonGenerator jsonGenerator) throws IOException, Exception {
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForExport().get(tableName);
-		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMap().get(tableName);
+		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMapForExport().get(tableName);
 		jsonGenerator.writeFieldName(tableName);
 		populate(tableName, null, tablesHierarchyPaths, tableRows, tableColumnsMap, referringForeignKeys, jsonGenerator);
 	}
@@ -317,7 +317,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 				String fkColumnName = tableColumn.getFkColumnName();
 				Serializable fkColumnValue = (Serializable) tableRow.get(tableColumn.getColumnName());
 				Map<String, TableColumn> fkTableColumnsMap = transportService.getTablesColumnsMapForExport().get(fkTableName);
-				List<ForeignKey> fkTableReferringForeignKeys = transportService.getReferringForeignKeysMap().get(fkTableName);
+				List<ForeignKey> fkTableReferringForeignKeys = transportService.getReferringForeignKeysMapForExport().get(fkTableName);
 				if (MapUtils.isEmpty(fkTableColumnsMap)) {
 					continue;
 				}
@@ -343,7 +343,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 			String fkColumnName = referringForeignKey.getFkColumnName();
 			Serializable fkColumnValue = (Serializable) tableRow.get(referringForeignKey.getPkColumnName());
 			Map<String, TableColumn> fkTableColumnsMap = transportService.getTablesColumnsMapForExport().get(fkTableName);
-			List<ForeignKey> fkTableReferringForeignKeys = transportService.getReferringForeignKeysMap().get(fkTableName);
+			List<ForeignKey> fkTableReferringForeignKeys = transportService.getReferringForeignKeysMapForExport().get(fkTableName);
 			if (MapUtils.isEmpty(fkTableColumnsMap)) {
 				continue;
 			}
