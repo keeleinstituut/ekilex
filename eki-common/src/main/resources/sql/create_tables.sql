@@ -846,7 +846,6 @@ create table lexeme
   corpus_frequency numeric,--TODO will be moved to lexeme_frequency table later
   level1 integer default 0,
   level2 integer default 0,
-  level3 integer default 0,
   value_state_code varchar(100) references value_state(code) null,
   process_state_code varchar(100) references process_state(code) null,
   complexity varchar(100) not null,

@@ -162,10 +162,10 @@ public class CudService extends AbstractService {
 		List<WordLexeme> lexemes = cudDbService.getWordPrimaryLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
-			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
+			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2());
 			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
 			createLifecycleLog(logData);
-			cudDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
+			cudDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2());
 		}
 	}
 

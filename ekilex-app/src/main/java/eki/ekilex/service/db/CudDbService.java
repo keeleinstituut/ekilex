@@ -93,15 +93,14 @@ public class CudDbService implements DbConstant {
 				.select(
 						l2.ID.as("lexeme_id"),
 						l2.LEVEL1,
-						l2.LEVEL2,
-						l2.LEVEL3)
+						l2.LEVEL2)
 				.from(l2, l1)
 				.where(
 						l1.ID.eq(lexemeId)
 								.and(l1.WORD_ID.eq(l2.WORD_ID))
 								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
 								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.orderBy(l2.LEVEL1, l2.LEVEL2, l2.LEVEL3)
+				.orderBy(l2.LEVEL1, l2.LEVEL2)
 				.fetchInto(WordLexeme.class);
 	}
 
@@ -288,11 +287,10 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public void updateLexemeLevels(Long lexemeId, Integer level1, Integer level2, Integer level3) {
+	public void updateLexemeLevels(Long lexemeId, Integer level1, Integer level2) {
 		create.update(LEXEME)
 				.set(LEXEME.LEVEL1, level1)
 				.set(LEXEME.LEVEL2, level2)
-				.set(LEXEME.LEVEL3, level3)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
@@ -479,9 +477,9 @@ public class CudDbService implements DbConstant {
 		create
 				.insertInto(
 						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 				.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-						1, 1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
+						1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
 				.execute();
 		return wordId;
 	}
@@ -734,9 +732,9 @@ public class CudDbService implements DbConstant {
 		Long lexemeId = create
 					.insertInto(
 							LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
-							LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+							LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 					.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-							1, 1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
+							1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
 					.returning(LEXEME.ID)
 					.fetchOne()
 					.getId();

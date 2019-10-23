@@ -6,8 +6,9 @@ import java.util.Map;
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
+import eki.common.data.LexemeLevel;
 
-public class Lexeme extends AbstractDataObject {
+public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,8 +21,6 @@ public class Lexeme extends AbstractDataObject {
 	private Integer level1;
 
 	private Integer level2;
-
-	private Integer level3;
 
 	private String levels;
 
@@ -127,14 +126,6 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLevel2(Integer level2) {
 		this.level2 = level2;
-	}
-
-	public Integer getLevel3() {
-		return level3;
-	}
-
-	public void setLevel3(Integer level3) {
-		this.level3 = level3;
 	}
 
 	public String getLevels() {
@@ -401,4 +392,8 @@ public class Lexeme extends AbstractDataObject {
 		this.emptyLexeme = emptyLexeme;
 	}
 
+	@Override
+	public String getDatasetCode() {
+		return null;
+	}
 }

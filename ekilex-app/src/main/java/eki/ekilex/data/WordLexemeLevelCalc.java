@@ -1,6 +1,6 @@
 package eki.ekilex.data;
 
-public interface WordLexemeLevelCalc {
+public interface WordLexemeLevelCalc { // TODO delete - Yogesh
 
 	Integer getLevel1();
 

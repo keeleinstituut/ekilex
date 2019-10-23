@@ -178,10 +178,8 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 
 			String dataset = lexeme.getDataset();
 			dataset = datasetNameMap.get(dataset);
-			String levels = composeLevels(lexeme);
 			boolean isAffixoid = isAffixoid(wordTypes);
 
-			lexeme.setLevels(levels);
 			lexeme.setDataset(dataset);
 			lexeme.setWordTypes(wordTypes);
 			lexeme.setAffixoid(isAffixoid);
@@ -215,24 +213,6 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		meaning.setLastChangedOn(latestLogEventTime);
 
 		return meaning;
-	}
-
-	private String composeLevels(Lexeme lexeme) {
-
-		Integer level1 = lexeme.getLevel1();
-		Integer level2 = lexeme.getLevel2();
-		Integer level3 = lexeme.getLevel3();
-		String levels = null;
-		if (level1 > 0) {
-			levels = String.valueOf(level1);
-			if (level2 > 0) {
-				levels += "." + level2;
-			}
-			if (level3 > 0) {
-				levels += "." + level3;
-			}
-		}
-		return levels;
 	}
 
 	private void setPagingData(int offset, int meaningCount, MeaningsResult meaningsResult) {

@@ -102,7 +102,6 @@ from (select w.id as word_id,
                           order by
                           mw.hw_lex_level1,
                           mw.hw_lex_level2,
-                          mw.hw_lex_level3,
                           mw.hw_lex_order_by,
                           mw.mw_lex_order_by
                           ) meaning_words
@@ -112,7 +111,6 @@ from (select w.id as word_id,
                                 l1.meaning_id,
                                 l1.level1 hw_lex_level1,
                                 l1.level2 hw_lex_level2,
-                                l1.level3 hw_lex_level3,
                                 l1.order_by hw_lex_order_by,
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
@@ -229,13 +227,12 @@ from (select w.id as word_id,
                           and r.word_rel_type_code != 'raw')) lc
                    group by lc.word_id) lc on lc.word_id = w.word_id
   left outer join (select wd.word_id,
-                          array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.value_prese,wd.lang,wd.complexity)::type_definition order by wd.level1,wd.level2,wd.level3,wd.lex_order_by,wd.d_order_by) definitions
+                          array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.value_prese,wd.lang,wd.complexity)::type_definition order by wd.level1,wd.level2,wd.lex_order_by,wd.d_order_by) definitions
                    from (select l.word_id,
                                 l.id lexeme_id,
                                 l.meaning_id,
                                 l.level1,
                                 l.level2,
-                                l.level3,
                                 l.order_by lex_order_by,
                                 d.value,
                                 d.value_prese,
@@ -392,7 +389,6 @@ select l.id lexeme_id,
        l.dataset_code,
        l.level1,
        l.level2,
-       l.level3,
        l.complexity,
        l.order_by lex_order_by,
        l_reg.register_codes,
@@ -465,7 +461,6 @@ from lexeme l
                           order by
                           mw.hw_lex_level1,
                           mw.hw_lex_level2,
-                          mw.hw_lex_level3,
                           mw.hw_lex_order_by,
                           mw.mw_lex_order_by
                           ) meaning_words
@@ -475,7 +470,6 @@ from lexeme l
                                 l1.meaning_id,
                                 l1.level1 hw_lex_level1,
                                 l1.level2 hw_lex_level2,
-                                l1.level3 hw_lex_level3,
                                 l1.order_by hw_lex_order_by,
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
@@ -734,7 +728,6 @@ group by l1.id,
          lc1.id
 order by l1.level1,
          l1.level2,
-         l1.level3,
          pgr1.order_by,
          rgr1.order_by,
          lc1.group_order,

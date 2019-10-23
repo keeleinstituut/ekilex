@@ -19,7 +19,6 @@ import eki.ekilex.data.LogData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
-import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
@@ -36,9 +35,6 @@ public class CompositionService extends AbstractService {
 
 	@Autowired
 	private CudDbService cudDbService;
-
-	@Autowired
-	private CommonDataDbService commonDataDbService;
 
 	@Autowired
 	private LookupDbService lookupDbService;
@@ -262,7 +258,7 @@ public class CompositionService extends AbstractService {
 			} else {
 				Integer currentMaxLevel = compositionDbService.getWordLexemesMaxFirstLevel(wordId);
 				int level1 = currentMaxLevel + 1;
-				compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, wordId, level1, DEFAULT_LEXEME_LEVEL, DEFAULT_LEXEME_LEVEL);
+				compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, wordId, level1, DEFAULT_LEXEME_LEVEL);
 			}
 		}
 	}
@@ -288,31 +284,21 @@ public class CompositionService extends AbstractService {
 		List<WordLexeme> lexemes = cudDbService.getWordPrimaryLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
-			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
+			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2());
 			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
 			createLifecycleLog(logData);
-			cudDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
+			cudDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2());
 		}
 	}
 
-	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) {
+	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) { // TODO refactor - Yogesh
 
 		LexemeRecord duplicatedLexeme = compositionDbService.getLexeme(duplicateLexemeId);
 		Integer level1 = duplicatedLexeme.getLevel1();
 		Integer level2 = duplicatedLexeme.getLevel2();
-		Integer level3 = duplicatedLexeme.getLevel3();
 		Long wordId = duplicatedLexeme.getWordId();
 
-		if (level3 > 1) {
-			List<LexemeRecord> lexemesWithLargerLevel3 = compositionDbService.getLexemesWithHigherLevel3(wordId, level1, level2, level3);
-			int increasedDuplicatedLexemeLevel3 = level3 + 1;
-			compositionDbService.updateLexemeLevel3(duplicateLexemeId, increasedDuplicatedLexemeLevel3);
-			for (LexemeRecord lexeme : lexemesWithLargerLevel3) {
-				Long lexemeId = lexeme.getId();
-				int increasedLevel3 = lexeme.getLevel3() + 1;
-				compositionDbService.updateLexemeLevel2(lexemeId, increasedLevel3);
-			}
-		} else if (level2 > 1) {
+		if (level2 > 1) {
 			List<LexemeRecord> lexemesWithLargerLevel2 = compositionDbService.getLexemesWithHigherLevel2(wordId, level1, level2);
 			int increasedDuplicatedLexemeLevel2 = level2 + 1;
 			compositionDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
@@ -345,8 +331,8 @@ public class CompositionService extends AbstractService {
 
 				updateLexemeLevels(sourceLexemeId, "delete");
 
-				String logEntrySource = StringUtils.joinWith(".", sourceLexeme.getLevel1(), sourceLexeme.getLevel2(), sourceLexeme.getLevel3());
-				String logEntryTarget = StringUtils.joinWith(".", targetLexeme.getLevel1(), targetLexeme.getLevel2(), targetLexeme.getLevel3());
+				String logEntrySource = StringUtils.joinWith(".", sourceLexeme.getLevel1(), sourceLexeme.getLevel2());
+				String logEntryTarget = StringUtils.joinWith(".", targetLexeme.getLevel1(), targetLexeme.getLevel2());
 				LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, targetLexemeId, logEntrySource,
 						logEntryTarget);
 				createLifecycleLog(logData);

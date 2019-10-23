@@ -151,7 +151,6 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 						LEXEME.FREQUENCY_GROUP_CODE,
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
-						LEXEME.LEVEL3,
 						LEXEME.VALUE_STATE_CODE,
 						LEXEME.PROCESS_STATE_CODE,
 						LEXEME.COMPLEXITY,

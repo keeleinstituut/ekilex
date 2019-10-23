@@ -408,18 +408,15 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 
 		Integer sumLevel1 = null;
 		Integer sumLevel2 = null;
-		Integer sumLevel3 = null;
 
 		if (ssLexeme == null) {
 			sumLevel1 = nonSsWordLexemeLevelMap.get(wordId);
 			sumLevel1 = sumLevel1 + 1;
 			sumLevel2 = 0;
-			sumLevel3 = 0;
 			nonSsWordLexemeLevelMap.put(wordId, sumLevel1);
 		} else {
 			sumLevel1 = ssLexeme.getLevel1();
 			sumLevel2 = ssLexeme.getLevel2();
-			sumLevel3 = ssLexeme.getLevel3();
 		}
 
 		// sum freq group
@@ -494,7 +491,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		sumLexeme.setCorpusFrequency(sumCorpusFrequency);
 		sumLexeme.setLevel1(sumLevel1);
 		sumLexeme.setLevel2(sumLevel2);
-		sumLexeme.setLevel3(sumLevel3);
 		sumLexeme.setValueStateCode(sumValueStateCode);
 		sumLexeme.setProcessStateCode(sumProcessStateCode);
 		sumLexeme.setComplexity(complexity);
@@ -1239,7 +1235,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			Float corpusFrequency = getFloat(rs, "corpus_frequency");
 			Integer level1 = rs.getObject("level1", Integer.class);
 			Integer level2 = rs.getObject("level2", Integer.class);
-			Integer level3 = rs.getObject("level3", Integer.class);
 			String valueStateCode = rs.getString("value_state_code");
 			String processStateCode = rs.getString("process_state_code");
 			String complexityStr = rs.getString("complexity");
@@ -1258,7 +1253,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 			lexeme.setCorpusFrequency(corpusFrequency);
 			lexeme.setLevel1(level1);
 			lexeme.setLevel2(level2);
-			lexeme.setLevel3(level3);
 			lexeme.setValueStateCode(valueStateCode);
 			lexeme.setProcessStateCode(processStateCode);
 			lexeme.setComplexity(complexity);

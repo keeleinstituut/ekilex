@@ -189,7 +189,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				lexeme.setMeaningId(itemData.meaningId);
 				lexeme.setLevel1(level1);
 				lexeme.setLevel2(1);
-				lexeme.setLevel3(1);
 				createLexemeIfNotExists(lexeme);
 			}
 		}
