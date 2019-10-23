@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 1655689382;
+    private static final long serialVersionUID = -1347981912;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -93,11 +93,6 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.level2</code>.
      */
     public final TableField<MviewWwLexemeRecord, Integer> LEVEL2 = createField("level2", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme.level3</code>.
-     */
-    public final TableField<MviewWwLexemeRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.complexity</code>.

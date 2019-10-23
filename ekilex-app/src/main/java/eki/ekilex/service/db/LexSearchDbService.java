@@ -536,7 +536,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				LEXEME.DATASET_CODE.as("dataset"),
 				LEXEME.LEVEL1,
 				LEXEME.LEVEL2,
-				LEXEME.LEVEL3,
 				LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 				LEXEME.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
 				lfreq.as("lexeme_frequencies"),
@@ -563,7 +562,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(dsWhere)
 				)
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
-				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2)
 				.fetchInto(WordLexeme.class);
 	}
 

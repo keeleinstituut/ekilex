@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
+import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
@@ -49,7 +50,6 @@ import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TermSearchDbService;
-import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
 public class LookupService extends AbstractWordSearchService {
@@ -73,7 +73,7 @@ public class LookupService extends AbstractWordSearchService {
 	private TermSearchDbService termSearchDbService;
 
 	@Autowired
-	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
+	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
 	public List<WordDetails> getWordDetailsOfJoinCandidates(String wordValue, Long wordIdToExclude, List<String> userPrefDatasetCodes,
@@ -104,7 +104,7 @@ public class LookupService extends AbstractWordSearchService {
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 
 		lexemes.forEach(lexeme -> populateLexemeWithMinimalData(lexeme, datasetNameMap));
-		lexemeLevelCalcUtil.combineLevels(lexemes);
+		lexemeLevelPreseUtil.combineLevels(lexemes);
 		String firstDefinitionValue = getFirstDefinitionValue(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
@@ -156,7 +156,7 @@ public class LookupService extends AbstractWordSearchService {
 						lexeme.setGovernments(governments);
 						lexeme.setUsages(usages);
 					});
-					lexemeLevelCalcUtil.combineLevels(wordLexemes);
+					lexemeLevelPreseUtil.combineLevels(wordLexemes);
 					lexemes.addAll(wordLexemes);
 				}
 			}

@@ -1,9 +1,9 @@
-.keyboard-nav-active-list{
+.keyboard-nav-list-active{
   position: relative;
   z-index: $zindex-modal;
   background: $white;
 }
-.keyboard-nav-active-item{
+.keyboard-nav-list-item-active{
   position: relative;
   z-index: 1;
   &::before{
@@ -19,6 +19,17 @@
     border: 2px solid $purple-100;
     box-shadow: $input-focus-box-shadow;
     @include border-radius(3px);
+  }
+}
+.keyboard-nav-list-item-selected{
+  position: relative;
+  z-index: $zindex-modal;
+  color: $white;
+  background: $primary;
+
+  .btn,
+  .action-icon{
+    color: currentColor;
   }
 }
 
@@ -37,4 +48,13 @@
     background: $gray-1000;
     opacity: .3;
   }
+}
+
+.navigate-disabled-panel {
+  pointer-events: none;
+  opacity: .4;
+}
+
+.navigate-declined {
+  background: $gray-200;
 }

@@ -722,7 +722,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						l.DATASET_CODE.as("dataset"),
 						l.LEVEL1,
 						l.LEVEL2,
-						l.LEVEL3,
 						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
 						lfreq.as("lexeme_frequencies"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
@@ -737,7 +736,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(f.PARADIGM_ID.eq(p.ID))
 								.and(f.MODE.eq(FormMode.WORD.name())))
 				.groupBy(l.ID, w.ID)
-				.orderBy(w.ID, l.DATASET_CODE, l.LEVEL1, l.LEVEL2, l.LEVEL3)
+				.orderBy(w.ID, l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
 				.fetchSingleInto(eki.ekilex.data.Lexeme.class);
 	}
 
@@ -755,7 +754,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name()))
 								.and(dsWhere))
-				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
+				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.WORD_ID, FORM.ID)
 				.limit(1)
 				.fetchSingleInto(String.class);
 	}

@@ -1,6 +1,6 @@
 function initialise() {
 	var KEYBOARD_MODE = false;
-	var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-active-item';
+	var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
 	var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 	var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 
@@ -11,14 +11,13 @@ function initialise() {
 		$('body').addClass('keyboard-edit-mode-active');
 		//TODO refactor
 		$('.keyboard-nav-list').each(function (e) {
-			//$(this).addClass('navigate-disabled-panel');
-			$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-active-list');
+			$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
 		});
 
-		let activatedDiv = $('div[data-panel-index="3"]');
-		activatedDiv.attr('data-active-panel', true).addClass('keyboard-nav-active-list');
-		itemToSelect = activatedDiv.find('[data-navigate-index="0"]');
-		itemToSelect.addClass('keyboard-nav-active-item');
+		let activatedList = $('div[data-panel-index="3"]');
+		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
+		itemToSelect = activatedList.find('[data-navigate-index="0"]');
+		itemToSelect.addClass('keyboard-nav-list-item-active');
 		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 		itemToSelect.find('button').focus();
 
@@ -32,8 +31,8 @@ function initialise() {
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 		let id = $(this).data('id');
-		let markedSynWordId = $(document).find('.navigate-marked').children(':first').data('word-id');
-		$('#synSearchResultsDiv').find('.list-group-item').each(function () {$(this).removeClass('keyboard-nav-active-item active');});
+		let markedSynWordId = $(document).find('.keyboard-nav-list-item-selected').children(':first').data('word-id');
+		$('#synSearchResultsDiv').find('.list-group-item').each(function () {$(this).removeClass('keyboard-nav-list-item-active active');});
 		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
 
 		$(this).parent().addClass('active');
@@ -187,8 +186,8 @@ function initialise() {
 			return false;
 		}
 
-		let currentActiveDiv = $('div[data-active-panel]');
-		let currentActivePanelIndex = currentActiveDiv.data('panel-index');
+		let currentActiveList = $('div[data-active-panel]');
+		let currentActivePanelIndex = currentActiveList.data('panel-index');
 
 		if (keyCode == 37 || keyCode == 39) {
 
@@ -219,9 +218,9 @@ function initialise() {
 			return;
 		}
 
-		let currentActiveDiv = $('div[data-active-panel]');
-		let currentActivePanelIndex = currentActiveDiv.data('panel-index');
-		let currentSelectedItem = currentActiveDiv.find('[data-navigate-selected]');
+		let currentActiveList = $('div[data-active-panel]');
+		let currentActivePanelIndex = currentActiveList.data('panel-index');
+		let currentSelectedItem = currentActiveList.find('[data-navigate-selected]');
 		let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
 
 		e = e || window.event;
@@ -233,11 +232,11 @@ function initialise() {
 				console.log('currentSelectedITem exists');
 				let indexIncrement = (e.keyCode == 40 ? 1 : -1);
 				let newIndex = currentSelectedIndex + indexIncrement;
-				let newItem = currentActiveDiv.find('[data-navigate-index="' + newIndex + '"]');
+				let newItem = currentActiveList.find('[data-navigate-index="' + newIndex + '"]');
 
 				if (newItem.length != 0) {
 					console.log('navItem exists');
-					newItem.addClass(isDisabledItem(currentActiveDiv, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+					newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
 					unActivateItem(currentSelectedItem, true);
 				}
@@ -247,7 +246,7 @@ function initialise() {
 		// 1 - 3, arrows left-right
 		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
 			if (isValidPanelChangeKeyPress(e.keyCode)) {
-				$('div[data-panel-index]').each(function () {$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-active-list');});
+				$('div[data-panel-index]').each(function () {$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');});
 
 				let selectedPanelIndex = 1;
 				let PANEL_KEYCODES = {"49": "1", "50": "2", "51" : "3"};
@@ -267,11 +266,11 @@ function initialise() {
 				}
 				unActivateItem(currentSelectedItem, false);
 
-				let activatedDiv = $('div[data-panel-index="' + selectedPanelIndex + '"]');
-				activatedDiv.attr('data-active-panel', true).addClass('keyboard-nav-active-list');
+				let activatedList = $('div[data-panel-index="' + selectedPanelIndex + '"]');
+				activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
 
-				let selectedItem = findSelectedNavigateItem(activatedDiv);
-				let isDisabled = isDisabledItem(activatedDiv, selectedItem);
+				let selectedItem = findSelectedNavigateItem(activatedList);
+				let isDisabled = isDisabledItem(activatedList, selectedItem);
 
 				selectedItem.addClass(isDisabled ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 				selectedItem.attr('data-navigate-selected', true);
@@ -279,7 +278,8 @@ function initialise() {
 
 		}
 
-		if (e.keyCode == 27) { //esc
+		//Esc key
+		if (e.keyCode == 27) {
 			$('.keyboard-nav-list').each(function () {
 				$(this).removeAttr('data-marked-word-id');
 				$(this).removeAttr('data-marked-relation-id'); //TODO refactor
@@ -287,8 +287,9 @@ function initialise() {
 				$(this).find('[data-navigate-index]').each(function () {
 					unActivateItem($(this), true);
 				});
+				$('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
 
-				$(this).find('.keyboard-nav-active-item').removeClass('keyboard-nav-active-item');
+				$(this).find('.keyboard-nav-list-item-active').removeClass('keyboard-nav-list-item-active');
 
 				$("#keyboardEditBtn").removeAttr('disabled');
 
@@ -298,27 +299,27 @@ function initialise() {
 			KEYBOARD_MODE = false;
 		}
 
-
-
+		//Enter key
 		if (e.keyCode == 13) {
 			e.preventDefault();
 
 			if (currentActivePanelIndex == "3") {
 
-				currentActiveDiv.find('.navigate-marked').each(function () {$(this).removeClass('navigate-marked');});
-				currentSelectedItem.addClass('navigate-marked');
-				currentActiveDiv.removeAttr('data-active-panel');
+				currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function () {$(this).removeClass('.keyboard-nav-list-item-selected');});
+				currentSelectedItem.addClass('keyboard-nav-list-item-selected');
+
+				unActivateItem(currentSelectedItem, false);
 				//TODO refactor
 				let wordId = currentSelectedItem.children(':first').attr('data-word-id');
 				let relationId = currentSelectedItem.attr('data-id');
 
-				let activatedDiv = $('div[data-panel-index="2"]');
-				activatedDiv.attr('data-active-panel', true);
+				let activatedList = $('div[data-panel-index="' + 2 + '"]');
+				activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
 
-				activatedDiv.data('marked-word-id', wordId);
-				activatedDiv.data('marked-relation-id', relationId);
+				activatedList.data('marked-word-id', wordId);
+				activatedList.data('marked-relation-id', relationId);
 
-				let selectedLexemeItem = findSelectedNavigateItem(activatedDiv);
+				let selectedLexemeItem = findSelectedNavigateItem(activatedList);
 
 				let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
 
@@ -327,8 +328,8 @@ function initialise() {
 
 			} else if (currentActivePanelIndex == "2") {
 				if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-					let wordId = currentActiveDiv.data('marked-word-id'); //TODO move to a hidden field ? - add a marked attribute to the marked element
-					let relationId = currentActiveDiv.data('marked-relation-id'); //TODO Refactor
+					let wordId = currentActiveList.data('marked-word-id'); //TODO move to a hidden field ? - add a marked attribute to the marked element
+					let relationId = currentActiveList.data('marked-relation-id'); //TODO Refactor
 
 					if (wordId != undefined) {
 
@@ -349,7 +350,7 @@ function initialise() {
 					openAlertDlg("Ilmik on juba olemas.");
 				}
 			} else if (currentActivePanelIndex == "1") {
-				$(document).find('.navigate-marked').removeClass('navigate-marked');
+				$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
 				currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
 			}
 		}

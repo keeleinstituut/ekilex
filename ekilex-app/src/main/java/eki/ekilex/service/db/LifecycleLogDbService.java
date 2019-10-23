@@ -45,6 +45,8 @@ import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 @Component
 public class LifecycleLogDbService {
 
+	private static final String LOADER_USERNAME_PATTERN = "Ekilex%-laadur";
+
 	@Autowired
 	private DSLContext create;
 
@@ -80,6 +82,7 @@ public class LifecycleLogDbService {
 						DSL.max(ll.field("event_on", Timestamp.class))
 				)
 				.from(ll)
+				.where(DSL.not(ll.field("event_by", String.class).like(LOADER_USERNAME_PATTERN)))
 				.fetchSingleInto(Timestamp.class);
 
 		return latestTimestamp;
@@ -141,6 +144,7 @@ public class LifecycleLogDbService {
 						DSL.max(ll.field("event_on", Timestamp.class))
 				)
 				.from(ll)
+				.where(DSL.not(ll.field("event_by", String.class).like(LOADER_USERNAME_PATTERN)))
 				.fetchSingleInto(Timestamp.class);
 
 		return latestTimestamp;
@@ -381,7 +385,7 @@ public class LifecycleLogDbService {
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			} else if (LifecycleProperty.LEVEL.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-				String recent = StringUtils.joinWith(".", entityData.get("level1"), entityData.get("level2"), entityData.get("level3"));
+				String recent = StringUtils.joinWith(".", entityData.get("level1"), entityData.get("level2"));
 				logData.setRecent(recent);
 				if (!logData.isValueChanged()) {
 					if (logData.isUpdateEvent()) {
@@ -791,7 +795,7 @@ public class LifecycleLogDbService {
 	}
 
 	private String lexemeLogString(Map<String, Object> entityData) {
-		return entityData.get("value") + " [" + entityData.get("level1") + "." + entityData.get("level2") + "." + entityData.get("level3") + "]";
+		return entityData.get("value") + " [" + entityData.get("level1") + "." + entityData.get("level2") + "]";
 	}
 
 	private Long createLifecycleLog(LogData logData) {
@@ -876,8 +880,7 @@ public class LifecycleLogDbService {
 		Map<String, Object> lexemeData = helper.getLexemeData(create, lexemeId);
 		String level1 = lexemeData.get("level1").toString();
 		String level2 = lexemeData.get("level2").toString();
-		String level3 = lexemeData.get("level3").toString();
-		String levels = String.join(".", level1, level2, level3);
+		String levels = String.join(".", level1, level2);
 		return lexemeData.get("value") + " [" + levels + "]";
 	}
 

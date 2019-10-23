@@ -12931,21 +12931,6 @@ select:invalid {
   overflow: auto;
 }
 
-.navigate-disabled-panel {
-  pointer-events: none;
-  opacity: 0.4;
-}
-
-.navigate-marked {
-  outline: 2px solid lightskyblue;
-  background: #ffc107;
-  font-size: large;
-}
-
-.navigate-declined {
-  background: lightgray;
-}
-
 /* stylelint-disable */
 eki-foreign {
   color: #00874F;
@@ -16433,18 +16418,18 @@ footer p {
   border-top-right-radius: 0;
 }
 
-.keyboard-nav-active-list {
+.keyboard-nav-list-active {
   position: relative;
   z-index: 1050;
   background: #fff;
 }
 
-.keyboard-nav-active-item {
+.keyboard-nav-list-item-active {
   position: relative;
   z-index: 1;
 }
 
-.keyboard-nav-active-item::before {
+.keyboard-nav-list-item-active::before {
   position: absolute;
   top: 0;
   right: 0;
@@ -16457,6 +16442,18 @@ footer p {
   border: 2px solid #db8dff;
   box-shadow: 0 0 0 0.2rem rgba(0, 90, 169, 0.25);
   border-radius: 3px;
+}
+
+.keyboard-nav-list-item-selected {
+  position: relative;
+  z-index: 1050;
+  color: #fff;
+  background: #005aa9;
+}
+
+.keyboard-nav-list-item-selected .btn,
+.keyboard-nav-list-item-selected .action-icon {
+  color: currentColor;
 }
 
 .keyboard-edit-mode-active::after {
@@ -16472,6 +16469,15 @@ footer p {
   content: "";
   background: #0e1013;
   opacity: .3;
+}
+
+.navigate-disabled-panel {
+  pointer-events: none;
+  opacity: .4;
+}
+
+.navigate-declined {
+  background: #ccd9e0;
 }
 
 .badge-counter {

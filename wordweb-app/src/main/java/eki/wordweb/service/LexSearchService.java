@@ -1,7 +1,5 @@
 package eki.wordweb.service;
 
-import static java.lang.Math.max;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
+import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocationTuple;
@@ -50,6 +49,9 @@ public class LexSearchService implements SystemConstant, WebConstant {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
+
+	@Autowired
+	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
 	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
@@ -158,7 +160,7 @@ public class LexSearchService implements SystemConstant, WebConstant {
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
 		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
 		wordData.setUnknownForm(isUnknownForm);
-		combineLevels(wordData.getLexemes());
+		lexemeLevelPreseUtil.combineLevels(wordData.getLexemes());
 		return wordData;
 	}
 
@@ -181,44 +183,6 @@ public class LexSearchService implements SystemConstant, WebConstant {
 				}
 			}
 		}
-	}
-
-	private void combineLevels(List<Lexeme> lexemes) {
-
-		if (CollectionUtils.isEmpty(lexemes)) {
-			return;
-		}
-
-		lexemes.forEach(lexeme -> {
-			if (lexeme.getLevel1() == 0) {
-				lexeme.setLevels(null);
-				return;
-			}
-			String levels;
-			long nrOfLexemesWithSameLevel1 = lexemes.stream()
-					.filter(otherLexeme ->
-							otherLexeme.getLevel1().equals(lexeme.getLevel1())
-									&& otherLexeme.getComplexity().equals(lexeme.getComplexity()))
-					.count();
-			if (nrOfLexemesWithSameLevel1 == 1) {
-				levels = String.valueOf(lexeme.getLevel1());
-			} else {
-				long nrOfLexemesWithSameLevel2 = lexemes.stream()
-						.filter(otherLexeme ->
-								otherLexeme.getLevel1().equals(lexeme.getLevel1())
-										&& otherLexeme.getLevel2().equals(lexeme.getLevel2())
-										&& otherLexeme.getComplexity().equals(lexeme.getComplexity()))
-						.count();
-				if (nrOfLexemesWithSameLevel2 == 1) {
-					int level2 = max(lexeme.getLevel2() - 1, 0);
-					levels = lexeme.getLevel1() + (level2 == 0 ? "" : "." + level2);
-				} else {
-					int level3 = max(lexeme.getLevel3() - 1, 0);
-					levels = lexeme.getLevel1() + "." + lexeme.getLevel2() + (level3 == 0 ? "" : "." + level3);
-				}
-			}
-			lexeme.setLevels(levels);
-		});
 	}
 
 	//falling back to dataset-based filtering, not cool at all...

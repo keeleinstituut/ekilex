@@ -44,9 +44,6 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "level2")
 	private Integer level2;
 
-	@Column(name = "level3")
-	private Integer level3;
-
 	private String levels;
 
 	@Column(name = "lexeme_frequency_group_code")
@@ -181,14 +178,6 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLevel2(Integer level2) {
 		this.level2 = level2;
-	}
-
-	public Integer getLevel3() {
-		return level3;
-	}
-
-	public void setLevel3(Integer level3) {
-		this.level3 = level3;
 	}
 
 	public String getLevels() {

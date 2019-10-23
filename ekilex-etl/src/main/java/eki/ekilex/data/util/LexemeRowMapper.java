@@ -22,7 +22,6 @@ public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexe
 		Float corpusFrequency = getFloat(rs, "corpus_frequency");
 		Integer level1 = rs.getObject("level1", Integer.class);
 		Integer level2 = rs.getObject("level2", Integer.class);
-		Integer level3 = rs.getObject("level3", Integer.class);
 		String valueStateCode = rs.getString("value_state_code");
 		String processStateCode = rs.getString("process_state_code");
 		String complexityStr = rs.getString("complexity");
@@ -41,7 +40,6 @@ public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexe
 		lexeme.setCorpusFrequency(corpusFrequency);
 		lexeme.setLevel1(level1);
 		lexeme.setLevel2(level2);
-		lexeme.setLevel3(level3);
 		lexeme.setValueStateCode(valueStateCode);
 		lexeme.setProcessStateCode(processStateCode);
 		lexeme.setComplexity(complexity);

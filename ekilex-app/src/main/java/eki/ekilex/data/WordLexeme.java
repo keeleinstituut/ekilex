@@ -6,8 +6,9 @@ import javax.persistence.Column;
 
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
+import eki.common.data.LexemeLevel;
 
-public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCalc {
+public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,9 +43,6 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 
 	@Column(name = "level2")
 	private Integer level2;
-
-	@Column(name = "level3")
-	private Integer level3;
 
 	private String levels;
 
@@ -201,14 +199,6 @@ public class WordLexeme extends AbstractDataObject implements WordLexemeLevelCal
 
 	public void setLevel2(Integer level2) {
 		this.level2 = level2;
-	}
-
-	public Integer getLevel3() {
-		return level3;
-	}
-
-	public void setLevel3(Integer level3) {
-		this.level3 = level3;
 	}
 
 	public String getLevels() {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.LexemeType;
 import eki.common.constant.RelationStatus;
+import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -20,7 +21,6 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
-import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
 public class SynSearchService extends AbstractWordSearchService {
@@ -31,7 +31,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	private SynSearchDbService synSearchDbService;
 
 	@Autowired
-	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
+	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
 	public WordSynDetails getWordSynDetails(Long wordId, List<String> selectedDatasetCodes) {
@@ -41,7 +41,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction);
 		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, wordDetails.getLanguage()));
-		lexemeLevelCalcUtil.combineLevels(synLexemes);
+		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
 		List<SynRelationParamTuple> relationTuples =
 				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
