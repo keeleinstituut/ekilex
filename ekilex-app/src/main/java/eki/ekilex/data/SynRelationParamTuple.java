@@ -15,6 +15,9 @@ public class SynRelationParamTuple extends AbstractDataObject {
 	@Column(name= "word_id")
 	private Long wordId;
 
+	@Column(name= "opposite_word_id")
+	private Long oppositeWordId;
+
 	@Column(name= "word")
 	private String word;
 
@@ -44,6 +47,22 @@ public class SynRelationParamTuple extends AbstractDataObject {
 		this.relationId = relationId;
 	}
 
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
+	}
+
+	public Long getOppositeWordId() {
+		return oppositeWordId;
+	}
+
+	public void setOppositeWordId(Long oppositeWordId) {
+		this.oppositeWordId = oppositeWordId;
+	}
+
 	public String getWord() {
 		return word;
 	}
@@ -68,6 +87,14 @@ public class SynRelationParamTuple extends AbstractDataObject {
 		this.oppositeRelationStatus = oppositeRelationStatus;
 	}
 
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
+
 	public String getParamName() {
 		return paramName;
 	}
@@ -82,22 +109,6 @@ public class SynRelationParamTuple extends AbstractDataObject {
 
 	public void setParamValue(String paramValue) {
 		this.paramValue = paramValue;
-	}
-
-	public Long getOrderBy() {
-		return orderBy;
-	}
-
-	public void setOrderBy(Long orderBy) {
-		this.orderBy = orderBy;
-	}
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
 	}
 
 	public Integer getHomonymNumber() {

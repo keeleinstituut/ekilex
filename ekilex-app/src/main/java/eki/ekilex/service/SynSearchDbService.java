@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import static eki.ekilex.data.db.Tables.DATASET;
+import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -45,10 +47,11 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		return create
 				.selectDistinct(
 						WORD_RELATION.ID.as("relation_id"),
+						WORD_RELATION.WORD2_ID.as("opposite_word_id"),
+						WORD_RELATION.RELATION_STATUS.as("relation_status"),
 						WORD.ID.as("word_id"),
 						WORD.HOMONYM_NR.as("word_homonym_number"),
 						FORM.VALUE.as("word"),
-						WORD_RELATION.RELATION_STATUS.as("relation_status"),
 						opposite.RELATION_STATUS.as("opposite_relation_status"),
 						WORD_RELATION_PARAM.NAME.as("param_name"),
 						WORD_RELATION_PARAM.VALUE.as("param_value"),
@@ -183,17 +186,33 @@ public class SynSearchDbService extends AbstractSearchDbService {
 	}
 
 	public Integer getExistingFormOtherHomonymsCount(String formValue, Integer existingHomonym) {
-		return
-				create
-						.select(DSL.count(DSL.val(1)))
-						.from(FORM, PARADIGM, WORD)
-						.where(
-								FORM.PARADIGM_ID.eq(PARADIGM.ID))
-									.and(PARADIGM.WORD_ID.eq(WORD.ID))
-									.and(FORM.VALUE.eq(formValue))
-									.and(
-											DSL.not(WORD.HOMONYM_NR.eq(existingHomonym))
-									)
-						.fetchSingleInto(Integer.class);
+		return create
+				.select(DSL.count(DSL.val(1)))
+				.from(FORM, PARADIGM, WORD)
+				.where(
+						FORM.PARADIGM_ID.eq(PARADIGM.ID)
+							.and(PARADIGM.WORD_ID.eq(WORD.ID))
+							.and(FORM.VALUE.eq(formValue))
+							.and(FORM.MODE.eq(FormMode.WORD.name()))
+							.and(WORD.HOMONYM_NR.ne(existingHomonym))
+				)
+				.fetchSingleInto(Integer.class);
 	}
+
+	public String getFirstDetailedDefinition(Long wordId) {
+		Record1<String> result = create
+				.select(DEFINITION.VALUE)
+				.from(LEXEME, MEANING, DEFINITION)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+							.and(MEANING.ID.eq(LEXEME.MEANING_ID))
+							.and(DEFINITION.MEANING_ID.eq(MEANING.ID))
+							.and(DEFINITION.COMPLEXITY.like("DETAIL%"))
+						)
+				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, DEFINITION.ORDER_BY)
+				.limit(1)
+				.fetchOne();
+		return  result != null ? result.into(String.class) : null;
+	}
+
 }

@@ -1130,6 +1130,7 @@ create index lexeme_process_state_code_idx on lexeme(process_state_code);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index definition_meaning_id_idx on definition(meaning_id);
 create index definition_lang_idx on definition(lang);
+create index definition_complexity_idx on definition(complexity);
 create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
 create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
 create index meaning_rel_mapping_code1_idx on meaning_rel_mapping(code1);

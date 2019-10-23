@@ -593,3 +593,6 @@ commit;
 
 -- 22.10.19
 create index lifecycle_log_event_by_idx on lifecycle_log(event_by);
+
+-- 23.10.19
+create index definition_complexity_idx on definition(complexity);

@@ -13,7 +13,11 @@ public class SynRelation extends AbstractDataObject {
 
 	private Long wordId;
 
+	private Long oppositeWordId;
+
 	private String word;
+
+	private String definition;
 
 	private Long orderBy;
 
@@ -41,6 +45,14 @@ public class SynRelation extends AbstractDataObject {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public String getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(String definition) {
+		this.definition = definition;
 	}
 
 	public RelationStatus getRelationStatus() {
@@ -81,6 +93,14 @@ public class SynRelation extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public Long getOppositeWordId() {
+		return oppositeWordId;
+	}
+
+	public void setOppositeWordId(Long oppositeWordId) {
+		this.oppositeWordId = oppositeWordId;
 	}
 
 	public Integer getHomonymNumber() {

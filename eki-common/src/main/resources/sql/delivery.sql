@@ -534,3 +534,4 @@ insert into meaning_rel_mapping (code1, code2) values ('üldmõiste', 'ainikmõi
 insert into meaning_rel_mapping (code1, code2) values ('ainikmõiste', 'üldmõiste');
 
 create index lifecycle_log_event_by_idx on lifecycle_log(event_by);
+create index definition_complexity_idx on definition(complexity);
