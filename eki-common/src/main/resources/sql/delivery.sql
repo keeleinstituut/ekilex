@@ -785,7 +785,7 @@ insert into language_label (code, value, lang, type) values ('uzb', 'Uzbek', 'en
 insert into language_label (code, value, lang, type) values ('ydg', 'Yidgha', 'eng', 'descrip');
 insert into language_label (code, value, lang, type) values ('ydg', 'Yidgha', 'eng', 'wordweb');
 insert into language_label (code, value, lang, type) values ('yor', 'Yoruba', 'eng', 'descrip');
-insert into language_label (code, value, lang, type) values ('yor', 'Yoruba', 'eng', 'wordweb');insert into meaning_rel_mapping (code1, code2) values ('ainikmõiste', 'üldmõiste');
+insert into language_label (code, value, lang, type) values ('yor', 'Yoruba', 'eng', 'wordweb');
 
 create index lifecycle_log_event_by_idx on lifecycle_log(event_by);
 create index definition_complexity_idx on definition(complexity);
