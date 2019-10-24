@@ -194,6 +194,10 @@ language	abk	abhaasi	est	descrip
 language	abk	abhaasi	est	wordweb
 language	abk	abhaasi keel	est	full
 language	abk	ab	est	iso2
+language	abe	abnaki	est	descrip
+language	abe	abnaki	est	wordweb
+language	abe	abnaki keel	est	full
+language	abe	abe	est	iso2
 language	afr	afrikaani	est	descrip
 language	afr	afrikaani	est	wordweb
 language	afr	afrikaani keel	est	full
@@ -206,10 +210,22 @@ language	sqi	albaania	est	descrip
 language	sqi	albaania	est	wordweb
 language	sqi	albaania keel	est	full
 language	sqi	sq	est	iso2
+language	amh	amhari	est	descrip
+language	amh	amhari	est	wordweb
+language	amh	amhari keel	est	full
+language	amh	am	est	iso2
 language	ara	araabia	est	descrip
 language	ara	araabia	est	wordweb
 language	ara	araabia keel	est	full
 language	ara	ar	est	iso2
+language	arc	aramea	est	descrip
+language	arc	aramea	est	wordweb
+language	arc	aramea keel	est	full
+language	arc	arc	est	iso2
+language	auf	arava	est	descrip
+language	auf	arava	est	wordweb
+language	auf	arava keel	est	full
+language	auf	auf	est	iso2
 language	arw	aravaki	est	descrip
 language	arw	aravaki	est	wordweb
 language	arw	aravaki	est	full
@@ -218,6 +234,10 @@ language	aze	aserbaidžaani	est	descrip
 language	aze	aserbaidžaani	est	wordweb
 language	aze	aserbaidžaani keel	est	full
 language	aze	az	est	iso2
+language	akk	assüüria	est	descrip
+language	akk	assüüria	est	wordweb
+language	akk	assüüria keel	est	full
+language	akk	akk	est	iso2
 language	qbk	Austraalia keeled	est	descrip
 language	qbk	Austraalia keeled	est	wordweb
 language	qbk	Austraalia keeled	est	full
@@ -250,6 +270,10 @@ language	ber	berberi	est	descrip
 language	ber	berberi	est	wordweb
 language	ber	berberi keel	est	full
 language	ber	ber	est	iso2
+language	bre	bretooni	est	descrip
+language	bre	bretooni	est	wordweb
+language	bre	bretooni keel	est	full
+language	bre	br	est	iso2
 language	xdk	dharuki	est	descrip
 language	xdk	dharuki	est	wordweb
 language	xdk	dharuki	est	full
@@ -282,6 +306,10 @@ language	eve	eveeni	est	descrip
 language	eve	eveeni	est	wordweb
 language	eve	eveeni keel	est	full
 language	eve	eu	est	iso2
+language	ewe	eve	est	descrip
+language	ewe	eve	est	wordweb
+language	ewe	eve keel	est	full
+language	ewe	ee	est	iso2
 language	evn	evengi	est	descrip
 language	evn	evengi	est	wordweb
 language	evn	evengi keel	est	full
@@ -306,6 +334,14 @@ language	kal	grööni	est	descrip
 language	kal	grööni	est	wordweb
 language	kal	grööni keel	est	full
 language	kal	kl	est	iso2
+language	gug	guaranii	est	descrip
+language	gug	guaranii	est	wordweb
+language	gug	guaranii keel	est	full
+language	gug	gug	est	iso2
+language	qbp	gutni	est	descrip
+language	qbp	gutni	est	wordweb
+language	qbp	gutni keel	est	full
+language	qbp	qbp	est	iso2
 language	kat	gruusia	est	descrip
 language	kat	gruusia	est	wordweb
 language	kat	gruusia keel	est	full
@@ -330,6 +366,10 @@ language	qai	hilisladina	est	descrip
 language	qai	hilisladina	est	wordweb
 language	qai	hilisladina keel	est	full
 language	qai	qai	est	iso2
+language	ibo	ibo	est	descrip
+language	ibo	ibo	est	wordweb
+language	ibo	ibo keel	est	full
+language	ibo	ig	est	iso2
 language	smn	Inari saami	est	descrip
 language	smn	Inari saami	est	wordweb
 language	smn	Inari saami keel	est	full
@@ -342,6 +382,10 @@ language	ind	Indoneesia	est	descrip
 language	ind	Indoneesia	est	wordweb
 language	ind	Indoneesia keel	est	full
 language	ind	id	est	iso2
+language	iku	inuktituti	est	descrip
+language	iku	inuktituti	est	wordweb
+language	iku	inuktituti keel	est	full
+language	iku	iu	est	iso2
 language	isl	islandi	est	descrip
 language	isl	islandi	est	wordweb
 language	isl	islandi keel	est	full
@@ -354,10 +398,22 @@ language	ita	itaalia	est	descrip
 language	ita	itaalia	est	wordweb
 language	ita	itaalia keel	est	full
 language	ita	it	est	iso2
+language	ydg	jidga	est	descrip
+language	ydg	jidga	est	wordweb
+language	ydg	jidga keel	est	full
+language	ydg	ydg	est	iso2
 language	yid	jidiši	est	descrip
 language	yid	jidiši	est	wordweb
 language	yid	jidiši keel	est	full
 language	yid	yi	est	iso2
+language	yor	joruba	est	descrip
+language	yor	joruba	est	wordweb
+language	yor	joruba keel	est	full
+language	yor	yo	est	iso2
+language	kab	kabardi	est	descrip
+language	kab	kabardi	est	wordweb
+language	kab	kabardi keel	est	full
+language	kab	kab	est	iso2
 language	xas	kamassi	est	descrip
 language	xas	kamassi	est	wordweb
 language	xas	kamassi keel	est	full
@@ -374,6 +430,10 @@ language	kaz	kasahhi	est	descrip
 language	kaz	kasahhi	est	wordweb
 language	kaz	kasahhi keel	est	full
 language	kaz	kk	est	iso2
+language	keb	kele	est	descrip
+language	keb	kele	est	wordweb
+language	keb	kele keel	est	full
+language	keb	keb	est	iso2
 language	cat	katalaani	est	descrip
 language	cat	katalaani	est	wordweb
 language	cat	katalaani keel	est	full
@@ -386,6 +446,10 @@ language	qak	keskaja ladina	est	descrip
 language	qak	keskaja ladina	est	wordweb
 language	qak	keskaja ladina keel	est	full
 language	qak	qak	est	iso2
+language	ltc	keskhiina	est	descrip
+language	ltc	keskhiina	est	wordweb
+language	ltc	keskhiina keel	est	full
+language	ltc	ltc	est	iso2
 language	dum	keskhollandi	est	descrip
 language	dum	keskhollandi	est	wordweb
 language	dum	keskhollandi keel	est	full
@@ -442,6 +506,10 @@ language	kon	kongo	est	descrip
 language	kon	kongo	est	wordweb
 language	kon	kongo keel	est	full
 language	kon	kg	est	iso2
+language	aem	krii	est	descrip
+language	aem	krii	est	wordweb
+language	aem	krii keel	est	full
+language	aem	aem	est	iso2
 language	qwm	kõptšaki	est	descrip
 language	qwm	kõptšaki	est	wordweb
 language	qwm	kõptšaki keel	est	full
@@ -494,6 +562,10 @@ language	lud	lüüdi	est	descrip
 language	lud	lüüdi	est	wordweb
 language	lud	lüüdi keel	est	full
 language	lud	lu	est	iso2
+language	myn	maaja	est	descrip
+language	myn	maaja	est	wordweb
+language	myn	maaja keel	est	full
+language	myn	myn	est	iso2
 language	mlg	malagassi	est	descrip
 language	mlg	malagassi	est	wordweb
 language	mlg	malagassi keel	est	full
@@ -518,6 +590,10 @@ language	mri	maoori	est	descrip
 language	mri	maoori	est	wordweb
 language	mri	maoori keel	est	full
 language	mri	mi	est	iso2
+language	arn	mapudunguni	est	descrip
+language	arn	mapudunguni	est	wordweb
+language	arn	mapudunguni keel	est	full
+language	arn	arn	est	iso2
 language	chm	mari	est	descrip
 language	chm	mari	est	wordweb
 language	chm	mari keel	est	full
@@ -538,6 +614,10 @@ language	mon	mongoli	est	descrip
 language	mon	mongoli	est	wordweb
 language	mon	mongoli keel	est	full
 language	mon	mn	est	iso2
+language	rom	mustlaskeel	est	descrip
+language	rom	mustlaskeel	est	wordweb
+language	rom	mustlaskeel mustlaskeel	est	full
+language	rom	rom	est	iso2
 language	nah	nahua	est	descrip
 language	nah	nahua	est	wordweb
 language	nah	nahua keel	est	full
@@ -546,10 +626,18 @@ language	naq	nama (endise nimega hotentoti)	est	descrip
 language	naq	nama	est	wordweb
 language	naq	nama (endise nimega hotentoti) keel	est	full
 language	naq	naq	est	iso2
+language	xnt	narraganseti	est	descrip
+language	xnt	narraganseti	est	wordweb
+language	xnt	narraganseti keel	est	full
+language	xnt	xnt	est	iso2
 language	yrk	neenetsi	est	descrip
 language	yrk	neenetsi	est	wordweb
 language	yrk	neenetsi keel	est	full
 language	yrk	yrk	est	iso2
+language	neg	negidali	est	descrip
+language	neg	negidali	est	wordweb
+language	neg	negidali keel	est	full
+language	neg	neg	est	iso2
 language	nep	nepaali	est	descrip
 language	nep	nepaali	est	wordweb
 language	nep	nepaali keel	est	full
@@ -562,6 +650,14 @@ language	nor	norra	est	descrip
 language	nor	norra	est	wordweb
 language	nor	norra keel	est	full
 language	nor	no	est	iso2
+language	oji	odžibvei	est	descrip
+language	oji	odžibvei	est	wordweb
+language	oji	odžibvei keel	est	full
+language	oji	oj	est	iso2
+language	oac	orotši	est	descrip
+language	oac	orotši	est	wordweb
+language	oac	orotši keel	est	full
+language	oac	oac	est	iso2
 language	oss	osseedi	est	descrip
 language	oss	osseedi	est	wordweb
 language	oss	osseedi keel	est	full
@@ -594,6 +690,10 @@ language	qbm	romaani keeled	est	descrip
 language	qbm	romaani keeled	est	wordweb
 language	qbm	romaani keeled	est	full
 language	qbm	qbm	est	iso2
+language	roh	retoromaani	est	descrip
+language	roh	retoromaani	est	wordweb
+language	roh	retoromaani keel	est	full
+language	roh	rm	est	iso2
 language	ron	rumeenia	est	descrip
 language	ron	rumeenia	est	wordweb
 language	ron	rumeenia keel	est	full
@@ -602,6 +702,10 @@ language	qaw	saami	est	descrip
 language	qaw	saami	est	wordweb
 language	qaw	saami keel	est	full
 language	qaw	qaw	est	iso2
+language	smo	samoa	est	descrip
+language	smo	samoa	est	wordweb
+language	smo	samoa keel	est	full
+language	smo	sm	est	iso2
 language	srh	sarikoli	est	descrip
 language	srh	sarikoli	est	wordweb
 language	srh	sarikoli keel	est	full
@@ -682,6 +786,10 @@ language	ces	tšehhi	est	descrip
 language	ces	tšehhi	est	wordweb
 language	ces	tšehhi keel	est	full
 language	ces	cs	est	iso2
+language	chr	tšerokii	est	descrip
+language	chr	tšerokii	est	wordweb
+language	chr	tšerokii keel	est	full
+language	chr	chr	est	iso2
 language	ckt	tšuktši	est	descrip
 language	ckt	tšuktši	est	wordweb
 language	ckt	tšuktši keel	est	full
@@ -694,10 +802,18 @@ language	qax	tupi-guaranii	est	descrip
 language	qax	tupi-guaranii	est	wordweb
 language	qax	tupi-guaranii keel	est	full
 language	qax	qax	est	iso2
+language	tpw	tupii	est	descrip
+language	tpw	tupii	est	wordweb
+language	tpw	tupii keel	est	full
+language	tpw	tpw	est	iso2
 language	tur	türgi	est	descrip
 language	tur	türgi	est	wordweb
 language	tur	türgi keel	est	full
 language	tur	tr	est	iso2
+language	ota	türgi (osmani)	est	descrip
+language	ota	türgi (osmani)	est	wordweb
+language	ota	türgi (osmani) keel	est	full
+language	ota	ota	est	iso2
 language	qbj	turgi keeled	est	descrip
 language	qbj	turgi keeled	est	wordweb
 language	qbj	turgi keeled	est	full
@@ -718,6 +834,10 @@ language	ukr	ukraina	est	descrip
 language	ukr	ukraina	est	wordweb
 language	ukr	ukraina	est	full
 language	ukr	uk	est	iso2
+language	umb	umbundu	est	descrip
+language	umb	umbundu	est	wordweb
+language	umb	umbundu	est	full
+language	umb	umb	est	iso2
 language	hun	ungari	est	descrip
 language	hun	ungari	est	wordweb
 language	hun	ungari keel	est	full
@@ -726,6 +846,10 @@ language	urd	urdu	est	descrip
 language	urd	urdu	est	wordweb
 language	urd	urdu keel	est	full
 language	urd	ur	est	iso2
+language	uzb	usbeki	est	descrip
+language	uzb	usbeki	est	wordweb
+language	uzb	usbeki keel	est	full
+language	uzb	uz	est	iso2
 language	qay	uurali	est	descrip
 language	qay	uurali	est	wordweb
 language	qay	uurali	est	full
@@ -774,6 +898,14 @@ language	fro	vanaprantsuse	est	descrip
 language	fro	vanaprantsuse	est	wordweb
 language	fro	vanaprantsuse keel	est	full
 language	fro	fro	est	iso2
+language	non	vanapõhja	est	descrip
+language	non	vanapõhja	est	wordweb
+language	non	vanapõhja keel	est	full
+language	non	non	est	iso2
+language	peo	vanapärsia	est	descrip
+language	peo	vanapärsia	est	wordweb
+language	peo	vanapärsia keel	est	full
+language	peo	peo	est	iso2
 language	qbg	vanarootsi	est	descrip
 language	qbg	vanarootsi	est	wordweb
 language	qbg	vanarootsi keel	est	full
@@ -846,14 +978,24 @@ language	swe	Swedish	eng	descrip
 language	swe	Swedish	eng	wordweb
 language	bod	Tibetan	eng	descrip
 language	bod	Tibetan	eng	wordweb
+language	abe	Abenaki	eng	descrip
+language	abe	Abenaki	eng	wordweb
 language	abk	Abkhaz	eng	descrip
 language	abk	Abkhaz	eng	wordweb
+language	akk	Akkadian	eng	descrip
+language	akk	Akkadian	eng	wordweb
 language	sqi	Albanian	eng	descrip
 language	sqi	Albanian	eng	wordweb
+language	amh	Amharic	eng	descrip
+language	amh	Amharic	eng	wordweb
 language	ara	Arabic	eng	descrip
 language	ara	Arabic	eng	wordweb
+language	arc	Aramean	eng	descrip
+language	arc	Aramean	eng	wordweb
 language	arw	Arawak	eng	descrip
 language	arw	Arawak	eng	wordweb
+language	auf	Arawan	eng	descrip
+language	auf	Arawan	eng	wordweb
 language	qbk	Australian languages	eng	descrip
 language	qbk	Australian languages	eng	wordweb
 language	ave	Avesta	eng	descrip
@@ -874,8 +1016,14 @@ language	ben	Bengal	eng	descrip
 language	ben	Bengal	eng	wordweb
 language	ber	Berber	eng	descrip
 language	ber	Berber	eng	wordweb
+language	bre	Breton	eng	descrip
+language	bre	Breton	eng	wordweb
+language	car	Caribbean	eng	descrip
+language	car	Caribbean	eng	wordweb
 language	chg	Chagatai	eng	descrip
 language	chg	Chagatai	eng	wordweb
+language	chr	Cherokee	eng	descrip
+language	chr	Cherokee	eng	wordweb
 language	ckt	Chukchi	eng	descrip
 language	ckt	Chukchi	eng	wordweb
 language	qam	Church Latin	eng	descrip
@@ -892,6 +1040,8 @@ language	myv	Erzya	eng	descrip
 language	myv	Erzya	eng	wordweb
 language	qaf	Estonian and Votic	eng	descrip
 language	qaf	Estonian and Votic	eng	wordweb
+language	ewe	Ewe	eng	descrip
+language	ewe	Ewe	eng	wordweb
 language	qac	Finno-Ugric	eng	descrip
 language	qac	Finno-Ugric	eng	wordweb
 language	qag	Frankish (Old Franconian, Old Frankish)	eng	descrip
@@ -906,6 +1056,8 @@ language	got	Gothic	eng	descrip
 language	got	Gothic	eng	wordweb
 language	kal	Greenlandic	eng	descrip
 language	kal	Greenlandic	eng	wordweb
+language	gug	Guarani	eng	descrip
+language	gug	Guarani	eng	wordweb
 language	haw	Hawaiian	eng	descrip
 language	haw	Hawaiian	eng	wordweb
 language	heb	Hebrew	eng	descrip
@@ -914,14 +1066,24 @@ language	hun	Hungarian	eng	descrip
 language	hun	Hungarian	eng	wordweb
 language	isl	Icelandic	eng	descrip
 language	isl	Icelandic	eng	wordweb
+language	ibo	Igbo	eng	descrip
+language	ibo	Igbo	eng	wordweb
 language	ind	Indonesian	eng	descrip
 language	ind	Indonesian	eng	wordweb
+language	iku	Inuktituti	eng	descrip
+language	iku	Inuktituti	eng	wordweb
 language	ita	Italian	eng	descrip
 language	ita	Italian	eng	wordweb
+language	kab	Kabardian	eng	descrip
+language	kab	Kabardian	eng	wordweb
+language	xas	Kamassian	eng	descrip
+language	xas	Kamassian	eng	wordweb
 language	krl	Karelian	eng	descrip
 language	krl	Karelian	eng	wordweb
 language	kaz	Kazakh	eng	descrip
 language	kaz	Kazakh	eng	wordweb
+language	keb	Kélé	eng	descrip
+language	keb	Kélé	eng	wordweb
 language	naq	Khoekhoe (Nama, Hottentot)	eng	descrip
 language	naq	Khoekhoe (Nama, Hottentot)	eng	wordweb
 language	kmb	Kimbundu (North Mbundu)	eng	descrip
@@ -934,6 +1096,8 @@ language	kom	Komi	eng	descrip
 language	kom	Komi	eng	wordweb
 language	kon	Kongo	eng	descrip
 language	kon	Kongo	eng	wordweb
+language	aem	Krik	eng	descrip
+language	aem	Krik	eng	wordweb
 language	qah	Late Greek	eng	descrip
 language	qah	Late Greek	eng	wordweb
 language	qai	Late Latin	eng	descrip
@@ -944,12 +1108,22 @@ language	liv	Livonian	eng	descrip
 language	liv	Livonian	eng	wordweb
 language	qab	Low German	eng	descrip
 language	qab	Low German	eng	wordweb
+language	lud	Lydian	eng	descrip
+language	lud	Lydian	eng	wordweb
+language	mlg	Malagasy	eng	descrip
+language	mlg	Malagasy	eng	wordweb
 language	msa	Malay	eng	descrip
 language	msa	Malay	eng	wordweb
 language	mal	Malayalam	eng	descrip
 language	mal	Malayalam	eng	wordweb
+language	mns	Mansi	eng	descrip
+language	mns	Mansi	eng	wordweb
+language	arn	Mapuche	eng	descrip
+language	arn	Mapuche	eng	wordweb
 language	chm	Mari	eng	descrip
 language	chm	Mari	eng	wordweb
+language	myn	Mayan	eng	descrip
+language	myn	Mayan	eng	wordweb
 language	qat	Medical Latin	eng	descrip
 language	qat	Medical Latin	eng	wordweb
 language	qaa	Medieval Greek	eng	descrip
@@ -958,6 +1132,8 @@ language	qak	Medieval Latin	eng	descrip
 language	qak	Medieval Latin	eng	wordweb
 language	mic	Micmac	eng	descrip
 language	mic	Micmac	eng	wordweb
+language	ltc	Middle Chineseh	eng	descrip
+language	ltc	Middle Chinese	eng	wordweb
 language	dum	Middle Dutch	eng	descrip
 language	dum	Middle Dutch	eng	wordweb
 language	frm	Middle French	eng	descrip
@@ -972,16 +1148,34 @@ language	mon	Mongolian	eng	descrip
 language	mon	Mongolian	eng	wordweb
 language	nah	Nahuatl	eng	descrip
 language	nah	Nahuatl	eng	wordweb
+language	xnt	Narragansett	eng	descrip
+language	xnt	Narragansett	eng	wordweb
+language	neg	Negidal	eng	descrip
+language	neg	Negidal	eng	wordweb
+language	yrk	Nenets	eng	descrip
+language	yrk	Nenets	eng	wordweb
+language	nep	Nepal	eng	descrip
+language	nep	Nepal	eng	wordweb
 language	qaz	New Greek	eng	descrip
 language	qaz	New Greek	eng	wordweb
 language	qba	New Latin / Neo-Latin	eng	descrip
 language	qba	New Latin / Neo-Latin	eng	wordweb
+language	nio	Nganassan	eng	descrip
+language	nio	Nganassan	eng	wordweb
+language	nor	Norwegian	eng	descrip
+language	nor	Norwegian	eng	wordweb
 language	chu	Old Church Slavonic	eng	descrip
 language	chu	Old Church Slavonic	eng	wordweb
+language	oji	Ojibwa	eng	descrip
+language	oji	Ojibwa	eng	wordweb
 language	fro	Old French	eng	descrip
 language	fro	Old French	eng	wordweb
 language	goh	Old High German	eng	descrip
 language	goh	Old High German	eng	wordweb
+language	non	Old Norse	eng	descrip
+language	non	Old Norse	eng	wordweb
+language	peo	Old Persian	eng	descrip
+language	peo	Old Persian	eng	wordweb
 language	qbi	Old Russian	eng	descrip
 language	qbi	Old Russian	eng	wordweb
 language	qbf	Old Saxon	eng	descrip
@@ -990,16 +1184,30 @@ language	qbg	Old Swedish	eng	descrip
 language	qbg	Old Swedish	eng	wordweb
 language	qbh	Old Turkish	eng	descrip
 language	qbh	Old Turkish	eng	wordweb
+language	oac	Oroch	eng	descrip
+language	oac	Oroch	eng	wordweb
+language	oss	Ossetian	eng	descrip
+language	oss	Ossetian	eng	wordweb
 language	fas	Persian	eng	descrip
 language	fas	Persian	eng	wordweb
 language	pim	Powhatan	eng	descrip
 language	pim	Powhatan	eng	wordweb
 language	que	Quechua	eng	descrip
 language	que	Quechua	eng	wordweb
+language	roh	Rhaeto-Romance	eng	descrip
+language	roh	Rhaeto-Romance	eng	wordweb
+language	rom	Romani	eng	descrip
+language	rom	Romani	eng	wordweb
 language	ron	Romanian	eng	descrip
 language	ron	Romanian	eng	wordweb
 language	qaw	Sami	eng	descrip
 language	qaw	Sami	eng	wordweb
+language	smo	Samoan	eng	descrip
+language	smo	Samoan	eng	wordweb
+language	srh	Sarikoli	eng	descrip
+language	srh	Sarikoli	eng	wordweb
+language	dak	Sioux	eng	descrip
+language	dak	Sioux	eng	wordweb
 language	swa	Swahili	eng	descrip
 language	swa	Swahili	eng	wordweb
 language	syr	Syrian	eng	descrip
@@ -1018,22 +1226,30 @@ language	tha	Thai	eng	descrip
 language	tha	Thai	eng	wordweb
 language	ton	Tongan	eng	descrip
 language	ton	Tongan	eng	wordweb
+language	tpw	Tupi	eng	descrip
+language	tpw	Tupi	eng	wordweb
 language	qax	Tupi-Guarani	eng	descrip
 language	qax	Tupi-Guarani	eng	wordweb
 language	qbj	Turkic	eng	descrip
 language	qbj	Turkic	eng	wordweb
 language	tur	Turkish	eng	descrip
 language	tur	Turkish	eng	wordweb
+language	ota	Turkish (Ottoman)	eng	descrip
+language	ota	Turkish (Ottoman)	eng	wordweb
 language	udm	Udmurt	eng	descrip
 language	udm	Udmurt	eng	wordweb
 language	uig	Uighur	eng	descrip
 language	uig	Uighur	eng	wordweb
 language	ukr	Ukrainian	eng	descrip
 language	ukr	Ukrainian	eng	wordweb
+language	umb	Umbundu	eng	descrip
+language	umb	Umbundu	eng	wordweb
 language	qay	Uralic	eng	descrip
 language	qay	Uralic	eng	wordweb
 language	urd	Urdu	eng	descrip
 language	urd	Urdu	eng	wordweb
+language	uzb	Uzbek	eng	descrip
+language	uzb	Uzbek	eng	wordweb
 language	vep	Vepsian	eng	descrip
 language	vep	Vepsian	eng	wordweb
 language	vie	Vietnamese	eng	descrip
@@ -1044,8 +1260,12 @@ language	qav	Vulgar Latin	eng	descrip
 language	qav	Vulgar Latin	eng	wordweb
 language	cym	Welsh	eng	descrip
 language	cym	Welsh	eng	wordweb
+language	ydg	Yidgha	eng	descrip
+language	ydg	Yidgha	eng	wordweb
 language	yid	Yidish	eng	descrip
 language	yid	Yidish	eng	wordweb
+language	yor	Yoruba	eng	descrip
+language	yor	Yoruba	eng	wordweb
 language	zul	Zulu	eng	descrip
 language	zul	Zulu	eng	wordweb
 lex_rel_type	comp	liitsõna	est	full
