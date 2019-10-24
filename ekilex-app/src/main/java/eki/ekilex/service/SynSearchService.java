@@ -46,21 +46,11 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<SynRelationParamTuple> relationTuples =
 				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
 		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
-		relations.forEach(relation -> populateRelation(relation));
 
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
 
 		return wordDetails;
-	}
-
-	private void populateRelation(SynRelation relation) {
-		Integer existingHomonymsCount = synSearchDbService.getExistingFormOtherHomonymsCount(relation.getWord(), relation.getHomonymNumber());
-		relation.setOtherHomonymsExist(existingHomonymsCount > 0);
-
-		String firstDefinition = synSearchDbService.getFirstDetailedDefinition(relation.getOppositeWordId());
-		relation.setDefinition(firstDefinition);
-
 	}
 
 	private void populateSynLexeme(WordSynLexeme lexeme, String language) {

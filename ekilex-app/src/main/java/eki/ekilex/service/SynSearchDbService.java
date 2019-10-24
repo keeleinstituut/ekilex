@@ -16,6 +16,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +45,13 @@ public class SynSearchDbService extends AbstractSearchDbService {
 	public List<SynRelationParamTuple> getWordSynRelations(Long wordId, String relationType, String classifierLabelLang, String classifierLabelTypeCode) {
 		WordRelation opposite = WORD_RELATION.as("opposite");
 
+		Table homonymCount = create.select(FORM.VALUE, WORD.HOMONYM_NR)
+				.from(FORM, PARADIGM, WORD)
+				.where(FORM.PARADIGM_ID.eq(PARADIGM.ID)
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.asTable("homonymCount");
+
 		return create
 				.selectDistinct(
 						WORD_RELATION.ID.as("relation_id"),
@@ -55,20 +63,33 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						opposite.RELATION_STATUS.as("opposite_relation_status"),
 						WORD_RELATION_PARAM.NAME.as("param_name"),
 						WORD_RELATION_PARAM.VALUE.as("param_value"),
-						WORD_RELATION.ORDER_BY.as("order_by"))
+						WORD_RELATION.ORDER_BY.as("order_by"),
+						DEFINITION.VALUE.as("definition_value"),
+						DEFINITION.ORDER_BY.as("definition_order"),
+						homonymCount.field("homonym_nr").as("other_homonym_number"),
+						LEXEME.LEVEL1, LEXEME.LEVEL2
+						)
 				.from(
 						WORD_RELATION.leftOuterJoin(WORD_REL_TYPE_LABEL).on(
 								WORD_RELATION.WORD_REL_TYPE_CODE.eq(WORD_REL_TYPE_LABEL.CODE)
 										.and(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
 												.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
 								.leftOuterJoin(opposite)
-								.on(opposite.WORD2_ID.eq(WORD_RELATION.WORD1_ID))
-								.and(opposite.WORD1_ID.eq(WORD_RELATION.WORD2_ID)
+								.on (opposite.WORD2_ID.eq(WORD_RELATION.WORD1_ID)
+										.and(opposite.WORD1_ID.eq(WORD_RELATION.WORD2_ID)
 										.and(opposite.WORD_REL_TYPE_CODE.eq(WORD_RELATION.WORD_REL_TYPE_CODE)))
-								.leftOuterJoin(WORD_RELATION_PARAM).on(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(WORD_RELATION.ID)),
+								)
+								.leftOuterJoin(WORD_RELATION_PARAM).on(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(WORD_RELATION.ID))
+								.leftOuterJoin(LEXEME).on(LEXEME.WORD_ID.eq(WORD_RELATION.WORD2_ID))
+								.leftOuterJoin(MEANING).on(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID).and(DEFINITION.COMPLEXITY.like("DETAIL%")))
+						,
 						WORD,
 						PARADIGM,
-						FORM)
+						FORM
+							.leftOuterJoin(homonymCount).on(homonymCount.field("value", String.class).eq(FORM.VALUE))
+
+				)
 				.where(
 						WORD_RELATION.WORD1_ID.eq(wordId)
 								.and(WORD_RELATION.WORD2_ID.eq(WORD.ID))
@@ -76,7 +97,11 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType))
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.orderBy(WORD_RELATION.ORDER_BY)
+				.orderBy(
+						WORD_RELATION.ORDER_BY,
+						LEXEME.LEVEL1, LEXEME.LEVEL2,
+						DEFINITION.ORDER_BY
+				)
 				.fetchInto(SynRelationParamTuple.class);
 	}
 
@@ -184,6 +209,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynMeaningWord.class);
 	}
 
+	@Deprecated
 	public Integer getExistingFormOtherHomonymsCount(String formValue, Integer existingHomonym) {
 		return create
 				.select(DSL.count(DSL.val(1)))
@@ -198,6 +224,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchSingleInto(Integer.class);
 	}
 
+	@Deprecated
 	public String getFirstDetailedDefinition(Long wordId) {
 		Record1<String> result = create
 				.select(DEFINITION.VALUE)
@@ -208,7 +235,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 							.and(DEFINITION.MEANING_ID.eq(MEANING.ID))
 							.and(DEFINITION.COMPLEXITY.like("DETAIL%"))
 						)
-				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, DEFINITION.ORDER_BY)
+				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, DEFINITION.ORDER_BY)
 				.limit(1)
 				.fetchOne();
 		return  result != null ? result.into(String.class) : null;
