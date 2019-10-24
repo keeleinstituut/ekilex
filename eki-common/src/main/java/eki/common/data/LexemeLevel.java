@@ -1,12 +1,10 @@
-package eki.ekilex.data;
+package eki.common.data;
 
-public interface WordLexemeLevelCalc {
+public interface LexemeLevel {
 
 	Integer getLevel1();
 
 	Integer getLevel2();
-
-	Integer getLevel3();
 
 	void setLevels(String levels);
 

@@ -293,7 +293,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		lexeme.setMeaningId(meaningId);
 		lexeme.setLevel1(wordData.level1);
 		lexeme.setLevel2(1);
-		lexeme.setLevel3(1);
 		lexeme.setFrequencyGroupCode(wordData.frequencyGroup);
 		wordData.level1++;
 		Long lexemeId = createLexemeIfNotExists(lexeme);
@@ -393,7 +392,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						lexeme.setMeaningId(meaningId);
 						lexeme.setLevel1(lexemeLevel1);
 						lexeme.setLevel2(1);
-						lexeme.setLevel3(1);
 						lexemeId = createLexemeIfNotExists(lexeme);
 					} else {
 						meaningId = (Long) existingLexeme.getMeaningId();
@@ -426,7 +424,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						russianLexeme.setMeaningId(meaningId);
 						russianLexeme.setLevel1(russianWordData.level1);
 						russianLexeme.setLevel2(1);
-						russianLexeme.setLevel3(1);
 						Long russianLexemeId = createLexemeIfNotExists(russianLexeme);
 						russianWordData.level1++;
 						if (russianLexemeId != null) {
@@ -576,14 +573,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 					processDomains(meaningGroupNode, meaningId, additionalDomains);
 
-					int lexemeLevel3 = 1;
 					for (WordData newWordData : newWords) {
 						Lexeme lexeme = new Lexeme();
 						lexeme.setWordId(newWordData.id);
 						lexeme.setMeaningId(meaningId);
 						lexeme.setLevel1(lexemeLevel1);
 						lexeme.setLevel2(lexemeLevel2);
-						lexeme.setLevel3(lexemeLevel3);
 						Long lexemeId = createLexemeIfNotExists(lexeme);
 						if (lexemeId != null) {
 							// FIXME: add usages and subword relations only to first lexeme on the second level
@@ -660,7 +655,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setMeaningId(meaningId);
 			lexeme.setLevel1(russianWord.level1);
 			lexeme.setLevel2(1);
-			lexeme.setLevel3(1);
 			lexeme.setCorpusFrequency(russianWordData.corpFrequency);
 			Long lexemeId = createLexemeIfNotExists(lexeme);
 			russianWord.level1++;
@@ -748,7 +742,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								lexeme.setMeaningId(meaningId);
 								lexeme.setLevel1(wordData.level1);
 								lexeme.setLevel2(1);
-								lexeme.setLevel3(1);
 								wordData.level1++;
 
 								Long lexemeId = createLexemeIfNotExists(lexeme);
@@ -791,7 +784,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 									russianLexeme.setMeaningId(meaningId);
 									russianLexeme.setLevel1(russianWordData.level1);
 									russianLexeme.setLevel2(1);
-									russianLexeme.setLevel3(1);
 									russianLexemeId = createLexemeIfNotExists(russianLexeme);
 									russianWordData.level1++;
 								}
@@ -1123,7 +1115,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		Map<String, Object> params = new HashMap<>();
 		params.put("wordId", wordId);
 		params.put("datasetCode", getDataset());
-		String sqlQueryStr = "select * from " + LEXEME + " where word_id = :wordId and dataset_code = :datasetCode order by level1, level2, level3";
+		String sqlQueryStr = "select * from " + LEXEME + " where word_id = :wordId and dataset_code = :datasetCode order by level1, level2";
 		List<Lexeme> lexemes = basicDbService.getResults(sqlQueryStr, params, new LexemeRowMapper());
 		return lexemes;
 	}

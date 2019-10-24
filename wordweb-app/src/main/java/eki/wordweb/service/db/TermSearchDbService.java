@@ -100,7 +100,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						ds.NAME.as("dataset_name"),
 						l.LEVEL1,
 						l.LEVEL2,
-						l.LEVEL3,
 						l.COMPLEXITY,
 						l.LEX_ORDER_BY,
 						l.REGISTER_CODES,
@@ -120,7 +119,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.orderBy(
 						l.LEVEL1,
 						l.LEVEL2,
-						l.LEVEL3,
 						l.LEX_ORDER_BY)
 				.fetch()
 				.into(Lexeme.class);

@@ -57,27 +57,27 @@ update word_relation set relation_status = 'PROCESSED' where relation_status = '
 
 create table semantic_type
 (
-	code varchar(100) primary key,
-	datasets varchar(10) array not null,
-	order_by bigserial
+  code varchar(100) primary key,
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table semantic_type_label
 (
-	code varchar(100) references semantic_type(code) on delete cascade not null,
-	value text not null,
-	lang char(3) references language(code) not null,
-	type varchar(10) references label_type(code) not null,
-	unique(code, lang, type)
+  code varchar(100) references semantic_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references language(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
 );
 
 create table meaning_semantic_type
 (
-	id bigserial primary key,
-	meaning_id bigint references meaning(id) on delete cascade not null,
-	semantic_type_code varchar(100) references semantic_type(code) not null,
-	order_by bigserial,
-	unique(meaning_id, semantic_type_code)
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  semantic_type_code varchar(100) references semantic_type(code) not null,
+  order_by bigserial,
+  unique(meaning_id, semantic_type_code)
 );
 alter sequence meaning_semantic_type_id_seq restart with 10000;
 
@@ -580,16 +580,20 @@ insert into meaning_rel_mapping (code1, code2) values ('ainikmõiste', 'üldmõi
 begin;
 
 alter table definition_dataset
-  drop constraint definition_dataset_dataset_code_fkey;
+drop constraint definition_dataset_dataset_code_fkey;
 
 alter table definition_dataset
-  add constraint definition_dataset_dataset_code_fkey
-    foreign key (dataset_code)
-      references dataset (code)
-      on update no action
-      on delete cascade;
+add constraint definition_dataset_dataset_code_fkey
+foreign key (dataset_code)
+references dataset (code)
+on update no action
+on delete cascade;
 
 commit;
+
+-- 23.10.2019 (level3 has been removed from views, recreate or delete views before running this)
+alter table lexeme
+drop column level3;
 
 -- 22.10.19
 create index lifecycle_log_event_by_idx on lifecycle_log(event_by);

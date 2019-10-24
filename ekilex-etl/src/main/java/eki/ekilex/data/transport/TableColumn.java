@@ -12,7 +12,13 @@ public class TableColumn extends AbstractDataObject {
 
 	private String dataType;
 
+	private Integer charMaxLength;
+
 	private boolean primaryKey;
+
+	private boolean nullable;
+
+	private boolean defaultExists;
 
 	private String fkTableName;
 
@@ -42,12 +48,36 @@ public class TableColumn extends AbstractDataObject {
 		this.dataType = dataType;
 	}
 
+	public Integer getCharMaxLength() {
+		return charMaxLength;
+	}
+
+	public void setCharMaxLength(Integer charMaxLength) {
+		this.charMaxLength = charMaxLength;
+	}
+
 	public boolean isPrimaryKey() {
 		return primaryKey;
 	}
 
 	public void setPrimaryKey(boolean primaryKey) {
 		this.primaryKey = primaryKey;
+	}
+
+	public boolean isNullable() {
+		return nullable;
+	}
+
+	public void setNullable(boolean nullable) {
+		this.nullable = nullable;
+	}
+
+	public boolean isDefaultExists() {
+		return defaultExists;
+	}
+
+	public void setDefaultExists(boolean defaultExists) {
+		this.defaultExists = defaultExists;
 	}
 
 	public String getFkTableName() {

@@ -180,7 +180,6 @@
                           th:data-id="${lexeme.lexemeId}"
                           th:data-level1="${lexeme.level1}"
                           th:data-level2="${lexeme.level2}"
-                          th:data-level3="${lexeme.level3}"
                           class="px-2 py-0 bg-light rounded font-weight-bold mr-2" th:text="${lexeme.levels}">
                   </span>
                     <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
@@ -223,7 +222,6 @@
                         th:data-id="${lexeme.lexemeId}"
                         th:data-level1="${lexeme.level1}"
                         th:data-level2="${lexeme.level2}"
-                        th:data-level3="${lexeme.level3}"
                         data-toggle="modal"
                         th:data-target="${'#editLexemeLevelsDlg_' + lexeme.lexemeId}"
                         sec:authorize="#vars.isLexemeCrudGranted">

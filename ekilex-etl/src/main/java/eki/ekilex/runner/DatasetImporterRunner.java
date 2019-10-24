@@ -185,7 +185,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		String targetDatasetCode = context.getTargetDatasetCode();
 
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForImport().get(tableName);
-		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMap().get(tableName);
+		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMapForImport().get(tableName);
 		boolean queueExists = queueId != null;
 
 		FkReassignResult fkReassignResult = reassignFks(importCode, sourceDatasetCode, targetDatasetCode, dataMap, tableColumnsMap);
@@ -223,24 +223,25 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 	private void handleReferringData(Context context, String tableName, Map<String, Object> dataMap) throws Exception {
 
-		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMap().get(tableName);
-		if (CollectionUtils.isEmpty(referringForeignKeys)) {
+		List<String> referringTableNames = transportService.getReferringTableNamesMapForImport().get(tableName);
+		if (CollectionUtils.isEmpty(referringTableNames)) {
 			return;
 		}
 		List<String> supportedTableNames = transportService.getImportTableNames();
-		for (ForeignKey referringForeignKey : referringForeignKeys) {
-			String fkTableName = referringForeignKey.getFkTableName();
-			if (!supportedTableNames.contains(fkTableName)) {
+		for (String referringTableName : referringTableNames) {
+			if (!supportedTableNames.contains(referringTableName)) {
 				continue;
 			}
-			Object referringData = dataMap.get(fkTableName);
-			extractTablesData(context, fkTableName, referringData, null);
+			Object referringData = dataMap.get(referringTableName);
+			extractTablesData(context, referringTableName, referringData, null);
 		}
 	}
 
 	private void handleNestedData(Context context, String tableName, Map<String, Object> dataMap) throws Exception {
 
+		List<String> supportedTableNames = transportService.getImportTableNames();
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForImport().get(tableName);
+		List<String> referredTableNames = transportService.getReferredTableNames(tableColumnsMap);
 
 		for (Entry<String, Object> dataEntry : dataMap.entrySet()) {
 			Object dataColumnValue = dataEntry.getValue();
@@ -248,7 +249,9 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 				continue;
 			}
 			String dataColumnName = dataEntry.getKey();
-			boolean isNestedData = !tableColumnsMap.containsKey(dataColumnName);
+			boolean isNestedData = !tableColumnsMap.containsKey(dataColumnName)
+					&& referredTableNames.contains(dataColumnName)
+					&& supportedTableNames.contains(dataColumnName);
 			if (isNestedData) {
 				extractTablesData(context, dataColumnName, dataColumnValue, null);
 			}

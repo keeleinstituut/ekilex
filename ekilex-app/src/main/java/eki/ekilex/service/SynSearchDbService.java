@@ -91,8 +91,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				LEXEME.DATASET_CODE.as("dataset"),
 				LEXEME.TYPE,
 				LEXEME.LEVEL1,
-				LEXEME.LEVEL2,
-				LEXEME.LEVEL3)
+				LEXEME.LEVEL2)
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
 				.where(
 						WORD.ID.eq(wordId)
@@ -105,7 +104,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
 								.and(dsWhere))
 				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
-				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2)
 				.fetchInto(WordSynLexeme.class);
 	}
 
@@ -119,10 +118,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 	public void createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Long existingLexemeId) {
 		create.insertInto(LEXEME,
 				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
-				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
 				LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 				.select(DSL.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode), DSL.val(lexemeType.name()),
-						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
 						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(existingLexemeId)))

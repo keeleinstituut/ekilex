@@ -157,17 +157,6 @@ public class CompositionDbService implements DbConstant {
 				.fetch();
 	}
 
-	public List<LexemeRecord> getLexemesWithHigherLevel3(Long wordId, Integer level1, Integer level2, Integer level3) {
-		return create
-				.selectFrom(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.LEVEL1.eq(level1))
-						.and(LEXEME.LEVEL2.eq(level2))
-						.and(LEXEME.LEVEL3.gt(level3))
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.fetch();
-	}
-
 	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
 
 		Lexeme l1 = LEXEME.as("l1");
@@ -778,13 +767,12 @@ public class CompositionDbService implements DbConstant {
 				.fetchOneInto(Integer.class);
 	}
 
-	public void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2, int level3) {
+	public void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2) {
 
 		create.update(LEXEME)
 				.set(LEXEME.WORD_ID, wordId)
 				.set(LEXEME.LEVEL1, level1)
 				.set(LEXEME.LEVEL2, level2)
-				.set(LEXEME.LEVEL3, level3)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
@@ -825,14 +813,6 @@ public class CompositionDbService implements DbConstant {
 
 		create.update(LEXEME)
 				.set(LEXEME.LEVEL2, level2)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void updateLexemeLevel3(Long lexemeId, Integer level3) {
-
-		create.update(LEXEME)
-				.set(LEXEME.LEVEL3, level3)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}

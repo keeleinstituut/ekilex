@@ -477,7 +477,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		lexeme.setMeaningId(meaningId);
 		lexeme.setLevel1(level1);
 		lexeme.setLevel2(level2);
-		lexeme.setLevel3(1);
 		lexeme.setFrequencyGroupCode(wordData.frequencyGroup);
 		Long lexemeId = createLexemeIfNotExists(lexeme);
 		if (!wordData.governments.isEmpty()) {
@@ -639,7 +638,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setMeaningId(meaningId);
 			lexeme.setLevel1(lexemeLevel1);
 			lexeme.setLevel2(lexemeLevel2);
-			lexeme.setLevel3(1);
 			lexeme.setFrequencyGroupCode(newWordData.frequencyGroup);
 			Long lexemeId = createLexemeIfNotExists(lexeme);
 			if (lexemeId != null) {

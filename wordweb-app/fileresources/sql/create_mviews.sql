@@ -138,7 +138,6 @@ dblink(
 	dataset_code varchar(10),
 	level1 integer,
 	level2 integer,
-	level3 integer,
 	complexity varchar(100),
 	lex_order_by bigint,
 	register_codes varchar(100) array,

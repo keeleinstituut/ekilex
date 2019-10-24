@@ -5,8 +5,9 @@ import java.util.List;
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
+import eki.common.data.LexemeLevel;
 
-public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevelCalc {
+public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -26,9 +27,6 @@ public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevel
 
 	@Column(name = "level2")
 	private Integer level2;
-
-	@Column(name = "level3")
-	private Integer level3;
 
 	private String levels;
 
@@ -66,14 +64,6 @@ public class WordSynLexeme extends AbstractDataObject implements WordLexemeLevel
 
 	public void setLevel2(Integer level2) {
 		this.level2 = level2;
-	}
-
-	public Integer getLevel3() {
-		return level3;
-	}
-
-	public void setLevel3(Integer level3) {
-		this.level3 = level3;
 	}
 
 	public String getLevels() {

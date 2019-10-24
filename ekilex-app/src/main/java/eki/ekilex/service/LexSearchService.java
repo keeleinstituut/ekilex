@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
@@ -46,7 +47,6 @@ import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.ProcessDbService;
-import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
 public class LexSearchService extends AbstractWordSearchService {
@@ -58,7 +58,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	private ProcessDbService processDbService;
 
 	@Autowired
-	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
+	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;
@@ -83,7 +83,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
 		lexemes.forEach(lexeme -> populateLexeme(lexeme, datasetNameMap));
-		lexemeLevelCalcUtil.combineLevels(lexemes);
+		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);
@@ -131,7 +131,7 @@ public class LexSearchService extends AbstractWordSearchService {
 						lexeme.setMeaningWords(meaningWords);
 						lexeme.setDefinitions(definitions);
 					});
-					lexemeLevelCalcUtil.combineLevels(wordLexemes);
+					lexemeLevelPreseUtil.combineLevels(wordLexemes);
 					lexemes.addAll(wordLexemes);
 				}
 			}

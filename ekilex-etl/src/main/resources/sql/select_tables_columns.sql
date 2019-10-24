@@ -1,10 +1,23 @@
 select col.table_name,
        col.column_name,
        col.data_type,
+       col.character_maximum_length,
        case
          when (col.column_name = pksubq.pk_column_name) then true
          else false
        end is_primary_key,
+       case
+         when col.is_nullable = 'YES' then true
+         when col.is_nullable = 'NO' then false
+       end is_nullable,
+       case
+         when col.column_default is not null then true
+         else false
+       end default_exists,
+       case
+         when col.column_default like 'nextval(%' then true
+         else false
+       end default_is_sequence,
        fksubq.fk_table_name,
        fksubq.fk_column_name
 from information_schema.columns col

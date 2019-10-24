@@ -290,7 +290,7 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 				Map<String, Object> maxLevelMap = basicDbService.queryForMap(sqlSelectWordLexemesMaxFirstLevel, paramMap);
 				Integer currentMaxLevel = (Integer) maxLevelMap.get("max");
 				int level1 = currentMaxLevel + 1;
-				updateLexemeWordIdAndLevels(secondWordLexemeId, firstWordId, level1, DEFAULT_LEXEME_LEVEL, DEFAULT_LEXEME_LEVEL);
+				updateLexemeWordIdAndLevels(secondWordLexemeId, firstWordId, level1, DEFAULT_LEXEME_LEVEL);
 			}
 		}
 	}
@@ -304,7 +304,7 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		return count == 0;
 	}
 
-	private void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2, int level3) throws Exception {
+	private void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2) throws Exception {
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("id", lexemeId);
@@ -313,7 +313,6 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		valueParamMap.put("word_id", wordId);
 		valueParamMap.put("level1", level1);
 		valueParamMap.put("level2", level2);
-		valueParamMap.put("level3", level3);
 
 		basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
 	}
