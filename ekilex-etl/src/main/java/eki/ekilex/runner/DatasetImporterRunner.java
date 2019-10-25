@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
+import eki.common.constant.LexemeType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
@@ -50,6 +51,8 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 	private static final String DATASET_TYPE_COMPENSATION = DatasetType.TERM.name();
 
 	private static final String LEXEME_COMPLEXITY_COMPENSATION = Complexity.DEFAULT.name();
+
+	private static final String LEXEME_TYPE_COMPENSATION = LexemeType.PRIMARY.name();
 
 	private static final String IMPORT_PK_MAP = "temp_ds_import_pk_map";
 
@@ -438,14 +441,20 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 	}
 
 	private Map<String, Object> compensateFieldsAndData(Context context, String tableName, Map<String, Object> dataMap) {
+
+		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForImport().get(tableName);
+
 		Map<String, Object> dataMapCopy = new HashMap<>(dataMap);
 		if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
-			if (!dataMapCopy.containsKey("type")) {
+			if (!dataMapCopy.containsKey("type") && tableColumnsMap.containsKey("type")) {
 				dataMapCopy.put("type", DATASET_TYPE_COMPENSATION);
 			}
 		} else if (StringUtils.equalsIgnoreCase(LEXEME, tableName)) {
-			if (!dataMapCopy.containsKey("complexity")) {
+			if (!dataMapCopy.containsKey("complexity") && tableColumnsMap.containsKey("complexity")) {
 				dataMapCopy.put("complexity", LEXEME_COMPLEXITY_COMPENSATION);
+			}
+			if (!dataMapCopy.containsKey("type") && tableColumnsMap.containsKey("type")) {
+				dataMapCopy.put("type", LEXEME_TYPE_COMPENSATION);
 			}
 		} else if (StringUtils.equalsIgnoreCase(DEFINITION, tableName)) {
 			String definitionValuePrese = (String) dataMap.get("value_prese");
