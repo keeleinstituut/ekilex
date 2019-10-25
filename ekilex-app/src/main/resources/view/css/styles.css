@@ -16573,4 +16573,14 @@ footer p {
 .ui-draggable-dragging {
   background: #fff;
 }
+
+.lexeme-list-item.ui-state-active {
+  color: #3f3f3f;
+  background: #a0dcf8;
+  border: 2px dotted #3173b8;
+}
+
+.lexeme-list-item.ui-state-active a {
+  color: inherit;
+}
 /*# sourceMappingURL=styles.css.map */

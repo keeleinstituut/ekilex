@@ -13,17 +13,19 @@ function initialise() {
 		$('.keyboard-nav-list').each(function (e) {
 			$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
 		});
-
-		let activatedList = $('div[data-panel-index="3"]');
-		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-		itemToSelect = activatedList.find('[data-navigate-index="0"]');
-		itemToSelect.addClass('keyboard-nav-list-item-active');
-		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
-		itemToSelect.find('button').focus();
+		activateList(3);
 
 		$(this).attr('disabled', true);
 
 	});
+
+	function activateList(listIndx, itemIndx=0){
+		let activatedList = $('div[data-panel-index="'+listIndx+'"]');
+		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
+		itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="'+itemIndx+'"]');
+		itemToSelect.addClass('keyboard-nav-list-item-active');
+		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
+	}
 
 	$(document).on("click", ".popover-close-btn" , function(){
 		$(this).parents(".popover").popover('hide');
@@ -98,6 +100,9 @@ function initialise() {
 				}
 			});
 
+			if(KEYBOARD_MODE){
+				activateList(3);
+			}
 
 		}).fail(function(data) {
 			console.log(data);
@@ -239,6 +244,8 @@ function initialise() {
 					newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
 					unActivateItem(currentSelectedItem, true);
+					$(currentActiveList).stop(true);
+					$(currentActiveList).scrollTo(newItem,320,{axis:'y'},{offset:-16},{queue:false});
 				}
 			}
 		}
@@ -302,7 +309,7 @@ function initialise() {
 		//Enter key
 		if (e.keyCode == 13) {
 			e.preventDefault();
-
+			//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
 			if (currentActivePanelIndex == "3") {
 
 				currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function () {$(this).removeClass('.keyboard-nav-list-item-selected');});
@@ -331,6 +338,7 @@ function initialise() {
 					let wordId = currentActiveList.data('marked-word-id'); //TODO move to a hidden field ? - add a marked attribute to the marked element
 					let relationId = currentActiveList.data('marked-relation-id'); //TODO Refactor
 
+					//IF
 					if (wordId != undefined) {
 
 						let lexemeId = currentSelectedItem.data('lexeme-id');
