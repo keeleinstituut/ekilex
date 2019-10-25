@@ -705,6 +705,10 @@ public class ConversionUtil implements DbConstant {
 
 		List<SynRelation> synRelations = new ArrayList<>();
 		Map<Long, SynRelation> relationMap = new HashMap<>();
+
+		List<String> relationParamNames = new ArrayList<>();
+
+		Integer otherHomonymNo = null;
 		for (SynRelationParamTuple paramTuple : synRelationParamTuples) {
 			SynRelation relation = relationMap.get(paramTuple.getRelationId());
 			if (relation == null) {
@@ -712,22 +716,36 @@ public class ConversionUtil implements DbConstant {
 				relation.setId(paramTuple.getRelationId());
 				relation.setWord(paramTuple.getWord());
 				relation.setWordId(paramTuple.getWordId());
+				relation.setOppositeWordId(paramTuple.getOppositeWordId());
 				relation.setOrderBy(paramTuple.getOrderBy());
 				relation.setRelationStatus(paramTuple.getRelationStatus());
+				relation.setHomonymNumber(paramTuple.getHomonymNumber());
+				relation.setDefinition(paramTuple.getDefinitionValue());
+
+				otherHomonymNo = paramTuple.getOtherHomonymNumber();
+
 				relation.setRelationParams(new ArrayList<>());
 				relationMap.put(relation.getId(), relation);
 				synRelations.add(relation);
+
+				relationParamNames.clear();
+			}
+
+			if (otherHomonymNo != paramTuple.getOtherHomonymNumber()) {
+				relation.setOtherHomonymsExist(true);
 			}
 
 			if (paramTuple.getOppositeRelationStatus() != null) {
 				relation.setOppositeRelationStatus(paramTuple.getOppositeRelationStatus());
 			}
 
-			if (StringUtils.isNotBlank(paramTuple.getParamName()) && StringUtils.isNotBlank(paramTuple.getParamValue())) {
+			if (StringUtils.isNotBlank(paramTuple.getParamName()) && !relationParamNames.contains(paramTuple.getParamName())) {
 				RelationParam param = new RelationParam();
 				param.setName(paramTuple.getParamName());
 				param.setValue(paramTuple.getParamValue());
 				relation.getRelationParams().add(param);
+
+				relationParamNames.add(param.getName());
 			}
 		}
 		return synRelations;

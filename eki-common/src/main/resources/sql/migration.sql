@@ -594,3 +594,9 @@ commit;
 -- 23.10.2019 (level3 has been removed from views, recreate or delete views before running this)
 alter table lexeme
 drop column level3;
+
+-- 22.10.19
+create index lifecycle_log_event_by_idx on lifecycle_log(event_by);
+
+-- 23.10.19
+create index definition_complexity_idx on definition(complexity);
