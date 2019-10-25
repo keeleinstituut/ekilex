@@ -66,8 +66,7 @@ function initialise() {
 				revert: "invalid",
 				appendTo:"body",
 				containment: "window",
-				helper: "clone",
-				handle: ".handle"
+				helper: "clone"
 			});
 
 			$(document).find('.droppable-lexeme').droppable({

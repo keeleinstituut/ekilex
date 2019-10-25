@@ -218,7 +218,7 @@
                       <div class="draggable-synonym   d-flex flex-row hover-actions-container align-items-center pl-1"
                            th:data-word-id="${synRelation.wordId}"
                            th:data-word="${synRelation.word}">
-                        <span class="px-2 handle drag-handle border-right border-light text-muted" data-toggle="tooltip" title="Lohista siit">
+                        <span class="px-2 handle drag-handle border-right border-light text-muted"  title="Lohista siit">
                           <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
                         </span>
                         <span th:if="${synRelation.relationStatus}" th:title="#{|relationstatus.${synRelation.relationStatus}|}"
@@ -228,11 +228,13 @@
                         <span th:unless="${synRelation.relationStatus}" title="Seos puudub"
                               data-toggle="tooltip" class="px-2"><i class="fa fa-exclamation-triangle text-muted"
                                                                     aria-hidden="true"></i></span>
+                        <div class="mr-auto pl-0 d-flex flex-row flex-nowrap align-items-center">
+                          <p  class="drag-handle py-2 pr-1 m-0" th:inline="text"  data-toggle="tooltip"
+                                 th:title="${synRelation.definition}">
+                            [[${synRelation.word}]] <sup th:if="${synRelation.otherHomonymsExist}" title="Homonüümi number" th:text="${synRelation.homonymNumber}">1</sup>
+                        </p>
+                        </div>
 
-                        <button type="button" class="btn btn-link mr-auto pl-0" th:text="${synRelation.word}" data-toggle="tooltip"
-                                th:title="${synRelation.definition}">
-                          Sünonüümi kandidaat
-                        </button>
                         <div class="hover-actions">
                           <button type="button" th:hidden="${relationIter.first}"
                                   class="btn btn-xs btn-secondary order-up "
@@ -255,7 +257,7 @@
                                   data-placement="right" title="Kustuta"><i class="fa fa-remove"
                                                                             aria-hidden="true"></i></button>
                         </div>
-                        <span th:if="${synRelation.otherHomonymsExist}" class="badge badge-light ml-2" data-toggle="tooltip" title="Homonüümi number" th:text="${synRelation.homonymNumber}"></span>
+
                         <button type="button" class="btn btn-sm px-0 syn-stats-popover" data-toggle="popover" th:data-title="${synRelation.word}"
                                 data-html="true">
                           <i class="fa fa-bar-chart action-icon px-2 d-block" aria-hidden="true" data-toggle="tooltip" data-placement="bottom"
