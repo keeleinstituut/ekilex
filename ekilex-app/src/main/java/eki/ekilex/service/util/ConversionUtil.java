@@ -729,6 +729,8 @@ public class ConversionUtil implements DbConstant {
 				synRelations.add(relation);
 
 				relationParamNames.clear();
+			} else if (StringUtils.isBlank(relation.getDefinition())) {
+				relation.setDefinition(paramTuple.getDefinitionValue());
 			}
 
 			if (otherHomonymNo != paramTuple.getOtherHomonymNumber()) {
