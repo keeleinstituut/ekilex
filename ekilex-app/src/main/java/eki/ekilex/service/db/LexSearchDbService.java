@@ -594,7 +594,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.select(
 						w2.ID.as("word_id"),
 						f2.VALUE,
-						w2.HOMONYM_NR,
+						w2.HOMONYM_NR.as("homonym_number"),
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"))
 				.from(l1, l2, w2, p2, f2)
