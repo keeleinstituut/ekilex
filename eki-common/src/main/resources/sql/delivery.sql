@@ -1,5 +1,47 @@
 -- upgrade from ver 1.8.0 to 1.9.0
 
+alter table lexeme add column type varchar(50);
+update lexeme set type = 'PRIMARY' where type is null;
+alter table lexeme alter column type set not null;
+create index lexeme_type_idx on lexeme(type);
+
+create index dataset_code_idx on dataset(code);
+create index dataset_type_idx on dataset(type);
+
+drop type if exists type_term_meaning_word;
+create type type_term_meaning_word as (word_id bigint, word text, homonym_nr integer, lang char(3), word_type_codes varchar(100) array, dataset_codes varchar(10) array, matching_word boolean);
+
+drop table if exists temp_ds_import_pk_map cascade;
+create table temp_ds_import_pk_map
+(
+  id bigserial primary key,
+  import_code varchar(100) not null,
+  created_on timestamp not null default statement_timestamp(),
+  table_name text not null,
+  source_pk bigint not null,
+  target_pk bigint not null
+);
+
+create index temp_ds_import_pk_map_import_code_idx on temp_ds_import_pk_map(import_code);
+create index temp_ds_import_pk_map_table_name_idx on temp_ds_import_pk_map(table_name);
+create index temp_ds_import_pk_map_source_pk_idx on temp_ds_import_pk_map(source_pk);
+create index temp_ds_import_pk_map_target_pk_idx on temp_ds_import_pk_map(target_pk);
+
+drop table if exists temp_ds_import_queue cascade;
+create table temp_ds_import_queue
+(
+  id bigserial primary key,
+  import_code varchar(100) not null,
+  created_on timestamp not null default statement_timestamp(),
+  table_name text not null,
+  content text not null  
+);
+
+create index temp_ds_import_queue_import_code_idx on temp_ds_import_queue(import_code);
+create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_name);
+
+update word_relation set relation_status = 'PROCESSED' where relation_status = 'CONFIRMED';
+
 begin;
 
 alter table definition_dataset
