@@ -42,7 +42,7 @@ public class SynSearchServiceTest extends AbstractTest {
 
 	@Test
 	public void testGetSynRelationsTuples() {
-		List<SynRelationParamTuple> paramTuples = synSearchDbService.getWordSynRelations(1003L, "raw", "est", "descrip");
+		List<SynRelationParamTuple> paramTuples = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", "est", "descrip");
 		List<SynRelation> relations = conversionUtil.composeSynRelations(paramTuples);
 
 		assertThat(relations.size()).isEqualTo(2);

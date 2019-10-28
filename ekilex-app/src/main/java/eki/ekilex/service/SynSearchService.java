@@ -1,6 +1,8 @@
 package eki.ekilex.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 import javax.transaction.Transactional;
 
@@ -34,17 +36,18 @@ public class SynSearchService extends AbstractWordSearchService {
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
-	public WordSynDetails getWordSynDetails(Long wordId, List<String> selectedDatasetCodes) {
+	public WordSynDetails getWordSynDetails(Long wordId, String datasetCode) {
 
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+		List datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction);
 		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, wordDetails.getLanguage()));
-		lexemeLevelPreseUtil.combineLevels(synLexemes);
+		lexemeLevelPreseUtil.combineLevels(synLexemes); //TODO check is this necessary ?
 
 		List<SynRelationParamTuple> relationTuples =
-				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, classifierLabelLang, classifierLabelTypeDescrip);
+				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
 
 		wordDetails.setLexemes(synLexemes);

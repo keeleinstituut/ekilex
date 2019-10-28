@@ -42,13 +42,15 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public List<SynRelationParamTuple> getWordSynRelations(Long wordId, String relationType, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<SynRelationParamTuple> getWordSynRelations(Long wordId, String relationType, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
 		WordRelation opposite = WORD_RELATION.as("opposite");
 
 		Table homonymCount = create.select(FORM.VALUE, WORD.HOMONYM_NR)
-				.from(FORM, PARADIGM, WORD)
+				.from(FORM, PARADIGM, WORD, LEXEME)
 				.where(FORM.PARADIGM_ID.eq(PARADIGM.ID)
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
 						.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.asTable("homonymCount");
 
@@ -80,7 +82,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 										.and(opposite.WORD_REL_TYPE_CODE.eq(WORD_RELATION.WORD_REL_TYPE_CODE)))
 								)
 								.leftOuterJoin(WORD_RELATION_PARAM).on(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(WORD_RELATION.ID))
-								.leftOuterJoin(LEXEME).on(LEXEME.WORD_ID.eq(WORD_RELATION.WORD2_ID))
+								.leftOuterJoin(LEXEME).on(LEXEME.WORD_ID.eq(WORD_RELATION.WORD2_ID).and(LEXEME.DATASET_CODE.eq(datasetCode)))
 								.leftOuterJoin(MEANING).on(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID).and(DEFINITION.COMPLEXITY.like("DETAIL%")))
 						,
