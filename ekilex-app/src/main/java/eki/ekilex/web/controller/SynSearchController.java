@@ -71,16 +71,16 @@ public class SynSearchController extends AbstractSearchController implements Sys
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
 
-		List<String> roleDatasetCode = getDatasetCodeFromRole(sessionBean);
+		String roleDatasetCode = getDatasetCodeFromRole(sessionBean);
+		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(roleDatasetCode));
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasetCode, simpleSearchFilter, detailSearchFilter);
+		String searchUri = searchHelper.composeSearchUri(searchMode, datasetCodeList, simpleSearchFilter, detailSearchFilter);
 		return "redirect:" + SYN_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(value = SYN_SEARCH_URI + "/**")
 	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
-		// if redirect from login arrives
 		initSearchForms(model);
 		resetUserRole(model);
 
@@ -126,7 +126,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("Requesting details by word {}", wordId);
 
-		List<String> dataSetCode = getDatasetCodeFromRole(sessionBean);
+		String dataSetCode = getDatasetCodeFromRole(sessionBean);
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, dataSetCode);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
@@ -135,12 +135,12 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
-	private List<String> getDatasetCodeFromRole(SessionBean sessionBean) {
+	private String getDatasetCodeFromRole(SessionBean sessionBean) {
 		DatasetPermission role = sessionBean.getUserRole();
 		if (role == null) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
 		}
-		return new ArrayList<>(Collections.singletonList(role.getDatasetCode()));
+		return role.getDatasetCode();
 	}
 
 
@@ -161,7 +161,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	public String createSynLexeme(@PathVariable Long meaningId, @PathVariable Long wordId, @PathVariable Long lexemeId, @PathVariable Long relationId, Model model) {
 		logger.debug("Adding lexeme to syn candidate word Id {}, meaning Id {} , existing lexeme Id {}, relation Id {}", wordId, meaningId, lexemeId, relationId);
 		SessionBean sessionBean = getSessionBean(model);
-		String datasetCode = getDatasetCodeFromRole(sessionBean).get(0);
+		String datasetCode = getDatasetCodeFromRole(sessionBean);
 
 		synSearchService.createSecondarySynLexeme(meaningId, wordId, datasetCode, lexemeId, relationId);
 
