@@ -7,36 +7,32 @@
 </th:block>
 </head>
 <body class="body-with-navbar">
-
   <th:block th:replace="common :: nav_bar"></th:block>
-
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
         <a class="btn btn-sm btn-secondary" th:href="@{'/lexback/' + ${targetLexeme.lexemeId}}">Tagasi</a>
       </p>
     </div>
-
     <div class="card shadow mt-4">
       <div class="card-header">
         <h5 class="card-title" th:text="#{lexeme.join.title}">Tähenduste ühendamine</h5>
       </div>
-
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
           <th:block th:replace=":: lexeme_details(${targetLexeme}, ${targetLexeme})"></th:block>
         </div>
       </div>
-
       <div class="card-body" th:if="${not #lists.isEmpty(validationMessages)}">
         <div class="alert alert-danger w-50" role="alert">
           <strong>Tähenduste ühendamine ebaõnnestus</strong>
-          <li>
-            <lu th:each="validationMessage : ${validationMessages}"><span th:text="${validationMessage}"></span></lu>
-          </li>
+          <ul>
+            <li th:each="validationMessage : ${validationMessages}">
+              <span th:text="${validationMessage}"></span>
+            </li>
+          </ul>
         </div>
       </div>
-
       <th:block th:if="${#lists.isEmpty(validationMessages)}">
         <div class="card-body">
           <form th:action="@{'/lexjoin/' + ${targetLexeme.lexemeId}}" method="post">
@@ -55,21 +51,15 @@
             </div>
           </form>
         </div>
-
         <div class="card-body" th:if="${#lists.isEmpty(sourceLexemes) && (searchFilter != null)}">
           <span th:text="#{lexjoin.not.found}">Not found.</span>
         </div>
-
         <div class="card-body" th:if="${not #lists.isEmpty(sourceLexemes)}">
           <form th:action="@{/lexjoin}" method="post">
             <input type="hidden" name="targetLexemeId" th:value="${targetLexeme.lexemeId}">
             <div class="row mb-4">
               <div class="col">
-                <button type="button" class="btn btn-primary" id="joinLexemesBtn"
-                        data-toggle="join-confirm"
-                        data-placement="right"
-                        disabled>Ühenda valitud tähendused
-                </button>
+                <button type="button" class="btn btn-primary" id="joinLexemesBtn" data-toggle="join-confirm" data-placement="right" disabled>Ühenda valitud tähendused</button>
               </div>
             </div>
             <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="sourceLexeme : ${sourceLexemes}">
@@ -80,15 +70,14 @@
       </th:block>
     </div>
   </div>
-
   <th:block th:fragment="lexeme_details(lexeme, targetLexeme)" th:if="${lexeme != null}">
     <div class="row">
       <div class="col col-w2rem">
         <input name="sourceLexemeIds" type="checkbox" class="mt-2"
-               th:value="${lexeme.lexemeId}"
-               th:if="${lexeme.meaningId != targetLexeme.meaningId}"
-               sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)"/>
-        <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetLexeme.meaningId}" checked="checked" th:disabled="true"/>
+          th:value="${lexeme.lexemeId}"
+          th:if="${lexeme.meaningId != targetLexeme.meaningId}"
+          sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)" />
+        <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetLexeme.meaningId}" checked="checked" th:disabled="true" />
       </div>
       <div class="col">
         <span>
@@ -131,14 +120,14 @@
             <span th:utext="${usage.value}"></span>
             <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
             <span th:if="${not #lists.isEmpty(usage.authors)}">
-                (
-                <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
-                  <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
-                  <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
-                  <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                  <span th:unless="${sourceLinkIter.last}">,</span>
-                </span>
-                )
+              (
+              <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
+                <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
+                <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
+                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                <span th:unless="${sourceLinkIter.last}">,</span>
+              </span>
+              )
             </span>
             <span th:if="${not #lists.isEmpty(usage.sourceLinks)}">
               [
@@ -166,13 +155,13 @@
   </th:block>
   <div th:replace="common :: #alertDlg"></div>
   <script th:inline="javascript">
-	  initialise();
-	  $('[data-toggle=join-confirm]').confirmation({
-		  btnOkLabel: 'Jah',
-		  btnCancelLabel: 'Ei',
-		  title: 'Kas olete kindel, et soovite tähendused ühendada?',
-		  onConfirm: joinLexemes
-	  });
+  	initialise();
+  	$('[data-toggle=join-confirm]').confirmation({
+  		btnOkLabel : 'Jah',
+  		btnCancelLabel : 'Ei',
+  		title : 'Kas olete kindel, et soovite tähendused ühendada?',
+  		onConfirm : joinLexemes
+  	});
   </script>
 </body>
 </html>

@@ -1,380 +1,367 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="common_header(title,links)">
-  <title th:replace="${title}" th:text="#{general.title}">EKILEX</title>
-  <!-- Common styles and scripts -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <!--<link rel="shortcut icon" th:href="@{/favicon.ico}">-->
-  <th:block th:replace=" :: css"></th:block>
-  <th:block th:replace=" :: js"></th:block>
-  <!--/* Per-page placeholder for additional links */-->
-  <th:block th:replace="${links}"/>
-  <script th:inline="javascript">
-      var applicationUrl = /*[[@{/}]]*/'/';
-  </script>
+<title th:replace="${title}" th:text="#{general.title}">EKILEX</title>
+<!-- Common styles and scripts -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!--<link rel="shortcut icon" th:href="@{/favicon.ico}">-->
+<th:block th:replace=" :: css"></th:block>
+<th:block th:replace=" :: js"></th:block>
+<!--/* Per-page placeholder for additional links */-->
+<th:block th:replace="${links}" />
+<script th:inline="javascript">
+	var applicationUrl = /*[[@{/}]]*/'/';
+</script>
 </head>
 <body>
-<!-- Bootstrap core JS -->
-<th:block th:fragment="js">
-  <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/jquery-ui.min.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap-select.min.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-home.js}"></script>
-</th:block>
-<!-- Bootstrap core CSS -->
-<th:block th:fragment="css">
-  <link rel="stylesheet" th:href="@{/view/css/styles.css}"/>
-</th:block>
-<th:block th:fragment="nav_bar">
-  <nav class="navbar navbar-expand-md navbar-dark bg-primary main-navigation"
-       th:classappend="${activeItem != 'syn'} ? 'fixed-top' :''">
-    <span th:if="${activeItem == 'home'}" class="text-white">Ekilex <small class="pl-2"
-                                                                           th:text="${'v.'+appData.appVersion}">1.0.0</small></span>
-    <div th:if="${activeItem != 'home'}" class="dropdown side-menu">
-      <button type="button" class="btn btn-primary ml-n3 side-menu-btn" id="sideMenuButton" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mr-2" aria-hidden="true"></i><span
-              th:text="${(activeItem == 'lex') ? 'Leksikograafid' : (activeItem == 'term') ? 'Terminoloogid' : (activeItem == 'syn') ? 'Sünonüümid': (activeItem == 'source') ? 'Allikate otsing': (activeItem == 'datasets') ? 'Sõnakogude haldus': (activeItem == 'permissions') ? 'Kasutajaõiguste haldus' : (activeItem == 'wwfeedback') ? 'Sõnaveebi tagasiside' :'Rakenduse valik'}">Aktiivne rakendus</span>
-      </button>
-      <div id="sideMenu" class="side-menu-content dropdown-menu ml-n3" aria-labelledby="sideMenuButton">
-        <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}"
-           th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex
-          <small class="text-secondary ml-auto" th:text="${'v.'+appData.appVersion}">1.0.0</small>
-        </a>
-        <div>
-          <div class="dropdown-header">Rakenduse valik</div>
+  <!-- Bootstrap core JS -->
+  <th:block th:fragment="js">
+    <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/jquery-ui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/bootstrap-select.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ekilex-home.js}"></script>
+  </th:block>
+  <!-- Bootstrap core CSS -->
+  <th:block th:fragment="css">
+    <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
+  </th:block>
+  <th:block th:fragment="nav_bar">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary main-navigation" th:classappend="${activeItem != 'syn'} ? 'fixed-top' :''">
+      <span th:if="${activeItem == 'home'}" class="text-white">
+        Ekilex <small class="pl-2" th:text="${'v.'+appData.appVersion}">1.0.0</small>
+      </span>
+      <div th:if="${activeItem != 'home'}" class="dropdown side-menu">
+        <button type="button" class="btn btn-primary ml-n3 side-menu-btn" id="sideMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-bars mr-2" aria-hidden="true"></i>
+          <span th:text="#{'menu.' + ${activeItem}}">Aktiivne rakendus</span>
+        </button>
+        <div id="sideMenu" class="side-menu-content dropdown-menu ml-n3" aria-labelledby="sideMenuButton">
+          <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">
+            Ekilex <small class="text-secondary ml-auto" th:text="${'v.'+appData.appVersion}">1.0.0</small>
+          </a>
           <div>
-            <a class="dropdown-item side-menu-item " th:classappend="${activeItem == 'lex' ? 'active' : ''}"
-               th:href="@{/lexsearch}">Leksikograafid</a>
-            <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}"
-               th:href="@{/termsearch}">Terminoloogid</a>
-            <a class="dropdown-item side-menu-item" th:if="${sessionBean != null && sessionBean.userRole != null}"
-               th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
-            <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}"
-               th:href="@{/sourcesearch}">Allikate otsing</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}"
-               th:href="@{/datasets}">Sõnakogude haldus</a>
-            <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}"
-               sec:authorize="${isAuthenticated() && (#authentication.principal.datasetOwnershipExist or authentication.principal.admin)}"
-               th:href="@{/permissions}">Kasutajaõiguste haldus</a>
-            <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}"
-               th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
-            <div class="dropdown-divider"></div>
+            <div class="dropdown-header">Rakenduse valik</div>
+            <div>
+              <a class="dropdown-item side-menu-item " th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
+              <a class="dropdown-item side-menu-item" th:if="${sessionBean != null && sessionBean.userRole != null}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}"
+                  sec:authorize="${isAuthenticated() && (#authentication.principal.datasetOwnershipExist or authentication.principal.admin)}" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
+              <div class="dropdown-divider"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <button type="button" class="btn btn-primary rounded-0" data-toggle="modal" data-target="#newWordDlg"
-            sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)"
-            th:if="${activeItem == 'lex' || activeItem == 'term'}">
-      <i class="fa fa-plus mr-2" aria-hidden="true"></i><span
-            th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
-    </button>
-
-    <ul th:if="${searchMode}" class="main-nav-tabs nav nav-tabs mb-n3 mx-auto align-self-start border-bottom-0">
-      <li class="nav-item">
-        <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active':''" id="simpleSearchModeBtn"
-           th:text="#{'search.mode.SIMPLE'}" data-toggle="tab" href="#simple_search_filter" role="tab"
-           aria-controls="simple_search_filter" aria-selected="true">Lihtotsing</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" th:classappend="${searchMode != 'SIMPLE'} ? 'active':''" id="detailSearchModeBtn"
-           th:text="#{'search.mode.DETAIL'}" data-toggle="tab" href="#detail_search_filter" role="tab"
-           aria-controls="simple_search_filter" aria-selected="true">Detailotsing</a>
-      </li>
-    </ul>
-    <th:block th:if="${activeItem == 'syn'}">
-      <button class="btn btn-primary mr-3" type="button" data-toggle="modal" data-target="#synoTutorialModal">
-        <i class="fa fa-question-circle-o" aria-hidden="true"></i> Kasutusjuhend
+      <button type="button" class="btn btn-primary rounded-0"
+        data-toggle="modal"
+        data-target="#newWordDlg"
+        sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)"
+        th:if="${activeItem == 'lex' || activeItem == 'term'}">
+        <i class="fa fa-plus mr-2" aria-hidden="true"></i>
+        <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
       </button>
-    </th:block>
-    <div class="navbar-nav" th:classappend="${searchMode} ? '':'ml-auto'">
-      <th:block sec:authorize="isAuthenticated()">
-
-        <div id="userMenuDropDown" class="dropdown user-menu">
-          <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button"
-                  data-toggle="dropdown">
+      <ul th:if="${searchMode}" class="main-nav-tabs nav nav-tabs mb-n3 mx-auto align-self-start border-bottom-0">
+        <li class="nav-item">
+          <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active':''"
+            id="simpleSearchModeBtn"
+            th:text="#{'search.mode.SIMPLE'}"
+            data-toggle="tab"
+            href="#simple_search_filter"
+            role="tab"
+            aria-controls="simple_search_filter"
+            aria-selected="true">Lihtotsing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:classappend="${searchMode != 'SIMPLE'} ? 'active':''"
+            id="detailSearchModeBtn"
+            th:text="#{'search.mode.DETAIL'}"
+            data-toggle="tab"
+            href="#detail_search_filter"
+            role="tab"
+            aria-controls="simple_search_filter"
+            aria-selected="true">Detailotsing</a>
+        </li>
+      </ul>
+      <th:block th:if="${activeItem == 'syn'}">
+        <button class="btn btn-primary mr-3" type="button" data-toggle="modal" data-target="#synoTutorialModal">
+          <i class="fa fa-question-circle-o" aria-hidden="true"></i> Kasutusjuhend
+        </button>
+      </th:block>
+      <div class="navbar-nav" th:classappend="${searchMode} ? '':'ml-auto'">
+        <th:block sec:authorize="isAuthenticated()">
+          <div id="userMenuDropDown" class="dropdown user-menu">
+            <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown">
               <span class="d-flex flex-wrap">
                 <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
                 <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
                   <th:block th:with="selectedRole = ${sessionBean.userRole}">
-                    <small class="w-100 text-truncate user-menu-active-role"
-                           th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
-                           th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
-
-                    </small>
+                    <small class="w-100 text-truncate user-menu-active-role" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
+                      th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"> </small>
                   </th:block>
                 </th:block>
               </span>
-
-          </button>
-          <div class="dropdown-menu dropdown-menu-right user-menu-content">
-
-            <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
-              <th:block th:with="selectedRole = ${sessionBean.userRole}">
-                <div>
-                  <div class="dropdown-header pb-0">Aktiivne roll</div>
-                  <div class="px-3 d-flex flex-row">
-                      <span class="pr-3" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
-                            th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
+            </button>
+            <div class="dropdown-menu dropdown-menu-right user-menu-content">
+              <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+                <th:block th:with="selectedRole = ${sessionBean.userRole}">
+                  <div>
+                    <div class="dropdown-header pb-0">Aktiivne roll</div>
+                    <div class="px-3 d-flex flex-row">
+                      <span class="pr-3" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}" th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
                       </span>
-                    <a th:href="@{/home}" class="text-nowrap"><i class="fa fa-pencil" aria-hidden="true"></i> Vaheta</a>
+                      <a th:href="@{/home}" class="text-nowrap">
+                        <i class="fa fa-pencil" aria-hidden="true"></i> Vaheta
+                      </a>
+                    </div>
                   </div>
-                </div>
+                </th:block>
               </th:block>
-            </th:block>
-
-
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" th:href="@{/userprofile}">Kasutaja profiili haldus <i class="fa fa-user"
-                                                                                           aria-hidden="true"></i></a>
-            <a class="dropdown-item" th:href="@{/dologout}">Logi välja <i class="fa fa-sign-out" aria-hidden="true"></i></a>
-          </div>
-        </div>
-      </th:block>
-    </div>
-  </nav>
-</th:block>
-<!-- debugging aid -->
-<div th:fragment="dump_vars" class="m-4">
-  <h4>Dump of all variables in Thymeleaf context</h4>
-  <hr/>
-  <table>
-    <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
-      <td th:text="${var}"></td>
-      <td th:text="${#vars.getVariable(var)}"></td>
-    </tr>
-    <tr>
-      <td>param</td>
-      <td th:text="${#vars.getVariable('param')}"></td>
-    </tr>
-    <tr>
-      <td>session</td>
-      <td th:text="${#vars.getVariable('session')}"></td>
-    </tr>
-    <tr>
-      <td>application</td>
-      <td th:text="${#vars.getVariable('application')}"></td>
-    </tr>
-  </table>
-</div>
-<th:block th:fragment="ordering_buttons(itemIter)">
-  <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left"
-          title="Muuda järjestust">
-    <i class="fa fa-arrow-up" aria-hidden="true"></i>
-  </button>
-  <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right"
-          title="Muuda järjestust">
-    <i class="fa fa-arrow-down" aria-hidden="true"></i>
-  </button>
-</th:block>
-<div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
-  <div class="modal-dialog" role="document" th:if="${permDataUtil.isRoleSelected(sessionBean)}">
-    <div class="modal-content">
-      <form id="addWordForm" th:action="@{/create_word}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="returnPage" th:value="${returnPage}">
-          <input type="hidden" name="meaningId">
-          <input type="hidden" name="dataset" th:value="${sessionBean.userRole.datasetCode}"/>
-          <div class="form-group row">
-            <div class="col-md-12">
-              <input class="form-control required-field" name="wordValue" placeholder="uus keelend">
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="@{/userprofile}">
+                Kasutaja profiili haldus <i class="fa fa-user" aria-hidden="true"></i>
+              </a>
+              <a class="dropdown-item" th:href="@{/dologout}">
+                Logi välja <i class="fa fa-sign-out" aria-hidden="true"></i>
+              </a>
             </div>
           </div>
-          <div class="form-group row">
-            <div class="col-md-12">
-              <span th:text="${sessionBean.userRole.datasetName}"></span>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-8">
-              <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select"
-                      data-live-search="true" name="language">
-                <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">
-                  vali keel...
-                </option>
-                <option th:each="language : ${userRoleLanguages}" th:value="${language.code}"
-                        th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
-                        th:text="${language.value}">language
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-8">
-              <select required class="form-control required-field" name="morphCode">
-                <option value="" hidden disabled
-                        th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...
-                </option>
-                <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}"
-                        th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
-                        th:text="${morphCode.value}">morphCode
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button id="addWordSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="source_link_dlg">
-  <div th:if="${#lists.isEmpty(sources)}">
-    <span th:text="#{source.search.not.found}">Nothing found</span>
-    <button class="btn btn-primary ml-4"
-            title="Lisa uus allikas"
-            data-dismiss="modal"
-            data-toggle="modal"
-            data-target="#addSourceDlg"
-            sec:authorize="${#authentication.principal.datasetPermissionsExist}">
-      Lisa uus allikas
-    </button>
-  </div>
-  <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden;" th:if="${not #lists.isEmpty(sources)}">
-    <table class="w-100 border mb-2" th:each="source,sourceIter : ${sources}">
-      <tr>
-        <td style="width: 70px; text-align: left; vertical-align: top;">
-          <b> <span th:text="${sourceIter.count + '.'}"></span>
-          </b>
-        </td>
-        <td>
-          <div class="row mb-1">
-            <table style="background-color: #ececec; font-weight: bold">
-              <tr>
-                <td>source id &nbsp;</td>
-                <td th:text="${source.sourceId}"></td>
-              </tr>
-              <tr>
-                <td>type</td>
-                <td th:text="${source.type}"></td>
-              </tr>
-            </table>
-          </div>
-        </td>
+        </th:block>
+      </div>
+    </nav>
+  </th:block>
+  <!-- debugging aid -->
+  <div th:fragment="dump_vars" class="m-4">
+    <h4>Dump of all variables in Thymeleaf context</h4>
+    <hr />
+    <table>
+      <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
+        <td th:text="${var}"></td>
+        <td th:text="${#vars.getVariable(var)}"></td>
       </tr>
       <tr>
-        <td style="width: 70px;"></td>
-        <td>
-          <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
-            <div class="row">
-              <div class="mb-1">
-                <div style="display: list-item; position: absolute"></div>
-                <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio"
-                       th:value="${sourceProperty.id}" th:name="${'source_' + source.sourceId}"
-                       th:checked="${sourcePropertyIter.count == 1}">
-                <span th:text="${sourceProperty.type}"></span>
-                -
-                <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"
-                      th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}"
-                      th:if="${sourceProperty.valueDate != null}"></span>
-              </div>
-            </div>
-          </th:block>
-        </td>
+        <td>param</td>
+        <td th:text="${#vars.getVariable('param')}"></td>
       </tr>
       <tr>
-        <td style="width: 70px;"></td>
-        <td colspan="2">
-          <div class="row">
-            <div class="col-12">
-              <div class="form-group row">
-                <label class="col-auto col-form-label">Siseviide</label>
-                <div class="col-8">
-                  <input type="text" class="form-control">
-                </div>
-                <div class="col-2">
-                  <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
+        <td>session</td>
+        <td th:text="${#vars.getVariable('session')}"></td>
+      </tr>
+      <tr>
+        <td>application</td>
+        <td th:text="${#vars.getVariable('application')}"></td>
       </tr>
     </table>
   </div>
-</div>
-<script th:inline="javascript" th:fragment="confirmations">
-    $('[data-toggle=confirmation]').confirmation({
-        btnOkLabel: 'Jah',
-        btnCancelLabel: 'Ei'
-    });
-    $('[data-toggle=delete-confirm]').confirmation({
-        btnOkLabel: 'Jah',
-        btnCancelLabel: 'Ei',
-        title: 'Kinnita kustutamine',
-        onConfirm: executeDelete
-    });
-    decorateSourceLinks();
-</script>
-<div id="sourceDetailsDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <th:block th:fragment="ordering_buttons(itemIter)">
+    <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left" title="Muuda järjestust">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </button>
+    <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right" title="Muuda järjestust">
+      <i class="fa fa-arrow-down" aria-hidden="true"></i>
+    </button>
+  </th:block>
+  <div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
+    <div class="modal-dialog" role="document" th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+      <div class="modal-content">
+        <form id="addWordForm" th:action="@{/create_word}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="returnPage" th:value="${returnPage}">
+            <input type="hidden" name="meaningId">
+            <input type="hidden" name="dataset" th:value="${sessionBean.userRole.datasetCode}" />
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input class="form-control required-field" name="wordValue" placeholder="uus keelend">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <span th:text="${sessionBean.userRole.datasetName}"></span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}"
+                    th:value="${language.code}"
+                    th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                    th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control required-field" name="morphCode">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
+                  <option th:each="morphCode : ${wordMorphCodes}"
+                    th:value="${morphCode.code}"
+                    th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
+                    th:text="${morphCode.value}">morphCode
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="addWordSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
       </div>
-      <div class="modal-body"></div>
     </div>
   </div>
-</div>
-<div id="alertDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-warning" role="alert">
-          <span name="alert_message"></span>
+  <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="source_link_dlg">
+    <div th:if="${#lists.isEmpty(sources)}">
+      <span th:text="#{source.search.not.found}">Nothing found</span>
+      <button class="btn btn-primary ml-4" title="Lisa uus allikas" data-dismiss="modal"
+        data-toggle="modal"
+        data-target="#addSourceDlg"
+        sec:authorize="${#authentication.principal.datasetPermissionsExist}">Lisa uus allikas
+      </button>
+    </div>
+    <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden;" th:if="${not #lists.isEmpty(sources)}">
+      <table class="w-100 border mb-2" th:each="source,sourceIter : ${sources}">
+        <tr>
+          <td style="width: 70px; text-align: left; vertical-align: top;">
+            <b> <span th:text="${sourceIter.count + '.'}"></span>
+            </b>
+          </td>
+          <td>
+            <div class="row mb-1">
+              <table style="background-color: #ececec; font-weight: bold">
+                <tr>
+                  <td>source id &nbsp;</td>
+                  <td th:text="${source.sourceId}"></td>
+                </tr>
+                <tr>
+                  <td>type</td>
+                  <td th:text="${source.type}"></td>
+                </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 70px;"></td>
+          <td>
+            <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
+              <div class="row">
+                <div class="mb-1">
+                  <div style="display: list-item; position: absolute"></div>
+                  <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" th:name="${'source_' + source.sourceId}"
+                    th:checked="${sourcePropertyIter.count == 1}">
+                  <span th:text="${sourceProperty.type}"></span>
+                  -
+                  <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+                  <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                </div>
+              </div>
+            </th:block>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 70px;"></td>
+          <td colspan="2">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-auto col-form-label">Siseviide</label>
+                  <div class="col-8">
+                    <input type="text" class="form-control">
+                  </div>
+                  <div class="col-2">
+                    <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <script th:inline="javascript" th:fragment="confirmations">
+  	$('[data-toggle=confirmation]').confirmation({
+  		btnOkLabel : 'Jah',
+  		btnCancelLabel : 'Ei'
+  	});
+  	$('[data-toggle=delete-confirm]').confirmation({
+  		btnOkLabel : 'Jah',
+  		btnCancelLabel : 'Ei',
+  		title : 'Kinnita kustutamine',
+  		onConfirm : executeDelete
+  	});
+  	decorateSourceLinks();
+  </script>
+  <div id="sourceDetailsDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        <div class="alert alert-success" role="alert">
-          <span name="alert_message"></span>
+        <div class="modal-body"></div>
+      </div>
+    </div>
+  </div>
+  <div id="alertDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-warning" role="alert">
+            <span name="alert_message"></span>
+          </div>
+          <div class="alert alert-success" role="alert">
+            <span name="alert_message"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
+    </div>
+  </div>
+  <div id="confirmDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="confirmQuestion" class="alert alert-primary" role="alert"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok">Jah</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel">Ei</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div id="confirmDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div id="confirmQuestion" class="alert alert-primary" role="alert"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok">Jah</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel">Ei</button>
+  <div id="waitDlg" class="modal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+      <div class="modal-content">
+        <div id="waitMessageDiv" class="modal-header">
+          <h5 id="waitMessage"></h5>
+        </div>
+        <div class="modal-body text-center">
+          <i class="fa fa-3x fa-spinner fa-spin"></i>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div id="waitDlg" class="modal" role="dialog" data-keyboard="false" data-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-    <div class="modal-content">
-      <div id="waitMessageDiv" class="modal-header">
-        <h5 id="waitMessage"></h5>
-      </div>
-      <div class="modal-body text-center">
-        <i class="fa fa-3x fa-spinner fa-spin"></i>
-      </div>
-    </div>
-  </div>
-</div>
 </body>
 </html>

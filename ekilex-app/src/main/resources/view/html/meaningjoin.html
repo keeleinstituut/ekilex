@@ -7,36 +7,32 @@
 </th:block>
 </head>
 <body class="body-with-navbar">
-
   <th:block th:replace="common :: nav_bar"></th:block>
-
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
         <a class="btn btn-sm btn-secondary" th:href="@{'/meaningback/' + ${targetMeaningId}}">Tagasi</a>
       </p>
     </div>
-
     <div class="card shadow mt-4" id="details_div">
       <div class="card-header">
         <h5 class="card-title" th:text="#{meaning.join.title}">Tähenduste ühendamine</h5>
       </div>
-
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
           <th:block th:replace=":: meaning_details(${targetMeaning})"></th:block>
         </div>
       </div>
-
       <div class="card-body" th:if="${not #lists.isEmpty(validationMessages)}">
         <div class="alert alert-danger w-50" role="alert">
           <strong>Tähenduste ühendamine ebaõnnestus</strong>
-          <li>
-            <lu th:each="validationMessage : ${validationMessages}"><span th:text="${validationMessage}"></span></lu>
-          </li>
+          <ul>
+            <li th:each="validationMessage : ${validationMessages}">
+              <span th:text="${validationMessage}"></span>
+            </li>
+          </ul>
         </div>
       </div>
-
       <th:block th:if="${#lists.isEmpty(validationMessages)}">
         <div class="card-body">
           <form th:action="@{'/meaningjoin/' + ${targetMeaningId}}" method="post">
@@ -55,20 +51,15 @@
             </div>
           </form>
         </div>
-
         <div class="card-body" th:if="${(searchFilter != null) && #lists.isEmpty(sourceMeanings)}">
           <span th:text="#{lexjoin.not.found}">Not found.</span>
         </div>
-
         <div class="card-body" th:if="${not #lists.isEmpty(sourceMeanings)}">
           <form th:action="@{/meaningjoin}" method="post">
             <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
             <div class="row mb-4">
               <div class="col">
-                <button type="button" class="btn btn-primary" id="joinMeaningsBtn"
-                        data-toggle="join-confirm"
-                        data-placement="right" disabled>Ühenda valitud tähendused
-                </button>
+                <button type="button" class="btn btn-primary" id="joinMeaningsBtn" data-toggle="join-confirm" data-placement="right" disabled>Ühenda valitud tähendused</button>
               </div>
             </div>
             <div style="width: 95%" class="border border-dark rounded mb-2 p-2" name="meaning" th:each="sourceMeaning : ${sourceMeanings}">
@@ -79,15 +70,14 @@
       </th:block>
     </div>
   </div>
-
   <th:block th:fragment="meaning_details(meaning)" th:if="${meaning != null}">
     <div class="row">
       <div class="col col-w2rem">
         <input name="sourceMeaningIds" type="checkbox" class="mt-2"
-               th:value="${meaning.meaningId}"
-               th:if="${meaning.meaningId != targetMeaningId}"
-               sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaning.meaningId)"/>
-        <input type="checkbox" class="mt-2" th:if="${meaning.meaningId == targetMeaningId}" checked="checked" th:disabled="true"/>
+          th:value="${meaning.meaningId}"
+          th:if="${meaning.meaningId != targetMeaningId}"
+          sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaning.meaningId)" />
+        <input type="checkbox" class="mt-2" th:if="${meaning.meaningId == targetMeaningId}" checked="checked" th:disabled="true" />
       </div>
     </div>
     <div class="row">
@@ -219,7 +209,7 @@
               <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
               <span th:if="${sourceLink.name != null}">
                 <span th:text="${sourceLink.name}"></span>
-                </span>
+              </span>
               ]
             </th:block>
           </div>
@@ -262,14 +252,14 @@
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <script th:inline="javascript">
-	  initialise();
-	  $('[data-toggle=join-confirm]').confirmation({
-		  btnOkLabel: 'Jah',
-		  btnCancelLabel: 'Ei',
-		  title: 'Kas olete kindel, et soovite tähendused ühendada?',
-		  onConfirm: joinMeanings
-	  });
-	  decorateSourceLinks();
+  	initialise();
+  	$('[data-toggle=join-confirm]').confirmation({
+  		btnOkLabel : 'Jah',
+  		btnCancelLabel : 'Ei',
+  		title : 'Kas olete kindel, et soovite tähendused ühendada?',
+  		onConfirm : joinMeanings
+  	});
+  	decorateSourceLinks();
   </script>
 </body>
 </html>

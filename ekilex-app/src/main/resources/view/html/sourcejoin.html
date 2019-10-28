@@ -12,19 +12,15 @@
         <button type="submit" class="btn btn-sm btn-secondary">Tagasi</button>
       </form>
     </div>
-
     <div class="card shadow mt-4">
-
       <div class="card-header">
         <h5 class="card-title" th:text="#{source.join.title}">Allikate ühendamine</h5>
       </div>
-
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
           <th:block th:replace="sourcecomp :: source_join_details(${firstSource.sourceId},${firstSource})"></th:block>
         </div>
       </div>
-
       <div class="card-body">
         <form th:action="@{/search_sources}" method="post">
           <input type="hidden" name="firstSourceId" th:value="${firstSource.sourceId}">
@@ -44,17 +40,14 @@
           </div>
         </form>
       </div>
-
       <div class="card-body" th:if="${(searchFilter != null) && #lists.isEmpty(sources)}">
         <span th:text="#{source.search.not.found}">Not found.</span>
       </div>
-
       <div class="card-body" th:if="${not #lists.isEmpty(sources)}">
         <div style="width: 95%" class="border rounded mb-2 p-2" name="source" th:each="source : ${sources}">
           <th:block th:replace="sourcecomp :: source_join_details(${firstSource.sourceId}, ${source})"></th:block>
         </div>
       </div>
-
     </div>
   </div>
 </body>

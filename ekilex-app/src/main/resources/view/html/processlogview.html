@@ -19,7 +19,6 @@
               <span class="float-right" th:text="${logRow.datasetCode}"></span>
             </div>
           </div>
-
           <div class="row" th:if="${logRow.processStateCode != null}">
             <div class="col-5 text-center">
               <span th:text="${logRow.comment}"></span>
@@ -31,13 +30,11 @@
               <span th:text="${logRow.processStateCode}"></span>
             </div>
           </div>
-
           <div class="row" th:if="${logRow.processStateCode == null}">
             <div class="col-11" th:utext="${logRow.commentPrese}"></div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </th:block>
 </body>

@@ -14,12 +14,10 @@
         <a class="btn btn-sm btn-secondary" th:href="@{${backUrl}}">Tagasi</a>
       </p>
     </div>
-
     <div class="card shadow mt-4 w-75">
       <div class="card-header">
         <h5 class="card-title" th:text="#{word.join.title}"></h5>
       </div>
-
       <div class="card-body">
         <div class="border rounded p-2">
           <div th:if="${firstWordDetails != null}">
@@ -37,11 +35,9 @@
           </div>
         </div>
       </div>
-
       <div class="card-body" th:if="${#lists.isEmpty(wordDetailsList)}">
         <span th:text="#{word.join.not.found}">Not found.</span>
       </div>
-
       <div class="card-body" th:if="${not #lists.isEmpty(wordDetailsList)}">
         <form th:action="@{/wordjoin}" method="post">
           <input type="hidden" name="targetWordId" th:value="${firstWordDetails.word.wordId}">
