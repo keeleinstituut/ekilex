@@ -31,6 +31,10 @@ public class SynRelation extends AbstractDataObject {
 
 	private boolean otherHomonymsExist;
 
+	private boolean isPrefixoid;
+
+	private boolean isSuffixoid;
+
 	public Long getId() {
 		return id;
 	}
@@ -117,5 +121,21 @@ public class SynRelation extends AbstractDataObject {
 
 	public void setOtherHomonymsExist(boolean otherHomonymsExist) {
 		this.otherHomonymsExist = otherHomonymsExist;
+	}
+
+	public boolean isPrefixoid() {
+		return isPrefixoid;
+	}
+
+	public void setPrefixoid(boolean prefixoid) {
+		isPrefixoid = prefixoid;
+	}
+
+	public boolean isSuffixoid() {
+		return isSuffixoid;
+	}
+
+	public void setSuffixoid(boolean suffixoid) {
+		isSuffixoid = suffixoid;
 	}
 }

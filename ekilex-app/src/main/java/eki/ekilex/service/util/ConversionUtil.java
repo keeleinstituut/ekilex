@@ -721,6 +721,8 @@ public class ConversionUtil implements DbConstant {
 				relation.setRelationStatus(paramTuple.getRelationStatus());
 				relation.setHomonymNumber(paramTuple.getHomonymNumber());
 				relation.setDefinition(paramTuple.getDefinitionValue());
+				relation.setSuffixoid(paramTuple.getSuffixoid());
+				relation.setPrefixoid(paramTuple.getPrefixoid());
 
 				otherHomonymNo = paramTuple.getOtherHomonymNumber();
 

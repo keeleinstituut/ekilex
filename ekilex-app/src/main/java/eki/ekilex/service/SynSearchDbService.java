@@ -10,6 +10,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 	}
 
 	public List<SynRelationParamTuple> getWordSynRelations(Long wordId, String relationType, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
+
 		WordRelation opposite = WORD_RELATION.as("opposite");
 
 		Table homonymCount = create.select(FORM.VALUE, WORD.HOMONYM_NR)
@@ -69,6 +71,22 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						DEFINITION.VALUE.as("definition_value"),
 						DEFINITION.ORDER_BY.as("definition_order"),
 						homonymCount.field("homonym_nr").as("other_homonym_number"),
+						DSL.field(
+							DSL.exists(
+								DSL.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
+								.from(WORD_WORD_TYPE)
+								.where(WORD_WORD_TYPE.WORD_ID.eq(WORD_RELATION.WORD2_ID)
+									.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))
+								.groupBy(WORD_WORD_TYPE.WORD_ID)))
+							.as("is_prefixoid"),
+						DSL.field(
+								DSL.exists(
+										DSL.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
+												.from(WORD_WORD_TYPE)
+												.where(WORD_WORD_TYPE.WORD_ID.eq(WORD_RELATION.WORD2_ID)
+														.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))
+												.groupBy(WORD_WORD_TYPE.WORD_ID)))
+								.as("is_suffixoid"),
 						LEXEME.LEVEL1, LEXEME.LEVEL2
 						)
 				.from(
@@ -101,7 +119,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.orderBy(
 						WORD_RELATION.ORDER_BY,
-						LEXEME.LEVEL1, LEXEME.LEVEL2,
+						LEXEME.LEVEL1,
+						LEXEME.LEVEL2,
 						DEFINITION.ORDER_BY
 				)
 				.fetchInto(SynRelationParamTuple.class);

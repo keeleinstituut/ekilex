@@ -45,6 +45,12 @@ public class SynRelationParamTuple extends AbstractDataObject {
 	@Column(name = "other_homonym_number")
 	private Integer otherHomonymNumber;
 
+	@Column(name = "is_prefixoid")
+	private Boolean isPrefixoid;
+
+	@Column(name = "is_suffixoid")
+	private Boolean isSuffixoid;
+
 	public Long getRelationId() {
 		return relationId;
 	}
@@ -139,5 +145,21 @@ public class SynRelationParamTuple extends AbstractDataObject {
 
 	public void setOtherHomonymNumber(Integer otherHomonymNumber) {
 		this.otherHomonymNumber = otherHomonymNumber;
+	}
+
+	public Boolean getPrefixoid() {
+		return isPrefixoid;
+	}
+
+	public void setPrefixoid(Boolean prefixoid) {
+		isPrefixoid = prefixoid;
+	}
+
+	public Boolean getSuffixoid() {
+		return isSuffixoid;
+	}
+
+	public void setSuffixoid(Boolean suffixoid) {
+		isSuffixoid = suffixoid;
 	}
 }
