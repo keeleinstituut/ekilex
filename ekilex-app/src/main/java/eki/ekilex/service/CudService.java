@@ -17,6 +17,7 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
+import eki.common.constant.RelationStatus;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
@@ -35,7 +36,7 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 public class CudService extends AbstractService {
 
 	private static final String RAW_RELATION_TYPE = "raw";
-	private static final String UNDEFINED_RELATION_STATUS = "UNDEFINED";
+	private static final String UNDEFINED_RELATION_STATUS = RelationStatus.UNDEFINED.name();
 
 	@Autowired
 	private CudDbService cudDbService;
