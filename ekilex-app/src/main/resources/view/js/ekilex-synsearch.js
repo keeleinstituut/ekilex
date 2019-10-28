@@ -244,7 +244,7 @@ function initialise() {
 					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
 					unActivateItem(currentSelectedItem, true);
 					$(currentActiveList).stop(true);
-					$(currentActiveList).scrollTo(newItem,320,{axis:'y'},{offset:-16},{queue:false});
+					$(currentActiveList).scrollTo(newItem,320,{axis:'y', offset:-64});
 				}
 			}
 		}
