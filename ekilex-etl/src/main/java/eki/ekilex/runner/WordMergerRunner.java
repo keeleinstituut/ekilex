@@ -295,7 +295,7 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		}
 	}
 
-	public boolean isOnlyLexemeForMeaning(Long lexemeId) throws Exception {
+	private boolean isOnlyLexemeForMeaning(Long lexemeId) throws Exception {
 
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("lexemeId", lexemeId);
