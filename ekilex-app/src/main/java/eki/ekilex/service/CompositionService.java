@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -291,30 +292,34 @@ public class CompositionService extends AbstractService {
 		}
 	}
 
-	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) { // TODO refactor - Yogesh
+	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) {
 
 		LexemeRecord duplicatedLexeme = compositionDbService.getLexeme(duplicateLexemeId);
 		Integer level1 = duplicatedLexeme.getLevel1();
 		Integer level2 = duplicatedLexeme.getLevel2();
 		Long wordId = duplicatedLexeme.getWordId();
+		String datasetCode = duplicatedLexeme.getDatasetCode();
 
-		if (level2 > 1) {
-			List<LexemeRecord> lexemesWithLargerLevel2 = compositionDbService.getLexemesWithHigherLevel2(wordId, level1, level2);
-			int increasedDuplicatedLexemeLevel2 = level2 + 1;
-			compositionDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
-			for (LexemeRecord lexeme : lexemesWithLargerLevel2) {
-				Long lexemeId = lexeme.getId();
-				int increasedLevel2 = lexeme.getLevel2() + 1;
-				compositionDbService.updateLexemeLevel2(lexemeId, increasedLevel2);
-			}
-		} else {
-			List<LexemeRecord> lexemesWithLargerLevel1 = compositionDbService.getLexemesWithHigherLevel1(wordId, level1);
+		Integer level2MinValue = compositionDbService.getLevel2MinimumValue(wordId, datasetCode, level1);
+		boolean isLevel1Increase = Objects.equals(level2, level2MinValue);
+
+		if (isLevel1Increase) {
+			List<LexemeRecord> lexemesWithLargerLevel1 = compositionDbService.getLexemesWithHigherLevel1(wordId, datasetCode, level1);
 			int increasedDuplicatedLexemeLevel1 = level1 + 1;
 			compositionDbService.updateLexemeLevel1(duplicateLexemeId, increasedDuplicatedLexemeLevel1);
 			for (LexemeRecord lexeme : lexemesWithLargerLevel1) {
 				Long lexemeId = lexeme.getId();
 				int increasedLevel1 = lexeme.getLevel1() + 1;
 				compositionDbService.updateLexemeLevel1(lexemeId, increasedLevel1);
+			}
+		} else {
+			List<LexemeRecord> lexemesWithLargerLevel2 = compositionDbService.getLexemesWithHigherLevel2(wordId, datasetCode, level1, level2);
+			int increasedDuplicatedLexemeLevel2 = level2 + 1;
+			compositionDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
+			for (LexemeRecord lexeme : lexemesWithLargerLevel2) {
+				Long lexemeId = lexeme.getId();
+				int increasedLevel2 = lexeme.getLevel2() + 1;
+				compositionDbService.updateLexemeLevel2(lexemeId, increasedLevel2);
 			}
 		}
 	}
