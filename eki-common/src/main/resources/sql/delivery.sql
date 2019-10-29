@@ -455,7 +455,8 @@ insert into meaning_semantic_type (meaning_id, semantic_type_code)
 (select distinct on (ff.value_text, meaning_id) mff.meaning_id, ff.value_text
 from meaning_freeform mff, freeform ff
 where mff.freeform_id = ff.id
-  and ff.type = 'SEMANTIC_TYPE');
+  and ff.type = 'SEMANTIC_TYPE'
+  and ff.value_text != '');
 
 insert into morph (code, datasets) values ('sing, nomn', '{}');
 insert into morph (code, datasets) values ('pl, nomn', '{}');
