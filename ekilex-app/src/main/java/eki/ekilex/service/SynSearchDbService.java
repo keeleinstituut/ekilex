@@ -69,6 +69,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						WORD_RELATION_PARAM.VALUE.as("param_value"),
 						WORD_RELATION.ORDER_BY.as("order_by"),
 						DEFINITION.VALUE.as("definition_value"),
+						DEFINITION.COMPLEXITY.as("definition_complexity"),
 						DEFINITION.ORDER_BY.as("definition_order"),
 						homonymCount.field("homonym_nr").as("other_homonym_number"),
 						DSL.field(
@@ -102,7 +103,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.leftOuterJoin(WORD_RELATION_PARAM).on(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(WORD_RELATION.ID))
 								.leftOuterJoin(LEXEME).on(LEXEME.WORD_ID.eq(WORD_RELATION.WORD2_ID).and(LEXEME.DATASET_CODE.eq(datasetCode)))
 								.leftOuterJoin(MEANING).on(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID).and(DEFINITION.COMPLEXITY.like("DETAIL%")))
+								.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID).and(DEFINITION.COMPLEXITY.like("DETAIL%").or(DEFINITION.COMPLEXITY.like("SIMPLE%"))))
 						,
 						WORD,
 						PARADIGM,
@@ -121,6 +122,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						WORD_RELATION.ORDER_BY,
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
+						DEFINITION.COMPLEXITY,
 						DEFINITION.ORDER_BY
 				)
 				.fetchInto(SynRelationParamTuple.class);
