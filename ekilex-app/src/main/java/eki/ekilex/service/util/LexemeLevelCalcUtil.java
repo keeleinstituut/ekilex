@@ -2,6 +2,7 @@ package eki.ekilex.service.util;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.WordLexeme;
 
 @Component
-public class LexemeLevelCalcUtil { // TODO refactor? - Yogesh
+public class LexemeLevelCalcUtil {
 
 	public void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {
 
@@ -36,50 +37,40 @@ public class LexemeLevelCalcUtil { // TODO refactor? - Yogesh
 			}
 			break;
 		case "pop":
-			if (levelToChange > 1) {
-				if (levelToChange == 2) {
-					Integer maxLevel1 = lexemes.stream().map(WordLexeme::getLevel1).max(Comparator.comparingInt(Integer::valueOf)).get();
-					Integer currentLevel1 = lexemeToMove.getLevel1();
-					lexemeToMove.setLevel1(maxLevel1 + 1);
-					lexemeToMove.setLevel2(1);
-					List<WordLexeme> lexemesToCorrect = lexemes.stream().filter(l -> l.getLevel1().equals(currentLevel1)).collect(Collectors.toList());
-					Integer oldLevel2 = 999;
-					Integer newLevel2 = 0;
-					Integer newLevel3 = 1;
-					// TODO modify - Yogesh
-					for (WordLexeme lexeme : lexemesToCorrect) {
-						if (lexeme.getLevel2().equals(oldLevel2)) {
-							newLevel3++;
-						} else {
-							newLevel3 = 1;
-							newLevel2++;
-							oldLevel2 = lexeme.getLevel2();
-						}
-						lexeme.setLevel2(newLevel2);
-						// lexeme.setLevel3(newLevel3);
+			if (levelToChange == 2) {
+				Integer maxLevel1 = lexemes.stream().map(WordLexeme::getLevel1).max(Comparator.comparingInt(Integer::valueOf)).get();
+				Integer currentLevel1 = lexemeToMove.getLevel1();
+				lexemeToMove.setLevel1(maxLevel1 + 1);
+				lexemeToMove.setLevel2(1);
+				List<WordLexeme> lexemesToCorrect = lexemes.stream().filter(l -> l.getLevel1().equals(currentLevel1)).collect(Collectors.toList());
+				Integer oldLevel2 = 999;
+				Integer newLevel2 = 0;
+				for (WordLexeme lexeme : lexemesToCorrect) {
+					if (!lexeme.getLevel2().equals(oldLevel2)) {
+						newLevel2++;
+						oldLevel2 = lexeme.getLevel2();
 					}
+					lexeme.setLevel2(newLevel2);
 				}
 			}
 			break;
 		case "push":
-			if (levelToChange < 3 && lexemes.size() > 1) {
-				if (levelToChange == 1) {
-					WordLexeme targetLexeme = lexemes.get(lexemePos == 0 ? lexemePos + 1 : lexemePos - 1);
-					Integer level1 = lexemeToMove.getLevel1();
-					Integer maxLevel2 = lexemes.stream().filter(l -> l.getLevel1().equals(targetLexeme.getLevel1()))
-							.map(WordLexeme::getLevel2).max(Comparator.comparingInt(Integer::valueOf)).get();
-					lexemeToMove.setLevel1(targetLexeme.getLevel1());
-					lexemeToMove.setLevel2(maxLevel2 + 1);
-					lexemes.stream().filter(l -> l.getLevel1() > level1).forEach(l -> l.setLevel1(l.getLevel1() - 1));
-				}
-				if (levelToChange == 2) {
-					List<WordLexeme> level2lexemes = lexemes.stream().filter(l -> l.getLevel1().equals(lexemeToMove.getLevel1())).collect(Collectors.toList());
-					lexemePos = level2lexemes.indexOf(lexemeToMove);
-					WordLexeme targetLexeme = lexemes.get(lexemePos == 0 ? lexemePos + 1 : lexemePos - 1);
-					Integer level2 = lexemeToMove.getLevel2();
-					lexemeToMove.setLevel2(targetLexeme.getLevel2());
-					level2lexemes.stream().filter(l -> l.getLevel2() > level2).forEach(l -> l.setLevel2(l.getLevel2() - 1));
-				}
+			if (levelToChange == 1 && lexemes.size() > 1) {
+				WordLexeme targetLexeme = lexemes.get(lexemePos == 0 ? lexemePos + 1 : lexemePos - 1);
+				Integer level1 = lexemeToMove.getLevel1();
+				Integer maxLevel2 = lexemes.stream().filter(l -> l.getLevel1().equals(targetLexeme.getLevel1())).map(WordLexeme::getLevel2)
+						.max(Comparator.comparingInt(Integer::valueOf)).get();
+				lexemeToMove.setLevel1(targetLexeme.getLevel1());
+				lexemeToMove.setLevel2(maxLevel2 + 1);
+				lexemes.stream().filter(l -> l.getLevel1() > level1).forEach(l -> l.setLevel1(l.getLevel1() - 1));
+			}
+			if (levelToChange == 2 && lexemes.size() > 1) {
+				List<WordLexeme> level2lexemes = lexemes.stream().filter(l -> l.getLevel1().equals(lexemeToMove.getLevel1())).collect(Collectors.toList());
+				lexemePos = level2lexemes.indexOf(lexemeToMove);
+				WordLexeme targetLexeme = lexemes.get(lexemePos == 0 ? lexemePos + 1 : lexemePos - 1);
+				Integer level2 = lexemeToMove.getLevel2();
+				lexemeToMove.setLevel2(targetLexeme.getLevel2());
+				level2lexemes.stream().filter(l -> l.getLevel2() > level2).forEach(l -> l.setLevel2(l.getLevel2() - 1));
 			}
 			break;
 		case "delete":
@@ -98,6 +89,7 @@ public class LexemeLevelCalcUtil { // TODO refactor? - Yogesh
 	}
 
 	private void moveUpDown(List<WordLexeme> lexemes, WordLexeme lexemeToMove, WordLexeme targetLexeme) {
+
 		int levelToChange = getLevelToChange(lexemes, lexemeToMove);
 		int previousLexLevel = numberAtLevel(levelToChange, targetLexeme);
 		int currentLexLevel = numberAtLevel(levelToChange, lexemeToMove);
@@ -120,22 +112,27 @@ public class LexemeLevelCalcUtil { // TODO refactor? - Yogesh
 	}
 
 	private int getLevelToChange(List<WordLexeme> lexemes, WordLexeme lexeme) {
-		if (lexemes.stream().filter(l -> l.getLevel1().equals(lexeme.getLevel1())).count() == 1) {
-			return 1;
+
+		Optional<WordLexeme> minLevelLexeme = lexemes.stream()
+				.filter(l -> l.getLevel1().equals(lexeme.getLevel1()))
+				.min(Comparator.comparing(WordLexeme::getLevel2));
+
+		if (minLevelLexeme.isPresent()) {
+			Long minLevelLexemeId = minLevelLexeme.get().getLexemeId();
+			Long lexemeId = lexeme.getLexemeId();
+			if (Objects.equals(lexemeId, minLevelLexemeId)) {
+				return 1;
+			}
 		}
-		if (lexemes.stream().filter(l -> l.getLevel1().equals(lexeme.getLevel1()) && l.getLevel2().equals(lexeme.getLevel2())).count() == 1) {
-			return 2;
-		}
-		return 3;
+		return 2;
 	}
 
 	private int numberAtLevel(int level, WordLexeme lex) {
-		switch (level) {
-		case 1:
+
+		if (level == 1) {
 			return lex.getLevel1();
-		case 2:
+		} else {
 			return lex.getLevel2();
 		}
-		return 0;
 	}
 }

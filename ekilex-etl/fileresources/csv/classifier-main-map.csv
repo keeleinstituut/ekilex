@@ -1231,7 +1231,7 @@ v_tyyp	v_tyyp	trük	(ei ole kasutusel)	et	-	-
 v_tyyp	v_tyyp	müt	(ei ole kasutusel)	et	-	-
 v_tyyp	v_tyyp	paleont	(ei ole kasutusel)	et	-	-
 v_tyyp	v_tyyp	kok	(ei ole kasutusel)	et	-	-
-valmidus	Valmidus	vormiliselt korras	vormiliselt korras	et	process_state	avalik
+valmidus	Valmidus	vormiliselt korras	vormiliselt korras	et	process_state	läbi vaatamata
 valmidus	Valmidus	avalik	avalik	et	process_state	avalik
 valmidus	Valmidus	töös	töös	et	process_state	töös
 valmidus	Valmidus	määramata	määramata	et	process_state	määramata

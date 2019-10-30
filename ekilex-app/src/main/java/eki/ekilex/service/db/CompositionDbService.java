@@ -138,23 +138,36 @@ public class CompositionDbService implements DbConstant {
 		return definition;
 	}
 
-	public List<LexemeRecord> getLexemesWithHigherLevel1(Long wordId, Integer level1) {
+	public List<LexemeRecord> getLexemesWithHigherLevel1(Long wordId, String datasetCode, Integer level1) {
 		return create
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
 						.and(LEXEME.LEVEL1.gt(level1))
 						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetch();
 	}
 
-	public List<LexemeRecord> getLexemesWithHigherLevel2(Long wordId, Integer level1, Integer level2) {
+	public List<LexemeRecord> getLexemesWithHigherLevel2(Long wordId, String datasetCode, Integer level1, Integer level2) {
 		return create
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
 						.and(LEXEME.LEVEL1.eq(level1))
 						.and(LEXEME.LEVEL2.gt(level2))
 						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetch();
+	}
+
+	public Integer getLevel2MinimumValue(Long wordId, String datasetCode, Integer level1) {
+		return create
+				.select(DSL.min(LEXEME.LEVEL2))
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
+						.and(LEXEME.LEVEL1.eq(level1))
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.fetchOneInto(Integer.class);
 	}
 
 	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {

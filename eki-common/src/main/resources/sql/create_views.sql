@@ -136,7 +136,6 @@ from (select w.id as word_id,
                          l1.type = 'PRIMARY'
                          and l1.process_state_code = 'avalik'
                          and l1ds.is_public = true
-                         and l2.type = 'PRIMARY'
                          and l2.process_state_code = 'avalik'
                          and l2ds.is_public = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
@@ -506,7 +505,6 @@ from lexeme l
                          l1.type = 'PRIMARY'
                          and l1.process_state_code = 'avalik'
                          and l1ds.is_public = true
-                         and l2.type = 'PRIMARY'
                          and l2.process_state_code = 'avalik'
                          and l2ds.is_public = true) mw
                    group by mw.lexeme_id) mw on mw.lexeme_id = l.id
