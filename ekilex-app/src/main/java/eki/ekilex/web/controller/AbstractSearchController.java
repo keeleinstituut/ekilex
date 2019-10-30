@@ -146,7 +146,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		}
 	}
 
-	protected void initSearchForms(Model model) {
+	protected void initSearchForms(String searchPage, Model model) {
 
 		SessionBean sessionBean = getSessionBean(model);
 		if (CollectionUtils.isEmpty(sessionBean.getLanguagesOrder())) {
@@ -154,7 +154,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 			List<ClassifierSelect> languagesOrder = convert(allLanguages);
 			sessionBean.setLanguagesOrder(languagesOrder);
 		}
-		SearchFilter detailSearchFilter = searchHelper.initSearchFilter();
+		SearchFilter detailSearchFilter = searchHelper.initSearchFilter(searchPage);
 
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
@@ -172,6 +172,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	}
 
 	protected void formDataCleanup(
+			String searchPage,
 			List<String> selectedDatasets,
 			SearchFilter detailSearchFilter,
 			String resultLang,
@@ -183,7 +184,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		sessionBean.setResultLang(resultLang);
 
 		if (detailSearchFilter == null) {
-			detailSearchFilter = searchHelper.initSearchFilter();
+			detailSearchFilter = searchHelper.initSearchFilter(searchPage);
 		} else {
 			if (CollectionUtils.isEmpty(detailSearchFilter.getCriteriaGroups())) {
 				detailSearchFilter.setCriteriaGroups(Collections.emptyList());

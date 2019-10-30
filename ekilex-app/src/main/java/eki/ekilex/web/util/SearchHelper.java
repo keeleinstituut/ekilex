@@ -27,7 +27,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.UserService;
 
 @Component
-public class SearchHelper {
+public class SearchHelper implements WebConstant {
 
 	private static final char PATH_SEPARATOR = '/';
 	private static final char DICTONARIES_SEPARATOR = ',';
@@ -152,7 +152,7 @@ public class SearchHelper {
 		return datasetArr;
 	}
 
-	public SearchUriData parseSearchUri(String searchUri) {
+	public SearchUriData parseSearchUri(String searchPage, String searchUri) {
 
 		boolean isValid;
 		String searchMode = null;
@@ -254,19 +254,31 @@ public class SearchHelper {
 			selectedDatasets = commonDataService.getDatasetCodes();
 		}
 		if (detailSearchFilter == null) {
-			detailSearchFilter = initSearchFilter();
+			detailSearchFilter = initSearchFilter(searchPage);
 		}
 		return new SearchUriData(isValid, searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
 	}
 
-	public SearchFilter initSearchFilter() {
+	public SearchFilter initSearchFilter(String searchPage) {
 
+		SearchEntity searchEntity = null;
+		SearchKey searchKey = null;
+		SearchOperand searchOperand = null;
+		if (StringUtils.equals(LEX_SEARCH_PAGE, searchPage)) {
+			searchEntity = SearchEntity.getLexEntities().get(0);
+		} else if (StringUtils.equals(SYN_SEARCH_PAGE, searchPage)) {
+			searchEntity = SearchEntity.getLexEntities().get(0);
+		} else if (StringUtils.equals(TERM_SEARCH_PAGE, searchPage)) {
+			searchEntity = SearchEntity.getTermEntities().get(0);
+		}
+		searchKey = searchEntity.getKeys()[0];
+		searchOperand = searchKey.getOperands()[0];
 		SearchFilter detailSearch = new SearchFilter();
 		SearchCriterion defaultCriterion = new SearchCriterion();
-		defaultCriterion.setSearchKey(SearchKey.VALUE);
-		defaultCriterion.setSearchOperand(SearchKey.VALUE.getOperands()[0]);
+		defaultCriterion.setSearchKey(searchKey);
+		defaultCriterion.setSearchOperand(searchOperand);
 		SearchCriterionGroup searchGroup = new SearchCriterionGroup();
-		searchGroup.setEntity(SearchEntity.HEADWORD);
+		searchGroup.setEntity(searchEntity);
 		searchGroup.setSearchCriteria(asList(defaultCriterion));
 		detailSearch.setCriteriaGroups(asList(searchGroup));
 		return detailSearch;
