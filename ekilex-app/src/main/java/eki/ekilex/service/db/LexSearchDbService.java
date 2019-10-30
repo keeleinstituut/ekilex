@@ -603,7 +603,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
 						.and(l2.ID.ne(l1.ID))
 						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
-						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l2.WORD_ID.eq(w2.ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
