@@ -116,6 +116,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		lexemeValueStateCodes.putAll(tempCodes);
 		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.VALUE_STATE.name());
 		lexemeValueStateCodes.putAll(tempCodes);
+		lexemeValueStateCodes.replace("variant", "rööptermin");
 
 		meaningAndLexemeProcessStateCodes = new HashMap<>();
 		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
