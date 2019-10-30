@@ -1149,6 +1149,7 @@ create index freeform_value_text_idx on freeform(value_text);
 create index freeform_value_text_lower_idx on freeform(lower(value_text));
 create index freeform_type_idx on freeform(type);
 create index freeform_lang_idx on freeform(lang);
+create index freeform_complexity_idx on freeform(complexity);
 create index source_type_idx on source(type);
 create index source_freeform_source_id_idx on source_freeform(source_id);
 create index source_freeform_freeform_id_idx on source_freeform(freeform_id);

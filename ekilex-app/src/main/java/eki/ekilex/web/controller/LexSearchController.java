@@ -82,7 +82,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	@GetMapping(value = LEX_SEARCH_URI + "/**")
 	public String lexSearch(Model model, HttpServletRequest request) throws Exception {
 
-		String searchPage = LEX_SEARCH_PAGE;
+		final String searchPage = LEX_SEARCH_PAGE;
 
 		// if redirect from login arrives
 		initSearchForms(searchPage, model);
@@ -194,8 +194,11 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@PostMapping(LEX_PAGING_URI)
-	public String paging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
-			@RequestParam("direction") String direction) throws Exception {
+	public String paging(
+			@RequestParam("offset") int offset,
+			@RequestParam("searchUri") String searchUri,
+			@RequestParam("direction") String direction,
+			Model model) throws Exception {
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(LEX_SEARCH_PAGE, searchUri);
 
@@ -205,9 +208,9 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean fetchAll = false;
 
-		if ("next".equals(direction)) {
+		if (StringUtils.equals("next", direction)) {
 			offset += MAX_RESULTS_LIMIT;
-		} else if ("previous".equals(direction)) {
+		} else if (StringUtils.equals("previous", direction)) {
 			offset -= MAX_RESULTS_LIMIT;
 		}
 

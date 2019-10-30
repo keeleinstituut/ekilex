@@ -81,7 +81,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	@GetMapping(value = SYN_SEARCH_URI + "/**")
 	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
-		String searchPage = SYN_SEARCH_PAGE;
+		final String searchPage = SYN_SEARCH_PAGE;
 
 		initSearchForms(searchPage, model);
 		resetUserRole(model);

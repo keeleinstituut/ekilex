@@ -136,8 +136,11 @@ public class TermSearchController extends AbstractSearchController implements Sy
 	}
 
 	@PostMapping(TERM_PAGING_URI)
-	public String paging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
-			@RequestParam("direction") String direction) throws Exception {
+	public String paging(
+			@RequestParam("offset") int offset,
+			@RequestParam("searchUri") String searchUri,
+			@RequestParam("direction") String direction,
+			Model model) throws Exception {
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(TERM_SEARCH_PAGE, searchUri);
 
