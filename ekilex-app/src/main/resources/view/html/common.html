@@ -83,7 +83,7 @@
             aria-selected="true">Lihtotsing</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:classappend="${searchMode != 'SIMPLE'} ? 'active':''"
+          <a class="nav-link" th:classappend="${searchMode == 'DETAIL'} ? 'active':''"
             id="detailSearchModeBtn"
             th:text="#{'search.mode.DETAIL'}"
             data-toggle="tab"

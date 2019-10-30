@@ -44,6 +44,7 @@ import org.jooq.Record1;
 import org.jooq.Record11;
 import org.jooq.Record7;
 import org.jooq.SelectField;
+import org.jooq.SelectOrderByStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -150,7 +151,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				Condition where2 = l1.WORD_ID.eq(w1.ID);
 				where2 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
 
-				where = composeWordLifecycleLogFilters(searchCriteria, searchDatasetsRestriction, w1, where);
+				where = composeWordLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_ON, searchCriteria, searchDatasetsRestriction, w1, where);
+				where = composeWordLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_BY, searchCriteria, searchDatasetsRestriction, w1, where);
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
 
@@ -300,10 +302,11 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return negativeExistCriteria;
 	}
 
-	private Condition composeWordLifecycleLogFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition wherew1) throws Exception {
+	private Condition composeWordLifecycleLogFilters(
+			SearchKey searchKey, List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition wherew1) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_ON) && c.getSearchValue() != null)
+				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
 				.collect(toList());
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
@@ -317,24 +320,34 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		MeaningLifecycleLog mll = MEANING_LIFECYCLE_LOG.as("mll");
 		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
 
-		Condition condwll = wll.WORD_ID.eq(w1.ID).and(wll.LIFECYCLE_LOG_ID.eq(ll.ID));
-		Condition condlll = lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID)).and(l1.WORD_ID.eq(w1.ID));
+		Condition condwll = wll.LIFECYCLE_LOG_ID.eq(ll.ID);
+		Condition condlll = lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID));
 		condlll = applyDatasetRestrictions(l1, searchDatasetsRestriction, condlll);
-		Condition condmll = mll.MEANING_ID.eq(m1.ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID)).and(l1.MEANING_ID.eq(m1.ID)).and(l1.WORD_ID.eq(w1.ID));
+		Condition condmll = mll.MEANING_ID.eq(m1.ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID)).and(l1.MEANING_ID.eq(m1.ID));
 		condmll = applyDatasetRestrictions(l1, searchDatasetsRestriction, condmll);
 
-		for (SearchCriterion criterion : filteredCriteria) {
-			condwll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condwll, false);
-			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condlll, false);
-			condmll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ll.EVENT_ON, condmll, false);
+		Field<?> searchField = null;
+		boolean isOnLowerValue = false;
+		if (searchKey.equals(SearchKey.CREATED_OR_UPDATED_ON)) {
+			searchField = ll.EVENT_ON;
+			isOnLowerValue = false;
+		} else if (searchKey.equals(SearchKey.CREATED_OR_UPDATED_BY)) {
+			searchField = ll.EVENT_BY;
+			isOnLowerValue = true;
 		}
 
-		Condition existwml = DSL.exists(DSL
-				.select(wll.ID).from(ll, wll).where(condwll)
-				.unionAll(DSL.select(lll.ID).from(ll, lll, l1).where(condlll))
-				.unionAll(DSL.select(mll.ID).from(ll, mll, l1, m1).where(condmll)));
+		for (SearchCriterion criterion : filteredCriteria) {
+			condwll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condwll, isOnLowerValue);
+			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condlll, isOnLowerValue);
+			condmll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condmll, isOnLowerValue);
+		}
 
-		return wherew1.and(existwml);
+		SelectOrderByStep<Record1<Long>> wmlSelect = DSL
+				.select(wll.WORD_ID).from(ll, wll).where(condwll)
+				.unionAll(DSL.select(l1.WORD_ID).from(ll, lll, l1).where(condlll))
+				.unionAll(DSL.select(l1.WORD_ID).from(ll, mll, l1, m1).where(condmll));
+
+		return wherew1.and(w1.ID.in(wmlSelect));
 	}
 
 	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset) {

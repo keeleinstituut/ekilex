@@ -43,7 +43,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 	@RequestMapping(value = TERM_SEARCH_URI, method = RequestMethod.GET)
 	public String initSearch(Model model) {
 
-		initSearchForms(model);
+		initSearchForms(TERM_SEARCH_PAGE, model);
 		resetUserRole(model);
 
 		MeaningsResult meaningsResult = new MeaningsResult();
@@ -63,7 +63,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(selectedDatasets, detailSearchFilter, resultLang, sessionBean);
+		formDataCleanup(TERM_SEARCH_PAGE, selectedDatasets, detailSearchFilter, resultLang, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -77,17 +77,19 @@ public class TermSearchController extends AbstractSearchController implements Sy
 	@GetMapping(value = TERM_SEARCH_URI + "/**")
 	public String termSearch(Model model, HttpServletRequest request) throws Exception {
 
+		final String searchPage = TERM_SEARCH_PAGE;
+
 		// if redirect from login arrives
-		initSearchForms(model);
+		initSearchForms(searchPage, model);
 		resetUserRole(model);
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), TERM_SEARCH_URI);
 		logger.debug(searchUri);
 
-		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
+		SearchUriData searchUriData = searchHelper.parseSearchUri(searchPage, searchUri);
 
 		if (!searchUriData.isValid()) {
-			initSearchForms(model);
+			initSearchForms(searchPage, model);
 			model.addAttribute("meaningsResult", new MeaningsResult());
 			model.addAttribute("invalidSearch", true);
 			return TERM_SEARCH_PAGE;
@@ -99,6 +101,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+
 		boolean fetchAll = false;
 
 		MeaningsResult meaningsResult;
@@ -136,7 +139,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 	public String paging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
 			@RequestParam("direction") String direction) throws Exception {
 
-		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
+		SearchUriData searchUriData = searchHelper.parseSearchUri(TERM_SEARCH_PAGE, searchUri);
 
 		SessionBean sessionBean = getSessionBean(model);
 		String resultLang = sessionBean.getResultLang();

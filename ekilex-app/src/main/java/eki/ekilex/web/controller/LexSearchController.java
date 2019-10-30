@@ -49,7 +49,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	@GetMapping(value = LEX_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
 
-		initSearchForms(model);
+		initSearchForms(LEX_SEARCH_PAGE, model);
 		resetUserRole(model);
 
 		WordsResult wordsResult = new WordsResult();
@@ -68,7 +68,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(selectedDatasets, detailSearchFilter, null, sessionBean);
+		formDataCleanup(LEX_SEARCH_PAGE, selectedDatasets, detailSearchFilter, null, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -82,17 +82,19 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	@GetMapping(value = LEX_SEARCH_URI + "/**")
 	public String lexSearch(Model model, HttpServletRequest request) throws Exception {
 
+		String searchPage = LEX_SEARCH_PAGE;
+
 		// if redirect from login arrives
-		initSearchForms(model);
+		initSearchForms(searchPage, model);
 		resetUserRole(model);
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), LEX_SEARCH_URI);
 		logger.debug(searchUri);
 
-		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
+		SearchUriData searchUriData = searchHelper.parseSearchUri(searchPage, searchUri);
 
 		if (!searchUriData.isValid()) {
-			initSearchForms(model);
+			initSearchForms(searchPage, model);
 			model.addAttribute("wordsResult", new WordsResult());
 			model.addAttribute("invalidSearch", true);
 			return LEX_SEARCH_PAGE;
@@ -195,7 +197,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	public String paging(Model model, @RequestParam("offset") int offset, @RequestParam("searchUri") String searchUri,
 			@RequestParam("direction") String direction) throws Exception {
 
-		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
+		SearchUriData searchUriData = searchHelper.parseSearchUri(LEX_SEARCH_PAGE, searchUri);
 
 		String searchMode = searchUriData.getSearchMode();
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();

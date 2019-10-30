@@ -199,19 +199,23 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
 			condition = condition.and(textTypeSearchFieldCase.contains(searchValueStr));
 		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
-			condition = condition.and(DSL.field("to_tsvector('simple',{0}) @@ to_tsquery('simple',{1})",
-					Boolean.class,
-					searchField, DSL.inline(searchValueStr)));
+			condition = condition.and(DSL.field(
+					"to_tsvector('simple', {0}) @@ to_tsquery('simple', {1})",
+					Boolean.class, searchField, DSL.inline(searchValueStr)));
 		} else if (SearchOperand.EARLIER_THAN.equals(searchOperand)) {
 			Date date = dateFormat.parse(searchValueStr);
 			@SuppressWarnings("unchecked")
 			Field<Timestamp> tsSearchField = (Field<Timestamp>) searchField;
-			condition = condition.and(tsSearchField.le(new Timestamp(date.getTime())));
+			condition = condition.and(DSL.field(
+					"(date_part('epoch', {0}) * 1000) <= {1}",
+					Boolean.class, tsSearchField, DSL.inline(date.getTime())));
 		} else if (SearchOperand.LATER_THAN.equals(searchOperand)) {
 			Date date = dateFormat.parse(searchValueStr);
 			@SuppressWarnings("unchecked")
 			Field<Timestamp> tsSearchField = (Field<Timestamp>) searchField;
-			condition = condition.and(tsSearchField.ge(new Timestamp(date.getTime())));
+			condition = condition.and(DSL.field(
+					"(date_part('epoch', {0}) * 1000) >= {1}",
+					Boolean.class, tsSearchField, DSL.inline(date.getTime())));
 		} else {
 			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
 		}

@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.web.util.SearchHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller

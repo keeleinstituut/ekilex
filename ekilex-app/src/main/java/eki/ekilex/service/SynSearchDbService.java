@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 		WordRelation opposite = WORD_RELATION.as("opposite");
 
-		Table homonymCount = create.select(FORM.VALUE, WORD.HOMONYM_NR)
+		Table<Record2<String, Integer>> homonymCount = create.select(FORM.VALUE, WORD.HOMONYM_NR)
 				.from(FORM, PARADIGM, WORD, LEXEME)
 				.where(FORM.PARADIGM_ID.eq(PARADIGM.ID)
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
@@ -230,38 +230,6 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.groupBy(w2.ID, f2.VALUE, l2.ID)
 				.orderBy(f2.VALUE)
 				.fetchInto(SynMeaningWord.class);
-	}
-
-	@Deprecated
-	public Integer getExistingFormOtherHomonymsCount(String formValue, Integer existingHomonym) {
-		return create
-				.select(DSL.count(DSL.val(1)))
-				.from(FORM, PARADIGM, WORD)
-				.where(
-						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-							.and(PARADIGM.WORD_ID.eq(WORD.ID))
-							.and(FORM.VALUE.eq(formValue))
-							.and(FORM.MODE.eq(FormMode.WORD.name()))
-							.and(WORD.HOMONYM_NR.ne(existingHomonym))
-				)
-				.fetchSingleInto(Integer.class);
-	}
-
-	@Deprecated
-	public String getFirstDetailedDefinition(Long wordId) {
-		Record1<String> result = create
-				.select(DEFINITION.VALUE)
-				.from(LEXEME, MEANING, DEFINITION)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-							.and(MEANING.ID.eq(LEXEME.MEANING_ID))
-							.and(DEFINITION.MEANING_ID.eq(MEANING.ID))
-							.and(DEFINITION.COMPLEXITY.like("DETAIL%"))
-						)
-				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, DEFINITION.ORDER_BY)
-				.limit(1)
-				.fetchOne();
-		return  result != null ? result.into(String.class) : null;
 	}
 
 }

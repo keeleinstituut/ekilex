@@ -47,7 +47,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	@GetMapping(value = SYN_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
 
-		initSearchForms(model);
+		initSearchForms(SYN_SEARCH_PAGE, model);
 		resetUserRole(model);
 
 		WordsResult wordsResult = new WordsResult();
@@ -65,7 +65,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(null, detailSearchFilter, null, sessionBean);
+		formDataCleanup(SYN_SEARCH_PAGE, null, detailSearchFilter, null, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -81,16 +81,18 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	@GetMapping(value = SYN_SEARCH_URI + "/**")
 	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
-		initSearchForms(model);
+		String searchPage = SYN_SEARCH_PAGE;
+
+		initSearchForms(searchPage, model);
 		resetUserRole(model);
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYN_SEARCH_URI);
 		logger.debug(searchUri);
 
-		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
+		SearchUriData searchUriData = searchHelper.parseSearchUri(searchPage, searchUri);
 
 		if (!searchUriData.isValid()) {
-			initSearchForms(model);
+			initSearchForms(searchPage, model);
 			model.addAttribute("wordsResult", new WordsResult());
 			model.addAttribute("noResults", true);
 			return SYN_SEARCH_PAGE;
