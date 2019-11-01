@@ -100,6 +100,9 @@
       </th:block>
       <div class="navbar-nav" th:classappend="${searchMode} ? '':'ml-auto'">
         <th:block sec:authorize="isAuthenticated()">
+          <a class="btn btn-primary mr-3" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex">
+            <i class="fa fa-fw fa-envelope" aria-hidden="true"></i> Abi
+          </a>
           <div id="userMenuDropDown" class="dropdown user-menu">
             <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown">
               <span class="d-flex flex-wrap">
