@@ -55,7 +55,7 @@ public class MaintenanceService implements SystemConstant {
 	public void userCacheEvict() {
 	}
 
-	@Scheduled(fixedDelay = DELETE_FLOATING_DATA_DELAY, initialDelay = 5000)
+	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_4_AM)
 	@Transactional
 	public void deleteFloatingData() {
 

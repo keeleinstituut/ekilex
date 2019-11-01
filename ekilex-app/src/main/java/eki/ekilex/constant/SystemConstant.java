@@ -14,7 +14,7 @@ public interface SystemConstant {
 
 	long CACHE_EVICT_DELAY_60MIN = 60 * 60 * 1000;
 
-	long DELETE_FLOATING_DATA_DELAY = 24 * 60 * 60 * 1000;
+	String DELETE_FLOATING_DATA_TIME_4_AM = "0 0 4 * * *";
 
 	String CLASSIF_LABEL_LANG_EST = "est";
 
