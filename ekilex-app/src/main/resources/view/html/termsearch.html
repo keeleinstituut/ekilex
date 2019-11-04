@@ -429,6 +429,16 @@
                 <div th:replace="termdialog :: add_image_source_link_dlg"></div>
                 <div class="invisible-buttons action-buttons-anchor w-100">
                   <img class="w-25" th:src="@{'/files/images/' + ${image.fileName}}">
+                  <span class="invisible-buttons">
+                    <button  type="button" class="btn badge badge-warning align-bottom"
+                            title="Kustuta pilt"
+                            data-op-code="meaning_image"
+                            th:data-id="${image.id}"
+                            data-toggle="delete-confirm"
+                            sec:authorize="${#vars.isMeaningCrudGranted}">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                  </span>
                   <span th:if="${#strings.isEmpty(image.title)}">
                     <button type="button" class="btn badge badge-success align-bottom"
                       title="Lisa pealkiri"
@@ -443,14 +453,6 @@
                       th:data-target="${'#addImageSourceLinkDlg_' + image.id}"
                       sec:authorize="${#vars.isMeaningCrudGranted}">
                       <i class="fa fa-external-link" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning align-bottom"
-                      title="Kustuta pilt"
-                      data-op-code="meaning_image"
-                      th:data-id="${image.id}"
-                      data-toggle="delete-confirm"
-                      sec:authorize="${#vars.isMeaningCrudGranted}">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                   </span>
                 </div>
