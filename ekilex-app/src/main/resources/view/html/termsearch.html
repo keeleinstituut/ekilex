@@ -680,16 +680,6 @@
                   </button>
                 </div>
                 <div class="ml-2">
-                  <form th:action="@{/wordjoin}" method="get">
-                    <input type="hidden" name="wordId" th:value="${lexeme.wordId}">
-                    <input type="hidden" name="meaningId" th:value="${meaningId}">
-                    <button type="submit" class="btn btn-sm btn-primary"
-                      title="Ühenda keelendid"
-                      sec:authorize="${#vars.isWordCrudGranted}"
-                      th:if="${!lexeme.affixoid}">Ühenda</button>
-                  </form>
-                </div>
-                <div class="ml-2">
                   <button type="button" class="btn btn-warning font-weight-bold btn-sm"
                     th:data-id="${lexeme.lexemeId}"
                     data-op-code="lexeme"

@@ -64,8 +64,6 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "order_by")
 	private Long orderBy;
 
-	private Boolean affixoid;
-
 	private List<Classifier> wordTypes;
 
 	private List<Classifier> pos;
@@ -226,14 +224,6 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
-	}
-
-	public Boolean getAffixoid() {
-		return affixoid;
-	}
-
-	public void setAffixoid(Boolean affixoid) {
-		this.affixoid = affixoid;
 	}
 
 	public List<Classifier> getWordTypes() {

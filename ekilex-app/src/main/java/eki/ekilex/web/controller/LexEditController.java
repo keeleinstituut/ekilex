@@ -23,20 +23,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.util.UriUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.web.util.SearchHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexEditController extends AbstractPageController {
+public class LexEditController extends AbstractPageController implements SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(LexEditController.class);
 
@@ -189,6 +192,35 @@ public class LexEditController extends AbstractPageController {
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(response);
+	}
+
+	@GetMapping(WORD_JOIN_URI)
+	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model) {
+
+		Long userId = userService.getAuthenticatedUser().getId();
+		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
+		WordDetails firstWordDetails = lookupService.getWordJoinDetails(wordId);
+		Word firstWord = firstWordDetails.getWord();
+		String firstWordValue = firstWord.getValue();
+
+		String encodedWordValue = UriUtils.encode(firstWordValue, UTF_8);
+		String backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
+		List<WordDetails> wordDetailsList = lookupService
+				.getWordDetailsOfJoinCandidates(firstWordValue, wordId, userPreferredDatasetCodes, userPermDatasetCodes);
+
+		model.addAttribute("firstWordDetails", firstWordDetails);
+		model.addAttribute("wordDetailsList", wordDetailsList);
+		model.addAttribute("backUrl", backUrl);
+		return WORD_JOIN_PAGE;
+	}
+
+	@PostMapping(WORD_JOIN_URI)
+	public String joinWords(@RequestParam("targetWordId") Long targetWordId, @RequestParam("sourceWordIds") List<Long> sourceWordIds,
+			@RequestParam("backUrl") String backUrl) {
+
+		compositionService.joinWords(targetWordId, sourceWordIds);
+		return "redirect:" + backUrl;
 	}
 
 }
