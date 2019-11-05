@@ -12945,10 +12945,6 @@ eki-stress {
   font-weight: bold;
 }
 
-.word-value eki-highlight {
-  font-weight: normal;
-}
-
 eki-sub {
   vertical-align: sub;
   font-size: 70%;

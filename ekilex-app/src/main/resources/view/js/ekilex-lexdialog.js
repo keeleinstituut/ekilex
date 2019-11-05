@@ -97,3 +97,8 @@ $(document).on("show.bs.modal", "[id^=addLexemeGrammarDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editWordVocalFormDlg_]", function() {
 	initGenericTextEditDlg($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=editWordValueDlg_]", function(e) {
+	initWordValueEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
