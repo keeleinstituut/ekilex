@@ -98,6 +98,7 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -192,6 +193,7 @@ public class Indexes {
     public static final Index FORM_FREQUENCY_PKEY = Indexes0.FORM_FREQUENCY_PKEY;
     public static final Index FORM_FREQUENCY_SOURCE_NAME_IDX = Indexes0.FORM_FREQUENCY_SOURCE_NAME_IDX;
     public static final Index FORM_FREQUENCY_WORD_VALUE_IDX = Indexes0.FORM_FREQUENCY_WORD_VALUE_IDX;
+    public static final Index FREEFORM_COMPLEXITY_IDX = Indexes0.FREEFORM_COMPLEXITY_IDX;
     public static final Index FREEFORM_LANG_IDX = Indexes0.FREEFORM_LANG_IDX;
     public static final Index FREEFORM_PARENT_ID_IDX = Indexes0.FREEFORM_PARENT_ID_IDX;
     public static final Index FREEFORM_PKEY = Indexes0.FREEFORM_PKEY;
@@ -355,6 +357,10 @@ public class Indexes {
     public static final Index WORD_ETYM_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.WORD_ETYM_SOURCE_LINK_SOURCE_ID_IDX;
     public static final Index WORD_ETYM_SOURCE_LINK_WORD_ETYM_ID_IDX = Indexes0.WORD_ETYM_SOURCE_LINK_WORD_ETYM_ID_IDX;
     public static final Index WORD_ETYMOLOGY_SOURCE_LINK_PKEY = Indexes0.WORD_ETYMOLOGY_SOURCE_LINK_PKEY;
+    public static final Index WORD_FREEFORM_FREEFORM_ID_IDX = Indexes0.WORD_FREEFORM_FREEFORM_ID_IDX;
+    public static final Index WORD_FREEFORM_PKEY = Indexes0.WORD_FREEFORM_PKEY;
+    public static final Index WORD_FREEFORM_WORD_ID_FREEFORM_ID_KEY = Indexes0.WORD_FREEFORM_WORD_ID_FREEFORM_ID_KEY;
+    public static final Index WORD_FREEFORM_WORD_ID_IDX = Indexes0.WORD_FREEFORM_WORD_ID_IDX;
     public static final Index WORD_GROUP_PKEY = Indexes0.WORD_GROUP_PKEY;
     public static final Index WORD_GROUP_MEMBER_GROUP_ID_IDX = Indexes0.WORD_GROUP_MEMBER_GROUP_ID_IDX;
     public static final Index WORD_GROUP_MEMBER_PKEY = Indexes0.WORD_GROUP_MEMBER_PKEY;
@@ -451,6 +457,7 @@ public class Indexes {
         public static Index FORM_FREQUENCY_PKEY = Internal.createIndex("form_frequency_pkey", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.ID }, true);
         public static Index FORM_FREQUENCY_SOURCE_NAME_IDX = Internal.createIndex("form_frequency_source_name_idx", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.SOURCE_NAME }, false);
         public static Index FORM_FREQUENCY_WORD_VALUE_IDX = Internal.createIndex("form_frequency_word_value_idx", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.WORD_VALUE }, false);
+        public static Index FREEFORM_COMPLEXITY_IDX = Internal.createIndex("freeform_complexity_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.COMPLEXITY }, false);
         public static Index FREEFORM_LANG_IDX = Internal.createIndex("freeform_lang_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.LANG }, false);
         public static Index FREEFORM_PARENT_ID_IDX = Internal.createIndex("freeform_parent_id_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.PARENT_ID }, false);
         public static Index FREEFORM_PKEY = Internal.createIndex("freeform_pkey", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.ID }, true);
@@ -614,6 +621,10 @@ public class Indexes {
         public static Index WORD_ETYM_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("word_etym_source_link_source_id_idx", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, new OrderField[] { WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID }, false);
         public static Index WORD_ETYM_SOURCE_LINK_WORD_ETYM_ID_IDX = Internal.createIndex("word_etym_source_link_word_etym_id_idx", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, new OrderField[] { WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYM_ID }, false);
         public static Index WORD_ETYMOLOGY_SOURCE_LINK_PKEY = Internal.createIndex("word_etymology_source_link_pkey", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, new OrderField[] { WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.ID }, true);
+        public static Index WORD_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("word_freeform_freeform_id_idx", WordFreeform.WORD_FREEFORM, new OrderField[] { WordFreeform.WORD_FREEFORM.FREEFORM_ID }, false);
+        public static Index WORD_FREEFORM_PKEY = Internal.createIndex("word_freeform_pkey", WordFreeform.WORD_FREEFORM, new OrderField[] { WordFreeform.WORD_FREEFORM.ID }, true);
+        public static Index WORD_FREEFORM_WORD_ID_FREEFORM_ID_KEY = Internal.createIndex("word_freeform_word_id_freeform_id_key", WordFreeform.WORD_FREEFORM, new OrderField[] { WordFreeform.WORD_FREEFORM.WORD_ID, WordFreeform.WORD_FREEFORM.FREEFORM_ID }, true);
+        public static Index WORD_FREEFORM_WORD_ID_IDX = Internal.createIndex("word_freeform_word_id_idx", WordFreeform.WORD_FREEFORM, new OrderField[] { WordFreeform.WORD_FREEFORM.WORD_ID }, false);
         public static Index WORD_GROUP_PKEY = Internal.createIndex("word_group_pkey", WordGroup.WORD_GROUP, new OrderField[] { WordGroup.WORD_GROUP.ID }, true);
         public static Index WORD_GROUP_MEMBER_GROUP_ID_IDX = Internal.createIndex("word_group_member_group_id_idx", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.WORD_GROUP_ID }, false);
         public static Index WORD_GROUP_MEMBER_PKEY = Internal.createIndex("word_group_member_pkey", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.ID }, true);

@@ -112,6 +112,7 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -166,7 +167,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1120175900;
+    private static final long serialVersionUID = -1597801353;
 
     /**
      * The reference instance of <code>public</code>
@@ -714,6 +715,11 @@ public class Public extends SchemaImpl {
     public final WordEtymologySourceLink WORD_ETYMOLOGY_SOURCE_LINK = eki.ekilex.data.db.tables.WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK;
 
     /**
+     * The table <code>public.word_freeform</code>.
+     */
+    public final WordFreeform WORD_FREEFORM = eki.ekilex.data.db.tables.WordFreeform.WORD_FREEFORM;
+
+    /**
      * The table <code>public.word_group</code>.
      */
     public final WordGroup WORD_GROUP = eki.ekilex.data.db.tables.WordGroup.WORD_GROUP;
@@ -896,6 +902,8 @@ public class Public extends SchemaImpl {
             Sequences.WORD_ETYMOLOGY_RELATION_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_SOURCE_LINK_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_SOURCE_LINK_ORDER_BY_SEQ,
+            Sequences.WORD_FREEFORM_ID_SEQ,
+            Sequences.WORD_FREEFORM_ORDER_BY_SEQ,
             Sequences.WORD_GROUP_ID_SEQ,
             Sequences.WORD_GROUP_MEMBER_ID_SEQ,
             Sequences.WORD_GROUP_MEMBER_ORDER_BY_SEQ,
@@ -1029,6 +1037,7 @@ public class Public extends SchemaImpl {
             WordEtymology.WORD_ETYMOLOGY,
             WordEtymologyRelation.WORD_ETYMOLOGY_RELATION,
             WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,
+            WordFreeform.WORD_FREEFORM,
             WordGroup.WORD_GROUP,
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,

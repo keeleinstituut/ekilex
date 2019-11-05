@@ -640,6 +640,17 @@ create table word_etymology_relation
 );
 alter sequence word_etymology_relation_id_seq restart with 10000;
 
+-- keelendi vabavorm
+create table word_freeform
+(
+	id bigserial primary key,
+	word_id bigint references word(id) on delete cascade not null,
+	freeform_id bigint references freeform(id) on delete cascade not null,
+	order_by bigserial,
+	unique(word_id, freeform_id)
+);
+alter sequence word_freeform_id_seq restart with 10000;
+
 create table word_lifecycle_log
 (
   id bigserial primary key,
@@ -1157,6 +1168,8 @@ create index meaning_freeform_meaning_id_idx on meaning_freeform(meaning_id);
 create index meaning_freeform_freeform_id_idx on meaning_freeform(freeform_id);
 create index lexeme_freeform_lexeme_id_idx on lexeme_freeform(lexeme_id);
 create index lexeme_freeform_freeform_id_idx on lexeme_freeform(freeform_id);
+create index word_freeform_word_id_idx on word_freeform(word_id);
+create index word_freeform_freeform_id_idx on word_freeform(freeform_id);
 create index definition_freeform_definition_id_idx on definition_freeform(definition_id);
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
 create index collocation_freeform_collocation_id_idx on collocation_freeform(collocation_id);
