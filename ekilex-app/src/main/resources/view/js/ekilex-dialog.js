@@ -44,6 +44,11 @@ $(document).on("show.bs.modal", "[id^=editLexemePublicNoteDlg_]", function(e) {
 	alignAndFocus(e, $(this));
 });
 
+$(document).on("show.bs.modal", "[id^=editWordValueDlg_]", function(e) {
+	initWordValueEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
 $(document).on("show.bs.modal", "[id^=editWordGenderDlg_]", function() {
 	initSelectDlg($(this));
 });
