@@ -200,17 +200,16 @@ public class LexEditController extends AbstractPageController implements SystemC
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
-		WordDetails firstWordDetails = lookupService.getWordJoinDetails(wordId);
-		Word firstWord = firstWordDetails.getWord();
-		String firstWordValue = firstWord.getValue();
+		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId);
+		Word targetWord = targetWordDetails.getWord();
+		String targetWordValue = targetWord.getValue();
 
-		String encodedWordValue = UriUtils.encode(firstWordValue, UTF_8);
+		String encodedWordValue = UriUtils.encode(targetWordValue, UTF_8);
 		String backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
-		List<WordDetails> wordDetailsList = lookupService
-				.getWordDetailsOfJoinCandidates(firstWordValue, wordId, userPreferredDatasetCodes, userPermDatasetCodes);
+		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(targetWord, userPreferredDatasetCodes, userPermDatasetCodes);
 
-		model.addAttribute("firstWordDetails", firstWordDetails);
-		model.addAttribute("wordDetailsList", wordDetailsList);
+		model.addAttribute("targetWordDetails", targetWordDetails);
+		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
 		model.addAttribute("backUrl", backUrl);
 		return WORD_JOIN_PAGE;
 	}

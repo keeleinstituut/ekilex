@@ -66,8 +66,7 @@
                   <input type="hidden" name="wordId" th:value="${details.word.wordId}">
                   <button type="submit" class="btn btn-secondary btn-compact"
                     title="Ühenda keelendid"
-                    sec:authorize="${#vars.isWordCrudGranted}"
-                    th:if="${!details.word.prefixoid && !details.word.suffixoid}">Ühenda</button>
+                    sec:authorize="${#vars.isWordCrudGranted}">Ühenda</button>
                 </form>
               </div>
               <div sec:authorize="${#vars.isWordCrudGranted}" class="ml-auto d-flex align-items-center flex-row">

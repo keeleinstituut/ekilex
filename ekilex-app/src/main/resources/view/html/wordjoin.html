@@ -20,50 +20,50 @@
       </div>
       <div class="card-body">
         <div class="border rounded p-2">
-          <div th:if="${firstWordDetails != null}">
+          <div th:if="${targetWordDetails != null}">
             <input type="checkbox" class="mt-2" checked="checked" th:disabled="true"/>
-            <span th:utext="${firstWordDetails.word.value}" class="ttl ml-2"></span>
-            <span th:text="${firstWordDetails.word.homonymNumber}" th:if="${firstWordDetails.word.homonymNumber > 0}"></span>
-            <span th:text="${'(' + viewUtil.getLangIso2(firstWordDetails.word.language) + ')'}" class="ml-2"></span>
-            <div th:if="${firstWordDetails.firstDefinitionValue != null}">
-              <span th:utext="${firstWordDetails.firstDefinitionValue}"></span>
+            <span th:utext="${targetWordDetails.word.value}" class="ttl ml-2"></span>
+            <span th:text="${targetWordDetails.word.homonymNumber}" th:if="${targetWordDetails.word.homonymNumber > 0}"></span>
+            <span th:text="${'(' + viewUtil.getLangIso2(targetWordDetails.word.language) + ')'}" class="ml-2"></span>
+            <div th:if="${targetWordDetails.firstDefinitionValue != null}">
+              <span th:utext="${targetWordDetails.firstDefinitionValue}"></span>
             </div>
-            <th:block th:replace=":: gender(${firstWordDetails})"></th:block>
-            <th:block th:replace=":: word_types(${firstWordDetails})"></th:block>
-            <th:block th:replace=":: aspect_code(${firstWordDetails})"></th:block>
-            <th:block th:replace=":: etymology(${firstWordDetails})"></th:block>
+            <th:block th:replace=":: gender(${targetWordDetails})"></th:block>
+            <th:block th:replace=":: word_types(${targetWordDetails})"></th:block>
+            <th:block th:replace=":: aspect_code(${targetWordDetails})"></th:block>
+            <th:block th:replace=":: etymology(${targetWordDetails})"></th:block>
           </div>
         </div>
       </div>
-      <div class="card-body" th:if="${#lists.isEmpty(wordDetailsList)}">
+      <div class="card-body" th:if="${#lists.isEmpty(sourceWordDetailsList)}">
         <span th:text="#{word.join.not.found}">Not found.</span>
       </div>
-      <div class="card-body" th:if="${not #lists.isEmpty(wordDetailsList)}">
+      <div class="card-body" th:if="${not #lists.isEmpty(sourceWordDetailsList)}">
         <form th:action="@{/wordjoin}" method="post">
-          <input type="hidden" name="targetWordId" th:value="${firstWordDetails.word.wordId}">
+          <input type="hidden" name="targetWordId" th:value="${targetWordDetails.word.wordId}">
           <input type="hidden" name="backUrl" th:value="${backUrl}">
             <button type="button" class="btn btn-primary" id="joinWordsBtn"
                     data-toggle="join-confirm"
                     data-placement="right"
                     disabled>Ühenda valitud keelendid
             </button>
-          <div class="border border-dark rounded mt-2 mb-2 p-2" th:each="wordDetails : ${wordDetailsList}">
-            <div th:if="${wordDetails != null}"
-                 th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordDetails.word.wordId, ''WORD'', ''DATASET:CRUD'')')}">
+          <div class="border border-dark rounded mt-2 mb-2 p-2" th:each="sourceWordDetails : ${sourceWordDetailsList}">
+            <div th:if="${sourceWordDetails != null}"
+                 th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.sourceWordDetails.word.wordId, ''WORD'', ''DATASET:CRUD'')')}">
               <div class="d-flex align-items-center flex-wrap mb-2">
                 <input name="sourceWordIds" type="checkbox" class="mt-2"
-                       th:value="${wordDetails.word.wordId}"
-                       th:if="${wordDetails.word.wordId != firstWordDetails.word.wordId}"
+                       th:value="${sourceWordDetails.word.wordId}"
+                       th:if="${sourceWordDetails.word.wordId != targetWordDetails.word.wordId}"
                        sec:authorize="${#vars.isWordCrudGranted}"/>
-                <span th:utext="${wordDetails.word.value}" class="ttl ml-2"></span>
-                <span th:text="${wordDetails.word.homonymNumber}" th:if="${wordDetails.word.homonymNumber > 0}" class="ml-2"></span>
-                <span th:text="${'(' + viewUtil.getLangIso2(wordDetails.word.language) + ')'}" class="ml-2"></span>
+                <span th:utext="${sourceWordDetails.word.value}" class="ttl ml-2"></span>
+                <span th:text="${sourceWordDetails.word.homonymNumber}" th:if="${sourceWordDetails.word.homonymNumber > 0}" class="ml-2"></span>
+                <span th:text="${'(' + viewUtil.getLangIso2(sourceWordDetails.word.language) + ')'}" class="ml-2"></span>
               </div>
-              <th:block th:replace=":: gender(${wordDetails})"></th:block>
-              <th:block th:replace=":: word_types(${wordDetails})"></th:block>
-              <th:block th:replace=":: aspect_code(${wordDetails})"></th:block>
-              <th:block th:replace=":: etymology(${wordDetails})"></th:block>
-              <div class="border rounded mb-2 p-2" th:each="lexeme : ${wordDetails.lexemes}">
+              <th:block th:replace=":: gender(${sourceWordDetails})"></th:block>
+              <th:block th:replace=":: word_types(${sourceWordDetails})"></th:block>
+              <th:block th:replace=":: aspect_code(${sourceWordDetails})"></th:block>
+              <th:block th:replace=":: etymology(${sourceWordDetails})"></th:block>
+              <div class="border rounded mb-2 p-2" th:each="lexeme : ${sourceWordDetails.lexemes}">
                 <div class="d-flex align-items-center flex-wrap">
                   <span th:if="${lexeme.levels != null}" class="pr-2">
                     <span class="bubble" th:text="${lexeme.levels}">
