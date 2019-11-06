@@ -3,6 +3,8 @@ package eki.ekilex.test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -17,8 +19,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.TermMeaning;
+import eki.ekilex.data.TermSearchResult;
+import eki.ekilex.data.TypeTermMeaningWord;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @RunWith(SpringRunner.class)
@@ -45,14 +49,24 @@ public class TermSearchServiceTest implements SystemConstant {
 		SearchDatasetsRestriction searchDatasetsRestriction = createDefaultSearchDatasetsRestriction();
 
 		String wordWithMetaCharacters = "hall*";
-		SearchResultMode resultMode = SearchResultMode.MEANING;
+		TermSearchResult termSearchResult;
+		SearchResultMode resultMode;
 		String resultLang = null;
 		boolean fetchAll = true;
 
-		TermSearchResult termSearchResult = termSearchDbService.getTermSearchResult(
+		resultMode = SearchResultMode.MEANING;
+		termSearchResult = termSearchDbService.getTermSearchResult(
 				wordWithMetaCharacters, searchDatasetsRestriction, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 20, termSearchResult.getMeaningCount());
+		assertEquals("Incorrect count of matches", 9, termSearchResult.getWordCount());
+
+		resultMode = SearchResultMode.WORD;
+		termSearchResult = termSearchDbService.getTermSearchResult(
+				wordWithMetaCharacters, searchDatasetsRestriction, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+
+		assertEquals("Incorrect count of matches", 20, termSearchResult.getMeaningCount());
+		assertEquals("Incorrect count of matches", 6, termSearchResult.getWordCount());
 	}
 
 	private SearchDatasetsRestriction createDefaultSearchDatasetsRestriction() {

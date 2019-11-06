@@ -663,7 +663,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 	}
 
 	private int executeCountMeaningsMeaningMode(Table<Record3<Long, Long, Long[]>> m) {
-		return create.fetchCount(DSL.select(m.field("meaning_id")).from(m));
+		return create.fetchCount(DSL.selectDistinct(m.field("meaning_id")).from(m));
 	}
 
 	private int executeCountWordsMeaningMode(Table<Record3<Long, Long, Long[]>> m, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
@@ -680,10 +680,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 		return create
 				.fetchCount(DSL
-						.select(wo.ID)
+						.selectDistinct(wo.ID)
 						.from(m
 								.innerJoin(lo).on(
-										lo.MEANING_ID.eq(m.field("word_id", Long.class))
+										lo.MEANING_ID.eq(m.field("meaning_id", Long.class))
 												.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
 												.and(wherelods))
 								.innerJoin(wo).on(wherewo)));
@@ -779,7 +779,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewm = wherewm.and(wm.LANG.eq(resultLang));
 		}
 
-		return create.fetchCount(DSL.select(wm.ID).from(wmid.innerJoin(wm).on(wherewm)));
+		return create.fetchCount(DSL.selectDistinct(wm.ID).from(wmid.innerJoin(wm).on(wherewm)));
 	}
 
 	private TermSearchResult composeResult(
