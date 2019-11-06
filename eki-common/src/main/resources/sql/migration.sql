@@ -8,11 +8,11 @@ insert into word_rel_mapping (code1, code2) values ('head', 'ühend');
 
 create table word_freeform
 (
-	id bigserial primary key,
-	word_id bigint references word(id) on delete cascade not null,
-	freeform_id bigint references freeform(id) on delete cascade not null,
-	order_by bigserial,
-	unique(word_id, freeform_id)
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  freeform_id bigint references freeform(id) on delete cascade not null,
+  order_by bigserial,
+  unique(word_id, freeform_id)
 );
 alter sequence word_freeform_id_seq restart with 10000;
 

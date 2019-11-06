@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
@@ -61,6 +62,10 @@ public class MaintenanceDbService implements DbConstant {
 						.select(COLLOCATION_FREEFORM.ID)
 						.from(COLLOCATION_FREEFORM)
 						.where(COLLOCATION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
+				.andNotExists(DSL
+						.select(WORD_FREEFORM.ID)
+						.from(WORD_FREEFORM)
+						.where(WORD_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
 				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}

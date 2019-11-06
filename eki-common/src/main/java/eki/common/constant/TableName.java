@@ -33,6 +33,7 @@ public interface TableName {
 	String WORD_GROUP = "word_group";
 	String WORD_LIFECYCLE_LOG = "word_lifecycle_log";
 	String WORD_PROCESS_LOG = "word_process_log";
+	String WORD_FREEFORM = "word_freeform";
 	String LEXEME = "lexeme";
 	String LEXEME_POS = "lexeme_pos";
 	String LEXEME_DERIV = "lexeme_deriv";

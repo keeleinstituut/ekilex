@@ -107,6 +107,9 @@ public class DatasetDbService {
 		// delete colloc freeforms
 		helper.deleteCollocationFreeforms(datasetCode, create);
 
+		// delete word freeforms
+		helper.deleteWordFreeforms(datasetCode, create);
+
 		// delete definitions
 		helper.deleteDefinitions(datasetCode, create);
 
@@ -128,8 +131,17 @@ public class DatasetDbService {
 			create.deleteFrom(MEANING).where(MEANING.ID.in(wordIds)).execute();
 		}
 
-		// delete process log
+		// delete process logs
 		create.deleteFrom(PROCESS_LOG).where(PROCESS_LOG.DATASET_CODE.eq(datasetCode)).execute();
+
+		// delete word lifecycle logs
+		helper.deleteWordLifecycleLogs(datasetCode, create);
+
+		// delete lexeme lifecycle logs
+		helper.deleteLexemeLifecycleLogs(datasetCode, create);
+
+		// delete meaning lifecycle logs
+		helper.deleteMeaningLifecycleLogs(datasetCode, create);
 
 		// delete dataset
 		create.delete(DATASET).where(DATASET.CODE.eq(datasetCode)).execute();

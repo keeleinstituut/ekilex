@@ -8,10 +8,15 @@ import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
+import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 
 import java.util.List;
 
@@ -28,9 +33,14 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeLifecycleLog;
+import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordLifecycleLog;
 
 @Component
 public class DatasetDbServiceHelper {
@@ -180,6 +190,32 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
+
+	public void deleteWordFreeforms(String datasetCode, DSLContext create) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Freeform ff = FREEFORM.as("ff");
+		WordFreeform wff = WORD_FREEFORM.as("wff");
+
+		create
+				.deleteFrom(ff)
+				.where(ff.ID.in(DSL
+						.select(wff.FREEFORM_ID)
+						.from(wff)
+						.whereExists(DSL
+								.select(l1.ID)
+								.from(l1)
+								.where(l1.WORD_ID.eq(wff.WORD_ID)
+										.and(l1.DATASET_CODE.eq(datasetCode))))
+						.andNotExists(DSL
+								.select(l2.ID)
+								.from(l2)
+								.where(l2.WORD_ID.eq(wff.WORD_ID)
+										.and(l2.DATASET_CODE.ne(datasetCode))))))
+				.execute();
+	}
+
 	public void deleteDefinitions(String datasetCode, DSLContext create) {
 
 		Definition d = DEFINITION.as("d");
@@ -219,6 +255,77 @@ public class DatasetDbServiceHelper {
 								.select(l2.ID)
 								.from(l2)
 								.where(l2.ID.eq(lc.LEXEME_ID).and(l2.DATASET_CODE.ne(datasetCode))))))
+				.execute();
+	}
+
+	public void deleteWordLifecycleLogs(String datasetCode, DSLContext create) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		LifecycleLog lcl = LIFECYCLE_LOG.as("lcl");
+		WordLifecycleLog wlcl = WORD_LIFECYCLE_LOG.as("wlcl");
+
+		create
+				.deleteFrom(lcl)
+				.where(lcl.ID.in(DSL
+						.select(wlcl.LIFECYCLE_LOG_ID)
+						.from(wlcl)
+						.whereExists(DSL
+								.select(l1.ID)
+								.from(l1)
+								.where(l1.WORD_ID.eq(wlcl.WORD_ID)
+										.and(l1.DATASET_CODE.eq(datasetCode))))
+						.andNotExists(DSL
+								.select(l2.ID)
+								.from(l2)
+								.where(l2.WORD_ID.eq(wlcl.WORD_ID)
+										.and(l2.DATASET_CODE.ne(datasetCode))))))
+				.execute();
+	}
+
+	public void deleteLexemeLifecycleLogs(String datasetCode, DSLContext create) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		LifecycleLog lcl = LIFECYCLE_LOG.as("lcl");
+		LexemeLifecycleLog llcl = LEXEME_LIFECYCLE_LOG.as("llcl");
+
+		create
+				.deleteFrom(lcl)
+				.where(lcl.ID.in(DSL
+						.select(llcl.LIFECYCLE_LOG_ID)
+						.from(llcl)
+						.whereExists(DSL
+								.select(l1.ID)
+								.from(l1)
+								.where(l1.ID.eq(llcl.LEXEME_ID).and(l1.DATASET_CODE.eq(datasetCode))))
+						.andNotExists(DSL
+								.select(l2.ID)
+								.from(l2)
+								.where(l2.ID.eq(llcl.LEXEME_ID).and(l2.DATASET_CODE.ne(datasetCode))))))
+				.execute();
+	}
+
+	public void deleteMeaningLifecycleLogs(String datasetCode, DSLContext create) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		LifecycleLog lcl = LIFECYCLE_LOG.as("lcl");
+		MeaningLifecycleLog mlcl = MEANING_LIFECYCLE_LOG.as("mlcl");
+
+		create
+				.deleteFrom(lcl)
+				.where(lcl.ID.in(DSL
+						.select(mlcl.LIFECYCLE_LOG_ID)
+						.from(mlcl)
+						.whereExists(DSL
+								.select(l1.ID)
+								.from(l1)
+								.where(l1.MEANING_ID.eq(mlcl.MEANING_ID).and(l1.DATASET_CODE.eq(datasetCode))))
+						.andNotExists(DSL
+								.select(l2.ID)
+								.from(l2)
+								.where(l2.MEANING_ID.eq(mlcl.MEANING_ID).and(l2.DATASET_CODE.ne(datasetCode))))))
 				.execute();
 	}
 }

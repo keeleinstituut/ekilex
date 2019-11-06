@@ -129,6 +129,8 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(WORD, WORD_LIFECYCLE_LOG, LIFECYCLE_LOG));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_PROCESS_LOG));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_PROCESS_LOG, PROCESS_LOG));
+		tablesHierarchyPaths.add(composePath(WORD, WORD_FREEFORM));
+		tablesHierarchyPaths.add(composePath(WORD, WORD_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_RELATION));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK));
