@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.common.constant.DbConstant;
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Freeform;
+import eki.ekilex.data.util.FreeformRowMapper;
 
 @Component
 public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant {
@@ -32,9 +36,17 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 
 	private static final String SQL_SELECT_WORD_HOMONYMS_WORD_IDS = "sql/select_word_homonyms_word_ids.sql";
 
+	private static final String SQL_SELECT_WORD_FREEFORMS = "sql/select_word_freeforms.sql";
+
+	private static final String SQL_UPDATE_WORD_FREEFORMS_WHERE_FREEFORM_ID_IN_LIST = "sql/update_word_freeforms_where_freeform_id_in_list.sql";
+
 	private String sqlSelectWordJoinCandidatesValueAndWordIds;
 
 	private String sqlSelectWordHomonymsWordIds;
+
+	private String sqlSelectWordFreeforms;
+
+	private String sqlUpdateWordFreeformsWhereFreeformIdInList;
 
 	private String sqlSelectWordLexemesMaxFirstLevel = "select max(lex.level1) from " + LEXEME + " lex where lex.word_id = :wordId";
 
@@ -49,6 +61,9 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 
 	private String sqlDeleteMeaningFreeforms =
 			"delete from " + FREEFORM + " ff where ff.id in(select mff.freeform_id from " + MEANING_FREEFORM + " mff where mff.meaning_id = :meaningId)";
+
+	private String sqlDeleteWordFreeforms =
+			"delete from " + FREEFORM + " ff where ff.id in(select wff.freeform_id from " + WORD_FREEFORM + " wff where wff.word_id = :wordId)";
 
 	private String sqlSelectMeaningDefinitionIds = "select def.id from " + DEFINITION + " def where def.meaning_id = :meaningId";
 
@@ -89,6 +104,12 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_HOMONYMS_WORD_IDS);
 		sqlSelectWordHomonymsWordIds = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_FREEFORMS);
+		sqlSelectWordFreeforms = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_UPDATE_WORD_FREEFORMS_WHERE_FREEFORM_ID_IN_LIST);
+		sqlUpdateWordFreeformsWhereFreeformIdInList = getContent(resourceFileInputStream);
 
 		excludedWordTypeCodes = new ArrayList<>();
 		excludedWordTypeCodes.add(WORD_TYPE_CODE_PREFIXOID);
@@ -199,20 +220,35 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 
 	private void joinWordData(Long firstWordId, Long secondWordId) throws Exception {
 
+		joinWordFreeforms(firstWordId, secondWordId);
+
 		Map<String, Object> criteriaParamMap;
 		Map<String, Object> valueParamMap;
+		List<String> notExistsFields;
 
 		criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word1_id", secondWordId);
 		valueParamMap = new HashMap<>();
 		valueParamMap.put("word1_id", firstWordId);
-		basicDbService.update(WORD_RELATION, criteriaParamMap, valueParamMap);
+		notExistsFields = new ArrayList<>();
+		notExistsFields.add("word_rel_type_code");
+		basicDbService.updateIfNotExists(WORD_RELATION, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word2_id", secondWordId);
 		valueParamMap = new HashMap<>();
 		valueParamMap.put("word2_id", firstWordId);
-		basicDbService.update(WORD_RELATION, criteriaParamMap, valueParamMap);
+		notExistsFields = new ArrayList<>();
+		notExistsFields.add("word_rel_type_code");
+		basicDbService.updateIfNotExists(WORD_RELATION, criteriaParamMap, valueParamMap, notExistsFields);
+
+		criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("word_id", secondWordId);
+		valueParamMap = new HashMap<>();
+		valueParamMap.put("word_id", firstWordId);
+		notExistsFields = new ArrayList<>();
+		notExistsFields.add("word_type_code");
+		basicDbService.updateIfNotExists(WORD_WORD_TYPE, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", secondWordId);
@@ -236,14 +272,6 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		criteriaParamMap.put("word_id", secondWordId);
 		valueParamMap = new HashMap<>();
 		valueParamMap.put("word_id", firstWordId);
-		List<String> notExistsFields = new ArrayList<>();
-		notExistsFields.add("word_type_code");
-		basicDbService.updateIfNotExists(WORD_WORD_TYPE, criteriaParamMap, valueParamMap, notExistsFields);
-
-		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word_id", secondWordId);
-		valueParamMap = new HashMap<>();
-		valueParamMap.put("word_id", firstWordId);
 		basicDbService.update(WORD_PROCESS_LOG, criteriaParamMap, valueParamMap);
 
 		criteriaParamMap = new HashMap<>();
@@ -257,6 +285,46 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		valueParamMap = new HashMap<>();
 		valueParamMap.put("homonym_nr", DEFAULT_HOMONYM_NUMBER);
 		basicDbService.update(WORD, criteriaParamMap, valueParamMap);
+	}
+
+	private void joinWordFreeforms(Long wordId, Long sourceWordId) throws Exception {
+
+		FreeformRowMapper freeformRowMapper = new FreeformRowMapper();
+		Map<String, Object> paramMap;
+
+		paramMap = new HashMap<>();
+		paramMap.put("wordId", wordId);
+		List<Freeform> wordFreeforms = basicDbService.getResults(sqlSelectWordFreeforms, paramMap, freeformRowMapper);
+
+		paramMap = new HashMap<>();
+		paramMap.put("wordId", sourceWordId);
+		List<Freeform> sourceWordFreeforms = basicDbService.getResults(sqlSelectWordFreeforms, paramMap, freeformRowMapper);
+
+		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(wordFreeforms, sourceWordFreeforms);
+
+		paramMap = new HashMap<>();
+		paramMap.put("wordId", wordId);
+		paramMap.put("sourceWordId", sourceWordId);
+		paramMap.put("nonDublicateFreeformIds", nonDublicateFreeformIds);
+		basicDbService.executeScript(sqlUpdateWordFreeformsWhereFreeformIdInList, paramMap);
+
+		paramMap = new HashMap<>();
+		paramMap.put("wordId", sourceWordId);
+		basicDbService.executeScript(sqlDeleteWordFreeforms, paramMap);
+	}
+
+	private List<Long> getNonDuplicateFreeformIds(List<Freeform> targetFreeforms, List<Freeform> sourceFreeforms) {
+
+		return sourceFreeforms.stream()
+				.filter(sf -> targetFreeforms.stream()
+						.noneMatch(
+								tf -> tf.getType().equals(sf.getType()) &&
+								((Objects.nonNull(tf.getValueText()) && tf.getValueText().equals(sf.getValueText())) ||
+								(Objects.nonNull(tf.getValueNumber()) && tf.getValueNumber().equals(sf.getValueNumber())) ||
+								(Objects.nonNull(tf.getClassifCode()) && tf.getClassifCode().equals(sf.getClassifCode())) ||
+								(Objects.nonNull(tf.getValueDate()) && tf.getValueDate().equals(sf.getValueDate())))))
+				.map(Freeform::getFreeformId)
+				.collect(Collectors.toList());
 	}
 
 	private void joinLexemeData(Long firstWordId, Long secondWordId) throws Exception {

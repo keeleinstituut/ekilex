@@ -29,6 +29,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
@@ -284,21 +285,19 @@ public class CompositionDbService implements DbConstant {
 				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))))
 				.fetch();
 
-		List<Long> nonDublicateFreeformIds = sourceLexemeFreeforms.stream()
-				.filter(slf -> lexemeFreeforms.stream()
-						.noneMatch(
-								lf -> lf.getType().equals(slf.getType()) &&
-								((Objects.nonNull(lf.getValueText()) && lf.getValueText().equals(slf.getValueText())) ||
-								(Objects.nonNull(lf.getValueNumber()) && lf.getValueNumber().equals(slf.getValueNumber())) ||
-								(Objects.nonNull(lf.getClassifCode()) && lf.getClassifCode().equals(slf.getClassifCode())) ||
-								(Objects.nonNull(lf.getValueDate()) && lf.getValueDate().equals(slf.getValueDate())))))
-				.map(FreeformRecord::getId)
-				.collect(Collectors.toList());
+		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(lexemeFreeforms, sourceLexemeFreeforms);
 
 		create.update(LEXEME_FREEFORM)
 				.set(LEXEME_FREEFORM.LEXEME_ID, lexemeId)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)
 						.and(LEXEME_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
+				.execute();
+
+		create.delete(FREEFORM)
+				.where(FREEFORM.ID.in(DSL
+						.select(LEXEME_FREEFORM.FREEFORM_ID)
+						.from(LEXEME_FREEFORM)
+						.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))))
 				.execute();
 
 		create.delete(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)).execute();
@@ -345,22 +344,30 @@ public class CompositionDbService implements DbConstant {
 	}
 
 	private void joinMeaningFreeforms(Long meaningId, Long sourceMeaningId) {
-		Result<FreeformRecord> meaningFreeforms = create.selectFrom(FREEFORM)
+
+		Result<FreeformRecord> meaningFreeforms = create
+				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))))
 				.fetch();
 		Result<FreeformRecord> sourceMeaningFreeforms = create.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))))
 				.fetch();
-		List<Long> nonDublicateFreeformIds = sourceMeaningFreeforms.stream()
-				.filter(sf -> meaningFreeforms.stream()
-						.noneMatch(mf -> mf.getType().equals(sf.getType()) && ((Objects.nonNull(mf.getValueText()) && mf.getValueText().equals(sf.getValueText())) ||
-								(Objects.nonNull(mf.getValueNumber()) && mf.getValueNumber().equals(sf.getValueNumber())) ||
-								(Objects.nonNull(mf.getClassifCode()) && mf.getClassifCode().equals(sf.getClassifCode())) ||
-								(Objects.nonNull(mf.getValueDate()) && mf.getValueDate().equals(sf.getValueDate())))))
-				.map(FreeformRecord::getId)
-				.collect(Collectors.toList());
-		create.update(MEANING_FREEFORM).set(MEANING_FREEFORM.MEANING_ID, meaningId)
-				.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId).and(MEANING_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds))).execute();
+
+		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(meaningFreeforms, sourceMeaningFreeforms);
+
+		create.update(MEANING_FREEFORM)
+				.set(MEANING_FREEFORM.MEANING_ID, meaningId)
+				.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)
+						.and(MEANING_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
+				.execute();
+
+		create.delete(FREEFORM)
+				.where(FREEFORM.ID.in(DSL
+						.select(MEANING_FREEFORM.FREEFORM_ID)
+						.from(MEANING_FREEFORM)
+						.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))))
+				.execute();
+
 		create.delete(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)).execute();
 	}
 
@@ -683,7 +690,9 @@ public class CompositionDbService implements DbConstant {
 
 	public void joinWordData(Long wordId, Long sourceWordId) {
 
+		joinWordFreeforms(wordId, sourceWordId);
 		joinWordRelations(wordId, sourceWordId);
+		joinWordTypeCodes(wordId, sourceWordId);
 
 		create.update(WORD_GROUP_MEMBER)
 				.set(WORD_GROUP_MEMBER.WORD_ID, wordId)
@@ -700,8 +709,6 @@ public class CompositionDbService implements DbConstant {
 				.where(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID.eq(sourceWordId))
 				.execute();
 
-		joinWordTypeCodes(wordId, sourceWordId);
-
 		create.update(WORD_PROCESS_LOG)
 				.set(WORD_PROCESS_LOG.WORD_ID, wordId)
 				.where(WORD_PROCESS_LOG.WORD_ID.eq(sourceWordId))
@@ -711,6 +718,35 @@ public class CompositionDbService implements DbConstant {
 				.set(WORD_LIFECYCLE_LOG.WORD_ID, wordId)
 				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(sourceWordId))
 				.execute();
+	}
+
+	private void joinWordFreeforms(Long wordId, Long sourceWordId) {
+
+		Result<FreeformRecord> wordFreeforms = create
+				.selectFrom(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(WORD_FREEFORM.FREEFORM_ID).from(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(wordId))))
+				.fetch();
+		Result<FreeformRecord> sourceWordFreeforms = create
+				.selectFrom(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(WORD_FREEFORM.FREEFORM_ID).from(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(sourceWordId))))
+				.fetch();
+
+		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(wordFreeforms, sourceWordFreeforms);
+
+		create.update(WORD_FREEFORM)
+				.set(WORD_FREEFORM.WORD_ID, wordId)
+				.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId)
+						.and(WORD_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
+				.execute();
+
+		create.delete(FREEFORM)
+				.where(FREEFORM.ID.in(DSL
+						.select(WORD_FREEFORM.FREEFORM_ID)
+						.from(WORD_FREEFORM)
+						.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId))))
+				.execute();
+
+		create.delete(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(sourceWordId)).execute();
 	}
 
 	private void joinWordRelations(Long wordId, Long sourceWordId) {
@@ -778,6 +814,20 @@ public class CompositionDbService implements DbConstant {
 						LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchOneInto(Integer.class);
+	}
+
+	private List<Long> getNonDuplicateFreeformIds(List<FreeformRecord> targetFreeforms, List<FreeformRecord> sourceFreeforms) {
+
+		return sourceFreeforms.stream()
+				.filter(sf -> targetFreeforms.stream()
+						.noneMatch(
+								tf -> tf.getType().equals(sf.getType()) &&
+								((Objects.nonNull(tf.getValueText()) && tf.getValueText().equals(sf.getValueText())) ||
+								(Objects.nonNull(tf.getValueNumber()) && tf.getValueNumber().equals(sf.getValueNumber())) ||
+								(Objects.nonNull(tf.getClassifCode()) && tf.getClassifCode().equals(sf.getClassifCode())) ||
+								(Objects.nonNull(tf.getValueDate()) && tf.getValueDate().equals(sf.getValueDate())))))
+				.map(FreeformRecord::getId)
+				.collect(Collectors.toList());
 	}
 
 	public void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2) {

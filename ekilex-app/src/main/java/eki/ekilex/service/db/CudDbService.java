@@ -29,6 +29,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
@@ -900,6 +901,12 @@ public class CudDbService implements DbConstant {
 						.select(WORD_PROCESS_LOG.PROCESS_LOG_ID)
 						.from(WORD_PROCESS_LOG)
 						.where(WORD_PROCESS_LOG.WORD_ID.eq(wordId))))
+				.execute();
+		create.delete(FREEFORM)
+				.where(FREEFORM.ID.in(DSL
+						.select(WORD_FREEFORM.FREEFORM_ID)
+						.from(WORD_FREEFORM)
+						.where(WORD_FREEFORM.WORD_ID.eq(wordId))))
 				.execute();
 		create.delete(WORD)
 				.where(WORD.ID.eq(wordId))

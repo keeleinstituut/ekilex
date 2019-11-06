@@ -273,7 +273,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		String sql;
 		int deletedRecordCount;
 
-		// freeforms
+		// delete freeforms
 		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteDefinitionFreeformsForDataset(), paramMap);
 		logger.debug("Deleted {} definition freeforms in \"{}\"", deletedRecordCount, dataset);
 
@@ -285,6 +285,23 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteCollocationFreeformsForDataset(), paramMap);
 		logger.debug("Deleted {} collocation freeforms in \"{}\"", deletedRecordCount, dataset);
+
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteWordFreeformsForDataset(), paramMap);
+		logger.debug("Deleted {} word freeforms in \"{}\"", deletedRecordCount, dataset);
+
+		// delete lifecycle logs
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteWordLifecycleLogsForDataset(), paramMap);
+		logger.debug("Deleted {} word lifecycle logs in \"{}\"", deletedRecordCount, dataset);
+
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteLexemeLifecycleLogsForDataset(), paramMap);
+		logger.debug("Deleted {} lexeme lifecycle logs in \"{}\"", deletedRecordCount, dataset);
+
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteMeaningLifecycleLogsForDataset(), paramMap);
+		logger.debug("Deleted {} meaning lifecycle logs in \"{}\"", deletedRecordCount, dataset);
+
+		// delete process logs
+		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteProcessLogsForDataset(), paramMap);
+		logger.debug("Deleted {} process logs in \"{}\"", deletedRecordCount, dataset);
 
 		// delete definitions
 		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteDefinitionsForDataset(), paramMap);

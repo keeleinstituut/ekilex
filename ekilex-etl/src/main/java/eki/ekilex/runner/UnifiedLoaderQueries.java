@@ -30,6 +30,11 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_DELETE_COLLOCATION_FF_FOR_DATASET = "sql/delete_collocation_freeforms_for_dataset.sql";
 	private static final String SQL_DELETE_COLLOCATIONS_FOR_DATASET = "sql/delete_collocations_for_dataset.sql";
 	private static final String SQL_DELETE_LEXEME_FF_FOR_DATASET = "sql/delete_lexeme_freeforms_for_dataset.sql";
+	private static final String SQL_DELETE_WORD_FF_FOR_DATASET = "sql/delete_word_freeforms_for_dataset.sql";
+	private static final String SQL_DELETE_WORD_LC_LOGS_FOR_DATASET = "sql/delete_word_lifecycle_logs_for_dataset.sql";
+	private static final String SQL_DELETE_LEXEME_LC_LOGS_FOR_DATASET = "sql/delete_lexeme_lifecycle_logs_for_dataset.sql";
+	private static final String SQL_DELETE_MEANING_LC_LOGS_FOR_DATASET = "sql/delete_meaning_lifecycle_logs_for_dataset.sql";
+	private static final String SQL_DELETE_PROCESS_LOGS_FOR_DATASET = "sql/delete_process_logs_for_dataset.sql";
 
 	private String sqlSelectWordIdsForDatasetByLexeme;
 	private String sqlSelectWordIdsForDatasetByGuid;
@@ -51,8 +56,13 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlDeleteDefinitionFreeformsForDataset;
 	private String sqlDeleteMeaningFreeformsForDataset;
 	private String sqlDeleteCollocationFreeformsForDataset;
+	private String sqlDeleteWordFreeformsForDataset;
 	private String sqlDeleteCollocationsForDataset;
 	private String sqlDeleteLexemeFreeformsForDataset;
+	private String sqlDeleteWordLifecycleLogsForDataset;
+	private String sqlDeleteLexemeLifecycleLogsForDataset;
+	private String sqlDeleteMeaningLifecycleLogsForDataset;
+	private String sqlDeleteProcessLogsForDataset;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -120,11 +130,26 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_COLLOCATION_FF_FOR_DATASET);
 		sqlDeleteCollocationFreeformsForDataset = getContent(resourceFileInputStream);
 
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_WORD_FF_FOR_DATASET);
+		sqlDeleteWordFreeformsForDataset = getContent(resourceFileInputStream);
+
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_COLLOCATIONS_FOR_DATASET);
 		sqlDeleteCollocationsForDataset = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_LEXEME_FF_FOR_DATASET);
 		sqlDeleteLexemeFreeformsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_WORD_LC_LOGS_FOR_DATASET);
+		sqlDeleteWordLifecycleLogsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_LEXEME_LC_LOGS_FOR_DATASET);
+		sqlDeleteLexemeLifecycleLogsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_MEANING_LC_LOGS_FOR_DATASET);
+		sqlDeleteMeaningLifecycleLogsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_PROCESS_LOGS_FOR_DATASET);
+		sqlDeleteProcessLogsForDataset = getContent(resourceFileInputStream);
 	}
 
 	public String getSqlSelectWordIdsForDatasetByLexeme() {
@@ -207,11 +232,31 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 		return sqlDeleteCollocationFreeformsForDataset;
 	}
 
+	public String getSqlDeleteWordFreeformsForDataset() {
+		return sqlDeleteWordFreeformsForDataset;
+	}
+
 	public String getSqlDeleteCollocationsForDataset() {
 		return sqlDeleteCollocationsForDataset;
 	}
 
 	public String getSqlDeleteLexemeFreeformsForDataset() {
 		return sqlDeleteLexemeFreeformsForDataset;
+	}
+
+	public String getSqlDeleteWordLifecycleLogsForDataset() {
+		return sqlDeleteWordLifecycleLogsForDataset;
+	}
+
+	public String getSqlDeleteLexemeLifecycleLogsForDataset() {
+		return sqlDeleteLexemeLifecycleLogsForDataset;
+	}
+
+	public String getSqlDeleteMeaningLifecycleLogsForDataset() {
+		return sqlDeleteMeaningLifecycleLogsForDataset;
+	}
+
+	public String getSqlDeleteProcessLogsForDataset() {
+		return sqlDeleteProcessLogsForDataset;
 	}
 }
