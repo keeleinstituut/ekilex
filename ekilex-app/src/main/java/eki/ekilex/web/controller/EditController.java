@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriUtils;
 
 import eki.common.constant.ContentKey;
 import eki.common.constant.LifecycleEntity;
@@ -39,7 +38,6 @@ import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
-import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CompositionService;
@@ -642,41 +640,6 @@ public class EditController extends AbstractPageController implements SystemCons
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, valuePrese);
 		cudService.updateWordValue(wordId, valuePrese);
 		return valuePrese;
-	}
-
-	@GetMapping(WORD_JOIN_URI)
-	public String showWordJoin(@RequestParam("wordId") Long wordId, @RequestParam(name = "meaningId", required = false) Long meaningId, Model model) {
-
-		Long userId = userService.getAuthenticatedUser().getId();
-		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
-		WordDetails firstWordDetails = lookupService.getWordJoinDetails(wordId);
-		Word firstWord = firstWordDetails.getWord();
-		String firstWordValue = firstWord.getValue();
-
-		String encodedWordValue = UriUtils.encode(firstWordValue, UTF_8);
-		String backUrl;
-		if (meaningId != null) {
-			backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_TERM_SEARCH;
-		} else {
-			backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
-		}
-
-		List<WordDetails> wordDetailsList = lookupService
-				.getWordDetailsOfJoinCandidates(firstWordValue, wordId, userPreferredDatasetCodes, userPermDatasetCodes);
-
-		model.addAttribute("firstWordDetails", firstWordDetails);
-		model.addAttribute("wordDetailsList", wordDetailsList);
-		model.addAttribute("backUrl", backUrl);
-		return WORD_JOIN_PAGE;
-	}
-
-	@PostMapping(WORD_JOIN_URI)
-	public String joinWords(@RequestParam("targetWordId") Long targetWordId, @RequestParam("sourceWordIds") List<Long> sourceWordIds,
-			@RequestParam("backUrl") String backUrl) {
-
-		compositionService.joinWords(targetWordId, sourceWordIds);
-		return "redirect:" + backUrl;
 	}
 
 	@PostMapping(CREATE_RELATIONS_URI)

@@ -80,7 +80,46 @@ public class LookupDbService implements DbConstant {
 				.fetchMap(wordValue, homonymNumbers);
 	}
 
-	public List<Long> getWordIdsOfJoinCandidates(String wordValue, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes, Long wordIdToExclude) {
+	public List<Long> getWordIdsOfJoinCandidates(eki.ekilex.data.Word targetWord, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
+
+		String wordValue = targetWord.getValue();
+		Long wordIdToExclude = targetWord.getWordId();
+		boolean isPrefixoid = targetWord.isPrefixoid();
+		boolean isSuffixoid = targetWord.isSuffixoid();
+
+		Condition whereCondition =
+				FORM.VALUE.like(wordValue)
+						.and(FORM.MODE.eq(FormMode.WORD.name()))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID)).and(LEXEME.WORD_ID.eq(WORD.ID))
+						.and(WORD.ID.ne(wordIdToExclude))
+						.andExists(DSL
+								.select(LEXEME.ID)
+								.from(LEXEME)
+								.where(
+										LEXEME.WORD_ID.eq(WORD.ID)
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+												.and(LEXEME.DATASET_CODE.in(userPrefDatasetCodes))));
+
+		if (isPrefixoid) {
+			whereCondition = whereCondition.andExists(DSL
+					.select(WORD_WORD_TYPE.ID)
+					.from(WORD_WORD_TYPE)
+					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID)));
+		} else if (isSuffixoid) {
+			whereCondition = whereCondition.andExists(DSL
+					.select(WORD_WORD_TYPE.ID)
+					.from(WORD_WORD_TYPE)
+					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_SUFFIXOID)));
+		} else {
+			whereCondition = whereCondition.andNotExists(DSL
+					.select(WORD_WORD_TYPE.ID)
+					.from(WORD_WORD_TYPE)
+					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID)));
+		}
 
 		Table<Record4<Long, Long, String, String>> wl = DSL
 				.select(
@@ -89,25 +128,7 @@ public class LookupDbService implements DbConstant {
 						LEXEME.DATASET_CODE.as("dataset_code"),
 						LEXEME.PROCESS_STATE_CODE.as("process_state_code"))
 				.from(WORD, PARADIGM, FORM, LEXEME)
-				.where(
-						FORM.VALUE.like(wordValue)
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(WORD.ID.ne(wordIdToExclude))
-								.andExists(DSL
-										.select(LEXEME.ID)
-										.from(LEXEME)
-										.where(
-												LEXEME.WORD_ID.eq(WORD.ID)
-														.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-														.and(LEXEME.DATASET_CODE.in(userPrefDatasetCodes))))
-								.andNotExists(DSL
-										.select(WORD_WORD_TYPE.ID)
-										.from(WORD_WORD_TYPE)
-										.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
-										.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
+				.where(whereCondition)
 				.asTable("wl");
 
 		return create

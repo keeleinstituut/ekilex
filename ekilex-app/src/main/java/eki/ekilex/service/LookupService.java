@@ -76,11 +76,10 @@ public class LookupService extends AbstractWordSearchService {
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
-	public List<WordDetails> getWordDetailsOfJoinCandidates(String wordValue, Long wordIdToExclude, List<String> userPrefDatasetCodes,
-			List<String> userPermDatasetCodes) {
+	public List<WordDetails> getWordDetailsOfJoinCandidates(Word targetWord, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
-		List<Long> wordIds = lookupDbService.getWordIdsOfJoinCandidates(wordValue, userPrefDatasetCodes, userPermDatasetCodes, wordIdToExclude);
+		List<Long> wordIds = lookupDbService.getWordIdsOfJoinCandidates(targetWord, userPrefDatasetCodes, userPermDatasetCodes);
 		wordIds.sort(Comparator.comparing(wordId -> !permissionDbService.isGrantedForWord(wordId, userPermDatasetCodes)));
 
 		for (Long wordId : wordIds) {

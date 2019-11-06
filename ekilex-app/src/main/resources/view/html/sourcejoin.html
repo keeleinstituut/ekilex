@@ -4,7 +4,7 @@
 <title th:text="#{source.join.title}">EKILEX allikate ühendamine</title>
 </head>
 <body class="body-with-navbar">
-  <th:block th:replace="common :: nav_bar"></th:block>
+  <th:block th:replace="common :: nav_bar(activeItem = 'sourcejoin')"></th:block>
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <form th:action="@{/sourcesearch}" method="post">

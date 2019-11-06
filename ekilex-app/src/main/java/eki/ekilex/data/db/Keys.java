@@ -98,6 +98,7 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -204,6 +205,7 @@ import eki.ekilex.data.db.tables.records.ValueStateRecord;
 import eki.ekilex.data.db.tables.records.WordEtymologyRecord;
 import eki.ekilex.data.db.tables.records.WordEtymologyRelationRecord;
 import eki.ekilex.data.db.tables.records.WordEtymologySourceLinkRecord;
+import eki.ekilex.data.db.tables.records.WordFreeformRecord;
 import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.tables.records.WordGroupRecord;
 import eki.ekilex.data.db.tables.records.WordGuidRecord;
@@ -318,6 +320,7 @@ public class Keys {
     public static final Identity<WordEtymologyRecord, Long> IDENTITY_WORD_ETYMOLOGY = Identities0.IDENTITY_WORD_ETYMOLOGY;
     public static final Identity<WordEtymologyRelationRecord, Long> IDENTITY_WORD_ETYMOLOGY_RELATION = Identities0.IDENTITY_WORD_ETYMOLOGY_RELATION;
     public static final Identity<WordEtymologySourceLinkRecord, Long> IDENTITY_WORD_ETYMOLOGY_SOURCE_LINK = Identities0.IDENTITY_WORD_ETYMOLOGY_SOURCE_LINK;
+    public static final Identity<WordFreeformRecord, Long> IDENTITY_WORD_FREEFORM = Identities0.IDENTITY_WORD_FREEFORM;
     public static final Identity<WordGroupRecord, Long> IDENTITY_WORD_GROUP = Identities0.IDENTITY_WORD_GROUP;
     public static final Identity<WordGroupMemberRecord, Long> IDENTITY_WORD_GROUP_MEMBER = Identities0.IDENTITY_WORD_GROUP_MEMBER;
     public static final Identity<WordGuidRecord, Long> IDENTITY_WORD_GUID = Identities0.IDENTITY_WORD_GUID;
@@ -448,6 +451,8 @@ public class Keys {
     public static final UniqueKey<WordEtymologyRelationRecord> WORD_ETYMOLOGY_RELATION_PKEY = UniqueKeys0.WORD_ETYMOLOGY_RELATION_PKEY;
     public static final UniqueKey<WordEtymologyRelationRecord> WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_RELATED_WORD_ID_KEY = UniqueKeys0.WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_RELATED_WORD_ID_KEY;
     public static final UniqueKey<WordEtymologySourceLinkRecord> WORD_ETYMOLOGY_SOURCE_LINK_PKEY = UniqueKeys0.WORD_ETYMOLOGY_SOURCE_LINK_PKEY;
+    public static final UniqueKey<WordFreeformRecord> WORD_FREEFORM_PKEY = UniqueKeys0.WORD_FREEFORM_PKEY;
+    public static final UniqueKey<WordFreeformRecord> WORD_FREEFORM_WORD_ID_FREEFORM_ID_KEY = UniqueKeys0.WORD_FREEFORM_WORD_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<WordGroupRecord> WORD_GROUP_PKEY = UniqueKeys0.WORD_GROUP_PKEY;
     public static final UniqueKey<WordGroupMemberRecord> WORD_GROUP_MEMBER_PKEY = UniqueKeys0.WORD_GROUP_MEMBER_PKEY;
     public static final UniqueKey<WordGroupMemberRecord> WORD_GROUP_MEMBER_WORD_GROUP_ID_WORD_ID_KEY = UniqueKeys0.WORD_GROUP_MEMBER_WORD_GROUP_ID_WORD_ID_KEY;
@@ -619,6 +624,8 @@ public class Keys {
     public static final ForeignKey<WordEtymologyRelationRecord, WordRecord> WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_RELATED_WORD_ID_FKEY = ForeignKeys0.WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_RELATED_WORD_ID_FKEY;
     public static final ForeignKey<WordEtymologySourceLinkRecord, WordEtymologyRecord> WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYM_ID_FKEY = ForeignKeys0.WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYM_ID_FKEY;
     public static final ForeignKey<WordEtymologySourceLinkRecord, SourceRecord> WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_FKEY = ForeignKeys0.WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_FKEY;
+    public static final ForeignKey<WordFreeformRecord, WordRecord> WORD_FREEFORM__WORD_FREEFORM_WORD_ID_FKEY = ForeignKeys0.WORD_FREEFORM__WORD_FREEFORM_WORD_ID_FKEY;
+    public static final ForeignKey<WordFreeformRecord, FreeformRecord> WORD_FREEFORM__WORD_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.WORD_FREEFORM__WORD_FREEFORM_FREEFORM_ID_FKEY;
     public static final ForeignKey<WordGroupRecord, WordRelTypeRecord> WORD_GROUP__WORD_GROUP_WORD_REL_TYPE_CODE_FKEY = ForeignKeys0.WORD_GROUP__WORD_GROUP_WORD_REL_TYPE_CODE_FKEY;
     public static final ForeignKey<WordGroupMemberRecord, WordGroupRecord> WORD_GROUP_MEMBER__WORD_GROUP_MEMBER_WORD_GROUP_ID_FKEY = ForeignKeys0.WORD_GROUP_MEMBER__WORD_GROUP_MEMBER_WORD_GROUP_ID_FKEY;
     public static final ForeignKey<WordGroupMemberRecord, WordRecord> WORD_GROUP_MEMBER__WORD_GROUP_MEMBER_WORD_ID_FKEY = ForeignKeys0.WORD_GROUP_MEMBER__WORD_GROUP_MEMBER_WORD_ID_FKEY;
@@ -721,6 +728,7 @@ public class Keys {
         public static Identity<WordEtymologyRecord, Long> IDENTITY_WORD_ETYMOLOGY = Internal.createIdentity(WordEtymology.WORD_ETYMOLOGY, WordEtymology.WORD_ETYMOLOGY.ID);
         public static Identity<WordEtymologyRelationRecord, Long> IDENTITY_WORD_ETYMOLOGY_RELATION = Internal.createIdentity(WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.ID);
         public static Identity<WordEtymologySourceLinkRecord, Long> IDENTITY_WORD_ETYMOLOGY_SOURCE_LINK = Internal.createIdentity(WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.ID);
+        public static Identity<WordFreeformRecord, Long> IDENTITY_WORD_FREEFORM = Internal.createIdentity(WordFreeform.WORD_FREEFORM, WordFreeform.WORD_FREEFORM.ID);
         public static Identity<WordGroupRecord, Long> IDENTITY_WORD_GROUP = Internal.createIdentity(WordGroup.WORD_GROUP, WordGroup.WORD_GROUP.ID);
         public static Identity<WordGroupMemberRecord, Long> IDENTITY_WORD_GROUP_MEMBER = Internal.createIdentity(WordGroupMember.WORD_GROUP_MEMBER, WordGroupMember.WORD_GROUP_MEMBER.ID);
         public static Identity<WordGuidRecord, Long> IDENTITY_WORD_GUID = Internal.createIdentity(WordGuid.WORD_GUID, WordGuid.WORD_GUID.ID);
@@ -849,6 +857,8 @@ public class Keys {
         public static final UniqueKey<WordEtymologyRelationRecord> WORD_ETYMOLOGY_RELATION_PKEY = Internal.createUniqueKey(WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, "word_etymology_relation_pkey", WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.ID);
         public static final UniqueKey<WordEtymologyRelationRecord> WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_RELATED_WORD_ID_KEY = Internal.createUniqueKey(WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, "word_etymology_relation_word_etym_id_related_word_id_key", WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.WORD_ETYM_ID, WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID);
         public static final UniqueKey<WordEtymologySourceLinkRecord> WORD_ETYMOLOGY_SOURCE_LINK_PKEY = Internal.createUniqueKey(WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, "word_etymology_source_link_pkey", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.ID);
+        public static final UniqueKey<WordFreeformRecord> WORD_FREEFORM_PKEY = Internal.createUniqueKey(WordFreeform.WORD_FREEFORM, "word_freeform_pkey", WordFreeform.WORD_FREEFORM.ID);
+        public static final UniqueKey<WordFreeformRecord> WORD_FREEFORM_WORD_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(WordFreeform.WORD_FREEFORM, "word_freeform_word_id_freeform_id_key", WordFreeform.WORD_FREEFORM.WORD_ID, WordFreeform.WORD_FREEFORM.FREEFORM_ID);
         public static final UniqueKey<WordGroupRecord> WORD_GROUP_PKEY = Internal.createUniqueKey(WordGroup.WORD_GROUP, "word_group_pkey", WordGroup.WORD_GROUP.ID);
         public static final UniqueKey<WordGroupMemberRecord> WORD_GROUP_MEMBER_PKEY = Internal.createUniqueKey(WordGroupMember.WORD_GROUP_MEMBER, "word_group_member_pkey", WordGroupMember.WORD_GROUP_MEMBER.ID);
         public static final UniqueKey<WordGroupMemberRecord> WORD_GROUP_MEMBER_WORD_GROUP_ID_WORD_ID_KEY = Internal.createUniqueKey(WordGroupMember.WORD_GROUP_MEMBER, "word_group_member_word_group_id_word_id_key", WordGroupMember.WORD_GROUP_MEMBER.WORD_GROUP_ID, WordGroupMember.WORD_GROUP_MEMBER.WORD_ID);
@@ -1018,6 +1028,8 @@ public class Keys {
         public static final ForeignKey<WordEtymologyRelationRecord, WordRecord> WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_RELATED_WORD_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, "word_etymology_relation__word_etymology_relation_related_word_id_fkey", WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID);
         public static final ForeignKey<WordEtymologySourceLinkRecord, WordEtymologyRecord> WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_ETYMOLOGY_PKEY, WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, "word_etymology_source_link__word_etymology_source_link_word_etym_id_fkey", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYM_ID);
         public static final ForeignKey<WordEtymologySourceLinkRecord, SourceRecord> WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.SOURCE_PKEY, WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, "word_etymology_source_link__word_etymology_source_link_source_id_fkey", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID);
+        public static final ForeignKey<WordFreeformRecord, WordRecord> WORD_FREEFORM__WORD_FREEFORM_WORD_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordFreeform.WORD_FREEFORM, "word_freeform__word_freeform_word_id_fkey", WordFreeform.WORD_FREEFORM.WORD_ID);
+        public static final ForeignKey<WordFreeformRecord, FreeformRecord> WORD_FREEFORM__WORD_FREEFORM_FREEFORM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, WordFreeform.WORD_FREEFORM, "word_freeform__word_freeform_freeform_id_fkey", WordFreeform.WORD_FREEFORM.FREEFORM_ID);
         public static final ForeignKey<WordGroupRecord, WordRelTypeRecord> WORD_GROUP__WORD_GROUP_WORD_REL_TYPE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_REL_TYPE_PKEY, WordGroup.WORD_GROUP, "word_group__word_group_word_rel_type_code_fkey", WordGroup.WORD_GROUP.WORD_REL_TYPE_CODE);
         public static final ForeignKey<WordGroupMemberRecord, WordGroupRecord> WORD_GROUP_MEMBER__WORD_GROUP_MEMBER_WORD_GROUP_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_GROUP_PKEY, WordGroupMember.WORD_GROUP_MEMBER, "word_group_member__word_group_member_word_group_id_fkey", WordGroupMember.WORD_GROUP_MEMBER.WORD_GROUP_ID);
         public static final ForeignKey<WordGroupMemberRecord, WordRecord> WORD_GROUP_MEMBER__WORD_GROUP_MEMBER_WORD_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordGroupMember.WORD_GROUP_MEMBER, "word_group_member__word_group_member_word_id_fkey", WordGroupMember.WORD_GROUP_MEMBER.WORD_ID);

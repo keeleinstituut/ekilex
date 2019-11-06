@@ -68,6 +68,7 @@ drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_lifecycle_log;
 drop table if exists word_process_log;
+drop table if exists word_freeform;
 drop table if exists word_etymology_relation;
 drop table if exists word_etymology;
 drop table if exists word_guid;

@@ -101,7 +101,12 @@ public class SynSearchDbService extends AbstractSearchDbService {
 										.and(opposite.WORD_REL_TYPE_CODE.eq(WORD_RELATION.WORD_REL_TYPE_CODE)))
 								)
 								.leftOuterJoin(WORD_RELATION_PARAM).on(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(WORD_RELATION.ID))
-								.leftOuterJoin(LEXEME).on(LEXEME.WORD_ID.eq(WORD_RELATION.WORD2_ID).and(LEXEME.DATASET_CODE.eq(datasetCode)))
+								.leftOuterJoin(LEXEME)
+									.on(
+										LEXEME.WORD_ID.eq(WORD_RELATION.WORD2_ID)
+												.and(LEXEME.DATASET_CODE.eq(datasetCode))
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+									)
 								.leftOuterJoin(MEANING).on(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID).and(DEFINITION.COMPLEXITY.like("DETAIL%").or(DEFINITION.COMPLEXITY.like("SIMPLE%"))))
 						,

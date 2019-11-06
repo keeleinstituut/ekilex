@@ -66,8 +66,7 @@
                   <input type="hidden" name="wordId" th:value="${details.word.wordId}">
                   <button type="submit" class="btn btn-secondary btn-compact"
                     title="Ühenda keelendid"
-                    sec:authorize="${#vars.isWordCrudGranted}"
-                    th:if="${!details.word.prefixoid && !details.word.suffixoid}">Ühenda</button>
+                    sec:authorize="${#vars.isWordCrudGranted}">Ühenda</button>
                 </form>
               </div>
               <div sec:authorize="${#vars.isWordCrudGranted}" class="ml-auto d-flex align-items-center flex-row">
@@ -429,6 +428,14 @@
                         <div th:replace="lexdialog :: add_image_source_link_dlg"></div>
                         <div class="invisible-buttons action-buttons-anchor w-100">
                           <img class="w-50" th:src="@{'/files/images/' + ${image.fileName}}">
+                          <button type="button" class="btn badge badge-warning align-top"
+                                  title="Kustuta pilt"
+                                  data-op-code="meaning_image"
+                                  th:data-id="${image.id}"
+                                  data-toggle="delete-confirm"
+                                  sec:authorize="${#vars.isMeaningCrudGranted}">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
                           <span th:if="${#strings.isEmpty(image.title)}">
                             <button type="button" class="btn badge badge-success align-bottom"
                               title="Lisa pealkiri"
@@ -443,14 +450,6 @@
                               th:data-target="${'#addImageSourceLinkDlg_' + image.id}"
                               sec:authorize="${#vars.isMeaningCrudGranted}">
                               <i class="fa fa-external-link" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn badge badge-warning align-bottom"
-                              title="Kustuta pilt"
-                              data-op-code="meaning_image"
-                              th:data-id="${image.id}"
-                              data-toggle="delete-confirm"
-                              sec:authorize="${#vars.isMeaningCrudGranted}">
-                              <i class="fa fa-remove" aria-hidden="true"></i>
                             </button>
                           </span>
                         </div>

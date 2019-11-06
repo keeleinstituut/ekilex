@@ -95,6 +95,7 @@ insert into word_rel_mapping (code1, code2) values ('superl', 'posit');
 insert into word_rel_mapping (code1, code2) values ('superl', 'komp');
 insert into word_rel_mapping (code1, code2) values ('deriv', 'deriv_base');
 insert into word_rel_mapping (code1, code2) values ('ühend', 'head');
+insert into word_rel_mapping (code1, code2) values ('head', 'ühend');
 insert into word_rel_mapping (code1, code2) values ('raw', 'raw');
 insert into lex_rel_mapping (code1, code2) values ('comp', 'head');
 insert into lex_rel_mapping (code1, code2) values ('head', 'comp');
