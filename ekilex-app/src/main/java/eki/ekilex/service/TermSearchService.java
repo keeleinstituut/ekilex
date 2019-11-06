@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
 import eki.common.constant.FreeformType;
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Definition;
@@ -26,7 +27,7 @@ import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.MeaningsResult;
+import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
@@ -53,55 +54,58 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
-	public MeaningsResult getMeanings(String searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) {
+	public TermSearchResult getTermSearchResult(String searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) {
 
-		MeaningsResult meaningsResult;
+		TermSearchResult termSearchResult;
 		if (StringUtils.isBlank(searchFilter)) {
-			meaningsResult = new MeaningsResult();
-			meaningsResult.setMeanings(Collections.emptyList());
-			meaningsResult.setMeaningCount(0);
-			meaningsResult.setWordCount(0);
+			termSearchResult = new TermSearchResult();
+			termSearchResult.setResults(Collections.emptyList());
+			termSearchResult.setMeaningCount(0);
+			termSearchResult.setWordCount(0);
+			termSearchResult.setResultCount(0);
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			meaningsResult = termSearchDbService.getMeaningsResult(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
-			conversionUtil.cleanTermMeanings(meaningsResult.getMeanings());
+			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);
+			conversionUtil.cleanTermMeanings(termSearchResult.getResults());
 		}
-		int meaningCount = meaningsResult.getMeaningCount();
-		boolean resultExist = meaningCount > 0;
-		boolean showPaging = meaningCount > MAX_RESULTS_LIMIT;
-		meaningsResult.setResultExist(resultExist);
-		meaningsResult.setShowPaging(showPaging);
+		int resultCount = termSearchResult.getResultCount();
+		boolean resultExist = resultCount > 0;
+		boolean showPaging = resultCount > MAX_RESULTS_LIMIT;
+		termSearchResult.setResultExist(resultExist);
+		termSearchResult.setShowPaging(showPaging);
 		if (showPaging) {
-			setPagingData(offset, meaningCount, meaningsResult);
+			setPagingData(offset, resultCount, termSearchResult);
 		}
 
-		return meaningsResult;
+		return termSearchResult;
 	}
 
 	@Transactional
-	public MeaningsResult getMeanings(SearchFilter searchFilter, List<String> selectedDatasetCodes, String resultLang, boolean fetchAll, int offset) throws Exception {
+	public TermSearchResult getTermSearchResult(
+			SearchFilter searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) throws Exception {
 
-		MeaningsResult meaningsResult;
+		TermSearchResult termSearchResult;
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
-			meaningsResult = new MeaningsResult();
-			meaningsResult.setMeanings(Collections.emptyList());
-			meaningsResult.setMeaningCount(0);
-			meaningsResult.setWordCount(0);
+			termSearchResult = new TermSearchResult();
+			termSearchResult.setResults(Collections.emptyList());
+			termSearchResult.setMeaningCount(0);
+			termSearchResult.setWordCount(0);
+			termSearchResult.setResultCount(0);
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			meaningsResult = termSearchDbService.getMeaningsResult(searchFilter, searchDatasetsRestriction, resultLang, fetchAll, offset);
-			conversionUtil.cleanTermMeanings(meaningsResult.getMeanings());
+			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);
+			conversionUtil.cleanTermMeanings(termSearchResult.getResults());
 		}
-		int meaningCount = meaningsResult.getMeaningCount();
-		boolean resultExist = meaningCount > 0;
-		boolean showPaging = meaningCount > MAX_RESULTS_LIMIT;
-		meaningsResult.setResultExist(resultExist);
-		meaningsResult.setShowPaging(showPaging);
+		int resultCount = termSearchResult.getResultCount();
+		boolean resultExist = resultCount > 0;
+		boolean showPaging = resultCount > MAX_RESULTS_LIMIT;
+		termSearchResult.setResultExist(resultExist);
+		termSearchResult.setShowPaging(showPaging);
 		if (showPaging) {
-			setPagingData(offset, meaningCount, meaningsResult);
+			setPagingData(offset, resultCount, termSearchResult);
 		}
 
-		return meaningsResult;
+		return termSearchResult;
 	}
 
 	@Transactional
@@ -215,17 +219,17 @@ public class TermSearchService extends AbstractSearchService implements DbConsta
 		return meaning;
 	}
 
-	private void setPagingData(int offset, int meaningCount, MeaningsResult meaningsResult) {
+	private void setPagingData(int offset, int resultCount, TermSearchResult termSearchResult) {
 
 		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
-		int totalPages = (meaningCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
+		int totalPages = (resultCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
 		boolean previousPageExists = currentPage > 1;
 		boolean nextPageExists = currentPage < totalPages;
 
-		meaningsResult.setCurrentPage(currentPage);
-		meaningsResult.setTotalPages(totalPages);
-		meaningsResult.setPreviousPageExists(previousPageExists);
-		meaningsResult.setNextPageExists(nextPageExists);
+		termSearchResult.setCurrentPage(currentPage);
+		termSearchResult.setTotalPages(totalPages);
+		termSearchResult.setPreviousPageExists(previousPageExists);
+		termSearchResult.setNextPageExists(nextPageExists);
 	}
 
 	private boolean isAffixoid(List<Classifier> wordTypes) {

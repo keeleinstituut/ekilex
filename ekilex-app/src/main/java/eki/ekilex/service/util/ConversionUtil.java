@@ -84,10 +84,8 @@ public class ConversionUtil implements DbConstant {
 				meaningWord.setSuffixoid(isSuffixoid);
 			});
 			boolean meaningWordsExist = CollectionUtils.isNotEmpty(meaningWords);
-			boolean conceptIdsExist = CollectionUtils.isNotEmpty(termMeaning.getConceptIds());
 			termMeaning.setMeaningWords(meaningWords);
 			termMeaning.setMeaningWordsExist(meaningWordsExist);
-			termMeaning.setConceptIdsExist(conceptIdsExist);
 		});
 	}
 

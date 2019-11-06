@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
@@ -63,9 +64,12 @@ public class SynSearchController extends AbstractSearchController implements Sys
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			Model model) throws Exception {
 
+		final SearchResultMode resultMode = SearchResultMode.WORD;
+		final String resultLang = null;
+
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(SYN_SEARCH_PAGE, null, detailSearchFilter, null, sessionBean);
+		formDataCleanup(SYN_SEARCH_PAGE, null, detailSearchFilter, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -74,7 +78,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		String roleDatasetCode = getDatasetCodeFromRole(sessionBean);
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(roleDatasetCode));
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, datasetCodeList, simpleSearchFilter, detailSearchFilter);
+		String searchUri = searchHelper.composeSearchUri(searchMode, datasetCodeList, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 		return "redirect:" + SYN_SEARCH_URI + searchUri;
 	}
 

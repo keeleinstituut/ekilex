@@ -2,7 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-public class MeaningsResult extends PagingResult {
+public class TermSearchResult extends PagingResult {
 
 	private static final long serialVersionUID = 1L;
 
@@ -10,7 +10,9 @@ public class MeaningsResult extends PagingResult {
 
 	private int wordCount;
 
-	private List<TermMeaning> meanings;
+	private int resultCount;
+
+	private List<TermMeaning> results;
 
 	private boolean resultExist;
 
@@ -30,12 +32,20 @@ public class MeaningsResult extends PagingResult {
 		this.wordCount = wordCount;
 	}
 
-	public List<TermMeaning> getMeanings() {
-		return meanings;
+	public int getResultCount() {
+		return resultCount;
 	}
 
-	public void setMeanings(List<TermMeaning> meanings) {
-		this.meanings = meanings;
+	public void setResultCount(int resultCount) {
+		this.resultCount = resultCount;
+	}
+
+	public List<TermMeaning> getResults() {
+		return results;
+	}
+
+	public void setResults(List<TermMeaning> results) {
+		this.results = results;
 	}
 
 	public boolean isResultExist() {

@@ -20,11 +20,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.MeaningsResult;
+import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.service.TermSearchService;
@@ -46,8 +47,8 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		initSearchForms(TERM_SEARCH_PAGE, model);
 		resetUserRole(model);
 
-		MeaningsResult meaningsResult = new MeaningsResult();
-		model.addAttribute("meaningsResult", meaningsResult);
+		TermSearchResult termSearchResult = new TermSearchResult();
+		model.addAttribute("termSearchResult", termSearchResult);
 
 		return TERM_SEARCH_PAGE;
 	}
@@ -55,7 +56,8 @@ public class TermSearchController extends AbstractSearchController implements Sy
 	@PostMapping(value = TERM_SEARCH_URI)
 	public String termSearch(
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
-			@RequestParam(name = "searchMode", required = false) String searchMode,
+			@RequestParam(name = "searchMode", required = true) String searchMode,
+			@RequestParam(name = "resultMode", required = true) SearchResultMode resultMode,
 			@RequestParam(name = "resultLang", required = false) String resultLang,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
@@ -63,14 +65,13 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(TERM_SEARCH_PAGE, selectedDatasets, detailSearchFilter, resultLang, sessionBean);
+		formDataCleanup(TERM_SEARCH_PAGE, selectedDatasets, detailSearchFilter, sessionBean);
+		sessionBean.setTermSearchResultMode(resultMode);
+		sessionBean.setTermSearchResultLang(resultLang);
 
-		if (StringUtils.isBlank(searchMode)) {
-			searchMode = SEARCH_MODE_SIMPLE;
-		}
 		selectedDatasets = getUserPreferredDatasetCodes();
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
+		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}
 
@@ -90,31 +91,35 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		if (!searchUriData.isValid()) {
 			initSearchForms(searchPage, model);
-			model.addAttribute("meaningsResult", new MeaningsResult());
+			model.addAttribute("termSearchResult", new TermSearchResult());
 			model.addAttribute("invalidSearch", true);
 			return TERM_SEARCH_PAGE;
 		}
 
-		SessionBean sessionBean = getSessionBean(model);
-		String resultLang = sessionBean.getResultLang();
 		String searchMode = searchUriData.getSearchMode();
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		SearchResultMode resultMode = searchUriData.getResultMode();
+		String resultLang = searchUriData.getResultLang();
+
+		SessionBean sessionBean = getSessionBean(model);
+		sessionBean.setTermSearchResultMode(resultMode);
+		sessionBean.setTermSearchResultLang(resultLang);
 
 		boolean fetchAll = false;
 
-		MeaningsResult meaningsResult;
+		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			meaningsResult = termSearchService.getMeanings(detailSearchFilter, selectedDatasets, resultLang, fetchAll, DEFAULT_OFFSET);
+			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, selectedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 		} else {
-			meaningsResult = termSearchService.getMeanings(simpleSearchFilter, selectedDatasets, resultLang, fetchAll, DEFAULT_OFFSET);
+			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, selectedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 		}
-		boolean noResults = meaningsResult.getMeaningCount() == 0;
+		boolean noResults = termSearchResult.getMeaningCount() == 0;
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
-		model.addAttribute("meaningsResult", meaningsResult);
+		model.addAttribute("termSearchResult", termSearchResult);
 		model.addAttribute("noResults", noResults);
 		model.addAttribute("searchUri", searchUri);
 
@@ -144,12 +149,12 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(TERM_SEARCH_PAGE, searchUri);
 
-		SessionBean sessionBean = getSessionBean(model);
-		String resultLang = sessionBean.getResultLang();
 		String searchMode = searchUriData.getSearchMode();
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		SearchResultMode resultMode = searchUriData.getResultMode();
+		String resultLang = searchUriData.getResultLang();
 		boolean fetchAll = false;
 
 		if ("next".equals(direction)) {
@@ -158,15 +163,15 @@ public class TermSearchController extends AbstractSearchController implements Sy
 			offset -= MAX_RESULTS_LIMIT;
 		}
 
-		MeaningsResult meaningsResult;
+		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			meaningsResult = termSearchService.getMeanings(detailSearchFilter, selectedDatasets, resultLang, fetchAll, offset);
+			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, selectedDatasets, resultMode, resultLang, fetchAll, offset);
 		} else {
-			meaningsResult = termSearchService.getMeanings(simpleSearchFilter, selectedDatasets, resultLang, fetchAll, offset);
+			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, selectedDatasets, resultMode, resultLang, fetchAll, offset);
 		}
 
-		meaningsResult.setOffset(offset);
-		model.addAttribute("meaningsResult", meaningsResult);
+		termSearchResult.setOffset(offset);
+		model.addAttribute("termSearchResult", termSearchResult);
 		model.addAttribute("searchUri", searchUri);
 
 		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";

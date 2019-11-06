@@ -10,11 +10,7 @@ public class TermMeaning extends AbstractDataObject {
 
 	private Long meaningId;
 
-	private List<String> conceptIds;
-
 	private List<TypeTermMeaningWord> meaningWords;
-
-	private boolean conceptIdsExist;
 
 	private boolean meaningWordsExist;
 
@@ -26,28 +22,12 @@ public class TermMeaning extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
-	public List<String> getConceptIds() {
-		return conceptIds;
-	}
-
-	public void setConceptIds(List<String> conceptIds) {
-		this.conceptIds = conceptIds;
-	}
-
 	public List<TypeTermMeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
 
 	public void setMeaningWords(List<TypeTermMeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
-	}
-
-	public boolean isConceptIdsExist() {
-		return conceptIdsExist;
-	}
-
-	public void setConceptIdsExist(boolean conceptIdsExist) {
-		this.conceptIdsExist = conceptIdsExist;
 	}
 
 	public boolean isMeaningWordsExist() {

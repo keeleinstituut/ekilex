@@ -89,15 +89,11 @@ function initialise() {
 
 	});
 
-	$(document).on('change', '#meaning-other-words-visible-check', function() {
-		if (this.checked) {
-			$(".other-word").fadeIn();
-		} else {
-			$(".other-word").fadeOut();
-		}
+	$(document).on('change', '[name="resultLang"]', function() {
+		$(this).closest('form').submit();
 	});
 
-	$(document).on('change', '#resultLang', function() {
+	$(document).on('change', '[name="resultMode"]', function() {
 		$(this).closest('form').submit();
 	});
 

@@ -16,6 +16,7 @@ import org.springframework.web.util.UriUtils;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
@@ -33,6 +34,8 @@ public class SearchHelper implements WebConstant {
 	private static final char DICTONARIES_SEPARATOR = ',';
 	private static final String EMPTY_VALUE = "-";
 	private static final String SEARCH_MODE = "smode";
+	private static final String RESULT_MODE = "rmode";
+	private static final String RESULT_LANG = "rlang";
 	private static final String DATASETS = "dicts";
 	private static final String SIMPLE_SEARCH_FILTER = "sfilt";
 	private static final String DETAIL_SEARCH_FILTER = "dfilt";
@@ -48,10 +51,16 @@ public class SearchHelper implements WebConstant {
 	protected UserService userService;
 
 	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
-		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null);
+		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
 	}
 
-	public String composeSearchUri(String searchMode, List<String> datasets, String simpleSearchFilter, SearchFilter detailSearchFilter) {
+	public String composeSearchUri(
+			String searchMode, 
+			List<String> datasets,
+			String simpleSearchFilter,
+			SearchFilter detailSearchFilter,
+			SearchResultMode resultMode,
+			String resultLang) {
 
 		StringBuffer uriBuf = new StringBuffer();
 
@@ -60,6 +69,20 @@ public class SearchHelper implements WebConstant {
 		uriBuf.append(SEARCH_MODE);
 		uriBuf.append(PATH_SEPARATOR);
 		uriBuf.append(searchMode);
+
+		// result mode
+		uriBuf.append(PATH_SEPARATOR);
+		uriBuf.append(RESULT_MODE);
+		uriBuf.append(PATH_SEPARATOR);
+		uriBuf.append(resultMode.name());
+
+		// result lang
+		if (StringUtils.isNotEmpty(resultLang)) {
+			uriBuf.append(PATH_SEPARATOR);
+			uriBuf.append(RESULT_LANG);
+			uriBuf.append(PATH_SEPARATOR);
+			uriBuf.append(resultLang);
+		}
 
 		// datasets
 		if (CollectionUtils.isNotEmpty(datasets)) {
@@ -159,6 +182,8 @@ public class SearchHelper implements WebConstant {
 		List<String> selectedDatasets = null;
 		String simpleSearchFilter = null;
 		SearchFilter detailSearchFilter = null;
+		SearchResultMode resultMode = null;
+		String resultLang = null;
 
 		String[] uriParts = StringUtils.split(searchUri, PATH_SEPARATOR);
 
@@ -169,6 +194,15 @@ public class SearchHelper implements WebConstant {
 			}
 			if (StringUtils.equals(SEARCH_MODE, uriPart)) {
 				searchMode = uriParts[uriPartIndex + 1];
+			} else if (StringUtils.equals(RESULT_MODE, uriPart)) {
+				String resultModeStr = uriParts[uriPartIndex + 1];
+				try {
+					resultMode = SearchResultMode.valueOf(resultModeStr.toUpperCase());
+				} catch (Exception e) {
+					resultMode = SearchResultMode.WORD;
+				}
+			} else if (StringUtils.equals(RESULT_LANG, uriPart)) {
+				resultLang = uriParts[uriPartIndex + 1];
 			} else if (StringUtils.equals(DATASETS, uriPart)) {
 				String selectedDatasetsStr = uriParts[uriPartIndex + 1];
 				selectedDatasetsStr = decode(selectedDatasetsStr);
@@ -256,7 +290,10 @@ public class SearchHelper implements WebConstant {
 		if (detailSearchFilter == null) {
 			detailSearchFilter = initSearchFilter(searchPage);
 		}
-		return new SearchUriData(isValid, searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
+		if (resultMode == null) {
+			resultMode = SearchResultMode.WORD;
+		}
+		return new SearchUriData(isValid, searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 	}
 
 	public SearchFilter initSearchFilter(String searchPage) {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.SearchKey;
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
@@ -154,8 +155,10 @@ public abstract class AbstractSearchController extends AbstractPageController {
 			List<ClassifierSelect> languagesOrder = convert(allLanguages);
 			sessionBean.setLanguagesOrder(languagesOrder);
 		}
+		if (sessionBean.getTermSearchResultMode() == null) {
+			sessionBean.setTermSearchResultMode(SearchResultMode.WORD);
+		}
 		SearchFilter detailSearchFilter = searchHelper.initSearchFilter(searchPage);
-
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
 	}
@@ -175,14 +178,11 @@ public abstract class AbstractSearchController extends AbstractPageController {
 			String searchPage,
 			List<String> selectedDatasets,
 			SearchFilter detailSearchFilter,
-			String resultLang,
 			SessionBean sessionBean) throws Exception {
 
 		if (CollectionUtils.isNotEmpty(selectedDatasets)) {
 			userService.updateUserPreferredDatasets(selectedDatasets);
 		}
-		sessionBean.setResultLang(resultLang);
-
 		if (detailSearchFilter == null) {
 			detailSearchFilter = searchHelper.initSearchFilter(searchPage);
 		} else {

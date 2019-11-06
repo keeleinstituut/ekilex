@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.SourceType;
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.SearchFilter;
@@ -66,16 +67,19 @@ public class LexSearchController extends AbstractSearchController implements Sys
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			Model model) throws Exception {
 
+		final SearchResultMode resultMode = SearchResultMode.WORD;
+		final String resultLang = null;
+
 		SessionBean sessionBean = getSessionBean(model);
 
-		formDataCleanup(LEX_SEARCH_PAGE, selectedDatasets, detailSearchFilter, null, sessionBean);
+		formDataCleanup(LEX_SEARCH_PAGE, selectedDatasets, detailSearchFilter, sessionBean);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
 		selectedDatasets = getUserPreferredDatasetCodes();
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter);
+		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 

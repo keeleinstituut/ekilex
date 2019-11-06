@@ -3,6 +3,7 @@ package eki.ekilex.web.bean;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 
@@ -10,7 +11,9 @@ public class SessionBean extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String resultLang;
+	private SearchResultMode termSearchResultMode;
+
+	private String termSearchResultLang;
 
 	private List<ClassifierSelect> languagesOrder;
 
@@ -20,12 +23,20 @@ public class SessionBean extends AbstractDataObject {
 
 	private DatasetPermission userRole;
 
-	public String getResultLang() {
-		return resultLang;
+	public SearchResultMode getTermSearchResultMode() {
+		return termSearchResultMode;
 	}
 
-	public void setResultLang(String resultLang) {
-		this.resultLang = resultLang;
+	public void setTermSearchResultMode(SearchResultMode termSearchResultMode) {
+		this.termSearchResultMode = termSearchResultMode;
+	}
+
+	public String getTermSearchResultLang() {
+		return termSearchResultLang;
+	}
+
+	public void setTermSearchResultLang(String resultLang) {
+		this.termSearchResultLang = resultLang;
 	}
 
 	public List<ClassifierSelect> getLanguagesOrder() {

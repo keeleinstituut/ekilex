@@ -18,13 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import eki.common.constant.ClassifierName;
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.MeaningsResult;
+import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
@@ -104,12 +105,13 @@ public class DataController implements SystemConstant, WebConstant {
 			REST_SERVICES_URI + TERM_SEARCH_URI + "/{word}/{datasets}"
 	})
 	@ResponseBody
-	public MeaningsResult termSearch(@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) {
+	public TermSearchResult termSearch(@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) {
 
 		boolean fetchAll = true;
 		List<String> datasets = parseDatasets(datasetsStr);
+		SearchResultMode resultMode = SearchResultMode.MEANING;
 		String resultLang = null;
-		MeaningsResult results = termSearchService.getMeanings(word, datasets, resultLang, fetchAll, DEFAULT_OFFSET);
+		TermSearchResult results = termSearchService.getTermSearchResult(word, datasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 		return results;
 	}
 

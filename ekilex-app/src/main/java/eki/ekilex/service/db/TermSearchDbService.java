@@ -23,6 +23,7 @@ import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -35,6 +36,7 @@ import org.jooq.Record12;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record7;
 import org.jooq.SelectHavingStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectOrderByStep;
@@ -48,7 +50,8 @@ import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
-import eki.ekilex.data.MeaningsResult;
+import eki.ekilex.constant.SearchResultMode;
+import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -85,30 +88,27 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	// simple search
 
-	public MeaningsResult getMeaningsResult(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll, int offset) {
+	public TermSearchResult getTermSearchResult(
+			String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction,
+			SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) {
 
-		Table<Record3<Long, Long, Long[]>> m = composeFilteredMeaning(searchFilter, searchDatasetsRestriction);
-		List<TermMeaning> meanings = executeFetch(m, searchDatasetsRestriction, resultLang, fetchAll, offset);
-		int meaningCount = executeCountMeanings(m);
-		int wordCount = executeCountWords(m, searchDatasetsRestriction, resultLang);
-
-		MeaningsResult meaningsResult = new MeaningsResult();
-		meaningsResult.setMeanings(meanings);
-		meaningsResult.setMeaningCount(meaningCount);
-		meaningsResult.setWordCount(wordCount);
-
-		return meaningsResult;
+		Table<Record3<Long, Long, Long[]>> wm = composeFilteredMeaning(searchFilter, searchDatasetsRestriction, resultMode);
+		return composeResult(wm, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);
 	}
 
-	private Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
+	private Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(
+			String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, SearchResultMode resultMode) {
 
 		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_").toLowerCase();
 
 		Meaning m = MEANING.as("m");
-		Lexeme l = LEXEME.as("l");
+		Lexeme l1 = LEXEME.as("l");
 		Paradigm p = PARADIGM.as("p");
 		Word w1 = WORD.as("w");
 		Form f1 = FORM.as("f");
+
+		Condition wherel = l1.TYPE.eq(LEXEME_TYPE_PRIMARY);
+		wherel = applyDatasetRestrictions(l1, searchDatasetsRestriction, wherel);
 
 		Condition wheref = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
@@ -116,8 +116,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		} else {
 			wheref = wheref.and(f1.VALUE.lower().equal(maskedSearchFilter));
 		}
-
-		Condition wherelds = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
 
 		Table<Record1<Long>> f = DSL
 				.select(f1.PARADIGM_ID)
@@ -128,53 +126,60 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Table<Record1<Long>> w = DSL
 				.select(w1.ID)
 				.from(f, p, w1)
-				.where(
-						f.field("paradigm_id", Long.class).eq(p.ID)
-						.and(p.WORD_ID.eq(w1.ID))
-						.andExists(DSL
-								.select(l.ID)
-								.from(l)
-								.where(
-										l.WORD_ID.eq(w1.ID).and(wherelds)
-										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+				.where(f.field("paradigm_id", Long.class).eq(p.ID).and(p.WORD_ID.eq(w1.ID)))
 				.asTable("w");
 
-		Table<Record3<Long, Long, Long[]>> mm = DSL
+		Table<Record4<Long, Long, Long, Long>> l = DSL
 				.select(
-						m.ID,
-						DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("order_by_word_id"),
-						DSL.arrayAgg(w.field("id", Long.class)).as("match_word_ids"))
-				.from(m, l, w)
-				.where(
-						l.MEANING_ID.eq(m.ID)
-								.and(
-										l.WORD_ID.eq(w.field("id", Long.class))
-										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-								.and(wherelds))
-				.groupBy(m.ID)
-				.asTable("m");
+						l1.ID.as("lexeme_id"),
+						l1.WORD_ID,
+						l1.MEANING_ID,
+						l1.ORDER_BY)
+				.from(l1)
+				.where(wherel)
+				.asTable("l");
 
-		return mm;
+		Condition wheremlw = l.field("meaning_id", Long.class).eq(m.ID).and(l.field("word_id", Long.class).eq(w.field("id", Long.class)));
+
+		Table<Record3<Long, Long, Long[]>> wm = null;
+
+		if (SearchResultMode.MEANING.equals(resultMode)) {
+			wm = DSL
+					.select(
+							m.ID.as("meaning_id"),
+							DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("word_id"),
+							DSL.arrayAgg(w.field("id", Long.class)).as("match_word_ids"))
+					.from(m, l, w)
+					.where(wheremlw)
+					.groupBy(m.ID)
+					.asTable("m");
+		} else if (SearchResultMode.WORD.equals(resultMode)) {
+			wm = DSL
+					.select(
+							m.ID.as("meaning_id"),
+							w.field("id", Long.class).as("word_id"),
+							DSL.array(new Long[0]))
+					.from(m, l, w)
+					.where(wheremlw)
+					.groupBy(w.field("id"), m.ID)
+					.asTable("wmid");
+		}
+
+		return wm;
 	}
 
 	// detail search
 
-	public MeaningsResult getMeaningsResult(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang, boolean fetchAll, int offset) throws Exception {
+	public TermSearchResult getTermSearchResult(
+			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction,
+			SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) throws Exception {
 
-		Table<Record3<Long, Long, Long[]>> m = composeFilteredMeaning(searchFilter, searchDatasetsRestriction);
-		List<TermMeaning> meanings = executeFetch(m, searchDatasetsRestriction, resultLang, fetchAll, offset);
-		int meaningCount = executeCountMeanings(m);
-		int wordCount = executeCountWords(m, searchDatasetsRestriction, resultLang);
-
-		MeaningsResult meaningsResult = new MeaningsResult();
-		meaningsResult.setMeanings(meanings);
-		meaningsResult.setMeaningCount(meaningCount);
-		meaningsResult.setWordCount(wordCount);
-
-		return meaningsResult;
+		Table<Record3<Long, Long, Long[]>> wm = composeFilteredMeaning(searchFilter, searchDatasetsRestriction, resultMode);
+		return composeResult(wm, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);
 	}
 
-	private Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
+	private Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(
+			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, SearchResultMode resultMode) throws Exception {
 
 		List<SearchCriterionGroup> criteriaGroups = searchFilter.getCriteriaGroups();
 
@@ -272,7 +277,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.from(l3, lff3)
 						.where(
 								lff3.LEXEME_ID.eq(l3.ID)
-								.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.asTable("lff2");
 
 				// notes owners joined
@@ -320,17 +325,31 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 		Condition wheremlw = l.field("meaning_id", Long.class).eq(m.field("id", Long.class)).and(l.field("word_id", Long.class).eq(w.field("id", Long.class)));
 
-		Table<Record3<Long, Long, Long[]>> mm = DSL
-				.select(
-						m.field("id", Long.class),
-						DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("order_by_word_id"),
-						DSL.arrayAgg(w.field("id", Long.class)).as("match_word_ids"))
-				.from(m, l, w)
-				.where(wheremlw)
-				.groupBy(m.field("id"))
-				.asTable("m");
+		Table<Record3<Long, Long, Long[]>> wm = null;
 
-		return mm;
+		if (SearchResultMode.MEANING.equals(resultMode)) {
+			wm = DSL
+					.select(
+							m.field("id", Long.class).as("meaning_id"),
+							DSL.field("(array_agg(w.id order by l.order_by)) [1]", Long.class).as("word_id"),
+							DSL.arrayAgg(w.field("id", Long.class)).as("match_word_ids"))
+					.from(m, l, w)
+					.where(wheremlw)
+					.groupBy(m.field("id"))
+					.asTable("m");
+		} else if (SearchResultMode.WORD.equals(resultMode)) {
+			wm = DSL
+					.select(
+							m.field("id", Long.class).as("meaning_id"),
+							w.field("id", Long.class).as("word_id"),
+							DSL.array(new Long[0]))
+					.from(m, l, w)
+					.where(wheremlw)
+					.groupBy(w.field("id"), m.field("id"))
+					.asTable("wmid");
+		}
+
+		return wm;
 	}
 
 	private Condition composeMeaningLifecycleLogFilters(
@@ -535,36 +554,9 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		return wherem;
 	}
 
-	private int executeCountMeanings(Table<Record3<Long, Long, Long[]>> m) {
-		return create.fetchCount(DSL.select(m.field("id")).from(m));
-	}
+	// search commons
 
-	private int executeCountWords(Table<Record3<Long, Long, Long[]>> m, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
-
-		Lexeme lo = LEXEME.as("lo");
-		Word wo = WORD.as("wo");
-
-		Condition wherewo = wo.ID.eq(lo.WORD_ID);
-		if (StringUtils.isNotBlank(resultLang)) {
-			wherewo = wherewo.and(wo.LANG.eq(resultLang));
-		}
-
-		Condition wherelods = composeLexemeDatasetsCondition(lo, searchDatasetsRestriction);
-
-		return create
-				.fetchCount(DSL
-						.select(wo.ID)
-						.from(m
-								.innerJoin(lo).on(
-										lo.MEANING_ID.eq(m.field("id", Long.class))
-										.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
-										.and(wherelods))
-								.innerJoin(wo).on(wherewo)));
-	}
-
-	// common search
-
-	private List<TermMeaning> executeFetch(
+	private List<TermMeaning> executeFetchMeaningMode(
 			Table<Record3<Long, Long, Long[]>> m,
 			SearchDatasetsRestriction searchDatasetsRestriction,
 			String resultLang, boolean fetchAll, int offset) {
@@ -577,8 +569,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Form fm = FORM.as("fm");
 		Lexeme lds = LEXEME.as("lds");
 		Dataset ds = DATASET.as("ds");
-		Freeform ff = FREEFORM.as("ff");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		WordWordType wt = WORD_WORD_TYPE.as("wt");
 		Language wol = LANGUAGE.as("wol");
 
@@ -592,8 +582,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.from(lds, ds)
 				.where(
 						lds.WORD_ID.eq(wo.ID)
-						.and(lds.MEANING_ID.eq(m.field("id", Long.class)))
-						.and(lds.DATASET_CODE.eq(ds.CODE)))
+								.and(lds.MEANING_ID.eq(m.field("meaning_id", Long.class)))
+								.and(lds.DATASET_CODE.eq(ds.CODE)))
 				.asTable("wdsf");
 
 		SelectJoinStep<Record1<String[]>> wds = DSL
@@ -607,9 +597,9 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewo = wherewo.and(wo.LANG.eq(resultLang));
 		}
 
-		Table<Record12<Long,Long,String,Long,String,Integer,String,String[],String[],Boolean,Long,Long>> mm = DSL
+		Table<Record12<Long, Long, String, Long, String, Integer, String, String[], String[], Boolean, Long, Long>> mm = DSL
 				.select(
-						m.field("id", Long.class),
+						m.field("meaning_id", Long.class),
 						pm.WORD_ID.as("order_by_word_id"),
 						fm.VALUE.as("order_by_word"),
 						wo.ID.as("word_id"),
@@ -620,30 +610,19 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						DSL.field(wds).as("dataset_codes"),
 						DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class)))).as("matching_word"),
 						wol.ORDER_BY.as("lang_order_by"),
-						lo.ORDER_BY.as("lex_order_by")
-						)
+						lo.ORDER_BY.as("lex_order_by"))
 				.from(m
-						.innerJoin(pm).on(pm.WORD_ID.eq(m.field("order_by_word_id", Long.class)))
+						.innerJoin(pm).on(pm.WORD_ID.eq(m.field("word_id", Long.class)))
 						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name())))
 						.leftOuterJoin(lo).on(
-								lo.MEANING_ID.eq(m.field("id", Long.class))
-								.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(wherelods))
+								lo.MEANING_ID.eq(m.field("meaning_id", Long.class))
+										.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(wherelods))
 						.leftOuterJoin(wo).on(wherewo)
 						.leftOuterJoin(po).on(po.WORD_ID.eq(wo.ID))
 						.leftOuterJoin(fo).on(fo.PARADIGM_ID.eq(po.ID).and(fo.MODE.eq(FormMode.WORD.name())))
-						.leftOuterJoin(wol).on(wol.CODE.eq(wo.LANG))
-						)
+						.leftOuterJoin(wol).on(wol.CODE.eq(wo.LANG)))
 				.asTable("m");
-
-		SelectHavingStep<Record1<String[]>> c = DSL
-				.select(DSL.arrayAgg(ff.VALUE_TEXT))
-				.from(mff, ff)
-				.where(
-						mff.MEANING_ID.eq(mm.field("id", Long.class))
-								.and(mff.FREEFORM_ID.eq(ff.ID))
-								.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name())))
-				.groupBy(mff.MEANING_ID);
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array_agg(row ("
@@ -670,18 +649,164 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		 */
 		return create
 				.select(
-						mm.field("id", Long.class).as("meaning_id"),
-						DSL.field(c).as("concept_ids"),
+						mm.field("meaning_id", Long.class),
 						mw.as("meaning_words"))
 				.from(mm)
 				.groupBy(
-						mm.field("id"),
+						mm.field("meaning_id"),
 						mm.field("order_by_word_id"),
 						mm.field("order_by_word"))
 				.orderBy(mm.field("order_by_word"))
 				.limit(limit)
 				.offset(offset)
 				.fetchInto(TermMeaning.class);
+	}
+
+	private int executeCountMeaningsMeaningMode(Table<Record3<Long, Long, Long[]>> m) {
+		return create.fetchCount(DSL.select(m.field("meaning_id")).from(m));
+	}
+
+	private int executeCountWordsMeaningMode(Table<Record3<Long, Long, Long[]>> m, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
+
+		Lexeme lo = LEXEME.as("lo");
+		Word wo = WORD.as("wo");
+
+		Condition wherewo = wo.ID.eq(lo.WORD_ID);
+		if (StringUtils.isNotBlank(resultLang)) {
+			wherewo = wherewo.and(wo.LANG.eq(resultLang));
+		}
+
+		Condition wherelods = composeLexemeDatasetsCondition(lo, searchDatasetsRestriction);
+
+		return create
+				.fetchCount(DSL
+						.select(wo.ID)
+						.from(m
+								.innerJoin(lo).on(
+										lo.MEANING_ID.eq(m.field("word_id", Long.class))
+												.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
+												.and(wherelods))
+								.innerJoin(wo).on(wherewo)));
+	}
+
+	private List<TermMeaning> executeFetchWordMode(
+			Table<Record3<Long, Long, Long[]>> wmid,
+			SearchDatasetsRestriction searchDatasetsRestriction,
+			String resultLang, boolean fetchAll, int offset) {
+
+		Word wm = WORD.as("wm");
+		Paradigm pm = PARADIGM.as("pm");
+		Form fm = FORM.as("fm");
+		Lexeme lds = LEXEME.as("lds");
+		Dataset ds = DATASET.as("ds");
+		WordWordType wt = WORD_WORD_TYPE.as("wt");
+
+		SelectHavingStep<Record1<String[]>> wts = DSL
+				.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
+				.from(wt).where(wt.WORD_ID.eq(wmid.field("word_id", Long.class)))
+				.groupBy(wt.WORD_ID);
+
+		Table<Record3<Long, String, Long>> wdsf = DSL
+				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
+				.from(lds, ds)
+				.where(
+						lds.WORD_ID.eq(wmid.field("word_id", Long.class))
+								.and(lds.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+								.and(lds.DATASET_CODE.eq(ds.CODE)))
+				.asTable("wdsf");
+
+		SelectJoinStep<Record1<String[]>> wds = DSL
+				.select(DSL.arrayAgg(wdsf.field("dataset_code", String.class)).orderBy(wdsf.field("order_by")))
+				.from(wdsf);
+
+		Condition wherewm = wm.ID.eq(wmid.field("word_id", Long.class));
+		if (StringUtils.isNotBlank(resultLang)) {
+			wherewm = wherewm.and(wm.LANG.eq(resultLang));
+		}
+
+		Table<Record7<Long, Long, String, Integer, String, String[], String[]>> wmm = DSL
+				.select(
+						wmid.field("word_id", Long.class),
+						wmid.field("meaning_id", Long.class),
+						fm.VALUE.as("word"),
+						wm.HOMONYM_NR,
+						wm.LANG,
+						DSL.field(wts).as("word_type_codes"),
+						DSL.field(wds).as("dataset_codes"))
+				.from(wmid
+						.innerJoin(wm).on(wherewm)
+						.innerJoin(pm).on(pm.WORD_ID.eq(wm.ID))
+						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name()))))
+				.asTable("wm");
+
+		Field<TypeTermMeaningWordRecord[]> mw = DSL
+				.field("array(select row ("
+						+ "wm.word_id,"
+						+ "wm.word,"
+						+ "wm.homonym_nr,"
+						+ "wm.lang,"
+						+ "wm.word_type_codes,"
+						+ "wm.dataset_codes,"
+						+ "true"
+						+ ")::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
+
+		int limit = MAX_RESULTS_LIMIT;
+		if (fetchAll) {
+			limit = Integer.MAX_VALUE;
+		}
+
+		return create
+				.select(
+						wmm.field("meaning_id", Long.class),
+						mw.as("meaning_words"))
+				.from(wmm)
+				.orderBy(wmm.field("word"), wmm.field("homonym_nr"))
+				.limit(limit)
+				.offset(offset)
+				.fetchInto(TermMeaning.class);
+	}
+
+	private int executeCountMeaningsWordMode(Table<Record3<Long, Long, Long[]>> wm) {
+		return create.fetchCount(DSL.selectDistinct(wm.field("meaning_id")).from(wm));
+	}
+
+	private int executeCountWordsWordMode(Table<Record3<Long, Long, Long[]>> wmid, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
+
+		Word wm = WORD.as("wm");
+
+		Condition wherewm = wm.ID.eq(wmid.field("word_id", Long.class));
+		if (StringUtils.isNotBlank(resultLang)) {
+			wherewm = wherewm.and(wm.LANG.eq(resultLang));
+		}
+
+		return create.fetchCount(DSL.select(wm.ID).from(wmid.innerJoin(wm).on(wherewm)));
+	}
+
+	private TermSearchResult composeResult(
+			Table<Record3<Long, Long, Long[]>> wm, SearchDatasetsRestriction searchDatasetsRestriction,
+			SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) {
+
+		List<TermMeaning> results = Collections.emptyList();
+		int meaningCount = 0;
+		int wordCount = 0;
+		int resultCount = 0;
+		if (SearchResultMode.MEANING.equals(resultMode)) {
+			results = executeFetchMeaningMode(wm, searchDatasetsRestriction, resultLang, fetchAll, offset);
+			meaningCount = resultCount = executeCountMeaningsMeaningMode(wm);
+			wordCount = executeCountWordsMeaningMode(wm, searchDatasetsRestriction, resultLang);
+		} else if (SearchResultMode.WORD.equals(resultMode)) {
+			results = executeFetchWordMode(wm, searchDatasetsRestriction, resultLang, fetchAll, offset);
+			meaningCount = executeCountMeaningsWordMode(wm);
+			wordCount = resultCount = executeCountWordsWordMode(wm, searchDatasetsRestriction, resultLang);
+		}
+
+		TermSearchResult termSearchResult = new TermSearchResult();
+		termSearchResult.setResults(results);
+		termSearchResult.setMeaningCount(meaningCount);
+		termSearchResult.setWordCount(wordCount);
+		termSearchResult.setResultCount(resultCount);
+
+		return termSearchResult;
 	}
 
 	// getters

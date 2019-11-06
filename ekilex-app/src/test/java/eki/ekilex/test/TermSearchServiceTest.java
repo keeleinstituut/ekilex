@@ -15,8 +15,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.data.MeaningsResult;
+import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.service.db.TermSearchDbService;
 
@@ -44,12 +45,14 @@ public class TermSearchServiceTest implements SystemConstant {
 		SearchDatasetsRestriction searchDatasetsRestriction = createDefaultSearchDatasetsRestriction();
 
 		String wordWithMetaCharacters = "hall*";
+		SearchResultMode resultMode = SearchResultMode.MEANING;
 		String resultLang = null;
 		boolean fetchAll = true;
 
-		MeaningsResult meaningsResult = termSearchDbService.getMeaningsResult(wordWithMetaCharacters, searchDatasetsRestriction, resultLang, fetchAll, DEFAULT_OFFSET);
+		TermSearchResult termSearchResult = termSearchDbService.getTermSearchResult(
+				wordWithMetaCharacters, searchDatasetsRestriction, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 
-		assertEquals("Incorrect count of matches", 20, meaningsResult.getMeaningCount());
+		assertEquals("Incorrect count of matches", 20, termSearchResult.getMeaningCount());
 	}
 
 	private SearchDatasetsRestriction createDefaultSearchDatasetsRestriction() {

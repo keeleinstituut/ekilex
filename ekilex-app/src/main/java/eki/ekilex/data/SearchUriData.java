@@ -3,6 +3,7 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.constant.SearchResultMode;
 
 public class SearchUriData extends AbstractDataObject {
 
@@ -18,12 +19,20 @@ public class SearchUriData extends AbstractDataObject {
 
 	private SearchFilter detailSearchFilter;
 
-	public SearchUriData(boolean valid, String searchMode, List<String> selectedDatasets, String simpleSearchFilter, SearchFilter detailSearchFilter) {
+	private SearchResultMode resultMode;
+
+	private String resultLang;
+
+	public SearchUriData(
+			boolean valid, String searchMode, List<String> selectedDatasets, String simpleSearchFilter,
+			SearchFilter detailSearchFilter, SearchResultMode resultMode, String resultLang) {
 		this.valid = valid;
 		this.searchMode = searchMode;
 		this.selectedDatasets = selectedDatasets;
 		this.simpleSearchFilter = simpleSearchFilter;
 		this.detailSearchFilter = detailSearchFilter;
+		this.resultMode = resultMode;
+		this.resultLang = resultLang;
 	}
 
 	public boolean isValid() {
@@ -44,6 +53,14 @@ public class SearchUriData extends AbstractDataObject {
 
 	public SearchFilter getDetailSearchFilter() {
 		return detailSearchFilter;
+	}
+
+	public SearchResultMode getResultMode() {
+		return resultMode;
+	}
+
+	public String getResultLang() {
+		return resultLang;
 	}
 
 }
