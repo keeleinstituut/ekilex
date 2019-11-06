@@ -18,3 +18,5 @@ alter sequence word_freeform_id_seq restart with 10000;
 
 create index word_freeform_word_id_idx on word_freeform(word_id);
 create index word_freeform_freeform_id_idx on word_freeform(freeform_id);
+
+--> kuni siiani testis olemas 06.11.2019
