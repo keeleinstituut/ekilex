@@ -316,6 +316,9 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		Long sourceId = dataMap.entrySet().stream().filter(entry -> {
 			String dataColumnName = entry.getKey();
 			TableColumn tableColumn = tableColumnsMap.get(dataColumnName);
+			if (tableColumn == null) {
+				return false;
+			}
 			return tableColumn.isPrimaryKey();
 		}).map(entry -> Long.valueOf(entry.getValue().toString())).findFirst().get();
 		return sourceId;
