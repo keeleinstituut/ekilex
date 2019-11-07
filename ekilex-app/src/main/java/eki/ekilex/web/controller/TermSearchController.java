@@ -115,7 +115,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		} else {
 			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, selectedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 		}
-		boolean noResults = termSearchResult.getMeaningCount() == 0;
+		boolean noResults = termSearchResult.getResultCount() == 0;
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
