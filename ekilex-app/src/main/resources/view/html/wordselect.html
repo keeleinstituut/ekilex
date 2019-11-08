@@ -43,10 +43,7 @@
             <span th:text="${'(' + viewUtil.getLangIso2(wordDescript.word.language) + ')'}"></span>
             <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${wordDescript.word.wordId} + '/' + ${meaningId} + '/' + ${returnPage}}">Vali</a>
             <span class="float-right">
-              <th:block th:each="code, codeIter : ${wordDescript.word.datasetCodes}">
-                <b th:text="${code}"></b>
-                <b th:unless="${codeIter.last}">, </b>
-              </th:block>
+              <b th:text="${#strings.listJoin(wordDescript.word.datasetCodes, ', ')}"></b>
             </span>
           </div>
           <hr />
