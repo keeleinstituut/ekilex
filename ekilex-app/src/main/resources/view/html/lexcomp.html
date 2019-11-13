@@ -13,12 +13,10 @@
             <span class="d-flex align-items-center">
               <span class="badge badge-light mr-2" th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
               <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}">vorm 1</span>
-              <span th:text="${'(' + viewUtil.getLangIso2(word.language) + ')'}"></span>
+              <span th:text="${'(' + viewUtil.getLangIso2(word.language) + ')'}" class="ml-1"></span>
             </span>
-            <small class="d-flex"> <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
-                <span th:text="${wordDatasetCode}"></span>
-                <span th:unless="${wordDatasetIter.last}">,</span>
-              </span>
+            <small class="d-flex">
+              <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
             </small>
             <span class="position-absolute search-result-status">
               <span th:id="${'word_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>

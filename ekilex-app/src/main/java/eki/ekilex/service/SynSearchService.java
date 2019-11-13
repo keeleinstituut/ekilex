@@ -1,8 +1,9 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -23,6 +24,7 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
+import eki.ekilex.service.db.CudDbService;
 
 @Component
 public class SynSearchService extends AbstractWordSearchService {
@@ -31,6 +33,9 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private SynSearchDbService synSearchDbService;
+
+	@Autowired
+	private CudDbService cudDbService;
 
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
@@ -82,6 +87,9 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public void changeRelationStatus(Long id, String status) {
 		synSearchDbService.changeRelationStatus(id, status);
+		if (RelationStatus.DELETED.name().equals(status)) {
+			moveChangedRelationToLast(id);
+		}
 	}
 
 	@Transactional
@@ -89,4 +97,25 @@ public class SynSearchService extends AbstractWordSearchService {
 		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
 		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
 	}
+
+	private void moveChangedRelationToLast(Long relationId) {
+		List<SynRelation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, RAW_RELATION_CODE);
+
+		if (existingRelations.size() > 1) {
+			SynRelation lastRelation = existingRelations.get(existingRelations.size() - 1);
+			List<Long> existingOrderByValues = existingRelations.stream().map(SynRelation::getOrderBy).collect(Collectors.toList());
+
+			cudDbService.updateWordRelationOrderBy(relationId, lastRelation.getOrderBy());
+			existingRelations.remove(0);
+
+			existingOrderByValues.remove(existingOrderByValues.size() - 1);
+
+			int relIdx = 0;
+			for (SynRelation relation : existingRelations) {
+				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
+				relIdx++;
+			}
+		}
+	}
+
 }

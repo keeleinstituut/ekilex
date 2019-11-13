@@ -142,3 +142,41 @@ insert into meaning_rel_mapping (code1, code2) values ('ülemmõiste', 'alammõi
 insert into meaning_rel_mapping (code1, code2) values ('alammõiste', 'ülemmõiste');
 insert into meaning_rel_mapping (code1, code2) values ('üldmõiste', 'ainikmõiste');
 insert into meaning_rel_mapping (code1, code2) values ('ainikmõiste', 'üldmõiste');
+
+do $$
+declare
+  lex_rel constant lex_rel_type.code%type := 'pyh';
+  opposite_lex_rel constant lex_rel_type.code%type := 'head';
+  word_rel constant word_rel_type.code%type := 'ühend';
+  opposite_word_rel constant word_rel_type.code%type := 'head';
+  rel_moved_counter integer := 0;
+  opposite_rel_moved_counter integer := 0;
+  word1_id word.id%type;
+  word2_id word.id%type;
+  lex_rel_row lex_relation%rowtype;
+  opposite_lex_rel_id lex_relation.id%type;
+begin
+  for lex_rel_row in
+    select * from lex_relation where lex_rel_type_code = lex_rel
+    loop
+      select lexeme.word_id into word1_id from lexeme where id = lex_rel_row.lexeme1_id;
+      select lexeme.word_id into word2_id from lexeme where id = lex_rel_row.lexeme2_id;
+
+      insert into word_relation (word1_id, word2_id, word_rel_type_code) values (word1_id, word2_id, word_rel) on conflict do nothing;
+      delete from lex_relation where id = lex_rel_row.id;
+      rel_moved_counter := rel_moved_counter + 1;
+
+      select id into opposite_lex_rel_id from lex_relation where lexeme1_id = lex_rel_row.lexeme2_id and lexeme2_id = lex_rel_row.lexeme1_id and lex_rel_type_code = opposite_lex_rel;
+      if opposite_lex_rel_id is not null then
+        insert into word_relation (word1_id, word2_id, word_rel_type_code) values (word2_id, word1_id, opposite_word_rel) on conflict do nothing;
+        delete from lex_relation where id = opposite_lex_rel_id;
+        opposite_rel_moved_counter := opposite_rel_moved_counter + 1;
+      end if;
+    end loop;
+  RAISE notice '% lexeme relations moved to word relations', rel_moved_counter;
+  RAISE notice '% opposite lexeme relations moved to opposite word relations', opposite_rel_moved_counter;
+end $$;
+
+delete from lex_rel_mapping where code1 = 'pyh';
+delete from lex_rel_mapping where code2 = 'pyh';
+delete from lex_rel_type where code = 'pyh';

@@ -302,11 +302,13 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 
 		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(wordFreeforms, sourceWordFreeforms);
 
-		paramMap = new HashMap<>();
-		paramMap.put("wordId", wordId);
-		paramMap.put("sourceWordId", sourceWordId);
-		paramMap.put("nonDublicateFreeformIds", nonDublicateFreeformIds);
-		basicDbService.executeScript(sqlUpdateWordFreeformsWhereFreeformIdInList, paramMap);
+		if (!nonDublicateFreeformIds.isEmpty()) {
+			paramMap = new HashMap<>();
+			paramMap.put("wordId", wordId);
+			paramMap.put("sourceWordId", sourceWordId);
+			paramMap.put("nonDublicateFreeformIds", nonDublicateFreeformIds);
+			basicDbService.executeScript(sqlUpdateWordFreeformsWhereFreeformIdInList, paramMap);
+		}
 
 		paramMap = new HashMap<>();
 		paramMap.put("wordId", sourceWordId);

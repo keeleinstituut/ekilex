@@ -25,6 +25,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynMeaningWord;
+import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
@@ -235,6 +236,21 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.groupBy(w2.ID, f2.VALUE, l2.ID)
 				.orderBy(f2.VALUE)
 				.fetchInto(SynMeaningWord.class);
+	}
+
+	public List<SynRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {
+		WordRelation wr2 = WORD_RELATION.as("wr2");
+
+		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
+					.from(WORD_RELATION, wr2)
+					.where(
+							WORD_RELATION.WORD1_ID.eq(wr2.WORD1_ID)
+									.and(wr2.ID.eq(relationId))
+									.and(WORD_RELATION.ORDER_BY.ge(wr2.ORDER_BY))
+									.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
+					)
+					.orderBy(WORD_RELATION.ORDER_BY)
+					.fetchInto(SynRelation.class);
 	}
 
 }

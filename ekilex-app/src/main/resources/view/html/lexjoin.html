@@ -81,10 +81,7 @@
       </div>
       <div class="col">
         <span>
-          <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-            <span th:text="${word}"></span>
-            <span th:unless="${wordIter.last}">,&nbsp;</span>
-          </span>
+          <span th:text="${#strings.listJoin(lexeme.words, ', ')}" class="ttl"></span>
           &nbsp;
         </span>
         <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">

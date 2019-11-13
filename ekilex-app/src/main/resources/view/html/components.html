@@ -18,10 +18,7 @@
                 <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${word.wordId}"/>
                 <div class="ml-3 mb-2" style="margin-top: -6px;">
                   <small>
-                    <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
-                      <span th:text="${wordDatasetCode}"></span>
-                      <span th:unless="${wordDatasetIter.last}">,</span>
-                    </span>
+                    <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
                   </small>
                 </div>
               </td>
@@ -43,10 +40,7 @@
             <tr th:each="lexeme : ${lexemesFoundBySearch}">
               <td class="p-0">
                 <div>
-                  <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-                    <span th:text="${word}"></span>
-                    <span th:unless="${wordIter.last}">,</span>
-                  </span>
+                  <span th:text="${#strings.listJoin(lexeme.words, ', ')}" class="ttl"></span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <span class="pt-0" style="color: #007bff;">
                       <span th:text="${meaningWord.value}"></span>
@@ -80,10 +74,7 @@
             <tr th:each="lexeme : ${lexemesFoundBySearch}">
               <td class="p-0">
                 <div>
-                  <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-                    <span th:text="${word}"></span>
-                    <span th:unless="${wordIter.last}">,</span>
-                  </span>
+                  <span th:text="${#strings.listJoin(lexeme.words, ', ')}" class="ttl"></span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <span class="pt-0" style="color: #007bff;"
                           th:text="${meaningWord.value + ' ' + meaningWord.homonymNumber + ' ( ' + viewUtil.getLangIso2(meaningWord.language) + ' )'}"> </span>
@@ -141,10 +132,7 @@
                         th:disabled="${wordExists}" th:title="${wordExists ? 'Keelend on juba sünonüümide hulgas' : ''}">Lisa</button>
                 <div class="ml-3 mb-2" style="margin-top: -6px;">
                   <small>
-                    <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
-                      <span th:text="${wordDatasetCode}"></span>
-                      <span th:unless="${wordDatasetIter.last}">,</span>
-                    </span>
+                    <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
                   </small>
                 </div>
               </td>
