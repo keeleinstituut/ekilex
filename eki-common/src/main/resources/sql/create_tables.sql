@@ -697,7 +697,7 @@ create table form
   display_form varchar(255) null,
   vocal_form varchar(255) null,
   audio_file varchar(255) null,
-  order_by integer not null default 0
+  order_by bigserial
 );
 alter sequence form_id_seq restart with 10000;
 

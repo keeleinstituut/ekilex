@@ -1,7 +1,7 @@
 package eki.ekilex.config;
 
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.web.interceptor.PageRequestPostHandler;
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-import java.util.Locale;
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.web.interceptor.PageRequestPostHandler;
 
 /**
  * Thymeleaf and Spring MVC configuration.

@@ -22,14 +22,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
+import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.imp.Form;
+import eki.ekilex.data.imp.Paradigm;
+import eki.ekilex.data.imp.ParadigmWrapper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
 @Transactional
-public class ArbitraryTest {
+public class ArbitraryTest implements SystemConstant {
 
 	private static final String DUMMY_TABLE = "dummy_table";
 
@@ -39,8 +45,7 @@ public class ArbitraryTest {
 	@Before
 	public void beforeTest() throws Exception {
 
-		String createDummyTableSql =
-				"create table " + DUMMY_TABLE + " ("
+		String createDummyTableSql = "create table " + DUMMY_TABLE + " ("
 				+ "id bigserial primary key, "
 				+ "value_array text array null"
 				+ ");";
@@ -53,7 +58,7 @@ public class ArbitraryTest {
 
 		File txtFile = new File("./fileresources/txt/file.txt");
 		FileInputStream txtFileStream = new FileInputStream(txtFile);
-		List<String> originalValueLines = IOUtils.readLines(txtFileStream, "UTF-8");
+		List<String> originalValueLines = IOUtils.readLines(txtFileStream, UTF_8);
 		txtFileStream.close();
 		int originalLineCount = originalValueLines.size();
 
@@ -73,5 +78,22 @@ public class ArbitraryTest {
 
 		assertEquals("Unmatching array counts", originalLineCount, resultLineCount);
 		assertEquals("Unmatching array values", originalValueLines, resultValueLines);
+	}
+
+	@Test
+	public void testMorphImport() throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		File jsonFile = new File("./fileresources/txt/paradigm.json");
+		FileInputStream jsonFileStream = new FileInputStream(jsonFile);
+		ParadigmWrapper paradigmWrapper = objectMapper.readValue(jsonFileStream, ParadigmWrapper.class);
+		jsonFileStream.close();
+
+		List<Paradigm> paradigms = paradigmWrapper.getParadigms();
+		Paradigm firstParadigm = paradigms.get(0);
+		List<Form> forms = firstParadigm.getForms();
+
+		assertEquals("Incorrect data count", 36, forms.size());
+
 	}
 }

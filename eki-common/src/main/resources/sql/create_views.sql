@@ -74,7 +74,6 @@ from (select w.id as word_id,
                     from lexeme as l,
                          dataset ds
                     where l.word_id = w.id
-                    --and l.dataset_code = 'sss'
                     and l.type = 'PRIMARY'
                     and l.process_state_code = 'avalik'
                     and ds.code = l.dataset_code
@@ -132,7 +131,6 @@ from (select w.id as word_id,
                            inner join paradigm p2 on p2.word_id = w2.id
                            inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
                          where 
-                         --l1.dataset_code = 'sss'
                          l1.type = 'PRIMARY'
                          and l1.process_state_code = 'avalik'
                          and l1ds.is_public = true
@@ -150,11 +148,9 @@ from (select w.id as word_id,
                             inner join dataset l2ds on l2ds.code = l2.dataset_code
                             inner join word w2 on w2.id = l2.word_id
                           where 
-                          --l1.dataset_code = 'sss'
                           l1.type = 'PRIMARY'
                           and l1.process_state_code = 'avalik'
                           and l1ds.is_public = true
-                          and l2.type = 'PRIMARY'
                           and l2.process_state_code = 'avalik'
                           and l2ds.is_public = true)
                           union all
@@ -166,7 +162,6 @@ from (select w.id as word_id,
                                freeform ff,
                                dataset ds
                           where 
-                          --l.dataset_code = 'sss'
                           l.type = 'PRIMARY'
                           and l.process_state_code = 'avalik'
                           and ds.code = l.dataset_code
@@ -184,7 +179,6 @@ from (select w.id as word_id,
                                freeform ut,
                                dataset ds
                           where 
-                          --l.dataset_code = 'sss'
                           l.type = 'PRIMARY'
                           and l.process_state_code = 'avalik'
                           and ds.code = l.dataset_code
@@ -202,7 +196,6 @@ from (select w.id as word_id,
                                definition d,
                                dataset ds
                           where 
-                          --l.dataset_code = 'sss'
                           l.type = 'PRIMARY'
                           and l.process_state_code = 'avalik'
                           and ds.code = l.dataset_code
@@ -218,7 +211,6 @@ from (select w.id as word_id,
                                dataset ds
                           where w2.id = r.word2_id
                           and l2.word_id = w2.id
-                          --and l2.dataset_code = 'sss'
                           and l2.type = 'PRIMARY'
                           and l2.process_state_code = 'avalik'
                           and ds.code = l2.dataset_code
@@ -242,7 +234,6 @@ from (select w.id as word_id,
                            inner join dataset ds on ds.code = l.dataset_code
                            inner join definition d on d.meaning_id = l.meaning_id
                          where 
-                         --l.dataset_code = 'sss'
                          l.type = 'PRIMARY'
                          and l.process_state_code = 'avalik'
                          and ds.is_public = true) wd
@@ -268,7 +259,6 @@ and   exists (select l.id
               from lexeme as l,
                    dataset ds
               where l.word_id = w.id
-              --and l.dataset_code = 'sss'
               and l.type = 'PRIMARY'
               and l.process_state_code = 'avalik'
               and ds.code = l.dataset_code
@@ -309,7 +299,6 @@ and   exists (select l.id
               from lexeme as l,
                    dataset ds
               where l.word_id = w.id 
-              --and l.dataset_code = 'sss'
               and l.type = 'PRIMARY'
               and l.process_state_code = 'avalik'
               and ds.code = l.dataset_code
@@ -334,7 +323,6 @@ from (select m.id
                     from lexeme as l,
                          dataset ds
                     where l.meaning_id = m.id 
-                    --and l.dataset_code = 'sss'
                     and l.type = 'PRIMARY'
                     and l.process_state_code = 'avalik'
                     and ds.code = l.dataset_code
@@ -501,7 +489,6 @@ from lexeme l
                            inner join paradigm p2 on p2.word_id = w2.id
                            inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
                          where 
-                         --l1.dataset_code = 'sss'
                          l1.type = 'PRIMARY'
                          and l1.process_state_code = 'avalik'
                          and l1ds.is_public = true
@@ -665,7 +652,6 @@ from lexeme l
                    group by lc.id) lc
                on lc.id = l.id
 where 
---l.dataset_code = 'sss'
 l.type = 'PRIMARY'
 and l.process_state_code = 'avalik'
 and ds.is_public = true
@@ -715,7 +701,6 @@ from collocation as c
   inner join lex_colloc_rel_group as rgr1 on lc1.rel_group_id = rgr1.id
   inner join lex_colloc_pos_group as pgr1 on pgr1.id = rgr1.pos_group_id
 where 
---l1.dataset_code = 'sss'
 l1.type = 'PRIMARY'
 and l1.process_state_code = 'avalik'
 and l1ds.is_public = true
@@ -843,7 +828,6 @@ from word w
                                          from lexeme lc,
                                               dataset ds
                                          where lc.word_id = w2.id
-                                         --and lc.dataset_code = 'sss'
                                          and lc.type = 'PRIMARY'
                                          and lc.process_state_code = 'avalik'
                                          and ds.code = lc.dataset_code
@@ -866,7 +850,6 @@ from word w
                                                           dataset ds
                                                      where l.type = 'PRIMARY'
                                                      and   l.process_state_code = 'avalik'
-                                                     --and l.dataset_code = 'sss'
                                                      and   ds.code = l.dataset_code
                                                      and   ds.is_public = true
                                                      and   l.word_id = w.id)
@@ -889,7 +872,6 @@ from word w
                                  from lexeme lc,
                                       dataset ds
                                  where lc.word_id = w2.id
-                                 --and lc.dataset_code = 'sss'
                                  and lc.type = 'PRIMARY'
                                  and lc.process_state_code = 'avalik'
                                  and ds.code = lc.dataset_code
@@ -912,7 +894,6 @@ from word w
                                              from lexeme as l,
                                                   dataset ds
                                              where l.word_id = w.id
-                                             --and l.dataset_code = 'sss'
                                              and l.type = 'PRIMARY'
                                              and l.process_state_code = 'avalik'
                                              and ds.code = l.dataset_code
@@ -934,7 +915,6 @@ and   exists (select l.id
               from lexeme l,
                    dataset ds
               where l.word_id = w.id
-              --and l.dataset_code = 'sss'
               and l.type = 'PRIMARY'
               and l.process_state_code = 'avalik'
               and ds.code = l.dataset_code
@@ -973,7 +953,6 @@ where exists (select l1.id
               from lexeme l1,
                    dataset l1ds
               where l1.id = r.lexeme1_id
-              --and l1.dataset_code = 'sss'
               and l1.type = 'PRIMARY'
               and l1.process_state_code = 'avalik'
               and l1ds.code = l1.dataset_code
@@ -1004,7 +983,6 @@ from meaning m1,
       and   f2.paradigm_id = p2.id
       and   p2.word_id = w2.id
       and   l2.word_id = w2.id
-      --and   l2.dataset_code = 'sss'
       and   l2.type = 'PRIMARY'
       and   l2.process_state_code = 'avalik'
       and   l2ds.code = l2.dataset_code
@@ -1015,7 +993,6 @@ and   exists (select l1.id
               from lexeme as l1,
                    dataset l1ds
               where l1.meaning_id = m1.id
-              --and l1.dataset_code = 'sss'
               and l1.type = 'PRIMARY'
               and l1.process_state_code = 'avalik'
               and l1ds.code = l1.dataset_code

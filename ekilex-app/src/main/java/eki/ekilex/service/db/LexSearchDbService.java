@@ -511,7 +511,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						FORM.VOCAL_FORM,
 						FORM.MORPH_CODE,
 						MORPH_LABEL.VALUE.as("morph_value"),
-						ffreq.as("form_frequencies"))
+						ffreq.as("form_frequencies"),
+						FORM.ORDER_BY.as("form_order_by"))
 				.from(PARADIGM, FORM, MORPH_LABEL)
 				.where(
 						PARADIGM.WORD_ID.eq(wordId)

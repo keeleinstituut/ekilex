@@ -109,7 +109,7 @@ dblink(
 	display_form varchar(255),
 	vocal_form varchar(255),
 	audio_file varchar(255),
-	order_by integer
+	order_by bigint
 );
 
 create materialized view mview_ww_meaning as

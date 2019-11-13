@@ -27,6 +27,12 @@
           <a th:href="@{/sourcesearch}">Allikate otsing</a>
         </p>
         <p>
+          <hr />
+        </p>
+        <p>
+          <a th:href="@{/morphology}" sec:authorize="${#authentication.principal.admin}">Morfoloogia haldus</a>
+        </p>
+        <p>
           <a th:href="@{/datasets}">Sõnakogude haldus</a>
         </p>
         <p sec:authorize="${#authentication.principal.datasetOwnershipExist or authentication.principal.admin}">

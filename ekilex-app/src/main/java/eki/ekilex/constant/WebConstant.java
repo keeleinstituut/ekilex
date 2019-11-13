@@ -68,6 +68,10 @@ public interface WebConstant {
 
 	String WW_FEEDBACK_PAGE = "wwfeedback";
 
+	String MORPHOLOGY_URI = "/morphology";
+
+	String MORPHOLOGY_PAGE = "morphology";
+
 	String LEX_JOIN_URI = "/lexjoin";
 
 	String LEX_JOIN_PAGE = "lexjoin";
