@@ -1,19 +1,18 @@
 package eki.ekilex.data.imp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
+@JsonIgnoreProperties({"id", "paradigm_id"})
 public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@JsonIgnore
 	private Long id;
 
-	@JsonIgnore
 	@JsonProperty("paradigm_id")
 	private Long paradigmId;
 
