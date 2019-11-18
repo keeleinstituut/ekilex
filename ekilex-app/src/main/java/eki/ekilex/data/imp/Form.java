@@ -13,6 +13,7 @@ public class Form extends AbstractDataObject {
 	@JsonIgnore
 	private Long id;
 
+	@JsonIgnore
 	@JsonProperty("paradigm_id")
 	private Long paradigmId;
 
