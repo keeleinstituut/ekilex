@@ -56,3 +56,11 @@ end $$;
 delete from lex_rel_mapping where code1 = 'pyh';
 delete from lex_rel_mapping where code2 = 'pyh';
 delete from lex_rel_type where code = 'pyh';
+
+drop view view_ww_form;--NB!
+
+create sequence form_order_by_seq;
+alter table form alter column order_by type bigint;
+alter table form alter column order_by set default nextval('form_order_by_seq');
+
+--NB! restore the view_ww_form in create_views.sql

@@ -1,5 +1,8 @@
 package eki.ekilex;
 
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -11,9 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 @SpringBootApplication(scanBasePackages = {"eki.common", "eki.ekilex"})
 @EnableCaching

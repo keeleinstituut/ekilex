@@ -310,8 +310,12 @@ public class DatasetImportValidator extends AbstractLoaderCommons {
 		for (TableColumn tableColumn : tableColumns.values()) {
 			if (!tableColumn.isNullable()) {
 				String columnName = tableColumn.getColumnName();
-				if (!dataMap.containsKey(columnName)) {
+				Object columnValue = dataMap.get(columnName);
+				if (columnValue == null) {
 					appendRow(context.getWriter(), "Tabelil", tableName, "puudub kohustuslik väli", columnName);
+					context.getValidationEntryCount().increment();
+				} else if (StringUtils.isEmpty(columnValue.toString())) {
+					appendRow(context.getWriter(), "Tabelil", tableName, "on kohustuslik väli tühi", columnName);
 					context.getValidationEntryCount().increment();
 				}
 			}

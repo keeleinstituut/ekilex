@@ -25,9 +25,9 @@ import eki.ekilex.service.UserService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class ProcessController implements WebConstant {
+public class ProcessLogController implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProcessController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProcessLogController.class);
 
 	@Autowired
 	private ProcessService processService;
