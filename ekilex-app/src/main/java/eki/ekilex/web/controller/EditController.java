@@ -40,7 +40,6 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.LookupService;
@@ -76,9 +75,6 @@ public class EditController extends AbstractPageController implements SystemCons
 
 	@Autowired
 	private TextDecorationService textDecorationService;
-
-	@Autowired
-	private CompositionService compositionService;
 
 	@Autowired
 	private LookupService lookupService;
@@ -191,6 +187,12 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "meaning_semantic_type":
 			cudService.createMeaningSemanticType(itemData.getId2(), valuePrese);
 			break;
+		case "od_word_suggestion":
+			cudService.createOdWordSuggestion(itemData.getId(), valuePrese);
+			break;
+		case "od_lexeme_suggestion":
+			cudService.createOdLexemeSuggestion(itemData.getId(), valuePrese);
+			break;
 		}
 		return "{}";
 	}
@@ -285,6 +287,12 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "meaning_semantic_type":
 			cudService.updateMeaningSemanticType(itemData.getId(), itemData.getCurrentValue(), valuePrese);
+			break;
+		case "od_word_suggestion":
+			cudService.updateOdWordSuggestion(itemData.getId(), valuePrese);
+			break;
+		case "od_lexeme_suggestion":
+			cudService.updateOdLexemeSuggestion(itemData.getId(), valuePrese);
 			break;
 		}
 		return "{}";
@@ -510,6 +518,12 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case ContentKey.LEXEME_SOURCE_LINK:
 			cudService.deleteLexemeSourceLink(id);
+			break;
+		case "od_word_suggestion":
+			cudService.deleteOdWordSuggestion(id);
+			break;
+		case "od_lexeme_suggestion":
+			cudService.deleteOdLexemeSuggestion(id);
 			break;
 		}
 		return "OK";

@@ -415,6 +415,19 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.OD_SUGGESTION.equals(property)) {
+				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.OD_LEXEME_SUGGESTION);
+				String recent = (String) entityData.get("value_prese");
+				logData.setRecent(recent);
+				if (!logData.isValueChanged()) {
+					if (logData.isUpdateEvent()) {
+						return;
+					}
+					logData.setRecent(null);
+				}
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.WORD.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
@@ -454,6 +467,19 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createWordLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.OD_SUGGESTION.equals(property)) {
+				Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.OD_WORD_SUGGESTION);
+				String recent = (String) entityData.get("value_prese");
+				logData.setRecent(recent);
+				if (!logData.isValueChanged()) {
+					if (logData.isUpdateEvent()) {
+						return;
+					}
+					logData.setRecent(null);
+				}
+				Long wordId = (Long) entityData.get("word_id");
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createWordLifecycleLog(wordId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.MEANING.equals(entity)) {
 			if (LifecycleProperty.DOMAIN.equals(property)) {

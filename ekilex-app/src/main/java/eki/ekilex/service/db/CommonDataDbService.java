@@ -680,6 +680,25 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(FreeForm.class);
 	}
 
+	public List<FreeForm> getOdLexemeSuggestions(Long lexemeId) {
+
+		return create
+				.select(
+						FREEFORM.ID,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.ORDER_BY)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(
+						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
+								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+								.and(FREEFORM.TYPE.eq(FreeformType.OD_LEXEME_SUGGESTION.name())))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(FreeForm.class);
+	}
+
 	public List<Government> getLexemeGovernments(Long lexemeId) {
 
 		LexemeFreeform glff = LEXEME_FREEFORM.as("glff");

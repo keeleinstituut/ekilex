@@ -23,6 +23,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
@@ -55,6 +56,7 @@ import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
@@ -845,4 +847,22 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(CollocationTuple.class);
 	}
 
+	public List<FreeForm> getOdWordSuggestions(Long wordId) {
+
+		return create
+				.select(
+						FREEFORM.ID,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.ORDER_BY)
+				.from(FREEFORM, WORD_FREEFORM)
+				.where(
+						WORD_FREEFORM.WORD_ID.eq(wordId)
+								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.OD_WORD_SUGGESTION.name())))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(FreeForm.class);
+	}
 }

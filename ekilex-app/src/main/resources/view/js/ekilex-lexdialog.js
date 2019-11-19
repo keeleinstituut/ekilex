@@ -97,3 +97,23 @@ $(document).on("show.bs.modal", "[id^=addLexemeGrammarDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editWordVocalFormDlg_]", function() {
 	initGenericTextEditDlg($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=addOdWordSuggestionDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editOdWordSuggestionDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addOdLexemeSuggestionDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editOdLexemeSuggestionDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});

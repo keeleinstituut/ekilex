@@ -25,6 +25,8 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<WordGroup> wordGroups;
 
+	private List<FreeForm> odWordSuggestions;
+
 	private String firstDefinitionValue;
 
 	private Integer wordProcessLogCount;
@@ -88,6 +90,14 @@ public class WordDetails extends AbstractDataObject {
 
 	public void setWordGroups(List<WordGroup> wordGroups) {
 		this.wordGroups = wordGroups;
+	}
+
+	public List<FreeForm> getOdWordSuggestions() {
+		return odWordSuggestions;
+	}
+
+	public void setOdWordSuggestions(List<FreeForm> odWordSuggestions) {
+		this.odWordSuggestions = odWordSuggestions;
 	}
 
 	public List<SynRelation> getWordSynRelations() {
