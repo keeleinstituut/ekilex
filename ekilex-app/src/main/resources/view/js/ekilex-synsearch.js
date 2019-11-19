@@ -3,6 +3,7 @@ function initialise() {
 	var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
 	var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 	var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
+	let activeSearchResultID;
 
 	//Enter keyboard edit mode
 	$(document).on("click", "#keyboardEditBtn", function() {
@@ -32,7 +33,12 @@ function initialise() {
 	});
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
+
+		var savedScrollPositions = getScrollPositions();
 		let id = $(this).data('id');
+
+
+
 		let markedSynWordId = $(document).find('.keyboard-nav-list-item-selected').children(':first').data('word-id');
 		$('#synSearchResultsDiv').find('.list-group-item').each(function () {$(this).removeClass('keyboard-nav-list-item-active active');});
 		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
@@ -102,6 +108,16 @@ function initialise() {
 			if(KEYBOARD_MODE){
 				activateList(3);
 			}
+
+			//KEEP TRACK OF WHAT WAS THE LAS SEARCH RESULT DISPLAYED
+			if(activeSearchResultID !== id){
+				activeSearchResultID = id;
+			}
+			//IF AN ALLREADY ACTIVE DETAILS VIEW WAS SELECTED KEEP THE SCROLLPOSITIONS
+			else if(activeSearchResultID === id){
+				setScrollPositions(savedScrollPositions);
+			}
+
 
 		}).fail(function(data) {
 			console.log(data);
@@ -366,13 +382,26 @@ function initialise() {
 
 	$(document).on('keydown', checkKey);
 
-
-
-
 	if ($('#synSearchResultsDiv').html() == undefined) {
 		$(document).find('input[name="simpleSearchFilter"]').focus();
 	}
 
+}
+
+function getScrollPositions(){
+	let scrollPositions=[];
+
+	$('.keyboard-nav-list').each(function () {
+		var scrollTop = $(this).scrollTop();
+		scrollPositions.push(scrollTop);
+
+	})
+	return scrollPositions;
+}
+function setScrollPositions(positions){
+	$('.keyboard-nav-list').each(function (i) {
+		$(this).scrollTop(positions[i]);
+	})
 }
 
 function refreshDetails() {

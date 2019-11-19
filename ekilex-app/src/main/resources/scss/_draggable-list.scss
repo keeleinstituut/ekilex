@@ -1,14 +1,31 @@
 .ui-draggable-dragging{
   background: $white;
+  box-shadow: $box-shadow-lg;
+  &.hover-actions-container:hover .hover-actions{
+    visibility: hidden;
+  }
 }
 
 .lexeme-list-item {
+  .lexeme-inner{
+    @include transition(transform ease-in-out .3s);
+  }
   &.ui-state-active {
     color: $gray-900;
-    background: $blue-100;
-    border: 2px dotted $blue-300;
+    background: $yellow-100;
+    border: none;
     a{
       color: inherit;
+    }
+  }
+  &.ui-droppable-active:not(.ui-state-active){
+    background: $gray-100;
+  }
+  &.ui-droppable-hover{
+    background: $blue-100;
+    box-shadow: inset $box-shadow-sm;
+    .lexeme-inner {
+      transform: scale(1.02);
     }
   }
 }
