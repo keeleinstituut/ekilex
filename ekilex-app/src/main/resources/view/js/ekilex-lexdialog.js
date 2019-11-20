@@ -117,3 +117,13 @@ $(document).on("show.bs.modal", "[id^=editOdLexemeSuggestionDlg_]", function(e) 
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
+
+$(document).on("show.bs.modal", "[id^=editOdUsageDefinitionDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editOdUsageVersionDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});

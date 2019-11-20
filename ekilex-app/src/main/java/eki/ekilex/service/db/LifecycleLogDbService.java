@@ -262,6 +262,32 @@ public class LifecycleLogDbService {
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+			} else if (LifecycleProperty.OD_DEFINITION.equals(property)) {
+				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_DEFINITION);
+				String recent = (String) entityData.get("value_prese");
+				logData.setRecent(recent);
+				if (!logData.isValueChanged()) {
+					if (logData.isUpdateEvent()) {
+						return;
+					}
+					logData.setRecent(null);
+				}
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+			} else if (LifecycleProperty.OD_VERSION.equals(property)) {
+				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_VERSION);
+				String recent = (String) entityData.get("value_prese");
+				logData.setRecent(recent);
+				if (!logData.isValueChanged()) {
+					if (logData.isUpdateEvent()) {
+						return;
+					}
+					logData.setRecent(null);
+				}
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.USAGE_TRANSLATION.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {

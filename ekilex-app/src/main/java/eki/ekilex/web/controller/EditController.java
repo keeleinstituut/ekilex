@@ -193,6 +193,12 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "od_lexeme_suggestion":
 			cudService.createOdLexemeSuggestion(itemData.getId(), valuePrese);
 			break;
+		case "od_usage_definition":
+			cudService.createOdUsageDefinition(itemData.getId(), valuePrese);
+			break;
+		case "od_usage_version":
+			cudService.createOdUsageVersion(itemData.getId(), valuePrese);
+			break;
 		}
 		return "{}";
 	}
@@ -293,6 +299,12 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "od_lexeme_suggestion":
 			cudService.updateOdLexemeSuggestion(itemData.getId(), valuePrese);
+			break;
+		case "od_usage_definition":
+			cudService.updateOdUsageDefinition(itemData.getId(), valuePrese);
+			break;
+		case "od_usage_version":
+			cudService.updateOdUsageVersion(itemData.getId(), valuePrese);
 			break;
 		}
 		return "{}";
@@ -524,6 +536,12 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "od_lexeme_suggestion":
 			cudService.deleteOdLexemeSuggestion(id);
+			break;
+		case "od_usage_definition":
+			cudService.deleteOdUsageDefinition(id);
+			break;
+		case "od_usage_version":
+			cudService.deleteOdUsageVersion(id);
 			break;
 		}
 		return "OK";

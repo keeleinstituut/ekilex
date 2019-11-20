@@ -922,6 +922,26 @@ public class CudDbService implements DbConstant {
 		return freeform.getId();
 	}
 
+	public Long createOdUsageDefinition(Long usageId, String value, String valuePrese) {
+
+		return create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
+				.values(FreeformType.OD_USAGE_DEFINITION.name(), usageId, value, valuePrese)
+				.returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createOdUsageVersion(Long usageId, String value, String valuePrese) {
+
+		return create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
+				.values(FreeformType.OD_USAGE_VERSION.name(), usageId, value, valuePrese)
+				.returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+	}
+
 	public void deleteWord(Long wordId) {
 		create.delete(LIFECYCLE_LOG)
 				.where(LIFECYCLE_LOG.ID.in(DSL

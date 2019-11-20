@@ -592,6 +592,8 @@
                 <select required class="form-control" name="opCode">
                   <option value="usage_translation">Kasutusnäite tõlge</option>
                   <option value="usage_definition">Kasutusnäite seletus</option>
+                  <option value="od_usage_definition">Kasutusnäite ÕS seletus</option>
+                  <option value="od_usage_version">Kasutusnäite ÕS variant</option>
                 </select>
               </div>
             </div>
@@ -607,6 +609,12 @@
               <div th:replace="components :: eki_editor_elem(true)"></div>
             </div>
             <div class="value-group" data-id="usage_definition">
+              <div th:replace="components :: eki_editor_elem(true)"></div>
+            </div>
+            <div class="value-group" data-id="od_usage_definition">
+              <div th:replace="components :: eki_editor_elem(true)"></div>
+            </div>
+            <div class="value-group" data-id="od_usage_version">
               <div th:replace="components :: eki_editor_elem(true)"></div>
             </div>
           </div>
@@ -1393,6 +1401,42 @@
             <input type="hidden" name="id" th:value="${odLexemeSuggestion.id}">
             <input type="hidden" name="opCode" value="od_lexeme_suggestion">
             <input type="hidden" name="value" th:value="${odLexemeSuggestion.valuePrese}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editOdUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageDefinition.id}" class="modal" role="dialog" th:fragment="edit_od_usage_definition_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${odUsageDefinition.id}">
+            <input type="hidden" name="opCode" value="od_usage_definition">
+            <input type="hidden" name="value" th:value="${odUsageDefinition.value}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editOdUsageVersionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageVersion.id}" class="modal" role="dialog" th:fragment="edit_od_usage_version_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${odUsageVersion.id}">
+            <input type="hidden" name="opCode" value="od_usage_version">
+            <input type="hidden" name="value" th:value="${odUsageVersion.value}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">

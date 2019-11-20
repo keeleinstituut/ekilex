@@ -41,6 +41,6 @@ public enum LifecycleProperty {
 	IMAGE_TITLE,
 	IMAGE,
 	OD_SUGGESTION,
-	OD_FORMULATION,
+	OD_DEFINITION,
 	OD_VERSION
 }

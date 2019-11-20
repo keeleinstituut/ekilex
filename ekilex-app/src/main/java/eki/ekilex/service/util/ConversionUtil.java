@@ -40,6 +40,8 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteSourceTuple;
+import eki.ekilex.data.OdUsageDefinition;
+import eki.ekilex.data.OdUsageVersion;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
@@ -261,6 +263,8 @@ public class ConversionUtil implements DbConstant {
 		Map<Long, SourceLink> usageSourceMap = new HashMap<>();
 		Map<Long, UsageTranslation> usageTranslationMap = new HashMap<>();
 		Map<Long, UsageDefinition> usageDefinitionMap = new HashMap<>();
+		Map<Long, OdUsageDefinition> odUsageDefinitionMap = new HashMap<>();
+		Map<Long, OdUsageVersion> odUsageVersionMap = new HashMap<>();
 
 		for (UsageTranslationDefinitionTuple tuple : usageTranslationDefinitionTuples) {
 
@@ -268,6 +272,8 @@ public class ConversionUtil implements DbConstant {
 			Long usageTranslationId = tuple.getUsageTranslationId();
 			Long usageDefinitionId = tuple.getUsageDefinitionId();
 			Long usageSourceLinkId = tuple.getUsageSourceLinkId();
+			Long odUsageDefinitionId = tuple.getOdUsageDefinitionId();
+			Long odUsageVersionId = tuple.getOdUsageVersionId();
 
 			Usage usage = usageMap.get(usageId);
 			if (usage == null) {
@@ -280,6 +286,8 @@ public class ConversionUtil implements DbConstant {
 				usage.setTypeValue(tuple.getUsageTypeValue());
 				usage.setTranslations(new ArrayList<>());
 				usage.setDefinitions(new ArrayList<>());
+				usage.setOdDefinitions(new ArrayList<>());
+				usage.setOdVersions(new ArrayList<>());
 				usage.setAuthors(new ArrayList<>());
 				usage.setSourceLinks(new ArrayList<>());
 				usageMap.put(usageId, usage);
@@ -327,6 +335,26 @@ public class ConversionUtil implements DbConstant {
 					usageDefinition.setLang(tuple.getUsageDefinitionLang());
 					usageDefinitionMap.put(usageDefinitionId, usageDefinition);
 					usage.getDefinitions().add(usageDefinition);
+				}
+			}
+			if (odUsageDefinitionId != null) {
+				OdUsageDefinition odUsageDefinition = odUsageDefinitionMap.get(odUsageDefinitionId);
+				if (odUsageDefinition == null) {
+					odUsageDefinition = new OdUsageDefinition();
+					odUsageDefinition.setId(odUsageDefinitionId);
+					odUsageDefinition.setValue(tuple.getOdUsageDefinitionValue());
+					odUsageDefinitionMap.put(odUsageDefinitionId, odUsageDefinition);
+					usage.getOdDefinitions().add(odUsageDefinition);
+				}
+			}
+			if (odUsageVersionId != null) {
+				OdUsageVersion odUsageVersion = odUsageVersionMap.get(odUsageVersionId);
+				if (odUsageVersion == null) {
+					odUsageVersion = new OdUsageVersion();
+					odUsageVersion.setId(odUsageVersionId);
+					odUsageVersion.setValue(tuple.getOdUsageVersionValue());
+					odUsageVersionMap.put(odUsageVersionId, odUsageVersion);
+					usage.getOdVersions().add(odUsageVersion);
 				}
 			}
 		}
