@@ -309,6 +309,7 @@ public class CudService extends AbstractService {
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
+	@Transactional
 	public void updateMeaningSemanticType(Long meaningId, String currentSemanticType, String newSemanticType) {
 		Long meaningSemanticTypeId = cudDbService.updateMeaningSemanticType(meaningId, currentSemanticType, newSemanticType);
 		LogData logData = new LogData(
@@ -323,6 +324,38 @@ public class CudService extends AbstractService {
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateImageTitle(imageId, value);
+	}
+
+	@Transactional
+	public void updateOdWordSuggestion(Long freeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.OD_SUGGESTION, freeformId, valuePrese);
+		createLifecycleLog(logData);
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
+	}
+
+	@Transactional
+	public void updateOdLexemeSuggestion(Long freeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_SUGGESTION, freeformId, valuePrese);
+		createLifecycleLog(logData);
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
+	}
+
+	@Transactional
+	public void updateOdUsageDefinition(Long freeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, freeformId, valuePrese);
+		createLifecycleLog(logData);
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
+	}
+
+	@Transactional
+	public void updateOdUsageVersion(Long freeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_VERSION, freeformId, valuePrese);
+		createLifecycleLog(logData);
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
 	}
 
 	// --- CREATE ---
@@ -571,6 +604,38 @@ public class CudService extends AbstractService {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.createImageTitle(imageId, value);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
+		createLifecycleLog(logData);
+	}
+
+	@Transactional
+	public void createOdWordSuggestion(Long wordId, String valuePrese) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		Long wordFreeformId = cudDbService.createOdWordSuggestion(wordId, value, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.OD_SUGGESTION, wordFreeformId, valuePrese);
+		createLifecycleLog(logData);
+	}
+
+	@Transactional
+	public void createOdLexemeSuggestion(Long lexemeId, String valuePrese) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		Long lexemeFreeformId = cudDbService.createOdLexemeSuggestion(lexemeId, value, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_SUGGESTION, lexemeFreeformId, valuePrese);
+		createLifecycleLog(logData);
+	}
+
+	@Transactional
+	public void createOdUsageDefinition(Long usageId, String valuePrese) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		Long odUsageDefinitionId = cudDbService.createOdUsageDefinition(usageId, value, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, odUsageDefinitionId, valuePrese);
+		createLifecycleLog(logData);
+	}
+
+	@Transactional
+	public void createOdUsageVersion(Long usageId, String valuePrese) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		Long odUsageVersionId = cudDbService.createOdUsageVersion(usageId, value, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_VERSION, odUsageVersionId, valuePrese);
 		createLifecycleLog(logData);
 	}
 
@@ -843,6 +908,33 @@ public class CudService extends AbstractService {
 		cudDbService.deleteFreeform(freeformId);
 	}
 
+	@Transactional
+	public void deleteOdWordSuggestion(Long freeformId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.OD_SUGGESTION, freeformId);
+		createLifecycleLog(logData);
+		cudDbService.deleteFreeform(freeformId);
+	}
+
+	@Transactional
+	public void deleteOdLexemeSuggestion(Long freeformId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.OD_SUGGESTION, freeformId);
+		createLifecycleLog(logData);
+		cudDbService.deleteFreeform(freeformId);
+	}
+
+	@Transactional
+	public void deleteOdUsageDefinition(Long freeformId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, freeformId, null);
+		createLifecycleLog(logData);
+		cudDbService.deleteFreeform(freeformId);
+	}
+
+	@Transactional
+	public void deleteOdUsageVersion(Long freeformId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.OD_VERSION, freeformId, null);
+		createLifecycleLog(logData);
+		cudDbService.deleteFreeform(freeformId);
+	}
 
 	@Transactional
 	public void addSynRelation(Long word1Id, Long word2Id) {

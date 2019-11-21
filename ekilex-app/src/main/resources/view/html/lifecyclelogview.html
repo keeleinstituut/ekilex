@@ -19,14 +19,14 @@
           </div>
           <div class="row">
             <div class="col-5 text-center">
-              <span th:text="${logRow.recent}" th:if="${logRow.recent != null}"></span>
+              <span th:utext="${logRow.recent}" th:if="${logRow.recent != null}"></span>
               <span class="fa fa-minus" th:if="${logRow.recent == null}"></span>
             </div>
             <div class="col-1">
               <span class="fa fa-chevron-right"></span>
             </div>
             <div class="col-5 text-center">
-              <span th:text="${logRow.entry}" th:if="${logRow.entry != null}"></span>
+              <span th:utext="${logRow.entry}" th:if="${logRow.entry != null}"></span>
               <span class="fa fa-minus" th:if="${logRow.entry == null}"></span>
             </div>
           </div>

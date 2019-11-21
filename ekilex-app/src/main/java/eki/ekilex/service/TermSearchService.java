@@ -26,7 +26,6 @@ import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
@@ -34,6 +33,7 @@ import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.service.db.LifecycleLogDbService;
@@ -118,7 +118,8 @@ public class TermSearchService extends AbstractSearchService {
 	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
-		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.PUBLIC_NOTE.name()};
+		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
+				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_SUGGESTION.name()};
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();

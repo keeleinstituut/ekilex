@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
@@ -38,6 +39,7 @@ import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.SourceFreeform;
+import eki.ekilex.data.db.tables.WordFreeform;
 
 @Component
 public class LifecycleLogDbServiceHelper implements DbConstant {
@@ -112,6 +114,24 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 				.where(
 						sff.FREEFORM_ID.eq(ff1.ID)
 								.and(ff1.ID.eq(sourceFreeformId))
+								.and(ff1.TYPE.eq(freeformType.name())))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getWordFreeformData(DSLContext create, Long wordFreeformId, FreeformType freeformType) {
+		WordFreeform wff = WORD_FREEFORM.as("wff");
+		Freeform ff1 = FREEFORM.as("ff1");
+		Map<String, Object> result = create
+				.select(
+						wff.WORD_ID,
+						ff1.VALUE_TEXT,
+						ff1.VALUE_PRESE
+				)
+				.from(wff, ff1)
+				.where(
+						wff.FREEFORM_ID.eq(ff1.ID)
+								.and(ff1.ID.eq(wordFreeformId))
 								.and(ff1.TYPE.eq(freeformType.name())))
 				.fetchSingleMap();
 		return result;

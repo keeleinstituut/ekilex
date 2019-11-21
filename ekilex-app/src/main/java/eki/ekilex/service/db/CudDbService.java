@@ -68,6 +68,7 @@ import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
+import eki.ekilex.data.db.tables.records.WordFreeformRecord;
 import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.tables.records.WordGroupRecord;
 import eki.ekilex.data.db.tables.records.WordRelationRecord;
@@ -887,6 +888,58 @@ public class CudDbService implements DbConstant {
 				.insertInto(FREEFORM, FREEFORM.PARENT_ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
 				.values(imageId, FreeformType.IMAGE_TITLE.name(), value, value)
 				.execute();
+	}
+
+	public Long createOdWordSuggestion(Long wordId, String value, String valuePrese) {
+
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.OD_WORD_SUGGESTION.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.store();
+
+		WordFreeformRecord wordFreeform = create.newRecord(WORD_FREEFORM);
+		wordFreeform.setWordId(wordId);
+		wordFreeform.setFreeformId(freeform.getId());
+		wordFreeform.store();
+
+		return freeform.getId();
+	}
+
+	public Long createOdLexemeSuggestion(Long lexemeId, String value, String valuePrese) {
+
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.OD_LEXEME_SUGGESTION.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.store();
+
+		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
+		lexemeFreeform.setLexemeId(lexemeId);
+		lexemeFreeform.setFreeformId(freeform.getId());
+		lexemeFreeform.store();
+
+		return freeform.getId();
+	}
+
+	public Long createOdUsageDefinition(Long usageId, String value, String valuePrese) {
+
+		return create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
+				.values(FreeformType.OD_USAGE_DEFINITION.name(), usageId, value, valuePrese)
+				.returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createOdUsageVersion(Long usageId, String value, String valuePrese) {
+
+		return create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
+				.values(FreeformType.OD_USAGE_VERSION.name(), usageId, value, valuePrese)
+				.returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public void deleteWord(Long wordId) {

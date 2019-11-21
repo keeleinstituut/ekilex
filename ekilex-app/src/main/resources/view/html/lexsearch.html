@@ -136,6 +136,7 @@
                 <div th:replace="lexdialog :: add_lexeme_deriv_dlg"></div>
                 <div th:replace="lexdialog :: add_lexeme_register_dlg"></div>
                 <div th:replace="lexdialog :: add_lexeme_grammar_dlg"></div>
+                <div th:replace="lexdialog :: add_od_lexeme_suggestion_dlg"></div>
                 <div th:replace="lexdialog :: add_definition_dlg"></div>
                 <div th:replace="lexdialog :: add_lexeme_source_link_dlg"></div>
                 <div th:replace="lexdialog :: add_learner_comment_dlg"></div>
@@ -336,6 +337,50 @@
                                     <i class="fa fa-remove" aria-hidden="true"></i>
                                   </button>
                                 </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" th:if="${not #lists.isEmpty(lexeme.odLexemeSuggestions)}">
+                    <hr />
+                    <div class="col pr-0 col-w13rem">
+                      <span class="lbl">ÕS soovitused</span>
+                      <button type="button" class="btn badge badge-success float-right mr-4"
+                              title="Lisa uus"
+                              data-toggle="modal"
+                              th:data-target="${'#addOdLexemeSuggestionDlg_' + lexeme.lexemeId}"
+                              sec:authorize="#vars.isLexemeCrudGranted">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="col pl-0">
+                      <div th:each="odLexemeSuggestion, itemIter : ${lexeme.odLexemeSuggestions}">
+                        <div th:replace="lexdialog :: edit_od_lexeme_suggestion"></div>
+                        <div class="row">
+                          <div class="col hidden-buttons">
+                            <div class="action-buttons-anchor">
+                              <div class="pr-3">
+                                <span th:utext="${odLexemeSuggestion.valuePrese}"></span>
+                              </div>
+                              <div class="action-buttons-2">
+                                <button type="button" class="btn badge badge-primary"
+                                        title="Muuda"
+                                        data-toggle="modal"
+                                        th:data-target="${'#editOdLexemeSuggestionDlg_' + lexeme.lexemeId + '_' + odLexemeSuggestion.id}"
+                                        sec:authorize="${#vars.isLexemeCrudGranted}">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn badge badge-warning"
+                                        data-op-code="od_lexeme_suggestion"
+                                        th:data-id="${odLexemeSuggestion.id}"
+                                        data-toggle="delete-confirm"
+                                        data-placement="right"
+                                        sec:authorize="${#vars.isLexemeCrudGranted}">
+                                  <i class="fa fa-remove" aria-hidden="true"></i>
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -723,7 +768,7 @@
                                 <i class="fa fa-remove" aria-hidden="true"></i>
                               </button>
                               <button type="button" class="btn badge badge-success"
-                                title="Lisa tõlge või seletus"
+                                title="Lisa kasutusnäitele andmeid"
                                 data-toggle="modal"
                                 th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
                                 sec:authorize="${#vars.isUsageCrudGranted}">
@@ -731,67 +776,151 @@
                               </button>
                             </div>
                           </div>
-                          <div class="row" th:each="usageTranslation : ${usage.translations}">
-                            <div th:replace="lexdialog :: edit_usage_translation_dlg"></div>
-                            <div class="col hidden-buttons">
-                              <!-- intentional generic lexeme perm on translations -->
-                              <div class="action-buttons-anchor">
-                                <span th:utext="${usageTranslation.value}"></span>
-                                <div class="action-buttons-3">
-                                  <button type="button" class="btn badge badge-primary"
-                                    title="Muuda"
-                                    data-toggle="modal"
-                                    th:data-target="${'#editUsageTranslationDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageTranslation.id}"
-                                    sec:authorize="${#vars.isLexemeCrudGranted}">
-                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                  </button>
-                                  <button type="button" class="btn badge badge-warning"
-                                    th:data-id="${usageTranslation.id}"
-                                    data-op-code="usage_translation"
-                                    data-toggle="delete-confirm"
-                                    data-placement="right"
-                                    sec:authorize="${#vars.isLexemeCrudGranted}">
-                                    <i class="fa fa-remove" aria-hidden="true"></i>
-                                  </button>
-                                  <button type="button" class="btn badge badge-success"
-                                    title="Lisa uus"
-                                    data-toggle="modal"
-                                    th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
-                                    sec:authorize="${#vars.isLexemeCrudGranted}">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                  </button>
+                          <div th:if="${not #lists.isEmpty(usage.translations)}" class="col pl-0">
+                            <div>
+                              <span class="lbl">Tõlked</span>
+                            </div>
+                            <div class="row" th:each="usageTranslation : ${usage.translations}">
+                              <div th:replace="lexdialog :: edit_usage_translation_dlg"></div>
+                              <div class="col hidden-buttons ml-2">
+                                <!-- intentional generic lexeme perm on translations -->
+                                <div class="action-buttons-anchor">
+                                  <span th:utext="${usageTranslation.value}"></span>
+                                  <div class="action-buttons-3">
+                                    <button type="button" class="btn badge badge-primary"
+                                      title="Muuda"
+                                      data-toggle="modal"
+                                      th:data-target="${'#editUsageTranslationDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageTranslation.id}"
+                                      sec:authorize="${#vars.isLexemeCrudGranted}">
+                                      <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn badge badge-warning"
+                                      th:data-id="${usageTranslation.id}"
+                                      data-op-code="usage_translation"
+                                      data-toggle="delete-confirm"
+                                      data-placement="right"
+                                      sec:authorize="${#vars.isLexemeCrudGranted}">
+                                      <i class="fa fa-remove" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn badge badge-success"
+                                      title="Lisa uus"
+                                      data-toggle="modal"
+                                      th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
+                                      sec:authorize="${#vars.isLexemeCrudGranted}">
+                                      <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div class="row" th:each="usageDefinition : ${usage.definitions}">
-                            <div th:replace="lexdialog :: edit_usage_definition_dlg"></div>
-                            <div class="col hidden-buttons">
-                              <div class="action-buttons-anchor">
-                                <span th:utext="${usageDefinition.value}"></span>
-                                <div class="action-buttons-3">
-                                  <button type="button" class="btn badge badge-primary"
-                                    title="Muuda"
-                                    data-toggle="modal"
-                                    th:data-target="${'#editUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageDefinition.id}"
-                                    sec:authorize="${#vars.isUsageCrudGranted}">
-                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                  </button>
-                                  <button type="button" class="btn badge badge-warning"
-                                    th:data-id="${usageDefinition.id}"
-                                    data-op-code="usage_definition"
-                                    data-toggle="delete-confirm"
-                                    data-placement="right"
-                                    sec:authorize="${#vars.isUsageCrudGranted}">
-                                    <i class="fa fa-remove" aria-hidden="true"></i>
-                                  </button>
-                                  <button type="button" class="btn badge badge-success"
-                                    title="Lisa uus"
-                                    data-toggle="modal"
-                                    th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
-                                    sec:authorize="${#vars.isUsageCrudGranted}">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                  </button>
+                          <div th:if="${not #lists.isEmpty(usage.definitions)}" class="col pl-0">
+                            <div>
+                              <span class="lbl">Seletused</span>
+                            </div>
+                            <div class="row" th:each="usageDefinition : ${usage.definitions}">
+                              <div th:replace="lexdialog :: edit_usage_definition_dlg"></div>
+                              <div class="col hidden-buttons ml-2">
+                                <div class="action-buttons-anchor">
+                                  <span th:utext="${usageDefinition.value}"></span>
+                                  <div class="action-buttons-3">
+                                    <button type="button" class="btn badge badge-primary"
+                                      title="Muuda"
+                                      data-toggle="modal"
+                                      th:data-target="${'#editUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageDefinition.id}"
+                                      sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn badge badge-warning"
+                                      th:data-id="${usageDefinition.id}"
+                                      data-op-code="usage_definition"
+                                      data-toggle="delete-confirm"
+                                      data-placement="right"
+                                      sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-remove" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn badge badge-success"
+                                      title="Lisa uus"
+                                      data-toggle="modal"
+                                      th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
+                                      sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div th:if="${not #lists.isEmpty(usage.odDefinitions)}" class="col pl-0">
+                            <div>
+                              <span class="lbl">ÕS seletused</span>
+                            </div>
+                            <div class="row" th:each="odUsageDefinition : ${usage.odDefinitions}">
+                              <div th:replace="lexdialog :: edit_od_usage_definition_dlg"></div>
+                              <div class="col hidden-buttons ml-2">
+                                <div class="action-buttons-anchor">
+                                  <span th:utext="${odUsageDefinition.value}"></span>
+                                  <div class="action-buttons-3">
+                                    <button type="button" class="btn badge badge-primary"
+                                            title="Muuda"
+                                            data-toggle="modal"
+                                            th:data-target="${'#editOdUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageDefinition.id}"
+                                            sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn badge badge-warning"
+                                            th:data-id="${odUsageDefinition.id}"
+                                            data-op-code="od_usage_definition"
+                                            data-toggle="delete-confirm"
+                                            data-placement="right"
+                                            sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-remove" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn badge badge-success"
+                                            title="Lisa uus"
+                                            data-toggle="modal"
+                                            th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
+                                            sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div th:if="${not #lists.isEmpty(usage.odVersions)}" class="col pl-0">
+                            <div>
+                              <span class="lbl">ÕS variandid</span>
+                            </div>
+                            <div class="row" th:each="odUsageVersion : ${usage.odVersions}">
+                              <div th:replace="lexdialog :: edit_od_usage_version_dlg"></div>
+                              <div class="col hidden-buttons ml-2">
+                                <div class="action-buttons-anchor">
+                                  <span th:utext="${odUsageVersion.value}"></span>
+                                  <div class="action-buttons-3">
+                                    <button type="button" class="btn badge badge-primary"
+                                            title="Muuda"
+                                            data-toggle="modal"
+                                            th:data-target="${'#editOdUsageVersionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageVersion.id}"
+                                            sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn badge badge-warning"
+                                            th:data-id="${odUsageVersion.id}"
+                                            data-op-code="od_usage_version"
+                                            data-toggle="delete-confirm"
+                                            data-placement="right"
+                                            sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-remove" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn badge badge-success"
+                                            title="Lisa uus"
+                                            data-toggle="modal"
+                                            th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
+                                            sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1015,6 +1144,7 @@
             <div class="col-4 border-left border-light h-100 overflow-auto">
               <div th:replace="lexdialog :: add_word_data_dlg"></div>
               <div th:replace="lexdialog :: add_word_relation_dlg"></div>
+              <div th:replace="lexdialog :: add_od_word_suggestion_dlg"></div>
               <div th:replace="lexdialog :: edit_word_value_dlg"></div>
               <div th:replace="lexdialog :: edit_word_gender_dlg"></div>
               <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
@@ -1105,6 +1235,41 @@
                     </div>
                   </th:block>
                   <hr />
+                </div>
+                <div class="card-body pt-0 pb-0">
+                  <span class="lbl">ÕS keelendi soovitused</span>
+                  <button type="button" class="btn badge badge-success"
+                          title="Lisa ÕS soovitus" data-toggle="modal"
+                          th:data-target="${'#addOdWordSuggestionDlg_' + wordId}"
+                          sec:authorize="${#vars.isWordCrudGranted}">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                  <div th:each="odWordSuggestion, itemIter : ${details.odWordSuggestions}">
+                    <div th:replace="lexdialog :: edit_od_word_suggestion"></div>
+                    <div class="col hidden-buttons pr-5">
+                      <div class="action-buttons-anchor">
+                        <span th:utext="${odWordSuggestion.valuePrese}"></span>
+                        <div class="action-buttons-2">
+                          <button type="button" class="btn badge badge-primary"
+                                  title="Muuda"
+                                  data-toggle="modal"
+                                  th:data-target="${'#editOdWordSuggestionDlg_' + odWordSuggestion.id}"
+                                  sec:authorize="${#vars.isWordCrudGranted}">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-id="${odWordSuggestion.id}"
+                                  data-op-code="od_word_suggestion"
+                                  data-toggle="delete-confirm"
+                                  data-placement="right"
+                                  sec:authorize="${#vars.isWordCrudGranted}">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr/>
                 </div>
                 <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
                   <div th:each="paradigm : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2">

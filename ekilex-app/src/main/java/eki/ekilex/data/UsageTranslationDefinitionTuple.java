@@ -47,6 +47,18 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 	@Column(name = "usage_definition_lang")
 	private String usageDefinitionLang;
 
+	@Column(name = "od_usage_definition_id")
+	private Long odUsageDefinitionId;
+
+	@Column(name = "od_usage_definition_value")
+	private String odUsageDefinitionValue;
+
+	@Column(name = "od_usage_version_id")
+	private Long odUsageVersionId;
+
+	@Column(name = "od_usage_version_value")
+	private String odUsageVersionValue;
+
 	@Column(name = "usage_source_link_id")
 	private Long usageSourceLinkId;
 
@@ -162,6 +174,38 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	public void setUsageDefinitionLang(String usageDefinitionLang) {
 		this.usageDefinitionLang = usageDefinitionLang;
+	}
+
+	public Long getOdUsageDefinitionId() {
+		return odUsageDefinitionId;
+	}
+
+	public void setOdUsageDefinitionId(Long odUsageDefinitionId) {
+		this.odUsageDefinitionId = odUsageDefinitionId;
+	}
+
+	public String getOdUsageDefinitionValue() {
+		return odUsageDefinitionValue;
+	}
+
+	public void setOdUsageDefinitionValue(String odUsageDefinitionValue) {
+		this.odUsageDefinitionValue = odUsageDefinitionValue;
+	}
+
+	public Long getOdUsageVersionId() {
+		return odUsageVersionId;
+	}
+
+	public void setOdUsageVersionId(Long odUsageVersionId) {
+		this.odUsageVersionId = odUsageVersionId;
+	}
+
+	public String getOdUsageVersionValue() {
+		return odUsageVersionValue;
+	}
+
+	public void setOdUsageVersionValue(String odUsageVersionValue) {
+		this.odUsageVersionValue = odUsageVersionValue;
 	}
 
 	public Long getUsageSourceLinkId() {

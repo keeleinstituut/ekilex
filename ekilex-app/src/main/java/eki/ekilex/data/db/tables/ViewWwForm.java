@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
 
-    private static final long serialVersionUID = 1319527657;
+    private static final long serialVersionUID = -417419848;
 
     /**
      * The reference instance of <code>public.view_ww_form</code>
@@ -141,7 +141,7 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     /**
      * The column <code>public.view_ww_form.order_by</code>.
      */
-    public final TableField<ViewWwFormRecord, Integer> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ViewWwFormRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.view_ww_form</code> table reference

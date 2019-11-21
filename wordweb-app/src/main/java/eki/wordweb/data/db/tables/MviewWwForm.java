@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = -592998964;
+    private static final long serialVersionUID = -613883301;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -146,7 +146,7 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     /**
      * The column <code>public.mview_ww_form.order_by</code>.
      */
-    public final TableField<MviewWwFormRecord, Integer> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwFormRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.mview_ww_form</code> table reference

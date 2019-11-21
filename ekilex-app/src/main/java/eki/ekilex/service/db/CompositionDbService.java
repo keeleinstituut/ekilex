@@ -25,6 +25,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
@@ -53,9 +54,14 @@ import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.db.tables.LexColloc;
+import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningRelation;
+import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.WordEtymologyRelation;
+import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
@@ -213,6 +219,7 @@ public class CompositionDbService implements DbConstant {
 		joinMeaningDomains(meaningId, sourceMeaningId);
 		joinMeaningFreeforms(meaningId, sourceMeaningId);
 		joinMeaningRelations(meaningId, sourceMeaningId);
+		joinMeaningSemanticTypes(meaningId, sourceMeaningId);
 		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, meaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
 		create.update(MEANING_PROCESS_LOG).set(MEANING_PROCESS_LOG.MEANING_ID, meaningId).where(MEANING_PROCESS_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
@@ -262,8 +269,32 @@ public class CompositionDbService implements DbConstant {
 
 	private void joinLexemeRelations(Long lexemeId, Long sourceLexemeId) {
 
-		create.update(LEX_RELATION).set(LEX_RELATION.LEXEME1_ID, lexemeId).where(LEX_RELATION.LEXEME1_ID.eq(sourceLexemeId)).execute();
-		create.update(LEX_RELATION).set(LEX_RELATION.LEXEME2_ID, lexemeId).where(LEX_RELATION.LEXEME2_ID.eq(sourceLexemeId)).execute();
+		LexRelation lr1 = LEX_RELATION.as("lr1");
+		LexRelation lr2 = LEX_RELATION.as("lr2");
+
+		create.update(lr1)
+				.set(lr1.LEXEME1_ID, lexemeId)
+				.where(lr1.LEXEME1_ID.eq(sourceLexemeId))
+				.andNotExists(DSL
+						.select(lr2.ID)
+						.from(lr2)
+						.where(
+								lr2.LEXEME1_ID.eq(lexemeId)
+										.and(lr2.LEXEME2_ID.eq(lr1.LEXEME2_ID))
+										.and(lr2.LEX_REL_TYPE_CODE.eq(lr1.LEX_REL_TYPE_CODE))))
+				.execute();
+
+		create.update(lr1)
+				.set(lr1.LEXEME2_ID, lexemeId)
+				.where(lr1.LEXEME2_ID.eq(sourceLexemeId))
+				.andNotExists(DSL
+						.select(lr2.ID)
+						.from(lr2)
+						.where(
+								lr2.LEXEME2_ID.eq(lexemeId)
+										.and(lr2.LEXEME1_ID.eq(lr1.LEXEME1_ID))
+										.and(lr2.LEX_REL_TYPE_CODE.eq(lr1.LEX_REL_TYPE_CODE))))
+				.execute();
 	}
 
 	private void joinLexemeDerivs(Long lexemeId, Long sourceLexemeId) {
@@ -338,9 +369,51 @@ public class CompositionDbService implements DbConstant {
 				.execute();
 	}
 
+	private void joinMeaningSemanticTypes(Long meaningId, Long sourceMeaningId) {
+
+		MeaningSemanticType mst1 = MEANING_SEMANTIC_TYPE.as("mst1");
+		MeaningSemanticType mst2 = MEANING_SEMANTIC_TYPE.as("mst2");
+
+		create.update(mst1)
+				.set(mst1.MEANING_ID, meaningId)
+				.where(mst1.MEANING_ID.eq(sourceMeaningId))
+				.andNotExists(DSL
+						.select(mst2.ID)
+						.from(mst2)
+						.where(
+								mst2.MEANING_ID.eq(meaningId)
+										.and(mst2.SEMANTIC_TYPE_CODE.eq(mst1.SEMANTIC_TYPE_CODE))))
+				.execute();
+	}
+
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {
-		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING1_ID, meaningId).where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId)).execute();
-		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING2_ID, meaningId).where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId)).execute();
+
+		MeaningRelation mr1 = MEANING_RELATION.as("mr1");
+		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
+
+		create.update(mr1)
+				.set(mr1.MEANING1_ID, meaningId)
+				.where(mr1.MEANING1_ID.eq(sourceMeaningId))
+				.andNotExists(DSL
+						.select(mr2.ID)
+						.from(mr2)
+						.where(
+								mr2.MEANING1_ID.eq(meaningId)
+										.and(mr2.MEANING2_ID.eq(mr1.MEANING2_ID))
+										.and(mr2.MEANING_REL_TYPE_CODE.eq(mr1.MEANING_REL_TYPE_CODE))))
+				.execute();
+
+		create.update(mr1)
+				.set(mr1.MEANING2_ID, meaningId)
+				.where(mr1.MEANING2_ID.eq(sourceMeaningId))
+				.andNotExists(DSL
+						.select(mr2.ID)
+						.from(mr2)
+						.where(
+								mr2.MEANING2_ID.eq(meaningId)
+										.and(mr2.MEANING1_ID.eq(mr1.MEANING1_ID))
+										.and(mr2.MEANING_REL_TYPE_CODE.eq(mr1.MEANING_REL_TYPE_CODE))))
+				.execute();
 	}
 
 	private void joinMeaningFreeforms(Long meaningId, Long sourceMeaningId) {
@@ -662,7 +735,7 @@ public class CompositionDbService implements DbConstant {
 		});
 	}
 
-	public Long cloneFreeform(Long freeformId, Long parentFreeformId) {
+	private Long cloneFreeform(Long freeformId, Long parentFreeformId) {
 		FreeformRecord freeform = create.selectFrom(FREEFORM).where(FREEFORM.ID.eq(freeformId)).fetchOne();
 		FreeformRecord clonedFreeform = freeform.copy();
 		clonedFreeform.setParentId(parentFreeformId);
@@ -693,21 +766,14 @@ public class CompositionDbService implements DbConstant {
 		joinWordFreeforms(wordId, sourceWordId);
 		joinWordRelations(wordId, sourceWordId);
 		joinWordTypeCodes(wordId, sourceWordId);
-
-		create.update(WORD_GROUP_MEMBER)
-				.set(WORD_GROUP_MEMBER.WORD_ID, wordId)
-				.where(WORD_GROUP_MEMBER.WORD_ID.eq(sourceWordId))
-				.execute();
+		joinWordGroupMembers(wordId, sourceWordId);
 
 		create.update(WORD_ETYMOLOGY)
 				.set(WORD_ETYMOLOGY.WORD_ID, wordId)
 				.where(WORD_ETYMOLOGY.WORD_ID.eq(sourceWordId))
 				.execute();
 
-		create.update(WORD_ETYMOLOGY_RELATION)
-				.set(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID, wordId)
-				.where(WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID.eq(sourceWordId))
-				.execute();
+		joinWordEtymologyRelations(wordId, sourceWordId);
 
 		create.update(WORD_PROCESS_LOG)
 				.set(WORD_PROCESS_LOG.WORD_ID, wordId)
@@ -717,6 +783,40 @@ public class CompositionDbService implements DbConstant {
 		create.update(WORD_LIFECYCLE_LOG)
 				.set(WORD_LIFECYCLE_LOG.WORD_ID, wordId)
 				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(sourceWordId))
+				.execute();
+	}
+
+	private void joinWordEtymologyRelations(Long wordId, Long sourceWordId) {
+
+		WordEtymologyRelation wer1 = WORD_ETYMOLOGY_RELATION.as("wer1");
+		WordEtymologyRelation wer2 = WORD_ETYMOLOGY_RELATION.as("wer2");
+
+		create.update(wer1)
+				.set(wer1.RELATED_WORD_ID, wordId)
+				.where(wer1.RELATED_WORD_ID.eq(sourceWordId))
+				.andNotExists(DSL
+						.select(wer2.ID)
+						.from(wer2)
+						.where(
+								wer2.RELATED_WORD_ID.eq(wordId)
+										.and(wer2.WORD_ETYM_ID.eq(wer1.WORD_ETYM_ID))))
+				.execute();
+	}
+
+	private void joinWordGroupMembers(Long wordId, Long sourceWordId) {
+
+		WordGroupMember wgm1 = WORD_GROUP_MEMBER.as("wgm1");
+		WordGroupMember wgm2 = WORD_GROUP_MEMBER.as("wgm2");
+
+		create.update(wgm1)
+				.set(wgm1.WORD_ID, wordId)
+				.where(wgm1.WORD_ID.eq(sourceWordId))
+				.andNotExists(DSL
+						.select(wgm2.ID)
+						.from(wgm2)
+						.where(
+								wgm2.WORD_ID.eq(wordId)
+										.and(wgm2.WORD_GROUP_ID.eq(wgm1.WORD_GROUP_ID))))
 				.execute();
 	}
 
@@ -763,8 +863,8 @@ public class CompositionDbService implements DbConstant {
 						.from(wr2)
 						.where(
 								wr2.WORD1_ID.eq(wordId)
-								.and(wr2.WORD2_ID.eq(wr1.WORD2_ID))
-								.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
+										.and(wr2.WORD2_ID.eq(wr1.WORD2_ID))
+										.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
 				.execute();
 
 		create.update(wr1)
@@ -782,6 +882,7 @@ public class CompositionDbService implements DbConstant {
 	}
 
 	private void joinWordTypeCodes(Long wordId, Long sourceWordId) {
+
 		WordWordType wwt1 = WORD_WORD_TYPE.as("wwt1");
 		WordWordType wwt2 = WORD_WORD_TYPE.as("wwt2");
 

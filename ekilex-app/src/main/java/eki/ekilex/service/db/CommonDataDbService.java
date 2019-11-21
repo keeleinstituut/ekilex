@@ -680,6 +680,25 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(FreeForm.class);
 	}
 
+	public List<FreeForm> getOdLexemeSuggestions(Long lexemeId) {
+
+		return create
+				.select(
+						FREEFORM.ID,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.ORDER_BY)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(
+						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
+								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+								.and(FREEFORM.TYPE.eq(FreeformType.OD_LEXEME_SUGGESTION.name())))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(FreeForm.class);
+	}
+
 	public List<Government> getLexemeGovernments(Long lexemeId) {
 
 		LexemeFreeform glff = LEXEME_FREEFORM.as("glff");
@@ -706,6 +725,8 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		Freeform u = FREEFORM.as("u");
 		Freeform ut = FREEFORM.as("ut");
 		Freeform ud = FREEFORM.as("ud");
+		Freeform odUd = FREEFORM.as("od_ud");
+		Freeform odUv = FREEFORM.as("od_uv");
 		Freeform utype = FREEFORM.as("utype");
 		Freeform pname = FREEFORM.as("pname");
 		Source src = SOURCE.as("src");
@@ -741,6 +762,10 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						ud.ID.as("usage_definition_id"),
 						ud.VALUE_PRESE.as("usage_definition_value"),
 						ud.LANG.as("usage_definition_lang"),
+						odUd.ID.as("od_usage_definition_id"),
+						odUd.VALUE_PRESE.as("od_usage_definition_value"),
+						odUv.ID.as("od_usage_version_id"),
+						odUv.VALUE_PRESE.as("od_usage_version_value"),
 						srcl.ID.as("usage_source_link_id"),
 						srcl.TYPE.as("usage_source_link_type"),
 						srcl.NAME.as("usage_source_link_name"),
@@ -752,12 +777,14 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
+								.leftOuterJoin(odUd).on(odUd.PARENT_ID.eq(u.ID).and(odUd.TYPE.eq(FreeformType.OD_USAGE_DEFINITION.name())))
+								.leftOuterJoin(odUv).on(odUv.PARENT_ID.eq(u.ID).and(odUv.TYPE.eq(FreeformType.OD_USAGE_VERSION.name())))
 								.leftOuterJoin(srcl).on(srcl.FREEFORM_ID.eq(u.ID))
 								.leftOuterJoin(srcn).on(srcn.field("id").cast(Long.class).eq(srcl.SOURCE_ID))
 								.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 								.leftOuterJoin(utypelbl).on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(ulff.LEXEME_ID.eq(lexemeId))
-				.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, srcl.ORDER_BY)
+				.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, odUd.ORDER_BY, odUv.ORDER_BY, srcl.ORDER_BY)
 				.fetchInto(UsageTranslationDefinitionTuple.class);
 	}
 
