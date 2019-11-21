@@ -308,7 +308,7 @@ public class DatasetImportValidator extends AbstractLoaderCommons {
 
 		//not nullable fields log
 		for (TableColumn tableColumn : tableColumns.values()) {
-			if (!tableColumn.isNullable()) {
+			if (!tableColumn.isNullable() && !tableColumn.isDefaultExists()) {
 				String columnName = tableColumn.getColumnName();
 				Object columnValue = dataMap.get(columnName);
 				if (columnValue == null) {
