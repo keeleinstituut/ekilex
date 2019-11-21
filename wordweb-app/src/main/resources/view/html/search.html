@@ -140,6 +140,11 @@
                 <button name="feedback-btn" value="feedback" class="btn btn-secondary ml-2" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
               </span>
             </h3>
+            <div th:if="${not #lists.isEmpty(wordData.word.odWordSuggestions)}">
+              <th:block th:each="odWordSuggestion : ${wordData.word.odWordSuggestions}">
+                <div th:utext="${odWordSuggestion}"></div>
+              </th:block>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -206,6 +211,11 @@
                     </div>
                     <span th:if="${lexeme.missingMatchWords}" th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
                   </div>
+                  <div class="mb-2" th:if="${not #lists.isEmpty(lexeme.odLexemeSuggestions)}">
+                    <th:block th:each="odLexemeSuggestion : ${lexeme.odLexemeSuggestions}">
+                      <div th:utext="${odLexemeSuggestion}"></div>
+                    </th:block>
+                  </div>
                 </div>
                 <div class="col-12 dependencies">
                   <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-1 rekts-est">
@@ -226,6 +236,21 @@
                         </button>
                         <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
                           <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:utext="${usageTranslation}"></span>
+                        </th:block>
+                        <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
+                          <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" th:utext="${usageDefinition}"></span>
+                        </th:block>
+                        <th:block th:if="${not #lists.isEmpty(usage.odUsageDefinitions)}">
+                          <div class="example-text">
+                            <span>ÕS parem:</span>
+                            <span th:each="odUsageDefinition : ${usage.odUsageDefinitions}" th:utext="${odUsageDefinition}"></span>
+                          </div>
+                        </th:block>
+                        <th:block th:if="${not #lists.isEmpty(usage.odUsageVersions)}">
+                          <div class="example-text">
+                            <span>ÕS variant:</span>
+                            <span th:each="odUsageVersion : ${usage.odUsageVersions}" th:utext="${odUsageVersion}"></span>
+                          </div>
                         </th:block>
                       </div>
                     </div>

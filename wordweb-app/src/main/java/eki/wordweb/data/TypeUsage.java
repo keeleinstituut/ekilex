@@ -35,6 +35,12 @@ public class TypeUsage extends AbstractDataObject {
 	@Column(name = "usage_definitions")
 	private List<String> usageDefinitions;
 
+	@Column(name = "od_usage_definitions")
+	private List<String> odUsageDefinitions;
+
+	@Column(name = "od_usage_versions")
+	private List<String> odUsageVersions;
+
 	@Column(name = "usage_authors")
 	private List<String> usageAuthorsRaw;
 
@@ -102,6 +108,22 @@ public class TypeUsage extends AbstractDataObject {
 
 	public void setUsageDefinitions(List<String> usageDefinitions) {
 		this.usageDefinitions = usageDefinitions;
+	}
+
+	public List<String> getOdUsageDefinitions() {
+		return odUsageDefinitions;
+	}
+
+	public void setOdUsageDefinitions(List<String> odUsageDefinitions) {
+		this.odUsageDefinitions = odUsageDefinitions;
+	}
+
+	public List<String> getOdUsageVersions() {
+		return odUsageVersions;
+	}
+
+	public void setOdUsageVersions(List<String> odUsageVersions) {
+		this.odUsageVersions = odUsageVersions;
 	}
 
 	public List<String> getUsageAuthorsRaw() {

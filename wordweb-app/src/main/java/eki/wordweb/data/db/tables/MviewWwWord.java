@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = -166423533;
+    private static final long serialVersionUID = -1483527433;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -125,6 +125,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.term_dataset_exists</code>.
      */
     public final TableField<MviewWwWordRecord, Boolean> TERM_DATASET_EXISTS = createField("term_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.od_word_suggestions</code>.
+     */
+    public final TableField<MviewWwWordRecord, String[]> OD_WORD_SUGGESTIONS = createField("od_word_suggestions", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_word</code> table reference

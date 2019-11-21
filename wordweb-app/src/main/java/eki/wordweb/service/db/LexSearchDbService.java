@@ -163,6 +163,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						l.GRAMMARS,
 						l.GOVERNMENTS,
 						l.USAGES,
+						l.OD_LEXEME_SUGGESTIONS,
 						lr.RELATED_LEXEMES)
 				.from(l.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
