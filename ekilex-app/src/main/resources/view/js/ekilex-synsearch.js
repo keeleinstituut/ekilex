@@ -254,8 +254,12 @@ function initialise() {
 				let newIndex = currentSelectedIndex + indexIncrement;
 				let newItem = currentActiveList.find('[data-navigate-index="' + newIndex + '"]');
 
+
 				if (newItem.length != 0) {
 					console.log('navItem exists');
+					if(currentActivePanelIndex=="3"){
+						changeSynonymDefinitionDisplay('hide');
+					}
 					newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
 					unActivateItem(currentSelectedItem, true);
@@ -285,6 +289,9 @@ function initialise() {
 					}
 				} else {
 					selectedPanelIndex = PANEL_KEYCODES[e.keyCode];
+				}
+				if (currentActivePanelIndex == "3") {
+					changeSynonymDefinitionDisplay();
 				}
 				unActivateItem(currentSelectedItem, false);
 
@@ -326,7 +333,7 @@ function initialise() {
 			e.preventDefault();
 			//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
 			if (currentActivePanelIndex == "3") {
-
+				changeSynonymDefinitionDisplay();
 				currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function () {$(this).removeClass('.keyboard-nav-list-item-selected');});
 				currentSelectedItem.addClass('keyboard-nav-list-item-selected');
 
@@ -347,6 +354,7 @@ function initialise() {
 
 				selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 				selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
+
 
 			} else if (currentActivePanelIndex == "2") {
 				if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
@@ -377,6 +385,15 @@ function initialise() {
 				currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
 			}
 		}
+		//IF SPACE KEY
+		if (e.keyCode == 32) {
+			e.preventDefault();
+			//IF SYNONYM LIST IS ACTIVE AND USER PRESSES SPACE
+			if (currentActivePanelIndex == "3") {
+				changeSynonymDefinitionDisplay();
+			}
+		}
+
 	}
 
 
@@ -403,7 +420,9 @@ function setScrollPositions(positions){
 		$(this).scrollTop(positions[i]);
 	})
 }
-
+function changeSynonymDefinitionDisplay(displayOption='toggle') {
+	$('.keyboard-nav-list-item-active .list-item-value').tooltip(displayOption);
+}
 function refreshDetails() {
 	var refreshButton = $('#refresh-details');
 	refreshButton.trigger('click');

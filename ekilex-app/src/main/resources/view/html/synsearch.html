@@ -210,7 +210,7 @@
                           <i class="fa fa-exclamation-triangle text-muted" aria-hidden="true"></i>
                         </span>
                         <div class="mr-auto pl-0 d-flex flex-row flex-nowrap align-items-center">
-                          <p class="drag-handle py-2 pr-1 m-0" th:inline="text" data-toggle="tooltip" th:title="${synRelation.definition != null ? synRelation.definition : 'definitsioon puudub' }">
+                          <p class="drag-handle py-2 pr-1 m-0 list-item-value" th:inline="text" data-toggle="tooltip" th:title="${synRelation.definition != null ? synRelation.definition : 'definitsioon puudub' }">
                             [[${(synRelation.suffixoid ? '-' : '') + synRelation.word + (synRelation.prefixoid ? '-' : '')}]] <sup th:if="${synRelation.otherHomonymsExist}" title="Homonüümi number" th:text="${synRelation.homonymNumber}">1</sup>
                           </p>
                         </div>
