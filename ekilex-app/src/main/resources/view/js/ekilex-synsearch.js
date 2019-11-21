@@ -26,6 +26,7 @@ function initialise() {
 		itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="'+itemIndx+'"]');
 		itemToSelect.addClass('keyboard-nav-list-item-active');
 		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
+		changeSynonymDefinitionDisplay('show');
 	}
 
 	$(document).on("click", ".popover-close-btn" , function(){
@@ -109,7 +110,7 @@ function initialise() {
 				activateList(3);
 			}
 
-			//KEEP TRACK OF WHAT WAS THE LAS SEARCH RESULT DISPLAYED
+			//KEEP TRACK OF WHAT WAS THE LAST SEARCH RESULT DISPLAYED
 			if(activeSearchResultID !== id){
 				activeSearchResultID = id;
 			}
@@ -265,6 +266,9 @@ function initialise() {
 					unActivateItem(currentSelectedItem, true);
 					$(currentActiveList).stop(true);
 					$(currentActiveList).scrollTo(newItem,320,{axis:'y', offset:-64});
+					if(currentActivePanelIndex=="3"){
+						changeSynonymDefinitionDisplay('show');
+					}
 				}
 			}
 		}
@@ -272,7 +276,11 @@ function initialise() {
 		// 1 - 3, arrows left-right
 		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
 			if (isValidPanelChangeKeyPress(e.keyCode)) {
+
 				$('div[data-panel-index]').each(function () {$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');});
+				if (currentActivePanelIndex == "3") {
+					changeSynonymDefinitionDisplay('hide');
+				}
 
 				let selectedPanelIndex = 1;
 				let PANEL_KEYCODES = {"49": "1", "50": "2", "51" : "3"};
@@ -290,9 +298,8 @@ function initialise() {
 				} else {
 					selectedPanelIndex = PANEL_KEYCODES[e.keyCode];
 				}
-				if (currentActivePanelIndex == "3") {
-					changeSynonymDefinitionDisplay();
-				}
+
+
 				unActivateItem(currentSelectedItem, false);
 
 				let activatedList = $('div[data-panel-index="' + selectedPanelIndex + '"]');
@@ -303,12 +310,18 @@ function initialise() {
 
 				selectedItem.addClass(isDisabled ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 				selectedItem.attr('data-navigate-selected', true);
+				if (selectedPanelIndex == "3") {
+					changeSynonymDefinitionDisplay('show');
+				}
 			}
 
 		}
 
 		//Esc key
 		if (e.keyCode == 27) {
+			if (currentActivePanelIndex == "3") {
+				changeSynonymDefinitionDisplay('hide');
+			}
 			$('.keyboard-nav-list').each(function () {
 				$(this).removeAttr('data-marked-word-id');
 				$(this).removeAttr('data-marked-relation-id'); //TODO refactor
@@ -333,7 +346,7 @@ function initialise() {
 			e.preventDefault();
 			//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
 			if (currentActivePanelIndex == "3") {
-				changeSynonymDefinitionDisplay();
+				changeSynonymDefinitionDisplay('hide');
 				currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function () {$(this).removeClass('.keyboard-nav-list-item-selected');});
 				currentSelectedItem.addClass('keyboard-nav-list-item-selected');
 
@@ -385,14 +398,7 @@ function initialise() {
 				currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
 			}
 		}
-		//IF SPACE KEY
-		if (e.keyCode == 32) {
-			e.preventDefault();
-			//IF SYNONYM LIST IS ACTIVE AND USER PRESSES SPACE
-			if (currentActivePanelIndex == "3") {
-				changeSynonymDefinitionDisplay();
-			}
-		}
+
 
 	}
 
