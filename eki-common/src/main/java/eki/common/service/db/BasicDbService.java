@@ -177,9 +177,7 @@ public class BasicDbService extends AbstractDbService {
 			sqlQueryBuf.append(fieldName);
 		}
 		sqlQueryBuf.append(") returning id");
-
 		String sqlScript = sqlQueryBuf.toString();
-
 		Long id;
 		try {
 			id = jdbcTemplate.queryForObject(sqlScript, paramMap, Long.class);

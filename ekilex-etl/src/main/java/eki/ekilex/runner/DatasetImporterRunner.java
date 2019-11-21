@@ -3,6 +3,8 @@ package eki.ekilex.runner;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +36,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.constant.LexemeType;
+import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.LifecycleProperty;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
@@ -44,7 +50,7 @@ import eki.ekilex.data.transport.TableColumn;
 import eki.ekilex.service.TransportService;
 
 @Component
-public class DatasetImporterRunner extends AbstractLoaderCommons implements InitializingBean {
+public class DatasetImporterRunner extends AbstractLifecycleLogger implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(DatasetImporterRunner.class);
 
@@ -70,7 +76,8 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 	private static final String EKI_LINK_TEXT_FRAGMENT = "<eki-link link-type='meaning_link'";
 
 	private static final String[] TABLE_NAMES_THAT_PREREQUISIT_PARENT_DATA = new String[] {
-			DEFINITION, LEXEME_RELATION, MEANING_RELATION, WORD_RELATION, WORD_ETYMOLOGY_RELATION};
+			DEFINITION, LEXEME_RELATION, MEANING_RELATION, WORD_RELATION, WORD_ETYMOLOGY_RELATION
+			};
 
 	@Autowired
 	private TransportService transportService;
@@ -79,14 +86,18 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 	public void afterPropertiesSet() throws Exception {
 	}
 
+	@Override
+	protected String getLogEventBy() {
+		return "Ekilex importer";
+	}
+
 	@Transactional
-	public void execute(String sourceDatasetCode, String targetDatasetCode, String importFilePath) throws Exception {
+	public void execute(boolean isCreate, boolean isAppend, String importFilePath) throws Exception {
 
 		String importCode = CodeGenerator.generateUniqueId();
-		Context context = new Context(importCode, sourceDatasetCode, targetDatasetCode);
+		Context context = new Context(isCreate, isAppend, importCode);
 
 		logger.info("Starting import \"{}\" from \"{}\"", importCode, importFilePath);
-		logger.info("Target dataset is \"{}\"", targetDatasetCode);
 
 		File zippedImportFile = new File(importFilePath);
 		ZipFile zipFile = new ZipFile(zippedImportFile);
@@ -135,11 +146,11 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		Map<String, Object> rootDataMap = (Map<String, Object>) rootData;
 		for (String tableName : rootDataMap.keySet()) {
 			Object data = rootDataMap.get(tableName);
-			extractTablesData(context, tableName, data, null);
+			extractTablesData(context, tableName, data, null, new ArrayList<>());
 		}
 	}
 
-	private void extractTablesData(Context context, String tableName, Object data, Long queueId) throws Exception {
+	private void extractTablesData(Context context, String tableName, Object data, Long queueId, List<Step> hierarchy) throws Exception {
 
 		if (data == null) {
 			return;
@@ -147,14 +158,14 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		if (data instanceof Map) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> dataMap = (Map<String, Object>) data;
-			saveTablesData(context, tableName, dataMap, queueId);
+			saveTablesData(context, tableName, dataMap, queueId, hierarchy);
 		} else if (data instanceof List) {
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> dataList = (List<Map<String, Object>>) data;
 			Iterator<Map<String, Object>> dataListIter = dataList.iterator();
 			while (dataListIter.hasNext()) {
 				Map<String, Object> dataMap = dataListIter.next();
-				saveTablesData(context, tableName, dataMap, queueId);
+				saveTablesData(context, tableName, dataMap, queueId, new ArrayList<>(hierarchy));
 				dataListIter.remove();
 			}
 		} else {
@@ -162,7 +173,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		}
 	}
 
-	private void saveTablesData(Context context, String tableName, Map<String, Object> dataMap, Long queueId) throws Exception {
+	private void saveTablesData(Context context, String tableName, Map<String, Object> dataMap, Long queueId, List<Step> hierarchy) throws Exception {
 
 		List<String> supportedTableNames = transportService.getImportTableNames();
 		boolean forceToQueue = ArrayUtils.contains(TABLE_NAMES_THAT_PREREQUISIT_PARENT_DATA, tableName) && (queueId == null);
@@ -170,49 +181,79 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			return;
 		} else if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
 			dataMap = compensateFieldsAndData(context, DATASET, dataMap);
-			createDataset(context, dataMap);
+			handleDataset(context, dataMap);
 		} else if (forceToQueue) {
 			createQueue(context.getImportCode(), tableName, dataMap);
 			return;
 		} else {
-			handleCurrentData(context, tableName, dataMap, queueId);
+			handleCurrentData(context, tableName, dataMap, queueId, hierarchy);
 		}
-		handleReferringData(context, tableName, dataMap);
-		handleNestedData(context, tableName, dataMap);
+		handleReferringData(context, tableName, dataMap, hierarchy);
+		handleNestedData(context, tableName, dataMap, hierarchy);
 	}
 
-	private void handleCurrentData(Context context, String tableName, Map<String, Object> dataMap, Long queueId) throws Exception {
+	private void handleDataset(Context context, Map<String, Object> dataMap) throws Exception {
+		String code = dataMap.get("code").toString();
+		boolean recordExists = recordExists(DATASET, "code", code);
+		if (recordExists) {
+			if (context.isCreate()) {
+				throw new DataLoadingException("Can't create dataset that already exists");
+			}
+		} else {
+			createDataset(context, dataMap);
+		}
+	}
 
+	private void handleCurrentData(Context context, String tableName, Map<String, Object> dataMap, Long queueId, List<Step> hierarchy) throws Exception {
+
+		boolean isAppend = context.isAppend();
 		String importCode = context.getImportCode();
-		String sourceDatasetCode = context.getSourceDatasetCode();
-		String targetDatasetCode = context.getTargetDatasetCode();
 
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForImport().get(tableName);
 		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMapForImport().get(tableName);
 		boolean queueExists = queueId != null;
 
-		FkReassignResult fkReassignResult = reassignFks(importCode, sourceDatasetCode, targetDatasetCode, dataMap, tableColumnsMap);
+		FkReassignResult fkReassignResult = reassignFks(importCode, dataMap, tableColumnsMap);
 		if (fkReassignResult.isSuccess()) {
 			Map<String, Object> reassignedDataMap = fkReassignResult.getReassignedDataMap();
 			Map<String, Object> truncDataMap = truncate(reassignedDataMap, tableColumnsMap);
-			if (CollectionUtils.isNotEmpty(referringForeignKeys)) {
-				Long sourceId = getPk(dataMap, tableColumnsMap);
-				Long targetId = null;
-				if (MapUtils.isEmpty(truncDataMap)) {
-					targetId = basicDbService.create(tableName);
+			Long targetId = null;
+			// default behaviour - if there are no referrers, it is assumed the record is meant to be created
+			if (CollectionUtils.isEmpty(referringForeignKeys)) {
+				if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_DATASET)) {
+					basicDbService.createWithoutId(tableName, truncDataMap);
 				} else {
-					truncDataMap = compensateFieldsAndData(context, tableName, truncDataMap);
 					targetId = basicDbService.create(tableName, truncDataMap);
+					createLifecycleLog(context, tableName, targetId, dataMap, hierarchy);
 				}
 				context.getCreatedRecordCount().increment();
+			} else {
+				Long sourceId = getPk(dataMap, tableColumnsMap);
+				boolean isCreate = false;
+				if (isAppend) {
+					boolean recordExists = recordExists(tableName, "id", sourceId);
+					isCreate = !recordExists;
+				} else {
+					isCreate = true;
+				}
+				if (isCreate) {
+					if (MapUtils.isEmpty(truncDataMap)) {
+						targetId = basicDbService.create(tableName);
+					} else {
+						truncDataMap = compensateFieldsAndData(context, tableName, truncDataMap);
+						targetId = basicDbService.create(tableName, truncDataMap);
+					}
+					createLifecycleLog(context, tableName, targetId, dataMap, hierarchy);
+					context.getCreatedRecordCount().increment();
+				} else {
+					targetId = new Long(sourceId);
+				}
 				List<Object> pkMapping = getPkMapping(importCode, tableName, sourceId);
 				if (CollectionUtils.isEmpty(pkMapping)) {
 					createPkMap(importCode, tableName, sourceId, targetId);
 				}
-			} else {
-				basicDbService.createWithoutId(tableName, truncDataMap);
-				context.getCreatedRecordCount().increment();
 			}
+			addToHierarchy(tableName, targetId, dataMap, hierarchy);
 			if (queueExists) {
 				deleteQueue(queueId);
 				context.getRecursivelyResolvedRecordCount().increment();
@@ -224,7 +265,15 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		}
 	}
 
-	private void handleReferringData(Context context, String tableName, Map<String, Object> dataMap) throws Exception {
+	private void addToHierarchy(String tableName, Long id, Map<String, Object> dataMap, List<Step> hierarchy) {
+		Step step = new Step();
+		step.setTableName(tableName);
+		step.setId(id);
+		step.setDataMap(new HashMap<>(dataMap));
+		hierarchy.add(step);
+	}
+
+	private void handleReferringData(Context context, String tableName, Map<String, Object> dataMap, List<Step> hierarchy) throws Exception {
 
 		List<String> referringTableNames = transportService.getReferringTableNamesMapForImport().get(tableName);
 		if (CollectionUtils.isEmpty(referringTableNames)) {
@@ -236,11 +285,11 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 				continue;
 			}
 			Object referringData = dataMap.get(referringTableName);
-			extractTablesData(context, referringTableName, referringData, null);
+			extractTablesData(context, referringTableName, referringData, null, new ArrayList<>(hierarchy));
 		}
 	}
 
-	private void handleNestedData(Context context, String tableName, Map<String, Object> dataMap) throws Exception {
+	private void handleNestedData(Context context, String tableName, Map<String, Object> dataMap, List<Step> hierarchy) throws Exception {
 
 		List<String> supportedTableNames = transportService.getImportTableNames();
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForImport().get(tableName);
@@ -256,7 +305,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 					&& referredTableNames.contains(dataColumnName)
 					&& supportedTableNames.contains(dataColumnName);
 			if (isNestedData) {
-				extractTablesData(context, dataColumnName, dataColumnValue, null);
+				extractTablesData(context, dataColumnName, dataColumnValue, null, new ArrayList<>(hierarchy));
 			}
 		}
 	}
@@ -283,6 +332,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			deleteCurrentQueue(context);
 			return;
 		}
+
 		logger.info("Attempting to resolve {} queue batch", queueBatchSize);
 		logger.info("Queue data is in tables: {}", unresolvedTableNames);
 		context.setRecentQueueSignature(queueSignature);
@@ -298,7 +348,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			String tableName = (String) queueRow.get("table_name");
 			String content = (String) queueRow.get("content");
 			Object data = objectMapper.readValue(content, Object.class);
-			extractTablesData(context, tableName, data, queueId);
+			extractTablesData(context, tableName, data, queueId, new ArrayList<>());
 
 			// progress
 			queueRowCounter++;
@@ -384,7 +434,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		return value;
 	}
 
-	private FkReassignResult reassignFks(String importCode, String sourceDatasetCode, String targetDatasetCode, Map<String, Object> dataMap, Map<String, TableColumn> tableColumnsMap) {
+	private FkReassignResult reassignFks(String importCode, Map<String, Object> dataMap, Map<String, TableColumn> tableColumnsMap) throws Exception {
 
 		FkReassignResult fkReassignResult = new FkReassignResult();
 		Map<String, Object> reassignedDataMap = new HashMap<>(dataMap);
@@ -404,6 +454,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			for (TableColumn tableFkColumn : fkColumnsMap.values()) {
 				String columnName = tableFkColumn.getColumnName();
 				String fkTableName = tableFkColumn.getFkTableName();
+				String fkColumnName = tableFkColumn.getFkColumnName();
 				Object columnValue = dataMap.get(columnName);
 				if (columnValue == null) {
 					fksCovered++;
@@ -413,17 +464,17 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 				if (!supportedTableNames.contains(fkTableName)) {
 					mappedPkValue = columnValue;
 				} else if (StringUtils.equalsIgnoreCase(DATASET, fkTableName)) {
-					String columnValueStr = columnValue.toString();
-					if (StringUtils.equals(columnValueStr, sourceDatasetCode)) {
-						mappedPkValue = targetDatasetCode;
-					} else {
-						mappedPkValue = columnValue;
-					}
+					mappedPkValue = columnValue;
 				} else {
 					List<Object> pkMapping = getPkMapping(importCode, fkTableName, columnValue);
 					if (CollectionUtils.isEmpty(pkMapping)) {
-						missingReference = true;
-						break;
+						boolean recordExists = recordExists(fkTableName, fkColumnName, columnValue);
+						if (recordExists) {
+							mappedPkValue = columnValue;
+						} else {
+							missingReference = true;
+							break;
+						}
 					} else {
 						mappedPkValue = pkMapping.get(0);
 					}
@@ -443,7 +494,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		return fkReassignResult;
 	}
 
-	private Map<String, Object> compensateFieldsAndData(Context context, String tableName, Map<String, Object> dataMap) {
+	private Map<String, Object> compensateFieldsAndData(Context context, String tableName, Map<String, Object> dataMap) throws Exception {
 
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForImport().get(tableName);
 
@@ -469,10 +520,13 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 					String sourceLinkIdStr = ekiLink.attr("link-id");
 					Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
 					String targetLinkId;
-					List<Object> pkMapping = getPkMapping(importCode, MEANING.toLowerCase(), sourceLinkId);
+					List<Object> pkMapping = getPkMapping(importCode, MEANING, sourceLinkId);
 					if (CollectionUtils.isEmpty(pkMapping)) {
 						targetLinkId = sourceLinkIdStr;
-						context.getUnresolvedMeaningLinkCount().increment();
+						boolean recordExists = recordExists(MEANING, "id", sourceLinkId);
+						if (!recordExists) {
+							context.getUnresolvedMeaningLinkCount().increment();
+						}
 					} else {
 						targetLinkId = pkMapping.get(0).toString();
 						context.getResolvedMeaningLinkCount().increment();
@@ -486,6 +540,13 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		return dataMapCopy;
 	}
 
+	private boolean recordExists(String tableName, String idFieldName, Object id) throws Exception {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put(idFieldName, id);
+		Map<String, Object> result = basicDbService.select(tableName, paramMap);
+		return MapUtils.isNotEmpty(result);
+	}
+
 	private List<Object> getPkMapping(String importCode, String pkTableName, Object pkValue) {
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("importCode", importCode);
@@ -496,7 +557,6 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 	}
 
 	private void createDataset(Context context, Map<String, Object> dataMap) throws Exception {
-		dataMap.put("code", context.getTargetDatasetCode());
 		basicDbService.createWithoutId(DATASET, dataMap);
 		context.getCreatedRecordCount().increment();
 	}
@@ -544,6 +604,217 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		int rowCount = basicDbService.executeScript(sql, paramMap);
 		logger.info("Deleted {} rows from {}", rowCount, IMPORT_QUEUE);
 		context.getUnresolvedRecordCount().increment(rowCount);
+	}
+
+	private void createLifecycleLog(Context context, String tableName, Long id, Map<String, Object> dataMap, List<Step> hierarchy) throws Exception {
+		
+		List<String> hierarchyTableNames = new ArrayList<>(hierarchy.stream().map(step -> step.getTableName()).collect(Collectors.toList()));
+
+		LifecycleLogOwner logOwner = null;
+		Long ownerId = null;
+		Long entityId = null;
+		LifecycleEntity entity = null;
+		LifecycleProperty property = null;
+		LifecycleEventType eventType = LifecycleEventType.CREATE;
+		String entry = null;
+		Step parentStep = null;
+
+		if (StringUtils.equalsIgnoreCase(tableName, FREEFORM)) {
+			List<Step> reverseHierarchy = new ArrayList<>(hierarchy);
+			Collections.reverse(reverseHierarchy);
+			String freeformType = dataMap.get("type").toString();
+			try {
+				entity = LifecycleEntity.valueOf(freeformType);
+			} catch (Exception e) {
+				entity = LifecycleEntity.ATTRIBUTE_FREEFORM;
+			}
+			if (hierarchyTableNames.contains(WORD_FREEFORM.toLowerCase())) {
+				parentStep = reverseHierarchy.stream().filter(step -> StringUtils.equalsIgnoreCase(step.getTableName(), WORD_FREEFORM)).findFirst().orElse(null);
+				//logOwner = LifecycleLogOwner.WORD;
+				//ownerId = getFieldValueAsLong(parentStep.getTableName(), "word_id", parentStep.getDataMap());
+				//...
+				//TODO finish when the entities are available
+			} else if (hierarchyTableNames.contains(LEXEME_FREEFORM.toLowerCase())) {
+				parentStep = reverseHierarchy.stream().filter(step -> StringUtils.equalsIgnoreCase(step.getTableName(), LEXEME_FREEFORM)).findFirst().orElse(null);
+				logOwner = LifecycleLogOwner.LEXEME;
+				ownerId = getFieldValueAsLong(parentStep.getTableName(), "lexeme_id", parentStep.getDataMap());
+				entityId = id;
+				property = LifecycleProperty.VALUE;
+				entry = getFieldValueAsString(tableName, "value_text", dataMap);
+			} else if (hierarchyTableNames.contains(MEANING_FREEFORM.toLowerCase())) {
+				parentStep = reverseHierarchy.stream().filter(step -> StringUtils.equalsIgnoreCase(step.getTableName(), MEANING_FREEFORM)).findFirst().orElse(null);
+				logOwner = LifecycleLogOwner.MEANING;
+				ownerId = getFieldValueAsLong(parentStep.getTableName(), "meaning_id", parentStep.getDataMap());
+				entityId = id;
+				property = LifecycleProperty.VALUE;
+				entry = getFieldValueAsString(tableName, "value_text", dataMap);
+			} else if (hierarchyTableNames.contains(DEFINITION_FREEFORM.toLowerCase())) {
+				//currently ignoring
+			}
+		} else if (StringUtils.equalsIgnoreCase(tableName, FREEFORM_SOURCE_LINK)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD)) {
+			logOwner = LifecycleLogOwner.WORD;
+			ownerId = id;
+			entity = LifecycleEntity.WORD;
+			entityId = id;
+			property = LifecycleProperty.ID;
+			entry = id.toString();
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_WORD_TYPE)) {
+			logOwner = LifecycleLogOwner.WORD;
+			ownerId = getFieldValueAsLong(tableName, "word_id", dataMap);
+			entity = LifecycleEntity.WORD;
+			entityId = ownerId;
+			property = LifecycleProperty.WORD_TYPE;
+			entry = getFieldValueAsString(tableName, "word_type_code", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_ETYMOLOGY)) {
+			logOwner = LifecycleLogOwner.WORD;
+			ownerId = getFieldValueAsLong(tableName, "word_id", dataMap);
+			entity = LifecycleEntity.WORD_ETYMOLOGY;
+			entityId = id;
+			property = LifecycleProperty.ID;
+			entry = id.toString();
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_ETYMOLOGY_RELATION)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_ETYMOLOGY_SOURCE_LINK)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_RELATION)) {
+			logOwner = LifecycleLogOwner.WORD;
+			ownerId = getFieldValueAsLong(tableName, "word1_id", dataMap);
+			entity = LifecycleEntity.WORD_RELATION;
+			entityId = id;
+			property = LifecycleProperty.VALUE;
+			entry = getFieldValueAsString(tableName, "word_rel_type_code", dataMap)
+					+ " "
+					+ getFieldValueAsString(tableName, "word2_id", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_GROUP_MEMBER)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_GROUP)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_FREEFORM)) {
+			//skipping until freeform itself
+		} else if (StringUtils.equalsIgnoreCase(tableName, PARADIGM)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, FORM)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING)) {
+			logOwner = LifecycleLogOwner.MEANING;
+			ownerId = id;
+			entity = LifecycleEntity.MEANING;
+			entityId = id;
+			property = LifecycleProperty.ID;
+			entry = id.toString();
+		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING_FREEFORM)) {
+			//skipping until freeform itself
+		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING_DOMAIN)) {
+			logOwner = LifecycleLogOwner.MEANING;
+			ownerId = getFieldValueAsLong(tableName, "meaning_id", dataMap);
+			entity = LifecycleEntity.MEANING;
+			entityId = ownerId;
+			property = LifecycleProperty.DOMAIN;
+			entry = getFieldValueAsString(tableName, "domain_origin", dataMap)
+					+ " "
+					+ getFieldValueAsString(tableName, "domain_code", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING_RELATION)) {
+			logOwner = LifecycleLogOwner.MEANING;
+			ownerId = getFieldValueAsLong(tableName, "meaning1_id", dataMap);
+			entity = LifecycleEntity.MEANING_RELATION;
+			entityId = id;
+			property = LifecycleProperty.VALUE;
+			entry = getFieldValueAsString(tableName, "meaning_rel_type_code", dataMap)
+					+ " "
+					+ getFieldValueAsString(tableName, "meaning2_id", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME)) {
+			logOwner = LifecycleLogOwner.LEXEME;
+			ownerId = id;
+			entity = LifecycleEntity.LEXEME;
+			entityId = id;
+			property = LifecycleProperty.DATASET;
+			entry = getFieldValueAsString(tableName, "dataset_code", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_FREEFORM)) {
+			//skipping until freeform itself
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_POS)) {
+			logOwner = LifecycleLogOwner.LEXEME;
+			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
+			entity = LifecycleEntity.LEXEME;
+			entityId = ownerId;
+			property = LifecycleProperty.POS;
+			entry = getFieldValueAsString(tableName, "pos_code", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_DERIV)) {
+			logOwner = LifecycleLogOwner.LEXEME;
+			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
+			entity = LifecycleEntity.LEXEME;
+			entityId = ownerId;
+			property = LifecycleProperty.DERIV;
+			entry = getFieldValueAsString(tableName, "deriv_code", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_REGISTER)) {
+			logOwner = LifecycleLogOwner.LEXEME;
+			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
+			entity = LifecycleEntity.LEXEME;
+			entityId = ownerId;
+			property = LifecycleProperty.REGISTER;
+			entry = getFieldValueAsString(tableName, "register_code", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_REGION)) {
+			logOwner = LifecycleLogOwner.LEXEME;
+			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
+			entity = LifecycleEntity.LEXEME;
+			entityId = ownerId;
+			property = LifecycleProperty.REGION;
+			entry = getFieldValueAsString(tableName, "region_code", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_FREQUENCY)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_RELATION)) {
+			logOwner = LifecycleLogOwner.LEXEME;
+			ownerId = getFieldValueAsLong(tableName, "lexeme1_id", dataMap);
+			entity = LifecycleEntity.LEXEME_RELATION;
+			entityId = id;
+			property = LifecycleProperty.VALUE;
+			entry = getFieldValueAsString(tableName, "lex_rel_type_code", dataMap)
+					+ " "
+					+ getFieldValueAsString(tableName, "lexeme2_id", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_SOURCE_LINK)) {
+			logOwner = LifecycleLogOwner.LEXEME;
+			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
+			entity = LifecycleEntity.LEXEME_SOURCE_LINK;
+			entityId = id;
+			property = LifecycleProperty.VALUE;
+			entry = getFieldValueAsString(tableName, "value", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEX_COLLOC)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, COLLOCATION)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, DEFINITION)) {
+			logOwner = LifecycleLogOwner.MEANING;
+			ownerId = getFieldValueAsLong(tableName, "meaning_id", dataMap);
+			entity = LifecycleEntity.DEFINITION;
+			entityId = id;
+			property = LifecycleProperty.VALUE;
+			entry = getFieldValueAsString(tableName, "value", dataMap);
+		} else if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_FREEFORM)) {
+			//skipping until freeform itself
+		} else if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_SOURCE_LINK)) {
+			//currently ignoring
+		} else if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_DATASET)) {
+			//currently ignoring
+		}
+
+		if (logOwner != null) {
+			createLifecycleLog(logOwner, ownerId, entityId, entity, property, eventType, entry);
+		}
+	}
+
+	private Long getFieldValueAsLong(String tableName, String fieldName, Map<String, Object> dataMap) throws Exception {
+		if (!dataMap.containsKey(fieldName)) {
+			throw new DataLoadingException(tableName + " is missing word_id");
+		}
+		return Long.valueOf(dataMap.get(fieldName).toString());
+	}
+
+	private String getFieldValueAsString(String tableName, String fieldName, Map<String, Object> dataMap) throws Exception {
+		if (!dataMap.containsKey(fieldName)) {
+			throw new DataLoadingException(tableName + " is missing required field " + fieldName);
+		}
+		return dataMap.get(fieldName).toString();
 	}
 
 	/*
@@ -644,11 +915,11 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 		private static final long serialVersionUID = 1L;
 
+		private boolean create;
+
+		private boolean append;
+
 		private String importCode;
-
-		private String sourceDatasetCode;
-
-		private String targetDatasetCode;
 
 		private Count createdRecordCount;
 
@@ -662,10 +933,10 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 
 		private String recentQueueSignature;
 
-		public Context(String importCode, String sourceDatasetCode, String targetDatasetCode) {
+		public Context(boolean create, boolean append, String importCode) {
+			this.create = create;
+			this.append = append;
 			this.importCode = importCode;
-			this.sourceDatasetCode = sourceDatasetCode;
-			this.targetDatasetCode = targetDatasetCode;
 			this.createdRecordCount = new Count();
 			this.recursivelyResolvedRecordCount = new Count();
 			this.unresolvedRecordCount = new Count();
@@ -674,16 +945,16 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 			this.recentQueueSignature = null;
 		}
 
+		public boolean isCreate() {
+			return create;
+		}
+
+		public boolean isAppend() {
+			return append;
+		}
+
 		public String getImportCode() {
 			return importCode;
-		}
-
-		public String getSourceDatasetCode() {
-			return sourceDatasetCode;
-		}
-
-		public String getTargetDatasetCode() {
-			return targetDatasetCode;
 		}
 
 		public Count getCreatedRecordCount() {
@@ -713,5 +984,41 @@ public class DatasetImporterRunner extends AbstractLoaderCommons implements Init
 		public String getRecentQueueSignature() {
 			return recentQueueSignature;
 		}
+	}
+
+	class Step extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private String tableName;
+
+		private Long id;
+
+		private Map<String, Object> dataMap;
+
+		public String getTableName() {
+			return tableName;
+		}
+
+		public void setTableName(String tableName) {
+			this.tableName = tableName;
+		}
+
+		public Long getId() {
+			return id;
+		}
+
+		public void setId(Long id) {
+			this.id = id;
+		}
+
+		public Map<String, Object> getDataMap() {
+			return dataMap;
+		}
+
+		public void setDataMap(Map<String, Object> dataMap) {
+			this.dataMap = dataMap;
+		}
+
 	}
 }

@@ -21,9 +21,13 @@ public class DatasetImporter extends AbstractLoader {
 
 	private static final String OP_IMPORT = "import";
 
+	private static final String OP_CREATE = "create";
+
+	private static final String OP_APPEND = "append";
+
 	//mvn exec:java -P<profile> -Dexec.args="tables"
 	//mvn exec:java -P<profile> -Dexec.args="validate <import file path>"
-	//mvn exec:java -P<profile> -Dexec.args="import <source dataset> <target dataset> <import file path>"
+	//mvn exec:java -P<profile> -Dexec.args="import <create|append> <import file path>"
 	public static void main(String[] args) {
 		if (validateArgs(args)) {
 			new DatasetImporter().execute(args);
@@ -33,7 +37,7 @@ public class DatasetImporter extends AbstractLoader {
 			logger.error("or");
 			logger.error("validate <import file path>");
 			logger.error("or");
-			logger.error("import <source dataset> <target dataset> <import file path>");
+			logger.error("import <create|append> <import file path>");
 		}
 	}
 
@@ -53,10 +57,11 @@ public class DatasetImporter extends AbstractLoader {
 				String importFilePath = args[1];
 				validator.validate(importFilePath);
 			} else if (StringUtils.equals(OP_IMPORT, operation)) {
-				String sourceDatasetCode = args[1];
-				String targetDatasetCode = args[2];
-				String importFilePath = args[3];
-				runner.execute(sourceDatasetCode, targetDatasetCode, importFilePath);
+				String importType = args[1];
+				String importFilePath = args[2];
+				boolean isAppend = StringUtils.equals(OP_APPEND, importType);
+				boolean isCreate = !isAppend;
+				runner.execute(isCreate, isAppend, importFilePath);
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
@@ -87,8 +92,13 @@ public class DatasetImporter extends AbstractLoader {
 			return false;
 		}
 		if (StringUtils.equals(OP_IMPORT, operation)) {
-			if (args.length == 4) {
-				String importFilePath = args[3];
+			if (args.length == 3) {
+				String importType = args[1];
+				if (!ArrayUtils.contains(new String[] {OP_CREATE, OP_APPEND}, importType)) {
+					logger.error("Import type is incorrect");
+					return false;
+				}
+				String importFilePath = args[2];
 				boolean fileExists = isValidFilePath(importFilePath);
 				if (fileExists) {
 					return true;

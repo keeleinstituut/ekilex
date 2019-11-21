@@ -2,6 +2,7 @@ package eki.common.constant;
 
 public enum LifecycleProperty {
 
+	ID,
 	VALUE,
 	LEVEL,
 	FREQUENCY_GROUP,

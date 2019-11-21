@@ -53,7 +53,7 @@ import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
 
-public abstract class AbstractLoaderRunner extends AbstractLoaderCommons implements InitializingBean {
+public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractLoaderRunner.class);
 
@@ -110,10 +110,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
 	protected static final String EKI_CLASSIFIER_VALMIDUS = "valmidus";
 
-	private final static String CREATION_END = "(koostamise lõpp)";
-	private final static String MODIFICATION_END = "(toimetamise lõpp)";
-	private final static String CHIEF_EDITING = "(artikli peatoimetamine)";
-
 	private List<String> afixoidWordTypeCodes;
 
 	private long t1;
@@ -127,6 +123,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		afixoidWordTypeCodes = new ArrayList<>();
 		afixoidWordTypeCodes.add(PREFIXOID_WORD_TYPE_CODE);
 		afixoidWordTypeCodes.add(SUFFIXOID_WORD_TYPE_CODE);
+	}
+
+	@Override
+	protected String getLogEventBy() {
+		return "Ekilex " + getDataset() + "-laadur";
 	}
 
 	protected void start() throws Exception {
@@ -1183,16 +1184,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return freeformId;
 	}
 
-	private LifecycleEntity translate(FreeformType freeformType) {
-		LifecycleEntity lifecycleEntity;
-		try {
-			lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
-		} catch (Exception e) {
-			lifecycleEntity = LifecycleEntity.ATTRIBUTE_FREEFORM;
-		}
-		return lifecycleEntity;
-	}
-
 	protected Long createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
 
 		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, null, null);
@@ -1596,81 +1587,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return relationParts;
 	}
 
-	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, Long entityId, LifecycleEntity entity,
-			LifecycleProperty property, LifecycleEventType eventType, String entry) throws Exception {
-
-		createLifecycleLog(logOwner, ownerId, entityId, entity, property, eventType, null, null, null, entry);
-	}
-
-	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, Long entityId, LifecycleEntity entity,
-			LifecycleProperty property, LifecycleEventType eventType, String eventBy, Timestamp eventOn, String entry) throws Exception {
-
-		createLifecycleLog(logOwner, ownerId, entityId, entity, property, eventType, eventBy, eventOn, null, entry);
-	}
-
-	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, Long entityId, LifecycleEntity entity,
-			LifecycleProperty property, LifecycleEventType eventType, String eventBy, Timestamp eventOn, String recent, String entry) throws Exception {
-
-		if (eventBy == null) {
-			eventBy = "Ekilex " + getDataset() + "-laadur";
-		}
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("entity_id", entityId);
-		tableRowParamMap.put("entity_name", entity.name());
-		tableRowParamMap.put("entity_prop", property.name());
-		tableRowParamMap.put("event_type", eventType.name());
-		tableRowParamMap.put("event_by", eventBy);
-		if (eventOn != null) {
-			tableRowParamMap.put("event_on", eventOn);
-		}
-		tableRowParamMap.put("recent", recent);
-		tableRowParamMap.put("entry", entry);
-		Long lifecycleLogId = basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
-
-		if (LifecycleLogOwner.LEXEME.equals(logOwner)) {
-			createLexemeLifecycleLog(ownerId, lifecycleLogId);
-		} else if (LifecycleLogOwner.MEANING.equals(logOwner)) {
-			createMeaningLifecycleLog(ownerId, lifecycleLogId);
-		} else if (LifecycleLogOwner.WORD.equals(logOwner)) {
-			createWordLifecycleLog(ownerId, lifecycleLogId);
-		} else if (LifecycleLogOwner.SOURCE.equals(logOwner)) {
-			createSourceLifecycleLog(ownerId, lifecycleLogId);
-		}
-	}
-
-	private void createMeaningLifecycleLog(Long meaningId, Long lifecycleLogId) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("meaning_id", meaningId);
-		tableRowParamMap.put("lifecycle_log_id", lifecycleLogId);
-		basicDbService.create(MEANING_LIFECYCLE_LOG, tableRowParamMap);
-	}
-
-	private void createWordLifecycleLog(Long wordId, Long lifecycleLogId) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word_id", wordId);
-		tableRowParamMap.put("lifecycle_log_id", lifecycleLogId);
-		basicDbService.create(WORD_LIFECYCLE_LOG, tableRowParamMap);
-	}
-
-	private void createLexemeLifecycleLog(Long lexemeId, Long lifecycleLogId) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("lexeme_id", lexemeId);
-		tableRowParamMap.put("lifecycle_log_id", lifecycleLogId);
-		basicDbService.create(LEXEME_LIFECYCLE_LOG, tableRowParamMap);
-	}
-
-	private void createSourceLifecycleLog(Long sourceId, Long lifecycleLogId) throws Exception {
-
-		Map<String, Object> sourceLifecycleLogMap = new HashMap<>();
-		sourceLifecycleLogMap.put("source_id", sourceId);
-		sourceLifecycleLogMap.put("lifecycle_log_id", lifecycleLogId);
-		basicDbService.create(SOURCE_LIFECYCLE_LOG, sourceLifecycleLogMap);
-	}
-
 	protected Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {
 		return loadClassifierMappingsFor(ekiClassifierName, null);
 	}
@@ -1706,35 +1622,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			timestamp = new Timestamp(timestampLong);
 		}
 		return timestamp;
-	}
-
-	protected void createWordLifecycleLog(List<Long> wordIds, ArticleLogData logData, String dataset) throws Exception {
-
-		for (Long wordId : wordIds) {
-			if (logData.getCreatedBy() != null && logData.getCreatedOn() != null) {
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.CREATE, logData.getCreatedBy(),
-						logData.getCreatedOn(), dataset);
-			}
-			if (logData.getCreatedBy() != null && logData.getCreationEnd() != null) {
-				String message = dataset + " " + CREATION_END;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, logData.getCreatedBy(),
-						logData.getCreationEnd(), message);
-			}
-			if (logData.getModifiedBy() != null && logData.getModifiedOn() != null) {
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, logData.getModifiedBy(),
-						logData.getModifiedOn(), dataset);
-			}
-			if (logData.getModifiedBy() != null && logData.getModificationEnd() != null) {
-				String message = dataset + " " + MODIFICATION_END;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, logData.getModifiedBy(),
-						logData.getModificationEnd(), message);
-			}
-			if (logData.getChiefEditedBy() != null && logData.getChiefEditedOn() != null) {
-				String message = dataset + " " + CHIEF_EDITING;
-				createLifecycleLog(LifecycleLogOwner.WORD, wordId, wordId, LifecycleEntity.WORD, LifecycleProperty.VALUE, LifecycleEventType.UPDATE, logData.getChiefEditedBy(),
-						logData.getChiefEditedOn(), message);
-			}
-		}
 	}
 
 	private void appendToReport(String reportName, Object ... reportCells) throws Exception {

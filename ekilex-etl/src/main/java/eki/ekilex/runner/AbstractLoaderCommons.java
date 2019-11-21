@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.FreeformType;
+import eki.common.constant.LifecycleEntity;
 import eki.common.constant.TableName;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.SystemConstant;
@@ -57,5 +59,15 @@ public abstract class AbstractLoaderCommons implements SystemConstant, TableName
 		List<String> contentLines = IOUtils.readLines(resourceInputStream, UTF_8);
 		resourceInputStream.close();
 		return contentLines;
+	}
+
+	protected LifecycleEntity translate(FreeformType freeformType) {
+		LifecycleEntity lifecycleEntity;
+		try {
+			lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
+		} catch (Exception e) {
+			lifecycleEntity = LifecycleEntity.ATTRIBUTE_FREEFORM;
+		}
+		return lifecycleEntity;
 	}
 }

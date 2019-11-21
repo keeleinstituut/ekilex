@@ -337,8 +337,8 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createWordType(Long wordId, String typeCode) {
-		Long lexemePosId = cudDbService.createWordType(wordId, typeCode);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
+		Long wordTypeId = cudDbService.createWordType(wordId, typeCode);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordTypeId, typeCode);
 		createLifecycleLog(logData);
 	}
 

@@ -5,7 +5,8 @@ public enum LifecycleEntity {
 	WORD,
 	LEXEME,
 	MEANING,
-	MEANING_DOMAIN,
+	@Deprecated
+	MEANING_DOMAIN,//FIXME should use LifecycleProperty.DOMAIN instead
 	USAGE,
 	USAGE_TRANSLATION,
 	USAGE_DEFINITION,
@@ -16,14 +17,20 @@ public enum LifecycleEntity {
 	MEANING_RELATION,
 	WORD_RELATION,
 	WORD_ETYMOLOGY,
-	LEXEME_SOURCE_LINK,
-	DEFINITION_SOURCE_LINK,
-	FREEFORM_SOURCE_LINK,
+	@Deprecated
+	LEXEME_SOURCE_LINK,//FIXME should use LifecycleProperty.SOURCE_LINK instead
+	@Deprecated
+	DEFINITION_SOURCE_LINK,//FIXME should use LifecycleProperty.SOURCE_LINK instead
+	@Deprecated
+	FREEFORM_SOURCE_LINK,//FIXME should use LifecycleProperty.SOURCE_LINK instead
 	WORD_RELATION_GROUP_MEMBER,
 	LEARNER_COMMENT,
-	LEXEME_PUBLIC_NOTE,
-	MEANING_PUBLIC_NOTE,
-	DEFINITION_PUBLIC_NOTE,
+	@Deprecated
+	LEXEME_PUBLIC_NOTE,//FIXME should use LifecycleProperty.PUBLIC_NOTE instead
+	@Deprecated
+	MEANING_PUBLIC_NOTE,//FIXME should use LifecycleProperty.PUBLIC_NOTE instead
+	@Deprecated
+	DEFINITION_PUBLIC_NOTE,//FIXME should use LifecycleProperty.PUBLIC_NOTE instead
 	SOURCE,
 	ATTRIBUTE_FREEFORM
 }
