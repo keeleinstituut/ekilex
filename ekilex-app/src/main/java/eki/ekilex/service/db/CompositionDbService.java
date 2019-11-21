@@ -25,6 +25,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
@@ -58,6 +59,7 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningRelation;
+import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -217,6 +219,7 @@ public class CompositionDbService implements DbConstant {
 		joinMeaningDomains(meaningId, sourceMeaningId);
 		joinMeaningFreeforms(meaningId, sourceMeaningId);
 		joinMeaningRelations(meaningId, sourceMeaningId);
+		joinMeaningSemanticTypes(meaningId, sourceMeaningId);
 		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, meaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
 		create.update(MEANING_PROCESS_LOG).set(MEANING_PROCESS_LOG.MEANING_ID, meaningId).where(MEANING_PROCESS_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
@@ -363,6 +366,23 @@ public class CompositionDbService implements DbConstant {
 						.where(lsl2.LEXEME_ID.eq(lexemeId)
 								.and(lsl2.TYPE.eq(lsl1.TYPE))
 								.and(lsl2.VALUE.eq(lsl1.VALUE))))
+				.execute();
+	}
+
+	private void joinMeaningSemanticTypes(Long meaningId, Long sourceMeaningId) {
+
+		MeaningSemanticType mst1 = MEANING_SEMANTIC_TYPE.as("mst1");
+		MeaningSemanticType mst2 = MEANING_SEMANTIC_TYPE.as("mst2");
+
+		create.update(mst1)
+				.set(mst1.MEANING_ID, meaningId)
+				.where(mst1.MEANING_ID.eq(sourceMeaningId))
+				.andNotExists(DSL
+						.select(mst2.ID)
+						.from(mst2)
+						.where(
+								mst2.MEANING_ID.eq(meaningId)
+										.and(mst2.SEMANTIC_TYPE_CODE.eq(mst1.SEMANTIC_TYPE_CODE))))
 				.execute();
 	}
 
