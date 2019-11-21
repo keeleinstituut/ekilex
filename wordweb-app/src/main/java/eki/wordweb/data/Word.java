@@ -48,6 +48,8 @@ public class Word extends WordTypeData {
 
 	private List<WordGroup> wordGroups;
 
+	private List<String> odWordSuggestions;
+
 	private boolean singlePos;
 
 	private boolean wordRelationsExist;
@@ -214,6 +216,14 @@ public class Word extends WordTypeData {
 
 	public void setWordGroups(List<WordGroup> wordGroups) {
 		this.wordGroups = wordGroups;
+	}
+
+	public List<String> getOdWordSuggestions() {
+		return odWordSuggestions;
+	}
+
+	public void setOdWordSuggestions(List<String> odWordSuggestions) {
+		this.odWordSuggestions = odWordSuggestions;
 	}
 
 	public boolean isSinglePos() {

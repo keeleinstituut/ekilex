@@ -32,7 +32,7 @@ drop type if exists type_meaning_relation;
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
+create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_versions text array, usage_authors text array);
 create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
@@ -73,7 +73,8 @@ dblink(
 	meaning_words type_meaning_word array,
 	definitions type_definition array,
 	lex_dataset_exists boolean,
-	term_dataset_exists boolean
+	term_dataset_exists boolean,
+	od_word_suggestions text array
 );
 
 create materialized view mview_ww_as_word as
@@ -149,7 +150,8 @@ dblink(
 	grammars type_grammar array,
 	governments type_government array,
 	usages type_usage array,
-	lang_complexities type_lang_complexity array
+	lang_complexities type_lang_complexity array,
+	od_lexeme_suggestions text array
 );
 
 create materialized view mview_ww_collocation as

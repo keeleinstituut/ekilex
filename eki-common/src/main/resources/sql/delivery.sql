@@ -58,9 +58,16 @@ delete from lex_rel_mapping where code2 = 'pyh';
 delete from lex_rel_type where code = 'pyh';
 
 drop view view_ww_form;--NB!
+drop view view_ww_lexeme;--NB!
+drop view view_ww_word;--NB!
 
 create sequence form_order_by_seq;
 alter table form alter column order_by type bigint;
 alter table form alter column order_by set default nextval('form_order_by_seq');
 
+drop type type_usage;
+create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_versions text array, usage_authors text array);
+
 --NB! restore the view_ww_form in create_views.sql
+--NB! restore the view_ww_lexeme in create_views.sql
+--NB! restore the view_ww_word in create_views.sql

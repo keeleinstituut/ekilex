@@ -67,4 +67,14 @@ alter table form alter column order_by set default nextval('form_order_by_seq');
 
 --NB! restore the view_ww_form in create_views.sql
 
---> kuni siiani testis olemas 13.11.2019
+-- 21.11.2019
+drop view view_ww_lexeme;--NB!
+drop view view_ww_word;--NB!
+
+drop type type_usage;
+create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_versions text array, usage_authors text array);
+
+--NB! restore the view_ww_lexeme in create_views.sql
+--NB! restore the view_ww_word in create_views.sql
+
+--> kuni siiani testis olemas 21.11.2019
