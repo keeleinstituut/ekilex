@@ -113,7 +113,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateMeaningDomainOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_DOMAIN, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateMeaningDomainOrderby(item);
 		}

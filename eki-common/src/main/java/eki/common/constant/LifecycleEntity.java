@@ -5,8 +5,6 @@ public enum LifecycleEntity {
 	WORD,
 	LEXEME,
 	MEANING,
-	@Deprecated
-	MEANING_DOMAIN,//FIXME should use LifecycleProperty.DOMAIN instead
 	USAGE,
 	USAGE_TRANSLATION,
 	USAGE_DEFINITION,

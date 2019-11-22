@@ -77,4 +77,15 @@ create type type_usage as (usage text, usage_prese text, usage_lang char(3), com
 --NB! restore the view_ww_lexeme in create_views.sql
 --NB! restore the view_ww_word in create_views.sql
 
---> kuni siiani testis olemas 21.11.2019
+-- 22.11.2019
+update lifecycle_log lfcl
+set entity_name = 'MEANING',
+    entity_prop = 'DOMAIN',
+    event_type  = 'ORDER_BY',
+    entity_id   = md.meaning_id
+from meaning_domain md
+where md.id = lfcl.entity_id
+  and lfcl.entity_name = 'MEANING_DOMAIN'
+  and lfcl.entity_prop = 'ORDER_BY';
+
+--> kuni siiani testis olemas 22.11.2019

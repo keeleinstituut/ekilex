@@ -827,8 +827,8 @@ public class LifecycleLogDbService {
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			}
-		} if (LifecycleEntity.MEANING_DOMAIN.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+		} if (LifecycleEntity.MEANING.equals(entity)) {
+			if (LifecycleProperty.DOMAIN.equals(property)) {
 				Map<String, Object> entityData = helper.getMeaningDomainData(create, entityId);
 				String domainCode = (String) entityData.get("domain_code");
 				Long meaningId = (Long) entityData.get("meaning_id");
@@ -840,6 +840,7 @@ public class LifecycleLogDbService {
 				String entry = newOrderby + ") " + domainCode;
 				logData.setRecent(recent);
 				logData.setEntry(entry);
+				logData.setEntityId(meaningId);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
