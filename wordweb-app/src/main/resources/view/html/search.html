@@ -142,7 +142,10 @@
             </h3>
             <div th:if="${not #lists.isEmpty(wordData.word.odWordSuggestions)}">
               <th:block th:each="odWordSuggestion : ${wordData.word.odWordSuggestions}">
-                <div th:utext="${odWordSuggestion}"></div>
+                <div>
+                  <span>ÕS soovitab:</span>
+                  <span th:utext="${odWordSuggestion}"></span>
+                </div>
               </th:block>
             </div>
           </div>
@@ -213,7 +216,10 @@
                   </div>
                   <div class="mb-2" th:if="${not #lists.isEmpty(lexeme.odLexemeSuggestions)}">
                     <th:block th:each="odLexemeSuggestion : ${lexeme.odLexemeSuggestions}">
-                      <div th:utext="${odLexemeSuggestion}"></div>
+                      <div>
+                        <span>ÕS soovitab:</span>
+                        <span th:utext="${odLexemeSuggestion}"></span>
+                      </div>
                     </th:block>
                   </div>
                 </div>
@@ -242,13 +248,13 @@
                         </th:block>
                         <th:block th:if="${not #lists.isEmpty(usage.odUsageDefinitions)}">
                           <div class="example-text">
-                            <span>ÕS parem:</span>
+                            <span>ÕS soovitab:</span>
                             <span th:each="odUsageDefinition : ${usage.odUsageDefinitions}" th:utext="${odUsageDefinition}"></span>
                           </div>
                         </th:block>
                         <th:block th:if="${not #lists.isEmpty(usage.odUsageVersions)}">
                           <div class="example-text">
-                            <span>ÕS variant:</span>
+                            <span>=</span>
                             <span th:each="odUsageVersion : ${usage.odUsageVersions}" th:utext="${odUsageVersion}"></span>
                           </div>
                         </th:block>

@@ -347,7 +347,7 @@
                   <div class="row" th:if="${not #lists.isEmpty(lexeme.odLexemeSuggestions)}">
                     <hr />
                     <div class="col pr-0 col-w13rem">
-                      <span class="lbl">ÕS soovitused</span>
+                      <span class="lbl">ÕS soovitab</span>
                       <button type="button" class="btn badge badge-success float-right mr-4"
                               title="Lisa uus"
                               data-toggle="modal"
@@ -853,7 +853,7 @@
                           </div>
                           <div th:if="${not #lists.isEmpty(usage.odDefinitions)}" class="col pl-0">
                             <div>
-                              <span class="lbl">ÕS seletused</span>
+                              <span class="lbl">ÕSi sõnastussoovitused</span>
                             </div>
                             <div class="row" th:each="odUsageDefinition : ${usage.odDefinitions}">
                               <div th:replace="lexdialog :: edit_od_usage_definition_dlg"></div>
@@ -890,7 +890,7 @@
                           </div>
                           <div th:if="${not #lists.isEmpty(usage.odVersions)}" class="col pl-0">
                             <div>
-                              <span class="lbl">ÕS variandid</span>
+                              <span class="lbl">ÕSi variandid</span>
                             </div>
                             <div class="row" th:each="odUsageVersion : ${usage.odVersions}">
                               <div th:replace="lexdialog :: edit_od_usage_version_dlg"></div>
@@ -1237,9 +1237,9 @@
                   <hr />
                 </div>
                 <div class="card-body pt-0 pb-0">
-                  <span class="lbl">ÕS keelendi soovitused</span>
+                  <span class="lbl">ÕS soovitab</span>
                   <button type="button" class="btn badge badge-success"
-                          title="Lisa ÕS soovitus" data-toggle="modal"
+                          title="Lisa ÕS soovitab" data-toggle="modal"
                           th:data-target="${'#addOdWordSuggestionDlg_' + wordId}"
                           sec:authorize="${#vars.isWordCrudGranted}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
