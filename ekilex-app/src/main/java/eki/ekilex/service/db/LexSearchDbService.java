@@ -847,7 +847,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(CollocationTuple.class);
 	}
 
-	public List<FreeForm> getOdWordSuggestions(Long wordId) {
+	public List<FreeForm> getOdWordRecommendations(Long wordId) {
 
 		return create
 				.select(
@@ -861,7 +861,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.where(
 						WORD_FREEFORM.WORD_ID.eq(wordId)
 								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.eq(FreeformType.OD_WORD_SUGGESTION.name())))
+						.and(FREEFORM.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}

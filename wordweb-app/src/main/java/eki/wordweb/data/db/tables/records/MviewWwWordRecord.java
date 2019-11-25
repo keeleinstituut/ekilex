@@ -30,7 +30,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> implements Record15<Long, String, String, String, Integer, String[], String, String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], Boolean, Boolean, String[]> {
 
-    private static final long serialVersionUID = 1949119866;
+    private static final long serialVersionUID = -1713354278;
 
     /**
      * Setter for <code>public.mview_ww_word.word_id</code>.
@@ -229,16 +229,16 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> implem
     }
 
     /**
-     * Setter for <code>public.mview_ww_word.od_word_suggestions</code>.
+     * Setter for <code>public.mview_ww_word.od_word_recommendations</code>.
      */
-    public void setOdWordSuggestions(String... value) {
+    public void setOdWordRecommendations(String... value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_word.od_word_suggestions</code>.
+     * Getter for <code>public.mview_ww_word.od_word_recommendations</code>.
      */
-    public String[] getOdWordSuggestions() {
+    public String[] getOdWordRecommendations() {
         return (String[]) get(14);
     }
 
@@ -379,7 +379,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> implem
      */
     @Override
     public Field<String[]> field15() {
-        return MviewWwWord.MVIEW_WW_WORD.OD_WORD_SUGGESTIONS;
+        return MviewWwWord.MVIEW_WW_WORD.OD_WORD_RECOMMENDATIONS;
     }
 
     /**
@@ -499,7 +499,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> implem
      */
     @Override
     public String[] component15() {
-        return getOdWordSuggestions();
+        return getOdWordRecommendations();
     }
 
     /**
@@ -619,7 +619,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> implem
      */
     @Override
     public String[] value15() {
-        return getOdWordSuggestions();
+        return getOdWordRecommendations();
     }
 
     /**
@@ -753,7 +753,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> implem
      */
     @Override
     public MviewWwWordRecord value15(String... value) {
-        setOdWordSuggestions(value);
+        setOdWordRecommendations(value);
         return this;
     }
 
@@ -794,7 +794,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> implem
     /**
      * Create a detached, initialised MviewWwWordRecord
      */
-    public MviewWwWordRecord(Long wordId, String word, String wordClass, String lang, Integer homonymNr, String[] wordTypeCodes, String morphCode, String displayMorphCode, String aspectCode, TypeLangComplexityRecord[] langComplexities, TypeMeaningWordRecord[] meaningWords, TypeDefinitionRecord[] definitions, Boolean lexDatasetExists, Boolean termDatasetExists, String[] odWordSuggestions) {
+    public MviewWwWordRecord(Long wordId, String word, String wordClass, String lang, Integer homonymNr, String[] wordTypeCodes, String morphCode, String displayMorphCode, String aspectCode, TypeLangComplexityRecord[] langComplexities, TypeMeaningWordRecord[] meaningWords, TypeDefinitionRecord[] definitions, Boolean lexDatasetExists, Boolean termDatasetExists, String[] odWordRecommendations) {
         super(MviewWwWord.MVIEW_WW_WORD);
 
         set(0, wordId);
@@ -811,6 +811,6 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> implem
         set(11, definitions);
         set(12, lexDatasetExists);
         set(13, termDatasetExists);
-        set(14, odWordSuggestions);
+        set(14, odWordRecommendations);
     }
 }

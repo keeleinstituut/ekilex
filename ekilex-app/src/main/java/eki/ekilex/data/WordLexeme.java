@@ -105,7 +105,7 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private List<Relation> lexemeRelations;
 
-	private List<FreeForm> odLexemeSuggestions;
+	private List<FreeForm> odLexemeRecommendations;
 
 	private List<CollocationPosGroup> collocationPosGroups;
 
@@ -419,12 +419,12 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.lexemeRelations = lexemeRelations;
 	}
 
-	public List<FreeForm> getOdLexemeSuggestions() {
-		return odLexemeSuggestions;
+	public List<FreeForm> getOdLexemeRecommendations() {
+		return odLexemeRecommendations;
 	}
 
-	public void setOdLexemeSuggestions(List<FreeForm> odLexemeSuggestions) {
-		this.odLexemeSuggestions = odLexemeSuggestions;
+	public void setOdLexemeRecommendations(List<FreeForm> odLexemeRecommendations) {
+		this.odLexemeRecommendations = odLexemeRecommendations;
 	}
 
 	public List<CollocationPosGroup> getCollocationPosGroups() {

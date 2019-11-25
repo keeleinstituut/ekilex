@@ -327,16 +327,16 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateOdWordSuggestion(Long freeformId, String valuePrese) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.OD_SUGGESTION, freeformId, valuePrese);
+	public void updateOdWordRecommendation(Long freeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
 	}
 
 	@Transactional
-	public void updateOdLexemeSuggestion(Long freeformId, String valuePrese) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_SUGGESTION, freeformId, valuePrese);
+	public void updateOdLexemeRecommendation(Long freeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
@@ -351,8 +351,8 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateOdUsageVersion(Long freeformId, String valuePrese) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_VERSION, freeformId, valuePrese);
+	public void updateOdUsageAlternative(Long freeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, freeformId, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
@@ -608,18 +608,18 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createOdWordSuggestion(Long wordId, String valuePrese) {
+	public void createOdWordRecommendation(Long wordId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long wordFreeformId = cudDbService.createOdWordSuggestion(wordId, value, valuePrese);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.OD_SUGGESTION, wordFreeformId, valuePrese);
+		Long wordFreeformId = cudDbService.createOdWordRecommendation(wordId, value, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, wordFreeformId, valuePrese);
 		createLifecycleLog(logData);
 	}
 
 	@Transactional
-	public void createOdLexemeSuggestion(Long lexemeId, String valuePrese) {
+	public void createOdLexemeRecommendation(Long lexemeId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long lexemeFreeformId = cudDbService.createOdLexemeSuggestion(lexemeId, value, valuePrese);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_SUGGESTION, lexemeFreeformId, valuePrese);
+		Long lexemeFreeformId = cudDbService.createOdLexemeRecommendation(lexemeId, value, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, lexemeFreeformId, valuePrese);
 		createLifecycleLog(logData);
 	}
 
@@ -632,10 +632,10 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createOdUsageVersion(Long usageId, String valuePrese) {
+	public void createOdUsageAlternative(Long usageId, String valuePrese) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long odUsageVersionId = cudDbService.createOdUsageVersion(usageId, value, valuePrese);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_VERSION, odUsageVersionId, valuePrese);
+		Long odUsageAlternativeId = cudDbService.createOdUsageAlternative(usageId, value, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, odUsageAlternativeId, valuePrese);
 		createLifecycleLog(logData);
 	}
 
@@ -909,15 +909,15 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void deleteOdWordSuggestion(Long freeformId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.OD_SUGGESTION, freeformId);
+	public void deleteOdWordRecommendation(Long freeformId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, freeformId);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(freeformId);
 	}
 
 	@Transactional
-	public void deleteOdLexemeSuggestion(Long freeformId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.OD_SUGGESTION, freeformId);
+	public void deleteOdLexemeRecommendation(Long freeformId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, freeformId);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(freeformId);
 	}
@@ -930,8 +930,8 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void deleteOdUsageVersion(Long freeformId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.OD_VERSION, freeformId, null);
+	public void deleteOdUsageAlternative(Long freeformId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, freeformId, null);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(freeformId);
 	}

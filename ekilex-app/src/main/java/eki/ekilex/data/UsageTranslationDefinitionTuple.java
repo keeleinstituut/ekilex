@@ -53,11 +53,11 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 	@Column(name = "od_usage_definition_value")
 	private String odUsageDefinitionValue;
 
-	@Column(name = "od_usage_version_id")
-	private Long odUsageVersionId;
+	@Column(name = "od_usage_alternative_id")
+	private Long odUsageAlternativeId;
 
-	@Column(name = "od_usage_version_value")
-	private String odUsageVersionValue;
+	@Column(name = "od_usage_alternative_value")
+	private String odUsageAlternativeValue;
 
 	@Column(name = "usage_source_link_id")
 	private Long usageSourceLinkId;
@@ -192,20 +192,20 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 		this.odUsageDefinitionValue = odUsageDefinitionValue;
 	}
 
-	public Long getOdUsageVersionId() {
-		return odUsageVersionId;
+	public Long getOdUsageAlternativeId() {
+		return odUsageAlternativeId;
 	}
 
-	public void setOdUsageVersionId(Long odUsageVersionId) {
-		this.odUsageVersionId = odUsageVersionId;
+	public void setOdUsageAlternativeId(Long odUsageAlternativeId) {
+		this.odUsageAlternativeId = odUsageAlternativeId;
 	}
 
-	public String getOdUsageVersionValue() {
-		return odUsageVersionValue;
+	public String getOdUsageAlternativeValue() {
+		return odUsageAlternativeValue;
 	}
 
-	public void setOdUsageVersionValue(String odUsageVersionValue) {
-		this.odUsageVersionValue = odUsageVersionValue;
+	public void setOdUsageAlternativeValue(String odUsageAlternativeValue) {
+		this.odUsageAlternativeValue = odUsageAlternativeValue;
 	}
 
 	public Long getUsageSourceLinkId() {

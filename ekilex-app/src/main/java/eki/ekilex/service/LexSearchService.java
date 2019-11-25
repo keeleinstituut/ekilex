@@ -79,7 +79,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
-		List<FreeForm> odWordSuggestions = lexSearchDbService.getOdWordSuggestions(wordId);
+		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
@@ -94,7 +94,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setWordRelations(wordRelations);
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setWordGroups(wordGroups);
-		wordDetails.setOdWordSuggestions(odWordSuggestions);
+		wordDetails.setOdWordRecommendations(odWordRecommendations);
 		wordDetails.setWordProcessLogCount(wordProcessLogCount);
 		wordDetails.setLastChangedOn(latestLogEventTime);
 
@@ -188,7 +188,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
-				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_SUGGESTION.name()};
+				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
@@ -211,7 +211,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
 		List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 		List<FreeForm> lexemePublicNotes = commonDataDbService.getLexemePublicNotes(lexemeId);
-		List<FreeForm> odLexemeSuggestions = commonDataDbService.getOdLexemeSuggestions(lexemeId);
+		List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
@@ -239,7 +239,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setMeaningImages(meaningImages);
 		lexeme.setLexemeFreeforms(lexemeFreeforms);
 		lexeme.setLexemePublicNotes(lexemePublicNotes);
-		lexeme.setOdLexemeSuggestions(odLexemeSuggestions);
+		lexeme.setOdLexemeRecommendations(odLexemeRecommendations);
 		lexeme.setGovernments(governments);
 		lexeme.setUsages(usages);
 		lexeme.setLexemeRelations(lexemeRelations);

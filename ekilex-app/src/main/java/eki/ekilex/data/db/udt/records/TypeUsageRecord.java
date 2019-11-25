@@ -27,7 +27,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements Record10<String, String, String, String, String, String[], String[], String[], String[], String[]> {
 
-    private static final long serialVersionUID = -1010813568;
+    private static final long serialVersionUID = -153547306;
 
     /**
      * Setter for <code>public.type_usage.usage</code>.
@@ -142,16 +142,16 @@ public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements R
     }
 
     /**
-     * Setter for <code>public.type_usage.od_usage_versions</code>.
+     * Setter for <code>public.type_usage.od_usage_alternatives</code>.
      */
-    public void setOdUsageVersions(String... value) {
+    public void setOdUsageAlternatives(String... value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>public.type_usage.od_usage_versions</code>.
+     * Getter for <code>public.type_usage.od_usage_alternatives</code>.
      */
-    public String[] getOdUsageVersions() {
+    public String[] getOdUsageAlternatives() {
         return (String[]) get(8);
     }
 
@@ -258,7 +258,7 @@ public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements R
      */
     @Override
     public Field<String[]> field9() {
-        return TypeUsage.OD_USAGE_VERSIONS;
+        return TypeUsage.OD_USAGE_ALTERNATIVES;
     }
 
     /**
@@ -338,7 +338,7 @@ public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements R
      */
     @Override
     public String[] component9() {
-        return getOdUsageVersions();
+        return getOdUsageAlternatives();
     }
 
     /**
@@ -418,7 +418,7 @@ public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements R
      */
     @Override
     public String[] value9() {
-        return getOdUsageVersions();
+        return getOdUsageAlternatives();
     }
 
     /**
@@ -506,7 +506,7 @@ public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements R
      */
     @Override
     public TypeUsageRecord value9(String... value) {
-        setOdUsageVersions(value);
+        setOdUsageAlternatives(value);
         return this;
     }
 
@@ -551,7 +551,7 @@ public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements R
     /**
      * Create a detached, initialised TypeUsageRecord
      */
-    public TypeUsageRecord(String usage, String usagePrese, String usageLang, String complexity, String usageTypeCode, String[] usageTranslations, String[] usageDefinitions, String[] odUsageDefinitions, String[] odUsageVersions, String[] usageAuthors) {
+    public TypeUsageRecord(String usage, String usagePrese, String usageLang, String complexity, String usageTypeCode, String[] usageTranslations, String[] usageDefinitions, String[] odUsageDefinitions, String[] odUsageAlternatives, String[] usageAuthors) {
         super(TypeUsage.TYPE_USAGE);
 
         set(0, usage);
@@ -562,7 +562,7 @@ public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements R
         set(5, usageTranslations);
         set(6, usageDefinitions);
         set(7, odUsageDefinitions);
-        set(8, odUsageVersions);
+        set(8, odUsageAlternatives);
         set(9, usageAuthors);
     }
 }

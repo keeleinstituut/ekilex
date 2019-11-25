@@ -890,10 +890,10 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public Long createOdWordSuggestion(Long wordId, String value, String valuePrese) {
+	public Long createOdWordRecommendation(Long wordId, String value, String valuePrese) {
 
 		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.OD_WORD_SUGGESTION.name());
+		freeform.setType(FreeformType.OD_WORD_RECOMMENDATION.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
 		freeform.store();
@@ -906,10 +906,10 @@ public class CudDbService implements DbConstant {
 		return freeform.getId();
 	}
 
-	public Long createOdLexemeSuggestion(Long lexemeId, String value, String valuePrese) {
+	public Long createOdLexemeRecommendation(Long lexemeId, String value, String valuePrese) {
 
 		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.OD_LEXEME_SUGGESTION.name());
+		freeform.setType(FreeformType.OD_LEXEME_RECOMMENDATION.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
 		freeform.store();
@@ -932,11 +932,11 @@ public class CudDbService implements DbConstant {
 				.getId();
 	}
 
-	public Long createOdUsageVersion(Long usageId, String value, String valuePrese) {
+	public Long createOdUsageAlternative(Long usageId, String value, String valuePrese) {
 
 		return create
 				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
-				.values(FreeformType.OD_USAGE_VERSION.name(), usageId, value, valuePrese)
+				.values(FreeformType.OD_USAGE_ALTERNATIVE.name(), usageId, value, valuePrese)
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();

@@ -33,7 +33,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> implements Record20<Long, Long, Long, String, String, Integer, Integer, String, Long, String[], String[], String[], TypeMeaningWordRecord[], String[], TypePublicNoteRecord[], TypeGrammarRecord[], TypeGovernmentRecord[], TypeUsageRecord[], TypeLangComplexityRecord[], String[]> {
 
-    private static final long serialVersionUID = 646317929;
+    private static final long serialVersionUID = 1457182749;
 
     /**
      * Setter for <code>public.view_ww_lexeme.lexeme_id</code>.
@@ -302,16 +302,16 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> impl
     }
 
     /**
-     * Setter for <code>public.view_ww_lexeme.od_lexeme_suggestions</code>.
+     * Setter for <code>public.view_ww_lexeme.od_lexeme_recommendations</code>.
      */
-    public void setOdLexemeSuggestions(String... value) {
+    public void setOdLexemeRecommendations(String... value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>public.view_ww_lexeme.od_lexeme_suggestions</code>.
+     * Getter for <code>public.view_ww_lexeme.od_lexeme_recommendations</code>.
      */
-    public String[] getOdLexemeSuggestions() {
+    public String[] getOdLexemeRecommendations() {
         return (String[]) get(19);
     }
 
@@ -492,7 +492,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> impl
      */
     @Override
     public Field<String[]> field20() {
-        return ViewWwLexeme.VIEW_WW_LEXEME.OD_LEXEME_SUGGESTIONS;
+        return ViewWwLexeme.VIEW_WW_LEXEME.OD_LEXEME_RECOMMENDATIONS;
     }
 
     /**
@@ -652,7 +652,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> impl
      */
     @Override
     public String[] component20() {
-        return getOdLexemeSuggestions();
+        return getOdLexemeRecommendations();
     }
 
     /**
@@ -812,7 +812,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> impl
      */
     @Override
     public String[] value20() {
-        return getOdLexemeSuggestions();
+        return getOdLexemeRecommendations();
     }
 
     /**
@@ -991,7 +991,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> impl
      */
     @Override
     public ViewWwLexemeRecord value20(String... value) {
-        setOdLexemeSuggestions(value);
+        setOdLexemeRecommendations(value);
         return this;
     }
 
@@ -1037,7 +1037,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> impl
     /**
      * Create a detached, initialised ViewWwLexemeRecord
      */
-    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetType, String datasetCode, Integer level1, Integer level2, String complexity, Long lexOrderBy, String[] registerCodes, String[] posCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypePublicNoteRecord[] publicNotes, TypeGrammarRecord[] grammars, TypeGovernmentRecord[] governments, TypeUsageRecord[] usages, TypeLangComplexityRecord[] langComplexities, String[] odLexemeSuggestions) {
+    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetType, String datasetCode, Integer level1, Integer level2, String complexity, Long lexOrderBy, String[] registerCodes, String[] posCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypePublicNoteRecord[] publicNotes, TypeGrammarRecord[] grammars, TypeGovernmentRecord[] governments, TypeUsageRecord[] usages, TypeLangComplexityRecord[] langComplexities, String[] odLexemeRecommendations) {
         super(ViewWwLexeme.VIEW_WW_LEXEME);
 
         set(0, lexemeId);
@@ -1059,6 +1059,6 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> impl
         set(16, governments);
         set(17, usages);
         set(18, langComplexities);
-        set(19, odLexemeSuggestions);
+        set(19, odLexemeRecommendations);
     }
 }

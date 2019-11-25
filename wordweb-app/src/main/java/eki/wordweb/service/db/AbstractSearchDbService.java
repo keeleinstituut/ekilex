@@ -46,7 +46,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						w.ASPECT_CODE,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
-						w.OD_WORD_SUGGESTIONS)
+						w.OD_WORD_RECOMMENDATIONS)
 				.from(w)
 				.where(w.WORD_ID.eq(wordId))
 				.fetchOne()

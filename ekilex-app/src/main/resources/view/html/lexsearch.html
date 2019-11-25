@@ -136,7 +136,7 @@
                 <div th:replace="lexdialog :: add_lexeme_deriv_dlg"></div>
                 <div th:replace="lexdialog :: add_lexeme_register_dlg"></div>
                 <div th:replace="lexdialog :: add_lexeme_grammar_dlg"></div>
-                <div th:replace="lexdialog :: add_od_lexeme_suggestion_dlg"></div>
+                <div th:replace="lexdialog :: add_od_lexeme_recommendation_dlg"></div>
                 <div th:replace="lexdialog :: add_definition_dlg"></div>
                 <div th:replace="lexdialog :: add_lexeme_source_link_dlg"></div>
                 <div th:replace="lexdialog :: add_learner_comment_dlg"></div>
@@ -344,38 +344,38 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row" th:if="${not #lists.isEmpty(lexeme.odLexemeSuggestions)}">
+                  <div class="row" th:if="${not #lists.isEmpty(lexeme.odLexemeRecommendations)}">
                     <hr />
                     <div class="col pr-0 col-w13rem">
                       <span class="lbl">ÕS soovitab</span>
                       <button type="button" class="btn badge badge-success float-right mr-4"
                               title="Lisa uus"
                               data-toggle="modal"
-                              th:data-target="${'#addOdLexemeSuggestionDlg_' + lexeme.lexemeId}"
+                              th:data-target="${'#addOdLexemeRecommendationDlg_' + lexeme.lexemeId}"
                               sec:authorize="#vars.isLexemeCrudGranted">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
                     <div class="col pl-0">
-                      <div th:each="odLexemeSuggestion, itemIter : ${lexeme.odLexemeSuggestions}">
-                        <div th:replace="lexdialog :: edit_od_lexeme_suggestion"></div>
+                      <div th:each="odLexemeRecommendation, itemIter : ${lexeme.odLexemeRecommendations}">
+                        <div th:replace="lexdialog :: edit_od_lexeme_recommendation"></div>
                         <div class="row">
                           <div class="col hidden-buttons">
                             <div class="action-buttons-anchor">
                               <div class="pr-3">
-                                <span th:utext="${odLexemeSuggestion.valuePrese}"></span>
+                                <span th:utext="${odLexemeRecommendation.valuePrese}"></span>
                               </div>
                               <div class="action-buttons-2">
                                 <button type="button" class="btn badge badge-primary"
                                         title="Muuda"
                                         data-toggle="modal"
-                                        th:data-target="${'#editOdLexemeSuggestionDlg_' + lexeme.lexemeId + '_' + odLexemeSuggestion.id}"
+                                        th:data-target="${'#editOdLexemeRecommendationDlg_' + lexeme.lexemeId + '_' + odLexemeRecommendation.id}"
                                         sec:authorize="${#vars.isLexemeCrudGranted}">
                                   <i class="fa fa-edit" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="btn badge badge-warning"
-                                        data-op-code="od_lexeme_suggestion"
-                                        th:data-id="${odLexemeSuggestion.id}"
+                                        data-op-code="od_lexeme_recommendation"
+                                        th:data-id="${odLexemeRecommendation.id}"
                                         data-toggle="delete-confirm"
                                         data-placement="right"
                                         sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -888,26 +888,26 @@
                               </div>
                             </div>
                           </div>
-                          <div th:if="${not #lists.isEmpty(usage.odVersions)}" class="col pl-0">
+                          <div th:if="${not #lists.isEmpty(usage.odAlternatives)}" class="col pl-0">
                             <div>
                               <span class="lbl">ÕSi variandid</span>
                             </div>
-                            <div class="row" th:each="odUsageVersion : ${usage.odVersions}">
-                              <div th:replace="lexdialog :: edit_od_usage_version_dlg"></div>
+                            <div class="row" th:each="odUsageAlternative : ${usage.odAlternatives}">
+                              <div th:replace="lexdialog :: edit_od_usage_alternative_dlg"></div>
                               <div class="col hidden-buttons ml-2">
                                 <div class="action-buttons-anchor">
-                                  <span th:utext="${odUsageVersion.value}"></span>
+                                  <span th:utext="${odUsageAlternative.value}"></span>
                                   <div class="action-buttons-3">
                                     <button type="button" class="btn badge badge-primary"
                                             title="Muuda"
                                             data-toggle="modal"
-                                            th:data-target="${'#editOdUsageVersionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageVersion.id}"
+                                            th:data-target="${'#editOdUsageAlternativeDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageAlternative.id}"
                                             sec:authorize="${#vars.isUsageCrudGranted}">
                                       <i class="fa fa-edit" aria-hidden="true"></i>
                                     </button>
                                     <button type="button" class="btn badge badge-warning"
-                                            th:data-id="${odUsageVersion.id}"
-                                            data-op-code="od_usage_version"
+                                            th:data-id="${odUsageAlternative.id}"
+                                            data-op-code="od_usage_alternative"
                                             data-toggle="delete-confirm"
                                             data-placement="right"
                                             sec:authorize="${#vars.isUsageCrudGranted}">
@@ -1144,7 +1144,7 @@
             <div class="col-4 border-left border-light h-100 overflow-auto">
               <div th:replace="lexdialog :: add_word_data_dlg"></div>
               <div th:replace="lexdialog :: add_word_relation_dlg"></div>
-              <div th:replace="lexdialog :: add_od_word_suggestion_dlg"></div>
+              <div th:replace="lexdialog :: add_od_word_recommendation_dlg"></div>
               <div th:replace="lexdialog :: edit_word_value_dlg"></div>
               <div th:replace="lexdialog :: edit_word_gender_dlg"></div>
               <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
@@ -1240,26 +1240,26 @@
                   <span class="lbl">ÕS soovitab</span>
                   <button type="button" class="btn badge badge-success"
                           title="Lisa ÕS soovitab" data-toggle="modal"
-                          th:data-target="${'#addOdWordSuggestionDlg_' + wordId}"
+                          th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
                           sec:authorize="${#vars.isWordCrudGranted}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <div th:each="odWordSuggestion, itemIter : ${details.odWordSuggestions}">
-                    <div th:replace="lexdialog :: edit_od_word_suggestion"></div>
+                  <div th:each="odWordRecommendation, itemIter : ${details.odWordRecommendations}">
+                    <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
                     <div class="col hidden-buttons pr-5">
                       <div class="action-buttons-anchor">
-                        <span th:utext="${odWordSuggestion.valuePrese}"></span>
+                        <span th:utext="${odWordRecommendation.valuePrese}"></span>
                         <div class="action-buttons-2">
                           <button type="button" class="btn badge badge-primary"
                                   title="Muuda"
                                   data-toggle="modal"
-                                  th:data-target="${'#editOdWordSuggestionDlg_' + odWordSuggestion.id}"
+                                  th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
                                   sec:authorize="${#vars.isWordCrudGranted}">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
                           <button type="button" class="btn badge badge-warning"
-                                  th:data-id="${odWordSuggestion.id}"
-                                  data-op-code="od_word_suggestion"
+                                  th:data-id="${odWordRecommendation.id}"
+                                  data-op-code="od_word_recommendation"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
                                   sec:authorize="${#vars.isWordCrudGranted}">

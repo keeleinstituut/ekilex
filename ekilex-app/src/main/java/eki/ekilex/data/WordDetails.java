@@ -25,7 +25,7 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<WordGroup> wordGroups;
 
-	private List<FreeForm> odWordSuggestions;
+	private List<FreeForm> odWordRecommendations;
 
 	private String firstDefinitionValue;
 
@@ -92,12 +92,12 @@ public class WordDetails extends AbstractDataObject {
 		this.wordGroups = wordGroups;
 	}
 
-	public List<FreeForm> getOdWordSuggestions() {
-		return odWordSuggestions;
+	public List<FreeForm> getOdWordRecommendations() {
+		return odWordRecommendations;
 	}
 
-	public void setOdWordSuggestions(List<FreeForm> odWordSuggestions) {
-		this.odWordSuggestions = odWordSuggestions;
+	public void setOdWordRecommendations(List<FreeForm> odWordRecommendations) {
+		this.odWordRecommendations = odWordRecommendations;
 	}
 
 	public List<SynRelation> getWordSynRelations() {

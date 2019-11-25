@@ -275,8 +275,8 @@ public class LifecycleLogDbService {
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_VERSION.equals(property)) {
-				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_VERSION);
+			} else if (LifecycleProperty.OD_ALTERNATIVE.equals(property)) {
+				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_ALTERNATIVE);
 				String recent = (String) entityData.get("value_prese");
 				logData.setRecent(recent);
 				if (!logData.isValueChanged()) {
@@ -441,8 +441,8 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_SUGGESTION.equals(property)) {
-				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.OD_LEXEME_SUGGESTION);
+			} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
+				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.OD_LEXEME_RECOMMENDATION);
 				String recent = (String) entityData.get("value_prese");
 				logData.setRecent(recent);
 				if (!logData.isValueChanged()) {
@@ -493,8 +493,8 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createWordLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_SUGGESTION.equals(property)) {
-				Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.OD_WORD_SUGGESTION);
+			} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
+				Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.OD_WORD_RECOMMENDATION);
 				String recent = (String) entityData.get("value_prese");
 				logData.setRecent(recent);
 				if (!logData.isValueChanged()) {

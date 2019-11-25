@@ -27,7 +27,7 @@ public class Usage extends AbstractDataObject {
 
 	private List<OdUsageDefinition> odDefinitions;
 
-	private List<OdUsageVersion> odVersions;
+	private List<OdUsageAlternative> odAlternatives;
 
 	private List<SourceLink> authors;
 
@@ -105,12 +105,12 @@ public class Usage extends AbstractDataObject {
 		this.odDefinitions = odDefinitions;
 	}
 
-	public List<OdUsageVersion> getOdVersions() {
-		return odVersions;
+	public List<OdUsageAlternative> getOdAlternatives() {
+		return odAlternatives;
 	}
 
-	public void setOdVersions(List<OdUsageVersion> odVersions) {
-		this.odVersions = odVersions;
+	public void setOdAlternatives(List<OdUsageAlternative> odAlternatives) {
+		this.odAlternatives = odAlternatives;
 	}
 
 	public List<SourceLink> getAuthors() {

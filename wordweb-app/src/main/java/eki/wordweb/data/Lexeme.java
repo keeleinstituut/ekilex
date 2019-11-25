@@ -60,7 +60,7 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	private List<String> learnerComments;
 
-	private List<String> odLexemeSuggestions;
+	private List<String> odLexemeRecommendations;
 
 	private List<TypeDefinition> definitions;
 
@@ -282,12 +282,12 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 		this.learnerComments = learnerComments;
 	}
 
-	public List<String> getOdLexemeSuggestions() {
-		return odLexemeSuggestions;
+	public List<String> getOdLexemeRecommendations() {
+		return odLexemeRecommendations;
 	}
 
-	public void setOdLexemeSuggestions(List<String> odLexemeSuggestions) {
-		this.odLexemeSuggestions = odLexemeSuggestions;
+	public void setOdLexemeRecommendations(List<String> odLexemeRecommendations) {
+		this.odLexemeRecommendations = odLexemeRecommendations;
 	}
 
 	public List<TypeDefinition> getDefinitions() {
