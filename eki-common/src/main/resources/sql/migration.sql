@@ -72,9 +72,36 @@ drop view view_ww_lexeme;--NB!
 drop view view_ww_word;--NB!
 
 drop type type_usage;
-create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_versions text array, usage_authors text array);
+create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_alternatives text array, usage_authors text array);
 
 --NB! restore the view_ww_lexeme in create_views.sql
 --NB! restore the view_ww_word in create_views.sql
 
---> kuni siiani testis olemas 21.11.2019
+-- 22.11.2019
+update lifecycle_log lfcl
+set entity_name = 'MEANING',
+    entity_prop = 'DOMAIN',
+    event_type  = 'ORDER_BY',
+    entity_id   = md.meaning_id
+from meaning_domain md
+where md.id = lfcl.entity_id
+  and lfcl.entity_name = 'MEANING_DOMAIN'
+  and lfcl.entity_prop = 'ORDER_BY';
+
+-- 25.11.2019
+update freeform set type = 'OD_WORD_RECOMMENDATION' where type = 'OD_WORD_SUGGESTION';
+update freeform set type = 'OD_LEXEME_RECOMMENDATION' where type = 'OD_LEXEME_SUGGESTION';
+update freeform set type = 'OD_USAGE_ALTERNATIVE' where type = 'OD_USAGE_VERSION';
+update lifecycle_log set entity_prop = 'OD_RECOMMENDATION' where entity_prop = 'OD_SUGGESTION';
+update lifecycle_log set entity_prop = 'OD_ALTERNATIVE' where entity_prop = 'OD_VERSION';
+
+drop view view_ww_lexeme;--NB!
+drop view view_ww_word;--NB!
+
+drop type type_usage;
+create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_alternatives text array, usage_authors text array);
+
+--NB! restore the view_ww_lexeme in create_views.sql
+--NB! restore the view_ww_word in create_views.sql
+
+--> kuni siiani testis olemas 25.11.2019

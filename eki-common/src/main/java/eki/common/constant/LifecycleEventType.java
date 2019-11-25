@@ -6,5 +6,6 @@ public enum LifecycleEventType {
 	UPDATE,
 	DELETE,
 	JOIN,
-	CLONE
+	CLONE,
+	ORDER_BY
 }

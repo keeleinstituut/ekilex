@@ -275,8 +275,8 @@ public class LifecycleLogDbService {
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_VERSION.equals(property)) {
-				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_VERSION);
+			} else if (LifecycleProperty.OD_ALTERNATIVE.equals(property)) {
+				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_ALTERNATIVE);
 				String recent = (String) entityData.get("value_prese");
 				logData.setRecent(recent);
 				if (!logData.isValueChanged()) {
@@ -441,8 +441,8 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_SUGGESTION.equals(property)) {
-				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.OD_LEXEME_SUGGESTION);
+			} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
+				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.OD_LEXEME_RECOMMENDATION);
 				String recent = (String) entityData.get("value_prese");
 				logData.setRecent(recent);
 				if (!logData.isValueChanged()) {
@@ -493,8 +493,8 @@ public class LifecycleLogDbService {
 				logData.setRecent(recent);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createWordLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_SUGGESTION.equals(property)) {
-				Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.OD_WORD_SUGGESTION);
+			} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
+				Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.OD_WORD_RECOMMENDATION);
 				String recent = (String) entityData.get("value_prese");
 				logData.setRecent(recent);
 				if (!logData.isValueChanged()) {
@@ -827,8 +827,8 @@ public class LifecycleLogDbService {
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			}
-		} if (LifecycleEntity.MEANING_DOMAIN.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+		} if (LifecycleEntity.MEANING.equals(entity)) {
+			if (LifecycleProperty.DOMAIN.equals(property)) {
 				Map<String, Object> entityData = helper.getMeaningDomainData(create, entityId);
 				String domainCode = (String) entityData.get("domain_code");
 				Long meaningId = (Long) entityData.get("meaning_id");
@@ -840,6 +840,7 @@ public class LifecycleLogDbService {
 				String entry = newOrderby + ") " + domainCode;
 				logData.setRecent(recent);
 				logData.setEntry(entry);
+				logData.setEntityId(meaningId);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}

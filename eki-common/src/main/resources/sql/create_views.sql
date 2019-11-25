@@ -1,7 +1,7 @@
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_versions text array, usage_authors text array);
+create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_alternatives text array, usage_authors text array);
 create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
@@ -41,7 +41,7 @@ select w.word_id,
        wd.definitions,
        w.lex_dataset_exists,
        w.term_dataset_exists,
-	   od_ws.od_word_suggestions
+       od_ws.od_word_recommendations
 from (select w.id as word_id,
              array_to_string(array_agg(distinct f.value),',','*') as word,
              w.word_class,
@@ -241,11 +241,11 @@ from (select w.id as word_id,
                    group by wd.word_id) wd
                on wd.word_id = w.word_id
   left outer join (select wf.word_id,
-                          array_agg(ff.value_prese order by ff.order_by) od_word_suggestions
+                          array_agg(ff.value_prese order by ff.order_by) od_word_recommendations
                    from word_freeform wf,
                         freeform ff
                    where wf.freeform_id = ff.id
-                   and   ff.type = 'OD_WORD_SUGGESTION'
+                   and   ff.type = 'OD_WORD_RECOMMENDATION'
                    group by wf.word_id) od_ws on od_ws.word_id = w.word_id;
 
 -- as words - OK
@@ -396,7 +396,7 @@ select l.id lexeme_id,
        gov.governments,
        usg.usages,
        lc.lang_complexities,
-	   od_ls.od_lexeme_suggestions
+       od_ls.od_lexeme_recommendations
 from lexeme l
   inner join dataset ds on ds.code = l.dataset_code
   left outer join (select l_reg.lexeme_id,
@@ -440,12 +440,12 @@ from lexeme l
                    and   ff.type = 'GOVERNMENT'
                    group by lf.lexeme_id) gov on gov.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-						  array_agg(ff.value_prese order by ff.order_by) od_lexeme_suggestions
-				   from lexeme_freeform lf,
-						freeform ff
-				   where lf.freeform_id = ff.id
-				   and   ff.type = 'OD_LEXEME_SUGGESTION'
-				   group by lf.lexeme_id) od_ls on od_ls.lexeme_id = l.id
+                          array_agg(ff.value_prese order by ff.order_by) od_lexeme_recommendations
+                   from lexeme_freeform lf,
+                        freeform ff
+                   where lf.freeform_id = ff.id
+                   and   ff.type = 'OD_LEXEME_RECOMMENDATION'
+                   group by lf.lexeme_id) od_ls on od_ls.lexeme_id = l.id
   left outer join (select mw.lexeme_id,
                           array_agg(row (
                           	mw.lexeme_id,
@@ -512,7 +512,7 @@ from lexeme l
                          and l2ds.is_public = true) mw
                    group by mw.lexeme_id) mw on mw.lexeme_id = l.id
   left outer join (select u.lexeme_id,
-                          array_agg(row (u.usage,u.usage_prese,u.usage_lang,u.complexity,u.usage_type_code,u.usage_translations,u.usage_definitions,u.od_usage_definitions,u.od_usage_versions,u.usage_authors)::type_usage order by u.order_by) usages
+                          array_agg(row (u.usage,u.usage_prese,u.usage_lang,u.complexity,u.usage_type_code,u.usage_translations,u.usage_definitions,u.od_usage_definitions,u.od_usage_alternatives,u.usage_authors)::type_usage order by u.order_by) usages
                    from (select lf.lexeme_id,
                                 u.value_text USAGE,
                                 u.value_prese usage_prese,
@@ -523,7 +523,7 @@ from lexeme l
                                 ut.usage_translations,
                                 ud.usage_definitions,
                                 odud.od_usage_definitions,
-                                oduv.od_usage_versions,
+                                odua.od_usage_alternatives,
                                 ua.usage_authors
                          from lexeme_freeform lf
                            inner join freeform u on lf.freeform_id = u.id and u.type = 'USAGE'
@@ -539,15 +539,15 @@ from lexeme l
                                             where ud.type = 'USAGE_DEFINITION'
                                             group by ud.parent_id) ud on ud.usage_id = u.id
 						   left outer join (select odud.parent_id usage_id,
-												   array_agg(odud.value_prese order by odud.order_by) od_usage_definitions
-											from freeform odud
-											where odud.type = 'OD_USAGE_DEFINITION'
-											group by odud.parent_id) odud on odud.usage_id = u.id
-						   left outer join (select oduv.parent_id usage_id,
-												   array_agg(oduv.value_prese order by oduv.order_by) od_usage_versions
-											from freeform oduv
-											where oduv.type = 'OD_USAGE_VERSION'
-											group by oduv.parent_id) oduv on oduv.usage_id = u.id
+                                       array_agg(odud.value_prese order by odud.order_by) od_usage_definitions
+                                from freeform odud
+                                where odud.type = 'OD_USAGE_DEFINITION'
+                                group by odud.parent_id) odud on odud.usage_id = u.id
+						   left outer join (select odua.parent_id usage_id,
+                                       array_agg(odua.value_prese order by odua.order_by) od_usage_alternatives
+                                from freeform odua
+                                where odua.type = 'OD_USAGE_ALTERNATIVE'
+                                group by odua.parent_id) odua on odua.usage_id = u.id
                            left outer join (select uasl.freeform_id usage_id,
                                                    array_agg((uasl.type || '|' || uas.person_name) order by uasl.order_by) usage_authors
                                             from freeform_source_link uasl

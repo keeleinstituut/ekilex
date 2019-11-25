@@ -32,7 +32,7 @@
                   <option value="meaning_semantic_type" sec:authorize="#vars.isMeaningCrudGranted">Semantiline tüüp</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.isMeaningCrudGranted">Tähenduse seos</option>
                   <option value="addLearnerCommentDlg" sec:authorize="#vars.isMeaningCrudGranted">Õppekommentaar</option>
-                  <option value="addOdLexemeSuggestionDlg" sec:authorize="#vars.isLexemeCrudGranted">ÕS ilmiku soovitus</option>
+                  <option value="addOdLexemeRecommendationDlg" sec:authorize="#vars.isLexemeCrudGranted">ÕS soovitab</option>
                 </select>
               </div>
             </div>
@@ -592,8 +592,8 @@
                 <select required class="form-control" name="opCode">
                   <option value="usage_translation">Kasutusnäite tõlge</option>
                   <option value="usage_definition">Kasutusnäite seletus</option>
-                  <option value="od_usage_definition">Kasutusnäite ÕS seletus</option>
-                  <option value="od_usage_version">Kasutusnäite ÕS variant</option>
+                  <option value="od_usage_definition">ÕSi sõnastussoovitus</option>
+                  <option value="od_usage_alternative">ÕSi variant</option>
                 </select>
               </div>
             </div>
@@ -614,7 +614,7 @@
             <div class="value-group" data-id="od_usage_definition">
               <div th:replace="components :: eki_editor_elem(true)"></div>
             </div>
-            <div class="value-group" data-id="od_usage_version">
+            <div class="value-group" data-id="od_usage_alternative">
               <div th:replace="components :: eki_editor_elem(true)"></div>
             </div>
           </div>
@@ -1339,13 +1339,13 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addOdWordSuggestionDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_od_word_suggestion_dlg">
+  <div th:id="${'addOdWordRecommendationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_od_word_recommendation_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${wordId}">
-            <input type="hidden" name="opCode" value="od_word_suggestion">
+            <input type="hidden" name="opCode" value="od_word_recommendation">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
@@ -1357,14 +1357,14 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editOdWordSuggestionDlg_' + odWordSuggestion.id}" class="modal" role="dialog" th:fragment="edit_od_word_suggestion">
+  <div th:id="${'editOdWordRecommendationDlg_' + odWordRecommendation.id}" class="modal" role="dialog" th:fragment="edit_od_word_recommendation">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${odWordSuggestion.id}">
-            <input type="hidden" name="opCode" value="od_word_suggestion">
-            <input type="hidden" name="value" th:value="${odWordSuggestion.valuePrese}">
+            <input type="hidden" name="id" th:value="${odWordRecommendation.id}">
+            <input type="hidden" name="opCode" value="od_word_recommendation">
+            <input type="hidden" name="value" th:value="${odWordRecommendation.valuePrese}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
@@ -1375,13 +1375,13 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addOdLexemeSuggestionDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_od_lexeme_suggestion_dlg">
+  <div th:id="${'addOdLexemeRecommendationDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_od_lexeme_recommendation_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="od_lexeme_suggestion">
+            <input type="hidden" name="opCode" value="od_lexeme_recommendation">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
@@ -1393,14 +1393,14 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editOdLexemeSuggestionDlg_' + lexeme.lexemeId + '_' + odLexemeSuggestion.id}" class="modal" role="dialog" th:fragment="edit_od_lexeme_suggestion">
+  <div th:id="${'editOdLexemeRecommendationDlg_' + lexeme.lexemeId + '_' + odLexemeRecommendation.id}" class="modal" role="dialog" th:fragment="edit_od_lexeme_recommendation">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${odLexemeSuggestion.id}">
-            <input type="hidden" name="opCode" value="od_lexeme_suggestion">
-            <input type="hidden" name="value" th:value="${odLexemeSuggestion.valuePrese}">
+            <input type="hidden" name="id" th:value="${odLexemeRecommendation.id}">
+            <input type="hidden" name="opCode" value="od_lexeme_recommendation">
+            <input type="hidden" name="value" th:value="${odLexemeRecommendation.valuePrese}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
@@ -1429,14 +1429,14 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editOdUsageVersionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageVersion.id}" class="modal" role="dialog" th:fragment="edit_od_usage_version_dlg">
+  <div th:id="${'editOdUsageAlternativeDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageAlternative.id}" class="modal" role="dialog" th:fragment="edit_od_usage_alternative_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${odUsageVersion.id}">
-            <input type="hidden" name="opCode" value="od_usage_version">
-            <input type="hidden" name="value" th:value="${odUsageVersion.value}">
+            <input type="hidden" name="id" th:value="${odUsageAlternative.id}">
+            <input type="hidden" name="opCode" value="od_usage_alternative">
+            <input type="hidden" name="value" th:value="${odUsageAlternative.value}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">

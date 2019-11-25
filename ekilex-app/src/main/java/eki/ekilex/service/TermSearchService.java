@@ -119,7 +119,7 @@ public class TermSearchService extends AbstractSearchService {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
-				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_SUGGESTION.name()};
+				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
