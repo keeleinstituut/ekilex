@@ -25,12 +25,15 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.Origin;
 import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
+import eki.ekilex.data.imp.Paradigm;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.FileService;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.MorphologyService;
 import eki.ekilex.service.TermSearchService;
 
 @ConditionalOnWebApplication
@@ -52,6 +55,9 @@ public class DataController implements SystemConstant, WebConstant {
 	@Autowired
 	private TermSearchService termSearchService;
 
+	@Autowired
+	private MorphologyService morphologyService;
+
 	@GetMapping(REST_SERVICES_URI + "/app")
 	public AppData getAppData() {
 		return appDataHolder.getAppData();
@@ -68,7 +74,6 @@ public class DataController implements SystemConstant, WebConstant {
 				.body(resource);
 	}
 
-	//TODO temp API service
 	@GetMapping({
 			REST_SERVICES_URI + LEX_SEARCH_URI + "/{word}",
 			REST_SERVICES_URI + LEX_SEARCH_URI + "/{word}/{datasets}"
@@ -82,13 +87,12 @@ public class DataController implements SystemConstant, WebConstant {
 		return results;
 	}
 
-	//TODO temp API service
 	@GetMapping({
 			REST_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}",
 			REST_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}/{datasets}"
 	})
 	@ResponseBody
-	public WordDetails wordDetails(@PathVariable("wordId") String wordIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr) {
+	public WordDetails getWordDetails(@PathVariable("wordId") String wordIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr) {
 
 		if (!StringUtils.isNumeric(wordIdStr)) {
 			return null;
@@ -99,7 +103,16 @@ public class DataController implements SystemConstant, WebConstant {
 		return result;
 	}
 
-	//TODO temp API service
+	@GetMapping(REST_SERVICES_URI + PARADIGMS_URI + "/{wordId}")
+	public List<Paradigm> getParadigms(@PathVariable("wordId") String wordIdStr) {
+
+		if (!StringUtils.isNumeric(wordIdStr)) {
+			return null;
+		}
+		Long wordId = Long.valueOf(wordIdStr);
+		return morphologyService.getParadigms(wordId);
+	}
+
 	@GetMapping({
 			REST_SERVICES_URI + TERM_SEARCH_URI + "/{word}",
 			REST_SERVICES_URI + TERM_SEARCH_URI + "/{word}/{datasets}"
@@ -115,13 +128,12 @@ public class DataController implements SystemConstant, WebConstant {
 		return results;
 	}
 
-	//TODO temp API service
 	@GetMapping({
 			REST_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}",
 			REST_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}/{datasets}"
 	})
 	@ResponseBody
-	public Meaning meaningDetails(@PathVariable("meaningId") String meaningIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr) {
+	public Meaning getMeaningDetails(@PathVariable("meaningId") String meaningIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr) {
 
 		if (!StringUtils.isNumeric(meaningIdStr)) {
 			return null;
@@ -134,7 +146,6 @@ public class DataController implements SystemConstant, WebConstant {
 		return meaning;
 	}
 
-	//TODO temp API service
 	@GetMapping(REST_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
 	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
 
@@ -146,6 +157,16 @@ public class DataController implements SystemConstant, WebConstant {
 			return null;
 		}
 		return commonDataService.getClassifiers(classifierName);
+	}
+
+	@GetMapping(REST_SERVICES_URI + DOMAIN_ORIGINS_URI)
+	public List<Origin> getDomainOrigins() {
+		return commonDataService.getDomainOrigins();
+	}
+
+	@GetMapping(REST_SERVICES_URI + DOMAINS_URI + "/{origin}")
+	public List<Classifier> getDomains(@PathVariable("origin") String origin) {
+		return commonDataService.getDomains(origin);
 	}
 
 	@GetMapping(REST_SERVICES_URI + DATASETS_URI)

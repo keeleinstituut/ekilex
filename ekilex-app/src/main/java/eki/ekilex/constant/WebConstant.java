@@ -52,9 +52,15 @@ public interface WebConstant {
 
 	String WORD_DETAILS_URI = "/worddetails";
 
+	String PARADIGMS_URI = "/paradigms";
+
 	String MEANING_DETAILS_URI = "/meaningdetails";
 
 	String CLASSIFIERS_URI = "/classifiers";
+
+	String DOMAINS_URI = "/domains";
+
+	String DOMAIN_ORIGINS_URI = "/domainorigins";
 
 	String WORD_SELECT_URI = "/wordselect";
 

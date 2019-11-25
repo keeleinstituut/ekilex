@@ -83,4 +83,22 @@ public class MorphologyDbService {
 
 		create.deleteFrom(PARADIGM).where(PARADIGM.WORD_ID.in(wordIds)).execute();
 	}
+
+	public List<Paradigm> getParadigms(Long wordId) {
+
+		return create
+				.selectFrom(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId))
+				.orderBy(PARADIGM.ID)
+				.fetchInto(Paradigm.class);
+	}
+
+	public List<Form> getForms(Long paradigmId) {
+
+		return create
+				.selectFrom(FORM)
+				.where(FORM.PARADIGM_ID.eq(paradigmId))
+				.orderBy(FORM.ORDER_BY)
+				.fetchInto(Form.class);
+	}
 }

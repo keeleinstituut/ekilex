@@ -4,13 +4,21 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import eki.common.data.AbstractDataObject;
 
+@JsonInclude(Include.NON_NULL)
 public class Classifier extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private String name;
+
+	private String parentOrigin;
+
+	private String parentCode;
 
 	private String origin;
 
@@ -28,6 +36,22 @@ public class Classifier extends AbstractDataObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getParentOrigin() {
+		return parentOrigin;
+	}
+
+	public void setParentOrigin(String parentOrigin) {
+		this.parentOrigin = parentOrigin;
+	}
+
+	public String getParentCode() {
+		return parentCode;
+	}
+
+	public void setParentCode(String parentCode) {
+		this.parentCode = parentCode;
 	}
 
 	public String getOrigin() {

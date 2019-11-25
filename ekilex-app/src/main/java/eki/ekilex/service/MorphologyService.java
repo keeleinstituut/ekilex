@@ -51,4 +51,15 @@ public class MorphologyService {
 			}
 		}
 	}
+
+	@Transactional
+	public List<Paradigm> getParadigms(Long wordId) {
+
+		List<Paradigm> paradigms = morphologyDbService.getParadigms(wordId);
+		for (Paradigm paradigm : paradigms) {
+			List<Form> forms = morphologyDbService.getForms(paradigm.getId());
+			paradigm.setForms(forms);
+		}
+		return paradigms;
+	}
 }

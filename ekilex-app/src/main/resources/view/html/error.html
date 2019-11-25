@@ -8,7 +8,7 @@
     <div>
       <a th:href="@{/}">
         <span>
-          Ekilex <small class="pl-2" th:text="${'v.'+appData.appVersion}">1.0.0</small>
+          Ekilex <small class="pl-2" th:text="${'v.'+appData.appVersion}" th:if="${appData != null}">1.0.0</small>
         </span>
       </a>
     </div>

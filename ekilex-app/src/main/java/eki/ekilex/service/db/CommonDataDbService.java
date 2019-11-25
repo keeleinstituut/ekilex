@@ -56,7 +56,6 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
-import org.jooq.Record5;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,8 +81,11 @@ import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.db.tables.Domain;
+import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Source;
@@ -337,25 +339,36 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.fetchInto(Origin.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #originCode, #classifierLabelTypeCode}")
-	public List<Classifier> getDomains(String originCode, String classifierLabelTypeCode) {
-		Table<Record5<String, String, String, Long, String>> originDomains = create
-				.select(getClassifierNameField(ClassifierName.DOMAIN),
-						DOMAIN.CODE,
-						DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
-						DOMAIN_LABEL.VALUE)
-				.distinctOn(DOMAIN.CODE)
-				.from(DOMAIN)
-				.leftJoin(DOMAIN_LABEL).on(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN)))
-				.innerJoin(LANGUAGE).on(LANGUAGE.CODE.eq(DOMAIN_LABEL.LANG))
-				.where(DOMAIN.ORIGIN.eq(originCode).and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(DOMAIN.CODE, LANGUAGE.ORDER_BY)
-				.asTable();
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #origin, #classifierLabelTypeCode}")
+	public List<Classifier> getDomains(String origin, String classifierLabelTypeCode) {
+
+		Domain d = DOMAIN.as("d");
+		DomainLabel dll = DOMAIN_LABEL.as("dl");
+		Language l = LANGUAGE.as("l");
+
+		Table<Record3<String, String, String>> dl = DSL.select(
+				dll.ORIGIN,
+				dll.CODE,
+				DSL.field("(array_agg(dl.value order by l.order_by)) [1]", String.class).as("value"))
+				.from(dll, l)
+				.where(
+						dll.LANG.eq(l.CODE)
+								.and(dll.TYPE.eq(classifierLabelTypeCode)))
+				.groupBy(dll.ORIGIN, dll.CODE)
+				.asTable("dl");
 
 		return create
-				.select(originDomains.fields())
-				.from(originDomains)
-				.orderBy(originDomains.field("value"))
+				.select(getClassifierNameField(ClassifierName.DOMAIN),
+						d.PARENT_ORIGIN,
+						d.PARENT_CODE,
+						d.ORIGIN,
+						d.CODE,
+						dl.field("value", String.class))
+				.from(d, dl)
+				.where(d.ORIGIN.eq(origin)
+						.and(dl.field("origin", String.class).eq(d.ORIGIN))
+						.and(dl.field("code", String.class).eq(d.CODE)))
+				.orderBy(d.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -931,11 +944,12 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 					.where(PROCESS_STATE.DATASETS.contains(datasetCodes))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-			return create.select(getClassifierNameField(ClassifierName.DOMAIN), DOMAIN.CODE,
-					DOMAIN_LABEL.VALUE, DOMAIN.ORIGIN, DOMAIN.ORDER_BY)
-					.from(DOMAIN)
-					.leftJoin(DOMAIN_LABEL)
-					.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
+			return create.select(
+					getClassifierNameField(ClassifierName.DOMAIN),
+					DOMAIN.ORIGIN,
+					DOMAIN.CODE,
+					DOMAIN_LABEL.VALUE)
+					.from(DOMAIN.leftJoin(DOMAIN_LABEL).on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))))
 					.where(
 							DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
 									.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))

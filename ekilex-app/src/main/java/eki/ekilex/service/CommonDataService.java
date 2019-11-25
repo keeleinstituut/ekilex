@@ -60,7 +60,6 @@ public class CommonDataService extends AbstractWordSearchService {
 
 	@Transactional
 	public Map<String, List<Classifier>> getDatasetDomainsByOrigin(String datasetCode) {
-
 		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(
 				ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		domains = conversionUtil.removeClassifierDuplicates(domains);
@@ -69,9 +68,9 @@ public class CommonDataService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public Map<String, List<Classifier>> getAllDomainsByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomains();
-		return domains.stream().collect(groupingBy(Classifier::getOrigin));
+	public List<Classifier> getDomains(String origin) {
+		List<Classifier> domains = commonDataDbService.getDomains(origin, CLASSIF_LABEL_TYPE_DESCRIP);
+		return domains;
 	}
 
 	@Transactional
