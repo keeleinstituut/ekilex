@@ -17,12 +17,6 @@ public enum LifecycleEntity {
 	WORD_ETYMOLOGY,
 	WORD_RELATION_GROUP_MEMBER,
 	LEARNER_COMMENT,
-	@Deprecated
-	LEXEME_PUBLIC_NOTE,//FIXME should use LifecycleProperty.PUBLIC_NOTE instead
-	@Deprecated
-	MEANING_PUBLIC_NOTE,//FIXME should use LifecycleProperty.PUBLIC_NOTE instead
-	@Deprecated
-	DEFINITION_PUBLIC_NOTE,//FIXME should use LifecycleProperty.PUBLIC_NOTE instead
 	SOURCE,
 	ATTRIBUTE_FREEFORM
 }

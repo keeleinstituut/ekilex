@@ -120,3 +120,30 @@ set entity_name = 'DEFINITION',
     entity_prop = 'SOURCE_LINK'
 where entity_name = 'DEFINITION_SOURCE_LINK'
   and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_name = 'LEXEME',
+    entity_prop = 'PUBLIC_NOTE',
+    entity_id   = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME_PUBLIC_NOTE'
+  and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_name = 'MEANING',
+    entity_prop = 'PUBLIC_NOTE',
+    entity_id   = mlcl.meaning_id
+from meaning_lifecycle_log mlcl
+where lcl.id = mlcl.lifecycle_log_id
+  and lcl.entity_name = 'MEANING_PUBLIC_NOTE'
+  and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_name = 'DEFINITION',
+    entity_prop = 'PUBLIC_NOTE',
+    entity_id   = df.definition_id
+from definition_freeform df
+where lcl.entity_id = df.freeform_id
+  and lcl.entity_name = 'DEFINITION_PUBLIC_NOTE'
+  and lcl.entity_prop = 'VALUE';
