@@ -45,24 +45,25 @@ import eki.ekilex.data.db.tables.WordFreeform;
 public class LifecycleLogDbServiceHelper implements DbConstant {
 
 	public Map<String, Object> getFirstDepthFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
+
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Map<String, Object> result = create
 				.select(
 						lff.LEXEME_ID,
 						ff1.VALUE_TEXT,
-						ff1.VALUE_PRESE
-						)
+						ff1.VALUE_PRESE)
 				.from(lff, ff1)
 				.where(
 						lff.FREEFORM_ID.eq(ff1.ID)
-						.and(ff1.ID.eq(entityId))
-						.and(ff1.TYPE.eq(freeformType.name())))
+								.and(ff1.ID.eq(entityId))
+								.and(ff1.TYPE.eq(freeformType.name())))
 				.fetchSingleMap();
 		return result;
 	}
 
 	public Map<String, Object> getSecondDepthFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
+
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Freeform ff2 = FREEFORM.as("ff2");
@@ -70,28 +71,26 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 				.select(
 						lff.LEXEME_ID,
 						ff2.VALUE_TEXT,
-						ff2.VALUE_PRESE
-						)
+						ff2.VALUE_PRESE)
 				.from(lff, ff1, ff2)
 				.where(
 						lff.FREEFORM_ID.eq(ff1.ID)
-						.and(ff2.PARENT_ID.eq(ff1.ID))
-						.and(ff2.ID.eq(entityId))
-						.and(ff2.TYPE.eq(freeformType.name()))
-						)
+								.and(ff2.PARENT_ID.eq(ff1.ID))
+								.and(ff2.ID.eq(entityId))
+								.and(ff2.TYPE.eq(freeformType.name())))
 				.fetchSingleMap();
 		return result;
 	}
 
 	public Map<String, Object> getMeaningFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
+
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Map<String, Object> result = create
 				.select(
 						mff.MEANING_ID,
 						ff1.VALUE_TEXT,
-						ff1.VALUE_PRESE
-				)
+						ff1.VALUE_PRESE)
 				.from(mff, ff1)
 				.where(
 						mff.FREEFORM_ID.eq(ff1.ID)
@@ -102,14 +101,14 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 	}
 
 	public Map<String, Object> getSourceFreeformData(DSLContext create, Long sourceFreeformId, FreeformType freeformType) {
+
 		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Map<String, Object> result = create
 				.select(
 						sff.SOURCE_ID,
 						ff1.VALUE_TEXT,
-						ff1.VALUE_PRESE
-				)
+						ff1.VALUE_PRESE)
 				.from(sff, ff1)
 				.where(
 						sff.FREEFORM_ID.eq(ff1.ID)
@@ -120,14 +119,14 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 	}
 
 	public Map<String, Object> getWordFreeformData(DSLContext create, Long wordFreeformId, FreeformType freeformType) {
+
 		WordFreeform wff = WORD_FREEFORM.as("wff");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Map<String, Object> result = create
 				.select(
 						wff.WORD_ID,
 						ff1.VALUE_TEXT,
-						ff1.VALUE_PRESE
-				)
+						ff1.VALUE_PRESE)
 				.from(wff, ff1)
 				.where(
 						wff.FREEFORM_ID.eq(ff1.ID)
@@ -138,6 +137,7 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 	}
 
 	public Map<String, Object> getSourceType(DSLContext create, Long entityId) {
+
 		Map<String, Object> result = create
 				.select(SOURCE.TYPE)
 				.from(SOURCE)
@@ -147,25 +147,27 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 	}
 
 	public Map<String, Object> getWordData(DSLContext create, Long entityId) {
+
 		Map<String, Object> result = create
 				.selectDistinct(
 						WORD.GENDER_CODE,
 						WORD.ASPECT_CODE,
 						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value"),
 						DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("value_prese"),
-						DSL.field("array_to_string(array_agg(distinct form.vocal_form), ',')").cast(String.class).as("vocal_form")
-						)
+						DSL.field("array_to_string(array_agg(distinct form.vocal_form), ',')").cast(String.class).as("vocal_form"))
 				.from(WORD, PARADIGM, FORM)
-				.where(WORD.ID.eq(entityId)
-						.and(PARADIGM.WORD_ID.eq(entityId))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.where(
+						WORD.ID.eq(entityId)
+								.and(PARADIGM.WORD_ID.eq(entityId))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.groupBy(WORD.ID)
 				.fetchSingleMap();
 		return result;
 	}
 
-	public Map<String, Object> getLexemeData(DSLContext create, Long entityId) {
+	public Map<String, Object> getLexemeData(DSLContext create, Long lexemeId) {
+
 		Map<String, Object> result = create
 				.select(
 						LEXEME.FREQUENCY_GROUP_CODE,
@@ -175,73 +177,88 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 						LEXEME.PROCESS_STATE_CODE,
 						LEXEME.COMPLEXITY,
 						LEXEME.ORDER_BY,
-						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value")
-						)
+						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value"))
 				.from(LEXEME, PARADIGM, FORM)
-				.where(LEXEME.ID.eq(entityId)
-						.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.where(
+						LEXEME.ID.eq(lexemeId)
+								.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.groupBy(LEXEME.ID)
 				.fetchSingleMap();
 		return result;
 	}
 
 	public Map<String, Object> getLexemeUsageData(DSLContext create, Long entityId) {
+
 		Freeform f1 = FREEFORM.as("f1");
 		Map<String, Object> result = create
-				.select(
-						DSL.field("array_to_string(array_agg(f1.value_text), ' ', '*')").cast(String.class).as("value_text")
-				)
+				.select(DSL.field("array_to_string(array_agg(f1.value_text), ' ', '*')").cast(String.class).as("value_text"))
 				.from(LEXEME_FREEFORM, f1)
-				.where(LEXEME_FREEFORM.LEXEME_ID.eq(entityId)
-						.and(f1.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(f1.TYPE.eq(FreeformType.USAGE.name())))
+				.where(
+						LEXEME_FREEFORM.LEXEME_ID.eq(entityId)
+								.and(f1.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+								.and(f1.TYPE.eq(FreeformType.USAGE.name())))
 				.fetchSingleMap();
 		return result;
 	}
 
-	public Map<String, Object> getLexemeSourceLinkData(DSLContext create, Long entityId) {
+	public Map<String, Object> getLexemeSourceLinkData(DSLContext create, Long sourceLinkId) {
+
 		Map<String, Object> result = create
 				.select(
 						LEXEME_SOURCE_LINK.LEXEME_ID,
-						LEXEME_SOURCE_LINK.VALUE
-						)
+						LEXEME_SOURCE_LINK.VALUE)
 				.from(LEXEME_SOURCE_LINK)
-				.where(LEXEME_SOURCE_LINK.ID.eq(entityId))
+				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
 				.fetchSingleMap();
 		return result;
 	}
 
-	public Map<String, Object> getDefinitionData(DSLContext create, Long entityId) {
+	public Map<String, Object> getDefinitionData(DSLContext create, Long definitionId) {
+
 		Map<String, Object> result = create
 				.select(
 						DEFINITION.MEANING_ID,
 						DEFINITION.VALUE,
 						DEFINITION.VALUE_PRESE,
-						DEFINITION.ORDER_BY
-						)
+						DEFINITION.ORDER_BY)
 				.from(DEFINITION)
-				.where(DEFINITION.ID.eq(entityId))
+				.where(DEFINITION.ID.eq(definitionId))
 				.fetchSingleMap();
 		return result;
 	}
 
-	public Map<String, Object> getDefinitionSourceLinkData(DSLContext create, Long entityId) {
+	public Map<String, Object> getDefinitionSourceLinkData(DSLContext create, Long sourceLinkId) {
+
 		Map<String, Object> result = create
 				.select(
 						DEFINITION.MEANING_ID,
-						DEFINITION_SOURCE_LINK.VALUE
-						)
+						DEFINITION_SOURCE_LINK.VALUE)
 				.from(DEFINITION, DEFINITION_SOURCE_LINK)
 				.where(
 						DEFINITION.ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID)
-						.and(DEFINITION_SOURCE_LINK.ID.eq(entityId)))
+								.and(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId)))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getUsageSourceLinkData(DSLContext create, Long sourceLinkId) {
+
+		Map<String, Object> result = create
+				.select(LEXEME_FREEFORM.LEXEME_ID,
+						FREEFORM_SOURCE_LINK.VALUE,
+						FREEFORM_SOURCE_LINK.FREEFORM_ID.as("usage_id"))
+				.from(LEXEME_FREEFORM, FREEFORM_SOURCE_LINK)
+				.where(
+						LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID)
+								.and(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId)))
 				.fetchSingleMap();
 		return result;
 	}
 
 	public Map<String, Object> getDefinitionFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
+
 		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Map<String, Object> result = create
@@ -260,7 +277,52 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 		return result;
 	}
 
+	public Map<String, Object> getLexemeFreeformSourceLinkData(DSLContext create, Long sourceLinkId) {
+
+		Map<String, Object> result = create
+				.select(
+						LEXEME_FREEFORM.LEXEME_ID,
+						FREEFORM_SOURCE_LINK.VALUE)
+				.from(LEXEME_FREEFORM, FREEFORM_SOURCE_LINK)
+				.where(
+						LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID)
+								.and(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId)))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getMeaningFreeformSourceLinkData(DSLContext create, Long sourceLinkId) {
+
+		Map<String, Object> result = create
+				.select(
+						MEANING_FREEFORM.MEANING_ID,
+						FREEFORM_SOURCE_LINK.VALUE)
+				.from(MEANING_FREEFORM, FREEFORM_SOURCE_LINK)
+				.where(
+						MEANING_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID)
+								.and(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId)))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getDefinitionFreeformSourceLinkData(DSLContext create, Long sourceLinkId) {
+
+		Map<String, Object> result = create
+				.select(
+						FREEFORM_SOURCE_LINK.VALUE,
+						DEFINITION_FREEFORM.DEFINITION_ID,
+						DEFINITION.MEANING_ID)
+				.from(DEFINITION, DEFINITION_FREEFORM, FREEFORM_SOURCE_LINK)
+				.where(
+						DEFINITION.ID.eq(DEFINITION_FREEFORM.DEFINITION_ID)
+								.and(DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM_SOURCE_LINK.FREEFORM_ID))
+								.and(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId)))
+				.fetchSingleMap();
+		return result;
+	}
+
 	public Map<String, Object> getFreeformSourceLinkData(DSLContext create, Long entityId) {
+
 		Freeform ff = FREEFORM.as("ff");
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
@@ -275,27 +337,25 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 						ffsl.VALUE,
 						lff.LEXEME_ID,
 						dff.field("meaning_id", Long.class).as("definition_meaning_id"),
-						mff.MEANING_ID
-						)
+						mff.MEANING_ID)
 				.from(ffsl
 						.innerJoin(ff).on(ff.ID.eq(ffsl.FREEFORM_ID))
 						.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ffsl.FREEFORM_ID))
 						.leftOuterJoin(dff).on(dff.field("freeform_id", Long.class).eq(ff.ID))
-						.leftOuterJoin(mff).on(mff.FREEFORM_ID.eq(ff.ID))
-						)
+						.leftOuterJoin(mff).on(mff.FREEFORM_ID.eq(ff.ID)))
 				.where(ffsl.ID.eq(entityId))
 				.fetchSingleMap();
 		return result;
 	}
 
 	public Map<String, Object> getLexemeRelationData(DSLContext create, Long entityId) {
+
 		Map<String, Object> result = create
 				.select(
 						LEX_RELATION.LEXEME1_ID,
 						LEX_RELATION.LEX_REL_TYPE_CODE,
 						LEX_RELATION.ORDER_BY,
-						LEXEME.WORD_ID.as("word2_id")
-						)
+						LEXEME.WORD_ID.as("word2_id"))
 				.from(LEX_RELATION).join(LEXEME).on(LEXEME.ID.eq(LEX_RELATION.LEXEME2_ID))
 				.where(LEX_RELATION.ID.eq(entityId))
 				.fetchSingleMap();
@@ -303,13 +363,13 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 	}
 
 	public Map<String, Object> getMeaningRelationData(DSLContext create, Long entityId) {
+
 		Map<String, Object> result = create
 				.select(
 						MEANING_RELATION.MEANING1_ID,
 						MEANING_RELATION.MEANING2_ID,
 						MEANING_RELATION.MEANING_REL_TYPE_CODE,
-						MEANING_RELATION.ORDER_BY
-						)
+						MEANING_RELATION.ORDER_BY)
 				.from(MEANING_RELATION)
 				.where(MEANING_RELATION.ID.eq(entityId))
 				.fetchSingleMap();
@@ -317,13 +377,13 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 	}
 
 	public Map<String, Object> getWordRelationData(DSLContext create, Long entityId) {
+
 		Map<String, Object> result = create
 				.select(
 						WORD_RELATION.WORD1_ID,
 						WORD_RELATION.WORD2_ID,
 						WORD_RELATION.WORD_REL_TYPE_CODE,
-						WORD_RELATION.ORDER_BY
-						)
+						WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
 				.where(WORD_RELATION.ID.eq(entityId))
 				.fetchSingleMap();
@@ -331,10 +391,9 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 	}
 
 	public Map<String, Object> getWordRelationGroupMember(DSLContext create, Long entityId) {
+
 		Map<String, Object> result = create
-				.select(
-						WORD_GROUP_MEMBER.WORD_ID
-				)
+				.select(WORD_GROUP_MEMBER.WORD_ID)
 				.from(WORD_GROUP_MEMBER)
 				.where(WORD_GROUP_MEMBER.ID.eq(entityId))
 				.fetchSingleMap();
@@ -342,6 +401,7 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 	}
 
 	public List<String> getMeaningWords(DSLContext create, Long entityId) {
+
 		List<String> result = create
 				.select(FORM.VALUE)
 				.from(LEXEME)
@@ -349,13 +409,13 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID).and(FORM.MODE.eq(FormMode.WORD.name())))
 				.where(
 						LEXEME.MEANING_ID.eq(entityId)
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-						)
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetch(0, String.class);
 		return result;
 	}
 
 	public Map<String, Object> getMeaningDomainData(DSLContext create, Long entityId) {
+
 		Map<String, Object> result = create
 				.select(
 						MEANING_DOMAIN.MEANING_ID,

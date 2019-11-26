@@ -105,3 +105,18 @@ create type type_usage as (usage text, usage_prese text, usage_lang char(3), com
 --NB! restore the view_ww_word in create_views.sql
 
 --> kuni siiani testis olemas 25.11.2019
+
+update lifecycle_log lcl
+set entity_name = 'LEXEME',
+    entity_prop = 'SOURCE_LINK',
+    entity_id   = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME_SOURCE_LINK'
+  and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_name = 'DEFINITION',
+    entity_prop = 'SOURCE_LINK'
+where entity_name = 'DEFINITION_SOURCE_LINK'
+  and lcl.entity_prop = 'VALUE';

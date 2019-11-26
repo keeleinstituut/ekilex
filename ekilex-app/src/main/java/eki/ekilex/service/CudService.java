@@ -518,7 +518,7 @@ public class CudService extends AbstractService {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = cudDbService.createLexemeSourceLink(lexemeId, sourceId, refType, sourceValue, sourceName);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
 		createLifecycleLog(logData);
 	}
 
@@ -588,14 +588,21 @@ public class CudService extends AbstractService {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = cudDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceValue, sourceName);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
 		createLifecycleLog(logData);
 	}
 
 	@Transactional
-	public void createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
+	public void createUsageSourceLink(Long usageId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
+		Long sourceLinkId = cudDbService.createFreeformSourceLink(usageId, sourceId, refType, sourceValue, sourceName);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
+		createLifecycleLog(logData);
+	}
+
+	@Transactional
+	public void createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName, LifecycleEntity lifecycleEntity) {
 		Long sourceLinkId = cudDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
+		LogData logData = new LogData(LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.FREEFORM_SOURCE_LINK, sourceLinkId, sourceValue);
 		createLifecycleLog(logData);
 	}
 
@@ -697,7 +704,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteDefinitionSourceLink(Long sourceLinkId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.SOURCE_LINK, sourceLinkId, null);
 		createLifecycleLog(logData);
 		cudDbService.deleteDefinitionRefLink(sourceLinkId);
 	}
@@ -775,7 +782,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteLexemeSourceLink(Long sourceLinkId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, sourceLinkId, null);
 		createLifecycleLog(logData);
 		cudDbService.deleteLexemeRefLink(sourceLinkId);
 	}
@@ -887,8 +894,15 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void deleteFreeformSourceLink(Long sourceLinkId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
+	public void deleteUsageSourceLink(Long sourceLinkId) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK, sourceLinkId, null);
+		createLifecycleLog(logData);
+		cudDbService.deleteFreeformRefLink(sourceLinkId);
+	}
+
+	@Transactional
+	public void deleteFreeformSourceLink(Long sourceLinkId, LifecycleEntity lifecycleEntity) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, lifecycleEntity, LifecycleProperty.FREEFORM_SOURCE_LINK, sourceLinkId, null);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeformRefLink(sourceLinkId);
 	}

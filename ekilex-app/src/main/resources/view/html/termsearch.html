@@ -282,7 +282,7 @@
                             </span>
                             <button type="button" class="btn badge badge-warning"
                               th:data-id="${sourceLink.id}"
-                              data-op-code="ff_source_link"
+                              data-op-code="definition_ff_source_link"
                               data-toggle="delete-confirm"
                               data-placement="right"
                               sec:authorize="${#vars.isDefinitionCrudGranted}">
@@ -408,7 +408,7 @@
                     </span>
                     <button type="button" class="btn badge badge-warning"
                       th:data-id="${sourceLink.id}"
-                      data-op-code="ff_source_link"
+                      data-op-code="meaning_ff_source_link"
                       data-toggle="delete-confirm"
                       data-placement="right"
                       sec:authorize="${#vars.isMeaningCrudGranted}">
@@ -475,7 +475,7 @@
                     </span>
                     <button type="button" class="btn badge badge-warning"
                       th:data-id="${sourceLink.id}"
-                      data-op-code="ff_source_link"
+                      data-op-code="meaning_ff_source_link"
                       data-toggle="delete-confirm"
                       data-placement="right"
                       sec:authorize="${#vars.isMeaningCrudGranted}">
@@ -525,7 +525,7 @@
                       </span>
                       <button type="button" class="btn badge badge-warning"
                         th:data-id="${sourceLink.id}"
-                        data-op-code="ff_source_link"
+                        data-op-code="meaning_ff_source_link"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="${#vars.isMeaningCrudGranted}">
@@ -825,7 +825,7 @@
                         <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
                         <button type="button" class="btn badge badge-warning" 
                           th:data-id="${sourceLink.id}"
-                          data-op-code="ff_source_link"
+                          data-op-code="usage_source_link"
                           data-toggle="delete-confirm"
                           data-placement="right"
                           sec:authorize="${#vars.isUsageCrudGranted}">
@@ -941,7 +941,7 @@
                         </span>
                         <button type="button" class="btn badge badge-warning"
                           th:data-id="${sourceLink.id}"
-                          data-op-code="ff_source_link"
+                          data-op-code="lexeme_ff_source_link"
                           data-toggle="delete-confirm"
                           data-placement="right"
                           sec:authorize="${#vars.isLexemeCrudGranted}">

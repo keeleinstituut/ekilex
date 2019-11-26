@@ -507,7 +507,7 @@
                             </span>
                             <button type="button" class="btn badge badge-warning"
                               th:data-id="${sourceLink.id}"
-                              data-op-code="ff_source_link"
+                              data-op-code="meaning_ff_source_link"
                               data-toggle="delete-confirm"
                               data-placement="right"
                               sec:authorize="${#vars.isMeaningCrudGranted}">
@@ -557,7 +557,7 @@
                               </span>
                               <button type="button" class="btn badge badge-warning"
                                 th:data-id="${sourceLink.id}"
-                                data-op-code="ff_source_link"
+                                data-op-code="meaning_ff_source_link"
                                 data-toggle="delete-confirm"
                                 data-placement="right"
                                 sec:authorize="${#vars.isMeaningCrudGranted}">
@@ -717,7 +717,7 @@
                                   <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></a>
                                   <button type="button" class="btn badge badge-warning hidden"
                                     th:data-id="${sourceLink.id}"
-                                    data-op-code="ff_source_link"
+                                    data-op-code="usage_author"
                                     data-toggle="delete-confirm"
                                     data-placement="right"
                                     sec:authorize="${#vars.isUsageCrudGranted}">
@@ -744,7 +744,7 @@
                                   </a>
                                   <button type="button" class="btn badge badge-warning"
                                     th:data-id="${sourceLink.id}"
-                                    data-op-code="ff_source_link"
+                                    data-op-code="usage_source_link"
                                     data-toggle="delete-confirm"
                                     data-placement="right">
                                     <i class="fa fa-remove" aria-hidden="true"></i>

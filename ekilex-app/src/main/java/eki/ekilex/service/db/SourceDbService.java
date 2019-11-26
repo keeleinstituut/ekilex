@@ -78,6 +78,18 @@ public class SourceDbService implements SystemConstant {
 				.fetchOneInto(String.class);
 	}
 
+	public String getSourceNameValue(Long sourceId) {
+
+		return create
+				.select(FREEFORM.VALUE_TEXT)
+				.from(SOURCE_FREEFORM, FREEFORM)
+				.where(SOURCE_FREEFORM.SOURCE_ID.eq(sourceId)
+						.and(FREEFORM.ID.eq(SOURCE_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.SOURCE_NAME.name())))
+				.limit(1)
+				.fetchOneInto(String.class);
+	}
+
 	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType) {
 		return getSources(searchFilterWithMetaCharacters, sourceType, null);
 	}
