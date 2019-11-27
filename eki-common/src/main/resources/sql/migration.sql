@@ -120,6 +120,7 @@ create table layer_state
 alter sequence layer_state_id_seq restart with 10000;
 
 create index layer_state_lexeme_id_idx on layer_state(lexeme_id);
+create index layer_state_layer_name_idx on layer_state(layer_name);
 
 create index domain_code_origin_idx on domain(code, origin);
 create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
