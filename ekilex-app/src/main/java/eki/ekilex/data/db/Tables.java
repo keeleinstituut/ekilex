@@ -41,6 +41,7 @@ import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LanguageLabel;
+import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -327,6 +328,11 @@ public class Tables {
      * The table <code>public.language_label</code>.
      */
     public static final LanguageLabel LANGUAGE_LABEL = eki.ekilex.data.db.tables.LanguageLabel.LANGUAGE_LABEL;
+
+    /**
+     * The table <code>public.layer_state</code>.
+     */
+    public static final LayerState LAYER_STATE = eki.ekilex.data.db.tables.LayerState.LAYER_STATE;
 
     /**
      * The table <code>public.lex_colloc</code>.

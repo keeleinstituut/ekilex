@@ -41,6 +41,7 @@ import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LanguageLabel;
+import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -149,6 +150,7 @@ import eki.ekilex.data.db.tables.records.GovernmentTypeRecord;
 import eki.ekilex.data.db.tables.records.LabelTypeRecord;
 import eki.ekilex.data.db.tables.records.LanguageLabelRecord;
 import eki.ekilex.data.db.tables.records.LanguageRecord;
+import eki.ekilex.data.db.tables.records.LayerStateRecord;
 import eki.ekilex.data.db.tables.records.LexCollocPosGroupRecord;
 import eki.ekilex.data.db.tables.records.LexCollocRecord;
 import eki.ekilex.data.db.tables.records.LexCollocRelGroupRecord;
@@ -274,6 +276,7 @@ public class Keys {
     public static final Identity<GenderRecord, Long> IDENTITY_GENDER = Identities0.IDENTITY_GENDER;
     public static final Identity<GovernmentTypeRecord, Long> IDENTITY_GOVERNMENT_TYPE = Identities0.IDENTITY_GOVERNMENT_TYPE;
     public static final Identity<LanguageRecord, Long> IDENTITY_LANGUAGE = Identities0.IDENTITY_LANGUAGE;
+    public static final Identity<LayerStateRecord, Long> IDENTITY_LAYER_STATE = Identities0.IDENTITY_LAYER_STATE;
     public static final Identity<LexCollocRecord, Long> IDENTITY_LEX_COLLOC = Identities0.IDENTITY_LEX_COLLOC;
     public static final Identity<LexCollocPosGroupRecord, Long> IDENTITY_LEX_COLLOC_POS_GROUP = Identities0.IDENTITY_LEX_COLLOC_POS_GROUP;
     public static final Identity<LexCollocRelGroupRecord, Long> IDENTITY_LEX_COLLOC_REL_GROUP = Identities0.IDENTITY_LEX_COLLOC_REL_GROUP;
@@ -378,6 +381,8 @@ public class Keys {
     public static final UniqueKey<LabelTypeRecord> LABEL_TYPE_PKEY = UniqueKeys0.LABEL_TYPE_PKEY;
     public static final UniqueKey<LanguageRecord> LANGUAGE_PKEY = UniqueKeys0.LANGUAGE_PKEY;
     public static final UniqueKey<LanguageLabelRecord> LANGUAGE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.LANGUAGE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final UniqueKey<LayerStateRecord> LAYER_STATE_PKEY = UniqueKeys0.LAYER_STATE_PKEY;
+    public static final UniqueKey<LayerStateRecord> LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY = UniqueKeys0.LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY;
     public static final UniqueKey<LexCollocRecord> LEX_COLLOC_PKEY = UniqueKeys0.LEX_COLLOC_PKEY;
     public static final UniqueKey<LexCollocRecord> LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY = UniqueKeys0.LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY;
     public static final UniqueKey<LexCollocPosGroupRecord> LEX_COLLOC_POS_GROUP_PKEY = UniqueKeys0.LEX_COLLOC_POS_GROUP_PKEY;
@@ -526,6 +531,8 @@ public class Keys {
     public static final ForeignKey<LanguageLabelRecord, LanguageRecord> LANGUAGE_LABEL__LANGUAGE_LABEL_CODE_FKEY = ForeignKeys0.LANGUAGE_LABEL__LANGUAGE_LABEL_CODE_FKEY;
     public static final ForeignKey<LanguageLabelRecord, LanguageRecord> LANGUAGE_LABEL__LANGUAGE_LABEL_LANG_FKEY = ForeignKeys0.LANGUAGE_LABEL__LANGUAGE_LABEL_LANG_FKEY;
     public static final ForeignKey<LanguageLabelRecord, LabelTypeRecord> LANGUAGE_LABEL__LANGUAGE_LABEL_TYPE_FKEY = ForeignKeys0.LANGUAGE_LABEL__LANGUAGE_LABEL_TYPE_FKEY;
+    public static final ForeignKey<LayerStateRecord, LexemeRecord> LAYER_STATE__LAYER_STATE_LEXEME_ID_FKEY = ForeignKeys0.LAYER_STATE__LAYER_STATE_LEXEME_ID_FKEY;
+    public static final ForeignKey<LayerStateRecord, ProcessStateRecord> LAYER_STATE__LAYER_STATE_PROCESS_STATE_CODE_FKEY = ForeignKeys0.LAYER_STATE__LAYER_STATE_PROCESS_STATE_CODE_FKEY;
     public static final ForeignKey<LexCollocRecord, LexemeRecord> LEX_COLLOC__LEX_COLLOC_LEXEME_ID_FKEY = ForeignKeys0.LEX_COLLOC__LEX_COLLOC_LEXEME_ID_FKEY;
     public static final ForeignKey<LexCollocRecord, LexCollocRelGroupRecord> LEX_COLLOC__LEX_COLLOC_REL_GROUP_ID_FKEY = ForeignKeys0.LEX_COLLOC__LEX_COLLOC_REL_GROUP_ID_FKEY;
     public static final ForeignKey<LexCollocRecord, CollocationRecord> LEX_COLLOC__LEX_COLLOC_COLLOCATION_ID_FKEY = ForeignKeys0.LEX_COLLOC__LEX_COLLOC_COLLOCATION_ID_FKEY;
@@ -682,6 +689,7 @@ public class Keys {
         public static Identity<GenderRecord, Long> IDENTITY_GENDER = Internal.createIdentity(Gender.GENDER, Gender.GENDER.ORDER_BY);
         public static Identity<GovernmentTypeRecord, Long> IDENTITY_GOVERNMENT_TYPE = Internal.createIdentity(GovernmentType.GOVERNMENT_TYPE, GovernmentType.GOVERNMENT_TYPE.ORDER_BY);
         public static Identity<LanguageRecord, Long> IDENTITY_LANGUAGE = Internal.createIdentity(Language.LANGUAGE, Language.LANGUAGE.ORDER_BY);
+        public static Identity<LayerStateRecord, Long> IDENTITY_LAYER_STATE = Internal.createIdentity(LayerState.LAYER_STATE, LayerState.LAYER_STATE.ID);
         public static Identity<LexCollocRecord, Long> IDENTITY_LEX_COLLOC = Internal.createIdentity(LexColloc.LEX_COLLOC, LexColloc.LEX_COLLOC.ID);
         public static Identity<LexCollocPosGroupRecord, Long> IDENTITY_LEX_COLLOC_POS_GROUP = Internal.createIdentity(LexCollocPosGroup.LEX_COLLOC_POS_GROUP, LexCollocPosGroup.LEX_COLLOC_POS_GROUP.ID);
         public static Identity<LexCollocRelGroupRecord, Long> IDENTITY_LEX_COLLOC_REL_GROUP = Internal.createIdentity(LexCollocRelGroup.LEX_COLLOC_REL_GROUP, LexCollocRelGroup.LEX_COLLOC_REL_GROUP.ID);
@@ -784,6 +792,8 @@ public class Keys {
         public static final UniqueKey<LabelTypeRecord> LABEL_TYPE_PKEY = Internal.createUniqueKey(LabelType.LABEL_TYPE, "label_type_pkey", LabelType.LABEL_TYPE.CODE);
         public static final UniqueKey<LanguageRecord> LANGUAGE_PKEY = Internal.createUniqueKey(Language.LANGUAGE, "language_pkey", Language.LANGUAGE.CODE);
         public static final UniqueKey<LanguageLabelRecord> LANGUAGE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(LanguageLabel.LANGUAGE_LABEL, "language_label_code_lang_type_key", LanguageLabel.LANGUAGE_LABEL.CODE, LanguageLabel.LANGUAGE_LABEL.LANG, LanguageLabel.LANGUAGE_LABEL.TYPE);
+        public static final UniqueKey<LayerStateRecord> LAYER_STATE_PKEY = Internal.createUniqueKey(LayerState.LAYER_STATE, "layer_state_pkey", LayerState.LAYER_STATE.ID);
+        public static final UniqueKey<LayerStateRecord> LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY = Internal.createUniqueKey(LayerState.LAYER_STATE, "layer_state_lexeme_id_layer_name_key", LayerState.LAYER_STATE.LEXEME_ID, LayerState.LAYER_STATE.LAYER_NAME);
         public static final UniqueKey<LexCollocRecord> LEX_COLLOC_PKEY = Internal.createUniqueKey(LexColloc.LEX_COLLOC, "lex_colloc_pkey", LexColloc.LEX_COLLOC.ID);
         public static final UniqueKey<LexCollocRecord> LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY = Internal.createUniqueKey(LexColloc.LEX_COLLOC, "lex_colloc_lexeme_id_collocation_id_key", LexColloc.LEX_COLLOC.LEXEME_ID, LexColloc.LEX_COLLOC.COLLOCATION_ID);
         public static final UniqueKey<LexCollocPosGroupRecord> LEX_COLLOC_POS_GROUP_PKEY = Internal.createUniqueKey(LexCollocPosGroup.LEX_COLLOC_POS_GROUP, "lex_colloc_pos_group_pkey", LexCollocPosGroup.LEX_COLLOC_POS_GROUP.ID);
@@ -930,6 +940,8 @@ public class Keys {
         public static final ForeignKey<LanguageLabelRecord, LanguageRecord> LANGUAGE_LABEL__LANGUAGE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, LanguageLabel.LANGUAGE_LABEL, "language_label__language_label_code_fkey", LanguageLabel.LANGUAGE_LABEL.CODE);
         public static final ForeignKey<LanguageLabelRecord, LanguageRecord> LANGUAGE_LABEL__LANGUAGE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, LanguageLabel.LANGUAGE_LABEL, "language_label__language_label_lang_fkey", LanguageLabel.LANGUAGE_LABEL.LANG);
         public static final ForeignKey<LanguageLabelRecord, LabelTypeRecord> LANGUAGE_LABEL__LANGUAGE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, LanguageLabel.LANGUAGE_LABEL, "language_label__language_label_type_fkey", LanguageLabel.LANGUAGE_LABEL.TYPE);
+        public static final ForeignKey<LayerStateRecord, LexemeRecord> LAYER_STATE__LAYER_STATE_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, LayerState.LAYER_STATE, "layer_state__layer_state_lexeme_id_fkey", LayerState.LAYER_STATE.LEXEME_ID);
+        public static final ForeignKey<LayerStateRecord, ProcessStateRecord> LAYER_STATE__LAYER_STATE_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PROCESS_STATE_PKEY, LayerState.LAYER_STATE, "layer_state__layer_state_process_state_code_fkey", LayerState.LAYER_STATE.PROCESS_STATE_CODE);
         public static final ForeignKey<LexCollocRecord, LexemeRecord> LEX_COLLOC__LEX_COLLOC_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, LexColloc.LEX_COLLOC, "lex_colloc__lex_colloc_lexeme_id_fkey", LexColloc.LEX_COLLOC.LEXEME_ID);
         public static final ForeignKey<LexCollocRecord, LexCollocRelGroupRecord> LEX_COLLOC__LEX_COLLOC_REL_GROUP_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEX_COLLOC_REL_GROUP_PKEY, LexColloc.LEX_COLLOC, "lex_colloc__lex_colloc_rel_group_id_fkey", LexColloc.LEX_COLLOC.REL_GROUP_ID);
         public static final ForeignKey<LexCollocRecord, CollocationRecord> LEX_COLLOC__LEX_COLLOC_COLLOCATION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_PKEY, LexColloc.LEX_COLLOC, "lex_colloc__lex_colloc_collocation_id_fkey", LexColloc.LEX_COLLOC.COLLOCATION_ID);

@@ -41,6 +41,7 @@ import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LanguageLabel;
+import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -152,6 +153,7 @@ public class Indexes {
     public static final Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Indexes0.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY;
     public static final Index DATASET_PERMISSION_PKEY = Indexes0.DATASET_PERMISSION_PKEY;
     public static final Index EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX = Indexes0.EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX;
+    public static final Index DEFINITION_COMPLEXITY_IDX = Indexes0.DEFINITION_COMPLEXITY_IDX;
     public static final Index DEFINITION_LANG_IDX = Indexes0.DEFINITION_LANG_IDX;
     public static final Index DEFINITION_MEANING_ID_IDX = Indexes0.DEFINITION_MEANING_ID_IDX;
     public static final Index DEFINITION_PKEY = Indexes0.DEFINITION_PKEY;
@@ -214,6 +216,8 @@ public class Indexes {
     public static final Index LABEL_TYPE_PKEY = Indexes0.LABEL_TYPE_PKEY;
     public static final Index LANGUAGE_PKEY = Indexes0.LANGUAGE_PKEY;
     public static final Index LANGUAGE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.LANGUAGE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY = Indexes0.LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY;
+    public static final Index LAYER_STATE_PKEY = Indexes0.LAYER_STATE_PKEY;
     public static final Index LEX_COLLOC_COLLOCATION_ID_IDX = Indexes0.LEX_COLLOC_COLLOCATION_ID_IDX;
     public static final Index LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY = Indexes0.LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY;
     public static final Index LEX_COLLOC_LEXEME_ID_IDX = Indexes0.LEX_COLLOC_LEXEME_ID_IDX;
@@ -272,7 +276,8 @@ public class Indexes {
     public static final Index LEXEME_SOURCE_LINK_PKEY = Indexes0.LEXEME_SOURCE_LINK_PKEY;
     public static final Index LEXEME_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.LEXEME_SOURCE_LINK_SOURCE_ID_IDX;
     public static final Index LEXEME_SOURCE_LINK_VALUE_IDX = Indexes0.LEXEME_SOURCE_LINK_VALUE_IDX;
-    public static final Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Indexes0.LIFECYCLE_LOG_EVENT_ON_ID_IDX;
+    public static final Index LIFECYCLE_LOG_EVENT_BY_IDX = Indexes0.LIFECYCLE_LOG_EVENT_BY_IDX;
+    public static final Index LIFECYCLE_LOG_EVENT_ON_IDX = Indexes0.LIFECYCLE_LOG_EVENT_ON_IDX;
     public static final Index LIFECYCLE_LOG_PKEY = Indexes0.LIFECYCLE_LOG_PKEY;
     public static final Index MEANING_PKEY = Indexes0.MEANING_PKEY;
     public static final Index MEANING_DOMAIN_MEANING_ID_DOMAIN_CODE_DOMAIN_ORIGIN_KEY = Indexes0.MEANING_DOMAIN_MEANING_ID_DOMAIN_CODE_DOMAIN_ORIGIN_KEY;
@@ -416,6 +421,7 @@ public class Indexes {
         public static Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Internal.createIndex("dataset_permission_dataset_code_user_id_auth_operation_auth_key", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM, DatasetPermission.DATASET_PERMISSION.AUTH_LANG }, true);
         public static Index DATASET_PERMISSION_PKEY = Internal.createIndex("dataset_permission_pkey", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.ID }, true);
         public static Index EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX = Internal.createIndex("eki_user_profile_recent_dataset_permission_id_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.ID }, false);
+        public static Index DEFINITION_COMPLEXITY_IDX = Internal.createIndex("definition_complexity_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.COMPLEXITY }, false);
         public static Index DEFINITION_LANG_IDX = Internal.createIndex("definition_lang_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.LANG }, false);
         public static Index DEFINITION_MEANING_ID_IDX = Internal.createIndex("definition_meaning_id_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.MEANING_ID }, false);
         public static Index DEFINITION_PKEY = Internal.createIndex("definition_pkey", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.ID }, true);
@@ -478,6 +484,8 @@ public class Indexes {
         public static Index LABEL_TYPE_PKEY = Internal.createIndex("label_type_pkey", LabelType.LABEL_TYPE, new OrderField[] { LabelType.LABEL_TYPE.CODE }, true);
         public static Index LANGUAGE_PKEY = Internal.createIndex("language_pkey", Language.LANGUAGE, new OrderField[] { Language.LANGUAGE.CODE }, true);
         public static Index LANGUAGE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("language_label_code_lang_type_key", LanguageLabel.LANGUAGE_LABEL, new OrderField[] { LanguageLabel.LANGUAGE_LABEL.CODE, LanguageLabel.LANGUAGE_LABEL.LANG, LanguageLabel.LANGUAGE_LABEL.TYPE }, true);
+        public static Index LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY = Internal.createIndex("layer_state_lexeme_id_layer_name_key", LayerState.LAYER_STATE, new OrderField[] { LayerState.LAYER_STATE.LEXEME_ID, LayerState.LAYER_STATE.LAYER_NAME }, true);
+        public static Index LAYER_STATE_PKEY = Internal.createIndex("layer_state_pkey", LayerState.LAYER_STATE, new OrderField[] { LayerState.LAYER_STATE.ID }, true);
         public static Index LEX_COLLOC_COLLOCATION_ID_IDX = Internal.createIndex("lex_colloc_collocation_id_idx", LexColloc.LEX_COLLOC, new OrderField[] { LexColloc.LEX_COLLOC.COLLOCATION_ID }, false);
         public static Index LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY = Internal.createIndex("lex_colloc_lexeme_id_collocation_id_key", LexColloc.LEX_COLLOC, new OrderField[] { LexColloc.LEX_COLLOC.LEXEME_ID, LexColloc.LEX_COLLOC.COLLOCATION_ID }, true);
         public static Index LEX_COLLOC_LEXEME_ID_IDX = Internal.createIndex("lex_colloc_lexeme_id_idx", LexColloc.LEX_COLLOC, new OrderField[] { LexColloc.LEX_COLLOC.LEXEME_ID }, false);
@@ -536,7 +544,8 @@ public class Indexes {
         public static Index LEXEME_SOURCE_LINK_PKEY = Internal.createIndex("lexeme_source_link_pkey", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.ID }, true);
         public static Index LEXEME_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("lexeme_source_link_source_id_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.SOURCE_ID }, false);
         public static Index LEXEME_SOURCE_LINK_VALUE_IDX = Internal.createIndex("lexeme_source_link_value_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.VALUE }, false);
-        public static Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Internal.createIndex("lifecycle_log_event_on_id_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_ON }, false);
+        public static Index LIFECYCLE_LOG_EVENT_BY_IDX = Internal.createIndex("lifecycle_log_event_by_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_BY }, false);
+        public static Index LIFECYCLE_LOG_EVENT_ON_IDX = Internal.createIndex("lifecycle_log_event_on_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_ON }, false);
         public static Index LIFECYCLE_LOG_PKEY = Internal.createIndex("lifecycle_log_pkey", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.ID }, true);
         public static Index MEANING_PKEY = Internal.createIndex("meaning_pkey", Meaning.MEANING, new OrderField[] { Meaning.MEANING.ID }, true);
         public static Index MEANING_DOMAIN_MEANING_ID_DOMAIN_CODE_DOMAIN_ORIGIN_KEY = Internal.createIndex("meaning_domain_meaning_id_domain_code_domain_origin_key", MeaningDomain.MEANING_DOMAIN, new OrderField[] { MeaningDomain.MEANING_DOMAIN.MEANING_ID, MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE, MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN }, true);

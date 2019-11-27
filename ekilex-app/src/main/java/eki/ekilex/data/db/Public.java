@@ -41,6 +41,7 @@ import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LanguageLabel;
+import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -167,7 +168,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 684961404;
+    private static final long serialVersionUID = -1060900207;
 
     /**
      * The reference instance of <code>public</code>
@@ -358,6 +359,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.language_label</code>.
      */
     public final LanguageLabel LANGUAGE_LABEL = eki.ekilex.data.db.tables.LanguageLabel.LANGUAGE_LABEL;
+
+    /**
+     * The table <code>public.layer_state</code>.
+     */
+    public final LayerState LAYER_STATE = eki.ekilex.data.db.tables.LayerState.LAYER_STATE;
 
     /**
      * The table <code>public.lex_colloc</code>.
@@ -832,6 +838,7 @@ public class Public extends SchemaImpl {
             Sequences.FORM_FREQUENCY_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_ORDER_BY_SEQ,
+            Sequences.FORM_ORDER_BY_SEQ1,
             Sequences.FREEFORM_ID_SEQ,
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
@@ -841,6 +848,7 @@ public class Public extends SchemaImpl {
             Sequences.GENDER_ORDER_BY_SEQ,
             Sequences.GOVERNMENT_TYPE_ORDER_BY_SEQ,
             Sequences.LANGUAGE_ORDER_BY_SEQ,
+            Sequences.LAYER_STATE_ID_SEQ,
             Sequences.LEX_COLLOC_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ,
@@ -967,6 +975,7 @@ public class Public extends SchemaImpl {
             LabelType.LABEL_TYPE,
             Language.LANGUAGE,
             LanguageLabel.LANGUAGE_LABEL,
+            LayerState.LAYER_STATE,
             LexColloc.LEX_COLLOC,
             LexCollocPosGroup.LEX_COLLOC_POS_GROUP,
             LexCollocRelGroup.LEX_COLLOC_REL_GROUP,

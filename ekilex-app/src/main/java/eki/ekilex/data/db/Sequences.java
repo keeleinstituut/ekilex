@@ -139,6 +139,11 @@ public class Sequences {
     public static final Sequence<Long> FORM_ORDER_BY_SEQ = new SequenceImpl<Long>("form_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.form_order_by_seq1</code>
+     */
+    public static final Sequence<Long> FORM_ORDER_BY_SEQ1 = new SequenceImpl<Long>("form_order_by_seq1", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.freeform_id_seq</code>
      */
     public static final Sequence<Long> FREEFORM_ID_SEQ = new SequenceImpl<Long>("freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -182,6 +187,11 @@ public class Sequences {
      * The sequence <code>public.language_order_by_seq</code>
      */
     public static final Sequence<Long> LANGUAGE_ORDER_BY_SEQ = new SequenceImpl<Long>("language_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.layer_state_id_seq</code>
+     */
+    public static final Sequence<Long> LAYER_STATE_ID_SEQ = new SequenceImpl<Long>("layer_state_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.lex_colloc_id_seq</code>
