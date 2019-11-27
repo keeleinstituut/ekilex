@@ -54,7 +54,8 @@ public class PermissionsController extends AbstractPageController {
 	public String clearCache() {
 
 		maintenanceService.clearCache();
-		return "OK";
+
+		return RESPONSE_OK_VER1;
 	}
 
 	@GetMapping(PERMISSIONS_URI)
@@ -174,7 +175,8 @@ public class PermissionsController extends AbstractPageController {
 
 		EkiUser sender = userService.getAuthenticatedUser();
 		permissionService.sendPermissionsEmail(userEmail, sender);
-		return "OK";
+
+		return RESPONSE_OK_VER1;
 	}
 
 	@ResponseBody

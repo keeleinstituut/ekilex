@@ -1,10 +1,10 @@
 package eki.common.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Configuration;
 import org.jooq.ExecuteContext;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultExecuteListener;
-import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,7 +150,7 @@ public class QueryLoggerListener extends DefaultExecuteListener implements DbCon
 			String routine = DSL.using(configuration).renderInlined(ctx.routine());
 			return routine;
 
-		} else if (!StringUtils.isBlank(ctx.sql())) {
+		} else if (StringUtils.isNotBlank(ctx.sql())) {
 
 			String sql = ctx.sql();
 			return sql;
@@ -158,7 +158,7 @@ public class QueryLoggerListener extends DefaultExecuteListener implements DbCon
 		} else if (batchSQL.length > 0) {
 
 			if (batchSQL[batchSQL.length - 1] != null) {
-				String sqls = org.apache.commons.lang3.StringUtils.join(batchSQL, ";\n");
+				String sqls = StringUtils.join(batchSQL, ";\n");
 				return sqls;
 			}
 		}

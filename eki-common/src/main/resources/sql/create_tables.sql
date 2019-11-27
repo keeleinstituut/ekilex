@@ -132,18 +132,18 @@ create table register_label
 -- semantiline tüüp
 create table semantic_type
 (
-	code varchar(100) primary key,
-	datasets varchar(10) array not null,
-	order_by bigserial
+  code varchar(100) primary key,
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table semantic_type_label
 (
-	code varchar(100) references semantic_type(code) on delete cascade not null,
-	value text not null,
-	lang char(3) references language(code) not null,
-	type varchar(10) references label_type(code) not null,
-	unique(code, lang, type)
+  code varchar(100) references semantic_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references language(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
 );
 
 -- sõnasort
@@ -517,25 +517,25 @@ alter sequence source_lifecycle_log_id_seq restart with 10000;
 -- protsessi logi
 create table process_log
 (
-	id bigserial primary key,
-	event_by text not null,
-	event_on timestamp not null default statement_timestamp(),
-	comment text null,
-	comment_prese text null,
-	process_state_code varchar(100) references process_state(code) null,
-	dataset_code varchar(10) references dataset(code) not null
+  id bigserial primary key,
+  event_by text not null,
+  event_on timestamp not null default statement_timestamp(),
+  comment text null,
+  comment_prese text null,
+  process_state_code varchar(100) references process_state(code) null,
+  dataset_code varchar(10) references dataset(code) not null
 );
 alter sequence process_log_id_seq restart with 10000;
 
 create table process_log_source_link
 (
-	id bigserial primary key,
-	process_log_id bigint references process_log(id) on delete cascade not null,
-	source_id bigint references source(id) on delete cascade not null,
-	type varchar(100) not null,
-	name text null,
-	value text null,
-	order_by bigserial
+  id bigserial primary key,
+  process_log_id bigint references process_log(id) on delete cascade not null,
+  source_id bigint references source(id) on delete cascade not null,
+  type varchar(100) not null,
+  name text null,
+  value text null,
+  order_by bigserial
 );
 alter sequence process_log_source_link_id_seq restart with 10000;
 
@@ -643,11 +643,11 @@ alter sequence word_etymology_relation_id_seq restart with 10000;
 -- keelendi vabavorm
 create table word_freeform
 (
-	id bigserial primary key,
-	word_id bigint references word(id) on delete cascade not null,
-	freeform_id bigint references freeform(id) on delete cascade not null,
-	order_by bigserial,
-	unique(word_id, freeform_id)
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  freeform_id bigint references freeform(id) on delete cascade not null,
+  order_by bigserial,
+  unique(word_id, freeform_id)
 );
 alter sequence word_freeform_id_seq restart with 10000;
 
@@ -661,9 +661,9 @@ alter sequence word_lifecycle_log_id_seq restart with 10000;
 
 create table word_process_log
 (
-	id bigserial primary key,
-	word_id bigint references word(id) on delete cascade not null,
-	process_log_id bigint references process_log(id) on delete cascade not null
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  process_log_id bigint references process_log(id) on delete cascade not null
 );
 alter sequence word_process_log_id_seq restart with 10000;
 
@@ -757,11 +757,11 @@ alter sequence meaning_domain_id_seq restart with 10000;
 
 create table meaning_semantic_type
 (
-	id bigserial primary key,
-	meaning_id bigint references meaning(id) on delete cascade not null,
-	semantic_type_code varchar(100) references semantic_type(code) not null,
-	order_by bigserial,
-	unique(meaning_id, semantic_type_code)
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  semantic_type_code varchar(100) references semantic_type(code) not null,
+  order_by bigserial,
+  unique(meaning_id, semantic_type_code)
 );
 alter sequence meaning_semantic_type_id_seq restart with 10000;
 
@@ -775,9 +775,9 @@ alter sequence meaning_lifecycle_log_id_seq restart with 10000;
 
 create table meaning_process_log
 (
-	id bigserial primary key,
-	meaning_id bigint references meaning(id) on delete cascade not null,
-	process_log_id bigint references process_log(id) on delete cascade not null
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  process_log_id bigint references process_log(id) on delete cascade not null
 );
 alter sequence meaning_process_log_id_seq restart with 10000;
 
@@ -865,6 +865,16 @@ create table lexeme
 );
 alter sequence lexeme_id_seq restart with 10000;
 
+create table layer_state
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  layer_name varchar(100) not null,
+  process_state_code varchar(100) references process_state(code) not null,
+  unique(lexeme_id, layer_name)
+);
+alter sequence layer_state_id_seq restart with 10000;
+
 create table lexeme_frequency
 (
   id bigserial primary key,
@@ -938,9 +948,9 @@ alter sequence lexeme_lifecycle_log_id_seq restart with 10000;
 
 create table lexeme_process_log
 (
-	id bigserial primary key,
-	lexeme_id bigint references lexeme(id) on delete cascade not null,
-	process_log_id bigint references process_log(id) on delete cascade not null
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  process_log_id bigint references process_log(id) on delete cascade not null
 );
 alter sequence lexeme_process_log_id_seq restart with 10000;
 
@@ -1138,6 +1148,7 @@ create index lexeme_dataset_code_idx on lexeme(dataset_code);
 create index lexeme_type_idx on lexeme(type);
 create index lexeme_process_state_code_idx on lexeme(process_state_code);
 create index lexeme_complexity_idx on lexeme(complexity);
+create index layer_state_lexeme_id_idx on layer_state(lexeme_id);
 create index definition_meaning_id_idx on definition(meaning_id);
 create index definition_lang_idx on definition(lang);
 create index definition_complexity_idx on definition(complexity);
@@ -1235,6 +1246,10 @@ create index temp_ds_import_pk_map_source_pk_idx on temp_ds_import_pk_map(source
 create index temp_ds_import_pk_map_target_pk_idx on temp_ds_import_pk_map(target_pk);
 create index temp_ds_import_queue_import_code_idx on temp_ds_import_queue(import_code);
 create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_name);
+create index domain_code_origin_idx on domain(code, origin);
+create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
+create index domain_label_code_origin_idx on domain_label(code, origin);
+create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin); 
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));

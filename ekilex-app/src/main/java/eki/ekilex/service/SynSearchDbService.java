@@ -11,6 +11,7 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.Tables.LAYER_STATE;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
+import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynMeaningWord;
@@ -139,26 +141,23 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
 		return create.select(
-				WORD.ID.as("word_id"),
-				LEXEME.ID.as("lexeme_id"),
 				LEXEME.MEANING_ID,
-				LEXEME.DATASET_CODE.as("dataset"),
+				LEXEME.WORD_ID,
+				LEXEME.ID.as("lexeme_id"),
 				LEXEME.TYPE,
+				LEXEME.DATASET_CODE,
 				LEXEME.LEVEL1,
-				LEXEME.LEVEL2)
-				.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
+				LEXEME.LEVEL2,
+				LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
+				.from(LEXEME
+						.innerJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE))
+						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(LayerName.SYN.name())))
+						)
 				.where(
-						WORD.ID.eq(wordId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
+						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
 								.and(dsWhere))
-				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
-				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2)
+				.orderBy(DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2)
 				.fetchInto(WordSynLexeme.class);
 	}
 
@@ -185,8 +184,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 	public WordSynDetails getWordDetails(Long wordId) {
 		return create.select(
 				WORD.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word"),
-				DSL.field("array_to_string(array_agg(distinct form.morph_code), ',', '*')").cast(String.class).as("morphCode"),
+				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')", String.class).as("word"),
+				DSL.field("array_to_string(array_agg(distinct form.morph_code), ',', '*')", String.class).as("morphCode"),
 				WORD.LANG.as("language"))
 				.from(WORD, PARADIGM, FORM)
 				.where(WORD.ID.eq(wordId)

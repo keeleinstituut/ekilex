@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
+import static eki.ekilex.data.db.Tables.LAYER_STATE;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.ProcessLog;
 
@@ -168,67 +170,37 @@ public class ProcessDbService {
 		return results;
 	}
 
-	public LexemeData getLexemeData(Long entityId) {
+	public LexemeData getLexemeData(Long lexemeId) {
 
 		LexemeData lexemeData = create
 				.select(
+						LEXEME.ID,
 						LEXEME.PROCESS_STATE_CODE,
-						LEXEME.DATASET_CODE
-				)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(entityId))
+						LEXEME.DATASET_CODE,
+						LAYER_STATE.PROCESS_STATE_CODE.as("syn_layer_process_state_code"))
+				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(LayerName.SYN.name()))))
+				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(LexemeData.class);
 		return lexemeData;
 	}
 
-	public void createLexemeProcessLog(Long lexemeId, String eventBy, String datasetCode, String comment, String commentPrese, String processStateCode) {
+	public List<LexemeData> getLexemeDatas(Long wordId, String datasetCode) {
 
-		Long processLogId = createProcessLog(eventBy, datasetCode, comment, commentPrese, processStateCode);
+		return create
+				.select(
+						LEXEME.ID,
+						LEXEME.PROCESS_STATE_CODE,
+						LEXEME.DATASET_CODE,
+						LAYER_STATE.PROCESS_STATE_CODE.as("syn_layer_process_state_code"))
+				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(LayerName.SYN.name()))))
+				.where(LEXEME.WORD_ID.eq(wordId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchInto(LexemeData.class);
+	}
+
+	public void createLexemeProcessLog(Long lexemeId, String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode) {
+
+		Long processLogId = createProcessLog(eventBy, comment, commentPrese, processStateCode, datasetCode);
 		createLexemeProcessLog(lexemeId, processLogId);
-	}
-
-	public void createMeaningProcessLog(Long meaningId, String dataset, String eventBy, String comment, String commentPrese) {
-
-		Long processLogId = createProcessLog(eventBy, dataset, comment, commentPrese, null);
-		createMeaningProcessLog(meaningId, processLogId);
-	}
-
-	public void createWordProcessLog(Long wordId, String dataset, String eventBy, String comment, String commentPrese) {
-
-		Long processLogId = createProcessLog(eventBy, dataset, comment, commentPrese, null);
-		createWordProcessLog(wordId, processLogId);
-	}
-
-	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
-
-		create.
-				update(LEXEME)
-				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
-	private Long createProcessLog(String eventBy, String datasetCode, String comment, String commentPrese, String processStateCode) {
-
-		Long processLogId = create
-				.insertInto(
-						PROCESS_LOG,
-						PROCESS_LOG.EVENT_BY,
-						PROCESS_LOG.DATASET_CODE,
-						PROCESS_LOG.COMMENT,
-						PROCESS_LOG.COMMENT_PRESE,
-						PROCESS_LOG.PROCESS_STATE_CODE)
-				.values(
-						eventBy,
-						datasetCode,
-						comment,
-						commentPrese,
-						processStateCode)
-				.returning(PROCESS_LOG.ID)
-				.fetchOne()
-				.getId();
-
-		return processLogId;
 	}
 
 	private void createLexemeProcessLog(Long lexemeId, Long processLogId) {
@@ -242,6 +214,12 @@ public class ProcessDbService {
 				.execute();
 	}
 
+	public void createMeaningProcessLog(Long meaningId, String eventBy, String comment, String commentPrese, String datasetCode) {
+
+		Long processLogId = createProcessLog(eventBy, comment, commentPrese, null, datasetCode);
+		createMeaningProcessLog(meaningId, processLogId);
+	}
+
 	private void createMeaningProcessLog(Long meaningId, Long processLogId) {
 
 		create
@@ -253,6 +231,12 @@ public class ProcessDbService {
 				.execute();
 	}
 
+	public void createWordProcessLog(Long wordId, String eventBy, String comment, String commentPrese, String datasetCode) {
+
+		Long processLogId = createProcessLog(eventBy, comment, commentPrese, null, datasetCode);
+		createWordProcessLog(wordId, processLogId);
+	}
+
 	private void createWordProcessLog(Long wordId, Long processLogId) {
 
 		create
@@ -262,5 +246,59 @@ public class ProcessDbService {
 						WORD_PROCESS_LOG.PROCESS_LOG_ID)
 				.values(wordId, processLogId)
 				.execute();
+	}
+
+	private Long createProcessLog(String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode) {
+
+		Long processLogId = create
+				.insertInto(
+						PROCESS_LOG,
+						PROCESS_LOG.EVENT_BY,
+						PROCESS_LOG.COMMENT,
+						PROCESS_LOG.COMMENT_PRESE,
+						PROCESS_LOG.PROCESS_STATE_CODE,
+						PROCESS_LOG.DATASET_CODE)
+				.values(
+						eventBy,
+						comment,
+						commentPrese,
+						processStateCode,
+						datasetCode)
+				.returning(PROCESS_LOG.ID)
+				.fetchOne()
+				.getId();
+
+		return processLogId;
+	}
+
+	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
+
+		create.update(LEXEME)
+				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void createOrUpdateLayerProcessState(Long lexemeId, LayerName layerName, String processStateCode) {
+
+		int updateCount = create
+				.update(LAYER_STATE)
+				.set(LAYER_STATE.PROCESS_STATE_CODE, processStateCode)
+				.where(LAYER_STATE.LEXEME_ID.eq(lexemeId).and(LAYER_STATE.LAYER_NAME.eq(layerName.name())))
+				.execute();
+
+		if (updateCount == 0) {
+			create
+				.insertInto(
+						LAYER_STATE,
+						LAYER_STATE.LEXEME_ID,
+						LAYER_STATE.LAYER_NAME,
+						LAYER_STATE.PROCESS_STATE_CODE)
+				.values(
+						lexemeId,
+						layerName.name(),
+						processStateCode)
+				.execute();
+		}
 	}
 }

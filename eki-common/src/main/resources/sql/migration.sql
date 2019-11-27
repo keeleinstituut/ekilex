@@ -105,3 +105,24 @@ create type type_usage as (usage text, usage_prese text, usage_lang char(3), com
 --NB! restore the view_ww_word in create_views.sql
 
 --> kuni siiani testis olemas 25.11.2019
+
+-- 25.11.2019
+alter table lexeme alter column process_state_code set not null;
+
+create table layer_state
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  layer_name varchar(100) not null,
+  process_state_code varchar(100) references process_state(code) not null,
+  unique(lexeme_id, layer_name)
+);
+alter sequence layer_state_id_seq restart with 10000;
+
+create index layer_state_lexeme_id_idx on layer_state(lexeme_id);
+
+create index domain_code_origin_idx on domain(code, origin);
+create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
+create index domain_label_code_origin_idx on domain_label(code, origin);
+create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin);
+

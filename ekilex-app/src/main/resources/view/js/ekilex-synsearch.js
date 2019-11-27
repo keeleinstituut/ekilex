@@ -1,5 +1,5 @@
 function initialise() {
-	var KEYBOARD_MODE = false;
+	var IS_KEYBOARD_MODE = false;
 	var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
 	var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 	var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
@@ -7,8 +7,8 @@ function initialise() {
 
 	//Enter keyboard edit mode
 	$(document).on("click", "#keyboardEditBtn", function() {
-		KEYBOARD_MODE = true;
-		console.log('KEYBOARD_MODE: '+KEYBOARD_MODE);
+		IS_KEYBOARD_MODE = true;
+		console.log('IS_KEYBOARD_MODE: ' + IS_KEYBOARD_MODE);
 		$('body').addClass('keyboard-edit-mode-active');
 		//TODO refactor
 		$('.keyboard-nav-list').each(function (e) {
@@ -33,12 +33,18 @@ function initialise() {
 		$(this).parents(".popover").popover('hide');
 	});
 
+	$(document).on("click", "#synLayerCompleteBtn", function() {
+
+		let wordId = $(this).data('word-id');
+		let actionUrl = applicationUrl + "syn_layer_complete/" + wordId;
+		let callbackFunc = () => $('#refresh-details').trigger('click');
+		doPostRelationChange(actionUrl, callbackFunc);
+	});
+
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 
 		var savedScrollPositions = getScrollPositions();
 		let id = $(this).data('id');
-
-
 
 		let markedSynWordId = $(document).find('.keyboard-nav-list-item-selected').children(':first').data('word-id');
 		$('#synSearchResultsDiv').find('.list-group-item').each(function () {$(this).removeClass('keyboard-nav-list-item-active active');});
@@ -87,7 +93,6 @@ function initialise() {
 						}
 					}
 				},
-
 				classes: {
 					"ui-droppable-active": "ui-state-active",
 					"ui-droppable-hover": "ui-state-hover"
@@ -106,7 +111,7 @@ function initialise() {
 				}
 			});
 
-			if(KEYBOARD_MODE){
+			if(IS_KEYBOARD_MODE){
 				activateList(3);
 			}
 
@@ -177,6 +182,7 @@ function initialise() {
 		}
 		return false;
 	}
+
 	function unActivateItem(selectedItem, unSelect) {
 
 		if (selectedItem != undefined) {
@@ -197,7 +203,6 @@ function initialise() {
 		}
 
 		return selectedItem;
-
 	}
 
 	function isValidPanelChangeKeyPress(keyCode) {
@@ -222,13 +227,12 @@ function initialise() {
 	}
 
 	function checkKey(e) {
-		if (KEYBOARD_MODE == false){
+		if (IS_KEYBOARD_MODE == false){
 			console.log("KEYBOARD MODE NOT ENABLED");
 			return;
 		}
 
 		//TODO refactor all this
-
 
 		var tag = e.target.tagName.toLowerCase();
 		if ( tag == 'input' || tag == 'textarea') {
@@ -338,7 +342,7 @@ function initialise() {
 				$(document).find('input[name="simpleSearchFilter"]').val('').focus();
 			});
 			$('body').removeClass('keyboard-edit-mode-active');
-			KEYBOARD_MODE = false;
+			IS_KEYBOARD_MODE = false;
 		}
 
 		//Enter key
@@ -421,14 +425,17 @@ function getScrollPositions(){
 	})
 	return scrollPositions;
 }
+
 function setScrollPositions(positions){
 	$('.keyboard-nav-list').each(function (i) {
 		$(this).scrollTop(positions[i]);
 	})
 }
+
 function changeSynonymDefinitionDisplay(displayOption='toggle') {
 	$('.keyboard-nav-list-item-active .list-item-value').tooltip(displayOption);
 }
+
 function refreshDetails() {
 	var refreshButton = $('#refresh-details');
 	refreshButton.trigger('click');

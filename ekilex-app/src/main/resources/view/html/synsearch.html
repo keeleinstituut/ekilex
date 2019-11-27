@@ -5,6 +5,7 @@
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/jquery.scrollTo.min.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-dialog.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-searchfilter.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-synsearch.js}"></script>
 </th:block>
@@ -105,7 +106,7 @@
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
             <h1 th:text="${details.word}" class="mr-3 mb-0">Aktiivne sõna</h1>
-            <button type="button" class="btn btn-secondary btn-compact">Märgi tehtuks</button>
+            <button id="synLayerCompleteBtn" th:data-word-id="${wordId}" type="button" class="btn btn-secondary btn-compact">Märgi tehtuks</button>
             <div class="ml-auto d-flex align-items-center flex-row">
               <span class="text-secondary mr-1"> Logid </span>
               <div class="btn-group ">
@@ -128,10 +129,21 @@
                 th:with="
                   isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
                   isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
-                <div data-lexeme-title class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-4': ''">
+                <div th:replace="syndialog :: edit_lexeme_syn_process_state_dlg"></div>
+                <div data-lexeme-title class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() > 2} ? 'pl-4': ''">
                   <div class="d-flex align-items-start flex-wrap pt-2">
                     <span class="px-2 py-0 bg-light rounded font-weight-bold mr-2">
                       <span th:if="${lexeme.levels != null}" th:text="${lexeme.levels}"> 1</span>
+                    </span>
+                    <span class="pl-0 pr-2">
+                      <span th:text="${lexeme.layerProcessStateCode}"></span>
+                      <button type="button" class="btn badge badge-primary"
+                        title="Muuda"
+                        data-toggle="modal"
+                        th:data-target="${'#editLexemeSynProcessStateDlg_' + lexeme.lexemeId}"
+                        sec:authorize="${#vars.isLexemeCrudGranted}">
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                      </button>
                     </span>
                     <span class="clasifiers pr-2 text-secondary" th:if="${not #lists.isEmpty(lexeme.pos)}">
                       <span th:each="classif,classifIter : ${lexeme.pos}">

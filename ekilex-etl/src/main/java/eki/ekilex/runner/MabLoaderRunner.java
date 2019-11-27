@@ -120,7 +120,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		String[] components;
 		String guid, word, wordAlt, wordClass, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, inflectionType;
 		String formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, audioFile;
-		Integer formOrderBy, displayLevel;
+		Long formOrderBy;
+		Integer displayLevel;
 		Long wordId, paradigmId;
 
 		Count totalArticleCount = new Count();
@@ -219,7 +220,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 						formGroupElement = (Element) formGroupNode;
 						formOrderByStr = formGroupElement.attributeValue(formOrderAttr);
-						formOrderBy = Integer.valueOf(formOrderByStr);
+						formOrderBy = Long.valueOf(formOrderByStr);
 						morphGroup1 = formGroupElement.attributeValue(morphGroup1Attr);
 						morphGroup2 = formGroupElement.attributeValue(morphGroup2Attr);
 						morphGroup3 = formGroupElement.attributeValue(morphGroup3Attr);

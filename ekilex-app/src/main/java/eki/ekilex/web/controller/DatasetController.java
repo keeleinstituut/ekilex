@@ -114,7 +114,7 @@ public class DatasetController implements WebConstant {
 		datasetService.deleteDataset(datasetCode);
 		userService.updateUserSecurityContext();
 
-		return "OK";
+		return RESPONSE_OK_VER1;
 	}
 
 	@GetMapping(REST_SERVICES_URI + VALIDATE_CREATE_DATASET_URI + "/{datasetCode}")
@@ -125,7 +125,7 @@ public class DatasetController implements WebConstant {
 			logger.debug("Trying to create dataset with existing code '{}'.", datasetCode);
 			return "CODE_EXISTS";
 		}
-		return "OK";
+		return RESPONSE_OK_VER1;
 	}
 
 	@ModelAttribute("languages")

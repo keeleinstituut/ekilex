@@ -43,7 +43,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordSynDetails getWordSynDetails(Long wordId, String datasetCode) {
 
-		List datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
+		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
 

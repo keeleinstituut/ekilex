@@ -124,3 +124,7 @@ $(document).on("show.bs.modal", "[id^=addMeaningSemanticTypeDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editMeaningSemanticTypeDlg_]", function() {
 	initSelectDlg($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=editLexemeSynProcessStateDlg_]", function() {
+	initSelectDlg($(this));
+});

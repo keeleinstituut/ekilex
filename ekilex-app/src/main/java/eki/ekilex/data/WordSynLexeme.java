@@ -2,8 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
+import eki.common.constant.LexemeType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.LexemeLevel;
 
@@ -11,30 +10,25 @@ public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "meaning_id")
 	private Long meaningId;
 
-	@Column(name = "word_id")
 	private Long wordId;
 
-	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
-	private List<SynMeaningWord> meaningWords;
+	private LexemeType type;
 
-	@Column(name = "level1")
+	private String datasetCode;
+
 	private Integer level1;
 
-	@Column(name = "level2")
 	private Integer level2;
 
 	private String levels;
 
-	@Column(name = "dataset")
-	private String datasetCode;
+	private String layerProcessStateCode;
 
-	@Column(name = "type")
-	private String type;
+	private List<SynMeaningWord> meaningWords;
 
 	private List<Definition> definitions;
 
@@ -42,12 +36,44 @@ public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private List<Usage> usages;
 
+	public Long getMeaningId() {
+		return meaningId;
+	}
+
+	public void setMeaningId(Long meaningId) {
+		this.meaningId = meaningId;
+	}
+
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
+	}
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
+	}
+
+	public LexemeType getType() {
+		return type;
+	}
+
+	public void setType(LexemeType type) {
+		this.type = type;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
 	public Integer getLevel1() {
@@ -74,6 +100,22 @@ public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 		this.levels = levels;
 	}
 
+	public String getLayerProcessStateCode() {
+		return layerProcessStateCode;
+	}
+
+	public void setLayerProcessStateCode(String layerProcessStateCode) {
+		this.layerProcessStateCode = layerProcessStateCode;
+	}
+
+	public List<SynMeaningWord> getMeaningWords() {
+		return meaningWords;
+	}
+
+	public void setMeaningWords(List<SynMeaningWord> meaningWords) {
+		this.meaningWords = meaningWords;
+	}
+
 	public List<Definition> getDefinitions() {
 		return definitions;
 	}
@@ -98,44 +140,4 @@ public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 		this.usages = usages;
 	}
 
-	public Long getMeaningId() {
-		return meaningId;
-	}
-
-	public void setMeaningId(Long meaningId) {
-		this.meaningId = meaningId;
-	}
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
-	}
-
-	@Override
-	public String getDatasetCode() {
-		return datasetCode;
-	}
-
-	public void setDatasetCode(String datasetCode) {
-		this.datasetCode = datasetCode;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public List<SynMeaningWord> getMeaningWords() {
-		return meaningWords;
-	}
-
-	public void setMeaningWords(List<SynMeaningWord> meaningWords) {
-		this.meaningWords = meaningWords;
-	}
 }

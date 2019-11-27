@@ -43,7 +43,7 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	private String audioFile;
 
-	private Integer orderBy;
+	private Long orderBy;
 
 	public Long getWordId() {
 		return wordId;
@@ -189,11 +189,11 @@ public class ParadigmFormTuple extends AbstractDataObject {
 		this.audioFile = audioFile;
 	}
 
-	public Integer getOrderBy() {
+	public Long getOrderBy() {
 		return orderBy;
 	}
 
-	public void setOrderBy(Integer orderBy) {
+	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
 	}
 

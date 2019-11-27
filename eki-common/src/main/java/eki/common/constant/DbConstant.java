@@ -8,6 +8,8 @@ public interface DbConstant {
 
 	String PROCESS_STATE_IN_WORK = "koostamisel";
 
+	String PROCESS_STATE_COMPLETE = "valmis";
+
 	String LEXEME_TYPE_PRIMARY = LexemeType.PRIMARY.name();
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();

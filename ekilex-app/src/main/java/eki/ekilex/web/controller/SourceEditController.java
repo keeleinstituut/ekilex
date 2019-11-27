@@ -149,7 +149,8 @@ public class SourceEditController extends AbstractPageController {
 		logger.debug("Deleting source with id: {}", sourceId);
 
 		sourceService.deleteSource(sourceId);
-		return "OK";
+
+		return RESPONSE_OK_VER1;
 	}
 
 	@PostMapping(SOURCE_JOIN_URI)

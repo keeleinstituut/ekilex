@@ -208,6 +208,8 @@ public interface WebConstant {
 
 	String SYN_SEARCH_WORDS = "/syn_search_words";
 
+	String SYN_LAYER_COMPLETE = "/syn_layer_complete";
+
 	String USER_PROFILE_PAGE = "userprofile";
 
 	String USER_PROFILE_URI = "/userprofile";
@@ -223,6 +225,10 @@ public interface WebConstant {
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";
+
+	String RESPONSE_OK_VER1 = "OK";
+
+	String RESPONSE_OK_VER2 = "{}";
 
 	// mode flags
 

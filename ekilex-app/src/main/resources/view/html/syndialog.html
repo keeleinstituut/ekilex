@@ -1,53 +1,60 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-
 </head>
 <body>
-<th:block th:fragment="syn_stats_dlg(synRelation)">
-  <div th:id="${'addSynRelationDlg_' + wordId}" class="modal" role="dialog"
-       th:fragment="add_syn_relation_dlg(wordId, relations, language, morphCode)">
-    <div class="modal-dialog" role="document" style="max-width: 600px;">
-      <div class="modal-content">
-        <div class="modal-body">
-          <form th:action="@{/syn_search_words}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <input type="hidden" name="language" th:value="${language}"/>
-                  <input type="hidden" name="morphCode" th:value="${morphCode}"/>
-                  <input th:each="relation : ${relations}" type="hidden" name="excludedIds"
-                         th:value="${relation.wordId}"/>
-
-                  <div class="col-8">
-                    <input id="txtSynSearchWord" type="text" class="form-control" name="searchFilter"
-                           placeholder="sisesta otsitav keelend">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
+  <th:block th:fragment="syn_stats_dlg(synRelation)">
+    <div th:id="${'addSynRelationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_syn_relation_dlg(wordId, relations, language, morphCode)">
+      <div class="modal-dialog" role="document" style="max-width: 600px;">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form th:action="@{/syn_search_words}">
+              <div class="form-row">
+                <div class="col-12">
+                  <div class="form-group row">
+                    <input type="hidden" name="language" th:value="${language}" />
+                    <input type="hidden" name="morphCode" th:value="${morphCode}" />
+                    <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}" />
+                    <div class="col-8">
+                      <input id="txtSynSearchWord" type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                    </div>
+                    <div class="col-2">
+                      <button type="submit" class="btn btn-primary">Otsi</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </form>
-          <form th:action="@{/create_item}" method="post">
-            <input type="hidden" name="id" th:value="${wordId}"/>
-            <input type="hidden" name="opCode" value="create_raw_relation"/>
-            <input type="hidden" name="id2"/>
-            <div class="form-group row">
-              <div class="col-md-6">
+            </form>
+            <form th:action="@{/create_item}" method="post">
+              <input type="hidden" name="id" th:value="${wordId}" />
+              <input type="hidden" name="opCode" value="create_raw_relation" />
+              <input type="hidden" name="id2" />
+              <div class="form-group row">
+                <div class="col-md-6"></div>
               </div>
-            </div>
-            <div data-name="dialogContent"></div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+              <div data-name="dialogContent"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
         </div>
       </div>
     </div>
+  </th:block>
+  <div th:id="${'editLexemeSynProcessStateDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_syn_process_state_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_syn_layer_process_state}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <select class="form-control" name="value">
+              <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.layerProcessStateCode}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
-</th:block>
-
 </body>
 </html>

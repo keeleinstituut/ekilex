@@ -1,5 +1,7 @@
 -- always run this after full reload
 
+alter sequence eki_user_id_seq restart with 10000;
+
 insert into eki_user (name,email,password,is_admin,is_enabled)
 values
 ('Admin','admin@nowhere.com','$2a$10$YCDhFLqRHPsxLKuCMXhmwOa00pq4PfgXdzMRMu.DTUVFoiADQyldG',true,true),
@@ -180,3 +182,5 @@ end $$;
 delete from lex_rel_mapping where code1 = 'pyh';
 delete from lex_rel_mapping where code2 = 'pyh';
 delete from lex_rel_type where code = 'pyh';
+
+alter table lexeme alter column process_state_code set not null;

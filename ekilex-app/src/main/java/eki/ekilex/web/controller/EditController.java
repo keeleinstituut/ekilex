@@ -200,7 +200,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.createOdUsageAlternative(itemData.getId(), valuePrese);
 			break;
 		}
-		return "{}";
+		return RESPONSE_OK_VER2;
 	}
 
 	private String getSourcePropertyValue(Long sourcePropertyId) {
@@ -307,7 +307,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.updateOdUsageAlternative(itemData.getId(), valuePrese);
 			break;
 		}
-		return "{}";
+		return RESPONSE_OK_VER2;
 	}
 
 	@ResponseBody
@@ -339,7 +339,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.updateMeaningDomainOrdering(items);
 			break;
 		}
-		return "{}";
+		return RESPONSE_OK_VER2;
 	}
 
 	@ResponseBody
@@ -348,7 +348,8 @@ public class EditController extends AbstractPageController implements SystemCons
 
 		logger.debug("Change lexeme levels for id {}, action {}", lexemeId, action);
 		cudService.updateLexemeLevels(lexemeId, action);
-		return "OK";
+
+		return RESPONSE_OK_VER1;
 	}
 
 	@ResponseBody
@@ -544,7 +545,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.deleteOdUsageAlternative(id);
 			break;
 		}
-		return "OK";
+		return RESPONSE_OK_VER1;
 	}
 
 	@PostMapping(CREATE_WORD_URI)
@@ -696,7 +697,7 @@ public class EditController extends AbstractPageController implements SystemCons
 				break;
 			}
 		}
-		return "OK";
+		return RESPONSE_OK_VER1;
 	}
 
 	@PostMapping(OPPOSITE_RELATIONS_URI)

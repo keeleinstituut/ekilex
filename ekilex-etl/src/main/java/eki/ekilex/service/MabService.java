@@ -247,7 +247,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		String displayForm = (String) row.get("display_form");
 		String vocalForm = (String) row.get("vocal_form");
 		String audioFile = (String) row.get("audio_file");
-		Integer orderBy = (Integer) row.get("order_by");
+		Long orderBy = (Long) row.get("order_by");
 		ParadigmFormTuple tuple = new ParadigmFormTuple();
 		tuple.setWordId(wordId);
 		tuple.setWordClass(wordClass);

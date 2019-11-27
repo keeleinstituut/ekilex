@@ -6,16 +6,20 @@ public class LexemeData extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String processStateCode;
+	private Long id;
 
 	private String datasetCode;
 
-	public String getProcessStateCode() {
-		return processStateCode;
+	private String processStateCode;
+
+	private String synLayerProcessStateCode;
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setProcessStateCode(String processStateCode) {
-		this.processStateCode = processStateCode;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getDatasetCode() {
@@ -25,4 +29,21 @@ public class LexemeData extends AbstractDataObject {
 	public void setDatasetCode(String datasetCode) {
 		this.datasetCode = datasetCode;
 	}
+
+	public String getProcessStateCode() {
+		return processStateCode;
+	}
+
+	public void setProcessStateCode(String processStateCode) {
+		this.processStateCode = processStateCode;
+	}
+
+	public String getSynLayerProcessStateCode() {
+		return synLayerProcessStateCode;
+	}
+
+	public void setSynLayerProcessStateCode(String synLayerProcessStateCode) {
+		this.synLayerProcessStateCode = synLayerProcessStateCode;
+	}
+
 }

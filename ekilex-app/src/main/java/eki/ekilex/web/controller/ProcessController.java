@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +23,14 @@ import eki.ekilex.data.ProcessLog;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.service.ProcessService;
 import eki.ekilex.service.UserService;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class ProcessLogController implements WebConstant {
+public class ProcessController implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProcessLogController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProcessController.class);
 
 	@Autowired
 	private ProcessService processService;
@@ -77,30 +80,34 @@ public class ProcessLogController implements WebConstant {
 
 	@PostMapping("/create_meaning_process_log")
 	@ResponseBody
-	public String createMeaningProcessLog(@RequestBody CreateItemRequest itemData) {
+	public String createMeaningProcessLog(
+			@RequestBody CreateItemRequest itemData,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		String userName = userService.getAuthenticatedUser().getName();
+		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 		Long meaningId = itemData.getId();
 		String commentPrese = itemData.getValue();
-		String dataset = itemData.getDataset();
 		logger.debug("Creating process log for meaning \"{}\"", meaningId);
-		processService.createMeaningProcessLog(meaningId, dataset, commentPrese, userName);
+		processService.createMeaningProcessLog(meaningId, userName, commentPrese, datasetCode);
 
-		return "{}";
+		return RESPONSE_OK_VER2;
 	}
 
 	@PostMapping("/create_word_process_log")
 	@ResponseBody
-	public String createWordProcessLog(@RequestBody CreateItemRequest itemData) {
+	public String createWordProcessLog(
+			@RequestBody CreateItemRequest itemData,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		String userName = userService.getAuthenticatedUser().getName();
+		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 		Long wordId = itemData.getId();
 		String commentPrese = itemData.getValue();
-		String dataset = itemData.getDataset();
 		logger.debug("Creating process log for word \"{}\"", wordId);
-		processService.createWordProcessLog(wordId, dataset, commentPrese, userName);
+		processService.createWordProcessLog(wordId, userName, commentPrese, datasetCode);
 
-		return "{}";
+		return RESPONSE_OK_VER2;
 	}
 
 	@PostMapping("/create_lexeme_process_state")
@@ -111,10 +118,9 @@ public class ProcessLogController implements WebConstant {
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 		logger.debug("Creating process state for lexeme \"{}\"", lexemeId);
-		processService.createLexemeProcessLog(lexemeId, processStateCode, userName);
-		processService.updateLexemeProcessState(lexemeId, processStateCode);
+		processService.updateLexemeProcessState(lexemeId, userName, processStateCode);
 
-		return "{}";
+		return RESPONSE_OK_VER2;
 	}
 
 	@PostMapping("/update_lexeme_process_state")
@@ -125,9 +131,35 @@ public class ProcessLogController implements WebConstant {
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 		logger.debug("Updating process state for lexeme \"{}\"", lexemeId);
-		processService.createLexemeProcessLog(lexemeId, processStateCode, userName);
-		processService.updateLexemeProcessState(lexemeId, processStateCode);
+		processService.updateLexemeProcessState(lexemeId, userName, processStateCode);
 
-		return "{}";
+		return RESPONSE_OK_VER2;
+	}
+
+	@PostMapping(SYN_LAYER_COMPLETE + "/{wordId}")
+	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@ResponseBody
+	public String synLayerProcessStateComplete(
+			@PathVariable Long wordId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		String userName = userService.getAuthenticatedUser().getName();
+		String datasetCode = sessionBean.getUserRole().getDatasetCode();
+		processService.updateSynLayerProcessStateComplete(wordId, userName, datasetCode);
+
+		return RESPONSE_OK_VER2;
+	}
+
+	@PostMapping("/update_syn_layer_process_state")
+	@ResponseBody
+	public String updateSynLayerProcessState(@RequestBody UpdateItemRequest itemData) {
+
+		String userName = userService.getAuthenticatedUser().getName();
+		Long lexemeId = itemData.getId();
+		String processStateCode = itemData.getValue();
+		logger.debug("Updating syn layer process state for lexeme \"{}\"", lexemeId);
+		processService.updateSynProcessState(lexemeId, userName, processStateCode);
+
+		return RESPONSE_OK_VER2;
 	}
 }

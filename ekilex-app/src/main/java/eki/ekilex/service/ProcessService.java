@@ -4,16 +4,19 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DbConstant;
+import eki.common.constant.LayerName;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.ProcessLog;
 import eki.ekilex.service.db.ProcessDbService;
 
 @Component
-public class ProcessService {
+public class ProcessService implements DbConstant {
 
 	private static final String PROCESS_STATE_DELETED_MESSAGE = " - haldusolek kustutatud";
 
@@ -21,7 +24,7 @@ public class ProcessService {
 	private ProcessDbService processDbService;
 
 	@Autowired
-	TextDecorationService textDecorationService;
+	private TextDecorationService textDecorationService;
 
 	@Transactional
 	public List<ProcessLog> getLogForMeaning(Long meaningId) {
@@ -44,7 +47,21 @@ public class ProcessService {
 	}
 
 	@Transactional
-	public void createLexemeProcessLog(Long lexemeId, String processStateCode, String userName) {
+	public void createMeaningProcessLog(Long meaningId, String userName, String commentPrese, String datasetCode) {
+
+		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
+		processDbService.createMeaningProcessLog(meaningId, userName, comment, commentPrese, datasetCode);
+	}
+
+	@Transactional
+	public void createWordProcessLog(Long wordId, String userName, String commentPrese, String datasetCode) {
+
+		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
+		processDbService.createWordProcessLog(wordId, userName, comment, commentPrese, datasetCode);
+	}
+
+	@Transactional
+	public void updateLexemeProcessState(Long lexemeId, String userName, String processStateCode) {
 
 		LexemeData lexemeData = processDbService.getLexemeData(lexemeId);
 		String datasetCode = lexemeData.getDatasetCode();
@@ -53,25 +70,36 @@ public class ProcessService {
 			recentProcessStateCode += PROCESS_STATE_DELETED_MESSAGE;
 		}
 
-		processDbService.createLexemeProcessLog(lexemeId, userName, datasetCode, recentProcessStateCode, null, processStateCode);
-	}
-
-	@Transactional
-	public void createMeaningProcessLog(Long meaningId, String dataset, String commentPrese, String userName) {
-
-		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
-		processDbService.createMeaningProcessLog(meaningId, dataset, userName, comment, commentPrese);
-	}
-
-	@Transactional
-	public void createWordProcessLog(Long wordId, String dataset, String commentPrese, String userName) {
-
-		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
-		processDbService.createWordProcessLog(wordId, dataset, userName, comment, commentPrese);
-	}
-
-	@Transactional
-	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
 		processDbService.updateLexemeProcessState(lexemeId, processStateCode);
+		processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, processStateCode, datasetCode);
+	}
+
+	@Transactional
+	public void updateSynLayerProcessStateComplete(Long wordId, String userName, String datasetCode) {
+
+		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode);
+		final LayerName layerName = LayerName.SYN;
+		final String newProcessStateCode = PROCESS_STATE_COMPLETE;
+		for (LexemeData lexemeData : lexemeDatas) {
+			Long lexemeId = lexemeData.getId();
+			String recentProcessStateCode = lexemeData.getSynLayerProcessStateCode();
+			if (!StringUtils.equals(recentProcessStateCode, newProcessStateCode)) {
+				processDbService.createOrUpdateLayerProcessState(lexemeId, layerName, newProcessStateCode);
+				processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, newProcessStateCode, datasetCode);
+			}
+		}
+	}
+
+	@Transactional
+	public void updateSynProcessState(Long lexemeId, String userName, String processStateCode) {
+
+		LexemeData lexemeData = processDbService.getLexemeData(lexemeId);
+		final LayerName layerName = LayerName.SYN;
+		String datasetCode = lexemeData.getDatasetCode();
+		String recentProcessStateCode = lexemeData.getSynLayerProcessStateCode();
+		if (!StringUtils.equals(recentProcessStateCode, processStateCode)) {
+			processDbService.createOrUpdateLayerProcessState(lexemeId, layerName, processStateCode);
+			processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, processStateCode, datasetCode);
+		}
 	}
 }

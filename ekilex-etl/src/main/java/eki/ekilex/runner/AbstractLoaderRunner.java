@@ -607,7 +607,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		String displayForm = form.getDisplayForm();
 		String vocalForm = form.getVocalForm();
 		String audioFile = form.getAudioFile();
-		Integer orderBy = form.getOrderBy();
+		Long orderBy = form.getOrderBy();
 
 		String valueClean = cleanEkiEntityMarkup(value);
 		String valuePrese = convertEkiEntityMarkup(value);

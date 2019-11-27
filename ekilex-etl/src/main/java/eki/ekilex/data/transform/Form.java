@@ -31,7 +31,7 @@ public class Form extends AbstractDataObject {
 
 	private String audioFile;
 
-	private Integer orderBy;
+	private Long orderBy;
 
 	public FormMode getMode() {
 		return mode;
@@ -129,11 +129,11 @@ public class Form extends AbstractDataObject {
 		this.audioFile = audioFile;
 	}
 
-	public Integer getOrderBy() {
+	public Long getOrderBy() {
 		return orderBy;
 	}
 
-	public void setOrderBy(Integer orderBy) {
+	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
 	}
 

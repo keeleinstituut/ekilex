@@ -149,7 +149,6 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		return role.getDatasetCode();
 	}
 
-
 	@PostMapping(SYN_CHANGE_RELATION_STATUS)
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@ResponseBody
@@ -158,7 +157,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		synSearchService.changeRelationStatus(id, status);
 
-		return "{}";
+		return RESPONSE_OK_VER2;
 	}
 
 	@PostMapping(SYN_CREATE_LEXEME + "/{meaningId}/{wordId}/{lexemeId}/{relationId}")
@@ -171,9 +170,8 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		synSearchService.createSecondarySynLexeme(meaningId, wordId, datasetCode, lexemeId, relationId);
 
-		return "{}";
+		return RESPONSE_OK_VER2;
 	}
-
 
 	@GetMapping(SYN_SEARCH_WORDS)
 	public String searchSynWords(
