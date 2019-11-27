@@ -908,7 +908,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Long sourceLinkId = basicDbService.createIfNotExists(LEXEME_SOURCE_LINK, tableRowParamMap);
 
 		if (sourceLinkId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, sumLexemeId, sourceLinkId, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, sumLexemeId, sourceLinkId, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, LifecycleEventType.CREATE, value);
 		}
 
 		return sourceLinkId;

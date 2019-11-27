@@ -57,6 +57,11 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
+	public String getSourceNameValue(Long sourceId) {
+		return sourceDbService.getSourceNameValue(sourceId);
+	}
+
+	@Transactional
 	public List<Source> getSources(String searchFilter) {
 		return getSources(searchFilter, null);
 	}

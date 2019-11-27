@@ -775,9 +775,9 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_SOURCE_LINK)) {
 			logOwner = LifecycleLogOwner.LEXEME;
 			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
-			entity = LifecycleEntity.LEXEME_SOURCE_LINK;
+			entity = LifecycleEntity.LEXEME;
 			entityId = id;
-			property = LifecycleProperty.VALUE;
+			property = LifecycleProperty.SOURCE_LINK;
 			entry = getFieldValueAsString(tableName, "value", dataMap);
 		} else if (StringUtils.equalsIgnoreCase(tableName, LEX_COLLOC)) {
 			//currently ignoring

@@ -995,7 +995,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 					referenceType = ReferenceType.TRANSLATOR;
 				}
 				Long freeformSourceLinkId = createFreeformSourceLink(usageId, referenceType, authorId, null, author);
-				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformSourceLinkId, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, LifecycleEventType.CREATE, author);
+				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformSourceLinkId, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK, LifecycleEventType.CREATE, author);
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
@@ -1343,7 +1343,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Long sourceLinkId = basicDbService.createIfNotExists(LEXEME_SOURCE_LINK, tableRowParamMap);
 
 		if (sourceLinkId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, sourceLinkId, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, sourceLinkId, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, LifecycleEventType.CREATE, value);
 		}
 		return sourceLinkId;
 	}

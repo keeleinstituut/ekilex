@@ -86,6 +86,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		logger.debug("Add new item : {}", itemData);
 
 		String valuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(itemData.getValue());
+		String sourceValue;
 
 		switch (itemData.getOpCode()) {
 		case "definition":
@@ -122,16 +123,32 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourcePropertyValue, valuePrese);
 			break;
 		}
-		case ContentKey.FREEFORM_SOURCE_LINK: {
-			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourcePropertyValue, valuePrese);
-			break;
-		}
 		case ContentKey.LEXEME_SOURCE_LINK: {
 			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
 			cudService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), sourcePropertyValue, valuePrese);
 			break;
 		}
+		case "usage_author":
+			sourceValue = getSourceNameValue(itemData.getId2());
+			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
+			cudService.createUsageSourceLink(itemData.getId(), itemData.getId2(), refType, sourceValue, null);
+			break;
+		case "usage_source_link":
+			sourceValue = getSourcePropertyValue(itemData.getId3());
+			cudService.createUsageSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceValue, valuePrese);
+			break;
+		case "lexeme_ff_source_link":
+			sourceValue = getSourcePropertyValue(itemData.getId3());
+			cudService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceValue, valuePrese, LifecycleEntity.LEXEME);
+			break;
+		case "meaning_ff_source_link":
+			sourceValue = getSourcePropertyValue(itemData.getId3());
+			cudService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceValue, valuePrese, LifecycleEntity.MEANING);
+			break;
+		case "definition_ff_source_link":
+			sourceValue = getSourcePropertyValue(itemData.getId3());
+			cudService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceValue, valuePrese, LifecycleEntity.DEFINITION);
+			break;
 		case "lexeme_deriv":
 			cudService.createLexemeDeriv(itemData.getId(), valuePrese);
 			break;
@@ -158,11 +175,6 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), valuePrese);
-			break;
-		case "usage_author":
-			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
-			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
-			cudService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), refType, sourcePropertyValue, null);
 			break;
 		case "learner_comment":
 			cudService.createMeaningLearnerComment(itemData.getId(), valuePrese, itemData.getLanguage());
@@ -205,6 +217,10 @@ public class EditController extends AbstractPageController implements SystemCons
 
 	private String getSourcePropertyValue(Long sourcePropertyId) {
 		return sourceService.getSourcePropertyValue(sourcePropertyId);
+	}
+
+	private String getSourceNameValue(Long sourceId) {
+		return sourceService.getSourceNameValue(sourceId);
 	}
 
 	@ResponseBody
@@ -448,7 +464,17 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.deleteUsageDefinition(id);
 			break;
 		case "usage_author":
-			cudService.deleteFreeformSourceLink(id);
+		case "usage_source_link":
+			cudService.deleteUsageSourceLink(id);
+			break;
+		case "lexeme_ff_source_link":
+			cudService.deleteFreeformSourceLink(id, LifecycleEntity.LEXEME);
+			break;
+		case "meaning_ff_source_link":
+			cudService.deleteFreeformSourceLink(id, LifecycleEntity.MEANING);
+			break;
+		case "definition_ff_source_link":
+			cudService.deleteFreeformSourceLink(id, LifecycleEntity.DEFINITION);
 			break;
 		case "government":
 			cudService.deleteLexemeGovernment(id);
@@ -525,9 +551,6 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
 			cudService.deleteDefinitionSourceLink(id);
-			break;
-		case ContentKey.FREEFORM_SOURCE_LINK:
-			cudService.deleteFreeformSourceLink(id);
 			break;
 		case ContentKey.LEXEME_SOURCE_LINK:
 			cudService.deleteLexemeSourceLink(id);

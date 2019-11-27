@@ -535,7 +535,7 @@
             <input type="hidden" name="id2">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control" name="itemType">
+                <select required class="form-control required-field" name="itemType">
                   <option value="" hidden disabled selected>vali tüüp...</option>
                   <option th:value="AUTHOR" th:text="#{enum.reference.type.AUTHOR}"></option>
                   <option th:value="TRANSLATOR" th:text="#{enum.reference.type.TRANSLATOR}"></option>
@@ -1276,7 +1276,7 @@
         </div>
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${image.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="opCode" value="meaning_ff_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="id3">
           <input type="hidden" name="value">
