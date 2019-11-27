@@ -71,7 +71,8 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 				.select(
 						lff.LEXEME_ID,
 						ff2.VALUE_TEXT,
-						ff2.VALUE_PRESE)
+						ff2.VALUE_PRESE,
+						ff2.PARENT_ID)
 				.from(lff, ff1, ff2)
 				.where(
 						lff.FREEFORM_ID.eq(ff1.ID)
@@ -234,7 +235,8 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 		Map<String, Object> result = create
 				.select(
 						DEFINITION.MEANING_ID,
-						DEFINITION_SOURCE_LINK.VALUE)
+						DEFINITION_SOURCE_LINK.VALUE,
+						DEFINITION_SOURCE_LINK.DEFINITION_ID)
 				.from(DEFINITION, DEFINITION_SOURCE_LINK)
 				.where(
 						DEFINITION.ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID)

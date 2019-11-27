@@ -248,72 +248,25 @@ public class LifecycleLogDbService {
 		Long entityId = logData.getEntityId();
 		LifecycleProperty property = logData.getProperty();
 
-		if (LifecycleEntity.USAGE.equals(entity)) {
-			if (LifecycleProperty.VALUE.equals(property)) {
-				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.USAGE);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long lexemeId = (Long) entityData.get("lexeme_id");
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO usageId and migration
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_DEFINITION.equals(property)) {
-				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_DEFINITION);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long lexemeId = (Long) entityData.get("lexeme_id");
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO usageId and migration
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_ALTERNATIVE.equals(property)) {
-				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_ALTERNATIVE);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long lexemeId = (Long) entityData.get("lexeme_id");
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO usageId and migration
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
-				Map<String, Object> entityData = helper.getUsageSourceLinkData(create, entityId);
-				String recent = (String) entityData.get("value");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long lexemeId = (Long) entityData.get("lexeme_id");
-				Long usageId = (Long) entityData.get("usage_id");
-				logData.setEntityId(usageId); // TODO migration
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			}
+		if (LifecycleEntity.LEXEME.equals(entity)) {
+			createLexemeLog(logData);
+		} else if (LifecycleEntity.DEFINITION.equals(entity)) {
+			createDefinitionLog(logData);
+		} else if (LifecycleEntity.WORD.equals(entity)) {
+			createWordLog(logData);
+		} else if (LifecycleEntity.MEANING.equals(entity)) {
+			createMeaningLog(logData);
+		} else if (LifecycleEntity.SOURCE.equals(entity)) {
+			createSourceLog(logData);
+		} else if (LifecycleEntity.USAGE.equals(entity)) {
+			createUsageLog(logData);
 		} else if (LifecycleEntity.USAGE_TRANSLATION.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.USAGE_TRANSLATION);
 				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
+				boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+				if (!isRecentValueValid) {
+					return;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(logData);
@@ -323,12 +276,9 @@ public class LifecycleLogDbService {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.USAGE_DEFINITION);
 				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
+				boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+				if (!isRecentValueValid) {
+					return;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(logData);
@@ -338,12 +288,9 @@ public class LifecycleLogDbService {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.GOVERNMENT);
 				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
+				boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+				if (!isRecentValueValid) {
+					return;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(logData);
@@ -353,324 +300,13 @@ public class LifecycleLogDbService {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.GRAMMAR);
 				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
+				boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+				if (!isRecentValueValid) {
+					return;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			}
-		} else if (LifecycleEntity.DEFINITION.equals(entity)) {
-			if (LifecycleProperty.VALUE.equals(property)) {
-				Map<String, Object> entityData = helper.getDefinitionData(create, entityId);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long meaningId = (Long) entityData.get("meaning_id");
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
-				Map<String, Object> entityData = helper.getDefinitionSourceLinkData(create, entityId);
-				String recent = (String) entityData.get("value");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long meaningId = (Long) entityData.get("meaning_id");
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO definitionId and migration
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.FREEFORM_SOURCE_LINK.equals(property)) {
-				Map<String, Object> entityData = helper.getDefinitionFreeformSourceLinkData(create, entityId);
-				String recent = (String) entityData.get("value");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long meaningId = (Long) entityData.get("meaning_id");
-				Long definitionId = (Long) entityData.get("definition_id");
-				logData.setEntityId(definitionId); // TODO migration
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
-				Map<String, Object> entityData = helper.getDefinitionFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long meaningId = (Long) entityData.get("meaning_id");
-				Long definitionId = (Long) entityData.get("definition_id");
-				logData.setEntityId(definitionId);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			}
-		} else if (LifecycleEntity.LEXEME.equals(entity)) {
-			if (LifecycleProperty.FREQUENCY_GROUP.equals(property)) {
-				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-				String recent = (String) entityData.get("frequency_group_code");
-				logData.setRecent(recent);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.COMPLEXITY.equals(property)) {
-				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-				String recent = (String) entityData.get("complexity");
-				logData.setRecent(recent);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.POS.equals(property)) {
-				Long lexemeId = create
-						.select(LEXEME_POS.LEXEME_ID)
-						.from(LEXEME_POS)
-						.where(LEXEME_POS.ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO lexemeId and migration
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.DERIV.equals(property)) {
-				Long lexemeId = create
-						.select(LEXEME_DERIV.LEXEME_ID)
-						.from(LEXEME_DERIV)
-						.where(LEXEME_DERIV.ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO lexemeId and migration
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.REGISTER.equals(property)) {
-				Long lexemeId = create
-						.select(LEXEME_REGISTER.LEXEME_ID)
-						.from(LEXEME_REGISTER)
-						.where(LEXEME_REGISTER.ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO lexemeId and migration
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.REGION.equals(property)) {
-				Long lexemeId = create
-						.select(LEXEME_REGION.LEXEME_ID)
-						.from(LEXEME_REGION)
-						.where(LEXEME_REGION.ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO lexemeId and migration
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.LEVEL.equals(property)) {
-				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-				String recent = StringUtils.joinWith(".", entityData.get("level1"), entityData.get("level2"));
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-				}
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.DATASET.equals(property)) {
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.VALUE.equals(property)) {
-				Long lifecycleLogId;
-				if (LifecycleEventType.DELETE == eventType) {
-					Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-					Map<String, Object> usageData = helper.getLexemeUsageData(create, entityId);
-					String logString = lexemeLogString(entityData) + (Objects.equals("null", usageData.get("value_text")) ? "" : " " + usageData.get("value_text"));
-					logData.setRecent(logString);
-					lifecycleLogId = createLifecycleLog(logData);
-				} else {
-					lifecycleLogId = createLifecycleLog(logData);
-				}
-				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.VALUE_STATE.equals(property)) {
-				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-				String recent = (String) entityData.get("value_state_code");
-				logData.setRecent(recent);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
-				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.OD_LEXEME_RECOMMENDATION);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long lexemeId = (Long) entityData.get("lexeme_id");
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO lexemeId and migration
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
-				Map<String, Object> entityData = helper.getLexemeSourceLinkData(create, entityId);
-				String recent = (String) entityData.get("value");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long lexemeId = (Long) entityData.get("lexeme_id");
-				logData.setEntityId(lexemeId);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.FREEFORM_SOURCE_LINK.equals(property)) {
-				Map<String, Object> entityData = helper.getLexemeFreeformSourceLinkData(create, entityId);
-				String recent = (String) entityData.get("value");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long lexemeId = (Long) entityData.get("lexeme_id");
-				logData.setEntityId(lexemeId); // TODO migration
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
-				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long lexemeId = (Long) entityData.get("lexeme_id");
-				logData.setEntityId(lexemeId);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			}
-		} else if (LifecycleEntity.WORD.equals(entity)) {
-			if (LifecycleProperty.VALUE.equals(property)) {
-				Long lifecycleLogId;
-				if (LifecycleEventType.DELETE == eventType) {
-					Map<String, Object> entityData = helper.getWordData(create, entityId);
-					String logString = entityData.get("value").toString();
-					logData.setRecent(logString);
-					lifecycleLogId = createLifecycleLog(logData);
-				} else {
-					lifecycleLogId = createLifecycleLog(logData);
-				}
-				createWordLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.WORD_TYPE.equals(property)) {
-				Long wordId = create
-						.select(WORD_WORD_TYPE.WORD_ID)
-						.from(WORD_WORD_TYPE)
-						.where(WORD_WORD_TYPE.ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO wordId and migration
-				createWordLifecycleLog(wordId, lifecycleLogId);
-			} else if (LifecycleProperty.GENDER.equals(property)) {
-				Map<String, Object> entityData = helper.getWordData(create, entityId);
-				String recent = (String) entityData.get("gender_code");
-				logData.setRecent(recent);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createWordLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.ASPECT.equals(property)) {
-				Map<String, Object> entityData = helper.getWordData(create, entityId);
-				String recent = (String) entityData.get("aspect_code");
-				logData.setRecent(recent);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createWordLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.VOCAL_FORM.equals(property)) {
-				Map<String, Object> entityData = helper.getWordData(create, entityId);
-				String recent = (String) entityData.get("vocal_form");
-				logData.setRecent(recent);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createWordLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
-				Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.OD_WORD_RECOMMENDATION);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long wordId = (Long) entityData.get("word_id");
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO wordId and migration
-				createWordLifecycleLog(wordId, lifecycleLogId);
-			}
-		} else if (LifecycleEntity.MEANING.equals(entity)) {
-			if (LifecycleProperty.DOMAIN.equals(property)) {
-				Long meaningId = create
-						.select(MEANING_DOMAIN.MEANING_ID)
-						.from(MEANING_DOMAIN)
-						.where(MEANING_DOMAIN.ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData);  // TODO meaningId and migration
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.VALUE.equals(property)) {
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createMeaningLifecycleLog(entityId, lifecycleLogId);
-			}  else if (LifecycleProperty.IMAGE_TITLE.equals(property)) {
-				Long meaningId = create
-						.select(MEANING_FREEFORM.MEANING_ID)
-						.from(MEANING_FREEFORM)
-						.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO meaningId and migration
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			}  else if (LifecycleProperty.IMAGE.equals(property)) {
-				Long meaningId = create
-						.select(MEANING_FREEFORM.MEANING_ID)
-						.from(MEANING_FREEFORM)
-						.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO meaningId and migration
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.SEMANTIC_TYPE.equals(property)) {
-				Long meaningId = create
-						.select(MEANING_SEMANTIC_TYPE.MEANING_ID)
-						.from(MEANING_SEMANTIC_TYPE)
-						.where(MEANING_SEMANTIC_TYPE.ID.eq(entityId))
-						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(logData); // TODO meaningId and migration
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.FREEFORM_SOURCE_LINK.equals(property)) {
-				Map<String, Object> entityData = helper.getMeaningFreeformSourceLinkData(create, entityId);
-				String recent = (String) entityData.get("value");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long meaningId = (Long) entityData.get("meaning_id");
-				logData.setEntityId(meaningId); // TODO migration
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
-				Map<String, Object> entityData = helper.getMeaningFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
-				String recent = (String) entityData.get("value_prese");
-				logData.setRecent(recent);
-				if (!logData.isValueChanged()) {
-					if (logData.isUpdateEvent()) {
-						return;
-					}
-					logData.setRecent(null);
-				}
-				Long meaningId = (Long) entityData.get("meaning_id");
-				logData.setEntityId(meaningId);
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.WORD_RELATION.equals(entity)) {
 			Map<String, Object> entityData = helper.getWordRelationData(create, entityId);
@@ -723,44 +359,428 @@ public class LifecycleLogDbService {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getMeaningFreeformData(create, entityId, FreeformType.LEARNER_COMMENT);
 				String recent = (String) entityData.get("value_prese");
+				boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+				if (!isRecentValueValid) {
+					return;
+				}
+				Long meaningId = (Long) entityData.get("meaning_id");
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createMeaningLifecycleLog(meaningId, lifecycleLogId);
+			}
+		}
+	}
+
+	private void createWordLog(LogData logData) {
+
+		LifecycleEventType eventType = logData.getEventType();
+		Long entityId = logData.getEntityId();
+		LifecycleProperty property = logData.getProperty();
+
+		if (LifecycleProperty.VALUE.equals(property)) {
+			Long lifecycleLogId;
+			if (LifecycleEventType.DELETE == eventType) {
+				Map<String, Object> entityData = helper.getWordData(create, entityId);
+				String logString = entityData.get("value").toString();
+				logData.setRecent(logString);
+				lifecycleLogId = createLifecycleLog(logData);
+			} else {
+				lifecycleLogId = createLifecycleLog(logData);
+			}
+			createWordLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.WORD_TYPE.equals(property)) {
+			Long wordId = create
+					.select(WORD_WORD_TYPE.WORD_ID)
+					.from(WORD_WORD_TYPE)
+					.where(WORD_WORD_TYPE.ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(wordId);
+			createWordLifecycleLog(wordId, lifecycleLogId);
+		} else if (LifecycleProperty.GENDER.equals(property)) {
+			Map<String, Object> entityData = helper.getWordData(create, entityId);
+			String recent = (String) entityData.get("gender_code");
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createWordLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.ASPECT.equals(property)) {
+			Map<String, Object> entityData = helper.getWordData(create, entityId);
+			String recent = (String) entityData.get("aspect_code");
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createWordLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.VOCAL_FORM.equals(property)) {
+			Map<String, Object> entityData = helper.getWordData(create, entityId);
+			String recent = (String) entityData.get("vocal_form");
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createWordLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
+			Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.OD_WORD_RECOMMENDATION);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long wordId = (Long) entityData.get("word_id");
+			logData.setEntityId(wordId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createWordLifecycleLog(wordId, lifecycleLogId);
+		}
+	}
+
+	private void createLexemeLog(LogData logData) {
+
+		LifecycleEventType eventType = logData.getEventType();
+		Long entityId = logData.getEntityId();
+		LifecycleProperty property = logData.getProperty();
+
+		if (LifecycleProperty.FREQUENCY_GROUP.equals(property)) {
+			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+			String recent = (String) entityData.get("frequency_group_code");
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.COMPLEXITY.equals(property)) {
+			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+			String recent = (String) entityData.get("complexity");
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.POS.equals(property)) {
+			Long lexemeId = create
+					.select(LEXEME_POS.LEXEME_ID)
+					.from(LEXEME_POS)
+					.where(LEXEME_POS.ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(lexemeId);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.DERIV.equals(property)) {
+			Long lexemeId = create
+					.select(LEXEME_DERIV.LEXEME_ID)
+					.from(LEXEME_DERIV)
+					.where(LEXEME_DERIV.ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(lexemeId);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.REGISTER.equals(property)) {
+			Long lexemeId = create
+					.select(LEXEME_REGISTER.LEXEME_ID)
+					.from(LEXEME_REGISTER)
+					.where(LEXEME_REGISTER.ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(lexemeId);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.REGION.equals(property)) {
+			Long lexemeId = create
+					.select(LEXEME_REGION.LEXEME_ID)
+					.from(LEXEME_REGION)
+					.where(LEXEME_REGION.ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(lexemeId);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.LEVEL.equals(property)) {
+			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+			String recent = StringUtils.joinWith(".", entityData.get("level1"), entityData.get("level2"));
+			logData.setRecent(recent);
+			if (!logData.isValueChanged()) {
+				if (logData.isUpdateEvent()) {
+					return;
+				}
+			}
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.DATASET.equals(property)) {
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.VALUE.equals(property)) {
+			Long lifecycleLogId;
+			if (LifecycleEventType.DELETE == eventType) {
+				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+				Map<String, Object> usageData = helper.getLexemeUsageData(create, entityId);
+				String logString = lexemeLogString(entityData) + (Objects.equals("null", usageData.get("value_text")) ? "" : " " + usageData.get("value_text"));
+				logData.setRecent(logString);
+				lifecycleLogId = createLifecycleLog(logData);
+			} else {
+				lifecycleLogId = createLifecycleLog(logData);
+			}
+			createLexemeLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.VALUE_STATE.equals(property)) {
+			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+			String recent = (String) entityData.get("value_state_code");
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
+			Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.OD_LEXEME_RECOMMENDATION);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long lexemeId = (Long) entityData.get("lexeme_id");
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(lexemeId);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
+			Map<String, Object> entityData = helper.getLexemeSourceLinkData(create, entityId);
+			String recent = (String) entityData.get("value");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long lexemeId = (Long) entityData.get("lexeme_id");
+			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.FREEFORM_SOURCE_LINK.equals(property)) {
+			Map<String, Object> entityData = helper.getLexemeFreeformSourceLinkData(create, entityId);
+			String recent = (String) entityData.get("value");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long lexemeId = (Long) entityData.get("lexeme_id");
+			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
+			Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long lexemeId = (Long) entityData.get("lexeme_id");
+			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		}
+	}
+
+	private void createMeaningLog(LogData logData) {
+
+		Long entityId = logData.getEntityId();
+		LifecycleProperty property = logData.getProperty();
+
+		if (LifecycleProperty.DOMAIN.equals(property)) {
+			Long meaningId = create
+					.select(MEANING_DOMAIN.MEANING_ID)
+					.from(MEANING_DOMAIN)
+					.where(MEANING_DOMAIN.ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(meaningId);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.VALUE.equals(property)) {
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createMeaningLifecycleLog(entityId, lifecycleLogId);
+		}  else if (LifecycleProperty.IMAGE_TITLE.equals(property)) {
+			Long meaningId = create
+					.select(MEANING_FREEFORM.MEANING_ID)
+					.from(MEANING_FREEFORM)
+					.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(meaningId);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		}  else if (LifecycleProperty.IMAGE.equals(property)) {
+			Long meaningId = create
+					.select(MEANING_FREEFORM.MEANING_ID)
+					.from(MEANING_FREEFORM)
+					.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(meaningId);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.SEMANTIC_TYPE.equals(property)) {
+			Long meaningId = create
+					.select(MEANING_SEMANTIC_TYPE.MEANING_ID)
+					.from(MEANING_SEMANTIC_TYPE)
+					.where(MEANING_SEMANTIC_TYPE.ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			logData.setEntityId(meaningId);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.FREEFORM_SOURCE_LINK.equals(property)) {
+			Map<String, Object> entityData = helper.getMeaningFreeformSourceLinkData(create, entityId);
+			String recent = (String) entityData.get("value");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long meaningId = (Long) entityData.get("meaning_id");
+			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
+			Map<String, Object> entityData = helper.getMeaningFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long meaningId = (Long) entityData.get("meaning_id");
+			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		}
+	}
+
+	private void createDefinitionLog(LogData logData) {
+
+		Long entityId = logData.getEntityId();
+		LifecycleProperty property = logData.getProperty();
+
+		if (LifecycleProperty.VALUE.equals(property)) {
+			Map<String, Object> entityData = helper.getDefinitionData(create, entityId);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long meaningId = (Long) entityData.get("meaning_id");
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
+			Map<String, Object> entityData = helper.getDefinitionSourceLinkData(create, entityId);
+			String recent = (String) entityData.get("value");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long meaningId = (Long) entityData.get("meaning_id");
+			Long definitionId = (Long) entityData.get("definition_id");
+			logData.setEntityId(definitionId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.FREEFORM_SOURCE_LINK.equals(property)) {
+			Map<String, Object> entityData = helper.getDefinitionFreeformSourceLinkData(create, entityId);
+			String recent = (String) entityData.get("value");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long meaningId = (Long) entityData.get("meaning_id");
+			Long definitionId = (Long) entityData.get("definition_id");
+			logData.setEntityId(definitionId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
+			Map<String, Object> entityData = helper.getDefinitionFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long meaningId = (Long) entityData.get("meaning_id");
+			Long definitionId = (Long) entityData.get("definition_id");
+			logData.setEntityId(definitionId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		}
+	}
+
+	private void createUsageLog(LogData logData) {
+
+		Long entityId = logData.getEntityId();
+		LifecycleProperty property = logData.getProperty();
+
+		if (LifecycleProperty.VALUE.equals(property)) {
+			Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.USAGE);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long lexemeId = (Long) entityData.get("lexeme_id");
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.OD_DEFINITION.equals(property)) {
+			Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_DEFINITION);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long lexemeId = (Long) entityData.get("lexeme_id");
+			Long usageId = (Long) entityData.get("parent_id");
+			logData.setEntityId(usageId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.OD_ALTERNATIVE.equals(property)) {
+			Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.OD_USAGE_ALTERNATIVE);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long lexemeId = (Long) entityData.get("lexeme_id");
+			Long usageId = (Long) entityData.get("parent_id");
+			logData.setEntityId(usageId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
+			Map<String, Object> entityData = helper.getUsageSourceLinkData(create, entityId);
+			String recent = (String) entityData.get("value");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long lexemeId = (Long) entityData.get("lexeme_id");
+			Long usageId = (Long) entityData.get("usage_id");
+			logData.setEntityId(usageId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		}
+	}
+
+	private boolean validateAndSetRecentValue(LogData logData, String recent) {
+
+		logData.setRecent(recent);
+		if (!logData.isValueChanged()) {
+			if (logData.isUpdateEvent()) {
+				return false;
+			}
+			logData.setRecent(null);
+		}
+		return true;
+	}
+
+	private void createSourceLog(LogData logData) {
+
+		LifecycleEventType eventType = logData.getEventType();
+		Long entityId = logData.getEntityId();
+		LifecycleProperty property = logData.getProperty();
+
+		if (LifecycleProperty.SOURCE_TYPE.equals(property)) {
+			if (LifecycleEventType.UPDATE == eventType) {
+				Map<String, Object> entityData = helper.getSourceType(create, entityId);
+				String recent = (String) entityData.get("type");
 				logData.setRecent(recent);
+			}
+		} else if (!LifecycleProperty.VALUE.equals(property)) {
+			if (LifecycleEventType.UPDATE == eventType || LifecycleEventType.DELETE == eventType) {
+				FreeformType freeformType = FreeformType.valueOf(property.name());
+				Map<String, Object> entityData = helper.getSourceFreeformData(create, entityId, freeformType);
+				String recent = (String) entityData.get("value");
+				Long sourceId = (Long) entityData.get("source_id");
+				logData.setRecent(recent);
+				entityId = sourceId;
+				logData.setEntityId(entityId);
 				if (!logData.isValueChanged()) {
 					if (logData.isUpdateEvent()) {
 						return;
 					}
 					logData.setRecent(null);
 				}
-				Long meaningId = (Long) entityData.get("meaning_id");
-				Long lifecycleLogId = createLifecycleLog(logData);
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
-		} else if (LifecycleEntity.SOURCE.equals(entity)) {
-			if (LifecycleProperty.SOURCE_TYPE.equals(property)) {
-				if (LifecycleEventType.UPDATE == eventType) {
-					Map<String, Object> entityData = helper.getSourceType(create, entityId);
-					String recent = (String) entityData.get("type");
-					logData.setRecent(recent);
-				}
-			} else if (!LifecycleProperty.VALUE.equals(property)) {
-				if (LifecycleEventType.UPDATE == eventType || LifecycleEventType.DELETE == eventType) {
-					FreeformType freeformType = FreeformType.valueOf(property.name());
-					Map<String, Object> entityData = helper.getSourceFreeformData(create, entityId, freeformType);
-					String recent = (String) entityData.get("value");
-					Long sourceId = (Long) entityData.get("source_id");
-					logData.setRecent(recent);
-					entityId = sourceId;
-					logData.setEntityId(entityId);
-					if (!logData.isValueChanged()) {
-						if (logData.isUpdateEvent()) {
-							return;
-						}
-						logData.setRecent(null);
-					}
-				}
-			}
-			Long lifecycleLogId = createLifecycleLog(logData);
-			createSourceLifecycleLog(entityId, lifecycleLogId);
 		}
+		Long lifecycleLogId = createLifecycleLog(logData);
+		createSourceLifecycleLog(entityId, lifecycleLogId);
 	}
 
 	public void createListOrderingLog(LogData logData) {
