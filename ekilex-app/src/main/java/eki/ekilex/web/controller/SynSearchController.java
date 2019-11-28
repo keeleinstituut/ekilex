@@ -132,8 +132,8 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("Requesting details by word {}", wordId);
 
-		String dataSetCode = getDatasetCodeFromRole(sessionBean);
-		WordSynDetails details = synSearchService.getWordSynDetails(wordId, dataSetCode);
+		String datasetCode = getDatasetCodeFromRole(sessionBean);
+		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 		model.addAttribute("markedSynWordId", markedSynWordId);

@@ -18,6 +18,8 @@ public class WordSynDetails extends AbstractDataObject {
 
 	private List<SynRelation> relations;
 
+	private boolean synLayerComplete;
+
 	public String getWord() {
 		return word;
 	}
@@ -56,6 +58,14 @@ public class WordSynDetails extends AbstractDataObject {
 
 	public void setRelations(List<SynRelation> relations) {
 		this.relations = relations;
+	}
+
+	public boolean isSynLayerComplete() {
+		return synLayerComplete;
+	}
+
+	public void setSynLayerComplete(boolean synLayerComplete) {
+		this.synLayerComplete = synLayerComplete;
 	}
 
 }

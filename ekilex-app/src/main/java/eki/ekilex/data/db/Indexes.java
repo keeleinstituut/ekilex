@@ -216,6 +216,7 @@ public class Indexes {
     public static final Index LABEL_TYPE_PKEY = Indexes0.LABEL_TYPE_PKEY;
     public static final Index LANGUAGE_PKEY = Indexes0.LANGUAGE_PKEY;
     public static final Index LANGUAGE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.LANGUAGE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index LAYER_STATE_LAYER_NAME_IDX = Indexes0.LAYER_STATE_LAYER_NAME_IDX;
     public static final Index LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY = Indexes0.LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY;
     public static final Index LAYER_STATE_PKEY = Indexes0.LAYER_STATE_PKEY;
     public static final Index LEX_COLLOC_COLLOCATION_ID_IDX = Indexes0.LEX_COLLOC_COLLOCATION_ID_IDX;
@@ -484,6 +485,7 @@ public class Indexes {
         public static Index LABEL_TYPE_PKEY = Internal.createIndex("label_type_pkey", LabelType.LABEL_TYPE, new OrderField[] { LabelType.LABEL_TYPE.CODE }, true);
         public static Index LANGUAGE_PKEY = Internal.createIndex("language_pkey", Language.LANGUAGE, new OrderField[] { Language.LANGUAGE.CODE }, true);
         public static Index LANGUAGE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("language_label_code_lang_type_key", LanguageLabel.LANGUAGE_LABEL, new OrderField[] { LanguageLabel.LANGUAGE_LABEL.CODE, LanguageLabel.LANGUAGE_LABEL.LANG, LanguageLabel.LANGUAGE_LABEL.TYPE }, true);
+        public static Index LAYER_STATE_LAYER_NAME_IDX = Internal.createIndex("layer_state_layer_name_idx", LayerState.LAYER_STATE, new OrderField[] { LayerState.LAYER_STATE.LAYER_NAME }, false);
         public static Index LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY = Internal.createIndex("layer_state_lexeme_id_layer_name_key", LayerState.LAYER_STATE, new OrderField[] { LayerState.LAYER_STATE.LEXEME_ID, LayerState.LAYER_STATE.LAYER_NAME }, true);
         public static Index LAYER_STATE_PKEY = Internal.createIndex("layer_state_pkey", LayerState.LAYER_STATE, new OrderField[] { LayerState.LAYER_STATE.ID }, true);
         public static Index LEX_COLLOC_COLLOCATION_ID_IDX = Internal.createIndex("lex_colloc_collocation_id_idx", LexColloc.LEX_COLLOC, new OrderField[] { LexColloc.LEX_COLLOC.COLLOCATION_ID }, false);

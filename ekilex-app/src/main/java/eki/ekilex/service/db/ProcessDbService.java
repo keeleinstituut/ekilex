@@ -35,7 +35,8 @@ public class ProcessDbService {
 						PROCESS_LOG.COMMENT,
 						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE,
-						PROCESS_LOG.DATASET_CODE)
+						PROCESS_LOG.DATASET_CODE,
+						PROCESS_LOG.LAYER_NAME)
 				.from(MEANING_PROCESS_LOG, PROCESS_LOG)
 				.where(
 						MEANING_PROCESS_LOG.MEANING_ID.eq(meaningId)
@@ -64,7 +65,8 @@ public class ProcessDbService {
 						PROCESS_LOG.COMMENT,
 						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE,
-						PROCESS_LOG.DATASET_CODE)
+						PROCESS_LOG.DATASET_CODE,
+						PROCESS_LOG.LAYER_NAME)
 				.from(WORD_PROCESS_LOG, PROCESS_LOG)
 				.where(
 						WORD_PROCESS_LOG.WORD_ID.eq(wordId)
@@ -99,7 +101,8 @@ public class ProcessDbService {
 						PROCESS_LOG.COMMENT,
 						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE,
-						PROCESS_LOG.DATASET_CODE)
+						PROCESS_LOG.DATASET_CODE,
+						PROCESS_LOG.LAYER_NAME)
 				.from(
 						MEANING_PROCESS_LOG,
 						PROCESS_LOG,
@@ -114,7 +117,8 @@ public class ProcessDbService {
 								PROCESS_LOG.COMMENT,
 								PROCESS_LOG.COMMENT_PRESE,
 								PROCESS_LOG.PROCESS_STATE_CODE,
-								PROCESS_LOG.DATASET_CODE)
+								PROCESS_LOG.DATASET_CODE,
+								PROCESS_LOG.LAYER_NAME)
 						.from(
 								LEXEME_PROCESS_LOG,
 								PROCESS_LOG)
@@ -142,7 +146,8 @@ public class ProcessDbService {
 						PROCESS_LOG.COMMENT,
 						PROCESS_LOG.COMMENT_PRESE,
 						PROCESS_LOG.PROCESS_STATE_CODE,
-						PROCESS_LOG.DATASET_CODE)
+						PROCESS_LOG.DATASET_CODE,
+						PROCESS_LOG.LAYER_NAME)
 				.from(
 						WORD_PROCESS_LOG,
 						PROCESS_LOG,
@@ -157,7 +162,8 @@ public class ProcessDbService {
 								PROCESS_LOG.COMMENT,
 								PROCESS_LOG.COMMENT_PRESE,
 								PROCESS_LOG.PROCESS_STATE_CODE,
-								PROCESS_LOG.DATASET_CODE)
+								PROCESS_LOG.DATASET_CODE,
+								PROCESS_LOG.LAYER_NAME)
 						.from(
 								LEXEME_PROCESS_LOG,
 								PROCESS_LOG)
@@ -200,6 +206,12 @@ public class ProcessDbService {
 	public void createLexemeProcessLog(Long lexemeId, String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode) {
 
 		Long processLogId = createProcessLog(eventBy, comment, commentPrese, processStateCode, datasetCode);
+		createLexemeProcessLog(lexemeId, processLogId);
+	}
+
+	public void createLexemeProcessLog(Long lexemeId, String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode, LayerName layerName) {
+
+		Long processLogId = createProcessLog(eventBy, comment, commentPrese, processStateCode, datasetCode, layerName);
 		createLexemeProcessLog(lexemeId, processLogId);
 	}
 
@@ -249,7 +261,7 @@ public class ProcessDbService {
 	}
 
 	private Long createProcessLog(String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode) {
-
+	
 		Long processLogId = create
 				.insertInto(
 						PROCESS_LOG,
@@ -267,7 +279,36 @@ public class ProcessDbService {
 				.returning(PROCESS_LOG.ID)
 				.fetchOne()
 				.getId();
+	
+		return processLogId;
+	}
 
+	private Long createProcessLog(String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode, LayerName layerName) {
+
+		if (layerName == null) {
+			return createProcessLog(eventBy, comment, commentPrese, processStateCode, datasetCode);
+		}
+	
+		Long processLogId = create
+				.insertInto(
+						PROCESS_LOG,
+						PROCESS_LOG.EVENT_BY,
+						PROCESS_LOG.COMMENT,
+						PROCESS_LOG.COMMENT_PRESE,
+						PROCESS_LOG.PROCESS_STATE_CODE,
+						PROCESS_LOG.DATASET_CODE,
+						PROCESS_LOG.LAYER_NAME)
+				.values(
+						eventBy,
+						comment,
+						commentPrese,
+						processStateCode,
+						datasetCode,
+						layerName.name())
+				.returning(PROCESS_LOG.ID)
+				.fetchOne()
+				.getId();
+	
 		return processLogId;
 	}
 

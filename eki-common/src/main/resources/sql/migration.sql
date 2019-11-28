@@ -271,3 +271,5 @@ where lcl.id = mlcl.lifecycle_log_id
   and lcl.entity_name = 'MEANING'
   and lcl.entity_prop = 'FREEFORM_SOURCE_LINK';
 
+-- 28.11.2019
+alter table process_log add column layer_name varchar(100) null;

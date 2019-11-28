@@ -106,7 +106,7 @@
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
             <h1 th:text="${details.word}" class="mr-3 mb-0">Aktiivne sõna</h1>
-            <button id="synLayerCompleteBtn" th:data-word-id="${wordId}" type="button" class="btn btn-secondary btn-compact">Märgi tehtuks</button>
+            <button id="synLayerCompleteBtn" th:data-word-id="${wordId}" type="button" class="btn btn-secondary btn-compact" th:disabled="${details.synLayerComplete}">Märgi tehtuks</button>
             <div class="ml-auto d-flex align-items-center flex-row">
               <span class="text-secondary mr-1"> Logid </span>
               <div class="btn-group ">

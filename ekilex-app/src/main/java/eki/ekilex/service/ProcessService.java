@@ -85,7 +85,7 @@ public class ProcessService implements DbConstant {
 			String recentProcessStateCode = lexemeData.getSynLayerProcessStateCode();
 			if (!StringUtils.equals(recentProcessStateCode, newProcessStateCode)) {
 				processDbService.createOrUpdateLayerProcessState(lexemeId, layerName, newProcessStateCode);
-				processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, newProcessStateCode, datasetCode);
+				processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, newProcessStateCode, datasetCode, layerName);
 			}
 		}
 	}
@@ -99,7 +99,7 @@ public class ProcessService implements DbConstant {
 		String recentProcessStateCode = lexemeData.getSynLayerProcessStateCode();
 		if (!StringUtils.equals(recentProcessStateCode, processStateCode)) {
 			processDbService.createOrUpdateLayerProcessState(lexemeId, layerName, processStateCode);
-			processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, processStateCode, datasetCode);
+			processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, processStateCode, datasetCode, layerName);
 		}
 	}
 }

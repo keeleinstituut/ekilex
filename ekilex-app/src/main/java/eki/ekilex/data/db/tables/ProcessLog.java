@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProcessLog extends TableImpl<ProcessLogRecord> {
 
-    private static final long serialVersionUID = -237579678;
+    private static final long serialVersionUID = 1610528757;
 
     /**
      * The reference instance of <code>public.process_log</code>
@@ -91,6 +91,11 @@ public class ProcessLog extends TableImpl<ProcessLogRecord> {
      * The column <code>public.process_log.dataset_code</code>.
      */
     public final TableField<ProcessLogRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+
+    /**
+     * The column <code>public.process_log.layer_name</code>.
+     */
+    public final TableField<ProcessLogRecord, String> LAYER_NAME = createField("layer_name", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.process_log</code> table reference

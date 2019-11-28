@@ -7,15 +7,18 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DbConstant;
 import eki.common.constant.LexemeType;
 import eki.common.constant.RelationStatus;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynMeaningWord;
 import eki.ekilex.data.SynRelation;
@@ -25,6 +28,7 @@ import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.service.db.CudDbService;
+import eki.ekilex.service.db.ProcessDbService;
 
 @Component
 public class SynSearchService extends AbstractWordSearchService {
@@ -33,6 +37,9 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private SynSearchDbService synSearchDbService;
+
+	@Autowired
+	private ProcessDbService processDbService;
 
 	@Autowired
 	private CudDbService cudDbService;
@@ -46,6 +53,8 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
+		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode);
+		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(DbConstant.PROCESS_STATE_COMPLETE, lexemeData.getSynLayerProcessStateCode()));
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction);
 		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, wordDetails.getLanguage()));
@@ -57,6 +66,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
+		wordDetails.setSynLayerComplete(isSynLayerComplete);
 
 		return wordDetails;
 	}

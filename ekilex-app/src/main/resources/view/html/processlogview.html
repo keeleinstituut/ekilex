@@ -13,7 +13,9 @@
               <span th:text="${#dates.format(logRow.eventOn, 'dd.MM.yyyy HH:mm')}"></span>
               -
               <span th:text="${logRow.eventBy}"></span>
-              <span th:if="${logRow.processStateCode != null}">muutis haldusolekut</span>
+              <th:block th:if="${logRow.processStateCode != null}">
+                <span th:text="#{|processlog.${logRow.layerName}|(${logRow.eventBy})}"></span>
+              </th:block>
             </div>
             <div class="col-1">
               <span class="float-right" th:text="${logRow.datasetCode}"></span>
