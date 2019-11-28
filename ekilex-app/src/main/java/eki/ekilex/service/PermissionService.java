@@ -113,13 +113,17 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
-	public boolean isGrantedForMeaning(Long meaningId, String datasetCode) {
-		return permissionDbService.isGrantedForMeaning(meaningId, datasetCode);
+	public boolean meaningDatasetExists(Long meaningId, String datasetCode) {
+		return permissionDbService.meaningDatasetExists(meaningId, datasetCode);
+	}
+
+	@Transactional
+	public boolean wordDatasetExists(Long wordId, String datasetCode) {
+		return permissionDbService.wordDatasetExists(wordId, datasetCode);
 	}
 
 	@Transactional
 	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId, Long userId) {
-
 		return permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
 	}
 }

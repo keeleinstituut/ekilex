@@ -58,8 +58,21 @@ public class PermDataUtil {
 			return false;
 		}
 		String datasetCode = userRole.getDatasetCode();
-		boolean isGrantedForMeaning = permissionService.isGrantedForMeaning(meaningId, datasetCode);
-		return isGrantedForMeaning;
+		boolean datasetExists = permissionService.meaningDatasetExists(meaningId, datasetCode);
+		return datasetExists;
+	}
+
+	public boolean isWordLexemeCrudGranted(Long wordId, SessionBean sessionBean) {
+		if (sessionBean == null) {
+			return false;
+		}
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return false;
+		}
+		String datasetCode = userRole.getDatasetCode();
+		boolean datasetExists = permissionService.wordDatasetExists(wordId, datasetCode);
+		return datasetExists;
 	}
 
 	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId) {

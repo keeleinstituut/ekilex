@@ -100,7 +100,10 @@
   </div>
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:data-id="${wordId}" id="syn_details_div" class="h-100"
-      th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')}">
+      th:with="
+          isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
+          isWordLexemeCrudGranted=${#vars.permDataUtil.isWordLexemeCrudGranted(#vars.wordId, #vars.sessionBean)}
+          ">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div th:replace="syndialog :: add_word_process_log_dlg"></div>
       <div class="navigate-panel card shadow h-100">
@@ -110,7 +113,8 @@
             <button type="button" class="btn btn-secondary btn-compact"
                     id="synLayerCompleteBtn"
                     th:data-word-id="${wordId}"
-                    th:disabled="${details.synLayerComplete}">Märgi tehtuks</button>
+                    th:disabled="${details.synLayerComplete}"
+                    sec:authorize="${#vars.isWordLexemeCrudGranted}">Märgi tehtuks</button>
             <div sec:authorize="${#vars.isWordCrudGranted}" class="ml-auto d-flex align-items-center flex-row">
               <span class="text-secondary mr-1"> Logid </span>
               <div class="btn-group ">

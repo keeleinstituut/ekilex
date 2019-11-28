@@ -357,22 +357,6 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForMeaning(Long meaningId, String datasetCode) {
-
-		return create
-				.select(field(DSL.count(MEANING.ID).gt(0)).as("is_granted"))
-				.from(MEANING)
-				.where(
-						MEANING.ID.eq(meaningId)
-								.andExists(DSL
-										.select(LEXEME.ID)
-										.from(LEXEME)
-										.where(LEXEME.MEANING_ID.eq(MEANING.ID)
-												.and(LEXEME.DATASET_CODE.eq(datasetCode))
-												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
-				.fetchSingleInto(Boolean.class);
-	}
-
 	public boolean isMeaningAnyLexemeCrudGranted(Long userId, Long meaningId) {
 
 		return create
@@ -607,6 +591,38 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.fetchInto(String.class);
 
 		return CollectionUtils.containsAll(permittedDatasets, linkedDatasets);
+	}
+
+	public boolean meaningDatasetExists(Long meaningId, String datasetCode) {
+	
+		return create
+				.select(field(DSL.count(MEANING.ID).gt(0)).as("is_granted"))
+				.from(MEANING)
+				.where(
+						MEANING.ID.eq(meaningId)
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.MEANING_ID.eq(MEANING.ID)
+												.and(LEXEME.DATASET_CODE.eq(datasetCode))
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordDatasetExists(Long wordId, String datasetCode) {
+		
+		return create
+				.select(field(DSL.count(WORD.ID).gt(0)).as("is_granted"))
+				.from(WORD)
+				.where(
+						WORD.ID.eq(wordId)
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID)
+												.and(LEXEME.DATASET_CODE.eq(datasetCode))
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+				.fetchSingleInto(Boolean.class);
 	}
 
 	public eki.ekilex.data.DatasetPermission getDatasetPermission(Long id) {
