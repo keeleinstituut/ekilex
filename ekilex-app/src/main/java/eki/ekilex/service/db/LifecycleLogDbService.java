@@ -309,19 +309,31 @@ public class LifecycleLogDbService {
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.WORD_RELATION.equals(entity)) {
-			Map<String, Object> entityData = helper.getWordRelationData(create, entityId);
-			Map<String, Object> relatedWordData = helper.getWordData(create, (Long) entityData.get("word2_id"));
-			String logString = entityData.get("word_rel_type_code") + " -> " + relatedWordData.get("value");
-			Long lifecycleLogId;
-			if (LifecycleEventType.DELETE == eventType) {
-				logData.setRecent(logString);
-				lifecycleLogId = createLifecycleLog(logData);
-			} else {
-				logData.setEntry(logString);
-				lifecycleLogId = createLifecycleLog(logData);
+			if (LifecycleProperty.VALUE.equals(property)) {
+				Map<String, Object> entityData = helper.getWordRelationData(create, entityId);
+				Map<String, Object> relatedWordData = helper.getWordData(create, (Long) entityData.get("word2_id"));
+				String logString = entityData.get("word_rel_type_code") + " -> " + relatedWordData.get("value");
+				Long lifecycleLogId;
+				if (LifecycleEventType.DELETE == eventType) {
+					logData.setRecent(logString);
+					lifecycleLogId = createLifecycleLog(logData);
+				} else {
+					logData.setEntry(logString);
+					lifecycleLogId = createLifecycleLog(logData);
+				}
+				Long wordId = (Long) entityData.get("word1_id");
+				createWordLifecycleLog(wordId, lifecycleLogId);
+			} else if (LifecycleProperty.STATUS.equals(property)) {
+				Map<String, Object> entityData = helper.getWordRelationData(create, entityId);
+				String recent = (String) entityData.get("relation_status");
+				boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+				if (!isRecentValueValid) {
+					return;
+				}
+				Long wordId = (Long) entityData.get("word1_id");
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createWordLifecycleLog(wordId, lifecycleLogId);
 			}
-			Long wordId = (Long) entityData.get("word1_id");
-			createWordLifecycleLog(wordId, lifecycleLogId);
 		} else if (LifecycleEntity.WORD_RELATION_GROUP_MEMBER.equals(entity)) {
 			Map<String, Object> memberData = helper.getWordRelationGroupMember(create, entityId);
 			Long lifecycleLogId = createLifecycleLog(logData);
@@ -558,6 +570,14 @@ public class LifecycleLogDbService {
 			logData.setEntityId(lexemeId);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleProperty.MATCH.equals(property)) {
+			Long meaningId = create
+					.select(LEXEME.MEANING_ID)
+					.from(LEXEME)
+					.where(LEXEME.ID.eq(entityId))
+					.fetchSingleInto(Long.class);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		}
 	}
 

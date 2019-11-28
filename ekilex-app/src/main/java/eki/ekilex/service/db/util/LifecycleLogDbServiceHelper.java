@@ -385,6 +385,7 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 						WORD_RELATION.WORD1_ID,
 						WORD_RELATION.WORD2_ID,
 						WORD_RELATION.WORD_REL_TYPE_CODE,
+						WORD_RELATION.RELATION_STATUS,
 						WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
 				.where(WORD_RELATION.ID.eq(entityId))
