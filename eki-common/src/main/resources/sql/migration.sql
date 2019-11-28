@@ -104,8 +104,6 @@ create type type_usage as (usage text, usage_prese text, usage_lang char(3), com
 --NB! restore the view_ww_lexeme in create_views.sql
 --NB! restore the view_ww_word in create_views.sql
 
---> kuni siiani testis olemas 25.11.2019
-
 -- 25.11.2019
 alter table lexeme alter column process_state_code set not null;
 
@@ -272,4 +270,12 @@ where lcl.id = mlcl.lifecycle_log_id
   and lcl.entity_prop = 'FREEFORM_SOURCE_LINK';
 
 -- 28.11.2019
+update lifecycle_log lcl
+set entity_name = 'USAGE',
+	entity_prop = 'SOURCE_LINK'
+where entity_name = 'FREEFORM_SOURCE_LINK'
+  and entity_prop = 'VALUE';
+
 alter table process_log add column layer_name varchar(100) null;
+
+--> kuni siiani testis olemas 28.11.2019
