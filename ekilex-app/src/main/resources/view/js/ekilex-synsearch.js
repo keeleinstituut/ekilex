@@ -11,7 +11,7 @@ function initialise() {
 		console.log('IS_KEYBOARD_MODE: ' + IS_KEYBOARD_MODE);
 		$('body').addClass('keyboard-edit-mode-active');
 		//TODO refactor
-		$('.keyboard-nav-list').each(function (e) {
+		$('.keyboard-nav-list').each(function(e) {
 			$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
 		});
 		activateList(3);
@@ -20,16 +20,16 @@ function initialise() {
 
 	});
 
-	function activateList(listIndx, itemIndx=0){
-		let activatedList = $('div[data-panel-index="'+listIndx+'"]');
+	function activateList(listIndx, itemIndx = 0) {
+		let activatedList = $('div[data-panel-index="' + listIndx + '"]');
 		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-		itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="'+itemIndx+'"]');
+		itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="' + itemIndx + '"]');
 		itemToSelect.addClass('keyboard-nav-list-item-active');
 		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 		changeSynonymDefinitionDisplay('show');
 	}
 
-	$(document).on("click", ".popover-close-btn" , function(){
+	$(document).on("click", ".popover-close-btn", function() {
 		$(this).parents(".popover").popover('hide');
 	});
 
@@ -47,7 +47,9 @@ function initialise() {
 		let id = $(this).data('id');
 
 		let markedSynWordId = $(document).find('.keyboard-nav-list-item-selected').children(':first').data('word-id');
-		$('#synSearchResultsDiv').find('.list-group-item').each(function () {$(this).removeClass('keyboard-nav-list-item-active active');});
+		$('#synSearchResultsDiv').find('.list-group-item').each(function() {
+			$(this).removeClass('keyboard-nav-list-item-active active');
+		});
 		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
 
 		$(this).parent().addClass('active');
@@ -69,7 +71,7 @@ function initialise() {
 			$('.syn-stats-popover').popover({
 				template:'<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header" ></h3><button type="button" class="bnt btn-sm btn-outline-light border-0  popover-close-btn"><i class="fa fa-close" aria-hidden="true"></i></button></div><div class="popover-body"></div></div>',
 				placement:'top',
-				content: function () {
+				content: function() {
 					// Get the content from the hidden sibling.
 					return $(this).siblings('.syn-stats-content').html();
 				}
@@ -77,7 +79,7 @@ function initialise() {
 
 			$(document).find('.draggable-synonym').draggable({
 				revert: "invalid",
-				appendTo:"body",
+				appendTo: "body",
 				containment: "window",
 				helper: "clone"
 			});
@@ -97,7 +99,7 @@ function initialise() {
 					"ui-droppable-active": "ui-state-active",
 					"ui-droppable-hover": "ui-state-hover"
 				},
-				drop: function (event, ui) {
+				drop: function(event, ui) {
 					let relationId = ui.draggable.parent().data('id');
 					console.log('relation id ' + relationId)
 					let meaningId = $(this).data('meaning-id');
@@ -111,16 +113,16 @@ function initialise() {
 				}
 			});
 
-			if(IS_KEYBOARD_MODE){
+			if (IS_KEYBOARD_MODE) {
 				activateList(3);
 			}
 
 			//KEEP TRACK OF WHAT WAS THE LAST SEARCH RESULT DISPLAYED
-			if(activeSearchResultID !== id){
+			if (activeSearchResultID !== id) {
 				activeSearchResultID = id;
 			}
 			//IF AN ALLREADY ACTIVE DETAILS VIEW WAS SELECTED KEEP THE SCROLLPOSITIONS
-			else if(activeSearchResultID === id){
+			else if (activeSearchResultID === id) {
 				setScrollPositions(savedScrollPositions);
 			}
 
@@ -178,7 +180,7 @@ function initialise() {
 		if (panelIndex == "2") {
 			let wordId = activeDiv.data('marked-word-id');
 
-			return  navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+			return navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
 		}
 		return false;
 	}
@@ -227,7 +229,7 @@ function initialise() {
 	}
 
 	function checkKey(e) {
-		if (IS_KEYBOARD_MODE == false){
+		if (IS_KEYBOARD_MODE == false) {
 			console.log("KEYBOARD MODE NOT ENABLED");
 			return;
 		}
@@ -235,7 +237,7 @@ function initialise() {
 		//TODO refactor all this
 
 		var tag = e.target.tagName.toLowerCase();
-		if ( tag == 'input' || tag == 'textarea') {
+		if (tag == 'input' || tag == 'textarea') {
 			return;
 		}
 
@@ -262,15 +264,15 @@ function initialise() {
 
 				if (newItem.length != 0) {
 					console.log('navItem exists');
-					if(currentActivePanelIndex=="3"){
+					if (currentActivePanelIndex == "3") {
 						changeSynonymDefinitionDisplay('hide');
 					}
 					newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
 					unActivateItem(currentSelectedItem, true);
 					$(currentActiveList).stop(true);
-					$(currentActiveList).scrollTo(newItem,320,{axis:'y', offset:-64});
-					if(currentActivePanelIndex=="3"){
+					$(currentActiveList).scrollTo(newItem, 320, {axis: 'y', offset: -64});
+					if (currentActivePanelIndex == "3") {
 						changeSynonymDefinitionDisplay('show');
 					}
 				}
@@ -281,13 +283,15 @@ function initialise() {
 		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
 			if (isValidPanelChangeKeyPress(e.keyCode)) {
 
-				$('div[data-panel-index]').each(function () {$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');});
+				$('div[data-panel-index]').each(function() {
+					$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
+				});
 				if (currentActivePanelIndex == "3") {
 					changeSynonymDefinitionDisplay('hide');
 				}
 
 				let selectedPanelIndex = 1;
-				let PANEL_KEYCODES = {"49": "1", "50": "2", "51" : "3"};
+				let PANEL_KEYCODES = {"49": "1", "50": "2", "51": "3"};
 
 				let isArrowKey = e.keyCode == 37 || e.keyCode == 39;
 				if (isArrowKey) {
@@ -326,11 +330,11 @@ function initialise() {
 			if (currentActivePanelIndex == "3") {
 				changeSynonymDefinitionDisplay('hide');
 			}
-			$('.keyboard-nav-list').each(function () {
+			$('.keyboard-nav-list').each(function() {
 				$(this).removeAttr('data-marked-word-id');
 				$(this).removeAttr('data-marked-relation-id'); //TODO refactor
 				$(this).removeAttr('data-active-panel');
-				$(this).find('[data-navigate-index]').each(function () {
+				$(this).find('[data-navigate-index]').each(function() {
 					unActivateItem($(this), true);
 				});
 				$('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
@@ -351,7 +355,9 @@ function initialise() {
 			//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
 			if (currentActivePanelIndex == "3") {
 				changeSynonymDefinitionDisplay('hide');
-				currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function () {$(this).removeClass('.keyboard-nav-list-item-selected');});
+				currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function() {
+					$(this).removeClass('.keyboard-nav-list-item-selected');
+				});
 				currentSelectedItem.addClass('keyboard-nav-list-item-selected');
 
 				unActivateItem(currentSelectedItem, false);
@@ -406,19 +412,40 @@ function initialise() {
 
 	}
 
-
 	$(document).on('keydown', checkKey);
 
 	if ($('#synSearchResultsDiv').html() == undefined) {
 		$(document).find('input[name="simpleSearchFilter"]').focus();
 	}
 
+	$(document).on('show.bs.modal', '#processLogDlg', function(e) {
+		var dlg = $(this);
+		var link = $(e.relatedTarget);
+		var url = link.attr('href');
+		dlg.find('.close').focus();
+		dlg.find('.modal-body').html(null);
+		$.get(url).done(function(data) {
+			dlg.find('.modal-body').html(data);
+		});
+	});
+
+	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
+		let dlg = $(this);
+		let link = $(e.relatedTarget);
+		let url = link.attr('href');
+		dlg.find('.close').focus();
+		dlg.find('.modal-body').html(null);
+		$.get(url).done(function(data) {
+			dlg.find('.modal-body').html(data);
+		});
+	});
+
 }
 
-function getScrollPositions(){
-	let scrollPositions=[];
+function getScrollPositions() {
+	let scrollPositions = [];
 
-	$('.keyboard-nav-list').each(function () {
+	$('.keyboard-nav-list').each(function() {
 		var scrollTop = $(this).scrollTop();
 		scrollPositions.push(scrollTop);
 
@@ -426,13 +453,13 @@ function getScrollPositions(){
 	return scrollPositions;
 }
 
-function setScrollPositions(positions){
-	$('.keyboard-nav-list').each(function (i) {
+function setScrollPositions(positions) {
+	$('.keyboard-nav-list').each(function(i) {
 		$(this).scrollTop(positions[i]);
 	})
 }
 
-function changeSynonymDefinitionDisplay(displayOption='toggle') {
+function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 	$('.keyboard-nav-list-item-active .list-item-value').tooltip(displayOption);
 }
 

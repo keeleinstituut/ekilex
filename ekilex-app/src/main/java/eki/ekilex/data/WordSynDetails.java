@@ -18,6 +18,8 @@ public class WordSynDetails extends AbstractDataObject {
 
 	private List<SynRelation> relations;
 
+	private Integer wordProcessLogCount;
+
 	public String getWord() {
 		return word;
 	}
@@ -58,4 +60,11 @@ public class WordSynDetails extends AbstractDataObject {
 		this.relations = relations;
 	}
 
+	public Integer getWordProcessLogCount() {
+		return wordProcessLogCount;
+	}
+
+	public void setWordProcessLogCount(Integer wordProcessLogCount) {
+		this.wordProcessLogCount = wordProcessLogCount;
+	}
 }

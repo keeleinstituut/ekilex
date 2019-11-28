@@ -57,11 +57,6 @@ $(document).on("show.bs.modal", "[id^=addWordRelationDlg_]", function() {
 	initMultiselectRelationDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addWordProcessLogDlg_]", function(e) {
-	initEkiEditorDlg($(this));
-	alignAndFocus(e, $(this));
-});
-
 $(document).on("show.bs.modal", "[id^=editWordAspectDlg_]", function() {
 	initSelectDlg($(this));
 });
