@@ -504,6 +504,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConsta
 		Map<String, Object> dataset = basicDbService.select(DATASET, paramMap);
 		if (dataset == null) {
 			paramMap.put("name", datasetCode);
+			paramMap.put("type", "TERM");
 			basicDbService.createWithoutId(DATASET, paramMap);
 		}
 	}
