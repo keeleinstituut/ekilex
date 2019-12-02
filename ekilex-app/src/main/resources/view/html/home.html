@@ -36,6 +36,10 @@
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="${#authentication.principal.datasetPermissionsExist && !#authentication.principal.hasSingleDatasetPermission}"></th:block>
+        <hr/>
+        <p>
+          <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>
+        </p>
       </div>
     </div>
   </div>
