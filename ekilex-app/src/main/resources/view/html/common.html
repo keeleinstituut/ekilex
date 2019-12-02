@@ -112,6 +112,14 @@
       </th:block>
       <div class="navbar-nav" th:classappend="${searchMode} ? '':'ml-auto'">
         <th:block sec:authorize="isAuthenticated()">
+          <div class="btn mr-3" style="font-size: 16px">
+            <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" title="Kasutajatugi">
+              <i class="fa fa-fw fa-envelope" aria-hidden="true"></i>
+            </a>
+            <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" title="Kasutusjuhend">
+              <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+            </a>
+          </div>
           <div id="userMenuDropDown" class="dropdown user-menu">
             <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown">
               <span class="d-flex flex-wrap">
