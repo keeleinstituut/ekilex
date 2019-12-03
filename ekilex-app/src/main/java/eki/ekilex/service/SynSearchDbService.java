@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -11,12 +12,12 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
-import static eki.ekilex.data.db.Tables.LAYER_STATE;
 
 import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -168,8 +169,22 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.execute();
 	}
 
-	public void createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Long existingLexemeId) {
-		create.insertInto(LEXEME,
+	public Long getRelationId(Long word1Id, Long word2Id, String relationType) {
+		Record1<Long> relationRecord = create.select(WORD_RELATION.ID)
+				.from(WORD_RELATION)
+				.where(WORD_RELATION.WORD1_ID.eq(word1Id)
+								.and(WORD_RELATION.WORD2_ID.eq(word2Id))
+								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType))
+						)
+				.fetchOne();
+
+		return relationRecord != null ? relationRecord.get(WORD_RELATION.ID) : null;
+
+	}
+
+
+	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Long existingLexemeId) {
+		return create.insertInto(LEXEME,
 				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
 				LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
@@ -178,7 +193,9 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(existingLexemeId)))
-				.execute();
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public WordSynDetails getWordDetails(Long wordId) {

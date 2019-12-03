@@ -120,7 +120,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) {
-		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
+		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
 		String synWordValue = lookupDbService.getWordValue(wordId);
 		LogData matchLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.MATCH, existingLexemeId, synWordValue);
 		createLifecycleLog(matchLogData);
@@ -128,6 +128,20 @@ public class SynSearchService extends AbstractWordSearchService {
 		LogData relationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, relationId, RelationStatus.PROCESSED.name());
 		createLifecycleLog(relationLogData);
 		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
+
+		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
+		List<SynMeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, wordDetails.getLanguage());
+
+		for (SynMeaningWord meaningWord : meaningWords) {
+			Long meaningWordRelationId = synSearchDbService.getRelationId(meaningWord.getWordId(), wordId, RAW_RELATION_CODE);
+
+			if (meaningWordRelationId != null) {
+				LogData oppositeRelationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, meaningWordRelationId,
+						RelationStatus.PROCESSED.name());
+				createLifecycleLog(oppositeRelationLogData );
+				synSearchDbService.changeRelationStatus(meaningWordRelationId, RelationStatus.PROCESSED.name());
+			}
+		}
 	}
 
 	private void moveChangedRelationToLast(Long relationId) {
