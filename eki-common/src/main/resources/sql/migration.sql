@@ -290,4 +290,6 @@ set entity_prop = 'ID',
 where entity_prop = 'ORDER_BY'
   and event_type = 'UPDATE';
 
+alter table lexeme alter column process_state_code drop not null;
+
 --> kuni siiani testis olemas 04.12.2019

@@ -82,8 +82,6 @@ where md.id = lfcl.entity_id
   and lfcl.entity_name = 'MEANING_DOMAIN'
   and lfcl.entity_prop = 'ORDER_BY';
 
-alter table lexeme alter column process_state_code set not null;
-
 create table layer_state
 (
 	id bigserial primary key,
