@@ -828,7 +828,7 @@ public class LifecycleLogDbService {
 				String definitionValue = (String) entityData.get("value");
 				Long meaningId = (Long) entityData.get("meaning_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + definitionValue;
@@ -844,7 +844,7 @@ public class LifecycleLogDbService {
 				String relTypeCode = (String) entityData.get("lex_rel_type_code");
 				Long lexemeId = (Long) entityData.get("lexeme1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + relTypeCode;
@@ -860,7 +860,7 @@ public class LifecycleLogDbService {
 				String relTypeCode = (String) entityData.get("meaning_rel_type_code");
 				Long meaningId = (Long) entityData.get("meaning1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + relTypeCode;
@@ -876,7 +876,7 @@ public class LifecycleLogDbService {
 				String relTypeCode = (String) entityData.get("word_rel_type_code");
 				Long wordId = (Long) entityData.get("word1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + relTypeCode;
@@ -890,7 +890,7 @@ public class LifecycleLogDbService {
 			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + lexemeLogString(entityData);
@@ -906,7 +906,7 @@ public class LifecycleLogDbService {
 				String domainCode = (String) entityData.get("domain_code");
 				Long meaningId = (Long) entityData.get("meaning_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + domainCode;
