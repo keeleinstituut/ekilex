@@ -33,6 +33,7 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningWord;
+import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SourceLink;
@@ -141,6 +142,7 @@ public class LookupService extends AbstractWordSearchService {
 						String datasetCode = lexeme.getDatasetCode();
 						String datasetName = datasetNameMap.get(datasetCode);
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
+						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 						List<DefinitionRefTuple> definitionRefTuples =
 								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
@@ -150,7 +152,7 @@ public class LookupService extends AbstractWordSearchService {
 						List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 
 						lexeme.setDataset(datasetName);
-						lexeme.setMeaningWords(meaningWords);
+						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 						lexeme.setDefinitions(definitions);
 						lexeme.setGovernments(governments);
 						lexeme.setUsages(usages);
@@ -278,6 +280,7 @@ public class LookupService extends AbstractWordSearchService {
 		String datasetCode = lexeme.getDatasetCode();
 		String datasetName = datasetNameMap.get(datasetCode);
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
+		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
@@ -285,7 +288,7 @@ public class LookupService extends AbstractWordSearchService {
 
 		lexeme.setDataset(datasetName);
 		lexeme.setPos(lexemePos);
-		lexeme.setMeaningWords(meaningWords);
+		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		lexeme.setDefinitions(definitions);
 	}
 

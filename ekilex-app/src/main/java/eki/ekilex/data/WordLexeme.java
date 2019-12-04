@@ -79,7 +79,7 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private List<OrderedClassifier> meaningDomains;
 
-	private List<MeaningWord> meaningWords;
+	private List<MeaningWordLangGroup> meaningWordLangGroups;
 
 	private List<Government> governments;
 
@@ -315,12 +315,12 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.meaningDomains = meaningDomains;
 	}
 
-	public List<MeaningWord> getMeaningWords() {
-		return meaningWords;
+	public List<MeaningWordLangGroup> getMeaningWordLangGroups() {
+		return meaningWordLangGroups;
 	}
 
-	public void setMeaningWords(List<MeaningWord> meaningWords) {
-		this.meaningWords = meaningWords;
+	public void setMeaningWordLangGroups(List<MeaningWordLangGroup> meaningWordLangGroups) {
+		this.meaningWordLangGroups = meaningWordLangGroups;
 	}
 
 	public List<Government> getGovernments() {

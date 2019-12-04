@@ -16,6 +16,10 @@ public class MeaningWord extends AbstractDataObject {
 
 	private Long lexemeId;
 
+	private String lexemeType;
+
+	private Long orderBy;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -54,5 +58,21 @@ public class MeaningWord extends AbstractDataObject {
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
+	}
+
+	public String getLexemeType() {
+		return lexemeType;
+	}
+
+	public void setLexemeType(String lexemeType) {
+		this.lexemeType = lexemeType;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 }

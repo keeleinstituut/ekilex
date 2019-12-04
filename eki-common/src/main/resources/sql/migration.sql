@@ -278,4 +278,9 @@ where entity_name = 'FREEFORM_SOURCE_LINK'
 
 alter table process_log add column layer_name varchar(100) null;
 
---> kuni siiani testis olemas 28.11.2019
+-- 04.12.2019
+update lifecycle_log lcl
+set entity_prop = 'MEANING_WORD'
+where entity_prop = 'MATCH';
+
+--> kuni siiani testis olemas 04.12.2019

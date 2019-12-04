@@ -38,10 +38,12 @@ import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
+import eki.ekilex.data.MeaningWord;
+import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteSourceTuple;
-import eki.ekilex.data.OdUsageDefinition;
 import eki.ekilex.data.OdUsageAlternative;
+import eki.ekilex.data.OdUsageDefinition;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
@@ -789,5 +791,28 @@ public class ConversionUtil implements DbConstant {
 			word.setPrefixoid(isPrefixoid);
 			word.setSuffixoid(isSuffixoid);
 		}
+	}
+
+	public List<MeaningWordLangGroup> composeMeaningWordLangGroups(List<MeaningWord> meaningWords, String mainWordLang) {
+
+		List<MeaningWordLangGroup> meaningWordLangGroups = new ArrayList<>();
+		Map<String, MeaningWordLangGroup> meaningWordLangGroupMap = new HashMap<>();
+		List<MeaningWord> meaningWordsOrderBy = meaningWords.stream().sorted(Comparator.comparing(MeaningWord::getOrderBy)).collect(Collectors.toList());
+
+		for (MeaningWord meaningWord : meaningWordsOrderBy) {
+			String lang = meaningWord.getLanguage();
+			MeaningWordLangGroup meaningWordLangGroup = meaningWordLangGroupMap.get(lang);
+			if (meaningWordLangGroup == null) {
+				meaningWordLangGroup = new MeaningWordLangGroup();
+				meaningWordLangGroup.setLang(lang);
+				meaningWordLangGroup.setMeaningWords(new ArrayList<>());
+				meaningWordLangGroupMap.put(lang, meaningWordLangGroup);
+				meaningWordLangGroups.add(meaningWordLangGroup);
+			}
+			meaningWordLangGroup.getMeaningWords().add(meaningWord);
+		}
+
+		meaningWordLangGroups.sort(Comparator.comparing(meaningWordLangGroup -> !StringUtils.equals(meaningWordLangGroup.getLang(), mainWordLang)));
+		return meaningWordLangGroups;
 	}
 }

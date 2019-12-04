@@ -41,13 +41,15 @@
               <td class="p-0">
                 <div>
                   <span th:text="${#strings.listJoin(lexeme.words, ', ')}" class="ttl"></span>
-                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                    <span class="pt-0" style="color: #007bff;">
-                      <span th:text="${meaningWord.value}"></span>
-                      <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.language) + ' )'}"></span>
-                    </span>
-                    <span th:unless="${meaningWordIter.last}">|</span>
+                  <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
+                    <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
+                      <span class="pt-0" style="color: #007bff;">
+                        <span th:text="${meaningWord.value}"></span>
+                        <span th:text="${meaningWord.homonymNumber}"></span>
+                        <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.language) + ' )'}"></span>
+                      </span>
+                      <span th:unless="${meaningWordIter.last}">|</span>
+                    </th:block>
                   </th:block>
                   <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.lexemeId}"/>
                   <small th:if="${lexeme.levels != null}" th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
@@ -75,10 +77,12 @@
               <td class="p-0">
                 <div>
                   <span th:text="${#strings.listJoin(lexeme.words, ', ')}" class="ttl"></span>
-                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                    <span class="pt-0" style="color: #007bff;"
-                          th:text="${meaningWord.value + ' ' + meaningWord.homonymNumber + ' ( ' + viewUtil.getLangIso2(meaningWord.language) + ' )'}"> </span>
-                    <span th:unless="${meaningWordIter.last}">|</span>
+                  <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
+                    <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
+                      <span class="pt-0" style="color: #007bff;"
+                            th:text="${meaningWord.value + ' ' + meaningWord.homonymNumber + ' ( ' + viewUtil.getLangIso2(meaningWord.language) + ' )'}"> </span>
+                      <span th:unless="${meaningWordIter.last}">|</span>
+                    </th:block>
                   </th:block>
                   <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.meaningId}"/>
                 </div>

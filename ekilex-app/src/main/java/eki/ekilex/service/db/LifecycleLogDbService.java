@@ -570,14 +570,19 @@ public class LifecycleLogDbService {
 			logData.setEntityId(lexemeId);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-		} else if (LifecycleProperty.MATCH.equals(property)) {
-			Long meaningId = create
-					.select(LEXEME.MEANING_ID)
-					.from(LEXEME)
-					.where(LEXEME.ID.eq(entityId))
-					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
-			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.MEANING_WORD.equals(property)) {
+			if (LifecycleEventType.CREATE.equals(eventType)) {
+				Long meaningId = create
+						.select(LEXEME.MEANING_ID)
+						.from(LEXEME)
+						.where(LEXEME.ID.eq(entityId))
+						.fetchSingleInto(Long.class);
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createMeaningLifecycleLog(meaningId, lifecycleLogId);
+			} else if (LifecycleEventType.ORDER_BY.equals(eventType)) {
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(entityId, lifecycleLogId);
+			}
 		}
 	}
 

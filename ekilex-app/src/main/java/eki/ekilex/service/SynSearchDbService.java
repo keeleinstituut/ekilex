@@ -26,8 +26,8 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.FormMode;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
+import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SynMeaningWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynDetails;
@@ -220,7 +220,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchOneInto(WordSynDetails.class);
 	}
 
-	public List<SynMeaningWord> getSynMeaningWords(Long lexemeId, String languageCode) {
+	public List<MeaningWord> getSynMeaningWords(Long lexemeId, String languageCode) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -232,10 +232,11 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.select(
 						w2.ID.as("word_id"),
 						f2.VALUE,
-						w2.HOMONYM_NR,
+						w2.HOMONYM_NR.as("homonym_number"),
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"),
-						l2.TYPE.as("lexeme_type"))
+						l2.TYPE.as("lexeme_type"),
+						l2.ORDER_BY)
 				.from(l1, l2, w2, p2, f2)
 				.where(
 						l1.ID.eq(lexemeId)
@@ -250,8 +251,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(w2.LANG.eq(languageCode))
 				)
 				.groupBy(w2.ID, f2.VALUE, l2.ID)
-				.orderBy(f2.VALUE)
-				.fetchInto(SynMeaningWord.class);
+				.orderBy(w2.LANG, l2.ORDER_BY)
+				.fetchInto(MeaningWord.class);
 	}
 
 	public List<SynRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {

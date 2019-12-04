@@ -158,21 +158,24 @@
                   data-lexeme-title
                   th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-4': ''">
                   <div class="d-flex flex-row flex-nowrap align-items-start">
-                    <div class="d-flex flex-row flex-wrap">
-                      <span th:if="${lexeme.levels != null}"
-                        th:data-id="${lexeme.lexemeId}"
-                        th:data-level1="${lexeme.level1}"
-                        th:data-level2="${lexeme.level2}"
-                        class="px-2 py-0 bg-light rounded font-weight-bold mr-2"
-                        th:text="${lexeme.levels}"> </span>
-                      <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                        <div class="btn-custom">
-                          <span th:text="${meaningWord.value}"></span>
-                          <span th:text="${meaningWord.homonymNumber}"></span>
-                          <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
-                        </div>
-                        <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
-                      </th:block>
+                    <span th:if="${lexeme.levels != null}"
+                      th:data-id="${lexeme.lexemeId}"
+                      th:data-level1="${lexeme.level1}"
+                      th:data-level2="${lexeme.level2}"
+                      class="px-2 py-0 bg-light rounded font-weight-bold mr-2"
+                      th:text="${lexeme.levels}"> </span>
+                    <div>
+                      <div class="d-flex flex-row flex-wrap" th:each="meaningWordLangGroup,meaningWordLangGroupIter : ${lexeme.meaningWordLangGroups}">
+                        <span th:if="${lexeme.wordLang == meaningWordLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
+                        <span th:unless="${lexeme.wordLang == meaningWordLangGroup.lang}" th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
+                        <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
+                          <span class="btn-custom">
+                            <span th:text="${meaningWord.value}"></span>
+                            <span th:text="${meaningWord.homonymNumber}"></span>
+                            <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
+                          </span>
+                        </span>
+                      </div>
                     </div>
                     <div class="ml-auto d-flex flex-row align-items-center">
                       <b th:text="${lexeme.dataset}" class="mr-2"></b>
@@ -198,7 +201,7 @@
                     <i class="fa fa-angle-up" aria-hidden="true"></i>
                   </button>
                   <div class="d-flex flex-row align-items-center flex-wrap">
-                    <div class="d-flex align-items-center flex-wrap">
+                    <div class="d-flex flex-wrap">
                       <span class="btn pl-1 pr-1" th:if="${lexeme.levels != null}"
                         th:data-id="${lexeme.lexemeId}"
                         th:data-level1="${lexeme.level1}"
@@ -216,28 +219,44 @@
                         </span>
                       </span>
                       <span class="pl-1 pr-1" th:if="${lexeme.wordDisplayMorphCode != null}" th:text="'[' + ${lexeme.wordDisplayMorphCode} + ']'"></span>
-                      <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                        <div class="hidden-buttons">
-                          <button type="button" class="btn btn-link pl-0 pr-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
-                            <span th:text="${meaningWord.value}"></span>
-                            <span th:text="${meaningWord.homonymNumber}"></span>
-                            <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
+                      <div>
+                        <div th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}"
+                          class="orderable d-flex flex-row flex-wrap mr-2"
+                          data-op-code="lexeme_meaning_word"
+                          th:data-additional-info="${lexeme.lexemeId}">
+                          <span th:if="${lexeme.wordLang == meaningWordLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
+                          <span th:unless="${lexeme.wordLang == meaningWordLangGroup.lang}" th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
+                          <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
                             th:data-id="${meaningWord.lexemeId}"
-                            data-callback="refreshDetails"
-                            data-toggle="deleteLexemeAndWordAndMeaning"
-                            sec:authorize="${#vars.isLexemeCrudGranted}">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
+                            th:data-orderby="${meaningWord.orderBy}">
+                            <div class="hidden-buttons">
+                              <button type="button" th:hidden="${meaningWordIter.first}" class="btn badge badge-secondary do-refresh order-up" title="Muuda järjestust">
+                                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                              </button>
+                              <button type="button" class="btn btn-link p-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
+                                <span th:text="${meaningWord.value}"></span>
+                                <span th:text="${meaningWord.homonymNumber}"></span>
+                              </button>
+                              <button type="button" class="btn badge badge-warning"
+                                th:data-id="${meaningWord.lexemeId}"
+                                data-callback="refreshDetails"
+                                data-toggle="deleteLexemeAndWordAndMeaning"
+                                sec:authorize="${#vars.isLexemeCrudGranted}">
+                                <i class="fa fa-remove" aria-hidden="true"></i>
+                              </button>
+                              <button type="button" th:hidden="${meaningWordIter.last}" class="btn  badge badge-secondary do-refresh order-down" title="Muuda järjestust">
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                              </button>
+                              <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
+                            </div>
+                          </div>
                         </div>
-                        <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
-                      </th:block>
+                      </div>
                     </div>
                     <div>
                       <a class="btn btn-sm btn-primary" title="Ühenda tähendused" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}" sec:authorize="${#vars.isLexemeCrudGranted}">Ühenda</a>
                       <a class="btn btn-sm btn-primary" th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}"
-                        th:if="${!#lists.isEmpty(lexeme.meaningWords)}" data-toggle="confirmation"
+                        th:if="${!#lists.isEmpty(lexeme.meaningWordLangGroups)}" data-toggle="confirmation"
                         data-placement="right"
                         data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
                         sec:authorize="${#vars.isLexemeCrudGranted}">Lahuta</a>

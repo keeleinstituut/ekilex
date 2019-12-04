@@ -119,6 +119,15 @@ public class CudService extends AbstractService {
 		}
 	}
 
+	@Transactional
+	public void updateLexemeMeaningWordOrdering(List<ListData> items, Long lexemeId) {
+		LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, lexemeId);
+		createLifecycleLog(logData);
+		for (ListData item : items) {
+			cudDbService.updateLexemeOrderby(item);
+		}
+	}
+
 	//@PreAuthorize("hasPermission(#id, 'USAGE', 'DATASET:CRUD')")
 	@Transactional
 	public void updateUsageValue(Long id, String valuePrese, Complexity complexity) {

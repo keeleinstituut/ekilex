@@ -203,14 +203,24 @@
                       </th:block>
                     </div>
                   </div>
-                  <div class="d-flex flex-row flex-wrap">
-                    <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                      <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}" />
+                  <div th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}"
+                    class="orderable d-flex flex-row flex-wrap"
+                    data-op-code="lexeme_meaning_word"
+                    th:data-additional-info="${lexeme.lexemeId}">
+                    <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
+                      th:data-id="${meaningWord.lexemeId}"
+                      th:data-orderby="${meaningWord.orderBy}">
+                      <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                       <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
+                        <button type="button" th:hidden="${meaningWordIter.first}" class="hover-actions btn btn-xs btn-secondary order-up do-refresh mr-2" title="Muuda järjestust">
+                          <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                        </button>
                         <a href="#" class="mr-2">
                           <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${meaningWord.value}"></span>
-                          <span th:text="${meaningWord.homonymNumber}"></span>
-                          <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
+                          <span th:if="${meaningWord.homonymNumber > 1}"
+                            th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
+                            th:text="${meaningWord.homonymNumber}">
+                          </span>
                         </a>
                         <button type="button" class="hover-actions btn btn-secondary btn-xs"
                           th:data-id="${meaningWord.lexemeId}"
@@ -219,9 +229,12 @@
                           sec:authorize="${#vars.isLexemeCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda sünonüüm"></i>
                         </button>
+                        <button type="button" th:hidden="${meaningWordIter.last}" class="hover-actions btn btn-xs btn-secondary order-down do-refresh ml-2" title="Muuda järjestust">
+                          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                        <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                       </div>
-                      <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
-                    </th:block>
+                    </div>
                   </div>
                 </div>
               </div>

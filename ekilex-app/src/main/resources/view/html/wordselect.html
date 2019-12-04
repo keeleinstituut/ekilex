@@ -49,8 +49,8 @@
           <hr />
           <div>
             <span th:each="lexeme, lexemeIter : ${wordDescript.lexemes}">
-              <th:block th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
-                <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+              <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
+                <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
                   <span th:text="${meaningWord.value}"></span>
                   <span th:text="${meaningWord.homonymNumber}"></span>
                   <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>

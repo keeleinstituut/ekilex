@@ -98,11 +98,11 @@ function showFieldError(field, errorText) {
 	}
 }
 
-
 function changeItemOrdering(target, delta) {
 	let orderBlock = target.closest('.orderable');
 	let opCode = orderBlock.attr("data-op-code");
 	let itemToMove = target.closest('[data-orderby]');
+	let additionalInfo = orderBlock.attr('data-additional-info');
 	let items = orderBlock.find('[data-orderby]');
 	let itemToMovePos = items.index(itemToMove);
 	let orderedItems = [];
@@ -128,7 +128,8 @@ function changeItemOrdering(target, delta) {
 	}
 	return {
 		opCode: opCode,
-		items: orderedItems
+		items: orderedItems,
+		additionalInfo: additionalInfo
 	};
 }
 
