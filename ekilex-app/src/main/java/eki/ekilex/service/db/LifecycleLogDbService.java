@@ -810,6 +810,11 @@ public class LifecycleLogDbService {
 
 	public void createListOrderingLog(LogData logData) {
 
+		LifecycleEventType eventType = logData.getEventType();
+		if (!LifecycleEventType.ORDER_BY.equals(eventType)) {
+			return;
+		}
+
 		LifecycleEntity entity = logData.getEntityName();
 		LifecycleProperty property = logData.getProperty();
 		ListData listData = logData.getListData();
@@ -818,7 +823,7 @@ public class LifecycleLogDbService {
 		logData.setEntityId(entityId);
 
 		if (LifecycleEntity.DEFINITION.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getDefinitionData(create, entityId);
 				String definitionValue = (String) entityData.get("value");
 				Long meaningId = (Long) entityData.get("meaning_id");
@@ -834,7 +839,7 @@ public class LifecycleLogDbService {
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.LEXEME_RELATION.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeRelationData(create, entityId);
 				String relTypeCode = (String) entityData.get("lex_rel_type_code");
 				Long lexemeId = (Long) entityData.get("lexeme1_id");
@@ -850,7 +855,7 @@ public class LifecycleLogDbService {
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.MEANING_RELATION.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getMeaningRelationData(create, entityId);
 				String relTypeCode = (String) entityData.get("meaning_rel_type_code");
 				Long meaningId = (Long) entityData.get("meaning1_id");
@@ -866,7 +871,7 @@ public class LifecycleLogDbService {
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.WORD_RELATION.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getWordRelationData(create, entityId);
 				String relTypeCode = (String) entityData.get("word_rel_type_code");
 				Long wordId = (Long) entityData.get("word1_id");
@@ -882,7 +887,7 @@ public class LifecycleLogDbService {
 				createWordLifecycleLog(wordId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.LEXEME.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
 				Long prevOrderBy = (Long) entityData.get("order_by");
 				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {

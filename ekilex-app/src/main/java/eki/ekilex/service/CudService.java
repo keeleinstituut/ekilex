@@ -95,7 +95,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateWordRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.WORD_RELATION, LifecycleProperty.ID, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateWordRelationOrderby(item);
 		}
@@ -104,7 +104,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateWordEtymologyOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ID, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateWordEtymologyOrderby(item);
 		}
@@ -156,7 +156,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateLexemeOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME, LifecycleProperty.ID, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateLexemeOrderby(item);
 		}
@@ -254,7 +254,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateLexemeRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.ID, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateLexemeRelationOrderby(item);
 		}
@@ -271,7 +271,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateDefinitionOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.DEFINITION, LifecycleProperty.ID, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateDefinitionOrderby(item);
 		}
@@ -288,7 +288,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void updateMeaningRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.ORDER_BY, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.MEANING_RELATION, LifecycleProperty.ID, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateMeaningRelationOrderby(item);
 		}

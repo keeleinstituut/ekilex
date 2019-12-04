@@ -13,7 +13,6 @@ public enum LifecycleProperty {
 	REGION,
 	GENDER,
 	DOMAIN,
-	ORDER_BY,
 	DATASET,
 	WORD_TYPE,
 	ASPECT,
