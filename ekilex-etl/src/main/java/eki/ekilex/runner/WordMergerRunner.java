@@ -254,7 +254,9 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		criteriaParamMap.put("word_id", secondWordId);
 		valueParamMap = new HashMap<>();
 		valueParamMap.put("word_id", firstWordId);
-		basicDbService.update(WORD_GROUP_MEMBER, criteriaParamMap, valueParamMap);
+		notExistsFields = new ArrayList<>();
+		notExistsFields.add("word_group_id");
+		basicDbService.updateIfNotExists(WORD_GROUP_MEMBER, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", secondWordId);
@@ -266,7 +268,9 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		criteriaParamMap.put("related_word_id", secondWordId);
 		valueParamMap = new HashMap<>();
 		valueParamMap.put("related_word_id", firstWordId);
-		basicDbService.update(WORD_ETYMOLOGY_RELATION, criteriaParamMap, valueParamMap);
+		notExistsFields = new ArrayList<>();
+		notExistsFields.add("word_etym_id");
+		basicDbService.updateIfNotExists(WORD_ETYMOLOGY_RELATION, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", secondWordId);
