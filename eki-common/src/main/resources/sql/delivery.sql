@@ -81,3 +81,178 @@ from meaning_domain md
 where md.id = lfcl.entity_id
   and lfcl.entity_name = 'MEANING_DOMAIN'
   and lfcl.entity_prop = 'ORDER_BY';
+
+create table layer_state
+(
+	id bigserial primary key,
+	lexeme_id bigint references lexeme(id) on delete cascade not null,
+	layer_name varchar(100) not null,
+	process_state_code varchar(100) references process_state(code) not null,
+	unique(lexeme_id, layer_name)
+);
+alter sequence layer_state_id_seq restart with 10000;
+
+create index layer_state_lexeme_id_idx on layer_state(lexeme_id);
+create index layer_state_layer_name_idx on layer_state(layer_name);
+
+create index domain_code_origin_idx on domain(code, origin);
+create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
+create index domain_label_code_origin_idx on domain_label(code, origin);
+create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin);
+
+update lifecycle_log lcl
+set entity_name = 'LEXEME',
+    entity_prop = 'SOURCE_LINK',
+    entity_id = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME_SOURCE_LINK'
+  and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_name = 'DEFINITION',
+    entity_prop = 'SOURCE_LINK',
+    entity_id = dsl.definition_id
+from definition_source_link dsl
+where lcl.entity_id = dsl.id
+  and entity_name = 'DEFINITION_SOURCE_LINK'
+  and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_name = 'LEXEME',
+    entity_prop = 'PUBLIC_NOTE',
+    entity_id = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME_PUBLIC_NOTE'
+  and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_name = 'MEANING',
+    entity_prop = 'PUBLIC_NOTE',
+    entity_id = mlcl.meaning_id
+from meaning_lifecycle_log mlcl
+where lcl.id = mlcl.lifecycle_log_id
+  and lcl.entity_name = 'MEANING_PUBLIC_NOTE'
+  and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_name = 'DEFINITION',
+    entity_prop = 'PUBLIC_NOTE',
+    entity_id = df.definition_id
+from definition_freeform df
+where lcl.entity_id = df.freeform_id
+  and lcl.entity_name = 'DEFINITION_PUBLIC_NOTE'
+  and lcl.entity_prop = 'VALUE';
+
+update lifecycle_log lcl
+set entity_id = wlcl.word_id
+from word_lifecycle_log wlcl
+where lcl.id = wlcl.lifecycle_log_id
+  and lcl.entity_name = 'WORD'
+  and lcl.entity_prop = 'WORD_TYPE';
+
+update lifecycle_log lcl
+set entity_id = wlcl.word_id
+from word_lifecycle_log wlcl
+where lcl.id = wlcl.lifecycle_log_id
+  and lcl.entity_name = 'WORD'
+  and lcl.entity_prop = 'OD_RECOMMENDATION';
+
+update lifecycle_log lcl
+set entity_id = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME'
+  and lcl.entity_prop = 'POS';
+
+update lifecycle_log lcl
+set entity_id = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME'
+  and lcl.entity_prop = 'DERIV';
+
+update lifecycle_log lcl
+set entity_id = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME'
+  and lcl.entity_prop = 'REGISTER';
+
+update lifecycle_log lcl
+set entity_id = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME'
+  and lcl.entity_prop = 'REGION';
+
+update lifecycle_log lcl
+set entity_id = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME'
+  and lcl.entity_prop = 'OD_RECOMMENDATION';
+
+update lifecycle_log lcl
+set entity_id = llcl.lexeme_id
+from lexeme_lifecycle_log llcl
+where lcl.id = llcl.lifecycle_log_id
+  and lcl.entity_name = 'LEXEME'
+  and lcl.entity_prop = 'FREEFORM_SOURCE_LINK';
+
+update lifecycle_log lcl
+set entity_id = mlcl.meaning_id
+from meaning_lifecycle_log mlcl
+where lcl.id = mlcl.lifecycle_log_id
+  and lcl.entity_name = 'MEANING'
+  and lcl.entity_prop = 'DOMAIN';
+
+update lifecycle_log lcl
+set entity_id = mlcl.meaning_id
+from meaning_lifecycle_log mlcl
+where lcl.id = mlcl.lifecycle_log_id
+  and lcl.entity_name = 'MEANING'
+  and lcl.entity_prop = 'IMAGE_TITLE';
+
+update lifecycle_log lcl
+set entity_id = mlcl.meaning_id
+from meaning_lifecycle_log mlcl
+where lcl.id = mlcl.lifecycle_log_id
+  and lcl.entity_name = 'MEANING'
+  and lcl.entity_prop = 'IMAGE_TITLE';
+
+update lifecycle_log lcl
+set entity_id = mlcl.meaning_id
+from meaning_lifecycle_log mlcl
+where lcl.id = mlcl.lifecycle_log_id
+  and lcl.entity_name = 'MEANING'
+  and lcl.entity_prop = 'IMAGE';
+
+update lifecycle_log lcl
+set entity_id = mlcl.meaning_id
+from meaning_lifecycle_log mlcl
+where lcl.id = mlcl.lifecycle_log_id
+  and lcl.entity_name = 'MEANING'
+  and lcl.entity_prop = 'SEMANTIC_TYPE';
+
+update lifecycle_log lcl
+set entity_id = mlcl.meaning_id
+from meaning_lifecycle_log mlcl
+where lcl.id = mlcl.lifecycle_log_id
+  and lcl.entity_name = 'MEANING'
+  and lcl.entity_prop = 'FREEFORM_SOURCE_LINK';
+
+update lifecycle_log lcl
+set entity_name = 'USAGE',
+    entity_prop = 'SOURCE_LINK'
+where entity_name = 'FREEFORM_SOURCE_LINK'
+  and entity_prop = 'VALUE';
+
+alter table process_log add column layer_name varchar(100) null;
+
+update lifecycle_log lcl
+set entity_prop = 'ID',
+    event_type = 'ORDER_BY'
+where entity_prop = 'ORDER_BY'
+  and event_type = 'UPDATE';

@@ -23,8 +23,9 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.LogData;
+import eki.ekilex.data.MeaningWord;
+import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SynMeaningWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.Usage;
@@ -87,7 +88,8 @@ public class SynSearchService extends AbstractWordSearchService {
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
 
-		List<SynMeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, language);
+		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, language);
+		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, language);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
@@ -98,10 +100,9 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 
 		lexeme.setPos(lexemePos);
-		lexeme.setMeaningWords(meaningWords);
+		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		lexeme.setDefinitions(definitions);
 		lexeme.setUsages(usages);
-
 	}
 
 	@Transactional
@@ -120,14 +121,28 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) {
-		synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
+		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
 		String synWordValue = lookupDbService.getWordValue(wordId);
-		LogData matchLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.MATCH, existingLexemeId, synWordValue);
+		LogData matchLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, existingLexemeId, synWordValue);
 		createLifecycleLog(matchLogData);
 
 		LogData relationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, relationId, RelationStatus.PROCESSED.name());
 		createLifecycleLog(relationLogData);
 		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
+
+		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
+		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, wordDetails.getLanguage());
+
+		for (MeaningWord meaningWord : meaningWords) {
+			Long meaningWordRelationId = synSearchDbService.getRelationId(meaningWord.getWordId(), wordId, RAW_RELATION_CODE);
+
+			if (meaningWordRelationId != null) {
+				LogData oppositeRelationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, meaningWordRelationId,
+						RelationStatus.PROCESSED.name());
+				createLifecycleLog(oppositeRelationLogData );
+				synSearchDbService.changeRelationStatus(meaningWordRelationId, RelationStatus.PROCESSED.name());
+			}
+		}
 	}
 
 	private void moveChangedRelationToLast(Long relationId) {

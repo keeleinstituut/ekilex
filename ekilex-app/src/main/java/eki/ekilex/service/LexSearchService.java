@@ -28,6 +28,7 @@ import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.MeaningWord;
+import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
@@ -127,10 +128,11 @@ public class LexSearchService extends AbstractWordSearchService {
 						Long meaningId = lexeme.getMeaningId();
 						String datasetCode = lexeme.getDatasetCode();
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
+						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 						List<DefinitionRefTuple> definitionRefTuples =
 								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
-						lexeme.setMeaningWords(meaningWords);
+						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 						lexeme.setDefinitions(definitions);
 					});
 					lexemeLevelPreseUtil.combineLevels(wordLexemes);
@@ -162,7 +164,8 @@ public class LexSearchService extends AbstractWordSearchService {
 				Long meaningId = lexeme.getMeaningId();
 				String datasetCode = lexeme.getDatasetCode();
 				List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
-				lexeme.setMeaningWords(meaningWords);
+				List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
+				lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 				List<DefinitionRefTuple> definitionRefTuples =
 						commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 				List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
@@ -196,6 +199,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		String datasetName = datasetNameMap.get(datasetCode);
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
+		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
@@ -231,7 +235,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setDerivs(lexemeDerivs);
 		lexeme.setRegisters(lexemeRegisters);
 		lexeme.setMeaningSemanticTypes(meaningSemanticTypes);
-		lexeme.setMeaningWords(meaningWords);
+		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		lexeme.setMeaningDomains(meaningDomains);
 		lexeme.setDefinitions(definitions);
 		lexeme.setMeaningFreeforms(meaningFreeforms);

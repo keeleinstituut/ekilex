@@ -405,8 +405,8 @@ public class LifecycleLogDbService {
 					.from(WORD_WORD_TYPE)
 					.where(WORD_WORD_TYPE.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(wordId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createWordLifecycleLog(wordId, lifecycleLogId);
 		} else if (LifecycleProperty.GENDER.equals(property)) {
 			Map<String, Object> entityData = helper.getWordData(create, entityId);
@@ -464,8 +464,8 @@ public class LifecycleLogDbService {
 					.from(LEXEME_POS)
 					.where(LEXEME_POS.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.DERIV.equals(property)) {
 			Long lexemeId = create
@@ -473,8 +473,8 @@ public class LifecycleLogDbService {
 					.from(LEXEME_DERIV)
 					.where(LEXEME_DERIV.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.REGISTER.equals(property)) {
 			Long lexemeId = create
@@ -482,8 +482,8 @@ public class LifecycleLogDbService {
 					.from(LEXEME_REGISTER)
 					.where(LEXEME_REGISTER.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.REGION.equals(property)) {
 			Long lexemeId = create
@@ -491,8 +491,8 @@ public class LifecycleLogDbService {
 					.from(LEXEME_REGION)
 					.where(LEXEME_REGION.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.LEVEL.equals(property)) {
 			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
@@ -534,8 +534,8 @@ public class LifecycleLogDbService {
 				return;
 			}
 			Long lexemeId = (Long) entityData.get("lexeme_id");
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
 			Map<String, Object> entityData = helper.getLexemeSourceLinkData(create, entityId);
@@ -570,14 +570,19 @@ public class LifecycleLogDbService {
 			logData.setEntityId(lexemeId);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-		} else if (LifecycleProperty.MATCH.equals(property)) {
-			Long meaningId = create
-					.select(LEXEME.MEANING_ID)
-					.from(LEXEME)
-					.where(LEXEME.ID.eq(entityId))
-					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
-			createMeaningLifecycleLog(meaningId, lifecycleLogId);
+		} else if (LifecycleProperty.MEANING_WORD.equals(property)) {
+			if (LifecycleEventType.CREATE.equals(eventType)) {
+				Long meaningId = create
+						.select(LEXEME.MEANING_ID)
+						.from(LEXEME)
+						.where(LEXEME.ID.eq(entityId))
+						.fetchSingleInto(Long.class);
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createMeaningLifecycleLog(meaningId, lifecycleLogId);
+			} else if (LifecycleEventType.ORDER_BY.equals(eventType)) {
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(entityId, lifecycleLogId);
+			}
 		}
 	}
 
@@ -592,8 +597,8 @@ public class LifecycleLogDbService {
 					.from(MEANING_DOMAIN)
 					.where(MEANING_DOMAIN.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		} else if (LifecycleProperty.VALUE.equals(property)) {
 			Long lifecycleLogId = createLifecycleLog(logData);
@@ -604,8 +609,8 @@ public class LifecycleLogDbService {
 					.from(MEANING_FREEFORM)
 					.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		}  else if (LifecycleProperty.IMAGE.equals(property)) {
 			Long meaningId = create
@@ -613,8 +618,8 @@ public class LifecycleLogDbService {
 					.from(MEANING_FREEFORM)
 					.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		} else if (LifecycleProperty.SEMANTIC_TYPE.equals(property)) {
 			Long meaningId = create
@@ -622,8 +627,8 @@ public class LifecycleLogDbService {
 					.from(MEANING_SEMANTIC_TYPE)
 					.where(MEANING_SEMANTIC_TYPE.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		} else if (LifecycleProperty.FREEFORM_SOURCE_LINK.equals(property)) {
 			Map<String, Object> entityData = helper.getMeaningFreeformSourceLinkData(create, entityId);
@@ -805,6 +810,11 @@ public class LifecycleLogDbService {
 
 	public void createListOrderingLog(LogData logData) {
 
+		LifecycleEventType eventType = logData.getEventType();
+		if (!LifecycleEventType.ORDER_BY.equals(eventType)) {
+			return;
+		}
+
 		LifecycleEntity entity = logData.getEntityName();
 		LifecycleProperty property = logData.getProperty();
 		ListData listData = logData.getListData();
@@ -813,12 +823,12 @@ public class LifecycleLogDbService {
 		logData.setEntityId(entityId);
 
 		if (LifecycleEntity.DEFINITION.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getDefinitionData(create, entityId);
 				String definitionValue = (String) entityData.get("value");
 				Long meaningId = (Long) entityData.get("meaning_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + definitionValue;
@@ -829,12 +839,12 @@ public class LifecycleLogDbService {
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.LEXEME_RELATION.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeRelationData(create, entityId);
 				String relTypeCode = (String) entityData.get("lex_rel_type_code");
 				Long lexemeId = (Long) entityData.get("lexeme1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + relTypeCode;
@@ -845,12 +855,12 @@ public class LifecycleLogDbService {
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.MEANING_RELATION.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getMeaningRelationData(create, entityId);
 				String relTypeCode = (String) entityData.get("meaning_rel_type_code");
 				Long meaningId = (Long) entityData.get("meaning1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + relTypeCode;
@@ -861,12 +871,12 @@ public class LifecycleLogDbService {
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.WORD_RELATION.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getWordRelationData(create, entityId);
 				String relTypeCode = (String) entityData.get("word_rel_type_code");
 				Long wordId = (Long) entityData.get("word1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + relTypeCode;
@@ -877,10 +887,10 @@ public class LifecycleLogDbService {
 				createWordLifecycleLog(wordId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.LEXEME.equals(entity)) {
-			if (LifecycleProperty.ORDER_BY.equals(property)) {
+			if (LifecycleProperty.ID.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + lexemeLogString(entityData);
@@ -896,7 +906,7 @@ public class LifecycleLogDbService {
 				String domainCode = (String) entityData.get("domain_code");
 				Long meaningId = (Long) entityData.get("meaning_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (logData.isUpdateEvent() && newOrderby.equals(prevOrderBy)) {
+				if (newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = prevOrderBy + ") " + domainCode;

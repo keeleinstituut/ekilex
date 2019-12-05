@@ -145,13 +145,21 @@ function initialise() {
 	});
 
 	$(document).on('click', '.order-up', function() {
-		let orderingData = changeItemOrdering($(this), -1);
+		let orderingBtn = $(this);
+		let orderingData = changeItemOrdering(orderingBtn, -1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
+		if (orderingBtn.hasClass('do-refresh')) {
+			refreshDetails();
+		}
 	});
 
 	$(document).on('click', '.order-down', function() {
-		let orderingData = changeItemOrdering($(this), 1);
+		let orderingBtn = $(this);
+		let orderingData = changeItemOrdering(orderingBtn, 1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
+		if (orderingBtn.hasClass('do-refresh')) {
+			refreshDetails();
+		}
 	});
 
 	$(document).on("show.bs.modal", "[id^=addSynRelationDlg_]", function() {

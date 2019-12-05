@@ -147,9 +147,9 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 				int candidateCount = candidateWordIds.size();
 				boolean multipleCandidates = candidateCount > 1;
 				if (multipleCandidates) {
-					Long firstWordId = candidateWordIds.get(0);
-					for (Long secondWordId : candidateWordIds.subList(1, candidateCount)) {
-						joinWords(firstWordId, secondWordId);
+					Long targetWordId = candidateWordIds.get(0);
+					for (Long sourceWordId : candidateWordIds.subList(1, candidateCount)) {
+						joinWords(targetWordId, sourceWordId);
 						candidateMergedWithAnotherCandidateCount.increment();
 					}
 					candidateMergedWithAnotherCandidateCount.increment();
@@ -157,9 +157,9 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 					candidateNotMergedCount.increment();
 				}
 			} else if (joinableHomonyms.size() == 1) {
-				Long firstWordId = joinableHomonyms.get(0);
-				for (Long secondWordId : candidateWordIds) {
-					joinWords(firstWordId, secondWordId);
+				Long targetWordId = joinableHomonyms.get(0);
+				for (Long sourceWordId : candidateWordIds) {
+					joinWords(targetWordId, sourceWordId);
 					candidateMergedWithSuperHomonymCount.increment();
 				}
 			} else {
@@ -211,89 +211,93 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		return wordIds;
 	}
 
-	private void joinWords(Long firstWordId, Long secondWordId) throws Exception {
+	private void joinWords(Long targetWordId, Long sourceWordId) throws Exception {
 
-		joinWordData(firstWordId, secondWordId);
-		joinLexemeData(firstWordId, secondWordId);
-		basicDbService.delete(WORD, secondWordId);
+		joinWordData(targetWordId, sourceWordId);
+		joinLexemeData(targetWordId, sourceWordId);
+		basicDbService.delete(WORD, sourceWordId);
 	}
 
-	private void joinWordData(Long firstWordId, Long secondWordId) throws Exception {
+	private void joinWordData(Long targetWordId, Long sourceWordId) throws Exception {
 
-		joinWordFreeforms(firstWordId, secondWordId);
+		joinWordFreeforms(targetWordId, sourceWordId);
 
 		Map<String, Object> criteriaParamMap;
 		Map<String, Object> valueParamMap;
 		List<String> notExistsFields;
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word1_id", secondWordId);
+		criteriaParamMap.put("word1_id", sourceWordId);
 		valueParamMap = new HashMap<>();
-		valueParamMap.put("word1_id", firstWordId);
+		valueParamMap.put("word1_id", targetWordId);
 		notExistsFields = new ArrayList<>();
 		notExistsFields.add("word_rel_type_code");
 		basicDbService.updateIfNotExists(WORD_RELATION, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word2_id", secondWordId);
+		criteriaParamMap.put("word2_id", sourceWordId);
 		valueParamMap = new HashMap<>();
-		valueParamMap.put("word2_id", firstWordId);
+		valueParamMap.put("word2_id", targetWordId);
 		notExistsFields = new ArrayList<>();
 		notExistsFields.add("word_rel_type_code");
 		basicDbService.updateIfNotExists(WORD_RELATION, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word_id", secondWordId);
+		criteriaParamMap.put("word_id", sourceWordId);
 		valueParamMap = new HashMap<>();
-		valueParamMap.put("word_id", firstWordId);
+		valueParamMap.put("word_id", targetWordId);
 		notExistsFields = new ArrayList<>();
 		notExistsFields.add("word_type_code");
 		basicDbService.updateIfNotExists(WORD_WORD_TYPE, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word_id", secondWordId);
+		criteriaParamMap.put("word_id", sourceWordId);
 		valueParamMap = new HashMap<>();
-		valueParamMap.put("word_id", firstWordId);
-		basicDbService.update(WORD_GROUP_MEMBER, criteriaParamMap, valueParamMap);
+		valueParamMap.put("word_id", targetWordId);
+		notExistsFields = new ArrayList<>();
+		notExistsFields.add("word_group_id");
+		basicDbService.updateIfNotExists(WORD_GROUP_MEMBER, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word_id", secondWordId);
+		criteriaParamMap.put("word_id", sourceWordId);
 		valueParamMap = new HashMap<>();
-		valueParamMap.put("word_id", firstWordId);
+		valueParamMap.put("word_id", targetWordId);
 		basicDbService.update(WORD_ETYMOLOGY, criteriaParamMap, valueParamMap);
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("related_word_id", secondWordId);
+		criteriaParamMap.put("related_word_id", sourceWordId);
 		valueParamMap = new HashMap<>();
-		valueParamMap.put("related_word_id", firstWordId);
-		basicDbService.update(WORD_ETYMOLOGY_RELATION, criteriaParamMap, valueParamMap);
+		valueParamMap.put("related_word_id", targetWordId);
+		notExistsFields = new ArrayList<>();
+		notExistsFields.add("word_etym_id");
+		basicDbService.updateIfNotExists(WORD_ETYMOLOGY_RELATION, criteriaParamMap, valueParamMap, notExistsFields);
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word_id", secondWordId);
+		criteriaParamMap.put("word_id", sourceWordId);
 		valueParamMap = new HashMap<>();
-		valueParamMap.put("word_id", firstWordId);
+		valueParamMap.put("word_id", targetWordId);
 		basicDbService.update(WORD_PROCESS_LOG, criteriaParamMap, valueParamMap);
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("word_id", secondWordId);
+		criteriaParamMap.put("word_id", sourceWordId);
 		valueParamMap = new HashMap<>();
-		valueParamMap.put("word_id", firstWordId);
+		valueParamMap.put("word_id", targetWordId);
 		basicDbService.update(WORD_LIFECYCLE_LOG, criteriaParamMap, valueParamMap);
 
 		criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("id", firstWordId);
+		criteriaParamMap.put("id", targetWordId);
 		valueParamMap = new HashMap<>();
 		valueParamMap.put("homonym_nr", DEFAULT_HOMONYM_NUMBER);
 		basicDbService.update(WORD, criteriaParamMap, valueParamMap);
 	}
 
-	private void joinWordFreeforms(Long wordId, Long sourceWordId) throws Exception {
+	private void joinWordFreeforms(Long targetWordId, Long sourceWordId) throws Exception {
 
 		FreeformRowMapper freeformRowMapper = new FreeformRowMapper();
 		Map<String, Object> paramMap;
 
 		paramMap = new HashMap<>();
-		paramMap.put("wordId", wordId);
+		paramMap.put("wordId", targetWordId);
 		List<Freeform> wordFreeforms = basicDbService.getResults(sqlSelectWordFreeforms, paramMap, freeformRowMapper);
 
 		paramMap = new HashMap<>();
@@ -304,7 +308,7 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 
 		if (!nonDublicateFreeformIds.isEmpty()) {
 			paramMap = new HashMap<>();
-			paramMap.put("wordId", wordId);
+			paramMap.put("wordId", targetWordId);
 			paramMap.put("sourceWordId", sourceWordId);
 			paramMap.put("nonDublicateFreeformIds", nonDublicateFreeformIds);
 			basicDbService.executeScript(sqlUpdateWordFreeformsWhereFreeformIdInList, paramMap);
@@ -329,38 +333,38 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 				.collect(Collectors.toList());
 	}
 
-	private void joinLexemeData(Long firstWordId, Long secondWordId) throws Exception {
+	private void joinLexemeData(Long targetWordId, Long sourceWordId) throws Exception {
 
 		Map<String, Object> paramMap;
 
 		paramMap = new HashMap<>();
-		paramMap.put("word_id", secondWordId);
-		List<Map<String, Object>> secondWordLexemes = basicDbService.selectAll(LEXEME, paramMap);
-		for (Map<String, Object> secondWordLexeme : secondWordLexemes) {
-			Long secondWordLexemeId = (Long) secondWordLexeme.get("id");
-			Long secondWordLexemeMeaningId = (Long) secondWordLexeme.get("meaning_id");
-			String secondWordLexemeDatasetCode = (String) secondWordLexeme.get("dataset_code");
+		paramMap.put("word_id", sourceWordId);
+		List<Map<String, Object>> sourceWordLexemes = basicDbService.selectAll(LEXEME, paramMap);
+		for (Map<String, Object> sourceWordLexeme : sourceWordLexemes) {
+			Long sourceWordLexemeId = (Long) sourceWordLexeme.get("id");
+			Long sourceWordLexemeMeaningId = (Long) sourceWordLexeme.get("meaning_id");
+			String sourceWordLexemeDatasetCode = (String) sourceWordLexeme.get("dataset_code");
 
 			paramMap = new HashMap<>();
-			paramMap.put("word_id", firstWordId);
-			paramMap.put("meaning_id", secondWordLexemeMeaningId);
-			paramMap.put("dataset_code", secondWordLexemeDatasetCode);
-			Map<String, Object> firstWordLexeme = basicDbService.select(LEXEME, paramMap);
-			boolean lexemeExists = firstWordLexeme != null;
+			paramMap.put("word_id", targetWordId);
+			paramMap.put("meaning_id", sourceWordLexemeMeaningId);
+			paramMap.put("dataset_code", sourceWordLexemeDatasetCode);
+			Map<String, Object> targetWordLexeme = basicDbService.select(LEXEME, paramMap);
+			boolean lexemeExists = targetWordLexeme != null;
 
 			if (lexemeExists) {
-				boolean isOnlyLexemeForMeaning = isOnlyLexemeForMeaning(secondWordLexemeId);
-				deleteLexeme(secondWordLexemeId);
+				boolean isOnlyLexemeForMeaning = isOnlyLexemeForMeaning(sourceWordLexemeId);
+				deleteLexeme(sourceWordLexemeId);
 				if (isOnlyLexemeForMeaning) {
-					deleteMeaning(secondWordLexemeMeaningId);
+					deleteMeaning(sourceWordLexemeMeaningId);
 				}
 			} else {
 				paramMap = new HashMap<>();
-				paramMap.put("wordId", firstWordId);
+				paramMap.put("wordId", targetWordId);
 				Map<String, Object> maxLevelMap = basicDbService.queryForMap(sqlSelectWordLexemesMaxFirstLevel, paramMap);
 				Integer currentMaxLevel = (Integer) maxLevelMap.get("max");
 				int level1 = currentMaxLevel + 1;
-				updateLexemeWordIdAndLevels(secondWordLexemeId, firstWordId, level1, DEFAULT_LEXEME_LEVEL);
+				updateLexemeWordIdAndLevels(sourceWordLexemeId, targetWordId, level1, DEFAULT_LEXEME_LEVEL);
 			}
 		}
 	}

@@ -12,6 +12,8 @@ public class UpdateListRequest extends AbstractDataObject {
 
 	private List<ListData> items;
 
+	private Long additionalInfo;
+
 	public String getOpCode() {
 		return opCode;
 	}
@@ -28,4 +30,11 @@ public class UpdateListRequest extends AbstractDataObject {
 		this.items = items;
 	}
 
+	public Long getAdditionalInfo() {
+		return additionalInfo;
+	}
+
+	public void setAdditionalInfo(Long additionalInfo) {
+		this.additionalInfo = additionalInfo;
+	}
 }

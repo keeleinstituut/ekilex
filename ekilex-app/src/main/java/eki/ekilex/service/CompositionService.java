@@ -229,21 +229,21 @@ public class CompositionService extends AbstractService {
 
 		Integer firstWordHomonymNum = compositionDbService.getWordHomonymNum(firstWordId);
 		Integer secondWordHomonymNum = compositionDbService.getWordHomonymNum(secondWordId);
-		Long wordId = firstWordHomonymNum <= secondWordHomonymNum ? firstWordId : secondWordId;
+		Long targetWordId = firstWordHomonymNum <= secondWordHomonymNum ? firstWordId : secondWordId;
 		Long sourceWordId = secondWordHomonymNum >= firstWordHomonymNum? secondWordId : firstWordId;
 
-		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue, wordValue);
+		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, targetWordId, wordValue, wordValue);
 		createLifecycleLog(logData);
 
-		compositionDbService.joinWordData(wordId, sourceWordId);
-		joinLexemeData(wordId, sourceWordId);
-		joinParadigms(wordId, sourceWordId);
+		compositionDbService.joinWordData(targetWordId, sourceWordId);
+		joinLexemeData(targetWordId, sourceWordId);
+		joinParadigms(targetWordId, sourceWordId);
 		cudDbService.deleteWord(sourceWordId);
 
-		return wordId;
+		return targetWordId;
 	}
 
-	private void joinLexemeData(Long wordId, Long sourceWordId) {
+	private void joinLexemeData(Long targetWordId, Long sourceWordId) {
 
 		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
 		for (LexemeRecord sourceWordLexeme : sourceWordLexemes) {
@@ -251,28 +251,28 @@ public class CompositionService extends AbstractService {
 			Long sourceWordLexemeMeaningId = sourceWordLexeme.getMeaningId();
 			String sourceWordLexemeDatasetCode = sourceWordLexeme.getDatasetCode();
 
-			Long wordLexemeId = compositionDbService.getLexemeId(wordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
-			boolean lexemeExists = wordLexemeId != null;
+			Long targetWordLexemeId = compositionDbService.getLexemeId(targetWordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
+			boolean targetLexemeExists = targetWordLexemeId != null;
 
-			if (lexemeExists) {
-				compositionDbService.joinLexemes(wordLexemeId, sourceWordLexemeId);
+			if (targetLexemeExists) {
+				compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
 			} else {
-				Integer currentMaxLevel = compositionDbService.getWordLexemesMaxFirstLevel(wordId);
+				Integer currentMaxLevel = compositionDbService.getWordLexemesMaxFirstLevel(targetWordId);
 				int level1 = currentMaxLevel + 1;
-				compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, wordId, level1, DEFAULT_LEXEME_LEVEL);
+				compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, targetWordId, level1, DEFAULT_LEXEME_LEVEL);
 			}
 		}
 	}
 
-	private void joinParadigms(Long wordId, Long sourceWordId) {
+	private void joinParadigms(Long targetWordId, Long sourceWordId) {
 
-		boolean wordHasForms = compositionDbService.wordHasForms(wordId);
+		boolean wordHasForms = compositionDbService.wordHasForms(targetWordId);
 		if (wordHasForms) {
 			return;
 		}
 		boolean sourceWordHasForms = compositionDbService.wordHasForms(sourceWordId);
 		if (sourceWordHasForms) {
-			compositionDbService.joinParadigms(wordId, sourceWordId);
+			compositionDbService.joinParadigms(targetWordId, sourceWordId);
 		}
 	}
 

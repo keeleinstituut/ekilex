@@ -70,13 +70,15 @@
                       <span th:text="${lexeme.levels}"></span>
                     </span>
                   </span>
-                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                    <div class="btn-custom">
-                      <span th:text="${meaningWord.value}"></span>
-                      <span th:text="${meaningWord.homonymNumber}"></span>
-                      <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
-                    </div>
-                    <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
+                  <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
+                    <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
+                      <div class="btn-custom">
+                        <span th:text="${meaningWord.value}"></span>
+                        <span th:text="${meaningWord.homonymNumber}"></span>
+                        <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
+                      </div>
+                      <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
+                    </th:block>
                   </th:block>
                   <div class="ml-auto">
                     <b th:text="${lexeme.dataset}"></b>

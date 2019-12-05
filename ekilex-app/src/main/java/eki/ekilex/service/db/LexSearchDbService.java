@@ -612,7 +612,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						f2.VALUE,
 						w2.HOMONYM_NR.as("homonym_number"),
 						w2.LANG.as("language"),
-						l2.ID.as("lexeme_id"))
+						l2.ID.as("lexeme_id"),
+						l2.ORDER_BY)
 				.from(l1, l2, w2, p2, f2)
 				.where(
 						l1.ID.eq(lexemeId)
@@ -625,7 +626,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f2.MODE.eq(FormMode.WORD.name()))
 						)
 				.groupBy(w2.ID, f2.VALUE, l2.ID)
-				.orderBy(f2.VALUE)
+				.orderBy(w2.LANG, l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
 	}
 

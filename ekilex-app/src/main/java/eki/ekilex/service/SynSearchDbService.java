@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -11,12 +12,12 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
-import static eki.ekilex.data.db.Tables.LAYER_STATE;
 
 import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -25,8 +26,8 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.FormMode;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
+import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SynMeaningWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynDetails;
@@ -168,8 +169,22 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.execute();
 	}
 
-	public void createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Long existingLexemeId) {
-		create.insertInto(LEXEME,
+	public Long getRelationId(Long word1Id, Long word2Id, String relationType) {
+		Record1<Long> relationRecord = create.select(WORD_RELATION.ID)
+				.from(WORD_RELATION)
+				.where(WORD_RELATION.WORD1_ID.eq(word1Id)
+								.and(WORD_RELATION.WORD2_ID.eq(word2Id))
+								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType))
+						)
+				.fetchOne();
+
+		return relationRecord != null ? relationRecord.get(WORD_RELATION.ID) : null;
+
+	}
+
+
+	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Long existingLexemeId) {
+		return create.insertInto(LEXEME,
 				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
 				LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
@@ -178,7 +193,9 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(existingLexemeId)))
-				.execute();
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public WordSynDetails getWordDetails(Long wordId) {
@@ -203,7 +220,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchOneInto(WordSynDetails.class);
 	}
 
-	public List<SynMeaningWord> getSynMeaningWords(Long lexemeId, String languageCode) {
+	public List<MeaningWord> getSynMeaningWords(Long lexemeId, String languageCode) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -215,10 +232,11 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.select(
 						w2.ID.as("word_id"),
 						f2.VALUE,
-						w2.HOMONYM_NR,
+						w2.HOMONYM_NR.as("homonym_number"),
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"),
-						l2.TYPE.as("lexeme_type"))
+						l2.TYPE.as("lexeme_type"),
+						l2.ORDER_BY)
 				.from(l1, l2, w2, p2, f2)
 				.where(
 						l1.ID.eq(lexemeId)
@@ -233,8 +251,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(w2.LANG.eq(languageCode))
 				)
 				.groupBy(w2.ID, f2.VALUE, l2.ID)
-				.orderBy(f2.VALUE)
-				.fetchInto(SynMeaningWord.class);
+				.orderBy(w2.LANG, l2.ORDER_BY)
+				.fetchInto(MeaningWord.class);
 	}
 
 	public List<SynRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {

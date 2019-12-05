@@ -28,7 +28,7 @@ public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private String layerProcessStateCode;
 
-	private List<SynMeaningWord> meaningWords;
+	private List<MeaningWordLangGroup> meaningWordLangGroups;
 
 	private List<Definition> definitions;
 
@@ -108,12 +108,12 @@ public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 		this.layerProcessStateCode = layerProcessStateCode;
 	}
 
-	public List<SynMeaningWord> getMeaningWords() {
-		return meaningWords;
+	public List<MeaningWordLangGroup> getMeaningWordLangGroups() {
+		return meaningWordLangGroups;
 	}
 
-	public void setMeaningWords(List<SynMeaningWord> meaningWords) {
-		this.meaningWords = meaningWords;
+	public void setMeaningWordLangGroups(List<MeaningWordLangGroup> meaningWordLangGroups) {
+		this.meaningWordLangGroups = meaningWordLangGroups;
 	}
 
 	public List<Definition> getDefinitions() {

@@ -802,7 +802,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Long meaningDomainId = basicDbService.createIfNotExists(MEANING_DOMAIN, tableRowParamMap);
 
 		if (meaningDomainId != null) {
-			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningDomainId, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, LifecycleEventType.CREATE, domainCode);
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, meaningId, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, LifecycleEventType.CREATE, domainCode);
 		}
 	}
 
@@ -995,7 +995,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 					referenceType = ReferenceType.TRANSLATOR;
 				}
 				Long freeformSourceLinkId = createFreeformSourceLink(usageId, referenceType, authorId, null, author);
-				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, freeformSourceLinkId, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK, LifecycleEventType.CREATE, author);
+				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, usageId, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK, LifecycleEventType.CREATE, author);
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
@@ -1343,7 +1343,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Long sourceLinkId = basicDbService.createIfNotExists(LEXEME_SOURCE_LINK, tableRowParamMap);
 
 		if (sourceLinkId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, sourceLinkId, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, LifecycleEventType.CREATE, value);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, LifecycleEventType.CREATE, value);
 		}
 		return sourceLinkId;
 	}
@@ -1436,7 +1436,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Long lexemeRegisterId = basicDbService.createIfNotExists(LEXEME_REGISTER, params);
 
 		if (lexemeRegisterId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeRegisterId, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, LifecycleEventType.CREATE, registerCode);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, LifecycleEventType.CREATE, registerCode);
 		}
 	}
 
@@ -1448,7 +1448,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Long lexemePosId = basicDbService.createIfNotExists(LEXEME_POS, tableRowParamMap);
 
 		if (lexemePosId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemePosId, LifecycleEntity.LEXEME, LifecycleProperty.POS, LifecycleEventType.CREATE, posCode);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.POS, LifecycleEventType.CREATE, posCode);
 		}
 	}
 
@@ -1460,7 +1460,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Long lexemeDerivId = basicDbService.createIfNotExists(LEXEME_DERIV, tableRowParamMap);
 
 		if (lexemeDerivId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeDerivId, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, LifecycleEventType.CREATE, derivCode);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, LifecycleEventType.CREATE, derivCode);
 		}
 	}
 
@@ -1472,7 +1472,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Long lexemeRegionId = basicDbService.createIfNotExists(LEXEME_REGION, params);
 
 		if (lexemeRegionId != null) {
-			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeRegionId, LifecycleEntity.LEXEME, LifecycleProperty.REGION, LifecycleEventType.CREATE, regionCode);
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.REGION, LifecycleEventType.CREATE, regionCode);
 		}
 	}
 

@@ -84,14 +84,16 @@
           <span th:text="${#strings.listJoin(lexeme.words, ', ')}" class="ttl"></span>
           &nbsp;
         </span>
-        <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-          <span class="pt-0">
-            <span th:text="${meaningWord.value}"></span>
-            <span th:text="${meaningWord.homonymNumber}"></span>
-            <span th:text="${'( ' +viewUtil.getLangIso2(meaningWord.language) + ' )'}"></span>
+        <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
+          <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
+            <span class="pt-0">
+              <span th:text="${meaningWord.value}"></span>
+              <span th:text="${meaningWord.homonymNumber}"></span>
+              <span th:text="${'( ' +viewUtil.getLangIso2(meaningWord.language) + ' )'}"></span>
+            </span>
+            <span th:unless="${meaningWordIter.last}">|</span>
           </span>
-          <span th:unless="${meaningWordIter.last}">|</span>
-        </span>
+        </th:block>
         <span th:if="${lexeme.levels != null}">
           <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
         </span>
