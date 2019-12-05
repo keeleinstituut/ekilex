@@ -241,7 +241,7 @@ public class BasicDbService extends AbstractDbService {
 		jdbcTemplate.update(sqlQueryStr, paramMap);
 	}
 
-	public void update(String tableName, Map<String, Object> criteriaParamMap, Map<String, Object> valueParamMap) throws Exception {
+	public int update(String tableName, Map<String, Object> criteriaParamMap, Map<String, Object> valueParamMap) throws Exception {
 
 		final String critParamPrefix = "crit_";
 		final String valParamPrefix = "val_";
@@ -282,10 +282,10 @@ public class BasicDbService extends AbstractDbService {
 
 		String sqlQueryStr = sqlQueryBuf.toString();
 
-		jdbcTemplate.update(sqlQueryStr, paramMap);
+		return jdbcTemplate.update(sqlQueryStr, paramMap);
 	}
 
-	public void updateIfNotExists(String tableName, Map<String, Object> criteriaParamMap, Map<String, Object> valueParamMap, List<String> notExistsFields) throws Exception {
+	public int updateIfNotExists(String tableName, Map<String, Object> criteriaParamMap, Map<String, Object> valueParamMap, List<String> notExistsFields) throws Exception {
 
 		final String critParamPrefix = "crit_";
 		final String valParamPrefix = "val_";
@@ -360,22 +360,22 @@ public class BasicDbService extends AbstractDbService {
 
 		String sqlQueryStr = sqlQueryBuf.toString();
 
-		jdbcTemplate.update(sqlQueryStr, paramMap);
+		return jdbcTemplate.update(sqlQueryStr, paramMap);
 	}
 
-	public void delete(String tableName, Long id) {
+	public int delete(String tableName, Long id) {
 
 		String sqlQueryStr = "delete from " + tableName + " where id = :id";
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("id", id);
-		jdbcTemplate.update(sqlQueryStr, paramMap);
+		return jdbcTemplate.update(sqlQueryStr, paramMap);
 	}
 
-	public void delete(String tableName, List<Long> ids) {
+	public int delete(String tableName, List<Long> ids) {
 
 		String sqlQueryStr = "delete from " + tableName + " where id in (:ids)";
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("ids", ids);
-		jdbcTemplate.update(sqlQueryStr, paramMap);
+		return jdbcTemplate.update(sqlQueryStr, paramMap);
 	}
 }

@@ -2,6 +2,7 @@ package eki.ekilex.data.util;
 
 import java.sql.Array;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -42,8 +43,14 @@ public class FreeformRowMapper extends AbstractRowMapper implements RowMapper<Fr
 			complexity = Complexity.valueOf(complexityStr);
 		}
 		Long orderBy = rs.getObject("order_by", Long.class);
-		boolean childrenExist = rs.getBoolean("children_exist");
-		boolean sourceLinksExist = rs.getBoolean("source_links_exist");
+		boolean childrenExist = false;
+		if (columnExists(rs, "children_exist")) {
+			childrenExist = rs.getBoolean("children_exist");
+		}
+		boolean sourceLinksExist = false;
+		if (columnExists(rs, "source_links_exist")) {
+			sourceLinksExist = rs.getBoolean("source_links_exist");
+		}
 
 		Freeform freeform = new Freeform();
 		freeform.setFreeformId(freeformId);
@@ -64,4 +71,14 @@ public class FreeformRowMapper extends AbstractRowMapper implements RowMapper<Fr
 		return freeform;
 	}
 
+	private boolean columnExists(ResultSet rs, String columnName) throws SQLException {
+	    ResultSetMetaData meta = rs.getMetaData();
+	    int columnCount = meta.getColumnCount();
+	    for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+	        if (columnName.equals(meta.getColumnName(columnIndex))) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 }

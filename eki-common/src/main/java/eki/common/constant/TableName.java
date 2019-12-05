@@ -51,6 +51,7 @@ public interface TableName {
 	String MEANING = "meaning";
 	String MEANING_NR = "meaning_nr";
 	String MEANING_DOMAIN = "meaning_domain";
+	String MEANING_SEMANTIC_TYPE = "meaning_semantic_type";
 	String MEANING_FREEFORM = "meaning_freeform";
 	String MEANING_RELATION = "meaning_relation";
 	String MEANING_LIFECYCLE_LOG = "meaning_lifecycle_log";
