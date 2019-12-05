@@ -761,70 +761,70 @@ public class CompositionDbService implements DbConstant {
 		return clonedFreeform.getId();
 	}
 
-	public void joinWordData(Long wordId, Long sourceWordId) {
+	public void joinWordData(Long targetWordId, Long sourceWordId) {
 
-		joinWordFreeforms(wordId, sourceWordId);
-		joinWordRelations(wordId, sourceWordId);
-		joinWordTypeCodes(wordId, sourceWordId);
-		joinWordGroupMembers(wordId, sourceWordId);
+		joinWordFreeforms(targetWordId, sourceWordId);
+		joinWordRelations(targetWordId, sourceWordId);
+		joinWordTypeCodes(targetWordId, sourceWordId);
+		joinWordGroupMembers(targetWordId, sourceWordId);
 
 		create.update(WORD_ETYMOLOGY)
-				.set(WORD_ETYMOLOGY.WORD_ID, wordId)
+				.set(WORD_ETYMOLOGY.WORD_ID, targetWordId)
 				.where(WORD_ETYMOLOGY.WORD_ID.eq(sourceWordId))
 				.execute();
 
-		joinWordEtymologyRelations(wordId, sourceWordId);
+		joinWordEtymologyRelations(targetWordId, sourceWordId);
 
 		create.update(WORD_PROCESS_LOG)
-				.set(WORD_PROCESS_LOG.WORD_ID, wordId)
+				.set(WORD_PROCESS_LOG.WORD_ID, targetWordId)
 				.where(WORD_PROCESS_LOG.WORD_ID.eq(sourceWordId))
 				.execute();
 
 		create.update(WORD_LIFECYCLE_LOG)
-				.set(WORD_LIFECYCLE_LOG.WORD_ID, wordId)
+				.set(WORD_LIFECYCLE_LOG.WORD_ID, targetWordId)
 				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(sourceWordId))
 				.execute();
 	}
 
-	private void joinWordEtymologyRelations(Long wordId, Long sourceWordId) {
+	private void joinWordEtymologyRelations(Long targetWordId, Long sourceWordId) {
 
 		WordEtymologyRelation wer1 = WORD_ETYMOLOGY_RELATION.as("wer1");
 		WordEtymologyRelation wer2 = WORD_ETYMOLOGY_RELATION.as("wer2");
 
 		create.update(wer1)
-				.set(wer1.RELATED_WORD_ID, wordId)
+				.set(wer1.RELATED_WORD_ID, targetWordId)
 				.where(wer1.RELATED_WORD_ID.eq(sourceWordId))
 				.andNotExists(DSL
 						.select(wer2.ID)
 						.from(wer2)
 						.where(
-								wer2.RELATED_WORD_ID.eq(wordId)
+								wer2.RELATED_WORD_ID.eq(targetWordId)
 										.and(wer2.WORD_ETYM_ID.eq(wer1.WORD_ETYM_ID))))
 				.execute();
 	}
 
-	private void joinWordGroupMembers(Long wordId, Long sourceWordId) {
+	private void joinWordGroupMembers(Long targetWordId, Long sourceWordId) {
 
 		WordGroupMember wgm1 = WORD_GROUP_MEMBER.as("wgm1");
 		WordGroupMember wgm2 = WORD_GROUP_MEMBER.as("wgm2");
 
 		create.update(wgm1)
-				.set(wgm1.WORD_ID, wordId)
+				.set(wgm1.WORD_ID, targetWordId)
 				.where(wgm1.WORD_ID.eq(sourceWordId))
 				.andNotExists(DSL
 						.select(wgm2.ID)
 						.from(wgm2)
 						.where(
-								wgm2.WORD_ID.eq(wordId)
+								wgm2.WORD_ID.eq(targetWordId)
 										.and(wgm2.WORD_GROUP_ID.eq(wgm1.WORD_GROUP_ID))))
 				.execute();
 	}
 
-	private void joinWordFreeforms(Long wordId, Long sourceWordId) {
+	private void joinWordFreeforms(Long targetWordId, Long sourceWordId) {
 
 		Result<FreeformRecord> wordFreeforms = create
 				.selectFrom(FREEFORM)
-				.where(FREEFORM.ID.in(DSL.select(WORD_FREEFORM.FREEFORM_ID).from(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(wordId))))
+				.where(FREEFORM.ID.in(DSL.select(WORD_FREEFORM.FREEFORM_ID).from(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(targetWordId))))
 				.fetch();
 		Result<FreeformRecord> sourceWordFreeforms = create
 				.selectFrom(FREEFORM)
@@ -834,7 +834,7 @@ public class CompositionDbService implements DbConstant {
 		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(wordFreeforms, sourceWordFreeforms);
 
 		create.update(WORD_FREEFORM)
-				.set(WORD_FREEFORM.WORD_ID, wordId)
+				.set(WORD_FREEFORM.WORD_ID, targetWordId)
 				.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId)
 						.and(WORD_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
 				.execute();
@@ -849,50 +849,50 @@ public class CompositionDbService implements DbConstant {
 		create.delete(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(sourceWordId)).execute();
 	}
 
-	private void joinWordRelations(Long wordId, Long sourceWordId) {
+	private void joinWordRelations(Long targetWordId, Long sourceWordId) {
 
 		WordRelation wr1 = WORD_RELATION.as("wr1");
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 
 		create.update(wr1)
-				.set(wr1.WORD1_ID, wordId)
+				.set(wr1.WORD1_ID, targetWordId)
 				.where(
 						wr1.WORD1_ID.eq(sourceWordId))
 				.andNotExists(DSL
 						.select(wr2.ID)
 						.from(wr2)
 						.where(
-								wr2.WORD1_ID.eq(wordId)
+								wr2.WORD1_ID.eq(targetWordId)
 										.and(wr2.WORD2_ID.eq(wr1.WORD2_ID))
 										.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
 				.execute();
 
 		create.update(wr1)
-				.set(wr1.WORD2_ID, wordId)
+				.set(wr1.WORD2_ID, targetWordId)
 				.where(
 						wr1.WORD2_ID.eq(sourceWordId))
 				.andNotExists(DSL
 						.select(wr2.ID)
 						.from(wr2)
 						.where(
-								wr2.WORD2_ID.eq(wordId)
+								wr2.WORD2_ID.eq(targetWordId)
 										.and(wr2.WORD1_ID.eq(wr1.WORD1_ID))
 										.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
 				.execute();
 	}
 
-	private void joinWordTypeCodes(Long wordId, Long sourceWordId) {
+	private void joinWordTypeCodes(Long targetWordId, Long sourceWordId) {
 
 		WordWordType wwt1 = WORD_WORD_TYPE.as("wwt1");
 		WordWordType wwt2 = WORD_WORD_TYPE.as("wwt2");
 
 		create.update(wwt1)
-				.set(wwt1.WORD_ID, wordId)
+				.set(wwt1.WORD_ID, targetWordId)
 				.where(wwt1.WORD_ID.eq(sourceWordId))
 				.andNotExists(DSL
 						.select(wwt2.ID)
 						.from(wwt2)
-						.where(wwt2.WORD_ID.eq(wordId)
+						.where(wwt2.WORD_ID.eq(targetWordId)
 								.and(wwt2.WORD_TYPE_CODE.eq(wwt1.WORD_TYPE_CODE))))
 				.execute();
 	}
