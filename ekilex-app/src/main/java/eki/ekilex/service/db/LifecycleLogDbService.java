@@ -405,8 +405,8 @@ public class LifecycleLogDbService {
 					.from(WORD_WORD_TYPE)
 					.where(WORD_WORD_TYPE.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(wordId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createWordLifecycleLog(wordId, lifecycleLogId);
 		} else if (LifecycleProperty.GENDER.equals(property)) {
 			Map<String, Object> entityData = helper.getWordData(create, entityId);
@@ -464,8 +464,8 @@ public class LifecycleLogDbService {
 					.from(LEXEME_POS)
 					.where(LEXEME_POS.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.DERIV.equals(property)) {
 			Long lexemeId = create
@@ -473,8 +473,8 @@ public class LifecycleLogDbService {
 					.from(LEXEME_DERIV)
 					.where(LEXEME_DERIV.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.REGISTER.equals(property)) {
 			Long lexemeId = create
@@ -482,8 +482,8 @@ public class LifecycleLogDbService {
 					.from(LEXEME_REGISTER)
 					.where(LEXEME_REGISTER.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.REGION.equals(property)) {
 			Long lexemeId = create
@@ -491,8 +491,8 @@ public class LifecycleLogDbService {
 					.from(LEXEME_REGION)
 					.where(LEXEME_REGION.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.LEVEL.equals(property)) {
 			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
@@ -534,8 +534,8 @@ public class LifecycleLogDbService {
 				return;
 			}
 			Long lexemeId = (Long) entityData.get("lexeme_id");
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(lexemeId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 		} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
 			Map<String, Object> entityData = helper.getLexemeSourceLinkData(create, entityId);
@@ -597,8 +597,8 @@ public class LifecycleLogDbService {
 					.from(MEANING_DOMAIN)
 					.where(MEANING_DOMAIN.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		} else if (LifecycleProperty.VALUE.equals(property)) {
 			Long lifecycleLogId = createLifecycleLog(logData);
@@ -609,8 +609,8 @@ public class LifecycleLogDbService {
 					.from(MEANING_FREEFORM)
 					.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		}  else if (LifecycleProperty.IMAGE.equals(property)) {
 			Long meaningId = create
@@ -618,8 +618,8 @@ public class LifecycleLogDbService {
 					.from(MEANING_FREEFORM)
 					.where(MEANING_FREEFORM.FREEFORM_ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		} else if (LifecycleProperty.SEMANTIC_TYPE.equals(property)) {
 			Long meaningId = create
@@ -627,8 +627,8 @@ public class LifecycleLogDbService {
 					.from(MEANING_SEMANTIC_TYPE)
 					.where(MEANING_SEMANTIC_TYPE.ID.eq(entityId))
 					.fetchSingleInto(Long.class);
-			Long lifecycleLogId = createLifecycleLog(logData);
 			logData.setEntityId(meaningId);
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		} else if (LifecycleProperty.FREEFORM_SOURCE_LINK.equals(property)) {
 			Map<String, Object> entityData = helper.getMeaningFreeformSourceLinkData(create, entityId);
