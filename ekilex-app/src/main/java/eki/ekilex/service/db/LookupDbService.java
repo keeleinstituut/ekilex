@@ -47,12 +47,14 @@ public class LookupDbService implements DbConstant {
 
 	public String getWordValue(Long wordId) {
 		return create
-				.select(FORM.VALUE)
-				.from(FORM, PARADIGM)
+				.select(DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')", String.class))
+				.from(WORD, PARADIGM, FORM)
 				.where(
-						PARADIGM.WORD_ID.eq(wordId)
+						WORD.ID.eq(wordId)
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.groupBy(WORD.ID)
 				.fetchOneInto(String.class);
 	}
 
