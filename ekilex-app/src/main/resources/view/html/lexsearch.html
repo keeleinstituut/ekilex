@@ -1170,6 +1170,69 @@
               <div th:replace="lexdialog :: edit_word_vocal_form_dlg"></div>
               <div class="pt-3 mb-2">
                 <div class="card-body pt-0 pb-0">
+                  <span class="lbl">ÕS soovitab</span>
+                  <button type="button" class="btn badge badge-success"
+                    title="Lisa ÕS soovitab" data-toggle="modal"
+                    th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
+                    sec:authorize="${#vars.isWordCrudGranted}">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                  <div th:each="odWordRecommendation, itemIter : ${details.odWordRecommendations}">
+                    <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
+                    <div class="col hidden-buttons pr-5">
+                      <div class="action-buttons-anchor">
+                        <span th:utext="${odWordRecommendation.valuePrese}"></span>
+                        <div class="action-buttons-2">
+                          <button type="button" class="btn badge badge-primary"
+                            title="Muuda"
+                            data-toggle="modal"
+                            th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
+                            sec:authorize="${#vars.isWordCrudGranted}">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                            th:data-id="${odWordRecommendation.id}"
+                            data-op-code="od_word_recommendation"
+                            data-toggle="delete-confirm"
+                            data-placement="right"
+                            sec:authorize="${#vars.isWordCrudGranted}">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr/>
+                </div>
+                <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
+                  <div th:each="paradigm : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2 mb-2">
+                    <button class="btn btn-info ml-3" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">
+                      <span th:text="${paradigm.title}"></span>
+                    </button>
+                    <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="collapse p-1">
+                      <div th:if="${not #lists.isEmpty(paradigm.forms)}">
+                        <table>
+                          <tr th:each="form : ${paradigm.forms}">
+                            <td style="width: 200px" class="text-right pr-1">
+                              <span th:text="${form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}" style="font-size: 80%; color: #999"></span>
+                            </td>
+                            <td class="pr-1">
+                              <span th:text="${form.value}" th:title="${form.formFrequencies}"></span>
+                            </td>
+                            <td class="pr-1">
+                              <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}" style="font-size: 80%; color: #999"></span>
+                            </td>
+                            <td>
+                              <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}" style="font-size: 80%; color: #999"></span>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <hr/>
+                </div>
+                <div class="card-body pt-0 pb-0">
                   <span class="lbl">Keelendi seosed</span>
                   <button type="button" class="btn badge badge-success"
                     title="Lisa seos" data-toggle="modal"
@@ -1254,68 +1317,6 @@
                     </div>
                   </th:block>
                   <hr />
-                </div>
-                <div class="card-body pt-0 pb-0">
-                  <span class="lbl">ÕS soovitab</span>
-                  <button type="button" class="btn badge badge-success"
-                          title="Lisa ÕS soovitab" data-toggle="modal"
-                          th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
-                          sec:authorize="${#vars.isWordCrudGranted}">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                  </button>
-                  <div th:each="odWordRecommendation, itemIter : ${details.odWordRecommendations}">
-                    <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
-                    <div class="col hidden-buttons pr-5">
-                      <div class="action-buttons-anchor">
-                        <span th:utext="${odWordRecommendation.valuePrese}"></span>
-                        <div class="action-buttons-2">
-                          <button type="button" class="btn badge badge-primary"
-                                  title="Muuda"
-                                  data-toggle="modal"
-                                  th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
-                                  sec:authorize="${#vars.isWordCrudGranted}">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:data-id="${odWordRecommendation.id}"
-                                  data-op-code="od_word_recommendation"
-                                  data-toggle="delete-confirm"
-                                  data-placement="right"
-                                  sec:authorize="${#vars.isWordCrudGranted}">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <hr/>
-                </div>
-                <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
-                  <div th:each="paradigm : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2">
-                    <button class="btn btn-info ml-3" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">
-                      <span th:text="${paradigm.title}"></span>
-                    </button>
-                    <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="collapse p-1">
-                      <div th:if="${not #lists.isEmpty(paradigm.forms)}">
-                        <table>
-                          <tr th:each="form : ${paradigm.forms}">
-                            <td style="width: 200px" class="text-right pr-1">
-                              <span th:text="${form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}" style="font-size: 80%; color: #999"></span>
-                            </td>
-                            <td class="pr-1">
-                              <span th:text="${form.value}" th:title="${form.formFrequencies}"></span>
-                            </td>
-                            <td class="pr-1">
-                              <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}" style="font-size: 80%; color: #999"></span>
-                            </td>
-                            <td>
-                              <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}" style="font-size: 80%; color: #999"></span>
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
