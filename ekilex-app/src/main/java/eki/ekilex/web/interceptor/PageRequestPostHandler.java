@@ -41,6 +41,8 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
+	@Autowired
+	private EkilexInfoContributor ekilexInfoContributor;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -104,6 +106,8 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		long startTime = Long.valueOf(requestStartTimeObj.toString());
 		long endTime = System.currentTimeMillis();
 		long requestTime = endTime - startTime;
+
+		ekilexInfoContributor.appendRequestTime(requestTime);
 
 		logger.info("Request process time for \"{}\" - {} ms", servletPath, requestTime);
 	}
