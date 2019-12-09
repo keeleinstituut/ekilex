@@ -14,6 +14,8 @@ public interface DbConstant {
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
 
+	String DATASET_TYPE_TERM = DatasetType.TERM.name();
+
 	String WORD_TYPE_CODE_PREFIXOID = "pf";
 
 	String WORD_TYPE_CODE_SUFFIXOID = "sf";
@@ -23,8 +25,6 @@ public interface DbConstant {
 	String IGNORE_QUERY_LOG = "'ignore query log'";
 
 	String FORCE_QUERY_LOG = "'force query log'";
-
-	String DATASET_TYPE_TERM = "TERM";
 
 	String LANGUAGE_CODE_EST = "est";
 }

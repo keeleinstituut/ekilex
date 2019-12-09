@@ -183,4 +183,3 @@ delete from lex_rel_mapping where code1 = 'pyh';
 delete from lex_rel_mapping where code2 = 'pyh';
 delete from lex_rel_type where code = 'pyh';
 
-alter table lexeme alter column process_state_code set not null;

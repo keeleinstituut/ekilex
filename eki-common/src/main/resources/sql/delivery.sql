@@ -72,16 +72,6 @@ create type type_usage as (usage text, usage_prese text, usage_lang char(3), com
 --NB! restore the view_ww_lexeme in create_views.sql
 --NB! restore the view_ww_word in create_views.sql
 
-update lifecycle_log lfcl
-set entity_name = 'MEANING',
-    entity_prop = 'DOMAIN',
-    event_type  = 'ORDER_BY',
-    entity_id   = md.meaning_id
-from meaning_domain md
-where md.id = lfcl.entity_id
-  and lfcl.entity_name = 'MEANING_DOMAIN'
-  and lfcl.entity_prop = 'ORDER_BY';
-
 create table layer_state
 (
 	id bigserial primary key,
@@ -99,6 +89,16 @@ create index domain_code_origin_idx on domain(code, origin);
 create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
 create index domain_label_code_origin_idx on domain_label(code, origin);
 create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin);
+
+update lifecycle_log lfcl
+set entity_name = 'MEANING',
+    entity_prop = 'DOMAIN',
+    event_type  = 'ORDER_BY',
+    entity_id   = md.meaning_id
+from meaning_domain md
+where md.id = lfcl.entity_id
+  and lfcl.entity_name = 'MEANING_DOMAIN'
+  and lfcl.entity_prop = 'ORDER_BY';
 
 update lifecycle_log lcl
 set entity_name = 'LEXEME',
@@ -249,10 +249,10 @@ set entity_name = 'USAGE',
 where entity_name = 'FREEFORM_SOURCE_LINK'
   and entity_prop = 'VALUE';
 
-alter table process_log add column layer_name varchar(100) null;
-
 update lifecycle_log lcl
 set entity_prop = 'ID',
     event_type = 'ORDER_BY'
 where entity_prop = 'ORDER_BY'
   and event_type = 'UPDATE';
+  
+alter table process_log add column layer_name varchar(100) null;

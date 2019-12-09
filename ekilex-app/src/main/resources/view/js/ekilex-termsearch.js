@@ -126,18 +126,6 @@ function initialise() {
 
 	initNewWordDlg();
 	initClassifierAutocomplete();
-
-	$('.add-smode').on('click', function() {
-		var baseTgt = $(this).attr("href");
-		var curr = window.location.href;
-		var smode = '/smode/';
-		var ind = curr.indexOf(smode);
-		if (ind === -1) return;
-		var afterSmode = curr.slice(ind + smode.length);
-		if (afterSmode.length === 0) return;
-		var href = baseTgt + smode + afterSmode;
-		$(this).attr('href', href);
-	});
 }
 
 function refreshDetails() {
