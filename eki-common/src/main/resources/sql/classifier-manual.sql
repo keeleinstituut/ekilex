@@ -72,6 +72,7 @@ insert into dataset (code, type, name, is_visible, is_public) values ('p3m', 'TE
 insert into dataset (code, type, name, is_visible, is_public) values ('rkb', 'TERM', 'Rakubioloogia', true, true);
 insert into dataset (code, type, name, is_visible, is_public) values ('rob', 'TERM', 'Robootika', true, true);
 insert into dataset (code, type, name, is_visible, is_public) values ('skt', 'TERM', 'Skeemiteraapiasõnastik', true, true);
+insert into dataset (code, type, name, is_visible, is_public) values ('tet', 'TERM', 'Teatriterminoloogia', true, true);
 insert into dataset (code, type, name, is_visible, is_public) values ('tee', 'TERM', 'Teenuste valdkonna terminibaas', true, true);
 insert into dataset (code, type, name, is_visible, is_public) values ('tts', 'TERM', 'Tootmistehnika ja süsteemide terminibaas', true, true);
 insert into dataset (code, type, name, is_visible, is_public) values ('usk', 'TERM', 'Uskumusolendite sõnastik', true, true);
