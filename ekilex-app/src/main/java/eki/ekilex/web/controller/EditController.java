@@ -590,23 +590,19 @@ public class EditController extends AbstractPageController implements SystemCons
 		if (StringUtils.isNotBlank(wordValue)) {
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
-
-			if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
-				List<String> allDatasets = commonDataService.getDatasetCodes();
-				WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true, DEFAULT_OFFSET);
-				if (words.getTotalCount() > 0) {
-					attributes.addFlashAttribute("dataset", dataset);
-					attributes.addFlashAttribute("wordValue", wordValue);
-					attributes.addFlashAttribute("language", language);
-					attributes.addFlashAttribute("morphCode", morphCode);
-					attributes.addFlashAttribute("returnPage", returnPage);
-					attributes.addFlashAttribute("meaningId", meaningId);
-					return "redirect:" + WORD_SELECT_URI;
-				}
-			} else {
+			List<String> allDatasets = commonDataService.getDatasetCodes();
+			WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true, DEFAULT_OFFSET);
+			if (words.getTotalCount() == 0) {
 				cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
+			} else {
+				attributes.addFlashAttribute("dataset", dataset);
+				attributes.addFlashAttribute("wordValue", wordValue);
+				attributes.addFlashAttribute("language", language);
+				attributes.addFlashAttribute("morphCode", morphCode);
+				attributes.addFlashAttribute("returnPage", returnPage);
+				attributes.addFlashAttribute("meaningId", meaningId);
+				return "redirect:" + WORD_SELECT_URI;
 			}
-
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
