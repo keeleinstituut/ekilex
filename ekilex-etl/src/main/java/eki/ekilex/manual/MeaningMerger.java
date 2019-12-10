@@ -24,10 +24,9 @@ public class MeaningMerger extends AbstractLoader {
 			initDefault();
 
 			MeaningMergerRunner meaningMergerRunner = getComponent(MeaningMergerRunner.class);
-			boolean doReports = confService.doReports();
 			String compoundDatasetCode = args[0];
 
-			meaningMergerRunner.execute(compoundDatasetCode, doReports);
+			meaningMergerRunner.execute(compoundDatasetCode);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,14 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 
 	private List<String> sqlSelectMeaningJoinCandidatesForDatasets;
 
+	private String sqlUpdateLexemeComplexity =
+			"update " + LEXEME + " l1 set complexity = :complexitySimple where l1.id = :ssLexemeId and exists ("
+					+ "select l2.id from " + LEXEME + " l2 where l2.id in (:compLexemeIds) and l2.complexity = :complexitySimple)";
+
+	private String sqlUpdateLexemeIds =
+			"update " + LEXEME + " l2 set meaning_id = :targetMeaningId where l2.dataset_code = :datasetCode and l2.meaning_id = :sourceMeaningId and not exists ("
+					+ "select l1.id from lexeme l1 where l1.dataset_code = :datasetCode and l1.meaning_id = :targetMeaningId and l1.word_id = l2.word_id)";
+
 	private String sqlSelectMeaningFreeforms = "select ff.* from " + FREEFORM + " ff, " + MEANING_FREEFORM + " mff where mff.freeform_id = ff.id and mff.meaning_id = :meaningId";
 
 	private String sqlUpdateMeaningFreeformIds = "update " + MEANING_FREEFORM + " set meaning_id = :targetMeaningId where meaning_id = :sourceMeaningId and freeform_id in (:freeformIds)";
@@ -48,6 +57,21 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 	private String sqlSelectLexemeFreeforms = "select ff.* from " + FREEFORM + " ff, " + LEXEME_FREEFORM + " lff where lff.freeform_id = ff.id and lff.lexeme_id = :lexemeId";
 
 	private String sqlUpdateLexemeFreeformIds = "update " + LEXEME_FREEFORM + " set lexeme_id = :targetLexemeId where lexeme_id = :sourceLexemeId and freeform_id in (:freeformIds)";
+
+	private String sqlDeleteLexemeFreeforms =
+			"delete from " + FREEFORM + " ff where exists (select lff.id from " + LEXEME_FREEFORM + " lff where lff.freeform_id = ff.id and lff.lexeme_id in (:lexemeIds))";
+
+	//TODO enhance to consider still existing lexemes
+	private String sqlDeleteMeaningFreeforms =
+			"delete from " + FREEFORM + " ff where exists (select mff.id from " + MEANING_FREEFORM + " mff where mff.freeform_id = ff.id and mff.meaning_id in (:meaningIds))";
+
+	//TODO enhance to consider still existing lexemes
+	private String sqlDeleteDefinitionFreeforms =
+			"delete from " + FREEFORM + " ff where exists ("
+					+ "select d.id from " + DEFINITION + " d, " + DEFINITION_FREEFORM + " dff "
+							+ "where dff.freeform_id = ff.id and dff.definition_id = d.id and d.meaning_id in (:meaningIds))";
+
+	private String sqlDeleteMeaning = "delete from " + MEANING + " m where m.id in (:meaningIds) and not exists (select l.id from " + LEXEME + " l where l.meaning_id = m.id)";
 
 	private String compoundDatasetCode;
 
@@ -107,7 +131,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String compoundDatasetCode, boolean doReports) throws Exception {
+	public void execute(String compoundDatasetCode) throws Exception {
 		this.compoundDatasetCode = compoundDatasetCode;
 
 		start();
@@ -125,6 +149,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 		updateCountMap.put(MEANING_LIFECYCLE_LOG, new Count());
 		updateCountMap.put(MEANING_PROCESS_LOG, new Count());
 		updateCountMap.put(DEFINITION, new Count());
+		updateCountMap.put(LEXEME, new Count());
 		updateCountMap.put(LEXEME_FREEFORM, new Count());
 		updateCountMap.put(LEXEME_FREQUENCY, new Count());
 		updateCountMap.put(LEXEME_REGISTER, new Count());
@@ -138,6 +163,13 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 		updateCountMap.put(LEXEME_PROCESS_LOG, new Count());
 		updateCountMap.put(LEXEME_RELATION, new Count());
 
+		Map<String, Count> deleteCountMap = new HashMap<>();
+		deleteCountMap.put(LEXEME, new Count());
+		deleteCountMap.put(LEXEME_FREEFORM, new Count());
+		deleteCountMap.put(MEANING, new Count());
+		deleteCountMap.put(MEANING_FREEFORM, new Count());
+		deleteCountMap.put(DEFINITION_FREEFORM, new Count());
+
 		long wordMeaningPairCounter = 0;
 		long progressIndicator = wordMeaningPairCount / Math.min(wordMeaningPairCount, 100);
 
@@ -146,11 +178,10 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 			MeaningJoinCandidate firstMeaningJoinCandidate = wordMeaningJoinCandidates.get(0);
 			Long ssLexemeId = firstMeaningJoinCandidate.getSsLexemeId();
 			Long ssMeaningId = firstMeaningJoinCandidate.getSsMeaningId();
-			List<Long> compLexemeIds = wordMeaningJoinCandidates.stream().map(cand -> cand.getCompLexemeId()).collect(Collectors.toList());
-			List<Long> compMeaningIds = wordMeaningJoinCandidates.stream().map(cand -> cand.getCompMeaningId()).collect(Collectors.toList());
+			List<Long> compLexemeIds = wordMeaningJoinCandidates.stream().map(MeaningJoinCandidate::getCompLexemeId).collect(Collectors.toList());
+			List<Long> compMeaningIds = wordMeaningJoinCandidates.stream().map(MeaningJoinCandidate::getCompMeaningId).collect(Collectors.toList());
 
-			//TODO move meaning other lexemes
-
+			moveMeaningLexemes(ssMeaningId, compMeaningIds, updateCountMap);
 			moveMeaningFreeforms(ssMeaningId, compMeaningIds, updateCountMap);
 			moveData("meaning_id", ssMeaningId, compMeaningIds, MEANING_NR, new String[] {"dataset_code"}, updateCountMap);
 			moveData("meaning_id", ssMeaningId, compMeaningIds, MEANING_DOMAIN, new String[] {"domain_origin", "domain_code"}, updateCountMap);
@@ -159,7 +190,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 			moveData("meaning_id", ssMeaningId, compMeaningIds, MEANING_PROCESS_LOG, null, updateCountMap);
 			moveData("meaning_id", ssMeaningId, compMeaningIds, DEFINITION, new String[] {"value"}, updateCountMap);
 
-			handleSumComplexity(ssLexemeId, compLexemeIds);//TODO impl
+			handleSumComplexity(ssLexemeId, compLexemeIds);
 			moveLexemeFreeforms(ssLexemeId, compLexemeIds, updateCountMap);
 			moveData("lexeme_id", ssLexemeId, compLexemeIds, LEXEME_FREQUENCY, new String[] {"source_name"}, updateCountMap);
 			moveData("lexeme_id", ssLexemeId, compLexemeIds, LEXEME_REGISTER, new String[] {"register_code"}, updateCountMap);
@@ -173,7 +204,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 			moveData("lexeme_id", ssLexemeId, compLexemeIds, LEXEME_PROCESS_LOG, null, updateCountMap);
 			moveLexemeRelations(ssLexemeId, compLexemeIds, updateCountMap);
 
-			//TODO delete comp lexemes and potential floaters
+			deleteLexemes(compLexemeIds, deleteCountMap);
 
 			// progress
 			wordMeaningPairCounter++;
@@ -183,10 +214,16 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		// TODO delete floating comp meanings
+		deleteMeanings(joinableWordMeaningPairMap.values(), deleteCountMap);
 
+		logger.info("Update counts are as following:");
 		for (Entry<String, Count> updateCountEntry : updateCountMap.entrySet()) {
-			System.out.println(updateCountEntry);
+			logger.info("{} : {}", updateCountEntry.getKey(), updateCountEntry.getValue().getValue());
+		}
+
+		logger.info("Delete counts are as following:");
+		for (Entry<String, Count> deleteCountEntry : deleteCountMap.entrySet()) {
+			logger.info("{} : {}", deleteCountEntry.getKey(), deleteCountEntry.getValue().getValue());
 		}
 
 		end();
@@ -223,6 +260,23 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 		return joinCandidates;
 	}
 
+	private void moveMeaningLexemes(Long ssMeaningId, List<Long> compMeaningIds, Map<String, Count> updateCountMap) {
+
+		Map<String, Object> paramMap;
+
+		int updateCount;
+
+		for (Long compMeaningId : compMeaningIds) {
+
+			paramMap = new HashMap<>();
+			paramMap.put("datasetCode", compoundDatasetCode);
+			paramMap.put("targetMeaningId", ssMeaningId);
+			paramMap.put("sourceMeaningId", compMeaningId);
+			updateCount = basicDbService.executeScript(sqlUpdateLexemeIds, paramMap);
+			updateCountMap.get(LEXEME).increment(updateCount);
+		}
+	}
+
 	private void moveMeaningFreeforms(Long ssMeaningId, List<Long> compMeaningIds, Map<String, Count> updateCountMap) throws Exception {
 
 		FreeformRowMapper freeformRowMapper = new FreeformRowMapper();
@@ -253,7 +307,12 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 	}
 
 	private void handleSumComplexity(Long ssLexemeId, List<Long> compLexemeIds) {
-		// TODO impl
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("ssLexemeId", ssLexemeId);
+		params.put("compLexemeIds", compLexemeIds);
+		params.put("complexitySimple", Complexity.SIMPLE.name());
+		basicDbService.executeScript(sqlUpdateLexemeComplexity, params);
 	}
 
 	private void moveLexemeFreeforms(Long ssLexemeId, List<Long> compLexemeIds, Map<String, Count> updateCountMap) throws Exception {
@@ -353,6 +412,53 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 			}
 			updateCountMap.get(dataTableName).increment(updateCount);
 		}
+	}
+
+	private void deleteLexemes(List<Long> compLexemeIds, Map<String, Count> deleteCountMap) {
+
+		int deleteCount;
+
+		// delete lexeme freeforms
+		Map<String, Object> params = new HashMap<>();
+		params.put("lexemeIds", compLexemeIds);
+		deleteCount = basicDbService.executeScript(sqlDeleteLexemeFreeforms, params);
+		deleteCountMap.get(LEXEME_FREEFORM).increment(deleteCount);
+
+		// delete lexemes
+		deleteCount = basicDbService.delete(LEXEME, compLexemeIds);
+		deleteCountMap.get(LEXEME).increment(deleteCount);
+	}
+
+	private void deleteMeanings(Collection<List<MeaningJoinCandidate>> wordMeaningJoinCandidatesGroups, Map<String, Count> deleteCountMap) {
+
+		List<Long> allCompMeaningIds = new ArrayList<>();
+		Map<String, Object> params;
+		int deleteCount;
+
+		for (List<MeaningJoinCandidate> wordMeaningJoinCandidates : wordMeaningJoinCandidatesGroups) {
+
+			List<Long> compMeaningIds = wordMeaningJoinCandidates.stream().map(MeaningJoinCandidate::getCompMeaningId).collect(Collectors.toList());
+			allCompMeaningIds.addAll(compMeaningIds);
+
+			params = new HashMap<>();
+			params.put("meaningIds", compMeaningIds);
+
+			/*
+			 * let it float for a while
+			 * 
+			deleteCount = basicDbService.executeScript(sqlDeleteDefinitionFreeforms, params);
+			deleteCountMap.get(DEFINITION_FREEFORM).increment(deleteCount);
+
+			deleteCount = basicDbService.executeScript(sqlDeleteMeaningFreeforms, params);
+			deleteCountMap.get(MEANING_FREEFORM).increment(deleteCount);
+			*/
+
+			deleteCount = basicDbService.executeScript(sqlDeleteMeaning, params);
+			deleteCountMap.get(MEANING).increment(deleteCount);
+		}
+		allCompMeaningIds = allCompMeaningIds.stream().distinct().collect(Collectors.toList());
+
+		logger.info("Total meaning count to be dissolved {} vs deleted {}", allCompMeaningIds.size(), deleteCountMap.get(MEANING).getValue());
 	}
 
 	class MeaningJoinCandidate extends AbstractDataObject {
