@@ -50,22 +50,11 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 
 	private String sqlSelectWordLexemesMaxFirstLevel = "select max(lex.level1) from " + LEXEME + " lex where lex.word_id = :wordId";
 
-	private String sqlSelectLexemeMeaningLexemeCount =
-			"select count(l2.id) count from " + LEXEME + " l1, " + LEXEME + " l2 where l1.id = :lexemeId and l1.meaning_id = l2.meaning_id and l1.id != l2.id";
-
 	private String sqlDeleteLexemeFreeforms =
 			"delete from " + FREEFORM + " ff where ff.id in(select lff.freeform_id from " + LEXEME_FREEFORM + " lff where lff.lexeme_id = :lexemeId)";
 
-	private String sqlDeleteDefinitionFreeforms =
-			"delete from " + FREEFORM + " ff where ff.id in(select dff.freeform_id from " + DEFINITION_FREEFORM + " dff where dff.definition_id = :definitionId)";
-
-	private String sqlDeleteMeaningFreeforms =
-			"delete from " + FREEFORM + " ff where ff.id in(select mff.freeform_id from " + MEANING_FREEFORM + " mff where mff.meaning_id = :meaningId)";
-
 	private String sqlDeleteWordFreeforms =
 			"delete from " + FREEFORM + " ff where ff.id in(select wff.freeform_id from " + WORD_FREEFORM + " wff where wff.word_id = :wordId)";
-
-	private String sqlSelectMeaningDefinitionIds = "select def.id from " + DEFINITION + " def where def.meaning_id = :meaningId";
 
 	private List<String> excludedWordTypeCodes;
 
@@ -353,11 +342,7 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 			boolean lexemeExists = targetWordLexeme != null;
 
 			if (lexemeExists) {
-				boolean isOnlyLexemeForMeaning = isOnlyLexemeForMeaning(sourceWordLexemeId);
 				deleteLexeme(sourceWordLexemeId);
-				if (isOnlyLexemeForMeaning) {
-					deleteMeaning(sourceWordLexemeMeaningId);
-				}
 			} else {
 				paramMap = new HashMap<>();
 				paramMap.put("wordId", targetWordId);
@@ -367,15 +352,6 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 				updateLexemeWordIdAndLevels(sourceWordLexemeId, targetWordId, level1, DEFAULT_LEXEME_LEVEL);
 			}
 		}
-	}
-
-	private boolean isOnlyLexemeForMeaning(Long lexemeId) throws Exception {
-
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("lexemeId", lexemeId);
-		Map<String, Object> countMap = basicDbService.queryForMap(sqlSelectLexemeMeaningLexemeCount, paramMap);
-		Long count = (Long) countMap.get("count");
-		return count == 0;
 	}
 
 	private void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2) throws Exception {
@@ -402,34 +378,6 @@ public class WordMergerRunner extends AbstractLoaderRunner implements DbConstant
 		Map<String, Object> params = new HashMap<>();
 		params.put("lexemeId", lexemeId);
 		basicDbService.executeScript(sqlDeleteLexemeFreeforms, params);
-	}
-
-	private void deleteMeaningFreeforms(Long meaningId) {
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("meaningId", meaningId);
-		basicDbService.executeScript(sqlDeleteMeaningFreeforms, params);
-	}
-
-	private void deleteDefinitionFreeforms(Long definitionId) {
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("definitionId", definitionId);
-		basicDbService.executeScript(sqlDeleteDefinitionFreeforms, params);
-	}
-
-	private void deleteMeaning(Long meaningId) {
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("meaningId", meaningId);
-		List<Long> definitionIds = basicDbService.queryList(sqlSelectMeaningDefinitionIds, params, Long.class);
-		for (Long definitionId : definitionIds) {
-			deleteDefinitionFreeforms(definitionId);
-			basicDbService.delete(DEFINITION, definitionId);
-		}
-
-		deleteMeaningFreeforms(meaningId);
-		basicDbService.delete(MEANING, meaningId);
 	}
 
 }
