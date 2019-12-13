@@ -47,11 +47,6 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 
 	private final String sqlUpdateLexemeComplexity = "update " + LEXEME + " set complexity = :complexity where id = :lexemeId";
 
-	private final String sqlUpdateLexemeIds =
-			"update " + LEXEME + " l2 set meaning_id = :targetMeaningId "
-					+ "where l2.dataset_code = :datasetCode and l2.meaning_id = :sourceMeaningId and l2.word_id != :wordId and not exists ("
-					+ "select l1.id from lexeme l1 where l1.dataset_code = :datasetCode and l1.meaning_id = :targetMeaningId and l1.word_id = l2.word_id)";
-
 	private final String sqlSelectMeaningFreeforms = "select ff.* from " + FREEFORM + " ff, " + MEANING_FREEFORM + " mff where mff.freeform_id = ff.id and mff.meaning_id = :meaningId";
 
 	private final String sqlUpdateMeaningFreeformIds = "update " + MEANING_FREEFORM + " set meaning_id = :targetMeaningId where meaning_id = :sourceMeaningId and freeform_id in (:freeformIds)";
@@ -330,25 +325,6 @@ public class MeaningMergerRunner extends AbstractLoaderRunner {
 		paramMap.put("sourceMeaningId", compMeaningId);
 		List<LexemeId> lexemeIds = basicDbService.getResults(sqlSelectLexeme, paramMap, new LexemeIdRowMapper());
 		return lexemeIds;
-	}
-
-	@Deprecated
-	private void moveMeaningLexemes(Long wordId, Long ssMeaningId, List<Long> compMeaningIds, Map<String, Count> updateCountMap) throws Exception {
-
-		Map<String, Object> paramMap;
-
-		int updateCount;
-
-		for (Long compMeaningId : compMeaningIds) {
-
-			paramMap = new HashMap<>();
-			paramMap.put("datasetCode", compoundDatasetCode);
-			paramMap.put("wordId", wordId);
-			paramMap.put("targetMeaningId", ssMeaningId);
-			paramMap.put("sourceMeaningId", compMeaningId);
-			updateCount = basicDbService.executeScript(sqlUpdateLexemeIds, paramMap);
-			updateCountMap.get(LEXEME).increment(updateCount);
-		}
 	}
 
 	private void moveMeaningFreeforms(Long ssMeaningId, List<Long> compMeaningIds, Map<String, Count> updateCountMap) throws Exception {
