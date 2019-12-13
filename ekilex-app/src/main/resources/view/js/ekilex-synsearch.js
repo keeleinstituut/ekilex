@@ -37,7 +37,7 @@ function initialise() {
 
 		let wordId = $(this).data('word-id');
 		let actionUrl = applicationUrl + "syn_layer_complete/" + wordId;
-		let callbackFunc = () => $('#refresh-details').trigger('click');
+		let callbackFunc = () => refreshDetails();
 		doPostRelationChange(actionUrl, callbackFunc);
 	});
 
@@ -57,6 +57,7 @@ function initialise() {
 
 		$("[id^='syn_select_wait_']").hide();
 		$("#syn_select_wait_" + id).show();
+		openWaitDlg();
 		let detailsUrl = applicationUrl + 'syn_worddetails/' + id;
 		if (markedSynWordId != undefined) {
 			detailsUrl += '?markedSynWordId=' + markedSynWordId;
@@ -65,6 +66,7 @@ function initialise() {
 		$.get(detailsUrl).done(function(data) {
 			let detailsDiv = $('#syn_details_div');
 			detailsDiv.replaceWith(data);
+			closeWaitDlg();
 			$("#syn_select_wait_" + id).hide();
 			$('[data-toggle="tooltip"]').tooltip();
 
@@ -108,7 +110,9 @@ function initialise() {
 
 					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
 
-					let callbackFunc = () => $('#refresh-details').trigger('click');
+
+					openWaitDlg();
+					let callbackFunc = () => refreshDetails();
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
 			});
@@ -138,7 +142,7 @@ function initialise() {
 		let id = $(this).data('id');
 		let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
 
-		let callbackFunc = () => $('#refresh-details').trigger('click');
+		let callbackFunc = () => refreshDetails();
 
 		doPostRelationChange(actionUrl, callbackFunc);
 
@@ -400,7 +404,7 @@ function initialise() {
 
 						//TODO - test
 						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
-						let callbackFunc = () => $('#refresh-details').trigger('click');
+						let callbackFunc = () => refreshDetails();
 
 						doPostRelationChange(actionUrl, callbackFunc);
 
