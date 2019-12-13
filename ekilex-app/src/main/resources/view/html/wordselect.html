@@ -10,8 +10,7 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary" th:if="${returnPage == 'lex_search'}" th:href="@{/lexsearch}">Tagasi</a>
-        <a class="btn btn-sm btn-secondary" th:if="${returnPage == 'term_search'}" th:href="@{/termsearch}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary" th:href="@{/lexsearch}">Tagasi</a>
       </p>
     </div>
     <div class="card mt-4 shadow">
@@ -25,7 +24,6 @@
           <input type="hidden" name="morphCode" th:value="${morphCode}">
           <input type="hidden" name="wordValue" th:value="${wordValue}">
           <input type="hidden" name="meaningId" th:value="${meaningId}">
-          <input type="hidden" name="returnPage" th:value="${returnPage}">
           <div style="width: 95%" class="border rounded p-2 mb-2">
             <span th:text="${wordValue}" class="ttl"></span>
             <button type="submit" class="btn btn-primary ml-4">Lisa uus homonüüm</button>
@@ -41,7 +39,7 @@
             <span th:text="${wordDescript.word.value}" class="ttl"></span>
             <span th:text="${wordDescript.word.homonymNumber}" class="ttl"></span>
             <span th:text="${'(' + viewUtil.getLangIso2(wordDescript.word.language) + ')'}"></span>
-            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${wordDescript.word.wordId} + '/' + ${meaningId} + '/' + ${returnPage}}">Vali</a>
+            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${wordDescript.word.wordId} + '/' + ${meaningId}}">Vali</a>
             <span class="float-right">
               <b th:text="${#strings.listJoin(wordDescript.word.datasetCodes, ', ')}"></b>
             </span>

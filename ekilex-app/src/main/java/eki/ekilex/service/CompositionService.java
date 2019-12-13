@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
+import eki.common.exception.ConstraintViolationException;
+import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.WordLexeme;
@@ -47,8 +49,72 @@ public class CompositionService extends AbstractService {
 	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
-	public Optional<Long> optionalDuplicateMeaning(Long meaningId, String userName) {
+	public void createWordAndMeaningAndRelations(CreateWordAndMeaningAndRelationsData createWordAndMeaningAndRelationsData) throws Exception {
+
+		String wordValue = createWordAndMeaningAndRelationsData.getWordValue();
+		String language = createWordAndMeaningAndRelationsData.getLanguage();
+		String morphCode = createWordAndMeaningAndRelationsData.getMorphCode();
+		Long meaningId = createWordAndMeaningAndRelationsData.getMeaningId();
+		Long relatedMeaningId = createWordAndMeaningAndRelationsData.getRelatedMeaningId();
+		String dataset = createWordAndMeaningAndRelationsData.getDataset();
+		boolean importMeaningData = createWordAndMeaningAndRelationsData.isImportMeaningData();
+		boolean createRelation = createWordAndMeaningAndRelationsData.isCreateRelation();
+
+		if (meaningId == null) {
+			if (importMeaningData) {
+				String userName = createWordAndMeaningAndRelationsData.getUserName();
+				List<String> userPermDatasetCodes = createWordAndMeaningAndRelationsData.getUserPermDatasetCodes();
+				Long duplicatedMeaningId = duplicateMeaningWithLexemesAndUpdateDataset(relatedMeaningId, userName, dataset, userPermDatasetCodes);
+				meaningId = duplicatedMeaningId;
+			} else {
+				Long createdMeaningId = cudDbService.createMeaning();
+				meaningId = createdMeaningId;
+			}
+		}
+
+		Long wordId = cudDbService.createWordAndLexeme(wordValue, wordValue, dataset, language, morphCode, meaningId);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue);
+		createLifecycleLog(logData);
+
+		if (createRelation) {
+			String relationType = createWordAndMeaningAndRelationsData.getRelationType();
+			String oppositeRelationType = createWordAndMeaningAndRelationsData.getOppositeRelationType();
+			Long relationId = cudDbService.createMeaningRelation(meaningId, relatedMeaningId, relationType);
+			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
+			createLifecycleLog(relationLogData);
+			if (StringUtils.isNotEmpty(oppositeRelationType)) {
+				Long oppositeRelationId = cudDbService.createMeaningRelation(relatedMeaningId, meaningId, oppositeRelationType);
+				LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
+				createLifecycleLog(oppositeRelationLogData);
+			}
+		}
+	}
+
+	@Transactional
+	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId, String userName) {
 		return Optional.of(duplicateMeaningWithLexemes(meaningId, userName));
+	}
+
+	private Long duplicateMeaningWithLexemesAndUpdateDataset(Long meaningId, String userName, String dataset, List<String> userPermDatasetCodes) throws Exception {
+
+		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
+		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, userPermDatasetCodes);
+		meaningLexemes.forEach(meaningLexeme -> duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId, userName));
+
+		List<LexemeRecord> duplicateMeaningLexemes = compositionDbService.getMeaningLexemes(duplicateMeaningId);
+		for (LexemeRecord duplicateMeaningLexeme : duplicateMeaningLexemes) {
+			updateLexemeDataset(duplicateMeaningLexeme, dataset);
+		}
+		return duplicateMeaningId;
+	}
+
+	private void updateLexemeDataset(LexemeRecord lexeme, String dataset) throws Exception {
+
+		boolean sameWordAndMeaningAndDatasetLexemeExists = compositionDbService.lexemeExists(lexeme.getWordId(), lexeme.getMeaningId(), dataset);
+		if (sameWordAndMeaningAndDatasetLexemeExists) {
+			throw new ConstraintViolationException("Could not update lexeme dataset because of db constraint");
+		}
+		cudDbService.updateLexemeDataset(lexeme.getId(), dataset);
 	}
 
 	@Transactional
@@ -257,8 +323,8 @@ public class CompositionService extends AbstractService {
 			if (targetLexemeExists) {
 				compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
 			} else {
-				Integer currentMaxLevel = compositionDbService.getWordLexemesMaxFirstLevel(targetWordId);
-				int level1 = currentMaxLevel + 1;
+				Integer currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(targetWordId, sourceWordLexemeDatasetCode);
+				int level1 = currentLexemesMaxLevel1 + 1;
 				compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, targetWordId, level1, DEFAULT_LEXEME_LEVEL);
 			}
 		}
@@ -306,20 +372,20 @@ public class CompositionService extends AbstractService {
 		if (isLevel1Increase) {
 			List<LexemeRecord> lexemesWithLargerLevel1 = compositionDbService.getLexemesWithHigherLevel1(wordId, datasetCode, level1);
 			int increasedDuplicatedLexemeLevel1 = level1 + 1;
-			compositionDbService.updateLexemeLevel1(duplicateLexemeId, increasedDuplicatedLexemeLevel1);
+			cudDbService.updateLexemeLevel1(duplicateLexemeId, increasedDuplicatedLexemeLevel1);
 			for (LexemeRecord lexeme : lexemesWithLargerLevel1) {
 				Long lexemeId = lexeme.getId();
 				int increasedLevel1 = lexeme.getLevel1() + 1;
-				compositionDbService.updateLexemeLevel1(lexemeId, increasedLevel1);
+				cudDbService.updateLexemeLevel1(lexemeId, increasedLevel1);
 			}
 		} else {
 			List<LexemeRecord> lexemesWithLargerLevel2 = compositionDbService.getLexemesWithHigherLevel2(wordId, datasetCode, level1, level2);
 			int increasedDuplicatedLexemeLevel2 = level2 + 1;
-			compositionDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
+			cudDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
 			for (LexemeRecord lexeme : lexemesWithLargerLevel2) {
 				Long lexemeId = lexeme.getId();
 				int increasedLevel2 = lexeme.getLevel2() + 1;
-				compositionDbService.updateLexemeLevel2(lexemeId, increasedLevel2);
+				cudDbService.updateLexemeLevel2(lexemeId, increasedLevel2);
 			}
 		}
 	}

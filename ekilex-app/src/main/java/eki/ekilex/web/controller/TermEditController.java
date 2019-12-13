@@ -7,25 +7,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import eki.common.exception.ConstraintViolationException;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.service.CompositionService;
+import eki.ekilex.service.CudService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
@@ -51,6 +60,9 @@ public class TermEditController extends AbstractPageController {
 
 	@Autowired
 	private LookupService lookupService;
+
+	@Autowired
+	private CudService cudService;
 
 	@RequestMapping(MEANING_JOIN_URI + "/{targetMeaningId}")
 	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
@@ -132,7 +144,7 @@ public class TermEditController extends AbstractPageController {
 		String userName = userService.getAuthenticatedUser().getName();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
-			clonedMeaning = compositionService.optionalDuplicateMeaning(meaningId, userName);
+			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId, userName);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
@@ -146,6 +158,111 @@ public class TermEditController extends AbstractPageController {
 		} else {
 			response.put("message", "Duplikaadi lisamine ebaõnnestus");
 			response.put("status", "error");
+		}
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(response);
+	}
+
+	@PostMapping(TERM_CREATE_WORD_URI)
+	public String createWord(
+			@RequestParam("wordValue") String wordValue,
+			@RequestParam("language") String language,
+			@RequestParam("morphCode") String morphCode,
+			@RequestParam("meaningId") Long meaningId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		String searchUri = "";
+		if (StringUtils.isNotBlank(wordValue)) {
+
+			Long userId = userService.getAuthenticatedUser().getId();
+			String dataset = sessionBean.getUserRole().getDatasetCode();
+			List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+			List<String> selectedDatasets = getUserPreferredDatasetCodes();
+			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+
+			sessionBean.setNewWordSelectedLanguage(language);
+			sessionBean.setNewWordSelectedMorphCode(morphCode);
+
+			List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(wordValue, userPermDatasetCodes, languagesOrder, meaningId);
+			if (CollectionUtils.isNotEmpty(relationCandidates)) {
+				attributes.addFlashAttribute("dataset", dataset);
+				attributes.addFlashAttribute("wordValue", wordValue);
+				attributes.addFlashAttribute("language", language);
+				attributes.addFlashAttribute("morphCode", morphCode);
+				attributes.addFlashAttribute("meaningId", meaningId);
+				attributes.addFlashAttribute("relationCandidates", relationCandidates);
+				return "redirect:" + MEANING_REL_SELECT_URI;
+			} else {
+				cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
+			}
+
+			if (!selectedDatasets.contains(dataset)) {
+				selectedDatasets.add(dataset);
+				userService.updateUserPreferredDatasets(selectedDatasets);
+			}
+			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+		}
+		return "redirect:" + TERM_SEARCH_URI + searchUri;
+	}
+
+	@GetMapping(MEANING_REL_SELECT_URI)
+	public String listMeaningRelationCandidates(
+			@ModelAttribute(name = "wordValue") String wordValue,
+			@ModelAttribute(name = "language") String language,
+			@ModelAttribute(name = "morphCode") String morphCode,
+			@ModelAttribute(name = "meaningId") Long meaningId,
+			@ModelAttribute(name = "relationCandidates") List<Meaning> relationCandidates,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		return MEANING_REL_SELECT_PAGE;
+	}
+
+	@PostMapping(CREATE_WORD_AND_MEANING_AND_REL_URI)
+	@ResponseBody
+	public String createWordAndMeaningAndRelations(
+			@RequestBody CreateWordAndMeaningAndRelationsData createWordAndMeaningAndRelationsData,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws JsonProcessingException {
+
+		Map<String, String> response = new HashMap<>();
+		String wordValue = createWordAndMeaningAndRelationsData.getWordValue();
+		if (StringUtils.isNotBlank(wordValue)) {
+
+			String dataset = sessionBean.getUserRole().getDatasetCode();
+			EkiUser user = userService.getAuthenticatedUser();
+			Long userId = user.getId();
+			String userName = user.getName();
+			List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+
+			createWordAndMeaningAndRelationsData.setDataset(dataset);
+			createWordAndMeaningAndRelationsData.setUserName(userName);
+			createWordAndMeaningAndRelationsData.setUserPermDatasetCodes(userPermDatasetCodes);
+
+			try {
+				compositionService.createWordAndMeaningAndRelations(createWordAndMeaningAndRelationsData);
+			} catch (Exception exception) {
+				if (exception instanceof ConstraintViolationException) {
+					response.put("status", "invalid");
+					response.put("message", "Tähenduse andmete kopeerimine ebaõnnestus. Kontrolli, et tähendusel ei oleks samakujulisi erineva sõnakogu termineid");
+				} else {
+					response.put("status", "invalid");
+					response.put("message", "Viga! Termini loomine ebaõnnestus");
+				}
+				logger.error("", exception);
+			}
+
+			List<String> selectedDatasets = getUserPreferredDatasetCodes();
+			if (!selectedDatasets.contains(dataset)) {
+				selectedDatasets.add(dataset);
+				userService.updateUserPreferredDatasets(selectedDatasets);
+			}
+			String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+			response.put("status", "valid");
+			response.put("searchUri", searchUri);
+		} else {
+			response.put("status", "invalid");
+			response.put("message", "Viga! Terminil puudub väärtus");
 		}
 
 		ObjectMapper jsonMapper = new ObjectMapper();

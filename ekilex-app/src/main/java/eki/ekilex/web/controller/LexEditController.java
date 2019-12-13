@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +18,28 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CompositionService;
+import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.LookupService;
+import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,6 +61,9 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@Autowired
 	private LookupService lookupService;
+
+	@Autowired
+	private CudService cudService;
 
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
 	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
@@ -220,6 +230,102 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 		compositionService.joinWords(targetWordId, sourceWordIds);
 		return "redirect:" + backUrl;
+	}
+
+	@PostMapping(LEX_CREATE_WORD_URI)
+	public String createWord(
+			@RequestParam("dataset") String dataset,
+			@RequestParam("wordValue") String wordValue,
+			@RequestParam("language") String language,
+			@RequestParam("morphCode") String morphCode,
+			@RequestParam("meaningId") Long meaningId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		String searchUri = "";
+		if (StringUtils.isNotBlank(wordValue)) {
+			sessionBean.setNewWordSelectedLanguage(language);
+			sessionBean.setNewWordSelectedMorphCode(morphCode);
+			List<String> allDatasets = commonDataService.getDatasetCodes();
+			WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true, DEFAULT_OFFSET);
+			if (words.getTotalCount() == 0) {
+				cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
+			} else {
+				attributes.addFlashAttribute("dataset", dataset);
+				attributes.addFlashAttribute("wordValue", wordValue);
+				attributes.addFlashAttribute("language", language);
+				attributes.addFlashAttribute("morphCode", morphCode);
+				attributes.addFlashAttribute("meaningId", meaningId);
+				return "redirect:" + WORD_SELECT_URI;
+			}
+
+			List<String> selectedDatasets = getUserPreferredDatasetCodes();
+			if (!selectedDatasets.contains(dataset)) {
+				selectedDatasets.add(dataset);
+				userService.updateUserPreferredDatasets(selectedDatasets);
+			}
+			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+		}
+		return "redirect:" + LEX_SEARCH_URI + searchUri;
+	}
+
+	@PostMapping(CREATE_HOMONYM_URI)
+	public String createWord(
+			@RequestParam("dataset") String dataset,
+			@RequestParam("wordValue") String wordValue,
+			@RequestParam("language") String language,
+			@RequestParam("morphCode") String morphCode,
+			@RequestParam("meaningId") Long meaningId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		String searchUri = "";
+		if (StringUtils.isNotBlank(wordValue)) {
+			cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
+			List<String> selectedDatasets = getUserPreferredDatasetCodes();
+			if (!selectedDatasets.contains(dataset)) {
+				selectedDatasets.add(dataset);
+				userService.updateUserPreferredDatasets(selectedDatasets);
+			}
+			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+		}
+		return "redirect:" + LEX_SEARCH_URI + searchUri;
+	}
+
+	@GetMapping(WORD_SELECT_URI)
+	public String listSelectableWords(
+			@ModelAttribute(name = "dataset") String dataset,
+			@ModelAttribute(name = "wordValue") String wordValue,
+			@ModelAttribute(name = "language") String language,
+			@ModelAttribute(name = "morphCode") String morphCode,
+			@ModelAttribute(name = "meaningId") Long meaningId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+
+		List<String> allDatasets = commonDataService.getDatasetCodes();
+		List<WordDescript> wordDescripts = lexSearchService.getWordDescripts(wordValue, allDatasets, meaningId);
+		model.addAttribute("wordDescripts", wordDescripts);
+
+		return WORD_SELECT_PAGE;
+	}
+
+	@GetMapping(WORD_SELECT_URI + "/{dataset}/{wordId}/{meaningId}")
+	public String selectWord(
+			@PathVariable(name = "dataset") String dataset,
+			@PathVariable(name = "wordId") Long wordId,
+			@PathVariable(name = "meaningId") String meaningIdCode,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
+		cudService.createLexeme(wordId, dataset, meaningId);
+		Word word = lexSearchService.getWord(wordId);
+		String wordValue = word.getValue();
+		List<String> selectedDatasets = getUserPreferredDatasetCodes();
+		if (!selectedDatasets.contains(dataset)) {
+			selectedDatasets.add(dataset);
+			userService.updateUserPreferredDatasets(selectedDatasets);
+		}
+		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
 }

@@ -677,7 +677,6 @@
                       <i class="fa fa-edit" aria-hidden="true"></i>
                     </button>
                   </div>
-                  <span th:text="${lexeme.homonymNumber}" class="pl-1"></span>
                   <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}" class="pl-1"></span>
                 </div>
                 <div class="ml-auto">
@@ -994,11 +993,11 @@
   	  </script>
     </div>
   </th:block>
-  <div th:replace="common :: newWordDlg('term_search')"></div>
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #confirmDlg"></div>
   <div th:replace="common :: #waitDlg"></div>
+  <div th:replace="termdialog :: new_word_dlg"></div>
   <div th:replace="sourcedialog :: add_source_dlg('term_search')"></div>
   <script th:inline="javascript">
   	initialise();

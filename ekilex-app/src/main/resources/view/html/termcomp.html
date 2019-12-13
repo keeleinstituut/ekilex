@@ -11,13 +11,13 @@
     <hr />
     <div id="results" class="w-100">
       <div th:each="resultRow,resultRowIter : ${termSearchResult.results}" class="d-flex flex-row flex-nowrap" th:classappend="${resultRowIter.last} ? '' : 'border-bottom'">
-        <button type="button" name="detailsBtn" th:data-id="${resultRow.meaningId}" class="btn btn-block pl-4 text-left" style="text-decoration:none; color:inherit;">
+        <button type="button" name="detailsBtn" th:data-id="${resultRow.meaningId}" class="btn btn-block pl-3 text-left" style="text-decoration:none; color:inherit;">
+          <span th:text="${resultRow.meaningId}" class="text-monospace float-right"></span>
           <th:block th:if="${resultRow.meaningWordsExist}">
             <div th:each="meaningWord : ${resultRow.meaningWords}" class="row" th:classappend="${meaningWord.matchingWord ? '' : 'other-word'}">
               <span class="ml-1">
                 <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}"
                       th:class="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
-                <span th:text="${meaningWord.homonymNr}"></span>
                 <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
                 <span class="ctxt" style="margin-top: 2px;">
                   <span th:each="datasetCode,itemIter : ${meaningWord.datasetCodes}">
@@ -29,7 +29,9 @@
             </div>
           </th:block>
           <th:block th:if="${!resultRow.meaningWordsExist}">
-            <div th:text="${resultRow.meaningId}" class="text-monospace"></div>
+            <div class="row">
+              <span class="stxt pl-1">tähendusel ei ole valitud keeles vasteid</span>
+            </div>
           </th:block>
         </button>
         <div class="result-right" style="padding: 5px">
