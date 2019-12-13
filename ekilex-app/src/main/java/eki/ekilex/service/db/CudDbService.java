@@ -297,6 +297,20 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
+	public void updateLexemeLevel1(Long lexemeId, Integer level1) {
+		create.update(LEXEME)
+				.set(LEXEME.LEVEL1, level1)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void updateLexemeLevel2(Long lexemeId, Integer level2) {
+		create.update(LEXEME)
+				.set(LEXEME.LEVEL2, level2)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
 	public void updateLexemeFrequencyGroup(Long lexemeId, String frequencyGroupCode) {
 		create.update(LEXEME)
 				.set(LEXEME.FREQUENCY_GROUP_CODE, frequencyGroupCode)
@@ -360,6 +374,13 @@ public class CudDbService implements DbConstant {
 	public void updateLexemeComplexity(Long lexemeId, String complexity) {
 		create.update(LEXEME)
 				.set(LEXEME.COMPLEXITY, complexity)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void updateLexemeDataset(Long lexemeId, String dataset) {
+		create.update(LEXEME)
+				.set(LEXEME.DATASET_CODE, dataset)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
@@ -712,7 +733,7 @@ public class CudDbService implements DbConstant {
 		return meaningSemanticTypeCodeId;
 	}
 
-	public Long createLexeme(Long wordId, String datasetCode, Long meaningId) {
+	public Long createLexeme(Long wordId, String datasetCode, Long meaningId, int lexemeLevel1) {
 
 		if (meaningId == null) {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
@@ -736,7 +757,7 @@ public class CudDbService implements DbConstant {
 							LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 							LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 					.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-							1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
+							lexemeLevel1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
 					.returning(LEXEME.ID)
 					.fetchOne()
 					.getId();

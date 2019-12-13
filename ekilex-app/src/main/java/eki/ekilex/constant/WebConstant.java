@@ -66,6 +66,12 @@ public interface WebConstant {
 
 	String WORD_SELECT_PAGE = "wordselect";
 
+	String MEANING_REL_SELECT_URI = "/meaningrelselect";
+
+	String MEANING_REL_SELECT_PAGE = "meaningrelselect";
+
+	String CREATE_WORD_AND_MEANING_AND_REL_URI = "/create_word_and_meaning_and_rel";
+
 	String AUTH_ERROR_URI = "/autherror";
 
 	String SEND_FEEDBACK_URI = "/send_feedback";
@@ -126,7 +132,9 @@ public interface WebConstant {
 
 	String ERROR_PAGE = "error";
 
-	String CREATE_WORD_URI = "/create_word";
+	String LEX_CREATE_WORD_URI = "/lex_create_word";
+
+	String TERM_CREATE_WORD_URI = "/term_create_word";
 
 	String CREATE_HOMONYM_URI = "/create_homonym";
 

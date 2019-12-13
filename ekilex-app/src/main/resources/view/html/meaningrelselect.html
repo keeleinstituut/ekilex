@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{meaning.relation.select.title}">Tähenduste seoste valimine</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-meaningrelselect.js}"></script>
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'meaningrelselect')"></th:block>
+  <div class="container-fluid">
+    <div class="d-flex flex-row mt-2">
+      <p class="card-text">
+        <a class="btn btn-sm btn-secondary" th:href="@{/termsearch}">Tagasi</a>
+      </p>
+    </div>
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Olemasoleva tähenduse valik</h5>
+      </div>
+      <form id="createWordForm" th:action="@{/create_word_and_meaning_and_rel}" method="post">
+        <input type="hidden" name="language" th:value="${language}">
+        <input type="hidden" name="morphCode" th:value="${morphCode}">
+        <input type="hidden" name="wordValue" th:value="${wordValue}">
+        <input type="hidden" name="meaningId" th:value="${meaningId}">
+        <input type="hidden" name="importMeaningData" value="false">
+        <input type="hidden" name="createRelation" value="false">
+        <div class="card-body">
+          <div style="width: 95%" class="border rounded p-2 mb-2">
+            <div class="row mb-2">
+              <div class="form-check mt-1 ml-4">
+                <input id="chkNoRelation" type="checkbox" class="form-check-input" value="true"/>
+                <label for="chkNoRelation" class="form-check-label">Ära tee seost</label>
+              </div>
+            </div>
+            <hr/>
+            <div id="relationTypes" class="row">
+              <div class="col-md-2">
+                <label class="col-form-label">
+                  tähenduse seose tüüp
+                  <select required class="form-control required-field" name="relationType">
+                    <option value="" hidden disabled selected>vali väärtus...</option>
+                    <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div id="oppositeRelationTypes" data-name="oppositeRelation" data-entity="MEANING" class="row" style="display: none">
+              <div class="col-md-2">
+                <label class="col-form-label">
+                  vastassuuna seose tüüp
+                  <select required class="form-control required-field" name="oppositeRelationType">
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div id="submitWithRelationDiv" class="row mt-2">
+              <div class="col">
+                <button th:if="${meaningId == null}" type="button" class="btn btn-primary" disabled>Loo uus termin ja mõiste ning seos</button>
+                <button th:if="${meaningId == null}" type="button" name="importDataBtn" class="btn btn-primary ml-2" disabled>Loo uus termin ja mõiste kopeeritud andmetega ning seos</button>
+                <button th:if="${meaningId != null}" type="button" class="btn btn-primary ml-2" disabled>Loo uus termin</button>
+                <a class="btn btn-secondary ml-2" th:href="@{/termsearch}">Tühista</a>
+              </div>
+            </div>
+            <div id="submitDiv" class="row" style="display: none">
+              <button th:if="${meaningId == null}" type="button" class="btn btn-primary ml-4">Loo uus termin ja mõiste</button>
+              <button th:if="${meaningId != null}" type="button" class="btn btn-primary ml-4">Loo uus termin</button>
+              <a class="btn btn-secondary ml-2" th:href="@{/termsearch}">Tühista</a>
+            </div>
+          </div>
+        </div>
+        <div id="meanings" class="card-body" th:if="${not #lists.isEmpty(relationCandidates)}">
+          <div style="width: 95%" class="border border-dark rounded mb-2 p-2" th:each="meaning : ${relationCandidates}">
+            <div class="row mb-2">
+              <input type="radio" name="relatedMeaningId" class="ml-3" th:value="${meaning.meaningId}" th:checked="${#lists.size(relationCandidates) == 1}">
+            </div>
+            <div class="row" th:if="${not #lists.isEmpty(meaning.definitionLangGroups)}">
+              <div class="col-1 pr-0">
+                <span class="lbl">Seletused</span>
+              </div>
+              <div class="col pl-0">
+                <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
+                  <div th:each="definition, itemIter: ${definitionLangGroup.definitions}">
+                    <div style="display: list-item; position: absolute"></div>
+                    <div>
+                      <span th:utext="${definition.value}"></span>
+                      <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
+                      <span th:each="sourceLink : ${definition.sourceLinks}">
+                        [
+                        <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                        <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                        ]
+                    </span>
+                    </div>
+                  </div>
+                </th:block>
+              </div>
+            </div>
+            <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
+              <div class="border rounded mb-2 p-2" th:each="lexeme : ${lexemeLangGroup.lexemes}">
+                <div>
+                  <span th:utext="${lexeme.word}" class="font-weight-bold"></span>
+                  <span th:text="${'(' + viewUtil.getLangIso2(lexeme.wordLang) + ')'}" class="ml-2"></span>
+                  <b class="float-right" th:text="${lexeme.dataset}"></b>
+                </div>
+                <div class="row">
+                  <div class="col-1 pr-0">
+                    <span class="lbl">Identifikaatorid</span>
+                  </div>
+                  <div class="col pl-0">
+                    <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
+                    <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
+                    <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
+                  </div>
+                </div>
+                <div class="row" th:if="${lexeme.lexemeProcessStateCode != null}">
+                  <div class="col-1 pr-0">
+                    <span class="lbl">Haldusolek</span>
+                  </div>
+                  <div class="col pl-0">
+                    <span th:text="${lexeme.lexemeProcessStateCode}"></span>
+                  </div>
+                </div>
+                <div class="row" th:if="${lexeme.lexemeValueStateCode != null}">
+                  <div class="col-1 pr-0">
+                    <span class="lbl">Väärtusolek</span>
+                  </div>
+                  <div class="col pl-0">
+                    <span th:text="${lexeme.lexemeValueStateCode}"></span>
+                  </div>
+                </div>
+                <div class="row" th:if="${not #lists.isEmpty(lexeme.wordTypes)}">
+                  <div class="col-1 pr-0">
+                    <span class="lbl">Sõna tüüp</span>
+                  </div>
+                  <div class="col pl-0">
+                  <span th:each="classif,classifIter : ${lexeme.wordTypes}">
+                    <span th:text="${classif.code}"></span>
+                    <th:block th:unless="${classif.code == classif.value}">
+                      -
+                      <span th:text="${classif.value}"></span>
+                    </th:block>
+                  </span>
+                  </div>
+                </div>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div th:replace="common :: #alertDlg"></div>
+  <script th:inline="javascript">
+	  initialise();
+  </script>
+</body>
+</html>

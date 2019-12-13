@@ -185,8 +185,23 @@ public class LookupService extends AbstractWordSearchService {
 		if (StringUtils.isBlank(searchFilter)) {
 			return Collections.emptyList();
 		} else {
-			List<Meaning> meanings = lookupDbService.getMeaningsOfJoinCandidates(searchFilter, userPrefDatasetCodes, userPermDatasetCodes, excludedMeaningId);
+			List<Meaning> meanings = lookupDbService.getMeanings(searchFilter, userPrefDatasetCodes, userPermDatasetCodes, excludedMeaningId);
 			meanings.sort(Comparator.comparing(meaning -> !permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaning.getMeaningId())));
+			meanings.forEach(meaning -> composeMeaningJoinData(meaning, languagesOrder));
+			return meanings;
+		}
+	}
+
+	@Transactional
+	public List<Meaning> getMeaningsOfRelationCandidates(String wordValue, List<String> userPermDatasetCodes, List<ClassifierSelect> languagesOrder, Long excludedMeaningId) {
+
+		List<String> allDatasetCodes = getAllDatasetCodes();
+
+		if (StringUtils.isBlank(wordValue)) {
+			return Collections.emptyList();
+		} else {
+			List<Meaning> meanings = lookupDbService.getMeanings(wordValue, allDatasetCodes, userPermDatasetCodes, excludedMeaningId);
+			// TODO share composeMeaningJoinData or create separate method? - Yogesh
 			meanings.forEach(meaning -> composeMeaningJoinData(meaning, languagesOrder));
 			return meanings;
 		}
