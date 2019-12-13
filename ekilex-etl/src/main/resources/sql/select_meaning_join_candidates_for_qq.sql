@@ -9,7 +9,8 @@ select w_ss.word_id,
        m_ss.lexeme_id ss_lexeme_id,
        m_ss.meaning_id ss_meaning_id,
        m_qq.lexeme_id comp_lexeme_id,
-       m_qq.meaning_id comp_meaning_id
+       m_qq.meaning_id comp_meaning_id,
+       false is_override_complexity
 from (select l1.id lexeme_id,
              l1.meaning_id,
              l1.word_id

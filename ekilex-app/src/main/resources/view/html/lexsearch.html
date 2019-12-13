@@ -1334,11 +1334,11 @@
   	  </script>
     </div>
   </th:block>
-  <div th:replace="common :: newWordDlg('lex_search')"></div>
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #confirmDlg"></div>
   <div th:replace="common :: #waitDlg"></div>
+  <div th:replace="lexdialog :: new_word_dlg"></div>
   <div th:replace="sourcedialog :: add_source_dlg('lex_search')"></div>
   <script th:inline="javascript">
 	initialise();

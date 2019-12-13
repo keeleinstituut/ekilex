@@ -156,8 +156,7 @@ public class LookupDbService implements DbConstant {
 				.fetchInto(WordLexemeMeaningIdTuple.class);
 	}
 
-	public List<eki.ekilex.data.Meaning> getMeaningsOfJoinCandidates(String searchFilter, List<String> userPrefDatasetCodes,
-			List<String> userPermDatasetCodes, Long excludedMeaningId) {
+	public List<eki.ekilex.data.Meaning> getMeanings(String searchFilter, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes, Long excludedMeaningId) {
 
 		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_").toLowerCase();
 
@@ -174,19 +173,24 @@ public class LookupDbService implements DbConstant {
 			whereFormValue = f.VALUE.lower().equal(maskedSearchFilter);
 		}
 
+		Condition whereExcludeMeaningId = DSL.noCondition();
+		if (excludedMeaningId != null) {
+			whereExcludeMeaningId = m.ID.ne(excludedMeaningId);
+		}
+
 		Table<Record1<Long>> mid = DSL
 				.selectDistinct(m.ID.as("meaning_id"))
 				.from(m, l, w, p, f)
 				.where(
-						m.ID.ne(excludedMeaningId)
-								.and(l.MEANING_ID.eq(m.ID))
+						l.MEANING_ID.eq(m.ID)
 								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(l.DATASET_CODE.in(userPrefDatasetCodes))
 								.and(w.ID.eq(l.WORD_ID))
 								.and(p.WORD_ID.eq(w.ID))
 								.and(f.PARADIGM_ID.eq(p.ID))
 								.and(f.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()))
-								.and(whereFormValue))
+								.and(whereFormValue)
+								.and(whereExcludeMeaningId))
 				.asTable("mid");
 
 		return create
@@ -250,5 +254,17 @@ public class LookupDbService implements DbConstant {
 								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
 								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
 				.fetchInto(Classifier.class);
+	}
+
+	public Integer getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
+
+		return create
+				.select(DSL.max(LEXEME.LEVEL1))
+				.from(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.fetchOneInto(Integer.class);
 	}
 }

@@ -155,7 +155,6 @@
       <div class="border rounded mb-2 p-2" th:each="lexeme : ${lexemeLangGroup.lexemes}">
         <div>
           <span th:utext="${lexeme.word}" class="font-weight-bold"></span>
-          <span th:text="${lexeme.homonymNumber}"></span>
           <span th:text="${'(' + viewUtil.getLangIso2(lexeme.wordLang) + ')'}" class="ml-2"></span>
           <b class="float-right" th:text="${lexeme.dataset}"></b>
         </div>

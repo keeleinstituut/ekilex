@@ -154,4 +154,19 @@ public abstract class AbstractPageController implements WebConstant {
 	public List<Classifier> getWordAspect() {
 		return commonDataService.getAspects();
 	}
+
+	@ModelAttribute("wordRelationTypes")
+	public List<Classifier> getWordRelationTypes() {
+		return commonDataService.getWordRelationTypes();
+	}
+
+	@ModelAttribute("lexemeRelationTypes")
+	public List<Classifier> getLexemeRelationTypes() {
+		return commonDataService.getLexemeRelationTypes();
+	}
+
+	@ModelAttribute("meaningRelationTypes")
+	public List<Classifier> getMeaningRelationTypes() {
+		return commonDataService.getMeaningRelationTypes();
+	}
 }

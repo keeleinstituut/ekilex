@@ -109,6 +109,16 @@ public class CompositionDbService implements DbConstant {
 				.fetch();
 	}
 
+	public List<LexemeRecord> getMeaningLexemes(Long meaningId, List<String> userPermDatasetCodes) {
+		return create
+				.selectFrom(LEXEME).where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
+				.fetch();
+	}
+
 	public List<LexemeRecord> getWordLexemes(Long wordId) {
 		return create
 				.selectFrom(LEXEME).where(
@@ -906,17 +916,6 @@ public class CompositionDbService implements DbConstant {
 				.fetchOneInto(Integer.class);
 	}
 
-	public Integer getWordLexemesMaxFirstLevel(Long wordId) {
-
-		return create
-				.select(DSL.max(LEXEME.LEVEL1))
-				.from(LEXEME)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.fetchOneInto(Integer.class);
-	}
-
 	private List<Long> getNonDuplicateFreeformIds(List<FreeformRecord> targetFreeforms, List<FreeformRecord> sourceFreeforms) {
 
 		return sourceFreeforms.stream()
@@ -965,19 +964,15 @@ public class CompositionDbService implements DbConstant {
 				.execute();
 	}
 
-	public void updateLexemeLevel1(Long lexemeId, Integer level1) {
+	public boolean lexemeExists(Long wordId, Long meaningId, String datasetCode) {
 
-		create.update(LEXEME)
-				.set(LEXEME.LEVEL1, level1)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void updateLexemeLevel2(Long lexemeId, Integer level2) {
-
-		create.update(LEXEME)
-				.set(LEXEME.LEVEL2, level2)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
+		return create
+				.select(field(DSL.count(LEXEME.ID).gt(0)).as("lexeme_exists"))
+				.from(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchSingleInto(Boolean.class);
 	}
 }

@@ -5,22 +5,17 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.constant.ContentKey;
 import eki.common.constant.LifecycleEntity;
@@ -36,17 +31,12 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
-import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDescript;
-import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.CudService;
-import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.SourceService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
-import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -59,9 +49,6 @@ public class EditController extends AbstractPageController implements SystemCons
 	private CudService cudService;
 
 	@Autowired
-	private LexSearchService lexSearchService;
-
-	@Autowired
 	private CommonDataService commonDataService;
 
 	@Autowired
@@ -69,9 +56,6 @@ public class EditController extends AbstractPageController implements SystemCons
 
 	@Autowired
 	private SourceService sourceService;
-
-	@Autowired
-	private SearchHelper searchHelper;
 
 	@Autowired
 	private TextDecorationService textDecorationService;
@@ -573,123 +557,6 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		}
 		return RESPONSE_OK_VER1;
-	}
-
-	@PostMapping(CREATE_WORD_URI)
-	public String createWord(
-			@RequestParam("dataset") String dataset,
-			@RequestParam("wordValue") String wordValue,
-			@RequestParam("language") String language,
-			@RequestParam("morphCode") String morphCode,
-			@RequestParam("meaningId") Long meaningId,
-			@RequestParam("returnPage") String returnPage,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
-
-		String searchUri = "";
-		if (StringUtils.isNotBlank(wordValue)) {
-			sessionBean.setNewWordSelectedLanguage(language);
-			sessionBean.setNewWordSelectedMorphCode(morphCode);
-			List<String> allDatasets = commonDataService.getDatasetCodes();
-			WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true, DEFAULT_OFFSET);
-			if (words.getTotalCount() == 0) {
-				cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
-			} else {
-				attributes.addFlashAttribute("dataset", dataset);
-				attributes.addFlashAttribute("wordValue", wordValue);
-				attributes.addFlashAttribute("language", language);
-				attributes.addFlashAttribute("morphCode", morphCode);
-				attributes.addFlashAttribute("returnPage", returnPage);
-				attributes.addFlashAttribute("meaningId", meaningId);
-				return "redirect:" + WORD_SELECT_URI;
-			}
-			List<String> selectedDatasets = getUserPreferredDatasetCodes();
-			if (!selectedDatasets.contains(dataset)) {
-				selectedDatasets.add(dataset);
-				userService.updateUserPreferredDatasets(selectedDatasets);
-			}
-			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
-		}
-		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
-			return "redirect:" + LEX_SEARCH_URI + searchUri;
-		}
-		if (StringUtils.equals(returnPage, RETURN_PAGE_TERM_SEARCH)) {
-			return "redirect:" + TERM_SEARCH_URI + searchUri;
-		}
-		return null;
-	}
-
-	@PostMapping(CREATE_HOMONYM_URI)
-	public String createWord(
-			@RequestParam("dataset") String dataset,
-			@RequestParam("wordValue") String wordValue,
-			@RequestParam("language") String language,
-			@RequestParam("morphCode") String morphCode,
-			@RequestParam("meaningId") Long meaningId,
-			@RequestParam("returnPage") String returnPage,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
-
-		String searchUri = "";
-		if (StringUtils.isNotBlank(wordValue)) {
-			cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
-			List<String> selectedDatasets = getUserPreferredDatasetCodes();
-			if (!selectedDatasets.contains(dataset)) {
-				selectedDatasets.add(dataset);
-				userService.updateUserPreferredDatasets(selectedDatasets);
-			}
-			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
-		}
-		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
-			return "redirect:" + LEX_SEARCH_URI + searchUri;
-		}
-		if (StringUtils.equals(returnPage, RETURN_PAGE_TERM_SEARCH)) {
-			return "redirect:" + TERM_SEARCH_URI + searchUri;
-		}
-		return null;
-	}
-
-	@GetMapping(WORD_SELECT_URI)
-	public String listSelectableWords(
-			@ModelAttribute(name = "dataset") String dataset,
-			@ModelAttribute(name = "wordValue") String wordValue,
-			@ModelAttribute(name = "language") String language,
-			@ModelAttribute(name = "morphCode") String morphCode,
-			@ModelAttribute(name = "meaningId") Long meaningId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
-
-		List<String> allDatasets = commonDataService.getDatasetCodes();
-		List<WordDescript> wordDescripts = lexSearchService.getWordDescripts(wordValue, allDatasets, meaningId);
-		model.addAttribute("wordDescripts", wordDescripts);
-
-		return WORD_SELECT_PAGE;
-	}
-
-	@GetMapping(WORD_SELECT_URI + "/{dataset}/{wordId}/{meaningId}/{returnPage}")
-	public String selectWord(
-			@PathVariable(name = "dataset") String dataset,
-			@PathVariable(name = "wordId") Long wordId,
-			@PathVariable(name = "meaningId") String meaningIdCode,
-			@PathVariable(name = "returnPage") String returnPage,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
-
-		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
-		cudService.createLexeme(wordId, dataset, meaningId);
-		Word word = lexSearchService.getWord(wordId);
-		String wordValue = word.getValue();
-		List<String> selectedDatasets = getUserPreferredDatasetCodes();
-		if (!selectedDatasets.contains(dataset)) {
-			selectedDatasets.add(dataset);
-			userService.updateUserPreferredDatasets(selectedDatasets);
-		}
-		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
-		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
-			return "redirect:" + LEX_SEARCH_URI + searchUri;
-		}
-		if (StringUtils.equals(returnPage, RETURN_PAGE_TERM_SEARCH)) {
-			return "redirect:" + TERM_SEARCH_URI + searchUri;
-		}
-		return null;
 	}
 
 	@PostMapping(UPDATE_WORD_VALUE_URI)

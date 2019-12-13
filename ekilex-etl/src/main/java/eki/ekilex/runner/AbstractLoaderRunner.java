@@ -994,7 +994,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 				} else {
 					referenceType = ReferenceType.TRANSLATOR;
 				}
-				Long freeformSourceLinkId = createFreeformSourceLink(usageId, referenceType, authorId, null, author);
+				createFreeformSourceLink(usageId, referenceType, authorId, null, author);
 				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, usageId, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK, LifecycleEventType.CREATE, author);
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {

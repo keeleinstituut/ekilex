@@ -83,21 +83,6 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return commonDataService.getWordTypes();
 	}
 
-	@ModelAttribute("wordRelationTypes")
-	public List<Classifier> getWordRelationTypes() {
-		return commonDataService.getWordRelationTypes();
-	}
-
-	@ModelAttribute("lexemeRelationTypes")
-	public List<Classifier> getLexemeRelationTypes() {
-		return commonDataService.getLexemeRelationTypes();
-	}
-
-	@ModelAttribute("meaningRelationTypes")
-	public List<Classifier> getMeaningRelationTypes() {
-		return commonDataService.getMeaningRelationTypes();
-	}
-
 	@ModelAttribute("definitionTypes")
 	public List<Classifier> getDefinitionTypes() {
 		return commonDataService.getDefinitionTypes();
