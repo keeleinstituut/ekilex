@@ -535,6 +535,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				logger.warn("Incorrect 'Mõistetüüp' reference: \"{}\"", value);
 			}
 		}
+
+		Long freeformId = createMeaningFreeform(meaningId, FreeformType.SOURCE_FILE, fileName);
 	}
 
 	private void createMeaningLifecycleLog(Long meaningId, Node conceptGroupNode) throws Exception {
