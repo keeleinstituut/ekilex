@@ -21,7 +21,7 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	private String value;
 
-	private String dataset;
+	private String value2;
 
 	private Complexity complexity;
 
@@ -81,12 +81,12 @@ public class CreateItemRequest extends AbstractDataObject {
 		this.value = value;
 	}
 
-	public String getDataset() {
-		return dataset;
+	public String getValue2() {
+		return value2;
 	}
 
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
+	public void setValue2(String value2) {
+		this.value2 = value2;
 	}
 
 	public Complexity getComplexity() {

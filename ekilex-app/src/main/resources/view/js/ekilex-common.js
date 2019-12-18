@@ -482,6 +482,8 @@ function initAddSynRelationDlg(addDlg) {
 				let button = $(e.target);
 				addDlg.find('[name=id2]').val(button.data(idElementName));
 				addDlg.find('[name=opCode]').val('create_raw_relation');
+				let weightValue = $("#weightInput").val();
+				addDlg.find('[name=value2]').val(weightValue);
 				let theForm = button.closest('form');
 				submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
 					addDlg.modal('hide');
@@ -492,6 +494,8 @@ function initAddSynRelationDlg(addDlg) {
 				e.preventDefault();
 				let button = $(e.target);
 				addDlg.find('[name=opCode]').val('create_syn_word');
+				let weightValue = $("#weightInput").val();
+				addDlg.find('[name=value2]').val(weightValue);
 
 				let theForm = button.closest('form');
 				if (checkRequiredFields(theForm)) {

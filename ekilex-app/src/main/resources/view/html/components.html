@@ -120,6 +120,16 @@
     </div>
   </div>
   <div data-name="dialogContent" th:fragment="syn_word_search_result">
+    <div class="card">
+      <div class="card-body p-2">
+        <div class="form-group row">
+          <div class="col-md-4 ml-2">
+            <label>Kandidaadi kaal</label>
+            <input id="weightInput" type="number" min="0" max="1" step=".1" class="form-control required-field" value="0.7">
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
       <div class="card-body p-2">
         <span th:text="${'Kokku leiti : ' + totalCount}"></span>

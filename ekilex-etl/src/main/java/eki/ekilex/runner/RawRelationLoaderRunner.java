@@ -27,9 +27,9 @@ public class RawRelationLoaderRunner extends AbstractLoaderRunner {
 			+ "on conflict do nothing;";
 
 	private final String sqlCreateOrUpdateWordRelationParam =
-			"insert into word_relation_param (word_relation_id, name, value) "
+			"insert into " + WORD_RELATION_PARAM + " (word_relation_id, name, value) "
 			+ "select id, :param_name, :param_value "
-			+ "from word_relation "
+			+ "from " + WORD_RELATION + " "
 			+ "where word1_id = :word1_id and word2_id = :word2_id and word_rel_type_code = :word_rel_type_code "
 			+ "on conflict (word_relation_id,name) do update "
 			+ "set value = :param_value;";
@@ -62,6 +62,7 @@ public class RawRelationLoaderRunner extends AbstractLoaderRunner {
 	void initialise() throws Exception {
 	}
 
+	// TODO @Transactional ?
 	public void execute(String inputFileFullPath) throws Exception {
 
 		File rawRelationCsvFile = new File(inputFileFullPath);

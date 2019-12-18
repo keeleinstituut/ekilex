@@ -37,6 +37,9 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 public class CudService extends AbstractService {
 
 	private static final String RAW_RELATION_TYPE = "raw";
+
+	private static final String USER_ADDED_WORD_RELATION_NAME = "user";
+
 	private static final String UNDEFINED_RELATION_STATUS = RelationStatus.UNDEFINED.name();
 
 	@Autowired
@@ -972,31 +975,36 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void addSynRelation(Long word1Id, Long word2Id) {
+	public void addSynRelation(Long word1Id, Long word2Id, String weightStr) {
 		SynRelation createdRelation = cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		moveCreatedRelationToFirst(word1Id, createdRelation);
+		Long createdRelationId = createdRelation.getId();
+		moveCreatedRelationToFirst(word1Id, createdRelationId);
+		BigDecimal weight = new BigDecimal(weightStr);
+		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 	}
 
 	@Transactional
-	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode) {
+	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode, String weightStr) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long createdWordId = cudDbService.createWordAndLexeme(value, valuePrese, datasetCode, language, morphCode, null);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
 		createLifecycleLog(logData);
 
 		SynRelation createdRelation = cudDbService.addSynRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		moveCreatedRelationToFirst(existingWordId, createdRelation);
-
+		Long createdRelationId = createdRelation.getId();
+		moveCreatedRelationToFirst(existingWordId, createdRelationId);
+		BigDecimal weight = new BigDecimal(weightStr);
+		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 	}
 
-	private void moveCreatedRelationToFirst(Long wordId, SynRelation createdRelation) {
+	private void moveCreatedRelationToFirst(Long wordId, Long relationId) {
 		List<SynRelation> existingRelations = cudDbService.getWordRelations(wordId, RAW_RELATION_TYPE);
 		if (existingRelations.size() > 1) {
 
 			SynRelation firstRelation = existingRelations.get(0);
 			List<Long> existingOrderByValues = existingRelations.stream().map(SynRelation::getOrderBy).collect(Collectors.toList());
 
-			cudDbService.updateWordRelationOrderBy(createdRelation.getId(), firstRelation.getOrderBy());
+			cudDbService.updateWordRelationOrderBy(relationId, firstRelation.getOrderBy());
 			existingRelations.remove(existingRelations.size() - 1);
 			existingOrderByValues.remove(0);
 
