@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 1396625270;
+    private static final long serialVersionUID = -1781468533;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -110,7 +110,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     /**
      * The column <code>public.lexeme.process_state_code</code>.
      */
-    public final TableField<LexemeRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexemeRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme.complexity</code>.
@@ -121,6 +121,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.order_by</code>.
      */
     public final TableField<LexemeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
+     * The column <code>public.lexeme.weight</code>.
+     */
+    public final TableField<LexemeRecord, BigDecimal> WEIGHT = createField("weight", org.jooq.impl.SQLDataType.NUMERIC(5, 4).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.NUMERIC)), this, "");
 
     /**
      * Create a <code>public.lexeme</code> table reference

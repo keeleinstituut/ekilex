@@ -120,3 +120,7 @@ $(document).on("show.bs.modal", "[id^=editOdUsageAlternativeDlg_]", function(e) 
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
+
+$(document).on("show.bs.modal", "[id^=editLexemeWeightDlg_]", function() {
+	initGenericTextEditDlg($(this));
+});

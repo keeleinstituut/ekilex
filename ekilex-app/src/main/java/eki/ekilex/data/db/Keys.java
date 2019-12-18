@@ -471,6 +471,7 @@ public class Keys {
     public static final UniqueKey<WordRelationRecord> WORD_RELATION_PKEY = UniqueKeys0.WORD_RELATION_PKEY;
     public static final UniqueKey<WordRelationRecord> WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = UniqueKeys0.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY;
     public static final UniqueKey<WordRelationParamRecord> WORD_RELATION_PARAM_PKEY = UniqueKeys0.WORD_RELATION_PARAM_PKEY;
+    public static final UniqueKey<WordRelationParamRecord> WORD_RELATION_PARAM_WORD_RELATION_ID_NAME_KEY = UniqueKeys0.WORD_RELATION_PARAM_WORD_RELATION_ID_NAME_KEY;
     public static final UniqueKey<WordTypeRecord> WORD_TYPE_PKEY = UniqueKeys0.WORD_TYPE_PKEY;
     public static final UniqueKey<WordTypeLabelRecord> WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<WordWordTypeRecord> WORD_WORD_TYPE_PKEY = UniqueKeys0.WORD_WORD_TYPE_PKEY;
@@ -882,6 +883,7 @@ public class Keys {
         public static final UniqueKey<WordRelationRecord> WORD_RELATION_PKEY = Internal.createUniqueKey(WordRelation.WORD_RELATION, "word_relation_pkey", WordRelation.WORD_RELATION.ID);
         public static final UniqueKey<WordRelationRecord> WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Internal.createUniqueKey(WordRelation.WORD_RELATION, "word_relation_word1_id_word2_id_word_rel_type_code_key", WordRelation.WORD_RELATION.WORD1_ID, WordRelation.WORD_RELATION.WORD2_ID, WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE);
         public static final UniqueKey<WordRelationParamRecord> WORD_RELATION_PARAM_PKEY = Internal.createUniqueKey(WordRelationParam.WORD_RELATION_PARAM, "word_relation_param_pkey", WordRelationParam.WORD_RELATION_PARAM.ID);
+        public static final UniqueKey<WordRelationParamRecord> WORD_RELATION_PARAM_WORD_RELATION_ID_NAME_KEY = Internal.createUniqueKey(WordRelationParam.WORD_RELATION_PARAM, "word_relation_param_word_relation_id_name_key", WordRelationParam.WORD_RELATION_PARAM.WORD_RELATION_ID, WordRelationParam.WORD_RELATION_PARAM.NAME);
         public static final UniqueKey<WordTypeRecord> WORD_TYPE_PKEY = Internal.createUniqueKey(WordType.WORD_TYPE, "word_type_pkey", WordType.WORD_TYPE.CODE);
         public static final UniqueKey<WordTypeLabelRecord> WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_code_lang_type_key", WordTypeLabel.WORD_TYPE_LABEL.CODE, WordTypeLabel.WORD_TYPE_LABEL.LANG, WordTypeLabel.WORD_TYPE_LABEL.TYPE);
         public static final UniqueKey<WordWordTypeRecord> WORD_WORD_TYPE_PKEY = Internal.createUniqueKey(WordWordType.WORD_WORD_TYPE, "word_word_type_pkey", WordWordType.WORD_WORD_TYPE.ID);

@@ -374,7 +374,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<mainClass>eki.ekilex.manual.RawRelationCsvToSqlGenerator</mainClass>
+							<mainClass>eki.ekilex.manual.RawRelationLoader</mainClass>
 							<cleanupDaemonThreads>false</cleanupDaemonThreads>
 						</configuration>
 					</plugin>
@@ -728,6 +728,39 @@
 						</executions>
 						<configuration>
 							<mainClass>eki.ekilex.manual.DatasetImporter</mainClass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+		<profile>
+			<id>prodsrvgenraw</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>${project.basedir}/envresources/prod</directory>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>java</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<mainClass>eki.ekilex.manual.RawRelationLoader</mainClass>
+							<cleanupDaemonThreads>false</cleanupDaemonThreads>
 						</configuration>
 					</plugin>
 				</plugins>

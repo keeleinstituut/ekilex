@@ -14,6 +14,7 @@ public enum LifecycleProperty {
 	GENDER,
 	DOMAIN,
 	DATASET,
+	WEIGHT,
 	WORD_TYPE,
 	ASPECT,
 	VOCAL_FORM,

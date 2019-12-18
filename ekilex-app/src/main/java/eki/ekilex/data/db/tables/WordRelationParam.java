@@ -9,6 +9,7 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordRelationParamRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
 
-    private static final long serialVersionUID = -1288571497;
+    private static final long serialVersionUID = 400563441;
 
     /**
      * The reference instance of <code>public.word_relation_param</code>
@@ -74,7 +75,7 @@ public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
     /**
      * The column <code>public.word_relation_param.value</code>.
      */
-    public final TableField<WordRelationParamRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<WordRelationParamRecord, BigDecimal> VALUE = createField("value", org.jooq.impl.SQLDataType.NUMERIC(5, 4).nullable(false), this, "");
 
     /**
      * Create a <code>public.word_relation_param</code> table reference
@@ -122,7 +123,7 @@ public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_RELATION_PARAM_PKEY, Indexes.WORD_RELATION_PARAM_WORD_RELATION_ID_IDX);
+        return Arrays.<Index>asList(Indexes.WORD_RELATION_PARAM_PKEY, Indexes.WORD_RELATION_PARAM_WORD_RELATION_ID_IDX, Indexes.WORD_RELATION_PARAM_WORD_RELATION_ID_NAME_KEY);
     }
 
     /**
@@ -146,7 +147,7 @@ public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
      */
     @Override
     public List<UniqueKey<WordRelationParamRecord>> getKeys() {
-        return Arrays.<UniqueKey<WordRelationParamRecord>>asList(Keys.WORD_RELATION_PARAM_PKEY);
+        return Arrays.<UniqueKey<WordRelationParamRecord>>asList(Keys.WORD_RELATION_PARAM_PKEY, Keys.WORD_RELATION_PARAM_WORD_RELATION_ID_NAME_KEY);
     }
 
     /**

@@ -556,6 +556,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				LEXEME.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
 				lfreq.as("lexeme_frequencies"),
 				LEXEME.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
+				LEXEME.WEIGHT.as("lexeme_weight"),
 				LEXEME.COMPLEXITY.as("lexeme_complexity")
 		};
 	}
@@ -613,6 +614,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						w2.HOMONYM_NR.as("homonym_number"),
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"),
+						l2.WEIGHT.as("lexeme_weight"),
 						l2.ORDER_BY)
 				.from(l1, l2, w2, p2, f2)
 				.where(

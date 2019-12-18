@@ -18,6 +18,8 @@ public class MeaningWord extends AbstractDataObject {
 
 	private String lexemeType;
 
+	private Float lexemeWeight;
+
 	private Long orderBy;
 
 	public Long getWordId() {
@@ -66,6 +68,14 @@ public class MeaningWord extends AbstractDataObject {
 
 	public void setLexemeType(String lexemeType) {
 		this.lexemeType = lexemeType;
+	}
+
+	public Float getLexemeWeight() {
+		return lexemeWeight;
+	}
+
+	public void setLexemeWeight(Float lexemeWeight) {
+		this.lexemeWeight = lexemeWeight;
 	}
 
 	public Long getOrderBy() {

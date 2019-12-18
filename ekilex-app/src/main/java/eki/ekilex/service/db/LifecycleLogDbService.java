@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -583,6 +584,14 @@ public class LifecycleLogDbService {
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			}
+		} else if (LifecycleProperty.WEIGHT.equals(property)) {
+			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+			BigDecimal recentWeight = (BigDecimal) entityData.get("weight");
+			String recent = String.valueOf(recentWeight);
+
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createLexemeLifecycleLog(entityId, lifecycleLogId);
 		}
 	}
 

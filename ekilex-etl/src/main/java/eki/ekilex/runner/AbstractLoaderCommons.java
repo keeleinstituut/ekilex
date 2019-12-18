@@ -1,5 +1,6 @@
 package eki.ekilex.runner;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -51,6 +52,12 @@ public abstract class AbstractLoaderCommons implements SystemConstant, TableName
 
 	protected List<String> readFileLines(String sourcePath) throws Exception {
 		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
+			return IOUtils.readLines(resourceInputStream, UTF_8);
+		}
+	}
+
+	protected List<String> readFileLines(File sourceFile) throws Exception {
+		try (InputStream resourceInputStream = new FileInputStream(sourceFile)) {
 			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
 	}

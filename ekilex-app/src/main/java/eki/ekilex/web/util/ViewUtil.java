@@ -1,5 +1,6 @@
 package eki.ekilex.web.util;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,5 +29,9 @@ public class ViewUtil {
 			return "?";
 		}
 		return langIso2;
+	}
+
+	public String getFormattedLexemeWeight(Float lexemeWeight) {
+		return new DecimalFormat("#.##").format(lexemeWeight);
 	}
 }

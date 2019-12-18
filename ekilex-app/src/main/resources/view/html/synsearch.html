@@ -221,6 +221,7 @@
                             th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
                             th:text="${meaningWord.homonymNumber}">
                           </span>
+                          <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
                         </a>
                         <button type="button" class="hover-actions btn btn-secondary btn-xs"
                           th:data-id="${meaningWord.lexemeId}"
