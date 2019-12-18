@@ -28,10 +28,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
@@ -41,7 +43,6 @@ import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -249,7 +250,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 			List<String> allDatasets = commonDataService.getDatasetCodes();
 			WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true, DEFAULT_OFFSET);
 			if (words.getTotalCount() == 0) {
-				cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
+				cudService.createWord(meaningId, wordValue, language, morphCode, dataset);
 			} else {
 				attributes.addFlashAttribute("dataset", dataset);
 				attributes.addFlashAttribute("wordValue", wordValue);
@@ -280,7 +281,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
-			cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
+			cudService.createWord(meaningId, wordValue, language, morphCode, dataset);
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
@@ -292,7 +293,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	}
 
 	@GetMapping(WORD_SELECT_URI)
-	public String listSelectableWords(
+	public String meaningWordCandidates(
 			@ModelAttribute(name = "dataset") String dataset,
 			@ModelAttribute(name = "wordValue") String wordValue,
 			@ModelAttribute(name = "language") String language,
@@ -302,8 +303,8 @@ public class LexEditController extends AbstractPageController implements SystemC
 			Model model) {
 
 		List<String> allDatasets = commonDataService.getDatasetCodes();
-		List<WordDescript> wordDescripts = lexSearchService.getWordDescripts(wordValue, allDatasets, meaningId);
-		model.addAttribute("wordDescripts", wordDescripts);
+		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language, allDatasets);
+		model.addAttribute("meaningWordCandidates", meaningWordCandidates);
 
 		return WORD_SELECT_PAGE;
 	}

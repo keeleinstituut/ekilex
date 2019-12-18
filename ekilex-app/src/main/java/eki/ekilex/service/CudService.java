@@ -379,7 +379,7 @@ public class CudService extends AbstractService {
 	// --- CREATE ---
 
 	@Transactional
-	public void createWord(String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
+	public void createWord(Long meaningId, String valuePrese, String language, String morphCode, String datasetCode) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long wordId = cudDbService.createWordAndLexeme(value, valuePrese, datasetCode, language, morphCode, meaningId);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);

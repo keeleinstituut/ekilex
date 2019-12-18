@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -38,7 +37,6 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
@@ -141,45 +139,6 @@ public class LexSearchService extends AbstractWordSearchService {
 			}
 		}
 		return lexemes;
-	}
-
-	@Transactional
-	public List<WordDescript> getWordDescripts(String searchFilter, List<String> datasets, Long excludingMeaningId) {
-
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
-		WordsResult words = getWords(searchFilter, datasets, true, DEFAULT_OFFSET);
-		List<WordDescript> wordDescripts = new ArrayList<>();
-		for (Word word : words.getWords()) {
-			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);
-			boolean lexemeAlreadyExists = false;
-			if (excludingMeaningId != null) {
-				lexemeAlreadyExists = lexemes.stream().anyMatch(lexeme -> lexeme.getMeaningId().equals(excludingMeaningId));
-			}
-			if (lexemeAlreadyExists) {
-				continue;
-			}
-			List<String> allDefinitionValues = new ArrayList<>();
-			lexemes.forEach(lexeme -> {
-				Long lexemeId = lexeme.getLexemeId();
-				Long meaningId = lexeme.getMeaningId();
-				String datasetCode = lexeme.getDatasetCode();
-				List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
-				List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
-				lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
-				List<DefinitionRefTuple> definitionRefTuples =
-						commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-				List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
-				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
-				allDefinitionValues.addAll(lexemeDefinitionValues);
-			});
-			List<String> distinctDefinitionValues = allDefinitionValues.stream().distinct().collect(Collectors.toList());
-			WordDescript wordDescript = new WordDescript();
-			wordDescript.setWord(word);
-			wordDescript.setLexemes(lexemes);
-			wordDescript.setDefinitions(distinctDefinitionValues);
-			wordDescripts.add(wordDescript);
-		}
-		return wordDescripts;
 	}
 
 	@Transactional

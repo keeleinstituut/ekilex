@@ -267,4 +267,21 @@ public class LookupDbService implements DbConstant {
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchOneInto(Integer.class);
 	}
+
+	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
+
+		return create
+				.select(DSL.field(DSL.count(WORD.ID).gt(0)).as("word_exists"))
+				.from(LEXEME, WORD, PARADIGM, FORM)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+						.and(LEXEME.WORD_ID.eq(WORD.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name()))
+						.and(FORM.VALUE.eq(wordValue))
+						.and(WORD.LANG.eq(language))
+						)
+				.fetchSingleInto(Boolean.class);
+	}
 }

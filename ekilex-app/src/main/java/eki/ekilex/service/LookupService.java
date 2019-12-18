@@ -33,6 +33,7 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningWord;
+import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -40,6 +41,7 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
@@ -75,6 +77,57 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
+
+	@Transactional
+	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
+		return lookupDbService.meaningHasWord(meaningId, wordValue, language);
+	}
+
+	@Transactional
+	public MeaningWordCandidates getMeaningWordCandidates(Long sourceMeaningId, String wordValue, String language, List<String> datasets) {
+
+		boolean meaningHasWord = lookupDbService.meaningHasWord(sourceMeaningId, wordValue, language);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
+		WordsResult words = getWords(wordValue, datasets, true, DEFAULT_OFFSET);
+		List<WordDescript> wordCandidates = new ArrayList<>();
+		for (Word word : words.getWords()) {
+			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);
+			boolean lexemeAlreadyExists = false;
+			if (sourceMeaningId != null) {
+				lexemeAlreadyExists = lexemes.stream().anyMatch(lexeme -> lexeme.getMeaningId().equals(sourceMeaningId));
+			}
+			if (lexemeAlreadyExists) {
+				continue;
+			}
+			List<String> allDefinitionValues = new ArrayList<>();
+			lexemes.forEach(lexeme -> {
+				Long lexemeId = lexeme.getLexemeId();
+				Long meaningId = lexeme.getMeaningId();
+				String datasetCode = lexeme.getDatasetCode();
+				List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
+				List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
+				lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
+				List<DefinitionRefTuple> definitionRefTuples =
+						commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+				List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
+				allDefinitionValues.addAll(lexemeDefinitionValues);
+			});
+			List<String> distinctDefinitionValues = allDefinitionValues.stream().distinct().collect(Collectors.toList());
+			WordDescript wordCandidate = new WordDescript();
+			wordCandidate.setWord(word);
+			wordCandidate.setLexemes(lexemes);
+			wordCandidate.setDefinitions(distinctDefinitionValues);
+			wordCandidates.add(wordCandidate);
+		}
+		boolean wordCandidatesExist = CollectionUtils.isNotEmpty(wordCandidates);
+		MeaningWordCandidates meaningWordCandidates = new MeaningWordCandidates();
+		meaningWordCandidates.setWordValue(wordValue);
+		meaningWordCandidates.setMeaningHasWord(meaningHasWord);
+		meaningWordCandidates.setWordCandidates(wordCandidates);
+		meaningWordCandidates.setWordCandidatesExist(wordCandidatesExist);
+		return meaningWordCandidates;
+	}
 
 	@Transactional
 	public List<WordDetails> getWordDetailsOfJoinCandidates(Word targetWord, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
@@ -193,7 +246,7 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<Meaning> getMeaningsOfRelationCandidates(String wordValue, List<String> userPermDatasetCodes, List<ClassifierSelect> languagesOrder, Long excludedMeaningId) {
+	public List<Meaning> getMeaningsOfRelationCandidates(Long excludedMeaningId, String wordValue, List<String> userPermDatasetCodes, List<ClassifierSelect> languagesOrder) {
 
 		List<String> allDatasetCodes = getAllDatasetCodes();
 

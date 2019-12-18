@@ -185,17 +185,20 @@ public class TermEditController extends AbstractPageController {
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
 
-			List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(wordValue, userPermDatasetCodes, languagesOrder, meaningId);
-			if (CollectionUtils.isNotEmpty(relationCandidates)) {
-				attributes.addFlashAttribute("dataset", dataset);
-				attributes.addFlashAttribute("wordValue", wordValue);
-				attributes.addFlashAttribute("language", language);
-				attributes.addFlashAttribute("morphCode", morphCode);
-				attributes.addFlashAttribute("meaningId", meaningId);
-				attributes.addFlashAttribute("relationCandidates", relationCandidates);
-				return "redirect:" + MEANING_REL_SELECT_URI;
-			} else {
-				cudService.createWord(wordValue, dataset, language, morphCode, meaningId);
+			boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
+			if (!meaningHasWord) {
+				List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(meaningId, wordValue, userPermDatasetCodes, languagesOrder);
+				if (CollectionUtils.isNotEmpty(relationCandidates)) {
+					attributes.addFlashAttribute("dataset", dataset);
+					attributes.addFlashAttribute("wordValue", wordValue);
+					attributes.addFlashAttribute("language", language);
+					attributes.addFlashAttribute("morphCode", morphCode);
+					attributes.addFlashAttribute("meaningId", meaningId);
+					attributes.addFlashAttribute("relationCandidates", relationCandidates);
+					return "redirect:" + MEANING_REL_SELECT_URI;
+				} else {
+					cudService.createWord(meaningId, wordValue, language, morphCode, dataset);
+				}				
 			}
 
 			if (!selectedDatasets.contains(dataset)) {
@@ -244,6 +247,7 @@ public class TermEditController extends AbstractPageController {
 			} catch (Exception exception) {
 				if (exception instanceof ConstraintViolationException) {
 					response.put("status", "invalid");
+					//TODO not very user-friendly condition - should just merge lexemes wo hussle
 					response.put("message", "Tähenduse andmete kopeerimine ebaõnnestus. Kontrolli, et tähendusel ei oleks samakujulisi erineva sõnakogu termineid");
 				} else {
 					response.put("status", "invalid");

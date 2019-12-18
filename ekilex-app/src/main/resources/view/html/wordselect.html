@@ -17,7 +17,7 @@
       <div class="card-header">
         <h5 class="card-title">Olemasoleva sõna valik</h5>
       </div>
-      <div class="card-body">
+      <div class="card-body" th:if="${!meaningWordCandidates.meaningHasWord}">
         <form th:action="@{/create_homonym}" method="post">
           <input type="hidden" name="dataset" th:value="${dataset}">
           <input type="hidden" name="language" th:value="${language}">
@@ -25,7 +25,7 @@
           <input type="hidden" name="wordValue" th:value="${wordValue}">
           <input type="hidden" name="meaningId" th:value="${meaningId}">
           <div style="width: 95%" class="border rounded p-2 mb-2">
-            <span th:text="${wordValue}" class="ttl"></span>
+            <span th:text="${meaningWordCandidates.wordValue}" class="ttl"></span>
             <button type="submit" class="btn btn-primary ml-4">Lisa uus homonüüm</button>
             <span class="float-right">
               <b th:text="${dataset}"></b>
@@ -33,20 +33,20 @@
           </div>
         </form>
       </div>
-      <div class="card-body" th:if="${not #lists.isEmpty(wordDescripts)}">
-        <div style="width: 95%" class="border rounded p-2 mb-2" th:each="wordDescript : ${wordDescripts}">
+      <div class="card-body" th:if="${meaningWordCandidates.wordCandidatesExist}">
+        <div style="width: 95%" class="border rounded p-2 mb-2" th:each="wordCandidate : ${meaningWordCandidates.wordCandidates}">
           <div>
-            <span th:text="${wordDescript.word.value}" class="ttl"></span>
-            <span th:text="${wordDescript.word.homonymNumber}" class="ttl"></span>
-            <span th:text="${'(' + viewUtil.getLangIso2(wordDescript.word.language) + ')'}"></span>
-            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${wordDescript.word.wordId} + '/' + ${meaningId}}">Vali</a>
+            <span th:text="${wordCandidate.word.value}" class="ttl"></span>
+            <span th:text="${wordCandidate.word.homonymNumber}" class="ttl"></span>
+            <span th:text="${'(' + viewUtil.getLangIso2(wordCandidate.word.language) + ')'}"></span>
+            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${wordCandidate.word.wordId} + '/' + ${meaningId}}">Vali</a>
             <span class="float-right">
-              <b th:text="${#strings.listJoin(wordDescript.word.datasetCodes, ', ')}"></b>
+              <b th:text="${#strings.listJoin(wordCandidate.word.datasetCodes, ', ')}"></b>
             </span>
           </div>
           <hr />
           <div>
-            <span th:each="lexeme, lexemeIter : ${wordDescript.lexemes}">
+            <span th:each="lexeme, lexemeIter : ${wordCandidate.lexemes}">
               <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
                 <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
                   <span th:text="${meaningWord.value}"></span>
@@ -57,9 +57,9 @@
               </th:block>
             </span>
           </div>
-          <div class="mt-2" th:if="${not #lists.isEmpty(wordDescript.definitions)}">
+          <div class="mt-2" th:if="${not #lists.isEmpty(wordCandidate.definitions)}">
             <span class="lbl">Seletused</span>
-            <div th:each="definition : ${wordDescript.definitions}" th:text="${definition}"></div>
+            <div th:each="definition : ${wordCandidate.definitions}" th:text="${definition}"></div>
           </div>
         </div>
       </div>
