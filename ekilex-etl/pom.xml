@@ -387,11 +387,14 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>testsrvgenerateraw</id>
+			<id>testsrvgenraw</id>
 			<build>
 				<resources>
 					<resource>
 						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
