@@ -74,8 +74,8 @@ public class EditController extends AbstractPageController implements SystemCons
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			cudService.createDefinition(itemData.getId(), valuePrese, itemData.getLanguage(), itemData.getDataset(), itemData.getComplexity(),
-					itemData.getItemType());
+			String dataset = sessionBean.getUserRole().getDatasetCode();
+			cudService.createDefinition(itemData.getId(), valuePrese, itemData.getLanguage(), dataset, itemData.getComplexity(), itemData.getItemType());
 			break;
 		case "definition_public_note":
 			cudService.createDefinitionPublicNote(itemData.getId(), valuePrese);
@@ -173,12 +173,11 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.createImageTitle(itemData.getId(), valuePrese);
 			break;
 		case "create_raw_relation":
-			//TODO - can regular word_relation be used here
-			cudService.addSynRelation(itemData.getId(), itemData.getId2());
+			cudService.addSynRelation(itemData.getId(), itemData.getId2(), itemData.getValue2());
 			break;
 		case "create_syn_word":
 			String datasetCode = sessionBean.getUserRole().getDatasetCode();
-			cudService.createWordAndSynRelation(itemData.getId(), itemData.getValue(), datasetCode, itemData.getLanguage(), itemData.getItemType());
+			cudService.createWordAndSynRelation(itemData.getId(), itemData.getValue(), datasetCode, itemData.getLanguage(), itemData.getItemType(), itemData.getValue2());
 			break;
 		case "meaning_semantic_type":
 			cudService.createMeaningSemanticType(itemData.getId2(), valuePrese);

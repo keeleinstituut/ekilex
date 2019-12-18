@@ -742,7 +742,6 @@
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
-            <input type="hidden" name="dataset" th:value="${sessionBean.userRole.datasetCode}"/>
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-8">

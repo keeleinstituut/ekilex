@@ -35,6 +35,7 @@ import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
@@ -972,6 +973,13 @@ public class CudDbService implements DbConstant {
 				.getId();
 	}
 
+	public void createWordRelationParam(Long wordRelationId, String paramName, BigDecimal paramValue) {
+
+		 create.insertInto(WORD_RELATION_PARAM, WORD_RELATION_PARAM.WORD_RELATION_ID, WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
+				 .values(wordRelationId, paramName, paramValue)
+				 .execute();
+	}
+
 	public void deleteWord(Long wordId) {
 		create.delete(LIFECYCLE_LOG)
 				.where(LIFECYCLE_LOG.ID.in(DSL
@@ -1180,13 +1188,13 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
-	public SynRelation addSynRelation(Long word1Id, Long word2Id, String relationType, String relatonStatus) {
+	public SynRelation addSynRelation(Long word1Id, Long word2Id, String relationType, String relationStatus) {
 		return create.insertInto(WORD_RELATION,
 					WORD_RELATION.WORD1_ID,
 					WORD_RELATION.WORD2_ID,
 					WORD_RELATION.WORD_REL_TYPE_CODE,
 					WORD_RELATION.RELATION_STATUS)
-				.values(word1Id, word2Id, relationType, relatonStatus)
+				.values(word1Id, word2Id, relationType, relationStatus)
 				.returning()
 				.fetchOne()
 				.into(SynRelation.class);
