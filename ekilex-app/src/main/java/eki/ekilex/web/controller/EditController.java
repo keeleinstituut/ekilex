@@ -261,6 +261,9 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "lexeme_region":
 			cudService.updateLexemeRegion(itemData.getId(), itemData.getCurrentValue(), valuePrese);
 			break;
+		case "lexeme_weight":
+			cudService.updateLexemeWeight(itemData.getId(), valuePrese);
+			break;
 		case "word_gender":
 			cudService.updateWordGender(itemData.getId(), valuePrese);
 			break;

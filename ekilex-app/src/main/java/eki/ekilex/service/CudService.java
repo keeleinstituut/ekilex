@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -365,6 +366,14 @@ public class CudService extends AbstractService {
 		createLifecycleLog(logData);
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
+	}
+
+	@Transactional
+	public void updateLexemeWeight(Long lexemeId, String lexemeWeightStr) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.WEIGHT, lexemeId, lexemeWeightStr);
+		createLifecycleLog(logData);
+		BigDecimal lexemeWeight = new BigDecimal(lexemeWeightStr);
+		cudDbService.updateLexemeWeight(lexemeId, lexemeWeight);
 	}
 
 	// --- CREATE ---

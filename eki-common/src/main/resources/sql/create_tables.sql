@@ -591,7 +591,8 @@ create table word_relation_param
   id bigserial primary key,
   word_relation_id bigint references word_relation(id) on delete cascade not null,
   name text not null,
-  value text not null
+  value numeric(5,4) not null,
+  unique (word_relation_id, name)
 );
 alter sequence word_relation_param_id_seq restart with 10000;
 
@@ -860,6 +861,7 @@ create table lexeme
   value_state_code varchar(100) references value_state(code) null,
   process_state_code varchar(100) references process_state(code) null,
   complexity varchar(100) not null,
+  weight numeric(5,4) default 1,
   order_by bigserial,
   unique(word_id, meaning_id, dataset_code)
 );

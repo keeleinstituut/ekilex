@@ -153,6 +153,21 @@
       </span>
     </div>
   </div>
+  <div class="hidden-buttons row" th:fragment="lexeme_weight">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Ilmiku kaal</span>
+    </div>
+    <div class="col pl-0">
+      <span th:text="${viewUtil.getFormattedLexemeWeight(lexeme.weight)}"></span>
+      <button type="button" class="btn badge badge-primary"
+        title="Muuda"
+        data-toggle="modal"
+        th:data-target="${'#editLexemeWeightDlg_' + lexeme.lexemeId}"
+        sec:authorize="${#vars.isLexemeCrudGranted}">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
   <div class="row" th:if="${not #lists.isEmpty(lexeme.pos)}" th:fragment="lexeme_pos">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Sõnaliik</span>

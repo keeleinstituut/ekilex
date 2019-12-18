@@ -37,7 +37,7 @@ function initialise() {
 
 		let wordId = $(this).data('word-id');
 		let actionUrl = applicationUrl + "syn_layer_complete/" + wordId;
-		let callbackFunc = () => $('#refresh-details').trigger('click');
+		let callbackFunc = () => refreshDetails();
 		doPostRelationChange(actionUrl, callbackFunc);
 	});
 
@@ -57,6 +57,7 @@ function initialise() {
 
 		$("[id^='syn_select_wait_']").hide();
 		$("#syn_select_wait_" + id).show();
+		openWaitDlg();
 		let detailsUrl = applicationUrl + 'syn_worddetails/' + id;
 		if (markedSynWordId != undefined) {
 			detailsUrl += '?markedSynWordId=' + markedSynWordId;
@@ -65,6 +66,7 @@ function initialise() {
 		$.get(detailsUrl).done(function(data) {
 			let detailsDiv = $('#syn_details_div');
 			detailsDiv.replaceWith(data);
+			closeWaitDlg();
 			$("#syn_select_wait_" + id).hide();
 			$('[data-toggle="tooltip"]').tooltip();
 
@@ -101,20 +103,22 @@ function initialise() {
 				},
 				drop: function(event, ui) {
 					let relationId = ui.draggable.parent().data('id');
-					console.log('relation id ' + relationId)
+
 					let meaningId = $(this).data('meaning-id');
 					let lexemeId = $(this).data('lexeme-id');
 					let wordId = ui.draggable.data('word-id');
 
 					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
 
-					let callbackFunc = () => $('#refresh-details').trigger('click');
+					openWaitDlg();
+					let callbackFunc = () => refreshDetails();
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
 			});
 
 			if (IS_KEYBOARD_MODE) {
 				activateList(3);
+
 			}
 
 			//KEEP TRACK OF WHAT WAS THE LAST SEARCH RESULT DISPLAYED
@@ -138,7 +142,7 @@ function initialise() {
 		let id = $(this).data('id');
 		let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
 
-		let callbackFunc = () => $('#refresh-details').trigger('click');
+		let callbackFunc = () => refreshDetails();
 
 		doPostRelationChange(actionUrl, callbackFunc);
 
@@ -392,16 +396,13 @@ function initialise() {
 					let wordId = currentActiveList.data('marked-word-id'); //TODO move to a hidden field ? - add a marked attribute to the marked element
 					let relationId = currentActiveList.data('marked-relation-id'); //TODO Refactor
 
-					//IF
 					if (wordId != undefined) {
 
 						let lexemeId = currentSelectedItem.data('lexeme-id');
 						let meaningId = currentSelectedItem.data('meaning-id');
 
-						//TODO - test
 						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
-						let callbackFunc = () => $('#refresh-details').trigger('click');
-
+						let callbackFunc = () => refreshDetails();
 						doPostRelationChange(actionUrl, callbackFunc);
 
 					} else {
@@ -424,6 +425,11 @@ function initialise() {
 
 	if ($('#synSearchResultsDiv').html() == undefined) {
 		$(document).find('input[name="simpleSearchFilter"]').focus();
+	}
+
+	let detailButtons = $('#results').find('[name="synDetailsBtn"]');
+	if (detailButtons.length === 1) {
+		detailButtons.trigger('click');
 	}
 
 	$(document).on('show.bs.modal', '#processLogDlg', function(e) {
@@ -472,6 +478,9 @@ function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 }
 
 function refreshDetails() {
-	var refreshButton = $('#refresh-details');
+	let selectedWordId = $('#syn_details_div').data('id');
+	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
+
 	refreshButton.trigger('click');
+	refreshButton.parent().addClass('active');
 }

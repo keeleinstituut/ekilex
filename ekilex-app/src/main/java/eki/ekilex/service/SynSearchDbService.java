@@ -13,6 +13,7 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -27,6 +28,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.MeaningWord;
+import eki.ekilex.data.RelationParam;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
@@ -149,6 +151,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				LEXEME.DATASET_CODE,
 				LEXEME.LEVEL1,
 				LEXEME.LEVEL2,
+				LEXEME.WEIGHT,
 				LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
 				.from(LEXEME
 						.innerJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE))
@@ -182,13 +185,12 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 	}
 
-
-	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Long existingLexemeId) {
+	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Float lexemeWeight, Long existingLexemeId) {
 		return create.insertInto(LEXEME,
-				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
+				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE, LEXEME.WEIGHT,
 				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
 				LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
-				.select(DSL.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode), DSL.val(lexemeType.name()),
+				.select(DSL.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode), DSL.val(lexemeType.name()), DSL.val(BigDecimal.valueOf(lexemeWeight)),
 						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
 						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 				.from(LEXEME)
@@ -236,6 +238,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"),
 						l2.TYPE.as("lexeme_type"),
+						l2.WEIGHT.as("lexeme_weight"),
 						l2.ORDER_BY)
 				.from(l1, l2, w2, p2, f2)
 				.where(
@@ -270,4 +273,12 @@ public class SynSearchDbService extends AbstractSearchDbService {
 					.fetchInto(SynRelation.class);
 	}
 
+	public List<RelationParam> getWordRelationParams(Long wordRelationId) {
+
+		return create
+				.select(WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
+				.from(WORD_RELATION_PARAM)
+				.where(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(wordRelationId))
+				.fetchInto(RelationParam.class);
+	}
 }

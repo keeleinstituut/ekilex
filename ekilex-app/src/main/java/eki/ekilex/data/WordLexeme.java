@@ -61,6 +61,9 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 	@Column(name = "lexeme_complexity")
 	private Complexity complexity;
 
+	@Column(name = "lexeme_weight")
+	private Float weight;
+
 	@Column(name = "gender_code")
 	private String genderCode;
 
@@ -249,6 +252,14 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public Float getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Float weight) {
+		this.weight = weight;
 	}
 
 	public String getGenderCode() {

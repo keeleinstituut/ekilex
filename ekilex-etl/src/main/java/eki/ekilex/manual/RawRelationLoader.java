@@ -4,11 +4,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eki.ekilex.runner.RawRelationsCsvToSqlGeneratorRunner;
+import eki.ekilex.runner.RawRelationLoaderRunner;
 
-public class RawRelationCsvToSqlGenerator extends AbstractLoader {
+public class RawRelationLoader extends AbstractLoader {
 
-	private static Logger logger = LoggerFactory.getLogger(RawRelationCsvToSqlGenerator.class);
+	private static Logger logger = LoggerFactory.getLogger(RawRelationLoader.class);
 
 	@Override
 	public void execute(String[] args) {
@@ -23,7 +23,7 @@ public class RawRelationCsvToSqlGenerator extends AbstractLoader {
 				return;
 			}
 
-			RawRelationsCsvToSqlGeneratorRunner runner = getComponent(RawRelationsCsvToSqlGeneratorRunner.class);
+			RawRelationLoaderRunner runner = getComponent(RawRelationLoaderRunner.class);
 			String fileName = args[0];
 
 			runner.execute(fileName);
@@ -36,7 +36,7 @@ public class RawRelationCsvToSqlGenerator extends AbstractLoader {
 	}
 
 	public static void main(String[] args) {
-		new RawRelationCsvToSqlGenerator().execute(args);
+		new RawRelationLoader().execute(args);
 	}
 
 }

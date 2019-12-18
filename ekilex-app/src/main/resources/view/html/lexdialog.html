@@ -1338,6 +1338,27 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editLexemeWeightDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="edit_lexeme_weight_dlg">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_weight">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="number" min="0" max="1" step=".1" class="form-control required-field" name="value" th:value="${lexeme.weight}">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addOdWordRecommendationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_od_word_recommendation_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">

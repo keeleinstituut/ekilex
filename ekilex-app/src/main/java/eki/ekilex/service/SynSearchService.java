@@ -3,12 +3,14 @@ package eki.ekilex.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
@@ -25,6 +27,7 @@ import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
+import eki.ekilex.data.RelationParam;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
@@ -40,6 +43,11 @@ import eki.ekilex.service.db.ProcessDbService;
 public class SynSearchService extends AbstractWordSearchService {
 
 	private static final String RAW_RELATION_CODE = "raw";
+
+	private static final float DEFAULT_LEXEME_WEIGHT = 1;
+
+	@Value("#{${relation.weight.multipliers}}")
+	private Map<String, Float> relationWeightMultiplierMap;
 
 	@Autowired
 	private SynSearchDbService synSearchDbService;
@@ -121,7 +129,11 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) {
-		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, existingLexemeId);
+
+		List<RelationParam> relationParams = synSearchDbService.getWordRelationParams(relationId);
+		Float lexemeWeight = getCalculatedLexemeWeight(relationParams);
+
+		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, lexemeWeight, existingLexemeId);
 		String synWordValue = lookupDbService.getWordValue(wordId);
 		LogData matchLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, existingLexemeId, synWordValue);
 		createLifecycleLog(matchLogData);
@@ -165,4 +177,24 @@ public class SynSearchService extends AbstractWordSearchService {
 		}
 	}
 
+	private Float getCalculatedLexemeWeight(List<RelationParam> relationParams) {
+
+		if (relationParams.isEmpty()) {
+			return DEFAULT_LEXEME_WEIGHT;
+		}
+
+		float dividend = 0;
+		float divisor = 0;
+
+		for (RelationParam relationParam : relationParams) {
+			String relationParamName = relationParam.getName();
+			Float relationParamValue = relationParam.getValue();
+			Float relationParamWeightMultiplier = relationWeightMultiplierMap.get(relationParamName);
+
+			dividend += (relationParamValue * relationParamWeightMultiplier);
+			divisor += relationParamWeightMultiplier;
+		}
+
+		return dividend / divisor;
+	}
 }

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domain extends TableImpl<DomainRecord> {
 
-    private static final long serialVersionUID = 969213330;
+    private static final long serialVersionUID = 609375755;
 
     /**
      * The reference instance of <code>public.domain</code>
@@ -132,7 +132,7 @@ public class Domain extends TableImpl<DomainRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DOMAIN_PKEY);
+        return Arrays.<Index>asList(Indexes.DOMAIN_CODE_ORIGIN_IDX, Indexes.DOMAIN_PARENT_CODE_ORIGIN_IDX, Indexes.DOMAIN_PKEY);
     }
 
     /**

@@ -37,6 +37,7 @@ import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -470,6 +471,14 @@ public class CudDbService implements DbConstant {
 				.update(WORD_RELATION)
 				.set(WORD_RELATION.ORDER_BY, orderBy)
 				.where(WORD_RELATION.ID.eq(relationId))
+				.execute();
+	}
+
+	public void updateLexemeWeight(Long lexemeId, BigDecimal lexemeWeight) {
+		create
+				.update(LEXEME)
+				.set(LEXEME.WEIGHT, lexemeWeight)
+				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 

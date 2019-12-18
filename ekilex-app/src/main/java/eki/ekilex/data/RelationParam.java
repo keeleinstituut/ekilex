@@ -8,7 +8,7 @@ public class RelationParam extends AbstractDataObject {
 
 	private String name;
 
-	private String value;
+	private Float value;
 
 	public String getName() {
 		return name;
@@ -18,11 +18,11 @@ public class RelationParam extends AbstractDataObject {
 		this.name = name;
 	}
 
-	public String getValue() {
+	public Float getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(Float value) {
 		this.value = value;
 	}
 }

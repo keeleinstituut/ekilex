@@ -34,7 +34,7 @@ public class SynRelationParamTuple extends AbstractDataObject {
 	private String paramName;
 
 	@Column(name = "param_value")
-	private String paramValue;
+	private Float paramValue;
 
 	@Column(name = "word_homonym_number")
 	private Integer homonymNumber;
@@ -115,11 +115,11 @@ public class SynRelationParamTuple extends AbstractDataObject {
 		this.paramName = paramName;
 	}
 
-	public String getParamValue() {
+	public Float getParamValue() {
 		return paramValue;
 	}
 
-	public void setParamValue(String paramValue) {
+	public void setParamValue(Float paramValue) {
 		this.paramValue = paramValue;
 	}
 

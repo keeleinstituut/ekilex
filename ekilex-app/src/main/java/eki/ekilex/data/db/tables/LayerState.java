@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LayerState extends TableImpl<LayerStateRecord> {
 
-    private static final long serialVersionUID = -856678586;
+    private static final long serialVersionUID = -1617641498;
 
     /**
      * The reference instance of <code>public.layer_state</code>
@@ -122,7 +122,7 @@ public class LayerState extends TableImpl<LayerStateRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LAYER_STATE_LAYER_NAME_IDX, Indexes.LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY, Indexes.LAYER_STATE_PKEY);
+        return Arrays.<Index>asList(Indexes.LAYER_STATE_LAYER_NAME_IDX, Indexes.LAYER_STATE_LEXEME_ID_IDX, Indexes.LAYER_STATE_LEXEME_ID_LAYER_NAME_KEY, Indexes.LAYER_STATE_PKEY);
     }
 
     /**

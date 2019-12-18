@@ -28,6 +28,8 @@ public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private String layerProcessStateCode;
 
+	private Float weight;
+
 	private List<MeaningWordLangGroup> meaningWordLangGroups;
 
 	private List<Definition> definitions;
@@ -106,6 +108,14 @@ public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setLayerProcessStateCode(String layerProcessStateCode) {
 		this.layerProcessStateCode = layerProcessStateCode;
+	}
+
+	public Float getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Float weight) {
+		this.weight = weight;
 	}
 
 	public List<MeaningWordLangGroup> getMeaningWordLangGroups() {

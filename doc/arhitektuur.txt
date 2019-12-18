@@ -68,16 +68,15 @@ ekilex/ekilex-etl>mvn exec:java -P testsrvkol (laeb kollokatsioonid)
 ekilex/ekilex-etl>mvn exec:java -P testsrvall (tühjendab andmebaasi ja laeb kõik eelneva)
 
 
-Sünonüümide relatsioonide SQL'i genereerimine
+Sünonüümide relatsioonide failist andmebaasi laadimine
 ---------------------------------------------
-'raw'-relatsioonide andmefail peab olema CSV-formaadis, eraldajaks TAB. Fail algab andmereaga, pealkirjarida ei ole.
+'raw'-relatsioonide andmefail peab olema CSV-formaadis, eraldajaks TAB. Fail algab pealkirjareaga.
 
-Generaatori käivitamine:
+Laaduri käivitamine:
 
 ekilex/ekilex-etl>mvn exec:java -P testsrvgenerateraw  -Dexec.args="<sisendfaili asukoht (full-path, koos kaustaga)> "
 
-Genereeritakse sisendfailiga sama nimega ja laiendiga ".sql" fail samasse kausta, kus oli sisendfail.
-Kui sama nimega fail on kaustas olemas, kirjutatakse see üle.
+CSV-faili ridade põhjal tekitatakse andmebaasi sünonüümide kandidaatide seosed.
 
 
 Muud tehn operatsioonid
