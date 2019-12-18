@@ -18,7 +18,7 @@ from (select l1.id lexeme_id,
            lexeme l1
       where w1.lang = 'est'
       and   l1.word_id = w1.id
-      and   l1.dataset_code = :compoundDatasetCode
+      and   l1.dataset_code = :datasetCode
       and   exists (select d1.id
                     from definition d1
                     where d1.meaning_id = l1.meaning_id
@@ -30,7 +30,7 @@ from (select l1.id lexeme_id,
            lexeme l1
       where w1.lang = 'est'
       and   l1.word_id = w1.id
-      and   l1.dataset_code = :compoundDatasetCode
+      and   l1.dataset_code = :datasetCode
       and   exists (select d1.id
                     from definition d1
                     where d1.meaning_id = l1.meaning_id
@@ -45,7 +45,7 @@ from (select l1.id lexeme_id,
            lexeme l1
       where w1.lang = 'est'
       and   l1.word_id = w1.id
-      and   l1.dataset_code = :compoundDatasetCode
+      and   l1.dataset_code = :datasetCode
       and   exists (select d1.id
                     from definition d1
                     where d1.meaning_id = l1.meaning_id
@@ -57,7 +57,7 @@ from (select l1.id lexeme_id,
            lexeme l1
       where w1.lang = 'est'
       and   l1.word_id = w1.id
-      and   l1.dataset_code = :compoundDatasetCode
+      and   l1.dataset_code = :datasetCode
       and   exists (select d1.id
                     from definition d1
                     where d1.meaning_id = l1.meaning_id

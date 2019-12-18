@@ -17,7 +17,7 @@ from (select l1.id lexeme_id,
       from lexeme l1,
            word w1
       where l1.word_id = w1.id
-      and   l1.dataset_code = :compoundDatasetCode
+      and   l1.dataset_code = :datasetCode
       and   w1.lang = 'est'
       and   exists (select d1.id
                     from definition d1
@@ -29,14 +29,14 @@ from (select l1.id lexeme_id,
       from lexeme l1,
            word w1
       where l1.word_id = w1.id
-      and   l1.dataset_code = :compoundDatasetCode
+      and   l1.dataset_code = :datasetCode
       and   w1.lang = 'est'
       and   exists (select w2.id
                     from lexeme l2,
                          word w2
                     where l2.meaning_id = l1.meaning_id
                     and   l2.word_id = w2.id
-                    and   l2.dataset_code = :compoundDatasetCode
+                    and   l2.dataset_code = :datasetCode
                     and   l2.complexity = 'SIMPLE'
                     and   w2.lang = 'rus')
       and   not exists (select d1.id
@@ -49,7 +49,7 @@ from (select l1.id lexeme_id,
            lexeme l1
       where w1.lang = 'est'
       and   l1.word_id = w1.id
-      and   l1.dataset_code = :compoundDatasetCode
+      and   l1.dataset_code = :datasetCode
       and   exists (select d1.id
                     from definition d1
                     where d1.meaning_id = l1.meaning_id
@@ -61,13 +61,13 @@ from (select l1.id lexeme_id,
            lexeme l1
       where w1.lang = 'est'
       and   l1.word_id = w1.id
-      and   l1.dataset_code = :compoundDatasetCode
+      and   l1.dataset_code = :datasetCode
       and   exists (select w2.id
                     from lexeme l2,
                          word w2
                     where l2.meaning_id = l1.meaning_id
                     and   l2.word_id = w2.id
-                    and   l2.dataset_code = :compoundDatasetCode
+                    and   l2.dataset_code = :datasetCode
                     and   l2.complexity = 'SIMPLE'
                     and   w2.lang = 'rus')
       and   not exists (select d1.id
