@@ -119,15 +119,18 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		lexemeValueStateCodes.replace("variant", "rööptermin");
 
 		meaningAndLexemeProcessStateCodes = new HashMap<>();
+		logger.debug("meaningAndLexemeProcessStateCodes:");
 		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
 		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
+		logger.debug("loadClassifierMappingsFor ({}): \"{}\"", EKI_CLASSIFIER_STAATUS, tempCodes.toString());
 		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VALMIDUS, ClassifierName.PROCESS_STATE.name());
 		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
+		logger.debug("loadClassifierMappingsFor ({}): \"{}\"", EKI_CLASSIFIER_VALMIDUS, tempCodes.toString());
 
 		registerConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.REGISTER.name());
 
 		ignoredValues = new HashSet<>();
-		ignoredValues.add("ülekantud");
+		//ignoredValues.add("ülekantud"); //ei igno enam
 		ignoredValues.add("termin");
 
 		meaningSemanticTypeMap = new HashMap<>();
@@ -343,6 +346,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					}
 				}
 
+				//Valmidus
 				for (Node readinessProcessStateValueNode : readinessProcessStateValueNodes) {
 					String value = ((Element) readinessProcessStateValueNode).getTextTrim();
 					if (meaningAndLexemeProcessStateCodes.containsKey(value)) {
@@ -355,6 +359,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					}
 				}
 
+				//Mõistetüüp
 				for (Node meaningTypeValueNode : meaningTypeValueNodes) {
 					String value = ((Element) meaningTypeValueNode).getTextTrim();
 					if (lexemePosCodeMap.containsKey(value)) {
@@ -363,6 +368,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					}
 				}
 
+				//Staatus
 				List<Node> valueNodes = termGroupNode.selectNodes(processStateExp);
 				for (Node processStateValueNode : valueNodes) {
 					String value = ((Element) processStateValueNode).getTextTrim();

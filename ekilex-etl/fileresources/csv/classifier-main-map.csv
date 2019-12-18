@@ -1235,6 +1235,7 @@ valmidus	Valmidus	vormiliselt korras	vormiliselt korras	et	process_state	läbi v
 valmidus	Valmidus	avalik	avalik	et	process_state	avalik
 valmidus	Valmidus	töös	töös	et	process_state	töös
 valmidus	Valmidus	määramata	määramata	et	process_state	määramata
+valmidus	Valmidus	ülekantud	ülekantud	et	process_state	arhiveeritud
 var_tyyp	var_tyyp	var	/ variant	et	-	-
 vk_tyyp	vk_tyyp	algvõrre	algvõrre	et	-	-
 vk_tyyp	vk_tyyp	algvõrre	positive degree	en	-	-
