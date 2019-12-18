@@ -46,7 +46,7 @@ public class WordwebFeedbackController implements WebConstant {
 	@CrossOrigin
 	@PostMapping(SEND_FEEDBACK_URI)
 	@ResponseBody
-	public String receiveFeedback(Feedback newFeedback) {
+	public String receiveFeedback(@RequestBody Feedback newFeedback) {
 
 		logger.debug("This is feedback : \"{}\"", newFeedback);
 
