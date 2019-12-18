@@ -430,6 +430,11 @@ function initialise() {
 		$(document).find('input[name="simpleSearchFilter"]').focus();
 	}
 
+	let detailButtons = $('#results').find('[name="synDetailsBtn"]');
+	if (detailButtons.length === 1) {
+		detailButtons.trigger('click');
+	}
+
 	$(document).on('show.bs.modal', '#processLogDlg', function(e) {
 		var dlg = $(this);
 		var link = $(e.relatedTarget);
