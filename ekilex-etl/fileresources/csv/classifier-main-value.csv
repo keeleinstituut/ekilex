@@ -1936,6 +1936,8 @@ semantic_type	esitus_tiitel	seisuse, teaduskraadi nimetus, aunimetus	est	descrip
 semantic_type	esitus_tiitel	representation_title	eng	descrip
 semantic_type	esitus_tähis	tähis, sümbol, märk (nt O, g)	est	descrip
 semantic_type	esitus_tähis	representation_symbol	eng	descrip
+semantic_type	grupp	grupp, rühm (nt kari, kamp)	est	descrip
+semantic_type	grupp	group	eng	descrip
 semantic_type	inimene	inimolend, isik, indiviid	est	descrip
 semantic_type	inimene	human, person	eng	descrip
 semantic_type	in_elukutse	elukutse, amet	est	descrip
