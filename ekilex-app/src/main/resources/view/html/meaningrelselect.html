@@ -39,8 +39,7 @@
                 <label class="col-form-label">
                   tähenduse seose tüüp
                   <select required class="form-control required-field" name="relationType">
-                    <option value="" hidden disabled selected>vali väärtus...</option>
-                    <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                    <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == defaultMeaningRelation}">value</option>
                   </select>
                 </label>
               </div>

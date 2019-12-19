@@ -49,6 +49,8 @@ public class TermEditController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermEditController.class);
 
+	public static final String DEFAULT_CANDIDATE_MEANING_REL = "duplikaadikandidaat";
+
 	@Autowired
 	private TermSearchService termSearchService;
 
@@ -217,8 +219,10 @@ public class TermEditController extends AbstractPageController {
 			@ModelAttribute(name = "morphCode") String morphCode,
 			@ModelAttribute(name = "meaningId") Long meaningId,
 			@ModelAttribute(name = "relationCandidates") List<Meaning> relationCandidates,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
 
+		model.addAttribute("defaultMeaningRelation", DEFAULT_CANDIDATE_MEANING_REL);
 		return MEANING_REL_SELECT_PAGE;
 	}
 

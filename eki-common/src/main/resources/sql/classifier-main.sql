@@ -302,6 +302,7 @@ insert into meaning_rel_type (code, datasets) values ('ülemmõiste', '{}');
 insert into meaning_rel_type (code, datasets) values ('alammõiste', '{}');
 insert into meaning_rel_type (code, datasets) values ('üldmõiste', '{}');
 insert into meaning_rel_type (code, datasets) values ('ainikmõiste', '{}');
+insert into meaning_rel_type (code, datasets) values ('duplikaadikandidaat', '{}');
 insert into morph (code, datasets) values ('ID', '{}');
 insert into morph (code, datasets) values ('SgN', '{}');
 insert into morph (code, datasets) values ('SgG', '{}');
@@ -1966,6 +1967,7 @@ insert into meaning_rel_type_label (code, value, lang, type) values ('ülemmõis
 insert into meaning_rel_type_label (code, value, lang, type) values ('alammõiste', 'alammõiste', 'est', 'descrip');
 insert into meaning_rel_type_label (code, value, lang, type) values ('üldmõiste', 'üldmõiste', 'est', 'descrip');
 insert into meaning_rel_type_label (code, value, lang, type) values ('ainikmõiste', 'ainikmõiste', 'est', 'descrip');
+insert into meaning_rel_type_label (code, value, lang, type) values ('duplikaadikandidaat', 'duplikaadikandidaat', 'est', 'descrip');
 insert into morph_label (code, value, lang, type) values ('ID', 'muutumatu', 'est', 'descrip2');
 insert into morph_label (code, value, lang, type) values ('SgN', 'ainsuse nimetav', 'est', 'descrip2');
 insert into morph_label (code, value, lang, type) values ('SgN', 'SgN', 'eng', 'descrip2');

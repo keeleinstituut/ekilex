@@ -144,6 +144,7 @@ insert into meaning_rel_mapping (code1, code2) values ('ülemmõiste', 'alammõi
 insert into meaning_rel_mapping (code1, code2) values ('alammõiste', 'ülemmõiste');
 insert into meaning_rel_mapping (code1, code2) values ('üldmõiste', 'ainikmõiste');
 insert into meaning_rel_mapping (code1, code2) values ('ainikmõiste', 'üldmõiste');
+insert into meaning_rel_mapping (code1, code2) values ('duplikaadikandidaat', 'duplikaadikandidaat');
 
 do $$
 declare
