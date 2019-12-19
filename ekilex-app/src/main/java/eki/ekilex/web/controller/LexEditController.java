@@ -235,7 +235,6 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@PostMapping(LEX_CREATE_WORD_URI)
 	public String createWord(
-			@RequestParam("dataset") String dataset,
 			@RequestParam("wordValue") String wordValue,
 			@RequestParam("language") String language,
 			@RequestParam("morphCode") String morphCode,
@@ -243,6 +242,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
+		String dataset = sessionBean.getUserRole().getDatasetCode();
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			sessionBean.setNewWordSelectedLanguage(language);
