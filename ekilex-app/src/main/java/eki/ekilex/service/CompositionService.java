@@ -72,9 +72,11 @@ public class CompositionService extends AbstractService {
 			}
 		}
 
-		Long wordId = cudDbService.createWordAndLexeme(wordValue, wordValue, dataset, language, morphCode, meaningId);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue);
-		createLifecycleLog(logData);
+		if (!importMeaningData) {
+			Long wordId = cudDbService.createWordAndLexeme(wordValue, wordValue, dataset, language, morphCode, meaningId);
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue);
+			createLifecycleLog(logData);
+		}
 
 		if (createRelation) {
 			String relationType = createWordAndMeaningAndRelationsData.getRelationType();
