@@ -256,7 +256,7 @@ public class LookupDbService implements DbConstant {
 				.fetchInto(Classifier.class);
 	}
 
-	public Integer getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
+	public int getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
 
 		return create
 				.select(DSL.max(LEXEME.LEVEL1))
@@ -265,7 +265,8 @@ public class LookupDbService implements DbConstant {
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.DATASET_CODE.eq(datasetCode))
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.fetchOneInto(Integer.class);
+				.fetchOptionalInto(Integer.class)
+				.orElse(0);
 	}
 
 	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
