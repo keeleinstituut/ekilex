@@ -11,7 +11,8 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary" th:href="@{/termsearch}">Tagasi</a>
+        <a th:if="${#strings.isEmpty(backUri)}" class="btn btn-sm btn-secondary" th:href="@{/termsearch}">Tagasi</a>
+        <a th:unless="${#strings.isEmpty(backUri)}" class="btn btn-sm btn-secondary" th:href="@{'/termsearch' + ${backUri}}">Tagasi</a>
       </p>
     </div>
     <div class="card mt-4 shadow">
@@ -23,6 +24,7 @@
         <input type="hidden" name="morphCode" th:value="${morphCode}">
         <input type="hidden" name="wordValue" th:value="${wordValue}">
         <input type="hidden" name="meaningId" th:value="${meaningId}">
+        <input type="hidden" name="backUri" th:value="${backUri}">
         <input type="hidden" name="importMeaningData" value="false">
         <input type="hidden" name="createRelation" value="false">
         <div class="card-body">
@@ -39,8 +41,7 @@
                 <label class="col-form-label">
                   tähenduse seose tüüp
                   <select required class="form-control required-field" name="relationType">
-                    <option value="" hidden disabled selected>vali väärtus...</option>
-                    <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                    <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == defaultMeaningRelation}">value</option>
                   </select>
                 </label>
               </div>
@@ -59,13 +60,15 @@
                 <button th:if="${meaningId == null}" type="button" class="btn btn-primary" disabled>Loo uus termin ja mõiste ning seos</button>
                 <button th:if="${meaningId == null}" type="button" name="importDataBtn" class="btn btn-primary ml-2" disabled>Loo uus termin ja mõiste kopeeritud andmetega ning seos</button>
                 <button th:if="${meaningId != null}" type="button" class="btn btn-primary ml-2" disabled>Loo uus termin</button>
-                <a class="btn btn-secondary ml-2" th:href="@{/termsearch}">Tühista</a>
+                <a th:if="${#strings.isEmpty(backUri)}" class="btn btn-secondary ml-2" th:href="@{/termsearch}">Tühista</a>
+                <a th:unless="${#strings.isEmpty(backUri)}" class="btn btn-secondary ml-2" th:href="@{'/termsearch' + ${backUri}}">Tühista</a>
               </div>
             </div>
             <div id="submitDiv" class="row" style="display: none">
               <button th:if="${meaningId == null}" type="button" class="btn btn-primary ml-4">Loo uus termin ja mõiste</button>
               <button th:if="${meaningId != null}" type="button" class="btn btn-primary ml-4">Loo uus termin</button>
-              <a class="btn btn-secondary ml-2" th:href="@{/termsearch}">Tühista</a>
+              <a th:if="${#strings.isEmpty(backUri)}" class="btn btn-secondary ml-2" th:href="@{/termsearch}">Tühista</a>
+              <a th:unless="${#strings.isEmpty(backUri)}" class="btn btn-secondary ml-2" th:href="@{'/termsearch' + ${backUri}}">Tühista</a>
             </div>
           </div>
         </div>

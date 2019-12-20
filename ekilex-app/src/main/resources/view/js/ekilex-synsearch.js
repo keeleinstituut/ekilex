@@ -220,6 +220,10 @@ function initialise() {
 		initAddSynRelationDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=editSynLexemeWeightDlg_]", function() {
+		initGenericTextEditDlg($(this));
+	});
+
 	$(document).find('.draggable-synonym').draggable();
 	$(document).find('.draggable-meaning').draggable();
 

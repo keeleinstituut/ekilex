@@ -124,3 +124,7 @@ $(document).on("show.bs.modal", "[id^=editOdUsageAlternativeDlg_]", function(e) 
 $(document).on("show.bs.modal", "[id^=editLexemeWeightDlg_]", function() {
 	initGenericTextEditDlg($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=editMeaningWordLexemeWeightDlg_]", function() {
+	initGenericTextEditDlg($(this));
+});

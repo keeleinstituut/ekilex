@@ -440,7 +440,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createLexeme(Long wordId, String datasetCode, Long meaningId) {
-		Integer currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
+		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
 
 		Long lexemeId = cudDbService.createLexeme(wordId, datasetCode, meaningId, lexemeLevel1);

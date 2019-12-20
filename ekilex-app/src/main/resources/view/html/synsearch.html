@@ -209,6 +209,8 @@
                     th:data-additional-info="${lexeme.lexemeId}">
                     <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
                       th:data-id="${meaningWord.lexemeId}"
+                      th:data-orderby="${meaningWord.orderBy}">
+                      <div th:replace="syndialog :: edit_meaning_word_lexeme_weight_dlg"></div>
                       th:data-orderby="${meaningWord.orderBy}"
                       th:data-orderpos="${meaningWordIter.index}">
                       <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
@@ -224,7 +226,14 @@
                           </span>
                           <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
                         </a>
-                        <button type="button" class="hover-actions btn btn-secondary btn-xs"
+                        <button type="button" class="hover-actions btn badge badge-secondary btn-xs"
+                          title="Muuda sünonüümi ilmiku kaalu"
+                          data-toggle="modal"
+                          th:data-target="${'#editSynLexemeWeightDlg_' + meaningWord.lexemeId}"
+                          sec:authorize="${#vars.isLexemeCrudGranted}">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="hover-actions btn btn-secondary btn-xs ml-2"
                           th:data-id="${meaningWord.lexemeId}"
                           data-callback="refreshDetails"
                           data-toggle="deleteLexemeAndWordAndMeaning"
