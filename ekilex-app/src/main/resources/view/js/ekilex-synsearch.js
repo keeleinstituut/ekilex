@@ -190,15 +190,9 @@ function initialise() {
 
 	});
 
-	function printArr(arr) {
-		console.log("output \n" + JSON.stringify(arr));
-	}
-
 	$(document).on('click', '.order-up', function() {
-		console.log("order up");
 		let orderingBtn = $(this);
 		let orderingData = changeItemOrdering(orderingBtn, -1);
-		printArr(orderingData);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
 			refreshDetails();
@@ -206,10 +200,8 @@ function initialise() {
 	});
 
 	$(document).on('click', '.order-down', function() {
-		console.log("order down");
 		let orderingBtn = $(this);
 		let orderingData = changeItemOrdering(orderingBtn, 1);
-		printArr(orderingData);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
 			refreshDetails();
@@ -533,7 +525,6 @@ function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 }
 
 function refreshDetails() {
-	console.log("refresh !");
 	let selectedWordId = $('#syn_details_div').data('id');
 	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
 

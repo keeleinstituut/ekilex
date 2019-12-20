@@ -209,10 +209,9 @@
                     th:data-additional-info="${lexeme.lexemeId}">
                     <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
                       th:data-id="${meaningWord.lexemeId}"
-                      th:data-orderby="${meaningWord.orderBy}">
-                      <div th:replace="syndialog :: edit_meaning_word_lexeme_weight_dlg"></div>
                       th:data-orderby="${meaningWord.orderBy}"
                       th:data-orderpos="${meaningWordIter.index}">
+                      <div th:replace="syndialog :: edit_meaning_word_lexeme_weight_dlg"></div>
                       <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                       <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
                         <button type="button" th:hidden="${meaningWordIter.first}" class="hover-actions btn btn-xs btn-secondary order-up do-refresh mr-2" title="Muuda järjestust">
