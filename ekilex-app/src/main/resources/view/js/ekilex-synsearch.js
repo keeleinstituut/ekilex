@@ -85,6 +85,47 @@ function initialise() {
 				containment: "window",
 				helper: "clone"
 			});
+			$(document).find('.draggable-meaning').draggable(
+				{
+					revert: "invalid",
+					appendTo: "body",
+					containment: "window",
+					helper: "clone"
+
+				}
+			);
+
+			$(document).find('.droppable-meaning').droppable({
+				accept: function(draggableDiv) {
+					let draggableLexemeId = draggableDiv.closest('.droppable-lexeme').attr('data-lexeme-id');
+					let droppableLexemeId =  $(this).closest('.droppable-lexeme').attr('data-lexeme-id');
+
+					return draggableLexemeId === droppableLexemeId;
+					}
+				,
+				greedy: true,
+				classes: {
+					"ui-droppable-active": "ui-state-active",
+					"ui-droppable-hover": "ui-state-hover"
+				},
+				drop: function(event, ui) {
+					let draggableOrderable = ui.draggable.closest('[data-orderpos]');
+					let draggableOrderPos = Number(draggableOrderable.data('orderpos'));
+					let orderingBtn = $(this);
+					let droppableOrderable = $(this).closest('[data-orderpos]');
+					let droppableOrderPos = Number(droppableOrderable.data('orderpos'));
+					let posDelta = droppableOrderPos - draggableOrderPos;
+
+					let draggableItem = ui.draggable;
+
+					let orderingData = changeItemOrdering(draggableItem, posDelta);
+					openWaitDlg();
+					postJson(applicationUrl + 'update_ordering', orderingData);
+					if (orderingBtn.hasClass('do-refresh')) {
+						refreshDetails();
+					}
+				}
+			});
 
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {
@@ -102,6 +143,7 @@ function initialise() {
 					"ui-droppable-hover": "ui-state-hover"
 				},
 				drop: function(event, ui) {
+
 					let relationId = ui.draggable.parent().data('id');
 
 					let meaningId = $(this).data('meaning-id');
@@ -148,9 +190,15 @@ function initialise() {
 
 	});
 
+	function printArr(arr) {
+		console.log("output \n" + JSON.stringify(arr));
+	}
+
 	$(document).on('click', '.order-up', function() {
+		console.log("order up");
 		let orderingBtn = $(this);
 		let orderingData = changeItemOrdering(orderingBtn, -1);
+		printArr(orderingData);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
 			refreshDetails();
@@ -158,8 +206,10 @@ function initialise() {
 	});
 
 	$(document).on('click', '.order-down', function() {
+		console.log("order down");
 		let orderingBtn = $(this);
 		let orderingData = changeItemOrdering(orderingBtn, 1);
+		printArr(orderingData);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
 			refreshDetails();
@@ -171,6 +221,7 @@ function initialise() {
 	});
 
 	$(document).find('.draggable-synonym').draggable();
+	$(document).find('.draggable-meaning').draggable();
 
 	function doPostRelationChange(actionUrl, callbackFunc) {
 
@@ -478,6 +529,7 @@ function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 }
 
 function refreshDetails() {
+	console.log("refresh !");
 	let selectedWordId = $('#syn_details_div').data('id');
 	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
 

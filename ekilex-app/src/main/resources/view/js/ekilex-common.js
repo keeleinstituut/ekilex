@@ -108,8 +108,20 @@ function changeItemOrdering(target, delta) {
 	let orderedItems = [];
 	if (itemToMovePos + delta >= 0 && itemToMovePos + delta < items.length) {
 		let orderby = $(items.get(itemToMovePos + delta)).attr('data-orderby');
-		$(items.get(itemToMovePos + delta)).attr('data-orderby', $(items.get(itemToMovePos)).attr('data-orderby'));
+		let orderpos = $(items.get(itemToMovePos + delta)).attr('data-orderpos');
+
+		let increment = delta > 0 ? -1 : 1;
+
+		for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos) ; position += increment) {
+			let nextPos = delta > 0 ? position -1 : position + 1;
+			let nexOrderPos = $(items.get(nextPos)).attr('data-orderpos');
+			$(items.get(position)).attr('data-orderby', $(items.get(nexOrderPos)).attr('data-orderby'));
+			$(items.get(position)).attr('data-orderpos', nexOrderPos);
+		}
+
+		$(items.get(itemToMovePos)).attr('data-orderpos', orderpos);
 		$(items.get(itemToMovePos)).attr('data-orderby', orderby);
+
 		if (delta > 0) {
 			$(items.get(itemToMovePos + delta)).after($(items.get(itemToMovePos)));
 		} else {
