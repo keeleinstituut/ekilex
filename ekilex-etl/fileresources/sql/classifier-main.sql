@@ -519,6 +519,7 @@ insert into semantic_type (code, datasets) values ('esitus_kujutis', '{}');
 insert into semantic_type (code, datasets) values ('esitus_mõõt', '{}');
 insert into semantic_type (code, datasets) values ('esitus_tiitel', '{}');
 insert into semantic_type (code, datasets) values ('esitus_tähis', '{}');
+insert into semantic_type (code, datasets) values ('grupp', '{}');
 insert into semantic_type (code, datasets) values ('inimene', '{}');
 insert into semantic_type (code, datasets) values ('in_elukutse', '{}');
 insert into semantic_type (code, datasets) values ('in_müt', '{}');
@@ -2527,6 +2528,8 @@ insert into semantic_type_label (code, value, lang, type) values ('esitus_tiitel
 insert into semantic_type_label (code, value, lang, type) values ('esitus_tiitel', 'representation_title', 'eng', 'descrip');
 insert into semantic_type_label (code, value, lang, type) values ('esitus_tähis', 'tähis, sümbol, märk (nt O, g)', 'est', 'descrip');
 insert into semantic_type_label (code, value, lang, type) values ('esitus_tähis', 'representation_symbol', 'eng', 'descrip');
+insert into semantic_type_label (code, value, lang, type) values ('grupp', 'grupp, rühm (nt kari, kamp)', 'est', 'descrip');
+insert into semantic_type_label (code, value, lang, type) values ('grupp', 'group', 'eng', 'descrip');
 insert into semantic_type_label (code, value, lang, type) values ('inimene', 'inimolend, isik, indiviid', 'est', 'descrip');
 insert into semantic_type_label (code, value, lang, type) values ('inimene', 'human, person', 'eng', 'descrip');
 insert into semantic_type_label (code, value, lang, type) values ('in_elukutse', 'elukutse, amet', 'est', 'descrip');

@@ -14,4 +14,9 @@ insert into meaning_rel_type (code, datasets) values ('duplikaadikandidaat', '{}
 insert into meaning_rel_type_label (code, value, lang, type) values ('duplikaadikandidaat', 'duplikaadikandidaat', 'est', 'descrip');
 insert into meaning_rel_mapping (code1, code2) values ('duplikaadikandidaat', 'duplikaadikandidaat');
 
---> kuni siiani testis olemas 19.12.2019
+-- 20.12.2019
+insert into semantic_type (code, datasets) values ('grupp', '{}');
+insert into semantic_type_label (code, value, lang, type) values ('grupp', 'grupp, rühm (nt kari, kamp)', 'est', 'descrip');
+insert into semantic_type_label (code, value, lang, type) values ('grupp', 'group', 'eng', 'descrip');
+
+--> kuni siiani testis olemas 20.12.2019
