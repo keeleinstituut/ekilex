@@ -89,11 +89,9 @@ function initialise() {
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 
 		var savedScrollPositions = getScrollPositions();
+
 		let id = $(this).data('id');
-
 		let markedSynWordId = $(document).find('.keyboard-nav-list-item-selected').children(':first').data('word-id');
-
-		console.log('marked ' + markedSynWordId);
 
 		$('#synSearchResultsDiv').find('.list-group-item').each(function() {
 			$(this).removeClass('keyboard-nav-list-item-active active');
@@ -442,11 +440,9 @@ function initialise() {
 	}
 
 	function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList) {
-		console.log(' *************** start');
 		e.preventDefault();
 		//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
 		if (currentActivePanelIndex == "3") {
-			console.log(' *************** on 3');
 			changeSynonymDefinitionDisplay('hide');
 			currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function() {
 				$(this).removeClass('keyboard-nav-list-item-selected');
@@ -466,8 +462,6 @@ function initialise() {
 
 			selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 			selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
-
-			console.log(' *************** end');
 
 		} else if (currentActivePanelIndex == "2") {
 			if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
@@ -527,7 +521,6 @@ function initialise() {
 		}
 
 		if (e.keyCode == 13) {
-			console.log('index ' + currentActivePanelIndex);
 			handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList);
 		}
 	}
