@@ -17,7 +17,6 @@ function initialise() {
 
 	});
 
-	//function activateList(listIndx, itemIndx = 0) {
 	function activateSynCandidatesList() {
 		let activatedList = $('#synCandidatesListDiv');
 		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
@@ -333,20 +332,167 @@ function initialise() {
 		return true;
 	}
 
-	function checkKey(e) {
+	function isValidKeyboardModeKeypress(e) {
 		if (IS_KEYBOARD_MODE == false) {
 			console.log("KEYBOARD MODE NOT ENABLED");
-			return;
+			return false;
 		}
-
-		//TODO refactor all this
 
 		var tag = e.target.tagName.toLowerCase();
 		if (tag == 'input' || tag == 'textarea') {
-			return;
+			return false;
 		}
 
 		if (($(".modal").data('bs.modal') || {})._isShown) {
+			return false;
+		}
+
+		return true;
+	}
+
+	function handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex) {
+		if (currentSelectedItem.length != 0) {
+			let indexIncrement = (e.keyCode == 40 ? 1 : -1);
+			let newIndex = currentSelectedIndex + indexIncrement;
+			let newItem = currentActiveList.find('[data-navigate-index="' + newIndex + '"]');
+
+			if (newItem.length != 0) {
+				if (currentActivePanelIndex == "3") {
+					changeSynonymDefinitionDisplay('hide');
+				}
+				newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+				newItem.attr(NAVIGATE_SELECTED_ATTR, true);
+				unActivateItem(currentSelectedItem, true);
+				$(currentActiveList).stop(true);
+				$(currentActiveList).scrollTo(newItem, 320, {axis: 'y', offset: -64});
+				if (currentActivePanelIndex == "3") {
+					changeSynonymDefinitionDisplay('show');
+				}
+			}
+		}
+	}
+	function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
+		if (isValidPanelChangeKeyPress(e.keyCode)) {
+
+			$('div[data-panel-index]').each(function() {
+				$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
+			});
+			if (currentActivePanelIndex == "3") {
+				changeSynonymDefinitionDisplay('hide');
+			}
+
+			let selectedPanelIndex = 1;
+			let PANEL_KEYCODES = {"49": "1", "50": "2", "51": "3"};
+
+			let isArrowKey = e.keyCode == 37 || e.keyCode == 39;
+			if (isArrowKey) {
+				if (currentActivePanelIndex != undefined) {
+					selectedPanelIndex = parseInt(currentActivePanelIndex);
+					if (e.keyCode == 37 && selectedPanelIndex > 1) {
+						selectedPanelIndex--;
+					} else if (e.keyCode == 39 && selectedPanelIndex < 3) {
+						selectedPanelIndex++;
+					}
+				}
+			} else {
+				selectedPanelIndex = PANEL_KEYCODES[e.keyCode];
+			}
+
+
+			unActivateItem(currentSelectedItem, false);
+
+			let activatedList = $('div[data-panel-index="' + selectedPanelIndex + '"]');
+			activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
+
+			let selectedItem = findSelectedNavigateItem(activatedList);
+			let isDisabled = isDisabledItem(activatedList, selectedItem);
+
+			selectedItem.addClass(isDisabled ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+			selectedItem.attr('data-navigate-selected', true);
+			if (selectedPanelIndex == "3") {
+				changeSynonymDefinitionDisplay('show');
+			}
+		}
+	}
+
+	function handleEscapeKeyPress(currentActivePanelIndex) {
+		if (currentActivePanelIndex == "3") {
+			changeSynonymDefinitionDisplay('hide');
+		}
+		$('.keyboard-nav-list').each(function() {
+			$(this).removeAttr('data-marked-word-id');
+			$(this).removeAttr('data-active-panel');
+			$(this).removeClass('keyboard-nav-list-active');
+			$(this).find('[data-navigate-index]').each(function() {
+				unActivateItem($(this), true);
+			});
+			$('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
+
+			$(this).find('.keyboard-nav-list-item-active').removeClass('keyboard-nav-list-item-active');
+
+			$("#keyboardEditBtn").removeAttr('disabled');
+
+			$(document).find('input[name="simpleSearchFilter"]').val('').focus();
+		});
+		$('body').removeClass('keyboard-edit-mode-active');
+		IS_KEYBOARD_MODE = false;
+	}
+
+	function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList) {
+		e.preventDefault();
+		//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
+		if (currentActivePanelIndex == "3") {
+			changeSynonymDefinitionDisplay('hide');
+			currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function() {
+				$(this).removeClass('keyboard-nav-list-item-selected');
+			});
+			currentSelectedItem.addClass('keyboard-nav-list-item-selected');
+
+			unActivateItem(currentSelectedItem, false);
+			let wordId = currentSelectedItem.children(':first').attr('data-word-id');
+
+			let activatedList = $('div[data-panel-index="' + 2 + '"]');
+			activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
+			activatedList.data('marked-word-id', wordId);
+
+			let selectedLexemeItem = findSelectedNavigateItem(activatedList);
+
+			let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+
+			selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+			selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
+
+
+		} else if (currentActivePanelIndex == "2") {
+			if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
+				let wordId = currentActiveList.data('marked-word-id');
+				let relationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
+
+				if (wordId != undefined) {
+					let lexemeId = currentSelectedItem.data('lexeme-id');
+					let meaningId = currentSelectedItem.data('meaning-id');
+
+					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
+					let callbackFunc = () => refreshDetails();
+					doPostRelationChange(actionUrl, callbackFunc);
+
+				} else {
+					openAlertDlg("Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
+				}
+
+			} else {
+				openAlertDlg("Ilmik on juba olemas.");
+			}
+		} else if (currentActivePanelIndex == "1") {
+			$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
+			currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
+		}
+
+
+	}
+
+	function handleKeyPress(e) {
+		if (!isValidKeyboardModeKeypress(e)) {
 			return;
 		}
 
@@ -356,166 +502,27 @@ function initialise() {
 		let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
 
 		e = e || window.event;
-		console.log(e.keyCode);
+		//console.log(e.keyCode);
 
 		if (e.keyCode == 38 || e.keyCode == 40) { // arrows up down
-
-			if (currentSelectedItem.length != 0) {
-				console.log('currentSelectedITem exists');
-				let indexIncrement = (e.keyCode == 40 ? 1 : -1);
-				let newIndex = currentSelectedIndex + indexIncrement;
-				let newItem = currentActiveList.find('[data-navigate-index="' + newIndex + '"]');
-
-
-				if (newItem.length != 0) {
-					console.log('navItem exists');
-					if (currentActivePanelIndex == "3") {
-						changeSynonymDefinitionDisplay('hide');
-					}
-					newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
-					newItem.attr(NAVIGATE_SELECTED_ATTR, true);
-					unActivateItem(currentSelectedItem, true);
-					$(currentActiveList).stop(true);
-					$(currentActiveList).scrollTo(newItem, 320, {axis: 'y', offset: -64});
-					if (currentActivePanelIndex == "3") {
-						changeSynonymDefinitionDisplay('show');
-					}
-				}
-			}
+			handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex);
 		}
 
 		// 1 - 3, arrows left-right
 		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
-			if (isValidPanelChangeKeyPress(e.keyCode)) {
-
-				$('div[data-panel-index]').each(function() {
-					$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
-				});
-				if (currentActivePanelIndex == "3") {
-					changeSynonymDefinitionDisplay('hide');
-				}
-
-				let selectedPanelIndex = 1;
-				let PANEL_KEYCODES = {"49": "1", "50": "2", "51": "3"};
-
-				let isArrowKey = e.keyCode == 37 || e.keyCode == 39;
-				if (isArrowKey) {
-					if (currentActivePanelIndex != undefined) {
-						selectedPanelIndex = parseInt(currentActivePanelIndex);
-						if (e.keyCode == 37 && selectedPanelIndex > 1) {
-							selectedPanelIndex--;
-						} else if (e.keyCode == 39 && selectedPanelIndex < 3) {
-							selectedPanelIndex++;
-						}
-					}
-				} else {
-					selectedPanelIndex = PANEL_KEYCODES[e.keyCode];
-				}
-
-
-				unActivateItem(currentSelectedItem, false);
-
-				let activatedList = $('div[data-panel-index="' + selectedPanelIndex + '"]');
-				activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-
-				let selectedItem = findSelectedNavigateItem(activatedList);
-				let isDisabled = isDisabledItem(activatedList, selectedItem);
-
-				selectedItem.addClass(isDisabled ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
-				selectedItem.attr('data-navigate-selected', true);
-				if (selectedPanelIndex == "3") {
-					changeSynonymDefinitionDisplay('show');
-				}
-			}
-
+			handleListChange(e, currentActivePanelIndex, currentSelectedItem);
 		}
 
-		//Esc key
 		if (e.keyCode == 27) {
-			if (currentActivePanelIndex == "3") {
-				changeSynonymDefinitionDisplay('hide');
-			}
-			$('.keyboard-nav-list').each(function() {
-				$(this).removeAttr('data-marked-word-id');
-				$(this).removeAttr('data-marked-relation-id'); //TODO refactor
-				$(this).removeAttr('data-active-panel');
-				$(this).removeClass('keyboard-nav-list-active');
-				$(this).find('[data-navigate-index]').each(function() {
-					unActivateItem($(this), true);
-				});
-				$('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
-
-				$(this).find('.keyboard-nav-list-item-active').removeClass('keyboard-nav-list-item-active');
-
-				$("#keyboardEditBtn").removeAttr('disabled');
-
-				$(document).find('input[name="simpleSearchFilter"]').val('').focus();
-			});
-			$('body').removeClass('keyboard-edit-mode-active');
-			IS_KEYBOARD_MODE = false;
+			handleEscapeKeyPress(currentActivePanelIndex);
 		}
 
-		//Enter key
 		if (e.keyCode == 13) {
-			e.preventDefault();
-			//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
-			if (currentActivePanelIndex == "3") {
-				changeSynonymDefinitionDisplay('hide');
-				currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function() {
-					$(this).removeClass('keyboard-nav-list-item-selected');
-				});
-				currentSelectedItem.addClass('keyboard-nav-list-item-selected');
-
-				unActivateItem(currentSelectedItem, false);
-				//TODO refactor
-				let wordId = currentSelectedItem.children(':first').attr('data-word-id');
-				let relationId = currentSelectedItem.attr('data-id');
-
-				let activatedList = $('div[data-panel-index="' + 2 + '"]');
-				activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-
-				activatedList.data('marked-word-id', wordId);
-				activatedList.data('marked-relation-id', relationId);
-
-				let selectedLexemeItem = findSelectedNavigateItem(activatedList);
-
-				let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
-
-				selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
-				selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
-
-
-			} else if (currentActivePanelIndex == "2") {
-				if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-					let wordId = currentActiveList.data('marked-word-id'); //TODO move to a hidden field ? - add a marked attribute to the marked element
-					let relationId = currentActiveList.data('marked-relation-id'); //TODO Refactor
-
-					if (wordId != undefined) {
-
-						let lexemeId = currentSelectedItem.data('lexeme-id');
-						let meaningId = currentSelectedItem.data('meaning-id');
-
-						let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
-						let callbackFunc = () => refreshDetails();
-						doPostRelationChange(actionUrl, callbackFunc);
-
-					} else {
-						openAlertDlg("Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
-					}
-
-				} else {
-					openAlertDlg("Ilmik on juba olemas.");
-				}
-			} else if (currentActivePanelIndex == "1") {
-				$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
-				currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
-			}
+			handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList);
 		}
-
-
 	}
 
-	$(document).on('keydown', checkKey);
+	$(document).on('keydown', handleKeyPress);
 
 	if ($('#synSearchResultsDiv').html() == undefined) {
 		$(document).find('input[name="simpleSearchFilter"]').focus();
