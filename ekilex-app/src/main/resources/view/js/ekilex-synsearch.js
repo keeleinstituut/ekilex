@@ -10,20 +10,18 @@ function initialise() {
 		IS_KEYBOARD_MODE = true;
 		console.log('IS_KEYBOARD_MODE: ' + IS_KEYBOARD_MODE);
 		$('body').addClass('keyboard-edit-mode-active');
-		//TODO refactor
-		$('.keyboard-nav-list').each(function(e) {
-			$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
-		});
-		activateList(3);
+
+		activateSynCandidatesList();
 
 		$(this).attr('disabled', true);
 
 	});
 
-	function activateList(listIndx, itemIndx = 0) {
-		let activatedList = $('div[data-panel-index="' + listIndx + '"]');
+	//function activateList(listIndx, itemIndx = 0) {
+	function activateSynCandidatesList() {
+		let activatedList = $('#synCandidatesListDiv');
 		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-		itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="' + itemIndx + '"]');
+		itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="0"]');
 		itemToSelect.addClass('keyboard-nav-list-item-active');
 		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 		changeSynonymDefinitionDisplay('show');
@@ -207,8 +205,8 @@ function initialise() {
 			});
 
 			if (IS_KEYBOARD_MODE) {
-				activateList(3);
-
+				//activateList(3);
+				activateSynCandidatesList();
 			}
 
 			//KEEP TRACK OF WHAT WAS THE LAST SEARCH RESULT DISPLAYED
@@ -441,6 +439,7 @@ function initialise() {
 				$(this).removeAttr('data-marked-word-id');
 				$(this).removeAttr('data-marked-relation-id'); //TODO refactor
 				$(this).removeAttr('data-active-panel');
+				$(this).removeClass('keyboard-nav-list-active');
 				$(this).find('[data-navigate-index]').each(function() {
 					unActivateItem($(this), true);
 				});
@@ -463,7 +462,7 @@ function initialise() {
 			if (currentActivePanelIndex == "3") {
 				changeSynonymDefinitionDisplay('hide');
 				currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function() {
-					$(this).removeClass('.keyboard-nav-list-item-selected');
+					$(this).removeClass('keyboard-nav-list-item-selected');
 				});
 				currentSelectedItem.addClass('keyboard-nav-list-item-selected');
 
