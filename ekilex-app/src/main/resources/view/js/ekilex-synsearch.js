@@ -20,7 +20,7 @@ function initialise() {
 	function activateSynCandidatesList() {
 		let activatedList = $('#synCandidatesListDiv');
 		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-		itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="0"]');
+		let itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="0"]');
 		itemToSelect.addClass('keyboard-nav-list-item-active');
 		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 		changeSynonymDefinitionDisplay('show');
@@ -92,6 +92,9 @@ function initialise() {
 		let id = $(this).data('id');
 
 		let markedSynWordId = $(document).find('.keyboard-nav-list-item-selected').children(':first').data('word-id');
+
+		console.log('marked ' + markedSynWordId);
+
 		$('#synSearchResultsDiv').find('.list-group-item').each(function() {
 			$(this).removeClass('keyboard-nav-list-item-active active');
 		});
@@ -439,9 +442,11 @@ function initialise() {
 	}
 
 	function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList) {
+		console.log(' *************** start');
 		e.preventDefault();
 		//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
 		if (currentActivePanelIndex == "3") {
+			console.log(' *************** on 3');
 			changeSynonymDefinitionDisplay('hide');
 			currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function() {
 				$(this).removeClass('keyboard-nav-list-item-selected');
@@ -462,6 +467,7 @@ function initialise() {
 			selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 			selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
 
+			console.log(' *************** end');
 
 		} else if (currentActivePanelIndex == "2") {
 			if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
@@ -486,8 +492,11 @@ function initialise() {
 		} else if (currentActivePanelIndex == "1") {
 			$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
 			currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
-		}
 
+			$('div[data-panel-index="' + 1 + '"]').removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
+			activateSynCandidatesList();
+
+		}
 
 	}
 
@@ -518,6 +527,7 @@ function initialise() {
 		}
 
 		if (e.keyCode == 13) {
+			console.log('index ' + currentActivePanelIndex);
 			handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList);
 		}
 	}
