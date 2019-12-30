@@ -1,4 +1,6 @@
 function initialise() {
+	let relationTypeSelect = $("select[name='relationType']");
+	changeOppositeRelationSelectData(relationTypeSelect);
 	checkEnableSubmitButtons();
 
 	$('#chkNoRelation').change(function() {

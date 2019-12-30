@@ -49,6 +49,8 @@ public class TermEditController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermEditController.class);
 
+	public static final String DEFAULT_CANDIDATE_MEANING_REL = "duplikaadikandidaat";
+
 	@Autowired
 	private TermSearchService termSearchService;
 
@@ -170,6 +172,7 @@ public class TermEditController extends AbstractPageController {
 			@RequestParam("language") String language,
 			@RequestParam("morphCode") String morphCode,
 			@RequestParam("meaningId") Long meaningId,
+			@RequestParam("backUri") String backUri,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
@@ -195,6 +198,7 @@ public class TermEditController extends AbstractPageController {
 					attributes.addFlashAttribute("morphCode", morphCode);
 					attributes.addFlashAttribute("meaningId", meaningId);
 					attributes.addFlashAttribute("relationCandidates", relationCandidates);
+					attributes.addFlashAttribute("backUri", backUri);
 					return "redirect:" + MEANING_REL_SELECT_URI;
 				} else {
 					cudService.createWord(meaningId, wordValue, language, morphCode, dataset);
@@ -217,8 +221,10 @@ public class TermEditController extends AbstractPageController {
 			@ModelAttribute(name = "morphCode") String morphCode,
 			@ModelAttribute(name = "meaningId") Long meaningId,
 			@ModelAttribute(name = "relationCandidates") List<Meaning> relationCandidates,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
 
+		model.addAttribute("defaultMeaningRelation", DEFAULT_CANDIDATE_MEANING_REL);
 		return MEANING_REL_SELECT_PAGE;
 	}
 
@@ -230,6 +236,9 @@ public class TermEditController extends AbstractPageController {
 
 		Map<String, String> response = new HashMap<>();
 		String wordValue = createWordAndMeaningAndRelationsData.getWordValue();
+		Long meaningId = createWordAndMeaningAndRelationsData.getMeaningId();
+		String backUri = createWordAndMeaningAndRelationsData.getBackUri();
+		String searchUri;
 		if (StringUtils.isNotBlank(wordValue)) {
 
 			String dataset = sessionBean.getUserRole().getDatasetCode();
@@ -261,7 +270,11 @@ public class TermEditController extends AbstractPageController {
 				selectedDatasets.add(dataset);
 				userService.updateUserPreferredDatasets(selectedDatasets);
 			}
-			String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+			if (meaningId == null) {
+				searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+			} else {
+				searchUri = backUri;
+			}
 			response.put("status", "valid");
 			response.put("searchUri", searchUri);
 		} else {

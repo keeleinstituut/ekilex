@@ -32,6 +32,8 @@ public class CreateWordAndMeaningAndRelationsData extends AbstractDataObject {
 
 	private List<String> userPermDatasetCodes;
 
+	private String backUri;
+
 	public String getWordValue() {
 		return wordValue;
 	}
@@ -126,5 +128,13 @@ public class CreateWordAndMeaningAndRelationsData extends AbstractDataObject {
 
 	public void setUserPermDatasetCodes(List<String> userPermDatasetCodes) {
 		this.userPermDatasetCodes = userPermDatasetCodes;
+	}
+
+	public String getBackUri() {
+		return backUri;
+	}
+
+	public void setBackUri(String backUri) {
+		this.backUri = backUri;
 	}
 }

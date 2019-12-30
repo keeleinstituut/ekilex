@@ -4,7 +4,9 @@ import java.sql.Timestamp;
 
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties("valueMatch")
 public class SourceProperty extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

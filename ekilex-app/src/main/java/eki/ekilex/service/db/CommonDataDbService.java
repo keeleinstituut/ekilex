@@ -580,7 +580,6 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 						MEANING.ID.as("meaning_id"),
 						LEXEME.ID.as("lexeme_id"),
 						WORD.ID.as("word_id"),
-						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
 						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
@@ -604,6 +603,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.groupBy(MEANING_RELATION.ID, MEANING.ID, LEXEME.ID, WORD.ID, FORM.VALUE, MEANING_REL_TYPE_LABEL.VALUE)
 				.orderBy(MEANING_RELATION.ORDER_BY)
 				.fetchInto(Relation.class);
 	}
