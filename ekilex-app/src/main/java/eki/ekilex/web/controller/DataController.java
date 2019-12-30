@@ -26,6 +26,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Origin;
+import eki.ekilex.data.Source;
 import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
@@ -34,6 +35,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.FileService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.MorphologyService;
+import eki.ekilex.service.SourceService;
 import eki.ekilex.service.TermSearchService;
 
 @ConditionalOnWebApplication
@@ -57,6 +59,9 @@ public class DataController implements SystemConstant, WebConstant {
 
 	@Autowired
 	private MorphologyService morphologyService;
+
+	@Autowired
+	private SourceService sourceService;
 
 	@GetMapping(REST_SERVICES_URI + "/app")
 	public AppData getAppData() {
@@ -85,6 +90,14 @@ public class DataController implements SystemConstant, WebConstant {
 		List<String> datasets = parseDatasets(datasetsStr);
 		WordsResult results = lexSearchService.getWords(word, datasets, fetchAll, DEFAULT_OFFSET);
 		return results;
+	}
+
+	@GetMapping(REST_SERVICES_URI + SOURCE_SEARCH_URI + "/{searchFilter}")
+	@ResponseBody
+	public List<Source> sourceSearch(@PathVariable("searchFilter") String searchFilter) {
+
+		List<Source> sources = sourceService.getSources(searchFilter);
+		return sources;
 	}
 
 	@GetMapping({

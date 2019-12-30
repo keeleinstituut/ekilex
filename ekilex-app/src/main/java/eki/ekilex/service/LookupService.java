@@ -227,7 +227,7 @@ public class LookupService extends AbstractWordSearchService {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(allDatasetCodes);
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
-		composeMeaningJoinData(meaning, languagesOrder);
+		composeMeaningSelectData(meaning, languagesOrder);
 		return meaning;
 	}
 
@@ -240,7 +240,7 @@ public class LookupService extends AbstractWordSearchService {
 		} else {
 			List<Meaning> meanings = lookupDbService.getMeanings(searchFilter, userPrefDatasetCodes, userPermDatasetCodes, excludedMeaningId);
 			meanings.sort(Comparator.comparing(meaning -> !permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaning.getMeaningId())));
-			meanings.forEach(meaning -> composeMeaningJoinData(meaning, languagesOrder));
+			meanings.forEach(meaning -> composeMeaningSelectData(meaning, languagesOrder));
 			return meanings;
 		}
 	}
@@ -254,8 +254,7 @@ public class LookupService extends AbstractWordSearchService {
 			return Collections.emptyList();
 		} else {
 			List<Meaning> meanings = lookupDbService.getMeanings(wordValue, allDatasetCodes, userPermDatasetCodes, excludedMeaningId);
-			// TODO share composeMeaningJoinData or create separate method? - Yogesh
-			meanings.forEach(meaning -> composeMeaningJoinData(meaning, languagesOrder));
+			meanings.forEach(meaning -> composeMeaningSelectData(meaning, languagesOrder));
 			return meanings;
 		}
 	}
@@ -301,7 +300,7 @@ public class LookupService extends AbstractWordSearchService {
 		return oppositeRelations;
 	}
 
-	private void composeMeaningJoinData(Meaning meaning, List<ClassifierSelect> languagesOrder) {
+	private void composeMeaningSelectData(Meaning meaning, List<ClassifierSelect> languagesOrder) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name()};
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();

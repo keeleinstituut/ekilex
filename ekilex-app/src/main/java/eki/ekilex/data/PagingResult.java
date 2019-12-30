@@ -1,7 +1,9 @@
 package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties({"showPaging", "previousPageExists", "nextPageExists", "currentPage", "totalPages", "offset"})
 public class PagingResult extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
