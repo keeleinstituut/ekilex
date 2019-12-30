@@ -520,6 +520,7 @@ create table process_log
   id bigserial primary key,
   event_by text not null,
   event_on timestamp not null default statement_timestamp(),
+  layer_name varchar(100) null,
   comment text null,
   comment_prese text null,
   process_state_code varchar(100) references process_state(code) null,
