@@ -205,7 +205,6 @@ function initialise() {
 			});
 
 			if (IS_KEYBOARD_MODE) {
-				//activateList(3);
 				activateSynCandidatesList();
 			}
 
@@ -217,7 +216,6 @@ function initialise() {
 			else if (activeSearchResultID === id) {
 				setScrollPositions(savedScrollPositions);
 			}
-
 
 		}).fail(function(data) {
 			console.log(data);
@@ -372,6 +370,7 @@ function initialise() {
 			}
 		}
 	}
+
 	function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
 		if (isValidPanelChangeKeyPress(e.keyCode)) {
 
@@ -491,7 +490,6 @@ function initialise() {
 			activateSynCandidatesList();
 
 		}
-
 	}
 
 	function handleKeyPress(e) {
@@ -505,7 +503,6 @@ function initialise() {
 		let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
 
 		e = e || window.event;
-		//console.log(e.keyCode);
 
 		if (e.keyCode == 38 || e.keyCode == 40) { // arrows up down
 			handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex);
@@ -557,7 +554,6 @@ function initialise() {
 			dlg.find('.modal-body').html(data);
 		});
 	});
-
 }
 
 function getScrollPositions() {
