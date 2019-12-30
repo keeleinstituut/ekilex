@@ -46,7 +46,7 @@ import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 @Component
 public class LifecycleLogDbService {
 
-	private static final String LOADER_USERNAME_PATTERN = "Ekilex%-laadur";
+	private static final String LOADER_USERNAME_PATTERN = "Ekilex %laadur";
 
 	@Autowired
 	private DSLContext create;

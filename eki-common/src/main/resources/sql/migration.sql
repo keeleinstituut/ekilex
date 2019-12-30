@@ -20,3 +20,6 @@ insert into semantic_type_label (code, value, lang, type) values ('grupp', 'grup
 insert into semantic_type_label (code, value, lang, type) values ('grupp', 'group', 'eng', 'descrip');
 
 --> kuni siiani testis olemas 20.12.2019
+
+-- 30.12.2019
+update lifecycle_log set event_by = 'Ekilex faililaadur' where event_by = 'Ekilex importer';

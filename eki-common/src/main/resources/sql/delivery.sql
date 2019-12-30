@@ -17,3 +17,5 @@ insert into meaning_rel_mapping (code1, code2) values ('duplikaadikandidaat', 'd
 insert into semantic_type (code, datasets) values ('grupp', '{}');
 insert into semantic_type_label (code, value, lang, type) values ('grupp', 'grupp, rühm (nt kari, kamp)', 'est', 'descrip');
 insert into semantic_type_label (code, value, lang, type) values ('grupp', 'group', 'eng', 'descrip');
+
+update lifecycle_log set event_by = 'Ekilex faililaadur' where event_by = 'Ekilex importer';

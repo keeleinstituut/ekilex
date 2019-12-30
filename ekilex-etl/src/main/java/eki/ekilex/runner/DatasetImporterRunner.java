@@ -88,7 +88,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 	@Override
 	protected String getLogEventBy() {
-		return "Ekilex importer";
+		return "Ekilex faililaadur";
 	}
 
 	@Transactional
