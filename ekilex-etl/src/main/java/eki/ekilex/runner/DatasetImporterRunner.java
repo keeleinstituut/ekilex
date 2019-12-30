@@ -224,7 +224,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 					basicDbService.createWithoutId(tableName, truncDataMap);
 				} else {
 					targetId = basicDbService.create(tableName, truncDataMap);
-					createLifecycleLog(context, tableName, targetId, dataMap, hierarchy);
+					createLifecycleLog(context, tableName, targetId, truncDataMap, hierarchy);
 				}
 				context.getCreatedRecordCount().increment();
 			} else {
@@ -243,7 +243,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 						truncDataMap = compensateFieldsAndData(context, tableName, truncDataMap);
 						targetId = basicDbService.create(tableName, truncDataMap);
 					}
-					createLifecycleLog(context, tableName, targetId, dataMap, hierarchy);
+					createLifecycleLog(context, tableName, targetId, truncDataMap, hierarchy);
 					context.getCreatedRecordCount().increment();
 				} else {
 					targetId = new Long(sourceId);
@@ -253,7 +253,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 					createPkMap(importCode, tableName, sourceId, targetId);
 				}
 			}
-			addToHierarchy(tableName, targetId, dataMap, hierarchy);
+			addToHierarchy(tableName, targetId, reassignedDataMap, hierarchy);
 			if (queueExists) {
 				deleteQueue(queueId);
 				context.getRecursivelyResolvedRecordCount().increment();
@@ -607,7 +607,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 	}
 
 	private void createLifecycleLog(Context context, String tableName, Long id, Map<String, Object> dataMap, List<Step> hierarchy) throws Exception {
-		
+
 		List<String> hierarchyTableNames = new ArrayList<>(hierarchy.stream().map(step -> step.getTableName()).collect(Collectors.toList()));
 
 		LifecycleLogOwner logOwner = null;
