@@ -84,12 +84,13 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 	var okMessage = feedbackForm.find('[name=ok_message]').text();
     var acceptPrivacyStatement = feedbackForm.find('.modal-check');
 	$.ajax({
-		url : feedbackServiceUrl,
-		data : feedbackForm.serialize(),
-		method : 'POST'
+		url: feedbackServiceUrl,
+		data: JSON.stringify(feedbackForm.serializeJSON()),
+		method: 'POST',
+		dataType: 'json',
+		contentType: 'application/json'
 	}).done(function(data) {
-		var answer = JSON.parse(data);
-		if (answer.status === 'ok') {
+		if (data.status === 'ok') {
 			dataDiv.attr('hidden', true);
 			responseDiv.attr('hidden', false);
 			okMessageElement.text(okMessage);
@@ -102,7 +103,7 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 		dataDiv.attr('hidden', true);
 		responseDiv.attr('hidden', false);
 		responseDiv.find('.has-error').show();
-        acceptPrivacyStatement.trigger('click');
+		acceptPrivacyStatement.trigger('click');
 	});
 });
 
