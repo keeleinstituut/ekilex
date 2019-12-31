@@ -1346,7 +1346,7 @@
             <input type="hidden" name="opCode" value="lexeme_weight">
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="number" min="0" max="1" step=".1" class="form-control required-field" name="value" th:value="${lexeme.weight}">
+                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="value" th:value="${lexeme.weight}">
               </div>
             </div>
           </div>
@@ -1367,7 +1367,7 @@
             <input type="hidden" name="opCode" value="lexeme_weight">
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="number" min="0" max="1" step=".1" class="form-control required-field" name="value" th:value="${meaningWord.lexemeWeight}">
+                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="value" th:value="${meaningWord.lexemeWeight}">
               </div>
             </div>
           </div>
