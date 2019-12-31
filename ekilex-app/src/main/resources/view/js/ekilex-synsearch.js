@@ -43,11 +43,14 @@ function initialise() {
 			for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos) ; position += increment) {
 				let nextPos = delta > 0 ? position -1 : position + 1;
 				let nextOrderPos = $(items.get(nextPos)).attr('data-orderpos');
+				//TODO - remove debug if dragging works as expected
+				console.log($(items.get(position)).attr('data-orderpos') + ' -> ' + $(items.get(nextPos)).attr('data-orderpos'));
 
 				$(items.get(position)).attr('data-orderby', $(items.get(nextOrderPos)).attr('data-orderby'));
 				$(items.get(position)).attr('data-orderpos', nextOrderPos);
 			}
-
+			//TODO - remove debug if dragging works as expected
+			console.log($(items.get(itemToMovePos)).attr('data-orderpos') + ' => ' + orderpos);
 			$(items.get(itemToMovePos)).attr('data-orderpos', orderpos);
 			$(items.get(itemToMovePos)).attr('data-orderby', orderby);
 
