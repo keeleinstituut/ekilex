@@ -153,6 +153,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						l.LEVEL1,
 						l.LEVEL2,
 						l.COMPLEXITY,
+						l.WEIGHT,
 						l.LEX_ORDER_BY,
 						l.REGISTER_CODES,
 						l.POS_CODES,

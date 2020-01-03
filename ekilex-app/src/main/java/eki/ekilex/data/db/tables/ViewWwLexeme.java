@@ -13,6 +13,8 @@ import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 import eki.ekilex.data.db.udt.records.TypePublicNoteRecord;
 import eki.ekilex.data.db.udt.records.TypeUsageRecord;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -39,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 1817864626;
+    private static final long serialVersionUID = 1516870700;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme</code>
@@ -88,6 +90,11 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
      * The column <code>public.view_ww_lexeme.level2</code>.
      */
     public final TableField<ViewWwLexemeRecord, Integer> LEVEL2 = createField("level2", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.view_ww_lexeme.weight</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, BigDecimal> WEIGHT = createField("weight", org.jooq.impl.SQLDataType.NUMERIC(5, 4), this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.complexity</code>.

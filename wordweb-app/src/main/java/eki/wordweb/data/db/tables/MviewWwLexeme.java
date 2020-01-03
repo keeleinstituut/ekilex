@@ -14,6 +14,7 @@ import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 import eki.wordweb.data.db.udt.records.TypePublicNoteRecord;
 import eki.wordweb.data.db.udt.records.TypeUsageRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +45,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -357367427;
+    private static final long serialVersionUID = 1669105773;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -93,6 +94,11 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.level2</code>.
      */
     public final TableField<MviewWwLexemeRecord, Integer> LEVEL2 = createField("level2", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.weight</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, BigDecimal> WEIGHT = createField("weight", org.jooq.impl.SQLDataType.NUMERIC(5, 4), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.complexity</code>.

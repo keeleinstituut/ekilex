@@ -17,6 +17,8 @@ public class TypeMeaningWord extends WordTypeData {
 
 	private Complexity mwLexComplexity;
 
+	private Float mwLexWeight;
+
 	private List<TypeGovernment> mwLexGovernments;
 
 	private List<String> mwLexRegisterCodes;
@@ -69,6 +71,14 @@ public class TypeMeaningWord extends WordTypeData {
 
 	public void setMwLexComplexity(Complexity mwLexComplexity) {
 		this.mwLexComplexity = mwLexComplexity;
+	}
+
+	public Float getMwLexWeight() {
+		return mwLexWeight;
+	}
+
+	public void setMwLexWeight(Float mwLexWeight) {
+		this.mwLexWeight = mwLexWeight;
 	}
 
 	public List<TypeGovernment> getMwLexGovernments() {

@@ -19,7 +19,16 @@ insert into semantic_type (code, datasets) values ('grupp', '{}');
 insert into semantic_type_label (code, value, lang, type) values ('grupp', 'grupp, rühm (nt kari, kamp)', 'est', 'descrip');
 insert into semantic_type_label (code, value, lang, type) values ('grupp', 'group', 'eng', 'descrip');
 
---> kuni siiani testis olemas 20.12.2019
-
 -- 30.12.2019
 update lifecycle_log set event_by = 'Ekilex faililaadur' where event_by = 'Ekilex importer';
+
+-- 03.01.2020
+-- ekilex:
+drop view if exists view_ww_lexeme;
+drop view if exists view_ww_word;
+drop type if exists type_meaning_word;
+-- NB! restore type and views
+
+-- wordweb - recreate types and views
+
+--> kuni siiani testis olemas 03.01.2020

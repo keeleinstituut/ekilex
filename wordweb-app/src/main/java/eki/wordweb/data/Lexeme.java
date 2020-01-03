@@ -26,6 +26,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	private Complexity complexity;
 
+	private Float weight;
+
 	private List<String> adviceNotes;
 
 	private List<TypePublicNote> publicNotes;
@@ -144,6 +146,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public Float getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Float weight) {
+		this.weight = weight;
 	}
 
 	public List<String> getAdviceNotes() {
