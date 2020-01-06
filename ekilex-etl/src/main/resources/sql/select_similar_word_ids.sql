@@ -1,4 +1,5 @@
-select l1.meaning_id
+select l1.word_id,
+       array_agg(distinct l2.word_id order by l2.word_id) sim_word_ids
 from lexeme l1,
      lexeme l2,
      word w1,
@@ -28,4 +29,4 @@ and   not exists (select wwt.id
                   where wwt.word_id = w2.id
                   and   wwt.word_type_code in ('pf', 'sf'))
 and   f1.value = f2.value
-group by l1.meaning_id
+group by l1.word_id

@@ -12,5 +12,5 @@ select l.id lexeme_id,
        l.meaning_id
 from lexeme l,
      word w
-where l.word_id = w.id
-and   l.meaning_id = :meaningId
+where w.id = :wordId
+and   l.word_id = w.id

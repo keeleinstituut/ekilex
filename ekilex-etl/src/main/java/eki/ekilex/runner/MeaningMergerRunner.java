@@ -111,7 +111,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 		Map<String, Count> deleteCountMap = mergeService.getDeleteCountMap();
 
 		Map<Long, Long> resolvedCompMeaningIdMap = new HashMap<>();
-		List<Long> failedDeleteCompMeaningIds = new ArrayList<>();
+		List<Long> failedDeleteMeaningIds = new ArrayList<>();
 
 		long joinedMeaningCounter = 0;
 		long progressIndicator = joinedMeaningCount / Math.min(joinedMeaningCount, 100);
@@ -128,7 +128,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 			allMeaningIds.add(ssMeaningId);
 			allMeaningIds.addAll(compMeaningIds);
 
-			List<WordLexemeMeaning> allLexemes = mergeService.getAllLexemes(allMeaningIds, compoundDatasetCode);
+			List<WordLexemeMeaning> allLexemes = mergeService.getLexemesByMeanings(allMeaningIds, compoundDatasetCode);
 
 			Map<Long, List<WordLexemeMeaning>> mergingLexemesByWordIdMap = allLexemes.stream().collect(Collectors.groupingBy(WordLexemeMeaning::getWordId));
 
@@ -142,7 +142,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 					//force move one to ss
 					WordLexemeMeaning forcedSsLexeme = mergingLexemes.get(0);
 					targetLexemeId = forcedSsLexeme.getLexemeId();
-					mergeService.moveLexeme(ssMeaningId, targetLexemeId);
+					mergeService.reassignLexemeToMeaning(ssMeaningId, targetLexemeId);
 				} else {
 					targetLexemeId = ssLexemeId;
 				}
@@ -150,14 +150,14 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 						.map(WordLexemeMeaning::getLexemeId).filter(mergingLexemeId -> !mergingLexemeId.equals(targetLexemeId))
 						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(sourceMergingLexemeIds)) {
-					mergeService.moveLexemes(targetLexemeId, sourceMergingLexemeIds, isOverrideComplexity, updateCountMap);
+					mergeService.moveLexemesData(targetLexemeId, sourceMergingLexemeIds, isOverrideComplexity, updateCountMap);
 					mergeService.deleteLexemes(sourceMergingLexemeIds, deleteCountMap);
 				}
 			}
 
 			//merge, delete meanings
-			mergeService.moveMeanings(ssMeaningId, compMeaningIds, updateCountMap);
-			mergeService.deleteMeanings(compMeaningIds, failedDeleteCompMeaningIds, deleteCountMap);
+			mergeService.moveMeaningsData(ssMeaningId, compMeaningIds, updateCountMap);
+			mergeService.deleteMeanings(compMeaningIds, failedDeleteMeaningIds, deleteCountMap);
 
 			// progress
 			joinedMeaningCounter++;
@@ -177,9 +177,9 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 			logger.info("{} : {}", deleteCountEntry.getKey(), deleteCountEntry.getValue().getValue());
 		}
 
-		logger.info(">>>> Failed meaning delete count: {}", failedDeleteCompMeaningIds.size());
-		if (CollectionUtils.isNotEmpty(failedDeleteCompMeaningIds)) {
-			logger.debug("Meaning ids: {}", failedDeleteCompMeaningIds);
+		logger.info(">>>> Failed meaning delete count: {}", failedDeleteMeaningIds.size());
+		if (CollectionUtils.isNotEmpty(failedDeleteMeaningIds)) {
+			logger.debug("Meaning ids: {}", failedDeleteMeaningIds);
 		}
 
 		end();
@@ -211,8 +211,6 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 
 			List<MeaningJoinCandidate> joinCandidates = getJoinCandidatesForDataset(sqlSelectMeaningJoinCandidatesForDataset, datasetCode);
 			logger.debug("{} join candidates collected for a dataset", joinCandidates.size());
-
-			joinCandidates.stream().collect(Collectors.groupingBy(MeaningJoinCandidate::getSsMeaningId));
 
 			for (MeaningJoinCandidate joinCandidate : joinCandidates) {
 				Long ssMeaningId = joinCandidate.getSsMeaningId();
