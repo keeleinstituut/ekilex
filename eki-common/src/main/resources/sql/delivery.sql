@@ -19,3 +19,12 @@ insert into semantic_type_label (code, value, lang, type) values ('grupp', 'grup
 insert into semantic_type_label (code, value, lang, type) values ('grupp', 'group', 'eng', 'descrip');
 
 update lifecycle_log set event_by = 'Ekilex faililaadur' where event_by = 'Ekilex importer';
+
+-- ekilex:
+drop view if exists view_ww_lexeme;
+drop view if exists view_ww_word;
+drop type if exists type_meaning_word;
+-- NB! restore type and views
+
+-- wordweb:
+-- NB! recreate types and views

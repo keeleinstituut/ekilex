@@ -8,6 +8,8 @@ import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.udt.records.TypeGovernmentRecord;
 import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Generated;
 
 import org.jooq.Schema;
@@ -30,7 +32,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
 
-    private static final long serialVersionUID = 101246914;
+    private static final long serialVersionUID = -666915397;
 
     /**
      * The reference instance of <code>public.type_meaning_word</code>
@@ -64,6 +66,11 @@ public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
      * The attribute <code>public.type_meaning_word.mw_lex_complexity</code>.
      */
     public static final UDTField<TypeMeaningWordRecord, String> MW_LEX_COMPLEXITY = createField("mw_lex_complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_meaning_word.mw_lex_weight</code>.
+     */
+    public static final UDTField<TypeMeaningWordRecord, BigDecimal> MW_LEX_WEIGHT = createField("mw_lex_weight", org.jooq.impl.SQLDataType.NUMERIC(5, 4), TYPE_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_meaning_word.mw_lex_governments</code>.

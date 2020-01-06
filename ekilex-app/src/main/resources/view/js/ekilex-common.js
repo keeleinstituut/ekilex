@@ -274,6 +274,7 @@ function checkRequiredFields(thisForm) {
 	let requiredFields = thisForm.find('input.required-field:not(:hidden), select.required-field:not(:hidden)');
 
 	requiredFields.each(function() {
+		let isRequiredRange = $(this).hasClass('required-range');
 		let isSelectPicker = $(this).hasClass('classifier-select');
 		let markableField = isSelectPicker ? $(this).parent() : $(this);
 
@@ -284,6 +285,15 @@ function checkRequiredFields(thisForm) {
 			isValid = false;
 		} else {
 			markableField.removeClass('is-invalid');
+		}
+
+		if (isValid && isRequiredRange) {
+			let minValue = $(this).attr('min');
+			let maxValue = $(this).attr('max');
+			if (!($.isNumeric(fldVal) && fldVal >= minValue && fldVal <= maxValue)) {
+				markableField.addClass('is-invalid');
+				isValid = false;
+			}
 		}
 	});
 	return isValid;
@@ -485,9 +495,11 @@ function initAddSynRelationDlg(addDlg) {
 				let weightValue = $("#weightInput").val();
 				addDlg.find('[name=value2]').val(weightValue);
 				let theForm = button.closest('form');
-				submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
-					addDlg.modal('hide');
-				});
+				if (checkRequiredFields(theForm)) {
+					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+						addDlg.modal('hide');
+					});
+				}
 			});
 
 			addDlg.find('#addSynRelationWord').on('click', function(e) {

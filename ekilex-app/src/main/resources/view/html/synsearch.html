@@ -31,7 +31,6 @@
               <small th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></small>
             </div>
             <div class="overflow-auto h-100 keyboard-nav-list" data-panel-index="1">
-              <!--th:attrappend="data-active-panel=${markedSynWordId == null}?'true'"-->
               <ul id="results" class="mb-0 pb-3 list-group ">
                 <li th:each="word, wordIter : ${wordsResult.words}" class="list-group-item search-result-item navigate-item border-left-0 border-right-0 rounded-0 p-0"
                   th:data-navigate-index="${wordIter.index}"
@@ -215,9 +214,6 @@
                       <div th:replace="syndialog :: edit_meaning_word_lexeme_weight_dlg"></div>
                       <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
                       <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
-                        <button type="button" th:hidden="${meaningWordIter.first}" class="hover-actions btn btn-xs btn-secondary order-up do-refresh mr-2" title="Muuda järjestust">
-                          <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                        </button>
                         <a href="#" class="mr-2 draggable-meaning droppable-meaning do-refresh">
                           <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${meaningWord.value}"></span>
                           <span th:if="${meaningWord.homonymNumber > 1}"
@@ -239,9 +235,6 @@
                           data-toggle="deleteLexemeAndWordAndMeaning"
                           sec:authorize="${#vars.isLexemeCrudGranted}">
                           <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda sünonüüm"></i>
-                        </button>
-                        <button type="button" th:hidden="${meaningWordIter.last}" class="hover-actions btn btn-xs btn-secondary order-down do-refresh ml-2" title="Muuda järjestust">
-                          <i class="fa fa-arrow-right" aria-hidden="true"></i>
                         </button>
                         <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                       </div>
