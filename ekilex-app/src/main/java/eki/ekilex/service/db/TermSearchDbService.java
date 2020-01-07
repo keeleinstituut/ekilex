@@ -826,7 +826,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(dsWhere))
 				.groupBy(MEANING.ID)
-				.fetchSingleInto(eki.ekilex.data.Meaning.class);
+				.fetchOptionalInto(eki.ekilex.data.Meaning.class)
+				.orElse(null);
 	}
 
 	public eki.ekilex.data.Lexeme getLexeme(Long lexemeId) {

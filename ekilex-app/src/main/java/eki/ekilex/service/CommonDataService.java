@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Origin;
@@ -21,7 +22,7 @@ import eki.ekilex.service.util.ConversionUtil;
 
 // only common use data aggregation!
 @Component
-public class CommonDataService extends AbstractWordSearchService {
+public class CommonDataService implements SystemConstant {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;

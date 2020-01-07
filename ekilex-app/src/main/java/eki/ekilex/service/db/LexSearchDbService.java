@@ -654,7 +654,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 										LEXEME.WORD_ID.eq(WORD.ID)
 												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
 				.groupBy(WORD.ID)
-				.fetchOneInto(eki.ekilex.data.Word.class);
+				.fetchOptionalInto(eki.ekilex.data.Word.class)
+				.orElse(null);
 	}
 
 	public List<Relation> getWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
