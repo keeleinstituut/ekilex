@@ -1,10 +1,13 @@
 package eki.ekilex.runner;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -77,34 +80,39 @@ public class RawRelationLoaderRunner extends AbstractLoaderRunner {
 
 		start();
 
-		List<String> rawRelationFileLines = readFileLines(rawRelationCsvFile);
-		int rawRelationCount = rawRelationFileLines.size();
+		long rawRelationCount = Files.lines(Paths.get(inputFileFullPath)).count();
 		logger.debug("Starting to process {} raw relations", rawRelationCount);
 
 		long rawRelationsCounter = 0;
 		long progressIndicator = rawRelationCount / Math.min(rawRelationCount, 100);
 
-		for (String rawRelationLine : rawRelationFileLines) {
-			if (NumberUtils.compare(rawRelationsCounter, 0L) == 0) {
+		LineIterator lineIterator = FileUtils.lineIterator(rawRelationCsvFile, UTF_8);
+		try {
+			while (lineIterator.hasNext()) {
+				if (NumberUtils.compare(rawRelationsCounter, 0L) == 0) {
+					lineIterator.nextLine();
+					rawRelationsCounter++;
+					continue;
+				}
+				String rawRelationLine = lineIterator.nextLine();
+				String[] rawRelationLineCells = StringUtils.split(rawRelationLine, CSV_SEPARATOR);
+
+				Long word1Id = Long.valueOf(rawRelationLineCells[1]);
+				Long word2Id = Long.valueOf(rawRelationLineCells[3]);
+				String paramName = rawRelationLineCells[4];
+				Float paramValue = Float.valueOf(rawRelationLineCells[5]);
+
+				createWordRelation(word1Id, word2Id);
+				createWordRelationParam(word1Id, word2Id, paramName, paramValue);
+
 				rawRelationsCounter++;
-				continue;
+				if (rawRelationsCounter % progressIndicator == 0) {
+					long progressPercent = rawRelationsCounter / progressIndicator;
+					logger.debug("{}% - {} raw relations processed", progressPercent, rawRelationsCounter);
+				}
 			}
-
-			String[] rawRelationLineCells = StringUtils.split(rawRelationLine, CSV_SEPARATOR);
-
-			Long word1Id = Long.valueOf(rawRelationLineCells[1]);
-			Long word2Id = Long.valueOf(rawRelationLineCells[3]);
-			String paramName = rawRelationLineCells[4];
-			Float paramValue = Float.valueOf(rawRelationLineCells[5]);
-
-			createWordRelation(word1Id, word2Id);
-			createWordRelationParam(word1Id, word2Id, paramName, paramValue);
-
-			rawRelationsCounter++;
-			if (rawRelationsCounter % progressIndicator == 0) {
-				long progressPercent = rawRelationsCounter / progressIndicator;
-				logger.debug("{}% - {} raw relations processed", progressPercent, rawRelationsCounter);
-			}
+		} finally {
+			LineIterator.closeQuietly(lineIterator);
 		}
 		end();
 	}

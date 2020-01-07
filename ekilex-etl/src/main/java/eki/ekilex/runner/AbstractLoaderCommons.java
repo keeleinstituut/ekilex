@@ -56,12 +56,6 @@ public abstract class AbstractLoaderCommons implements SystemConstant, TableName
 		}
 	}
 
-	protected List<String> readFileLines(File sourceFile) throws Exception {
-		try (InputStream resourceInputStream = new FileInputStream(sourceFile)) {
-			return IOUtils.readLines(resourceInputStream, UTF_8);
-		}
-	}
-
 	protected List<String> getContentLines(InputStream resourceInputStream) throws Exception {
 		List<String> contentLines = IOUtils.readLines(resourceInputStream, UTF_8);
 		resourceInputStream.close();
