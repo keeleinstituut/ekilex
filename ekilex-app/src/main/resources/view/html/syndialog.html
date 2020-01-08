@@ -16,7 +16,7 @@
                     <input type="hidden" name="morphCode" th:value="${morphCode}" />
                     <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}" />
                     <div class="col-8">
-                      <input id="txtSynSearchWord" type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                      <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
                     </div>
                     <div class="col-2">
                       <button type="submit" class="btn btn-primary">Otsi</button>
@@ -47,6 +47,20 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_syn_layer_process_state}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <select class="form-control" name="value">
+              <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.layerProcessStateCode}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeBilingProcessStateDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_biling_process_state_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_biling_layer_process_state}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <select class="form-control" name="value">
@@ -94,6 +108,90 @@
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" role="dialog" id="synTutorialDlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Kasutusjuhend</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Tulpade vahel ja üles alla liikumiseks töötavad <strong>nooleklahvid</strong>.
+            <br/>
+            Klahv <strong>ENTER</strong> töötab eri tulpades järgmiselt:
+          </p>
+          <p>
+          <ul>
+            <li>Vasakul: valitud otsingutulemuse detailide kuvamine</li>
+            <li>Paremal: valitud sünonüümi märkimine</li>
+            <li>Keskel: Paremal tulbas märgitud sünonüümi valitud ilmikuga sidumine</li>
+          </ul>
+          Klahv <strong>ESC</strong> eemaldab markeeringud ja liigutab kursori otsingu kasti.
+          <br/>
+          Klahvid <strong>'1', '2' ja '3'</strong> töötavad kiirklahvidena kolme tulba valimiseks
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="selectBilingCandidateLangDlg" class="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_biling_candidate_langs}" method="post">
+          <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <select name="languages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
+                  th:title="#{biling.choose.candidates.languages}"
+                  th:data-select-all-text="#{button.select.all.text}"
+                  th:data-deselect-all-text="#{button.unselect.all.text}">
+                  <th:block th:each="language: ${userRoleLanguages}">
+                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${candidateLangCodes != null && #lists.contains(candidateLangCodes, language.code)}"/>
+                  </th:block>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="updateBilingCandidateLangsSubmitBtn" type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div id="selectBilingMeaningWordLangDlg" class="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_biling_meaning_word_langs}" method="post">
+          <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <select name="languages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
+                  th:title="#{biling.choose.meaning.word.languages}"
+                  th:data-select-all-text="#{button.select.all.text}"
+                  th:data-deselect-all-text="#{button.unselect.all.text}">
+                  <th:block th:each="language: ${userRoleLanguages}">
+                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${meaningWordLangCodes != null && #lists.contains(meaningWordLangCodes, language.code)}"/>
+                  </th:block>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="updateBilingMeaningWordLangsBtn" type="submit" class="btn btn-primary">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>

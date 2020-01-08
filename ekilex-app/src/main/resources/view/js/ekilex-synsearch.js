@@ -89,6 +89,14 @@ function initialise() {
 		doPostRelationChange(actionUrl, callbackFunc);
 	});
 
+	$(document).on("click", "#bilingLayerCompleteBtn", function() {
+
+		let wordId = $(this).data('word-id');
+		let actionUrl = applicationUrl + "biling_layer_complete/" + wordId;
+		let callbackFunc = () => refreshDetails();
+		doPostRelationChange(actionUrl, callbackFunc);
+	});
+
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 
 		var savedScrollPositions = getScrollPositions();
@@ -107,7 +115,11 @@ function initialise() {
 		$("[id^='syn_select_wait_']").hide();
 		$("#syn_select_wait_" + id).show();
 		openWaitDlg();
-		let detailsUrl = applicationUrl + 'syn_worddetails/' + id;
+
+		let isBiling = $("#bilingSearchForm").length === 1;
+		let wordDetailsUriPart = isBiling ? "biling_worddetails/" : "syn_worddetails/";
+		let detailsUrl =  applicationUrl + wordDetailsUriPart + id;
+
 		if (markedSynWordId != undefined) {
 			detailsUrl += '?markedSynWordId=' + markedSynWordId;
 		}
@@ -253,14 +265,6 @@ function initialise() {
 		if (orderingBtn.hasClass('do-refresh')) {
 			refreshDetails();
 		}
-	});
-
-	$(document).on("show.bs.modal", "[id^=addSynRelationDlg_]", function() {
-		initAddSynRelationDlg($(this));
-	});
-
-	$(document).on("show.bs.modal", "[id^=editSynLexemeWeightDlg_]", function() {
-		initGenericTextEditDlg($(this));
 	});
 
 	$(document).find('.draggable-synonym').draggable();

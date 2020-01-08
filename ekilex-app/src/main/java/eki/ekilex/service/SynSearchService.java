@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
+import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -67,16 +69,17 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordSynDetails getWordSynDetails(Long wordId, String datasetCode) {
 
+		final LayerName layerName = LayerName.SYN;
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
-		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode);
-		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(DbConstant.PROCESS_STATE_COMPLETE, lexemeData.getSynLayerProcessStateCode()));
+		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
+		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(DbConstant.PROCESS_STATE_COMPLETE, lexemeData.getLayerProcessStateCode()));
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 
-		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction);
+		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName);
 		synLexemes.forEach(lexeme -> populateSynLexeme(lexeme, wordDetails.getLanguage()));
-		lexemeLevelPreseUtil.combineLevels(synLexemes); //TODO check is this necessary ?
+		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
 		List<SynRelationParamTuple> relationTuples =
 				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
@@ -90,14 +93,57 @@ public class SynSearchService extends AbstractWordSearchService {
 		return wordDetails;
 	}
 
-	private void populateSynLexeme(WordSynLexeme lexeme, String language) {
+	@Transactional
+	public WordSynDetails getWordBilingDetails(Long wordId, String datasetCode, List<String> candidateLangs, List<String> meaningWordLangs) {
+
+		final LayerName layerName = LayerName.BILING_RUS;
+		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
+		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
+		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
+		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(DbConstant.PROCESS_STATE_COMPLETE, lexemeData.getLayerProcessStateCode()));
+		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
+
+		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName);
+		synLexemes.forEach(lexeme -> populateBilingLexeme(lexeme, wordDetails.getLanguage(), meaningWordLangs));
+		lexemeLevelPreseUtil.combineLevels(synLexemes);
+
+		List<SynRelationParamTuple> relationTuples =
+				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+		List<SynRelation> relations = conversionUtil.composeBilingRelations(relationTuples, candidateLangs);
+
+		wordDetails.setLexemes(synLexemes);
+		wordDetails.setRelations(relations);
+		wordDetails.setSynLayerComplete(isSynLayerComplete);
+		wordDetails.setWordProcessLogCount(wordProcessLogCount);
+
+		return wordDetails;
+	}
+
+	private void populateSynLexeme(WordSynLexeme lexeme, String mainWordLanguage) {
+		populateLexeme(lexeme, mainWordLanguage, null, false);
+	}
+
+	private void populateBilingLexeme(WordSynLexeme lexeme, String mainWordLanguage, List<String> meaningWordLangs) {
+		populateLexeme(lexeme, mainWordLanguage, meaningWordLangs, true);
+	}
+
+	private void populateLexeme(WordSynLexeme lexeme, String mainWordLanguage, List<String> meaningWordLangs, boolean isBiling) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
 
-		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, language);
-		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, language);
+		List<MeaningWord> meaningWords = new ArrayList<>();
+		if (isBiling) {
+			if (CollectionUtils.isNotEmpty(meaningWordLangs)) {
+				meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, meaningWordLangs);
+			}
+		} else {
+			meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Collections.singletonList(mainWordLanguage));
+		}
+		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, mainWordLanguage);
+
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
@@ -143,7 +189,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
 
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
-		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, wordDetails.getLanguage());
+		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Collections.singletonList(wordDetails.getLanguage()));
 
 		for (MeaningWord meaningWord : meaningWords) {
 			Long meaningWordRelationId = synSearchDbService.getRelationId(meaningWord.getWordId(), wordId, RAW_RELATION_CODE);

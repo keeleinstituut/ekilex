@@ -311,4 +311,17 @@ public class UserService implements WebConstant {
 		userDbService.updatePreferredDatasets(selectedDatasets, userId);
 	}
 
+	@Transactional
+	public void updateUserPreferredBilingCandidateLangs(List<String> languages) {
+
+		Long userId = getAuthenticatedUser().getId();
+		userDbService.updatePreferredBilingCandidateLangs(languages, userId);
+	}
+
+	@Transactional
+	public void updateUserPreferredMeaningWordLangs(List<String> languages) {
+
+		Long userId = getAuthenticatedUser().getId();
+		userDbService.updatePreferredMeaningWordLangs(languages, userId);
+	}
 }

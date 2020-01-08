@@ -12,7 +12,7 @@ public class LexemeData extends AbstractDataObject {
 
 	private String processStateCode;
 
-	private String synLayerProcessStateCode;
+	private String layerProcessStateCode;
 
 	public Long getId() {
 		return id;
@@ -38,12 +38,12 @@ public class LexemeData extends AbstractDataObject {
 		this.processStateCode = processStateCode;
 	}
 
-	public String getSynLayerProcessStateCode() {
-		return synLayerProcessStateCode;
+	public String getLayerProcessStateCode() {
+		return layerProcessStateCode;
 	}
 
-	public void setSynLayerProcessStateCode(String synLayerProcessStateCode) {
-		this.synLayerProcessStateCode = synLayerProcessStateCode;
+	public void setLayerProcessStateCode(String layerProcessStateCode) {
+		this.layerProcessStateCode = layerProcessStateCode;
 	}
 
 }

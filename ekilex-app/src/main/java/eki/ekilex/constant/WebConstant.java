@@ -218,6 +218,18 @@ public interface WebConstant {
 
 	String SYN_LAYER_COMPLETE = "/syn_layer_complete";
 
+	String BILING_SEARCH_PAGE = "bilingsearch";
+
+	String BILING_SEARCH_URI = "/bilingsearch";
+
+	String BILING_WORD_DETAILS_URI = "/biling_worddetails";
+
+	String UPDATE_BILING_CANDIDATE_LANGS_URI = "/update_biling_candidate_langs";
+
+	String UPDATE_BILING_MEANING_WORD_LANGS_URI = "/update_biling_meaning_word_langs";
+
+	String BILING_LAYER_COMPLETE = "/biling_layer_complete";
+
 	String USER_PROFILE_PAGE = "userprofile";
 
 	String USER_PROFILE_URI = "/userprofile";

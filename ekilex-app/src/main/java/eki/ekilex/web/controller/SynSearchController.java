@@ -9,9 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,38 +20,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.client.HttpClientErrorException;
 
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.SynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SynSearchController extends AbstractSearchController implements SystemConstant {
+public class SynSearchController extends AbstractSynSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SynSearchController.class);
 
-	@Autowired
-	private SynSearchService synSearchService;
-
 	@GetMapping(value = SYN_SEARCH_URI)
-	public String initSearch(Model model) throws Exception {
+	public String initPage(Model model) {
 
-		initSearchForms(SYN_SEARCH_PAGE, model);
-		resetUserRole(model);
-
-		WordsResult wordsResult = new WordsResult();
-		model.addAttribute("wordsResult", wordsResult);
-
+		initPage(SYN_SEARCH_PAGE, model);
 		return SYN_SEARCH_PAGE;
 	}
 
@@ -86,42 +71,11 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
 		final String searchPage = SYN_SEARCH_PAGE;
-
-		initSearchForms(searchPage, model);
-		resetUserRole(model);
-
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYN_SEARCH_URI);
 		logger.debug(searchUri);
 
-		SearchUriData searchUriData = searchHelper.parseSearchUri(searchPage, searchUri);
-
-		if (!searchUriData.isValid()) {
-			initSearchForms(searchPage, model);
-			model.addAttribute("wordsResult", new WordsResult());
-			model.addAttribute("noResults", true);
-			return SYN_SEARCH_PAGE;
-		}
-
-		String searchMode = searchUriData.getSearchMode();
-		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
-		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
-		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = false;
-
-		WordsResult wordsResult;
-		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
-		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
-		}
-		boolean noResults = wordsResult.getTotalCount() == 0;
-		model.addAttribute("searchMode", searchMode);
-		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
-		model.addAttribute("detailSearchFilter", detailSearchFilter);
-		model.addAttribute("wordsResult", wordsResult);
-		model.addAttribute("noResults", noResults);
-
-		return SYN_SEARCH_PAGE;
+		initSearch(model, searchPage, searchUri);
+		return searchPage;
 	}
 
 	@GetMapping(SYN_WORD_DETAILS_URI + "/{wordId}")
@@ -139,14 +93,6 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		model.addAttribute("markedSynWordId", markedSynWordId);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
-	}
-
-	private String getDatasetCodeFromRole(SessionBean sessionBean) {
-		DatasetPermission role = sessionBean.getUserRole();
-		if (role == null) {
-			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
-		}
-		return role.getDatasetCode();
 	}
 
 	@PostMapping(SYN_CHANGE_RELATION_STATUS)

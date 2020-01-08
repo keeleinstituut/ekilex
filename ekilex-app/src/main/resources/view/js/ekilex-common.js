@@ -276,6 +276,7 @@ function checkRequiredFields(thisForm) {
 	requiredFields.each(function() {
 		let isRequiredRange = $(this).hasClass('required-range');
 		let isSelectPicker = $(this).hasClass('classifier-select');
+		let isMultiselect = isSelectPicker && $(this).hasClass('multi-select');
 		let markableField = isSelectPicker ? $(this).parent() : $(this);
 
 		let fldVal = $(this).val();
@@ -294,6 +295,11 @@ function checkRequiredFields(thisForm) {
 				markableField.addClass('is-invalid');
 				isValid = false;
 			}
+		}
+
+		if (isValid && isMultiselect && fldVal.length === 0) {
+			markableField.addClass('is-invalid');
+			isValid = false;
 		}
 	});
 	return isValid;

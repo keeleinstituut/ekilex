@@ -75,14 +75,13 @@ public class ProcessService implements DbConstant {
 	}
 
 	@Transactional
-	public void updateSynLayerProcessStateComplete(Long wordId, String userName, String datasetCode) {
+	public void updateLayerProcessStateComplete(Long wordId, String userName, String datasetCode, LayerName layerName) {
 
-		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode);
-		final LayerName layerName = LayerName.SYN;
 		final String newProcessStateCode = PROCESS_STATE_COMPLETE;
+		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
 		for (LexemeData lexemeData : lexemeDatas) {
 			Long lexemeId = lexemeData.getId();
-			String recentProcessStateCode = lexemeData.getSynLayerProcessStateCode();
+			String recentProcessStateCode = lexemeData.getLayerProcessStateCode();
 			if (!StringUtils.equals(recentProcessStateCode, newProcessStateCode)) {
 				processDbService.createOrUpdateLayerProcessState(lexemeId, layerName, newProcessStateCode);
 				processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, newProcessStateCode, datasetCode, layerName);
@@ -91,12 +90,11 @@ public class ProcessService implements DbConstant {
 	}
 
 	@Transactional
-	public void updateSynProcessState(Long lexemeId, String userName, String processStateCode) {
+	public void updateSynProcessState(Long lexemeId, String userName, String processStateCode, LayerName layerName) {
 
-		LexemeData lexemeData = processDbService.getLexemeData(lexemeId);
-		final LayerName layerName = LayerName.SYN;
+		LexemeData lexemeData = processDbService.getLexemeData(lexemeId, layerName);
 		String datasetCode = lexemeData.getDatasetCode();
-		String recentProcessStateCode = lexemeData.getSynLayerProcessStateCode();
+		String recentProcessStateCode = lexemeData.getLayerProcessStateCode();
 		if (!StringUtils.equals(recentProcessStateCode, processStateCode)) {
 			processDbService.createOrUpdateLayerProcessState(lexemeId, layerName, processStateCode);
 			processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, processStateCode, datasetCode, layerName);
