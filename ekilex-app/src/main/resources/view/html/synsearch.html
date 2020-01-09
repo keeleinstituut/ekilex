@@ -16,7 +16,7 @@
   <div class="card shadow rounded-0 border-0 flex-shrink-0">
     <div class="card-body px-2 py-3">
       <form th:action="@{/synsearch}" method="post">
-        <th:block th:replace="search ::simple_search"></th:block>
+        <th:block th:replace="search :: search_form('lex_search', false)"></th:block>
       </form>
     </div>
   </div>
