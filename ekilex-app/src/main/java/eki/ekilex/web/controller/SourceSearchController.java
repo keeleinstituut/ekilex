@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import eki.ekilex.data.Source;
 import eki.ekilex.service.SourceService;
@@ -22,6 +23,8 @@ import eki.ekilex.service.SourceService;
 public class SourceSearchController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceSearchController.class);
+
+	private static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
 
 	@Autowired
 	private SourceService sourceService;
@@ -71,6 +74,14 @@ public class SourceSearchController extends AbstractPageController {
 		model.addAttribute("sourceCount", sources.size());
 
 		return SOURCE_SEARCH_PAGE;
+	}
+
+	@GetMapping(SOURCE_NAME_SEARCH_URI + "/{nameSearchFilter}")
+	@ResponseBody
+	public List<String> sourceNameSearch(@PathVariable("nameSearchFilter") String nameSearchFilter) {
+
+		List<String> sourceNames = sourceService.getSourceNames(nameSearchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		return sourceNames;
 	}
 
 }

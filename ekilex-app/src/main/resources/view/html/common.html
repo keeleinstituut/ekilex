@@ -229,7 +229,6 @@
             <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
               <div class="row">
                 <div class="mb-1">
-                  <div style="display: list-item; position: absolute"></div>
                   <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" th:name="${'source_' + source.sourceId}"
                     th:checked="${sourcePropertyIter.count == 1}">
                   <span th:text="${sourceProperty.type}"></span>

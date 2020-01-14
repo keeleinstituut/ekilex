@@ -311,6 +311,10 @@ function initAddSourceLinkDlg(addDlg) {
 
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
+		let searchInput = addDlg.find("input[name='searchFilter']");
+		if (searchInput.autocomplete('instance')) {
+			searchInput.autocomplete('close');
+		}
 		let button = $(this);
 		let content = button.html();
 		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
@@ -337,7 +341,7 @@ function initAddSourceLinkDlg(addDlg) {
 			});
 		}).fail(function(data) {
 			console.log(data);
-			alert(failMessage);
+			openAlertDlg('Viga!');
 		}).always(function() {
 			button.html(content);
 		});
@@ -371,7 +375,7 @@ function initRelationDialogLogic(addDlg, idElementName) {
 			});
 		}).fail(function(data) {
 			console.log(data);
-			alert(failMessage);
+			openAlertDlg('Viga!');
 		}).always(function() {
 			button.html(content);
 		});
@@ -525,7 +529,7 @@ function initAddSynRelationDlg(addDlg) {
 
 		}).fail(function(data) {
 			console.log(data);
-			alert(failMessage);
+			openAlertDlg('Viga!');
 		}).always(function() {
 			button.html(content);
 		});
