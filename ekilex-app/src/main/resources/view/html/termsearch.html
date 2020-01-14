@@ -9,6 +9,7 @@
   <script type="text/javascript" th:src="@{/view/js/ekilex-termdialog.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-dialog.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-sourcesearch.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-autocomplete.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.et.min.js}"></script>
 </th:block>
@@ -18,7 +19,7 @@
   <div class="card shadow rounded-0 mt-n3 border-0">
     <div class="card-body px-2 py-3">
       <form id="searchForm" th:action="@{/termsearch}" method="post">
-        <th:block th:replace="search :: search_form('term_search')"></th:block>
+        <th:block th:replace="search :: search_form('term_search', true)"></th:block>
         <div class="form-row pt-3 align-items-center border-top border-light mt-3">
           <div class="col-auto">
             <div class="row align-items-center">

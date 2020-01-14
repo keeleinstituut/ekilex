@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,15 @@ public class SourceService extends AbstractService {
 		List<Source> sources = convert(sourcePropertyTuples);
 
 		return sources;
+	}
+
+	@Transactional
+	public List<String> getSourceNames(String nameSearchFilter, int limit) {
+
+		if (StringUtils.isBlank(nameSearchFilter)) {
+			return Collections.emptyList();
+		}
+		return sourceDbService.getSourceNames(nameSearchFilter, limit);
 	}
 
 	@Transactional

@@ -64,6 +64,22 @@ public abstract class AbstractPageController implements WebConstant {
 		return datasets;
 	}
 
+	protected List<String> getUserPreferredBilingCandidateLangCodes() {
+
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		EkiUserProfile userProfile = userService.getUserProfile(userId);
+		return userProfile.getPreferredBilingCandidateLangs();
+	}
+
+	protected List<String> getUserPreferredBilingLexMeaningWordLangCodes() {
+
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		EkiUserProfile userProfile = userService.getUserProfile(userId);
+		return userProfile.getPreferredBilingLexMeaningWordLangs();
+	}
+
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {
 		return commonDataService.getDatasets();

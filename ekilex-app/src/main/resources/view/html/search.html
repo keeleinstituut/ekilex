@@ -5,11 +5,11 @@
 <title>Search components</title>
 </head>
 <body>
-  <th:block th:fragment="search_form(searchPageName)">
+  <th:block th:fragment="search_form(searchPageName, showDatasetSelect)">
     <div class="d-flex flex-row flex-nowrap">
       <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
       <input type="hidden" id="isSearchFilterValid" value="false">
-      <div class="flex-shrink-0 flex-grow-0 pr-2" th:if="${!#lists.isEmpty(allDatasets)}" th:insert="~{::dataset_select}"></div>
+      <div class="flex-shrink-0 flex-grow-0 pr-2" th:if="${!#lists.isEmpty(allDatasets) && showDatasetSelect}" th:insert="~{::dataset_select}"></div>
       <div class="tab-content w-100">
         <th:block th:replace="::detail_search(${searchPageName})"></th:block>
         <th:block th:replace="::simple_search"></th:block>
@@ -17,7 +17,7 @@
     </div>
     <script th:inline="javascript">
 		initialiseSearchForm()
-	</script>
+    </script>
   </th:block>
   <th:block th:fragment="simple_search">
     <div class="tab-pane fade " th:classappend="${searchMode =='SIMPLE' ? 'show active' : ''}" id="simple_search_filter">

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.ProcessLog;
@@ -31,6 +32,10 @@ import eki.ekilex.web.bean.SessionBean;
 public class ProcessController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProcessController.class);
+
+	private final LayerName synLayerName = LayerName.SYN;
+
+	private final LayerName bilingLayerName = LayerName.BILING_RUS;
 
 	@Autowired
 	private ProcessService processService;
@@ -145,7 +150,21 @@ public class ProcessController implements WebConstant {
 
 		String userName = userService.getAuthenticatedUser().getName();
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
-		processService.updateSynLayerProcessStateComplete(wordId, userName, datasetCode);
+		processService.updateLayerProcessStateComplete(wordId, userName, datasetCode, synLayerName);
+
+		return RESPONSE_OK_VER2;
+	}
+
+	@PostMapping(BILING_LAYER_COMPLETE + "/{wordId}")
+	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@ResponseBody
+	public String bilingLayerProcessStateComplete(
+			@PathVariable Long wordId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		String userName = userService.getAuthenticatedUser().getName();
+		String datasetCode = sessionBean.getUserRole().getDatasetCode();
+		processService.updateLayerProcessStateComplete(wordId, userName, datasetCode, bilingLayerName);
 
 		return RESPONSE_OK_VER2;
 	}
@@ -158,7 +177,20 @@ public class ProcessController implements WebConstant {
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 		logger.debug("Updating syn layer process state for lexeme \"{}\"", lexemeId);
-		processService.updateSynProcessState(lexemeId, userName, processStateCode);
+		processService.updateSynProcessState(lexemeId, userName, processStateCode, synLayerName);
+
+		return RESPONSE_OK_VER2;
+	}
+
+	@PostMapping("/update_biling_layer_process_state")
+	@ResponseBody
+	public String updateBilingLayerProcessState(@RequestBody UpdateItemRequest itemData) {
+
+		String userName = userService.getAuthenticatedUser().getName();
+		Long lexemeId = itemData.getId();
+		String processStateCode = itemData.getValue();
+		logger.debug("Updating biling layer process state for lexeme \"{}\"", lexemeId);
+		processService.updateSynProcessState(lexemeId, userName, processStateCode, bilingLayerName);
 
 		return RESPONSE_OK_VER2;
 	}

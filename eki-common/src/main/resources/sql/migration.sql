@@ -31,4 +31,8 @@ drop type if exists type_meaning_word;
 
 -- wordweb - recreate types and views
 
---> kuni siiani testis olemas 03.01.2020
+alter table eki_user_profile
+add column preferred_biling_candidate_langs char(3) array,
+add column preferred_biling_lex_meaning_word_langs char(3) array;
+
+--> kuni siiani testis olemas 08.01.2020

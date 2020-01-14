@@ -164,6 +164,8 @@ public interface WebConstant {
 
 	String SOURCE_SEARCH_RESULT = "source_search_result";
 
+	String SOURCE_NAME_SEARCH_URI = "/sourcenamesearch";
+
 	String UPDATE_SOURCE_PROPERTY_URI = "/update_source_property";
 
 	String CREATE_SOURCE_PROPERTY_URI = "/create_source_property";
@@ -217,6 +219,18 @@ public interface WebConstant {
 	String SYN_SEARCH_WORDS = "/syn_search_words";
 
 	String SYN_LAYER_COMPLETE = "/syn_layer_complete";
+
+	String BILING_SEARCH_PAGE = "bilingsearch";
+
+	String BILING_SEARCH_URI = "/bilingsearch";
+
+	String BILING_WORD_DETAILS_URI = "/biling_worddetails";
+
+	String UPDATE_BILING_CANDIDATE_LANGS_URI = "/update_biling_candidate_langs";
+
+	String UPDATE_BILING_MEANING_WORD_LANGS_URI = "/update_biling_meaning_word_langs";
+
+	String BILING_LAYER_COMPLETE = "/biling_layer_complete";
 
 	String USER_PROFILE_PAGE = "userprofile";
 

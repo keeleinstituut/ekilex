@@ -418,21 +418,7 @@
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/sourcesearchajax}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
-                  <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+          <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
@@ -452,21 +438,7 @@
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/sourcesearchajax}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
-                  <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+          <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${usage.id}">
@@ -610,21 +582,7 @@
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/sourcesearchajax}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
-                  <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+          <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${publicNote.id}">
@@ -680,21 +638,7 @@
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/sourcesearchajax}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
-                  <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+          <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${publicNote.id}">
@@ -750,7 +694,7 @@
             </div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required id="definitionPermLanguageSelect" class="form-control classifier-select" data-live-search="true" name="language">
+                <select required class="form-control classifier-select" data-live-search="true" name="language">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
@@ -806,21 +750,7 @@
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/sourcesearchajax}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
-                  <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+          <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${definition.id}">
@@ -876,21 +806,7 @@
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/sourcesearchajax}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
-                  <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+          <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${publicNote.id}">
@@ -1042,21 +958,7 @@
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/sourcesearchajax}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
-                  <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
+          <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${image.id}">

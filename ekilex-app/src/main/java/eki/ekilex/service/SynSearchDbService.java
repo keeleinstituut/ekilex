@@ -69,6 +69,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						WORD_RELATION.RELATION_STATUS.as("relation_status"),
 						WORD.ID.as("word_id"),
 						WORD.HOMONYM_NR.as("word_homonym_number"),
+						WORD.LANG.as("word_lang"),
 						FORM.VALUE.as("word"),
 						opposite.RELATION_STATUS.as("opposite_relation_status"),
 						WORD_RELATION_PARAM.NAME.as("param_name"),
@@ -139,7 +140,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynRelationParamTuple.class);
 	}
 
-	public List<WordSynLexeme> getWordPrimarySynonymLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public List<WordSynLexeme> getWordPrimarySynonymLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -155,7 +156,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
 				.from(LEXEME
 						.innerJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE))
-						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(LayerName.SYN.name())))
+						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name())))
 						)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
@@ -222,7 +223,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchOneInto(WordSynDetails.class);
 	}
 
-	public List<MeaningWord> getSynMeaningWords(Long lexemeId, String languageCode) {
+	public List<MeaningWord> getSynMeaningWords(Long lexemeId, List<String> meaningWordLangs) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -251,7 +252,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(p2.WORD_ID.eq(w2.ID))
 								.and(f2.PARADIGM_ID.eq(p2.ID))
 								.and(f2.MODE.eq(FormMode.WORD.name()))
-								.and(w2.LANG.eq(languageCode))
+								.and(w2.LANG.in(meaningWordLangs))
 				)
 				.groupBy(w2.ID, f2.VALUE, l2.ID)
 				.orderBy(w2.LANG, l2.ORDER_BY)

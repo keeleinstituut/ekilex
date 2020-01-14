@@ -276,6 +276,7 @@ function checkRequiredFields(thisForm) {
 	requiredFields.each(function() {
 		let isRequiredRange = $(this).hasClass('required-range');
 		let isSelectPicker = $(this).hasClass('classifier-select');
+		let isMultiselect = isSelectPicker && $(this).hasClass('multi-select');
 		let markableField = isSelectPicker ? $(this).parent() : $(this);
 
 		let fldVal = $(this).val();
@@ -295,6 +296,11 @@ function checkRequiredFields(thisForm) {
 				isValid = false;
 			}
 		}
+
+		if (isValid && isMultiselect && fldVal.length === 0) {
+			markableField.addClass('is-invalid');
+			isValid = false;
+		}
 	});
 	return isValid;
 }
@@ -305,6 +311,10 @@ function initAddSourceLinkDlg(addDlg) {
 
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
+		let searchInput = addDlg.find("input[name='searchFilter']");
+		if (searchInput.autocomplete('instance')) {
+			searchInput.autocomplete('close');
+		}
 		let button = $(this);
 		let content = button.html();
 		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
@@ -331,7 +341,7 @@ function initAddSourceLinkDlg(addDlg) {
 			});
 		}).fail(function(data) {
 			console.log(data);
-			alert(failMessage);
+			openAlertDlg('Viga!');
 		}).always(function() {
 			button.html(content);
 		});
@@ -365,7 +375,7 @@ function initRelationDialogLogic(addDlg, idElementName) {
 			});
 		}).fail(function(data) {
 			console.log(data);
-			alert(failMessage);
+			openAlertDlg('Viga!');
 		}).always(function() {
 			button.html(content);
 		});
@@ -519,7 +529,7 @@ function initAddSynRelationDlg(addDlg) {
 
 		}).fail(function(data) {
 			console.log(data);
-			alert(failMessage);
+			openAlertDlg('Viga!');
 		}).always(function() {
 			button.html(content);
 		});

@@ -176,29 +176,43 @@ public class ProcessDbService {
 		return results;
 	}
 
-	public LexemeData getLexemeData(Long lexemeId) {
+	public LexemeData getLexemeData(Long entityId) {
+
+		LexemeData lexemeData = create
+				.select(
+						LEXEME.ID,
+						LEXEME.PROCESS_STATE_CODE,
+						LEXEME.DATASET_CODE
+				)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(entityId))
+				.fetchSingleInto(LexemeData.class);
+		return lexemeData;
+	}
+
+	public LexemeData getLexemeData(Long lexemeId, LayerName layerName) {
 
 		LexemeData lexemeData = create
 				.select(
 						LEXEME.ID,
 						LEXEME.PROCESS_STATE_CODE,
 						LEXEME.DATASET_CODE,
-						LAYER_STATE.PROCESS_STATE_CODE.as("syn_layer_process_state_code"))
-				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(LayerName.SYN.name()))))
+						LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
+				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(LexemeData.class);
 		return lexemeData;
 	}
 
-	public List<LexemeData> getLexemeDatas(Long wordId, String datasetCode) {
+	public List<LexemeData> getLexemeDatas(Long wordId, String datasetCode, LayerName layerName) {
 
 		return create
 				.select(
 						LEXEME.ID,
 						LEXEME.PROCESS_STATE_CODE,
 						LEXEME.DATASET_CODE,
-						LAYER_STATE.PROCESS_STATE_CODE.as("syn_layer_process_state_code"))
-				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(LayerName.SYN.name()))))
+						LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
+				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
 				.where(LEXEME.WORD_ID.eq(wordId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchInto(LexemeData.class);
 	}

@@ -122,8 +122,7 @@ public class CompositionDbService implements DbConstant {
 	public List<LexemeRecord> getWordLexemes(Long wordId) {
 		return create
 				.selectFrom(LEXEME).where(
-					LEXEME.WORD_ID.eq(wordId)
-					.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+					LEXEME.WORD_ID.eq(wordId))
 				.fetch();
 	}
 
@@ -134,8 +133,7 @@ public class CompositionDbService implements DbConstant {
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

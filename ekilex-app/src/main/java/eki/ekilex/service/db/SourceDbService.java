@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -142,6 +143,18 @@ public class SourceDbService implements SystemConstant {
 				.orderBy(s.ID, sp.ORDER_BY)
 				.fetch()
 				.into(SourcePropertyTuple.class);
+	}
+
+	public List<String> getSourceNames(String nameSearchFilter, int limit) {
+
+		return create
+				.selectDistinct(FREEFORM.VALUE_TEXT)
+				.from(FREEFORM)
+				.where(FREEFORM.TYPE.eq(FreeformType.SOURCE_NAME.name())
+						.and(FREEFORM.VALUE_TEXT.lower().like('%' + StringUtils.lowerCase(nameSearchFilter) + '%')))
+				.orderBy(FREEFORM.VALUE_TEXT)
+				.limit(limit)
+				.fetchInto(String.class);
 	}
 
 	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties) {

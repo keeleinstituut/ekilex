@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
-      <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
+      <div th:text="#{common.not.found}" class="card-body">Not found.</div>
     </div>
   </div>
   <div data-name="dialogContent" th:fragment="lexeme_search_result">
@@ -65,7 +65,7 @@
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(lexemesFoundBySearch)}">
-      <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
+      <div th:text="#{common.not.found}" class="card-body">Not found.</div>
     </div>
   </div>
   <div data-name="dialogContent" th:fragment="meaning_search_result">
@@ -97,7 +97,7 @@
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(lexemesFoundBySearch)}">
-      <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
+      <div th:text="#{common.not.found}" class="card-body">Not found.</div>
     </div>
   </div>
   <div data-name="dialogContent" th:fragment="source_search_result">
@@ -156,7 +156,7 @@
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
-      <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
+      <div th:text="#{common.not.found}" class="card-body">Not found.</div>
     </div>
     <div class="card">
       <div class="card-body p-2">
@@ -183,7 +183,7 @@
         </div>
         <div class="form-group row">
           <div class="col-md-6 ml-2">
-            <input class="form-control" readonly name="value" th:value="${searchedWord}"/>
+            <input class="form-control required-field" readonly name="value" th:value="${searchedWord}"/>
           </div>
           <div class="col-md-3">
             <button type="button" id="addSynRelationWord" class="btn btn-sm btn-success" data-btn-menu>Lisa uus keelend</button>
@@ -248,4 +248,19 @@
       </div>
     </form>
   </th:block>
+  <form th:fragment="source_search_form" th:action="@{/sourcesearchajax}">
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group row ui-front">
+          <label class="col-auto col-form-label">Otsing</label>
+          <div class="col-5">
+            <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
+          </div>
+          <div class="col-2">
+            <button type="submit" class="btn btn-primary">Otsi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </body>

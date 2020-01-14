@@ -34,6 +34,7 @@ $(document).on("show.bs.modal", "[id^=addMeaningDataDlg_]", function() {
 
 $(document).on("show.bs.modal", "[id^=addUsageSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addMeaningPublicNoteDlg_]", function(e) {
@@ -57,6 +58,7 @@ $(document).on("show.bs.modal", "[id^=addMeaningDomainDlg_]", function() {
 
 $(document).on("show.bs.modal", "[id^=addDefinitionSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteDlg_]", function(e) {
@@ -71,14 +73,17 @@ $(document).on("show.bs.modal", "[id^=editDefinitionPublicNoteDlg_]", function(e
 
 $(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addLexemePublicNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addMeaningPublicNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=editLexemeRegionDlg_]", function() {

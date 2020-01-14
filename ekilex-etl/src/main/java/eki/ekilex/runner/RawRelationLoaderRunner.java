@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -80,7 +81,10 @@ public class RawRelationLoaderRunner extends AbstractLoaderRunner {
 
 		start();
 
-		long rawRelationCount = Files.lines(Paths.get(inputFileFullPath)).count();
+		long rawRelationCount;
+		try (Stream<String> lines = Files.lines(Paths.get(inputFileFullPath))) {
+			rawRelationCount = lines.count();
+		}
 		logger.debug("Starting to process {} raw relations", rawRelationCount);
 
 		long rawRelationsCounter = 0;

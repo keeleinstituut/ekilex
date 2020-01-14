@@ -28,3 +28,21 @@ drop type if exists type_meaning_word;
 
 -- wordweb:
 -- NB! recreate types and views
+
+alter table eki_user_profile
+add column preferred_biling_candidate_langs char(3) array,
+add column preferred_biling_lex_meaning_word_langs char(3) array;
+
+update lexeme
+set order_by = l.ev_qq_order_by
+from (select l1.id lexeme_id, (array_agg(l2.order_by order by l2.dataset_code))[1] ev_qq_order_by
+      from lexeme l1,
+           lexeme l2
+      where l1.dataset_code = 'sss'
+        and l2.dataset_code in ('ev2', 'qq2')
+        and l1.word_id = l2.word_id
+        and l1.meaning_id = l2.meaning_id
+      group by l1.word_id,
+               l1.meaning_id,
+               l1.id) l
+where lexeme.id = l.lexeme_id;

@@ -179,4 +179,22 @@ public class UserDbService extends AbstractDbService {
 				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
 				.execute();
 	}
+
+	public void updatePreferredBilingCandidateLangs(List<String> languages, Long userId) {
+
+		String[] languagesArray = languages.toArray(new String[0]);
+		create.update(EKI_USER_PROFILE)
+				.set(EKI_USER_PROFILE.PREFERRED_BILING_CANDIDATE_LANGS, languagesArray)
+				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
+				.execute();
+	}
+
+	public void updatePreferredMeaningWordLangs(List<String> languages, Long userId) {
+
+		String[] languagesArray = languages.toArray(new String[0]);
+		create.update(EKI_USER_PROFILE)
+				.set(EKI_USER_PROFILE.PREFERRED_BILING_LEX_MEANING_WORD_LANGS, languagesArray)
+				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
+				.execute();
+	}
 }

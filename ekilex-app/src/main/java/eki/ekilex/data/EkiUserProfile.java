@@ -12,6 +12,10 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private List<String> preferredDatasets;
 
+	private List<String> preferredBilingCandidateLangs;
+
+	private List<String> preferredBilingLexMeaningWordLangs;
+
 	public Long getRecentDatasetPermissionId() {
 		return recentDatasetPermissionId;
 	}
@@ -26,5 +30,21 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	public void setPreferredDatasets(List<String> preferredDatasets) {
 		this.preferredDatasets = preferredDatasets;
+	}
+
+	public List<String> getPreferredBilingCandidateLangs() {
+		return preferredBilingCandidateLangs;
+	}
+
+	public void setPreferredBilingCandidateLangs(List<String> preferredBilingCandidateLangs) {
+		this.preferredBilingCandidateLangs = preferredBilingCandidateLangs;
+	}
+
+	public List<String> getPreferredBilingLexMeaningWordLangs() {
+		return preferredBilingLexMeaningWordLangs;
+	}
+
+	public void setPreferredBilingLexMeaningWordLangs(List<String> preferredBilingLexMeaningWordLangs) {
+		this.preferredBilingLexMeaningWordLangs = preferredBilingLexMeaningWordLangs;
 	}
 }

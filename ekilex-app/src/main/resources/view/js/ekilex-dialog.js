@@ -14,6 +14,7 @@ $(document).on("show.bs.modal", "[id^=editDefinitionDlg_]", function(e) {
 
 $(document).on("show.bs.modal", "[id^=addLexemeSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addUsageDlg_]", function(e) {
@@ -105,6 +106,7 @@ $(document).on("show.bs.modal", "[id^=editLearnerCommentDlg_]", function(e) {
 
 $(document).on("show.bs.modal", "[id^=addImageSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addImageTitleDlg_]", function(e) {
@@ -122,10 +124,6 @@ $(document).on("show.bs.modal", "[id^=addMeaningSemanticTypeDlg_]", function() {
 });
 
 $(document).on("show.bs.modal", "[id^=editMeaningSemanticTypeDlg_]", function() {
-	initSelectDlg($(this));
-});
-
-$(document).on("show.bs.modal", "[id^=editLexemeSynProcessStateDlg_]", function() {
 	initSelectDlg($(this));
 });
 

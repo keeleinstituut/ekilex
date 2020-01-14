@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{syn.search.title}">EKILEX otsing</title>
+<title th:text="#{biling.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/jquery.scrollTo.min.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-dialog.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-searchfilter.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-synsearch.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-bilingsearch.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-syndialog.js}"></script>
 </th:block>
 </head>
 <body class="d-flex flex-column">
-  <th:block th:replace="common :: nav_bar(activeItem = 'syn')"></th:block>
+  <th:block th:replace="common :: nav_bar(activeItem = 'biling')"></th:block>
   <div class="card shadow rounded-0 border-0 flex-shrink-0">
     <div class="card-body px-2 py-3">
-      <form th:action="@{/synsearch}" method="post">
+      <form id="bilingSearchForm" th:action="@{/bilingsearch}" method="post">
         <th:block th:replace="search :: search_form('lex_search', false)"></th:block>
       </form>
     </div>
@@ -24,9 +25,8 @@
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:data-id="${wordId}" id="syn_details_div" class="h-100"
       th:with="
-          isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
-          isWordLexemeCrudGranted=${#vars.permDataUtil.isWordLexemeCrudGranted(#vars.wordId, #vars.sessionBean)}
-          ">
+        isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
+        isWordLexemeCrudGranted=${#vars.permDataUtil.isWordLexemeCrudGranted(#vars.wordId, #vars.sessionBean)}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div th:replace="syndialog :: add_word_process_log_dlg"></div>
       <div class="navigate-panel card shadow h-100">
@@ -34,10 +34,15 @@
           <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
             <h1 th:text="${details.word}" class="mr-3 mb-0">Aktiivne sõna</h1>
             <button type="button" class="btn btn-secondary btn-compact"
-              id="synLayerCompleteBtn"
+              id="bilingLayerCompleteBtn"
               th:data-word-id="${wordId}"
               th:disabled="${details.synLayerComplete}"
               sec:authorize="${#vars.isWordLexemeCrudGranted}">Märgi tehtuks
+            </button>
+            <button type="button" class="btn px-2 rounded-0" data-toggle="modal" data-target="#selectBilingMeaningWordLangDlg">
+              <span th:title="#{biling.choose.meaning.word.languages}" data-toggle="tooltip">
+                <i class="action-icon fa fa-globe" aria-hidden="true"></i>
+              </span>
             </button>
             <div th:replace="syncomp :: syn_logdata"></div>
           </div>
@@ -52,7 +57,7 @@
                 th:with="
                   isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
                   isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
-                <div th:replace="syndialog :: edit_lexeme_syn_process_state_dlg"></div>
+                <div th:replace="syndialog :: edit_lexeme_biling_process_state_dlg"></div>
                 <div data-lexeme-title class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() > 2} ? 'pl-4': ''">
                   <div class="d-flex align-items-start flex-wrap pt-2">
                     <span class="px-2 py-0 bg-light rounded font-weight-bold mr-2">
@@ -63,7 +68,7 @@
                       <button type="button" class="btn badge badge-primary"
                         title="Muuda"
                         data-toggle="modal"
-                        th:data-target="${'#editLexemeSynProcessStateDlg_' + lexeme.lexemeId}"
+                        th:data-target="${'#editLexemeBilingProcessStateDlg_' + lexeme.lexemeId}"
                         sec:authorize="${#vars.isLexemeCrudGranted}">
                         <i class="fa fa-caret-down" aria-hidden="true"></i>
                       </button>
@@ -72,15 +77,21 @@
                     <p th:if="${not #lists.isEmpty(lexeme.definitions)}" th:utext="${lexeme.definitions.get(0).value}" class="mb-1"></p>
                   </div>
                   <th:block th:replace="syncomp :: usages_data"></th:block>
-                  <th:block th:replace="syncomp :: meaning_word_data(false)"></th:block>
+                  <th:block th:replace="syncomp :: meaning_word_data(true)"></th:block>
                 </div>
               </div>
             </div>
             <div class="col-4 border-left border-light h-100">
               <div class="navigate-panel  mb-2 d-flex flex-column h-100">
                 <div class="d-flex bg-light px-2 align-items-center">
-                  <span th:text="#{syn.candidates.title}">Sünonüümide kandidaadid</span>
+                  <span th:text="#{biling.candidates.title}">Vastete kandidaadid</span>
                   <div class="ml-auto d-flex flex-row align-items-center">
+                    <span class="border-left py-2"></span>
+                    <button type="button" class="btn btn-light px-2 rounded-0" data-toggle="modal" data-target="#selectBilingCandidateLangDlg">
+                      <span th:title="#{biling.choose.candidates.languages}" data-toggle="tooltip">
+                        <i class="action-icon fa fa-globe" aria-hidden="true"></i>
+                      </span>
+                    </button>
                     <span class="border-left py-2"></span>
                     <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0" th:disabled="${markedSynWordId != null}">
                       <span th:title="#{syn.manual.mode}" data-toggle="tooltip">
@@ -102,17 +113,19 @@
         </div>
       </div>
     </div>
+    <div th:replace="syndialog :: #selectBilingCandidateLangDlg"></div>
+    <div th:replace="syndialog :: #selectBilingMeaningWordLangDlg"></div>
     <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.relations}, ${details.language}, ${details.morphCode})"></div>
     <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>
     <script>
-    	$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-    		btnOkLabel : 'Jah',
-    		btnCancelLabel : 'Ei',
-    		title : 'Kinnita vaste ilmiku kustutamine',
-    		onConfirm : deleteLexemeAndWordAndMeaning
-    	});
+		$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
+			btnOkLabel : 'Jah',
+			btnCancelLabel : 'Ei',
+			title : 'Kinnita vaste ilmiku kustutamine',
+			onConfirm : deleteLexemeAndWordAndMeaning
+		});
     </script>
   </th:block>
   <div th:replace="common :: #waitDlg"></div>
@@ -120,7 +133,7 @@
   <div th:replace="common :: #confirmDlg"></div>
   <div th:replace="syndialog :: #synTutorialDlg"></div>
   <script th:inline="javascript">
-  	initialise();
+	  initialise();
   </script>
 </body>
 </html>

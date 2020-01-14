@@ -730,6 +730,14 @@ public class ConversionUtil implements DbConstant {
 	}
 
 	public List<SynRelation> composeSynRelations(List<SynRelationParamTuple> synRelationParamTuples) {
+		return composeRelations(synRelationParamTuples, null, false);
+	}
+
+	public List<SynRelation> composeBilingRelations(List<SynRelationParamTuple> synRelationParamTuples, List<String> candidateLangs) {
+		return composeRelations(synRelationParamTuples, candidateLangs, true);
+	}
+
+	private List<SynRelation> composeRelations(List<SynRelationParamTuple> synRelationParamTuples, List<String> candidateLangs, boolean isBiling) {
 
 		List<SynRelation> synRelations = new ArrayList<>();
 		Map<Long, SynRelation> relationMap = new HashMap<>();
@@ -738,6 +746,12 @@ public class ConversionUtil implements DbConstant {
 
 		Integer otherHomonymNo = null;
 		for (SynRelationParamTuple paramTuple : synRelationParamTuples) {
+			if (isBiling) {
+				if (CollectionUtils.isEmpty(candidateLangs) || !candidateLangs.contains(paramTuple.getWordLang())) {
+					continue;
+				}
+			}
+
 			SynRelation relation = relationMap.get(paramTuple.getRelationId());
 			if (relation == null) {
 				relation = new SynRelation();

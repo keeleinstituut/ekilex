@@ -21,6 +21,9 @@ public class SynRelationParamTuple extends AbstractDataObject {
 	@Column(name = "word")
 	private String word;
 
+	@Column(name = "word_lang")
+	private String wordLang;
+
 	@Column(name = "relation_status")
 	private RelationStatus relationStatus;
 
@@ -81,6 +84,14 @@ public class SynRelationParamTuple extends AbstractDataObject {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public String getWordLang() {
+		return wordLang;
+	}
+
+	public void setWordLang(String wordLang) {
+		this.wordLang = wordLang;
 	}
 
 	public RelationStatus getRelationStatus() {
