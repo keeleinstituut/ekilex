@@ -4,21 +4,16 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
 import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -41,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = -1708459646;
+    private static final long serialVersionUID = 1668222146;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -65,6 +60,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.word</code>.
      */
     public final TableField<MviewWwWordRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.as_word</code>.
+     */
+    public final TableField<MviewWwWordRecord, String> AS_WORD = createField("as_word", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word.word_class</code>.
@@ -117,6 +117,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, TypeDefinitionRecord[]> DEFINITIONS = createField("definitions", eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
 
     /**
+     * The column <code>public.mview_ww_word.od_word_recommendations</code>.
+     */
+    public final TableField<MviewWwWordRecord, String[]> OD_WORD_RECOMMENDATIONS = createField("od_word_recommendations", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
      * The column <code>public.mview_ww_word.lex_dataset_exists</code>.
      */
     public final TableField<MviewWwWordRecord, Boolean> LEX_DATASET_EXISTS = createField("lex_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
@@ -127,9 +132,9 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, Boolean> TERM_DATASET_EXISTS = createField("term_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>public.mview_ww_word.od_word_recommendations</code>.
+     * The column <code>public.mview_ww_word.forms_exist</code>.
      */
-    public final TableField<MviewWwWordRecord, String[]> OD_WORD_RECOMMENDATIONS = createField("od_word_recommendations", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRecord, Boolean> FORMS_EXIST = createField("forms_exist", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * Create a <code>public.mview_ww_word</code> table reference
@@ -170,14 +175,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_LEX_DATASET_EXISTS_IDX, Indexes.MVIEW_WW_WORD_TERM_DATASET_EXISTS_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
     }
 
     /**

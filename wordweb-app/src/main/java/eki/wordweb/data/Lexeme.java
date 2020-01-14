@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.DatasetType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 import eki.common.data.LexemeLevel;
@@ -17,6 +18,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 	private Long meaningId;
 
 	private String datasetName;
+
+	private DatasetType datasetType;
 
 	private Integer level1;
 
@@ -72,8 +75,6 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	private List<TypeMeaningWord> destinLangMatchWords;
 
-	private List<TypeMeaningWord> otherLangMatchWords;
-
 	private List<TypeLexemeRelation> relatedLexemes;
 
 	private Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType;
@@ -114,6 +115,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setDatasetName(String datasetName) {
 		this.datasetName = datasetName;
+	}
+
+	public DatasetType getDatasetType() {
+		return datasetType;
+	}
+
+	public void setDatasetType(DatasetType datasetType) {
+		this.datasetType = datasetType;
 	}
 
 	public Integer getLevel1() {
@@ -330,14 +339,6 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setDestinLangMatchWords(List<TypeMeaningWord> destinLangMatchWords) {
 		this.destinLangMatchWords = destinLangMatchWords;
-	}
-
-	public List<TypeMeaningWord> getOtherLangMatchWords() {
-		return otherLangMatchWords;
-	}
-
-	public void setOtherLangMatchWords(List<TypeMeaningWord> otherLangMatchWords) {
-		this.otherLangMatchWords = otherLangMatchWords;
 	}
 
 	public List<TypeLexemeRelation> getRelatedLexemes() {

@@ -3,7 +3,7 @@ package eki.wordweb.data;
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
-public class TypePublicNote extends AbstractDataObject {
+public class TypePublicNote extends AbstractDataObject implements ComplexityType {
 
 	private static final long serialVersionUID = 1L;
 

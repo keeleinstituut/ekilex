@@ -12,6 +12,8 @@ public class Word extends WordTypeData {
 
 	private String word;
 
+	private String asWord;
+
 	private String wordClass;
 
 	private String lang;
@@ -50,6 +52,12 @@ public class Word extends WordTypeData {
 
 	private List<String> odWordRecommendations;
 
+	private boolean lexDatasetExists;
+
+	private boolean termDatasetExists;
+
+	private boolean formsExist;
+
 	private boolean singlePos;
 
 	private boolean wordRelationsExist;
@@ -72,6 +80,14 @@ public class Word extends WordTypeData {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public String getAsWord() {
+		return asWord;
+	}
+
+	public void setAsWord(String asWord) {
+		this.asWord = asWord;
 	}
 
 	public String getWordClass() {
@@ -224,6 +240,30 @@ public class Word extends WordTypeData {
 
 	public void setOdWordRecommendations(List<String> odWordRecommendations) {
 		this.odWordRecommendations = odWordRecommendations;
+	}
+
+	public boolean isLexDatasetExists() {
+		return lexDatasetExists;
+	}
+
+	public void setLexDatasetExists(boolean lexDatasetExists) {
+		this.lexDatasetExists = lexDatasetExists;
+	}
+
+	public boolean isTermDatasetExists() {
+		return termDatasetExists;
+	}
+
+	public void setTermDatasetExists(boolean termDatasetExists) {
+		this.termDatasetExists = termDatasetExists;
+	}
+
+	public boolean isFormsExist() {
+		return formsExist;
+	}
+
+	public void setFormsExist(boolean formsExist) {
+		this.formsExist = formsExist;
 	}
 
 	public boolean isSinglePos() {

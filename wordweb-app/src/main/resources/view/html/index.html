@@ -30,17 +30,9 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-12 mb-2 align-self-center">
+          <div class="col-12 mb-3 align-self-center">
             <div class="row align-items-center justify-content-center">
-              <div class="col-2 p-4 col-md-2">
-                <div th:replace="common-search :: dataset-type-filter"></div>
-              </div>
-              <div class="col-2 p-1 col-md-2">
-                <div th:replace="common-search :: lang-filter"></div>
-              </div>
-              <div class="col-2 col-md-2 p-0">
-                <div th:replace="common-search :: detail-filter"></div>
-              </div>
+              <div th:replace="common-search :: detail-filter"></div>
             </div>
           </div>
         </div>
@@ -68,8 +60,8 @@
   <div th:replace="common-app :: footer-content"></div>
   <div th:replace="common-app :: feedback-form"></div>
   <script th:inline="javascript">
-  	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
-  	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+  	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"*";
+  	var destinLang = /*[[${sessionBean.destinLang}]]*/"*";
   	var currentPage = /*[[@{/}]]*/"/";
   	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';

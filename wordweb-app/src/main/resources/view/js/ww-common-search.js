@@ -2,7 +2,6 @@ var windowWidthTreshold = 768;
 
 $(document).ready(function () {
 
-	initLanguageFilter();
 	initialiseRecording(speechRecognitionServiceUrl);
 
 	var isWideWindow = $(window).width() >= windowWidthTreshold;
@@ -51,10 +50,9 @@ $(document).ready(function () {
 
 	var searchWordAutocompleteConfig = {
 		source: function (request, response) {
-			var sourceLang = $("button[name='source-lang-btn'].active").val();
-			var destinLang = $("button[name='destin-lang-btn'].active").val();
+			var sourceLang = "*";
 			var wordPrefix = request.term;
-			var searchWordsByPrefixUrlWithParams = searchWordsByPrefixUrl + "/" + sourceLang + "/" + destinLang + "/" + wordPrefix;
+			var searchWordsByPrefixUrlWithParams = searchWordsByPrefixUrl + "/" + sourceLang + "/" + wordPrefix;
 			$.ajax({
 				url: searchWordsByPrefixUrlWithParams,
 				type: "GET",
@@ -113,29 +111,6 @@ $(document).ready(function () {
 $(window).resize(function () {
 	calculateAndSetStyles();
 });
-
-function initLanguageFilter() {
-	$("button[name = 'source-lang-btn'][value = '" + sourceLang + "']").addClass("active");
-	$("button[name = 'destin-lang-btn'][value = '" + destinLang + "']").addClass("active");
-	empowerLanguageSelection();
-}
-
-function clearLanguageSelection(name) {
-	$("button[name = '" + name + "']").each(function () {
-		$(this).removeClass("active");
-	});
-}
-
-function empowerLanguageSelection() {
-	var sourceLangLabel = $("button[name = 'source-lang-btn'].active").text();
-	var destinLangLabel = $("button[name = 'destin-lang-btn'].active").text();
-	$("#source-lang-lbl").text(sourceLangLabel);
-	$("#destin-lang-lbl").text(destinLangLabel);
-	sourceLang = $("button[name = 'source-lang-btn'].active").val();
-	destinLang = $("button[name = 'destin-lang-btn'].active").val();
-	$("input[name = 'sourceLang']").val(sourceLang);
-	$("input[name = 'destinLang']").val(destinLang);
-}
 
 function calculateAndSetStyles() {
 	var homonymItem = $(".homonym-item");
@@ -351,79 +326,6 @@ $(document).on("keyup", "input[name='searchWord']", function (e) {
 		$("#clear-search-btn").show();
 	} else {
 		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
-	}
-});
-
-$(document).on("click", "button[name='source-lang-btn']", function (e) {
-	var prevSourceLang = $("button[name='source-lang-btn'].active").val();
-	var currSourceLang = $(this).val();
-	if (currSourceLang == prevSourceLang) {
-		return;
-	}
-	var currDestinLang = $("button[name='destin-lang-btn'].active").val();
-	clearLanguageSelection('source-lang-btn');
-	$(this).addClass("active");
-	if ((currSourceLang == currDestinLang) && (currSourceLang == "rus")) {
-		clearLanguageSelection('destin-lang-btn');
-		$("button[name='destin-lang-btn'][value='est']").addClass("active");
-	}
-	empowerLanguageSelection();
-	var tempSearchWord = $("input[name='searchWord']").val();
-	if (tempSearchWord) {
-		$("#search-btn").click();
-	} else {
-		$("#lang-selector-btn").click();
-	}
-});
-
-$(document).on("click", "button[name='destin-lang-btn']", function (e) {
-	var currSourceLang = $("button[name='source-lang-btn'].active").val();
-	var prevDestinLang = $("button[name='destin-lang-btn'].active").val();
-	var currDestinLang = $(this).val();
-	if (currDestinLang == prevDestinLang) {
-		return;
-	}
-	clearLanguageSelection('destin-lang-btn');
-	$(this).addClass("active");
-	if ((currSourceLang == currDestinLang) && (currDestinLang == "rus")) {
-		clearLanguageSelection('source-lang-btn');
-		$("button[name='source-lang-btn'][value='est']").addClass("active");
-	}
-	empowerLanguageSelection();
-	var tempSearchWord = $("input[name='searchWord']").val();
-	if (tempSearchWord) {
-		$("#search-btn").click();
-	} else {
-		$("#lang-selector-btn").click();
-	}
-});
-
-$(document).on("click", "button[id='lang-sel-complete-btn']", function (e) {
-	$("#lang-selector-btn").click();
-	clickSearchIfInputExists();
-});
-
-$(document).on("click", "#toggle-lex", function (e) {
-	$("#lang-select-container").removeAttr("hidden");
-	$("#detail-toggle-container").removeAttr("hidden");
-	var datasetType = $("input[name='datasetType']").val();
-	if (datasetType === "term") {
-		$("input[name='datasetType']").val("lex");
-		$(this).addClass("active");
-		$("#toggle-term").removeClass("active");
-		clickSearchIfInputExists();
-	}
-});
-
-$(document).on("click", "#toggle-term", function (e) {
-	$("#lang-select-container").attr("hidden", "true");
-	$("#detail-toggle-container").attr("hidden", "true");
-	var datasetType = $("input[name='datasetType']").val();
-	if (datasetType === "lex") {
-		$("input[name='datasetType']").val("term");
-		$(this).addClass("active");
-		$("#toggle-lex").removeClass("active");
-		clickSearchIfInputExists();
 	}
 });
 

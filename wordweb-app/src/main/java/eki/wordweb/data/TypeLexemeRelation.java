@@ -4,7 +4,7 @@ import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-public class TypeLexemeRelation extends AbstractDataObject {
+public class TypeLexemeRelation extends AbstractDataObject implements ComplexityType {
 
 	private static final long serialVersionUID = 1L;
 

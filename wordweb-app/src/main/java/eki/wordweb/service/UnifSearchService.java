@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.DatasetType;
 import eki.common.constant.FormMode;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
@@ -34,57 +35,45 @@ import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordsData;
-import eki.wordweb.service.db.LexSearchDbService;
+import eki.wordweb.service.db.UnifSearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
-import eki.wordweb.service.util.ConversionUtil;
+import eki.wordweb.service.util.CollocConversionUtil;
+import eki.wordweb.service.util.LexemeConversionUtil;
+import eki.wordweb.service.util.EtymConversionUtil;
+import eki.wordweb.service.util.ParadigmConversionUtil;
+import eki.wordweb.service.util.WordConversionUtil;
 
 @Component
-public class LexSearchService implements SystemConstant, WebConstant {
+public class UnifSearchService implements SystemConstant, WebConstant {
 
 	@Autowired
-	private LexSearchDbService lexSearchDbService;
+	private UnifSearchDbService unifSearchDbService;
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
 	@Autowired
-	private ConversionUtil conversionUtil;
+	private WordConversionUtil wordConversionUtil;
+
+	@Autowired
+	private LexemeConversionUtil lexemeConversionUtil;
+
+	@Autowired
+	private CollocConversionUtil collocConversionUtil;
+
+	@Autowired
+	private EtymConversionUtil etymConversionUtil;
+
+	@Autowired
+	private ParadigmConversionUtil paradigmConversionUtil;
 
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
-	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
-
-		DataFilter dataFilter = getDataFilter(sourceLang, destinLang, searchMode);
-		List<Word> allWords = lexSearchDbService.getWords(searchWord, dataFilter);
-		boolean isForcedSearchMode = false;
-		if (CollectionUtils.isEmpty(allWords) && StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
-			dataFilter = getDataFilter(sourceLang, destinLang, SEARCH_MODE_DETAIL);
-			allWords = lexSearchDbService.getWords(searchWord, dataFilter);
-			if (CollectionUtils.isNotEmpty(allWords)) {
-				searchMode = SEARCH_MODE_DETAIL;
-				isForcedSearchMode = true;
-			}
-		}
-		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
-		conversionUtil.setAffixoidFlags(allWords);
-		conversionUtil.composeHomonymWrapups(allWords, dataFilter);
-		conversionUtil.selectHomonym(allWords, homonymNr);
-		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
-		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
-			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(Word::getWord).distinct().collect(Collectors.toList());
-			boolean isSingleResult = CollectionUtils.size(fullMatchWords) == 1;
-			return new WordsData(fullMatchWords, formMatchWords, searchMode, isForcedSearchMode, resultsExist, isSingleResult);
-		}
-		boolean isSingleResult = CollectionUtils.size(allWords) == 1;
-		return new WordsData(allWords, Collections.emptyList(), searchMode, isForcedSearchMode, resultsExist, isSingleResult);
-	}
-
-	@Transactional
 	public Map<String, List<String>> getWordsByPrefix(String wordPrefix, String sourceLang, int limit) {
 
-		Map<String, List<WordOrForm>> results = lexSearchDbService.getWordsByPrefix(wordPrefix, sourceLang, limit);
+		Map<String, List<WordOrForm>> results = unifSearchDbService.getWordsByPrefix(wordPrefix, limit);
 		List<WordOrForm> prefWordsResult = results.get("prefWords");
 		List<WordOrForm> formWordsResult = results.get("formWords");
 		List<String> prefWords, formWords;
@@ -112,6 +101,27 @@ public class LexSearchService implements SystemConstant, WebConstant {
 	}
 
 	@Transactional
+	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
+
+		DataFilter dataFilter = getDataFilter(searchWord, destinLang, searchMode);
+		List<Word> allWords = unifSearchDbService.getWords(searchWord, dataFilter);
+		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
+		wordConversionUtil.setAffixoidFlags(allWords);
+		wordConversionUtil.composeHomonymWrapups(allWords, dataFilter);
+		wordConversionUtil.selectHomonym(allWords, homonymNr);
+		List<Word> fullMatchWords = allWords.stream()
+				.filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord) || StringUtils.equalsIgnoreCase(word.getAsWord(), searchWord))
+				.collect(Collectors.toList());
+		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
+			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(Word::getWord).distinct().collect(Collectors.toList());
+			boolean isSingleResult = CollectionUtils.size(fullMatchWords) == 1;
+			return new WordsData(fullMatchWords, formMatchWords, searchMode, resultsExist, isSingleResult);
+		}
+		boolean isSingleResult = CollectionUtils.size(allWords) == 1;
+		return new WordsData(allWords, Collections.emptyList(), searchMode, resultsExist, isSingleResult);
+	}
+
+	@Transactional
 	public WordData getWordData(Long wordId, String sourceLang, String destinLang, String displayLang, String searchMode) {
 
 		// query params
@@ -119,24 +129,44 @@ public class LexSearchService implements SystemConstant, WebConstant {
 		Integer maxDisplayLevel = dataFilter.getMaxDisplayLevel();
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 
-		// queries and transformations
-		Word word = lexSearchDbService.getWord(wordId);
+		// word data
+		Word word = unifSearchDbService.getWord(wordId);
+		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
-		conversionUtil.setWordTypeFlags(word);
-		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymologyTuples(wordId);
-		conversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
-		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.getWordRelationTuples(wordId);
-		conversionUtil.composeWordRelations(word, wordRelationTuples, lexComplexity, displayLang);
-		List<Lexeme> lexemes = lexSearchDbService.getLexemes(wordId, dataFilter);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.getLexemeMeaningTuples(wordId, dataFilter);
-		List<CollocationTuple> collocTuples = lexSearchDbService.getCollocations(wordId, lexComplexity);
-		compensateNullWords(wordId, collocTuples);
-		conversionUtil.enrich(word, lexemes, lexemeMeaningTuples, collocTuples, dataFilter, displayLang);
-		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.getWordForms(wordId, maxDisplayLevel);
-		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
-		List<String> allImageFiles = conversionUtil.collectImages(lexemes);
+		wordConversionUtil.setWordTypeFlags(word);
+		List<WordRelationTuple> wordRelationTuples = unifSearchDbService.getWordRelationTuples(wordId);
+		wordConversionUtil.composeWordRelations(word, wordRelationTuples, lexComplexity, displayLang);
+		List<WordEtymTuple> wordEtymTuples = unifSearchDbService.getWordEtymologyTuples(wordId);
+		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
+		Map<Long, List<Form>> paradigmFormsMap = unifSearchDbService.getWordForms(wordId, maxDisplayLevel);
+		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
+		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
+
+		// lexeme data
+		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = unifSearchDbService.getLexemeMeaningTuples(wordId, dataFilter);
+		Map<DatasetType, List<Lexeme>> lexemeGroups = lexemes.stream().collect(Collectors.groupingBy(Lexeme::getDatasetType));
+
+		// lex conv
+		List<Lexeme> lexLexemes = lexemeGroups.get(DatasetType.LEX);
+		if (CollectionUtils.isNotEmpty(lexLexemes)) {
+			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId, lexComplexity);
+			compensateNullWords(wordId, collocTuples);
+			lexemeConversionUtil.enrich(wordLang, lexemes, lexemeMeaningTuples, allRelatedWords, lexComplexity, displayLang);
+			collocConversionUtil.enrich(wordId, lexemes, collocTuples, dataFilter, displayLang);
+			lexemeLevelPreseUtil.combineLevels(lexLexemes);
+		}
+
+		// term conv
+		List<Lexeme> termLexemes = lexemeGroups.get(DatasetType.TERM);
+		if (CollectionUtils.isNotEmpty(termLexemes)) {
+			lexemeConversionUtil.enrich(wordLang, termLexemes, lexemeMeaningTuples, allRelatedWords, null, displayLang);
+		}
 
 		// resulting flags
+		wordConversionUtil.composeCommon(word, lexemes);
+		boolean lexResultsExist = CollectionUtils.isNotEmpty(lexemes);
+		boolean multipleLexLexemesExist = CollectionUtils.size(lexLexemes) > 1;
 		String firstAvailableVocalForm = null;
 		String firstAvailableAudioFile = null;
 		boolean isUnknownForm = false;
@@ -154,13 +184,14 @@ public class LexSearchService implements SystemConstant, WebConstant {
 
 		WordData wordData = new WordData();
 		wordData.setWord(word);
-		wordData.setLexemes(lexemes);
+		wordData.setLexLexemes(lexLexemes);
+		wordData.setTermLexemes(termLexemes);
 		wordData.setParadigms(paradigms);
-		wordData.setImageFiles(allImageFiles);
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
 		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
 		wordData.setUnknownForm(isUnknownForm);
-		lexemeLevelPreseUtil.combineLevels(wordData.getLexemes());
+		wordData.setLexResultsExist(lexResultsExist);
+		wordData.setMultipleLexLexemesExist(multipleLexLexemesExist);
 		return wordData;
 	}
 
@@ -172,7 +203,7 @@ public class LexSearchService implements SystemConstant, WebConstant {
 				if (StringUtils.isBlank(collocMem.getWord())) {
 					String collocValue = tuple.getCollocValue();
 					List<String> collocTokens = Arrays.asList(StringUtils.split(collocValue));
-					List<WordForm> wordFormCandidates = lexSearchDbService.getWordFormCandidates(wordId, collocTokens);
+					List<WordForm> wordFormCandidates = unifSearchDbService.getWordFormCandidates(wordId, collocTokens);
 					if (CollectionUtils.isEmpty(wordFormCandidates)) {
 						tuple.setInvalid(true);
 						break;
@@ -185,7 +216,6 @@ public class LexSearchService implements SystemConstant, WebConstant {
 		}
 	}
 
-	//falling back to dataset-based filtering, not cool at all...
 	private DataFilter getDataFilter(String sourceLang, String destinLang, String searchMode) {
 		Complexity lexComplexity = null;
 		try {
@@ -193,25 +223,11 @@ public class LexSearchService implements SystemConstant, WebConstant {
 		} catch (Exception e) {
 			//not interested
 		}
-		String complexityIndex = "";
-		if (StringUtils.equals(sourceLang, "est") && StringUtils.equals(destinLang, "est")) {
-			complexityIndex = "1";
-		} else if (StringUtils.equals(sourceLang, "est") && StringUtils.equals(destinLang, "rus")) {
-			complexityIndex = "2";
-		} else if (StringUtils.equals(sourceLang, "rus") && StringUtils.equals(destinLang, "est")) {
-			complexityIndex = "2";
-		}
-		Complexity dataComplexity = null;
-		try {
-			dataComplexity = Complexity.valueOf(lexComplexity.name() + complexityIndex);
-		} catch (Exception e) {
-			//not interested
-		}
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		if (Complexity.SIMPLE.equals(lexComplexity)) {
 			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		}
-		DataFilter dataFilter = new DataFilter(sourceLang, destinLang, lexComplexity, dataComplexity, maxDisplayLevel);
+		DataFilter dataFilter = new DataFilter(sourceLang, destinLang, lexComplexity, null, maxDisplayLevel);
 		return dataFilter;
 	}
 }

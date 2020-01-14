@@ -10,17 +10,21 @@ public class WordData extends AbstractDataObject {
 
 	private Word word;
 
-	private List<Lexeme> lexemes;
+	private List<Lexeme> lexLexemes;
+
+	private List<Lexeme> termLexemes;
 
 	private List<Paradigm> paradigms;
-
-	private List<String> imageFiles;
 
 	private String firstAvailableVocalForm;
 
 	private String firstAvailableAudioFile;
 
 	private boolean unknownForm;
+
+	private boolean lexResultsExist;
+
+	private boolean multipleLexLexemesExist;
 
 	public Word getWord() {
 		return word;
@@ -30,12 +34,20 @@ public class WordData extends AbstractDataObject {
 		this.word = word;
 	}
 
-	public List<Lexeme> getLexemes() {
-		return lexemes;
+	public List<Lexeme> getLexLexemes() {
+		return lexLexemes;
 	}
 
-	public void setLexemes(List<Lexeme> lexemes) {
-		this.lexemes = lexemes;
+	public void setLexLexemes(List<Lexeme> lexLexemes) {
+		this.lexLexemes = lexLexemes;
+	}
+
+	public List<Lexeme> getTermLexemes() {
+		return termLexemes;
+	}
+
+	public void setTermLexemes(List<Lexeme> termLexemes) {
+		this.termLexemes = termLexemes;
 	}
 
 	public List<Paradigm> getParadigms() {
@@ -44,14 +56,6 @@ public class WordData extends AbstractDataObject {
 
 	public void setParadigms(List<Paradigm> paradigms) {
 		this.paradigms = paradigms;
-	}
-
-	public List<String> getImageFiles() {
-		return imageFiles;
-	}
-
-	public void setImageFiles(List<String> imageFiles) {
-		this.imageFiles = imageFiles;
 	}
 
 	public String getFirstAvailableVocalForm() {
@@ -77,4 +81,21 @@ public class WordData extends AbstractDataObject {
 	public void setUnknownForm(boolean unknownForm) {
 		this.unknownForm = unknownForm;
 	}
+
+	public boolean isLexResultsExist() {
+		return lexResultsExist;
+	}
+
+	public void setLexResultsExist(boolean lexResultsExist) {
+		this.lexResultsExist = lexResultsExist;
+	}
+
+	public boolean isMultipleLexLexemesExist() {
+		return multipleLexLexemesExist;
+	}
+
+	public void setMultipleLexLexemesExist(boolean multipleLexLexemesExist) {
+		this.multipleLexLexemesExist = multipleLexLexemesExist;
+	}
+
 }

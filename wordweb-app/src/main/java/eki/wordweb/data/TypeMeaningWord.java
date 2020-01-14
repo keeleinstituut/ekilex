@@ -5,7 +5,7 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
 
-public class TypeMeaningWord extends WordTypeData {
+public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,8 +37,6 @@ public class TypeMeaningWord extends WordTypeData {
 
 	private Classifier aspect;
 
-	private boolean emphasiseMatch;
-
 	private boolean additionalDataExists;
 
 	public Long getLexemeId() {
@@ -63,6 +61,10 @@ public class TypeMeaningWord extends WordTypeData {
 
 	public void setMwLexemeId(Long mwLexemeId) {
 		this.mwLexemeId = mwLexemeId;
+	}
+
+	public Complexity getComplexity() {
+		return mwLexComplexity;
 	}
 
 	public Complexity getMwLexComplexity() {
@@ -151,14 +153,6 @@ public class TypeMeaningWord extends WordTypeData {
 
 	public void setAspect(Classifier aspect) {
 		this.aspect = aspect;
-	}
-
-	public boolean isEmphasiseMatch() {
-		return emphasiseMatch;
-	}
-
-	public void setEmphasiseMatch(boolean emphasiseMatch) {
-		this.emphasiseMatch = emphasiseMatch;
 	}
 
 	public boolean isAdditionalDataExists() {

@@ -2,6 +2,7 @@ package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_AS_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
@@ -21,7 +22,6 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.DatasetType;
 import eki.common.constant.FormMode;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
@@ -31,6 +31,7 @@ import eki.wordweb.data.Word;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.db.tables.MviewWwAsWord;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
@@ -38,41 +39,26 @@ import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 
-//TODO remove soon
-@Deprecated
 @Component
-public class LexSearchDbService extends AbstractSearchDbService {
+public class UnifSearchDbService extends AbstractSearchDbService {
 
 	public List<Word> getWords(String searchWord, DataFilter dataFilter) {
 
-		String sourceLang = dataFilter.getSourceLang();
-		String destinLang = dataFilter.getDestinLang();
-		Complexity lexComplexity = dataFilter.getLexComplexity();
-		Complexity dataComplexity = dataFilter.getDataComplexity();
-		String[] filtComplexities = new String[] {lexComplexity.name(), dataComplexity.name()};
-
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
-		Table<?> lc = DSL.unnest(w.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 
 		String searchWordLower = StringUtils.lowerCase(searchWord);
-		Condition where = w.LEX_DATASET_EXISTS.isTrue() 
-				.and(w.LANG.eq(sourceLang))
-				.andExists(DSL
-						.select(f.WORD_ID)
-						.from(f)
-						.where(f.WORD_ID.eq(w.WORD_ID)
-								.and(f.FORM.lower().eq(searchWordLower))))
-				.andExists(DSL
-						.selectFrom(lc)
-						.where(
-								lc.field("lang", String.class).eq(destinLang)
-								.and(lc.field("complexity", String.class).in(filtComplexities))));
+		Condition where = DSL.exists(DSL
+				.select(f.WORD_ID)
+				.from(f)
+				.where(f.WORD_ID.eq(w.WORD_ID)
+						.and(f.FORM.lower().eq(searchWordLower))));
 
 		return create
 				.select(
 						w.WORD_ID,
 						w.WORD,
+						w.AS_WORD,
 						w.WORD_CLASS,
 						w.LANG,
 						w.HOMONYM_NR,
@@ -81,7 +67,11 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						w.DISPLAY_MORPH_CODE,
 						w.ASPECT_CODE,
 						w.MEANING_WORDS,
-						w.DEFINITIONS)
+						w.DEFINITIONS,
+						w.OD_WORD_RECOMMENDATIONS,
+						w.LEX_DATASET_EXISTS,
+						w.TERM_DATASET_EXISTS,
+						w.FORMS_EXIST)
 				.from(w)
 				.where(where)
 				.orderBy(w.LANG, w.HOMONYM_NR)
@@ -90,7 +80,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordOrForm>> getWordsByPrefix(String wordPrefix, String lang, int maxWordCount) {
+	public Map<String, List<WordOrForm>> getWordsByPrefix(String wordPrefix, int maxWordCount) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwAsWord aw = MVIEW_WW_AS_WORD.as("aw");
@@ -99,9 +89,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		String wordPrefixLower = StringUtils.lowerCase(wordPrefix);
 		Field<String> iswtf = DSL.field(DSL.value("prefWords")).as("group");
 		Field<String> iswff = DSL.field(DSL.value("formWords")).as("group");
-		Condition wlc = w.LEX_DATASET_EXISTS.isTrue().and(w.WORD.lower().like(wordPrefixLower + '%')).and(w.LANG.eq(lang));
-		Condition awlc = w.LEX_DATASET_EXISTS.isTrue().and(aw.AS_WORD.lower().like(wordPrefixLower + '%')).and(w.LANG.eq(lang).and(aw.WORD_ID.eq(w.WORD_ID)));
-		Condition flc = f.FORM.lower().eq(wordPrefixLower).and(f.MODE.eq(FormMode.FORM.name())).and(f.LANG.eq(lang));
+		Condition wlc = w.WORD.lower().like(wordPrefixLower + '%');
+		Condition awlc = aw.AS_WORD.lower().like(wordPrefixLower + '%').and(aw.WORD_ID.eq(w.WORD_ID));
+		Condition flc = f.FORM.lower().eq(wordPrefixLower).and(f.MODE.eq(FormMode.FORM.name()));
 
 		Table<Record2<String, String>> woft = DSL
 				.selectDistinct(w.WORD.as("value"), iswtf)
@@ -131,25 +121,18 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {
 
-		String destinLang = dataFilter.getDestinLang();
-		Complexity lexComplexity = dataFilter.getLexComplexity();
-		Complexity dataComplexity = dataFilter.getDataComplexity();
-		String[] filtComplexities = new String[] {lexComplexity.name(), dataComplexity.name()};
-
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
+		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
-		Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 
-		Condition where = l.WORD_ID.eq(wordId)
-				.and(l.DATASET_TYPE.eq(DatasetType.LEX.name()))
-				.andExists(DSL
-						.selectFrom(lc)
-						.where(lc.field("lang", String.class).eq(destinLang)
-								.and(lc.field("complexity", String.class).in(filtComplexities))));
+		Condition where = l.WORD_ID.eq(wordId);
+
 		return create
 				.select(
 						l.LEXEME_ID,
 						l.MEANING_ID,
+						ds.NAME.as("dataset_name"),
+						l.DATASET_TYPE,
 						l.LEVEL1,
 						l.LEVEL2,
 						l.COMPLEXITY,
@@ -166,7 +149,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						l.USAGES,
 						l.OD_LEXEME_RECOMMENDATIONS,
 						lr.RELATED_LEXEMES)
-				.from(l.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
+				.from(l
+						.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE))
+						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
 				.orderBy(
 						l.LEVEL1,
@@ -178,22 +163,11 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId, DataFilter dataFilter) {
 
-		String destinLang = dataFilter.getDestinLang();
-		Complexity lexComplexity = dataFilter.getLexComplexity();
-		Complexity dataComplexity = dataFilter.getDataComplexity();
-		String[] filtComplexities = new String[] {lexComplexity.name(), dataComplexity.name()};
-
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
 		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
-		Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 
-		Condition where = l.WORD_ID.eq(wordId)
-				.and(l.DATASET_TYPE.eq(DatasetType.LEX.name()))
-				.andExists(DSL
-						.selectFrom(lc)
-						.where(lc.field("lang", String.class).eq(destinLang)
-								.and(lc.field("complexity", String.class).in(filtComplexities))));
+		Condition where = l.WORD_ID.eq(wordId);
 
 		return create
 				.select(
@@ -219,7 +193,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		MviewWwCollocation c = MVIEW_WW_COLLOCATION.as("c");
 
-		Condition where = c.WORD_ID.eq(wordId).and(c.COMPLEXITY.eq(complexity.name()));
+		Condition where = c.WORD_ID.eq(wordId);
 
 		return create
 				.select(
@@ -245,5 +219,4 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch()
 				.into(CollocationTuple.class);
 	}
-
 }

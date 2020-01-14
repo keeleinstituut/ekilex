@@ -5,19 +5,11 @@ public interface WebConstant {
 	//TODO should be set by defaults and/or ui
 	String DISPLAY_LANG = "est";
 
-	String DEFAULT_DATASET_TYPE = "lex";
+	String DEFAULT_SOURCE_LANG = "*";
 
-	String DEFAULT_SOURCE_LANG = "est";
-
-	String DEFAULT_DESTIN_LANG = "est";
+	String DEFAULT_DESTIN_LANG = "*";
 
 	char LANGUAGE_PAIR_SEPARATOR = '-';
-
-	String EMPHASISE_DESTIN_LANG = "lat";
-
-	String ADDITIONAL_DESTIN_LANG = "lat";
-
-	String[] SUPPORTED_LANGUAGES = new String[] {"est", "rus"};
 
 	String HOME_PAGE = "index";
 
@@ -48,6 +40,8 @@ public interface WebConstant {
 	String LEX_URI = "/lex";
 
 	String TERM_URI = "/term";
+
+	String UNIF_URI = "/unif";
 
 	String SEARCH_URI = "/search";
 

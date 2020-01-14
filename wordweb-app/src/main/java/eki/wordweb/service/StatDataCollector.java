@@ -29,14 +29,14 @@ public class StatDataCollector {
 		this.exceptionCountMap = new HashMap<>();
 	}
 
-	public synchronized void addSearchStat(String langPair, String searchMode, boolean isForcedSearchMode, boolean resultsExist, boolean isIeUser) {
+	public synchronized void addSearchStat(String langPair, String searchMode, boolean resultsExist, boolean isIeUser) {
 		if (StringUtils.isBlank(langPair)) {
 			return;
 		}
 		if (StringUtils.isBlank(searchMode)) {
 			return;
 		}
-		String searchCountKey = composeSearchCountKey(langPair, searchMode, isForcedSearchMode, resultsExist, isIeUser);
+		String searchCountKey = composeSearchCountKey(langPair, searchMode, resultsExist, isIeUser);
 		Count langSearchCount = searchCountMap.get(searchCountKey);
 		if (langSearchCount == null) {
 			langSearchCount = new Count();
@@ -51,14 +51,11 @@ public class StatDataCollector {
 		totalSearchCount.increment();
 	}
 
-	private String composeSearchCountKey(String langPair, String searchMode, boolean isForcedSearchMode, boolean resultsExist, boolean isIeUser) {
+	private String composeSearchCountKey(String langPair, String searchMode, boolean resultsExist, boolean isIeUser) {
 		StringBuffer keyBuf = new StringBuffer();
 		keyBuf.append(langPair);
 		keyBuf.append(' ');
 		keyBuf.append(searchMode.toLowerCase());
-		if (isForcedSearchMode) {
-			keyBuf.append("! ");
-		}
 		keyBuf.append(' ');
 		if (resultsExist) {
 			keyBuf.append("pos");

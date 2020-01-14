@@ -11,7 +11,7 @@ create type type_meaning_word as (
 				meaning_id bigint,
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
-        mw_lex_weight numeric(5,4),
+				mw_lex_weight numeric(5,4),
 				mw_lex_governments type_government array,
 				mw_lex_register_codes varchar(100) array,
 				word_id bigint,
@@ -30,6 +30,7 @@ create view view_ww_word
 as
 select w.word_id,
        w.word,
+       w.as_word,
        w.word_class,
        w.lang,
        w.homonym_nr,
@@ -40,11 +41,18 @@ select w.word_id,
        lc.lang_complexities,
        mw.meaning_words,
        wd.definitions,
+       od_ws.od_word_recommendations,
        w.lex_dataset_exists,
        w.term_dataset_exists,
-       od_ws.od_word_recommendations
+       w.forms_exist
 from (select w.id as word_id,
              array_to_string(array_agg(distinct f.value),',','*') as word,
+             (select array_agg(distinct f.value)
+	          from paradigm p,
+	               form f
+	          where p.word_id = w.id
+	          and   f.paradigm_id = p.id
+	          and   f.mode = 'AS_WORD')[1] as as_word,
              w.word_class,
              w.lang,
              w.homonym_nr,
@@ -68,7 +76,13 @@ from (select w.id as word_id,
 	          and   l.word_id = w.id
 	          and   ds.code = l.dataset_code
 	          and   ds.is_public = true
-	          and   ds.type = 'TERM') term_dataset_exists
+	          and   ds.type = 'TERM') term_dataset_exists,
+	         (select count(f.id) > 0
+	          from paradigm p,
+	               form f
+	          where p.word_id = w.id
+	          and   f.paradigm_id = p.id
+	          and   f.mode = 'FORM') forms_exist
       from word as w
         join paradigm as p on p.word_id = w.id
         join form as f on f.paradigm_id = p.id and f.mode = 'WORD'

@@ -104,14 +104,8 @@ public class ViewUtil implements WebConstant, SystemConstant {
 
 	private String composeSearchUri(SessionBean sessionBean, String word, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
 
-		String datasetType = sessionBean.getDatasetType();
 		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
-		String searchUri = null;
-		if (StringUtils.equals(datasetType, DATASET_TYPE_LEX)) {
-			searchUri = SEARCH_URI + LEX_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + searchMode + "/" + encodedWord;
-		} else if (StringUtils.equals(datasetType, DATASET_TYPE_TERM)) {
-			searchUri = SEARCH_URI + TERM_URI + "/" + encodedWord;
-		}
+		String searchUri = SEARCH_URI + UNIF_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + searchMode + "/" + encodedWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}

@@ -30,6 +30,8 @@ import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 
+//TODO remove soon
+@Deprecated
 @Component
 public class TermSearchDbService extends AbstractSearchDbService {
 

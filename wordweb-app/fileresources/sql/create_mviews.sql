@@ -63,6 +63,7 @@ dblink(
 	'select * from view_ww_word') as word(
 	word_id bigint,
 	word text,
+	as_word text,
 	word_class varchar(100),
 	lang char(3),
 	homonym_nr integer,
@@ -73,9 +74,10 @@ dblink(
 	lang_complexities type_lang_complexity array,
 	meaning_words type_meaning_word array,
 	definitions type_definition array,
+	od_word_recommendations text array
 	lex_dataset_exists boolean,
 	term_dataset_exists boolean,
-	od_word_recommendations text array
+	forms_exist boolean
 );
 
 create materialized view mview_ww_as_word as

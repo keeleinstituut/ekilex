@@ -11,6 +11,7 @@ import java.util.Map;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
@@ -18,6 +19,7 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
+import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwWord;
@@ -37,6 +39,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 				.select(
 						w.WORD_ID,
 						w.WORD,
+						w.AS_WORD,
 						w.HOMONYM_NR,
 						w.WORD_CLASS,
 						w.LANG,
@@ -46,7 +49,10 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						w.ASPECT_CODE,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
-						w.OD_WORD_RECOMMENDATIONS)
+						w.OD_WORD_RECOMMENDATIONS,
+						w.LEX_DATASET_EXISTS,
+						w.TERM_DATASET_EXISTS,
+						w.FORMS_EXIST)
 				.from(w)
 				.where(w.WORD_ID.eq(wordId))
 				.fetchOne()
@@ -84,6 +90,22 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 				.where(where)
 				.orderBy(f.PARADIGM_ID, f.ORDER_BY, f.FORM_ID)
 				.fetchGroups(f.PARADIGM_ID, Form.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_NULL_WORD, key = "{#wordId, #tokens}")
+	public List<WordForm> getWordFormCandidates(Long wordId, List<String> tokens) {
+
+		MviewWwForm f = MVIEW_WW_FORM.as("f");
+
+		return create
+				.select(
+						f.WORD,
+						f.FORM)
+				.from(f)
+				.where(
+						f.WORD_ID.eq(wordId)
+								.and(f.FORM.in(tokens)))
+				.fetchInto(WordForm.class);
 	}
 
 	public List<WordRelationTuple> getWordRelationTuples(Long wordId) {
