@@ -122,19 +122,20 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 			List<MeaningJoinCandidate> meaningJoinCandidates = meaningJoinCandidatesEntry.getValue();
 			meaningJoinCandidates = filterDuplicateJoins(ssMeaningId, meaningJoinCandidates, resolvedCompMeaningIdMap);
 
-			boolean isOverrideComplexity = meaningJoinCandidates.stream().anyMatch(MeaningJoinCandidate::isOverrideComplexity);
+			List<Long> simpleWordIds = meaningJoinCandidates.stream().filter(MeaningJoinCandidate::isOverrideComplexity).map(MeaningJoinCandidate::getWordId).collect(Collectors.toList());
 			List<Long> compMeaningIds = meaningJoinCandidates.stream().map(MeaningJoinCandidate::getCompMeaningId).distinct().collect(Collectors.toList());
 			List<Long> allMeaningIds = new ArrayList<>();
 			allMeaningIds.add(ssMeaningId);
 			allMeaningIds.addAll(compMeaningIds);
 
 			List<WordLexemeMeaning> allLexemes = mergeService.getLexemesByMeanings(allMeaningIds, compoundDatasetCode);
-
 			Map<Long, List<WordLexemeMeaning>> mergingLexemesByWordIdMap = allLexemes.stream().collect(Collectors.groupingBy(WordLexemeMeaning::getWordId));
 
 			//merge, move, delete lexemes
-			for (List<WordLexemeMeaning> mergingLexemes : mergingLexemesByWordIdMap.values()) {
+			for (Entry<Long, List<WordLexemeMeaning>> mergingLexemeEntries : mergingLexemesByWordIdMap.entrySet()) {
 
+				Long targetWordId = mergingLexemeEntries.getKey();
+				List<WordLexemeMeaning> mergingLexemes = mergingLexemeEntries.getValue();
 				Long ssLexemeId = mergingLexemes.stream().map(WordLexemeMeaning::getLexemeId).filter(mergingLexemeId -> mergingLexemeId.equals(ssMeaningId)).findAny().orElse(null);
 				Long targetLexemeId;
 				if (ssLexemeId == null) {
@@ -150,6 +151,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 						.map(WordLexemeMeaning::getLexemeId).filter(mergingLexemeId -> !mergingLexemeId.equals(targetLexemeId))
 						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(sourceMergingLexemeIds)) {
+					boolean isOverrideComplexity = simpleWordIds.contains(targetWordId);
 					mergeService.moveLexemesData(targetLexemeId, sourceMergingLexemeIds, isOverrideComplexity, updateCountMap);
 					mergeService.deleteLexemes(sourceMergingLexemeIds, deleteCountMap);
 				}
@@ -195,7 +197,7 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 				resolvedCompMeaningIdMap.put(compMeaningId, resolvingSsMeaningId);
 			}
 			if (!resolvingSsMeaningId.equals(ssMeaningId)) {
-				logger.debug("Component meaning {} is already joined with {}, skipping {}", compMeaningId, resolvingSsMeaningId, ssMeaningId);
+				//logger.debug("Component meaning {} is already joined with {}, skipping {}", compMeaningId, resolvingSsMeaningId, ssMeaningId);
 				continue;
 			}
 			filteredCompMeaningJoinCandidates.add(compMeaningJoinCandidate);

@@ -42,7 +42,7 @@ create type type_meaning_word as (
 				meaning_id bigint,
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
-        mw_lex_weight numeric(5,4),
+				mw_lex_weight numeric(5,4),
 				mw_lex_governments type_government array,
 				mw_lex_register_codes varchar(100) array,
 				word_id bigint,
@@ -74,7 +74,7 @@ dblink(
 	lang_complexities type_lang_complexity array,
 	meaning_words type_meaning_word array,
 	definitions type_definition array,
-	od_word_recommendations text array
+	od_word_recommendations text array,
 	lex_dataset_exists boolean,
 	term_dataset_exists boolean,
 	forms_exist boolean
