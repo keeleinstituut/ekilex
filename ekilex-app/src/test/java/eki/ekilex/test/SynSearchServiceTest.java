@@ -2,6 +2,7 @@ package eki.ekilex.test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -46,8 +47,7 @@ public class SynSearchServiceTest extends AbstractTest {
 
 	@Test
 	public void testGetSynRelationsTuples() {
-		List<String> allLanguageCodes = commonDataService.getLanguageCodes();
-		List<SynRelationParamTuple> paramTuples = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", allLanguageCodes, "est", "descrip");
+		List<SynRelationParamTuple> paramTuples = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"), "est", "descrip");
 		List<SynRelation> relations = conversionUtil.composeSynRelations(paramTuples);
 
 		assertThat(relations.size()).isEqualTo(2);

@@ -88,8 +88,7 @@ public class SynSearchController extends AbstractSynSearchController {
 		logger.debug("Requesting details by word {}", wordId);
 
 		String datasetCode = getDatasetCodeFromRole(sessionBean);
-		List<String> allLanguageCodes = commonDataService.getLanguageCodes();
-		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.SYN, allLanguageCodes, null);
+		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.SYN, Collections.singletonList(LANGUAGE_CODE_EST), null);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 		model.addAttribute("markedSynWordId", markedSynWordId);
