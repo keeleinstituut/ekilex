@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.web.bean.SessionBean;
@@ -85,9 +88,12 @@ public class BilingSearchController extends AbstractSynSearchController {
 		logger.debug("Requesting details by word {}", wordId);
 
 		String datasetCode = getDatasetCodeFromRole(sessionBean);
-		List<String> candidateLangCodes = getUserPreferredBilingCandidateLangCodes();
-		List<String> meaningWordLangCodes = getUserPreferredBilingLexMeaningWordLangCodes();
-		WordSynDetails details = synSearchService.getWordBilingDetails(wordId, datasetCode, candidateLangCodes, meaningWordLangCodes);
+		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUserProfile userProfile = userService.getUserProfile(userId);
+		List<String> candidateLangCodes = userProfile.getPreferredBilingCandidateLangs();
+		List<String> meaningWordLangCodes = userProfile.getPreferredBilingLexMeaningWordLangs();
+
+		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.BILING_RUS, candidateLangCodes, meaningWordLangCodes);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);

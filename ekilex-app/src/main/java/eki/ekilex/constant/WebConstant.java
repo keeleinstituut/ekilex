@@ -128,6 +128,10 @@ public interface WebConstant {
 
 	String PROCESS_LOG_VIEW_PAGE = "processlogview";
 
+	String CREATE_WORD_PROCESS_LOG_URI = "/create_word_process_log";
+
+	String CREATE_MEANING_PROCESS_LOG_URI = "/create_meaning_process_log";
+
 	String SOURCEVIEW_PAGE = "sourceview";
 
 	String ERROR_PAGE = "error";
@@ -218,8 +222,6 @@ public interface WebConstant {
 
 	String SYN_SEARCH_WORDS = "/syn_search_words";
 
-	String SYN_LAYER_COMPLETE = "/syn_layer_complete";
-
 	String BILING_SEARCH_PAGE = "bilingsearch";
 
 	String BILING_SEARCH_URI = "/bilingsearch";
@@ -230,7 +232,13 @@ public interface WebConstant {
 
 	String UPDATE_BILING_MEANING_WORD_LANGS_URI = "/update_biling_meaning_word_langs";
 
-	String BILING_LAYER_COMPLETE = "/biling_layer_complete";
+	String UPDATE_LAYER_COMPLETE_URI = "/update_layer_complete";
+
+	String UPDATE_LAYER_PROCESS_STATE_URI = "/update_layer_process_state";
+
+	String UPDATE_LEXEME_PROCESS_STATE_URI = "/update_lexeme_process_state";
+
+	String CREATE_LEXEME_PROCESS_STATE_URI = "/create_lexeme_process_state";
 
 	String USER_PROFILE_PAGE = "userprofile";
 

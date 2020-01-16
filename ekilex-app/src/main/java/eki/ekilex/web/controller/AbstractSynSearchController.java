@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.client.HttpClientErrorException;
 
+import eki.common.constant.DbConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchFilter;
@@ -16,7 +17,7 @@ import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.SynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
-public class AbstractSynSearchController extends AbstractSearchController implements SystemConstant {
+public class AbstractSynSearchController extends AbstractSearchController implements SystemConstant, DbConstant {
 
 	@Autowired
 	protected SynSearchService synSearchService;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,10 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		sessionBean.setTermSearchResultLang(resultLang);
 
 		selectedDatasets = getUserPreferredDatasetCodes();
+		if (CollectionUtils.isEmpty(selectedDatasets)) {
+			selectedDatasets = commonDataService.getDatasetCodes();
+			userService.updateUserPreferredDatasets(selectedDatasets);
+		}
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 		return "redirect:" + TERM_SEARCH_URI + searchUri;

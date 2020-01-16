@@ -577,33 +577,32 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 		return create
 				.select(
 						MEANING_RELATION.ID.as("id"),
-						MEANING.ID.as("meaning_id"),
-						LEXEME.ID.as("lexeme_id"),
+						LEXEME.MEANING_ID.as("meaning_id"),
 						WORD.ID.as("word_id"),
-						FORM.VALUE.as("word"),
+						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')", String.class).as("word"),
 						WORD.LANG.as("word_lang"),
-						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						DSL.field(DSL
+								.select(MEANING_REL_TYPE_LABEL.VALUE)
+								.from(MEANING_REL_TYPE_LABEL)
+								.where(MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_LABEL.CODE)
+										.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang))
+										.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))).as("rel_type_label"),
 						MEANING_RELATION.ORDER_BY.as("order_by"))
 				.from(
-						MEANING_RELATION.leftOuterJoin(MEANING_REL_TYPE_LABEL).on(
-								MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_LABEL.CODE)
-										.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-												.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
-						MEANING,
+						MEANING_RELATION,
 						LEXEME,
 						WORD,
 						PARADIGM,
 						FORM)
 				.where(
 						MEANING_RELATION.MEANING1_ID.eq(meaningId)
-								.and(MEANING_RELATION.MEANING2_ID.eq(MEANING.ID))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.and(MEANING_RELATION.MEANING2_ID.eq(LEXEME.MEANING_ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(MEANING_RELATION.ID, MEANING.ID, LEXEME.ID, WORD.ID, FORM.VALUE, MEANING_REL_TYPE_LABEL.VALUE)
+				.groupBy(MEANING_RELATION.ID, LEXEME.MEANING_ID, WORD.ID)
 				.orderBy(MEANING_RELATION.ORDER_BY)
 				.fetchInto(Relation.class);
 	}

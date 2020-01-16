@@ -48,8 +48,8 @@ public class SourceSearchController extends AbstractPageController {
 		return SOURCE_SEARCH_PAGE;
 	}
 
-	@GetMapping("/sourcesearchajax")
-	public String sourceSearchAjax(@RequestParam String searchFilter, Model model) {
+	@GetMapping(SEARCH_SOURCES_URI)
+	public String sourceSearch(@RequestParam String searchFilter, Model model) {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 

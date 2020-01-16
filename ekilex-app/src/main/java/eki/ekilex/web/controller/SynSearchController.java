@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.SearchFilter;
@@ -87,7 +88,7 @@ public class SynSearchController extends AbstractSynSearchController {
 		logger.debug("Requesting details by word {}", wordId);
 
 		String datasetCode = getDatasetCodeFromRole(sessionBean);
-		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode);
+		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.SYN, Collections.singletonList(LANGUAGE_CODE_EST), null);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 		model.addAttribute("markedSynWordId", markedSynWordId);
@@ -126,7 +127,7 @@ public class SynSearchController extends AbstractSynSearchController {
 			@RequestParam(required = false) String language,
 			@RequestParam(required = false) String morphCode,
 			Model model) {
-		logger.debug("word search ajax {}", searchFilter);
+		logger.debug("word search {}", searchFilter);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		WordsResult result = synSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);

@@ -1,8 +1,9 @@
+var IS_KEYBOARD_MODE = false;
+var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
+var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
+var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
+
 function initialise() {
-	var IS_KEYBOARD_MODE = false;
-	var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
-	var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
-	var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 	let activeSearchResultID;
 
 	//Enter keyboard edit mode
@@ -17,66 +18,6 @@ function initialise() {
 
 	});
 
-	function activateSynCandidatesList() {
-		let activatedList = $('#synCandidatesListDiv');
-		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-		let itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="0"]');
-		itemToSelect.addClass('keyboard-nav-list-item-active');
-		itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
-		changeSynonymDefinitionDisplay('show');
-	}
-
-	function changeLexemeMeaningOrdering(target, delta) {
-		let orderBlock = target.closest('.orderable');
-		let opCode = orderBlock.attr("data-op-code");
-		let itemToMove = target.closest('[data-orderby]');
-		let additionalInfo = orderBlock.attr('data-additional-info');
-		let items = orderBlock.find('[data-orderby]');
-		let itemToMovePos = items.index(itemToMove);
-		let orderedItems = [];
-		if (itemToMovePos + delta >= 0 && itemToMovePos + delta < items.length) {
-			let orderby = $(items.get(itemToMovePos + delta)).attr('data-orderby');
-			let orderpos = $(items.get(itemToMovePos + delta)).attr('data-orderpos');
-
-			let increment = delta > 0 ? -1 : 1;
-
-			for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos) ; position += increment) {
-				let nextPos = delta > 0 ? position -1 : position + 1;
-				let nextOrderPos = $(items.get(nextPos)).attr('data-orderpos');
-				//TODO - remove debug if dragging works as expected
-				console.log($(items.get(position)).attr('data-orderpos') + ' -> ' + $(items.get(nextPos)).attr('data-orderpos'));
-
-				$(items.get(position)).attr('data-orderby', $(items.get(nextOrderPos)).attr('data-orderby'));
-				$(items.get(position)).attr('data-orderpos', nextOrderPos);
-			}
-			//TODO - remove debug if dragging works as expected
-			console.log($(items.get(itemToMovePos)).attr('data-orderpos') + ' => ' + orderpos);
-			$(items.get(itemToMovePos)).attr('data-orderpos', orderpos);
-			$(items.get(itemToMovePos)).attr('data-orderby', orderby);
-
-			if (delta > 0) {
-				$(items.get(itemToMovePos + delta)).after($(items.get(itemToMovePos)));
-			} else {
-				$(items.get(itemToMovePos + delta)).before($(items.get(itemToMovePos)));
-			}
-			items = orderBlock.find('[data-orderby]');
-			items.each(function(indx, item) {
-				$(item).find('.order-up').prop('hidden', indx == 0);
-				$(item).find('.order-down').prop('hidden', indx == items.length - 1);
-				let itemData = {};
-				itemData.id = $(item).attr('data-id');
-				itemData.code = $(item).attr('data-code');
-				itemData.orderby = $(item).attr('data-orderby');
-				orderedItems.push(itemData);
-			});
-		}
-		return {
-			opCode: opCode,
-			items: orderedItems,
-			additionalInfo: additionalInfo
-		};
-	}
-
 	$(document).on("click", ".popover-close-btn", function() {
 		$(this).parents(".popover").popover('hide');
 	});
@@ -84,17 +25,12 @@ function initialise() {
 	$(document).on("click", "#synLayerCompleteBtn", function() {
 
 		let wordId = $(this).data('word-id');
-		let actionUrl = applicationUrl + "syn_layer_complete/" + wordId;
-		let callbackFunc = () => refreshDetails();
-		doPostRelationChange(actionUrl, callbackFunc);
+		setLayerComplete(wordId, "syn");
 	});
 
 	$(document).on("click", "#bilingLayerCompleteBtn", function() {
-
 		let wordId = $(this).data('word-id');
-		let actionUrl = applicationUrl + "biling_layer_complete/" + wordId;
-		let callbackFunc = () => refreshDetails();
-		doPostRelationChange(actionUrl, callbackFunc);
+		setLayerComplete(wordId, "biling");
 	});
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
@@ -270,265 +206,6 @@ function initialise() {
 	$(document).find('.draggable-synonym').draggable();
 	$(document).find('.draggable-meaning').draggable();
 
-	function doPostRelationChange(actionUrl, callbackFunc) {
-
-		$.post(actionUrl).done(function(data) {
-			if (data != '{}') {
-				openAlertDlg("Andmete muutmine ebaõnnestus.");
-				console.log(data);
-			}
-			callbackFunc();
-		}).fail(function(data) {
-			openAlertDlg("Andmete muutmine ebaõnnestus.");
-			console.log(data);
-		});
-	}
-
-	function isDisabledItem(activeDiv, navigateItem) {
-		let panelIndex = activeDiv.attr('data-panel-index');
-
-		if (panelIndex == "2") {
-			let wordId = activeDiv.data('marked-word-id');
-
-			return navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
-		}
-		return false;
-	}
-
-	function unActivateItem(selectedItem, unSelect) {
-
-		if (selectedItem != undefined) {
-			selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
-			selectedItem.removeClass(NAVIGATE_DECLINED_CLASS);
-
-			if (unSelect) {
-				selectedItem.removeAttr(NAVIGATE_SELECTED_ATTR);
-			}
-		}
-	}
-
-	function findSelectedNavigateItem(activeDiv) {
-		let selectedItem = activeDiv.find('[' + NAVIGATE_SELECTED_ATTR + ']');
-
-		if (selectedItem.length == 0) {
-			selectedItem = activeDiv.find('[data-navigate-index="0"]');
-		}
-
-		return selectedItem;
-	}
-
-	function isValidPanelChangeKeyPress(keyCode) {
-		let synDetailsVisible = $("#syn_details_div").html() != '';
-
-		if (!synDetailsVisible) {
-			return false;
-		}
-
-		let currentActiveList = $('div[data-active-panel]');
-		let currentActivePanelIndex = currentActiveList.data('panel-index');
-
-		if (keyCode == 37 || keyCode == 39) {
-
-			if (currentActivePanelIndex != undefined) {
-				let currentIndex = parseInt(currentActivePanelIndex);
-				return ((currentIndex > 1 && keyCode == 37) || (currentIndex < 3 && keyCode == 39));
-			}
-		}
-
-		return true;
-	}
-
-	function isValidKeyboardModeKeypress(e) {
-		if (IS_KEYBOARD_MODE == false) {
-			console.log("KEYBOARD MODE NOT ENABLED");
-			return false;
-		}
-
-		var tag = e.target.tagName.toLowerCase();
-		if (tag == 'input' || tag == 'textarea') {
-			return false;
-		}
-
-		if (($(".modal").data('bs.modal') || {})._isShown) {
-			return false;
-		}
-
-		return true;
-	}
-
-	function handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex) {
-		if (currentSelectedItem.length != 0) {
-			let indexIncrement = (e.keyCode == 40 ? 1 : -1);
-			let newIndex = currentSelectedIndex + indexIncrement;
-			let newItem = currentActiveList.find('[data-navigate-index="' + newIndex + '"]');
-
-			if (newItem.length != 0) {
-				if (currentActivePanelIndex == "3") {
-					changeSynonymDefinitionDisplay('hide');
-				}
-				newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
-				newItem.attr(NAVIGATE_SELECTED_ATTR, true);
-				unActivateItem(currentSelectedItem, true);
-				$(currentActiveList).stop(true);
-				$(currentActiveList).scrollTo(newItem, 320, {axis: 'y', offset: -64});
-				if (currentActivePanelIndex == "3") {
-					changeSynonymDefinitionDisplay('show');
-				}
-			}
-		}
-	}
-
-	function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
-		if (isValidPanelChangeKeyPress(e.keyCode)) {
-
-			$('div[data-panel-index]').each(function() {
-				$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
-			});
-			if (currentActivePanelIndex == "3") {
-				changeSynonymDefinitionDisplay('hide');
-			}
-
-			let selectedPanelIndex = 1;
-			let PANEL_KEYCODES = {"49": "1", "50": "2", "51": "3"};
-
-			let isArrowKey = e.keyCode == 37 || e.keyCode == 39;
-			if (isArrowKey) {
-				if (currentActivePanelIndex != undefined) {
-					selectedPanelIndex = parseInt(currentActivePanelIndex);
-					if (e.keyCode == 37 && selectedPanelIndex > 1) {
-						selectedPanelIndex--;
-					} else if (e.keyCode == 39 && selectedPanelIndex < 3) {
-						selectedPanelIndex++;
-					}
-				}
-			} else {
-				selectedPanelIndex = PANEL_KEYCODES[e.keyCode];
-			}
-
-
-			unActivateItem(currentSelectedItem, false);
-
-			let activatedList = $('div[data-panel-index="' + selectedPanelIndex + '"]');
-			activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-
-			let selectedItem = findSelectedNavigateItem(activatedList);
-			let isDisabled = isDisabledItem(activatedList, selectedItem);
-
-			selectedItem.addClass(isDisabled ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
-			selectedItem.attr('data-navigate-selected', true);
-			if (selectedPanelIndex == "3") {
-				changeSynonymDefinitionDisplay('show');
-			}
-		}
-	}
-
-	function handleEscapeKeyPress(currentActivePanelIndex) {
-		if (currentActivePanelIndex == "3") {
-			changeSynonymDefinitionDisplay('hide');
-		}
-		$('.keyboard-nav-list').each(function() {
-			$(this).removeAttr('data-marked-word-id');
-			$(this).removeAttr('data-active-panel');
-			$(this).removeClass('keyboard-nav-list-active');
-			$(this).find('[data-navigate-index]').each(function() {
-				unActivateItem($(this), true);
-			});
-			$('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
-
-			$(this).find('.keyboard-nav-list-item-active').removeClass('keyboard-nav-list-item-active');
-
-			$("#keyboardEditBtn").removeAttr('disabled');
-
-			$(document).find('input[name="simpleSearchFilter"]').val('').focus();
-		});
-		$('body').removeClass('keyboard-edit-mode-active');
-		IS_KEYBOARD_MODE = false;
-	}
-
-	function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList) {
-		e.preventDefault();
-		//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
-		if (currentActivePanelIndex == "3") {
-			changeSynonymDefinitionDisplay('hide');
-			currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function() {
-				$(this).removeClass('keyboard-nav-list-item-selected');
-			});
-			currentSelectedItem.addClass('keyboard-nav-list-item-selected');
-
-			unActivateItem(currentSelectedItem, false);
-			let wordId = currentSelectedItem.children(':first').attr('data-word-id');
-
-			let activatedList = $('div[data-panel-index="' + 2 + '"]');
-			activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-			activatedList.data('marked-word-id', wordId);
-
-			let selectedLexemeItem = findSelectedNavigateItem(activatedList);
-
-			let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
-
-			selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
-			selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
-
-		} else if (currentActivePanelIndex == "2") {
-			if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-				let wordId = currentActiveList.data('marked-word-id');
-				let relationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
-
-				if (wordId != undefined) {
-					let lexemeId = currentSelectedItem.data('lexeme-id');
-					let meaningId = currentSelectedItem.data('meaning-id');
-
-					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
-					let callbackFunc = () => refreshDetails();
-					doPostRelationChange(actionUrl, callbackFunc);
-
-				} else {
-					openAlertDlg("Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
-				}
-
-			} else {
-				openAlertDlg("Ilmik on juba olemas.");
-			}
-		} else if (currentActivePanelIndex == "1") {
-			$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
-			currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
-
-			$('div[data-panel-index="' + 1 + '"]').removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
-			activateSynCandidatesList();
-
-		}
-	}
-
-	function handleKeyPress(e) {
-		if (!isValidKeyboardModeKeypress(e)) {
-			return;
-		}
-
-		let currentActiveList = $('div[data-active-panel]');
-		let currentActivePanelIndex = currentActiveList.data('panel-index');
-		let currentSelectedItem = currentActiveList.find('[data-navigate-selected]');
-		let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
-
-		e = e || window.event;
-
-		if (e.keyCode == 38 || e.keyCode == 40) { // arrows up down
-			handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex);
-		}
-
-		// 1 - 3, arrows left-right
-		if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
-			handleListChange(e, currentActivePanelIndex, currentSelectedItem);
-		}
-
-		if (e.keyCode == 27) {
-			handleEscapeKeyPress(currentActivePanelIndex);
-		}
-
-		if (e.keyCode == 13) {
-			handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList);
-		}
-	}
-
 	$(document).on('keydown', handleKeyPress);
 
 	if ($('#synSearchResultsDiv').html() == undefined) {
@@ -561,6 +238,331 @@ function initialise() {
 			dlg.find('.modal-body').html(data);
 		});
 	});
+}
+
+function activateSynCandidatesList() {
+	let activatedList = $('#synCandidatesListDiv');
+	activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
+	let itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="0"]');
+	itemToSelect.addClass('keyboard-nav-list-item-active');
+	itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
+	changeSynonymDefinitionDisplay('show');
+}
+
+function changeLexemeMeaningOrdering(target, delta) {
+	let orderBlock = target.closest('.orderable');
+	let opCode = orderBlock.attr("data-op-code");
+	let itemToMove = target.closest('[data-orderby]');
+	let additionalInfo = orderBlock.attr('data-additional-info');
+	let items = orderBlock.find('[data-orderby]');
+	let itemToMovePos = items.index(itemToMove);
+	let orderedItems = [];
+	if (itemToMovePos + delta >= 0 && itemToMovePos + delta < items.length) {
+		let orderby = $(items.get(itemToMovePos + delta)).attr('data-orderby');
+		let orderpos = $(items.get(itemToMovePos + delta)).attr('data-orderpos');
+
+		let increment = delta > 0 ? -1 : 1;
+
+		for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos) ; position += increment) {
+			let nextPos = delta > 0 ? position -1 : position + 1;
+			let nextOrderPos = $(items.get(nextPos)).attr('data-orderpos');
+			//TODO - remove debug if dragging works as expected
+			console.log($(items.get(position)).attr('data-orderpos') + ' -> ' + $(items.get(nextPos)).attr('data-orderpos'));
+
+			$(items.get(position)).attr('data-orderby', $(items.get(nextOrderPos)).attr('data-orderby'));
+			$(items.get(position)).attr('data-orderpos', nextOrderPos);
+		}
+		//TODO - remove debug if dragging works as expected
+		console.log($(items.get(itemToMovePos)).attr('data-orderpos') + ' => ' + orderpos);
+		$(items.get(itemToMovePos)).attr('data-orderpos', orderpos);
+		$(items.get(itemToMovePos)).attr('data-orderby', orderby);
+
+		if (delta > 0) {
+			$(items.get(itemToMovePos + delta)).after($(items.get(itemToMovePos)));
+		} else {
+			$(items.get(itemToMovePos + delta)).before($(items.get(itemToMovePos)));
+		}
+		items = orderBlock.find('[data-orderby]');
+		items.each(function(indx, item) {
+			$(item).find('.order-up').prop('hidden', indx == 0);
+			$(item).find('.order-down').prop('hidden', indx == items.length - 1);
+			let itemData = {};
+			itemData.id = $(item).attr('data-id');
+			itemData.code = $(item).attr('data-code');
+			itemData.orderby = $(item).attr('data-orderby');
+			orderedItems.push(itemData);
+		});
+	}
+	return {
+		opCode: opCode,
+		items: orderedItems,
+		additionalInfo: additionalInfo
+	};
+}
+
+function doPostRelationChange(actionUrl, callbackFunc) {
+
+	$.post(actionUrl).done(function(data) {
+		if (data != '{}') {
+			openAlertDlg("Andmete muutmine ebaõnnestus.");
+			console.log(data);
+		}
+		callbackFunc();
+	}).fail(function(data) {
+		openAlertDlg("Andmete muutmine ebaõnnestus.");
+		console.log(data);
+	});
+}
+
+function setLayerComplete(wordId, layerType) {
+	let actionUrl = applicationUrl + "update_layer_complete/" + wordId + "/" + layerType;
+	let callbackFunc = () => refreshDetails();
+	doPostRelationChange(actionUrl, callbackFunc);
+}
+
+function isDisabledItem(activeDiv, navigateItem) {
+	let panelIndex = activeDiv.attr('data-panel-index');
+
+	if (panelIndex == "2") {
+		let wordId = activeDiv.data('marked-word-id');
+
+		return navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+	}
+	return false;
+}
+
+function unActivateItem(selectedItem, unSelect) {
+
+	if (selectedItem != undefined) {
+		selectedItem.removeClass(NAVIGATE_SELECTED_CLASS);
+		selectedItem.removeClass(NAVIGATE_DECLINED_CLASS);
+
+		if (unSelect) {
+			selectedItem.removeAttr(NAVIGATE_SELECTED_ATTR);
+		}
+	}
+}
+
+function findSelectedNavigateItem(activeDiv) {
+	let selectedItem = activeDiv.find('[' + NAVIGATE_SELECTED_ATTR + ']');
+
+	if (selectedItem.length == 0) {
+		selectedItem = activeDiv.find('[data-navigate-index="0"]');
+	}
+
+	return selectedItem;
+}
+
+function isValidPanelChangeKeyPress(keyCode) {
+	let synDetailsVisible = $("#syn_details_div").html() != '';
+
+	if (!synDetailsVisible) {
+		return false;
+	}
+
+	let currentActiveList = $('div[data-active-panel]');
+	let currentActivePanelIndex = currentActiveList.data('panel-index');
+
+	if (keyCode == 37 || keyCode == 39) {
+
+		if (currentActivePanelIndex != undefined) {
+			let currentIndex = parseInt(currentActivePanelIndex);
+			return ((currentIndex > 1 && keyCode == 37) || (currentIndex < 3 && keyCode == 39));
+		}
+	}
+
+	return true;
+}
+
+function isValidKeyboardModeKeypress(e) {
+	if (IS_KEYBOARD_MODE == false) {
+		console.log("KEYBOARD MODE NOT ENABLED");
+		return false;
+	}
+
+	var tag = e.target.tagName.toLowerCase();
+	if (tag == 'input' || tag == 'textarea') {
+		return false;
+	}
+
+	if (($(".modal").data('bs.modal') || {})._isShown) {
+		return false;
+	}
+
+	return true;
+}
+
+function handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex) {
+	if (currentSelectedItem.length != 0) {
+		let indexIncrement = (e.keyCode == 40 ? 1 : -1);
+		let newIndex = currentSelectedIndex + indexIncrement;
+		let newItem = currentActiveList.find('[data-navigate-index="' + newIndex + '"]');
+
+		if (newItem.length != 0) {
+			if (currentActivePanelIndex == "3") {
+				changeSynonymDefinitionDisplay('hide');
+			}
+			newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+			newItem.attr(NAVIGATE_SELECTED_ATTR, true);
+			unActivateItem(currentSelectedItem, true);
+			$(currentActiveList).stop(true);
+			$(currentActiveList).scrollTo(newItem, 320, {axis: 'y', offset: -64});
+			if (currentActivePanelIndex == "3") {
+				changeSynonymDefinitionDisplay('show');
+			}
+		}
+	}
+}
+
+function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
+	if (isValidPanelChangeKeyPress(e.keyCode)) {
+
+		$('div[data-panel-index]').each(function() {
+			$(this).removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
+		});
+		if (currentActivePanelIndex == "3") {
+			changeSynonymDefinitionDisplay('hide');
+		}
+
+		let selectedPanelIndex = 1;
+		let PANEL_KEYCODES = {"49": "1", "50": "2", "51": "3"};
+
+		let isArrowKey = e.keyCode == 37 || e.keyCode == 39;
+		if (isArrowKey) {
+			if (currentActivePanelIndex != undefined) {
+				selectedPanelIndex = parseInt(currentActivePanelIndex);
+				if (e.keyCode == 37 && selectedPanelIndex > 1) {
+					selectedPanelIndex--;
+				} else if (e.keyCode == 39 && selectedPanelIndex < 3) {
+					selectedPanelIndex++;
+				}
+			}
+		} else {
+			selectedPanelIndex = PANEL_KEYCODES[e.keyCode];
+		}
+
+
+		unActivateItem(currentSelectedItem, false);
+
+		let activatedList = $('div[data-panel-index="' + selectedPanelIndex + '"]');
+		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
+
+		let selectedItem = findSelectedNavigateItem(activatedList);
+		let isDisabled = isDisabledItem(activatedList, selectedItem);
+
+		selectedItem.addClass(isDisabled ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+		selectedItem.attr('data-navigate-selected', true);
+		if (selectedPanelIndex == "3") {
+			changeSynonymDefinitionDisplay('show');
+		}
+	}
+}
+
+function handleEscapeKeyPress(currentActivePanelIndex) {
+	if (currentActivePanelIndex == "3") {
+		changeSynonymDefinitionDisplay('hide');
+	}
+	$('.keyboard-nav-list').each(function() {
+		$(this).removeAttr('data-marked-word-id');
+		$(this).removeAttr('data-active-panel');
+		$(this).removeClass('keyboard-nav-list-active');
+		$(this).find('[data-navigate-index]').each(function() {
+			unActivateItem($(this), true);
+		});
+		$('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
+
+		$(this).find('.keyboard-nav-list-item-active').removeClass('keyboard-nav-list-item-active');
+
+		$("#keyboardEditBtn").removeAttr('disabled');
+
+		$(document).find('input[name="simpleSearchFilter"]').val('').focus();
+	});
+	$('body').removeClass('keyboard-edit-mode-active');
+	IS_KEYBOARD_MODE = false;
+}
+
+function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList) {
+	e.preventDefault();
+	//IF SYNONYM LIST IS ACTIVE AND USER PRESSES ENTER
+	if (currentActivePanelIndex == "3") {
+		changeSynonymDefinitionDisplay('hide');
+		currentActiveList.removeClass('keyboard-nav-list-active').removeAttr('data-active-panel').find('.keyboard-nav-list-item-selected').each(function() {
+			$(this).removeClass('keyboard-nav-list-item-selected');
+		});
+		currentSelectedItem.addClass('keyboard-nav-list-item-selected');
+
+		unActivateItem(currentSelectedItem, false);
+		let wordId = currentSelectedItem.children(':first').attr('data-word-id');
+
+		let activatedList = $('div[data-panel-index="' + 2 + '"]');
+		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
+		activatedList.data('marked-word-id', wordId);
+
+		let selectedLexemeItem = findSelectedNavigateItem(activatedList);
+
+		let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+
+		selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
+		selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
+
+	} else if (currentActivePanelIndex == "2") {
+		if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
+			let wordId = currentActiveList.data('marked-word-id');
+			let relationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
+
+			if (wordId != undefined) {
+				let lexemeId = currentSelectedItem.data('lexeme-id');
+				let meaningId = currentSelectedItem.data('meaning-id');
+
+				let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
+				let callbackFunc = () => refreshDetails();
+				doPostRelationChange(actionUrl, callbackFunc);
+
+			} else {
+				openAlertDlg("Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
+			}
+
+		} else {
+			openAlertDlg("Ilmik on juba olemas.");
+		}
+	} else if (currentActivePanelIndex == "1") {
+		$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
+		currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
+
+		$('div[data-panel-index="' + 1 + '"]').removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
+		activateSynCandidatesList();
+
+	}
+}
+
+function handleKeyPress(e) {
+	if (!isValidKeyboardModeKeypress(e)) {
+		return;
+	}
+
+	let currentActiveList = $('div[data-active-panel]');
+	let currentActivePanelIndex = currentActiveList.data('panel-index');
+	let currentSelectedItem = currentActiveList.find('[data-navigate-selected]');
+	let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
+
+	e = e || window.event;
+
+	if (e.keyCode == 38 || e.keyCode == 40) { // arrows up down
+		handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex);
+	}
+
+	// 1 - 3, arrows left-right
+	if ((e.keyCode >= 49 && e.keyCode <= 51) || e.keyCode == 37 || e.keyCode == 39) {
+		handleListChange(e, currentActivePanelIndex, currentSelectedItem);
+	}
+
+	if (e.keyCode == 27) {
+		handleEscapeKeyPress(currentActivePanelIndex);
+	}
+
+	if (e.keyCode == 13) {
+		handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList);
+	}
 }
 
 function getScrollPositions() {

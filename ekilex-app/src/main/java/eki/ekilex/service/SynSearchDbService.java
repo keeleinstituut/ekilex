@@ -49,7 +49,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public List<SynRelationParamTuple> getWordSynRelations(Long wordId, String relationType, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<SynRelationParamTuple> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordRelation opposite = WORD_RELATION.as("opposite");
 
@@ -125,6 +125,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				)
 				.where(
 						WORD_RELATION.WORD1_ID.eq(wordId)
+								.and(WORD.LANG.in(wordLangs))
 								.and(WORD_RELATION.WORD2_ID.eq(WORD.ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))

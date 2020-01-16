@@ -46,8 +46,9 @@
   <div th:id="${'editLexemeSynProcessStateDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_syn_process_state_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_syn_layer_process_state}" method="post">
+        <form th:action="@{/update_layer_process_state}" method="post">
           <div class="modal-body">
+            <input type="hidden" name="opCode" value="syn">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <select class="form-control" name="value">
               <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.layerProcessStateCode}">value</option>
@@ -60,8 +61,9 @@
   <div th:id="${'editLexemeBilingProcessStateDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_biling_process_state_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_biling_layer_process_state}" method="post">
+        <form th:action="@{/update_layer_process_state}" method="post">
           <div class="modal-body">
+            <input type="hidden" name="opCode" value="biling">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <select class="form-control" name="value">
               <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.layerProcessStateCode}">value</option>

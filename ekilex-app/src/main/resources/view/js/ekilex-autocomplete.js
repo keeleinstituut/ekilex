@@ -13,7 +13,7 @@ function initSourceNameAutocomplete(dlg) {
 					$.each(sourceNames, function(index, sourceName) {
 						let label;
 						if (sourceName.length > 101) {
-							label = sourceName.substr(0,100) + '...';
+							label = sourceName.substr(0, 100) + '...';
 						} else {
 							label = sourceName;
 						}
