@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,10 +87,12 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
-		List<SynRelationParamTuple> relationTuples =
-				synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs, classifierLabelLang, classifierLabelTypeDescrip);
-
-		List<SynRelation> relations = conversionUtil.composeSynRelations(relationTuples);
+		List<SynRelation> relations = Collections.emptyList();
+		if (CollectionUtils.isNotEmpty(candidateLangs)) {
+			List<SynRelationParamTuple> relationTuples = synSearchDbService
+					.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs, classifierLabelLang, classifierLabelTypeDescrip);
+			relations = conversionUtil.composeSynRelations(relationTuples);
+		}
 
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
@@ -105,8 +108,11 @@ public class SynSearchService extends AbstractWordSearchService {
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
 
-		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, meaningWordLangs);
-		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, mainWordLanguage);
+		List<MeaningWordLangGroup> meaningWordLangGroups = Collections.emptyList();
+		if (CollectionUtils.isNotEmpty(meaningWordLangs)) {
+			List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, meaningWordLangs);
+			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, mainWordLanguage);
+		}
 
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
