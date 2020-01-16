@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
 
-    private static final long serialVersionUID = 820581588;
+    private static final long serialVersionUID = -1184600483;
 
     /**
      * The reference instance of <code>public.mview_ww_classifier</code>
@@ -77,6 +77,11 @@ public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
      * The column <code>public.mview_ww_classifier.lang</code>.
      */
     public final TableField<MviewWwClassifierRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.mview_ww_classifier.type</code>.
+     */
+    public final TableField<MviewWwClassifierRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_classifier.order_by</code>.
@@ -129,7 +134,7 @@ public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_CLASSIFIER_NAME_CODE_LANG_IDX, Indexes.MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_CLASSIFIER_NAME_CODE_LANG_TYPE_IDX, Indexes.MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_TYPE_IDX);
     }
 
     /**

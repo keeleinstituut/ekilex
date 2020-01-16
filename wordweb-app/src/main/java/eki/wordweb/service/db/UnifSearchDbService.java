@@ -74,7 +74,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 						w.FORMS_EXIST)
 				.from(w)
 				.where(where)
-				.orderBy(w.LANG, w.HOMONYM_NR)
+				.orderBy(w.LEX_DATASET_EXISTS.desc(), w.LANG, w.HOMONYM_NR)
 				.fetch()
 				.into(Word.class);
 	}
@@ -154,6 +154,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
 				.orderBy(
+						l.DATASET_TYPE,
 						l.LEVEL1,
 						l.LEVEL2,
 						l.LEX_ORDER_BY)

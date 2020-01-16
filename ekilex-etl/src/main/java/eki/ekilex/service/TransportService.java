@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import eki.common.data.OrderedMap;
 import eki.ekilex.data.transport.ForeignKey;
-import eki.ekilex.data.transport.OrderedMap;
 import eki.ekilex.data.transport.TableColumn;
 import eki.ekilex.data.util.ForeignKeyRowMapper;
 import eki.ekilex.data.util.TableColumnRowMapper;

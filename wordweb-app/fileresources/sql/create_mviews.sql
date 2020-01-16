@@ -19,6 +19,7 @@ drop type if exists type_word;--remove later
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
+drop type if exists type_source_link;
 drop type if exists type_colloc_member;
 drop type if exists type_word_etym_relation;
 drop type if exists type_word_relation;
@@ -32,7 +33,19 @@ drop type if exists type_meaning_relation;
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_alternatives text array, usage_authors text array);
+create type type_source_link as (source_id bigint, type varchar(100), name text, value text);
+create type type_usage as (
+				usage text,
+				usage_prese text,
+				usage_lang char(3),
+				complexity varchar(100),
+				usage_type_code varchar(100),
+				usage_translations text array,
+				usage_definitions text array,
+				od_usage_definitions text array,
+				od_usage_alternatives text array,
+				usage_authors text array,
+				usage_source_links type_source_link array);
 create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
@@ -45,6 +58,7 @@ create type type_meaning_word as (
 				mw_lex_weight numeric(5,4),
 				mw_lex_governments type_government array,
 				mw_lex_register_codes varchar(100) array,
+				mw_lex_value_state_code varchar(100),
 				word_id bigint,
 				word text,
 				homonym_nr integer,
@@ -251,6 +265,7 @@ dblink(
 	code varchar(100),
 	value text,
 	lang char(3),
+	type varchar(10),
 	order_by bigint
 );
 
@@ -288,5 +303,5 @@ create index mview_ww_word_etymology_word_id_idx on mview_ww_word_etymology (wor
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);
 create index mview_ww_meaning_relation_meaning_id_idx on mview_ww_meaning_relation (meaning_id);
-create index mview_ww_classifier_name_code_lang_idx on mview_ww_classifier (name, code, lang);
-create index mview_ww_classifier_name_origin_code_lang_idx on mview_ww_classifier (name, origin, code, lang);
+create index mview_ww_classifier_name_code_lang_type_idx on mview_ww_classifier (name, code, lang, type);
+create index mview_ww_classifier_name_origin_code_lang_type_idx on mview_ww_classifier (name, origin, code, lang, type);

@@ -1,4 +1,4 @@
-package eki.ekilex.data.transport;
+package eki.common.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
-
-import eki.common.data.AbstractDataObject;
 
 public class OrderedMap<K, V> extends AbstractDataObject implements Map<K, V> {
 

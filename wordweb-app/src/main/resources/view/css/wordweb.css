@@ -93,6 +93,23 @@
 	position: fixed;
 }
 
+.blink-alert {
+	color: #aa3333;
+	animation-duration: 400ms;
+	animation-name: blink;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+@keyframes blink {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
 @media ( min-width : 768px) {
 	.header-container .show-btn.back {
 		display: none !important;

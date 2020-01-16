@@ -1,4 +1,4 @@
-package eki.ekilex.data.transport;
+package eki.common.data;
 
 import java.util.Arrays;
 import java.util.Collection;

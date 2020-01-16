@@ -5,6 +5,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_CLASSIFIER;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +36,8 @@ public class CommonDataDbService implements SystemConstant {
 		Condition where =
 				MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
 				.and(MVIEW_WW_CLASSIFIER.CODE.eq(code))
-				.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang));
+				.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
+				.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE));
 		if (StringUtils.isNotBlank(origin)) {
 			where = where.and(MVIEW_WW_CLASSIFIER.ORIGIN.eq(origin));
 		}
@@ -69,7 +71,8 @@ public class CommonDataDbService implements SystemConstant {
 						)
 				.from(MVIEW_WW_CLASSIFIER)
 				.where(MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
-						.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang)))
+						.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
+						.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
 				.orderBy(MVIEW_WW_CLASSIFIER.ORDER_BY)
 				.fetch().into(Classifier.class);
 	}
@@ -88,7 +91,8 @@ public class CommonDataDbService implements SystemConstant {
 		Condition where =
 				MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
 				.and(MVIEW_WW_CLASSIFIER.CODE.in(codes))
-				.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang));
+				.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
+				.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE));
 		if (StringUtils.isNotBlank(origin)) {
 			where = where.and(MVIEW_WW_CLASSIFIER.ORIGIN.eq(origin));
 		}
@@ -124,5 +128,31 @@ public class CommonDataDbService implements SystemConstant {
 			}
 		}
 		return classifiers;
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	public Map<String, Long> getLangOrderByMap() {
+		return create
+				.select(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.ORDER_BY)
+				.from(MVIEW_WW_CLASSIFIER)
+				.where(
+						MVIEW_WW_CLASSIFIER.NAME.eq(ClassifierName.LANGUAGE.name())
+						.and(MVIEW_WW_CLASSIFIER.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
+						.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE))
+						)
+				.fetchMap(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.ORDER_BY);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	public Map<String, String> getLangIso2Map() {
+		return create
+				.select(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.VALUE)
+				.from(MVIEW_WW_CLASSIFIER)
+				.where(
+						MVIEW_WW_CLASSIFIER.NAME.eq(ClassifierName.LANGUAGE.name())
+						.and(MVIEW_WW_CLASSIFIER.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
+						.and(MVIEW_WW_CLASSIFIER.TYPE.eq(CLASSIF_LABEL_TYPE_ISO2))
+						)
+				.fetchMap(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.VALUE);
 	}
 }

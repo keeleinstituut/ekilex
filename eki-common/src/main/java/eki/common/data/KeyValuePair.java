@@ -1,8 +1,6 @@
-package eki.ekilex.data.transport;
+package eki.common.data;
 
 import java.util.Map.Entry;
-
-import eki.common.data.AbstractDataObject;
 
 public class KeyValuePair<K, V> extends AbstractDataObject implements Entry<K, V> {
 

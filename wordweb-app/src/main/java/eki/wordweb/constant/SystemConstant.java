@@ -37,4 +37,10 @@ public interface SystemConstant {
 	String FOREIGN_WORD_TYPE_CODE = "z";
 
 	Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
+
+	String DEFAULT_CLASSIF_VALUE_LANG = "est";
+
+	String DEFAULT_CLASSIF_VALUE_TYPE = "wordweb";
+
+	String CLASSIF_LABEL_TYPE_ISO2 = "iso2";
 }

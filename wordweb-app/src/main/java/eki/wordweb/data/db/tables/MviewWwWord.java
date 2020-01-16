@@ -4,16 +4,21 @@
 package eki.wordweb.data.db.tables;
 
 
+import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
 import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -36,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 1668222146;
+    private static final long serialVersionUID = 1332999861;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -175,6 +180,14 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_LEX_DATASET_EXISTS_IDX, Indexes.MVIEW_WW_WORD_TERM_DATASET_EXISTS_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
     }
 
     /**
