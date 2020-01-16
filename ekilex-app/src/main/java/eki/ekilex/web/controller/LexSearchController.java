@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,12 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
+
 		selectedDatasets = getUserPreferredDatasetCodes();
+		if (CollectionUtils.isEmpty(selectedDatasets)) {
+			selectedDatasets = commonDataService.getDatasetCodes();
+			userService.updateUserPreferredDatasets(selectedDatasets);
+		}
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
@@ -127,10 +133,10 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		return LEX_SEARCH_PAGE;
 	}
 
-	@GetMapping("/wordsearchajax")
-	public String searchWordAjax(@RequestParam String searchFilter, Model model) {
+	@GetMapping("/wordsearch")
+	public String searchWord(@RequestParam String searchFilter, Model model) {
 
-		logger.debug("word search ajax {}", searchFilter);
+		logger.debug("word search {}", searchFilter);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		WordsResult result = lexSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
@@ -140,10 +146,10 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "word_search_result";
 	}
 
-	@GetMapping("/lexemesearchajax")
-	public String searchLexemeAjax(@RequestParam String searchFilter, @RequestParam Long lexemeId, Model model) {
+	@GetMapping("/lexemesearch")
+	public String searchLexeme(@RequestParam String searchFilter, @RequestParam Long lexemeId, Model model) {
 
-		logger.debug("lexeme search ajax {}, lexeme {}", searchFilter, lexemeId);
+		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
@@ -153,10 +159,10 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_search_result";
 	}
 
-	@GetMapping("/meaningsearchajax")
-	public String searchMeaningAjax(@RequestParam String searchFilter, Model model) {
+	@GetMapping("/meaningsearch")
+	public String searchMeaning(@RequestParam String searchFilter, Model model) {
 
-		logger.debug("meaning search ajax {}", searchFilter);
+		logger.debug("meaning search {}", searchFilter);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, selectedDatasets);
@@ -173,10 +179,10 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_search_result";
 	}
 
-	@GetMapping("/personsearchajax")
-	public String searchPersonsAjax(@RequestParam String searchFilter, Model model) {
+	@GetMapping("/personsearch")
+	public String searchPersons(@RequestParam String searchFilter, Model model) {
 
-		logger.debug("person search ajax {}", searchFilter);
+		logger.debug("person search {}", searchFilter);
 
 		List<Source> sources = sourceService.getSources(searchFilter, SourceType.PERSON);
 		model.addAttribute("sourcesFoundBySearch", sources);

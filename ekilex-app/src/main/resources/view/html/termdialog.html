@@ -497,7 +497,7 @@
     <div class="modal-dialog" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/lexemesearchajax}">
+          <form th:action="@{/lexemesearch}">
             <input type="hidden" name="lexemeId" th:value="${lexeme.lexemeId}">
             <div class="form-row">
               <div class="col-12">
@@ -863,7 +863,7 @@
     <div class="modal-dialog" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/meaningsearchajax}">
+          <form th:action="@{/meaningsearch}">
             <input type="hidden" name="meaningId">
             <div class="form-row">
               <div class="col-12">

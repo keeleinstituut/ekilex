@@ -2,10 +2,12 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
@@ -32,10 +35,6 @@ import eki.ekilex.web.bean.SessionBean;
 public class ProcessController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProcessController.class);
-
-	private final LayerName synLayerName = LayerName.SYN;
-
-	private final LayerName bilingLayerName = LayerName.BILING_RUS;
 
 	@Autowired
 	private ProcessService processService;
@@ -83,7 +82,7 @@ public class ProcessController implements WebConstant {
 		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
 
-	@PostMapping("/create_meaning_process_log")
+	@PostMapping(CREATE_MEANING_PROCESS_LOG_URI)
 	@ResponseBody
 	public String createMeaningProcessLog(
 			@RequestBody CreateItemRequest itemData,
@@ -99,7 +98,7 @@ public class ProcessController implements WebConstant {
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping("/create_word_process_log")
+	@PostMapping(CREATE_WORD_PROCESS_LOG_URI)
 	@ResponseBody
 	public String createWordProcessLog(
 			@RequestBody CreateItemRequest itemData,
@@ -115,7 +114,7 @@ public class ProcessController implements WebConstant {
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping("/create_lexeme_process_state")
+	@PostMapping(CREATE_LEXEME_PROCESS_STATE_URI)
 	@ResponseBody
 	public String createLexemeProcessState(@RequestBody CreateItemRequest itemData) {
 
@@ -128,7 +127,7 @@ public class ProcessController implements WebConstant {
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping("/update_lexeme_process_state")
+	@PostMapping(UPDATE_LEXEME_PROCESS_STATE_URI)
 	@ResponseBody
 	public String updateLexemeProcessState(@RequestBody UpdateItemRequest itemData) {
 
@@ -141,57 +140,49 @@ public class ProcessController implements WebConstant {
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping(SYN_LAYER_COMPLETE + "/{wordId}")
+	@PostMapping(UPDATE_LAYER_COMPLETE_URI + "/{wordId}/{opCode}")
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@ResponseBody
-	public String synLayerProcessStateComplete(
+	public String updateLayerProcessStateComplete(
 			@PathVariable Long wordId,
+			@PathVariable String opCode,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		LayerName layerName = getLayerName(opCode);
 		String userName = userService.getAuthenticatedUser().getName();
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
-		processService.updateLayerProcessStateComplete(wordId, userName, datasetCode, synLayerName);
+
+		logger.debug("Updating {} layer process state complete for word \"{}\"", layerName.name(), wordId);
+		processService.updateLayerProcessStateComplete(wordId, userName, datasetCode, layerName);
 
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping(BILING_LAYER_COMPLETE + "/{wordId}")
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@PostMapping(UPDATE_LAYER_PROCESS_STATE_URI)
 	@ResponseBody
-	public String bilingLayerProcessStateComplete(
-			@PathVariable Long wordId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String updateLayerProcessState(@RequestBody UpdateItemRequest itemData) {
 
 		String userName = userService.getAuthenticatedUser().getName();
-		String datasetCode = sessionBean.getUserRole().getDatasetCode();
-		processService.updateLayerProcessStateComplete(wordId, userName, datasetCode, bilingLayerName);
-
-		return RESPONSE_OK_VER2;
-	}
-
-	@PostMapping("/update_syn_layer_process_state")
-	@ResponseBody
-	public String updateSynLayerProcessState(@RequestBody UpdateItemRequest itemData) {
-
-		String userName = userService.getAuthenticatedUser().getName();
+		String opCode = itemData.getOpCode();
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
-		logger.debug("Updating syn layer process state for lexeme \"{}\"", lexemeId);
-		processService.updateSynProcessState(lexemeId, userName, processStateCode, synLayerName);
+		LayerName layerName = getLayerName(opCode);
+
+		logger.debug("Updating {} layer process state for lexeme \"{}\"", layerName.name(), lexemeId);
+		processService.updateSynProcessState(lexemeId, userName, processStateCode, layerName);
 
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping("/update_biling_layer_process_state")
-	@ResponseBody
-	public String updateBilingLayerProcessState(@RequestBody UpdateItemRequest itemData) {
+	private LayerName getLayerName(String opCode) {
 
-		String userName = userService.getAuthenticatedUser().getName();
-		Long lexemeId = itemData.getId();
-		String processStateCode = itemData.getValue();
-		logger.debug("Updating biling layer process state for lexeme \"{}\"", lexemeId);
-		processService.updateSynProcessState(lexemeId, userName, processStateCode, bilingLayerName);
-
-		return RESPONSE_OK_VER2;
+		if (StringUtils.equals(opCode, "syn")) {
+			return LayerName.SYN;
+		} else if (StringUtils.equals(opCode, "biling")) {
+			return LayerName.BILING_RUS;
+		} else {
+			logger.error("Unknown opCode \"{}\" when updating layer process state", opCode);
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Unknown opCode");
+		}
 	}
 }

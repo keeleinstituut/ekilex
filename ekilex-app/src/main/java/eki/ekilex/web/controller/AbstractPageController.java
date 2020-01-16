@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -56,28 +55,7 @@ public abstract class AbstractPageController implements WebConstant {
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userService.getUserProfile(userId);
-		List<String> datasets = userProfile.getPreferredDatasets();
-		if (CollectionUtils.isEmpty(datasets)) {
-			datasets = commonDataService.getDatasetCodes();
-			userService.updateUserPreferredDatasets(datasets);
-		}
-		return datasets;
-	}
-
-	protected List<String> getUserPreferredBilingCandidateLangCodes() {
-
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
-		EkiUserProfile userProfile = userService.getUserProfile(userId);
-		return userProfile.getPreferredBilingCandidateLangs();
-	}
-
-	protected List<String> getUserPreferredBilingLexMeaningWordLangCodes() {
-
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
-		EkiUserProfile userProfile = userService.getUserProfile(userId);
-		return userProfile.getPreferredBilingLexMeaningWordLangs();
+		return userProfile.getPreferredDatasets();
 	}
 
 	@ModelAttribute("allDatasets")
