@@ -69,11 +69,15 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	private List<TypeDefinition> definitions;
 
+	private Map<String, List<TypeDefinition>> definitionsByLang;
+
 	private List<TypeMeaningWord> meaningWords;
 
 	private List<TypeMeaningWord> sourceLangMeaningWords;
 
 	private List<TypeMeaningWord> destinLangMatchWords;
+
+	private Map<String, List<TypeMeaningWord>> destinLangMatchWordsByLang;
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
@@ -317,6 +321,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 		this.definitions = definitions;
 	}
 
+	public Map<String, List<TypeDefinition>> getDefinitionsByLang() {
+		return definitionsByLang;
+	}
+
+	public void setDefinitionsByLang(Map<String, List<TypeDefinition>> definitionsByLang) {
+		this.definitionsByLang = definitionsByLang;
+	}
+
 	public List<TypeMeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
@@ -339,6 +351,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setDestinLangMatchWords(List<TypeMeaningWord> destinLangMatchWords) {
 		this.destinLangMatchWords = destinLangMatchWords;
+	}
+
+	public Map<String, List<TypeMeaningWord>> getDestinLangMatchWordsByLang() {
+		return destinLangMatchWordsByLang;
+	}
+
+	public void setDestinLangMatchWordsByLang(Map<String, List<TypeMeaningWord>> destinLangMatchWordsByLang) {
+		this.destinLangMatchWordsByLang = destinLangMatchWordsByLang;
 	}
 
 	public List<TypeLexemeRelation> getRelatedLexemes() {

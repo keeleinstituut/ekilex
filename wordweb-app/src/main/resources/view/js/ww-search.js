@@ -1,6 +1,6 @@
 var windowWidthTreshold = 768;
 
-function fetchDetails(wordId, word, wordSelectUrl) {
+function fetchDetails(wordId, word, lang, wordSelectUrl) {
 	var detailsDiv = $('.word-details');
 	var wordDetailsUrl = applicationUrl + "worddetails/" + wordId;
 	$.get(wordDetailsUrl).done(function(data) {
@@ -14,9 +14,6 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 			wordSelectUrl : wordSelectUrl
 		};
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
-		var lang = wordSelectUrl.split('/').find(function(e) {
-			return e.indexOf('-') !== -1
-		}).split('-')[0];
 		fetchCorpSentences(lang, word);
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
@@ -33,9 +30,9 @@ function setHomonymNrVisibility() {
 	}
 }
 
-function fetchCorpSentences(lang, sentence) {
+function fetchCorpSentences(lang, word) {
 	var corpDiv = $("#korp");
-	var corpSentencesUrl = applicationUrl + 'korp/' + lang + '/' + encodeURIComponent(sentence);
+	var corpSentencesUrl = applicationUrl + 'korp/' + lang + '/' + encodeURIComponent(word);
 	$.get(corpSentencesUrl).done(function(data) {
 		corpDiv.replaceWith(data);
 	}).fail(function(data) {
@@ -95,8 +92,9 @@ $(document).on("click", "a[id^='word-details-link']", function() {
 	var wordWrapperForm = $(this).closest("form");
 	var wordId = wordWrapperForm.children("[name='word-id']").val();
 	var word = wordWrapperForm.children("[name='word-value']").val();
+	var lang = wordWrapperForm.children("[name='word-lang']").val();
 	var wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();
-	fetchDetails(wordId, word, wordSelectUrl);
+	fetchDetails(wordId, word, lang, wordSelectUrl);
 });
 
 $(document).on("click", "button[name='colloc-usages-btn']", function() {

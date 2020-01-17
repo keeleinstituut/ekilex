@@ -25,6 +25,10 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	private List<Classifier> mwLexRegisters;
 
+	private String mwLexValueStateCode;
+
+	private Classifier mwLexValueState;
+
 	private Long wordId;
 
 	private String word;
@@ -105,6 +109,22 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	public void setMwLexRegisters(List<Classifier> mwLexRegisters) {
 		this.mwLexRegisters = mwLexRegisters;
+	}
+
+	public String getMwLexValueStateCode() {
+		return mwLexValueStateCode;
+	}
+
+	public void setMwLexValueStateCode(String mwLexValueStateCode) {
+		this.mwLexValueStateCode = mwLexValueStateCode;
+	}
+
+	public Classifier getMwLexValueState() {
+		return mwLexValueState;
+	}
+
+	public void setMwLexValueState(Classifier mwLexValueState) {
+		this.mwLexValueState = mwLexValueState;
 	}
 
 	public Long getWordId() {

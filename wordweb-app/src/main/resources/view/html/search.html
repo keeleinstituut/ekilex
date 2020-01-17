@@ -76,6 +76,7 @@
             <form>
               <input type="hidden" name="word-id" th:value="${word.wordId}" />
               <input type="hidden" name="word-value" th:value="${word.word}" />
+              <input type="hidden" name="word-lang" th:value="${word.lang}" />
               <input type="hidden" name="word-selected" th:value="${word.selected}" />
               <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, word.word, word.homonymNr)}}" />
               <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
@@ -101,6 +102,7 @@
         <div class="row">
           <div class="col-12 content-title">
             <h3>
+              <span class="additional-meta" th:text="${viewUtil.getLangIso2(wordData.word.lang)}"></span>
               <span class="homonym-name" th:classappend="${wordData.word.foreignWord ? 'font-italic' : ''}" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
               <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
               <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableAudioFile != null}"
@@ -334,10 +336,10 @@
                 <div class="mb-0">
                   <h5 class="font-weight-bold mb-0">
                     <span th:text="#{sentence.same.as}" ></span>
-                    <a th:if="${sessionBean.sourceLang == 'est'}"
+                    <a th:if="${wordData.word.lang == 'est'}"
                        th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
                        th:href="${'https://kn.eki.ee/?Q=' + wordData.word.word}" target="_blank">e-keelenõus</a>
-                    <a th:if="${sessionBean.sourceLang == 'rus'}"
+                    <a th:if="${wordData.word.lang == 'rus'}"
                        th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
                        th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + wordData.word.word}" target="_blank">vene-eesti sõnaraamatus</a>
                   </h5>

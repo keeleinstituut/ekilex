@@ -2,6 +2,7 @@ package eki.wordweb.service.util;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -83,6 +84,9 @@ public class ClassifierUtil {
 		classifierCodes = meaningWord.getMwLexRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
 		meaningWord.setMwLexRegisters(classifiers);
+		classifierCode = meaningWord.getMwLexValueStateCode();
+		classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
+		meaningWord.setMwLexValueState(classifier);
 	}
 
 	public void applyClassifiers(LexemeMeaningTuple tuple, Lexeme lexeme, String displayLang) {
@@ -189,5 +193,9 @@ public class ClassifierUtil {
 					.collect(Collectors.toList());
 		}
 		return classifiers;
+	}
+
+	public Map<String, Long> getLangOrderByMap() {
+		return commonDataDbService.getLangOrderByMap();
 	}
 }

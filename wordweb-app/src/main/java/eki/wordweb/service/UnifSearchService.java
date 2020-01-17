@@ -38,8 +38,8 @@ import eki.wordweb.data.WordsData;
 import eki.wordweb.service.db.UnifSearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.CollocConversionUtil;
-import eki.wordweb.service.util.LexemeConversionUtil;
 import eki.wordweb.service.util.EtymConversionUtil;
+import eki.wordweb.service.util.LexemeConversionUtil;
 import eki.wordweb.service.util.ParadigmConversionUtil;
 import eki.wordweb.service.util.WordConversionUtil;
 
@@ -141,6 +141,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		Map<Long, List<Form>> paradigmFormsMap = unifSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
+		Map<String, Long> langOrderByMap = classifierUtil.getLangOrderByMap();
 
 		// lexeme data
 		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
@@ -152,7 +153,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
 			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId, lexComplexity);
 			compensateNullWords(wordId, collocTuples);
-			lexemeConversionUtil.enrich(wordLang, lexemes, lexemeMeaningTuples, allRelatedWords, lexComplexity, displayLang);
+			lexemeConversionUtil.enrich(wordLang, lexemes, lexemeMeaningTuples, allRelatedWords, langOrderByMap, lexComplexity, displayLang);
 			collocConversionUtil.enrich(wordId, lexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 		}
@@ -160,7 +161,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		// term conv
 		List<Lexeme> termLexemes = lexemeGroups.get(DatasetType.TERM);
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
-			lexemeConversionUtil.enrich(wordLang, termLexemes, lexemeMeaningTuples, allRelatedWords, null, displayLang);
+			lexemeConversionUtil.enrich(wordLang, termLexemes, lexemeMeaningTuples, allRelatedWords, langOrderByMap, null, displayLang);
 		}
 
 		// resulting flags

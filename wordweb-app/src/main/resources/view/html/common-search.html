@@ -64,7 +64,14 @@
       <div class="definition-row definition-area">
         <span class="domain" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
         <span class="domain" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
-        <span class="definition-value" th:each="definition,definitionIter : ${lexeme.definitions}" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
+        <div th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
+          <div th:each="definitionEntry : ${lexeme.definitionsByLang}">
+            <span class="additional-meta" th:text="${viewUtil.getLangIso2(definitionEntry.key)}"></span>
+            <span th:each="definition,definitionIter : ${definitionEntry.value}">
+              <span class="definition-value" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
+            </span>
+          </div>
+        </div>
       </div>
       <div class="col-lg meaning-meta pl-0">
         <div class="synonyms">
@@ -72,33 +79,49 @@
             <span th:text="#{label.same.as}">sama mis</span>
             <span th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}">
               <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
-                <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '') + (meaningWordIter.last ? '' : ', ')}">tee</span>
+                <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>
               </a>
+              <span th:if="${meaningWord.additionalDataExists}" class="rections">
+                <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
+                      th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"
+                      class="type-three"></span>
+                <span class="blink-alert" th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
+                  <span class="type-one" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
+                </th:block>
+                <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
+                  <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                </th:block>
+              </span>
+              <span th:unless="${meaningWordIter.last}" class="pr-1" th:style="${meaningWord.additionalDataExists ? '' : 'margin-left: -2px'}">,</span>
             </span>
           </span>
         </div>
       </div>
       <div class="matches">
-        <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
-          <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
-            <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
-              <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>
-            </a>
-            <span th:if="${meaningWord.additionalDataExists}" class="rections">
-              <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
-                    th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"
-                    class="type-three"></span>
-              <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
-                <span class="type-one" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
-              </th:block>
-              <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
-                <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
-              </th:block>
+        <div class="additional-meta" th:if="${not #maps.isEmpty(lexeme.destinLangMatchWordsByLang)}">
+          <div th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
+            <span th:text="${viewUtil.getLangIso2(meaningWordEntry.key)}"></span>
+            <span th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
+              <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
+                <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>
+              </a>
+              <span th:if="${meaningWord.additionalDataExists}" class="rections">
+                <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
+                      th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"
+                      class="type-three"></span>
+                <span class="blink-alert" th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
+                  <span class="type-one" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
+                </th:block>
+                <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
+                  <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                </th:block>
+              </span>
+              <span th:unless="${meaningWordIter.last}" class="pr-1" th:style="${meaningWord.additionalDataExists ? '' : 'margin-left: -2px'}">,</span>
             </span>
-            <span th:unless="${meaningWordIter.last}" class="pr-1">,</span>
-          </span>
+          </div>
         </div>
-        <span th:if="${lexeme.missingMatchWords}" th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
       </div>
       <div class="mb-2" th:if="${not #lists.isEmpty(lexeme.odLexemeRecommendations)}">
         <th:block th:each="odLexemeRecommendation : ${lexeme.odLexemeRecommendations}">

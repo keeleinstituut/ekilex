@@ -1,8 +1,10 @@
 package eki.wordweb.web.util;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriUtils;
 
@@ -11,10 +13,30 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.TypeCollocMember;
+import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
 
 @Component
 public class ViewUtil implements WebConstant, SystemConstant {
+
+	@Autowired
+	private CommonDataService commonDataService;
+
+	private Map<String, String> languageIso2Map = null;
+
+	public String getLangIso2(String langIso3) {
+		if (StringUtils.isBlank(langIso3)) {
+			return "-";
+		}
+		if (languageIso2Map == null) {
+			languageIso2Map = commonDataService.getLangIso2Map();
+		}
+		String langIso2 = languageIso2Map.get(langIso3);
+		if (StringUtils.isBlank(langIso2)) {
+			return "?";
+		}
+		return langIso2;
+	}
 
 	public String getTooltipHtml(DisplayColloc colloc) {
 

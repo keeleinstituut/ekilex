@@ -1,7 +1,19 @@
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_usage as (usage text, usage_prese text, usage_lang char(3), complexity varchar(100), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, od_usage_definitions text array, od_usage_alternatives text array, usage_authors text array);
+create type type_source_link as (source_id bigint, type varchar(100), name text, value text);
+create type type_usage as (
+				usage text,
+				usage_prese text,
+				usage_lang char(3),
+				complexity varchar(100),
+				usage_type_code varchar(100),
+				usage_translations text array,
+				usage_definitions text array,
+				od_usage_definitions text array,
+				od_usage_alternatives text array,
+				usage_authors text array,
+				usage_source_links type_source_link array);
 create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
@@ -14,6 +26,7 @@ create type type_meaning_word as (
 				mw_lex_weight numeric(5,4),
 				mw_lex_governments type_government array,
 				mw_lex_register_codes varchar(100) array,
+				mw_lex_value_state_code varchar(100),
 				word_id bigint,
 				word text,
 				homonym_nr integer,
@@ -107,6 +120,7 @@ from (select w.id as word_id,
                           	mw.mw_lex_complexity,
                             mw.mw_lex_weight,
                           	null,
+                            null,
                             null,
                           	mw.mw_word_id,
                           	mw.mw_word,
@@ -473,6 +487,7 @@ from lexeme l
                             mw.mw_lex_weight,
                           	mw.mw_lex_governments,
                           	mw.mw_lex_register_codes,
+                          	mw.mw_lex_value_state_code,
                           	mw.mw_word_id,
                           	mw.mw_word,
                           	mw.mw_homonym_nr,
@@ -496,7 +511,8 @@ from lexeme l
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
-                                (select array_agg(row (ff.value_text,ff.complexity)::type_government order by ff.order_by)
+                                --NB! space sym replaced by temp placeholder because nested complex type array masking failure by postgres
+                                (select array_agg(row (replace(ff.value_text, ' ', '`'),ff.complexity)::type_government order by ff.order_by)
 			                     from lexeme_freeform lf,
 			                          freeform ff
 			                     where lf.lexeme_id = l2.id
@@ -507,6 +523,7 @@ from lexeme l
                    				 from lexeme_register l_reg
                    				 where l_reg.lexeme_id = l2.id
                    				 group by l_reg.lexeme_id) mw_lex_register_codes,
+                   				l2.value_state_code mw_lex_value_state_code,
                                 w2.id mw_word_id,
                                 f2.value mw_word,
                                 w2.homonym_nr mw_homonym_nr,
@@ -532,9 +549,22 @@ from lexeme l
                          and l2ds.is_public = true) mw
                    group by mw.lexeme_id) mw on mw.lexeme_id = l.id
   left outer join (select u.lexeme_id,
-                          array_agg(row (u.usage,u.usage_prese,u.usage_lang,u.complexity,u.usage_type_code,u.usage_translations,u.usage_definitions,u.od_usage_definitions,u.od_usage_alternatives,u.usage_authors)::type_usage order by u.order_by) usages
+                          array_agg(row (
+                          	u.usage,
+                          	u.usage_prese,
+                          	u.usage_lang,
+                          	u.complexity,
+                          	u.usage_type_code,
+                          	u.usage_translations,
+                          	u.usage_definitions,
+                          	u.od_usage_definitions,
+                          	u.od_usage_alternatives,
+                          	u.usage_authors,
+                          	null
+                          )::type_usage
+                          order by u.order_by) usages
                    from (select lf.lexeme_id,
-                                u.value_text USAGE,
+                                u.value_text usage,
                                 u.value_prese usage_prese,
                                 u.lang usage_lang,
                                 u.complexity,
@@ -544,7 +574,8 @@ from lexeme l
                                 ud.usage_definitions,
                                 odud.od_usage_definitions,
                                 odua.od_usage_alternatives,
-                                ua.usage_authors
+                                ua.usage_authors,
+                                null
                          from lexeme_freeform lf
                            inner join freeform u on lf.freeform_id = u.id and u.type = 'USAGE'
                            left outer join freeform utp on utp.parent_id = u.id and utp.type = 'USAGE_TYPE'
@@ -1190,14 +1221,15 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		language c,
 		language_label cl
 	where 
 		c.code = cl.code
-		and cl.type = 'wordweb'
-	order by c.order_by)
+		and cl.type in ('wordweb', 'iso2')
+	order by c.order_by, cl.lang, cl.type)
 	union all 
 	(select
 		'MORPH' as name,
@@ -1205,6 +1237,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		morph c,
@@ -1212,7 +1245,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'DISPLAY_MORPH' as name,
@@ -1220,6 +1253,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		display_morph c,
@@ -1227,7 +1261,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'WORD_TYPE' as name,
@@ -1235,6 +1269,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		word_type c,
@@ -1242,7 +1277,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'ASPECT' as name,
@@ -1250,6 +1285,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		aspect c,
@@ -1257,7 +1293,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'POS' as name,
@@ -1265,6 +1301,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		pos c,
@@ -1272,7 +1309,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'REGISTER' as name,
@@ -1280,6 +1317,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		register c,
@@ -1287,7 +1325,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'DERIV' as name,
@@ -1295,6 +1333,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		deriv c,
@@ -1302,7 +1341,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'DOMAIN' as name,
@@ -1310,6 +1349,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		domain c,
@@ -1318,7 +1358,7 @@ create view view_ww_classifier
 		c.code = cl.code
 		and c.origin = cl.origin
 		and cl.type = 'descrip'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'USAGE_TYPE' as name,
@@ -1326,6 +1366,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		usage_type c,
@@ -1333,7 +1374,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'POS_GROUP' as name,
@@ -1341,6 +1382,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		pos_group c,
@@ -1348,7 +1390,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'WORD_REL_TYPE' as name,
@@ -1356,6 +1398,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		word_rel_type c,
@@ -1363,7 +1406,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'LEX_REL_TYPE' as name,
@@ -1371,6 +1414,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		lex_rel_type c,
@@ -1378,7 +1422,7 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
 		'MEANING_REL_TYPE' as name,
@@ -1386,6 +1430,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
+		cl.type,
 		c.order_by
 	from 
 		meaning_rel_type c,
@@ -1393,6 +1438,22 @@ create view view_ww_classifier
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
-	order by c.order_by)
+	order by c.order_by, cl.lang, cl.type)
+	union all
+	(select
+		'VALUE_STATE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		cl.type,
+		c.order_by
+	from 
+		meaning_rel_type c,
+		meaning_rel_type_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by, cl.lang, cl.type)
 );
 
