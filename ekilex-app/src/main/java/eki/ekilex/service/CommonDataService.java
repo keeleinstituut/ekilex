@@ -47,6 +47,12 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<String> getLanguageCodes() {
+		List<String> languageCodes = getLanguages().stream().map(Classifier::getCode).collect(Collectors.toList());
+		return languageCodes;
+	}
+
+	@Transactional
 	public Map<String, String> getLanguageIso2Map() {
 		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_ISO2).stream()
 				.collect(Collectors.toMap(Classifier::getCode, classifier -> StringUtils.isNotBlank(classifier.getValue()) ? classifier.getValue() : classifier.getCode()));

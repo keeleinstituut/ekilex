@@ -80,13 +80,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		String mainWordLang = wordDetails.getLanguage();
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName);
-
-		if (LayerName.BILING_RUS == layerName) {
-			synLexemes.forEach(lexeme -> populateLexeme(lexeme, mainWordLang, meaningWordLangs));
-		} else {
-			synLexemes.forEach(lexeme -> populateLexeme(lexeme, mainWordLang, Collections.singletonList(mainWordLang)));
-		}
-
+		synLexemes.forEach(lexeme -> populateLexeme(lexeme, mainWordLang, meaningWordLangs));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
 		List<SynRelation> relations = Collections.emptyList();

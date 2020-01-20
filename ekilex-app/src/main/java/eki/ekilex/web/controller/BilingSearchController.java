@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +93,15 @@ public class BilingSearchController extends AbstractSynSearchController {
 		EkiUserProfile userProfile = userService.getUserProfile(userId);
 		List<String> candidateLangCodes = userProfile.getPreferredBilingCandidateLangs();
 		List<String> meaningWordLangCodes = userProfile.getPreferredBilingLexMeaningWordLangs();
+
+		if (CollectionUtils.isEmpty(candidateLangCodes)) {
+			candidateLangCodes = commonDataService.getLanguageCodes();
+			userService.updateUserPreferredBilingCandidateLangs(candidateLangCodes);
+		}
+		if (CollectionUtils.isEmpty(meaningWordLangCodes)) {
+			meaningWordLangCodes = commonDataService.getLanguageCodes();
+			userService.updateUserPreferredMeaningWordLangs(meaningWordLangCodes);
+		}
 
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.BILING_RUS, candidateLangCodes, meaningWordLangCodes);
 
