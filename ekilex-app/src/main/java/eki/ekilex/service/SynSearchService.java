@@ -12,7 +12,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.DbConstant;
 import eki.common.constant.LayerName;
@@ -206,6 +208,10 @@ public class SynSearchService extends AbstractWordSearchService {
 			String relationParamName = relationParam.getName();
 			Float relationParamValue = relationParam.getValue();
 			Float relationParamWeightMultiplier = relationWeightMultiplierMap.get(relationParamName);
+
+			if (relationParamWeightMultiplier == null) {
+				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Unknown relation weight name: " + relationParamName);
+			}
 
 			dividend += (relationParamValue * relationParamWeightMultiplier);
 			divisor += relationParamWeightMultiplier;
