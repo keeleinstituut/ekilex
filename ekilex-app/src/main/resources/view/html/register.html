@@ -24,7 +24,7 @@
                   <span class="float-right">Ees- ja perekonnanimi</span>
                 </label>
                 <div class="col-sm-4">
-                  <input type="text" class="form-control" name="name" th:value="${userName}" th:autofocus="${userName == null}">
+                  <input type="text" class="form-control required-field" name="name" th:value="${userName}" th:autofocus="${userName == null}">
                 </div>
               </div>
               <div class="form-group row">
@@ -32,7 +32,7 @@
                   <span class="float-right">E-posti aadress</span>
                 </label>
                 <div class="col-sm-4">
-                  <input type="email" class="form-control" name="email" placeholder="e-posti aadress" th:value="${userEmail}">
+                  <input type="email" class="form-control required-field" name="email" placeholder="e-posti aadress" th:value="${userEmail}">
                 </div>
               </div>
               <div class="form-group row">

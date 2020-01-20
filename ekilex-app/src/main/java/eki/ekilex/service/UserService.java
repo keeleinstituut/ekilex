@@ -40,6 +40,8 @@ public class UserService implements WebConstant {
 
 	private static final int MIN_PASSWORD_LENGTH = 8;
 
+	private static final int MIN_NAME_LENGTH = 4;
+
 	@Value("${ekilex.app.url:}")
 	private String ekilexAppUrl;
 
@@ -165,6 +167,17 @@ public class UserService implements WebConstant {
 		email = email.toLowerCase();
 		Long userId = userDbService.getUserIdByEmail(email);
 		return userId;
+	}
+
+	@Transactional
+	public boolean isValidName(String name) {
+
+		name = name.trim();
+		if (name.length() < MIN_NAME_LENGTH || !name.contains(" ") || name.contains("  ")) {
+			return false;
+		}
+		name = name.replaceAll("\\s", "");
+		return !StringUtils.isAllUpperCase(name);
 	}
 
 	@Transactional

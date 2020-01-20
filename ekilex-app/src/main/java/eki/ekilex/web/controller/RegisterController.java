@@ -61,6 +61,13 @@ public class RegisterController implements WebConstant {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
 
+		if (!userService.isValidName(name)) {
+			model.addAttribute("userName", name);
+			model.addAttribute("userEmail", email);
+			model.addAttribute("error_message", "Nimi ei sobi. Kontrolli, et see ei oleks liiga lühike ning koosneks ees- ja perekonnanimest. Nimi ei tohi olla läbiva suurtähega.");
+			return REGISTER_PAGE;
+		}
+
 		if (!userService.isValidPassword(password, password2)) {
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
