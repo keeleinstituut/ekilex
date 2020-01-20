@@ -962,15 +962,4 @@ public class CompositionDbService implements DbConstant {
 				.execute();
 	}
 
-	public boolean lexemeExists(Long wordId, Long meaningId, String datasetCode) {
-
-		return create
-				.select(field(DSL.count(LEXEME.ID).gt(0)).as("lexeme_exists"))
-				.from(LEXEME)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetchSingleInto(Boolean.class);
-	}
 }

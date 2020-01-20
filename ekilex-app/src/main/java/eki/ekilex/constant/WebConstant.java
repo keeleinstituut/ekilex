@@ -72,6 +72,8 @@ public interface WebConstant {
 
 	String CREATE_WORD_AND_MEANING_AND_REL_URI = "/create_word_and_meaning_and_rel";
 
+	String VALIDATE_MEANING_DATA_IMPORT_URI = "/validatemeaningdataimport";
+
 	String AUTH_ERROR_URI = "/autherror";
 
 	String SEND_FEEDBACK_URI = "/send_feedback";

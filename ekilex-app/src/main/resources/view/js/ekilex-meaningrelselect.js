@@ -30,9 +30,32 @@ function initialise() {
 			createWordForm.find('select[name="oppositeRelationType"]').prop('disabled', false);
 			if ($(this).attr("name") === "importDataBtn") {
 				createWordForm.find('input[name="importMeaningData"]').val("true");
+				validateMeaningDataImportAndSubmitForm();
+			} else {
+				submitForm();
 			}
-			submitForm();
 		}
+	});
+}
+
+function validateMeaningDataImportAndSubmitForm() {
+	let failMessage = "Termini loomine ja mõiste andmete kopeerimine ebaõnnestus. Kontrolli, et mõistel ei oleks samakujulisi erineva sõnakogu termineid";
+	let importMeaningDataInput = $("#createWordForm").find('input[name="importMeaningData"]');
+	let meaningId = $('input[name="relatedMeaningId"]:checked').val();
+	let validateMeaningDataImportUrl = applicationUrl + "validatemeaningdataimport/" + meaningId;
+
+	$.get(validateMeaningDataImportUrl).done(function(response) {
+		if (response === "OK") {
+			submitForm();
+		} else {
+			console.log(response);
+			openAlertDlg(failMessage);
+			importMeaningDataInput.val("false");
+		}
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg(failMessage);
+		importMeaningDataInput.val("false");
 	});
 }
 

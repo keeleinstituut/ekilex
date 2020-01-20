@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import eki.common.exception.ConstraintViolationException;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
@@ -251,19 +250,7 @@ public class TermEditController extends AbstractPageController {
 			createWordAndMeaningAndRelationsData.setUserName(userName);
 			createWordAndMeaningAndRelationsData.setUserPermDatasetCodes(userPermDatasetCodes);
 
-			try {
-				compositionService.createWordAndMeaningAndRelations(createWordAndMeaningAndRelationsData);
-			} catch (Exception exception) {
-				if (exception instanceof ConstraintViolationException) {
-					response.put("status", "invalid");
-					//TODO not very user-friendly condition - should just merge lexemes wo hussle
-					response.put("message", "Tähenduse andmete kopeerimine ebaõnnestus. Kontrolli, et tähendusel ei oleks samakujulisi erineva sõnakogu termineid");
-				} else {
-					response.put("status", "invalid");
-					response.put("message", "Viga! Termini loomine ebaõnnestus");
-				}
-				logger.error("", exception);
-			}
+			compositionService.createWordAndMeaningAndRelations(createWordAndMeaningAndRelationsData);
 
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
@@ -284,6 +271,22 @@ public class TermEditController extends AbstractPageController {
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(response);
+	}
+
+	@GetMapping(VALIDATE_MEANING_DATA_IMPORT_URI + "/{meaningId}")
+	@ResponseBody
+	public String validateMeaningDataImport(@PathVariable("meaningId") Long meaningId) {
+
+		logger.debug("Validating meaning data import, meaning id: {}", meaningId);
+		Long userId = userService.getAuthenticatedUser().getId();
+		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+
+		boolean isImportValid = compositionService.validateMeaningDataImport(meaningId, userPermDatasetCodes);
+		if (isImportValid) {
+			return RESPONSE_OK_VER1;
+		} else {
+			return "invalid";
+		}
 	}
 
 }

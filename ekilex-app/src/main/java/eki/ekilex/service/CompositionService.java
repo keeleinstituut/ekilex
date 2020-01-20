@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
-import eki.common.exception.ConstraintViolationException;
 import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
@@ -49,7 +48,7 @@ public class CompositionService extends AbstractService {
 	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
-	public void createWordAndMeaningAndRelations(CreateWordAndMeaningAndRelationsData createWordAndMeaningAndRelationsData) throws Exception {
+	public void createWordAndMeaningAndRelations(CreateWordAndMeaningAndRelationsData createWordAndMeaningAndRelationsData) {
 
 		String wordValue = createWordAndMeaningAndRelationsData.getWordValue();
 		String language = createWordAndMeaningAndRelationsData.getLanguage();
@@ -97,7 +96,7 @@ public class CompositionService extends AbstractService {
 		return Optional.of(duplicateMeaningWithLexemes(meaningId, userName));
 	}
 
-	private Long duplicateMeaningWithLexemesAndUpdateDataset(Long meaningId, String userName, String dataset, List<String> userPermDatasetCodes) throws Exception {
+	private Long duplicateMeaningWithLexemesAndUpdateDataset(Long meaningId, String userName, String dataset, List<String> userPermDatasetCodes) {
 
 		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, userPermDatasetCodes);
@@ -105,18 +104,9 @@ public class CompositionService extends AbstractService {
 
 		List<LexemeRecord> duplicateMeaningLexemes = compositionDbService.getMeaningLexemes(duplicateMeaningId);
 		for (LexemeRecord duplicateMeaningLexeme : duplicateMeaningLexemes) {
-			updateLexemeDataset(duplicateMeaningLexeme, dataset);
+			cudDbService.updateLexemeDataset(duplicateMeaningLexeme.getId(), dataset);
 		}
 		return duplicateMeaningId;
-	}
-
-	private void updateLexemeDataset(LexemeRecord lexeme, String dataset) throws Exception {
-
-		boolean sameWordAndMeaningAndDatasetLexemeExists = compositionDbService.lexemeExists(lexeme.getWordId(), lexeme.getMeaningId(), dataset);
-		if (sameWordAndMeaningAndDatasetLexemeExists) {
-			throw new ConstraintViolationException("Could not update lexeme dataset because of db constraint");
-		}
-		cudDbService.updateLexemeDataset(lexeme.getId(), dataset);
 	}
 
 	@Transactional
@@ -413,5 +403,14 @@ public class CompositionService extends AbstractService {
 				compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
 			}
 		}
+	}
+
+	@Transactional
+	public boolean validateMeaningDataImport(Long meaningId, List<String> userPermDatasetCodes) {
+
+		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, userPermDatasetCodes);
+		long distinctWordIdCount = meaningLexemes.stream().map(LexemeRecord::getWordId).distinct().count();
+		long meaningLexemesCount = meaningLexemes.size();
+		return meaningLexemesCount == distinctWordIdCount;
 	}
 }
