@@ -27,11 +27,11 @@
     <div class="search-panel">
       <div class="row">
         <div class="col-12 align-self-center" id="language-detail-panel">
-          <div class="row align-items-center justify-content-center">
-            <div class="col-6 col-md-6">
+          <div class="row align-items-center">
+            <div class="col-12 col-md-6">
               <div th:replace="common-search :: search"></div>
             </div>
-            <div class="col-2 p-0 col-md-2">
+            <div class="col-12 p-0 col-md-2">
               <div th:replace="common-search :: detail-filter"></div>
             </div>
           </div>
@@ -61,25 +61,43 @@
         </th:block>
       </div>
     </div>
-    <div class="row homonym-wrap" th:if="${wordsData.resultsExist}">
-      <div class="homonym-container container-fluid">
-        <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
-          <div class="pt-1" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
-            <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-            <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+    <div class="container search-results-header" th:if="${wordsData.resultsExist}">
+      <div class="d-flex flex-column flex-md-row align-items-md-center pb-3">
+        <div class="mr-2"><span class="mr-2">Leiti</span><span>5 tulemust</span> </div>
+        <div class="border-left mr-2 pl-2 d-flex"><label class="mr-2 my-0 p-0">Näita tulemustes</label>
+          <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle p-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Kõik keeled
+            </button>
+            <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+              <a class="active dropdown-item px-2 py-1" href="#">Kõik keeled</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item px-2 py-1" href="#">Vene keel</a>
+              <a class="dropdown-item px-2 py-1" href="#">Inglise keel</a>
+              <a class="dropdown-item px-2 py-1" href="#">Ladina keel</a>
+              <a class="dropdown-item px-2 py-1" href="#">...jne</a>
+            </div>
           </div>
         </div>
+        <div class="pl-2 ml-2 border-left homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+          <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
+          <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+        </div>
+        <button name="feedback-btn" value="feedback" class="ml-auto btn btn-secondary" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
+
       </div>
-      <div class="col-12 homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
-        <ul class="homonym-list">
-          <li th:each="word : ${wordsData.fullMatchWords}">
-            <form>
-              <input type="hidden" name="word-id" th:value="${word.wordId}" />
-              <input type="hidden" name="word-value" th:value="${word.word}" />
-              <input type="hidden" name="word-lang" th:value="${word.lang}" />
-              <input type="hidden" name="word-selected" th:value="${word.selected}" />
-              <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, word.word, word.homonymNr)}}" />
-              <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
+    </div>
+    <main role="main" class="content-panel bg-white container" >
+    <div th:if="${wordsData.resultsExist}" class="row border-bottom homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
+      <ul class="homonym-list">
+        <li th:each="word : ${wordsData.fullMatchWords}">
+          <form class="h-100">
+            <input type="hidden" name="word-id" th:value="${word.wordId}" />
+            <input type="hidden" name="word-value" th:value="${word.word}" />
+            <input type="hidden" name="word-lang" th:value="${word.lang}" />
+            <input type="hidden" name="word-selected" th:value="${word.selected}" />
+            <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, word.word, word.homonymNr)}}" />
+            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item border-left">
                 <span class="homonym-item-wrap">
                   <span class="homonym-header">
                     <span class="homonym-name-container">
@@ -90,51 +108,49 @@
                   <span class="homonym-matches" th:text="${word.meaningWordsWrapup}"></span>
                   <span class="homonym-intro" th:text="${word.definitionsWrapup}"></span>
                 </span>
-              </a>
-            </form>
-          </li>
-        </ul>
-      </div>
+            </a>
+          </form>
+        </li>
+      </ul>
     </div>
     <div class="word-details"></div>
-    <div role="main" class="row word-details" th:fragment="worddetails" th:if="${wordData.lexResultsExist}">
-      <div class="col-12 content-panel d-md-block">
-        <div class="row">
-          <div class="col-12 content-title">
-            <h3>
-              <span class="additional-meta" th:text="${viewUtil.getLangIso2(wordData.word.lang)}"></span>
-              <span class="homonym-name" th:classappend="${wordData.word.foreignWord ? 'font-italic' : ''}" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
-              <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
-              <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableAudioFile != null}"
-                      th:data-url-to-audio="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">
-                <span class="icon icon-speaker"></span>
-              </button>
-              <span id="spellingLine" style="font-size: large"
-                    th:if="${wordData.firstAvailableVocalForm != null}"
-                    th:text="${'['+wordData.firstAvailableVocalForm+']'}"></span>
-              <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
-                <span class="tag" th:text="${wordType.value}"></span>
-              </th:block>
-              <span class="tag" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
-              <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
-                <span class="tag" th:text="${summarisedPos.value}"></span>
-              </th:block>
-              <span class="float-right">
-                <button name="feedback-btn" value="feedback" class="btn btn-secondary ml-2" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
-              </span>
-            </h3>
-            <div th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
-              <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
-                <div>
-                  <span>ÕS soovitab:</span>
-                  <span th:utext="${odWordRecommendation}"></span>
-                </div>
-              </th:block>
-            </div>
-          </div>
-        </div>
+    </main>
+    <div  class="row word-details" th:fragment="worddetails" th:if="${wordData.lexResultsExist}">
+      <div class="col-12  d-md-block">
         <div class="row">
           <div class="col-md-7 col-lg-8 main-data">
+            <div class="row">
+              <div class="col-12 content-title">
+                <h3>
+                  <span class="additional-meta" th:text="${viewUtil.getLangIso2(wordData.word.lang)}"></span>
+                  <span class="homonym-name" th:classappend="${wordData.word.foreignWord ? 'font-italic' : ''}" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
+                  <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
+                  <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableAudioFile != null}"
+                          th:data-url-to-audio="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">
+                    <span class="icon icon-speaker"></span>
+                  </button>
+                  <span id="spellingLine" style="font-size: large"
+                        th:if="${wordData.firstAvailableVocalForm != null}"
+                        th:text="${'['+wordData.firstAvailableVocalForm+']'}"></span>
+                  <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
+                    <span class="tag" th:text="${wordType.value}"></span>
+                  </th:block>
+                  <span class="tag" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
+                  <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
+                    <span class="tag" th:text="${summarisedPos.value}"></span>
+                  </th:block>
+
+                </h3>
+                <div th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
+                  <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
+                    <div>
+                      <span>ÕS soovitab:</span>
+                      <span th:utext="${odWordRecommendation}"></span>
+                    </div>
+                  </th:block>
+                </div>
+              </div>
+            </div>
             <div class="level-2-panel">
               <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
                 <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexLexemes}">

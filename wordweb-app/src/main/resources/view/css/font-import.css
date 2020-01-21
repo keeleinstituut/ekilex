@@ -1,3 +1,4 @@
+/* stylelint-disable */
 @font-face {
   font-family: 'Klavika';
   font-style: normal;
@@ -113,3 +114,4 @@
        url('../fonts/pt-serif/pt-serif-v8-latin_latin-ext-700italic.ttf') format('truetype'), /* Safari, Android, iOS */
        url('../fonts/pt-serif/pt-serif-v8-latin_latin-ext-700italic.svg#PTSerif') format('svg'); /* Legacy iOS */
 }
+/*# sourceMappingURL=font-import.css.map */

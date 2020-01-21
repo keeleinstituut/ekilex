@@ -1,9 +1,13 @@
+/* stylelint-disable */
 #detail-toggle-container {
 	width: 160px;
 	height: 32px;
 	position: relative;
 	border-radius: 6px;
 	overflow: hidden;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 	cursor: pointer;
 }
@@ -14,6 +18,9 @@
 	position: relative;
 	border-radius: 6px;
 	overflow: hidden;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 	cursor: pointer;
 }
@@ -49,6 +56,7 @@
 	width: 50%;
 	position: absolute;
 	height: inherit;
+	display: -webkit-box;
 	display: flex;
 	box-sizing: border-box;
 }
@@ -95,10 +103,23 @@
 
 .blink-alert {
 	color: #aa3333;
+	-webkit-animation-duration: 400ms;
 	animation-duration: 400ms;
+	-webkit-animation-name: blink;
 	animation-name: blink;
+	-webkit-animation-iteration-count: infinite;
 	animation-iteration-count: infinite;
+	-webkit-animation-direction: alternate;
 	animation-direction: alternate;
+}
+
+@-webkit-keyframes blink {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
 }
 
 @keyframes blink {
@@ -245,11 +266,13 @@
 	width: 100%;
 	padding: 0.4rem;
 	background: red;
+	display: -webkit-box;
 	display: flex;
 	z-index: 9999;
 	color: white;
 	border: 0px solid #730000;
 	border-top: 1px;
+	-webkit-box-pack: center;
 	justify-content: center;
 }
 
@@ -285,3 +308,4 @@
 	font-size: 0.7rem;
 	line-height: normal;
 }
+/*# sourceMappingURL=wordweb.css.map */
