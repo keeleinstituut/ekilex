@@ -309,7 +309,18 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForWord(Long wordId, List<String> datasetCodes) {
+	public boolean isGrantedForWord(Long wordId, String datasetCode, List<String> datasetCodes) {
+
+		Table<Record1<Integer>> sup = DSL.
+				select(field(DSL.count(LEXEME.ID)).as("sup_lex_count"))
+				.from(LEXEME, DATASET)
+				.where(
+						DATASET.CODE.eq(datasetCode)
+								.and(DATASET.IS_SUPERIOR.eq(true))
+								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
+								.and(LEXEME.WORD_ID.eq(wordId))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.asTable("sup");
 
 		Table<Record1<Integer>> lp = DSL
 				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
@@ -331,8 +342,10 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.asTable("la");
 
 		return create
-				.select(DSL.field(lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class))).as("is_granted"))
-				.from(lp, la)
+				.select(field(DSL.or(
+						sup.field("sup_lex_count", Integer.class).gt(0),
+						lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class)))).as("is_granted"))
+				.from(sup, lp, la)
 				.fetchSingleInto(Boolean.class);
 	}
 

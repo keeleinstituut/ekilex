@@ -206,7 +206,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	}
 
 	@GetMapping(WORD_JOIN_URI)
-	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model) {
+	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
@@ -214,10 +214,11 @@ public class LexEditController extends AbstractPageController implements SystemC
 		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId);
 		Word targetWord = targetWordDetails.getWord();
 		String targetWordValue = targetWord.getValue();
+		String roleDatasetCode = sessionBean.getUserRole().getDatasetCode();
 
 		String encodedWordValue = UriUtils.encode(targetWordValue, UTF_8);
 		String backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
-		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(targetWord, userPreferredDatasetCodes, userPermDatasetCodes);
+		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(targetWord, roleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);

@@ -130,11 +130,11 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordDetails> getWordDetailsOfJoinCandidates(Word targetWord, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
+	public List<WordDetails> getWordDetailsOfJoinCandidates(Word targetWord, String roleDatasetCode, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
 		List<Long> wordIds = lookupDbService.getWordIdsOfJoinCandidates(targetWord, userPrefDatasetCodes, userPermDatasetCodes);
-		wordIds.sort(Comparator.comparing(wordId -> !permissionDbService.isGrantedForWord(wordId, userPermDatasetCodes)));
+		wordIds.sort(Comparator.comparing(wordId -> !permissionDbService.isGrantedForWord(wordId, roleDatasetCode, userPermDatasetCodes)));
 
 		for (Long wordId : wordIds) {
 			WordDetails wordDetails = getWordJoinDetails(wordId);
