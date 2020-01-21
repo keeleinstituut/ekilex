@@ -23,13 +23,14 @@
               <tr>
                 <th class="m-1 p-1" style="width: 10%">Kood</th>
                 <th class="m-1 p-1" style="width: 15%">Nimi</th>
-                <th class="m-1 p-1" style="width: 60%">Kirjeldus</th>
+                <th class="m-1 p-1" style="width: 55%">Kirjeldus</th>
                 <th class="m-1 p-1 text-center" style="width: 5%">Nähtav</th>
                 <th class="m-1 p-1 text-center" style="width: 5%">Avalik</th>
+                <th class="m-1 p-1 text-center" style="width: 5%">Peremees</th>
                 <th class="m-1 p-1" style="width: 5%"></th>
               </tr>
               <th:block th:each="dataset : ${datasets}">
-                <tr>
+                <tr th:classappend="${dataset.superior} ? 'font-weight-bold': ''">
                   <td class="m-1 p-1">
                     <span th:text="${dataset.code}"></span>
                   </td>
@@ -44,6 +45,9 @@
                   </td>
                   <td class="m-1 p-1 text-center">
                     <span th:text="${dataset.public ? 'Jah' : 'Ei'}"></span>
+                  </td>
+                  <td class="m-1 p-1 text-center">
+                    <span th:text="${dataset.superior ? 'Jah' : 'Ei'}"></span>
                   </td>
                   <td class="m-1 p-1">
                     <th:block th:if="${isAdmin || #lists.contains(ownedDatasetCodes, dataset.code)}">

@@ -45,7 +45,8 @@ public class DatasetDbService {
 						DATASET.TYPE,
 						DATASET.DESCRIPTION,
 						DATASET.IS_VISIBLE,
-						DATASET.IS_PUBLIC)
+						DATASET.IS_PUBLIC,
+						DATASET.IS_SUPERIOR)
 				.from(DATASET)
 				.orderBy(DATASET.NAME)
 				.fetchInto(Dataset.class);
@@ -162,7 +163,8 @@ public class DatasetDbService {
 						DATASET.TYPE,
 						DATASET.DESCRIPTION,
 						DATASET.IS_VISIBLE,
-						DATASET.IS_PUBLIC)
+						DATASET.IS_PUBLIC,
+						DATASET.IS_VISIBLE)
 				.from(DATASET)
 				.where(DATASET.CODE.eq(code))
 				.fetchSingleInto(Dataset.class);

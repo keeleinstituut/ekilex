@@ -21,6 +21,8 @@ public class Dataset extends AbstractDataObject {
 
 	private boolean isPublic;
 
+	private boolean isSuperior;
+
 	private List<String> origins;
 
 	private List<Classifier> domains;
@@ -75,6 +77,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
+	}
+
+	public boolean isSuperior() {
+		return isSuperior;
+	}
+
+	public void setSuperior(boolean superior) {
+		isSuperior = superior;
 	}
 
 	public List<String> getOrigins() {

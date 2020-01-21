@@ -5,6 +5,7 @@ package eki.ekilex.data.db.udt;
 
 
 import eki.ekilex.data.db.Public;
+import eki.ekilex.data.db.udt.records.TypeSourceLinkRecord;
 import eki.ekilex.data.db.udt.records.TypeUsageRecord;
 
 import javax.annotation.Generated;
@@ -29,7 +30,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeUsage extends UDTImpl<TypeUsageRecord> {
 
-    private static final long serialVersionUID = -570184537;
+    private static final long serialVersionUID = -1287609479;
 
     /**
      * The reference instance of <code>public.type_usage</code>
@@ -93,6 +94,11 @@ public class TypeUsage extends UDTImpl<TypeUsageRecord> {
      * The attribute <code>public.type_usage.usage_authors</code>.
      */
     public static final UDTField<TypeUsageRecord, String[]> USAGE_AUTHORS = createField("usage_authors", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
+
+    /**
+     * The attribute <code>public.type_usage.usage_source_links</code>.
+     */
+    public static final UDTField<TypeUsageRecord, TypeSourceLinkRecord[]> USAGE_SOURCE_LINKS = createField("usage_source_links", eki.ekilex.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK.getDataType().getArrayDataType(), TYPE_USAGE, "");
 
     /**
      * No further instances allowed

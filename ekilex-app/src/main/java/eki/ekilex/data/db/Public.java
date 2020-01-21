@@ -137,6 +137,7 @@ import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeMeaningWord;
 import eki.ekilex.data.db.udt.TypePublicNote;
+import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
@@ -168,7 +169,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 298963033;
+    private static final long serialVersionUID = 487850360;
 
     /**
      * The reference instance of <code>public</code>
@@ -838,6 +839,7 @@ public class Public extends SchemaImpl {
             Sequences.FORM_FREQUENCY_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_ORDER_BY_SEQ,
+            Sequences.FORM_ORDER_BY_SEQ1,
             Sequences.FREEFORM_ID_SEQ,
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
@@ -1081,6 +1083,7 @@ public class Public extends SchemaImpl {
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeMeaningWord.TYPE_MEANING_WORD,
             TypePublicNote.TYPE_PUBLIC_NOTE,
+            TypeSourceLink.TYPE_SOURCE_LINK,
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,

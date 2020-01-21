@@ -444,6 +444,7 @@ create table dataset
   description text,
   is_visible boolean default true,
   is_public boolean default true,
+  is_superior boolean default false,
   order_by bigserial
 );
 

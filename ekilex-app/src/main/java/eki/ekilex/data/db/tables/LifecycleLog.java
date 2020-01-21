@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LifecycleLog extends TableImpl<LifecycleLogRecord> {
 
-    private static final long serialVersionUID = 1010413675;
+    private static final long serialVersionUID = -803351403;
 
     /**
      * The reference instance of <code>public.lifecycle_log</code>
@@ -148,7 +148,7 @@ public class LifecycleLog extends TableImpl<LifecycleLogRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LIFECYCLE_LOG_EVENT_BY_IDX, Indexes.LIFECYCLE_LOG_EVENT_ON_ID_IDX, Indexes.LIFECYCLE_LOG_PKEY);
+        return Arrays.<Index>asList(Indexes.LIFECYCLE_LOG_EVENT_BY_IDX, Indexes.LIFECYCLE_LOG_EVENT_ON_IDX, Indexes.LIFECYCLE_LOG_PKEY);
     }
 
     /**

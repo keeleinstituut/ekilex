@@ -46,3 +46,6 @@ from (select l1.id lexeme_id, (array_agg(l2.order_by order by l2.dataset_code))[
                l1.meaning_id,
                l1.id) l
 where lexeme.id = l.lexeme_id;
+
+alter table dataset add column is_superior boolean default false;
+update dataset set is_superior = true where code = 'sss';

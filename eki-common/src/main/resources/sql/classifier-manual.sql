@@ -16,7 +16,7 @@ insert into dataset (code, type, name, is_visible, is_public) values ('ev2', 'LE
 insert into dataset (code, type, name, is_visible, is_public) values ('kol', 'LEX', 'Eesti keele naabersõnad 2019', true, true);
 insert into dataset (code, type, name, is_visible, is_public) values ('mab', 'LEX', 'Eesti keele morfoloogia', false, false);
 
-insert into dataset (code, type, name, is_visible, is_public) values ('sss', 'LEX', 'Supersõnaraamat 2019', true, true);
+insert into dataset (code, type, name, is_visible, is_public, is_superior) values ('sss', 'LEX', 'Supersõnaraamat 2019', true, true, true);
 
 -- term
 insert into dataset (code, type, name, is_visible, is_public) values ('est', 'TERM', 'Esterm', true, true);

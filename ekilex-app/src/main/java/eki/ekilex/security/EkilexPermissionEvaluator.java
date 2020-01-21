@@ -82,9 +82,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		boolean isPermGranted = false;
 
 		if (StringUtils.equals(LifecycleEntity.WORD.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForWord(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
+			isPermGranted = permissionDbService.isGrantedForWord(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
 		} else if (StringUtils.equals(LifecycleEntity.MEANING.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
+			isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
 		} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
 			if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
 				isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, providedDatasetCode);

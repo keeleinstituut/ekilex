@@ -14,6 +14,7 @@ import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeMeaningWord;
 import eki.ekilex.data.db.udt.TypePublicNote;
+import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
@@ -84,6 +85,11 @@ public class UDTs {
      * The type <code>public.type_public_note</code>
      */
     public static TypePublicNote TYPE_PUBLIC_NOTE = eki.ekilex.data.db.udt.TypePublicNote.TYPE_PUBLIC_NOTE;
+
+    /**
+     * The type <code>public.type_source_link</code>
+     */
+    public static TypeSourceLink TYPE_SOURCE_LINK = eki.ekilex.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK;
 
     /**
      * The type <code>public.type_term_meaning_word</code>

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = 1977350934;
+    private static final long serialVersionUID = -1200407441;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -60,6 +60,11 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
      * The column <code>public.view_ww_word.word</code>.
      */
     public final TableField<ViewWwWordRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_word.as_word</code>.
+     */
+    public final TableField<ViewWwWordRecord, String> AS_WORD = createField("as_word", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_word.word_class</code>.
@@ -112,6 +117,11 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
     public final TableField<ViewWwWordRecord, TypeDefinitionRecord[]> DEFINITIONS = createField("definitions", eki.ekilex.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
 
     /**
+     * The column <code>public.view_ww_word.od_word_recommendations</code>.
+     */
+    public final TableField<ViewWwWordRecord, String[]> OD_WORD_RECOMMENDATIONS = createField("od_word_recommendations", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
      * The column <code>public.view_ww_word.lex_dataset_exists</code>.
      */
     public final TableField<ViewWwWordRecord, Boolean> LEX_DATASET_EXISTS = createField("lex_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
@@ -122,9 +132,9 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
     public final TableField<ViewWwWordRecord, Boolean> TERM_DATASET_EXISTS = createField("term_dataset_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>public.view_ww_word.od_word_recommendations</code>.
+     * The column <code>public.view_ww_word.forms_exist</code>.
      */
-    public final TableField<ViewWwWordRecord, String[]> OD_WORD_RECOMMENDATIONS = createField("od_word_recommendations", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwWordRecord, Boolean> FORMS_EXIST = createField("forms_exist", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * Create a <code>public.view_ww_word</code> table reference

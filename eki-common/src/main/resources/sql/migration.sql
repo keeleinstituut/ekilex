@@ -35,4 +35,7 @@ alter table eki_user_profile
 add column preferred_biling_candidate_langs char(3) array,
 add column preferred_biling_lex_meaning_word_langs char(3) array;
 
---> kuni siiani testis olemas 08.01.2020
+alter table dataset add column is_superior boolean default false;
+update dataset set is_superior = true where code = 'sss';
+
+--> kuni siiani testis olemas 21.01.2020
