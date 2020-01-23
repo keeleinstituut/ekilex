@@ -38,7 +38,9 @@
       <div class="card-body" th:if="${#lists.isEmpty(sourceWordDetailsList)}">
         <span th:text="#{word.join.not.found}">Not found.</span>
       </div>
-      <div class="card-body" th:if="${not #lists.isEmpty(sourceWordDetailsList)}">
+      <div class="card-body"
+        th:if="${not #lists.isEmpty(sourceWordDetailsList)}"
+        th:with="isTargetWordSuperiorCrudGranted=${#vars.permDataUtil.isWordSuperiorCrudGranted(#vars.targetWordDetails.word.wordId, #vars.sessionBean)}">
         <form th:action="@{/wordjoin}" method="post">
           <input type="hidden" name="targetWordId" th:value="${targetWordDetails.word.wordId}">
           <input type="hidden" name="backUrl" th:value="${backUrl}">
@@ -54,7 +56,7 @@
                 <input name="sourceWordIds" type="checkbox" class="mt-2"
                        th:value="${sourceWordDetails.word.wordId}"
                        th:if="${sourceWordDetails.word.wordId != targetWordDetails.word.wordId}"
-                       sec:authorize="${#vars.isWordCrudGranted}"/>
+                       sec:authorize="${#vars.isTargetWordSuperiorCrudGranted or #vars.isWordCrudGranted}"/>
                 <span th:utext="${sourceWordDetails.word.value}" class="ttl ml-2"></span>
                 <span th:text="${sourceWordDetails.word.homonymNumber}" th:if="${sourceWordDetails.word.homonymNumber > 0}" class="ml-2"></span>
                 <span th:text="${'(' + viewUtil.getLangIso2(sourceWordDetails.word.language) + ')'}" class="ml-2"></span>
