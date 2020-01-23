@@ -32,7 +32,7 @@ import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
-import eki.wordweb.data.WordOrForm;
+import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.db.UnifSearchDbService;
@@ -71,22 +71,24 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
-	public Map<String, List<String>> getWordsByPrefix(String wordPrefix, String sourceLang, int limit) {
+	public Map<String, List<String>> getWordsByPrefix(String wordPrefix, int limit) {
 
-		Map<String, List<WordOrForm>> results = unifSearchDbService.getWordsByPrefix(wordPrefix, limit);
-		List<WordOrForm> prefWordsResult = results.get("prefWords");
-		List<WordOrForm> formWordsResult = results.get("formWords");
-		List<String> prefWords, formWords;
-		if (CollectionUtils.isEmpty(prefWordsResult)) {
-			prefWords = Collections.emptyList();
-		} else {
-			prefWords = prefWordsResult.stream().map(WordOrForm::getValue).collect(Collectors.toList());
+		Map<String, List<WordSearchElement>> results = unifSearchDbService.getWordsByPrefix(wordPrefix, limit);
+		List<WordSearchElement> wordGroup = results.get(WORD_SEARCH_GROUP_WORD);
+		List<WordSearchElement> asWordGroup = results.get(WORD_SEARCH_GROUP_AS_WORD);
+		List<WordSearchElement> formGroup = results.get(WORD_SEARCH_GROUP_FORM);
+		if (CollectionUtils.isEmpty(wordGroup)) {
+			wordGroup = Collections.emptyList();
 		}
-		if (CollectionUtils.isEmpty(formWordsResult)) {
-			formWords = Collections.emptyList();
-		} else {
-			formWords = formWordsResult.stream().map(WordOrForm::getValue).collect(Collectors.toList());
+		if (CollectionUtils.isEmpty(asWordGroup)) {
+			asWordGroup = Collections.emptyList();
 		}
+		if (CollectionUtils.isEmpty(formGroup)) {
+			formGroup = Collections.emptyList();
+		}
+		wordGroup.addAll(asWordGroup);
+		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
+		List<String> formWords = formGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(prefWords)) {
 			prefWords.forEach(formWords::remove);
 			int prefWordsCount = prefWords.size();
@@ -101,9 +103,9 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 	}
 
 	@Transactional
-	public WordsData getWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
+	public WordsData getWords(String searchWord, String destinLang, Integer homonymNr, String searchMode) {
 
-		DataFilter dataFilter = getDataFilter(searchWord, destinLang, searchMode);
+		DataFilter dataFilter = getDataFilter(destinLang, searchMode);
 		List<Word> allWords = unifSearchDbService.getWords(searchWord, dataFilter);
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
@@ -122,10 +124,10 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 	}
 
 	@Transactional
-	public WordData getWordData(Long wordId, String sourceLang, String destinLang, String displayLang, String searchMode) {
+	public WordData getWordData(Long wordId, String destinLang, String displayLang, String searchMode) {
 
 		// query params
-		DataFilter dataFilter = getDataFilter(sourceLang, destinLang, searchMode);
+		DataFilter dataFilter = getDataFilter(destinLang, searchMode);
 		Integer maxDisplayLevel = dataFilter.getMaxDisplayLevel();
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 
@@ -217,7 +219,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		}
 	}
 
-	private DataFilter getDataFilter(String sourceLang, String destinLang, String searchMode) {
+	private DataFilter getDataFilter(String destinLang, String searchMode) {
 		Complexity lexComplexity = null;
 		try {
 			lexComplexity = Complexity.valueOf(searchMode.toUpperCase());
@@ -228,7 +230,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		if (Complexity.SIMPLE.equals(lexComplexity)) {
 			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		}
-		DataFilter dataFilter = new DataFilter(sourceLang, destinLang, lexComplexity, null, maxDisplayLevel);
+		DataFilter dataFilter = new DataFilter(destinLang, lexComplexity, null, maxDisplayLevel);
 		return dataFilter;
 	}
 }

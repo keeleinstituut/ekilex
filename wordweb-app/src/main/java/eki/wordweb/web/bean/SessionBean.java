@@ -6,8 +6,6 @@ public class SessionBean extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String sourceLang;
-
 	private String destinLang;
 
 	private String searchMode;
@@ -17,14 +15,6 @@ public class SessionBean extends AbstractDataObject {
 	private String recentWord;
 
 	private Integer recentHomonymNr;
-
-	public String getSourceLang() {
-		return sourceLang;
-	}
-
-	public void setSourceLang(String sourceLang) {
-		this.sourceLang = sourceLang;
-	}
 
 	public String getDestinLang() {
 		return destinLang;

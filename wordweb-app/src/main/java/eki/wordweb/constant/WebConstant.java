@@ -5,11 +5,17 @@ public interface WebConstant {
 	//TODO should be set by defaults and/or ui
 	String DISPLAY_LANG = "est";
 
-	String DEFAULT_SOURCE_LANG = "*";
+	String DESTIN_LANG_ALL = "*";
 
-	String DEFAULT_DESTIN_LANG = "*";
+	String DESTIN_LANG_EST = "est";
 
-	char LANGUAGE_PAIR_SEPARATOR = '-';
+	String DESTIN_LANG_ENG = "eng";
+
+	String DESTIN_LANG_RUS = "rus";
+
+	String DESTIN_LANG_OTHER = "other";
+
+	String[] DESTIN_LANGS = new String[] {DESTIN_LANG_ALL, DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS, DESTIN_LANG_OTHER};
 
 	String HOME_PAGE = "index";
 

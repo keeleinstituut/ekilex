@@ -7,7 +7,6 @@
       <form th:action="@{/search}" th:method="post" name="searchForm">
         <div>
           <input type="text" id="search" role="search" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
-          <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
           <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
           <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
         </div>
@@ -103,7 +102,7 @@
           <div th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
             <span th:text="${viewUtil.getLangIso2(meaningWordEntry.key)}"></span>
             <span th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
-              <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
+              <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
                 <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>
               </a>
               <span th:if="${meaningWord.additionalDataExists}" class="rections">

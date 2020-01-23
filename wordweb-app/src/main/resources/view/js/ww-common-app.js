@@ -17,8 +17,8 @@ $(document).ready(function() {
 
 	// Focus trap sidebar
 	$('.header-links .menu-item:last-of-type').on('focus', function(e) {
-		if ($("#langDropdownMenuButton").val() == "") {
-			$("#langDropdownMenuButton").focus();
+		if ($("#uiLangMenuButton").val() == "") {
+			$("#uiLangMenuButton").focus();
 		}
 	});
 

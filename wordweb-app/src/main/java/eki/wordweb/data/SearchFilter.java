@@ -8,8 +8,6 @@ public class SearchFilter extends AbstractDataObject {
 
 	private String searchWord;
 
-	private String sourceLang;
-
 	private String destinLang;
 
 	private Integer homonymNr;
@@ -26,14 +24,6 @@ public class SearchFilter extends AbstractDataObject {
 
 	public void setSearchWord(String searchWord) {
 		this.searchWord = searchWord;
-	}
-
-	public String getSourceLang() {
-		return sourceLang;
-	}
-
-	public void setSourceLang(String sourceLang) {
-		this.sourceLang = sourceLang;
 	}
 
 	public String getDestinLang() {

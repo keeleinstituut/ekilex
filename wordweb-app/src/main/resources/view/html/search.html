@@ -15,13 +15,6 @@
     <th:block th:replace="common-app :: wcag-main"></th:block>
   </div>
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <!-- 
-  <div class="alert-danger-rus" th:if="${sessionBean.sourceLang == 'rus' && wordsData.resultsExist}">
-    <div class="alert-danger-ie-container">
-      <span th:text="#{warning.eki.rus}">Vene-eesti sõnastik on veel toimetamisel.</span>
-    </div>
-  </div>
-   -->
   <div th:replace="common-app :: menu_with_backBtn"></div>
   <div class="container-fluid search-wrap">
     <div class="search-panel">
@@ -42,40 +35,28 @@
   <div class="container-fluid homonym-page bottom-gutter">
     <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
       <div class="col offset-1 lg-max-noneset">
-        <th:block th:if="${sessionBean.sourceLang == 'est'}">
-          <th:block th:if="${sessionBean.destinLang == 'rus'}">
-            <span th:text="#{label.word.rus.not.found}">Ei leidnud midagi. Otsi eesti sõna tähendust eesti-eesti osast</span>
-          </th:block>
-          <th:block th:if="${sessionBean.destinLang == 'est'}">
-            <span th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
-            <a th:href="${'https://kn.eki.ee/?Q=' + searchWord}" th:aria-label="|#{label.find.from.kn.eki}, #{aria.new.window}|"
-                th:text="#{label.find.from.kn.eki}" target="_blank">e-keelenõust</a>
-            <button name="feedback-btn" value="feedback" class="btn btn-secondary ml-5" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
-          </th:block>
-        </th:block>
-        <th:block th:if="${sessionBean.sourceLang == 'rus'}">
-          <span th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
-          <a th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + searchWord}" th:aria-label="|#{label.find.from.eki.rus}, #{aria.new.window}|"
-             th:text="#{label.find.from.eki.rus}" target="_blank">vene-eesti sõnaraamatus</a>
-          <button name="feedback-btn" value="feedback" class="btn btn-secondary ml-5" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
-        </th:block>
+        <span th:text="#{label.word.rus.not.found}">Ei leidnud midagi. Otsi eesti sõna tähendust eesti-eesti osast</span>
       </div>
     </div>
     <div class="container search-results-header" th:if="${wordsData.resultsExist}">
       <div class="d-flex flex-column flex-md-row align-items-md-center pb-3">
-        <div class="mr-2"><span class="mr-2">Leiti</span><span>5 tulemust</span> </div>
-        <div class="border-left mr-2 pl-2 d-flex"><label class="mr-2 my-0 p-0">Näita tulemustes</label>
+        <div class="mr-2">
+          <span class="mr-2">Leiti</span>
+          <span>5 tulemust</span>
+        </div>
+        <div class="border-left mr-2 pl-2 d-flex">
+          <label class="mr-2 my-0 p-0">Näita tulemustes</label>
           <div class="dropdown">
-            <button class="btn btn-link dropdown-toggle p-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-link dropdown-toggle p-0" type="button" id="destinLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Kõik keeled
             </button>
-            <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
-              <a class="active dropdown-item px-2 py-1" href="#">Kõik keeled</a>
+            <div class="dropdown-menu px-3" aria-labelledby="destinLangMenuButton">
+              <a id="destin-lang-all" data-lang="*" class="active dropdown-item px-2 py-1" href="#">Kõik keeled</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item px-2 py-1" href="#">Vene keel</a>
-              <a class="dropdown-item px-2 py-1" href="#">Inglise keel</a>
-              <a class="dropdown-item px-2 py-1" href="#">Ladina keel</a>
-              <a class="dropdown-item px-2 py-1" href="#">...jne</a>
+              <a id="destin-lang-est" data-lang="est" class="dropdown-item px-2 py-1" href="#">Eesti keel</a>
+              <a id="destin-lang-eng" data-lang="eng" class="dropdown-item px-2 py-1" href="#">Inglise keel</a>
+              <a id="destin-lang-rus" data-lang="rus" class="dropdown-item px-2 py-1" href="#">Vene keel</a>
+              <a id="destin-lang-other" data-lang="other" class="dropdown-item px-2 py-1" href="#">Muud keeled</a>
             </div>
           </div>
         </div>
@@ -84,36 +65,35 @@
           <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
         </div>
         <button name="feedback-btn" value="feedback" class="ml-auto btn btn-secondary" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
-
       </div>
     </div>
     <main role="main" class="content-panel bg-white container" >
-    <div th:if="${wordsData.resultsExist}" class="row border-bottom homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
-      <ul class="homonym-list">
-        <li th:each="word : ${wordsData.fullMatchWords}">
-          <form class="h-100">
-            <input type="hidden" name="word-id" th:value="${word.wordId}" />
-            <input type="hidden" name="word-value" th:value="${word.word}" />
-            <input type="hidden" name="word-lang" th:value="${word.lang}" />
-            <input type="hidden" name="word-selected" th:value="${word.selected}" />
-            <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, word.word, word.homonymNr)}}" />
-            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item border-left">
-                <span class="homonym-item-wrap">
-                  <span class="homonym-header">
-                    <span class="homonym-name-container">
-                      <span class="homonym-name pr-2" th:text="${(word.suffixoid ? '-' : '') + word.word + (word.prefixoid ? '-' : '')}">tee</span>
+      <div th:if="${wordsData.resultsExist}" class="row border-bottom homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
+        <ul class="homonym-list">
+          <li th:each="word : ${wordsData.fullMatchWords}">
+            <form class="h-100">
+              <input type="hidden" name="word-id" th:value="${word.wordId}" />
+              <input type="hidden" name="word-value" th:value="${word.word}" />
+              <input type="hidden" name="word-lang" th:value="${word.lang}" />
+              <input type="hidden" name="word-selected" th:value="${word.selected}" />
+              <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, word.word, word.homonymNr)}}" />
+              <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item border-left">
+                  <span class="homonym-item-wrap">
+                    <span class="homonym-header">
+                      <span class="homonym-name-container">
+                        <span class="homonym-name pr-2" th:text="${(word.suffixoid ? '-' : '') + word.word + (word.prefixoid ? '-' : '')}">tee</span>
+                      </span>
+                      <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
                     </span>
-                    <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
+                    <span class="homonym-matches" th:text="${word.meaningWordsWrapup}"></span>
+                    <span class="homonym-intro" th:text="${word.definitionsWrapup}"></span>
                   </span>
-                  <span class="homonym-matches" th:text="${word.meaningWordsWrapup}"></span>
-                  <span class="homonym-intro" th:text="${word.definitionsWrapup}"></span>
-                </span>
-            </a>
-          </form>
-        </li>
-      </ul>
-    </div>
-    <div class="word-details"></div>
+              </a>
+            </form>
+          </li>
+        </ul>
+      </div>
+      <div class="word-details"></div>
     </main>
     <div  class="row word-details" th:fragment="worddetails" th:if="${wordData.lexResultsExist}">
       <div class="col-12  d-md-block">
@@ -370,7 +350,6 @@
   </div>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
-  	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"*";
   	var destinLang = /*[[${sessionBean.destinLang}]]*/"*";
   	var currentPage = /*[[@{/search}]]*/"/search";
   	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";

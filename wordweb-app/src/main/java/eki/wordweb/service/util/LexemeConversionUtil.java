@@ -139,10 +139,14 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (CollectionUtils.isEmpty(meaningWords)) {
 			return;
 		}
-		meaningWords = filter(meaningWords, lexComplexity);
-		lexeme.setMeaningWords(meaningWords);
-
+		List<TypeMeaningWord> filteredMeaningWords = new ArrayList<>();
 		for (TypeMeaningWord meaningWord : meaningWords) {
+			if (lexComplexity != null
+					&& Complexity.SIMPLE.equals(lexComplexity)
+					&& Complexity.SIMPLE.equals(meaningWord.getComplexity())) {
+				continue;
+			}
+			filteredMeaningWords.add(meaningWord);
 			cleanEscapeSym(meaningWord.getMwLexGovernments());
 			String meaningWordLang = meaningWord.getLang();
 			classifierUtil.applyClassifiers(meaningWord, displayLang);
@@ -158,6 +162,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				lexeme.getDestinLangMatchWords().add(meaningWord);
 			}
 		}
+		lexeme.setMeaningWords(filteredMeaningWords);
 
 		Map<String, List<TypeMeaningWord>> destinLangMatchWordsByLangUnordered = lexeme.getDestinLangMatchWords().stream().collect(Collectors.groupingBy(TypeMeaningWord::getLang));
 		Map<String, List<TypeMeaningWord>> destinLangMatchWordsByLangOrdered = composeOrderedMap(destinLangMatchWordsByLangUnordered, langOrderByMap);

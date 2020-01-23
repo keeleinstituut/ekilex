@@ -1,6 +1,5 @@
 package eki.wordweb.service.db;
 
-import static eki.wordweb.data.db.Tables.MVIEW_WW_AS_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
@@ -9,27 +8,25 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.FormMode;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
-import eki.wordweb.data.WordOrForm;
-import eki.wordweb.data.db.tables.MviewWwAsWord;
+import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
@@ -38,6 +35,7 @@ import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.tables.MviewWwWordSearch;
 
 @Component
 public class UnifSearchDbService extends AbstractSearchDbService {
@@ -80,43 +78,35 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordOrForm>> getWordsByPrefix(String wordPrefix, int maxWordCount) {
+	public Map<String, List<WordSearchElement>> getWordsByPrefix(String wordPrefix, int maxWordCount) {
 
-		MviewWwWord w = MVIEW_WW_WORD.as("w");
-		MviewWwAsWord aw = MVIEW_WW_AS_WORD.as("aw");
-		MviewWwForm f = MVIEW_WW_FORM.as("f");
+		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
+		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
+		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
 
 		String wordPrefixLower = StringUtils.lowerCase(wordPrefix);
-		Field<String> iswtf = DSL.field(DSL.value("prefWords")).as("group");
-		Field<String> iswff = DSL.field(DSL.value("formWords")).as("group");
-		Condition wlc = w.WORD.lower().like(wordPrefixLower + '%');
-		Condition awlc = aw.AS_WORD.lower().like(wordPrefixLower + '%').and(aw.WORD_ID.eq(w.WORD_ID));
-		Condition flc = f.FORM.lower().eq(wordPrefixLower).and(f.MODE.eq(FormMode.FORM.name()));
-
-		Table<Record2<String, String>> woft = DSL
-				.selectDistinct(w.WORD.as("value"), iswtf)
+		Table<Record2<String, String>> ws = DSL
+				.select(w.SGROUP, w.WORD)
 				.from(w)
-				.where(wlc)
+				.where(w.SGROUP.eq(WORD_SEARCH_GROUP_WORD).and(w.CRIT.like(wordPrefixLower + '%')))
 				.orderBy(w.WORD)
 				.limit(maxWordCount)
-				.unionAll(DSL
-						.selectDistinct(w.WORD.as("value"), iswtf)
-						.from(w, aw)
-						.where(awlc)
-						.orderBy(w.WORD)
+				.unionAll(DSL.select(aw.SGROUP, aw.WORD)
+						.from(aw)
+						.where(aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD).and(aw.CRIT.like(wordPrefixLower + '%')))
+						.orderBy(aw.WORD)
 						.limit(maxWordCount))
-				.unionAll(DSL
-						.selectDistinct(f.WORD.as("value"), iswff)
+				.unionAll(DSL.select(f.SGROUP, f.WORD)
 						.from(f)
-						.where(flc)
+						.where(f.SGROUP.eq(WORD_SEARCH_GROUP_FORM).and(f.CRIT.eq(wordPrefixLower)))
 						.orderBy(f.WORD)
 						.limit(maxWordCount))
-				.asTable("woft");
+				.asTable("ws");
 
-		return (Map<String, List<WordOrForm>>) create
-				.selectDistinct(woft.field("value"), woft.field("group"))
-				.from(woft)
-				.fetchGroups("group", WordOrForm.class);
+		return (Map<String, List<WordSearchElement>>) create
+				.select(ws.field("sgroup"), ws.field("word"))
+				.from(ws)
+				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 
 	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {

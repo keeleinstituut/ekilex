@@ -1,5 +1,6 @@
+drop materialized view if exists mview_ww_word_search;
 drop materialized view if exists mview_ww_word;
-drop materialized view if exists mview_ww_as_word;
+drop materialized view if exists mview_ww_as_word;--remove later
 drop materialized view if exists mview_ww_form;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
@@ -70,6 +71,16 @@ create type type_word_relation as (word_id bigint, word text, word_lang char(3),
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), meaning_rel_type_code varchar(100));
 
+create materialized view mview_ww_word_search as
+select * from
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_word_search') as word_search(
+	sgroup varchar(10),
+	word text,
+	crit text
+);
+
 create materialized view mview_ww_word as
 select * from 
 dblink(
@@ -92,16 +103,6 @@ dblink(
 	lex_dataset_exists boolean,
 	term_dataset_exists boolean,
 	forms_exist boolean
-);
-
-create materialized view mview_ww_as_word as
-select * from 
-dblink(
-	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_ww_as_word') as as_word(
-	word_id bigint,
-	word text,
-	as_word text
 );
 
 create materialized view mview_ww_form as
@@ -269,6 +270,9 @@ dblink(
 	order_by bigint
 );
 
+create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
+create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);
+create index mview_ww_word_search_crit_lower_prefix_idx on mview_ww_word_search (lower(crit) text_pattern_ops);
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
 create index mview_ww_word_value_idx on mview_ww_word (word);
 create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
@@ -277,11 +281,6 @@ create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(word) 
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
 create index mview_ww_word_lex_dataset_exists_idx on mview_ww_word (lex_dataset_exists);
 create index mview_ww_word_term_dataset_exists_idx on mview_ww_word (term_dataset_exists);
-create index mview_ww_as_word_word_id_idx on mview_ww_as_word (word_id);
-create index mview_ww_as_word_value_idx on mview_ww_as_word (as_word);
-create index mview_ww_as_word_value_lower_idx on mview_ww_as_word (lower(as_word));
-create index mview_ww_as_word_value_prefix_idx on mview_ww_as_word (as_word text_pattern_ops);
-create index mview_ww_as_word_value_lower_prefix_idx on mview_ww_as_word (lower(as_word) text_pattern_ops);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
 create index mview_ww_form_word_idx on mview_ww_form (word);
 create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));

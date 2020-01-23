@@ -22,7 +22,7 @@ import eki.common.constant.DatasetType;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
-import eki.wordweb.data.WordOrForm;
+import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
@@ -64,7 +64,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordOrForm>> getWordsByPrefix(String wordPrefix, int maxWordCount) {
+	public Map<String, List<WordSearchElement>> getWordsByPrefix(String wordPrefix, int maxWordCount) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 
@@ -80,10 +80,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.limit(maxWordCount)
 				.asTable("woft");
 
-		return (Map<String, List<WordOrForm>>) create
+		return (Map<String, List<WordSearchElement>>) create
 				.selectDistinct(woft.field("value"), woft.field("group"))
 				.from(woft)
-				.fetchGroups("group", WordOrForm.class);
+				.fetchGroups("group", WordSearchElement.class);
 	}
 
 	public List<Lexeme> getLexemes(Long wordId) {

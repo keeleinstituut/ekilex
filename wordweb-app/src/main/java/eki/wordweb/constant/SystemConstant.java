@@ -43,4 +43,10 @@ public interface SystemConstant {
 	String DEFAULT_CLASSIF_VALUE_TYPE = "wordweb";
 
 	String CLASSIF_LABEL_TYPE_ISO2 = "iso2";
+
+	String WORD_SEARCH_GROUP_WORD = "word";
+
+	String WORD_SEARCH_GROUP_AS_WORD = "as_word";
+
+	String WORD_SEARCH_GROUP_FORM = "form";
 }

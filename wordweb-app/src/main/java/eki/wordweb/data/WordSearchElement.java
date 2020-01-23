@@ -2,28 +2,27 @@ package eki.wordweb.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordOrForm extends AbstractDataObject {
+public class WordSearchElement extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String value;
+	private String sgroup;
 
-	private String group;
+	private String word;
 
-	public String getValue() {
-		return value;
+	public String getSgroup() {
+		return sgroup;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setSgroup(String sgroup) {
+		this.sgroup = sgroup;
 	}
 
-	public String getGroup() {
-		return group;
+	public String getWord() {
+		return word;
 	}
 
-	public void setGroup(String group) {
-		this.group = group;
+	public void setWord(String word) {
+		this.word = word;
 	}
-
 }

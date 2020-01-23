@@ -1068,10 +1068,8 @@
   <div th:replace="common-app :: footer-content"></div>
   <th:block th:replace="common-app :: content-top"></th:block>
   <script th:inline="javascript">
-    var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
     var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
     setActiveMenuItem('learn');
-
     $(document).on("click", ".back", function(e) {
       window.location = applicationUrl;
     });

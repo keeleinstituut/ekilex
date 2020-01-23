@@ -7,8 +7,6 @@ public class DataFilter extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String sourceLang;
-
 	private String destinLang;
 
 	private Complexity lexComplexity;
@@ -17,16 +15,11 @@ public class DataFilter extends AbstractDataObject {
 
 	private Integer maxDisplayLevel;
 
-	public DataFilter(String sourceLang, String destinLang, Complexity lexComplexity, Complexity dataComplexity, Integer maxDisplayLevel) {
-		this.sourceLang = sourceLang;
+	public DataFilter(String destinLang, Complexity lexComplexity, Complexity dataComplexity, Integer maxDisplayLevel) {
 		this.destinLang = destinLang;
 		this.lexComplexity = lexComplexity;
 		this.dataComplexity = dataComplexity;
 		this.maxDisplayLevel = maxDisplayLevel;
-	}
-
-	public String getSourceLang() {
-		return sourceLang;
 	}
 
 	public String getDestinLang() {

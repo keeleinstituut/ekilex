@@ -52,11 +52,8 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		} else {
 			sessionBean = getSessionBean(model);
 		}
-		if (StringUtils.isBlank(sessionBean.getSourceLang())) {
-			sessionBean.setSourceLang(DEFAULT_SOURCE_LANG);
-		}
 		if (StringUtils.isBlank(sessionBean.getDestinLang())) {
-			sessionBean.setDestinLang(DEFAULT_DESTIN_LANG);
+			sessionBean.setDestinLang(DESTIN_LANG_ALL);
 		}
 		if (StringUtils.isBlank(sessionBean.getSearchMode())) {
 			sessionBean.setSearchMode(SEARCH_MODE_DETAIL);

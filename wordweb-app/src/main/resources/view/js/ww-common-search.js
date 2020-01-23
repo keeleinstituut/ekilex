@@ -50,9 +50,8 @@ $(document).ready(function () {
 
 	var searchWordAutocompleteConfig = {
 		source: function (request, response) {
-			var sourceLang = "*";
 			var wordPrefix = request.term;
-			var searchWordsByPrefixUrlWithParams = searchWordsByPrefixUrl + "/" + sourceLang + "/" + wordPrefix;
+			var searchWordsByPrefixUrlWithParams = searchWordsByPrefixUrl + "/" + wordPrefix;
 			$.ajax({
 				url: searchWordsByPrefixUrlWithParams,
 				type: "GET",
@@ -327,6 +326,29 @@ $(document).on("keyup", "input[name='searchWord']", function (e) {
 	} else {
 		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
 	}
+});
+
+$(document).on("click", "a[id^='destin-lang']", function (e) {
+	var destinLang = $(this).attr("data-lang");
+	if (destinLang == "*") {
+		$("a[id^='destin-lang']").removeClass("active");
+		$(this).addClass("active");
+	} else {
+		if ($(this).hasClass("active")) {
+			$(this).removeClass("active");
+			if ($("a[id^='destin-lang']").hasClass("active") == false) {
+				$("a[id^='destin-lang-all']").addClass("active");
+			}
+		} else {
+			$("a[id^='destin-lang-all']").removeClass("active");
+			$(this).addClass("active");
+		}
+	}
+	var destinLangs = $("a[id^='destin-lang'].active").map(function (idx, element) {
+		return $(element).attr("data-lang");
+	}).get();
+	//console.log("---> " + destinLangs);
+	//TODO to be continued...
 });
 
 $(document).on("click", "#toggle-simple", function (e) {

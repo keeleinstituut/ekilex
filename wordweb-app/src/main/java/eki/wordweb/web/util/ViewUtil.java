@@ -101,33 +101,23 @@ public class ViewUtil implements WebConstant, SystemConstant {
 
 	public String getSearchUri(SessionBean sessionBean, String word, Integer homonymNr) {
 		
-		String sourceLang = sessionBean.getSourceLang();
 		String destinLang = sessionBean.getDestinLang();
 		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, word, sourceLang, destinLang, homonymNr, searchMode);
+		String uri = composeSearchUri(sessionBean, word, destinLang, homonymNr, searchMode);
 		return uri;
 	}
 
 	public String getSearchUri(SessionBean sessionBean, String word) {
-		String sourceLang = sessionBean.getSourceLang();
 		String destinLang = sessionBean.getDestinLang();
 		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, word, sourceLang, destinLang, null, searchMode);
+		String uri = composeSearchUri(sessionBean, word, destinLang, null, searchMode);
 		return uri;
 	}
 
-	public String getSearchUriForDestinationLanguage(SessionBean sessionBean, String word, Integer homonymNr) {
-		String sourceLang = sessionBean.getDestinLang();
-		String destinLang = sessionBean.getSourceLang();
-		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, word, sourceLang, destinLang, homonymNr, searchMode);
-		return uri;
-	}
-
-	private String composeSearchUri(SessionBean sessionBean, String word, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
+	private String composeSearchUri(SessionBean sessionBean, String word, String destinLang, Integer homonymNr, String searchMode) {
 
 		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
-		String searchUri = SEARCH_URI + UNIF_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + searchMode + "/" + encodedWord;
+		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLang + "/" + searchMode + "/" + encodedWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}
