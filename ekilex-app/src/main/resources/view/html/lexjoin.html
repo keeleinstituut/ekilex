@@ -8,7 +8,7 @@
 </head>
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'lexjoin')"></th:block>
-  <div class="container-fluid">
+  <div class="container-fluid" th:with="isTargetMeaningSuperiorCrudGranted=${#vars.permDataUtil.isMeaningSuperiorCrudGranted(#vars.targetLexeme.meaningId, #vars.sessionBean)}">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
         <a class="btn btn-sm btn-secondary" th:href="@{'/lexback/' + ${targetLexeme.lexemeId}}">Tagasi</a>
@@ -76,7 +76,7 @@
         <input name="sourceLexemeIds" type="checkbox" class="mt-2"
           th:value="${lexeme.lexemeId}"
           th:if="${lexeme.meaningId != targetLexeme.meaningId}"
-          sec:authorize="#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)" />
+          sec:authorize="#vars.isTargetMeaningSuperiorCrudGranted or #vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.lexeme.meaningId)"/>
         <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetLexeme.meaningId}" checked="checked" th:disabled="true" />
       </div>
       <div class="col">

@@ -38,17 +38,6 @@ public class PermDataUtil {
 		return isRoleSelected;
 	}
 
-	public String getRoleDatasetCode(SessionBean sessionBean) {
-		if (sessionBean == null) {
-			return null;
-		}
-		DatasetPermission userRole = sessionBean.getUserRole();
-		if (userRole == null) {
-			return null;
-		}
-		return userRole.getDatasetCode();
-	}
-
 	public boolean isMeaningLexemeCrudGranted(Long meaningId, SessionBean sessionBean) {
 		if (sessionBean == null) {
 			return false;
@@ -78,5 +67,39 @@ public class PermDataUtil {
 	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId) {
 		Long userId = userService.getAuthenticatedUser().getId();
 		return permissionService.isMeaningAnyLexemeCrudGranted(meaningId, userId);
+	}
+
+	public boolean isMeaningSuperiorCrudGranted(Long meaningId, SessionBean sessionBean) {
+		if (sessionBean == null) {
+			return false;
+		}
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return false;
+		}
+		String roleDatasetCode = userRole.getDatasetCode();
+		boolean isRoleDatasetSuperior = userRole.isSuperiorDataset();
+		boolean meaningHasSuperiorLexemes = false;
+		if (isRoleDatasetSuperior) {
+			meaningHasSuperiorLexemes = permissionService.meaningDatasetExists(meaningId, roleDatasetCode);
+		}
+		return meaningHasSuperiorLexemes;
+	}
+
+	public boolean isWordSuperiorCrudGranted(Long wordId, SessionBean sessionBean) {
+		if (sessionBean == null) {
+			return false;
+		}
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return false;
+		}
+		String roleDatasetCode = userRole.getDatasetCode();
+		boolean isRoleDatasetSuperior = userRole.isSuperiorDataset();
+		boolean wordHasSuperiorLexemes = false;
+		if (isRoleDatasetSuperior) {
+			wordHasSuperiorLexemes = permissionService.wordDatasetExists(wordId, roleDatasetCode);
+		}
+		return wordHasSuperiorLexemes;
 	}
 }

@@ -104,6 +104,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 						DATASET_PERMISSION.ID,
 						DATASET_PERMISSION.DATASET_CODE,
 						DATASET.NAME.as("dataset_name"),
+						DATASET.IS_SUPERIOR.as("is_superior_dataset"),
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG,
@@ -671,6 +672,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.select(
 						DATASET_PERMISSION.ID,
 						DATASET.NAME.as("dataset_name"),
+						DATASET.IS_SUPERIOR.as("is_superior_dataset"),
 						DATASET_PERMISSION.AUTH_LANG,
 						DATASET_PERMISSION.DATASET_CODE,
 						DATASET_PERMISSION.USER_ID,
