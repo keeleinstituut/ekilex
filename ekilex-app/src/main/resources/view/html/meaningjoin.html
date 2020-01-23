@@ -8,7 +8,7 @@
 </head>
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'meaningjoin')"></th:block>
-  <div class="container-fluid" th:with="isTargetMeaningSuperiorCrudGranted=${#vars.permDataUtil.isMeaningSuperiorCrudGranted(#vars.targetMeaningId, #vars.sessionBean)}">
+  <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
         <a class="btn btn-sm btn-secondary" th:href="@{'/meaningback/' + ${targetMeaningId}}">Tagasi</a>
@@ -76,7 +76,7 @@
         <input name="sourceMeaningIds" type="checkbox" class="mt-2"
           th:value="${meaning.meaningId}"
           th:if="${meaning.meaningId != targetMeaningId}"
-          sec:authorize="#vars.isTargetMeaningSuperiorCrudGranted or #vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaning.meaningId)" />
+          sec:authorize="#vars.permDataUtil.isSourceMeaningCrudGranted(#vars.meaning.meaningId, #vars.targetMeaningId, #vars.sessionBean)"/>
         <input type="checkbox" class="mt-2" th:if="${meaning.meaningId == targetMeaningId}" checked="checked" th:disabled="true" />
       </div>
     </div>

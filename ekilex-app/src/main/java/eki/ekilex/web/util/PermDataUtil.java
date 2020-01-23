@@ -1,5 +1,7 @@
 package eki.ekilex.web.util;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -69,7 +71,14 @@ public class PermDataUtil {
 		return permissionService.isMeaningAnyLexemeCrudGranted(meaningId, userId);
 	}
 
-	public boolean isMeaningSuperiorCrudGranted(Long meaningId, SessionBean sessionBean) {
+	public boolean isSourceMeaningCrudGranted(Long sourceMeaningId, Long targetMeaningId, SessionBean sessionBean) {
+
+		Long userId = userService.getAuthenticatedUser().getId();
+		boolean isSourceMeaningAnyLexemeCrudGranted = permissionService.isMeaningAnyLexemeCrudGranted(sourceMeaningId, userId);
+		if (isSourceMeaningAnyLexemeCrudGranted) {
+			return true;
+		}
+
 		if (sessionBean == null) {
 			return false;
 		}
@@ -79,14 +88,16 @@ public class PermDataUtil {
 		}
 		String roleDatasetCode = userRole.getDatasetCode();
 		boolean isRoleDatasetSuperior = userRole.isSuperiorDataset();
-		boolean meaningHasSuperiorLexemes = false;
+		boolean targetMeaningHasSuperiorLexemes = false;
 		if (isRoleDatasetSuperior) {
-			meaningHasSuperiorLexemes = permissionService.meaningDatasetExists(meaningId, roleDatasetCode);
+			targetMeaningHasSuperiorLexemes = permissionService.meaningDatasetExists(targetMeaningId, roleDatasetCode);
 		}
-		return meaningHasSuperiorLexemes;
+		return targetMeaningHasSuperiorLexemes;
 	}
 
-	public boolean isWordSuperiorCrudGranted(Long wordId, SessionBean sessionBean) {
+	public boolean isSourceWordCrudGranted(Long sourceWordId, Long targetWordId, SessionBean sessionBean) {
+
+		Long userId = userService.getAuthenticatedUser().getId();
 		if (sessionBean == null) {
 			return false;
 		}
@@ -95,11 +106,18 @@ public class PermDataUtil {
 			return false;
 		}
 		String roleDatasetCode = userRole.getDatasetCode();
-		boolean isRoleDatasetSuperior = userRole.isSuperiorDataset();
-		boolean wordHasSuperiorLexemes = false;
-		if (isRoleDatasetSuperior) {
-			wordHasSuperiorLexemes = permissionService.wordDatasetExists(wordId, roleDatasetCode);
+		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+
+		boolean isSourceWordCrudGranted = permissionService.isGrantedForWord(sourceWordId, roleDatasetCode, userPermDatasetCodes);
+		if (isSourceWordCrudGranted) {
+			return true;
 		}
-		return wordHasSuperiorLexemes;
+
+		boolean isRoleDatasetSuperior = userRole.isSuperiorDataset();
+		boolean targetWordHasSuperiorLexemes = false;
+		if (isRoleDatasetSuperior) {
+			targetWordHasSuperiorLexemes = permissionService.wordDatasetExists(targetWordId, roleDatasetCode);
+		}
+		return targetWordHasSuperiorLexemes;
 	}
 }
