@@ -102,12 +102,16 @@ public class SimilarWordMergeRunner extends AbstractLoaderRunner implements DbCo
 		for (List<Long> simWordIdSet : simWordIdSets) {
 
 			List<WordLexemeMeaning> allLexemes = mergeService.getLexemesByWords(simWordIdSet);
-			allLexemes = allLexemes.stream().sorted(Comparator.comparing(WordLexemeMeaning::getHomonymNr).thenComparing(WordLexemeMeaning::getLexemeId)).collect(Collectors.toList());
-			WordLexemeMeaning targetLexeme = allLexemes.get(0);
-
-			if (StringUtils.equals(LANGUAGE_CODE_EST, targetLexeme.getLang())) {
+			WordLexemeMeaning firstLexeme = allLexemes.get(0);
+			if (StringUtils.equals(LANGUAGE_CODE_EST, firstLexeme.getLang())) {
 				//handled elsewhere
 				continue;
+			}
+
+			allLexemes = allLexemes.stream().sorted(Comparator.comparing(WordLexemeMeaning::getOrderBy)).collect(Collectors.toList());
+			WordLexemeMeaning targetLexeme = allLexemes.stream().filter(lexeme -> lexeme.getComplexity().equals(Complexity.DETAIL)).findFirst().orElse(null);
+			if (targetLexeme == null) {
+				targetLexeme = allLexemes.get(0);
 			}
 
 			// merge lexemes

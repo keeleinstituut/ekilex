@@ -1,5 +1,6 @@
+drop view if exists view_ww_word_search;
 drop view if exists view_ww_word;
-drop view if exists view_ww_as_word;
+drop view if exists view_ww_as_word;--remove later
 drop view if exists view_ww_form;
 drop view if exists view_ww_meaning;
 drop view if exists view_ww_lexeme;

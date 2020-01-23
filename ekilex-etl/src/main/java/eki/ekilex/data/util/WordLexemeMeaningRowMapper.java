@@ -20,7 +20,8 @@ public class WordLexemeMeaningRowMapper implements RowMapper<WordLexemeMeaning> 
 		String word = rs.getObject("word", String.class);
 		String lang = rs.getObject("lang", String.class);
 		Integer homonymNr = rs.getObject("homonym_nr", Integer.class);
+		Long orderBy = rs.getObject("order_by", Long.class);
 		Long meaningId = rs.getObject("meaning_id", Long.class);
-		return new WordLexemeMeaning(lexemeId, complexity, wordId, word, lang, homonymNr, meaningId);
+		return new WordLexemeMeaning(lexemeId, complexity, wordId, word, lang, homonymNr, orderBy, meaningId);
 	}
 }

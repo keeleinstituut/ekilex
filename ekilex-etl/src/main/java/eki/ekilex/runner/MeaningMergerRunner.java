@@ -87,11 +87,11 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 		sqlSelectMeaningJoinCandidatesForDataset = getContent(resourceFileInputStream);
 		sqlSelectMeaningJoinCandidatesForDatasets.add(sqlSelectMeaningJoinCandidatesForDataset);
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_JOIN_CANDIDATES_FOR_QQ);
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_JOIN_CANDIDATES_FOR_EV);
 		sqlSelectMeaningJoinCandidatesForDataset = getContent(resourceFileInputStream);
 		sqlSelectMeaningJoinCandidatesForDatasets.add(sqlSelectMeaningJoinCandidatesForDataset);
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_JOIN_CANDIDATES_FOR_EV);
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_JOIN_CANDIDATES_FOR_QQ);
 		sqlSelectMeaningJoinCandidatesForDataset = getContent(resourceFileInputStream);
 		sqlSelectMeaningJoinCandidatesForDatasets.add(sqlSelectMeaningJoinCandidatesForDataset);
 	}
@@ -136,7 +136,8 @@ public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConst
 
 				Long targetWordId = mergingLexemeEntries.getKey();
 				List<WordLexemeMeaning> mergingLexemes = mergingLexemeEntries.getValue();
-				Long ssLexemeId = mergingLexemes.stream().map(WordLexemeMeaning::getLexemeId).filter(mergingLexemeId -> mergingLexemeId.equals(ssMeaningId)).findAny().orElse(null);
+				Long ssLexemeId = mergingLexemes.stream().filter(mergingLexeme -> mergingLexeme.getMeaningId().equals(ssMeaningId)).map(WordLexemeMeaning::getLexemeId).findFirst().orElse(null);
+
 				Long targetLexemeId;
 				if (ssLexemeId == null) {
 

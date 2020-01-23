@@ -38,6 +38,80 @@ create type type_word_relation as (word_id bigint, word text, word_lang char(3),
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), meaning_rel_type_code varchar(100));
 
+create view view_ww_word_search
+as
+select ws.sgroup,
+       ws.word,
+       ws.crit
+from ((select 'word' as sgroup,
+              fw.value word,
+              lower(fw.value) crit
+       from form fw
+       where fw.mode = 'WORD'
+       and   exists (select w.id
+                     from paradigm p,
+                          word w,
+                          lexeme as l,
+                          dataset ds
+                     where fw.paradigm_id = p.id
+                     and   p.word_id = w.id
+                     and   l.word_id = w.id
+                     and   l.type = 'PRIMARY'
+                     and   l.process_state_code = 'avalik'
+                     and   ds.code = l.dataset_code
+                     and   ds.is_public = true)
+       group by fw.value)
+       union all
+       (select 'as_word' as sgroup,
+               fw.value word,
+               lower(faw.value) crit
+       from form fw,
+            form faw
+       where fw.mode = 'WORD'
+       and   faw.mode = 'AS_WORD'
+       and   fw.paradigm_id = faw.paradigm_id
+       and   exists (select w.id
+                     from paradigm p,
+                          word w,
+                          lexeme as l,
+                          dataset ds
+                     where fw.paradigm_id = p.id
+                     and   p.word_id = w.id
+                     and   l.word_id = w.id
+                     and   l.type = 'PRIMARY'
+                     and   l.process_state_code = 'avalik'
+                     and   ds.code = l.dataset_code
+                     and   ds.is_public = true)
+       group by fw.value,
+                faw.value)
+       union all
+       (select 'form' as sgroup,
+               fw.value word,
+               lower(f.value) crit
+       from form fw,
+            form f
+       where fw.mode = 'WORD'
+       and   f.mode = 'FORM'
+       and   fw.paradigm_id = f.paradigm_id
+       and   exists (select w.id
+                     from paradigm p,
+                          word w,
+                          lexeme as l,
+                          dataset ds
+                     where fw.paradigm_id = p.id
+                     and   p.word_id = w.id
+                     and   l.word_id = w.id
+                     and   l.type = 'PRIMARY'
+                     and   l.process_state_code = 'avalik'
+                     and   ds.code = l.dataset_code
+                     and   ds.is_public = true)
+       and   fw.value != f.value
+       group by fw.value,
+                f.value)) ws
+order by ws.sgroup,
+         ws.word,
+         ws.crit;
+
 -- words - OK
 create view view_ww_word 
 as
@@ -278,30 +352,6 @@ from (select w.id as word_id,
                    where wf.freeform_id = ff.id
                    and   ff.type = 'OD_WORD_RECOMMENDATION'
                    group by wf.word_id) od_ws on od_ws.word_id = w.word_id;
-
--- as words - OK
-create view view_ww_as_word 
-as
-select w.id word_id,
-       f1.value word,
-       f2.value as_word
-from word w,
-     paradigm p,
-     form f1,
-     form f2
-where p.word_id = w.id
-and   f1.paradigm_id = p.id
-and   f2.paradigm_id = p.id
-and   f1.mode = 'WORD'
-and   f2.mode = 'AS_WORD'
-and   exists (select l.id
-              from lexeme as l,
-                   dataset ds
-              where l.word_id = w.id
-              and l.type = 'PRIMARY'
-              and l.process_state_code = 'avalik'
-              and ds.code = l.dataset_code
-              and ds.is_public = true);
 
 -- word forms - OK
 create view view_ww_form 

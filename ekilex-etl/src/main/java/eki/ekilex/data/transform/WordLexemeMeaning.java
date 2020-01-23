@@ -19,6 +19,8 @@ public class WordLexemeMeaning extends AbstractDataObject {
 
 	private Integer homonymNr;
 
+	private Long orderBy;
+
 	private Long meaningId;
 
 	public WordLexemeMeaning(
@@ -28,6 +30,7 @@ public class WordLexemeMeaning extends AbstractDataObject {
 			String word,
 			String lang,
 			Integer homonymNr,
+			Long orderBy,
 			Long meaningId) {
 
 		this.lexemeId = lexemeId;
@@ -36,6 +39,7 @@ public class WordLexemeMeaning extends AbstractDataObject {
 		this.word = word;
 		this.lang = lang;
 		this.homonymNr = homonymNr;
+		this.orderBy = orderBy;
 		this.meaningId = meaningId;
 	}
 
@@ -61,6 +65,10 @@ public class WordLexemeMeaning extends AbstractDataObject {
 
 	public Integer getHomonymNr() {
 		return homonymNr;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
 	}
 
 	public Long getMeaningId() {

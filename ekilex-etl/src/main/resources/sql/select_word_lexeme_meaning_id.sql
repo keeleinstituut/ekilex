@@ -9,6 +9,7 @@ select l.id lexeme_id,
         and   f.mode = 'WORD') word,
        w.lang,
        w.homonym_nr,
+       l.order_by,
        l.meaning_id
 from lexeme l,
      word w
