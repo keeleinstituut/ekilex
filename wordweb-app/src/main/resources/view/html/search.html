@@ -21,7 +21,7 @@
       <div class="row">
         <div class="col-12 align-self-center" id="language-detail-panel">
           <div class="row align-items-center">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
               <div th:replace="common-search :: search"></div>
             </div>
             <div class="col-12 p-0 col-md-2">
@@ -32,19 +32,19 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid homonym-page bottom-gutter">
+  <div class="container-fluid homonym-page mt-3 bottom-gutter">
     <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
       <div class="col offset-1 lg-max-noneset">
         <span th:text="#{label.word.rus.not.found}">Ei leidnud midagi. Otsi eesti sõna tähendust eesti-eesti osast</span>
       </div>
     </div>
-    <div class="container search-results-header" th:if="${wordsData.resultsExist}">
-      <div class="d-flex flex-column flex-md-row align-items-md-center pb-3">
-        <div class="mr-2">
+    <div class="container search-results-header px-0" th:if="${wordsData.resultsExist}">
+      <div class="d-flex flex-row-reverse flex-md-row align-items-start align-items-md-center pb-3">
+        <div class="mr-2 hide-with-details">
           <span class="mr-2">Leiti</span>
           <span>5 tulemust</span>
         </div>
-        <div class="border-left mr-2 pl-2 d-flex">
+        <div class="border-left mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details">
           <label class="mr-2 my-0 p-0">Näita tulemustes</label>
           <div class="dropdown">
             <button class="btn btn-link dropdown-toggle p-0" type="button" id="destinLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -60,15 +60,16 @@
             </div>
           </div>
         </div>
-        <div class="pl-2 ml-2 border-left homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+
+        <div class="pl-2 ml-2 border-left homonym-innerwrap show-with-details" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
           <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
           <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
         </div>
-        <button name="feedback-btn" value="feedback" class="ml-auto btn btn-secondary" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
+        <button name="feedback-btn" value="feedback" class="ml-auto btn btn-secondary show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
       </div>
     </div>
     <main role="main" class="content-panel bg-white container" >
-      <div th:if="${wordsData.resultsExist}" class="row border-bottom homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
+      <div th:if="${wordsData.resultsExist}" class="row border-bottom overflow-hidden homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
         <ul class="homonym-list">
           <li th:each="word : ${wordsData.fullMatchWords}">
             <form class="h-100">

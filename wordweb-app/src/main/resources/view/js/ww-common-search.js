@@ -119,7 +119,9 @@ function calculateAndSetStyles() {
 	var isMultiHomonym = homonymItem.length > 1;
 	if (isWideWindow) {
 		$(".search-panel").removeClass("d-none");
-		$(".content-panel").removeClass("d-none");
+		$(".word-details").removeClass("d-none");
+		$(".show-with-details").removeClass("d-none");
+
 		if (isSingleHomonym) {
 			homonymPanel.addClass("d-none");
 		} else {
@@ -132,12 +134,13 @@ function calculateAndSetStyles() {
 	} else {
 		if (isMultiHomonym) {
 			if (!homonymPanel.hasClass("d-none")) {
-				$(".content-panel").addClass("d-none");
+				$(".word-details").addClass("d-none");
 			}
 		}
 		if (isSingleHomonym && homonymPanel.hasClass("d-none")) {
 			$(".search-panel").addClass("d-none");
 		}
+		$(".show-with-details").addClass("d-none");
 	}
 }
 

@@ -104,7 +104,9 @@ $(document).on("click", "button[name='colloc-usages-btn']", function() {
 // demo js for interactions between the mobile and desktop modes
 $(document).on("click", ".back", function() {
 	if ($(".homonym-panel").hasClass("d-none")) {
-		$(".content-panel").addClass("d-none d-md-block");
+		$(".word-details").addClass("d-none d-md-block");
+		$(".show-with-details").addClass("d-none").removeClass("d-flex");
+		$(".hide-with-details").removeClass("d-none").addClass("d-flex");
 		$(".homonym-panel").removeClass("d-none d-md-block");
 		$(".search-panel").removeClass("d-none d-md-block");
 		calculateAndSetStyles();
@@ -129,6 +131,8 @@ $(document).on("click", ".homonym-item", function() {
 	} else {
 		$(".homonym-panel").addClass("d-none");
 		$(".search-panel").addClass("d-none");
+		$(".show-with-details").removeClass("d-none").addClass("d-flex");
+		$(".hide-with-details").addClass("d-none").removeClass("d-flex");
 	}
 });
 
