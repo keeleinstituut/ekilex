@@ -64,7 +64,7 @@
     overflow-x: scroll;
     display: -webkit-box;
     display: flex;
-    margin-bottom: -15px;
+    margin-bottom: -10px;
   }
   .homonym-item {
     height: 100%;
@@ -234,5 +234,9 @@
     margin-right: 0.125rem;
     font-weight: 700;
   }
+}
+
+.overflow-hidden {
+  overflow: hidden !important;
 }
 /*# sourceMappingURL=styles.css.map */
