@@ -737,6 +737,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						.innerJoin(wm).on(wherewm)
 						.innerJoin(pm).on(pm.WORD_ID.eq(wm.ID))
 						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name()))))
+				.groupBy(
+						wmid.field("word_id"),
+						wmid.field("meaning_id"),
+						fm.VALUE,
+						wm.HOMONYM_NR,
+						wm.LANG)
 				.asTable("wm");
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
