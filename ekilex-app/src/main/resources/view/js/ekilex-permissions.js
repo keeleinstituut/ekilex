@@ -36,6 +36,25 @@ $(document).on("click", ":input[name='userAdminCheck']", function() {
 	});
 });
 
+$(document).on("click", ":input[name='userMasterCheck']", function() {
+	var userId = $(this).data('id');
+	var enable = $(this).is(':checked');
+	var orderBy = $(this).data('order-by');
+	var setMasterUrl;
+	if (enable == true) {
+		setMasterUrl = applicationUrl + 'permissions/setmaster/' + userId + '/' + orderBy;
+	} else {
+		setMasterUrl = applicationUrl + 'permissions/remmaster/' + userId + '/' + orderBy;
+	}
+	$.get(setMasterUrl).done(function(data) {
+		var permissionsArea = $('#permissionsArea');
+		permissionsArea.replaceWith(data);
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg('Viga!');
+	});
+});
+
 $(document).on("click", ":input[name='userReviewedCheck']", function() {
 	var userId = $(this).data('id');
 	var reviewed = $(this).is(':checked');

@@ -112,6 +112,22 @@ public class PermissionsController extends AbstractPageController {
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
+	@GetMapping(PERMISSIONS_URI + "/setmaster/{userId}/{orderBy}")
+	public String setMaster(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+
+		userService.setMaster(userId, true);
+		populateUserPermDataModel(model, orderBy);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/remmaster/{userId}/{orderBy}")
+	public String remMaster(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+
+		userService.setMaster(userId, false);
+		populateUserPermDataModel(model, orderBy);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
+	}
+
 	@GetMapping(PERMISSIONS_URI + "/setreviewed/{userId}/{orderBy}")
 	public String setReviewed(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 

@@ -9,6 +9,7 @@ create table eki_user
   activation_key varchar(60),
   recovery_key varchar(60),
   is_admin boolean default false,
+  is_master boolean default false,
   is_enabled boolean,
   is_reviewed boolean,
   review_comment text,

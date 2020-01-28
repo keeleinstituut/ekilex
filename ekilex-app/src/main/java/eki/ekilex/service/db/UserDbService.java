@@ -48,6 +48,7 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER.ACTIVATION_KEY,
 						EKI_USER.RECOVERY_KEY,
 						EKI_USER.IS_ADMIN.as("admin"),
+						EKI_USER.IS_MASTER.as("master"),
 						EKI_USER.IS_ENABLED.as("enabled"))
 				.from(EKI_USER)
 				.where(EKI_USER.EMAIL.eq(email))
@@ -125,6 +126,10 @@ public class UserDbService extends AbstractDbService {
 
 	public void setAdmin(Long userId, boolean isAdmin) {
 		create.update(EKI_USER).set(EKI_USER.IS_ADMIN, isAdmin).where(EKI_USER.ID.eq(userId)).execute();
+	}
+
+	public void setMaster(Long userId, boolean isMaster) {
+		create.update(EKI_USER).set(EKI_USER.IS_MASTER, isMaster).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
 	public void setReviewed(Long userId, boolean isReviewed) {

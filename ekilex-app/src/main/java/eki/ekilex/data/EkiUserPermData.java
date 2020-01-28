@@ -17,6 +17,8 @@ public class EkiUserPermData extends AbstractDataObject {
 
 	private boolean admin;
 
+	private boolean master;
+
 	private Boolean enabled;
 
 	private Boolean reviewed;
@@ -61,6 +63,14 @@ public class EkiUserPermData extends AbstractDataObject {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public boolean isMaster() {
+		return master;
+	}
+
+	public void setMaster(boolean master) {
+		this.master = master;
 	}
 
 	public Boolean getEnabled() {

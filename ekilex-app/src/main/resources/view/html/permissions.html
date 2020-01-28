@@ -40,6 +40,7 @@
                   </th>
                   <th class="m-1 p-1">E-post</th>
                   <th class="m-1 p-1 text-center">Admin</th>
+                  <th class="m-1 p-1 text-center">Lugeja</th>
                   <th class="m-1 p-1 text-center">Lubatud</th>
                   <th class="m-1 p-1 text-center">Tegeletud</th>
                   <th class="m-1 p-1">Kommentaar</th>
@@ -68,6 +69,15 @@
                              name="userAdminCheck"
                              th:checked="${userPerm.admin}"
                              th:disabled="${(#authentication.principal.id == userPerm.id) || (!#authentication.principal.admin)}"/>
+                    </td>
+                    <td class="m-1 p-1 text-center">
+                      <input type="checkbox"
+                        class="form-check-input"
+                        th:data-id="${userPerm.id}"
+                        th:data-order-by="${orderBy}"
+                        name="userMasterCheck"
+                        th:checked="${userPerm.master}"
+                        th:disabled="${!#authentication.principal.admin}"/>
                     </td>
                     <td class="m-1 p-1 text-center">
                       <input type="checkbox"

@@ -12,7 +12,7 @@
       <div class="card-header">
         <h5 class="card-title" th:text="#{index.title}">Tere</h5>
       </div>
-      <div class="card-body">
+      <div class="card-body" th:with="isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)}">
         <p>
           <a th:href="@{/lexsearch}">Leksikograafide otsing</a>
         </p>
@@ -20,12 +20,12 @@
           <a th:href="@{/termsearch}">Terminoloogide otsing</a>
         </p>
         <p>
-          <a th:href="@{/synsearch}" th:if="${sessionBean.userRole != null}">Sünonüümide otsing</a>
-          <span th:if="${sessionBean.userRole == null}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</span>
+          <a th:href="@{/synsearch}" th:if="${#vars.isCrudRoleSelected}">Sünonüümide otsing</a>
+          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</span>
         </p>
         <p>
-          <a th:href="@{/bilingsearch}" th:if="${sessionBean.userRole != null}">Kakskeelsete vastete otsing</a>
-          <span th:if="${sessionBean.userRole == null}" title="Vali roll kakskeelsete vastete otsinguks">Kakskeelsete vastete otsing</span>
+          <a th:href="@{/bilingsearch}" th:if="${#vars.isCrudRoleSelected}">Kakskeelsete vastete otsing</a>
+          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll kakskeelsete vastete otsinguks">Kakskeelsete vastete otsing</span>
         </p>
         <p>
           <a th:href="@{/sourcesearch}">Allikate otsing</a>

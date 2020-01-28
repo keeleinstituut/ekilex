@@ -42,7 +42,10 @@
     </div>
   </div>
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${wordId}" id="details_div" class="h-100" th:with="isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')}">
+    <div th:data-id="${wordId}" id="details_div" class="h-100"
+      th:with="
+            isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
+            isWordReadGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:READ'')')}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="detailsBtn" data-refresh></button>
       <div class="navigate-panel card shadow h-100">
         <div class="card-body p-0 d-flex flex-column h-100">
@@ -70,13 +73,12 @@
                     sec:authorize="${#vars.isWordCrudGranted}">Ühenda</button>
                 </form>
               </div>
-              <div sec:authorize="${#vars.isWordCrudGranted}" class="ml-auto d-flex align-items-center flex-row">
+              <div sec:authorize="${#vars.isWordReadGranted}" class="ml-auto d-flex align-items-center flex-row">
                 <span class="text-secondary mr-1"> Logid </span>
                 <div class="btn-group ">
                   <a th:href="@{'/wordprocesslog:' + ${wordId}}" data-toggle="modal"
                     data-target="#processLogDlg"
-                    class="btn btn-secondary btn-compact position-relative pr-1"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    class="btn btn-secondary btn-compact position-relative pr-1">
                     <span class="d-block" data-toggle="tooltip" title="Vaata kommentaare">
                       Kommentaarid
                       <span class="badge badge-counter" th:text="${details.wordProcessLogCount}" th:classappend="${details.wordProcessLogCount > 0}?'badge-danger':'badge-secondary'">0</span>
@@ -101,8 +103,7 @@
                 </div>
                 <a th:href="@{'/wordlifecyclelog:' + ${wordId}}" data-toggle="modal"
                   data-target="#wordLifecycleLogDlg"
-                  class="btn btn-secondary btn-compact ml-2"
-                  sec:authorize="${#vars.isWordCrudGranted}">Tegevused</a>
+                  class="btn btn-secondary btn-compact ml-2">Tegevused</a>
                 <div id="wordLifecycleLogDlg" class="modal" role="dialog">
                   <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">

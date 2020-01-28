@@ -87,6 +87,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 						EKI_USER.NAME,
 						EKI_USER.EMAIL,
 						EKI_USER.IS_ADMIN.as("admin"),
+						EKI_USER.IS_MASTER.as("master"),
 						EKI_USER.IS_ENABLED.as("enabled"),
 						EKI_USER.IS_REVIEWED.as("reviewed"),
 						EKI_USER.REVIEW_COMMENT,
@@ -130,6 +131,11 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 						.select(EKI_USER.ID)
 						.from(EKI_USER)
 						.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_ADMIN.isTrue())));
+		Condition userIsMasterCond = DSL
+				.exists(DSL
+						.select(EKI_USER.ID)
+						.from(EKI_USER)
+						.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_MASTER.isTrue())));
 		Condition datasetPermCond = DSL
 				.exists(DSL
 						.select(DATASET_PERMISSION.ID)
@@ -138,7 +144,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 		return create
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
-				.where(DATASET.IS_VISIBLE.isTrue().and(DSL.or(userIsAdminCond, datasetPermCond)))
+				.where(DATASET.IS_VISIBLE.isTrue().and(DSL.or(userIsAdminCond, userIsMasterCond, datasetPermCond)))
 				.orderBy(DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);
 	}
