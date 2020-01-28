@@ -641,7 +641,7 @@ function initWordValueEditorDlg(dlg) {
 	editFld.html(valueInput.val());
 	initEkiEditor(ekiEditorElem);
 
-	$(document).on("click", "button[name='saveWordValueBtn']", function () {
+	dlg.find('button[name="saveWordValueBtn"]').off('click').on('click', function() {
 		let form = dlg.find('form');
 		if (editFld.html()) {
 			valueInput.val(editFld.html());
