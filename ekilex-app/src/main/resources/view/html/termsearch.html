@@ -75,7 +75,8 @@
     <div th:data-id="${meaningId}" id="details_div"
       th:with="isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.meaningId, ''MEANING'', ''DATASET:CRUD'')')},
                isMeaningLexemeCrudGranted=${#vars.permDataUtil.isMeaningLexemeCrudGranted(#vars.meaningId, #vars.sessionBean)},
-               isMeaningAnyLexemeCrudGranted=${#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaningId)}">
+               isMeaningAnyLexemeCrudGranted=${#vars.permDataUtil.isMeaningAnyLexemeCrudGranted(#vars.meaningId)},
+               isMeaningReadGranted=${#authorization.expression('hasPermission(#vars.meaningId, ''MEANING'', ''DATASET:READ'')')}">
       <div th:replace="termdialog :: add_meaning_data_dlg"></div>
       <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
       <div th:replace="termdialog :: add_definition_dlg"></div>
@@ -123,12 +124,12 @@
                 data-toggle="modal"
                 data-target="#meaningLifecycleLogDlg"
                 class="btn btn-secondary btn-sm  ml-4"
-                sec:authorize="${#vars.isMeaningCrudGranted}">Tegevuste logi</a>
+                sec:authorize="${#vars.isMeaningReadGranted}">Tegevuste logi</a>
               <a th:href="@{'/meaningprocesslog:' + ${meaningId}}"
                 data-toggle="modal"
                 data-target="#processLogDlg"
                 class="btn btn-secondary btn-sm"
-                sec:authorize="${#vars.isMeaningCrudGranted}">Menetluse logi</a>
+                sec:authorize="${#vars.isMeaningReadGranted}">Menetluse logi</a>
               <button type="button" class="btn badge badge-secondary"
                 title="Lisa kirje menetluse logisse"
                 data-toggle="modal"

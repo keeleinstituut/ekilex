@@ -60,13 +60,25 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
 
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+
+		// required authority
+		Authority requiredAuthority = parse(permission);
+		AuthorityItem requiredAuthItem = requiredAuthority.getAuthItem();
+		List<String> requiredAuthOps = requiredAuthority.getAuthOps();
+
+		if (requiredAuthOps.contains(AuthorityOperation.READ.name())) {
+			boolean isMaster = user.isMaster();
+			if (isMaster) {
+				return true;
+			}
+		}
+
 		DatasetPermission userRole = getUserRole();
 		if (userRole == null) {
 			return false;
 		}
-
-		EkiUser user = (EkiUser) authentication.getPrincipal();
-		Long userId = user.getId();
 
 		// provided user role
 		String providedDatasetCode = userRole.getDatasetCode();
@@ -74,31 +86,23 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		AuthorityItem providedAuthItem = userRole.getAuthItem();
 		String providedAuthLang = userRole.getAuthLang();
 
-		// required authority
 		Long entityId = Long.valueOf(targetId.toString());
-		Authority requiredAuthority = parse(permission);
-		AuthorityItem requiredAuthItem = requiredAuthority.getAuthItem();
-		List<String> requiredAuthOps = requiredAuthority.getAuthOps();
 		boolean isPermGranted = false;
 
-		if (StringUtils.equals(LifecycleEntity.WORD.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForWord(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
-		} else if (StringUtils.equals(LifecycleEntity.MEANING.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
-		} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
-			if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
+		if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
+			if (StringUtils.equals(LifecycleEntity.WORD.name(), targetType)) {
+				isPermGranted = permissionDbService.isGrantedForWord(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
+			} else if (StringUtils.equals(LifecycleEntity.MEANING.name(), targetType)) {
+				isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
+			} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
 				isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, providedDatasetCode);
-			}
-		} else if (StringUtils.equals(LifecycleEntity.DEFINITION.name(), targetType)) {
-			if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
+			} else if (StringUtils.equals(LifecycleEntity.DEFINITION.name(), targetType)) {
 				isPermGranted = permissionDbService.isGrantedForDefinition(entityId, providedDatasetCode, providedAuthLang);
-			}
-		} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
-			if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
+			} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
 				isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, providedDatasetCode, providedAuthLang);
+			} else if (StringUtils.equals(LifecycleEntity.SOURCE.name(), targetType)) {
+				isPermGranted = permissionDbService.isGrantedForSource(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
 			}
-		} else if (StringUtils.equals(LifecycleEntity.SOURCE.name(), targetType)) {
-			isPermGranted = permissionDbService.isGrantedForSource(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
 		}
 
 		//logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\" granted: {}", userId, targetId, targetType, permission, isPermGranted);
@@ -126,9 +130,15 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		AuthorityOperation authOp = AuthorityOperation.valueOf(perms[1]);
 		List<String> authOps = new ArrayList<>();
 		authOps.add(authOp.name());
-		// if crud is required, owner is also pass
-		if (AuthorityItem.DATASET.equals(authItem) && AuthorityOperation.CRUD.equals(authOp)) {
-			authOps.add(AuthorityOperation.OWN.name());
+		if (AuthorityItem.DATASET.equals(authItem)) {
+			if (AuthorityOperation.CRUD.equals(authOp)) {
+				// if crud is required, owner is also pass
+				authOps.add(AuthorityOperation.OWN.name());
+			} else if (AuthorityOperation.READ.equals(authOp)) {
+				// if read is required, crud and owner is also pass
+				authOps.add(AuthorityOperation.CRUD.name());
+				authOps.add(AuthorityOperation.OWN.name());
+			}
 		}
 		return new Authority(authItem, authOps);
 	}

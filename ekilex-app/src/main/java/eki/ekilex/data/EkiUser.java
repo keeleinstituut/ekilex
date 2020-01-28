@@ -29,6 +29,8 @@ public class EkiUser implements Principal, Serializable {
 
 	private boolean admin;
 
+	private boolean master;
+
 	private Boolean enabled;
 
 	private List<DatasetPermission> datasetPermissions;
@@ -95,6 +97,14 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public boolean isMaster() {
+		return master;
+	}
+
+	public void setMaster(boolean master) {
+		this.master = master;
 	}
 
 	public Boolean getEnabled() {

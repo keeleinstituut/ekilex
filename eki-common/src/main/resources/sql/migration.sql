@@ -38,4 +38,6 @@ add column preferred_biling_lex_meaning_word_langs char(3) array;
 alter table dataset add column is_superior boolean default false;
 update dataset set is_superior = true where code = 'sss';
 
---> kuni siiani testis olemas 21.01.2020
+alter table eki_user add column is_master boolean default false;
+
+--> kuni siiani testis olemas 28.01.2020

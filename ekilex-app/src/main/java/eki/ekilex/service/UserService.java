@@ -217,6 +217,12 @@ public class UserService implements WebConstant {
 		userDbService.setAdmin(userId, isAdmin);
 	}
 
+	@PreAuthorize("principal.admin")
+	@Transactional
+	public void setMaster(Long userId, boolean isMaster) {
+		userDbService.setMaster(userId, isMaster);
+	}
+
 	@Transactional
 	public void enableUser(Long userId, boolean enable) {
 		userDbService.enableUser(userId, enable);
