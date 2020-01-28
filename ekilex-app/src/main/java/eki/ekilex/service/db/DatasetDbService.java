@@ -129,7 +129,7 @@ public class DatasetDbService {
 
 		// delete meanings
 		if (CollectionUtils.isNotEmpty(meaningIds)) {
-			create.deleteFrom(MEANING).where(MEANING.ID.in(wordIds)).execute();
+			create.deleteFrom(MEANING).where(MEANING.ID.in(meaningIds)).execute();
 		}
 
 		// delete process logs
