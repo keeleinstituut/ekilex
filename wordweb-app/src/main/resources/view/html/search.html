@@ -35,32 +35,29 @@
   <div class="container-fluid homonym-page mt-3 bottom-gutter">
     <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
       <div class="col offset-1 lg-max-noneset">
-        <span th:text="#{label.word.rus.not.found}">Ei leidnud midagi. Otsi eesti sõna tähendust eesti-eesti osast</span>
+        <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
       </div>
     </div>
     <div class="container search-results-header px-0" th:if="${wordsData.resultsExist}">
       <div class="d-flex flex-row-reverse flex-md-row align-items-start align-items-md-center pb-3">
         <div class="mr-2 hide-with-details">
-          <span class="mr-2">Leiti</span>
-          <span>5 tulemust</span>
+          <span class="mr-2" th:text="#{|label.result.count|(${wordsData.resultCount})}">Leiti 5 tulemust</span>
         </div>
         <div class="border-left mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details">
           <label class="mr-2 my-0 p-0">Näita tulemustes</label>
           <div class="dropdown">
             <button class="btn btn-link dropdown-toggle p-0" type="button" id="destinLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Kõik keeled
+              <span id="selected-langs" th:text="${selectedLangsStr}"></span>
             </button>
             <div class="dropdown-menu px-3" aria-labelledby="destinLangMenuButton">
-              <a id="destin-lang-all" data-lang="*" class="active dropdown-item px-2 py-1" href="#">Kõik keeled</a>
-              <div class="dropdown-divider"></div>
-              <a id="destin-lang-est" data-lang="est" class="dropdown-item px-2 py-1" href="#">Eesti keel</a>
-              <a id="destin-lang-eng" data-lang="eng" class="dropdown-item px-2 py-1" href="#">Inglise keel</a>
-              <a id="destin-lang-rus" data-lang="rus" class="dropdown-item px-2 py-1" href="#">Vene keel</a>
-              <a id="destin-lang-other" data-lang="other" class="dropdown-item px-2 py-1" href="#">Muud keeled</a>
+              <th:block th:each="langElem : ${langFilter}">
+                <a href="#" th:id="${'destin-lang-' + langElem.code}" th:data-lang="${langElem.code}" th:text="${langElem.value}"
+                   class="dropdown-item px-2 py-1" th:classappend="${langElem.selected ? 'active' : ''}" >Keel</a>
+                <div class="dropdown-divider" th:if="${langElem.addSeparator}"></div>
+              </th:block>
             </div>
           </div>
         </div>
-
         <div class="pl-2 ml-2 border-left homonym-innerwrap show-with-details" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
           <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
           <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
@@ -96,14 +93,21 @@
       </div>
       <div class="word-details"></div>
     </main>
-    <div  class="row word-details" th:fragment="worddetails" th:if="${wordData.lexResultsExist}">
+    <div class="row word-details" th:fragment="worddetailsempty" th:if="${(wordData.word != null) && !wordData.lexResultsExist}">
+      <div class="col-12 pt-2 ml-2">
+        <div class="row">
+          <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>
+        </div>
+      </div>
+    </div>
+    <div class="row word-details" th:fragment="worddetails" th:if="${(wordData.word != null) && wordData.lexResultsExist}">
       <div class="col-12  d-md-block">
         <div class="row">
           <div class="col-md-7 col-lg-8 main-data">
             <div class="row">
               <div class="col-12 content-title">
                 <h3>
-                  <span class="additional-meta" th:text="${viewUtil.getLangIso2(wordData.word.lang)}"></span>
+                  <span class="additional-meta" th:text="${viewUtil.getLangIso2(wordData.word.lang)}" th:title="${viewUtil.getLangLabel(wordData.word.lang)}"></span>
                   <span class="homonym-name" th:classappend="${wordData.word.foreignWord ? 'font-italic' : ''}" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
                   <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
                   <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableAudioFile != null}"
@@ -120,7 +124,6 @@
                   <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
                     <span class="tag" th:text="${summarisedPos.value}"></span>
                   </th:block>
-
                 </h3>
                 <div th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
                   <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
@@ -351,7 +354,6 @@
   </div>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
-  	var destinLang = /*[[${sessionBean.destinLang}]]*/"*";
   	var currentPage = /*[[@{/search}]]*/"/search";
   	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';

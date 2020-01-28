@@ -9,7 +9,6 @@ import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
 import eki.wordweb.data.db.udt.records.TypeGovernmentRecord;
 import eki.wordweb.data.db.udt.records.TypeGrammarRecord;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 import eki.wordweb.data.db.udt.records.TypePublicNoteRecord;
 import eki.wordweb.data.db.udt.records.TypeUsageRecord;
@@ -45,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 1669105773;
+    private static final long serialVersionUID = -2048980476;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -156,14 +155,14 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     public final TableField<MviewWwLexemeRecord, TypeUsageRecord[]> USAGES = createField("usages", eki.wordweb.data.db.udt.TypeUsage.TYPE_USAGE.getDataType().getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_lexeme.lang_complexities</code>.
-     */
-    public final TableField<MviewWwLexemeRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField("lang_complexities", eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
-
-    /**
      * The column <code>public.mview_ww_lexeme.od_lexeme_recommendations</code>.
      */
     public final TableField<MviewWwLexemeRecord, String[]> OD_LEXEME_RECOMMENDATIONS = createField("od_lexeme_recommendations", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.lang_filter</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String[]> LANG_FILTER = createField("lang_filter", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_lexeme</code> table reference
@@ -211,7 +210,7 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_COMPLEXITY_IDX, Indexes.MVIEW_WW_LEXEME_DATASET_TYPE_IDX, Indexes.MVIEW_WW_LEXEME_LEXEME_ID_IDX, Indexes.MVIEW_WW_LEXEME_MEANING_ID_IDX, Indexes.MVIEW_WW_LEXEME_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_COMPLEXITY_IDX, Indexes.MVIEW_WW_LEXEME_DATASET_TYPE_IDX, Indexes.MVIEW_WW_LEXEME_LANG_FILTER_GIN_IDX, Indexes.MVIEW_WW_LEXEME_LEXEME_ID_IDX, Indexes.MVIEW_WW_LEXEME_MEANING_ID_IDX, Indexes.MVIEW_WW_LEXEME_WORD_ID_IDX);
     }
 
     /**

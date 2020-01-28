@@ -12,6 +12,7 @@ import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.DisplayColloc;
+import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
@@ -22,20 +23,44 @@ public class ViewUtil implements WebConstant, SystemConstant {
 	@Autowired
 	private CommonDataService commonDataService;
 
-	private Map<String, String> languageIso2Map = null;
+	private Map<String, LanguageData> langDataMap = null;
 
 	public String getLangIso2(String langIso3) {
 		if (StringUtils.isBlank(langIso3)) {
 			return "-";
 		}
-		if (languageIso2Map == null) {
-			languageIso2Map = commonDataService.getLangIso2Map();
+		LanguageData langData = getLangData(langIso3);
+		if (langData == null) {
+			return "?";
 		}
-		String langIso2 = languageIso2Map.get(langIso3);
+		String langIso2 = langData.getCodeIso2();
 		if (StringUtils.isBlank(langIso2)) {
 			return "?";
 		}
 		return langIso2;
+	}
+
+	public String getLangLabel(String langIso3) {
+		if (StringUtils.isBlank(langIso3)) {
+			return "-";
+		}
+		LanguageData langData = getLangData(langIso3);
+		if (langData == null) {
+			return "?";
+		}
+		String label = langData.getLabel();
+		if (StringUtils.isBlank(label)) {
+			return "?";
+		}
+		return label;
+	}
+
+	private LanguageData getLangData(String langIso3) {
+		if (langDataMap == null) {
+			langDataMap = commonDataService.getLangDataMap();
+		}
+		LanguageData langData = langDataMap.get(langIso3);
+		return langData;
 	}
 
 	public String getTooltipHtml(DisplayColloc colloc) {
@@ -100,24 +125,25 @@ public class ViewUtil implements WebConstant, SystemConstant {
 	}
 
 	public String getSearchUri(SessionBean sessionBean, String word, Integer homonymNr) {
-		
-		String destinLang = sessionBean.getDestinLang();
+		List<String> destinLangs = sessionBean.getDestinLangs();
+		String destinLangsStr = StringUtils.join(destinLangs, LANG_FILTER_SEPARATOR);
 		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, word, destinLang, homonymNr, searchMode);
+		String uri = composeSearchUri(sessionBean, word, destinLangsStr, homonymNr, searchMode);
 		return uri;
 	}
 
 	public String getSearchUri(SessionBean sessionBean, String word) {
-		String destinLang = sessionBean.getDestinLang();
+		List<String> destinLangs = sessionBean.getDestinLangs();
+		String destinLangsStr = StringUtils.join(destinLangs, LANG_FILTER_SEPARATOR);
 		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, word, destinLang, null, searchMode);
+		String uri = composeSearchUri(sessionBean, word, destinLangsStr, null, searchMode);
 		return uri;
 	}
 
-	private String composeSearchUri(SessionBean sessionBean, String word, String destinLang, Integer homonymNr, String searchMode) {
+	private String composeSearchUri(SessionBean sessionBean, String word, String destinLangsStr, Integer homonymNr, String searchMode) {
 
 		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
-		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLang + "/" + searchMode + "/" + encodedWord;
+		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLangsStr + "/" + searchMode + "/" + encodedWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}

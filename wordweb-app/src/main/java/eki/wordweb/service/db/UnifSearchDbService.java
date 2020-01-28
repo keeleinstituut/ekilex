@@ -13,11 +13,13 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
@@ -40,7 +42,7 @@ import eki.wordweb.data.db.tables.MviewWwWordSearch;
 @Component
 public class UnifSearchDbService extends AbstractSearchDbService {
 
-	public List<Word> getWords(String searchWord, DataFilter dataFilter) {
+	public List<Word> getWords(String searchWord) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
@@ -111,11 +113,17 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 
 	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {
 
+		List<String> destinLangs = dataFilter.getDestinLangs();
+
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
 
 		Condition where = l.WORD_ID.eq(wordId);
+		if (CollectionUtils.isNotEmpty(destinLangs)) {
+			String[] destinLangsArr = destinLangs.toArray(new String[0]);
+			where = where.and(PostgresDSL.arrayOverlap(l.LANG_FILTER, destinLangsArr));
+		}
 
 		return create
 				.select(
@@ -184,7 +192,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 
 		MviewWwCollocation c = MVIEW_WW_COLLOCATION.as("c");
 
-		Condition where = c.WORD_ID.eq(wordId);
+		Condition where = c.WORD_ID.eq(wordId).and(c.COMPLEXITY.eq(complexity.name()));
 
 		return create
 				.select(

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,6 +13,7 @@ import eki.common.constant.Complexity;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.ComplexityType;
+import eki.wordweb.data.LangType;
 import eki.wordweb.data.TypeMeaningWord;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordTypeData;
@@ -78,5 +80,34 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 			return true;
 		}
 		return StringUtils.startsWith(dataComplexity.name(), lexComplexity.name());
+	}
+
+	protected <T extends LangType> List<T> filter(List<T> list, String wordLang, List<String> destinLangs) {
+		if (CollectionUtils.isEmpty(list)) {
+			return list;
+		}
+		if (CollectionUtils.isEmpty(destinLangs)) {
+			return list;
+		}
+		return list.stream().filter(elem -> isLangFilterMatch(wordLang, elem.getLang(), destinLangs)).collect(Collectors.toList());
+	}
+
+	protected boolean isLangFilterMatch(String wordLang, String dataLang, List<String> destinLangs) {
+		if (CollectionUtils.isEmpty(destinLangs)) {
+			return true;
+		}
+		if (destinLangs.contains(DESTIN_LANG_ALL)) {
+			return true;
+		}
+		if (StringUtils.equals(wordLang, dataLang)) {
+			return true;
+		}
+		boolean isDataLangSupportedFilterLang = ArrayUtils.contains(SUPPORTED_DESTIN_LANGS, dataLang);
+		if (isDataLangSupportedFilterLang && destinLangs.contains(dataLang)) {
+			return true;
+		} else if (!isDataLangSupportedFilterLang && destinLangs.contains(DESTIN_LANG_OTHER)) {
+			return true;
+		}
+		return false;
 	}
 }

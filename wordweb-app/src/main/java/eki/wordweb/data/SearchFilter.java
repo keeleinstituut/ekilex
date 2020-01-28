@@ -1,5 +1,7 @@
 package eki.wordweb.data;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class SearchFilter extends AbstractDataObject {
@@ -8,7 +10,7 @@ public class SearchFilter extends AbstractDataObject {
 
 	private String searchWord;
 
-	private String destinLang;
+	private List<String> destinLangs;
 
 	private Integer homonymNr;
 
@@ -26,12 +28,12 @@ public class SearchFilter extends AbstractDataObject {
 		this.searchWord = searchWord;
 	}
 
-	public String getDestinLang() {
-		return destinLang;
+	public List<String> getDestinLangs() {
+		return destinLangs;
 	}
 
-	public void setDestinLang(String destinLang) {
-		this.destinLang = destinLang;
+	public void setDestinLangs(List<String> destinLangs) {
+		this.destinLangs = destinLangs;
 	}
 
 	public Integer getHomonymNr() {

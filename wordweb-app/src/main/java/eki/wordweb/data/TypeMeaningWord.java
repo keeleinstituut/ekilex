@@ -5,7 +5,7 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
 
-public class TypeMeaningWord extends WordTypeData implements ComplexityType {
+public class TypeMeaningWord extends WordTypeData implements ComplexityType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -67,6 +67,7 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 		this.mwLexemeId = mwLexemeId;
 	}
 
+	@Override
 	public Complexity getComplexity() {
 		return mwLexComplexity;
 	}
@@ -151,6 +152,7 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 		this.homonymNr = homonymNr;
 	}
 
+	@Override
 	public String getLang() {
 		return lang;
 	}

@@ -1,7 +1,11 @@
 package eki.wordweb.web.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,14 +14,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
+import eki.wordweb.data.LanguageFilterElement;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
+import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
 import eki.wordweb.web.util.UserAgentUtil;
 
 public abstract class AbstractController implements WebConstant, SystemConstant {
 
 	protected static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 10;
+
+	@Autowired
+	private CommonDataService commonDataService;
 
 	@Value("${speech.recognition.service.url:}")
 	protected String speechRecognitionServiceUrl;
@@ -52,13 +61,35 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		} else {
 			sessionBean = getSessionBean(model);
 		}
-		if (StringUtils.isBlank(sessionBean.getDestinLang())) {
-			sessionBean.setDestinLang(DESTIN_LANG_ALL);
-		}
+
+		// search mode
 		if (StringUtils.isBlank(sessionBean.getSearchMode())) {
 			sessionBean.setSearchMode(SEARCH_MODE_DETAIL);
 		}
+
+		// lang filter
+		List<LanguageFilterElement> langFilter = commonDataService.getLangFilter(DISPLAY_LANG);
+		List<String> destinLangs = sessionBean.getDestinLangs();
+		List<String> selectedLangs = new ArrayList<>();
+		if (CollectionUtils.isEmpty(destinLangs)) {
+			destinLangs = new ArrayList<>();
+			destinLangs.add(DESTIN_LANG_ALL);
+			sessionBean.setDestinLangs(destinLangs);
+		}
+		for (LanguageFilterElement langFilterElement : langFilter) {
+			boolean isSelected = destinLangs.contains(langFilterElement.getCode());
+			langFilterElement.setSelected(isSelected);
+			if (isSelected) {
+				selectedLangs.add(langFilterElement.getValue());
+			}
+		}
+		String destinLangsStr = StringUtils.join(destinLangs, LANG_FILTER_SEPARATOR);
+		String selectedLangsStr = StringUtils.join(selectedLangs, ", ");
+
 		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
+		model.addAttribute("langFilter", langFilter);
+		model.addAttribute("destinLangsStr", destinLangsStr);
+		model.addAttribute("selectedLangsStr", selectedLangsStr);
 	}
 
 	protected boolean sessionBeanNotPresent(Model model) {

@@ -5,18 +5,6 @@ public interface WebConstant {
 	//TODO should be set by defaults and/or ui
 	String DISPLAY_LANG = "est";
 
-	String DESTIN_LANG_ALL = "*";
-
-	String DESTIN_LANG_EST = "est";
-
-	String DESTIN_LANG_ENG = "eng";
-
-	String DESTIN_LANG_RUS = "rus";
-
-	String DESTIN_LANG_OTHER = "other";
-
-	String[] DESTIN_LANGS = new String[] {DESTIN_LANG_ALL, DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS, DESTIN_LANG_OTHER};
-
 	String HOME_PAGE = "index";
 
 	String SEARCH_PAGE = "search";
@@ -104,4 +92,6 @@ public interface WebConstant {
 	Integer SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL = 2;
 
 	String ALTERNATIVE_FORMS_SEPARATOR = " ~ ";
+
+	char LANG_FILTER_SEPARATOR = ',';
 }

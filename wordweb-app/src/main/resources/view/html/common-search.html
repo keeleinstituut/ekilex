@@ -7,7 +7,7 @@
       <form th:action="@{/search}" th:method="post" name="searchForm">
         <div>
           <input type="text" id="search" role="search" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
-          <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
+          <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
           <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
         </div>
         <div class="extra-buttons">
@@ -48,9 +48,11 @@
         <span th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></span>
       </div>
       <div th:if="${lexeme.emptyLexeme}">
-        <span th:text="#{label.word.has.no.description}">Selle sõna kirjeldust veel ei ole. Seni vaata</span>
-        <a th:href="@{${viewUtil.getSearchUri(sessionBean, wordData.word.relatedWords.get(0).word)}}" th:if="${not #lists.isEmpty(wordData.word.relatedWords)}"
-           th:text="${wordData.word.relatedWords.get(0).word}"> </a>
+        <span th:text="#{label.word.has.no.description}">Selle sõna kirjeldust veel ei ole</span>
+        <span th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
+          <span th:text="#{label.word.suggest}">Seni vaata</span>
+          <a th:href="@{${viewUtil.getSearchUri(sessionBean, wordData.word.relatedWords.get(0).word)}}" th:text="${wordData.word.relatedWords.get(0).word}"> </a>
+        </span>
       </div>
       <div class="definition-row">
         <th:block th:if="${not #lists.isEmpty(lexeme.poses) && !wordData.word.singlePos}">
@@ -65,7 +67,7 @@
         <span class="domain" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
         <div th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
           <div th:each="definitionEntry : ${lexeme.definitionsByLang}">
-            <span class="additional-meta" th:text="${viewUtil.getLangIso2(definitionEntry.key)}"></span>
+            <span class="additional-meta" th:text="${viewUtil.getLangIso2(definitionEntry.key)}" th:title="${viewUtil.getLangLabel(definitionEntry.key)}"></span>
             <span th:each="definition,definitionIter : ${definitionEntry.value}">
               <span class="definition-value" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
             </span>
@@ -100,7 +102,7 @@
       <div class="matches">
         <div class="additional-meta" th:if="${not #maps.isEmpty(lexeme.destinLangMatchWordsByLang)}">
           <div th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
-            <span th:text="${viewUtil.getLangIso2(meaningWordEntry.key)}"></span>
+            <span th:text="${viewUtil.getLangIso2(meaningWordEntry.key)}" th:title="${viewUtil.getLangLabel(meaningWordEntry.key)}"></span>
             <span th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
               <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
                 <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>

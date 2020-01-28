@@ -3,7 +3,7 @@ package eki.wordweb.data;
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
-public class TypeDefinition extends AbstractDataObject implements ComplexityType {
+public class TypeDefinition extends AbstractDataObject implements ComplexityType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,6 +51,7 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 		this.valuePrese = valuePrese;
 	}
 
+	@Override
 	public String getLang() {
 		return lang;
 	}

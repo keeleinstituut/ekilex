@@ -169,8 +169,8 @@ dblink(
 	grammars type_grammar array,
 	governments type_government array,
 	usages type_usage array,
-	lang_complexities type_lang_complexity array,
-	od_lexeme_recommendations text array
+	od_lexeme_recommendations text array,
+	lang_filter varchar(10) array
 );
 
 create materialized view mview_ww_collocation as
@@ -295,6 +295,7 @@ create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_lexeme_dataset_type_idx on mview_ww_lexeme (dataset_type);
 create index mview_ww_lexeme_complexity_idx on mview_ww_lexeme (complexity);
+create index mview_ww_lexeme_lang_filter_gin_idx on mview_ww_lexeme using gin(lang_filter);
 create index mview_ww_collocation_lexeme_id_idx on mview_ww_collocation (lexeme_id);
 create index mview_ww_collocation_word_id_idx on mview_ww_collocation (word_id);
 create index mview_ww_collocation_complexity_idx on mview_ww_collocation (complexity);

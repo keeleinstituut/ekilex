@@ -8,7 +8,7 @@ import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-public class TypeUsage extends AbstractDataObject implements ComplexityType {
+public class TypeUsage extends AbstractDataObject implements ComplexityType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -62,6 +62,11 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType {
 		this.usagePrese = usagePrese;
 	}
 
+	@Override
+	public String getLang() {
+		return usageLang;
+	}
+
 	public String getUsageLang() {
 		return usageLang;
 	}
@@ -70,6 +75,7 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType {
 		this.usageLang = usageLang;
 	}
 
+	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}

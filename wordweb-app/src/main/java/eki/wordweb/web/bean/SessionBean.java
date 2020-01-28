@@ -1,12 +1,14 @@
 package eki.wordweb.web.bean;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class SessionBean extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String destinLang;
+	private List<String> destinLangs;
 
 	private String searchMode;
 
@@ -16,12 +18,12 @@ public class SessionBean extends AbstractDataObject {
 
 	private Integer recentHomonymNr;
 
-	public String getDestinLang() {
-		return destinLang;
+	public List<String> getDestinLangs() {
+		return destinLangs;
 	}
 
-	public void setDestinLang(String destinLang) {
-		this.destinLang = destinLang;
+	public void setDestinLangs(List<String> destinLangs) {
+		this.destinLangs = destinLangs;
 	}
 
 	public String getSearchMode() {

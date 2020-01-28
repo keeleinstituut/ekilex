@@ -32,8 +32,8 @@ import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
-import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordRelationTuple;
+import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.db.UnifSearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
@@ -103,10 +103,10 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 	}
 
 	@Transactional
-	public WordsData getWords(String searchWord, String destinLang, Integer homonymNr, String searchMode) {
+	public WordsData getWords(String searchWord, Integer homonymNr, List<String> destinLangs, String searchMode) {
 
-		DataFilter dataFilter = getDataFilter(destinLang, searchMode);
-		List<Word> allWords = unifSearchDbService.getWords(searchWord, dataFilter);
+		DataFilter dataFilter = getDataFilter(destinLangs, searchMode);
+		List<Word> allWords = unifSearchDbService.getWords(searchWord);
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, dataFilter);
@@ -116,18 +116,20 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 				.collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
 			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(Word::getWord).distinct().collect(Collectors.toList());
-			boolean isSingleResult = CollectionUtils.size(fullMatchWords) == 1;
-			return new WordsData(fullMatchWords, formMatchWords, searchMode, resultsExist, isSingleResult);
+			int resultCount = CollectionUtils.size(fullMatchWords);
+			boolean isSingleResult = resultCount == 1;
+			return new WordsData(fullMatchWords, formMatchWords, searchMode, resultCount, resultsExist, isSingleResult);
 		}
-		boolean isSingleResult = CollectionUtils.size(allWords) == 1;
-		return new WordsData(allWords, Collections.emptyList(), searchMode, resultsExist, isSingleResult);
+		int resultCount = CollectionUtils.size(allWords);
+		boolean isSingleResult = resultCount == 1;
+		return new WordsData(allWords, Collections.emptyList(), searchMode, resultCount, resultsExist, isSingleResult);
 	}
 
 	@Transactional
-	public WordData getWordData(Long wordId, String destinLang, String displayLang, String searchMode) {
+	public WordData getWordData(Long wordId, List<String> destinLangs, String searchMode, String displayLang) {
 
 		// query params
-		DataFilter dataFilter = getDataFilter(destinLang, searchMode);
+		DataFilter dataFilter = getDataFilter(destinLangs, searchMode);
 		Integer maxDisplayLevel = dataFilter.getMaxDisplayLevel();
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 
@@ -155,15 +157,15 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
 			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId, lexComplexity);
 			compensateNullWords(wordId, collocTuples);
-			lexemeConversionUtil.enrich(wordLang, lexemes, lexemeMeaningTuples, allRelatedWords, langOrderByMap, lexComplexity, displayLang);
-			collocConversionUtil.enrich(wordId, lexemes, collocTuples, dataFilter, displayLang);
+			lexemeConversionUtil.enrich(DatasetType.LEX, wordLang, lexLexemes, lexemeMeaningTuples, allRelatedWords, langOrderByMap, dataFilter, displayLang);
+			collocConversionUtil.enrich(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 		}
 
 		// term conv
 		List<Lexeme> termLexemes = lexemeGroups.get(DatasetType.TERM);
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
-			lexemeConversionUtil.enrich(wordLang, termLexemes, lexemeMeaningTuples, allRelatedWords, langOrderByMap, null, displayLang);
+			lexemeConversionUtil.enrich(DatasetType.TERM, wordLang, termLexemes, lexemeMeaningTuples, allRelatedWords, langOrderByMap, dataFilter, displayLang);
 		}
 
 		// resulting flags
@@ -219,7 +221,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		}
 	}
 
-	private DataFilter getDataFilter(String destinLang, String searchMode) {
+	private DataFilter getDataFilter(List<String> destinLangs, String searchMode) {
 		Complexity lexComplexity = null;
 		try {
 			lexComplexity = Complexity.valueOf(searchMode.toUpperCase());
@@ -230,7 +232,8 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		if (Complexity.SIMPLE.equals(lexComplexity)) {
 			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		}
-		DataFilter dataFilter = new DataFilter(destinLang, lexComplexity, null, maxDisplayLevel);
+		List<String> destinLangsClean = destinLangs.stream().filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL)).collect(Collectors.toList());
+		DataFilter dataFilter = new DataFilter(destinLangsClean, lexComplexity, maxDisplayLevel);
 		return dataFilter;
 	}
 }

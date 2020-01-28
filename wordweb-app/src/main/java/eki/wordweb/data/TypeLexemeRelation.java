@@ -4,7 +4,7 @@ import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-public class TypeLexemeRelation extends AbstractDataObject implements ComplexityType {
+public class TypeLexemeRelation extends AbstractDataObject implements ComplexityType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -48,6 +48,11 @@ public class TypeLexemeRelation extends AbstractDataObject implements Complexity
 		this.word = word;
 	}
 
+	@Override
+	public String getLang() {
+		return wordLang;
+	}
+
 	public String getWordLang() {
 		return wordLang;
 	}
@@ -64,6 +69,7 @@ public class TypeLexemeRelation extends AbstractDataObject implements Complexity
 		this.homonymNr = homonymNr;
 	}
 
+	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}

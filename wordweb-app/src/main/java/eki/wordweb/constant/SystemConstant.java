@@ -4,6 +4,20 @@ public interface SystemConstant {
 
 	String UTF_8 = "UTF-8";
 
+	String DESTIN_LANG_ALL = "all";
+
+	String DESTIN_LANG_EST = "est";
+
+	String DESTIN_LANG_ENG = "eng";
+
+	String DESTIN_LANG_RUS = "rus";
+
+	String DESTIN_LANG_OTHER = "other";
+
+	String[] SUPPORTED_DESTIN_LANGS = new String[] {DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS};
+
+	String[] SUPPORTED_DESTIN_LANG_FILTERS = new String[] {DESTIN_LANG_ALL, DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS, DESTIN_LANG_OTHER};
+
 	String DATASET_TYPE_LEX = "lex";
 
 	String DATASET_TYPE_TERM = "term";
@@ -42,7 +56,7 @@ public interface SystemConstant {
 
 	String DEFAULT_CLASSIF_VALUE_TYPE = "wordweb";
 
-	String CLASSIF_LABEL_TYPE_ISO2 = "iso2";
+	String CLASSIF_VALUE_TYPE_ISO2 = "iso2";
 
 	String WORD_SEARCH_GROUP_WORD = "word";
 

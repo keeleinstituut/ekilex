@@ -19,6 +19,7 @@ public class TypeGovernment extends AbstractDataObject implements ComplexityType
 		this.value = value;
 	}
 
+	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}

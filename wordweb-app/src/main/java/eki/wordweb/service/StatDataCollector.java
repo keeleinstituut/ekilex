@@ -4,8 +4,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -29,14 +31,14 @@ public class StatDataCollector {
 		this.exceptionCountMap = new HashMap<>();
 	}
 
-	public synchronized void addSearchStat(String destinLang, String searchMode, boolean resultsExist, boolean isIeUser) {
-		if (StringUtils.isBlank(destinLang)) {
+	public synchronized void addSearchStat(List<String> destinLangs, String searchMode, boolean resultsExist, boolean isIeUser) {
+		if (CollectionUtils.isEmpty(destinLangs)) {
 			return;
 		}
 		if (StringUtils.isBlank(searchMode)) {
 			return;
 		}
-		String searchCountKey = composeSearchCountKey(destinLang, searchMode, resultsExist, isIeUser);
+		String searchCountKey = composeSearchCountKey(destinLangs, searchMode, resultsExist, isIeUser);
 		Count langSearchCount = searchCountMap.get(searchCountKey);
 		if (langSearchCount == null) {
 			langSearchCount = new Count();
@@ -51,9 +53,9 @@ public class StatDataCollector {
 		totalSearchCount.increment();
 	}
 
-	private String composeSearchCountKey(String destinLang, String searchMode, boolean resultsExist, boolean isIeUser) {
+	private String composeSearchCountKey(List<String> destinLangs, String searchMode, boolean resultsExist, boolean isIeUser) {
 		StringBuffer keyBuf = new StringBuffer();
-		keyBuf.append(destinLang);
+		keyBuf.append(destinLangs.toString());
 		keyBuf.append(' ');
 		keyBuf.append(searchMode.toLowerCase());
 		keyBuf.append(' ');

@@ -61,6 +61,7 @@ public class Indexes {
     public static final Index MVIEW_WW_FORM_WORD_IDX = Indexes0.MVIEW_WW_FORM_WORD_IDX;
     public static final Index MVIEW_WW_LEXEME_COMPLEXITY_IDX = Indexes0.MVIEW_WW_LEXEME_COMPLEXITY_IDX;
     public static final Index MVIEW_WW_LEXEME_DATASET_TYPE_IDX = Indexes0.MVIEW_WW_LEXEME_DATASET_TYPE_IDX;
+    public static final Index MVIEW_WW_LEXEME_LANG_FILTER_GIN_IDX = Indexes0.MVIEW_WW_LEXEME_LANG_FILTER_GIN_IDX;
     public static final Index MVIEW_WW_LEXEME_LEXEME_ID_IDX = Indexes0.MVIEW_WW_LEXEME_LEXEME_ID_IDX;
     public static final Index MVIEW_WW_LEXEME_MEANING_ID_IDX = Indexes0.MVIEW_WW_LEXEME_MEANING_ID_IDX;
     public static final Index MVIEW_WW_LEXEME_WORD_ID_IDX = Indexes0.MVIEW_WW_LEXEME_WORD_ID_IDX;
@@ -111,6 +112,7 @@ public class Indexes {
         public static Index MVIEW_WW_FORM_WORD_IDX = Internal.createIndex("mview_ww_form_word_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.WORD }, false);
         public static Index MVIEW_WW_LEXEME_COMPLEXITY_IDX = Internal.createIndex("mview_ww_lexeme_complexity_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.COMPLEXITY }, false);
         public static Index MVIEW_WW_LEXEME_DATASET_TYPE_IDX = Internal.createIndex("mview_ww_lexeme_dataset_type_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.DATASET_TYPE }, false);
+        public static Index MVIEW_WW_LEXEME_LANG_FILTER_GIN_IDX = Internal.createIndex("mview_ww_lexeme_lang_filter_gin_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.LANG_FILTER }, false);
         public static Index MVIEW_WW_LEXEME_LEXEME_ID_IDX = Internal.createIndex("mview_ww_lexeme_lexeme_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.LEXEME_ID }, false);
         public static Index MVIEW_WW_LEXEME_MEANING_ID_IDX = Internal.createIndex("mview_ww_lexeme_meaning_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.MEANING_ID }, false);
         public static Index MVIEW_WW_LEXEME_WORD_ID_IDX = Internal.createIndex("mview_ww_lexeme_word_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.WORD_ID }, false);

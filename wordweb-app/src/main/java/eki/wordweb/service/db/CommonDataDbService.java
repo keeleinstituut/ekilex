@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.TypeDomain;
+import eki.wordweb.data.db.tables.MviewWwClassifier;
 
 @Component
 public class CommonDataDbService implements SystemConstant {
@@ -33,8 +35,7 @@ public class CommonDataDbService implements SystemConstant {
 		if (StringUtils.isBlank(code)) {
 			return null;
 		}
-		Condition where =
-				MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
+		Condition where = MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
 				.and(MVIEW_WW_CLASSIFIER.CODE.eq(code))
 				.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
 				.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE));
@@ -47,8 +48,7 @@ public class CommonDataDbService implements SystemConstant {
 						MVIEW_WW_CLASSIFIER.ORIGIN,
 						MVIEW_WW_CLASSIFIER.CODE,
 						MVIEW_WW_CLASSIFIER.VALUE,
-						MVIEW_WW_CLASSIFIER.LANG
-						)
+						MVIEW_WW_CLASSIFIER.LANG)
 				.from(MVIEW_WW_CLASSIFIER)
 				.where(where)
 				.fetchOne();
@@ -67,8 +67,7 @@ public class CommonDataDbService implements SystemConstant {
 						MVIEW_WW_CLASSIFIER.ORIGIN,
 						MVIEW_WW_CLASSIFIER.CODE,
 						MVIEW_WW_CLASSIFIER.VALUE,
-						MVIEW_WW_CLASSIFIER.LANG
-						)
+						MVIEW_WW_CLASSIFIER.LANG)
 				.from(MVIEW_WW_CLASSIFIER)
 				.where(MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
 						.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
@@ -88,8 +87,7 @@ public class CommonDataDbService implements SystemConstant {
 		if (CollectionUtils.isEmpty(codes)) {
 			return Collections.emptyList();
 		}
-		Condition where =
-				MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
+		Condition where = MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
 				.and(MVIEW_WW_CLASSIFIER.CODE.in(codes))
 				.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
 				.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE));
@@ -102,8 +100,7 @@ public class CommonDataDbService implements SystemConstant {
 						MVIEW_WW_CLASSIFIER.ORIGIN,
 						MVIEW_WW_CLASSIFIER.CODE,
 						MVIEW_WW_CLASSIFIER.VALUE,
-						MVIEW_WW_CLASSIFIER.LANG
-						)
+						MVIEW_WW_CLASSIFIER.LANG)
 				.from(MVIEW_WW_CLASSIFIER)
 				.where(where)
 				.orderBy(MVIEW_WW_CLASSIFIER.ORDER_BY)
@@ -137,22 +134,26 @@ public class CommonDataDbService implements SystemConstant {
 				.from(MVIEW_WW_CLASSIFIER)
 				.where(
 						MVIEW_WW_CLASSIFIER.NAME.eq(ClassifierName.LANGUAGE.name())
-						.and(MVIEW_WW_CLASSIFIER.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
-						.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE))
-						)
+								.and(MVIEW_WW_CLASSIFIER.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
+								.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
 				.fetchMap(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.ORDER_BY);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
-	public Map<String, String> getLangIso2Map() {
+	public Map<String, LanguageData> getLangDataMap() {
+		MviewWwClassifier cllbl = MVIEW_WW_CLASSIFIER.as("cllbl");
+		MviewWwClassifier cliso = MVIEW_WW_CLASSIFIER.as("cliso");
 		return create
-				.select(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.VALUE)
-				.from(MVIEW_WW_CLASSIFIER)
+				.select(cllbl.CODE, cliso.VALUE.as("codeIso2"), cllbl.VALUE.as("label"))
+				.from(cllbl, cliso)
 				.where(
-						MVIEW_WW_CLASSIFIER.NAME.eq(ClassifierName.LANGUAGE.name())
-						.and(MVIEW_WW_CLASSIFIER.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
-						.and(MVIEW_WW_CLASSIFIER.TYPE.eq(CLASSIF_LABEL_TYPE_ISO2))
-						)
-				.fetchMap(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.VALUE);
+						cllbl.NAME.eq(ClassifierName.LANGUAGE.name())
+								.and(cllbl.NAME.eq(cliso.NAME))
+								.and(cllbl.CODE.eq(cliso.CODE))
+								.and(cllbl.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
+								.and(cliso.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
+								.and(cllbl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE))
+								.and(cliso.TYPE.eq(CLASSIF_VALUE_TYPE_ISO2)))
+				.fetchMap(cllbl.CODE, LanguageData.class);
 	}
 }

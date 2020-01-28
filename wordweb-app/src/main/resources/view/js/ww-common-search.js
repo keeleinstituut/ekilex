@@ -333,7 +333,7 @@ $(document).on("keyup", "input[name='searchWord']", function (e) {
 
 $(document).on("click", "a[id^='destin-lang']", function (e) {
 	var destinLang = $(this).attr("data-lang");
-	if (destinLang == "*") {
+	if (destinLang == "all") {
 		$("a[id^='destin-lang']").removeClass("active");
 		$(this).addClass("active");
 	} else {
@@ -347,11 +347,15 @@ $(document).on("click", "a[id^='destin-lang']", function (e) {
 			$(this).addClass("active");
 		}
 	}
-	var destinLangs = $("a[id^='destin-lang'].active").map(function (idx, element) {
+	var destinLangsStr = $("a[id^='destin-lang'].active").map(function (idx, element) {
 		return $(element).attr("data-lang");
 	}).get();
-	//console.log("---> " + destinLangs);
-	//TODO to be continued...
+	var selectedLangs = $("a[id^='destin-lang'].active").map(function (idx, element) {
+		return $(element).text();
+	}).get();
+	$("input[name='destinLangsStr']").val(destinLangsStr);
+	$("#selected-langs").text(selectedLangs);
+	clickSearchIfInputExists();
 });
 
 $(document).on("click", "#toggle-simple", function (e) {

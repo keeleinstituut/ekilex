@@ -169,7 +169,7 @@ public class ClassifierUtil {
 		return classifiers;
 	}
 
-	private List<Classifier> getClassifiers(ClassifierName name, List<String> codes, String lang) {
+	public List<Classifier> getClassifiers(ClassifierName name, List<String> codes, String lang) {
 		if (CollectionUtils.isEmpty(codes)) {
 			return Collections.emptyList();
 		}
