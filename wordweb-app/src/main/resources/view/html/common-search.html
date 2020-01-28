@@ -67,7 +67,7 @@
         <span class="domain" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
         <div th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
           <div th:each="definitionEntry : ${lexeme.definitionsByLang}">
-            <span class="additional-meta" th:text="${viewUtil.getLangIso2(definitionEntry.key)}" th:title="${viewUtil.getLangLabel(definitionEntry.key)}"></span>
+            <span class="additional-meta" th:with="langData=${viewUtil.getLangData(definitionEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
             <span th:each="definition,definitionIter : ${definitionEntry.value}">
               <span class="definition-value" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
             </span>
@@ -102,7 +102,7 @@
       <div class="matches">
         <div class="additional-meta" th:if="${not #maps.isEmpty(lexeme.destinLangMatchWordsByLang)}">
           <div th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
-            <span th:text="${viewUtil.getLangIso2(meaningWordEntry.key)}" th:title="${viewUtil.getLangLabel(meaningWordEntry.key)}"></span>
+            <span th:with="langData=${viewUtil.getLangData(meaningWordEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
             <span th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
               <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
                 <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>

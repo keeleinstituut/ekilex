@@ -12,6 +12,15 @@ public class LanguageData extends AbstractDataObject {
 
 	private String label;
 
+	public LanguageData() {
+	}
+
+	public LanguageData(String code, String codeIso2, String label) {
+		this.code = code;
+		this.codeIso2 = codeIso2;
+		this.label = label;
+	}
+
 	public String getCode() {
 		return code;
 	}

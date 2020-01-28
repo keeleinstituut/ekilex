@@ -25,41 +25,17 @@ public class ViewUtil implements WebConstant, SystemConstant {
 
 	private Map<String, LanguageData> langDataMap = null;
 
-	public String getLangIso2(String langIso3) {
+	public LanguageData getLangData(String langIso3) {
 		if (StringUtils.isBlank(langIso3)) {
-			return "-";
+			return new LanguageData(langIso3, "-", "-");
 		}
-		LanguageData langData = getLangData(langIso3);
-		if (langData == null) {
-			return "?";
-		}
-		String langIso2 = langData.getCodeIso2();
-		if (StringUtils.isBlank(langIso2)) {
-			return "?";
-		}
-		return langIso2;
-	}
-
-	public String getLangLabel(String langIso3) {
-		if (StringUtils.isBlank(langIso3)) {
-			return "-";
-		}
-		LanguageData langData = getLangData(langIso3);
-		if (langData == null) {
-			return "?";
-		}
-		String label = langData.getLabel();
-		if (StringUtils.isBlank(label)) {
-			return "?";
-		}
-		return label;
-	}
-
-	private LanguageData getLangData(String langIso3) {
 		if (langDataMap == null) {
 			langDataMap = commonDataService.getLangDataMap();
 		}
 		LanguageData langData = langDataMap.get(langIso3);
+		if (langData == null) {
+			return new LanguageData(langIso3, "?", "?");
+		}
 		return langData;
 	}
 
