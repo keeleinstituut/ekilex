@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
 
-    private static final long serialVersionUID = -707566634;
+    private static final long serialVersionUID = -161576287;
 
     /**
      * The reference instance of <code>public.type_source_link</code>
@@ -43,6 +43,21 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
     public Class<TypeSourceLinkRecord> getRecordType() {
         return TypeSourceLinkRecord.class;
     }
+
+    /**
+     * The attribute <code>public.type_source_link.ref_owner</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, String> REF_OWNER = createField("ref_owner", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
+
+    /**
+     * The attribute <code>public.type_source_link.owner_id</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, Long> OWNER_ID = createField("owner_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
+
+    /**
+     * The attribute <code>public.type_source_link.source_link_id</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_LINK_ID = createField("source_link_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.source_id</code>.
@@ -63,6 +78,11 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
      * The attribute <code>public.type_source_link.value</code>.
      */
     public static final UDTField<TypeSourceLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
+
+    /**
+     * The attribute <code>public.type_source_link.order_by</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
      * No further instances allowed

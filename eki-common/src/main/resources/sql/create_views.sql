@@ -1,7 +1,7 @@
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_source_link as (source_id bigint, type varchar(100), name text, value text);
+create type type_source_link as (ref_owner varchar(100), owner_id bigint, source_link_id bigint, source_id bigint, type varchar(100), name text, value text, order_by bigint);
 create type type_usage as (
 				usage text,
 				usage_prese text,
@@ -12,8 +12,7 @@ create type type_usage as (
 				usage_definitions text array,
 				od_usage_definitions text array,
 				od_usage_alternatives text array,
-				usage_authors text array,
-				usage_source_links type_source_link array);
+				usage_authors text array);
 create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
@@ -613,8 +612,7 @@ from lexeme l
                           	u.usage_definitions,
                           	u.od_usage_definitions,
                           	u.od_usage_alternatives,
-                          	u.usage_authors,
-                          	null
+                          	u.usage_authors
                           )::type_usage
                           order by u.order_by) usages
                    from (select lf.lexeme_id,
@@ -1133,6 +1131,57 @@ and   exists (select l1.id
               and l1ds.code = l1.dataset_code
               and l1ds.is_public = true)
 group by m1.id;
+
+
+-- source links
+create view view_ww_lexeme_source_link
+as
+select l.word_id,
+       array_agg(row ('LEXEME', lsl.lexeme_id, lsl.id, lsl.source_id, lsl.type, lsl.name, lsl.value, lsl.order_by)::type_source_link order by l.id, lsl.id) source_links
+from lexeme l,
+     dataset ds,
+     lexeme_source_link lsl
+where l.type = 'PRIMARY'
+and   l.process_state_code = 'avalik'
+and   lsl.lexeme_id = l.id
+and   ds.code = l.dataset_code
+and   ds.is_public = true
+group by l.word_id
+order by l.word_id;
+
+create view view_ww_freeform_source_link
+as
+select l.word_id,
+       array_agg(row ('FREEFORM', ffsl.freeform_id, ffsl.id, ffsl.source_id, ffsl.type, ffsl.name, ffsl.value, ffsl.order_by)::type_source_link order by l.id, lff.id, ffsl.id) source_links
+from lexeme l,
+     dataset ds,
+     lexeme_freeform lff,
+     freeform_source_link ffsl
+where l.type = 'PRIMARY'
+and   l.process_state_code = 'avalik'
+and   lff.lexeme_id = l.id
+and   lff.freeform_id = ffsl.freeform_id
+and   ds.code = l.dataset_code
+and   ds.is_public = true
+group by l.word_id
+order by l.word_id;
+
+create view view_ww_definition_source_link
+as
+select d.meaning_id,
+       array_agg(row ('DEFINITION', dsl.definition_id, dsl.id, dsl.source_id, dsl.type, dsl.name, dsl.value, dsl.order_by)::type_source_link order by d.id, dsl.id) source_links
+from lexeme l,
+     dataset ds,
+     definition d,
+     definition_source_link dsl
+where l.type = 'PRIMARY'
+and   l.process_state_code = 'avalik'
+and   l.meaning_id = d.meaning_id
+and   dsl.definition_id = d.id
+and   ds.code = l.dataset_code
+and   ds.is_public = true
+group by d.meaning_id
+order by d.meaning_id;
 
 
 -- lexical decision game data - OK
