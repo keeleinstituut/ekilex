@@ -67,7 +67,7 @@
     </div>
     <main role="main" class="content-panel bg-white container" >
       <div th:if="${wordsData.resultsExist}" class="row border-bottom overflow-hidden homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
-        <ul class="homonym-list">
+        <ul class="homonym-list w-100">
           <li th:each="word : ${wordsData.fullMatchWords}">
             <form class="h-100">
               <input type="hidden" name="word-id" th:value="${word.wordId}" />
@@ -78,7 +78,7 @@
               <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item border-left">
                   <span class="homonym-item-wrap">
                     <span class="homonym-header">
-                      <span style="display: inline-block; color: #7F8891; font-size: 90%"
+                      <span class="text-muted mr-1"
                             th:with="langData=${viewUtil.getLangData(word.lang)}"
                             th:text="${langData.codeIso2}"
                             th:title="${langData.label}">1</span>
@@ -88,7 +88,7 @@
                       <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
                     </span>
                     <span class="homonym-matches" th:text="${word.meaningWordsWrapup}"></span>
-                    <span class="homonym-intro" th:text="${word.definitionsWrapup}"></span>
+                    <span class="homonym-intro d-block" th:text="${word.definitionsWrapup}"></span>
                   </span>
               </a>
             </form>
@@ -142,11 +142,12 @@
             <div class="level-2-panel">
               <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
                 <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexLexemes}">
+
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>              
               </th:block>
               <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
-                <h5 th:text="#{termdata.title}">Oskussõnastikes</h5>
+                <h5 class="mt-3" th:text="#{termdata.title}">Oskussõnastikes</h5>
                 <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.termLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>

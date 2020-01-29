@@ -8119,6 +8119,14 @@ input[type="checkbox"] {
   width: calc(22.125rem / 2);
   background-size: calc(22.125rem / 2) calc(11.6875rem / 2);
 }
+.erf-logo {
+  background: url(../images/erf-logo.svg) center center no-repeat;
+  display: block;
+  height: calc(11.6875rem / 2);
+  width: calc(22.125rem / 2);
+  background-size: calc(22.125rem / 2) calc(11.6875rem / 2);
+}
+
 .eki-logo {
   background: url(../images/eki.svg) center center no-repeat;
   display: block;
@@ -8817,7 +8825,7 @@ body:not(.home-page) footer {
   width: calc(14.75rem / 1.4);
   background-size: calc(14.75rem / 1.4) calc(6.125rem / 1.4);
 }
-.esf-logo {
+.esf-logo, .erf-logo {
   height: calc(11.6875rem / 2.2);
   width: calc(22.125rem / 2.2);
   background-size: calc(22.125rem / 2.2) calc(11.6875rem / 2.2);
