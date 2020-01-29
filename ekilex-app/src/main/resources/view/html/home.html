@@ -12,7 +12,12 @@
       <div class="card-header">
         <h5 class="card-title" th:text="#{index.title}">Tere</h5>
       </div>
-      <div class="card-body" th:with="isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)}">
+      <div class="card-body"
+           th:with="
+             isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)},
+             isAdmin=${#vars.permDataUtil.isAdmin()},
+             isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()},
+             isRoleChangeEnabled=${#vars.permDataUtil.isRoleChangeEnabled()}">
         <p>
           <a th:href="@{/lexsearch}">Leksikograafide otsing</a>
         </p>
@@ -34,18 +39,18 @@
           <hr />
         </p>
         <p>
-          <a th:href="@{/morphology}" sec:authorize="${#authentication.principal.admin}">Morfoloogia haldus</a>
+          <a th:href="@{/morphology}" sec:authorize="${#vars.isAdmin}">Morfoloogia haldus</a>
         </p>
         <p>
           <a th:href="@{/datasets}">Sõnakogude haldus</a>
         </p>
-        <p sec:authorize="${#authentication.principal.datasetOwnershipExist or authentication.principal.admin}">
+        <p sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
           <a th:href="@{/permissions}">Õiguste haldus</a>
         </p>
         <p>
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
-        <th:block th:replace="components :: change_role" sec:authorize="${#authentication.principal.datasetPermissionsExist && !#authentication.principal.hasSingleDatasetPermission}"></th:block>
+        <th:block th:replace="components :: change_role" sec:authorize="${#vars.isRoleChangeEnabled}"></th:block>
         <hr/>
         <p>
           <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>

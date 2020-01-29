@@ -37,6 +37,8 @@ public class EkiUser implements Principal, Serializable {
 
 	private boolean datasetPermissionsExist;
 
+	private boolean datasetCrudPermissionsExist;
+
 	private boolean datasetOwnershipExist;
 
 	private boolean hasSingleDatasetPermission;
@@ -129,6 +131,14 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setDatasetPermissionsExist(boolean datasetPermissionsExist) {
 		this.datasetPermissionsExist = datasetPermissionsExist;
+	}
+
+	public boolean isDatasetCrudPermissionsExist() {
+		return datasetCrudPermissionsExist;
+	}
+
+	public void setDatasetCrudPermissionsExist(boolean datasetCrudPermissionsExist) {
+		this.datasetCrudPermissionsExist = datasetCrudPermissionsExist;
 	}
 
 	public boolean isDatasetOwnershipExist() {
