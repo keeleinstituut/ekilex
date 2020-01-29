@@ -93,7 +93,7 @@ public class DatasetController implements WebConstant {
 		return REDIRECT_PREF + DATASETS_URI;
 	}
 
-	@PreAuthorize("authentication.principal.datasetPermissionsExist or authentication.principal.admin")
+	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist or authentication.principal.admin")
 	@PostMapping(UPDATE_DATASET_URI)
 	public String updateDataset(@Valid @ModelAttribute("datasetData") Dataset datasetFormData) {
 
@@ -104,7 +104,7 @@ public class DatasetController implements WebConstant {
 		return REDIRECT_PREF + DATASETS_URI;
 	}
 
-	@PreAuthorize("authentication.principal.datasetPermissionsExist or authentication.principal.admin")
+	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist or authentication.principal.admin")
 	@GetMapping(DELETE_DATASET_URI + "/{datasetCode}")
 	@ResponseBody
 	public String deleteDataset(@PathVariable("datasetCode") String datasetCode) {

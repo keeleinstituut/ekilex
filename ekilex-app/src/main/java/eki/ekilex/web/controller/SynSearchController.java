@@ -98,7 +98,7 @@ public class SynSearchController extends AbstractSynSearchController {
 	}
 
 	@PostMapping(SYN_CHANGE_RELATION_STATUS)
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
 	public String changeRelationStatus(@RequestParam Long id, @RequestParam String status) {
 		logger.debug("Changing syn relation status id {}, new status {}", id, status);
@@ -109,7 +109,7 @@ public class SynSearchController extends AbstractSynSearchController {
 	}
 
 	@PostMapping(SYN_CREATE_LEXEME + "/{meaningId}/{wordId}/{lexemeId}/{relationId}")
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
 	public String createSynLexeme(@PathVariable Long meaningId, @PathVariable Long wordId, @PathVariable Long lexemeId, @PathVariable Long relationId, Model model) {
 		logger.debug("Adding lexeme to syn candidate word Id {}, meaning Id {} , existing lexeme Id {}, relation Id {}", wordId, meaningId, lexemeId, relationId);

@@ -20,7 +20,7 @@
                 title="Lisa uus allikas"
                 data-toggle="modal"
                 data-target="#addSourceDlg"
-                sec:authorize="${#authentication.principal.datasetPermissionsExist}">
+                sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">
           Lisa uus allikas
         </button>
         <form id="sourceSearchForm" th:action="@{/sourcesearch}" method="post">
@@ -46,7 +46,7 @@
         <span th:text="${sourceCount}">123</span>
       </div>
       <th:block th:each="source,sourceIter : ${sources}" th:with="count=${sourceIter.count}">
-          <th:block th:replace="sourcecomp :: source_search_result"></th:block>
+        <th:block th:replace="sourcecomp :: source_search_result"></th:block>
       </th:block>
     </div>
   </div>
