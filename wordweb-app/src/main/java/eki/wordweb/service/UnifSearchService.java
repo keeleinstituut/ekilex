@@ -1,5 +1,6 @@
 package eki.wordweb.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,13 +79,13 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		List<WordSearchElement> asWordGroup = results.get(WORD_SEARCH_GROUP_AS_WORD);
 		List<WordSearchElement> formGroup = results.get(WORD_SEARCH_GROUP_FORM);
 		if (CollectionUtils.isEmpty(wordGroup)) {
-			wordGroup = Collections.emptyList();
+			wordGroup = new ArrayList<>();
 		}
 		if (CollectionUtils.isEmpty(asWordGroup)) {
-			asWordGroup = Collections.emptyList();
+			asWordGroup = new ArrayList<>();
 		}
 		if (CollectionUtils.isEmpty(formGroup)) {
-			formGroup = Collections.emptyList();
+			formGroup = new ArrayList<>();
 		}
 		wordGroup.addAll(asWordGroup);
 		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
