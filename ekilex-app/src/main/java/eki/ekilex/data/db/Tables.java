@@ -95,13 +95,15 @@ import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
 import eki.ekilex.data.db.tables.ValueStateLabel;
-import eki.ekilex.data.db.tables.ViewWwAsWord;
 import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwCollocation;
 import eki.ekilex.data.db.tables.ViewWwDataset;
+import eki.ekilex.data.db.tables.ViewWwDefinitionSourceLink;
 import eki.ekilex.data.db.tables.ViewWwForm;
+import eki.ekilex.data.db.tables.ViewWwFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
 import eki.ekilex.data.db.tables.ViewWwLexemeRelation;
+import eki.ekilex.data.db.tables.ViewWwLexemeSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
@@ -109,6 +111,7 @@ import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
+import eki.ekilex.data.db.tables.ViewWwWordSearch;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
@@ -600,11 +603,6 @@ public class Tables {
     public static final ValueStateLabel VALUE_STATE_LABEL = eki.ekilex.data.db.tables.ValueStateLabel.VALUE_STATE_LABEL;
 
     /**
-     * The table <code>public.view_ww_as_word</code>.
-     */
-    public static final ViewWwAsWord VIEW_WW_AS_WORD = eki.ekilex.data.db.tables.ViewWwAsWord.VIEW_WW_AS_WORD;
-
-    /**
      * The table <code>public.view_ww_classifier</code>.
      */
     public static final ViewWwClassifier VIEW_WW_CLASSIFIER = eki.ekilex.data.db.tables.ViewWwClassifier.VIEW_WW_CLASSIFIER;
@@ -620,9 +618,19 @@ public class Tables {
     public static final ViewWwDataset VIEW_WW_DATASET = eki.ekilex.data.db.tables.ViewWwDataset.VIEW_WW_DATASET;
 
     /**
+     * The table <code>public.view_ww_definition_source_link</code>.
+     */
+    public static final ViewWwDefinitionSourceLink VIEW_WW_DEFINITION_SOURCE_LINK = eki.ekilex.data.db.tables.ViewWwDefinitionSourceLink.VIEW_WW_DEFINITION_SOURCE_LINK;
+
+    /**
      * The table <code>public.view_ww_form</code>.
      */
     public static final ViewWwForm VIEW_WW_FORM = eki.ekilex.data.db.tables.ViewWwForm.VIEW_WW_FORM;
+
+    /**
+     * The table <code>public.view_ww_freeform_source_link</code>.
+     */
+    public static final ViewWwFreeformSourceLink VIEW_WW_FREEFORM_SOURCE_LINK = eki.ekilex.data.db.tables.ViewWwFreeformSourceLink.VIEW_WW_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_lexeme</code>.
@@ -633,6 +641,11 @@ public class Tables {
      * The table <code>public.view_ww_lexeme_relation</code>.
      */
     public static final ViewWwLexemeRelation VIEW_WW_LEXEME_RELATION = eki.ekilex.data.db.tables.ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION;
+
+    /**
+     * The table <code>public.view_ww_lexeme_source_link</code>.
+     */
+    public static final ViewWwLexemeSourceLink VIEW_WW_LEXEME_SOURCE_LINK = eki.ekilex.data.db.tables.ViewWwLexemeSourceLink.VIEW_WW_LEXEME_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_lexical_decision_data</code>.
@@ -668,6 +681,11 @@ public class Tables {
      * The table <code>public.view_ww_word_relation</code>.
      */
     public static final ViewWwWordRelation VIEW_WW_WORD_RELATION = eki.ekilex.data.db.tables.ViewWwWordRelation.VIEW_WW_WORD_RELATION;
+
+    /**
+     * The table <code>public.view_ww_word_search</code>.
+     */
+    public static final ViewWwWordSearch VIEW_WW_WORD_SEARCH = eki.ekilex.data.db.tables.ViewWwWordSearch.VIEW_WW_WORD_SEARCH;
 
     /**
      * The table <code>public.word</code>.

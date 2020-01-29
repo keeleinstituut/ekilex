@@ -141,7 +141,7 @@ public class ProcessController implements WebConstant {
 	}
 
 	@PostMapping(UPDATE_LAYER_COMPLETE_URI + "/{wordId}/{opCode}")
-	@PreAuthorize("authentication.principal.datasetPermissionsExist")
+	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
 	public String updateLayerProcessStateComplete(
 			@PathVariable Long wordId,

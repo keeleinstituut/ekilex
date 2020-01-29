@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = -1589983031;
+    private static final long serialVersionUID = -1250819191;
 
     /**
      * The reference instance of <code>public.eki_user</code>
@@ -93,6 +93,11 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     public final TableField<EkiUserRecord, Boolean> IS_ADMIN = createField("is_admin", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
+     * The column <code>public.eki_user.is_master</code>.
+     */
+    public final TableField<EkiUserRecord, Boolean> IS_MASTER = createField("is_master", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
      * The column <code>public.eki_user.is_enabled</code>.
      */
     public final TableField<EkiUserRecord, Boolean> IS_ENABLED = createField("is_enabled", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
@@ -111,11 +116,6 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
      * The column <code>public.eki_user.created</code>.
      */
     public final TableField<EkiUserRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>public.eki_user.is_master</code>.
-     */
-    public final TableField<EkiUserRecord, Boolean> IS_MASTER = createField("is_master", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.eki_user</code> table reference

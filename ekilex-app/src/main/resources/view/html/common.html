@@ -58,7 +58,10 @@
           </a>
           <div>
             <div class="dropdown-header">Rakenduse valik</div>
-            <div th:with="isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)}">
+            <div th:with="
+                   isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)},
+                   isAdmin=${#vars.permDataUtil.isAdmin()},
+                   isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()}">
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
               <a class="dropdown-item side-menu-item" sec:authorize="${#vars.isCrudRoleSelected}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
@@ -66,10 +69,10 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
-                sec:authorize="${isAuthenticated() && (#authentication.principal.admin)}">Morfoloogia haldus</a>
+                sec:authorize="${isAuthenticated() && (#vars.isAdmin)}">Morfoloogia haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}"
-                sec:authorize="${isAuthenticated() && (#authentication.principal.datasetOwnershipExist or authentication.principal.admin)}" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
+                sec:authorize="${isAuthenticated() && (#vars.isDatasetOwnerOrAdmin)}" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
               <div class="dropdown-divider"></div>
             </div>
@@ -198,7 +201,7 @@
       <button class="btn btn-primary ml-4" title="Lisa uus allikas" data-dismiss="modal"
         data-toggle="modal"
         data-target="#addSourceDlg"
-        sec:authorize="${#authentication.principal.datasetPermissionsExist}">Lisa uus allikas
+        sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">Lisa uus allikas
       </button>
     </div>
     <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden;" th:if="${not #lists.isEmpty(sources)}">

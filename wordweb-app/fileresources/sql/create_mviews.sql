@@ -34,7 +34,7 @@ drop type if exists type_meaning_relation;
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_source_link as (source_id bigint, type varchar(100), name text, value text);
+create type type_source_link as (ref_owner varchar(100), owner_id bigint, source_link_id bigint, source_id bigint, type varchar(100), name text, value text, order_by bigint);
 create type type_usage as (
 				usage text,
 				usage_prese text,
@@ -45,8 +45,7 @@ create type type_usage as (
 				usage_definitions text array,
 				od_usage_definitions text array,
 				od_usage_alternatives text array,
-				usage_authors text array,
-				usage_source_links type_source_link array);
+				usage_authors text array);
 create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));

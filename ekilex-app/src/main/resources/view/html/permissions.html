@@ -47,7 +47,11 @@
                   <th class="m-1 p-1">Avaldused</th>
                   <th class="m-1 p-1" colspan="3">Load</th>
                 </tr>
-                <th:block th:each="userPerm : ${ekiUserPermissions}">
+                <th:block th:each="userPerm : ${ekiUserPermissions}"
+                          th:with="
+                            isOwnPermission=${#vars.permDataUtil.isOwnPermission(userPerm.id)},
+                            isAdmin=${#vars.permDataUtil.isAdmin()},
+                            isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()}">
                   <tr>
                     <td class="m-1 p-1 text-center">
                       <span th:if="${userPerm.enablePending}" class="fa fa-circle"></span>
@@ -63,61 +67,61 @@
                     </td>
                     <td class="m-1 p-1 text-center">
                       <input type="checkbox"
-                        class="form-check-input"
-                        th:data-id="${userPerm.id}"
-                        th:data-order-by="${orderBy}"
-                        name="userAdminCheck"
-                        th:checked="${userPerm.admin}"
-                        th:disabled="${(#authentication.principal.id == userPerm.id) || (!#authentication.principal.admin)}"/>
+                             class="form-check-input"
+                             th:data-id="${userPerm.id}"
+                             th:data-order-by="${orderBy}"
+                             name="userAdminCheck"
+                             th:checked="${userPerm.admin}"
+                             th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
                     </td>
                     <td class="m-1 p-1 text-center">
                       <input type="checkbox"
-                        class="form-check-input"
-                        th:data-id="${userPerm.id}"
-                        th:data-order-by="${orderBy}"
-                        name="userMasterCheck"
-                        th:checked="${userPerm.master}"
-                        th:disabled="${(#authentication.principal.id == userPerm.id) || (!#authentication.principal.admin)}"/>
+                             class="form-check-input"
+                             th:data-id="${userPerm.id}"
+                             th:data-order-by="${orderBy}"
+                             name="userMasterCheck"
+                             th:checked="${userPerm.master}"
+                             th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
                     </td>
                     <td class="m-1 p-1 text-center">
                       <input type="checkbox"
-                        class="form-check-input"
-                        th:data-id="${userPerm.id}"
-                        th:data-order-by="${orderBy}"
-                        name="userEnableCheck"
-                        th:checked="${userPerm.enabled}"
-                        th:disabled="${#authentication.principal.id == userPerm.id}"/>
+                             class="form-check-input"
+                             th:data-id="${userPerm.id}"
+                             th:data-order-by="${orderBy}"
+                             name="userEnableCheck"
+                             th:checked="${userPerm.enabled}"
+                             th:disabled="${#vars.isOwnPermission}"/>
                     </td>
                     <td class="m-1 p-1 text-center">
                       <input type="checkbox"
-                        class="form-check-input"
-                        th:data-id="${userPerm.id}"
-                        th:data-order-by="${orderBy}"
-                        name="userReviewedCheck"
-                        th:checked="${userPerm.reviewed}"
-                        th:disabled="${#authentication.principal.id == userPerm.id}"/>
+                             class="form-check-input"
+                             th:data-id="${userPerm.id}"
+                             th:data-order-by="${orderBy}"
+                             name="userReviewedCheck"
+                             th:checked="${userPerm.reviewed}"
+                             th:disabled="${#vars.isOwnPermission}"/>
                     </td>
                     <td class="m-1 p-1">
                       <div th:replace="permdialog :: edit_review_comment_dlg"></div>
                       <button type="button" class="btn badge badge-success" title="Lisa kommentaar"
-                        data-toggle="modal"
-                        th:data-target="${'#editReviewCommentDlg_' + userPerm.id}"
-                        sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
-                        th:if="${#strings.isEmpty(userPerm.reviewComment)}">
+                              data-toggle="modal"
+                              th:data-target="${'#editReviewCommentDlg_' + userPerm.id}"
+                              sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                              th:if="${#strings.isEmpty(userPerm.reviewComment)}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                       <div class="invisible-buttons" th:unless="${#strings.isEmpty(userPerm.reviewComment)}">
                         <span th:text="${userPerm.reviewComment}"></span>
                         <button type="button" class="btn badge badge-primary" title="Muuda"
-                          data-toggle="modal"
-                          th:data-target="${'#editReviewCommentDlg_' + userPerm.id}"
-                          sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}">
+                                data-toggle="modal"
+                                th:data-target="${'#editReviewCommentDlg_' + userPerm.id}"
+                                sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
                         <a class="btn badge badge-warning"
-                          title="Kustuta kommentaar"
-                          th:href="@{'/permissions/deletereviewcomment/' + ${userPerm.id} + '/' + ${orderBy}}"
-                          sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}">
+                           title="Kustuta kommentaar"
+                           th:href="@{'/permissions/deletereviewcomment/' + ${userPerm.id} + '/' + ${orderBy}}"
+                           sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </a>
                       </div>
@@ -135,10 +139,10 @@
                     <td class="m-1 p-1 text-center">
                       <div th:replace="permdialog :: add_dataset_perm_dlg"></div>
                       <button type="button" class="btn badge badge-success" title="Lisa luba"
-                        data-toggle="modal"
-                        th:data-target="${'#addDatasetPermissionDlg_' + userPerm.id}"
-                        sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
-                        th:disabled="${#authentication.principal.id == userPerm.id}">
+                              data-toggle="modal"
+                              th:data-target="${'#addDatasetPermissionDlg_' + userPerm.id}"
+                              sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                              th:disabled="${#vars.isOwnPermission}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </td>
@@ -152,12 +156,12 @@
                             <span th:text="${datasetPerm.authLang}"></span>
                           </span>
                           <button class="btn badge badge-warning"
-                            th:data-id="${datasetPerm.id}"
-                            th:data-order-by="${orderBy}"
-                            data-toggle="delete-confirm"
-                            data-placement="right"
-                            sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
-                            th:disabled="${#authentication.principal.id == userPerm.id}">
+                                  th:data-id="${datasetPerm.id}"
+                                  th:data-order-by="${orderBy}"
+                                  data-toggle="delete-confirm"
+                                  data-placement="right"
+                                  sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                                  th:disabled="${#vars.isOwnPermission}">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                         </div>
@@ -165,11 +169,11 @@
                     </td>
                     <td class="m-1 p-1">
                       <button type="button" class="btn badge"
-                        data-toggle="send-mail-confirm"
-                        data-placement="top"
-                        th:data-user-email="${userPerm.email}"
-                        sec:authorize="${#authentication.principal.datasetOwnershipExist or #authentication.principal.admin}"
-                        th:disabled="${#authentication.principal.id == userPerm.id}">
+                              data-toggle="send-mail-confirm"
+                              data-placement="top"
+                              th:data-user-email="${userPerm.email}"
+                              sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                              th:disabled="${#vars.isOwnPermission}">
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                       </button>
                     </td>

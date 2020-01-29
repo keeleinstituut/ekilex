@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
@@ -145,5 +146,42 @@ public class PermDataUtil {
 			targetWordHasSuperiorLexemes = permissionService.wordDatasetExists(targetWordId, roleDatasetCode);
 		}
 		return targetWordHasSuperiorLexemes;
+	}
+
+	public boolean isOwnPermission(Long permissionId) {
+
+		Long userId = userService.getAuthenticatedUser().getId();
+		boolean isOwnPermission = userId.equals(permissionId);
+		return isOwnPermission;
+	}
+
+	public boolean isAdmin() {
+
+		boolean isAdmin = userService.getAuthenticatedUser().isAdmin();
+		return isAdmin;
+	}
+
+	public boolean isDatasetOwnerOrAdmin() {
+
+		EkiUser user = userService.getAuthenticatedUser();
+		boolean isDatasetOwner = user.isDatasetOwnershipExist();
+		boolean isAdmin = user.isAdmin();
+		return isDatasetOwner || isAdmin;
+	}
+
+	public boolean isDatasetCrudOwnerOrAdmin() {
+
+		EkiUser user = userService.getAuthenticatedUser();
+		boolean isDatasetCrudOwner = user.isDatasetCrudPermissionsExist();
+		boolean isAdmin = user.isAdmin();
+		return isDatasetCrudOwner || isAdmin;
+	}
+
+	public boolean isRoleChangeEnabled() {
+
+		EkiUser user = userService.getAuthenticatedUser();
+		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
+		boolean hasMoreThanOnePermission = !user.isHasSingleDatasetPermission();
+		return datasetPermissionsExist && hasMoreThanOnePermission;
 	}
 }

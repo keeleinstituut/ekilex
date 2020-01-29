@@ -32,7 +32,7 @@ import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
-@PreAuthorize("authentication.principal.datasetPermissionsExist")
+@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 @Component
 public class CudService extends AbstractService {
 
