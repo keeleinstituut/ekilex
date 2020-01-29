@@ -215,6 +215,14 @@
   }
 }
 
+.lang-code {
+  font-size: 16px;
+}
+
+.lang-code-sm {
+  font-size: 12px;
+}
+
 /*stylelint-disable*/
 .overflow-hidden {
   overflow: hidden !important;

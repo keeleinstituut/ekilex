@@ -69,12 +69,12 @@
           <span class="domain" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
 
           <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
-            <th:block th:each="definitionEntry : ${lexeme.definitionsByLang}">
-              <span class="additional-meta" th:with="langData=${viewUtil.getLangData(definitionEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+            <div class="mb-2" th:each="definitionEntry : ${lexeme.definitionsByLang}">
+              <span class="additional-meta lang-code lang-code-sm" th:with="langData=${viewUtil.getLangData(definitionEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
               <span th:each="definition,definitionIter : ${definitionEntry.value}">
                 <span class="definition-value" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
               </span>
-            </th:block>
+            </div>
           </th:block>
         </div>
         <div class="col-lg meaning-meta pl-0">
@@ -89,7 +89,7 @@
                   <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
                         th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"
                         class="type-three"></span>
-                  <span class="text-danger" th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                  <span  th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
                   <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
                     <span class="type-one" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
                   </th:block>
@@ -114,7 +114,7 @@
                   <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
                         th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"
                         class="type-three"></span>
-                  <span class="text-danger" th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                  <span  th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
                   <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
                     <span class="type-one" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
                   </th:block>
