@@ -1,7 +1,9 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -20,6 +22,7 @@ import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
+import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
@@ -98,13 +101,19 @@ public class CompositionService extends AbstractService {
 
 	private Long duplicateMeaningWithLexemesAndUpdateDataset(Long meaningId, String userName, String dataset, List<String> userPermDatasetCodes) {
 
+		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
 		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, userPermDatasetCodes);
-		meaningLexemes.forEach(meaningLexeme -> duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId, userName));
+		meaningLexemes.forEach(meaningLexeme -> {
+			Long lexemeId = meaningLexeme.getId();
+			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, userName);
+			lexemeIdAndDuplicateLexemeIdMap.put(lexemeId, duplicateLexemeId);
+		});
+		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
 
-		List<LexemeRecord> duplicateMeaningLexemes = compositionDbService.getMeaningLexemes(duplicateMeaningId);
-		for (LexemeRecord duplicateMeaningLexeme : duplicateMeaningLexemes) {
-			cudDbService.updateLexemeDataset(duplicateMeaningLexeme.getId(), dataset);
+		for (Map.Entry<Long, Long> lexemeIdAndDuplicateLexemeId : lexemeIdAndDuplicateLexemeIdMap.entrySet()) {
+			Long duplicateLexemeId = lexemeIdAndDuplicateLexemeId.getValue();
+			cudDbService.updateLexemeDataset(duplicateLexemeId, dataset);
 		}
 		return duplicateMeaningId;
 	}
@@ -112,7 +121,7 @@ public class CompositionService extends AbstractService {
 	@Transactional
 	public List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId, String userName) {
 
-		List<Long> duplicateLexemeIds = new ArrayList<>();
+		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
 		String datasetCode = lexeme.getDatasetCode();
 		Long meaningId = lexeme.getMeaningId();
@@ -121,10 +130,12 @@ public class CompositionService extends AbstractService {
 
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, datasetCode);
 		meaningLexemes.forEach(meaningLexeme -> {
-			Long duplicateLexemeId = duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId, userName);
-			duplicateLexemeIds.add(duplicateLexemeId);
+			Long meaningLexemeId = meaningLexeme.getId();
+			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, userName);
+			lexemeIdAndDuplicateLexemeIdMap.put(meaningLexemeId, duplicateLexemeId);
 		});
-
+		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
+		List<Long> duplicateLexemeIds = new ArrayList<>(lexemeIdAndDuplicateLexemeIdMap.values());
 		return duplicateLexemeIds;
 	}
 
@@ -158,22 +169,27 @@ public class CompositionService extends AbstractService {
 
 	private Long duplicateMeaningWithLexemes(Long meaningId, String userName) {
 
+		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
 		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId);
-		meaningLexemes.forEach(meaningLexeme -> duplicateLexemeData(meaningLexeme.getId(), duplicateMeaningId, userName));
+		meaningLexemes.forEach(meaningLexeme -> {
+			Long lexemeId = meaningLexeme.getId();
+			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, userName);
+			lexemeIdAndDuplicateLexemeIdMap.put(lexemeId, duplicateLexemeId);
+		});
+		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
 		return duplicateMeaningId;
 	}
 
-	private Long duplicateLexemeData(Long lexemeId, Long meaningId, String userName) {
+	private Long duplicateLexemeData(Long lexemeId, Long duplicateMeaningId, String userName) {
 
-		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, meaningId);
+		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, duplicateMeaningId);
 		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
 		compositionDbService.cloneLexemeDerivs(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeFreeforms(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemePoses(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeSoureLinks(lexemeId, duplicateLexemeId);
-		compositionDbService.cloneLexemeRelations(lexemeId, duplicateLexemeId);
 		String sourceLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(lexemeId);
 		String targetLexemeDescription = lifecycleLogDbService.getExtendedLexemeDescription(duplicateLexemeId);
 
@@ -219,6 +235,39 @@ public class CompositionService extends AbstractService {
 			compositionDbService.cloneDefinitionDatasets(meaningDefinition.getId(), duplicateDefinintionId);
 			compositionDbService.cloneDefinitionSourceLinks(meaningDefinition.getId(), duplicateDefinintionId);
 		});
+	}
+
+	private void duplicateLexemeRelations(Map<Long, Long> existingLexemeIdAndDuplicateLexemeIdMap) {
+
+		for (Map.Entry<Long, Long> lexemeIdAndDuplicateLexemeId : existingLexemeIdAndDuplicateLexemeIdMap.entrySet()) {
+
+			Long existingLexemeId = lexemeIdAndDuplicateLexemeId.getKey();
+			Long duplicateLexemeId = lexemeIdAndDuplicateLexemeId.getValue();
+
+			List<LexRelationRecord> existingLexemeRelations = compositionDbService.getLexemeRelations(existingLexemeId);
+			for (LexRelationRecord existingLexemeRelation : existingLexemeRelations) {
+
+				Long existingLexeme1Id = existingLexemeRelation.getLexeme1Id();
+				Long existingLexeme2Id = existingLexemeRelation.getLexeme2Id();
+				String lexRelTypeCode = existingLexemeRelation.getLexRelTypeCode();
+
+				if (existingLexeme1Id.equals(existingLexemeId)) {
+					if (existingLexemeIdAndDuplicateLexemeIdMap.containsKey(existingLexeme2Id)) {
+						Long duplicateLexeme2Id = existingLexemeIdAndDuplicateLexemeIdMap.get(existingLexeme2Id);
+						compositionDbService.createLexemeRelation(duplicateLexemeId, duplicateLexeme2Id, lexRelTypeCode);
+					} else {
+						compositionDbService.createLexemeRelation(duplicateLexemeId, existingLexeme2Id, lexRelTypeCode);
+					}
+				} else {
+					if (existingLexemeIdAndDuplicateLexemeIdMap.containsKey(existingLexeme1Id)) {
+						Long duplicateLexeme1Id = existingLexemeIdAndDuplicateLexemeIdMap.get(existingLexeme1Id);
+						compositionDbService.createLexemeRelation(duplicateLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+					} else {
+						compositionDbService.createLexemeRelation(existingLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+					}
+				}
+			}
+		}
 	}
 
 	@Transactional
