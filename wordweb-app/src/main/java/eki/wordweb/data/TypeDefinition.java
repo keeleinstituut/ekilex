@@ -1,5 +1,7 @@
 package eki.wordweb.data;
 
+import java.util.List;
+
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
@@ -11,6 +13,8 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	private Long meaningId;
 
+	private Long definitionId;
+
 	private String value;
 
 	private String valuePrese;
@@ -18,6 +22,8 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 	private String lang;
 
 	private Complexity complexity;
+
+	private List<TypeSourceLink> sourceLinks;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -33,6 +39,14 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public Long getDefinitionId() {
+		return definitionId;
+	}
+
+	public void setDefinitionId(Long definitionId) {
+		this.definitionId = definitionId;
 	}
 
 	public String getValue() {
@@ -66,6 +80,14 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public List<TypeSourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	public void setSourceLinks(List<TypeSourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 
 }

@@ -91,6 +91,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	private List<DisplayColloc> limitedPrimaryDisplayCollocs;
 
+	private List<TypeSourceLink> lexemeSourceLinks;
+
 	private boolean missingMatchWords;
 
 	private boolean moreSecondaryCollocs;
@@ -407,6 +409,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setLimitedPrimaryDisplayCollocs(List<DisplayColloc> limitedPrimaryDisplayCollocs) {
 		this.limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs;
+	}
+
+	public List<TypeSourceLink> getLexemeSourceLinks() {
+		return lexemeSourceLinks;
+	}
+
+	public void setLexemeSourceLinks(List<TypeSourceLink> lexemeSourceLinks) {
+		this.lexemeSourceLinks = lexemeSourceLinks;
 	}
 
 	public boolean isMissingMatchWords() {

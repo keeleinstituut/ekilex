@@ -1,5 +1,5 @@
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
-create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
+create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_source_link as (ref_owner varchar(100), owner_id bigint, source_link_id bigint, source_id bigint, type varchar(100), name text, value text, order_by bigint);
 create type type_usage as (
@@ -327,13 +327,14 @@ from (select w.id as word_id,
                           and r.word_rel_type_code != 'raw')) lc
                    group by lc.word_id) lc on lc.word_id = w.word_id
   left outer join (select wd.word_id,
-                          array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.value_prese,wd.lang,wd.complexity)::type_definition order by wd.level1,wd.level2,wd.lex_order_by,wd.d_order_by) definitions
+                          array_agg(row (wd.lexeme_id,wd.meaning_id,wd.definition_id,wd.value,wd.value_prese,wd.lang,wd.complexity)::type_definition order by wd.level1,wd.level2,wd.lex_order_by,wd.d_order_by) definitions
                    from (select l.word_id,
                                 l.id lexeme_id,
                                 l.meaning_id,
                                 l.level1,
                                 l.level2,
                                 l.order_by lex_order_by,
+                                d.id definition_id,
                                 d.value,
                                 d.value_prese,
                                 d.lang,
@@ -424,7 +425,7 @@ from (select m.id
                    from meaning_domain m_dom
                    group by m_dom.meaning_id) m_dom on m_dom.meaning_id = m.id
   left outer join (select d.meaning_id,
-                          array_agg(row (null,d.meaning_id,d.value,d.value_prese,d.lang,d.complexity)::type_definition order by d.order_by) definitions
+                          array_agg(row (null,d.meaning_id,d.id,d.value,d.value_prese,d.lang,d.complexity)::type_definition order by d.order_by) definitions
                    from definition d
                    --where d.complexity in ('SIMPLE1', 'SIMPLE2', 'DETAIL1', 'DETAIL2')
                    group by d.meaning_id) d on d.meaning_id = m.id
@@ -1168,20 +1169,31 @@ order by l.word_id;
 
 create view view_ww_definition_source_link
 as
-select d.meaning_id,
-       array_agg(row ('DEFINITION', dsl.definition_id, dsl.id, dsl.source_id, dsl.type, dsl.name, dsl.value, dsl.order_by)::type_source_link order by d.id, dsl.id) source_links
-from lexeme l,
-     dataset ds,
-     definition d,
-     definition_source_link dsl
-where l.type = 'PRIMARY'
-and   l.process_state_code = 'avalik'
-and   l.meaning_id = d.meaning_id
-and   dsl.definition_id = d.id
-and   ds.code = l.dataset_code
-and   ds.is_public = true
-group by d.meaning_id
-order by d.meaning_id;
+select dsl.meaning_id,
+       array_agg(row ('DEFINITION', dsl.definition_id, dsl.source_link_id, dsl.source_id, dsl.type, dsl.name, dsl.value, dsl.order_by)::type_source_link order by dsl.definition_id, dsl.source_link_id) source_links
+from (select d.meaning_id,
+             d.id definition_id,
+             dsl.id source_link_id,
+             dsl.source_id,
+             dsl.type,
+             dsl.name,
+             dsl.value,
+             dsl.order_by
+      from lexeme l,
+           dataset ds,
+           definition d,
+           definition_source_link dsl
+      where l.type = 'PRIMARY'
+      and   l.process_state_code = 'avalik'
+      and   l.meaning_id = d.meaning_id
+      and   dsl.definition_id = d.id
+      and   ds.code = l.dataset_code
+      and   ds.is_public = true
+      group by d.meaning_id,
+               d.id,
+               dsl.id) dsl
+group by dsl.meaning_id
+order by dsl.meaning_id;
 
 
 -- lexical decision game data - OK

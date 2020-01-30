@@ -2,9 +2,12 @@ package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_DEFINITION_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_FREEFORM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
@@ -27,13 +30,18 @@ import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.SourceLinksWrapper;
+import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
+import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
+import eki.wordweb.data.db.tables.MviewWwFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
+import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
@@ -165,6 +173,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
 		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
+		MviewWwDefinitionSourceLink dsl = MVIEW_WW_DEFINITION_SOURCE_LINK.as("dsl");
 
 		Condition where = l.WORD_ID.eq(wordId);
 
@@ -178,10 +187,12 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 						m.SEMANTIC_TYPES,
 						m.LEARNER_COMMENTS,
 						m.DEFINITIONS,
-						mr.RELATED_MEANINGS)
+						mr.RELATED_MEANINGS,
+						dsl.SOURCE_LINKS.as("definition_source_links"))
 				.from(
 						l.innerJoin(m).on(m.MEANING_ID.eq(l.MEANING_ID))
-								.leftOuterJoin(mr).on(mr.MEANING_ID.eq(m.MEANING_ID)))
+								.leftOuterJoin(mr).on(mr.MEANING_ID.eq(m.MEANING_ID))
+								.leftOuterJoin(dsl).on(dsl.MEANING_ID.eq(m.MEANING_ID)))
 				.where(where)
 				.orderBy(m.MEANING_ID, l.LEXEME_ID)
 				.fetch()
@@ -217,5 +228,35 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 						c.COLLOC_ID)
 				.fetch()
 				.into(CollocationTuple.class);
+	}
+
+	public List<TypeSourceLink> getLexemeSourceLinks(Long wordId) {
+
+		MviewWwLexemeSourceLink sl = MVIEW_WW_LEXEME_SOURCE_LINK.as("sl");
+
+		SourceLinksWrapper sourceLinksWrapper = create
+				.select(sl.SOURCE_LINKS)
+				.from(sl)
+				.where(sl.WORD_ID.eq(wordId))
+				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
+		if (sourceLinksWrapper == null) {
+			return null;
+		}
+		return sourceLinksWrapper.getSourceLinks();
+	}
+
+	public List<TypeSourceLink> getFreeformSourceLinks(Long wordId) {
+
+		MviewWwFreeformSourceLink sl = MVIEW_WW_FREEFORM_SOURCE_LINK.as("sl");
+
+		SourceLinksWrapper sourceLinksWrapper = create
+				.select(sl.SOURCE_LINKS)
+				.from(sl)
+				.where(sl.WORD_ID.eq(wordId))
+				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
+		if (sourceLinksWrapper == null) {
+			return null;
+		}
+		return sourceLinksWrapper.getSourceLinks();
 	}
 }

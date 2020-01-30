@@ -29,6 +29,7 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.TypeCollocMember;
+import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
@@ -150,7 +151,18 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 
 		// lexeme data
 		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
+		List<TypeSourceLink> lexemeSourceLinks = unifSearchDbService.getLexemeSourceLinks(wordId);
+		Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(lexemeSourceLinks)) {
+			lexemeSourceLinkMap = lexemeSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
+		}
+		List<TypeSourceLink> freeformSourceLinks = unifSearchDbService.getFreeformSourceLinks(wordId);
+		Map<Long, List<TypeSourceLink>> freeformSourceLinkMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(freeformSourceLinks)) {
+			freeformSourceLinkMap = freeformSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
+		}
 		List<LexemeMeaningTuple> lexemeMeaningTuples = unifSearchDbService.getLexemeMeaningTuples(wordId, dataFilter);
+		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
 		Map<DatasetType, List<Lexeme>> lexemeGroups = lexemes.stream().collect(Collectors.groupingBy(Lexeme::getDatasetType));
 
 		// lex conv
@@ -158,7 +170,9 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
 			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId, lexComplexity);
 			compensateNullWords(wordId, collocTuples);
-			lexemeConversionUtil.enrich(DatasetType.LEX, wordLang, lexLexemes, lexemeMeaningTuples, allRelatedWords, langOrderByMap, dataFilter, displayLang);
+			lexemeConversionUtil.enrich(
+					DatasetType.LEX, wordLang, lexLexemes, lexemeSourceLinkMap, freeformSourceLinkMap, lexemeMeaningTupleMap,
+					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 			collocConversionUtil.enrich(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 		}
@@ -166,7 +180,9 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		// term conv
 		List<Lexeme> termLexemes = lexemeGroups.get(DatasetType.TERM);
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
-			lexemeConversionUtil.enrich(DatasetType.TERM, wordLang, termLexemes, lexemeMeaningTuples, allRelatedWords, langOrderByMap, dataFilter, displayLang);
+			lexemeConversionUtil.enrich(
+					DatasetType.TERM, wordLang, termLexemes, lexemeSourceLinkMap, freeformSourceLinkMap, lexemeMeaningTupleMap,
+					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 		}
 
 		// resulting flags

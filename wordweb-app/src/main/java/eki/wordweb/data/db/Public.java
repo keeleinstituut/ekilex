@@ -9,9 +9,12 @@ import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
+import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
+import eki.wordweb.data.db.tables.MviewWwFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
+import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
@@ -61,7 +64,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1406206434;
+    private static final long serialVersionUID = 679097286;
 
     /**
      * The reference instance of <code>public</code>
@@ -94,9 +97,19 @@ public class Public extends SchemaImpl {
     public final MviewWwDataset MVIEW_WW_DATASET = eki.wordweb.data.db.tables.MviewWwDataset.MVIEW_WW_DATASET;
 
     /**
+     * The table <code>public.mview_ww_definition_source_link</code>.
+     */
+    public final MviewWwDefinitionSourceLink MVIEW_WW_DEFINITION_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK;
+
+    /**
      * The table <code>public.mview_ww_form</code>.
      */
     public final MviewWwForm MVIEW_WW_FORM = eki.wordweb.data.db.tables.MviewWwForm.MVIEW_WW_FORM;
+
+    /**
+     * The table <code>public.mview_ww_freeform_source_link</code>.
+     */
+    public final MviewWwFreeformSourceLink MVIEW_WW_FREEFORM_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwFreeformSourceLink.MVIEW_WW_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_lexeme</code>.
@@ -107,6 +120,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_lexeme_relation</code>.
      */
     public final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = eki.wordweb.data.db.tables.MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
+
+    /**
+     * The table <code>public.mview_ww_lexeme_source_link</code>.
+     */
+    public final MviewWwLexemeSourceLink MVIEW_WW_LEXEME_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwLexemeSourceLink.MVIEW_WW_LEXEME_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_meaning</code>.
@@ -193,9 +211,12 @@ public class Public extends SchemaImpl {
             MviewWwClassifier.MVIEW_WW_CLASSIFIER,
             MviewWwCollocation.MVIEW_WW_COLLOCATION,
             MviewWwDataset.MVIEW_WW_DATASET,
+            MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK,
             MviewWwForm.MVIEW_WW_FORM,
+            MviewWwFreeformSourceLink.MVIEW_WW_FREEFORM_SOURCE_LINK,
             MviewWwLexeme.MVIEW_WW_LEXEME,
             MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION,
+            MviewWwLexemeSourceLink.MVIEW_WW_LEXEME_SOURCE_LINK,
             MviewWwMeaning.MVIEW_WW_MEANING,
             MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION,
             MviewWwWord.MVIEW_WW_WORD,

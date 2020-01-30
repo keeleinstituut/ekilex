@@ -9,9 +9,12 @@ import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
+import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
+import eki.wordweb.data.db.tables.MviewWwFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
+import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
@@ -63,9 +66,19 @@ public class Tables {
     public static final MviewWwDataset MVIEW_WW_DATASET = eki.wordweb.data.db.tables.MviewWwDataset.MVIEW_WW_DATASET;
 
     /**
+     * The table <code>public.mview_ww_definition_source_link</code>.
+     */
+    public static final MviewWwDefinitionSourceLink MVIEW_WW_DEFINITION_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK;
+
+    /**
      * The table <code>public.mview_ww_form</code>.
      */
     public static final MviewWwForm MVIEW_WW_FORM = eki.wordweb.data.db.tables.MviewWwForm.MVIEW_WW_FORM;
+
+    /**
+     * The table <code>public.mview_ww_freeform_source_link</code>.
+     */
+    public static final MviewWwFreeformSourceLink MVIEW_WW_FREEFORM_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwFreeformSourceLink.MVIEW_WW_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_lexeme</code>.
@@ -76,6 +89,11 @@ public class Tables {
      * The table <code>public.mview_ww_lexeme_relation</code>.
      */
     public static final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = eki.wordweb.data.db.tables.MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
+
+    /**
+     * The table <code>public.mview_ww_lexeme_source_link</code>.
+     */
+    public static final MviewWwLexemeSourceLink MVIEW_WW_LEXEME_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwLexemeSourceLink.MVIEW_WW_LEXEME_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_meaning</code>.

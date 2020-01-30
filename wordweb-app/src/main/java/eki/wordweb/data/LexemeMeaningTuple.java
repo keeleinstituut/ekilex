@@ -26,6 +26,8 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	private List<TypeMeaningRelation> relatedMeanings;
 
+	private List<TypeSourceLink> definitionSourceLinks;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -96,6 +98,14 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	public void setRelatedMeanings(List<TypeMeaningRelation> relatedMeanings) {
 		this.relatedMeanings = relatedMeanings;
+	}
+
+	public List<TypeSourceLink> getDefinitionSourceLinks() {
+		return definitionSourceLinks;
+	}
+
+	public void setDefinitionSourceLinks(List<TypeSourceLink> definitionSourceLinks) {
+		this.definitionSourceLinks = definitionSourceLinks;
 	}
 
 }

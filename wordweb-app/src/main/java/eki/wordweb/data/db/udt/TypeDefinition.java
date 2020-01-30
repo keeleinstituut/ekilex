@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
 
-    private static final long serialVersionUID = -1606833699;
+    private static final long serialVersionUID = 507053096;
 
     /**
      * The reference instance of <code>public.type_definition</code>
@@ -53,6 +53,11 @@ public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
      * The attribute <code>public.type_definition.meaning_id</code>.
      */
     public static final UDTField<TypeDefinitionRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_DEFINITION, "");
+
+    /**
+     * The attribute <code>public.type_definition.definition_id</code>.
+     */
+    public static final UDTField<TypeDefinitionRecord, Long> DEFINITION_ID = createField("definition_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_DEFINITION, "");
 
     /**
      * The attribute <code>public.type_definition.value</code>.

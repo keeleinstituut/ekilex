@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
+import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.common.data.OrderedMap;
@@ -26,6 +27,7 @@ import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
 import eki.wordweb.data.TypeMeaningWord;
 import eki.wordweb.data.TypePublicNote;
+import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.TypeUsage;
 
 @Component
@@ -37,7 +39,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			DatasetType datasetType,
 			String wordLang,
 			List<Lexeme> lexemes,
-			List<LexemeMeaningTuple> lexemeMeaningTuples,
+			Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap,
+			Map<Long, List<TypeSourceLink>> freeformSourceLinkMap,
+			Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap,
 			List<String> allRelatedWordValues,
 			Map<String, Long> langOrderByMap,
 			DataFilter dataFilter,
@@ -55,23 +59,16 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		for (Lexeme lexeme : lexemes) {
 
-			lexemeMap.put(lexeme.getLexemeId(), lexeme);
-			populateLexeme(lexeme, lexComplexity, displayLang);
+			Long lexemeId = lexeme.getLexemeId();
+			lexemeMap.put(lexemeId, lexeme);
+			populateLexeme(lexeme, lexemeSourceLinkMap, lexComplexity, displayLang);
 			populateUsages(lexeme, wordLang, destinLangs, lexComplexity, displayLang);
 			populateRelatedLexemes(lexeme, lexComplexity, displayLang);
 			populateMeaningWords(lexeme, langOrderByMap, wordLang, destinLangs, lexComplexity, displayLang);
 			filterMeaningWords(lexeme, allRelatedWordValues);
-		}
-
-		for (LexemeMeaningTuple tuple : lexemeMeaningTuples) {
-
-			Long lexemeId = tuple.getLexemeId();
-			Lexeme lexeme = lexemeMap.get(lexemeId);
-			if (lexeme == null) {
-				continue;
-			}
-			populateMeaning(lexeme, tuple, langOrderByMap, wordLang, destinLangs, lexComplexity, displayLang);
-			populateRelatedMeanings(lexeme, tuple, displayLang);
+			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
+			populateMeaning(lexeme, lexemeMeaningTuple, langOrderByMap, wordLang, destinLangs, lexComplexity, displayLang);
+			populateRelatedMeanings(lexeme, lexemeMeaningTuple, displayLang);
 		}
 
 		for (Lexeme lexeme : lexemes) {
@@ -80,7 +77,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	private void populateLexeme(Lexeme lexeme, Complexity lexComplexity, String displayLang) {
+	private void populateLexeme(Lexeme lexeme, Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap, Complexity lexComplexity, String displayLang) {
 
 		if (DatasetType.LEX.equals(lexeme.getDatasetType())) {
 			lexeme.setDatasetName(null);
@@ -96,6 +93,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setPublicNotes(filter(publicNotes, lexComplexity));
 		lexeme.setGrammars(filter(grammars, lexComplexity));
 		lexeme.setGovernments(filter(governments, lexComplexity));
+
+		List<TypeSourceLink> lexemeSourceLinks = lexemeSourceLinkMap.get(lexeme.getLexemeId());
+		lexeme.setLexemeSourceLinks(lexemeSourceLinks);
 
 		classifierUtil.applyClassifiers(lexeme, displayLang);
 	}
@@ -205,6 +205,17 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			definitions = filter(definitions, lexComplexity);
 			definitions = filter(definitions, wordLang, destinLangs);
 			lexeme.setDefinitions(definitions);
+			List<TypeSourceLink> allDefinitionSourceLinks = tuple.getDefinitionSourceLinks();
+			if (CollectionUtils.isNotEmpty(allDefinitionSourceLinks)) {
+				Map<Long, List<TypeSourceLink>> definitionSourceLinksMap = allDefinitionSourceLinks.stream()
+						.filter(sourceLink -> ReferenceOwner.DEFINITION.equals(sourceLink.getRefOwner()))
+						.collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
+				definitions.forEach(definition -> {
+					Long definitionId = definition.getDefinitionId();
+					List<TypeSourceLink> sourceLinks = definitionSourceLinksMap.get(definitionId);
+					definition.setSourceLinks(sourceLinks);
+				});
+			}
 			Map<String, List<TypeDefinition>> definitionsByLangUnordered = definitions.stream().collect(Collectors.groupingBy(TypeDefinition::getLang));
 			Map<String, List<TypeDefinition>> definitionsByLangOrdered = composeOrderedMap(definitionsByLangUnordered, langOrderByMap);
 			lexeme.setDefinitionsByLang(definitionsByLangOrdered);
