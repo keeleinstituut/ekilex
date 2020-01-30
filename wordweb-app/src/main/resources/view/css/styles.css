@@ -64,7 +64,7 @@
     overflow-x: scroll;
     display: -webkit-box;
     display: flex;
-    margin-bottom: -10px;
+    margin-bottom: -15px;
   }
   .homonym-item {
     height: 100%;
@@ -79,25 +79,6 @@
     padding-right: 0.375rem;
     display: inline-block;
     position: relative;
-  }
-  .homonym-item .homonym-name-container:before,
-  .homonym-item .homonym-name-container:after {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 8.75rem;
-    margin-right: -0.0625rem;
-    height: 100%;
-    width: 1.875rem;
-    z-index: 10000;
-    background: #fff;
-    background: linear-gradient(275deg, #fff 20%, rgba(255, 255, 255, 0) 100%);
-  }
-  .homonym-item.selected .homonym-name-container:before,
-  .homonym-item.selected .homonym-name-container:after {
-    background: #003F87;
-    background: linear-gradient(275deg, #003F87 20%, rgba(0, 63, 135, 0) 100%);
   }
   .homonym-item .homonym-nr {
     color: #fff;
@@ -161,7 +142,6 @@
   }
   .homonym-intro {
     max-height: 1.5rem;
-    top: 4.75rem;
     margin-top: auto;
   }
   .homonym-matches {
@@ -174,11 +154,10 @@
     display: block;
     position: relative;
     overflow: hidden;
-    margin-left: -1.25rem;
-    margin-right: -1.25rem;
     padding: 1.25rem;
     padding-right: 3.75rem;
     border-bottom: 1px #D8D8D8 solid;
+    margin-left: -1px;
   }
   .homonym-item.last-selected {
     background-color: rgba(0, 17, 36, 0.15);
@@ -236,6 +215,15 @@
   }
 }
 
+.lang-code {
+  font-size: 16px;
+}
+
+.lang-code-sm {
+  font-size: 12px;
+}
+
+/*stylelint-disable*/
 .overflow-hidden {
   overflow: hidden !important;
 }

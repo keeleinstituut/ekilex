@@ -148,10 +148,10 @@ public class PermDataUtil {
 		return targetWordHasSuperiorLexemes;
 	}
 
-	public boolean isOwnPermission(Long permissionId) {
+	public boolean isOwnPermission(Long userId) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
-		boolean isOwnPermission = userId.equals(permissionId);
+		Long authenticatedUserId = userService.getAuthenticatedUser().getId();
+		boolean isOwnPermission = authenticatedUserId.equals(userId);
 		return isOwnPermission;
 	}
 

@@ -220,6 +220,29 @@ public class CompositionDbService implements DbConstant {
 				.fetchInto(IdPair.class);
 	}
 
+	public List<LexRelationRecord> getLexemeRelations(Long lexemeId) {
+
+		return create
+				.selectFrom(LEX_RELATION)
+				.where(LEX_RELATION.LEXEME1_ID.eq(lexemeId).or(LEX_RELATION.LEXEME2_ID.eq(lexemeId)))
+				.orderBy(LEX_RELATION.ORDER_BY)
+				.fetch();
+	}
+
+	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String lexRelTypeCode) {
+
+		create.insertInto(LEX_RELATION, LEX_RELATION.LEXEME1_ID, LEX_RELATION.LEXEME2_ID, LEX_RELATION.LEX_REL_TYPE_CODE)
+				.select(DSL
+						.select(DSL.val(lexemeId1), DSL.val(lexemeId2), DSL.val(lexRelTypeCode))
+						.whereNotExists(DSL
+								.select(LEX_RELATION.ID)
+								.from(LEX_RELATION)
+								.where(LEX_RELATION.LEXEME1_ID.eq(lexemeId1)
+										.and(LEX_RELATION.LEXEME2_ID.eq(lexemeId2))
+										.and(LEX_RELATION.LEX_REL_TYPE_CODE.eq(lexRelTypeCode)))))
+				.execute();
+	}
+
 	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
 
 		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
@@ -613,23 +636,6 @@ public class CompositionDbService implements DbConstant {
 			clonedLexemeSourceLink.setLexemeId(clonedLexemeId);
 			clonedLexemeSourceLink.changed(LEXEME_SOURCE_LINK.ORDER_BY, false);
 			clonedLexemeSourceLink.store();
-		});
-	}
-
-	public void cloneLexemeRelations(Long lexemeId, Long clonedLexemeId) {
-
-		Result<LexRelationRecord> lexemeRelations = create.selectFrom(LEX_RELATION)
-				.where(LEX_RELATION.LEXEME1_ID.eq(lexemeId).or(LEX_RELATION.LEXEME2_ID.eq(lexemeId)))
-				.orderBy(LEX_RELATION.ORDER_BY)
-				.fetch();
-		lexemeRelations.stream().map(LexRelationRecord::copy).forEach(clonedRelation -> {
-			if (clonedRelation.getLexeme1Id().equals(lexemeId)) {
-				clonedRelation.setLexeme1Id(clonedLexemeId);
-			} else {
-				clonedRelation.setLexeme2Id(clonedLexemeId);
-			}
-			clonedRelation.changed(LEX_RELATION.ORDER_BY, false);
-			clonedRelation.store();
 		});
 	}
 
