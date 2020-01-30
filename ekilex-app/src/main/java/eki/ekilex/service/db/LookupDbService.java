@@ -85,6 +85,7 @@ public class LookupDbService implements DbConstant {
 	public List<Long> getWordIdsOfJoinCandidates(eki.ekilex.data.Word targetWord, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
 
 		String wordValue = targetWord.getValue();
+		String wordLang = targetWord.getLanguage();
 		Long wordIdToExclude = targetWord.getWordId();
 		boolean isPrefixoid = targetWord.isPrefixoid();
 		boolean isSuffixoid = targetWord.isSuffixoid();
@@ -95,6 +96,7 @@ public class LookupDbService implements DbConstant {
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID)).and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(WORD.ID.ne(wordIdToExclude))
+						.and(WORD.LANG.eq(wordLang))
 						.andExists(DSL
 								.select(LEXEME.ID)
 								.from(LEXEME)
