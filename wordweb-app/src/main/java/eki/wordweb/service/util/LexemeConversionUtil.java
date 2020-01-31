@@ -1,7 +1,6 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,12 +58,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			lexComplexity = dataFilter.getLexComplexity();
 		}
 
-		Map<Long, Lexeme> lexemeMap = new HashMap<>();
-
 		for (Lexeme lexeme : lexemes) {
 
 			Long lexemeId = lexeme.getLexemeId();
-			lexemeMap.put(lexemeId, lexeme);
 			populateLexeme(lexeme, lexemeSourceLinkMap, lexComplexity, displayLang);
 			populateUsages(lexeme, wordLang, destinLangs, lexComplexity, displayLang);
 			populateRelatedLexemes(lexeme, lexComplexity, displayLang);
@@ -73,9 +69,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
 			populateMeaning(lexeme, lexemeMeaningTuple, langOrderByMap, wordLang, destinLangs, lexComplexity, displayLang);
 			populateRelatedMeanings(lexeme, lexemeMeaningTuple, displayLang);
-		}
 
-		for (Lexeme lexeme : lexemes) {
 			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
 			lexeme.setEmptyLexeme(isEmptyLexeme);
 		}
