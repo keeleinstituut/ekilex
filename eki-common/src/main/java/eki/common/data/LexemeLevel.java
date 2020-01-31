@@ -6,6 +6,8 @@ public interface LexemeLevel {
 
 	Integer getLevel2();
 
+	String getLevels();
+
 	void setLevels(String levels);
 
 	String getDatasetCode();

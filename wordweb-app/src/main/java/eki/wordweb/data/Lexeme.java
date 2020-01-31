@@ -9,13 +9,15 @@ import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 import eki.common.data.LexemeLevel;
 
-public class Lexeme extends AbstractDataObject implements LexemeLevel {
+public class Lexeme extends AbstractDataObject implements LexemeLevel, ComplexityType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long lexemeId;
 
 	private Long meaningId;
+
+	private String datasetCode;
 
 	private String datasetName;
 
@@ -115,6 +117,15 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 		this.meaningId = meaningId;
 	}
 
+	@Override
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
+	}
+
 	public String getDatasetName() {
 		return datasetName;
 	}
@@ -131,6 +142,7 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 		this.datasetType = datasetType;
 	}
 
+	@Override
 	public Integer getLevel1() {
 		return level1;
 	}
@@ -139,6 +151,7 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 		this.level1 = level1;
 	}
 
+	@Override
 	public Integer getLevel2() {
 		return level2;
 	}
@@ -151,10 +164,12 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 		return levels;
 	}
 
+	@Override
 	public void setLevels(String levels) {
 		this.levels = levels;
 	}
 
+	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}
@@ -441,10 +456,5 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setEmptyLexeme(boolean emptyLexeme) {
 		this.emptyLexeme = emptyLexeme;
-	}
-
-	@Override
-	public String getDatasetCode() {
-		return null;
 	}
 }
