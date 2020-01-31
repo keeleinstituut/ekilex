@@ -5,7 +5,7 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
-public class CollocationTuple extends AbstractDataObject {
+public class CollocationTuple extends AbstractDataObject implements ComplexityType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -123,6 +123,7 @@ public class CollocationTuple extends AbstractDataObject {
 		this.collocMembers = collocMembers;
 	}
 
+	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}

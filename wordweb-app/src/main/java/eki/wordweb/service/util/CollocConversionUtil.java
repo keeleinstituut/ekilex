@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.MapUtils;
 
+import eki.common.constant.Complexity;
 import eki.wordweb.constant.CollocMemberGroup;
-import eki.wordweb.constant.SystemConstant;
-import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Collocation;
 import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationRelGroup;
@@ -26,12 +25,15 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.TypeCollocMember;
 
 @Component
-public class CollocConversionUtil implements WebConstant, SystemConstant {
+public class CollocConversionUtil extends AbstractConversionUtil {
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
 	public void enrich(Long wordId, List<Lexeme> lexemes, List<CollocationTuple> collocTuples, DataFilter dataFilter, String displayLang) {
+
+		Complexity lexComplexity = dataFilter.getLexComplexity();
+		collocTuples = filter(collocTuples, lexComplexity);
 
 		Map<Long, Lexeme> lexemeMap = lexemes.stream().collect(Collectors.toMap(Lexeme::getLexemeId, lexeme -> lexeme));
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
