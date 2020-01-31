@@ -7,10 +7,11 @@
 </th:block>
 </head>
 <body class="home-page">
+  <th:block th:replace="common-app :: update-msg"></th:block>
   <th:block th:replace="common-app :: wcag-search"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div class="header-container">
-    <button class="btn menu-btn" th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
+    <button class="btn menu-btn position-static ml-auto" th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
       <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
       <span class="icon icon-menu"></span>
     </button>
