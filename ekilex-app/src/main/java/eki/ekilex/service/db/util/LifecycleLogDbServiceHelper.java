@@ -153,6 +153,7 @@ public class LifecycleLogDbServiceHelper implements DbConstant {
 				.selectDistinct(
 						WORD.GENDER_CODE,
 						WORD.ASPECT_CODE,
+						WORD.LANG,
 						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value"),
 						DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("value_prese"),
 						DSL.field("array_to_string(array_agg(distinct form.vocal_form), ',')").cast(String.class).as("vocal_form"))

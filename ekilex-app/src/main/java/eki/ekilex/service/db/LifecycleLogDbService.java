@@ -427,6 +427,12 @@ public class LifecycleLogDbService {
 			logData.setRecent(recent);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createWordLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.LANG.equals(property)) {
+			Map<String, Object> entityData = helper.getWordData(create, entityId);
+			String recent = (String) entityData.get("lang");
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createWordLifecycleLog(entityId, lifecycleLogId);
 		} else if (LifecycleProperty.OD_RECOMMENDATION.equals(property)) {
 			Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.OD_WORD_RECOMMENDATION);
 			String recent = (String) entityData.get("value_prese");

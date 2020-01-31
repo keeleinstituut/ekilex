@@ -13,20 +13,6 @@ $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	}
 });
 
-//addWordDataDlg_ select
-$(document).on("change", "select.word-data-select[name='opCode']", function() {
-	var opCode = $(this).val();
-	var localForm = $(this).closest("form");
-	localForm.find(".value-group").hide();
-	var wordId = localForm.find("[name=id3]").val();
-	var dlgElemId = "#" + opCode + '_' + wordId;
-	$(dlgElemId).show();
-});
-
-$(document).on("show.bs.modal", "[id^=addWordDataDlg_]", function() {
-	initAddMultiDataDlg($(this));
-});
-
 $(document).on("show.bs.modal", "[id^=addGovernmentDlg_]", function() {
 	initGenericTextAddDlg($(this));
 });
@@ -57,7 +43,19 @@ $(document).on("show.bs.modal", "[id^=addWordRelationDlg_]", function() {
 	initMultiselectRelationDlg($(this));
 });
 
+$(document).on("show.bs.modal", "[id^=addWordAspectDlg_]", function() {
+	initSelectDlg($(this));
+});
+
 $(document).on("show.bs.modal", "[id^=editWordAspectDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addWordLangDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editWordLangDlg_]", function() {
 	initSelectDlg($(this));
 });
 
@@ -89,8 +87,20 @@ $(document).on("show.bs.modal", "[id^=addLexemeGrammarDlg_]", function() {
 	initGenericTextEditDlg($(this));
 });
 
+$(document).on("show.bs.modal", "[id^=addWordVocalFormDlg_]", function() {
+	initGenericTextEditDlg($(this));
+});
+
 $(document).on("show.bs.modal", "[id^=editWordVocalFormDlg_]", function() {
 	initGenericTextEditDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addWordGenderDlg_]", function() {
+	initSelectDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addWordTypeDlg_]", function() {
+	initSelectDlg($(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addOdWordRecommendationDlg_]", function(e) {
