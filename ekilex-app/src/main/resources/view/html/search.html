@@ -235,9 +235,10 @@
             <button class="btn btn-secondary btn-sm" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
             <div class="mt-3" style="max-height: calc(100vh - 14rem); overflow-y: auto;">
               <div class="form-check mt-1" th:each="dataset : ${allDatasets}">
-                <input class="form-check-input" type="checkbox" th:value="${dataset.code}" th:name="selectedDatasets"
-                  th:checked="${not #lists.isEmpty(userProfile.preferredDatasets) && #lists.contains(userProfile.preferredDatasets, dataset.code)}">
-                <label class="form-check-label" th:text="${dataset.name}">Default checkbox</label>
+                <label class="form-check-label"><input class="form-check-input" type="checkbox" 
+                  th:value="${dataset.code}" th:name="selectedDatasets"
+                  th:checked="${not #lists.isEmpty(userProfile.preferredDatasets) && #lists.contains(userProfile.preferredDatasets, dataset.code)}"><span 
+                  th:text="${dataset.name}">Dataset name</span> <span class="ctxt" th:text="'(' + ${dataset.code} + ')'">(code)</span></label>
               </div>
             </div>
           </div>
