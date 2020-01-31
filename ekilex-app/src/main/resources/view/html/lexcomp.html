@@ -363,18 +363,43 @@
       </span>
     </div>
   </div>
+  <div class="mr-1" th:fragment="word_lang">
+    <th:block th:if="${#strings.isEmpty(details.word.language)}">
+      <button type="button" class="btn btn-secondary btn-compact btn-sm"
+              data-toggle="modal"
+              th:data-target="${'#addWordLangDlg_' + wordId}"
+              sec:authorize="${#vars.isWordCrudGranted}">
+        <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Keel
+      </button>
+    </th:block>
+    <th:block th:unless="${#strings.isEmpty(details.word.language)}">
+      <div class="hover-actions-container hover-actions-container-outline">
+        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.language, allLanguages)}" data-toggle="tooltip" title="Keel"></span>
+        <div class="hover-actions">
+          <div class="btn-group">
+            <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
+                    data-toggle="modal"
+                    th:data-target="${'#editWordLangDlg_' + wordId}"
+                    sec:authorize="${#vars.isWordCrudGranted}">
+            <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </div>
   <div class="mr-1" th:fragment="word_vocal_form">
     <th:block th:if="${#strings.isEmpty(details.word.vocalForm)}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
         data-toggle="modal"
-        th:data-target="${'#addWordDataDlg_' + wordId}"
+        th:data-target="${'#addWordVocalFormDlg_' + wordId}"
         sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Hääldus
       </button>
     </th:block>
     <th:block th:unless="${#strings.isEmpty(details.word.vocalForm)}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="'['+${details.word.vocalForm}+']'" data-toggle="tooltip" title="Hääldus"></span>
+        <span th:text="'[' + ${details.word.vocalForm} + ']'" data-toggle="tooltip" title="Hääldus"></span>
         <div class="hover-actions hover-actions-bottom-right">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
@@ -400,7 +425,7 @@
     <th:block th:if="${details.word.genderCode == null}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
         data-toggle="modal"
-        th:data-target="${'#addWordDataDlg_' + wordId}"
+        th:data-target="${'#addWordGenderDlg_' + wordId}"
         sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Sugu
       </button>
@@ -434,7 +459,7 @@
     <th:block th:if="${#lists.isEmpty(details.wordTypes)}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
         data-toggle="modal"
-        th:data-target="${'#addWordDataDlg_' + wordId}"
+        th:data-target="${'#addWordTypeDlg_' + wordId}"
         sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Sõna tüüp
       </button>
@@ -451,7 +476,7 @@
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm"
               data-toggle="modal"
-              th:data-target="${'#addWordDataDlg_' + wordId}"
+              th:data-target="${'#addWordTypeDlg_' + wordId}"
               sec:authorize="${#vars.isWordCrudGranted}">
               <i class="fa fa-plus action-icon" aria-hidden="true"></i>
             </button>
@@ -480,7 +505,7 @@
     <th:block th:if="${details.word.aspectCode == null}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
         data-toggle="modal"
-        th:data-target="${'#addWordDataDlg_' + wordId}" 
+        th:data-target="${'#addWordAspectDlg_' + wordId}"
         sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Aspekt
       </button>

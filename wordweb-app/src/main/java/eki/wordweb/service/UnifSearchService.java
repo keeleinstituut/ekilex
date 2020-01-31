@@ -151,6 +151,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 
 		// lexeme data
 		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
+		lexemes = lexemeConversionUtil.filterLexemes(lexemes, lexComplexity);
 		List<TypeSourceLink> lexemeSourceLinks = unifSearchDbService.getLexemeSourceLinks(wordId);
 		Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(lexemeSourceLinks)) {
@@ -168,7 +169,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		// lex conv
 		List<Lexeme> lexLexemes = lexemeGroups.get(DatasetType.LEX);
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
-			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId, lexComplexity);
+			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
 			lexemeConversionUtil.enrich(
 					DatasetType.LEX, wordLang, lexLexemes, lexemeSourceLinkMap, freeformSourceLinkMap, lexemeMeaningTupleMap,
@@ -243,14 +244,16 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		try {
 			lexComplexity = Complexity.valueOf(searchMode.toUpperCase());
 		} catch (Exception e) {
-			//not interested
+			lexComplexity = Complexity.DETAIL;
 		}
+		DatasetType datasetType = null;
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		if (Complexity.SIMPLE.equals(lexComplexity)) {
+			datasetType = DatasetType.LEX;
 			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		}
 		List<String> destinLangsClean = destinLangs.stream().filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL)).collect(Collectors.toList());
-		DataFilter dataFilter = new DataFilter(destinLangsClean, lexComplexity, maxDisplayLevel);
+		DataFilter dataFilter = new DataFilter(datasetType, destinLangsClean, lexComplexity, maxDisplayLevel);
 		return dataFilter;
 	}
 }

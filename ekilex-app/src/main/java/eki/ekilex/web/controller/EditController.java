@@ -154,6 +154,9 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(itemData.getId3(), valuePrese);
 			break;
+		case "word_lang":
+			cudService.updateWordLang(itemData.getId3(), valuePrese);
+			break;
 		case "lexeme_grammar":
 			cudService.createLexemeGrammar(itemData.getId(), valuePrese, itemData.getComplexity());
 			break;
@@ -277,6 +280,9 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(itemData.getId(), valuePrese);
+			break;
+		case "word_lang":
+			cudService.updateWordLang(itemData.getId(), valuePrese);
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), valuePrese);

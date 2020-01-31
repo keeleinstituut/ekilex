@@ -373,6 +373,13 @@ public class CudDbService implements DbConstant {
 				.execute();
 	}
 
+	public void updateWordLang(Long wordId, String langCode) {
+		create.update(WORD)
+				.set(WORD.LANG, langCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateLexemeComplexity(Long lexemeId, String complexity) {
 		create.update(LEXEME)
 				.set(LEXEME.COMPLEXITY, complexity)
