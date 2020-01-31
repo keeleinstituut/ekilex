@@ -49,6 +49,7 @@
   </th:block>
   <!-- menu -->
   <th:block th:fragment="menu">
+    <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="container-fluid header-container">
       <div class="row header-wrap">
         <div class="col-12">
@@ -70,6 +71,7 @@
   </th:block>
 
   <th:block th:fragment="menu_with_backBtn">
+    <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="container-fluid header-container">
       <div class="row header-wrap">
         <div class="col-12">
@@ -121,7 +123,7 @@
           <span th:text="#{menu.games}">Keelemängud</span>
         </a>
         <a th:href="@{/teacher-tools}" class="menu-item" data-item-name="ttools">
-          <span th:text="#{menu.ttools}">Õpetajate tööristad</span>
+          <span th:text="#{menu.ttools}">Õpetajate tööriistad</span>
         </a>
         <a th:href="@{/about}" class="menu-item" data-item-name="about">
           <span th:text="#{menu.about}">Portaalist</span>
@@ -425,5 +427,11 @@
       <span class="icon icon-chevron-left"></span>
     </a>
   </th:block>
+<th:block th:fragment="update-msg">
+  <div class="alert  alert-dismissible fade show bg-warning text-black px-3 py-1 d-flex align-items-center update-alert" role="alert">Sõnaveeb uueneb. Uut versiooni tutvustame märtsis 2020 <button type="button" class="close btn bg-transparent ml-auto py-1" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+</th:block>
 </body>
 </html>
