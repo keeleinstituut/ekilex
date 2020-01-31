@@ -36,7 +36,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
 
 	public List<Lexeme> filterLexemes(List<Lexeme> lexemes, Complexity lexComplexity) {
-		lexemes = filter(lexemes, lexComplexity);
+		if ((lexComplexity != null) && Complexity.SIMPLE.equals(lexComplexity)) {
+			return filter(lexemes, lexComplexity);
+		}
 		return lexemes;
 	}
 
@@ -155,18 +157,13 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (CollectionUtils.isEmpty(meaningWords)) {
 			return;
 		}
-		List<TypeMeaningWord> filteredMeaningWords = new ArrayList<>();
+		meaningWords = filter(meaningWords, wordLang, destinLangs);
+		if ((lexComplexity != null) && Complexity.SIMPLE.equals(lexComplexity)) {
+			meaningWords = filter(meaningWords, lexComplexity);
+		}
+
 		for (TypeMeaningWord meaningWord : meaningWords) {
-			if (lexComplexity != null
-					&& Complexity.SIMPLE.equals(lexComplexity)
-					&& !Complexity.SIMPLE.equals(meaningWord.getComplexity())) {
-				continue;
-			}
 			String meaningWordLang = meaningWord.getLang();
-			if (!isLangFilterMatch(wordLang, meaningWordLang, destinLangs)) {
-				continue;
-			}
-			filteredMeaningWords.add(meaningWord);
 			cleanEscapeSym(meaningWord.getMwLexGovernments());
 			classifierUtil.applyClassifiers(meaningWord, displayLang);
 			setWordTypeFlags(meaningWord);
@@ -181,7 +178,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				lexeme.getDestinLangMatchWords().add(meaningWord);
 			}
 		}
-		lexeme.setMeaningWords(filteredMeaningWords);
+		lexeme.setMeaningWords(meaningWords);
 
 		Map<String, List<TypeMeaningWord>> destinLangMatchWordsByLangUnordered = lexeme.getDestinLangMatchWords().stream().collect(Collectors.groupingBy(TypeMeaningWord::getLang));
 		Map<String, List<TypeMeaningWord>> destinLangMatchWordsByLangOrdered = composeOrderedMap(destinLangMatchWordsByLangUnordered, langOrderByMap);
@@ -277,6 +274,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				&& CollectionUtils.isEmpty(lexeme.getRegisters())
 				&& CollectionUtils.isEmpty(lexeme.getGovernments())
 				&& CollectionUtils.isEmpty(lexeme.getUsages())
+				&& CollectionUtils.isEmpty(lexeme.getSourceLangMeaningWords())
 				&& CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords());
 	}
 
