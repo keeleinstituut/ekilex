@@ -17,7 +17,7 @@
     </div>
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Olemasoleva tähenduse valik</h5>
+        <h5 class="card-title" th:text="#{meaning.relation.select.title}">Olemasoleva tähenduse valik</h5>
       </div>
       <form id="createWordForm" th:action="@{/create_word_and_meaning_and_rel}" method="post">
         <input type="hidden" name="language" th:value="${language}">
