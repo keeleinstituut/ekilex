@@ -33,7 +33,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 	public void enrich(Long wordId, List<Lexeme> lexemes, List<CollocationTuple> collocTuples, DataFilter dataFilter, String displayLang) {
 
 		Complexity lexComplexity = dataFilter.getLexComplexity();
-		collocTuples = filter(collocTuples, lexComplexity);
+		collocTuples = filterSimpleOnly(collocTuples, lexComplexity);
 
 		Map<Long, Lexeme> lexemeMap = lexemes.stream().collect(Collectors.toMap(Lexeme::getLexemeId, lexeme -> lexeme));
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();

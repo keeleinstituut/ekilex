@@ -36,10 +36,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
 
 	public List<Lexeme> filterLexemes(List<Lexeme> lexemes, Complexity lexComplexity) {
-		if ((lexComplexity != null) && Complexity.SIMPLE.equals(lexComplexity)) {
-			return filter(lexemes, lexComplexity);
-		}
-		return lexemes;
+		return filterSimpleOnly(lexemes, lexComplexity);
 	}
 
 	public void enrich(
@@ -158,9 +155,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			return;
 		}
 		meaningWords = filter(meaningWords, wordLang, destinLangs);
-		if ((lexComplexity != null) && Complexity.SIMPLE.equals(lexComplexity)) {
-			meaningWords = filter(meaningWords, lexComplexity);
-		}
+		meaningWords = filterSimpleOnly(meaningWords, lexComplexity);
 
 		for (TypeMeaningWord meaningWord : meaningWords) {
 			String meaningWordLang = meaningWord.getLang();

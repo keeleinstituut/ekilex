@@ -52,6 +52,13 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		}
 	}
 
+	protected <T extends ComplexityType> List<T> filterSimpleOnly(List<T> list, Complexity lexComplexity) {
+		if ((lexComplexity != null) && Complexity.SIMPLE.equals(lexComplexity)) {
+			return filter(list, lexComplexity);
+		}
+		return list;
+	}
+
 	protected <T extends ComplexityType> List<T> filter(List<T> list, Complexity lexComplexity) {
 		if (CollectionUtils.isEmpty(list)) {
 			return list;
