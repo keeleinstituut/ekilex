@@ -97,6 +97,13 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
+	public void updateWordLang(Long wordId, String langCode) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.LANG, wordId, langCode);
+		createLifecycleLog(logData);
+		cudDbService.updateWordLang(wordId, langCode);
+	}
+
+	@Transactional
 	public void updateWordRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
 			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.WORD_RELATION, LifecycleProperty.ID, item);
