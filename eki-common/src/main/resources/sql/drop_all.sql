@@ -1,3 +1,4 @@
+-- wordweb associated views and types
 drop view if exists view_ww_word_search;
 drop view if exists view_ww_word;
 drop view if exists view_ww_as_word;--remove later
@@ -31,8 +32,9 @@ drop type if exists type_word_etym_relation;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
-drop type if exists type_term_meaning_word;
 
+-- ekilex associated tables and types
+drop type if exists type_term_meaning_word;
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
 drop table if exists feedback_log_comment;
