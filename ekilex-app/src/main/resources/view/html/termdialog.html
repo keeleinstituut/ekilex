@@ -159,7 +159,10 @@
                 <select required class="form-control classifier-select required-field term-domain-select" data-live-search="true">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}" th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
+                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain
+                    </option>
                   </optgroup>
                 </select>
               </div>
@@ -326,6 +329,21 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_lang_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.wordId}">
+            <input type="hidden" name="opCode" value="word_lang">
+            <select required class="form-control" name="value">
+              <option th:each="item : ${allLanguages}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.wordLang}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addMeaningDomainDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_domain_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -338,7 +356,10 @@
               <select required class="form-control classifier-select" data-live-search="true">
                 <option value="" hidden disabled selected>vali väärtus...</option>
                 <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                  <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}" th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                  <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
+                          th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                          th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain
+                  </option>
                 </optgroup>
               </select>
             </div>
@@ -365,7 +386,8 @@
                         th:value="${domain.toIdString()}"
                         th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
                         th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
-                        th:selected="${domain.toIdString() == classif.toIdString()}">domain</option>
+                        th:selected="${domain.toIdString() == classif.toIdString()}">domain
+                </option>
               </optgroup>
             </select>
           </div>
@@ -699,7 +721,8 @@
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
-                          th:text="${language.value}">language</option>
+                          th:text="${language.value}">language
+                  </option>
                 </select>
               </div>
             </div>
@@ -1032,9 +1055,9 @@
                 <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
-                    th:value="${language.code}"
-                    th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
-                    th:text="${language.value}">language
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                          th:text="${language.value}">language
                   </option>
                 </select>
               </div>
@@ -1044,9 +1067,9 @@
                 <select required class="form-control required-field" name="morphCode">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
                   <option th:each="morphCode : ${wordMorphCodes}"
-                    th:value="${morphCode.code}"
-                    th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
-                    th:text="${morphCode.value}">morphCode
+                          th:value="${morphCode.code}"
+                          th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
+                          th:text="${morphCode.value}">morphCode
                   </option>
                 </select>
               </div>

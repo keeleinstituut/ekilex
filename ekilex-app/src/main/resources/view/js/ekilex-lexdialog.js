@@ -55,10 +55,6 @@ $(document).on("show.bs.modal", "[id^=addWordLangDlg_]", function() {
 	initSelectDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=editWordLangDlg_]", function() {
-	initSelectDlg($(this));
-});
-
 $(document).on("show.bs.modal", "[id^=editLexemeLevelsDlg_]", function() {
 	initLexemeLevelsDlg($(this));
 });
