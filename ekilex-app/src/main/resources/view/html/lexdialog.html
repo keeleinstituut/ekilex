@@ -104,9 +104,10 @@
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}"
-                      th:value="${domain.toIdString()}"
-                      th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                      th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                            th:value="${domain.toIdString()}"
+                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain
+                    </option>
                   </optgroup>
                 </select>
               </div>
@@ -191,9 +192,10 @@
                 <select required class="form-control required-field classifier-select" data-live-search="true" name="language">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
-                    th:value="${language.code}"
-                    th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
-                    th:text="${language.value}">language</option>
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                          th:text="${language.value}">language
+                  </option>
                 </select>
               </div>
             </div>
@@ -228,9 +230,9 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option th:each="complexity : ${complexities}"
-                    th:value="${complexity}"
-                    th:selected="${complexity == definition.complexity}"
-                    th:text="#{'enum.complexity.' + ${complexity}}">value
+                          th:value="${complexity}"
+                          th:selected="${complexity == definition.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -394,9 +396,9 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option th:each="complexity : ${complexities}"
-                    th:value="${complexity}"
-                    th:selected="${complexity == government.complexity}"
-                    th:text="#{'enum.complexity.' + ${complexity}}">value
+                          th:value="${complexity}"
+                          th:selected="${complexity == government.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -490,9 +492,9 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option th:each="complexity : ${complexities}"
-                    th:value="${complexity}"
-                    th:selected="${complexity == usage.complexity}"
-                    th:text="#{'enum.complexity.' + ${complexity}}">value
+                          th:value="${complexity}"
+                          th:selected="${complexity == usage.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -627,9 +629,9 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option th:each="complexity : ${complexities}"
-                    th:value="${complexity}"
-                    th:selected="${complexity == publicNote.complexity}"
-                    th:text="#{'enum.complexity.' + ${complexity}}">value
+                          th:value="${complexity}"
+                          th:selected="${complexity == publicNote.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -1171,8 +1173,10 @@
                 <select required class="form-control required-field classifier-select" data-live-search="true">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                      th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
+                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain
+                    </option>
                   </optgroup>
                 </select>
               </div>
@@ -1196,8 +1200,11 @@
             <input type="hidden" name="currentValue" th:value="${classif.toIdString()}">
             <select class="form-control classifier-select" name="value" data-live-search="true">
               <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}" th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                  th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}" th:selected="${domain.toIdString() == classif.toIdString()}">domain</option>
+                <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
+                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                        th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
+                        th:selected="${domain.toIdString() == classif.toIdString()}">domain
+                </option>
               </optgroup>
             </select>
           </div>
@@ -1518,9 +1525,9 @@
                 <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
-                    th:value="${language.code}"
-                    th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
-                    th:text="${language.value}">language
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                          th:text="${language.value}">language
                   </option>
                 </select>
               </div>
@@ -1530,9 +1537,9 @@
                 <select required class="form-control required-field" name="morphCode">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
                   <option th:each="morphCode : ${wordMorphCodes}"
-                    th:value="${morphCode.code}"
-                    th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
-                    th:text="${morphCode.value}">morphCode
+                          th:value="${morphCode.code}"
+                          th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
+                          th:text="${morphCode.value}">morphCode
                   </option>
                 </select>
               </div>

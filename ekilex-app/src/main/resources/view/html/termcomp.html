@@ -378,6 +378,19 @@
       </button>
     </div>
   </div>
+  <div class="row mr-0 hidden-buttons" th:if="${lexeme.wordLang != null}" th:fragment="word_lang">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Sõna keel</span>
+    </div>
+    <div class="col pl-0">
+      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(lexeme.wordLang, allLanguages)}"></span>
+      <button type="button" class="btn badge badge-primary" title="Muuda"
+              data-toggle="modal"
+              th:data-target="${'#editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
   <div class="row mr-0" th:if="${not #lists.isEmpty(lexeme.wordTypes)}" th:fragment="word_type">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Sõna tüüp</span>

@@ -58,6 +58,10 @@ $(document).on("show.bs.modal", "[id^=editWordTypeDlg_]", function() {
 	initSelectDlg($(this));
 });
 
+$(document).on("show.bs.modal", "[id^=editWordLangDlg_]", function() {
+	initSelectDlg($(this));
+});
+
 $(document).on("show.bs.modal", "[id^=editLexemeProcessStateDlg_]", function() {
 	initSelectDlg($(this));
 });
