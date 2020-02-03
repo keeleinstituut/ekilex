@@ -636,6 +636,8 @@ from lexeme l
                                                    array_agg(ut.value_prese order by ut.order_by) usage_translations
                                             from freeform ut
                                             where ut.type = 'USAGE_TRANSLATION'
+                                            -- TODO this hack is based on ralistic data and fulfils necessary prerequisite for data filtering at ww
+                                            and   ut.lang = 'rus' 
                                             group by ut.parent_id) ut on ut.usage_id = u.id
                            left outer join (select ud.parent_id usage_id,
                                                    array_agg(ud.value_prese order by ud.order_by) usage_definitions

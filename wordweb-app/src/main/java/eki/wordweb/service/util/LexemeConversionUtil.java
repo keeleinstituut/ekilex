@@ -107,6 +107,10 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		usages = filter(usages, wordLang, destinLangs);
 		lexeme.setUsages(usages);
 		for (TypeUsage usage : usages) {
+			// TODO based on reasonable expectation that all translations are in fact in rus
+			if (!isDestinLangAlsoRus(destinLangs)) {
+				usage.setUsageTranslations(null);
+			}
 			usage.setUsageAuthors(new ArrayList<>());
 			classifierUtil.applyClassifiers(usage, displayLang);
 			List<String> usageAuthorsRaw = usage.getUsageAuthorsRaw();
@@ -126,6 +130,16 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 		boolean isMoreUsages = CollectionUtils.size(usages) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 		lexeme.setMoreUsages(isMoreUsages);
+	}
+
+	private boolean isDestinLangAlsoRus(List<String> destinLangs) {
+		if (CollectionUtils.isEmpty(destinLangs)) {
+			return true;
+		}
+		if (destinLangs.contains(DESTIN_LANG_ALL)) {
+			return true;
+		}
+		return destinLangs.contains(DESTIN_LANG_RUS);
 	}
 
 	private void populateRelatedLexemes(Lexeme lexeme, Complexity lexComplexity, String displayLang) {
