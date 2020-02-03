@@ -137,10 +137,7 @@ public class SearchController extends AbstractController {
 			HttpServletRequest request,
 			Model model) {
 
-		Integer homonymNr = null;
-		if (StringUtils.isNotBlank(homonymNrStr) && StringUtils.isNumeric(homonymNrStr)) {
-			homonymNr = Integer.valueOf(homonymNrStr);
-		}
+		Integer homonymNr = nullSafe(homonymNrStr);
 		String searchUri = composeSearchUri(DESTIN_LANG_ALL, searchMode, searchWord, homonymNr);
 
 		return "redirect:" + searchUri;
