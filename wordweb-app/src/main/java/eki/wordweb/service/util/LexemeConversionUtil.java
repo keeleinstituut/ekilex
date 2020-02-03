@@ -38,7 +38,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		return filterSimpleOnly(lexemes, lexComplexity);
 	}
 
-	public void enrich(
+	public void compose(
 			DatasetType datasetType,
 			String wordLang,
 			List<Lexeme> lexemes,
@@ -258,13 +258,15 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {
 		return CollectionUtils.isEmpty(lexeme.getDefinitions())
-				&& CollectionUtils.isEmpty(lexeme.getRelatedLexemes())
-				&& CollectionUtils.isEmpty(lexeme.getDomains())
-				&& CollectionUtils.isEmpty(lexeme.getRegisters())
-				&& CollectionUtils.isEmpty(lexeme.getGovernments())
 				&& CollectionUtils.isEmpty(lexeme.getUsages())
 				&& CollectionUtils.isEmpty(lexeme.getSourceLangMeaningWords())
-				&& CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords());
+				&& CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords())
+				&& CollectionUtils.isEmpty(lexeme.getRelatedLexemes())
+				&& CollectionUtils.isEmpty(lexeme.getDomains())
+				;
+		//not much of a content?
+		//&& CollectionUtils.isEmpty(lexeme.getRegisters()) 
+		//&& CollectionUtils.isEmpty(lexeme.getGovernments())
 	}
 
 	private <T> OrderedMap<String, List<T>> composeOrderedMap(Map<String, List<T>> langKeyUnorderedMap, Map<String, Long> langOrderByMap) {

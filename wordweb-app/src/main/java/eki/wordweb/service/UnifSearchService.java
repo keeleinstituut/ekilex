@@ -171,17 +171,18 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
 			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
-			lexemeConversionUtil.enrich(
+			lexemeConversionUtil.compose(
 					DatasetType.LEX, wordLang, lexLexemes, lexemeSourceLinkMap, freeformSourceLinkMap, lexemeMeaningTupleMap,
 					allRelatedWords, langOrderByMap, dataFilter, displayLang);
-			collocConversionUtil.enrich(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
+			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
+			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 		}
 
 		// term conv
 		List<Lexeme> termLexemes = lexemeGroups.get(DatasetType.TERM);
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
-			lexemeConversionUtil.enrich(
+			lexemeConversionUtil.compose(
 					DatasetType.TERM, wordLang, termLexemes, lexemeSourceLinkMap, freeformSourceLinkMap, lexemeMeaningTupleMap,
 					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 		}

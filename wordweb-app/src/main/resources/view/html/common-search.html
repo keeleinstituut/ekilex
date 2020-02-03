@@ -9,6 +9,7 @@
           <input type="text" id="search" role="search" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
           <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
           <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
+          <input type="hidden" name="selectedWordHomonymNr"/>
         </div>
         <div class="extra-buttons">
           <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">

@@ -65,13 +65,15 @@ public class SearchController extends AbstractController {
 	public String searchWords(
 			@RequestParam(name = "destinLangsStr") String destinLangStr,
 			@RequestParam(name = "searchMode") String searchMode,
-			@RequestParam(name = "searchWord") String searchWord) {
+			@RequestParam(name = "searchWord") String searchWord,
+			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr) {
 
 		searchWord = StringUtils.trim(searchWord);
 		if (StringUtils.isBlank(searchWord)) {
 			return "redirect:" + SEARCH_PAGE;
 		}
-		String searchUri = composeSearchUri(destinLangStr, searchMode, searchWord, null);
+		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
+		String searchUri = composeSearchUri(destinLangStr, searchMode, searchWord, selectedWordHomonymNr);
 
 		return "redirect:" + searchUri;
 	}
@@ -97,8 +99,7 @@ public class SearchController extends AbstractController {
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
 		String recentWord = sessionBean.getRecentWord();
-		Integer recentHomonymNr = sessionBean.getRecentHomonymNr();
-		SearchFilter searchFilter = validateSearch(destinLangsStr, searchMode, searchWord, homonymNrStr, recentWord, recentHomonymNr);
+		SearchFilter searchFilter = validateSearch(destinLangsStr, searchMode, searchWord, homonymNrStr, recentWord);
 		sessionBean.setSearchWord(searchWord);
 
 		if (sessionBeanNotPresent) {
@@ -166,19 +167,13 @@ public class SearchController extends AbstractController {
 		model.addAttribute("wordData", wordData);
 		populateRecent(sessionBean, wordData);
 
-		if (wordData.isLexResultsExist()) {
-			return SEARCH_PAGE + " :: worddetails";
-		} else {
-			return SEARCH_PAGE + " :: worddetailsempty";
-		}
+		return SEARCH_PAGE + " :: worddetails";
 	}
 
 	private void populateRecent(SessionBean sessionBean, WordData wordData) {
 		Word word = wordData.getWord();
 		String wordValue = word.getWord();
-		Integer homonymNr = word.getHomonymNr();
 		sessionBean.setRecentWord(wordValue);
-		sessionBean.setRecentHomonymNr(homonymNr);
 	}
 
 	@GetMapping("/korp/{lang}/{sentence}")
@@ -198,11 +193,9 @@ public class SearchController extends AbstractController {
 	}
 
 	private SearchFilter validateSearch(
-			String destinLangsStr, String searchMode, String searchWord, String homonymNrStr, String recentSearchWord, Integer recentHomonymNr) {
+			String destinLangsStr, String searchMode, String searchWord, String homonymNrStr, String recentSearchWord) {
 
 		boolean isValid = true;
-
-		Integer homonymNr;
 
 		String[] destinLangsArr = StringUtils.split(destinLangsStr, LANG_FILTER_SEPARATOR);
 		List<String> destinLangs = Arrays.stream(destinLangsArr)
@@ -230,20 +223,10 @@ public class SearchController extends AbstractController {
 		}
 
 		// homonym nr
-		if (StringUtils.isBlank(homonymNrStr)) {
-			if (isValid && StringUtils.equals(searchWord, recentSearchWord)) {
-				homonymNr = recentHomonymNr;
-				isValid = isValid & true;
-			} else {
-				homonymNr = 1;
-				isValid = isValid & false;
-			}
-		} else if (!StringUtils.isNumeric(homonymNrStr)) {
+		Integer homonymNr = nullSafe(homonymNrStr);
+		if (homonymNr == null) {
 			homonymNr = 1;
 			isValid = isValid & false;
-		} else {
-			homonymNr = new Integer(homonymNrStr);
-			isValid = isValid & true;
 		}
 
 		String searchUri = composeSearchUri(destinLangsStr, searchMode, searchWord, homonymNr);
@@ -267,5 +250,15 @@ public class SearchController extends AbstractController {
 			searchUri += "/" + homonymNr;
 		}
 		return searchUri;
+	}
+
+	private Integer nullSafe(String value) {
+		if (StringUtils.isBlank(value)) {
+			return null;
+		}
+		if (!StringUtils.isNumeric(value)) {
+			return null;
+		}
+		return new Integer(value);
 	}
 }

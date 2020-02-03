@@ -355,6 +355,7 @@ $(document).on("click", "a[id^='destin-lang']", function (e) {
 	}).get();
 	$("input[name='destinLangsStr']").val(destinLangsStr);
 	$("#selected-langs").text(selectedLangs);
+	setSelectedWordHomonymNr();
 	clickSearchIfInputExists();
 });
 
@@ -364,6 +365,7 @@ $(document).on("click", "#toggle-simple", function (e) {
 		$("input[name='searchMode']").val("simple");
 		$(this).addClass("active");
 		$("#toggle-detail").removeClass("active");
+		setSelectedWordHomonymNr();
 		clickSearchIfInputExists();
 	}
 });
@@ -374,9 +376,15 @@ $(document).on("click", "#toggle-detail", function (e) {
 		$("input[name='searchMode']").val("detail");
 		$(this).addClass("active");
 		$("#toggle-simple").removeClass("active");
+		setSelectedWordHomonymNr();
 		clickSearchIfInputExists();
 	}
 });
+
+function setSelectedWordHomonymNr() {
+	var selectedHomonymNr = $("#selected-word-homonym-nr").val();
+	$("input[name='selectedWordHomonymNr']").val(selectedHomonymNr);
+}
 
 function clickSearchIfInputExists() {
 	var tempSearchWord = $("input[name='searchWord']").val();

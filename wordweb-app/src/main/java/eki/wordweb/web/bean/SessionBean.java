@@ -16,8 +16,6 @@ public class SessionBean extends AbstractDataObject {
 
 	private String recentWord;
 
-	private Integer recentHomonymNr;
-
 	public List<String> getDestinLangs() {
 		return destinLangs;
 	}
@@ -48,14 +46,6 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setRecentWord(String recentWord) {
 		this.recentWord = recentWord;
-	}
-
-	public Integer getRecentHomonymNr() {
-		return recentHomonymNr;
-	}
-
-	public void setRecentHomonymNr(Integer recentHomonymNr) {
-		this.recentHomonymNr = recentHomonymNr;
 	}
 
 }

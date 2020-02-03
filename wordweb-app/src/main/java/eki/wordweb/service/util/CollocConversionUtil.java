@@ -30,7 +30,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void enrich(Long wordId, List<Lexeme> lexemes, List<CollocationTuple> collocTuples, DataFilter dataFilter, String displayLang) {
+	public void compose(Long wordId, List<Lexeme> lexemes, List<CollocationTuple> collocTuples, DataFilter dataFilter, String displayLang) {
 
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 		collocTuples = filterSimpleOnly(collocTuples, lexComplexity);
