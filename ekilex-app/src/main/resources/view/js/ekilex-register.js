@@ -8,4 +8,13 @@ function initialise() {
 			registerForm.submit();
 		}
 	});
+
+	let agreementChk = $(document).find('input[name="agreement"]');
+	agreementChk.change(function() {
+		if (this.checked) {
+			$('#registerBtn').prop("disabled", false);
+		} else {
+			$('#registerBtn').prop("disabled", true);
+		}
+	});
 }

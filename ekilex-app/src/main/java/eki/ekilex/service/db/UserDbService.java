@@ -92,9 +92,9 @@ public class UserDbService extends AbstractDbService {
 		ekiUser.store();
 	}
 
-	public void createUserProfile(Long userId) {
-		create.insertInto(EKI_USER_PROFILE, EKI_USER_PROFILE.USER_ID)
-				.values(userId)
+	public void createUserProfile(Long userId, String termsVer) {
+		create.insertInto(EKI_USER_PROFILE, EKI_USER_PROFILE.USER_ID, EKI_USER_PROFILE.TERMS_VER)
+				.values(userId, termsVer)
 				.execute();
 	}
 

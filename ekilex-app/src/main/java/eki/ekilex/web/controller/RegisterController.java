@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,9 @@ public class RegisterController implements WebConstant {
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
 	private static final String BOT_PROTECTION_CODE = "botProtectionCode";
+
+	@Value("${terms.version}")
+	private String termsVer;
 
 	@Autowired
 	private UserService userService;
@@ -52,6 +56,7 @@ public class RegisterController implements WebConstant {
 			@RequestParam("name") String name,
 			@RequestParam("salasona") String password,
 			@RequestParam("salasona2") String password2,
+			@RequestParam(value = "agreement", required = false) boolean agreement,
 			Model model,
 			RedirectAttributes attributes,
 			HttpServletRequest request) {
@@ -59,6 +64,13 @@ public class RegisterController implements WebConstant {
 		boolean isBotProtectionTriggered = checkBotProtection(request, botProtectionCode, email);
 		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
+		}
+
+		if (!agreement) {
+			model.addAttribute("userName", name);
+			model.addAttribute("userEmail", email);
+			model.addAttribute("error_message", "Registreeruda saab ainult tingimustega nõustudes.");
+			return REGISTER_PAGE;
 		}
 
 		if (!userService.isValidName(name)) {
@@ -76,7 +88,7 @@ public class RegisterController implements WebConstant {
 		}
 
 		if (userService.isValidUser(email)) {
-			String activationLink = userService.createUser(email, name, password);
+			String activationLink = userService.createUser(email, name, password, termsVer);
 			if (emailService.isEnabled()) {
 				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile: " + email);
 			} else {
