@@ -466,6 +466,7 @@ create table eki_user_profile
 (
   id bigserial primary key,
   user_id bigint references eki_user(id) on delete cascade not null,
+  terms_ver varchar(100) null,
   recent_dataset_permission_id bigint references dataset_permission(id),
   preferred_datasets varchar(10) array,
   preferred_biling_candidate_langs char(3) array,

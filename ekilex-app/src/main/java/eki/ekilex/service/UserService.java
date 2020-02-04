@@ -197,14 +197,14 @@ public class UserService implements WebConstant {
 	}
 
 	@Transactional
-	public String createUser(String email, String name, String password) {
+	public String createUser(String email, String name, String password, String termsVer) {
 
 		email = email.toLowerCase();
 		String activationKey = generateUniqueKey();
 		String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 		String encodedPassword = passwordEncoder.encode(password);
 		Long userId = userDbService.createUser(email, name, encodedPassword, activationKey);
-		userDbService.createUserProfile(userId);
+		userDbService.createUserProfile(userId, termsVer);
 		EkiUser user = userDbService.getUserByEmail(email);
 		emailService.sendUserActivationEmail(email, activationLink);
 		logger.debug("Created new user : {}", user.getDescription());

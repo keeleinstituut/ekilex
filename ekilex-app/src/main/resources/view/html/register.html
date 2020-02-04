@@ -53,11 +53,37 @@
               </div>
               <div class="form-group row">
                 <div class="col-sm-10 offset-sm-2">
-                  <button type="button" class="btn btn-primary" id="registerBtn" th:data-code="${botProtectionCode}">Registreeru</button>
+                  <label class="col-form-label">
+                    <input type="checkbox" name="agreement">
+                    <span>Palun kinnita <a href="#" data-toggle="modal" data-target="#terms">kasutustingimustega</a> nõusolek</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-10 offset-sm-2">
+                  <button type="button" class="btn btn-primary" id="registerBtn" th:data-code="${botProtectionCode}" disabled>Registreeru</button>
                 </div>
               </div>
             </form>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" role="dialog" id="terms">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Tingimused</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <th:block th:replace="terms :: terms_text"></th:block>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
         </div>
       </div>
     </div>

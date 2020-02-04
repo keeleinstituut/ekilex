@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = -429952924;
+    private static final long serialVersionUID = 1312549262;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -85,6 +85,11 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
      * The column <code>public.eki_user_profile.preferred_biling_lex_meaning_word_langs</code>.
      */
     public final TableField<EkiUserProfileRecord, String[]> PREFERRED_BILING_LEX_MEANING_WORD_LANGS = createField("preferred_biling_lex_meaning_word_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.eki_user_profile.terms_ver</code>.
+     */
+    public final TableField<EkiUserProfileRecord, String> TERMS_VER = createField("terms_ver", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.eki_user_profile</code> table reference
