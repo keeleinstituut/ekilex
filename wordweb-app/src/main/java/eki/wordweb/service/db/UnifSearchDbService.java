@@ -95,6 +95,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 
 		String wordInfixLower = StringUtils.lowerCase(wordInfix);
 		String wordInfixCrit = '%' + wordInfixLower + '%';
+		String wordInfixCritUnaccent = '%' + StringUtils.stripAccents(wordInfixLower) + '%';
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
@@ -109,7 +110,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 				.from(w)
 				.where(
 						w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
-								.and(w.UNACRIT.like(wordInfixCrit)))
+								.and(w.UNACRIT.like(wordInfixCritUnaccent)))
 				.unionAll(DSL
 						.select(
 								wgf.as("sgroup"),
@@ -118,7 +119,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 						.from(aw)
 						.where(
 								aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
-										.and(aw.UNACRIT.like(wordInfixCrit))))
+										.and(aw.UNACRIT.like(wordInfixCritUnaccent))))
 				.asTable("ws");
 
 		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), DSL.inline(wordInfixLower)));
