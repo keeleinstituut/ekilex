@@ -50,10 +50,10 @@ $(document).ready(function () {
 
 	var searchWordAutocompleteConfig = {
 		source: function (request, response) {
-			var wordPrefix = request.term;
-			var searchWordsByPrefixUrlWithParams = searchWordsByPrefixUrl + "/" + wordPrefix;
+			var wordFrag = request.term;
+			var searchWordFragUrlWithParams = searchWordFragUrl + "/" + wordFrag;
 			$.ajax({
-				url: searchWordsByPrefixUrlWithParams,
+				url: searchWordFragUrlWithParams,
 				type: "GET",
 				success: function (data) {
 					var prefWords = data.prefWords;
@@ -77,7 +77,7 @@ $(document).ready(function () {
 				}
 			});
 		},
-		minLength: 2,
+		minLength: 3,
 		create: function () {
 			$(this).data('uiAutocomplete')._renderMenu = searchWordAutocompleteMenuRenderer;
 		},

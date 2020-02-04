@@ -94,4 +94,12 @@ public interface WebConstant {
 	String ALTERNATIVE_FORMS_SEPARATOR = " ~ ";
 
 	char LANG_FILTER_SEPARATOR = ',';
+
+	String AUTOCOMPLETE_BY_INFIX_LEV = "infixlev";
+
+	String AUTOCOMPLETE_BY_PREFIX = "pref";
+
+	int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
+
+	String AUTOCOMPLETE_ALG = AUTOCOMPLETE_BY_INFIX_LEV;
 }

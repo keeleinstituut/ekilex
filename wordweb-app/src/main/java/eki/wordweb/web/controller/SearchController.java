@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -143,12 +144,16 @@ public class SearchController extends AbstractController {
 		return "redirect:" + searchUri;
 	}
 
-	@GetMapping(value = "/prefix/{wordPrefix}", produces = "application/json;charset=UTF-8")
+	@GetMapping(value = "/searchwordfrag/{wordFrag}", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public Map<String, List<String>> searchWordsByPrefix(@PathVariable("wordPrefix") String wordPrefix) {
+	public Map<String, List<String>> searchWordsByFragment(@PathVariable("wordFrag") String wordFragment) {
 
-		Map<String, List<String>> searchResultCandidates = unifSearchService.getWordsByPrefix(wordPrefix, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
-		return searchResultCandidates;
+		if (StringUtils.equals(AUTOCOMPLETE_ALG, AUTOCOMPLETE_BY_INFIX_LEV)) {
+			return unifSearchService.getWordsByInfixLev(wordFragment, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		} else if (StringUtils.equals(AUTOCOMPLETE_ALG, AUTOCOMPLETE_BY_PREFIX)) {
+			return unifSearchService.getWordsByPrefix(wordFragment, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		}
+		return new HashedMap<>();
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")

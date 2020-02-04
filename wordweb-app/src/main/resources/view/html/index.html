@@ -65,7 +65,7 @@
   <div th:replace="common-app :: feedback-form"></div>
   <script th:inline="javascript">
   	var currentPage = /*[[@{/}]]*/"/";
-  	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
+  	var searchWordFragUrl = /*[[@{/searchwordfrag}]]*/"/searchwordfrag";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search');
   </script>

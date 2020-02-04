@@ -31,8 +31,10 @@ drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
 
 -- run this once:
--- CREATE EXTENSION dblink;
+-- create extension dblink;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
+-- create extension pg_trgm;
+-- create extension fuzzystrmatch;
 
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
@@ -80,7 +82,8 @@ dblink(
 	'select * from view_ww_word_search') as word_search(
 	sgroup varchar(10),
 	word text,
-	crit text
+	crit text,
+	unacrit text
 );
 
 create materialized view mview_ww_word as
@@ -300,6 +303,7 @@ dblink(
 );
 
 create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
+create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);
 create index mview_ww_word_search_crit_lower_prefix_idx on mview_ww_word_search (lower(crit) text_pattern_ops);
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);

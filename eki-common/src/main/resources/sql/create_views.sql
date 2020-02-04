@@ -1,3 +1,6 @@
+-- run this once:
+-- create extension unaccent;
+
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
@@ -41,7 +44,8 @@ create view view_ww_word_search
 as
 select ws.sgroup,
        ws.word,
-       ws.crit
+       ws.crit,
+       unaccent(ws.crit) unacrit
 from ((select 'word' as sgroup,
               fw.value word,
               lower(fw.value) crit

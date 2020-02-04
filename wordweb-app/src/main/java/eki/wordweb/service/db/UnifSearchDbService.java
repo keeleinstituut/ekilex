@@ -19,7 +19,9 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Field;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
@@ -34,6 +36,7 @@ import eki.wordweb.data.SourceLinksWrapper;
 import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordSearchElement;
+import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
@@ -88,13 +91,76 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 	}
 
 	@SuppressWarnings("unchecked")
+	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, int maxWordCount) {
+
+		String wordInfixLower = StringUtils.lowerCase(wordInfix);
+		String wordInfixCrit = '%' + wordInfixLower + '%';
+
+		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
+		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
+		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
+		Field<String> wgf = DSL.field(DSL.val(WORD_SEARCH_GROUP_WORD));
+
+		Table<Record3<String, String, String>> ws = DSL
+				.select(
+						wgf.as("sgroup"),
+						w.WORD,
+						w.CRIT)
+				.from(w)
+				.where(
+						w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
+								.and(w.UNACRIT.like(wordInfixCrit)))
+				.unionAll(DSL
+						.select(
+								wgf.as("sgroup"),
+								aw.WORD,
+								aw.CRIT)
+						.from(aw)
+						.where(
+								aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
+										.and(aw.UNACRIT.like(wordInfixCrit))))
+				.asTable("ws");
+
+		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), DSL.inline(wordInfixLower)));
+
+		Table<Record3<String, String, Integer>> wfs = DSL
+				.select(
+						ws.field("sgroup", String.class),
+						ws.field("word", String.class),
+						wlf.as("lev"))
+				.from(ws)
+				.where(ws.field("crit").like(wordInfixCrit))
+				.orderBy(DSL.field("lev"))
+				.limit(maxWordCount)
+				.unionAll(DSL
+						.select(
+								f.SGROUP,
+								f.WORD,
+								DSL.field(DSL.val(0)).as("lev"))
+						.from(f)
+						.where(f.SGROUP.eq(WORD_SEARCH_GROUP_FORM).and(f.CRIT.eq(wordInfixLower)))
+						.orderBy(f.WORD)
+						.limit(maxWordCount))
+				.asTable("wfs");
+
+		return (Map<String, List<WordSearchElement>>) create
+				.select(
+						wfs.field("sgroup", String.class),
+						wfs.field("word", String.class))
+				.from(wfs)
+				.fetchGroups("sgroup", WordSearchElement.class);
+	}
+
+	//TODO obsolete?
+	@SuppressWarnings("unchecked")
 	public Map<String, List<WordSearchElement>> getWordsByPrefix(String wordPrefix, int maxWordCount) {
+
+		String wordPrefixLower = StringUtils.lowerCase(wordPrefix);
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
 		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
 
-		String wordPrefixLower = StringUtils.lowerCase(wordPrefix);
 		Table<Record2<String, String>> ws = DSL
 				.select(w.SGROUP, w.WORD)
 				.from(w)

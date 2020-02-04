@@ -23,8 +23,6 @@ import eki.wordweb.web.util.UserAgentUtil;
 
 public abstract class AbstractController implements WebConstant, SystemConstant {
 
-	protected static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 10;
-
 	@Autowired
 	private CommonDataService commonDataService;
 

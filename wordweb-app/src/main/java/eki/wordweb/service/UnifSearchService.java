@@ -73,6 +73,34 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
+	public Map<String, List<String>> getWordsByInfixLev(String wordInfix, int limit) {
+
+		Map<String, List<WordSearchElement>> results = unifSearchDbService.getWordsByInfixLev(wordInfix, limit);
+		List<WordSearchElement> wordGroup = results.get(WORD_SEARCH_GROUP_WORD);
+		List<WordSearchElement> formGroup = results.get(WORD_SEARCH_GROUP_FORM);
+		if (CollectionUtils.isEmpty(wordGroup)) {
+			wordGroup = new ArrayList<>();
+		}
+		if (CollectionUtils.isEmpty(formGroup)) {
+			formGroup = new ArrayList<>();
+		}
+		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
+		List<String> formWords = formGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
+		if (CollectionUtils.isNotEmpty(prefWords)) {
+			prefWords.forEach(formWords::remove);
+			int prefWordsCount = prefWords.size();
+			int formWordsCount = formWords.size();
+			int requiredPrefWordsCount = Math.min(prefWordsCount, limit - formWordsCount);
+			prefWords = prefWords.subList(0, requiredPrefWordsCount);
+		}
+		Map<String, List<String>> searchResultCandidates = new HashMap<>();
+		searchResultCandidates.put("prefWords", prefWords);
+		searchResultCandidates.put("formWords", formWords);
+		return searchResultCandidates;
+	}
+
+	//TODO obsolete?
+	@Transactional
 	public Map<String, List<String>> getWordsByPrefix(String wordPrefix, int limit) {
 
 		Map<String, List<WordSearchElement>> results = unifSearchDbService.getWordsByPrefix(wordPrefix, limit);
