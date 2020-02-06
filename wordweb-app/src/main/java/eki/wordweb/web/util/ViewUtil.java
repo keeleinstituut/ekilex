@@ -102,24 +102,28 @@ public class ViewUtil implements WebConstant, SystemConstant {
 
 	public String getSearchUri(SessionBean sessionBean, String word, Integer homonymNr) {
 		List<String> destinLangs = sessionBean.getDestinLangs();
+		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
+		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
 		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, word, destinLangsStr, homonymNr, searchMode);
+		String uri = composeSearchUri(sessionBean, destinLangsStr, datasetCodesStr, searchMode, word, homonymNr);
 		return uri;
 	}
 
 	public String getSearchUri(SessionBean sessionBean, String word) {
 		List<String> destinLangs = sessionBean.getDestinLangs();
+		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
+		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
 		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, word, destinLangsStr, null, searchMode);
+		String uri = composeSearchUri(sessionBean, destinLangsStr, datasetCodesStr, searchMode, word, null);
 		return uri;
 	}
 
-	private String composeSearchUri(SessionBean sessionBean, String word, String destinLangsStr, Integer homonymNr, String searchMode) {
+	private String composeSearchUri(SessionBean sessionBean, String destinLangsStr, String datasetCodesStr, String searchMode, String word, Integer homonymNr) {
 
 		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
-		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLangsStr + "/" + searchMode + "/" + encodedWord;
+		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLangsStr + "/" + datasetCodesStr + "/" + searchMode + "/" + encodedWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}

@@ -4,7 +4,7 @@ public interface SystemConstant {
 
 	String UTF_8 = "UTF-8";
 
-	String DESTIN_LANG_ALL = "all";
+	String DESTIN_LANG_ALL = "dlall";
 
 	String DESTIN_LANG_EST = "est";
 
@@ -14,7 +14,7 @@ public interface SystemConstant {
 
 	String DESTIN_LANG_OTHER = "other";
 
-	String DATASET_ALL = "all";
+	String DATASET_ALL = "dsall";
 
 	String[] SUPPORTED_DESTIN_LANGS = new String[] {DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS};
 

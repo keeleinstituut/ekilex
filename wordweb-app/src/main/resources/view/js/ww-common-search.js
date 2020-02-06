@@ -332,18 +332,19 @@ $(document).on("keyup", "input[name='searchWord']", function (e) {
 });
 
 $(document).on("click", "a[id^='destin-lang-']", function (e) {
+	var destinLangAll = "dlall";
 	var destinLang = $(this).attr("data-filter-code");
-	if (destinLang == "all") {
+	if (destinLang == destinLangAll) {
 		$("a[id^='destin-lang-']").removeClass("active");
 		$(this).addClass("active");
 	} else {
 		if ($(this).hasClass("active")) {
 			$(this).removeClass("active");
 			if ($("a[id^='destin-lang-']").hasClass("active") == false) {
-				$("a[id^='destin-lang-all']").addClass("active");
+				$("a[id^='destin-lang-" + destinLangAll + "']").addClass("active");
 			}
 		} else {
-			$("a[id^='destin-lang-all']").removeClass("active");
+			$("a[id^='destin-lang-" + destinLangAll + "']").removeClass("active");
 			$(this).addClass("active");
 		}
 	}
@@ -360,18 +361,19 @@ $(document).on("click", "a[id^='destin-lang-']", function (e) {
 });
 
 $(document).on("click", "a[id^='dataset-']", function (e) {
+	var datasetCodeAll = "dsall";
 	var datasetCode = $(this).attr("data-filter-code");
-	if (datasetCode == "all") {
+	if (datasetCode == datasetCodeAll) {
 		$("a[id^='dataset-']").removeClass("active");
 		$(this).addClass("active");
 	} else {
 		if ($(this).hasClass("active")) {
 			$(this).removeClass("active");
 			if ($("a[id^='dataset-']").hasClass("active") == false) {
-				$("a[id^='dataset-all']").addClass("active");
+				$("a[id^='dataset-" + datasetCodeAll + "']").addClass("active");
 			}
 		} else {
-			$("a[id^='dataset-all']").removeClass("active");
+			$("a[id^='dataset-" + datasetCodeAll + "']").removeClass("active");
 			$(this).addClass("active");
 		}
 	}
