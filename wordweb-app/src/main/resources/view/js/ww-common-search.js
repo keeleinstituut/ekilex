@@ -331,15 +331,15 @@ $(document).on("keyup", "input[name='searchWord']", function (e) {
 	}
 });
 
-$(document).on("click", "a[id^='destin-lang']", function (e) {
-	var destinLang = $(this).attr("data-lang");
+$(document).on("click", "a[id^='destin-lang-']", function (e) {
+	var destinLang = $(this).attr("data-filter-code");
 	if (destinLang == "all") {
-		$("a[id^='destin-lang']").removeClass("active");
+		$("a[id^='destin-lang-']").removeClass("active");
 		$(this).addClass("active");
 	} else {
 		if ($(this).hasClass("active")) {
 			$(this).removeClass("active");
-			if ($("a[id^='destin-lang']").hasClass("active") == false) {
+			if ($("a[id^='destin-lang-']").hasClass("active") == false) {
 				$("a[id^='destin-lang-all']").addClass("active");
 			}
 		} else {
@@ -347,14 +347,44 @@ $(document).on("click", "a[id^='destin-lang']", function (e) {
 			$(this).addClass("active");
 		}
 	}
-	var destinLangsStr = $("a[id^='destin-lang'].active").map(function (idx, element) {
-		return $(element).attr("data-lang");
+	var destinLangsStr = $("a[id^='destin-lang-'].active").map(function (idx, element) {
+		return $(element).attr("data-filter-code");
 	}).get();
-	var selectedLangs = $("a[id^='destin-lang'].active").map(function (idx, element) {
+	var selectedLangs = $("a[id^='destin-lang-'].active").map(function (idx, element) {
 		return $(element).text();
 	}).get();
 	$("input[name='destinLangsStr']").val(destinLangsStr);
 	$("#selected-langs").text(selectedLangs);
+	setSelectedWordHomonymNr();
+	clickSearchIfInputExists();
+});
+
+$(document).on("click", "a[id^='dataset-']", function (e) {
+	var datasetCode = $(this).attr("data-filter-code");
+	if (datasetCode == "all") {
+		$("a[id^='dataset-']").removeClass("active");
+		$(this).addClass("active");
+	} else {
+		if ($(this).hasClass("active")) {
+			$(this).removeClass("active");
+			if ($("a[id^='dataset-']").hasClass("active") == false) {
+				$("a[id^='dataset-all']").addClass("active");
+			}
+		} else {
+			$("a[id^='dataset-all']").removeClass("active");
+			$(this).addClass("active");
+		}
+	}
+	var datasetCodesStr = $("a[id^='dataset-'].active").map(function (idx, element) {
+		return $(element).attr("data-filter-code");
+	}).get();
+	var selectedDatasetsStr = $("a[id^='dataset-'].active").text();
+	var selectedDatasetCount = $("a[id^='dataset-'].active").length;
+	if (selectedDatasetCount > 1) {
+		selectedDatasetsStr = selectedDatasetCount;
+	}
+	$("input[name='datasetCodesStr']").val(datasetCodesStr);
+	$("#selected-datasets").text(selectedDatasetsStr);
 	setSelectedWordHomonymNr();
 	clickSearchIfInputExists();
 });

@@ -94,13 +94,14 @@ dblink(
 	word_id bigint,
 	word text,
 	as_word text,
-	word_class varchar(100),
 	lang char(3),
 	homonym_nr integer,
+	word_class varchar(100),
 	word_type_codes varchar(100) array,
 	morph_code varchar(100),
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
+	dataset_codes varchar(10) array,
 	lang_complexities type_lang_complexity array,
 	meaning_words type_meaning_word array,
 	definitions type_definition array,
@@ -313,6 +314,7 @@ create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
 create index mview_ww_word_value_prefix_idx on mview_ww_word (word text_pattern_ops);
 create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(word) text_pattern_ops);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
+create index mview_ww_word_dataset_codes_gin_idx on mview_ww_word using gin(dataset_codes);
 create index mview_ww_word_lex_dataset_exists_idx on mview_ww_word (lex_dataset_exists);
 create index mview_ww_word_term_dataset_exists_idx on mview_ww_word (term_dataset_exists);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
@@ -328,6 +330,7 @@ create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
 create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_lexeme_dataset_type_idx on mview_ww_lexeme (dataset_type);
+create index mview_ww_lexeme_dataset_code_idx on mview_ww_lexeme (dataset_code);
 create index mview_ww_lexeme_complexity_idx on mview_ww_lexeme (complexity);
 create index mview_ww_lexeme_lang_filter_gin_idx on mview_ww_lexeme using gin(lang_filter);
 create index mview_ww_collocation_lexeme_id_idx on mview_ww_collocation (lexeme_id);

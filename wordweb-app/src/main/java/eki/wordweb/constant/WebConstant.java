@@ -93,7 +93,7 @@ public interface WebConstant {
 
 	String ALTERNATIVE_FORMS_SEPARATOR = " ~ ";
 
-	char LANG_FILTER_SEPARATOR = ',';
+	char UI_FILTER_VALUES_SEPARATOR = ',';
 
 	String AUTOCOMPLETE_BY_INFIX_LEV = "infixlev";
 

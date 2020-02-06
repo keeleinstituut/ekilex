@@ -53,7 +53,7 @@ import eki.wordweb.data.db.tables.MviewWwWordSearch;
 @Component
 public class UnifSearchDbService extends AbstractSearchDbService {
 
-	public List<Word> getWords(String searchWord) {
+	public List<Word> getWords(String searchWord, List<String> datasetCodes) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
@@ -64,6 +64,11 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 				.from(f)
 				.where(f.WORD_ID.eq(w.WORD_ID)
 						.and(f.FORM.lower().eq(searchWordLower))));
+
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
+			String[] datasetCodesArr = datasetCodes.toArray(new String[0]);
+			where = where.and(PostgresDSL.arrayOverlap(w.DATASET_CODES, datasetCodesArr));
+		}
 
 		return create
 				.select(
@@ -190,6 +195,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 
 		DatasetType datasetType = dataFilter.getDatasetType();
 		List<String> destinLangs = dataFilter.getDestinLangs();
+		List<String> datasetCodes = dataFilter.getDatasetCodes();
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
@@ -202,6 +208,9 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		if (CollectionUtils.isNotEmpty(destinLangs)) {
 			String[] destinLangsArr = destinLangs.toArray(new String[0]);
 			where = where.and(PostgresDSL.arrayOverlap(l.LANG_FILTER, destinLangsArr));
+		}
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
+			where = where.and(l.DATASET_CODE.in(datasetCodes));
 		}
 
 		return create

@@ -33,15 +33,11 @@
     </div>
   </div>
   <div class="container-fluid homonym-page mt-3 bottom-gutter">
-    <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
-      <div class="col offset-1 lg-max-noneset">
-        <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
-      </div>
-    </div>
-    <div class="container search-results-header px-0" th:if="${wordsData.resultsExist}">
+    <div class="container search-results-header px-0" >
       <div class="d-flex flex-row-reverse flex-md-row align-items-start align-items-md-center pb-3">
-        <div class="mr-2 hide-with-details">
-          <span class="mr-2" th:text="#{|label.result.count|(${wordsData.resultCount})}">Leiti 5 tulemust</span>
+        <div class="pl-2 ml-2 border-left homonym-innerwrap show-with-details" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+          <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
+          <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
         </div>
         <div class="border-left mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details">
           <label class="mr-2 my-0 p-0">Näita tulemustes</label>
@@ -49,20 +45,36 @@
             <button class="btn btn-link dropdown-toggle p-0" type="button" id="destinLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span id="selected-langs" th:text="${selectedLangsStr}"></span>
             </button>
-            <div class="dropdown-menu px-3" aria-labelledby="destinLangMenuButton">
-              <th:block th:each="langElem : ${langFilter}">
-                <a href="#" th:id="${'destin-lang-' + langElem.code}" th:data-lang="${langElem.code}" th:text="${langElem.value}"
-                   class="dropdown-item px-2 py-1" th:classappend="${langElem.selected ? 'active' : ''}" >Keel</a>
-                <div class="dropdown-divider" th:if="${langElem.addSeparator}"></div>
+            <div class="dropdown-menu px-3 w-25" aria-labelledby="destinLangMenuButton">
+              <th:block th:each="filterElem : ${langFilter}">
+                <a href="#" th:id="${'destin-lang-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
+                   class="dropdown-item px-2 py-1" th:classappend="${filterElem.selected ? 'active' : ''}" >Keel</a>
+                <div class="dropdown-divider" th:if="${filterElem.addSeparator}"></div>
               </th:block>
             </div>
           </div>
         </div>
-        <div class="pl-2 ml-2 border-left homonym-innerwrap show-with-details" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
-          <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-          <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+        <div class="border-left mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details">
+          <label class="mr-2 my-0 p-0">Sõnakogud</label>
+          <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
+            </button>
+            <div class="dropdown-menu px-2 w-25" aria-labelledby="datasetMenuButton">
+              <th:block th:each="filterElem : ${datasetFilter}">
+                <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
+                   class="dropdown-item px-2" th:classappend="${filterElem.selected ? 'active' : ''}" >Keel</a>
+                <div class="dropdown-divider" th:if="${filterElem.addSeparator}"></div>
+              </th:block>
+            </div>
+          </div>
         </div>
         <button name="feedback-btn" value="feedback" class="ml-auto btn btn-secondary show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
+      </div>
+    </div>
+    <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
+      <div class="col offset-1 lg-max-noneset">
+        <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
       </div>
     </div>
     <main role="main" class="content-panel bg-white container" >

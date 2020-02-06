@@ -102,7 +102,7 @@ public class ViewUtil implements WebConstant, SystemConstant {
 
 	public String getSearchUri(SessionBean sessionBean, String word, Integer homonymNr) {
 		List<String> destinLangs = sessionBean.getDestinLangs();
-		String destinLangsStr = StringUtils.join(destinLangs, LANG_FILTER_SEPARATOR);
+		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		String searchMode = sessionBean.getSearchMode();
 		String uri = composeSearchUri(sessionBean, word, destinLangsStr, homonymNr, searchMode);
 		return uri;
@@ -110,7 +110,7 @@ public class ViewUtil implements WebConstant, SystemConstant {
 
 	public String getSearchUri(SessionBean sessionBean, String word) {
 		List<String> destinLangs = sessionBean.getDestinLangs();
-		String destinLangsStr = StringUtils.join(destinLangs, LANG_FILTER_SEPARATOR);
+		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		String searchMode = sessionBean.getSearchMode();
 		String uri = composeSearchUri(sessionBean, word, destinLangsStr, null, searchMode);
 		return uri;

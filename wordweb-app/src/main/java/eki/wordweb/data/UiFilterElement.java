@@ -2,7 +2,7 @@ package eki.wordweb.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class LanguageFilterElement extends AbstractDataObject {
+public class UiFilterElement extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -14,10 +14,10 @@ public class LanguageFilterElement extends AbstractDataObject {
 
 	private boolean selected;
 
-	public LanguageFilterElement() {
+	public UiFilterElement() {
 	}
 
-	public LanguageFilterElement(String code, String value, boolean addSeparator) {
+	public UiFilterElement(String code, String value, boolean addSeparator) {
 		this.code = code;
 		this.value = value;
 		this.addSeparator = addSeparator;

@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
 
-    private static final long serialVersionUID = -809786466;
+    private static final long serialVersionUID = -1200820055;
 
     /**
      * The reference instance of <code>public.mview_ww_word_search</code>
@@ -119,7 +119,7 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_SEARCH_CRIT_IDX, Indexes.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_SEARCH_CRIT_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX, Indexes.MVIEW_WW_WORD_SEARCH_SGROUP_IDX, Indexes.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX);
     }
 
     /**

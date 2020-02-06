@@ -121,13 +121,14 @@ as
 select w.word_id,
        w.word,
        w.as_word,
-       w.word_class,
        w.lang,
        w.homonym_nr,
+       w.word_class,
        wt.word_type_codes,
        w.morph_code,
        w.display_morph_code,
        w.aspect_code,
+       w.dataset_codes,
        lc.lang_complexities,
        mw.meaning_words,
        wd.definitions,
@@ -143,12 +144,21 @@ from (select w.id as word_id,
 	          where p.word_id = w.id
 	          and   f.paradigm_id = p.id
 	          and   f.mode = 'AS_WORD')[1] as as_word,
-             w.word_class,
              w.lang,
              w.homonym_nr,
+             w.word_class,
              w.morph_code,
              w.display_morph_code,
              w.aspect_code,
+             (select array_agg(distinct l.dataset_code)
+              from lexeme l,
+                   dataset ds
+              where l.type = 'PRIMARY'
+	          and   l.process_state_code = 'avalik'
+	          and   l.word_id = w.id
+	          and   ds.code = l.dataset_code
+	          and   ds.is_public = true
+	          group by w.id) dataset_codes,
              (select count(l.id) > 0
 	          from lexeme l,
 	               dataset ds

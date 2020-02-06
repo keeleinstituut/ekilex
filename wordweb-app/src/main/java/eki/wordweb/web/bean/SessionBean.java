@@ -10,6 +10,8 @@ public class SessionBean extends AbstractDataObject {
 
 	private List<String> destinLangs;
 
+	private List<String> datasetCodes;
+
 	private String searchMode;
 
 	private String searchWord;
@@ -22,6 +24,14 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setDestinLangs(List<String> destinLangs) {
 		this.destinLangs = destinLangs;
+	}
+
+	public List<String> getDatasetCodes() {
+		return datasetCodes;
+	}
+
+	public void setDatasetCodes(List<String> datasetCodes) {
+		this.datasetCodes = datasetCodes;
 	}
 
 	public String getSearchMode() {

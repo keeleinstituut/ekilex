@@ -8,24 +8,23 @@ public class SearchFilter extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String searchWord;
-
 	private List<String> destinLangs;
 
-	private Integer homonymNr;
+	private List<String> datasetCodes;
 
 	private String searchMode;
 
-	private String searchUri;
+	private String searchWord;
 
-	private boolean valid;
+	private Integer homonymNr;
 
-	public String getSearchWord() {
-		return searchWord;
+	public SearchFilter() {
 	}
 
-	public void setSearchWord(String searchWord) {
-		this.searchWord = searchWord;
+	public SearchFilter(List<String> destinLangs, List<String> datasetCodes, String searchMode) {
+		this.destinLangs = destinLangs;
+		this.datasetCodes = datasetCodes;
+		this.searchMode = searchMode;
 	}
 
 	public List<String> getDestinLangs() {
@@ -36,12 +35,12 @@ public class SearchFilter extends AbstractDataObject {
 		this.destinLangs = destinLangs;
 	}
 
-	public Integer getHomonymNr() {
-		return homonymNr;
+	public List<String> getDatasetCodes() {
+		return datasetCodes;
 	}
 
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
+	public void setDatasetCodes(List<String> datasetCodes) {
+		this.datasetCodes = datasetCodes;
 	}
 
 	public String getSearchMode() {
@@ -52,20 +51,20 @@ public class SearchFilter extends AbstractDataObject {
 		this.searchMode = searchMode;
 	}
 
-	public String getSearchUri() {
-		return searchUri;
+	public String getSearchWord() {
+		return searchWord;
 	}
 
-	public void setSearchUri(String searchUri) {
-		this.searchUri = searchUri;
+	public void setSearchWord(String searchWord) {
+		this.searchWord = searchWord;
 	}
 
-	public boolean isValid() {
-		return valid;
+	public Integer getHomonymNr() {
+		return homonymNr;
 	}
 
-	public void setValid(boolean valid) {
-		this.valid = valid;
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.LanguageFilterElement;
+import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.CommonDataService;
@@ -24,7 +24,7 @@ import eki.wordweb.web.util.UserAgentUtil;
 public abstract class AbstractController implements WebConstant, SystemConstant {
 
 	@Autowired
-	private CommonDataService commonDataService;
+	protected CommonDataService commonDataService;
 
 	@Value("${speech.recognition.service.url:}")
 	protected String speechRecognitionServiceUrl;
@@ -66,7 +66,17 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		}
 
 		// lang filter
-		List<LanguageFilterElement> langFilter = commonDataService.getLangFilter(DISPLAY_LANG);
+		populateLangFilter(sessionBean, model);
+
+		// dataset filter
+		populateDatasetFilter(sessionBean, model);
+
+		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
+	}
+
+	private void populateLangFilter(SessionBean sessionBean, Model model) {
+	
+		List<UiFilterElement> langFilter = commonDataService.getLangFilter(DISPLAY_LANG);
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> selectedLangs = new ArrayList<>();
 		if (CollectionUtils.isEmpty(destinLangs)) {
@@ -74,20 +84,47 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 			destinLangs.add(DESTIN_LANG_ALL);
 			sessionBean.setDestinLangs(destinLangs);
 		}
-		for (LanguageFilterElement langFilterElement : langFilter) {
+		for (UiFilterElement langFilterElement : langFilter) {
 			boolean isSelected = destinLangs.contains(langFilterElement.getCode());
 			langFilterElement.setSelected(isSelected);
 			if (isSelected) {
 				selectedLangs.add(langFilterElement.getValue());
 			}
 		}
-		String destinLangsStr = StringUtils.join(destinLangs, LANG_FILTER_SEPARATOR);
+		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		String selectedLangsStr = StringUtils.join(selectedLangs, ", ");
-
-		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
+	
 		model.addAttribute("langFilter", langFilter);
 		model.addAttribute("destinLangsStr", destinLangsStr);
 		model.addAttribute("selectedLangsStr", selectedLangsStr);
+	}
+
+	private void populateDatasetFilter(SessionBean sessionBean, Model model) {
+
+		List<UiFilterElement> datasetFilter = commonDataService.getDatasetFilter();
+		List<String> datasetCodes = sessionBean.getDatasetCodes();
+		if (CollectionUtils.isEmpty(datasetCodes)) {
+			datasetCodes = new ArrayList<>();
+			datasetCodes.add(DATASET_ALL);
+			sessionBean.setDatasetCodes(datasetCodes);
+		}
+		String selectedDatasetsStr = null;
+		for (UiFilterElement datasetFilterElement : datasetFilter) {
+			boolean isSelected = datasetCodes.contains(datasetFilterElement.getCode());
+			datasetFilterElement.setSelected(isSelected);
+			if (isSelected) {
+				selectedDatasetsStr = datasetFilterElement.getValue();
+			}
+		}
+		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
+		long selectedDatasetCount = datasetFilter.stream().filter(UiFilterElement::isSelected).count();
+		if (selectedDatasetCount > 1) {
+			selectedDatasetsStr = String.valueOf(selectedDatasetCount);
+		}
+
+		model.addAttribute("datasetFilter", datasetFilter);
+		model.addAttribute("datasetCodesStr", datasetCodesStr);
+		model.addAttribute("selectedDatasetsStr", selectedDatasetsStr);
 	}
 
 	protected boolean sessionBeanNotPresent(Model model) {

@@ -28,6 +28,7 @@ import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
@@ -37,6 +38,7 @@ import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
+import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.UnifSearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.CollocConversionUtil;
@@ -50,6 +52,9 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 
 	@Autowired
 	private UnifSearchDbService unifSearchDbService;
+
+	@Autowired
+	private CommonDataDbService commonDataDbService;
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
@@ -133,10 +138,14 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 	}
 
 	@Transactional
-	public WordsData getWords(String searchWord, Integer homonymNr, List<String> destinLangs, String searchMode) {
+	public WordsData getWords(SearchFilter searchFilter) {
 
-		DataFilter dataFilter = getDataFilter(destinLangs, searchMode);
-		List<Word> allWords = unifSearchDbService.getWords(searchWord);
+		String searchMode = searchFilter.getSearchMode();
+		String searchWord = searchFilter.getSearchWord();
+		Integer homonymNr = searchFilter.getHomonymNr();
+
+		DataFilter dataFilter = getDataFilter(searchFilter);
+		List<Word> allWords = unifSearchDbService.getWords(searchWord, dataFilter.getDatasetCodes());
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, dataFilter);
@@ -156,10 +165,10 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 	}
 
 	@Transactional
-	public WordData getWordData(Long wordId, List<String> destinLangs, String searchMode, String displayLang) {
+	public WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang) {
 
 		// query params
-		DataFilter dataFilter = getDataFilter(destinLangs, searchMode);
+		DataFilter dataFilter = getDataFilter(searchFilter);
 		Integer maxDisplayLevel = dataFilter.getMaxDisplayLevel();
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 
@@ -175,7 +184,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		Map<Long, List<Form>> paradigmFormsMap = unifSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
-		Map<String, Long> langOrderByMap = classifierUtil.getLangOrderByMap();
+		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 
 		// lexeme data
 		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
@@ -268,7 +277,10 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		}
 	}
 
-	private DataFilter getDataFilter(List<String> destinLangs, String searchMode) {
+	private DataFilter getDataFilter(SearchFilter searchFilter) {
+		List<String> destinLangs = searchFilter.getDestinLangs();
+		List<String> datasetCodes = searchFilter.getDatasetCodes();
+		String searchMode = searchFilter.getSearchMode();
 		Complexity lexComplexity = null;
 		try {
 			lexComplexity = Complexity.valueOf(searchMode.toUpperCase());
@@ -282,7 +294,8 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		}
 		List<String> destinLangsClean = destinLangs.stream().filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL)).collect(Collectors.toList());
-		DataFilter dataFilter = new DataFilter(datasetType, destinLangsClean, lexComplexity, maxDisplayLevel);
+		List<String> datasetCodesClean = datasetCodes.stream().filter(datasetCode -> !StringUtils.equals(datasetCode, DATASET_ALL)).collect(Collectors.toList());
+		DataFilter dataFilter = new DataFilter(datasetType, destinLangsClean, datasetCodesClean, lexComplexity, maxDisplayLevel);
 		return dataFilter;
 	}
 }

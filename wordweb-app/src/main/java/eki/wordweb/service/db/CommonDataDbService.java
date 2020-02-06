@@ -1,6 +1,7 @@
 package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_CLASSIFIER;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
@@ -155,5 +157,26 @@ public class CommonDataDbService implements SystemConstant {
 								.and(cllbl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE))
 								.and(cliso.TYPE.eq(CLASSIF_VALUE_TYPE_ISO2)))
 				.fetchMap(cllbl.CODE, LanguageData.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	public List<Dataset> getDatasets() {
+		return create
+				.select(
+						MVIEW_WW_DATASET.CODE,
+						MVIEW_WW_DATASET.NAME,
+						MVIEW_WW_DATASET.DESCRIPTION)
+				.from(MVIEW_WW_DATASET)
+				.orderBy(MVIEW_WW_DATASET.ORDER_BY)
+				.fetchInto(Dataset.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	public List<String> getDatasetCodes() {
+		return create
+				.select(MVIEW_WW_DATASET.CODE)
+				.from(MVIEW_WW_DATASET)
+				.orderBy(MVIEW_WW_DATASET.ORDER_BY)
+				.fetchInto(String.class);
 	}
 }

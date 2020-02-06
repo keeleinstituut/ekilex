@@ -2,7 +2,6 @@ package eki.wordweb.service.util;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -193,9 +192,5 @@ public class ClassifierUtil {
 					.collect(Collectors.toList());
 		}
 		return classifiers;
-	}
-
-	public Map<String, Long> getLangOrderByMap() {
-		return commonDataDbService.getLangOrderByMap();
 	}
 }

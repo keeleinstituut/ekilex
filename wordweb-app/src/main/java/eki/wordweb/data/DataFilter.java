@@ -14,13 +14,16 @@ public class DataFilter extends AbstractDataObject {
 
 	private List<String> destinLangs;
 
+	private List<String> datasetCodes;
+
 	private Complexity lexComplexity;
 
 	private Integer maxDisplayLevel;
 
-	public DataFilter(DatasetType datasetType, List<String> destinLangs, Complexity lexComplexity, Integer maxDisplayLevel) {
+	public DataFilter(DatasetType datasetType, List<String> destinLangs, List<String> datasetCodes, Complexity lexComplexity, Integer maxDisplayLevel) {
 		this.datasetType = datasetType;
 		this.destinLangs = destinLangs;
+		this.datasetCodes = datasetCodes;
 		this.lexComplexity = lexComplexity;
 		this.maxDisplayLevel = maxDisplayLevel;
 	}
@@ -31,6 +34,10 @@ public class DataFilter extends AbstractDataObject {
 
 	public List<String> getDestinLangs() {
 		return destinLangs;
+	}
+
+	public List<String> getDatasetCodes() {
+		return datasetCodes;
 	}
 
 	public Complexity getLexComplexity() {
