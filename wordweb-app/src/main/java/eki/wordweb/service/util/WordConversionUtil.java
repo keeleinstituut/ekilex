@@ -30,6 +30,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 	public void composeHomonymWrapups(List<Word> words, DataFilter dataFilter) {
 
 		Complexity lexComplexity = dataFilter.getLexComplexity();
+		//TODO destinLang & datasetCodes?
 
 		for (Word word : words) {
 			String wordLang = word.getLang();
