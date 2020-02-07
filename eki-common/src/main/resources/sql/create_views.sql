@@ -855,13 +855,14 @@ order by l1.level1,
 -- etymology - OK
 create view view_ww_word_etymology
 as
-with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, word_etym_rel_id, related_word_id) as
+with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, word_etym_rel_id, related_word_id, related_word_ids) as
 (
   (select we.word_id,
           we.word_id word_etym_word_id,
           we.id word_etym_id,
           wer.id word_etym_rel_id,
-          wer.related_word_id
+          wer.related_word_id,
+          array[wer.related_word_id] as related_word_ids
    from word_etymology we
      left outer join word_etymology_relation wer on wer.word_etym_id = we.id
    order by we.order_by,
@@ -871,10 +872,12 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, wo
            we.word_id word_etym_word_id,
            we.id word_etym_id,
            wer.id word_etym_rel_id,
-           wer.related_word_id
+           wer.related_word_id,
+           (rec.related_word_ids || wer.related_word_id) as related_word_ids
     from word_etym_recursion rec
       inner join word_etymology we on we.word_id = rec.related_word_id
       left outer join word_etymology_relation wer on wer.word_etym_id = we.id
+    where rec.related_word_id != any(rec.related_word_ids)
     order by we.order_by,
              wer.order_by)
 )
