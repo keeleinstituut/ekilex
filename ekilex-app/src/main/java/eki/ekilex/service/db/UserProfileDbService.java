@@ -5,6 +5,8 @@ import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,8 @@ import eki.ekilex.data.db.tables.records.EkiUserProfileRecord;
 
 @Component
 public class UserProfileDbService {
+
+	private static Logger logger = LoggerFactory.getLogger(UserProfileDbService.class);
 
 	@Autowired
 	private DSLContext create;
@@ -74,6 +78,8 @@ public class UserProfileDbService {
 
 	public void updateUserProfile(EkiUserProfile userProfile) {
 
+		logger.debug("updateUserProfile start");
+
 		Long userId = userProfile.getUserId();
 		Long recentDatasetPermissionId = userProfile.getRecentDatasetPermissionId();
 		String[] preferredDatasets = userProfile.getPreferredDatasets().toArray(new String[0]);
@@ -85,7 +91,9 @@ public class UserProfileDbService {
 		boolean showMeaningRelationMeaningId = userProfile.isShowMeaningRelationMeaningId();
 		boolean showMeaningRelationWordDatasets = userProfile.isShowMeaningRelationWordDatasets();
 
+		logger.debug("before selecting ekiUserProfile");
 		EkiUserProfileRecord ekiUserProfile = create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOne();
+		logger.debug("ekiUserProfile is null: " + (ekiUserProfile == null));
 		ekiUserProfile.setRecentDatasetPermissionId(recentDatasetPermissionId);
 		ekiUserProfile.setPreferredDatasets(preferredDatasets);
 		ekiUserProfile.setPreferredBilingCandidateLangs(preferredBilingCandidateLangs);
@@ -96,6 +104,7 @@ public class UserProfileDbService {
 		ekiUserProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		ekiUserProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
 
+		logger.debug("before store()");
 		ekiUserProfile.store();
 	}
 
