@@ -33,6 +33,7 @@ drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
 
 alter table lexeme add column weight numeric(5,4) default 1;
+update lexeme set weight = 0.89 where type = 'SECONDARY';
 alter table word_relation_param alter column value type numeric(5,4) using value::numeric(5,4);
 
 delete from word_relation_param wrp using word_relation_param wrp2
