@@ -4,9 +4,8 @@ import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.DSLContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +14,6 @@ import eki.ekilex.data.db.tables.records.EkiUserProfileRecord;
 
 @Component
 public class UserProfileDbService {
-
-	private static Logger logger = LoggerFactory.getLogger(UserProfileDbService.class);
 
 	@Autowired
 	private DSLContext create;
@@ -78,33 +75,37 @@ public class UserProfileDbService {
 
 	public void updateUserProfile(EkiUserProfile userProfile) {
 
-		logger.debug("updateUserProfile start");
-
 		Long userId = userProfile.getUserId();
 		Long recentDatasetPermissionId = userProfile.getRecentDatasetPermissionId();
-		String[] preferredDatasets = userProfile.getPreferredDatasets().toArray(new String[0]);
-		String[] preferredBilingCandidateLangs = userProfile.getPreferredBilingCandidateLangs().toArray(new String[0]);
-		String[] preferredBilingLexMeaningWordLangs = userProfile.getPreferredBilingLexMeaningWordLangs().toArray(new String[0]);
-		String[] preferredMeaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs().toArray(new String[0]);
+		List<String> preferredDatasets = userProfile.getPreferredDatasets();
+		List<String> preferredBilingCandidateLangs = userProfile.getPreferredBilingCandidateLangs();
+		List<String> preferredBilingLexMeaningWordLangs = userProfile.getPreferredBilingLexMeaningWordLangs();
+		List<String> preferredMeaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
 		boolean showLexMeaningRelationSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
 		boolean showMeaningRelationFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
 		boolean showMeaningRelationMeaningId = userProfile.isShowMeaningRelationMeaningId();
 		boolean showMeaningRelationWordDatasets = userProfile.isShowMeaningRelationWordDatasets();
 
-		logger.debug("before selecting ekiUserProfile");
 		EkiUserProfileRecord ekiUserProfile = create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOne();
-		logger.debug("ekiUserProfile is null: " + (ekiUserProfile == null));
+
 		ekiUserProfile.setRecentDatasetPermissionId(recentDatasetPermissionId);
-		ekiUserProfile.setPreferredDatasets(preferredDatasets);
-		ekiUserProfile.setPreferredBilingCandidateLangs(preferredBilingCandidateLangs);
-		ekiUserProfile.setPreferredBilingLexMeaningWordLangs(preferredBilingLexMeaningWordLangs);
-		ekiUserProfile.setPreferredMeaningRelationWordLangs(preferredMeaningRelationWordLangs);
+		if (CollectionUtils.isNotEmpty(preferredDatasets)) {
+			ekiUserProfile.setPreferredDatasets(preferredDatasets.toArray(new String[0]));
+		}
+		if (CollectionUtils.isNotEmpty(preferredBilingCandidateLangs)) {
+			ekiUserProfile.setPreferredBilingCandidateLangs(preferredBilingCandidateLangs.toArray(new String[0]));
+		}
+		if (CollectionUtils.isNotEmpty(preferredBilingLexMeaningWordLangs)) {
+			ekiUserProfile.setPreferredBilingLexMeaningWordLangs(preferredBilingLexMeaningWordLangs.toArray(new String[0]));
+		}
+		if (CollectionUtils.isNotEmpty(preferredMeaningRelationWordLangs)) {
+			ekiUserProfile.setPreferredMeaningRelationWordLangs(preferredMeaningRelationWordLangs.toArray(new String[0]));
+		}
 		ekiUserProfile.setShowLexMeaningRelationSourceLangWords(showLexMeaningRelationSourceLangWords);
 		ekiUserProfile.setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
 		ekiUserProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		ekiUserProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
 
-		logger.debug("before store()");
 		ekiUserProfile.store();
 	}
 

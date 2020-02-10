@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +22,6 @@ import eki.ekilex.data.EkiUserProfile;
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class UserProfileController extends AbstractPageController implements DbConstant {
-
-	private static Logger logger = LoggerFactory.getLogger(UserProfileController.class);
 
 	@GetMapping(USER_PROFILE_URI)
 	public String userProfile(Model model) {
@@ -65,19 +61,14 @@ public class UserProfileController extends AbstractPageController implements DbC
 			@RequestParam(value = "showMeaningRelationMeaningId", required = false) boolean showMeaningRelationMeaningId,
 			@RequestParam(value = "showMeaningRelationWordDatasets", required = false) boolean showMeaningRelationWordDatasets) {
 
-		logger.debug("updateMeaningRelPrefs start");
-
 		Long userId = userService.getAuthenticatedUser().getId();
-		logger.debug("userId: " + userId);
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		logger.debug("userProfile is null: " + (userProfile == null));
 		userProfile.setPreferredMeaningRelationWordLangs(meaningRelationWordLanguages);
 		userProfile.setShowLexMeaningRelationSourceLangWords(showLexMeaningRelationSourceLangWords);
 		userProfile.setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
 		userProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		userProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
 		userProfileService.updateUserProfile(userProfile);
-		logger.debug("updateMeaningRelPrefs end");
 		return "redirect:" + USER_PROFILE_URI;
 	}
 }
