@@ -6,6 +6,7 @@ create table eki_user
   name text not null,
   email text not null,
   password text not null,
+  terms_ver varchar(100) null,
   activation_key varchar(60),
   recovery_key varchar(60),
   is_admin boolean default false,
@@ -466,11 +467,15 @@ create table eki_user_profile
 (
   id bigserial primary key,
   user_id bigint references eki_user(id) on delete cascade not null,
-  terms_ver varchar(100) null,
   recent_dataset_permission_id bigint references dataset_permission(id),
   preferred_datasets varchar(10) array,
   preferred_biling_candidate_langs char(3) array,
-  preferred_biling_lex_meaning_word_langs char(3) array
+  preferred_biling_lex_meaning_word_langs char(3) array,
+  preferred_meaning_relation_word_langs char(3) array,
+  show_lex_meaning_relation_source_lang_words boolean default false,
+  show_meaning_relation_first_word_only boolean default true,
+  show_meaning_relation_meaning_id boolean default true,
+  show_meaning_relation_word_datasets boolean default true
 );
 alter sequence eki_user_profile_id_seq restart with 10000;
 

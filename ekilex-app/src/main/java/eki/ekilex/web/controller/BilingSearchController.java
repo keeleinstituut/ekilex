@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.WordSynDetails;
@@ -55,8 +54,9 @@ public class BilingSearchController extends AbstractSynSearchController {
 		final String resultLang = null;
 
 		SessionBean sessionBean = getSessionBean(model);
+		Long userId = userService.getAuthenticatedUser().getId();
 
-		formDataCleanup(BILING_SEARCH_PAGE, null, detailSearchFilter, sessionBean);
+		formDataCleanup(BILING_SEARCH_PAGE, null, detailSearchFilter, userId);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -90,17 +90,17 @@ public class BilingSearchController extends AbstractSynSearchController {
 
 		String datasetCode = getDatasetCodeFromRole(sessionBean);
 		Long userId = userService.getAuthenticatedUser().getId();
-		EkiUserProfile userProfile = userService.getUserProfile(userId);
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> candidateLangCodes = userProfile.getPreferredBilingCandidateLangs();
 		List<String> meaningWordLangCodes = userProfile.getPreferredBilingLexMeaningWordLangs();
 
 		if (CollectionUtils.isEmpty(candidateLangCodes)) {
 			candidateLangCodes = commonDataService.getLanguageCodes();
-			userService.updateUserPreferredBilingCandidateLangs(candidateLangCodes);
+			userProfileService.updateUserPreferredBilingCandidateLangs(candidateLangCodes, userId);
 		}
 		if (CollectionUtils.isEmpty(meaningWordLangCodes)) {
 			meaningWordLangCodes = commonDataService.getLanguageCodes();
-			userService.updateUserPreferredMeaningWordLangs(meaningWordLangCodes);
+			userProfileService.updateUserPreferredMeaningWordLangs(meaningWordLangCodes, userId);
 		}
 
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.BILING_RUS, candidateLangCodes, meaningWordLangCodes);
@@ -118,7 +118,8 @@ public class BilingSearchController extends AbstractSynSearchController {
 	@ResponseBody
 	public String updateCandidateLangs(@RequestParam("languages") List<String> languages) {
 
-		userService.updateUserPreferredBilingCandidateLangs(languages);
+		Long userId = userService.getAuthenticatedUser().getId();
+		userProfileService.updateUserPreferredBilingCandidateLangs(languages, userId);
 		return RESPONSE_OK_VER1;
 	}
 
@@ -126,7 +127,8 @@ public class BilingSearchController extends AbstractSynSearchController {
 	@ResponseBody
 	public String updateMeaningWordLangs(@RequestParam("languages") List<String> languages) {
 
-		userService.updateUserPreferredMeaningWordLangs(languages);
+		Long userId = userService.getAuthenticatedUser().getId();
+		userProfileService.updateUserPreferredMeaningWordLangs(languages, userId);
 		return RESPONSE_OK_VER1;
 	}
 

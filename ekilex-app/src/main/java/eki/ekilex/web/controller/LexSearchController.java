@@ -33,7 +33,6 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.SourceService;
-import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -71,9 +70,9 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;
 
-		SessionBean sessionBean = getSessionBean(model);
+		Long userId = userService.getAuthenticatedUser().getId();
 
-		formDataCleanup(LEX_SEARCH_PAGE, selectedDatasets, detailSearchFilter, sessionBean);
+		formDataCleanup(LEX_SEARCH_PAGE, selectedDatasets, detailSearchFilter, userId);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -82,7 +81,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		selectedDatasets = getUserPreferredDatasetCodes();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
-			userService.updateUserPreferredDatasets(selectedDatasets);
+			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);

@@ -8,6 +8,8 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long userId;
+
 	private Long recentDatasetPermissionId;
 
 	private List<String> preferredDatasets;
@@ -15,6 +17,24 @@ public class EkiUserProfile extends AbstractDataObject {
 	private List<String> preferredBilingCandidateLangs;
 
 	private List<String> preferredBilingLexMeaningWordLangs;
+
+	private List<String> preferredMeaningRelationWordLangs;
+
+	private boolean showLexMeaningRelationSourceLangWords;
+
+	private boolean showMeaningRelationFirstWordOnly;
+
+	private boolean showMeaningRelationMeaningId;
+
+	private boolean showMeaningRelationWordDatasets;
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
 	public Long getRecentDatasetPermissionId() {
 		return recentDatasetPermissionId;
@@ -46,5 +66,45 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	public void setPreferredBilingLexMeaningWordLangs(List<String> preferredBilingLexMeaningWordLangs) {
 		this.preferredBilingLexMeaningWordLangs = preferredBilingLexMeaningWordLangs;
+	}
+
+	public List<String> getPreferredMeaningRelationWordLangs() {
+		return preferredMeaningRelationWordLangs;
+	}
+
+	public void setPreferredMeaningRelationWordLangs(List<String> preferredMeaningRelationWordLangs) {
+		this.preferredMeaningRelationWordLangs = preferredMeaningRelationWordLangs;
+	}
+
+	public boolean isShowLexMeaningRelationSourceLangWords() {
+		return showLexMeaningRelationSourceLangWords;
+	}
+
+	public void setShowLexMeaningRelationSourceLangWords(boolean showLexMeaningRelationSourceLangWords) {
+		this.showLexMeaningRelationSourceLangWords = showLexMeaningRelationSourceLangWords;
+	}
+
+	public boolean isShowMeaningRelationFirstWordOnly() {
+		return showMeaningRelationFirstWordOnly;
+	}
+
+	public void setShowMeaningRelationFirstWordOnly(boolean showMeaningRelationFirstWordOnly) {
+		this.showMeaningRelationFirstWordOnly = showMeaningRelationFirstWordOnly;
+	}
+
+	public boolean isShowMeaningRelationMeaningId() {
+		return showMeaningRelationMeaningId;
+	}
+
+	public void setShowMeaningRelationMeaningId(boolean showMeaningRelationMeaningId) {
+		this.showMeaningRelationMeaningId = showMeaningRelationMeaningId;
+	}
+
+	public boolean isShowMeaningRelationWordDatasets() {
+		return showMeaningRelationWordDatasets;
+	}
+
+	public void setShowMeaningRelationWordDatasets(boolean showMeaningRelationWordDatasets) {
+		this.showMeaningRelationWordDatasets = showMeaningRelationWordDatasets;
 	}
 }

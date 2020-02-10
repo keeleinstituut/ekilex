@@ -23,6 +23,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.PermDataUtil;
@@ -31,6 +32,9 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@Autowired
 	protected UserService userService;
+
+	@Autowired
+	protected UserProfileService userProfileService;
 
 	@Autowired
 	protected CommonDataService commonDataService;
@@ -54,7 +58,7 @@ public abstract class AbstractPageController implements WebConstant {
 
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
-		EkiUserProfile userProfile = userService.getUserProfile(userId);
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		return userProfile.getPreferredDatasets();
 	}
 
@@ -107,7 +111,7 @@ public abstract class AbstractPageController implements WebConstant {
 	public EkiUserProfile getUserProfile() {
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
-		return userService.getUserProfile(userId);
+		return userProfileService.getUserProfile(userId);
 	}
 
 	@ModelAttribute("allLanguages")

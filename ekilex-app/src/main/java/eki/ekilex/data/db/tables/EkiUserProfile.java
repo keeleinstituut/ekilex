@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = 1312549262;
+    private static final long serialVersionUID = 587110653;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -87,9 +87,29 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     public final TableField<EkiUserProfileRecord, String[]> PREFERRED_BILING_LEX_MEANING_WORD_LANGS = createField("preferred_biling_lex_meaning_word_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.eki_user_profile.terms_ver</code>.
+     * The column <code>public.eki_user_profile.preferred_meaning_relation_word_langs</code>.
      */
-    public final TableField<EkiUserProfileRecord, String> TERMS_VER = createField("terms_ver", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_MEANING_RELATION_WORD_LANGS = createField("preferred_meaning_relation_word_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.eki_user_profile.show_lex_meaning_relation_source_lang_words</code>.
+     */
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_LEX_MEANING_RELATION_SOURCE_LANG_WORDS = createField("show_lex_meaning_relation_source_lang_words", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.eki_user_profile.show_meaning_relation_first_word_only</code>.
+     */
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_FIRST_WORD_ONLY = createField("show_meaning_relation_first_word_only", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.eki_user_profile.show_meaning_relation_meaning_id</code>.
+     */
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_MEANING_ID = createField("show_meaning_relation_meaning_id", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.eki_user_profile.show_meaning_relation_word_datasets</code>.
+     */
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_WORD_DATASETS = createField("show_meaning_relation_word_datasets", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.eki_user_profile</code> table reference

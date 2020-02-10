@@ -583,15 +583,47 @@
             <div class="col pl-0">
               <table th:if="${not #lists.isEmpty(meaning.groupedRelations)}">
                 <tr th:each="relations : ${meaning.groupedRelations}" class="hidden-buttons">
-                  <td class="pr-3">
-                    <th:block th:each="relation, iter : ${relations}">
+                  <td class="pr-3" th:with="filteredRelations=${#vars.profileUtil.getFilteredMeaningRelations(relations)}">
+                    <th:block th:each="relation, relIter : ${filteredRelations}">
                       <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
-                        <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                        <span th:text="${relation.word}"></span>
+                        <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                        <th:block th:each="datasetCode, dsIter : ${relation.wordLexemeDatasetCodes}">
+                          <span th:if="${dsIter.first}">[</span>
+                          <span th:text="${datasetCode}"></span>
+                          <span th:unless="${dsIter.last}">,</span>
+                          <span th:if="${dsIter.last}">]</span>
+                        </th:block>
+                        <th:block th:each="aspectCode, aIter : ${relation.wordAspectCode}">
+                          <span th:if="${aIter.first}">[</span>
+                          <span th:text="${aspectCode}"></span>
+                          <span th:unless="${aIter.last}">,</span>
+                          <span th:if="${aIter.last}">]</span>
+                        </th:block>
+                        <th:block th:each="valueStateCode, vsIter : ${relation.lexemeValueStateCodes}">
+                          <span th:if="${vsIter.first}">[</span>
+                          <span th:text="${valueStateCode}"></span>
+                          <span th:unless="${vsIter.last}">,</span>
+                          <span th:if="${vsIter.last}">]</span>
+                        </th:block>
+                        <th:block th:each="registerCode, rIter : ${relation.lexemeRegisterCodes}">
+                          <span th:if="${rIter.first}">[</span>
+                          <span th:text="${registerCode}"></span>
+                          <span th:unless="${rIter.last}">,</span>
+                          <span th:if="${rIter.last}">]</span>
+                        </th:block>
+                        <th:block th:each="government, gIter : ${relation.lexemeGovernmentValues}">
+                          <span th:if="${gIter.first}">[</span>
+                          <span th:text="${government}"></span>
+                          <span th:unless="${gIter.last}">,</span>
+                          <span th:if="${gIter.last}">]</span>
+                        </th:block>
                       </button>
-                      <span th:unless="${iter.last}">,</span>
+                      <span th:unless="${relIter.last}">,</span>
                     </th:block>
                   </td>
                   <td>
+                    <span th:if="${#vars.profileUtil.showMeaningRelationMeaningId()}" th:text="'[' + ${relations.get(0).id} + '] '"></span>
                     <span th:text="${relations.get(0).relationTypeLabel}"></span>
                     <button type="button" class="btn badge badge-warning"
                             data-placement="right"

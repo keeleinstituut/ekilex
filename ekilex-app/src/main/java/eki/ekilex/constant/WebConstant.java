@@ -70,6 +70,8 @@ public interface WebConstant {
 
 	String MEANING_REL_SELECT_PAGE = "meaningrelselect";
 
+	String UPDATE_MEANING_REL_PREFS_URI = "/update_meaning_rel_prefs";
+
 	String CREATE_WORD_AND_MEANING_AND_REL_URI = "/create_word_and_meaning_and_rel";
 
 	String VALIDATE_MEANING_DATA_IMPORT_URI = "/validatemeaningdataimport";
@@ -283,6 +285,8 @@ public interface WebConstant {
 	String PERM_DATA_UTIL_KEY = "permDataUtil";
 
 	String CLASSIFIER_UTIL_KEY = "classifierUtil";
+
+	String PROFILE_UTIL_KEY = "profileUtil";
 
 	String USER_KEY = "user";
 

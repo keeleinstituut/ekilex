@@ -21,6 +21,7 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.web.util.ClassifierUtil;
 import eki.ekilex.web.util.PermDataUtil;
+import eki.ekilex.web.util.ProfileUtil;
 import eki.ekilex.web.util.ViewUtil;
 
 @ConditionalOnWebApplication
@@ -40,6 +41,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
+
+	@Autowired
+	private ProfileUtil profileUtil;
 
 	@Autowired
 	private EkilexInfoContributor ekilexInfoContributor;
@@ -79,6 +83,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 		if (!modelMap.containsKey(CLASSIFIER_UTIL_KEY)) {
 			modelMap.addAttribute(CLASSIFIER_UTIL_KEY, classifierUtil);
+		}
+		if (!modelMap.containsKey(PROFILE_UTIL_KEY)) {
+			modelMap.addAttribute(PROFILE_UTIL_KEY, profileUtil);
 		}
 
 		logRequestProcessTime(request);

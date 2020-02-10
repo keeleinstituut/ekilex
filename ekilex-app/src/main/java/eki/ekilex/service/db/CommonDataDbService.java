@@ -55,7 +55,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.Record3;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,14 +86,21 @@ import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
+import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeRegister;
+import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
+import eki.ekilex.data.db.tables.MeaningRelation;
+import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
+import eki.ekilex.data.db.tables.Word;
 
 //only common use data reading!
 @Component
@@ -574,36 +584,86 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 	public List<Relation> getMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
 
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+		MeaningRelTypeLabel mrtl = MEANING_REL_TYPE_LABEL.as("mrtl");
+		Meaning m = MEANING.as("m");
+		Lexeme l = LEXEME.as("l");
+		LexemeRegister lr = LEXEME_REGISTER.as("lr");
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		Freeform ff = FREEFORM.as("ff");
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+
+		SelectConditionStep<Record1<String>> mrl = DSL
+				.select(mrtl.VALUE)
+				.from(mrtl)
+				.where(mr.MEANING_REL_TYPE_CODE.eq(mrtl.CODE))
+						.and(mrtl.LANG.eq(classifierLabelLang))
+						.and(mrtl.TYPE.eq(classifierLabelTypeCode));
+
+		SelectHavingStep<Record1<String[]>> lvscs = DSL
+				.select(DSL.arrayAggDistinct(l.VALUE_STATE_CODE))
+				.from(l)
+				.where(l.MEANING_ID.eq(m.ID)
+						.and(l.WORD_ID.eq(w.ID))
+						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l.VALUE_STATE_CODE.isNotNull()))
+				.groupBy(l.WORD_ID, l.MEANING_ID);
+
+		SelectHavingStep<Record1<String[]>> lrcs = DSL
+				.select(DSL.arrayAggDistinct(lr.REGISTER_CODE))
+				.from(lr, l)
+				.where(l.MEANING_ID.eq(m.ID)
+						.and(l.WORD_ID.eq(w.ID))
+						.and(lr.LEXEME_ID.eq(l.ID))
+						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(l.WORD_ID, l.MEANING_ID);
+
+		SelectHavingStep<Record1<String[]>> lgvs = DSL
+				.select(DSL.arrayAgg(ff.VALUE_TEXT))
+				.from(ff, lff, l)
+				.where(l.MEANING_ID.eq(m.ID)
+						.and(l.WORD_ID.eq(w.ID))
+						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(lff.LEXEME_ID.eq(l.ID))
+						.and(ff.ID.eq(lff.FREEFORM_ID))
+						.and(ff.TYPE.eq(FreeformType.GOVERNMENT.name())))
+				.groupBy(l.WORD_ID, l.MEANING_ID);
+
+		SelectHavingStep<Record1<String[]>> wlds = DSL
+				.select(DSL.arrayAggDistinct(l.DATASET_CODE))
+				.from(l)
+				.where(l.WORD_ID.eq(w.ID)
+						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(l.WORD_ID);
+
 		return create
 				.select(
-						MEANING_RELATION.ID.as("id"),
-						LEXEME.MEANING_ID.as("meaning_id"),
-						WORD.ID.as("word_id"),
-						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')", String.class).as("word"),
-						WORD.LANG.as("word_lang"),
-						DSL.field(DSL
-								.select(MEANING_REL_TYPE_LABEL.VALUE)
-								.from(MEANING_REL_TYPE_LABEL)
-								.where(MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_LABEL.CODE)
-										.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang))
-										.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))).as("rel_type_label"),
-						MEANING_RELATION.ORDER_BY.as("order_by"))
+						mr.ID.as("id"),
+						DSL.field(mrl).as("rel_type_label"),
+						m.ID.as("meaning_id"),
+						DSL.field(lvscs).as("lex_value_state_codes"),
+						DSL.field(lrcs).as("lex_register_codes"),
+						DSL.field(lgvs).as("lex_government_values"),
+						w.ID.as("word_id"),
+						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").as("word"),
+						w.LANG.as("word_lang"),
+						w.ASPECT_CODE.as("word_aspect_code"),
+						DSL.field(wlds).as("word_lexeme_dataset_codes"))
 				.from(
-						MEANING_RELATION,
-						LEXEME,
-						WORD,
-						PARADIGM,
-						FORM)
+						mr,
+						m,
+						l.innerJoin(w).on(w.ID.eq(l.WORD_ID))
+						.innerJoin(p).on(p.WORD_ID.eq(w.ID))
+						.innerJoin(f).on(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
 				.where(
-						MEANING_RELATION.MEANING1_ID.eq(meaningId)
-								.and(MEANING_RELATION.MEANING2_ID.eq(LEXEME.MEANING_ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(MEANING_RELATION.ID, LEXEME.MEANING_ID, WORD.ID)
-				.orderBy(MEANING_RELATION.ORDER_BY)
+						mr.MEANING1_ID.eq(meaningId)
+								.and(mr.MEANING2_ID.eq(m.ID))
+								.and(l.MEANING_ID.eq(m.ID))
+								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(m.ID, mr.ID, w.ID)
+				.orderBy(mr.ID)
 				.fetchInto(Relation.class);
 	}
 
