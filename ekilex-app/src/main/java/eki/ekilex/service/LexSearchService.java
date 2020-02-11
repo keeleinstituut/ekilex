@@ -17,11 +17,13 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.FreeformType;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
@@ -63,7 +65,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
-	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes) {
+	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
@@ -85,7 +87,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
-		lexemes.forEach(lexeme -> populateLexeme(lexeme, datasetNameMap));
+		lexemes.forEach(lexeme -> populateLexeme(lexeme, datasetNameMap, languagesOrder, userProfile));
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
@@ -150,6 +152,10 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
+		populateLexeme(lexeme, datasetNameMap, null, null);
+	}
+
+	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
@@ -158,10 +164,11 @@ public class LexSearchService extends AbstractWordSearchService {
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
+		String wordLang = lexeme.getWordLang();
 
 		String datasetName = datasetNameMap.get(datasetCode);
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
-		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
+		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, wordLang);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
@@ -184,7 +191,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 		List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<List<Relation>> groupedMeaningRelations = conversionUtil.groupRelationsById(meaningRelations);
+		List<List<Relation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
 		List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
 		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.getPrimaryCollocationTuples(lexemeId);
 		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
@@ -214,7 +221,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setCollocationPosGroups(collocationPosGroups);
 		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setSourceLinks(lexemeSourceLinks);
-		lexeme.setGroupedMeaningRelations(groupedMeaningRelations);
+		lexeme.setViewMeaningRelations(viewMeaningRelations);
 
 		boolean lexemeOrMeaningClassifiersExist =
 				StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())

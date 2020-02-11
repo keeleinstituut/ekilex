@@ -96,11 +96,9 @@ public class BilingSearchController extends AbstractSynSearchController {
 
 		if (CollectionUtils.isEmpty(candidateLangCodes)) {
 			candidateLangCodes = commonDataService.getLanguageCodes();
-			userProfileService.updateUserPreferredBilingCandidateLangs(candidateLangCodes, userId);
 		}
 		if (CollectionUtils.isEmpty(meaningWordLangCodes)) {
 			meaningWordLangCodes = commonDataService.getLanguageCodes();
-			userProfileService.updateUserPreferredMeaningWordLangs(meaningWordLangCodes, userId);
 		}
 
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.BILING_RUS, candidateLangCodes, meaningWordLangCodes);

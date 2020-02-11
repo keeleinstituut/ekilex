@@ -621,7 +621,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 				.groupBy(l.WORD_ID, l.MEANING_ID);
 
 		SelectHavingStep<Record1<String[]>> lgvs = DSL
-				.select(DSL.arrayAgg(ff.VALUE_TEXT))
+				.select(DSL.arrayAgg(ff.VALUE_PRESE))
 				.from(ff, lff, l)
 				.where(l.MEANING_ID.eq(m.ID)
 						.and(l.WORD_ID.eq(w.ID))

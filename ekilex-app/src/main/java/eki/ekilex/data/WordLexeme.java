@@ -100,7 +100,7 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private List<Relation> meaningRelations;
 
-	private List<List<Relation>> groupedMeaningRelations;
+	private List<List<Relation>> viewMeaningRelations;
 
 	private List<FreeForm> lexemeFreeforms;
 
@@ -398,12 +398,12 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.meaningRelations = meaningRelations;
 	}
 
-	public List<List<Relation>> getGroupedMeaningRelations() {
-		return groupedMeaningRelations;
+	public List<List<Relation>> getViewMeaningRelations() {
+		return viewMeaningRelations;
 	}
 
-	public void setGroupedMeaningRelations(List<List<Relation>> groupedMeaningRelations) {
-		this.groupedMeaningRelations = groupedMeaningRelations;
+	public void setViewMeaningRelations(List<List<Relation>> viewMeaningRelations) {
+		this.viewMeaningRelations = viewMeaningRelations;
 	}
 
 	public List<FreeForm> getLexemeFreeforms() {

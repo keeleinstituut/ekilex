@@ -25,6 +25,8 @@ import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Source;
@@ -33,6 +35,7 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -190,12 +193,15 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
-	public String details(@PathVariable("wordId") Long wordId, Model model) {
+	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
-		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets);
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
