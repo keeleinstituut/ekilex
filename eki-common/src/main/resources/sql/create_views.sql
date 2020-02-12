@@ -862,7 +862,7 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, wo
           we.id word_etym_id,
           wer.id word_etym_rel_id,
           wer.related_word_id,
-          array[wer.related_word_id] as related_word_ids
+          array[we.word_id] as related_word_ids
    from word_etymology we
      left outer join word_etymology_relation wer on wer.word_etym_id = we.id
    order by we.order_by,
@@ -873,7 +873,7 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, wo
            we.id word_etym_id,
            wer.id word_etym_rel_id,
            wer.related_word_id,
-           (rec.related_word_ids || wer.related_word_id) as related_word_ids
+           (rec.related_word_ids || we.word_id) as related_word_ids
     from word_etym_recursion rec
       inner join word_etymology we on we.word_id = rec.related_word_id
       left outer join word_etymology_relation wer on wer.word_etym_id = we.id
