@@ -48,8 +48,11 @@
             <div class="dropdown-menu px-3 w-25" aria-labelledby="destinLangMenuButton">
               <th:block th:each="filterElem : ${langFilter}">
                 <a href="#" th:id="${'destin-lang-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
-                   class="dropdown-item px-2 py-1" th:classappend="${filterElem.selected ? 'active' : ''}" >Keel</a>
-                <div class="dropdown-divider" th:if="${filterElem.addSeparator}"></div>
+                   class="dropdown-item px-2 py-1 dropdown-item-multiselect" th:classappend="${filterElem.selected ? 'active' : ''}" >Keel</a>
+                <th:block th:if="${filterElem.addSeparator}">
+                  <div class="dropdown-divider" ></div>
+                  <div class="text-muted font-italic pl-1">vali üks või mitu</div>
+                </th:block>
               </th:block>
             </div>
           </div>
@@ -60,12 +63,17 @@
             <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
             </button>
-            <div class="dropdown-menu px-2 w-25" aria-labelledby="datasetMenuButton">
+            <div class="dropdown-menu w-25 py-0" aria-labelledby="datasetMenuButton">
+              <div class="dropdown-menu-scroll px-2 py-1">
               <th:block th:each="filterElem : ${datasetFilter}">
                 <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
-                   class="dropdown-item px-2" th:classappend="${filterElem.selected ? 'active' : ''}" >Keel</a>
-                <div class="dropdown-divider" th:if="${filterElem.addSeparator}"></div>
+                   class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}" >Sõnakogu</a>
+                <th:block th:if="${filterElem.addSeparator}">
+                <div class="dropdown-divider" ></div>
+                <div class="text-muted font-italic pl-1">vali üks või mitu</div>
+                </th:block>
               </th:block>
+              </div>
             </div>
           </div>
         </div>

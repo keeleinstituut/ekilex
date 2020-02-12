@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* stylelint-disable */
 .homonym-item-wrap {
   display: block;
@@ -226,5 +227,25 @@
 /*stylelint-disable*/
 .overflow-hidden {
   overflow: hidden !important;
+}
+
+.text-wrap {
+  white-space: normal !important;
+}
+
+.dropdown-menu {
+  overflow: hidden;
+}
+
+.dropdown-menu .dropdown-menu-scroll {
+  max-height: calc(100vh - 80px);
+  overflow: auto;
+}
+
+.dropdown-item-multiselect.active::before {
+  display: inline-block;
+  margin-right: 5px;
+  font-family: FontAwesome, sans-serif;
+  content: "";
 }
 /*# sourceMappingURL=styles.css.map */
