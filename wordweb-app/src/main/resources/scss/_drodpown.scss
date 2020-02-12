@@ -1,0 +1,19 @@
+.dropdown-menu {
+  overflow: hidden;
+
+  .dropdown-menu-scroll {
+    max-height: calc(100vh - 80px);
+    overflow: auto;
+  }
+}
+
+.dropdown-item-multiselect {
+  &.active {
+    &::before {
+      display: inline-block;
+      margin-right: 5px;
+      font-family: FontAwesome, sans-serif;
+      content: "";
+    }
+  }
+}

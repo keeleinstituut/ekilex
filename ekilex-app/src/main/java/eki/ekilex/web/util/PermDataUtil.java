@@ -19,7 +19,7 @@ public class PermDataUtil {
 	private final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.CRUD, AuthorityOperation.OWN);
 
 	@Autowired
-	protected PermissionService permissionService;
+	private PermissionService permissionService;
 
 	@Autowired
 	private UserService userService;

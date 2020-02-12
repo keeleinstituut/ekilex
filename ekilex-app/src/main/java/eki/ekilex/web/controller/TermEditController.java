@@ -206,7 +206,7 @@ public class TermEditController extends AbstractPageController {
 
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
-				userService.updateUserPreferredDatasets(selectedDatasets);
+				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
 			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
@@ -255,7 +255,7 @@ public class TermEditController extends AbstractPageController {
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				selectedDatasets.add(dataset);
-				userService.updateUserPreferredDatasets(selectedDatasets);
+				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
 			if (meaningId == null) {
 				searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);

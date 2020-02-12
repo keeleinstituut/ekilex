@@ -32,6 +32,7 @@ import eki.ekilex.security.EkilexPasswordEncoder;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
+import eki.ekilex.service.db.UserProfileDbService;
 
 @Component
 public class UserService implements WebConstant {
@@ -47,6 +48,9 @@ public class UserService implements WebConstant {
 
 	@Autowired
 	private UserDbService userDbService;
+
+	@Autowired
+	private UserProfileDbService userProfileDbService;
 
 	@Autowired
 	private PermissionDbService permissionDbService;
@@ -76,11 +80,6 @@ public class UserService implements WebConstant {
 			user.setName(principal.toString());
 		}
 		return user;
-	}
-
-	@Transactional
-	public EkiUserProfile getUserProfile(Long userId) {
-		return userDbService.getUserProfile(userId);
 	}
 
 	public void updateUserSecurityContext() {
@@ -137,7 +136,7 @@ public class UserService implements WebConstant {
 
 	private DatasetPermission resolveRecentRole(Long userId, List<DatasetPermission> userPermissions) {
 
-		EkiUserProfile userProfile = userDbService.getUserProfile(userId);
+		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
 		if (userProfile == null) {
 			return null;
 		}
@@ -149,14 +148,14 @@ public class UserService implements WebConstant {
 		if (recentDatasetPermissionId == null) {
 			if (userPermissions.size() == 1) {
 				recentRole = userPermissions.get(0);
-				userDbService.setRecentDatasetPermission(userId, recentRole.getId());
+				userProfileDbService.setRecentDatasetPermission(userId, recentRole.getId());
 			}
 		} else {
 			recentRole = userPermissions.stream()
 					.filter(perm -> perm.getId().equals(recentDatasetPermissionId))
 					.findFirst().orElse(null);
 			if (recentRole == null) {
-				userDbService.setRecentDatasetPermission(userId, null);
+				userProfileDbService.setRecentDatasetPermission(userId, null);
 			}
 		}
 		return recentRole;
@@ -203,8 +202,8 @@ public class UserService implements WebConstant {
 		String activationKey = generateUniqueKey();
 		String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 		String encodedPassword = passwordEncoder.encode(password);
-		Long userId = userDbService.createUser(email, name, encodedPassword, activationKey);
-		userDbService.createUserProfile(userId, termsVer);
+		Long userId = userDbService.createUser(email, name, encodedPassword, activationKey, termsVer);
+		userProfileDbService.createUserProfile(userId);
 		EkiUser user = userDbService.getUserByEmail(email);
 		emailService.sendUserActivationEmail(email, activationLink);
 		logger.debug("Created new user : {}", user.getDescription());
@@ -317,36 +316,4 @@ public class UserService implements WebConstant {
 		return CodeGenerator.generateUniqueId();
 	}
 
-	@Transactional
-	public DatasetPermission getAndSetRecentDatasetPermission(Long permissionId) {
-		EkiUser currentUser = getAuthenticatedUser();
-		DatasetPermission datasetPermission = permissionDbService.getDatasetPermission(permissionId);
-		if (datasetPermission == null) {
-			userDbService.setRecentDatasetPermission(currentUser.getId(), null);
-		} else {
-			userDbService.setRecentDatasetPermission(currentUser.getId(), permissionId);
-		}
-		return datasetPermission;
-	}
-
-	@Transactional
-	public void updateUserPreferredDatasets(List<String> selectedDatasets) {
-
-		Long userId = getAuthenticatedUser().getId();
-		userDbService.updatePreferredDatasets(selectedDatasets, userId);
-	}
-
-	@Transactional
-	public void updateUserPreferredBilingCandidateLangs(List<String> languages) {
-
-		Long userId = getAuthenticatedUser().getId();
-		userDbService.updatePreferredBilingCandidateLangs(languages, userId);
-	}
-
-	@Transactional
-	public void updateUserPreferredMeaningWordLangs(List<String> languages) {
-
-		Long userId = getAuthenticatedUser().getId();
-		userDbService.updatePreferredMeaningWordLangs(languages, userId);
-	}
 }

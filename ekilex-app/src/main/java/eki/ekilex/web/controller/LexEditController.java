@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.MeaningWordCandidates;
@@ -43,6 +41,7 @@ import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -263,8 +262,9 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
+				Long userId = userService.getAuthenticatedUser().getId();
 				selectedDatasets.add(dataset);
-				userService.updateUserPreferredDatasets(selectedDatasets);
+				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
 			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
@@ -285,8 +285,9 @@ public class LexEditController extends AbstractPageController implements SystemC
 			cudService.createWord(meaningId, wordValue, language, morphCode, dataset);
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
+				Long userId = userService.getAuthenticatedUser().getId();
 				selectedDatasets.add(dataset);
-				userService.updateUserPreferredDatasets(selectedDatasets);
+				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
 			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
@@ -323,8 +324,9 @@ public class LexEditController extends AbstractPageController implements SystemC
 		String wordValue = word.getValue();
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		if (!selectedDatasets.contains(dataset)) {
+			Long userId = userService.getAuthenticatedUser().getId();
 			selectedDatasets.add(dataset);
-			userService.updateUserPreferredDatasets(selectedDatasets);
+			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
 		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		return "redirect:" + LEX_SEARCH_URI + searchUri;

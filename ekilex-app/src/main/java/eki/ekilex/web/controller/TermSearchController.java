@@ -25,10 +25,11 @@ import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
+import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -65,15 +66,16 @@ public class TermSearchController extends AbstractSearchController implements Sy
 			Model model) throws Exception {
 
 		SessionBean sessionBean = getSessionBean(model);
+		Long userId = userService.getAuthenticatedUser().getId();
 
-		formDataCleanup(TERM_SEARCH_PAGE, selectedDatasets, detailSearchFilter, sessionBean);
+		formDataCleanup(TERM_SEARCH_PAGE, selectedDatasets, detailSearchFilter, userId);
 		sessionBean.setTermSearchResultMode(resultMode);
 		sessionBean.setTermSearchResultLang(resultLang);
 
 		selectedDatasets = getUserPreferredDatasetCodes();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
-			userService.updateUserPreferredDatasets(selectedDatasets);
+			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
@@ -138,7 +140,9 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder);
+		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile);
 		model.addAttribute("meaning", meaning);
 		model.addAttribute("meaningId", meaningId);
 

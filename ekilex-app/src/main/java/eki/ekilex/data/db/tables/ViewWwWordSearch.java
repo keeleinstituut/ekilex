@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordSearch extends TableImpl<ViewWwWordSearchRecord> {
 
-    private static final long serialVersionUID = 1350190604;
+    private static final long serialVersionUID = 201918049;
 
     /**
      * The reference instance of <code>public.view_ww_word_search</code>
@@ -62,6 +62,11 @@ public class ViewWwWordSearch extends TableImpl<ViewWwWordSearchRecord> {
      * The column <code>public.view_ww_word_search.crit</code>.
      */
     public final TableField<ViewWwWordSearchRecord, String> CRIT = createField("crit", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_word_search.unacrit</code>.
+     */
+    public final TableField<ViewWwWordSearchRecord, String> UNACRIT = createField("unacrit", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.view_ww_word_search</code> table reference
