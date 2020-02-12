@@ -112,7 +112,7 @@ public class DataController implements SystemConstant, WebConstant {
 		}
 		Long wordId = Long.valueOf(wordIdStr);
 		List<String> datasets = parseDatasets(datasetsStr);
-		WordDetails result = lexSearchService.getWordDetails(wordId, datasets);
+		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, null);
 		return result;
 	}
 
@@ -155,7 +155,7 @@ public class DataController implements SystemConstant, WebConstant {
 		List<String> datasets = parseDatasets(datasetsStr);
 		List<Classifier> allLanguages = commonDataService.getLanguages();
 		List<ClassifierSelect> languagesOrder = convert(allLanguages);
-		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder);
+		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder, null);
 		return meaning;
 	}
 

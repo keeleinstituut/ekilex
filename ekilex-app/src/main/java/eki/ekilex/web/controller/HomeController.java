@@ -146,7 +146,8 @@ public class HomeController extends AbstractPageController {
 		if (permissionId == null) {
 			sessionBean.setUserRole(null);
 		} else {
-			DatasetPermission datasetPermission = userService.getAndSetRecentDatasetPermission(permissionId);
+			Long userId = userService.getAuthenticatedUser().getId();
+			DatasetPermission datasetPermission = userProfileService.getAndSetRecentDatasetPermission(permissionId, userId);
 			userService.updateUserSecurityContext();
 			sessionBean.setUserRole(datasetPermission);
 		}

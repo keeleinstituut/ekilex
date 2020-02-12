@@ -3,11 +3,15 @@ package eki.ekilex.service.util;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -33,6 +37,7 @@ import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
@@ -668,9 +673,63 @@ public class ConversionUtil implements DbConstant {
 		return collocations;
 	}
 
-	public List<List<Relation>> groupRelationsById(List<Relation> relations) {
-		Map<Long, List<Relation>> groupedById = relations.stream().collect(groupingBy(Relation::getId));
-		return new ArrayList<>(groupedById.values());
+	public List<List<Relation>> composeViewMeaningRelations(List<Relation> relations, EkiUserProfile userProfile, String sourceLang, List<ClassifierSelect> languagesOrder) {
+
+		Map<Long, List<Relation>> groupedRelationsMap = relations.stream().collect(groupingBy(Relation::getId));
+		ArrayList<List<Relation>> groupedRelationsList = new ArrayList<>(groupedRelationsMap.values());
+		if (userProfile == null) {
+			return groupedRelationsList;
+		}
+
+		List<String> allLangs = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+		boolean showFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
+		boolean showDatasets = userProfile.isShowMeaningRelationWordDatasets();
+		boolean showSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
+
+		List<String> prefWordLangs;
+		if (showSourceLangWords && StringUtils.isNotEmpty(sourceLang)) {
+			prefWordLangs = Collections.singletonList(sourceLang);
+		} else {
+			prefWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
+		}
+
+		groupedRelationsList.forEach(groupedRelations -> {
+			filterMeaningRelations(prefWordLangs, allLangs, groupedRelations, showFirstWordOnly);
+			if (!showDatasets) {
+				groupedRelations.forEach(relation -> relation.setWordLexemeDatasetCodes(Collections.emptyList()));
+			}
+		});
+
+		return groupedRelationsList;
+	}
+
+	private void filterMeaningRelations(List<String> wordLangs, List<String> allLangs, List<Relation> meaningRelations, boolean showFirstWordOnly) {
+
+		boolean relationLangIsInWordLangs = meaningRelations.stream().anyMatch(relation -> wordLangs.contains(relation.getWordLang()));
+		if (relationLangIsInWordLangs) {
+			meaningRelations.removeIf(relation -> !wordLangs.contains(relation.getWordLang()));
+		} else {
+			for (String lang : allLangs) {
+				boolean relationLangEqualsLang = meaningRelations.stream().anyMatch(relation -> lang.equals(relation.getWordLang()));
+				if (relationLangEqualsLang) {
+					meaningRelations.removeIf(relation -> !lang.equals(relation.getWordLang()));
+					break;
+				}
+			}
+		}
+
+		if (showFirstWordOnly) {
+			Iterator<Relation> relationIterator = meaningRelations.iterator();
+			Set<String> occurredLangs = new HashSet<>();
+			while (relationIterator.hasNext()) {
+				String iteratorLang = relationIterator.next().getWordLang();
+				if (occurredLangs.contains(iteratorLang)) {
+					relationIterator.remove();
+				} else {
+					occurredLangs.add(iteratorLang);
+				}
+			}
+		}
 	}
 
 	public List<OrderedClassifier> removeOrderedClassifierDuplicates(List<OrderedClassifier> allClassifiers) {

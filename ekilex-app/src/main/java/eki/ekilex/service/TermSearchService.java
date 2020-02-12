@@ -20,6 +20,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
@@ -115,7 +116,7 @@ public class TermSearchService extends AbstractSearchService {
 	}
 
 	@Transactional
-	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder) {
+	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
@@ -148,7 +149,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningPublicNoteSourceTuples(meaningId);
 		List<Note> meaningPublicNotes = conversionUtil.composeNotes(meaningPublicNoteSourceTuples);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);
+		List<List<Relation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
 		Integer meaningProcessLogCount = processDbService.getLogCountForMeaning(meaningId);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForMeaning(meaningId);
 
@@ -213,7 +214,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setPublicNotes(meaningPublicNotes);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
-		meaning.setGroupedRelations(groupedRelations);
+		meaning.setViewRelations(viewRelations);
 		meaning.setMeaningProcessLogCount(meaningProcessLogCount);
 		meaning.setLastChangedOn(latestLogEventTime);
 

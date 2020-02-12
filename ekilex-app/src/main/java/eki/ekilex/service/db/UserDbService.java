@@ -2,7 +2,6 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
-import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 import eki.common.service.db.AbstractDbService;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
-import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
 
 @Component
@@ -27,12 +25,13 @@ public class UserDbService extends AbstractDbService {
 		create = context;
 	}
 
-	public Long createUser(String email, String name, String password, String activationKey) {
+	public Long createUser(String email, String name, String password, String activationKey, String termsVer) {
 		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
 		ekiUser.setEmail(email);
 		ekiUser.setName(name);
 		ekiUser.setPassword(password);
 		ekiUser.setActivationKey(activationKey);
+		ekiUser.setTermsVer(termsVer);
 		ekiUser.store();
 		return ekiUser.getId();
 	}
@@ -90,24 +89,6 @@ public class UserDbService extends AbstractDbService {
 		ekiUser.setRecoveryKey(null);
 		ekiUser.setPassword(encodedPassword);
 		ekiUser.store();
-	}
-
-	public void createUserProfile(Long userId, String termsVer) {
-		create.insertInto(EKI_USER_PROFILE, EKI_USER_PROFILE.USER_ID, EKI_USER_PROFILE.TERMS_VER)
-				.values(userId, termsVer)
-				.execute();
-	}
-
-	public EkiUserProfile getUserProfile(Long userId) {
-		return create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOptionalInto(EkiUserProfile.class).orElse(null);
-	}
-
-	public void setRecentDatasetPermission(Long userId, Long permissionId) {
-
-		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID, permissionId)
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.execute();
 	}
 
 	public EkiUser activateUser(String activationKey) {
@@ -175,31 +156,4 @@ public class UserDbService extends AbstractDbService {
 				.fetchInto(EkiUserApplication.class);
 	}
 
-	public void updatePreferredDatasets(List<String> selectedDatasets, Long userId) {
-
-		String[] selectedDatasetsArray = selectedDatasets.toArray(new String[0]);
-		create
-				.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_DATASETS, selectedDatasetsArray)
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.execute();
-	}
-
-	public void updatePreferredBilingCandidateLangs(List<String> languages, Long userId) {
-
-		String[] languagesArray = languages.toArray(new String[0]);
-		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_BILING_CANDIDATE_LANGS, languagesArray)
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.execute();
-	}
-
-	public void updatePreferredMeaningWordLangs(List<String> languages, Long userId) {
-
-		String[] languagesArray = languages.toArray(new String[0]);
-		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_BILING_LEX_MEANING_WORD_LANGS, languagesArray)
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.execute();
-	}
 }

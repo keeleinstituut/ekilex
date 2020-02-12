@@ -25,6 +25,8 @@ import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Source;
@@ -71,9 +73,9 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;
 
-		SessionBean sessionBean = getSessionBean(model);
+		Long userId = userService.getAuthenticatedUser().getId();
 
-		formDataCleanup(LEX_SEARCH_PAGE, selectedDatasets, detailSearchFilter, sessionBean);
+		formDataCleanup(LEX_SEARCH_PAGE, selectedDatasets, detailSearchFilter, userId);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -82,7 +84,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		selectedDatasets = getUserPreferredDatasetCodes();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = commonDataService.getDatasetCodes();
-			userService.updateUserPreferredDatasets(selectedDatasets);
+			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
@@ -191,12 +193,15 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
-	public String details(@PathVariable("wordId") Long wordId, Model model) {
+	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
-		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets);
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 

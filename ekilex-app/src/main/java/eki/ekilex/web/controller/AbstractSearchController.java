@@ -24,6 +24,7 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
@@ -40,6 +41,9 @@ public abstract class AbstractSearchController extends AbstractPageController {
 
 	@Autowired
 	protected UserService userService;
+
+	@Autowired
+	protected UserProfileService userProfileService;
 
 	@ModelAttribute("domains")
 	public Map<String, List<Classifier>> getDomainsInUse() {
@@ -163,10 +167,11 @@ public abstract class AbstractSearchController extends AbstractPageController {
 			String searchPage,
 			List<String> selectedDatasets,
 			SearchFilter detailSearchFilter,
-			SessionBean sessionBean) throws Exception {
+			Long userId) throws Exception {
+
 
 		if (CollectionUtils.isNotEmpty(selectedDatasets)) {
-			userService.updateUserPreferredDatasets(selectedDatasets);
+			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
 		if (detailSearchFilter == null) {
 			detailSearchFilter = searchHelper.initSearchFilter(searchPage);

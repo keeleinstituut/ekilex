@@ -543,7 +543,7 @@ liik_tyyp	liik_tyyp	lz	tsitaatsõna lühend	et	word_type	lz
 liik_tyyp	liik_tyyp	lz	abbreviation for alien word	en	word_type	lz
 liik_tyyp	liik_tyyp	n	number (nt 24/7)	et	word_type	n
 liik_tyyp	liik_tyyp	n	number	en	word_type	n
-liik_tyyp	liik_tyyp	pf	prefiksoid, pooleesliide vm esiosa	et	word_type	pf
+liik_tyyp	liik_tyyp	pf	prefiksoid, esiosa	et	word_type	pf
 liik_tyyp	liik_tyyp	pf	combining form	en	word_type	pf
 liik_tyyp	liik_tyyp	s	sarja liige	et	word_type	s
 liik_tyyp	liik_tyyp	s	serial member	en	word_type	s
@@ -642,7 +642,7 @@ rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	government_type	subj
 s_tyyp	s_tyyp	EST	eestivene	et	register	eevn
 s_tyyp	s_tyyp	dem	deminutiiv	et	register	hellitl
 s_tyyp	s_tyyp	hellitl	hellitlev	et	register	hellitl
-s_tyyp	s_tyyp	hlv	halvustav, solvav	et	register	hlv
+s_tyyp	s_tyyp	hlv	halvustav	et	register	hlv
 s_tyyp	s_tyyp	hlv	offensive	en	register	hlv
 s_tyyp	s_tyyp	hrv	harvaesinev	et	register	hrv
 s_tyyp	s_tyyp	hrv	rare	en	register	hrv
@@ -662,13 +662,13 @@ s_tyyp	s_tyyp	piltl	piltlik	et	register	piltl
 s_tyyp	s_tyyp	piltl	figurative	en	register	piltl
 s_tyyp	s_tyyp	släng	släng	et	register	släng
 s_tyyp	s_tyyp	släng	slang	en	register	släng
-s_tyyp	s_tyyp	vabakeel	kõnekeelne, vabakeelne, mitteformaalne	et	register	kõnek
-s_tyyp	s_tyyp	vabakeel	informal, journalistic	en	register	kõnek
+s_tyyp	s_tyyp	vabakeel	kõnekeelne	et	register	kõnek
+s_tyyp	s_tyyp	vabakeel	informal	en	register	kõnek
 s_tyyp	s_tyyp	kõnek	kõnek	et	register	kõnek
 s_tyyp	s_tyyp	rhvk	rahvakeelne	et	register	kõnek
 s_tyyp	s_tyyp	iroon	irooniline	et	register	kõnek
 s_tyyp	s_tyyp	uudis	uudissõna	et	register	uudis
-s_tyyp	s_tyyp	van	vanamoeliselt, vananemas	et	register	van
+s_tyyp	s_tyyp	van	vananenud	et	register	van
 s_tyyp	s_tyyp	van	archaic	en	register	van
 s_tyyp	s_tyyp	vulg	vulgaarne	et	register	vulg
 s_tyyp	s_tyyp	vulg	vulgar	en	register	vulg
@@ -1154,13 +1154,13 @@ v_tyyp	v_tyyp	arheol	arheoloogia	et	-	-
 v_tyyp	v_tyyp	arheol	archeology	en	-	-
 v_tyyp	v_tyyp	astr	astronoomia	et	-	-
 v_tyyp	v_tyyp	astr	astronomy	en	-	-
-v_tyyp	v_tyyp	bibl	raamatukogundus, trükindus	et	-	-
-v_tyyp	v_tyyp	bibl	bibliography, printing industry	en	-	-
+v_tyyp	v_tyyp	bibl	bibliograafia	et	-	-
+v_tyyp	v_tyyp	bibl	bibliography	en	-	-
 v_tyyp	v_tyyp	biol	bioloogia	et	-	-
 v_tyyp	v_tyyp	biol	biology	en	-	-
 v_tyyp	v_tyyp	bot	botaanika	et	-	-
 v_tyyp	v_tyyp	bot	botany	en	-	-
-v_tyyp	v_tyyp	el	elekter ja elektrotehnika	et	-	-
+v_tyyp	v_tyyp	el	elekter	et	-	-
 v_tyyp	v_tyyp	el	electricity	en	-	-
 v_tyyp	v_tyyp	etn	etnograafia	et	-	-
 v_tyyp	v_tyyp	etn	ethnography	en	-	-
@@ -1176,9 +1176,9 @@ v_tyyp	v_tyyp	geogr	geograafia	et	-	-
 v_tyyp	v_tyyp	geogr	geography	en	-	-
 v_tyyp	v_tyyp	geol	geoloogia	et	-	-
 v_tyyp	v_tyyp	geol	geology	en	-	-
-v_tyyp	v_tyyp	info	informaatika, arvutiteadus	et	-	-
-v_tyyp	v_tyyp	info	information technology, computer science	en	-	-
-v_tyyp	v_tyyp	jur	jurisprudents	et	-	-
+v_tyyp	v_tyyp	info	IT	et	-	-
+v_tyyp	v_tyyp	info	IT	en	-	-
+v_tyyp	v_tyyp	jur	õigusteadus	et	-	-
 v_tyyp	v_tyyp	jur	law	en	-	-
 v_tyyp	v_tyyp	keel	keeleteadus	et	-	-
 v_tyyp	v_tyyp	keel	linguistics	en	-	-
@@ -1188,7 +1188,7 @@ v_tyyp	v_tyyp	kirj	kirjandusteadus	et	-	-
 v_tyyp	v_tyyp	kirj	literature	en	-	-
 v_tyyp	v_tyyp	loog	loogika	et	-	-
 v_tyyp	v_tyyp	loog	logic	en	-	-
-v_tyyp	v_tyyp	maj	majandus, majandusteadus	et	-	-
+v_tyyp	v_tyyp	maj	majandus	et	-	-
 v_tyyp	v_tyyp	maj	economics	en	-	-
 v_tyyp	v_tyyp	mat	matemaatika	et	-	-
 v_tyyp	v_tyyp	mat	mathematics	en	-	-
@@ -1196,7 +1196,7 @@ v_tyyp	v_tyyp	med	meditsiin	et	-	-
 v_tyyp	v_tyyp	med	medicine	en	-	-
 v_tyyp	v_tyyp	mer	merendus	et	-	-
 v_tyyp	v_tyyp	mer	nautical	en	-	-
-v_tyyp	v_tyyp	meteor	meteoroloogia, klimatoloogia	et	-	-
+v_tyyp	v_tyyp	meteor	meteoroloogia	et	-	-
 v_tyyp	v_tyyp	meteor	meteorology	en	-	-
 v_tyyp	v_tyyp	muus	muusika	et	-	-
 v_tyyp	v_tyyp	muus	music	en	-	-
@@ -1206,8 +1206,8 @@ v_tyyp	v_tyyp	psühh	psühholooogia	et	-	-
 v_tyyp	v_tyyp	psühh	psychology	en	-	-
 v_tyyp	v_tyyp	sport	sport	et	-	-
 v_tyyp	v_tyyp	sport	sports	en	-	-
-v_tyyp	v_tyyp	sõj	sõjandus, riigikaitse	et	-	-
-v_tyyp	v_tyyp	sõj	military science, national defence	en	-	-
+v_tyyp	v_tyyp	sõj	sõjandus	et	-	-
+v_tyyp	v_tyyp	sõj	military science	en	-	-
 v_tyyp	v_tyyp	zool	zooloogia	et	-	-
 v_tyyp	v_tyyp	zool	zoology	en	-	-
 v_tyyp	v_tyyp	vet	veterinaaria	et	-	-

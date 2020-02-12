@@ -35,7 +35,7 @@ public class Meaning extends AbstractDataObject {
 
 	private List<Relation> relations;
 
-	private List<List<Relation>> groupedRelations;
+	private List<List<Relation>> viewRelations;
 
 	private Integer meaningProcessLogCount;
 
@@ -129,12 +129,12 @@ public class Meaning extends AbstractDataObject {
 		this.relations = relations;
 	}
 
-	public List<List<Relation>> getGroupedRelations() {
-		return groupedRelations;
+	public List<List<Relation>> getViewRelations() {
+		return viewRelations;
 	}
 
-	public void setGroupedRelations(List<List<Relation>> groupedRelations) {
-		this.groupedRelations = groupedRelations;
+	public void setViewRelations(List<List<Relation>> viewRelations) {
+		this.viewRelations = viewRelations;
 	}
 
 	public Integer getMeaningProcessLogCount() {

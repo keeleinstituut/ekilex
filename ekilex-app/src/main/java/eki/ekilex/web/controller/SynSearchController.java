@@ -54,8 +54,9 @@ public class SynSearchController extends AbstractSynSearchController {
 		final String resultLang = null;
 
 		SessionBean sessionBean = getSessionBean(model);
+		Long userId = userService.getAuthenticatedUser().getId();
 
-		formDataCleanup(SYN_SEARCH_PAGE, null, detailSearchFilter, sessionBean);
+		formDataCleanup(SYN_SEARCH_PAGE, null, detailSearchFilter, userId);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;

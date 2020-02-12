@@ -131,7 +131,7 @@
         <div class="mb-2" th:if="${not #lists.isEmpty(lexeme.odLexemeRecommendations)}">
           <th:block th:each="odLexemeRecommendation : ${lexeme.odLexemeRecommendations}">
             <div>
-              <span>ÕS soovitab:</span>
+              <span>ÕS soovitab</span>
               <span th:utext="${odLexemeRecommendation}"></span>
             </div>
           </th:block>
@@ -253,7 +253,7 @@
             <div class="w-100 colloc-samples">
               <div class="colloc-heading row">
                 <span class="col">
-                  <b th:text="#{label.collocations}" class="pr-2">Naaberõnad</b>
+                  <b th:text="#{label.collocations}" class="pr-2">Naabersõnad</b>
                 </span>
               </div>
               <div class="colloc-section w-100" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">

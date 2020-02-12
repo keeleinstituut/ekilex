@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import javax.persistence.Column;
 
 import eki.common.constant.RelationStatus;
@@ -18,6 +20,15 @@ public class Relation extends AbstractDataObject {
 	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
+	@Column(name = "lex_value_state_codes")
+	private List<String> lexemeValueStateCodes;
+
+	@Column(name = "lex_register_codes")
+	private List<String> lexemeRegisterCodes;
+
+	@Column(name = "lex_government_values")
+	private List<String> lexemeGovernmentValues;
+
 	@Column(name = "meaning_id")
 	private Long meaningId;
 
@@ -30,6 +41,12 @@ public class Relation extends AbstractDataObject {
 	@Column(name = "word_lang")
 	private String wordLang;
 
+	@Column(name = "word_aspect_code")
+	private String wordAspectCode;
+
+	@Column(name = "word_lexeme_dataset_codes")
+	private List<String> wordLexemeDatasetCodes;
+
 	@Column(name = "rel_type_code")
 	private String relationTypeCode;
 
@@ -41,7 +58,6 @@ public class Relation extends AbstractDataObject {
 
 	@Column(name = "relation_status")
 	private RelationStatus relationStatus;
-
 
 	public Long getId() {
 		return id;
@@ -65,6 +81,30 @@ public class Relation extends AbstractDataObject {
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
+	}
+
+	public List<String> getLexemeValueStateCodes() {
+		return lexemeValueStateCodes;
+	}
+
+	public void setLexemeValueStateCodes(List<String> lexemeValueStateCodes) {
+		this.lexemeValueStateCodes = lexemeValueStateCodes;
+	}
+
+	public List<String> getLexemeRegisterCodes() {
+		return lexemeRegisterCodes;
+	}
+
+	public void setLexemeRegisterCodes(List<String> lexemeRegisterCodes) {
+		this.lexemeRegisterCodes = lexemeRegisterCodes;
+	}
+
+	public List<String> getLexemeGovernmentValues() {
+		return lexemeGovernmentValues;
+	}
+
+	public void setLexemeGovernmentValues(List<String> lexemeGovernmentValues) {
+		this.lexemeGovernmentValues = lexemeGovernmentValues;
 	}
 
 	public Long getMeaningId() {
@@ -97,6 +137,22 @@ public class Relation extends AbstractDataObject {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
+	}
+
+	public String getWordAspectCode() {
+		return wordAspectCode;
+	}
+
+	public void setWordAspectCode(String wordAspectCode) {
+		this.wordAspectCode = wordAspectCode;
+	}
+
+	public List<String> getWordLexemeDatasetCodes() {
+		return wordLexemeDatasetCodes;
+	}
+
+	public void setWordLexemeDatasetCodes(List<String> wordLexemeDatasetCodes) {
+		this.wordLexemeDatasetCodes = wordLexemeDatasetCodes;
 	}
 
 	public String getRelationTypeLabel() {
