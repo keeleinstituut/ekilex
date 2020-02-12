@@ -105,7 +105,6 @@ $(document).ready(function () {
 	$(".back").on("click", function (e) {
 		$(".header-container .back").addClass("show-btn");
 	});
-
 });
 
 $(window).resize(function () {
