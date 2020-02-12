@@ -18,7 +18,6 @@ import eki.common.data.OrderedMap;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
-import eki.wordweb.data.SourceLink;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeGovernment;
 import eki.wordweb.data.TypeGrammar;
@@ -31,8 +30,6 @@ import eki.wordweb.data.TypeUsage;
 
 @Component
 public class LexemeConversionUtil extends AbstractConversionUtil {
-
-	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
 
 	public List<Lexeme> filterLexemes(List<Lexeme> lexemes, Complexity lexComplexity) {
 		return filterSimpleOnly(lexemes, lexComplexity);
@@ -111,7 +108,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			if (!isDestinLangAlsoRus(destinLangs)) {
 				usage.setUsageTranslations(null);
 			}
-			//usage.setUsageAuthors(new ArrayList<>());
 			classifierUtil.applyClassifiers(usage, displayLang);
 			Long usageId = usage.getUsageId();
 			List<TypeSourceLink> usageSourceLinks = freeformSourceLinkMap.get(usageId);
@@ -122,23 +118,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				});
 			}
 			usage.setSourceLinks(usageSourceLinks);
-			/*
-			FIXME merge source links else where
-			List<String> usageAuthorsRaw = usage.getUsageAuthorsRaw();
-			if (CollectionUtils.isNotEmpty(usageAuthorsRaw)) {
-				for (String usageAuthorRaw : usageAuthorsRaw) {
-					String[] usageAuthorElements = StringUtils.split(usageAuthorRaw, RAW_VALUE_ELEMENTS_SEPARATOR);
-					String type = usageAuthorElements[0];
-					String name = usageAuthorElements[1];
-					boolean isTranslator = StringUtils.equalsIgnoreCase(ReferenceType.TRANSLATOR.name(), type);
-					SourceLink usageAuthor = new SourceLink();
-					usageAuthor.setType(type);
-					usageAuthor.setName(name);
-					usageAuthor.setTranslator(isTranslator);
-					usage.getUsageAuthors().add(usageAuthor);
-				}
-			}
-			*/
 		}
 		boolean isMoreUsages = CollectionUtils.size(usages) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 		lexeme.setMoreUsages(isMoreUsages);

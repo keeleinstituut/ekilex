@@ -68,7 +68,7 @@
                 <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
                   [
                   <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
-                    <a href="#">
+                    <a href="#" th:title="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
                       <span th:utext="${sourceLink.name + ' - '}" th:if="${sourceLink.name != null}"></span>
                       <span th:utext="${sourceLink.value}"></span>
                     </a>
@@ -146,9 +146,11 @@
             <div class="dependence-unit" th:data-words="${usage.usage}" onclick="generateAudioAndPlay(this)">
               <span class="example-text" th:utext="${usage.usagePrese}"></span>
               <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
-                <div class="example-text" th:each="usageSourceLink : ${usage.usageSourceLinks}">
-                  <span th:if="${usageSourceLink.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
-                  <span th:text="${usageSourceLink.name}"></span>
+                <div class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
+                  <span th:if="${sourceLink.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
+                  <a href="#" th:title="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                    <span th:text="${sourceLink.value}"></span>
+                  </a>
                 </div>
               </th:block>
               <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|">
@@ -236,7 +238,7 @@
             <div class="col-12">
               [
               <th:block th:each="sourceLink,sourceLinkIter : ${lexeme.lexemeSourceLinks}">
-                <a href="#">
+                <a href="#" th:title="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
                   <span th:utext="${sourceLink.name + ' - '}" th:if="${sourceLink.name != null}"></span>
                   <span th:utext="${sourceLink.value}"></span>
                 </a>
@@ -414,8 +416,8 @@
       </button>
     </div>
     <script th:inline="javascript">
-					$('.corp-panel [data-toggle="tooltip"]').tooltip();
-				</script>
+		$('.corp-panel [data-toggle="tooltip"]').tooltip();
+	</script>
   </section>
 </body>
 </html>
