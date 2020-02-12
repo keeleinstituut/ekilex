@@ -14,6 +14,7 @@ drop view if exists view_ww_lexeme_relation;
 drop view if exists view_ww_meaning_relation;
 drop view if exists view_ww_lexeme_source_link;
 drop view if exists view_ww_freeform_source_link;
+drop view if exists view_ww_word_etym_source_link;
 drop view if exists view_ww_definition_source_link;
 drop view if exists view_ww_lexical_decision_data;
 drop view if exists view_ww_similarity_judgement_data;

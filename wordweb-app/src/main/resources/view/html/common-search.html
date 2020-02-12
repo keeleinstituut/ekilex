@@ -145,10 +145,10 @@
           <div class="dependence example-item" th:each="usage : ${lexeme.usages}">
             <div class="dependence-unit" th:data-words="${usage.usage}" onclick="generateAudioAndPlay(this)">
               <span class="example-text" th:utext="${usage.usagePrese}"></span>
-              <th:block th:if="${not #lists.isEmpty(usage.usageAuthors)}">
-                <div class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
-                  <span th:if="${usageAuthor.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
-                  <span th:text="${usageAuthor.name}"></span>
+              <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                <div class="example-text" th:each="usageSourceLink : ${usage.usageSourceLinks}">
+                  <span th:if="${usageSourceLink.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
+                  <span th:text="${usageSourceLink.name}"></span>
                 </div>
               </th:block>
               <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|">

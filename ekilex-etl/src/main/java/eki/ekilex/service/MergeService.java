@@ -424,7 +424,7 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 		moveData("meaning_id", targetMeaningId, sourceMeaningIds, MEANING_SEMANTIC_TYPE, new String[] {"semantic_type_code"}, updateCountMap);
 		moveData("meaning_id", targetMeaningId, sourceMeaningIds, MEANING_LIFECYCLE_LOG, null, updateCountMap);
 		moveData("meaning_id", targetMeaningId, sourceMeaningIds, MEANING_PROCESS_LOG, null, updateCountMap);
-		moveData("meaning_id", targetMeaningId, sourceMeaningIds, DEFINITION, new String[] {"value"}, updateCountMap);
+		moveData("meaning_id", targetMeaningId, sourceMeaningIds, DEFINITION, new String[] {"value", "complexity"}, updateCountMap);
 		moveMeaningRelations(targetMeaningId, sourceMeaningIds, updateCountMap);
 	}
 

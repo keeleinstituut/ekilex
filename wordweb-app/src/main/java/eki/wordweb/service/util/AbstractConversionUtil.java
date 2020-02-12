@@ -59,6 +59,18 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		return list;
 	}
 
+	protected <T extends ComplexityType> List<T> filterPreferred(List<T> list, Complexity lexComplexity, Complexity preferredComplexity) {
+		if (CollectionUtils.isEmpty(list)) {
+			return list;
+		} else if ((lexComplexity != null) && StringUtils.startsWith(preferredComplexity.name(), lexComplexity.name())) {
+			boolean preferredComplexityExists = list.stream().anyMatch(elem -> elem.getComplexity().equals(preferredComplexity));
+			if (preferredComplexityExists) {
+				return filter(list, preferredComplexity);
+			}
+		}
+		return filter(list, lexComplexity);
+	}
+
 	protected <T extends ComplexityType> List<T> filter(List<T> list, Complexity lexComplexity) {
 		if (CollectionUtils.isEmpty(list)) {
 			return list;

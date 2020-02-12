@@ -4,5 +4,6 @@ public enum ReferenceOwner {
 
 	FREEFORM,
 	DEFINITION,
-	LEXEME
+	LEXEME,
+	WORD_ETYM
 }

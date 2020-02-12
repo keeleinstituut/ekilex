@@ -11,6 +11,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 
 import java.util.List;
@@ -48,6 +49,7 @@ import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
 
 @Component
@@ -329,6 +331,21 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 	public List<TypeSourceLink> getFreeformSourceLinks(Long wordId) {
 
 		MviewWwFreeformSourceLink sl = MVIEW_WW_FREEFORM_SOURCE_LINK.as("sl");
+
+		SourceLinksWrapper sourceLinksWrapper = create
+				.select(sl.SOURCE_LINKS)
+				.from(sl)
+				.where(sl.WORD_ID.eq(wordId))
+				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
+		if (sourceLinksWrapper == null) {
+			return null;
+		}
+		return sourceLinksWrapper.getSourceLinks();
+	}
+
+	public List<TypeSourceLink> getWordEtymSourceLinks(Long wordId) {
+
+		MviewWwWordEtymSourceLink sl = MVIEW_WW_WORD_ETYM_SOURCE_LINK.as("sl");
 
 		SourceLinksWrapper sourceLinksWrapper = create
 				.select(sl.SOURCE_LINKS)

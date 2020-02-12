@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
 
-    private static final long serialVersionUID = -526367201;
+    private static final long serialVersionUID = -1001096170;
 
     /**
      * The reference instance of <code>public.type_source_link</code>
@@ -60,14 +60,9 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
     public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_LINK_ID = createField("source_link_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
-     * The attribute <code>public.type_source_link.source_id</code>.
+     * The attribute <code>public.type_source_link.source_link_type</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
-
-    /**
-     * The attribute <code>public.type_source_link.type</code>.
-     */
-    public static final UDTField<TypeSourceLinkRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, String> SOURCE_LINK_TYPE = createField("source_link_type", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.name</code>.
@@ -83,6 +78,16 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
      * The attribute <code>public.type_source_link.order_by</code>.
      */
     public static final UDTField<TypeSourceLinkRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
+
+    /**
+     * The attribute <code>public.type_source_link.source_id</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
+
+    /**
+     * The attribute <code>public.type_source_link.source_props</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, String[]> SOURCE_PROPS = createField("source_props", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_SOURCE_LINK, "");
 
     /**
      * No further instances allowed

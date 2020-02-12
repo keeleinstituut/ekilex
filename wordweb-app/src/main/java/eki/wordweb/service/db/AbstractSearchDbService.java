@@ -142,7 +142,6 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						we.ETYMOLOGY_YEAR,
 						we.WORD_ETYM_COMMENT,
 						we.WORD_ETYM_IS_QUESTIONABLE,
-						we.WORD_ETYM_SOURCES,
 						we.WORD_ETYM_RELATIONS)
 				.from(we)
 				.where(we.WORD_ID.eq(wordId))

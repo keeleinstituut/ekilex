@@ -1,5 +1,7 @@
 package eki.wordweb.data;
 
+import java.util.List;
+
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
@@ -14,8 +16,6 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	private Long sourceLinkId;
 
-	private Long sourceId;
-
 	private ReferenceType type;
 
 	private String name;
@@ -23,6 +23,12 @@ public class TypeSourceLink extends AbstractDataObject {
 	private String value;
 
 	private Long orderBy;
+
+	private Long sourceId;
+
+	private List<String> sourceProps;
+
+	private boolean translator;
 
 	public ReferenceOwner getRefOwner() {
 		return refOwner;
@@ -46,14 +52,6 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	public void setSourceLinkId(Long sourceLinkId) {
 		this.sourceLinkId = sourceLinkId;
-	}
-
-	public Long getSourceId() {
-		return sourceId;
-	}
-
-	public void setSourceId(Long sourceId) {
-		this.sourceId = sourceId;
 	}
 
 	public ReferenceType getType() {
@@ -86,6 +84,30 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public Long getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(Long sourceId) {
+		this.sourceId = sourceId;
+	}
+
+	public List<String> getSourceProps() {
+		return sourceProps;
+	}
+
+	public void setSourceProps(List<String> sourceProps) {
+		this.sourceProps = sourceProps;
+	}
+
+	public boolean isTranslator() {
+		return translator;
+	}
+
+	public void setTranslator(boolean translator) {
+		this.translator = translator;
 	}
 
 }
