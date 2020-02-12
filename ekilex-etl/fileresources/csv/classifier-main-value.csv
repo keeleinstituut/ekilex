@@ -2174,8 +2174,6 @@ word_type	ys	sidesõna	est	wordweb
 word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
 word_type	f	fras-väljend	est	descrip
 word_type	f	multiword expression	eng	descrip
-word_type	mf	fras-väljend	est	descrip
-word_type	mf	multiword expression	eng	descrip
 word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
 word_type	g	täiendsõna	est	wordweb
 word_type	lz	tsitaatsõna lühend	est	descrip
@@ -2205,7 +2203,6 @@ word_type	l	lühend	est	wordweb
 word_type	km	kaubamärk	est	wordweb
 word_type	k	kohanimi	est	wordweb
 word_type	th	tähis	est	wordweb
-word_type	mf	väljend	est	wordweb
 word_type	f	väljend	est	wordweb
 word_type	ametinimetus	ametinimetus	est	wordweb
 word_type	dokumendi pealkiri	dokumendi pealkiri	est	wordweb
