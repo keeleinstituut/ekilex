@@ -118,6 +118,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				});
 			}
 			usage.setSourceLinks(usageSourceLinks);
+			boolean isPutOnSpeaker = StringUtils.equals(usage.getUsageLang(), DESTIN_LANG_EST);
+			usage.setPutOnSpeaker(isPutOnSpeaker);
 		}
 		boolean isMoreUsages = CollectionUtils.size(usages) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 		lexeme.setMoreUsages(isMoreUsages);

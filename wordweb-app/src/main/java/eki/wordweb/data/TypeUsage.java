@@ -34,6 +34,8 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Lan
 
 	private List<TypeSourceLink> sourceLinks;
 
+	private boolean putOnSpeaker;
+
 	public Long getUsageId() {
 		return usageId;
 	}
@@ -134,6 +136,14 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Lan
 
 	public void setSourceLinks(List<TypeSourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
+	}
+
+	public boolean isPutOnSpeaker() {
+		return putOnSpeaker;
+	}
+
+	public void setPutOnSpeaker(boolean putOnSpeaker) {
+		this.putOnSpeaker = putOnSpeaker;
 	}
 
 }

@@ -63,7 +63,7 @@ public class EtymConversionUtil {
 			if (headwordEtymBuf.length() > 0) {
 				headwordEtymBuf.append(", ");
 			}
-			//TODO temp replacement
+			//currently there is no source content
 			List<String> wordEtymSourceLinkValues = wordEtymSourceLinks.stream().map(TypeSourceLink::getValue).collect(Collectors.toList());
 			String wordEtymSourceLinkValuesWrapup = StringUtils.join(wordEtymSourceLinkValues, ", ");
 			headwordEtymBuf.append(wordEtymSourceLinkValuesWrapup);
@@ -172,7 +172,7 @@ public class EtymConversionUtil {
 			Long wordEtymId = etymLevelMember.getWordEtymId();
 			List<TypeSourceLink> wordEtymSourceLinks = wordEtymSourceLinkMap.get(wordEtymId);
 			if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
-				//TODO temp replacement
+				//currently there is no source content
 				List<String> wordEtymSourceLinkValues = wordEtymSourceLinks.stream().map(TypeSourceLink::getValue).collect(Collectors.toList());
 				String wordEtymSourceLinkValuesWrapup = StringUtils.join(wordEtymSourceLinkValues, ", ");
 				etymLevelBuf.append(' ');
