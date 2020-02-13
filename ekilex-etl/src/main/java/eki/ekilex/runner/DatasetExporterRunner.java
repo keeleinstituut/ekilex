@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eki.common.constant.DbConstant;
 import eki.common.constant.TableName;
 import eki.common.data.Count;
 import eki.ekilex.data.transport.ForeignKey;
@@ -42,7 +44,7 @@ import eki.ekilex.data.transport.TableColumn;
 import eki.ekilex.service.TransportService;
 
 @Component
-public class DatasetExporterRunner extends AbstractLoaderCommons implements InitializingBean, TableName {
+public class DatasetExporterRunner extends AbstractLoaderCommons implements InitializingBean, TableName, DbConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(DatasetExporterRunner.class);
 
@@ -50,45 +52,27 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 
 	private static final char TABLES_HIERARCHY_PATH_SEPARATOR = '/';
 
+	private static final String SQL_SELECT_WORDS_FOR_DATASET_PATH = "sql/select_words_for_dataset.sql";
+
+	private static final String SQL_SELECT_PARADIGMS_FOR_DATASET_PATH = "sql/select_paradigms_for_dataset.sql";
+
+	private static final String SQL_SELECT_COLLOCATIONS_FOR_DATASET_PATH = "sql/select_collocations_for_dataset.sql";
+
+	private static final String SQL_SELECT_LEXEMES_FOR_DATASET_PATH = "sql/select_lexemes_for_dataset.sql";
+
+	private static final String SQL_SELECT_MEANINGS_FOR_DATASET_PATH = "sql/select_meanings_for_dataset.sql";
+
 	private static final String SQL_SELECT_DATASET = "select * from " + DATASET + " where code = :datasetCode";
 
-	private static final String SQL_SELECT_WORDS_FOR_DATASET =
-			"select w.* from " + WORD + " w "
-			+ "where exists ("
-			+ "select l.id from " + LEXEME + " l "
-			+ "where l.word_id = w.id and l.dataset_code = :datasetCode) "
-			+ "order by w.id";
+	private String sqlSelectWordsForDataset;
 
-	private static final String SQL_SELECT_PARADIGMS_FOR_DATASET =
-			"select p.* from " + PARADIGM + " p "
-			+ "where exists ("
-			+ "select l.id from " + LEXEME + " l "
-			+ "where l.word_id = p.word_id and l.dataset_code = :datasetCode) "
-			+ "order by p.id";
+	private String sqlSelectParadigmsForDataset;
 
-	private static final String SQL_SELECT_COLLOCATIONS_FOR_DATASET =
-			"select c.* from " + COLLOCATION + " c "
-			+ "where exists ("
-			+ "select l.id "
-			+ "from "
-			+ LEXEME + " l, "
-			+ LEX_COLLOC + " lc "
-			+ "where "
-			+ "lc.collocation_id = c.id "
-			+ "and lc.lexeme_id = l.id "
-			+ "and l.dataset_code = :datasetCode) "
-			+ "order by c.id";
+	private String sqlSelectCollocationsForDataset;
 
-	private static final String SQL_SELECT_LEXEMES_FOR_DATASET =
-			"select l.* from " + LEXEME + " l where l.dataset_code = :datasetCode "
-			+ "order by l.id";
+	private String sqlSelectLexemesForDataset;
 
-	private static final String SQL_SELECT_MEANINGS_FOR_DATASET =
-			"select m.* from " + MEANING + " m "
-			+ "where exists ("
-			+ "select l.id from " + LEXEME + " l "
-			+ "where l.meaning_id = m.id and l.dataset_code = :datasetCode) "
-			+ "order by m.id";
+	private String sqlSelectMeaningsForDataset;
 
 	@Autowired
 	private TransportService transportService;
@@ -188,12 +172,33 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP, LEX_COLLOC_REL_GROUP));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC));
+
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		InputStream resourceFileInputStream;
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORDS_FOR_DATASET_PATH);
+		sqlSelectWordsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_PARADIGMS_FOR_DATASET_PATH);
+		sqlSelectParadigmsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_COLLOCATIONS_FOR_DATASET_PATH);
+		sqlSelectCollocationsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEMES_FOR_DATASET_PATH);
+		sqlSelectLexemesForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANINGS_FOR_DATASET_PATH);
+		sqlSelectMeaningsForDataset = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
-	public void execute(String datasetCode, String exportFolder) throws Exception {
+	public void execute(String datasetCode, boolean isOnlyPublic, String exportFolder) throws Exception {
 
 		logger.info("Starting dataset \"{}\" export...", datasetCode);
+		if (isOnlyPublic) {
+			logger.info("Exporting only public data");
+		}
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -222,7 +227,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		String exportEntryName;
 		List<Map<String, Object>> tableRows;
 		for (String rootTableName : rootTables) {
-			tableRows = getTableRows(datasetCode, rootTableName);
+			tableRows = getTableRows(rootTableName, datasetCode, isOnlyPublic);
 			if (CollectionUtils.isEmpty(tableRows)) {
 				continue;
 			}
@@ -363,26 +368,30 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		jsonGenerator.writeEndObject();
 	}
 
-	private List<Map<String, Object>> getTableRows(String datasetCode, String tableName) throws Exception {
+	private List<Map<String, Object>> getTableRows(String tableName, String datasetCode, boolean isOnlyPublic) throws Exception {
 
 		String sql;
 		if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
 			sql = SQL_SELECT_DATASET;
 		} else if (StringUtils.equalsIgnoreCase(WORD, tableName)) {
-			sql = SQL_SELECT_WORDS_FOR_DATASET;
+			sql = new String(sqlSelectWordsForDataset);
 		} else if (StringUtils.equalsIgnoreCase(PARADIGM, tableName)) {
-			sql = SQL_SELECT_PARADIGMS_FOR_DATASET;
+			sql = new String(sqlSelectParadigmsForDataset);
 		} else if (StringUtils.equalsIgnoreCase(MEANING, tableName)) {
-			sql = SQL_SELECT_MEANINGS_FOR_DATASET;
+			sql = new String(sqlSelectMeaningsForDataset);
 		} else if (StringUtils.equalsIgnoreCase(COLLOCATION, tableName)) {
-			sql = SQL_SELECT_COLLOCATIONS_FOR_DATASET;
+			sql = new String(sqlSelectCollocationsForDataset);
 		} else if (StringUtils.equalsIgnoreCase(LEXEME, tableName)) {
-			sql = SQL_SELECT_LEXEMES_FOR_DATASET;
+			sql = new String(sqlSelectLexemesForDataset);
 		} else {
 			return null;
 		}
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("datasetCode", datasetCode);
+		if (isOnlyPublic) {
+			sql = StringUtils.remove(sql, "--");
+			paramMap.put("processStateCode", PROCESS_STATE_PUBLIC);			
+		}
 		List<Map<String, Object>> tableRows = basicDbService.queryList(sql, paramMap);
 		return tableRows;
 	}

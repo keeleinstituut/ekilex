@@ -25,9 +25,10 @@ public class DatasetExporter extends AbstractLoader {
 			transportService.initialise();
 
 			String datasetCode = ConsolePromptUtil.promptStringValue("Please specify dataset to be exported? (dataset code)");
+			boolean isOnlyPublic = ConsolePromptUtil.promptBooleanValue("Only public data? (y/n)");
 			String datasetExportFolder = ConsolePromptUtil.promptDataFolderPath("Please specify folder for export file? (/path/of/file/)");
 
-			runner.execute(datasetCode, datasetExportFolder);
+			runner.execute(datasetCode, isOnlyPublic, datasetExportFolder);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
