@@ -18,6 +18,7 @@ import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
@@ -64,7 +65,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 679097286;
+    private static final long serialVersionUID = -1516561330;
 
     /**
      * The reference instance of <code>public</code>
@@ -140,6 +141,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_word</code>.
      */
     public final MviewWwWord MVIEW_WW_WORD = eki.wordweb.data.db.tables.MviewWwWord.MVIEW_WW_WORD;
+
+    /**
+     * The table <code>public.mview_ww_word_etym_source_link</code>.
+     */
+    public final MviewWwWordEtymSourceLink MVIEW_WW_WORD_ETYM_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_word_etymology</code>.
@@ -220,6 +226,7 @@ public class Public extends SchemaImpl {
             MviewWwMeaning.MVIEW_WW_MEANING,
             MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION,
             MviewWwWord.MVIEW_WW_WORD,
+            MviewWwWordEtymSourceLink.MVIEW_WW_WORD_ETYM_SOURCE_LINK,
             MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY,
             MviewWwWordRelation.MVIEW_WW_WORD_RELATION,
             MviewWwWordSearch.MVIEW_WW_WORD_SEARCH,

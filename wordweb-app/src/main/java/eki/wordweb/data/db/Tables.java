@@ -18,6 +18,7 @@ import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
@@ -109,6 +110,11 @@ public class Tables {
      * The table <code>public.mview_ww_word</code>.
      */
     public static final MviewWwWord MVIEW_WW_WORD = eki.wordweb.data.db.tables.MviewWwWord.MVIEW_WW_WORD;
+
+    /**
+     * The table <code>public.mview_ww_word_etym_source_link</code>.
+     */
+    public static final MviewWwWordEtymSourceLink MVIEW_WW_WORD_ETYM_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_word_etymology</code>.

@@ -18,7 +18,6 @@ import eki.common.data.OrderedMap;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
-import eki.wordweb.data.SourceLink;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeGovernment;
 import eki.wordweb.data.TypeGrammar;
@@ -31,8 +30,6 @@ import eki.wordweb.data.TypeUsage;
 
 @Component
 public class LexemeConversionUtil extends AbstractConversionUtil {
-
-	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
 
 	public List<Lexeme> filterLexemes(List<Lexeme> lexemes, Complexity lexComplexity) {
 		return filterSimpleOnly(lexemes, lexComplexity);
@@ -62,12 +59,12 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 			Long lexemeId = lexeme.getLexemeId();
 			populateLexeme(lexeme, lexemeSourceLinkMap, lexComplexity, displayLang);
-			populateUsages(lexeme, wordLang, destinLangs, lexComplexity, displayLang);
+			populateUsages(lexeme, wordLang, freeformSourceLinkMap, destinLangs, lexComplexity, displayLang);
 			populateRelatedLexemes(lexeme, lexComplexity, displayLang);
-			populateMeaningWords(lexeme, langOrderByMap, wordLang, destinLangs, lexComplexity, displayLang);
+			populateMeaningWords(lexeme, wordLang, langOrderByMap, destinLangs, lexComplexity, displayLang);
 			filterMeaningWords(lexeme, allRelatedWordValues);
 			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
-			populateMeaning(lexeme, lexemeMeaningTuple, langOrderByMap, wordLang, destinLangs, lexComplexity, displayLang);
+			populateMeaning(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, destinLangs, lexComplexity, displayLang);
 			populateRelatedMeanings(lexeme, lexemeMeaningTuple, displayLang);
 
 			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
@@ -98,7 +95,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		classifierUtil.applyClassifiers(lexeme, displayLang);
 	}
 
-	private void populateUsages(Lexeme lexeme, String wordLang, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
+	private void populateUsages(Lexeme lexeme, String wordLang, Map<Long, List<TypeSourceLink>> freeformSourceLinkMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 		List<TypeUsage> usages = lexeme.getUsages();
 		if (CollectionUtils.isEmpty(usages)) {
 			return;
@@ -111,22 +108,16 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			if (!isDestinLangAlsoRus(destinLangs)) {
 				usage.setUsageTranslations(null);
 			}
-			usage.setUsageAuthors(new ArrayList<>());
 			classifierUtil.applyClassifiers(usage, displayLang);
-			List<String> usageAuthorsRaw = usage.getUsageAuthorsRaw();
-			if (CollectionUtils.isNotEmpty(usageAuthorsRaw)) {
-				for (String usageAuthorRaw : usageAuthorsRaw) {
-					String[] usageAuthorElements = StringUtils.split(usageAuthorRaw, RAW_VALUE_ELEMENTS_SEPARATOR);
-					String type = usageAuthorElements[0];
-					String name = usageAuthorElements[1];
-					boolean isTranslator = StringUtils.equalsIgnoreCase(ReferenceType.TRANSLATOR.name(), type);
-					SourceLink usageAuthor = new SourceLink();
-					usageAuthor.setType(type);
-					usageAuthor.setName(name);
-					usageAuthor.setTranslator(isTranslator);
-					usage.getUsageAuthors().add(usageAuthor);
-				}
+			Long usageId = usage.getUsageId();
+			List<TypeSourceLink> usageSourceLinks = freeformSourceLinkMap.get(usageId);
+			if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
+				usageSourceLinks.forEach(sourceLink -> {
+					boolean isTranslator = ReferenceType.TRANSLATOR.equals(sourceLink.getType());
+					sourceLink.setTranslator(isTranslator);
+				});
 			}
+			usage.setSourceLinks(usageSourceLinks);
 		}
 		boolean isMoreUsages = CollectionUtils.size(usages) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 		lexeme.setMoreUsages(isMoreUsages);
@@ -156,7 +147,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setRelatedLexemesByType(relatedLexemesByType);
 	}
 
-	private void populateMeaningWords(Lexeme lexeme, Map<String, Long> langOrderByMap, String wordLang, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
+	private void populateMeaningWords(Lexeme lexeme, String wordLang, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
 		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
 		if (CollectionUtils.isEmpty(meaningWords)) {
@@ -201,13 +192,13 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	}
 
 	private void populateMeaning(
-			Lexeme lexeme, LexemeMeaningTuple tuple,
-			Map<String, Long> langOrderByMap, String wordLang, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
+			Lexeme lexeme, String wordLang,
+			LexemeMeaningTuple tuple, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
 		List<TypeDefinition> definitions = tuple.getDefinitions();
 
 		if (CollectionUtils.isNotEmpty(definitions)) {
-			definitions = filter(definitions, lexComplexity);
+			definitions = filterPreferred(definitions, lexComplexity, Complexity.DETAIL1);
 			definitions = filter(definitions, wordLang, destinLangs);
 			lexeme.setDefinitions(definitions);
 			List<TypeSourceLink> allDefinitionSourceLinks = tuple.getDefinitionSourceLinks();

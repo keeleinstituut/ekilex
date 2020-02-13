@@ -2,8 +2,6 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
@@ -12,39 +10,37 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Lan
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "usage")
+	private Long usageId;
+
 	private String usage;
 
-	@Column(name = "usage_prese")
 	private String usagePrese;
 
-	@Column(name = "usage_lang")
 	private String usageLang;
 
-	@Column(name = "complexity")
 	private Complexity complexity;
 
-	@Column(name = "usage_type_code")
 	private String usageTypeCode;
 
 	private Classifier usageType;
 
-	@Column(name = "usage_translations")
 	private List<String> usageTranslations;
 
-	@Column(name = "usage_definitions")
 	private List<String> usageDefinitions;
 
-	@Column(name = "od_usage_definitions")
 	private List<String> odUsageDefinitions;
 
-	@Column(name = "od_usage_alternatives")
 	private List<String> odUsageAlternatives;
 
-	@Column(name = "usage_authors")
-	private List<String> usageAuthorsRaw;
+	private List<TypeSourceLink> sourceLinks;
 
-	private List<SourceLink> usageAuthors;
+	public Long getUsageId() {
+		return usageId;
+	}
+
+	public void setUsageId(Long usageId) {
+		this.usageId = usageId;
+	}
 
 	public String getUsage() {
 		return usage;
@@ -132,20 +128,12 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Lan
 		this.odUsageAlternatives = odUsageAlternatives;
 	}
 
-	public List<String> getUsageAuthorsRaw() {
-		return usageAuthorsRaw;
+	public List<TypeSourceLink> getSourceLinks() {
+		return sourceLinks;
 	}
 
-	public void setUsageAuthorsRaw(List<String> usageAuthorsRaw) {
-		this.usageAuthorsRaw = usageAuthorsRaw;
-	}
-
-	public List<SourceLink> getUsageAuthors() {
-		return usageAuthors;
-	}
-
-	public void setUsageAuthors(List<SourceLink> usageAuthors) {
-		this.usageAuthors = usageAuthors;
+	public void setSourceLinks(List<TypeSourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 
 }

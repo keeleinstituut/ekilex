@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.data.Classifier;
+import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.TypeWordEtymRelation;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
@@ -22,7 +23,7 @@ public class EtymConversionUtil {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void composeWordEtymology(Word word, List<WordEtymTuple> wordEtymTuples, String displayLang) {
+	public void composeWordEtymology(Word word, List<WordEtymTuple> wordEtymTuples, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap, String displayLang) {
 
 		if (CollectionUtils.isEmpty(wordEtymTuples)) {
 			return;
@@ -36,15 +37,15 @@ public class EtymConversionUtil {
 		Map<Long, List<WordEtymTuple>> etymAltsMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId));
 
 		WordEtymTuple headwordEtymTuple = etymAltsMap.get(headwordId).get(0);
-		WordEtymology wordEtymology = composeHeadwordEtym(headwordEtymTuple);
+		WordEtymology wordEtymology = composeHeadwordEtym(headwordEtymTuple, wordEtymSourceLinkMap);
 		word.setWordEtymology(wordEtymology);
 
 		List<String> etymLevelsWrapup = new ArrayList<>();
 		wordEtymology.setEtymLevelsWrapup(etymLevelsWrapup);
-		composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, headwordId, etymAltsMap);
+		composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, headwordId, etymAltsMap, wordEtymSourceLinkMap);
 	}
 
-	private WordEtymology composeHeadwordEtym(WordEtymTuple headwordEtymTuple) {
+	private WordEtymology composeHeadwordEtym(WordEtymTuple headwordEtymTuple, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
 
 		WordEtymology wordEtymology = new WordEtymology();
 		StringBuilder headwordEtymBuf = new StringBuilder();
@@ -56,12 +57,16 @@ public class EtymConversionUtil {
 			headwordEtymBuf.append(headwordEtymTuple.getEtymologyType().getValue());
 			headwordEtymBuf.append("</font>");
 		}
-		List<String> wordEtymSources = headwordEtymTuple.getWordEtymSources();
-		if (CollectionUtils.isNotEmpty(wordEtymSources)) {
+		Long wordEtymId = headwordEtymTuple.getWordEtymId();
+		List<TypeSourceLink> wordEtymSourceLinks = wordEtymSourceLinkMap.get(wordEtymId);
+		if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
 			if (headwordEtymBuf.length() > 0) {
 				headwordEtymBuf.append(", ");
 			}
-			headwordEtymBuf.append(StringUtils.join(wordEtymSources, ", "));
+			//TODO temp replacement
+			List<String> wordEtymSourceLinkValues = wordEtymSourceLinks.stream().map(TypeSourceLink::getValue).collect(Collectors.toList());
+			String wordEtymSourceLinkValuesWrapup = StringUtils.join(wordEtymSourceLinkValues, ", ");
+			headwordEtymBuf.append(wordEtymSourceLinkValuesWrapup);
 		}
 		String etymologyYear = headwordEtymTuple.getEtymologyYear();
 		if (StringUtils.isNotEmpty(etymologyYear)) {
@@ -78,7 +83,12 @@ public class EtymConversionUtil {
 		return wordEtymology;
 	}
 
-	private void composeEtymLevelsWrapup(List<String> etymLevelsWrapup, Long headwordId, Long wordId, Map<Long, List<WordEtymTuple>> etymAltsMap) {
+	private void composeEtymLevelsWrapup(
+			List<String> etymLevelsWrapup,
+			Long headwordId,
+			Long wordId,
+			Map<Long, List<WordEtymTuple>> etymAltsMap,
+			Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
 
 		if (wordId == null) {
 			return;
@@ -88,7 +98,7 @@ public class EtymConversionUtil {
 		List<Long> etymLevelWordIds = new ArrayList<>();
 		for (WordEtymTuple wordEtymAlt : wordEtymAlts) {
 			List<TypeWordEtymRelation> wordEtymRelations = wordEtymAlt.getWordEtymRelations();
-			String etymLevelWrapup = composeEtymLevelWrapup(wordEtymRelations, etymAltsMap);
+			String etymLevelWrapup = composeEtymLevelWrapup(wordEtymRelations, etymAltsMap, wordEtymSourceLinkMap);
 			if (StringUtils.isNotBlank(etymLevelWrapup)) {
 				if (!headwordId.equals(wordId) && wordEtymAlt.isWordEtymIsQuestionable()) {
 					etymLevelWrapup = " ? " + etymLevelWrapup;
@@ -105,11 +115,14 @@ public class EtymConversionUtil {
 			etymLevelsWrapup.add(etymLevelWrapupJoin);
 		}
 		for (Long etymLevelWordId : etymLevelWordIds) {
-			composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, etymLevelWordId, etymAltsMap);
+			composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, etymLevelWordId, etymAltsMap, wordEtymSourceLinkMap);
 		}
 	}
 
-	private String composeEtymLevelWrapup(List<TypeWordEtymRelation> wordEtymRelations, Map<Long, List<WordEtymTuple>> etymAltsMap) {
+	private String composeEtymLevelWrapup(
+			List<TypeWordEtymRelation> wordEtymRelations,
+			Map<Long, List<WordEtymTuple>> etymAltsMap,
+			Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
 
 		StringBuilder etymLevelBuf = new StringBuilder();
 		int etymLevelMemberIndex = 0;
@@ -138,7 +151,6 @@ public class EtymConversionUtil {
 			String etymWordLang = etymLevelMember.getWordEtymWordLang();
 			Classifier etymWordLanguage = etymLevelMember.getWordEtymWordLanguage();
 			List<String> etymWordMeaningWords = etymLevelMember.getWordEtymWordMeaningWords();
-			List<String> etymWordSources = etymLevelMember.getWordEtymSources();
 			if (etymWordLanguage != null) {
 				if (etymLevelMemberIndex == 0) {
 					etymLevelBuf.append(etymWordLanguage.getValue());
@@ -157,10 +169,15 @@ public class EtymConversionUtil {
 				etymLevelBuf.append(StringUtils.join(etymWordMeaningWords, ", "));
 				etymLevelBuf.append('\'');
 			}
-			if (CollectionUtils.isNotEmpty(etymWordSources)) {
+			Long wordEtymId = etymLevelMember.getWordEtymId();
+			List<TypeSourceLink> wordEtymSourceLinks = wordEtymSourceLinkMap.get(wordEtymId);
+			if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
+				//TODO temp replacement
+				List<String> wordEtymSourceLinkValues = wordEtymSourceLinks.stream().map(TypeSourceLink::getValue).collect(Collectors.toList());
+				String wordEtymSourceLinkValuesWrapup = StringUtils.join(wordEtymSourceLinkValues, ", ");
 				etymLevelBuf.append(' ');
 				etymLevelBuf.append('(');
-				etymLevelBuf.append(StringUtils.join(etymWordSources, ", "));
+				etymLevelBuf.append(wordEtymSourceLinkValuesWrapup);
 				if (StringUtils.isNotBlank(etymLevelMember.getEtymologyYear())) {
 					etymLevelBuf.append(' ');
 					etymLevelBuf.append(etymLevelMember.getEtymologyYear());

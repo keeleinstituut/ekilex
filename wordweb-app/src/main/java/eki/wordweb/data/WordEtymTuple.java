@@ -33,8 +33,6 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	private boolean wordEtymIsQuestionable;
 
-	private List<String> wordEtymSources;
-
 	private List<TypeWordEtymRelation> wordEtymRelations;
 
 	public Long getWordId() {
@@ -131,14 +129,6 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	public void setWordEtymIsQuestionable(boolean wordEtymIsQuestionable) {
 		this.wordEtymIsQuestionable = wordEtymIsQuestionable;
-	}
-
-	public List<String> getWordEtymSources() {
-		return wordEtymSources;
-	}
-
-	public void setWordEtymSources(List<String> wordEtymSources) {
-		this.wordEtymSources = wordEtymSources;
 	}
 
 	public List<TypeWordEtymRelation> getWordEtymRelations() {

@@ -13,6 +13,7 @@ drop materialized view if exists mview_ww_lexeme_relation;
 drop materialized view if exists mview_ww_meaning_relation;
 drop materialized view if exists mview_ww_lexeme_source_link;
 drop materialized view if exists mview_ww_freeform_source_link;
+drop materialized view if exists mview_ww_word_etym_source_link;
 drop materialized view if exists mview_ww_definition_source_link;
 drop type if exists type_meaning_word;
 drop type if exists type_public_note;
@@ -39,8 +40,18 @@ drop type if exists type_meaning_relation;
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_source_link as (ref_owner varchar(100), owner_id bigint, source_link_id bigint, source_id bigint, type varchar(100), name text, value text, order_by bigint);
+create type type_source_link as (
+				ref_owner varchar(100),
+				owner_id bigint,
+				source_link_id bigint,
+				source_link_type varchar(100),
+				name text,
+				value text,
+				order_by bigint,
+				source_id bigint,
+				source_props text array);
 create type type_usage as (
+				usage_id bigint,
 				usage text,
 				usage_prese text,
 				usage_lang char(3),
@@ -49,8 +60,7 @@ create type type_usage as (
 				usage_translations text array,
 				usage_definitions text array,
 				od_usage_definitions text array,
-				od_usage_alternatives text array,
-				usage_authors text array);
+				od_usage_alternatives text array);
 create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
@@ -217,7 +227,6 @@ dblink(
 	word_etym_comment text,
 	word_etym_is_questionable boolean,
 	word_etym_order_by bigint,
-	word_etym_sources text array,
 	word_etym_relations type_word_etym_relation array
 );
 
@@ -265,6 +274,15 @@ select * from
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_freeform_source_link') as freeform_source_link(
+	word_id bigint,
+	source_links type_source_link array
+);
+
+create materialized view mview_ww_word_etym_source_link as
+select * from
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_word_etym_source_link') as word_etym_source_link(
 	word_id bigint,
 	source_links type_source_link array
 );
@@ -342,6 +360,7 @@ create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation 
 create index mview_ww_meaning_relation_meaning_id_idx on mview_ww_meaning_relation (meaning_id);
 create index mview_ww_lexeme_source_link_word_id_idx on mview_ww_lexeme_source_link (word_id);
 create index mview_ww_freeform_source_link_word_id_idx on mview_ww_freeform_source_link (word_id);
+create index mview_ww_word_etym_source_link_word_id_idx on mview_ww_word_etym_source_link (word_id);
 create index mview_ww_definition_source_link_meaning_id_idx on mview_ww_definition_source_link (meaning_id);
 create index mview_ww_classifier_name_code_lang_type_idx on mview_ww_classifier (name, code, lang, type);
 create index mview_ww_classifier_name_origin_code_lang_type_idx on mview_ww_classifier (name, origin, code, lang, type);

@@ -180,7 +180,12 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		List<WordRelationTuple> wordRelationTuples = unifSearchDbService.getWordRelationTuples(wordId);
 		wordConversionUtil.composeWordRelations(word, wordRelationTuples, lexComplexity, displayLang);
 		List<WordEtymTuple> wordEtymTuples = unifSearchDbService.getWordEtymologyTuples(wordId);
-		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
+		List<TypeSourceLink> wordEtymSourceLinks = unifSearchDbService.getWordEtymSourceLinks(wordId);
+		Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
+			wordEtymSourceLinkMap = wordEtymSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
+		}
+		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, wordEtymSourceLinkMap, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = unifSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);

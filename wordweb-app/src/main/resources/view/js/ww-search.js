@@ -77,7 +77,7 @@ $(document).on("click", ".show-more", function() {
 			.toggleClass("fade-target");
 
 	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel").find(
-			".colloc-fulldata .colloc-col:lt(3), .dependencies .dependence:lt(2), .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
+			".colloc-fulldata .colloc-col:lt(3), .dependencies .dependence:lt(3), .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
 			.removeClass("fade-target");
 });
 

@@ -4,8 +4,18 @@
 create type type_lang_complexity as (lang char(3), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_source_link as (ref_owner varchar(100), owner_id bigint, source_link_id bigint, source_id bigint, type varchar(100), name text, value text, order_by bigint);
+create type type_source_link as (
+				ref_owner varchar(100),
+				owner_id bigint,
+				source_link_id bigint,
+				source_link_type varchar(100),
+				name text,
+				value text,
+				order_by bigint,
+				source_id bigint,
+				source_props text array);
 create type type_usage as (
+				usage_id bigint,
 				usage text,
 				usage_prese text,
 				usage_lang char(3),
@@ -14,8 +24,7 @@ create type type_usage as (
 				usage_translations text array,
 				usage_definitions text array,
 				od_usage_definitions text array,
-				od_usage_alternatives text array,
-				usage_authors text array);
+				od_usage_alternatives text array);
 create type type_public_note as (value text, complexity varchar(100));
 create type type_grammar as (value text, complexity varchar(100));
 create type type_government as (value text, complexity varchar(100));
@@ -618,6 +627,7 @@ from lexeme l
                    group by mw.lexeme_id) mw on mw.lexeme_id = l.id
   left outer join (select u.lexeme_id,
                           array_agg(row (
+                            u.usage_id,
                           	u.usage,
                           	u.usage_prese,
                           	u.usage_lang,
@@ -626,11 +636,11 @@ from lexeme l
                           	u.usage_translations,
                           	u.usage_definitions,
                           	u.od_usage_definitions,
-                          	u.od_usage_alternatives,
-                          	u.usage_authors
+                          	u.od_usage_alternatives
                           )::type_usage
                           order by u.order_by) usages
                    from (select lf.lexeme_id,
+                                u.id usage_id,
                                 u.value_text usage,
                                 u.value_prese usage_prese,
                                 u.lang usage_lang,
@@ -640,9 +650,7 @@ from lexeme l
                                 ut.usage_translations,
                                 ud.usage_definitions,
                                 odud.od_usage_definitions,
-                                odua.od_usage_alternatives,
-                                ua.usage_authors,
-                                null
+                                odua.od_usage_alternatives
                          from lexeme_freeform lf
                            inner join freeform u on lf.freeform_id = u.id and u.type = 'USAGE'
                            left outer join freeform utp on utp.parent_id = u.id and utp.type = 'USAGE_TYPE'
@@ -667,21 +675,7 @@ from lexeme l
                                        array_agg(odua.value_prese order by odua.order_by) od_usage_alternatives
                                 from freeform odua
                                 where odua.type = 'OD_USAGE_ALTERNATIVE'
-                                group by odua.parent_id) odua on odua.usage_id = u.id
-                           left outer join (select uasl.freeform_id usage_id,
-                                                   array_agg((uasl.type || '|' || uas.person_name) order by uasl.order_by) usage_authors
-                                            from freeform_source_link uasl
-                                              inner join (select s.id,
-                                                                 array_to_string(array_agg(ff.value_text),', ','*') person_name
-                                                          from source s,
-                                                               source_freeform sff,
-                                                               freeform ff
-                                                          where s.type = 'PERSON'
-                                                          and   sff.source_id = s.id
-                                                          and   sff.freeform_id = ff.id
-                                                          and   ff.type = 'SOURCE_NAME'
-                                                          group by s.id) uas on uas.id = uasl.source_id
-                                            group by uasl.freeform_id) ua on ua.usage_id = u.id) u
+                                group by odua.parent_id) odua on odua.usage_id = u.id) u
                    group by u.lexeme_id) usg on usg.lexeme_id = l.id
   left outer join (select ll.id,
                          array_agg(distinct ll.lang) lang_filter
@@ -869,13 +863,14 @@ order by l1.level1,
 -- etymology - OK
 create view view_ww_word_etymology
 as
-with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, word_etym_rel_id, related_word_id) as
+with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, word_etym_rel_id, related_word_id, related_word_ids) as
 (
   (select we.word_id,
           we.word_id word_etym_word_id,
           we.id word_etym_id,
           wer.id word_etym_rel_id,
-          wer.related_word_id
+          wer.related_word_id,
+          array[we.word_id] as related_word_ids
    from word_etymology we
      left outer join word_etymology_relation wer on wer.word_etym_id = we.id
    order by we.order_by,
@@ -885,10 +880,12 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, wo
            we.word_id word_etym_word_id,
            we.id word_etym_id,
            wer.id word_etym_rel_id,
-           wer.related_word_id
+           wer.related_word_id,
+           (rec.related_word_ids || we.word_id) as related_word_ids
     from word_etym_recursion rec
       inner join word_etymology we on we.word_id = rec.related_word_id
       left outer join word_etymology_relation wer on wer.word_etym_id = we.id
+    where rec.related_word_id != any(rec.related_word_ids)
     order by we.order_by,
              wer.order_by)
 )
@@ -903,7 +900,6 @@ select rec.word_id,
        we.comment_prese word_etym_comment,
        we.is_questionable word_etym_is_questionable,
        we.order_by word_etym_order_by,
-       wesl.word_etym_sources,
        array_agg(row(wer.id,wer.comment_prese,wer.is_questionable,wer.is_compound,wer.related_word_id)::type_word_etym_relation order by wer.order_by) word_etym_relations
 from word_etym_recursion rec
   inner join word_etymology we on we.id = rec.word_etym_id
@@ -939,15 +935,10 @@ from word_etym_recursion rec
                    and   f2.paradigm_id = p2.id
                    and   f2.mode = 'WORD'
                    group by l1.word_id) mw2 on mw2.word_id = rec.word_etym_word_id
-  left outer join (select wesl.word_etym_id,
-                          array_agg(wesl.value order by wesl.order_by) word_etym_sources
-                   from word_etymology_source_link wesl
-                   group by wesl.word_etym_id) wesl on wesl.word_etym_id = rec.word_etym_id
 group by rec.word_id,
          rec.word_etym_id,
          rec.word_etym_word_id,
          mw2.meaning_words,
-         wesl.word_etym_sources,
          we.id,
          w2.id,
          p2.id,
@@ -1151,63 +1142,124 @@ group by m1.id;
 
 
 -- source links
-create view view_ww_lexeme_source_link
+create view view_ww_lexeme_source_link 
 as
 select l.word_id,
-       array_agg(row ('LEXEME', lsl.lexeme_id, lsl.id, lsl.source_id, lsl.type, lsl.name, lsl.value, lsl.order_by)::type_source_link order by l.id, lsl.id) source_links
+       array_agg(row ('LEXEME', lsl.lexeme_id, lsl.id, lsl.type, lsl.name, lsl.value, lsl.order_by, s.source_id, s.source_props)::type_source_link order by l.id, lsl.order_by) source_links
 from lexeme l,
      dataset ds,
-     lexeme_source_link lsl
+     lexeme_source_link lsl,
+     (select s.id source_id,
+             array_agg(ff.value_prese order by ff.order_by) source_props
+      from source s,
+           source_freeform sff,
+           freeform ff
+      where sff.source_id = s.id
+      and   sff.freeform_id = ff.id
+      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
+      group by s.id) s
 where l.type = 'PRIMARY'
 and   l.process_state_code = 'avalik'
 and   lsl.lexeme_id = l.id
+and   lsl.source_id = s.source_id
 and   ds.code = l.dataset_code
 and   ds.is_public = true
 group by l.word_id
 order by l.word_id;
 
-create view view_ww_freeform_source_link
+create view view_ww_freeform_source_link 
 as
 select l.word_id,
-       array_agg(row ('FREEFORM', ffsl.freeform_id, ffsl.id, ffsl.source_id, ffsl.type, ffsl.name, ffsl.value, ffsl.order_by)::type_source_link order by l.id, lff.id, ffsl.id) source_links
+       array_agg(row ('FREEFORM', ffsl.freeform_id, ffsl.id, ffsl.type, ffsl.name, ffsl.value, ffsl.order_by, s.source_id, s.source_props)::type_source_link order by l.id, lff.id, ffsl.order_by) source_links
 from lexeme l,
      dataset ds,
      lexeme_freeform lff,
-     freeform_source_link ffsl
+     freeform_source_link ffsl,
+     (select s.id source_id,
+             array_agg(ff.value_prese order by ff.order_by) source_props
+      from source s,
+           source_freeform sff,
+           freeform ff
+      where sff.source_id = s.id
+      and   sff.freeform_id = ff.id
+      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
+      group by s.id) s
 where l.type = 'PRIMARY'
 and   l.process_state_code = 'avalik'
 and   lff.lexeme_id = l.id
 and   lff.freeform_id = ffsl.freeform_id
+and   ffsl.source_id = s.source_id
 and   ds.code = l.dataset_code
 and   ds.is_public = true
 group by l.word_id
 order by l.word_id;
 
-create view view_ww_definition_source_link
+create view view_ww_word_etym_source_link 
+as
+select we.word_id,
+       array_agg(row ('WORD_ETYM', wesl.word_etym_id, wesl.id, wesl.type, wesl.name, wesl.value, wesl.order_by, s.source_id, s.source_props)::type_source_link order by we.id, wesl.order_by) source_links
+from word_etymology we,
+     word_etymology_source_link wesl,
+     (select s.id source_id,
+             array_agg(ff.value_prese order by ff.order_by) source_props
+      from source s,
+           source_freeform sff,
+           freeform ff
+      where sff.source_id = s.id
+      and   sff.freeform_id = ff.id
+      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
+      group by s.id) s
+where wesl.word_etym_id = we.id
+and   wesl.source_id = s.source_id
+and   exists (select l.id
+              from lexeme l,
+                   dataset ds
+              where l.word_id = we.word_id
+              and   l.type = 'PRIMARY'
+              and   l.process_state_code = 'avalik'
+              and   ds.code = l.dataset_code
+              and   ds.is_public = true)
+group by we.word_id
+order by we.word_id;
+
+create view view_ww_definition_source_link 
 as
 select dsl.meaning_id,
-       array_agg(row ('DEFINITION', dsl.definition_id, dsl.source_link_id, dsl.source_id, dsl.type, dsl.name, dsl.value, dsl.order_by)::type_source_link order by dsl.definition_id, dsl.source_link_id) source_links
+       array_agg(row ('DEFINITION', dsl.definition_id, dsl.source_link_id, dsl.type, dsl.name, dsl.value, dsl.order_by, dsl.source_id, dsl.source_props)::type_source_link order by dsl.definition_id, dsl.order_by) source_links
 from (select d.meaning_id,
              d.id definition_id,
              dsl.id source_link_id,
-             dsl.source_id,
              dsl.type,
              dsl.name,
              dsl.value,
-             dsl.order_by
+             dsl.order_by,
+             s.source_id,
+             s.source_props
       from lexeme l,
            dataset ds,
            definition d,
-           definition_source_link dsl
+           definition_source_link dsl,
+           (select s.id source_id,
+                   array_agg(ff.value_prese order by ff.order_by) source_props
+            from source s,
+                 source_freeform sff,
+                 freeform ff
+            where sff.source_id = s.id
+            and   sff.freeform_id = ff.id
+            and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
+            group by s.id) s
       where l.type = 'PRIMARY'
       and   l.process_state_code = 'avalik'
       and   l.meaning_id = d.meaning_id
       and   dsl.definition_id = d.id
+      and   dsl.source_id = s.source_id
       and   ds.code = l.dataset_code
       and   ds.is_public = true
       group by d.meaning_id,
                d.id,
-               dsl.id) dsl
+               dsl.id,
+               s.source_id,
+               s.source_props) dsl
 group by dsl.meaning_id
 order by dsl.meaning_id;
 

@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeUsage extends UDTImpl<TypeUsageRecord> {
 
-    private static final long serialVersionUID = 2007980265;
+    private static final long serialVersionUID = 11001660;
 
     /**
      * The reference instance of <code>public.type_usage</code>
@@ -43,6 +43,11 @@ public class TypeUsage extends UDTImpl<TypeUsageRecord> {
     public Class<TypeUsageRecord> getRecordType() {
         return TypeUsageRecord.class;
     }
+
+    /**
+     * The attribute <code>public.type_usage.usage_id</code>.
+     */
+    public static final UDTField<TypeUsageRecord, Long> USAGE_ID = createField("usage_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage</code>.
@@ -88,11 +93,6 @@ public class TypeUsage extends UDTImpl<TypeUsageRecord> {
      * The attribute <code>public.type_usage.od_usage_alternatives</code>.
      */
     public static final UDTField<TypeUsageRecord, String[]> OD_USAGE_ALTERNATIVES = createField("od_usage_alternatives", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
-
-    /**
-     * The attribute <code>public.type_usage.usage_authors</code>.
-     */
-    public static final UDTField<TypeUsageRecord, String[]> USAGE_AUTHORS = createField("usage_authors", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
 
     /**
      * No further instances allowed
