@@ -4,6 +4,7 @@ aos	keskaeg	-	keskaeg	et
 aos	avatäited	-	avatäited	et
 aos	militaararhitektuur	-	militaararhitektuur	et
 aos	(uus teema)	-	(uus teema)	et
+aos	(uus teema)	-	(uus teema)	et
 aos	antiik	-	antiik	et
 aos	katus	-	katus	et
 aos	stiil	-	stiil	et
@@ -85,6 +86,7 @@ arh	ripatsid	ehted	ripatsid	et
 arh	muud ehted või ehte osad	ehted	muud ehted või ehte osad	et
 arh	metallid ja sulamid	metallitööga seotud mõisted	metallid ja sulamid	et
 arh	tehnikad	kiviajaga seotud mõisted	tehnikad	et
+arh	sõjamehevarustus	sõjandus	sõjamehevarustus	et
 arh	ühiskond	-	ühiskond	et
 arh	amb ja selle osad	relvad	amb ja selle osad	et
 arh	laevandus	majandus	laevandus	et
@@ -454,11 +456,15 @@ kto	tekstiilikäsitöö	-	tekstiilikäsitöö	et
 kto	kirivöötehnika	tekstiilikäsitöö	kirivöötehnika	et
 kto	niplamine	tekstiilikäsitöö	niplamine	et
 kto	teadus, käsitööteadus	-	teadus, käsitööteadus	et
+kto	tikkimine	tekstiilikäsitöö	tikkimine	et
 kto	kangakudumine	tekstiilikäsitöö	kangakudumine	et
+kto	ketramine	tekstiilikäsitöö	ketramine	et
 kto	metallikäsitöö	-	metallikäsitöö	et
 kto	palkehitus	puidukäsitöö	palkehitus	et
+kto	aasnõelumine	tekstiilikäsitöö	aasnõelumine	et
 kto	sepistamine	metallikäsitöö	sepistamine	et
 kto	kõlatehnika	tekstiilikäsitöö	kõlatehnika	et
+kto	võrkpõime	tekstiilikäsitöö	võrkpõime	et
 kto	silmuskudumine	tekstiilikäsitöö	silmuskudumine	et
 kto	käsitöö	-	käsitöö	et
 lenoch	AD	-	Public Administration - Private Administration - Offices	eng
@@ -3694,6 +3700,7 @@ mut	sündmused	-	events	en
 prs	diagnostika terminid	-	diagnostika terminid	et
 prs	morfoloogia ja arenemistsükli terminid	-	morfoloogia ja arenemistsükli terminid	et
 prs	parasitoloogia põhimõisted	-	parasitoloogia põhimõisted	et
+tet	lavastusliik	-	lavastusliik	et
 usk	majavaimud	-	majavaimud	et
 usk	popkultuur	-	popkultuur	et
 usk	veevaimud	-	veevaimud	et
