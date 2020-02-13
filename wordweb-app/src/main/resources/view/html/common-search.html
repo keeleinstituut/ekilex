@@ -205,7 +205,31 @@
               <div th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                 <span th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
-                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word, relation.homonymNr)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
+                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word, relation.homonymNr)}}">
+                    <span th:text="${relation.word}"></span>
+                    <th:block th:if="${relation.aspect != null}">
+                      <span th:text="${'[' + relation.aspect.value + ']'}"></span>
+                    </th:block>
+                    <th:block th:each="valueState, vsIter : ${relation.lexValueStates}">
+                      <span th:if="${vsIter.first}">[</span>
+                      <span th:text="${valueState.value}"></span>
+                      <span th:unless="${vsIter.last}">,</span>
+                      <span th:if="${vsIter.last}">]</span>
+                    </th:block>
+                    <th:block th:each="register, rIter : ${relation.lexRegisters}">
+                      <span th:if="${rIter.first}">[</span>
+                      <span th:text="${register.value}"></span>
+                      <span th:unless="${rIter.last}">,</span>
+                      <span th:if="${rIter.last}">]</span>
+                    </th:block>
+                    <th:block th:each="government, gIter : ${relation.lexGovernmentValues}">
+                      <span th:if="${gIter.first}">[</span>
+                      <span th:text="${government}"></span>
+                      <span th:unless="${gIter.last}">,</span>
+                      <span th:if="${gIter.last}">]</span>
+                    </th:block>
+                    <span th:unless="${relationIter.last}">,</span>
+                  </a>
                 </th:block>
               </div>
             </div>

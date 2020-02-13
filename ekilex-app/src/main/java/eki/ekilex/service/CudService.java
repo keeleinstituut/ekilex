@@ -194,7 +194,7 @@ public class CudService extends AbstractService {
 	public void updateLexemeGovernment(Long id, String value, Complexity complexity) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, value);
 		createLifecycleLog(logData);
-		cudDbService.updateFreeformTextValueAndComplexity(id, value, null, complexity);
+		cudDbService.updateFreeformTextValueAndComplexity(id, value, value, complexity);
 	}
 
 	@Transactional

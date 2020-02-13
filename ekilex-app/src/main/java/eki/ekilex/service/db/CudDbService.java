@@ -828,8 +828,8 @@ public class CudDbService implements DbConstant {
 
 	public Long createLexemeGovernment(Long lexemeId, String government, Complexity complexity) {
 		Long governmentFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.COMPLEXITY)
-				.values(FreeformType.GOVERNMENT.name(), government, complexity.name())
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.COMPLEXITY)
+				.values(FreeformType.GOVERNMENT.name(), government, government, complexity.name())
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
