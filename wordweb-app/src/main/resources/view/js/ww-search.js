@@ -16,8 +16,9 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
 		fetchCorpSentences(lang, word);
 		setHomonymNrVisibility();
-		$('.word-details [data-toggle="tooltip"]').tooltip();
 		calculateAndSetStyles();
+		$('.word-details [data-toggle="tooltip"]').tooltip();
+		$('[data-toggle="popover"]').popover();
 	}).fail(function(data) {
 		alert(messages.search_failure);
 	})

@@ -65,13 +65,14 @@
               <span class="additional-meta lang-code lang-code-sm" th:with="langData=${viewUtil.getLangData(definitionEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
               <span th:each="definition,definitionIter : ${definitionEntry.value}">
                 <span class="definition-value" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
+                <!--Allika viited-->
                 <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
                   [
                   <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
-                    <a href="#">
+                    <button type="button" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?" class="source-link btn btn-link p-0" >
                       <span th:utext="${sourceLink.name + ' - '}" th:if="${sourceLink.name != null}"></span>
                       <span th:utext="${sourceLink.value}"></span>
-                    </a>
+                    </button>
                     <span th:unless="${sourceLinkIter.last}">&nbsp;</span>
                   </th:block>
                   ]
@@ -233,13 +234,14 @@
             <div class="col-6">
               <b></b>
             </div>
+            <!-- Allika viited-->
             <div class="col-12">
               [
               <th:block th:each="sourceLink,sourceLinkIter : ${lexeme.lexemeSourceLinks}">
-                <a href="#">
+                <button type="button" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?" class="source-link btn btn-link p-0" >
                   <span th:utext="${sourceLink.name + ' - '}" th:if="${sourceLink.name != null}"></span>
                   <span th:utext="${sourceLink.value}"></span>
-                </a>
+                </button>
                 <span th:unless="${sourceLinkIter.last}">&nbsp;</span>
               </th:block>
               ]
