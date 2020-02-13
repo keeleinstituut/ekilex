@@ -19,7 +19,8 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
 		calculateAndSetStyles();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
 		$('[data-toggle="popover"]').popover({
-			placement: 'top'
+			placement: 'top',
+			trigger: 'focus'
 		});
 	}).fail(function(data) {
 		alert(messages.search_failure);

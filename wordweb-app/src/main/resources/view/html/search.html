@@ -40,7 +40,7 @@
           <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
         </div>
         <div class="border-left mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details">
-          <label class="mr-2 my-0 p-0">Näita tulemustes</label>
+          <label class="mr-2 my-0 p-0" th:text="#{label.show.results}">Näita tulemustes</label>
           <div class="dropdown">
             <button class="btn btn-link dropdown-toggle p-0" type="button" id="destinLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span id="selected-langs" th:text="${selectedLangsStr}"></span>
@@ -51,7 +51,7 @@
                    class="dropdown-item px-2 py-1 dropdown-item-multiselect" th:classappend="${filterElem.selected ? 'active' : ''}" >Keel</a>
                 <th:block th:if="${filterElem.addSeparator}">
                   <div class="dropdown-divider" ></div>
-                  <div class="text-muted font-italic pl-1">vali üks või mitu</div>
+                  <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
                 </th:block>
               </th:block>
             </div>
@@ -70,7 +70,7 @@
                    class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}" >Sõnakogu</a>
                 <th:block th:if="${filterElem.addSeparator}">
                 <div class="dropdown-divider" ></div>
-                <div class="text-muted font-italic pl-1">vali üks või mitu</div>
+                <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
                 </th:block>
               </th:block>
               </div>
@@ -151,7 +151,7 @@
                 <div th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
                   <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
                     <div>
-                      <span>ÕS soovitab:</span>
+                      <span th:text="#{label.od.recommend}">ÕS soovitab:</span>
                       <span th:utext="${odWordRecommendation}"></span>
                     </div>
                   </th:block>
