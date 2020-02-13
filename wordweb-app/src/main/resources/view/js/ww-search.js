@@ -18,7 +18,9 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
 		setHomonymNrVisibility();
 		calculateAndSetStyles();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
-		$('[data-toggle="popover"]').popover();
+		$('[data-toggle="popover"]').popover({
+			placement: 'top'
+		});
 	}).fail(function(data) {
 		alert(messages.search_failure);
 	})
