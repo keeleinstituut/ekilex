@@ -399,8 +399,14 @@
 }
 
 .dropdown-menu .dropdown-menu-scroll {
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 20px);
   overflow: auto;
+}
+
+@media (min-width: 576px) {
+  .dropdown-menu .dropdown-menu-scroll {
+    max-height: calc(100vh - 80px);
+  }
 }
 
 .dropdown-item-multiselect.active::before {
