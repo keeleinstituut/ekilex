@@ -146,7 +146,7 @@
         </div>
         <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
           <div class="dependence example-item" th:each="usage : ${lexeme.usages}">
-            <div class="dependence-unit" th:data-words="${usage.usage}" onclick="generateAudioAndPlay(this)">
+            <div class="dependence-unit" th:data-words="${usage.usage}" th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
               <span class="example-text" th:utext="${usage.usagePrese}"></span>
               <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
                 <div class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
