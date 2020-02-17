@@ -25,7 +25,7 @@
             <i class="fa fa-exclamation-triangle text-muted" aria-hidden="true"></i>
           </span>
           <div class="mr-auto pl-0 d-flex flex-row flex-nowrap align-items-center">
-            <p class="drag-handle py-2 pr-1 m-0 list-item-value" th:inline="text" data-toggle="tooltip" th:title="${synRelation.definition != null ? synRelation.definition : 'definitsioon puudub' }">
+            <p class="drag-handle py-2 pr-1 m-0 list-item-value" th:inline="text" data-toggle="tooltip" data-html="true" th:title="${viewUtil.getDefinitionTooltipHtml(synRelation.definitions)}">
               [[${(synRelation.suffixoid ? '-' : '') + synRelation.word + (synRelation.prefixoid ? '-' : '')}]] <sup th:if="${synRelation.otherHomonymsExist}" title="Homonüümi number" th:text="${synRelation.homonymNumber}">1</sup>
             </p>
           </div>
@@ -121,8 +121,15 @@
     </div>
   </div>
 
+  <div th:fragment="definitions_data">
+    <div class="d-flex flex-row flex-wrap ml-3" th:each="definition : ${lexeme.definitions}">
+      <div style="display: list-item; position: absolute"></div>
+      <span th:utext="${definition.value}"></span>
+    </div>
+  </div>
+
   <div th:data-id="${lexeme.lexemeId}" th:fragment="usages_data">
-    <div class="d-flex  flex-wrap" th:if="${not #lists.isEmpty(lexeme.usages)}">
+    <div class="d-flex flex-wrap" th:if="${not #lists.isEmpty(lexeme.usages)}">
       <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
         <div th:with="usage= ${lexeme.usages[0]}">
           <span class="text-secondary" th:utext="${usage.value}"></span>
@@ -131,7 +138,7 @@
     </div>
   </div>
 
-  <th:block th:fragment="meaning_word_data(showLangLabel)" th:if="${not #lists.isEmpty(lexeme.meaningWordLangGroups)}">
+  <th:block th:fragment="meaning_words_data(showLangLabel)" th:if="${not #lists.isEmpty(lexeme.meaningWordLangGroups)}">
     <div th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}"
       class="orderable d-flex flex-row flex-wrap"
       data-op-code="lexeme_meaning_word"

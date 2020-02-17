@@ -17,7 +17,7 @@ public class SynRelation extends AbstractDataObject {
 
 	private String word;
 
-	private String definition;
+	private List<String> definitions;
 
 	private Long orderBy;
 
@@ -51,12 +51,12 @@ public class SynRelation extends AbstractDataObject {
 		this.word = word;
 	}
 
-	public String getDefinition() {
-		return definition;
+	public List<String> getDefinitions() {
+		return definitions;
 	}
 
-	public void setDefinition(String definition) {
-		this.definition = definition;
+	public void setDefinitions(List<String> definitions) {
+		this.definitions = definitions;
 	}
 
 	public RelationStatus getRelationStatus() {

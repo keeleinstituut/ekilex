@@ -1,6 +1,7 @@
 package eki.ekilex.web.util;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,8 @@ import eki.ekilex.service.CommonDataService;
 public class ViewUtil implements InitializingBean {
 
 	private static final String LEXEME_WEIGHT_PATTERN = "#.##";
+
+	private static final int DEFINITION_MAX_CHARS = 100;
 
 	private Map<String, String> languageIso2Map = null;
 
@@ -43,5 +46,27 @@ public class ViewUtil implements InitializingBean {
 
 	public String getFormattedLexemeWeight(Float lexemeWeight) {
 		return lexemeWeightFormat.format(lexemeWeight);
+	}
+
+	public String getDefinitionTooltipHtml(List<String> definitions) {
+
+		StringBuilder htmlBuf = new StringBuilder();
+		if (definitions.isEmpty()) {
+			htmlBuf.append("definitsioon puudub");
+		} else {
+			boolean countDefinitions = definitions.size() > 1;
+			int definitionsCount = 1;
+			htmlBuf.append("<p style='text-align:left'>");
+			for (String definition : definitions) {
+				if (countDefinitions) {
+					htmlBuf.append(definitionsCount++);
+					htmlBuf.append(". ");
+				}
+				htmlBuf.append(StringUtils.abbreviate(definition, DEFINITION_MAX_CHARS));
+				htmlBuf.append("<br>");
+			}
+			htmlBuf.append("</p>");
+		}
+		return htmlBuf.toString();
 	}
 }

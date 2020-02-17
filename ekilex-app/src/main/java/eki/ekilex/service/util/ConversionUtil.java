@@ -796,8 +796,10 @@ public class ConversionUtil implements DbConstant {
 		List<String> relationParamNames = new ArrayList<>();
 
 		Integer otherHomonymNo = null;
+		Long firstRelationLexemeId = null;
 		for (SynRelationParamTuple paramTuple : synRelationParamTuples) {
 			SynRelation relation = relationMap.get(paramTuple.getRelationId());
+			String definitionValue = paramTuple.getDefinitionValue();
 			if (relation == null) {
 				relation = new SynRelation();
 				relation.setId(paramTuple.getRelationId());
@@ -807,19 +809,24 @@ public class ConversionUtil implements DbConstant {
 				relation.setOrderBy(paramTuple.getOrderBy());
 				relation.setRelationStatus(paramTuple.getRelationStatus());
 				relation.setHomonymNumber(paramTuple.getHomonymNumber());
-				relation.setDefinition(paramTuple.getDefinitionValue());
 				relation.setSuffixoid(paramTuple.getSuffixoid());
 				relation.setPrefixoid(paramTuple.getPrefixoid());
 
+				relation.setDefinitions(new ArrayList<>());
+				if (StringUtils.isNotBlank(definitionValue)) {
+					relation.getDefinitions().add(definitionValue);
+				}
+
 				otherHomonymNo = paramTuple.getOtherHomonymNumber();
+				firstRelationLexemeId = paramTuple.getLexemeId();
 
 				relation.setRelationParams(new ArrayList<>());
 				relationMap.put(relation.getId(), relation);
 				synRelations.add(relation);
 
 				relationParamNames.clear();
-			} else if (StringUtils.isBlank(relation.getDefinition())) {
-				relation.setDefinition(paramTuple.getDefinitionValue());
+			} else if (firstRelationLexemeId != null && firstRelationLexemeId.equals(paramTuple.getLexemeId())) {
+				relation.getDefinitions().add(definitionValue);
 			}
 
 			if (otherHomonymNo != paramTuple.getOtherHomonymNumber()) {

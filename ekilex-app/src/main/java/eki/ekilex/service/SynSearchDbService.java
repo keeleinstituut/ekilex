@@ -75,6 +75,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						WORD_RELATION_PARAM.NAME.as("param_name"),
 						WORD_RELATION_PARAM.VALUE.as("param_value"),
 						WORD_RELATION.ORDER_BY.as("order_by"),
+						LEXEME.ID.as("lexeme_id"),
 						DEFINITION.VALUE.as("definition_value"),
 						DEFINITION.COMPLEXITY.as("definition_complexity"),
 						DEFINITION.ORDER_BY.as("definition_order"),
