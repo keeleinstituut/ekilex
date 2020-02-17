@@ -65,7 +65,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			filterMeaningWords(lexeme, allRelatedWordValues);
 			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
 			populateMeaning(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, destinLangs, lexComplexity, displayLang);
-			populateRelatedMeanings(lexeme, lexemeMeaningTuple, lexComplexity, wordLang, displayLang, langOrderByMap);
+			populateRelatedMeanings(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, lexComplexity, displayLang);
 
 			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
 			lexeme.setEmptyLexeme(isEmptyLexeme);
@@ -229,7 +229,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
 	}
 
-	private void populateRelatedMeanings(Lexeme lexeme, LexemeMeaningTuple tuple, Complexity lexComplexity, String wordLang, String displayLang, Map<String, Long> langOrderByMap) {
+	private void populateRelatedMeanings(Lexeme lexeme, String wordLang, LexemeMeaningTuple tuple, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
 
 		if (CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())) {
 			return;
@@ -246,35 +246,34 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setRelatedMeanings(relatedMeanings);
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType = relatedMeanings.stream()
-					.sorted(((r1, r2) -> compareLangOrderby(r1, r2, wordLang, langOrderByMap)))
+					.sorted(((relation1, relation2) -> compareLangOrderby(relation1, relation2, wordLang, langOrderByMap)))
 					.collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningRelType,
-							Collectors.groupingBy(TypeMeaningRelation::getMeaningId, Collectors.toList()))).entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
-								List<TypeMeaningRelation> meaningRelations = new ArrayList<>();
-								entry.getValue().values().forEach(list -> meaningRelations.add(list.get(0)));
-								return meaningRelations;
-							}));
+							Collectors.groupingBy(TypeMeaningRelation::getMeaningId, Collectors.toList())))
+					.entrySet().stream()
+					.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+						List<TypeMeaningRelation> meaningRelations = new ArrayList<>();
+						entry.getValue().values().forEach(list -> meaningRelations.add(list.get(0)));
+						return meaningRelations;
+					}));
 			lexeme.setRelatedMeaningsByType(relatedMeaningsByType);
 		}
 	}
 
-	private int compareLangOrderby(TypeMeaningRelation lRelation, TypeMeaningRelation rRelation, String sourceLang, Map<String, Long> langOrderByMap) {
+	private int compareLangOrderby(TypeMeaningRelation relation1, TypeMeaningRelation relation2, String sourceLang, Map<String, Long> langOrderByMap) {
 
-		String lLang = lRelation.getWordLang();
-		String rLang = rRelation.getWordLang();
-		boolean isLSourceLang = StringUtils.equals(lLang, sourceLang);
-		boolean isRSourceLang = StringUtils.equals(rLang, sourceLang);
+		String lang1 = relation1.getWordLang();
+		String lang2 = relation2.getWordLang();
 
-		if (isLSourceLang) {
-			if (isRSourceLang) {
-				return 0;
-			} else {
-				return -1;
-			}
-		} else if (isRSourceLang) {
-			return 1;
-		} else {
-			return (int) (langOrderByMap.get(lLang) - langOrderByMap.get(rLang));
+		if (StringUtils.equals(sourceLang, lang1) && StringUtils.equals(sourceLang, lang2)) {
+			return 0;
 		}
+		if (StringUtils.equals(sourceLang, lang1)) {
+			return -1;
+		}
+		if (StringUtils.equals(sourceLang, lang2)) {
+			return 1;
+		}
+		return (int) (langOrderByMap.get(lang1) - langOrderByMap.get(lang2));
 	}
 
 	private void filterMeaningWords(Lexeme lexeme, List<String> allRelatedWordValues) {
@@ -300,8 +299,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				&& CollectionUtils.isEmpty(lexeme.getSourceLangMeaningWords())
 				&& CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords())
 				&& CollectionUtils.isEmpty(lexeme.getRelatedLexemes())
-				&& CollectionUtils.isEmpty(lexeme.getDomains())
-				;
+				&& CollectionUtils.isEmpty(lexeme.getDomains());
 		//not much of a content?
 		//&& CollectionUtils.isEmpty(lexeme.getRegisters()) 
 		//&& CollectionUtils.isEmpty(lexeme.getGovernments())
