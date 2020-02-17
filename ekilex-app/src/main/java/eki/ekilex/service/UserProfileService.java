@@ -28,10 +28,12 @@ public class UserProfileService implements DbConstant {
 	public EkiUserProfile getUserProfile(Long userId) {
 
 		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
-		List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
-		if (CollectionUtils.isEmpty(meaningRelationWordLangs)) {
-			meaningRelationWordLangs = Collections.singletonList(LANGUAGE_CODE_EST);
-			userProfile.setPreferredMeaningRelationWordLangs(meaningRelationWordLangs);
+		if (userProfile != null) {
+			List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
+			if (CollectionUtils.isEmpty(meaningRelationWordLangs)) {
+				meaningRelationWordLangs = Collections.singletonList(LANGUAGE_CODE_EST);
+				userProfile.setPreferredMeaningRelationWordLangs(meaningRelationWordLangs);
+			}
 		}
 		return userProfile;
 	}
