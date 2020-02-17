@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
 
-    private static final long serialVersionUID = -1561115113;
+    private static final long serialVersionUID = 1291908462;
 
     /**
      * The reference instance of <code>public.type_meaning_relation</code>
@@ -48,11 +48,6 @@ public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
      * The attribute <code>public.type_meaning_relation.meaning_id</code>.
      */
     public static final UDTField<TypeMeaningRelationRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_MEANING_RELATION, "");
-
-    /**
-     * The attribute <code>public.type_meaning_relation.lexeme_id</code>.
-     */
-    public static final UDTField<TypeMeaningRelationRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_MEANING_RELATION, "");
 
     /**
      * The attribute <code>public.type_meaning_relation.word_id</code>.
@@ -75,9 +70,29 @@ public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
     public static final UDTField<TypeMeaningRelationRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_MEANING_RELATION, "");
 
     /**
+     * The attribute <code>public.type_meaning_relation.aspect_code</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_RELATION, "");
+
+    /**
      * The attribute <code>public.type_meaning_relation.complexity</code>.
      */
     public static final UDTField<TypeMeaningRelationRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_meaning_relation.lex_value_state_codes</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, String[]> LEX_VALUE_STATE_CODES = createField("lex_value_state_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_MEANING_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_meaning_relation.lex_register_codes</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, String[]> LEX_REGISTER_CODES = createField("lex_register_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_MEANING_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_meaning_relation.lex_government_values</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, String[]> LEX_GOVERNMENT_VALUES = createField("lex_government_values", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_MEANING_RELATION, "");
 
     /**
      * The attribute <code>public.type_meaning_relation.meaning_rel_type_code</code>.

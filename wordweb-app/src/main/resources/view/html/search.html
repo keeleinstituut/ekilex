@@ -34,12 +34,12 @@
   </div>
   <div class="container-fluid homonym-page mt-3 bottom-gutter">
     <div class="container search-results-header px-0" >
-      <div class="d-flex flex-row-reverse flex-md-row align-items-start align-items-md-center pb-3">
+      <div class="d-flex flex-row flex-wrap flex-md-nowrap align-items-start align-items-md-center pb-3">
         <div class="pl-2 ml-2 border-left homonym-innerwrap show-with-details" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
           <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
           <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
         </div>
-        <div class="border-left mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details">
+        <div class="mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details col-12 col-md-auto">
           <label class="mr-2 my-0 p-0" th:text="#{label.filter.lang}">Keel</label>
           <div class="dropdown">
             <button class="btn btn-link dropdown-toggle p-0" type="button" id="destinLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -57,7 +57,7 @@
             </div>
           </div>
         </div>
-        <div class="border-left mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details">
+        <div class="border-left mt-3 mt-md-0 mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details col-12 col-md-auto">
           <label class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
           <div class="dropdown">
             <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -178,14 +178,14 @@
               <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
                 <h5 class="font-weight-bold mb-0">
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
-                  <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
+                  <button type="button" class="alert-icn border-0" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="bottom"  th:title="#{forms.dataset.title}"></button>
                 </h5>
                 <span th:text="#{label.no.data}">Andmed puuduvad</span>
               </div>
               <div class="col-12 morphology-panel" th:unless="${wordData.unknownForm}">
                 <h5 class="font-weight-bold mb-0">
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
-                  <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
+                  <button type="button" class="alert-icn border-0" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}"></button>
                 </h5>
                 <div class="position-relative" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
                   <div class="morphology-section d-flex">

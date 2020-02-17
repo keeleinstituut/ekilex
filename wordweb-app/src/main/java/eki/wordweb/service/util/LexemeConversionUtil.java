@@ -65,7 +65,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			filterMeaningWords(lexeme, allRelatedWordValues);
 			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
 			populateMeaning(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, destinLangs, lexComplexity, displayLang);
-			populateRelatedMeanings(lexeme, lexemeMeaningTuple, displayLang);
+			populateRelatedMeanings(lexeme, lexemeMeaningTuple, lexComplexity, wordLang, displayLang, langOrderByMap);
 
 			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
 			lexeme.setEmptyLexeme(isEmptyLexeme);
@@ -229,11 +229,15 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
 	}
 
-	private void populateRelatedMeanings(Lexeme lexeme, LexemeMeaningTuple tuple, String displayLang) {
+	private void populateRelatedMeanings(Lexeme lexeme, LexemeMeaningTuple tuple, Complexity lexComplexity, String wordLang, String displayLang, Map<String, Long> langOrderByMap) {
+
 		if (CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())) {
 			return;
 		}
 		List<TypeMeaningRelation> relatedMeanings = tuple.getRelatedMeanings();
+		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
+			relatedMeanings = filter(relatedMeanings, lexComplexity);
+		}
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			for (TypeMeaningRelation meaningRelation : relatedMeanings) {
 				classifierUtil.applyClassifiers(meaningRelation, displayLang);
@@ -241,8 +245,35 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 		lexeme.setRelatedMeanings(relatedMeanings);
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
-			Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType = relatedMeanings.stream().collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningRelType));
+			Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType = relatedMeanings.stream()
+					.sorted(((r1, r2) -> compareLangOrderby(r1, r2, wordLang, langOrderByMap)))
+					.collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningRelType,
+							Collectors.groupingBy(TypeMeaningRelation::getMeaningId, Collectors.toList()))).entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+								List<TypeMeaningRelation> meaningRelations = new ArrayList<>();
+								entry.getValue().values().forEach(list -> meaningRelations.add(list.get(0)));
+								return meaningRelations;
+							}));
 			lexeme.setRelatedMeaningsByType(relatedMeaningsByType);
+		}
+	}
+
+	private int compareLangOrderby(TypeMeaningRelation lRelation, TypeMeaningRelation rRelation, String sourceLang, Map<String, Long> langOrderByMap) {
+
+		String lLang = lRelation.getWordLang();
+		String rLang = rRelation.getWordLang();
+		boolean isLSourceLang = StringUtils.equals(lLang, sourceLang);
+		boolean isRSourceLang = StringUtils.equals(rLang, sourceLang);
+
+		if (isLSourceLang) {
+			if (isRSourceLang) {
+				return 0;
+			} else {
+				return -1;
+			}
+		} else if (isRSourceLang) {
+			return 1;
+		} else {
+			return (int) (langOrderByMap.get(lLang) - langOrderByMap.get(rLang));
 		}
 	}
 

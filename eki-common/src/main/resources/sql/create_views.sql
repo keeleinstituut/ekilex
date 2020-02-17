@@ -47,7 +47,18 @@ create type type_meaning_word as (
 create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), homonym_nr integer, lex_complexities varchar(100) array, word_type_codes varchar(100) array, word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), lex_rel_type_code varchar(100));
-create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), meaning_rel_type_code varchar(100));
+create type type_meaning_relation as (
+        meaning_id bigint,
+        word_id bigint,
+        word text,
+        word_lang char(3),
+        homonym_nr integer,
+        aspect_code varchar(100),
+        complexity varchar(100),
+        lex_value_state_codes varchar(100) array,
+        lex_register_codes varchar(100) array,
+        lex_government_values text array,
+        meaning_rel_type_code varchar(100));
 
 create view view_ww_word_search
 as
@@ -1102,43 +1113,82 @@ group by r.lexeme1_id;
 
 
 -- meaning relations - OK
-create view view_ww_meaning_relation 
+create view view_ww_meaning_relation
 as
-select m1.id meaning_id,
-       array_agg(row (m2.meaning_id,m2.lexeme_id,m2.word_id,m2.word,m2.word_lang,m2.homonym_nr,m2.complexity,r.meaning_rel_type_code)::type_meaning_relation order by r.order_by) related_meanings
-from meaning m1,
-     meaning_relation r,
-     (select distinct l2.meaning_id,
-             l2.id lexeme_id,
-             l2.word_id,
-             f2.value word,
-             w2.lang word_lang,
-             w2.homonym_nr,
-             l2.complexity
-      from lexeme l2,
-           word w2,
-           paradigm p2,
-           form f2,
-           dataset l2ds
-      where f2.mode = 'WORD'
-      and   f2.paradigm_id = p2.id
-      and   p2.word_id = w2.id
-      and   l2.word_id = w2.id
-      and   l2.type = 'PRIMARY'
-      and   l2.process_state_code = 'avalik'
-      and   l2ds.code = l2.dataset_code
-      and   l2ds.is_public = true) m2
-where r.meaning1_id = m1.id
-and   r.meaning2_id = m2.meaning_id
-and   exists (select l1.id
-              from lexeme as l1,
-                   dataset l1ds
-              where l1.meaning_id = m1.id
-              and l1.type = 'PRIMARY'
-              and l1.process_state_code = 'avalik'
-              and l1ds.code = l1.dataset_code
-              and l1ds.is_public = true)
-group by m1.id;
+select r.m1_id meaning_id,
+       array_agg(row (r.m2_id,r.word_id,r.word,r.word_lang,r.homonym_nr,r.aspect_code,r.complexity,r.lex_value_state_codes,r.lex_register_codes,r.lex_government_values,r.meaning_rel_type_code)::type_meaning_relation order by r.order_by, r.lex_order_by) related_meanings
+from (select mr.meaning1_id m1_id,
+             mr.meaning2_id m2_id,
+             w.id word_id,
+             array_to_string(array_agg(distinct f.value), ',', '*') word,
+             w.lang word_lang,
+             w.homonym_nr,
+             w.aspect_code aspect_code,
+             l.complexity,
+             (select array_agg(distinct l.value_state_code)
+              from lexeme l,
+                   dataset l_ds
+              where l.meaning_id = m.id
+                and l.word_id = w.id
+                and l.type = 'PRIMARY'
+                and l.process_state_code = 'avalik'
+                and l_ds.code = l.dataset_code
+                and l_ds.is_public = true
+                and l.value_state_code is not null
+              group by l.word_id, l.meaning_id) lex_value_state_codes,
+             (select array_agg(distinct lr.register_code)
+              from lexeme_register lr,
+                   lexeme l,
+                   dataset l_ds
+              where l.meaning_id = m.id
+                and l.word_id = w.id
+                and lr.lexeme_id = l.id
+                and l.type = 'PRIMARY'
+                and l.process_state_code = 'avalik'
+                and l_ds.code = l.dataset_code
+                and l_ds.is_public = true
+              group by l.word_id, l.meaning_id) lex_register_codes,
+             (select array_agg(ff.value_text)
+              from freeform ff,
+                   lexeme_freeform lff,
+                   lexeme l,
+                   dataset l_ds
+              where l.meaning_id = m.id
+                and l.word_id = w.id
+                and l.type = 'PRIMARY'
+                and l.process_state_code = 'avalik'
+                and l_ds.code = l.dataset_code
+                and l_ds.is_public = true
+                and lff.lexeme_id = l.id
+                and ff.id = lff.freeform_id
+                and ff.type = 'GOVERNMENT'
+              group by l.word_id, l.meaning_id) lex_government_values,
+             l.order_by lex_order_by,
+             mr.meaning_rel_type_code meaning_rel_type_code,
+             mr.order_by
+      from meaning_relation mr,
+           meaning m,
+           lexeme l
+             join word w on w.id = l.word_id
+             join paradigm p on p.word_id = w.id
+             join form f on (f.paradigm_id = p.id and f.mode = 'WORD'),
+           dataset l_ds
+      where mr.meaning2_id = m.id
+        and l.meaning_id = m.id
+        and l.type = 'PRIMARY'
+        and l.process_state_code = 'avalik'
+        and l_ds.code = l.dataset_code
+        and l_ds.is_public = true
+        and exists(select lex.id
+                   from lexeme lex,
+                        dataset lex_ds
+                   where lex.meaning_id = mr.meaning1_id
+                     and lex.type = 'PRIMARY'
+                     and lex.process_state_code = 'avalik'
+                     and lex_ds.code = lex.dataset_code
+                     and lex_ds.is_public = true)
+      group by m.id, mr.id, w.id, l.id) r
+group by r.m1_id;
 
 
 -- source links

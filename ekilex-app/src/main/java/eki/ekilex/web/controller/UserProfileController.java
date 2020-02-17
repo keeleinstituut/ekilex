@@ -1,9 +1,7 @@
 package eki.ekilex.web.controller;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.common.constant.DbConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
@@ -21,7 +18,7 @@ import eki.ekilex.data.EkiUserProfile;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class UserProfileController extends AbstractPageController implements DbConstant {
+public class UserProfileController extends AbstractPageController {
 
 	@GetMapping(USER_PROFILE_URI)
 	public String userProfile(Model model) {
@@ -29,13 +26,6 @@ public class UserProfileController extends AbstractPageController implements DbC
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<EkiUserApplication> userApplications = userService.getUserApplications(userId);
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-
-		List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
-		if (CollectionUtils.isEmpty(meaningRelationWordLangs)) {
-			meaningRelationWordLangs = Collections.singletonList(LANGUAGE_CODE_EST);
-			userProfileService.updateUserPreferredMeaningRelationWordLangs(meaningRelationWordLangs, userId);
-			userProfile.setPreferredMeaningRelationWordLangs(meaningRelationWordLangs);
-		}
 
 		model.addAttribute("userProfile", userProfile);
 		model.addAttribute("userApplications", userApplications);

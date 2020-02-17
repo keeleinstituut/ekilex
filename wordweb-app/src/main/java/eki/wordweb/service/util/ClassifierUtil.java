@@ -113,7 +113,18 @@ public class ClassifierUtil {
 
 	public void applyClassifiers(TypeMeaningRelation meaningRelation, String displayLang) {
 		String classifierCode;
+		List<String> classifierCodes;
 		Classifier classifier;
+		List<Classifier> classifiers;
+		classifierCode = meaningRelation.getAspectCode();
+		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
+		meaningRelation.setAspect(classifier);
+		classifierCodes = meaningRelation.getLexValueStateCodes();
+		classifiers = getClassifiers(ClassifierName.VALUE_STATE, classifierCodes, displayLang);
+		meaningRelation.setLexValueStates(classifiers);
+		classifierCodes = meaningRelation.getLexRegisterCodes();
+		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
+		meaningRelation.setLexRegisters(classifiers);
 		classifierCode = meaningRelation.getMeaningRelTypeCode();
 		classifier = getClassifier(ClassifierName.MEANING_REL_TYPE, classifierCode, displayLang);
 		meaningRelation.setMeaningRelType(classifier);

@@ -657,11 +657,8 @@
                                   <span th:unless="${dsIter.last}">,</span>
                                   <span th:if="${dsIter.last}">]</span>
                                 </th:block>
-                                <th:block th:each="aspectCode, aIter : ${relation.wordAspectCode}">
-                                  <span th:if="${aIter.first}">[</span>
-                                  <span th:text="${aspectCode}"></span>
-                                  <span th:unless="${aIter.last}">,</span>
-                                  <span th:if="${aIter.last}">]</span>
+                                <th:block th:unless="${#strings.isEmpty(relation.wordAspectCode)}">
+                                  <span th:text="${'[' + relation.wordAspectCode + ']'}"></span>
                                 </th:block>
                                 <th:block th:each="valueStateCode, vsIter : ${relation.lexemeValueStateCodes}">
                                   <span th:if="${vsIter.first}">[</span>
@@ -686,7 +683,7 @@
                             </th:block>
                           </td>
                           <td>
-                            <span th:if="${#vars.userProfileUtil.showMeaningRelationMeaningId()}" th:text="'[' + ${relations.get(0).id} + '] '"></span>
+                            <span th:if="${#vars.userProfileUtil.showMeaningRelationMeaningId()}" th:text="'[' + ${relations.get(0).meaningId} + '] '"></span>
                             <span th:text="${relations.get(0).relationTypeLabel}"></span>
                             <button type="button" class="btn badge badge-warning"
                                     data-placement="right"
