@@ -1,19 +1,22 @@
 package eki.ekilex.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DbConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserProfileDbService;
 
 @Component
-public class UserProfileService {
+public class UserProfileService implements DbConstant {
 
 	@Autowired
 	private UserProfileDbService userProfileDbService;
@@ -23,7 +26,14 @@ public class UserProfileService {
 
 	@Transactional
 	public EkiUserProfile getUserProfile(Long userId) {
-		return userProfileDbService.getUserProfile(userId);
+
+		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
+		List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
+		if (CollectionUtils.isEmpty(meaningRelationWordLangs)) {
+			meaningRelationWordLangs = Collections.singletonList(LANGUAGE_CODE_EST);
+			userProfile.setPreferredMeaningRelationWordLangs(meaningRelationWordLangs);
+		}
+		return userProfile;
 	}
 
 	@Transactional
