@@ -118,6 +118,9 @@ public final class ConsolePromptUtil {
 			BufferedReader consoleReader = new BufferedReader(consoleInput);
 			String dataFolderPath = consoleReader.readLine();
 			validateDataFolderExists(dataFolderPath);
+			if (!StringUtils.endsWith(dataFolderPath, "/")) {
+				dataFolderPath = dataFolderPath + "/";
+			}
 			return dataFolderPath;
 		} catch (ConsolePromptException e) {
 			promptMessage = "Incorrect path. Please try again";
