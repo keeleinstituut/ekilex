@@ -82,7 +82,8 @@
                      class="btn btn-secondary btn-compact position-relative pr-1">
                     <span class="d-block" data-toggle="tooltip" title="Vaata kommentaare">
                       Kommentaarid
-                      <span class="badge badge-counter" th:text="${details.wordProcessLogCount}" th:classappend="${details.wordProcessLogCount > 0}?'badge-danger':'badge-secondary'">0</span>
+                      <span class="badge badge-counter" th:text="${details.wordProcessLogCount}"
+                            th:classappend="${details.wordProcessLogCount > 0} ? 'badge-danger' : 'badge-secondary'">0</span>
                     </span>
                   </a>
                   <button type="button" class="btn btn-secondary btn-compact px-0"
@@ -644,8 +645,11 @@
                       </button>
                     </div>
                     <div class="col pl-0">
-                      <table>
+                      <table class="table table-striped">
                         <tr th:each="relations : ${lexeme.viewMeaningRelations}" class="hidden-buttons">
+                          <td class="pr-3" th:if="${#vars.userProfileUtil.showMeaningRelationMeaningId()}">
+                            <span class="text-monospace" th:text="${relations.get(0).meaningId}"></span>
+                          </td>
                           <td class="pr-3">
                             <th:block th:each="relation, iter : ${relations}">
                               <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
@@ -683,7 +687,6 @@
                             </th:block>
                           </td>
                           <td>
-                            <span th:if="${#vars.userProfileUtil.showMeaningRelationMeaningId()}" th:text="'[' + ${relations.get(0).meaningId} + '] '"></span>
                             <span th:text="${relations.get(0).relationTypeLabel}"></span>
                             <button type="button" class="btn badge badge-warning"
                                     data-placement="right"

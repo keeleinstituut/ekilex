@@ -581,8 +581,11 @@
               </button>
             </div>
             <div class="col pl-0">
-              <table th:if="${not #lists.isEmpty(meaning.viewRelations)}">
+              <table class="table table-striped" th:if="${not #lists.isEmpty(meaning.viewRelations)}">
                 <tr th:each="relations : ${meaning.viewRelations}" class="hidden-buttons">
+                  <td class="pr-3" th:if="${#vars.userProfileUtil.showMeaningRelationMeaningId()}">
+                    <span class="text-monospace" th:text="${relations.get(0).meaningId}"></span>
+                  </td>
                   <td class="pr-3">
                     <th:block th:each="relation, relIter : ${relations}">
                       <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
@@ -620,7 +623,6 @@
                     </th:block>
                   </td>
                   <td>
-                    <span th:if="${#vars.userProfileUtil.showMeaningRelationMeaningId()}" th:text="'[' + ${relations.get(0).meaningId} + '] '"></span>
                     <span th:text="${relations.get(0).relationTypeLabel}"></span>
                     <button type="button" class="btn badge badge-warning"
                             data-placement="right"
