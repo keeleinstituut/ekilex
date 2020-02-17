@@ -94,13 +94,6 @@ public class BilingSearchController extends AbstractSynSearchController {
 		List<String> candidateLangCodes = userProfile.getPreferredBilingCandidateLangs();
 		List<String> meaningWordLangCodes = userProfile.getPreferredBilingLexMeaningWordLangs();
 
-		if (CollectionUtils.isEmpty(candidateLangCodes)) {
-			candidateLangCodes = commonDataService.getLanguageCodes();
-		}
-		if (CollectionUtils.isEmpty(meaningWordLangCodes)) {
-			meaningWordLangCodes = commonDataService.getLanguageCodes();
-		}
-
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.BILING_RUS, candidateLangCodes, meaningWordLangCodes);
 
 		model.addAttribute("wordId", wordId);
