@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -10,13 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
+import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserProfileDbService;
 
 @Component
-public class UserProfileService implements DbConstant {
+public class UserProfileService implements DbConstant, SystemConstant {
 
 	@Autowired
 	private UserProfileDbService userProfileDbService;
@@ -24,17 +28,35 @@ public class UserProfileService implements DbConstant {
 	@Autowired
 	private PermissionDbService permissionDbService;
 
+	@Autowired
+	private CommonDataDbService commonDataDbService;
+
 	@Transactional
 	public EkiUserProfile getUserProfile(Long userId) {
 
 		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
+
 		if (userProfile != null) {
+			List<String> bilingCandidateLangs = userProfile.getPreferredBilingCandidateLangs();
+			List<String> bilingLexMeaningWordLangs = userProfile.getPreferredBilingLexMeaningWordLangs();
 			List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
+			List<Classifier> allLangs = commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<String> allLangCodes = allLangs.stream().map(Classifier::getCode).collect(Collectors.toList());
+
+			if (CollectionUtils.isEmpty(bilingCandidateLangs)) {
+				bilingCandidateLangs = allLangCodes;
+				userProfile.setPreferredBilingCandidateLangs(bilingCandidateLangs);
+			}
+			if (CollectionUtils.isEmpty(bilingLexMeaningWordLangs)) {
+				bilingLexMeaningWordLangs = allLangCodes;
+				userProfile.setPreferredBilingLexMeaningWordLangs(bilingLexMeaningWordLangs);
+			}
 			if (CollectionUtils.isEmpty(meaningRelationWordLangs)) {
 				meaningRelationWordLangs = Collections.singletonList(LANGUAGE_CODE_EST);
 				userProfile.setPreferredMeaningRelationWordLangs(meaningRelationWordLangs);
 			}
 		}
+
 		return userProfile;
 	}
 
