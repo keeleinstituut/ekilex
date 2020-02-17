@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriUtils;
 
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
@@ -22,6 +21,9 @@ public class ViewUtil implements WebConstant, SystemConstant {
 
 	@Autowired
 	private CommonDataService commonDataService;
+
+	@Autowired
+	private WebUtil webUtil;
 
 	private Map<String, LanguageData> langDataMap = null;
 
@@ -106,7 +108,7 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
 		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, destinLangsStr, datasetCodesStr, searchMode, word, homonymNr);
+		String uri = webUtil.composeSearchUri(destinLangsStr, datasetCodesStr, searchMode, word, homonymNr);
 		return uri;
 	}
 
@@ -116,17 +118,8 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
 		String searchMode = sessionBean.getSearchMode();
-		String uri = composeSearchUri(sessionBean, destinLangsStr, datasetCodesStr, searchMode, word, null);
+		String uri = webUtil.composeSearchUri(destinLangsStr, datasetCodesStr, searchMode, word, null);
 		return uri;
 	}
 
-	private String composeSearchUri(SessionBean sessionBean, String destinLangsStr, String datasetCodesStr, String searchMode, String word, Integer homonymNr) {
-
-		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
-		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLangsStr + "/" + datasetCodesStr + "/" + searchMode + "/" + encodedWord;
-		if (homonymNr != null) {
-			searchUri += "/" + homonymNr;
-		}
-		return searchUri;
-	}
 }
