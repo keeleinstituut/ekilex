@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.PagingResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
@@ -66,5 +67,18 @@ public abstract class AbstractSearchService extends AbstractService implements S
 		searchDatasetsRestriction.setSinglePermDataset(singlePermDataset);
 
 		return searchDatasetsRestriction;
+	}
+
+	protected void setPagingData(int offset, int wordCount, PagingResult result) {
+
+		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
+		int totalPages = (wordCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
+		boolean previousPageExists = currentPage > 1;
+		boolean nextPageExists = currentPage < totalPages;
+
+		result.setCurrentPage(currentPage);
+		result.setTotalPages(totalPages);
+		result.setPreviousPageExists(previousPageExists);
+		result.setNextPageExists(nextPageExists);
 	}
 }

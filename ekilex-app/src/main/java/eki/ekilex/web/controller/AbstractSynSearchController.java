@@ -9,11 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.DbConstant;
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.WordsResult;
+import eki.ekilex.data.WordsSynResult;
 import eki.ekilex.service.SynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -31,7 +33,7 @@ public class AbstractSynSearchController extends AbstractSearchController implem
 		model.addAttribute("wordsResult", wordsResult);
 	}
 
-	protected void initSearch(Model model, String searchPage, String searchUri) throws Exception {
+	protected void initSearch(Model model, String searchPage, String searchUri, LayerName layerName) throws Exception {
 
 		initSearchForms(searchPage, model);
 		resetUserRole(model);
@@ -51,11 +53,11 @@ public class AbstractSynSearchController extends AbstractSearchController implem
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean fetchAll = false;
 
-		WordsResult wordsResult;
+		WordsSynResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
+			wordsResult = synSearchService.getWords(detailSearchFilter, selectedDatasets, layerName, fetchAll, DEFAULT_OFFSET);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, selectedDatasets, layerName, fetchAll, DEFAULT_OFFSET);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);

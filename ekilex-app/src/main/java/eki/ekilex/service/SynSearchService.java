@@ -33,13 +33,17 @@ import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.RelationParam;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
+import eki.ekilex.data.SynWord;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
+import eki.ekilex.data.WordsSynResult;
 import eki.ekilex.service.db.CudDbService;
+import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.ProcessDbService;
 
@@ -57,6 +61,9 @@ public class SynSearchService extends AbstractWordSearchService {
 	private SynSearchDbService synSearchDbService;
 
 	@Autowired
+	private LexSearchDbService lexSearchDbService;
+
+	@Autowired
 	private ProcessDbService processDbService;
 
 	@Autowired
@@ -67,6 +74,62 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private LookupDbService lookupDbService;
+
+	@Transactional
+	public WordsSynResult getWords(String searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) {
+
+		List<SynWord> words;
+		int wordCount;
+		if (StringUtils.isBlank(searchFilter)) {
+			words = Collections.emptyList();
+			wordCount = 0;
+		} else {
+			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+			words = synSearchDbService.getWords(searchFilter, searchDatasetsRestriction, layerName, fetchAll, offset);
+			wordCount = words.size();
+			if ((!fetchAll && wordCount == MAX_RESULTS_LIMIT) || offset > DEFAULT_OFFSET) {
+				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
+			}
+		}
+		WordsSynResult result = new WordsSynResult();
+		result.setWords(words);
+		result.setTotalCount(wordCount);
+
+		boolean showPaging = wordCount > MAX_RESULTS_LIMIT;
+		result.setShowPaging(showPaging);
+		if (showPaging) {
+			setPagingData(offset, wordCount, result);
+		}
+		return result;
+	}
+
+	@Transactional
+	public WordsSynResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) throws Exception {
+
+		List<SynWord> words;
+		int wordCount;
+		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+			words = Collections.emptyList();
+			wordCount = 0;
+		} else {
+			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+			words = synSearchDbService.getWords(searchFilter, searchDatasetsRestriction, layerName, fetchAll, offset);
+			wordCount = words.size();
+			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
+			}
+		}
+		WordsSynResult result = new WordsSynResult();
+		result.setWords(words);
+		result.setTotalCount(wordCount);
+
+		boolean showPaging = wordCount > MAX_RESULTS_LIMIT;
+		result.setShowPaging(showPaging);
+		if (showPaging) {
+			setPagingData(offset, wordCount, result);
+		}
+		return result;
+	}
 
 	@Transactional
 	public WordSynDetails getWordSynDetails(Long wordId, String datasetCode, LayerName layerName, List<String> candidateLangs, List<String> meaningWordLangs) {

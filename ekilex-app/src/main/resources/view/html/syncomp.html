@@ -103,7 +103,12 @@
                           <span th:unless="${wordDatasetIter.last}">,</span>
                         </span>
                       </small>
-                      <span class="badge badge-pill badge-light ml-auto ">staatus</span>
+                      <span class="badge badge-pill badge-light ml-auto ">
+                        <span th:each="layerProcessStateCode,layerProcessStateIter : ${word.layerProcessStateCodes}">
+                          <span th:text="${layerProcessStateCode}"></span>
+                          <span th:unless="${layerProcessStateIter.last}">,</span>
+                        </span>
+                      </span>
                     </span>
                     <span class="position-absolute search-result-status">
                       <span th:id="${'syn_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
