@@ -982,7 +982,12 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void addSynRelation(Long word1Id, Long word2Id, String weightStr) {
+	public void addSynRelation(Long word1Id, Long word2Id, String weightStr, String datasetCode) {
+
+		boolean word2DatasetLexemeExists = cudDbService.getWordLexemeExists(word2Id, datasetCode);
+		if (!word2DatasetLexemeExists) {
+			createLexeme(word2Id, datasetCode, null);
+		}
 		SynRelation createdRelation = cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		Long createdRelationId = createdRelation.getId();
 		moveCreatedRelationToFirst(word1Id, createdRelationId);
