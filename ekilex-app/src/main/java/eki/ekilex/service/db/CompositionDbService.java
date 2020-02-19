@@ -53,6 +53,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
+import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -482,15 +483,23 @@ public class CompositionDbService implements DbConstant {
 								.and(DSL.row(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).notIn(
 										DSL.select(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).from(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)))))
 				.execute();
-		create.delete(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)).execute();
 	}
 
 	private void joinMeaningDefinitions(Long meaningId, Long sourceMeaningId) {
-		create.update(DEFINITION).set(DEFINITION.MEANING_ID, meaningId)
-				.where(DEFINITION.MEANING_ID.eq(sourceMeaningId)
-						.and(DEFINITION.VALUE.notIn(DSL.select(DEFINITION.VALUE).from(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)))))
+
+		Definition def1 = DEFINITION.as("def1");
+		Definition def2 = DEFINITION.as("def2");
+
+		create.update(def1)
+				.set(def1.MEANING_ID, meaningId)
+				.where(def1.MEANING_ID.eq(sourceMeaningId))
+				.andNotExists(DSL
+						.select(def2.ID)
+						.from(def2)
+						.where(def2.MEANING_ID.eq(meaningId)
+								.and(def2.VALUE.eq(def1.VALUE))
+								.and(def2.COMPLEXITY.eq(def1.COMPLEXITY))))
 				.execute();
-		create.delete(DEFINITION).where(DEFINITION.MEANING_ID.eq(sourceMeaningId)).execute();
 	}
 
 	public void separateLexemeMeanings(Long lexemeId) {
