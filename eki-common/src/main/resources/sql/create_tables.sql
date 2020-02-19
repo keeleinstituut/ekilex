@@ -1178,6 +1178,7 @@ create index word_relation_word1_id_idx on word_relation(word1_id);
 create index word_relation_word2_id_idx on word_relation(word2_id);
 create index word_relation_word_rel_type_code_idx on word_relation(word_rel_type_code);
 create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);
+create index word_relation_param_name_idx on word_relation_param(name);
 create index word_rel_mapping_code1_idx on word_rel_mapping(code1);
 create index word_rel_mapping_code2_idx on word_rel_mapping(code2);
 create index freeform_parent_id_idx on freeform(parent_id);
