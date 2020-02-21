@@ -145,7 +145,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		Integer homonymNr = searchFilter.getHomonymNr();
 
 		DataFilter dataFilter = getDataFilter(searchFilter);
-		List<Word> allWords = unifSearchDbService.getWords(searchWord, dataFilter.getDatasetCodes());
+		List<Word> allWords = unifSearchDbService.getWords(searchWord, dataFilter);
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, dataFilter);
@@ -296,6 +296,7 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		if (Complexity.SIMPLE.equals(lexComplexity)) {
 			datasetType = DatasetType.LEX;
+			datasetCodes = Arrays.asList(DATASET_SSS);
 			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		}
 		List<String> destinLangsClean = destinLangs.stream().filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL)).collect(Collectors.toList());

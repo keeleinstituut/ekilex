@@ -20,7 +20,7 @@
 	var feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
 	var messages = {
 		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
-		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige palun hiljem uuesti.',
+		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige hiljem uuesti.',
 		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.',
 		'fb_service_error' : /*[[#{label.fb.missing.sevice}]]*/'Tagasiside teenus ei ole seadistatud.'
 	}
@@ -177,7 +177,7 @@
   </div>
   <!-- IE user message -->
   <th:block th:fragment="ie-user">
-    <div class="alert-danger-ie" th:if="${ieuser}">
+    <div class="alert-danger-ie" th:if="${session.ieuser}">
       <div class="alert-danger-ie-container">
         <span th:text="#{warning.ieuser}">Bad bad browser, no Cookies for you!!!</span>
       </div>

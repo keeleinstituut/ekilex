@@ -2,6 +2,7 @@ package eki.wordweb.web.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
+import eki.wordweb.web.util.UserAgentUtil;
 import eki.wordweb.web.util.ViewUtil;
 
 @ConditionalOnWebApplication
@@ -31,6 +33,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	@Autowired
 	private ViewUtil viewUtil;
 
+	@Autowired
+	protected UserAgentUtil userAgentUtil;
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
@@ -42,6 +47,8 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+
+		setIeUserFlag(request);
 
 		if (request.getAttribute("javax.servlet.error.status_code") != null) {
 			return;
@@ -60,6 +67,14 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 
 		logRequestProcessTime(request);
+	}
+
+	private void setIeUserFlag(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		if (session.getAttribute(IE_USER_FLAG_KEY) == null) {
+			boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
+			session.setAttribute(IE_USER_FLAG_KEY, isIeUser);
+		}
 	}
 
 	private void logRequestProcessTime(HttpServletRequest request) {

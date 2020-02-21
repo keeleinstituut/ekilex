@@ -1,5 +1,7 @@
 package eki.wordweb.constant;
 
+import eki.common.constant.Complexity;
+
 public interface SystemConstant {
 
 	String UTF_8 = "UTF-8";
@@ -16,9 +18,15 @@ public interface SystemConstant {
 
 	String DATASET_ALL = "dsall";
 
+	String DATASET_SSS = "sss";
+
+	String[] SUPPORTED_SIMPLE_DATASETS = new String[] {DATASET_ALL, DATASET_SSS};
+
 	String[] SUPPORTED_DESTIN_LANGS = new String[] {DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS};
 
 	String[] SUPPORTED_DESTIN_LANG_FILTERS = new String[] {DESTIN_LANG_ALL, DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS, DESTIN_LANG_OTHER};
+
+	Complexity[] PREFERRED_COMPLEXITY_HIERARCHY = new Complexity[] {Complexity.DETAIL1, Complexity.DETAIL2, Complexity.SIMPLE1, Complexity.SIMPLE2, Complexity.DEFAULT};
 
 	String DATASET_TYPE_LEX = "lex";
 

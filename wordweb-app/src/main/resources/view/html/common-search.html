@@ -39,6 +39,21 @@
       </div>
     </div>
   </th:block>
+  <th:block th:fragment="detail-filter-simple-confirm">
+    <div class="modal fade" id="search-mode-simple-confirm-modal" tabindex="-1" role="dialog" aria-labelledby="searchModeSimpleConfirmLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h4 th:text="#{warning.filter.change}">Kas oled kindel?</h4>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{button.label.cancel}">Katkesta</button>
+            <button type="button" class="btn btn-primary" id="search-mode-simple-confirm-btn" th:text="#{button.label.confirm}">Sobib</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
   <th:block th:fragment="lexeme-data">
     <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-5 pl-4': ''">
       <div class="col-12 dictionary-source" th:if="${lexeme.datasetName != null}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</div>

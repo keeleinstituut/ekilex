@@ -87,7 +87,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		lexeme.setPublicNotes(filter(publicNotes, lexComplexity));
 		lexeme.setGrammars(filter(grammars, lexComplexity));
-		lexeme.setGovernments(filter(governments, lexComplexity));
+		lexeme.setGovernments(filterPreferred(governments, lexComplexity));
 
 		List<TypeSourceLink> lexemeSourceLinks = lexemeSourceLinkMap.get(lexeme.getLexemeId());
 		lexeme.setLexemeSourceLinks(lexemeSourceLinks);
@@ -100,8 +100,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (CollectionUtils.isEmpty(usages)) {
 			return;
 		}
-		usages = filter(usages, lexComplexity);
 		usages = filter(usages, wordLang, destinLangs);
+		usages = filterPreferred(usages, lexComplexity);
 		lexeme.setUsages(usages);
 		for (TypeUsage usage : usages) {
 			// TODO based on reasonable expectation that all translations are in fact in rus
@@ -200,8 +200,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		List<TypeDefinition> definitions = tuple.getDefinitions();
 
 		if (CollectionUtils.isNotEmpty(definitions)) {
-			definitions = filterPreferred(definitions, lexComplexity, Complexity.DETAIL1);
 			definitions = filter(definitions, wordLang, destinLangs);
+			definitions = filterPreferred(definitions, lexComplexity);
 			lexeme.setDefinitions(definitions);
 			List<TypeSourceLink> allDefinitionSourceLinks = tuple.getDefinitionSourceLinks();
 			if (CollectionUtils.isNotEmpty(allDefinitionSourceLinks)) {

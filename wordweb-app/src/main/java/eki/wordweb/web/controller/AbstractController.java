@@ -3,14 +3,11 @@ package eki.wordweb.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
@@ -35,22 +32,26 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 	@Autowired
 	protected UserAgentUtil userAgentUtil;
 
-	@ModelAttribute(IE_USER_FLAG_KEY)
-	public boolean isIeUser(HttpServletRequest request) {
-		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
-		return isIeUser;
+	protected void populateDefaultSearchModel(Model model) {
+		populateSearchModel("", new WordsData(SEARCH_MODE_DETAIL), model);
 	}
 
 	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 
-		populateGlobalData(model);
-		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
+		SessionBean sessionBean = populateCommonModel(model);
+		if (StringUtils.isBlank(sessionBean.getSearchMode())) {
+			sessionBean.setSearchMode(SEARCH_MODE_DETAIL);
+		}
+		populateLangFilter(sessionBean, model);
+		populateDatasetFilter(sessionBean, model);
+		sessionBean.setRecentSearchMode(sessionBean.getSearchMode());
+
 		model.addAttribute("searchWord", searchWord);
 		model.addAttribute("wordsData", wordsData);
 		model.addAttribute("wordData", new WordData());
 	}
 
-	protected void populateGlobalData(Model model) {
+	protected SessionBean populateCommonModel(Model model) {
 
 		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
 		SessionBean sessionBean;
@@ -59,23 +60,13 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		} else {
 			sessionBean = getSessionBean(model);
 		}
-
-		// search mode
-		if (StringUtils.isBlank(sessionBean.getSearchMode())) {
-			sessionBean.setSearchMode(SEARCH_MODE_DETAIL);
-		}
-
-		// lang filter
-		populateLangFilter(sessionBean, model);
-
-		// dataset filter
-		populateDatasetFilter(sessionBean, model);
-
+		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
+		return sessionBean;
 	}
 
 	private void populateLangFilter(SessionBean sessionBean, Model model) {
-	
+
 		List<UiFilterElement> langFilter = commonDataService.getLangFilter(DISPLAY_LANG);
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> selectedLangs = new ArrayList<>();
@@ -93,7 +84,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		}
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		String selectedLangsStr = StringUtils.join(selectedLangs, ", ");
-	
+
 		model.addAttribute("langFilter", langFilter);
 		model.addAttribute("destinLangsStr", destinLangsStr);
 		model.addAttribute("selectedLangsStr", selectedLangsStr);
@@ -101,9 +92,10 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 
 	private void populateDatasetFilter(SessionBean sessionBean, Model model) {
 
+		boolean isSearchModeChange = !StringUtils.equals(sessionBean.getSearchMode(), sessionBean.getRecentSearchMode());
 		List<UiFilterElement> datasetFilter = commonDataService.getDatasetFilter();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
-		if (CollectionUtils.isEmpty(datasetCodes)) {
+		if (CollectionUtils.isEmpty(datasetCodes) || isSearchModeChange) {
 			datasetCodes = new ArrayList<>();
 			datasetCodes.add(DATASET_ALL);
 			sessionBean.setDatasetCodes(datasetCodes);
@@ -125,6 +117,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		model.addAttribute("datasetFilter", datasetFilter);
 		model.addAttribute("datasetCodesStr", datasetCodesStr);
 		model.addAttribute("selectedDatasetsStr", selectedDatasetsStr);
+		model.addAttribute("supportedSimpleDatasets", SUPPORTED_SIMPLE_DATASETS);
 	}
 
 	protected boolean sessionBeanNotPresent(Model model) {

@@ -122,4 +122,8 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		return uri;
 	}
 
+	public String getDetailSearchUri(String word) {
+		String uri = webUtil.composeSearchUri(DESTIN_LANG_ALL, DATASET_ALL, SEARCH_MODE_DETAIL, word, null);
+		return uri;
+	}
 }

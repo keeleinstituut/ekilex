@@ -1,7 +1,7 @@
 -- run this once:
 -- create extension unaccent;
 
-create type type_lang_complexity as (lang char(3), complexity varchar(100));
+create type type_lang_complexity as (lang varchar(10), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_source_link as (
@@ -277,7 +277,9 @@ from (select w.id as word_id,
                          and l2ds.is_public = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select lc.word_id,
-                          array_agg(distinct row(lc.lang, lc.complexity)::type_lang_complexity) lang_complexities
+                          array_agg(distinct row(
+                                        case when (lc.lang in ('est', 'rus', 'eng')) then lc.lang else 'other' end,
+                                        trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities
                    from ((select l1.word_id,
                                  w2.lang,
                                  l2.complexity
@@ -294,10 +296,7 @@ from (select w.id as word_id,
                           and l2ds.is_public = true)
                           union all
                           (select l.word_id,
-                                  case
-                                    when ff.lang is null then w.lang
-                                    else ff.lang
-                                  end lang,
+                                  coalesce(ff.lang, w.lang) lang,
                                   ff.complexity
                           from word w,
                                lexeme l,

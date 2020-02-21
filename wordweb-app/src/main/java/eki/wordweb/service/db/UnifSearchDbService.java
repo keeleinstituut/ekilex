@@ -28,6 +28,7 @@ import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
@@ -54,48 +55,6 @@ import eki.wordweb.data.db.tables.MviewWwWordSearch;
 
 @Component
 public class UnifSearchDbService extends AbstractSearchDbService {
-
-	public List<Word> getWords(String searchWord, List<String> datasetCodes) {
-
-		MviewWwWord w = MVIEW_WW_WORD.as("w");
-		MviewWwForm f = MVIEW_WW_FORM.as("f");
-
-		String searchWordLower = StringUtils.lowerCase(searchWord);
-		Condition where = DSL.exists(DSL
-				.select(f.WORD_ID)
-				.from(f)
-				.where(f.WORD_ID.eq(w.WORD_ID)
-						.and(f.FORM.lower().eq(searchWordLower))));
-
-		if (CollectionUtils.isNotEmpty(datasetCodes)) {
-			String[] datasetCodesArr = datasetCodes.toArray(new String[0]);
-			where = where.and(PostgresDSL.arrayOverlap(w.DATASET_CODES, datasetCodesArr));
-		}
-
-		return create
-				.select(
-						w.WORD_ID,
-						w.WORD,
-						w.AS_WORD,
-						w.WORD_CLASS,
-						w.LANG,
-						w.HOMONYM_NR,
-						w.WORD_TYPE_CODES,
-						w.MORPH_CODE,
-						w.DISPLAY_MORPH_CODE,
-						w.ASPECT_CODE,
-						w.MEANING_WORDS,
-						w.DEFINITIONS,
-						w.OD_WORD_RECOMMENDATIONS,
-						w.LEX_DATASET_EXISTS,
-						w.TERM_DATASET_EXISTS,
-						w.FORMS_EXIST)
-				.from(w)
-				.where(where)
-				.orderBy(w.LEX_DATASET_EXISTS.desc(), w.LANG, w.HOMONYM_NR)
-				.fetch()
-				.into(Word.class);
-	}
 
 	@SuppressWarnings("unchecked")
 	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, int maxWordCount) {
@@ -191,6 +150,67 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 				.select(ws.field("sgroup"), ws.field("word"))
 				.from(ws)
 				.fetchGroups("sgroup", WordSearchElement.class);
+	}
+
+	public List<Word> getWords(String searchWord, DataFilter dataFilter) {
+
+		List<String> destinLangs = dataFilter.getDestinLangs();
+		List<String> datasetCodes = dataFilter.getDatasetCodes();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
+
+		MviewWwWord w = MVIEW_WW_WORD.as("w");
+		MviewWwForm f = MVIEW_WW_FORM.as("f");
+
+		String searchWordLower = StringUtils.lowerCase(searchWord);
+		Condition where = DSL.exists(DSL
+				.select(f.WORD_ID)
+				.from(f)
+				.where(f.WORD_ID.eq(w.WORD_ID)
+						.and(f.FORM.lower().eq(searchWordLower))));
+
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
+			String[] datasetCodesArr = datasetCodes.toArray(new String[0]);
+			where = where.and(PostgresDSL.arrayOverlap(w.DATASET_CODES, datasetCodesArr));
+		}
+
+		if (Complexity.SIMPLE.equals(lexComplexity)) {
+			Table<?> lc = DSL.unnest(w.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
+			where = where.and(w.LEX_DATASET_EXISTS.isTrue());
+			Condition langCompWhere = lc.field("complexity", String.class).eq(lexComplexity.name());
+			if (CollectionUtils.isNotEmpty(destinLangs)) {
+				if (destinLangs.size() == 1) {
+					String destinLang = destinLangs.get(0);
+					langCompWhere = langCompWhere.and(lc.field("lang", String.class).eq(destinLang));
+				} else {
+					langCompWhere = langCompWhere.and(lc.field("lang", String.class).in(destinLangs));
+				}
+			}
+			where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
+		}
+
+		return create
+				.select(
+						w.WORD_ID,
+						w.WORD,
+						w.AS_WORD,
+						w.WORD_CLASS,
+						w.LANG,
+						w.HOMONYM_NR,
+						w.WORD_TYPE_CODES,
+						w.MORPH_CODE,
+						w.DISPLAY_MORPH_CODE,
+						w.ASPECT_CODE,
+						w.MEANING_WORDS,
+						w.DEFINITIONS,
+						w.OD_WORD_RECOMMENDATIONS,
+						w.LEX_DATASET_EXISTS,
+						w.TERM_DATASET_EXISTS,
+						w.FORMS_EXIST)
+				.from(w)
+				.where(where)
+				.orderBy(w.LEX_DATASET_EXISTS.desc(), w.LANG, w.HOMONYM_NR)
+				.fetch()
+				.into(Word.class);
 	}
 
 	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {

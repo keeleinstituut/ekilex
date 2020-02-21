@@ -1,6 +1,7 @@
 package eki.wordweb.service.util;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,14 +60,15 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		return list;
 	}
 
-	protected <T extends ComplexityType> List<T> filterPreferred(List<T> list, Complexity lexComplexity, Complexity preferredComplexity) {
+	protected <T extends ComplexityType> List<T> filterPreferred(List<T> list, Complexity lexComplexity) {
 		if (CollectionUtils.isEmpty(list)) {
 			return list;
-		} else if ((lexComplexity != null) && StringUtils.startsWith(preferredComplexity.name(), lexComplexity.name())) {
-			boolean preferredComplexityExists = list.stream().anyMatch(elem -> elem.getComplexity().equals(preferredComplexity));
-			if (preferredComplexityExists) {
-				return filter(list, preferredComplexity);
-			}
+		} else if (Complexity.DETAIL.equals(lexComplexity)) {
+			List<Complexity> preferredComplexityHierarchy = Arrays.asList(PREFERRED_COMPLEXITY_HIERARCHY);
+			Comparator<Complexity> complexityComparator = (complexity1, complexity2) -> preferredComplexityHierarchy.indexOf(complexity1) - preferredComplexityHierarchy.indexOf(complexity2);
+			List<Complexity> existingComplexities = list.stream().map(ComplexityType::getComplexity).distinct().sorted(complexityComparator).collect(Collectors.toList());
+			Complexity suggestedComplexity = existingComplexities.get(0);
+			return list.stream().filter(elem -> elem.getComplexity().equals(suggestedComplexity)).collect(Collectors.toList());
 		}
 		return filter(list, lexComplexity);
 	}

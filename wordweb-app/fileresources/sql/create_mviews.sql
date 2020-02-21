@@ -37,7 +37,7 @@ drop type if exists type_meaning_relation;
 -- create extension pg_trgm;
 -- create extension fuzzystrmatch;
 
-create type type_lang_complexity as (lang char(3), complexity varchar(100));
+create type type_lang_complexity as (lang varchar(10), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_source_link as (

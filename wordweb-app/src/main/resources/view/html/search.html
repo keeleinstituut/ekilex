@@ -32,6 +32,7 @@
       </div>
     </div>
   </div>
+  <div th:replace="common-search :: detail-filter-simple-confirm"></div>
   <div class="container-fluid homonym-page mt-3 bottom-gutter">
     <div class="container search-results-header px-0" >
       <div class="d-flex flex-row flex-wrap flex-md-nowrap align-items-start align-items-md-center pb-3">
@@ -57,7 +58,8 @@
             </div>
           </div>
         </div>
-        <div class="border-left mt-3 mt-md-0 mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details col-12 col-md-auto">
+        <div class="border-left mt-3 mt-md-0 mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details col-12 col-md-auto"
+             th:hidden="${sessionBean.searchMode == 'simple'}">
           <label class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
           <div class="dropdown">
             <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -82,7 +84,8 @@
     </div>
     <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
       <div class="col offset-1 lg-max-noneset">
-        <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
+        <span th:text="#{'label.word.not.found.' + ${sessionBean.searchMode}}">Ei leidnud midagi</span>
+        <a th:if="${sessionBean.searchMode == 'simple'}" th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}" th:text="${searchWord}"></a>
       </div>
     </div>
     <main role="main" class="content-panel bg-white container" >
@@ -160,7 +163,7 @@
             </div>
             <div class="level-2-panel">
               <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-                <h5 class="mt-3" th:text="#{lexdata.title}">EKI ühendsõnastik 2020</h5>
+                <h5 class="mt-3" th:text="#{lexdata.title}" th:if="${sessionBean.searchMode == 'detail'}">EKI ühendsõnastik 2020</h5>
                 <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>              
@@ -381,6 +384,7 @@
   	var currentPage = /*[[@{/search}]]*/"/search";
   	var searchWordFragUrl = /*[[@{/searchwordfrag}]]*/"/searchwordfrag";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+  	var supportedSimpleDatasets = /*[[${supportedSimpleDatasets}]]*/;
   	setActiveMenuItem('search');
   </script>
 </body>
