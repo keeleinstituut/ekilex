@@ -76,7 +76,7 @@ public class SynSearchController extends AbstractSynSearchController {
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYN_SEARCH_URI);
 		logger.debug(searchUri);
 
-		initSearch(model, searchPage, searchUri);
+		initSearch(model, searchPage, searchUri, LayerName.SYN);
 		return searchPage;
 	}
 

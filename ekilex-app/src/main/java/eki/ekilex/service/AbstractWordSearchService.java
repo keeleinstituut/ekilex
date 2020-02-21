@@ -82,16 +82,4 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		return result;
 	}
 
-	private void setPagingData(int offset, int wordCount, WordsResult result) {
-		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
-		int totalPages = (wordCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
-		boolean previousPageExists = currentPage > 1;
-		boolean nextPageExists = currentPage < totalPages;
-
-		result.setCurrentPage(currentPage);
-		result.setTotalPages(totalPages);
-		result.setPreviousPageExists(previousPageExists);
-		result.setNextPageExists(nextPageExists);
-	}
-
 }

@@ -812,7 +812,8 @@
                                           th:data-id="${sourceLink.id}"
                                           data-op-code="usage_source_link"
                                           data-toggle="delete-confirm"
-                                          data-placement="right">
+                                          data-placement="right"
+                                          sec:authorize="${#vars.isUsageCrudGranted}">
                                     <i class="fa fa-remove" aria-hidden="true"></i>
                                   </button>
                                 </span>

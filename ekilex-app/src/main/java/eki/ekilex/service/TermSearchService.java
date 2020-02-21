@@ -221,17 +221,4 @@ public class TermSearchService extends AbstractSearchService {
 		return meaning;
 	}
 
-	private void setPagingData(int offset, int resultCount, TermSearchResult termSearchResult) {
-
-		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
-		int totalPages = (resultCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
-		boolean previousPageExists = currentPage > 1;
-		boolean nextPageExists = currentPage < totalPages;
-
-		termSearchResult.setCurrentPage(currentPage);
-		termSearchResult.setTotalPages(totalPages);
-		termSearchResult.setPreviousPageExists(previousPageExists);
-		termSearchResult.setNextPageExists(nextPageExists);
-	}
-
 }

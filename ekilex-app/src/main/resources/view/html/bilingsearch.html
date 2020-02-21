@@ -76,10 +76,10 @@
                       </button>
                     </span>
                     <th:block th:replace="syncomp :: pos_data"></th:block>
-                    <p th:if="${not #lists.isEmpty(lexeme.definitions)}" th:utext="${lexeme.definitions.get(0).value}" class="mb-1"></p>
                   </div>
+                  <th:block th:replace="syncomp :: definitions_data"></th:block>
                   <th:block th:replace="syncomp :: usages_data"></th:block>
-                  <th:block th:replace="syncomp :: meaning_word_data(true)"></th:block>
+                  <th:block th:replace="syncomp :: meaning_words_data(true)"></th:block>
                 </div>
               </div>
             </div>

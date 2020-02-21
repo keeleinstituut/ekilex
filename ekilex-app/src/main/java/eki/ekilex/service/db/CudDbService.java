@@ -37,6 +37,7 @@ import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static org.jooq.impl.DSL.field;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -207,6 +208,22 @@ public class CudDbService implements DbConstant {
 				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
 				.orderBy(WORD_RELATION.ORDER_BY)
 				.fetchInto(SynRelation.class);
+	}
+
+	public boolean getWordLexemeExists(Long wordId, String datasetCode) {
+
+		return create
+				.select(field(DSL.count(WORD.ID).gt(0)).as("word_lexeme_exists"))
+				.from(WORD)
+				.where(
+						WORD.ID.eq(wordId)
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID)
+												.and(LEXEME.DATASET_CODE.eq(datasetCode))
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+				.fetchSingleInto(Boolean.class);
 	}
 
 	public void updateFreeformTextValue(Long id, String value, String valuePrese) {

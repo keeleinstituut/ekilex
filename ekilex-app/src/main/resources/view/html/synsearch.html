@@ -71,15 +71,15 @@
                       </button>
                     </span>
                     <th:block th:replace="syncomp :: pos_data"></th:block>
-                    <p th:if="${not #lists.isEmpty(lexeme.definitions)}" th:utext="${lexeme.definitions.get(0).value}" class="mb-1"></p>
                   </div>
+                  <th:block th:replace="syncomp :: definitions_data"></th:block>
                   <th:block th:replace="syncomp :: usages_data"></th:block>
-                  <th:block th:replace="syncomp :: meaning_word_data(false)"></th:block>
+                  <th:block th:replace="syncomp :: meaning_words_data(false)"></th:block>
                 </div>
               </div>
             </div>
             <div class="col-4 border-left border-light h-100">
-              <div class="navigate-panel  mb-2 d-flex flex-column h-100">
+              <div class="navigate-panel mb-2 d-flex flex-column h-100">
                 <div class="d-flex bg-light px-2 align-items-center">
                   <span th:text="#{syn.candidates.title}">Sünonüümide kandidaadid</span>
                   <div class="ml-auto d-flex flex-row align-items-center">

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +75,7 @@ public class BilingSearchController extends AbstractSynSearchController {
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), BILING_SEARCH_URI);
 		logger.debug(searchUri);
 
-		initSearch(model, searchPage, searchUri);
+		initSearch(model, searchPage, searchUri, LayerName.BILING_RUS);
 		return searchPage;
 	}
 

@@ -1,9 +1,20 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -13,31 +24,46 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.SelectOrderByStep;
 import org.jooq.impl.DSL;
 
 import eki.common.constant.DbConstant;
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
+import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningLifecycleLog;
+import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordLifecycleLog;
 
 public abstract class AbstractSearchDbService implements SystemConstant, DbConstant {
 
@@ -488,6 +514,265 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 			m1Where = m1Where.and(DSL.notExists(DSL.select(m1d.ID).from(m1d).where(where1)));
 		}
 		return m1Where;
+	}
+
+	protected Condition createSearchCondition(Word word, Paradigm paradigm, String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
+
+		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
+
+		Form form = FORM.as("f2");
+		Condition where1 = form.PARADIGM_ID.eq(paradigm.ID);
+		where1 = where1.and(form.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
+		if (StringUtils.containsAny(theFilter, '%', '_')) {
+			where1 = where1.and(form.VALUE.lower().like(theFilter));
+		} else {
+			where1 = where1.and(form.VALUE.lower().eq(theFilter));
+		}
+		Condition where = composeWordDatasetsCondition(word, searchDatasetsRestriction);
+		where = where.andExists(DSL.select(form.ID).from(form).where(where1));
+		return where;
+	}
+
+	protected Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
+
+		Condition where = composeWordDatasetsCondition(w1, searchDatasetsRestriction);
+
+		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
+
+			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
+			if (searchCriteria.isEmpty()) {
+				continue;
+			}
+			SearchEntity searchEntity = searchCriterionGroup.getEntity();
+
+			if (SearchEntity.HEADWORD.equals(searchEntity)) {
+
+				Lexeme l1 = Lexeme.LEXEME.as("l1");
+				Paradigm p1 = Paradigm.PARADIGM.as("p1");
+				Form f1 = Form.FORM.as("f1");
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(p1.WORD_ID.eq(w1.ID))
+						.and(f1.PARADIGM_ID.eq(p1.ID))
+						.and(f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
+
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
+				where1 = applyLexemeSourceRefFilter(searchCriteria, l1.ID, where1);
+				where1 = applyLexemeSourceNameFilter(searchCriteria, l1.ID, where1);
+
+				where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
+
+				Condition where2 = l1.WORD_ID.eq(w1.ID);
+				where2 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
+
+				where = composeWordLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_ON, searchCriteria, searchDatasetsRestriction, w1, where);
+				where = composeWordLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_BY, searchCriteria, searchDatasetsRestriction, w1, where);
+
+			} else if (SearchEntity.WORD.equals(searchEntity)) {
+
+				List<SearchCriterion> positiveExistSearchCriteria = filterPositiveExistCriteria(searchCriteria);
+				List<SearchCriterion> negativeExistSearchCriteria = filterNegativeExistCriteria(searchCriteria);
+
+				Lexeme l1 = Lexeme.LEXEME.as("l1");
+				Lexeme l2 = Lexeme.LEXEME.as("l2");
+				Word w2 = Word.WORD.as("w2");
+
+				if (CollectionUtils.isNotEmpty(positiveExistSearchCriteria)) {
+
+					Paradigm p2 = Paradigm.PARADIGM.as("p2");
+					Form f2 = Form.FORM.as("f2");
+
+					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+							.and(l2.WORD_ID.eq(w2.ID))
+							.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
+							.and(p2.WORD_ID.eq(w2.ID))
+							.and(f2.PARADIGM_ID.eq(p2.ID))
+							.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
+
+					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+					where1 = applyValueFilters(SearchKey.VALUE, positiveExistSearchCriteria, f2.VALUE, where1, true);
+					where1 = applyValueFilters(SearchKey.LANGUAGE, positiveExistSearchCriteria, w2.LANG, where1, false);
+					where1 = applyLexemeSourceRefFilter(positiveExistSearchCriteria, l2.ID, where1);
+					where1 = applyLexemeSourceNameFilter(positiveExistSearchCriteria, l2.ID, where1);
+
+					where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
+				}
+
+				if (CollectionUtils.isNotEmpty(negativeExistSearchCriteria)) {
+
+					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+							.and(l2.WORD_ID.eq(w2.ID))
+							.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY));
+
+					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+					where1 = applyLanguageNotExistFilters(negativeExistSearchCriteria, l1, l2, w2, where1);
+
+					where = where.andNotExists(DSL.select(l1.ID).from(l1, l2, w2).where(where1));
+				}
+
+			} else if (SearchEntity.FORM.equals(searchEntity)) {
+
+				Lexeme l1 = Lexeme.LEXEME.as("l1");
+				Paradigm p1 = Paradigm.PARADIGM.as("p1");
+				Form f1 = Form.FORM.as("f1");
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(p1.WORD_ID.eq(w1.ID))
+						.and(f1.PARADIGM_ID.eq(p1.ID));
+
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
+
+				where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
+
+			} else if (SearchEntity.MEANING.equals(searchEntity)) {
+
+				Lexeme l1 = LEXEME.as("l1");
+				Meaning m1 = MEANING.as("m1");
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l1.MEANING_ID.eq(m1.ID));
+
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where = applyDomainFilters(searchCriteria, l1, m1, where1, where);
+
+			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
+
+				Lexeme l1 = LEXEME.as("l1");
+				Meaning m1 = MEANING.as("m1");
+				Definition d1 = DEFINITION.as("d1");
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l1.MEANING_ID.eq(m1.ID))
+						.and(d1.MEANING_ID.eq(m1.ID));
+
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1, false);
+				where1 = applyDefinitionSourceRefFilter(searchCriteria, d1.ID, where1);
+				where1 = applyLexemeSourceNameFilter(searchCriteria, d1.ID, where1);
+
+				where = where.andExists(DSL.select(d1.ID).from(l1, m1, d1).where(where1));
+
+			} else if (SearchEntity.USAGE.equals(searchEntity)) {
+
+				Lexeme l1 = LEXEME.as("l1");
+				LexemeFreeform l1ff = LEXEME_FREEFORM.as("l1ff");
+				Freeform u1 = FREEFORM.as("u1");
+
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l1ff.LEXEME_ID.eq(l1.ID))
+						.and(l1ff.FREEFORM_ID.eq(u1.ID))
+						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
+
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1, true);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1, false);
+				where1 = applyFreeformSourceNameFilter(searchCriteria, u1.ID, where1);
+				where1 = applyFreeformSourceRefFilter(searchCriteria, u1.ID, where1);
+
+				where = where.andExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1));
+
+			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
+
+				// this type of search is not actually available
+
+				Lexeme l1 = LEXEME.as("l1");
+				Meaning m1 = MEANING.as("m1");
+				MeaningFreeform m1ff = MEANING_FREEFORM.as("m1ff");
+				Freeform c1 = FREEFORM.as("c1");
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l1.MEANING_ID.eq(m1.ID))
+						.and(m1ff.MEANING_ID.eq(m1.ID))
+						.and(m1ff.FREEFORM_ID.eq(c1.ID))
+						.and(c1.TYPE.eq(FreeformType.CONCEPT_ID.name()));
+
+				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1, false);
+
+				where = where.andExists(DSL.select(c1.ID).from(l1, m1, m1ff, c1).where(where1));
+			}
+		}
+		return where;
+	}
+
+	private Condition composeWordDatasetsCondition(Word word, SearchDatasetsRestriction searchDatasetsRestriction) {
+
+		Lexeme lfd = LEXEME.as("lfd");
+		Condition dsFiltWhere = composeLexemeDatasetsCondition(lfd, searchDatasetsRestriction);
+		Condition where = DSL.exists(DSL.select(lfd.ID).from(lfd).where(lfd.WORD_ID.eq(word.ID).and(dsFiltWhere)));
+		return where;
+	}
+
+	private List<SearchCriterion> filterPositiveExistCriteria(List<SearchCriterion> searchCriteria) {
+		// any other than NOT_EXISTS
+		List<SearchCriterion> positiveExistCriteria = searchCriteria.stream().filter(crit -> !SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand())).collect(
+				Collectors.toList());
+		return positiveExistCriteria;
+	}
+
+	private List<SearchCriterion> filterNegativeExistCriteria(List<SearchCriterion> searchCriteria) {
+		List<SearchCriterion> negativeExistCriteria = searchCriteria.stream().filter(crit -> SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand())).collect(Collectors.toList());
+		return negativeExistCriteria;
+	}
+
+	private Condition composeWordLifecycleLogFilters(
+			SearchKey searchKey, List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition wherew1) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return wherew1;
+		}
+
+		Lexeme l1 = LEXEME.as("l1");
+		Meaning m1 = MEANING.as("m1");
+		WordLifecycleLog wll = WORD_LIFECYCLE_LOG.as("wll");
+		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
+		MeaningLifecycleLog mll = MEANING_LIFECYCLE_LOG.as("mll");
+		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
+
+		Condition condwll = wll.LIFECYCLE_LOG_ID.eq(ll.ID);
+		Condition condlll = lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID));
+		condlll = applyDatasetRestrictions(l1, searchDatasetsRestriction, condlll);
+		Condition condmll = mll.MEANING_ID.eq(m1.ID).and(mll.LIFECYCLE_LOG_ID.eq(ll.ID)).and(l1.MEANING_ID.eq(m1.ID));
+		condmll = applyDatasetRestrictions(l1, searchDatasetsRestriction, condmll);
+
+		Field<?> searchField = null;
+		boolean isOnLowerValue = false;
+		if (searchKey.equals(SearchKey.CREATED_OR_UPDATED_ON)) {
+			searchField = ll.EVENT_ON;
+			isOnLowerValue = false;
+		} else if (searchKey.equals(SearchKey.CREATED_OR_UPDATED_BY)) {
+			searchField = ll.EVENT_BY;
+			isOnLowerValue = true;
+		}
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			condwll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condwll, isOnLowerValue);
+			condlll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condlll, isOnLowerValue);
+			condmll = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condmll, isOnLowerValue);
+		}
+
+		SelectOrderByStep<Record1<Long>> wmlSelect = DSL
+				.select(wll.WORD_ID).from(ll, wll).where(condwll)
+				.unionAll(DSL.select(l1.WORD_ID).from(ll, lll, l1).where(condlll))
+				.unionAll(DSL.select(l1.WORD_ID).from(ll, mll, l1, m1).where(condmll));
+
+		return wherew1.and(w1.ID.in(wmlSelect));
 	}
 
 }
