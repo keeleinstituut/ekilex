@@ -69,7 +69,6 @@
     </div>
     <th:block th:replace=":: feedback-form"></th:block>
   </th:block>
-
   <th:block th:fragment="menu_with_backBtn">
     <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="container-fluid header-container">
@@ -94,7 +93,6 @@
     </div>
     <th:block th:replace=":: feedback-form"></th:block>
   </th:block>
-
   <th:block th:fragment="menu-links">
     <div id="headerLinks">
       <div class="header-links" role="navbar">
@@ -116,10 +114,10 @@
         <a th:href="@{/}" class="menu-item" data-item-name="search">
           <span th:text="#{menu.search}">Otsing</span>
         </a>
-	<a th:href="@{/about}" class="menu-item" data-item-name="about">
+        <a th:href="@{/about}" class="menu-item" data-item-name="about">
           <span th:text="#{menu.about}">Portaalist</span>
         </a>
-	<a th:href="@{/teacher-tools}" class="menu-item" data-item-name="ttools">
+        <a th:href="@{/teacher-tools}" class="menu-item" data-item-name="ttools">
           <span th:text="#{menu.ttools}">Õpetaja tööriistad</span>
         </a>
         <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
@@ -127,7 +125,7 @@
         </a>
         <a aria-hidden="true" th:href="@{/games}" class="menu-item" data-item-name="games">
           <span th:text="#{menu.games}">Keelemängud</span>
-        </a>     
+        </a>
         <a th:href="@{/contacts}" class="menu-item" data-item-name="contacts">
           <span th:text="#{menu.contacts}">Kontakt</span>
         </a>
@@ -277,8 +275,7 @@
           <div class="col-12 col-sm-6 col-md-4 order-1 order-md-2 justify-content-md-end d-flex">
             <div class="social-list">
               <span class="helper-text">Jaga meid:</span>
-              <a th:aria-label="#{aria.footer.facebook}" class="fb-icon icon" href="http://www.facebook.com/sharer.php?u=https://sonaveeb.ee" target="_blank"
-                title="Share this in Facebook"></a>
+              <a th:aria-label="#{aria.footer.facebook}" class="fb-icon icon" href="http://www.facebook.com/sharer.php?u=https://sonaveeb.ee" target="_blank" title="Share this in Facebook"></a>
             </div>
           </div>
         </div>
@@ -427,11 +424,13 @@
       <span class="icon icon-chevron-left"></span>
     </a>
   </th:block>
-<th:block th:fragment="update-msg">
-  <div class="alert   alert-dismissible fade show bg-warning text-black px-3 py-1 d-flex align-items-center update-alert" role="alert"><i class="fa fa-exclamation-triangle small mr-2" aria-hidden="true"></i> Sõnaveeb uueneb. Uut versiooni tutvustame märtsis 2020 <button type="button" class="close btn bg-transparent ml-auto py-1" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-  </div>
-</th:block>
+  <th:block th:fragment="update-msg">
+    <div class="alert   alert-dismissible fade show bg-warning text-black px-3 py-1 d-flex align-items-center update-alert" role="alert">
+      <i class="fa fa-exclamation-triangle small mr-2" aria-hidden="true"></i> Sõnaveeb uueneb. Uut versiooni tutvustame märtsis 2020
+      <button type="button" class="close btn bg-transparent ml-auto py-1" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </th:block>
 </body>
 </html>
