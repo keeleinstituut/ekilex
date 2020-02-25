@@ -725,8 +725,8 @@
                 <div class="ml-2">
                   <button type="button" class="btn btn-warning font-weight-bold btn-sm"
                           th:data-id="${lexeme.lexemeId}"
-                          data-op-code="lexeme"
-                          data-toggle="delete-confirm"
+                          data-callback="refreshDetails"
+                          data-toggle="deleteLexemeAndWordAndMeaning"
                           sec:authorize="${#vars.isLexemeCrudGranted}">Eemalda
                   </button>
                 </div>
@@ -1025,6 +1025,12 @@
           btnCancelLabel : 'Ei',
           title : 'Kinnita kustutamine',
           onConfirm : deleteMeaningAndLexemesAndWords
+        });
+        $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
+          btnOkLabel : 'Jah',
+          btnCancelLabel : 'Ei',
+          title : 'Kinnita kustutamine',
+          onConfirm : deleteLexemeAndWordAndMeaning
         });
   	  </script>
     </div>

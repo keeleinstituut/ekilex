@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
@@ -43,6 +45,9 @@ public class Word extends AbstractDataObject {
 
 	@Column(name = "is_suffixoid")
 	private boolean suffixoid;
+
+	@Column(name = "layer_process_state_codes")
+	List<String> layerProcessStateCodes;
 
 	public Word() {
 	}
@@ -143,4 +148,11 @@ public class Word extends AbstractDataObject {
 		this.suffixoid = suffixoid;
 	}
 
+	public List<String> getLayerProcessStateCodes() {
+		return layerProcessStateCodes;
+	}
+
+	public void setLayerProcessStateCodes(List<String> layerProcessStateCodes) {
+		this.layerProcessStateCodes = layerProcessStateCodes;
+	}
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ContentKey;
+import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.ReferenceType;
 import eki.common.service.TextDecorationService;
@@ -376,6 +377,8 @@ public class EditController extends AbstractPageController implements SystemCons
 		Long id = confirmationRequest.getId();
 		List<String> questions = new ArrayList<>();
 		String question;
+		String validationMessage = "";
+		boolean isValid = true;
 
 		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
 
@@ -383,34 +386,66 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "delete":
 			switch (opCode) {
 			case "lexeme":
-				boolean isOnlyLexemeForMeaning = commonDataService.isOnlyLexemeForMeaning(id);
-				if (isOnlyLexemeForMeaning) {
-					question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
-					questions.add(question);
+				LexemeType lexemeType = lookupService.getLexemeType(id);
+				boolean isPrimaryLexeme = lexemeType.equals(LexemeType.PRIMARY);
+				if (!isPrimaryLexeme) {
+					break;
 				}
-				boolean isOnlyLexemeForWord = commonDataService.isOnlyLexemeForWord(id);
-				if (isOnlyLexemeForWord) {
-					question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
-					questions.add(question);
+				boolean isOnlyPrimaryLexemeForMeaning = lookupService.isOnlyPrimaryLexemeForMeaning(id);
+				if (isOnlyPrimaryLexemeForMeaning) {
+					boolean isOnlyLexemeForMeaning = lookupService.isOnlyLexemeForMeaning(id);
+					if (isOnlyLexemeForMeaning) {
+						question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
+						questions.add(question);
+					} else {
+						isValid = false;
+						validationMessage += "Valitud ilmik on tähenduse ainus ilmik. Ilmikut ei saa kustutada, sest selle keelend on märgitud sünonüümiks. ";
+					}
+				}
+				boolean isOnlyPrimaryLexemeForWord = lookupService.isOnlyPrimaryLexemeForWord(id);
+				if (isOnlyPrimaryLexemeForWord) {
+					boolean isOnlyLexemeForWord = lookupService.isOnlyLexemeForWord(id);
+					if (isOnlyLexemeForWord) {
+						question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
+						questions.add(question);
+					} else {
+						isValid = false;
+						validationMessage += "Valitud ilmik on keelendi ainus ilmik. Ilmikut ei saa kustutada, sest selle keelend on märgitud sünonüümiks. ";
+					}
 				}
 				break;
 			case "meaning":
 				DatasetPermission userRole = sessionBean.getUserRole();
 				if (userRole == null) {
-					question = "Mõiste kustutamine pole ilma rollita õigustatud";
-					questions.add(question);
+					isValid = false;
+					validationMessage += "Mõiste kustutamine pole ilma rollita õigustatud.";
 					break;
 				}
 				String datasetCode = userRole.getDatasetCode();
-				boolean isOnlyLexemesForMeaning = commonDataService.isOnlyLexemesForMeaning(id, datasetCode);
+				boolean secondaryMeaningLexemeExists = lookupService.secondaryMeaningLexemeExists(id, datasetCode);
+				if (secondaryMeaningLexemeExists) {
+					isValid = false;
+					validationMessage += "Valitud mõistel on osasünonüüme. Mõistet ei saa kustutada.";
+					break;
+				}
+				boolean isOnlyLexemesForMeaning = lookupService.isOnlyLexemesForMeaning(id, datasetCode);
 				if (isOnlyLexemesForMeaning) {
 					question = "Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine";
 					questions.add(question);
 				}
-				boolean isOnlyLexemesForWords = commonDataService.isOnlyLexemesForWords(id, datasetCode);
-				if (isOnlyLexemesForWords) {
-					List<String> wordsToDelete = lookupService.getWordsToBeDeleted(id, datasetCode);
-					String joinedWords = StringUtils.join(wordsToDelete, ", ");
+
+				boolean isOnlyPrimaryLexemesForWords = lookupService.isOnlyPrimaryLexemesForWords(id, datasetCode);
+				if (isOnlyPrimaryLexemesForWords) {
+					List<Long> wordIdsToDelete = lookupService.getWordIdsToBeDeleted(id, datasetCode);
+					boolean secondaryWordLexemeExists = lookupService.secondaryWordLexemeExists(wordIdsToDelete, datasetCode);
+					if (secondaryWordLexemeExists) {
+						isValid = false;
+						validationMessage += "Valitud mõiste termin on märgitud osasünonüümiks. Mõistet ei saa kustutada.";
+						break;
+					}
+
+					List<String> wordValuesToDelete = lookupService.getWordsValues(wordIdsToDelete);
+					String joinedWords = StringUtils.join(wordValuesToDelete, ", ");
 
 					question = "Valitud mõiste kustutamisel jäävad järgnevad terminid mõisteta: ";
 					question += joinedWords;
@@ -423,9 +458,15 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		}
 
-		boolean unconfirmed = CollectionUtils.isNotEmpty(questions);
-		confirmationRequest.setUnconfirmed(unconfirmed);
-		confirmationRequest.setQuestions(questions);
+		if (isValid) {
+			boolean unconfirmed = CollectionUtils.isNotEmpty(questions);
+			confirmationRequest.setUnconfirmed(unconfirmed);
+			confirmationRequest.setQuestions(questions);
+		} else {
+			confirmationRequest.setValidationMessage(validationMessage);
+		}
+		confirmationRequest.setValid(isValid);
+
 		return confirmationRequest;
 	}
 

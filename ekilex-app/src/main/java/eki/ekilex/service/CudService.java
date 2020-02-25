@@ -750,8 +750,8 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteLexeme(Long lexemeId) {
 
-		boolean isOnlyLexemeForMeaning = commonDataDbService.isOnlyLexemeForMeaning(lexemeId);
-		boolean isOnlyLexemeForWord = commonDataDbService.isOnlyLexemeForWord(lexemeId);
+		boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
+		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.geWordLexemeMeaningId(lexemeId);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
@@ -984,7 +984,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void addSynRelation(Long word1Id, Long word2Id, String weightStr, String datasetCode) {
 
-		boolean word2DatasetLexemeExists = cudDbService.getWordLexemeExists(word2Id, datasetCode);
+		boolean word2DatasetLexemeExists = cudDbService.wordLexemeExists(word2Id, datasetCode);
 		if (!word2DatasetLexemeExists) {
 			createLexeme(word2Id, datasetCode, null);
 		}

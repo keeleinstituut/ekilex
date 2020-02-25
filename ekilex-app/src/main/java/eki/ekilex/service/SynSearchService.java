@@ -36,12 +36,12 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynRelationParamTuple;
-import eki.ekilex.data.SynWord;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.data.Word;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
-import eki.ekilex.data.WordsSynResult;
+import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
@@ -76,9 +76,9 @@ public class SynSearchService extends AbstractWordSearchService {
 	private LookupDbService lookupDbService;
 
 	@Transactional
-	public WordsSynResult getWords(String searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) {
+	public WordsResult getWords(String searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) {
 
-		List<SynWord> words;
+		List<Word> words;
 		int wordCount;
 		if (StringUtils.isBlank(searchFilter)) {
 			words = Collections.emptyList();
@@ -91,7 +91,7 @@ public class SynSearchService extends AbstractWordSearchService {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}
-		WordsSynResult result = new WordsSynResult();
+		WordsResult result = new WordsResult();
 		result.setWords(words);
 		result.setTotalCount(wordCount);
 
@@ -104,9 +104,9 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordsSynResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) throws Exception {
+	public WordsResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) throws Exception {
 
-		List<SynWord> words;
+		List<Word> words;
 		int wordCount;
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
 			words = Collections.emptyList();
@@ -119,7 +119,7 @@ public class SynSearchService extends AbstractWordSearchService {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}
-		WordsSynResult result = new WordsSynResult();
+		WordsResult result = new WordsResult();
 		result.setWords(words);
 		result.setTotalCount(wordCount);
 

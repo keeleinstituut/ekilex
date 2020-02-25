@@ -690,7 +690,9 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) 
 		dataType: 'json',
 		contentType: 'application/json'
 	}).done(function (data) {
-		if (data.unconfirmed) {
+		if (!data.valid) {
+			openAlertDlg(data.validationMessage);
+		} else if (data.unconfirmed) {
 			openMultiConfirmDlg(data.questions, doPostDelete, deleteUrl, successCallbackFunc);
 		} else {
 			doPostDelete(deleteUrl, successCallbackFunc);

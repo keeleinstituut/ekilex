@@ -15,7 +15,6 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.data.WordsSynResult;
 import eki.ekilex.service.SynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -53,7 +52,7 @@ public class AbstractSynSearchController extends AbstractSearchController implem
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean fetchAll = false;
 
-		WordsSynResult wordsResult;
+		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			wordsResult = synSearchService.getWords(detailSearchFilter, selectedDatasets, layerName, fetchAll, DEFAULT_OFFSET);
 		} else {

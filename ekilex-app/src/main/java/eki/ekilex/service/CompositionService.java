@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
@@ -190,6 +191,7 @@ public class CompositionService extends AbstractService {
 		compositionDbService.cloneLexemePoses(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeSoureLinks(lexemeId, duplicateLexemeId);
+		compositionDbService.cloneLexemeCollocations(lexemeId, duplicateLexemeId);
 		String sourceLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(lexemeId);
 		String targetLexemeDescription = lifecycleLogDbService.getExtendedLexemeDescription(duplicateLexemeId);
 
@@ -357,18 +359,34 @@ public class CompositionService extends AbstractService {
 			Long sourceWordLexemeId = sourceWordLexeme.getId();
 			Long sourceWordLexemeMeaningId = sourceWordLexeme.getMeaningId();
 			String sourceWordLexemeDatasetCode = sourceWordLexeme.getDatasetCode();
+			boolean isSourceWordLexemePrimaryType = StringUtils.equals(sourceWordLexeme.getType(), LexemeType.PRIMARY.name());
 
-			Long targetWordLexemeId = compositionDbService.getLexemeId(targetWordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
-			boolean targetLexemeExists = targetWordLexemeId != null;
+			LexemeRecord targetWordLexeme = compositionDbService.getLexeme(targetWordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
+			boolean targetLexemeExists = targetWordLexeme != null;
 
 			if (targetLexemeExists) {
-				compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
+				Long targetWordLexemeId = targetWordLexeme.getId();
+				boolean isTargetWordLexemePrimaryType = StringUtils.equals(targetWordLexeme.getType(), LexemeType.PRIMARY.name());
+
+				if (isTargetWordLexemePrimaryType && isSourceWordLexemePrimaryType) {
+					compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
+				} else if (isSourceWordLexemePrimaryType) {
+					cudDbService.deleteLexeme(targetWordLexemeId);
+					connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
+				} else {
+					cudDbService.deleteLexeme(sourceWordLexemeId);
+				}
 			} else {
-				Integer currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(targetWordId, sourceWordLexemeDatasetCode);
-				int level1 = currentLexemesMaxLevel1 + 1;
-				compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, targetWordId, level1, DEFAULT_LEXEME_LEVEL);
+				connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
 			}
 		}
+	}
+
+	private void connectLexemeToAnotherWord(Long targetWordId, Long sourceWordLexemeId, String datasetCode) {
+
+		Integer currentTargetWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(targetWordId, datasetCode);
+		int level1 = currentTargetWordLexemesMaxLevel1 + 1;
+		compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, targetWordId, level1, DEFAULT_LEXEME_LEVEL);
 	}
 
 	private void joinParadigms(Long targetWordId, Long sourceWordId) {
@@ -432,6 +450,7 @@ public class CompositionService extends AbstractService {
 	}
 
 	private void joinMeaningsCommonWordsLexemes(Long targetMeaningId, Long sourceMeaningId) {
+
 		List<IdPair> meaningsCommonWordsLexemeIdPairs = compositionDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);
 		boolean meaningsShareCommonWord = CollectionUtils.isNotEmpty(meaningsCommonWordsLexemeIdPairs);
 		if (meaningsShareCommonWord) {
@@ -440,16 +459,26 @@ public class CompositionService extends AbstractService {
 				Long sourceLexemeId = lexemeIdPair.getId2();
 				LexemeRecord targetLexeme = compositionDbService.getLexeme(targetLexemeId);
 				LexemeRecord sourceLexeme = compositionDbService.getLexeme(sourceLexemeId);
+				boolean isTargetLexemePrimaryType = StringUtils.equals(targetLexeme.getType(), LexemeType.PRIMARY.name());
+				boolean isSourceLexemePrimaryType = StringUtils.equals(sourceLexeme.getType(), LexemeType.PRIMARY.name());
 
-				updateLexemeLevels(sourceLexemeId, "delete");
+				if (isTargetLexemePrimaryType && isSourceLexemePrimaryType) {
+					updateLexemeLevels(sourceLexemeId, "delete");
 
-				String logEntrySource = StringUtils.joinWith(".", sourceLexeme.getLevel1(), sourceLexeme.getLevel2());
-				String logEntryTarget = StringUtils.joinWith(".", targetLexeme.getLevel1(), targetLexeme.getLevel2());
-				LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, targetLexemeId, logEntrySource,
-						logEntryTarget);
-				createLifecycleLog(logData);
+					String logEntrySource = StringUtils.joinWith(".", sourceLexeme.getLevel1(), sourceLexeme.getLevel2());
+					String logEntryTarget = StringUtils.joinWith(".", targetLexeme.getLevel1(), targetLexeme.getLevel2());
+					LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, targetLexemeId, logEntrySource, logEntryTarget);
+					createLifecycleLog(logData);
 
-				compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
+					compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
+				} else if (isSourceLexemePrimaryType) {
+					Long targetLexemeWordId = targetLexeme.getWordId();
+					String datasetCode = targetLexeme.getDatasetCode();
+					cudDbService.deleteLexeme(targetLexemeId);
+					connectLexemeToAnotherWord(targetLexemeWordId, sourceLexemeId, datasetCode);
+				} else {
+					cudDbService.deleteLexeme(sourceLexemeId);
+				}
 			}
 		}
 	}

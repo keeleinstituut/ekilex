@@ -22,8 +22,8 @@ import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -31,8 +31,6 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Record11;
-import org.jooq.Record7;
 import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -82,7 +80,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, fetchAll, offset);
+		return execute(w1, p, wordCondition, null, Collections.emptyList(), fetchAll, offset, create);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -100,7 +98,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm paradigm = PARADIGM.as("p");
 		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, fetchAll, offset);
+		return execute(word, paradigm, where, null, Collections.emptyList(), fetchAll, offset, create);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
@@ -110,78 +108,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
 		return count(word, paradigm, where);
-	}
-
-	private List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, boolean fetchAll, int offset) {
-
-		Form f1 = FORM.as("f1");
-		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
-		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
-
-		Table<Record7<Long, String, Integer, String, String, String, String>> w = DSL
-				.select(
-						w1.ID.as("word_id"),
-						wf.as("word"),
-						w1.HOMONYM_NR,
-						w1.LANG,
-						w1.WORD_CLASS,
-						w1.GENDER_CODE,
-						w1.ASPECT_CODE)
-				.from(from)
-				.where(where)
-				.groupBy(w1.ID)
-				.asTable("w");
-
-		Field<String[]> dscf = DSL.field(DSL
-				.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE))
-				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class)).and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(w.field("word_id")));
-
-		Field<String[]> wtf = DSL.field(DSL
-				.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
-				.from(WORD_WORD_TYPE)
-				.where(WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class)))
-				.groupBy(w.field("word_id")));
-
-		Field<Boolean> wtpf = DSL.field(DSL.exists(DSL
-				.select(WORD_WORD_TYPE.ID)
-				.from(WORD_WORD_TYPE)
-				.where(
-						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
-								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))));
-
-		Field<Boolean> wtsf = DSL.field(DSL.exists(DSL
-				.select(WORD_WORD_TYPE.ID)
-				.from(WORD_WORD_TYPE)
-				.where(
-						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
-								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))));
-
-		Table<Record11<Long, String, Integer, String, String, String, String, String[], String[], Boolean, Boolean>> ww = DSL
-				.select(
-						w.field("word_id", Long.class),
-						w.field("word", String.class),
-						w.field("homonym_nr", Integer.class),
-						w.field("lang", String.class),
-						w.field("word_class", String.class),
-						w.field("gender_code", String.class),
-						w.field("aspect_code", String.class),
-						dscf.as("dataset_codes"),
-						wtf.as("word_type_codes"),
-						wtpf.as("is_prefixoid"),
-						wtsf.as("is_suffixoid"))
-				.from(w)
-				.orderBy(
-						w.field("word"),
-						w.field("homonym_nr"))
-				.asTable("ww");
-
-		if (fetchAll) {
-			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
-		} else {
-			return create.selectFrom(ww).limit(MAX_RESULTS_LIMIT).offset(offset).fetchInto(eki.ekilex.data.Word.class);
-		}
 	}
 
 	private int count(Word word, Paradigm paradigm, Condition where) {
