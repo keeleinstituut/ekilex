@@ -415,4 +415,11 @@
   font-family: FontAwesome, sans-serif;
   content: "";
 }
+
+.meaning-sub-heading {
+  padding: 10px;
+  margin: 0 -20px;
+  text-transform: uppercase;
+  background: #ecf0f2;
+}
 /*# sourceMappingURL=styles.css.map */

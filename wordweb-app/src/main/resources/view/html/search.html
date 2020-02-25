@@ -163,13 +163,16 @@
             </div>
             <div class="level-2-panel">
               <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-                <h5 class="mt-3" th:text="#{lexdata.title}" th:if="${sessionBean.searchMode == 'detail'}">EKI ühendsõnastik 2020</h5>
+                <h5 class="meaning-sub-heading" th:if="${sessionBean.searchMode == 'detail'}">
+                  <i class="fa fa-book mr-1 text-muted"></i><span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
+                </h5>
+
                 <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>              
               </th:block>
               <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
-                <h5 class="mt-3" th:text="#{termdata.title}">Oskussõnastikes</h5>
+                <h5 class="meaning-sub-heading" ><i class="fa fa-book mr-1 text-muted"></i><span th:text="#{termdata.title}">Oskussõnastikes</span></h5>
                 <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.termLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>
