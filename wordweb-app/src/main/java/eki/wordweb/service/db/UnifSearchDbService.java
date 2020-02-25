@@ -23,6 +23,7 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
@@ -68,11 +69,12 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
 		Field<String> wgf = DSL.field(DSL.val(WORD_SEARCH_GROUP_WORD));
 
-		Table<Record3<String, String, String>> ws = DSL
+		Table<Record4<String, String, String, Long>> ws = DSL
 				.select(
 						wgf.as("sgroup"),
 						w.WORD,
-						w.CRIT)
+						w.CRIT,
+						w.LANG_ORDER_BY)
 				.from(w)
 				.where(
 						w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
@@ -81,7 +83,8 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 						.select(
 								wgf.as("sgroup"),
 								aw.WORD,
-								aw.CRIT)
+								aw.CRIT,
+								aw.LANG_ORDER_BY)
 						.from(aw)
 						.where(
 								aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
@@ -97,7 +100,9 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 						wlf.as("lev"))
 				.from(ws)
 				.where(ws.field("crit").like(wordInfixCrit))
-				.orderBy(DSL.field("lev"))
+				.orderBy(
+						ws.field("lang_order_by"),
+						DSL.field("lev"))
 				.limit(maxWordCount)
 				.unionAll(DSL
 						.select(

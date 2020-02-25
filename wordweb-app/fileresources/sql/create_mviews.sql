@@ -104,7 +104,8 @@ dblink(
 	sgroup varchar(10),
 	word text,
 	crit text,
-	unacrit text
+	unacrit text,
+	lang_order_by bigint
 );
 
 create materialized view mview_ww_word as

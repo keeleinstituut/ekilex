@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeLangComplexity extends UDTImpl<TypeLangComplexityRecord> {
 
-    private static final long serialVersionUID = 2059223066;
+    private static final long serialVersionUID = 650762321;
 
     /**
      * The reference instance of <code>public.type_lang_complexity</code>
@@ -47,7 +47,7 @@ public class TypeLangComplexity extends UDTImpl<TypeLangComplexityRecord> {
     /**
      * The attribute <code>public.type_lang_complexity.lang</code>.
      */
-    public static final UDTField<TypeLangComplexityRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_LANG_COMPLEXITY, "");
+    public static final UDTField<TypeLangComplexityRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.VARCHAR(10), TYPE_LANG_COMPLEXITY, "");
 
     /**
      * The attribute <code>public.type_lang_complexity.complexity</code>.

@@ -20,7 +20,6 @@ import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
-import eki.wordweb.data.db.tables.MviewWwWordSearch;
 import eki.wordweb.data.db.tables.SimilarityJudgementData;
 import eki.wordweb.data.db.tables.SimilarityJudgementResult;
 
@@ -86,10 +85,6 @@ public class Indexes {
     public static final Index MVIEW_WW_WORD_ETYM_SOURCE_LINK_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_ETYM_SOURCE_LINK_WORD_ID_IDX;
     public static final Index MVIEW_WW_WORD_ETYMOLOGY_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_ETYMOLOGY_WORD_ID_IDX;
     public static final Index MVIEW_WW_WORD_RELATION_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_RELATION_WORD_ID_IDX;
-    public static final Index MVIEW_WW_WORD_SEARCH_CRIT_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_CRIT_IDX;
-    public static final Index MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX;
-    public static final Index MVIEW_WW_WORD_SEARCH_SGROUP_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_SGROUP_IDX;
-    public static final Index MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX;
     public static final Index SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX;
     public static final Index SIMILARITY_JUDGEMENT_DATA_LANG_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_LANG_IDX;
     public static final Index SIMILARITY_JUDGEMENT_DATA_MEANING_ID_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_MEANING_ID_IDX;
@@ -145,10 +140,6 @@ public class Indexes {
         public static Index MVIEW_WW_WORD_ETYM_SOURCE_LINK_WORD_ID_IDX = Internal.createIndex("mview_ww_word_etym_source_link_word_id_idx", MviewWwWordEtymSourceLink.MVIEW_WW_WORD_ETYM_SOURCE_LINK, new OrderField[] { MviewWwWordEtymSourceLink.MVIEW_WW_WORD_ETYM_SOURCE_LINK.WORD_ID }, false);
         public static Index MVIEW_WW_WORD_ETYMOLOGY_WORD_ID_IDX = Internal.createIndex("mview_ww_word_etymology_word_id_idx", MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY, new OrderField[] { MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY.WORD_ID }, false);
         public static Index MVIEW_WW_WORD_RELATION_WORD_ID_IDX = Internal.createIndex("mview_ww_word_relation_word_id_idx", MviewWwWordRelation.MVIEW_WW_WORD_RELATION, new OrderField[] { MviewWwWordRelation.MVIEW_WW_WORD_RELATION.WORD_ID }, false);
-        public static Index MVIEW_WW_WORD_SEARCH_CRIT_IDX = Internal.createIndex("mview_ww_word_search_crit_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.CRIT }, false);
-        public static Index MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX = Internal.createIndex("mview_ww_word_search_crit_prefix_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.CRIT }, false);
-        public static Index MVIEW_WW_WORD_SEARCH_SGROUP_IDX = Internal.createIndex("mview_ww_word_search_sgroup_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.SGROUP }, false);
-        public static Index MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX = Internal.createIndex("mview_ww_word_search_unacrit_tri_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.UNACRIT }, false);
         public static Index SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX = Internal.createIndex("similarity_judgement_data_dataset_code_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.DATASET_CODE }, false);
         public static Index SIMILARITY_JUDGEMENT_DATA_LANG_IDX = Internal.createIndex("similarity_judgement_data_lang_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.LANG }, false);
         public static Index SIMILARITY_JUDGEMENT_DATA_MEANING_ID_IDX = Internal.createIndex("similarity_judgement_data_meaning_id_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.MEANING_ID }, false);

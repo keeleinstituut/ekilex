@@ -65,20 +65,24 @@ as
 select ws.sgroup,
        ws.word,
        ws.crit,
-       unaccent(ws.crit) unacrit
+       unaccent(ws.crit) unacrit,
+       ws.lang_order_by
 from ((select 'word' as sgroup,
               fw.value word,
-              lower(fw.value) crit
-       from form fw
+              lower(fw.value) crit,
+              (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
+       from form fw,
+            paradigm p,
+            word w,
+            language wl
        where fw.mode = 'WORD'
+       and   fw.paradigm_id = p.id
+       and   p.word_id = w.id
+       and   w.lang = wl.code
        and   exists (select w.id
-                     from paradigm p,
-                          word w,
-                          lexeme as l,
+                     from lexeme as l,
                           dataset ds
-                     where fw.paradigm_id = p.id
-                     and   p.word_id = w.id
-                     and   l.word_id = w.id
+                     where l.word_id = w.id
                      and   l.type = 'PRIMARY'
                      and   l.process_state_code = 'avalik'
                      and   ds.code = l.dataset_code
@@ -86,21 +90,24 @@ from ((select 'word' as sgroup,
        group by fw.value)
        union all
        (select 'as_word' as sgroup,
-               fw.value word,
-               lower(faw.value) crit
+              fw.value word,
+              lower(faw.value) crit,
+              (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
        from form fw,
-            form faw
+            form faw,
+            paradigm p,
+            word w,
+            language wl
        where fw.mode = 'WORD'
        and   faw.mode = 'AS_WORD'
-       and   fw.paradigm_id = faw.paradigm_id
+       and   faw.paradigm_id = p.id
+       and   fw.paradigm_id = p.id
+       and   p.word_id = w.id
+       and   w.lang = wl.code
        and   exists (select w.id
-                     from paradigm p,
-                          word w,
-                          lexeme as l,
+                     from lexeme as l,
                           dataset ds
-                     where fw.paradigm_id = p.id
-                     and   p.word_id = w.id
-                     and   l.word_id = w.id
+                     where l.word_id = w.id
                      and   l.type = 'PRIMARY'
                      and   l.process_state_code = 'avalik'
                      and   ds.code = l.dataset_code
@@ -109,21 +116,24 @@ from ((select 'word' as sgroup,
                 faw.value)
        union all
        (select 'form' as sgroup,
-               fw.value word,
-               lower(f.value) crit
+              fw.value word,
+              lower(f.value) crit,
+              (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
        from form fw,
-            form f
+            form f,
+            paradigm p,
+            word w,
+            language wl
        where fw.mode = 'WORD'
        and   f.mode = 'FORM'
-       and   fw.paradigm_id = f.paradigm_id
+       and   fw.paradigm_id = p.id
+       and   f.paradigm_id = p.id
+       and   p.word_id = w.id
+       and   w.lang = wl.code
        and   exists (select w.id
-                     from paradigm p,
-                          word w,
-                          lexeme as l,
+                     from lexeme as l,
                           dataset ds
-                     where fw.paradigm_id = p.id
-                     and   p.word_id = w.id
-                     and   l.word_id = w.id
+                     where l.word_id = w.id
                      and   l.type = 'PRIMARY'
                      and   l.process_state_code = 'avalik'
                      and   ds.code = l.dataset_code
