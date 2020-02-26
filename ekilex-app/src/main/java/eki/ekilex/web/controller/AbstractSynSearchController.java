@@ -1,5 +1,7 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,17 +48,20 @@ public class AbstractSynSearchController extends AbstractSearchController implem
 			return;
 		}
 
+		SessionBean sessionBean = getSessionBean(model);
+		String roleDatasetCode = getDatasetCodeFromRole(sessionBean);
+		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
+
 		String searchMode = searchUriData.getSearchMode();
-		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean fetchAll = false;
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, selectedDatasets, layerName, fetchAll, DEFAULT_OFFSET);
+			wordsResult = synSearchService.getWords(detailSearchFilter, roleDatasets, layerName, fetchAll, DEFAULT_OFFSET);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, selectedDatasets, layerName, fetchAll, DEFAULT_OFFSET);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, roleDatasets, layerName, fetchAll, DEFAULT_OFFSET);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);

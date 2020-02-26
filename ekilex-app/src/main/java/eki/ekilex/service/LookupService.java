@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
@@ -47,7 +46,6 @@ import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -271,27 +269,6 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<Long> getWordIdsToBeDeleted(Long meaningId, String datasetCode) {
-
-		List<Long> wordIdsToBeDeleted = new ArrayList<>();
-		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
-		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
-			Long lexemeId = wordLexemeMeaningId.getLexemeId();
-			Long wordId = wordLexemeMeaningId.getWordId();
-			boolean isOnlyPrimaryLexemeForWord = lookupDbService.isOnlyPrimaryLexemeForWord(lexemeId);
-			if (isOnlyPrimaryLexemeForWord) {
-				wordIdsToBeDeleted.add(wordId);
-			}
-		}
-		return wordIdsToBeDeleted;
-	}
-
-	@Transactional
-	public List<String> getWordsValues(List<Long> wordIds) {
-		return lookupDbService.getWordsValues(wordIds);
-	}
-
-	@Transactional
 	public List<Classifier> getOppositeRelations(LifecycleEntity entity, String relationTypeCode) {
 
 		List<Classifier> oppositeRelations = new ArrayList<>();
@@ -303,11 +280,6 @@ public class LookupService extends AbstractWordSearchService {
 			oppositeRelations = lookupDbService.getMeaningOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		}
 		return oppositeRelations;
-	}
-
-	@Transactional
-	public LexemeType getLexemeType(Long lexemeId) {
-		return lookupDbService.getLexemeType(lexemeId);
 	}
 
 	private void composeMeaningSelectData(Meaning meaning, List<ClassifierSelect> languagesOrder) {
@@ -390,43 +362,4 @@ public class LookupService extends AbstractWordSearchService {
 		}
 	}
 
-	@Transactional
-	public boolean isOnlyLexemeForWord(Long lexemeId) {
-		return lookupDbService.isOnlyLexemeForWord(lexemeId);
-	}
-
-	@Transactional
-	public boolean isOnlyLexemeForMeaning(Long lexemeId) {
-		return lookupDbService.isOnlyLexemeForMeaning(lexemeId);
-	}
-
-	@Transactional
-	public boolean isOnlyPrimaryLexemeForWord(Long lexemeId) {
-		return lookupDbService.isOnlyPrimaryLexemeForWord(lexemeId);
-	}
-
-	@Transactional
-	public boolean isOnlyPrimaryLexemeForMeaning(Long lexemeId) {
-		return lookupDbService.isOnlyPrimaryLexemeForMeaning(lexemeId);
-	}
-
-	@Transactional
-	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
-		return lookupDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
-	}
-
-	@Transactional
-	public boolean isOnlyPrimaryLexemesForWords(Long meaningId, String datasetCode) {
-		return lookupDbService.isOnlyPrimaryLexemesForWords(meaningId, datasetCode);
-	}
-
-	@Transactional
-	public boolean secondaryMeaningLexemeExists(Long meaningId, String datasetCode) {
-		return lookupDbService.secondaryMeaningLexemeExists(meaningId, datasetCode);
-	}
-
-	@Transactional
-	public boolean secondaryWordLexemeExists(List<Long> wordIds, String datasetCode) {
-		return lookupDbService.secondaryWordLexemeExists(wordIds, datasetCode);
-	}
 }

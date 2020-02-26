@@ -583,7 +583,7 @@
             <div class="col pl-0">
               <table class="table table-striped" th:if="${not #lists.isEmpty(meaning.viewRelations)}">
                 <tr th:each="relations : ${meaning.viewRelations}" class="hidden-buttons">
-                  <td class="pr-3" th:if="${#vars.userProfileUtil.showMeaningRelationMeaningId()}">
+                  <td class="pr-3" th:if="${userProfile.showMeaningRelationMeaningId}">
                     <span class="text-monospace" th:text="${relations.get(0).meaningId}"></span>
                   </td>
                   <td class="pr-3">

@@ -19,6 +19,7 @@ import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.web.util.ClassifierUtil;
 import eki.ekilex.web.util.PermDataUtil;
 import eki.ekilex.web.util.UserProfileUtil;
@@ -84,8 +85,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		if (!modelMap.containsKey(CLASSIFIER_UTIL_KEY)) {
 			modelMap.addAttribute(CLASSIFIER_UTIL_KEY, classifierUtil);
 		}
-		if (!modelMap.containsKey(USER_PROFILE_UTIL_KEY)) {
-			modelMap.addAttribute(USER_PROFILE_UTIL_KEY, userProfileUtil);
+		if (!modelMap.containsKey(USER_PROFILE_KEY)) {
+			EkiUserProfile userProfile = userProfileUtil.getUserProfile();
+			modelMap.addAttribute(USER_PROFILE_KEY, userProfile);
 		}
 
 		logRequestProcessTime(request);

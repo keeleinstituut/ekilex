@@ -163,16 +163,8 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return languagesOrder;
 	}
 
-	protected void formDataCleanup(
-			String searchPage,
-			List<String> selectedDatasets,
-			SearchFilter detailSearchFilter,
-			Long userId) throws Exception {
+	protected void formDataCleanup(String searchPage, SearchFilter detailSearchFilter) throws Exception {
 
-
-		if (CollectionUtils.isNotEmpty(selectedDatasets)) {
-			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
-		}
 		if (detailSearchFilter == null) {
 			detailSearchFilter = searchHelper.initSearchFilter(searchPage);
 		} else {

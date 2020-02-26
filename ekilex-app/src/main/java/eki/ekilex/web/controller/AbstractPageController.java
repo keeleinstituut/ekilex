@@ -107,13 +107,6 @@ public abstract class AbstractPageController implements WebConstant {
 		return permissionService.getUserDatasetPermissions(userId);
 	}
 
-	@ModelAttribute("userProfile")
-	public EkiUserProfile getUserProfile() {
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
-		return userProfileService.getUserProfile(userId);
-	}
-
 	@ModelAttribute("allLanguages")
 	public List<Classifier> getAllLanguages() {
 		return commonDataService.getLanguages();
