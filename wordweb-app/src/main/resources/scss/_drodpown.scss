@@ -16,8 +16,9 @@
     &::before {
       display: inline-block;
       margin-right: 5px;
-      font-family: FontAwesome, sans-serif;
-      content: "";
+      font-family: "Font Awesome 5 Free", sans-serif;
+      font-weight: 900;
+      content: "\f00c";
     }
   }
 }

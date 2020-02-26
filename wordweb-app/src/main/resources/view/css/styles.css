@@ -1,4 +1,3 @@
-@charset "UTF-8";
 .popover {
   position: absolute;
   top: 0;
@@ -412,8 +411,9 @@
 .dropdown-item-multiselect.active::before {
   display: inline-block;
   margin-right: 5px;
-  font-family: FontAwesome, sans-serif;
-  content: "";
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  content: "\f00c";
 }
 
 .meaning-sub-heading {
