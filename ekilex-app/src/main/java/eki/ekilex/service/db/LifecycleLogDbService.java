@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
@@ -104,6 +105,7 @@ public class LifecycleLogDbService {
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
+								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
 								.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
 				.unionAll(DSL
 						.select(
@@ -132,8 +134,9 @@ public class LifecycleLogDbService {
 						.from(LEXEME, MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
 						.where(
 								LEXEME.WORD_ID.eq(wordId)
-										.and(LEXEME.MEANING_ID.eq(MEANING_LIFECYCLE_LOG.MEANING_ID))
-										.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
+								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.MEANING_ID.eq(MEANING_LIFECYCLE_LOG.MEANING_ID))
+								.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
 				.asTable("ll");
 	}
 
