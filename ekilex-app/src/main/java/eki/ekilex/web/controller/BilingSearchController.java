@@ -1,7 +1,7 @@
 package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,19 +52,17 @@ public class BilingSearchController extends AbstractSynSearchController {
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;
 
-		SessionBean sessionBean = getSessionBean(model);
-		Long userId = userService.getAuthenticatedUser().getId();
-
-		formDataCleanup(BILING_SEARCH_PAGE, null, detailSearchFilter, userId);
+		formDataCleanup(BILING_SEARCH_PAGE, detailSearchFilter);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
 
+		SessionBean sessionBean = getSessionBean(model);
 		String roleDatasetCode = getDatasetCodeFromRole(sessionBean);
-		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(roleDatasetCode));
+		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, datasetCodeList, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
+		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 		return "redirect:" + BILING_SEARCH_URI + searchUri;
 	}
 
@@ -76,6 +74,7 @@ public class BilingSearchController extends AbstractSynSearchController {
 		logger.debug(searchUri);
 
 		initSearch(model, searchPage, searchUri, LayerName.BILING_RUS);
+
 		return searchPage;
 	}
 

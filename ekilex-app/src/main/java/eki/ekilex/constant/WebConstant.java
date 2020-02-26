@@ -286,9 +286,9 @@ public interface WebConstant {
 
 	String CLASSIFIER_UTIL_KEY = "classifierUtil";
 
-	String USER_PROFILE_UTIL_KEY = "userProfileUtil";
-
 	String USER_KEY = "user";
+
+	String USER_PROFILE_KEY = "userProfile";
 
 	String SEARCH_WORD_KEY = "searchWord";
 

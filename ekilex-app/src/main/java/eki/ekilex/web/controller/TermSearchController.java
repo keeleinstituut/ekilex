@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,18 +64,14 @@ public class TermSearchController extends AbstractSearchController implements Sy
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			Model model) throws Exception {
 
-		SessionBean sessionBean = getSessionBean(model);
-		Long userId = userService.getAuthenticatedUser().getId();
+		formDataCleanup(TERM_SEARCH_PAGE, detailSearchFilter);
 
-		formDataCleanup(TERM_SEARCH_PAGE, selectedDatasets, detailSearchFilter, userId);
+		SessionBean sessionBean = getSessionBean(model);
 		sessionBean.setTermSearchResultMode(resultMode);
 		sessionBean.setTermSearchResultLang(resultLang);
 
-		selectedDatasets = getUserPreferredDatasetCodes();
-		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = commonDataService.getDatasetCodes();
-			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
-		}
+		Long userId = userService.getAuthenticatedUser().getId();
+		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
@@ -115,6 +110,9 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		sessionBean.setTermSearchResultLang(resultLang);
 
 		boolean fetchAll = false;
+
+		Long userId = userService.getAuthenticatedUser().getId();
+		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {

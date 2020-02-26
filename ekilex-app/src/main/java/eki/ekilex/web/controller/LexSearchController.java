@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,18 +72,13 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		formDataCleanup(LEX_SEARCH_PAGE, detailSearchFilter);
 
-		formDataCleanup(LEX_SEARCH_PAGE, selectedDatasets, detailSearchFilter, userId);
+		Long userId = userService.getAuthenticatedUser().getId();
+		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
-		}
-
-		selectedDatasets = getUserPreferredDatasetCodes();
-		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = commonDataService.getDatasetCodes();
-			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
@@ -117,6 +111,9 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean fetchAll = false;
+
+		Long userId = userService.getAuthenticatedUser().getId();
+		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {

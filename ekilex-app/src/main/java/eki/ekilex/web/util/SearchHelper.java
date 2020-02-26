@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,7 @@ import eki.ekilex.service.UserService;
 public class SearchHelper implements WebConstant {
 
 	private static final char PATH_SEPARATOR = '/';
-	private static final char DICTONARIES_SEPARATOR = ',';
+	private static final char DATASETS_SEPARATOR = ',';
 	private static final String EMPTY_VALUE = "-";
 	private static final String SEARCH_MODE = "smode";
 	private static final String RESULT_MODE = "rmode";
@@ -56,7 +57,7 @@ public class SearchHelper implements WebConstant {
 
 	public String composeSearchUri(
 			String searchMode, 
-			List<String> datasets,
+			List<String> selectedDatasets,
 			String simpleSearchFilter,
 			SearchFilter detailSearchFilter,
 			SearchResultMode resultMode,
@@ -85,16 +86,17 @@ public class SearchHelper implements WebConstant {
 		}
 
 		// datasets
-		if (CollectionUtils.isNotEmpty(datasets)) {
+		if (CollectionUtils.isNotEmpty(selectedDatasets)) {
 			List<String> allDatasets = commonDataService.getDatasetCodes();
-			Collection<String> datasetComparison = CollectionUtils.disjunction(datasets, allDatasets);
+			List<String> validDatasetSelection = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, allDatasets));
+			Collection<String> datasetComparison = CollectionUtils.disjunction(validDatasetSelection, allDatasets);
 			if (CollectionUtils.isNotEmpty(datasetComparison)) {
-				String[] datasetArr = encodeDatasets(datasets);
-				String dictonaries = StringUtils.join(datasetArr, DICTONARIES_SEPARATOR);
+				List<String> encodedDatasets = validDatasetSelection.stream().map(dataset -> encode(dataset)).collect(Collectors.toList());
+				String encodedDatasetsStr = StringUtils.join(encodedDatasets, DATASETS_SEPARATOR);
 				uriBuf.append(PATH_SEPARATOR);
 				uriBuf.append(DATASETS);
 				uriBuf.append(PATH_SEPARATOR);
-				uriBuf.append(dictonaries);
+				uriBuf.append(encodedDatasetsStr);
 			}
 		}
 
@@ -167,14 +169,6 @@ public class SearchHelper implements WebConstant {
 		return uriBuf.toString();
 	}
 
-	private String[] encodeDatasets(List<String> datasets) {
-		String[] datasetArr = datasets.toArray(new String[datasets.size()]);
-		for (int datasetIndex = 0; datasetIndex < datasetArr.length; datasetIndex++) {
-			datasetArr[datasetIndex] = encode(datasetArr[datasetIndex]);
-		}
-		return datasetArr;
-	}
-
 	public SearchUriData parseSearchUri(String searchPage, String searchUri) {
 
 		boolean isValid;
@@ -207,7 +201,7 @@ public class SearchHelper implements WebConstant {
 				String selectedDatasetsStr = uriParts[uriPartIndex + 1];
 				selectedDatasetsStr = decode(selectedDatasetsStr);
 				selectedDatasetsStr = StringUtils.remove(selectedDatasetsStr, ' ');
-				selectedDatasets = Arrays.asList(StringUtils.split(selectedDatasetsStr, DICTONARIES_SEPARATOR));
+				selectedDatasets = Arrays.asList(StringUtils.split(selectedDatasetsStr, DATASETS_SEPARATOR));
 			} else if (StringUtils.equals(SIMPLE_SEARCH_FILTER, uriPart)) {
 				simpleSearchFilter = uriParts[uriPartIndex + 1];
 				simpleSearchFilter = decode(simpleSearchFilter);
@@ -284,8 +278,11 @@ public class SearchHelper implements WebConstant {
 			}
 		}
 		isValid = validateSearchFilter(simpleSearchFilter, detailSearchFilter);
+		List<String> allDatasetCodes = commonDataService.getDatasetCodes();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = commonDataService.getDatasetCodes();
+			selectedDatasets = new ArrayList<>(allDatasetCodes);
+		} else {
+			selectedDatasets = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, allDatasetCodes));
 		}
 		if (detailSearchFilter == null) {
 			detailSearchFilter = initSearchFilter(searchPage);

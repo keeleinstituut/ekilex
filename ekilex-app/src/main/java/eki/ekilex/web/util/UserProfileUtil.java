@@ -16,12 +16,10 @@ public class UserProfileUtil {
 	@Autowired
 	private UserService userService;
 
-	public boolean showMeaningRelationMeaningId() {
-
+	public EkiUserProfile getUserProfile() {
 		Long userId = userService.getAuthenticatedUser().getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		boolean showMeaningRelationMeaningId = userProfile.isShowMeaningRelationMeaningId();
-		return showMeaningRelationMeaningId;
+		return userProfile;
 	}
 
 }
