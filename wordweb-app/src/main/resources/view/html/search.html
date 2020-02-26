@@ -173,6 +173,7 @@
               </th:block>
               <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
                 <h5 class="meaning-sub-heading" ><i class="fa fa-book mr-1 text-muted"></i><span th:text="#{termdata.title}">Oskussõnastikes</span></h5>
+                <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert row" role="alert"><i class="fa fa-exclamation-triangle small mr-2" aria-hidden="true"></i> See on sõnapõhine vaade. Terminitööks vajalik mõistepõhine vaade (Terminiveeb) valmib mais</div>
                 <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.termLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>
