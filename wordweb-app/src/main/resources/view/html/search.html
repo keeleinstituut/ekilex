@@ -34,7 +34,7 @@
   </div>
   <div th:replace="common-search :: detail-filter-simple-confirm"></div>
   <div class="container-fluid homonym-page mt-3 bottom-gutter">
-    <div class="container search-results-header px-0" >
+    <div class="container search-results-header px-0">
       <div class="d-flex flex-row flex-wrap flex-md-nowrap align-items-start align-items-md-center pb-3">
         <div class="pl-2 ml-2 border-left homonym-innerwrap show-with-details" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
           <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
@@ -49,9 +49,9 @@
             <div class="dropdown-menu px-3 w-25" aria-labelledby="destinLangMenuButton">
               <th:block th:each="filterElem : ${langFilter}">
                 <a href="#" th:id="${'destin-lang-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
-                   class="dropdown-item px-2 py-1 dropdown-item-multiselect" th:classappend="${filterElem.selected ? 'active' : ''}" >Keel</a>
+                   class="dropdown-item px-2 py-1 dropdown-item-multiselect" th:classappend="${filterElem.selected ? 'active' : ''}">Keel</a>
                 <th:block th:if="${filterElem.addSeparator}">
-                  <div class="dropdown-divider" ></div>
+                  <div class="dropdown-divider"></div>
                   <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
                 </th:block>
               </th:block>
@@ -69,9 +69,9 @@
               <div class="dropdown-menu-scroll px-2 py-1">
               <th:block th:each="filterElem : ${datasetFilter}">
                 <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
-                   class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}" >Sõnakogu</a>
+                   class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
                 <th:block th:if="${filterElem.addSeparator}">
-                <div class="dropdown-divider" ></div>
+                <div class="dropdown-divider"></div>
                 <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
                 </th:block>
               </th:block>
@@ -88,7 +88,7 @@
         <a th:if="${sessionBean.searchMode == 'simple'}" th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}" th:text="${searchWord}"></a>
       </div>
     </div>
-    <main role="main" class="content-panel bg-white container" >
+    <main role="main" class="content-panel bg-white container">
       <div th:if="${wordsData.resultsExist}" class="row border-bottom overflow-hidden homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
         <ul class="homonym-list w-100">
           <li th:each="word : ${wordsData.fullMatchWords}">
@@ -121,7 +121,7 @@
       <div class="word-details"></div>
     </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
-      <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}" >
+      <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
       <div class="col-12 pt-2 ml-2" th:if="${!wordData.lexResultsExist}">
         <div class="row">
           <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>
@@ -132,7 +132,7 @@
           <div class="col-md-7 col-lg-8 main-data">
             <div class="row">
               <div class="col-12 content-title">
-                <h3>
+                <h3 class="mb-0">
                   <span class="additional-meta lang-code" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
                   <span class="homonym-name" th:classappend="${wordData.word.foreignWord ? 'font-italic' : ''}" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
                   <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
@@ -167,16 +167,20 @@
                   <i class="fa fa-book mr-1 text-muted"></i>
                   <span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
                 </h5>
-                <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexLexemes}">
+                <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.lexLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
-                </section>              
+                </section>
               </th:block>
               <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
                 <h5 class="meaning-sub-heading">
                   <i class="fa fa-book mr-1 text-muted"></i>
                   <span th:text="#{termdata.title}">Oskussõnastikes</span>
                 </h5>
-                <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.termLexemes}">
+                <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert row flex-nowrap" role="alert">
+                  <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
+                  <span th:text="#{warning.underconstruction.termview}">See on sõnapõhine vaade. Terminitööks vajalik mõistepõhine vaade (Terminiveeb) valmib mais</span>
+                </div>
+                <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.termLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>
               </th:block>
@@ -368,7 +372,7 @@
               <div class="col-12 corp-panel">
                 <div class="mb-0">
                   <h5 class="font-weight-bold mb-0">
-                    <span th:text="#{sentence.same.as}" ></span>
+                    <span th:text="#{sentence.same.as}"></span>
                     <a th:if="${wordData.word.lang == 'est'}"
                        th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
                        th:href="${'https://kn.eki.ee/?Q=' + wordData.word.word}" target="_blank">e-keelenõus</a>

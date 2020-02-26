@@ -1,0 +1,15 @@
+@include media-breakpoint-up(md){
+  .meaning-panel {
+    padding: 5px;
+    overflow: auto;
+
+    .meaning,
+    .meaning-meta {
+      float: left;
+    }
+
+    .dependencies {
+      float: right;
+    }
+  }
+}
