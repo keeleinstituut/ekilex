@@ -193,7 +193,8 @@ public class UnifSearchService implements SystemConstant, WebConstant {
 
 		// lexeme data
 		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
-		lexemes = lexemeConversionUtil.filterLexemes(lexemes, lexComplexity);
+		//TODO filter by lex or lex data?
+		//lexemes = lexemeConversionUtil.filterLexemes(lexemes, lexComplexity);
 		List<TypeSourceLink> lexemeSourceLinks = unifSearchDbService.getLexemeSourceLinks(wordId);
 		Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(lexemeSourceLinks)) {
