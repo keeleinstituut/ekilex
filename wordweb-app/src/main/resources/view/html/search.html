@@ -132,7 +132,7 @@
           <div class="col-md-7 col-lg-8 main-data">
             <div class="row">
               <div class="col-12 content-title">
-                <h3>
+                <h3 class="mb-0">
                   <span class="additional-meta lang-code" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
                   <span class="homonym-name" th:classappend="${wordData.word.foreignWord ? 'font-italic' : ''}" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
                   <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
@@ -167,13 +167,13 @@
                   <i class="fa fa-book mr-1 text-muted"></i><span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
                 </h5>
 
-                <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexLexemes}">
+                <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.lexLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>              
               </th:block>
               <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
                 <h5 class="meaning-sub-heading" ><i class="fa fa-book mr-1 text-muted"></i><span th:text="#{termdata.title}">Oskussõnastikes</span></h5>
-                <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.termLexemes}">
+                <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.termLexemes}">
                   <div th:replace="common-search :: lexeme-data"></div>
                 </section>
               </th:block>

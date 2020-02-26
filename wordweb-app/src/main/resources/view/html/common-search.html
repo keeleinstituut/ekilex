@@ -76,7 +76,7 @@
           <span class="domain" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
           <span class="domain" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
           <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
-            <div class="mb-2" th:each="definitionEntry : ${lexeme.definitionsByLang}">
+            <div class="mb-0" th:each="definitionEntry : ${lexeme.definitionsByLang}">
               <span class="additional-meta lang-code lang-code-sm" th:with="langData=${viewUtil.getLangData(definitionEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
               <span th:each="definition,definitionIter : ${definitionEntry.value}">
                 <th:block th:if="${#lists.isEmpty(definition.sourceLinks)}">
@@ -302,8 +302,8 @@
               </div>
               <div class="colloc-section w-100" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
                 <div class="colloc-inner-section" style="padding: 0px 10px;">
-                  <div class="colloc-row row" style="padding: 5px 5px 0px;">
-                    <span class="colloc-col" th:each="displayColloc,displayCollocIter : ${lexeme.limitedPrimaryDisplayCollocs}" style="padding: 2px;">
+                  <div class="colloc-row row" >
+                    <span class="colloc-col" th:each="displayColloc,displayCollocIter : ${lexeme.limitedPrimaryDisplayCollocs}" >
                       <span class="colloc-member">
                         <span th:if="${displayCollocIter.first}">
                           <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
@@ -358,7 +358,6 @@
                     <button name="colloc-usages-btn" type="button" class="btn btn-secondary btn-sm" th:text="#{button.label.usages}">Kasutusnäited</button>
                   </span>
                 </div>
-                <div class="filler-row row">&nbsp;</div>
                 <div class="w-100">
                   <div class="colloc-section w-100" th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}">
                     <div class="colloc-name row">
@@ -366,9 +365,9 @@
                         <span th:text="${collocPosGr.posGroup.value}"></span>
                       </div>
                     </div>
-                    <div class="colloc-inner-section" style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
-                      <div class="colloc-row row" style="padding: 5px 5px 0px;">
-                        <span class="colloc-col" th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}" style="padding: 2px;">
+                    <div class="colloc-inner-section"  th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
+                      <div class="colloc-row row" >
+                        <span class="colloc-col" th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}">
                           <span class="colloc-member">
                             <span th:if="${displayCollocIter.first}">
                               <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
@@ -413,7 +412,7 @@
                           </span>
                         </span>
                       </div>
-                      <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="row pb-3"
+                      <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="row pb-1"
                         style="display: none">
                         <div class="col-12" th:each="collocUsage : ${collocRelGr.allUsages}">
                           <span class="font-weight-light" th:text="${collocUsage}"></span>

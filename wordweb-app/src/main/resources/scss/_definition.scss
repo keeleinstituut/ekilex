@@ -1,0 +1,18 @@
+.definition-row {
+  line-height: 1.1;
+}
+
+.definition-area {
+  padding-bottom: 0;
+}
+
+.definition-area .domain {
+  font-size: $font-size-sm;
+  font-weight: 400;
+  color: #003f87;
+  text-transform: uppercase;
+}
+
+.definition-value {
+  font-size: 1.2em;
+}

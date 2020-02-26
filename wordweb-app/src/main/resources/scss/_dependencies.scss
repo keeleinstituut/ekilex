@@ -1,0 +1,93 @@
+.dependencies * {
+  @include transition(0);
+}
+
+.dependencies .btn-speaker {
+  position: relative;
+  top: .1875rem;
+  color: #07f;
+  opacity: .5;
+}
+
+.dependence .icon-speaker {
+  padding-right: .5rem;
+}
+
+.dependence .icon-speaker + .example-text {
+  padding-left: 0;
+}
+
+.dependencies .btn-speaker .icon-speaker {
+  font-size: 1rem;
+}
+
+.dependencies .btn-speaker:focus,
+.dependencies .btn-speaker:focus-within,
+.dependencies .btn-speaker:active {
+  color: #07f;
+  opacity: 1;
+}
+
+.dependence .dependence-unit {
+  position: relative;
+  padding-bottom: .1875rem;
+  margin-bottom: -.4375rem;
+  overflow: inherit;
+}
+
+.question {
+  font-size: .75rem;
+  font-style: italic;
+  font-weight: $font-weight-normal;
+  color: $gray-100;
+}
+
+.dependence-group {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.dependence-unit:hover .btn-speaker {
+  opacity: 1;
+}
+
+.example-item{
+  clear: both;
+
+  .btn-speaker {
+    clear: right;
+  }
+
+  .btn-speaker + .example-text {
+    float: none;
+    padding-left: 0;
+  }
+
+  .dependence-unit {
+    display: flex;
+    margin-bottom: .125rem;
+  }
+
+  .dependence-unit:hover {
+    cursor: pointer;
+    background-color: $gray-200;
+  }
+}
+
+.example-text {
+  align-items: center;
+  float: left;
+  padding: .5rem .5rem .25rem;
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1;
+}
+
+.btn-speaker {
+  display: block;
+  float: left;
+  padding: .125rem;
+  color: #b4b4b4;
+  background: transparent;
+}
