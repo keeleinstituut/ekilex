@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
@@ -15,6 +16,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -29,14 +31,20 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record12;
+import org.jooq.Record7;
 import org.jooq.SelectOrderByStep;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -773,6 +781,94 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 				.unionAll(DSL.select(l1.WORD_ID).from(ll, mll, l1, m1).where(condmll));
 
 		return wherew1.and(w1.ID.in(wmlSelect));
+	}
+
+	protected List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, LayerName layerName, List<String> datasetCodes, boolean fetchAll, int offset, DSLContext create) {
+
+		Form f1 = FORM.as("f1");
+		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
+		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
+
+		Table<Record7<Long, String, Integer, String, String, String, String>> w = DSL
+				.select(
+						w1.ID.as("word_id"),
+						wf.as("word"),
+						w1.HOMONYM_NR,
+						w1.LANG,
+						w1.WORD_CLASS,
+						w1.GENDER_CODE,
+						w1.ASPECT_CODE)
+				.from(from)
+				.where(where)
+				.groupBy(w1.ID)
+				.asTable("w");
+
+		Field<String[]> dscf = DSL.field(DSL
+				.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE))
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class)).and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(w.field("word_id")));
+
+		Field<String[]> lpscf;
+		if (layerName == null) {
+			lpscf = DSL.field(DSL.val(new String[0]));
+		} else {
+			lpscf = DSL.field(DSL
+					.select(DSL.arrayAggDistinct(DSL.coalesce(LAYER_STATE.PROCESS_STATE_CODE, "!")))
+					.from(LEXEME.leftOuterJoin(LAYER_STATE)
+							.on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID)
+									.and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
+					.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class))
+							.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+							.and(LEXEME.DATASET_CODE.in(datasetCodes)))
+					.groupBy(w.field("word_id")));
+		}
+
+		Field<String[]> wtf = DSL.field(DSL
+				.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
+				.from(WORD_WORD_TYPE)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class)))
+				.groupBy(w.field("word_id")));
+
+		Field<Boolean> wtpf = DSL.field(DSL.exists(DSL
+				.select(WORD_WORD_TYPE.ID)
+				.from(WORD_WORD_TYPE)
+				.where(
+						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
+								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))));
+
+		Field<Boolean> wtsf = DSL.field(DSL.exists(DSL
+				.select(WORD_WORD_TYPE.ID)
+				.from(WORD_WORD_TYPE)
+				.where(
+						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
+								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))));
+
+		Table<Record12<Long, String, Integer, String, String, String, String, String[], String[], String[], Boolean, Boolean>> ww = DSL
+				.select(
+						w.field("word_id", Long.class),
+						w.field("word", String.class),
+						w.field("homonym_nr", Integer.class),
+						w.field("lang", String.class),
+						w.field("word_class", String.class),
+						w.field("gender_code", String.class),
+						w.field("aspect_code", String.class),
+						dscf.as("dataset_codes"),
+						lpscf.as("layer_process_state_codes"),
+						wtf.as("word_type_codes"),
+						wtpf.as("is_prefixoid"),
+						wtsf.as("is_suffixoid"))
+				.from(w)
+				.orderBy(
+						w.field("word"),
+						w.field("homonym_nr"))
+				.asTable("ww");
+
+		if (fetchAll) {
+			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
+		} else {
+			return create.selectFrom(ww).limit(MAX_RESULTS_LIMIT).offset(offset).fetchInto(eki.ekilex.data.Word.class);
+		}
 	}
 
 }

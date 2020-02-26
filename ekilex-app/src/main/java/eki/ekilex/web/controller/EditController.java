@@ -1,9 +1,7 @@
 package eki.ekilex.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +29,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
-import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.SourceService;
@@ -49,9 +47,6 @@ public class EditController extends AbstractPageController implements SystemCons
 	private CudService cudService;
 
 	@Autowired
-	private CommonDataService commonDataService;
-
-	@Autowired
 	private ConversionUtil conversionUtil;
 
 	@Autowired
@@ -62,6 +57,9 @@ public class EditController extends AbstractPageController implements SystemCons
 
 	@Autowired
 	private LookupService lookupService;
+
+	@Autowired
+	private ComplexOpService complexOpService;
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
@@ -374,59 +372,19 @@ public class EditController extends AbstractPageController implements SystemCons
 		String opName = confirmationRequest.getOpName();
 		String opCode = confirmationRequest.getOpCode();
 		Long id = confirmationRequest.getId();
-		List<String> questions = new ArrayList<>();
-		String question;
-
 		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
 
 		switch (opName) {
 		case "delete":
 			switch (opCode) {
 			case "lexeme":
-				boolean isOnlyLexemeForMeaning = commonDataService.isOnlyLexemeForMeaning(id);
-				if (isOnlyLexemeForMeaning) {
-					question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
-					questions.add(question);
-				}
-				boolean isOnlyLexemeForWord = commonDataService.isOnlyLexemeForWord(id);
-				if (isOnlyLexemeForWord) {
-					question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
-					questions.add(question);
-				}
-				break;
+				return complexOpService.validateLexemeDelete(id);
 			case "meaning":
 				DatasetPermission userRole = sessionBean.getUserRole();
-				if (userRole == null) {
-					question = "Mõiste kustutamine pole ilma rollita õigustatud";
-					questions.add(question);
-					break;
-				}
-				String datasetCode = userRole.getDatasetCode();
-				boolean isOnlyLexemesForMeaning = commonDataService.isOnlyLexemesForMeaning(id, datasetCode);
-				if (isOnlyLexemesForMeaning) {
-					question = "Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine";
-					questions.add(question);
-				}
-				boolean isOnlyLexemesForWords = commonDataService.isOnlyLexemesForWords(id, datasetCode);
-				if (isOnlyLexemesForWords) {
-					List<String> wordsToDelete = lookupService.getWordsToBeDeleted(id, datasetCode);
-					String joinedWords = StringUtils.join(wordsToDelete, ", ");
-
-					question = "Valitud mõiste kustutamisel jäävad järgnevad terminid mõisteta: ";
-					question += joinedWords;
-					questions.add(question);
-					question = "Palun kinnita terminite kustutamine";
-					questions.add(question);
-				}
-				break;
+				return complexOpService.validateMeaningDelete(id, userRole);
 			}
-			break;
 		}
-
-		boolean unconfirmed = CollectionUtils.isNotEmpty(questions);
-		confirmationRequest.setUnconfirmed(unconfirmed);
-		confirmationRequest.setQuestions(questions);
-		return confirmationRequest;
+		throw new UnsupportedOperationException("Unsupported confirm operation: " + opName + " " + opCode);
 	}
 
 	@ResponseBody

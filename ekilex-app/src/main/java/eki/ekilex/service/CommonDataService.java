@@ -244,24 +244,4 @@ public class CommonDataService implements SystemConstant {
 		return allDomainOrigins;
 	}
 
-	@Transactional
-	public boolean isOnlyLexemeForWord(Long lexemeId) {
-		return commonDataDbService.isOnlyLexemeForWord(lexemeId);
-	}
-
-	@Transactional
-	public boolean isOnlyLexemeForMeaning(Long lexemeId) {
-		return commonDataDbService.isOnlyLexemeForMeaning(lexemeId);
-	}
-
-	@Transactional
-	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
-		return commonDataDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
-	}
-
-	@Transactional
-	public boolean isOnlyLexemesForWords(Long meaningId, String datasetCode) {
-		return commonDataDbService.isOnlyLexemesForWords(meaningId, datasetCode);
-	}
-
 }

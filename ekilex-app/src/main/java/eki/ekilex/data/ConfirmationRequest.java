@@ -18,6 +18,10 @@ public class ConfirmationRequest extends AbstractDataObject {
 
 	private boolean unconfirmed;
 
+	private String validationMessage;
+
+	private boolean valid;
+
 	public String getOpName() {
 		return opName;
 	}
@@ -58,4 +62,19 @@ public class ConfirmationRequest extends AbstractDataObject {
 		this.unconfirmed = unconfirmedDialogueExists;
 	}
 
+	public String getValidationMessage() {
+		return validationMessage;
+	}
+
+	public void setValidationMessage(String validationMessage) {
+		this.validationMessage = validationMessage;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
 }

@@ -151,11 +151,6 @@ public class CudDbService implements DbConstant {
 		return exists;
 	}
 
-	//TODO unused method?
-	public LexemeRecord getLexeme(Long lexemeId) {
-		return create.fetchOne(LEXEME, LEXEME.ID.eq(lexemeId));
-	}
-
 	public Long getLexemePosId(Long lexemeId, String posCode) {
 		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
 		return lexemePosRecord.getId();
@@ -210,7 +205,7 @@ public class CudDbService implements DbConstant {
 				.fetchInto(SynRelation.class);
 	}
 
-	public boolean getWordLexemeExists(Long wordId, String datasetCode) {
+	public boolean wordLexemeExists(Long wordId, String datasetCode) {
 
 		return create
 				.select(field(DSL.count(WORD.ID).gt(0)).as("word_lexeme_exists"))

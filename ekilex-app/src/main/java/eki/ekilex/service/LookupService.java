@@ -46,7 +46,6 @@ import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -270,23 +269,6 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<String> getWordsToBeDeleted(Long meaningId, String datasetCode) {
-
-		List<String> wordsToBeDeleted = new ArrayList<>();
-		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
-		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
-			Long lexemeId = wordLexemeMeaningId.getLexemeId();
-			Long wordId = wordLexemeMeaningId.getWordId();
-			boolean isOnlyLexemeForWord = commonDataDbService.isOnlyLexemeForWord(lexemeId);
-			if (isOnlyLexemeForWord) {
-				String wordValue = lookupDbService.getWordValue(wordId);
-				wordsToBeDeleted.add(wordValue);
-			}
-		}
-		return wordsToBeDeleted;
-	}
-
-	@Transactional
 	public List<Classifier> getOppositeRelations(LifecycleEntity entity, String relationTypeCode) {
 
 		List<Classifier> oppositeRelations = new ArrayList<>();
@@ -379,4 +361,5 @@ public class LookupService extends AbstractWordSearchService {
 			return null;
 		}
 	}
+
 }

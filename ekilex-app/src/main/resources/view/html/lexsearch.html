@@ -270,11 +270,12 @@
                     </div>
                     <div>
                       <a class="btn btn-sm btn-primary" title="Ühenda tähendused" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}" sec:authorize="${#vars.isLexemeCrudGranted}">Ühenda</a>
-                      <a class="btn btn-sm btn-primary" th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}"
-                         th:if="${!#lists.isEmpty(lexeme.meaningWordLangGroups)}" data-toggle="confirmation"
-                         data-placement="right"
-                         data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
-                         sec:authorize="${#vars.isLexemeCrudGranted}">Lahuta</a>
+<!--                      TODO this functionality is (temporarily) not needed. Enable this function or delete related code when decision is made what to do with this (19.02.2020) -->
+<!--                      <a class="btn btn-sm btn-primary" th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}"-->
+<!--                         th:if="${!#lists.isEmpty(lexeme.meaningWordLangGroups)}" data-toggle="confirmation"-->
+<!--                         data-placement="right"-->
+<!--                         data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"-->
+<!--                         sec:authorize="${#vars.isLexemeCrudGranted}">Lahuta</a>-->
                       <button th:id="${'duplicateLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
                               title="Tee duplikaat ilmikust ja temaga seotud elementidest"
                               th:data-lexeme-id="${lexeme.lexemeId}"

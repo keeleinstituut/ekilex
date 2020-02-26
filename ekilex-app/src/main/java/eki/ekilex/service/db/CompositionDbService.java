@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
@@ -18,6 +19,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
+import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -38,7 +40,9 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static org.jooq.impl.DSL.field;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -65,12 +69,16 @@ import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
+import eki.ekilex.data.db.tables.records.CollocationRecord;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
+import eki.ekilex.data.db.tables.records.LexCollocPosGroupRecord;
+import eki.ekilex.data.db.tables.records.LexCollocRecord;
+import eki.ekilex.data.db.tables.records.LexCollocRelGroupRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
@@ -96,8 +104,7 @@ public class CompositionDbService implements DbConstant {
 	public List<LexemeRecord> getMeaningLexemes(Long meaningId) {
 		return create
 				.selectFrom(LEXEME).where(
-					LEXEME.MEANING_ID.eq(meaningId)
-					.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						LEXEME.MEANING_ID.eq(meaningId))
 				.fetch();
 	}
 
@@ -105,8 +112,7 @@ public class CompositionDbService implements DbConstant {
 		return create
 				.selectFrom(LEXEME).where(
 					LEXEME.MEANING_ID.eq(meaningId)
-					.and(LEXEME.DATASET_CODE.eq(datasetCode))
-					.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+					.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetch();
 	}
 
@@ -114,7 +120,6 @@ public class CompositionDbService implements DbConstant {
 		return create
 				.selectFrom(LEXEME).where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
 										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
 				.fetch();
@@ -127,16 +132,14 @@ public class CompositionDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Long getLexemeId(Long wordId, Long meaningId, String datasetCode) {
+	public LexemeRecord getLexeme(Long wordId, Long meaningId, String datasetCode) {
 		return create
-				.select(LEXEME.ID)
-				.from(LEXEME)
+				.selectFrom(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.MEANING_ID.eq(meaningId))
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetchOptionalInto(Long.class)
-				.orElse(null);
+				.fetchOne();
 	}
 
 	public List<DefinitionRecord> getMeaningDefinitions(Long meaningId) {
@@ -197,14 +200,11 @@ public class CompositionDbService implements DbConstant {
 				selectDistinct(l1.WORD_ID)
 				.from(l1, m1)
 				.where(l1.MEANING_ID.eq(meaningId)
-						.and(
-								l1.MEANING_ID.eq(m1.ID)
-								.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.and(l1.MEANING_ID.eq(m1.ID))
 						.andExists(DSL
 								.select(l2.ID)
 								.from(l2, m2)
 								.where(m2.ID.eq(sourceMeaningId)
-										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(l2.MEANING_ID.eq(m2.ID))
 										.and(l2.WORD_ID.eq(l1.WORD_ID)))));
 
@@ -212,12 +212,10 @@ public class CompositionDbService implements DbConstant {
 				.select(l1.ID.as("id1"), l2.ID.as("id2"))
 				.from(l1, l2)
 				.where(l1.WORD_ID.in(wordIds)
-						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
 						.and(l1.MEANING_ID.eq(meaningId))
 						.and(l2.MEANING_ID.eq(sourceMeaningId))
-						.and(l2.WORD_ID.eq(l1.WORD_ID))
-						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.and(l2.WORD_ID.eq(l1.WORD_ID)))
 				.fetchInto(IdPair.class);
 	}
 
@@ -646,6 +644,65 @@ public class CompositionDbService implements DbConstant {
 			clonedLexemeSourceLink.changed(LEXEME_SOURCE_LINK.ORDER_BY, false);
 			clonedLexemeSourceLink.store();
 		});
+	}
+
+	public void cloneLexemeCollocations(Long lexemeId, Long clonedLexemeId) {
+
+		Map<Long, Long> collocIdMap = new HashMap<>();
+		Map<Long, Long> relGroupIdMap = new HashMap<>();
+		Map<Long, Long> posGroupIdMap = new HashMap<>();
+		Result<LexCollocRecord> lexCollocs = create.selectFrom(LEX_COLLOC).where(LEX_COLLOC.LEXEME_ID.eq(lexemeId)).fetch();
+		for (LexCollocRecord lexColloc : lexCollocs) {
+			Long lexCollocId = lexColloc.getId();
+			Long collocId = lexColloc.getCollocationId();
+			Long relGroupId = lexColloc.getRelGroupId();
+
+			Long clonedCollocId = collocIdMap.get(collocId);
+			if (clonedCollocId == null) {
+				CollocationRecord colloc = create.selectFrom(COLLOCATION).where(COLLOCATION.ID.eq(collocId)).fetchOne();
+				CollocationRecord clonedColloc = colloc.copy();
+				clonedColloc.store();
+				clonedCollocId = clonedColloc.getId();
+				collocIdMap.put(collocId, clonedCollocId);
+				Result<LexCollocRecord> relatedLexCollocs = create.selectFrom(LEX_COLLOC).where(LEX_COLLOC.COLLOCATION_ID.eq(collocId).and(LEX_COLLOC.ID.ne(lexCollocId))).fetch();
+				for (LexCollocRecord relatedLexColloc : relatedLexCollocs) {
+					LexCollocRecord clonedRelatedLexColloc = relatedLexColloc.copy();
+					clonedRelatedLexColloc.setCollocationId(clonedCollocId);
+					clonedRelatedLexColloc.store();
+				}
+			}
+
+			LexCollocRecord clonedLexColloc = lexColloc.copy();
+			clonedLexColloc.setLexemeId(clonedLexemeId);
+			clonedLexColloc.setCollocationId(clonedCollocId);
+
+			if (relGroupId != null) {
+				Long clonedRelGroupId = relGroupIdMap.get(relGroupId);
+				if (clonedRelGroupId == null) {
+					LexCollocRelGroupRecord relGroup = create.selectFrom(LEX_COLLOC_REL_GROUP).where(LEX_COLLOC_REL_GROUP.ID.eq(relGroupId)).fetchOne();
+					Long posGroupId = relGroup.getPosGroupId();
+					Long clonedPosGroupId = posGroupIdMap.get(posGroupId);
+					if (clonedPosGroupId == null) {
+						LexCollocPosGroupRecord posGroup = create.selectFrom(LEX_COLLOC_POS_GROUP).where(LEX_COLLOC_POS_GROUP.ID.eq(posGroupId)).fetchOne();
+						LexCollocPosGroupRecord clonedPosGroup = posGroup.copy();
+						clonedPosGroup.setLexemeId(clonedLexemeId);
+						clonedPosGroup.changed(LEX_COLLOC_POS_GROUP.ORDER_BY, false);
+						clonedPosGroup.store();
+						clonedPosGroupId = clonedPosGroup.getId();
+						posGroupIdMap.put(posGroupId, clonedPosGroupId);
+					}
+					LexCollocRelGroupRecord clonedRelGroup = relGroup.copy();
+					clonedRelGroup.setPosGroupId(clonedPosGroupId);
+					clonedRelGroup.changed(LEX_COLLOC_REL_GROUP.ORDER_BY, false);
+					clonedRelGroup.store();
+					clonedRelGroupId = clonedRelGroup.getId();
+					relGroupIdMap.put(relGroupId, clonedRelGroupId);
+				}
+				clonedLexColloc.setRelGroupId(clonedRelGroupId);
+			}
+
+			clonedLexColloc.store();
+		}
 	}
 
 	public Long cloneMeaning(Long meaningId) {

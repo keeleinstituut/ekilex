@@ -282,7 +282,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.asTable("sup");
 
 		Table<Record1<Integer>> lp = DSL
-				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(field(DSL.count(LEXEME.ID)).as("perm_lex_count"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
@@ -300,7 +300,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.asTable("lp");
 
 		Table<Record1<Integer>> la = DSL
-				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(field(DSL.count(LEXEME.ID)).as("all_lex_count"))
 				.from(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
@@ -311,7 +311,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 		return create
 				.select(field(DSL.or(
 						sup.field("sup_lex_count", Integer.class).gt(0),
-						lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class)))).as("is_granted"))
+						lp.field("perm_lex_count", Integer.class).eq(la.field("all_lex_count", Integer.class)))).as("is_granted"))
 				.from(sup, lp, la)
 				.fetchSingleInto(Boolean.class);
 	}
@@ -330,7 +330,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.asTable("sup");
 
 		Table<Record1<Integer>> lp = DSL
-				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(DSL.field(DSL.count(LEXEME.ID)).as("perm_lex_count"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
 								.and(LEXEME.DATASET_CODE.in(userPermDatasetCodes))
@@ -340,7 +340,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.asTable("lp");
 
 		Table<Record1<Integer>> la = DSL
-				.select(DSL.field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(DSL.field(DSL.count(LEXEME.ID)).as("all_lex_count"))
 				.from(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
@@ -351,7 +351,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 		return create
 				.select(field(DSL.or(
 						sup.field("sup_lex_count", Integer.class).gt(0),
-						lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class)))).as("is_granted"))
+						lp.field("perm_lex_count", Integer.class).eq(la.field("all_lex_count", Integer.class)))).as("is_granted"))
 				.from(sup, lp, la)
 				.fetchSingleInto(Boolean.class);
 	}
@@ -370,7 +370,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.asTable("sup");
 
 		Table<Record1<Integer>> lp = DSL
-				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(field(DSL.count(LEXEME.ID)).as("perm_lex_count"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
@@ -387,7 +387,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.asTable("lp");
 
 		Table<Record1<Integer>> la = DSL
-				.select(field(DSL.count(LEXEME.ID)).as("lex_count"))
+				.select(field(DSL.count(LEXEME.ID)).as("all_lex_count"))
 				.from(LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
@@ -398,7 +398,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 		return create
 				.select(field(DSL.or(
 						sup.field("sup_lex_count", Integer.class).gt(0),
-						lp.field("lex_count", Integer.class).eq(la.field("lex_count", Integer.class)))).as("is_granted"))
+						lp.field("perm_lex_count", Integer.class).eq(la.field("all_lex_count", Integer.class)))).as("is_granted"))
 				.from(sup, lp, la)
 				.fetchSingleInto(Boolean.class);
 	}
