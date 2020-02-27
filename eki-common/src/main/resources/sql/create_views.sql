@@ -934,21 +934,15 @@ from word_etym_recursion rec
                         lexeme l2,
                         word w2,
                         paradigm p2,
-                        form f2,
-                        dataset l1ds,
-                        dataset l2ds
+                        form f2
                    where l1.meaning_id = m.id
                    and   l2.meaning_id = m.id
                    and   l1.word_id != l2.word_id
                    and   l1.type = 'PRIMARY'
                    and   l1.process_state_code = 'avalik'
-                   and   l1ds.code = l1.dataset_code
-                   and   l1ds.is_public = true
                    and   l2.dataset_code = 'ety'
                    and   l2.type = 'PRIMARY'
                    and   l2.process_state_code = 'avalik'
-                   and   l2ds.code = l2.dataset_code
-                   and   l2ds.is_public = true
                    and   l2.word_id = w2.id
                    and   p2.word_id = w2.id
                    and   w2.lang = 'est'
