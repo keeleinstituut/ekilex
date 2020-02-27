@@ -386,7 +386,8 @@
       <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(lexeme.wordLang, allLanguages)}"></span>
       <button type="button" class="btn badge badge-primary" title="Muuda"
               data-toggle="modal"
-              th:data-target="${'#editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}">
+              th:data-target="${'#editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}"
+              sec:authorize="${#vars.isWordCrudGranted}">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
     </div>
