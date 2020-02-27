@@ -2,7 +2,6 @@ package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,7 +88,7 @@ public class SynSearchController extends AbstractSynSearchController {
 		logger.debug("Requesting details by word {}", wordId);
 
 		String datasetCode = getDatasetCodeFromRole(sessionBean);
-		List<String> synLangs = Collections.singletonList(LANGUAGE_CODE_EST);
+		List<String> synLangs = Arrays.asList(LANGUAGE_CODE_EST);
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, LayerName.SYN, synLangs, synLangs);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);

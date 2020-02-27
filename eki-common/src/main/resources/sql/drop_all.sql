@@ -36,6 +36,7 @@ drop type if exists type_meaning_relation;
 
 -- ekilex associated tables and types
 drop type if exists type_term_meaning_word;
+drop type if exists type_word_rel_param;
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
 drop table if exists feedback_log_comment;

@@ -5,12 +5,10 @@ import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
-import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
@@ -19,8 +17,6 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
-import org.jooq.Record2;
-import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -33,14 +29,16 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SynRelation;
-import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
+import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordRelationParam;
+import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.service.db.AbstractSearchDbService;
 
 @Component
@@ -74,97 +72,86 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		return execute(w1, p, wordCondition, layerName, filteringDatasetCodes, fetchAll, offset, create);
 	}
 	
-	public List<SynRelationParamTuple> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		WordRelation opposite = WORD_RELATION.as("opposite");
+		WordRelation r = WORD_RELATION.as("r");
+		WordRelation oppr = WORD_RELATION.as("oppr");
+		WordRelationParam rp = WORD_RELATION_PARAM.as("rp");
+		Word w2 = WORD.as("w2");
+		Word wh = WORD.as("wh");
+		Paradigm p2 = PARADIGM.as("p2");
+		Paradigm ph = PARADIGM.as("ph");
+		Form f2 = FORM.as("f2");
+		Form fh = FORM.as("fh");
+		Lexeme l = LEXEME.as("l");
+		Lexeme lh = LEXEME.as("lh");
+		Definition d = DEFINITION.as("d");
+		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
-		Table<Record2<String, Integer>> homonymCount = create.select(FORM.VALUE, WORD.HOMONYM_NR)
-				.from(FORM, PARADIGM, WORD, LEXEME)
-				.where(FORM.PARADIGM_ID.eq(PARADIGM.ID)
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.asTable("homonymCount");
-
-		return create
-				.selectDistinct(
-						WORD_RELATION.ID.as("relation_id"),
-						WORD_RELATION.WORD2_ID.as("opposite_word_id"),
-						WORD_RELATION.RELATION_STATUS.as("relation_status"),
-						WORD.ID.as("word_id"),
-						WORD.HOMONYM_NR.as("word_homonym_number"),
-						WORD.LANG.as("word_lang"),
-						FORM.VALUE.as("word"),
-						opposite.RELATION_STATUS.as("opposite_relation_status"),
-						WORD_RELATION_PARAM.NAME.as("param_name"),
-						WORD_RELATION_PARAM.VALUE.as("param_value"),
-						WORD_RELATION.ORDER_BY.as("order_by"),
-						LEXEME.ID.as("lexeme_id"),
-						DEFINITION.VALUE.as("definition_value"),
-						DEFINITION.COMPLEXITY.as("definition_complexity"),
-						DEFINITION.ORDER_BY.as("definition_order"),
-						homonymCount.field("homonym_nr").as("other_homonym_number"),
-						DSL.field(
-							DSL.exists(
-								DSL.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
-								.from(WORD_WORD_TYPE)
-								.where(WORD_WORD_TYPE.WORD_ID.eq(WORD_RELATION.WORD2_ID)
-									.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))
-								.groupBy(WORD_WORD_TYPE.WORD_ID)))
-							.as("is_prefixoid"),
-						DSL.field(
-								DSL.exists(
-										DSL.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
-												.from(WORD_WORD_TYPE)
-												.where(WORD_WORD_TYPE.WORD_ID.eq(WORD_RELATION.WORD2_ID)
-														.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))
-												.groupBy(WORD_WORD_TYPE.WORD_ID)))
-								.as("is_suffixoid"),
-						LEXEME.LEVEL1, LEXEME.LEVEL2
-						)
-				.from(
-						WORD_RELATION.leftOuterJoin(WORD_REL_TYPE_LABEL).on(
-								WORD_RELATION.WORD_REL_TYPE_CODE.eq(WORD_REL_TYPE_LABEL.CODE)
-										.and(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-												.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
-								.leftOuterJoin(opposite)
-								.on (opposite.WORD2_ID.eq(WORD_RELATION.WORD1_ID)
-										.and(opposite.WORD1_ID.eq(WORD_RELATION.WORD2_ID)
-										.and(opposite.WORD_REL_TYPE_CODE.eq(WORD_RELATION.WORD_REL_TYPE_CODE)))
-								)
-								.leftOuterJoin(WORD_RELATION_PARAM).on(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(WORD_RELATION.ID))
-								.leftOuterJoin(LEXEME)
-									.on(
-										LEXEME.WORD_ID.eq(WORD_RELATION.WORD2_ID)
-												.and(LEXEME.DATASET_CODE.eq(datasetCode))
-												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-									)
-								.leftOuterJoin(MEANING).on(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID).and(DEFINITION.COMPLEXITY.like("DETAIL%").or(DEFINITION.COMPLEXITY.like("SIMPLE%"))))
-						,
-						WORD,
-						PARADIGM,
-						FORM
-							.leftOuterJoin(homonymCount).on(homonymCount.field("value", String.class).eq(FORM.VALUE))
-
-				)
+		return create.selectDistinct(
+				r.ID,
+				r.RELATION_STATUS,
+				r.ORDER_BY,
+				oppr.RELATION_STATUS.as("opposite_relation_status"),
+				w2.ID.as("related_word_id"),
+				f2.VALUE.as("related_word"),
+				w2.HOMONYM_NR.as("related_word_homonym_nr"),
+				w2.LANG.as("related_word_lang"),
+				DSL.field(DSL.select(DSL.arrayAgg(DSL.rowField(DSL.row(rp.NAME, rp.VALUE))))
+						.from(rp)
+						.where(rp.WORD_RELATION_ID.eq(r.ID))
+						.groupBy(rp.WORD_RELATION_ID)).as("relation_params"),
+				DSL.field(DSL.select(DSL.arrayAgg(d.VALUE).orderBy(l.ORDER_BY, d.ORDER_BY))
+						.from(l, d)
+						.where(
+								l.WORD_ID.eq(r.WORD2_ID)
+										.and(l.DATASET_CODE.eq(datasetCode))
+										.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
+										.and(l.MEANING_ID.eq(d.MEANING_ID))
+										.and(DSL.or(d.COMPLEXITY.like("DETAIL%"), d.COMPLEXITY.like("SIMPLE%"))))
+						.groupBy(l.WORD_ID)).as("related_word_definitions"),
+				DSL.field(DSL.exists(
+						DSL.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
+								.from(wt)
+								.where(wt.WORD_ID.eq(r.WORD2_ID)
+										.and(wt.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))
+								.groupBy(wt.WORD_ID)))
+						.as("related_word_is_prefixoid"),
+				DSL.field(DSL.exists(
+						DSL.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
+								.from(wt)
+								.where(wt.WORD_ID.eq(r.WORD2_ID)
+										.and(wt.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))
+								.groupBy(wt.WORD_ID)))
+						.as("related_word_is_suffixoid"),
+				DSL.field(DSL.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
+						.from(fh, ph, wh)
+						.where(
+								fh.VALUE.eq(f2.VALUE)
+										.and(fh.MODE.eq(FormMode.WORD.name()))
+										.and(fh.PARADIGM_ID.eq(ph.ID))
+										.and(ph.WORD_ID.eq(wh.ID))
+										.andExists(DSL
+												.select(lh.ID)
+												.from(lh)
+												.where(
+														lh.WORD_ID.eq(wh.ID)
+																.and(lh.DATASET_CODE.eq(datasetCode)))))
+						.groupBy(fh.VALUE)).as("related_word_homonyms_exist"))
+				.from(r
+						.leftOuterJoin(oppr).on(
+								oppr.WORD1_ID.eq(r.WORD2_ID)
+										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
+										.and(oppr.WORD_REL_TYPE_CODE.eq(r.WORD_REL_TYPE_CODE)))
+						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID))
+						.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
+						.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name()))))
 				.where(
-						WORD_RELATION.WORD1_ID.eq(wordId)
-								.and(WORD.LANG.in(wordLangs))
-								.and(WORD_RELATION.WORD2_ID.eq(WORD.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.orderBy(
-						WORD_RELATION.ORDER_BY,
-						LEXEME.LEVEL1,
-						LEXEME.LEVEL2,
-						DEFINITION.COMPLEXITY,
-						DEFINITION.ORDER_BY
-				)
-				.fetchInto(SynRelationParamTuple.class);
+						r.WORD1_ID.eq(wordId)
+						.and(r.WORD_REL_TYPE_CODE.eq(relationType))
+						.and(w2.LANG.in(wordLangs)))
+				.orderBy(r.ORDER_BY)
+				.fetchInto(SynRelation.class);
 	}
 
 	public List<WordSynLexeme> getWordPrimarySynonymLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName) {

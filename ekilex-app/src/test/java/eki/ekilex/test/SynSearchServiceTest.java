@@ -17,10 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.data.SynRelation;
-import eki.ekilex.data.SynRelationParamTuple;
-import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.SynSearchDbService;
-import eki.ekilex.service.util.ConversionUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -34,12 +31,6 @@ public class SynSearchServiceTest extends AbstractTest {
 	@Autowired
 	private SynSearchDbService synSearchDbService;
 
-	@Autowired
-	private ConversionUtil conversionUtil;
-
-	@Autowired
-	private CommonDataService commonDataService;
-
 	@Before
 	public void beforeTest() throws Exception {
 		testEnvInitialiser.initDatabase();
@@ -47,9 +38,7 @@ public class SynSearchServiceTest extends AbstractTest {
 
 	@Test
 	public void testGetSynRelationsTuples() {
-		List<SynRelationParamTuple> paramTuples = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"), "est", "descrip");
-		List<SynRelation> relations = conversionUtil.composeSynRelations(paramTuples);
-
+		List<SynRelation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"), "est", "descrip");
 		assertThat(relations.size()).isEqualTo(2);
 	}
 }

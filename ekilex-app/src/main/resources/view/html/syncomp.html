@@ -12,9 +12,9 @@
         th:data-id="${synRelation.id}"
         th:data-orderby="${synRelation.orderBy}"
         th:data-navigate-index="${relationIter.index}"
-        th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-marked' : ''}"
-        th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.wordId}?'true'">
-        <div class="draggable-synonym d-flex flex-row hover-actions-container align-items-center pl-1" th:data-word-id="${synRelation.wordId}" th:data-word="${synRelation.word}">
+        th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.relatedWordId ? 'navigate-marked' : ''}"
+        th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.relatedWordId}?'true'">
+        <div class="draggable-synonym d-flex flex-row hover-actions-container align-items-center pl-1" th:data-word-id="${synRelation.relatedWordId}" th:data-word="${synRelation.relatedWord}">
           <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
             <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
           </span>
@@ -25,8 +25,9 @@
             <i class="fa fa-exclamation-triangle text-muted" aria-hidden="true"></i>
           </span>
           <div class="mr-auto pl-0 d-flex flex-row flex-nowrap align-items-center">
-            <p class="drag-handle py-2 pr-1 m-0 list-item-value" th:inline="text" data-toggle="tooltip" data-html="true" th:title="${viewUtil.getDefinitionTooltipHtml(synRelation.definitions)}">
-              [[${(synRelation.suffixoid ? '-' : '') + synRelation.word + (synRelation.prefixoid ? '-' : '')}]] <sup th:if="${synRelation.otherHomonymsExist}" title="Homonüümi number" th:text="${synRelation.homonymNumber}">1</sup>
+            <p class="drag-handle py-2 pr-1 m-0 list-item-value" th:inline="text" data-toggle="tooltip" data-html="true" th:title="${viewUtil.getDefinitionTooltipHtml(synRelation.relatedWordDefinitions)}">
+              [[${(synRelation.relatedWordIsSuffixoid ? '-' : '') + synRelation.relatedWord + (synRelation.relatedWordIsPrefixoid ? '-' : '')}]]
+              <sup th:if="${synRelation.relatedWordHomonymsExist}" title="Homonüümi number" th:text="${synRelation.relatedWordHomonymNr}">1</sup>
             </p>
           </div>
           <div class="hover-actions">
@@ -46,17 +47,17 @@
               <i class="fa fa-remove" aria-hidden="true"></i>
             </button>
           </div>
-          <button type="button" class="btn btn-sm px-0 syn-stats-popover" data-toggle="popover" th:data-title="${synRelation.word}" data-html="true">
+          <button type="button" class="btn btn-sm px-0 syn-stats-popover" data-toggle="popover" th:data-title="${synRelation.relatedWord}" data-html="true">
             <i class="fa fa-bar-chart action-icon px-2 d-block" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Vaata statistikat"></i>
           </button>
           <div class="syn-stats-content d-none">
-            <ul th:if="${synRelation.relationParams!=null and !synRelation.relationParams.isEmpty()}" class=" list-unstyled">
+            <ul th:if="${not #lists.isEmpty(synRelation.relationParams)}" class="list-unstyled">
               <li th:each="relationParam : ${synRelation.relationParams}" class="d-flex flex-row flex-nowrap row">
                 <span class="col-6" th:text="${relationParam.name}">Label </span>
                 <span class="col-6" th:text="${relationParam.value}">Value </span>
               </li>
             </ul>
-            <p th:unless="${synRelation.relationParams!=null and !synRelation.relationParams.isEmpty()}">Andmed puuduvad</p>
+            <p th:if="${#lists.isEmpty(synRelation.relationParams)}">Andmed puuduvad</p>
           </div>
           <span th:if="${synRelation.oppositeRelationStatus != null}"
             th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}"

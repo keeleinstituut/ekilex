@@ -35,7 +35,6 @@ import eki.ekilex.data.RelationParam;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SynRelation;
-import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
@@ -148,9 +147,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<SynRelation> relations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(candidateLangs)) {
-			List<SynRelationParamTuple> relationTuples = synSearchDbService
-					.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs, classifierLabelLang, classifierLabelTypeDescrip);
-			relations = conversionUtil.composeSynRelations(relationTuples);
+			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs, classifierLabelLang, classifierLabelTypeDescrip);
 		}
 
 		wordDetails.setLexemes(synLexemes);

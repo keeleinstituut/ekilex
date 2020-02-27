@@ -63,7 +63,6 @@ import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;

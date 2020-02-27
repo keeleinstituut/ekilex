@@ -11,29 +11,29 @@ public class SynRelation extends AbstractDataObject {
 
 	private Long id;
 
-	private Long wordId;
-
-	private Long oppositeWordId;
-
-	private String word;
-
-	private List<String> definitions;
+	private RelationStatus relationStatus;
 
 	private Long orderBy;
 
-	private RelationStatus relationStatus;
-
 	private RelationStatus oppositeRelationStatus;
+
+	private Long relatedWordId;
+
+	private String relatedWord;
+
+	private Integer relatedWordHomonymNr;
+
+	private String relatedWordLang;
 
 	private List<RelationParam> relationParams;
 
-	private Integer homonymNumber;
+	private List<String> relatedWordDefinitions;
 
-	private boolean otherHomonymsExist;
+	private boolean relatedWordIsPrefixoid;
 
-	private boolean isPrefixoid;
+	private boolean relatedWordIsSuffixoid;
 
-	private boolean isSuffixoid;
+	private boolean relatedWordHomonymsExist;
 
 	public Long getId() {
 		return id;
@@ -41,22 +41,6 @@ public class SynRelation extends AbstractDataObject {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
-	}
-
-	public List<String> getDefinitions() {
-		return definitions;
-	}
-
-	public void setDefinitions(List<String> definitions) {
-		this.definitions = definitions;
 	}
 
 	public RelationStatus getRelationStatus() {
@@ -67,12 +51,52 @@ public class SynRelation extends AbstractDataObject {
 		this.relationStatus = relationStatus;
 	}
 
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
+
 	public RelationStatus getOppositeRelationStatus() {
 		return oppositeRelationStatus;
 	}
 
 	public void setOppositeRelationStatus(RelationStatus oppositeRelationStatus) {
 		this.oppositeRelationStatus = oppositeRelationStatus;
+	}
+
+	public Long getRelatedWordId() {
+		return relatedWordId;
+	}
+
+	public void setRelatedWordId(Long relatedWordId) {
+		this.relatedWordId = relatedWordId;
+	}
+
+	public String getRelatedWord() {
+		return relatedWord;
+	}
+
+	public void setRelatedWord(String relatedWord) {
+		this.relatedWord = relatedWord;
+	}
+
+	public Integer getRelatedWordHomonymNr() {
+		return relatedWordHomonymNr;
+	}
+
+	public void setRelatedWordHomonymNr(Integer relatedWordHomonymNr) {
+		this.relatedWordHomonymNr = relatedWordHomonymNr;
+	}
+
+	public String getRelatedWordLang() {
+		return relatedWordLang;
+	}
+
+	public void setRelatedWordLang(String relatedWordLang) {
+		this.relatedWordLang = relatedWordLang;
 	}
 
 	public List<RelationParam> getRelationParams() {
@@ -83,59 +107,36 @@ public class SynRelation extends AbstractDataObject {
 		this.relationParams = relationParams;
 	}
 
-	public Long getOrderBy() {
-		return orderBy;
+	public List<String> getRelatedWordDefinitions() {
+		return relatedWordDefinitions;
 	}
 
-	public void setOrderBy(Long orderBy) {
-		this.orderBy = orderBy;
+	public void setRelatedWordDefinitions(List<String> relatedWordDefinitions) {
+		this.relatedWordDefinitions = relatedWordDefinitions;
 	}
 
-	public Long getWordId() {
-		return wordId;
+	public boolean isRelatedWordIsPrefixoid() {
+		return relatedWordIsPrefixoid;
 	}
 
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
+	public void setRelatedWordIsPrefixoid(boolean relatedWordIsPrefixoid) {
+		this.relatedWordIsPrefixoid = relatedWordIsPrefixoid;
 	}
 
-	public Long getOppositeWordId() {
-		return oppositeWordId;
+	public boolean isRelatedWordIsSuffixoid() {
+		return relatedWordIsSuffixoid;
 	}
 
-	public void setOppositeWordId(Long oppositeWordId) {
-		this.oppositeWordId = oppositeWordId;
+	public void setRelatedWordIsSuffixoid(boolean relatedWordIsSuffixoid) {
+		this.relatedWordIsSuffixoid = relatedWordIsSuffixoid;
 	}
 
-	public Integer getHomonymNumber() {
-		return homonymNumber;
+	public boolean isRelatedWordHomonymsExist() {
+		return relatedWordHomonymsExist;
 	}
 
-	public void setHomonymNumber(Integer homonymNumber) {
-		this.homonymNumber = homonymNumber;
+	public void setRelatedWordHomonymsExist(boolean relatedWordHomonymsExist) {
+		this.relatedWordHomonymsExist = relatedWordHomonymsExist;
 	}
 
-	public boolean isOtherHomonymsExist() {
-		return otherHomonymsExist;
-	}
-
-	public void setOtherHomonymsExist(boolean otherHomonymsExist) {
-		this.otherHomonymsExist = otherHomonymsExist;
-	}
-
-	public boolean isPrefixoid() {
-		return isPrefixoid;
-	}
-
-	public void setPrefixoid(boolean prefixoid) {
-		isPrefixoid = prefixoid;
-	}
-
-	public boolean isSuffixoid() {
-		return isSuffixoid;
-	}
-
-	public void setSuffixoid(boolean suffixoid) {
-		isSuffixoid = suffixoid;
-	}
 }

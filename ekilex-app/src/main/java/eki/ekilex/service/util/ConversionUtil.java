@@ -53,10 +53,7 @@ import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
-import eki.ekilex.data.RelationParam;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.data.SynRelation;
-import eki.ekilex.data.SynRelationParamTuple;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TypeTermMeaningWord;
 import eki.ekilex.data.Usage;
@@ -786,67 +783,6 @@ public class ConversionUtil implements DbConstant {
 		collocMember.setWordModeWord(isWordModeWord);
 
 		collocation.getCollocMembers().add(collocMember);
-	}
-
-	public List<SynRelation> composeSynRelations(List<SynRelationParamTuple> synRelationParamTuples) {
-
-		List<SynRelation> synRelations = new ArrayList<>();
-		Map<Long, SynRelation> relationMap = new HashMap<>();
-
-		List<String> relationParamNames = new ArrayList<>();
-
-		Integer otherHomonymNo = null;
-		Long firstRelationLexemeId = null;
-		for (SynRelationParamTuple paramTuple : synRelationParamTuples) {
-			SynRelation relation = relationMap.get(paramTuple.getRelationId());
-			String definitionValue = paramTuple.getDefinitionValue();
-			if (relation == null) {
-				relation = new SynRelation();
-				relation.setId(paramTuple.getRelationId());
-				relation.setWord(paramTuple.getWord());
-				relation.setWordId(paramTuple.getWordId());
-				relation.setOppositeWordId(paramTuple.getOppositeWordId());
-				relation.setOrderBy(paramTuple.getOrderBy());
-				relation.setRelationStatus(paramTuple.getRelationStatus());
-				relation.setHomonymNumber(paramTuple.getHomonymNumber());
-				relation.setSuffixoid(paramTuple.getSuffixoid());
-				relation.setPrefixoid(paramTuple.getPrefixoid());
-
-				relation.setDefinitions(new ArrayList<>());
-				if (StringUtils.isNotBlank(definitionValue)) {
-					relation.getDefinitions().add(definitionValue);
-				}
-
-				otherHomonymNo = paramTuple.getOtherHomonymNumber();
-				firstRelationLexemeId = paramTuple.getLexemeId();
-
-				relation.setRelationParams(new ArrayList<>());
-				relationMap.put(relation.getId(), relation);
-				synRelations.add(relation);
-
-				relationParamNames.clear();
-			} else if (firstRelationLexemeId != null && firstRelationLexemeId.equals(paramTuple.getLexemeId())) {
-				relation.getDefinitions().add(definitionValue);
-			}
-
-			if (otherHomonymNo != paramTuple.getOtherHomonymNumber()) {
-				relation.setOtherHomonymsExist(true);
-			}
-
-			if (paramTuple.getOppositeRelationStatus() != null) {
-				relation.setOppositeRelationStatus(paramTuple.getOppositeRelationStatus());
-			}
-
-			if (StringUtils.isNotBlank(paramTuple.getParamName()) && !relationParamNames.contains(paramTuple.getParamName())) {
-				RelationParam param = new RelationParam();
-				param.setName(paramTuple.getParamName());
-				param.setValue(paramTuple.getParamValue());
-				relation.getRelationParams().add(param);
-
-				relationParamNames.add(param.getName());
-			}
-		}
-		return synRelations;
 	}
 
 	public void setWordTypeFlags(Word word, List<Classifier> wordTypes) {

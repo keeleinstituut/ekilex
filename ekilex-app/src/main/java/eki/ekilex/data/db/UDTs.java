@@ -18,6 +18,7 @@ import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
+import eki.ekilex.data.db.udt.TypeWordRelParam;
 import eki.ekilex.data.db.udt.TypeWordRelation;
 
 import javax.annotation.Generated;
@@ -105,6 +106,11 @@ public class UDTs {
      * The type <code>public.type_word_etym_relation</code>
      */
     public static TypeWordEtymRelation TYPE_WORD_ETYM_RELATION = eki.ekilex.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION;
+
+    /**
+     * The type <code>public.type_word_rel_param</code>
+     */
+    public static TypeWordRelParam TYPE_WORD_REL_PARAM = eki.ekilex.data.db.udt.TypeWordRelParam.TYPE_WORD_REL_PARAM;
 
     /**
      * The type <code>public.type_word_relation</code>

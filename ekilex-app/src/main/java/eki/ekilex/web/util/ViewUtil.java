@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class ViewUtil implements InitializingBean {
 	public String getDefinitionTooltipHtml(List<String> definitions) {
 
 		StringBuilder htmlBuf = new StringBuilder();
-		if (definitions.isEmpty()) {
+		if (CollectionUtils.isEmpty(definitions)) {
 			htmlBuf.append("definitsioon puudub");
 		} else {
 			boolean countDefinitions = definitions.size() > 1;
