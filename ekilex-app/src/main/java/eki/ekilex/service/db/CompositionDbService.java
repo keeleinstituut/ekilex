@@ -40,6 +40,7 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static org.jooq.impl.DSL.field;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +58,13 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
+import eki.ekilex.data.LexCollocationGroupTuple;
+import eki.ekilex.data.LexCollocationTuple;
+import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.LexColloc;
+import eki.ekilex.data.db.tables.LexCollocPosGroup;
+import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -69,16 +75,13 @@ import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.tables.records.CollocationRecord;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
-import eki.ekilex.data.db.tables.records.LexCollocPosGroupRecord;
 import eki.ekilex.data.db.tables.records.LexCollocRecord;
-import eki.ekilex.data.db.tables.records.LexCollocRelGroupRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
@@ -651,19 +654,21 @@ public class CompositionDbService implements DbConstant {
 		Map<Long, Long> collocIdMap = new HashMap<>();
 		Map<Long, Long> relGroupIdMap = new HashMap<>();
 		Map<Long, Long> posGroupIdMap = new HashMap<>();
-		Result<LexCollocRecord> lexCollocs = create.selectFrom(LEX_COLLOC).where(LEX_COLLOC.LEXEME_ID.eq(lexemeId)).fetch();
-		for (LexCollocRecord lexColloc : lexCollocs) {
-			Long lexCollocId = lexColloc.getId();
-			Long collocId = lexColloc.getCollocationId();
-			Long relGroupId = lexColloc.getRelGroupId();
+		List<LexCollocationTuple> lexCollocationTuples = getLexCollocationTuples(lexemeId);
+		List<LexCollocationGroupTuple> lexCollocationGroupTuples = getLexCollocationGroupTuples(lexemeId);
+		Map<Long, LexCollocationGroupTuple> lexCollocationGroupTupleMap = lexCollocationGroupTuples.stream()
+				.collect(Collectors.toMap(lexCollocationGroupTuple -> lexCollocationGroupTuple.getRelGroupId(), lexCollocationGroupTuple -> lexCollocationGroupTuple));
+
+		for (LexCollocationTuple lexCollocationTuple : lexCollocationTuples) {
+			Long lexCollocId = lexCollocationTuple.getLexCollocId();
+			Long collocId = lexCollocationTuple.getCollocId();
+			Long relGroupId = lexCollocationTuple.getRelGroupId();
 
 			Long clonedCollocId = collocIdMap.get(collocId);
 			if (clonedCollocId == null) {
-				CollocationRecord colloc = create.selectFrom(COLLOCATION).where(COLLOCATION.ID.eq(collocId)).fetchOne();
-				CollocationRecord clonedColloc = colloc.copy();
-				clonedColloc.store();
-				clonedCollocId = clonedColloc.getId();
+				clonedCollocId = createCollocation(lexCollocationTuple);
 				collocIdMap.put(collocId, clonedCollocId);
+
 				Result<LexCollocRecord> relatedLexCollocs = create.selectFrom(LEX_COLLOC).where(LEX_COLLOC.COLLOCATION_ID.eq(collocId).and(LEX_COLLOC.ID.ne(lexCollocId))).fetch();
 				for (LexCollocRecord relatedLexColloc : relatedLexCollocs) {
 					LexCollocRecord clonedRelatedLexColloc = relatedLexColloc.copy();
@@ -672,37 +677,156 @@ public class CompositionDbService implements DbConstant {
 				}
 			}
 
-			LexCollocRecord clonedLexColloc = lexColloc.copy();
-			clonedLexColloc.setLexemeId(clonedLexemeId);
-			clonedLexColloc.setCollocationId(clonedCollocId);
-
+			Long clonedRelGroupId = null;
 			if (relGroupId != null) {
-				Long clonedRelGroupId = relGroupIdMap.get(relGroupId);
+				clonedRelGroupId = relGroupIdMap.get(relGroupId);
 				if (clonedRelGroupId == null) {
-					LexCollocRelGroupRecord relGroup = create.selectFrom(LEX_COLLOC_REL_GROUP).where(LEX_COLLOC_REL_GROUP.ID.eq(relGroupId)).fetchOne();
-					Long posGroupId = relGroup.getPosGroupId();
+					LexCollocationGroupTuple lexCollocationGroupTuple = lexCollocationGroupTupleMap.get(relGroupId);
+					Long posGroupId = lexCollocationGroupTuple.getPosGroupId();
 					Long clonedPosGroupId = posGroupIdMap.get(posGroupId);
 					if (clonedPosGroupId == null) {
-						LexCollocPosGroupRecord posGroup = create.selectFrom(LEX_COLLOC_POS_GROUP).where(LEX_COLLOC_POS_GROUP.ID.eq(posGroupId)).fetchOne();
-						LexCollocPosGroupRecord clonedPosGroup = posGroup.copy();
-						clonedPosGroup.setLexemeId(clonedLexemeId);
-						clonedPosGroup.changed(LEX_COLLOC_POS_GROUP.ORDER_BY, false);
-						clonedPosGroup.store();
-						clonedPosGroupId = clonedPosGroup.getId();
+						clonedPosGroupId = createPosGroup(lexCollocationGroupTuple, clonedLexemeId);
 						posGroupIdMap.put(posGroupId, clonedPosGroupId);
 					}
-					LexCollocRelGroupRecord clonedRelGroup = relGroup.copy();
-					clonedRelGroup.setPosGroupId(clonedPosGroupId);
-					clonedRelGroup.changed(LEX_COLLOC_REL_GROUP.ORDER_BY, false);
-					clonedRelGroup.store();
-					clonedRelGroupId = clonedRelGroup.getId();
+					clonedRelGroupId = createRelGroup(lexCollocationGroupTuple, clonedPosGroupId);
 					relGroupIdMap.put(relGroupId, clonedRelGroupId);
 				}
-				clonedLexColloc.setRelGroupId(clonedRelGroupId);
 			}
 
-			clonedLexColloc.store();
+			createLexColloc(lexCollocationTuple, clonedLexemeId, clonedRelGroupId, clonedCollocId);
 		}
+	}
+
+	private List<LexCollocationTuple> getLexCollocationTuples(Long lexemeId) {
+
+		LexColloc lc = LEX_COLLOC.as("lc");
+		Collocation c = COLLOCATION.as("c");
+
+		return create
+				.select(
+						lc.ID.as("lex_colloc_id"),
+						lc.REL_GROUP_ID.as("rel_group_id"),
+						lc.MEMBER_FORM.as("member_form"),
+						lc.CONJUNCT.as("conjunct"),
+						lc.WEIGHT.as("weight"),
+						lc.MEMBER_ORDER.as("member_order"),
+						lc.GROUP_ORDER.as("group_order"),
+						c.ID.as("colloc_id"),
+						c.VALUE.as("colloc_value"),
+						c.DEFINITION.as("colloc_definition"),
+						c.FREQUENCY.as("colloc_frequency"),
+						c.SCORE.as("colloc_score"),
+						c.USAGES.as("colloc_usages"),
+						c.COMPLEXITY.as("colloc_complexity"))
+				.from(lc, c)
+				.where(lc.LEXEME_ID.eq(lexemeId)
+						.and(c.ID.eq(lc.COLLOCATION_ID)))
+				.fetchInto(LexCollocationTuple.class);
+	}
+
+	private List<LexCollocationGroupTuple> getLexCollocationGroupTuples(Long lexemeId) {
+
+		LexCollocRelGroup lcrg = LEX_COLLOC_REL_GROUP.as("lcrg");
+		LexCollocPosGroup lcpg = LEX_COLLOC_POS_GROUP.as("lcpg");
+
+		return create
+				.select(
+						lcpg.ID.as("pos_group_id"),
+						lcpg.POS_GROUP_CODE.as("pos_group_code"),
+						lcpg.ORDER_BY.as("pos_group_order_by"),
+						lcrg.ID.as("rel_group_id"),
+						lcrg.NAME.as("rel_group_name"),
+						lcrg.FREQUENCY.as("rel_group_frequency"),
+						lcrg.SCORE.as("rel_group_score"),
+						lcrg.ORDER_BY.as("rel_group_order_by"))
+				.from(LEXEME
+						.innerJoin(lcpg).on(lcpg.LEXEME_ID.eq(LEXEME.ID))
+						.innerJoin(lcrg).on(lcrg.POS_GROUP_ID.eq(lcpg.ID)))
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchInto(LexCollocationGroupTuple.class);
+	}
+
+	private Long createCollocation(LexCollocationTuple lexCollocationTuple) {
+
+		String value = lexCollocationTuple.getCollocValue();
+		String definition = lexCollocationTuple.getCollocDefinition();
+		BigDecimal frequency = lexCollocationTuple.getCollocFrequency() == null ? null : BigDecimal.valueOf(lexCollocationTuple.getCollocFrequency());
+		BigDecimal score = lexCollocationTuple.getCollocScore() == null ? null : BigDecimal.valueOf(lexCollocationTuple.getCollocScore());
+		String[] usages = lexCollocationTuple.getCollocUsages() == null ? null : lexCollocationTuple.getCollocUsages().toArray(new String[0]);
+		String complexity = lexCollocationTuple.getCollocComplexity();
+
+		return create
+				.insertInto(COLLOCATION,
+						COLLOCATION.VALUE,
+						COLLOCATION.DEFINITION,
+						COLLOCATION.FREQUENCY,
+						COLLOCATION.SCORE,
+						COLLOCATION.USAGES,
+						COLLOCATION.COMPLEXITY)
+				.values(value, definition, frequency, score, usages, complexity)
+				.returning(COLLOCATION.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	private Long createPosGroup(LexCollocationGroupTuple lexCollocationGroupTuple, Long lexemeId) {
+
+		String posGroupCode = lexCollocationGroupTuple.getPosGroupCode();
+		Long orderBy = lexCollocationGroupTuple.getPosGroupOrderBy();
+
+		return create
+				.insertInto(LEX_COLLOC_POS_GROUP,
+						LEX_COLLOC_POS_GROUP.LEXEME_ID,
+						LEX_COLLOC_POS_GROUP.POS_GROUP_CODE,
+						LEX_COLLOC_POS_GROUP.ORDER_BY)
+				.values(lexemeId, posGroupCode, orderBy)
+				.returning(LEX_COLLOC_POS_GROUP.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	private Long createRelGroup(LexCollocationGroupTuple lexCollocationGroupTuple, Long posGroupId) {
+
+		String name = lexCollocationGroupTuple.getRelGroupName();
+		BigDecimal frequency = lexCollocationGroupTuple.getRelGroupFrequency() == null ? null : BigDecimal.valueOf(lexCollocationGroupTuple.getRelGroupFrequency());
+		BigDecimal score = lexCollocationGroupTuple.getRelGroupScore() == null ? null : BigDecimal.valueOf(lexCollocationGroupTuple.getRelGroupScore());
+		Long orderBy = lexCollocationGroupTuple.getRelGroupOrderBy();
+
+		return create
+				.insertInto(LEX_COLLOC_REL_GROUP,
+						LEX_COLLOC_REL_GROUP.POS_GROUP_ID,
+						LEX_COLLOC_REL_GROUP.NAME,
+						LEX_COLLOC_REL_GROUP.FREQUENCY,
+						LEX_COLLOC_REL_GROUP.SCORE,
+						LEX_COLLOC_REL_GROUP.ORDER_BY)
+				.values(posGroupId, name, frequency, score, orderBy)
+				.returning(LEX_COLLOC_REL_GROUP.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	private Long createLexColloc(LexCollocationTuple lexCollocationTuple, Long lexemeId, Long relGroupId, Long collocationId) {
+
+		String memberForm = lexCollocationTuple.getMemberForm();
+		String conjunct = lexCollocationTuple.getConjunct();
+		BigDecimal weight = lexCollocationTuple.getWeight() == null ? null : BigDecimal.valueOf(lexCollocationTuple.getWeight());
+		Integer memberOrder = lexCollocationTuple.getMemberOrder();
+		Integer groupOrder = lexCollocationTuple.getGroupOrder();
+
+		return create
+				.insertInto(LEX_COLLOC,
+						LEX_COLLOC.LEXEME_ID,
+						LEX_COLLOC.REL_GROUP_ID,
+						LEX_COLLOC.COLLOCATION_ID,
+						LEX_COLLOC.MEMBER_FORM,
+						LEX_COLLOC.CONJUNCT,
+						LEX_COLLOC.WEIGHT,
+						LEX_COLLOC.MEMBER_ORDER,
+						LEX_COLLOC.GROUP_ORDER)
+				.values(lexemeId, relGroupId, collocationId, memberForm, conjunct, weight, memberOrder, groupOrder)
+				.returning(LEX_COLLOC.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public Long cloneMeaning(Long meaningId) {

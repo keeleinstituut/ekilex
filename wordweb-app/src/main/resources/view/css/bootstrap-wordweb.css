@@ -8084,10 +8084,6 @@ footer p {
   padding-bottom: 11.25rem;
 }
 
-.bs-tooltip-top {
-  top: -160px!important;
-}
-
 .btn-primary {
   background: dodgerblue;
   color: white;
@@ -8710,4 +8706,5 @@ body:not(.home-page) footer {
     margin-left: 0!important;
   }
 }
+
 /*# sourceMappingURL=bootstrap-wordweb.css.map */

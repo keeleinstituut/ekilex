@@ -92,7 +92,7 @@ etymkeel_tyyp	etymkeel_tyyp	avesta	avesta keel	et	language	ave
 etymkeel_tyyp	etymkeel_tyyp	avesta	Avesta	en	language	ave
 etymkeel_tyyp	etymkeel_tyyp	balti	balti keel (tiibeti keelerühmas)	et	language	bft
 etymkeel_tyyp	etymkeel_tyyp	balti	Balti	en	language	bft
-etymkeel_tyyp	etymkeel_tyyp	baltisaksa	baltisaksa murre	et	language	qad
+etymkeel_tyyp	etymkeel_tyyp	baltisaksa et	language	qad
 etymkeel_tyyp	etymkeel_tyyp	baltisaksa	Baltic German	en	language	qad
 etymkeel_tyyp	etymkeel_tyyp	bambara	bambara keel (Malis)	et	language	bam
 etymkeel_tyyp	etymkeel_tyyp	bambara	Bambara	en	language	bam
@@ -580,7 +580,7 @@ mt_tyyp	mt_tyyp	f?v	Flash video	en	-	-
 mt_tyyp	mt_tyyp	snd	heli	et	-	-
 mt_tyyp	mt_tyyp	snd	sound	en	-	-
 mvtl_tyyp	mvtl_tyyp	srj	sarjaviide	et	-	-
-mvtl_tyyp	mvtl_tyyp	srj	sarjaviide	en	-	-
+mvtl_tyyp	mvtl_tyyp	srj	see also	en	-	-
 mvtl_tyyp	mvtl_tyyp	vt	vaata seost	et	-	-
 mvtl_tyyp	mvtl_tyyp	vt	see also	en	-	-
 mvtl_tyyp	mvtl_tyyp	adv	adverbiviide	et	-	-
@@ -1539,9 +1539,9 @@ vn_tyyp	muutevormi nimi	KvtPtPsN	polnuvat	et	morph	KvtPtPsN
 vn_tyyp	muutevormi nimi	KndPrPsN	poleks	et	morph	KndPrPsN
 vn_tyyp	muutevormi nimi	KndPtPsN	polnuks	et	morph	KndPtPsN
 xmllang_tyyp	XML elementide keelevalik	et	eesti	et	-	-
-xmllang_tyyp	XML elementide keelevalik	et	estonian	en	-	-
+xmllang_tyyp	XML elementide keelevalik	et	Estonian	en	-	-
 xmllang_tyyp	XML elementide keelevalik	ru	vene	et	-	-
-xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-
+xmllang_tyyp	XML elementide keelevalik	ru	Russian	en	-	-
 yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	lex_rel_type	yvt:vrd
 yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	lex_rel_type	yvt:vt ka
 yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	lex_rel_type	yvt:NB

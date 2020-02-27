@@ -151,14 +151,7 @@
                     <span class="tag" th:text="${summarisedPos.value}"></span>
                   </th:block>
                 </h3>
-                <div th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
-                  <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
-                    <div>
-                      <span th:text="#{label.od.recommend}">ÕS soovitab:</span>
-                      <span th:utext="${odWordRecommendation}"></span>
-                    </div>
-                  </th:block>
-                </div>
+
               </div>
             </div>
             <div class="level-2-panel">
@@ -187,6 +180,14 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data sidebar">
+            <section class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
+              <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
+                <div class="col-12">
+                  <h5  class="recommended-usage-label"><span th:text="#{label.od.recommend}" class="label-text">ÕS soovitab:</span></h5>
+                  <div th:utext="${odWordRecommendation}"></div>
+                </div>
+              </th:block>
+            </section>
             <section class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
                 <h5 class="font-weight-bold mb-0">

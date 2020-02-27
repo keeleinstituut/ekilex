@@ -34,7 +34,7 @@
       <div class="navigate-panel card shadow h-100">
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
-            <h1 th:text="${details.word}" class="mr-3 mb-0">Aktiivne sõna</h1>
+            <h1 th:utext="${details.word}" class="mr-3 mb-0">Aktiivne sõna</h1>
             <button type="button" class="btn btn-secondary btn-compact"
               id="synLayerCompleteBtn"
               th:data-word-id="${wordId}"
