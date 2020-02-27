@@ -31,10 +31,10 @@ import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
-import eki.ekilex.data.RelationParam;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
@@ -202,8 +202,8 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) {
 
-		List<RelationParam> relationParams = synSearchDbService.getWordRelationParams(relationId);
-		Float lexemeWeight = getCalculatedLexemeWeight(relationParams);
+		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(relationId);
+		Float lexemeWeight = getCalculatedLexemeWeight(typeWordRelParams);
 
 		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, lexemeWeight, existingLexemeId);
 		String synWordValue = lookupDbService.getWordValue(wordId);
@@ -249,18 +249,18 @@ public class SynSearchService extends AbstractWordSearchService {
 		}
 	}
 
-	private Float getCalculatedLexemeWeight(List<RelationParam> relationParams) {
+	private Float getCalculatedLexemeWeight(List<TypeWordRelParam> typeWordRelParams) {
 
-		if (relationParams.isEmpty()) {
+		if (typeWordRelParams.isEmpty()) {
 			return DEFAULT_LEXEME_WEIGHT;
 		}
 
 		float dividend = 0;
 		float divisor = 0;
 
-		for (RelationParam relationParam : relationParams) {
-			String relationParamName = relationParam.getName();
-			Float relationParamValue = relationParam.getValue();
+		for (TypeWordRelParam typeWordRelParam : typeWordRelParams) {
+			String relationParamName = typeWordRelParam.getName();
+			Float relationParamValue = typeWordRelParam.getValue();
 			Float relationParamWeightMultiplier = relationWeightMultiplierMap.get(relationParamName);
 
 			if (relationParamWeightMultiplier == null) {

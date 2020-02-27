@@ -2,7 +2,7 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class RelationParam extends AbstractDataObject {
+public class TypeWordRelParam extends AbstractDataObject {
 
 	private static final long serialVersionUID = -8481017888065593956L;
 

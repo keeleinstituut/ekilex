@@ -24,11 +24,11 @@ import eki.common.constant.FormMode;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.RelationParam;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.data.db.tables.Definition;
@@ -39,6 +39,7 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordWordType;
+import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 import eki.ekilex.service.db.AbstractSearchDbService;
 
 @Component
@@ -97,7 +98,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				f2.VALUE.as("related_word"),
 				w2.HOMONYM_NR.as("related_word_homonym_nr"),
 				w2.LANG.as("related_word_lang"),
-				DSL.field(DSL.select(DSL.arrayAgg(DSL.rowField(DSL.row(rp.NAME, rp.VALUE))))
+				DSL.field(DSL.select(DSL.field("array_agg(row(rp.name, rp.value)::type_word_rel_param)", TypeWordRelParamRecord[].class))
 						.from(rp)
 						.where(rp.WORD_RELATION_ID.eq(r.ID))
 						.groupBy(rp.WORD_RELATION_ID)).as("relation_params"),
@@ -288,12 +289,12 @@ public class SynSearchDbService extends AbstractSearchDbService {
 					.fetchInto(SynRelation.class);
 	}
 
-	public List<RelationParam> getWordRelationParams(Long wordRelationId) {
+	public List<TypeWordRelParam> getWordRelationParams(Long wordRelationId) {
 
 		return create
 				.select(WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
 				.from(WORD_RELATION_PARAM)
 				.where(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(wordRelationId))
-				.fetchInto(RelationParam.class);
+				.fetchInto(TypeWordRelParam.class);
 	}
 }

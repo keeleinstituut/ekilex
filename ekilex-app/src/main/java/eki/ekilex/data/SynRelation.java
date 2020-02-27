@@ -25,7 +25,7 @@ public class SynRelation extends AbstractDataObject {
 
 	private String relatedWordLang;
 
-	private List<RelationParam> relationParams;
+	private List<TypeWordRelParam> relationParams;
 
 	private List<String> relatedWordDefinitions;
 
@@ -99,11 +99,11 @@ public class SynRelation extends AbstractDataObject {
 		this.relatedWordLang = relatedWordLang;
 	}
 
-	public List<RelationParam> getRelationParams() {
+	public List<TypeWordRelParam> getRelationParams() {
 		return relationParams;
 	}
 
-	public void setRelationParams(List<RelationParam> relationParams) {
+	public void setRelationParams(List<TypeWordRelParam> relationParams) {
 		this.relationParams = relationParams;
 	}
 
