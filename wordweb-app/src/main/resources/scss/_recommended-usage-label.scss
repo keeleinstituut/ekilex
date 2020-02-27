@@ -1,11 +1,11 @@
 .recommended-usage-label{
   position: relative;
+  display: inline-block;
   padding: 10px 10px 7px;
   margin-left: 5px;
   font-size: 16px;
-  text-transform: uppercase;
-  display: inline-block;
   color: $white;
+  text-transform: uppercase;
 
   .label-text{
     position: relative;
