@@ -4,13 +4,18 @@
 package eki.wordweb.data.db.tables;
 
 
+import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordSearchRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -33,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
 
-    private static final long serialVersionUID = 106307275;
+    private static final long serialVersionUID = 1923793449;
 
     /**
      * The reference instance of <code>public.mview_ww_word_search</code>
@@ -112,6 +117,14 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_SEARCH_CRIT_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX, Indexes.MVIEW_WW_WORD_SEARCH_SGROUP_IDX, Indexes.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX);
     }
 
     /**

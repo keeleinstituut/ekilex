@@ -223,6 +223,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		DatasetType datasetType = dataFilter.getDatasetType();
 		List<String> destinLangs = dataFilter.getDestinLangs();
 		List<String> datasetCodes = dataFilter.getDatasetCodes();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
@@ -232,12 +233,21 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		if (datasetType != null) {
 			where = where.and(l.DATASET_TYPE.eq(datasetType.name()));
 		}
-		if (CollectionUtils.isNotEmpty(destinLangs)) {
-			String[] destinLangsArr = destinLangs.toArray(new String[0]);
-			where = where.and(PostgresDSL.arrayOverlap(l.LANG_FILTER, destinLangsArr));
-		}
 		if (CollectionUtils.isNotEmpty(datasetCodes)) {
 			where = where.and(l.DATASET_CODE.in(datasetCodes));
+		}
+		if (Complexity.SIMPLE.equals(lexComplexity)) {
+			Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
+			Condition langCompWhere = lc.field("complexity", String.class).eq(lexComplexity.name());
+			if (CollectionUtils.isNotEmpty(destinLangs)) {
+				if (destinLangs.size() == 1) {
+					String destinLang = destinLangs.get(0);
+					langCompWhere = langCompWhere.and(lc.field("lang", String.class).eq(destinLang));
+				} else {
+					langCompWhere = langCompWhere.and(lc.field("lang", String.class).in(destinLangs));
+				}
+			}
+			where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
 		}
 
 		return create

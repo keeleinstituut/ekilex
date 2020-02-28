@@ -184,3 +184,31 @@ delete from lex_rel_mapping where code1 = 'pyh';
 delete from lex_rel_mapping where code2 = 'pyh';
 delete from lex_rel_type where code = 'pyh';
 
+
+-- only pre meaning sum:
+update lexeme
+set order_by = l.ev_qq_order_by
+from (select l1.id lexeme_id, (array_agg(l2.order_by order by l2.dataset_code))[1] ev_qq_order_by
+      from lexeme l1,
+           lexeme l2
+      where l1.dataset_code = 'sss'
+        and l2.dataset_code in ('ev2', 'qq2')
+        and l1.word_id = l2.word_id
+        and l1.meaning_id = l2.meaning_id
+      group by l1.word_id,
+               l1.meaning_id,
+               l1.id) l
+where lexeme.id = l.lexeme_id;
+
+-- only pre meaning sum:
+update lexeme l
+   set order_by = nextval('lexeme_order_by_seq')
+from (select l.id
+      from lexeme l,
+           word w
+      where l.complexity = 'SIMPLE'
+      and   l.word_id = w.id
+      and   w.lang = 'rus'
+      order by l.order_by) lqq
+where l.id = lqq.id;
+

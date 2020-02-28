@@ -8,6 +8,7 @@ import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwLexemeRecord;
 import eki.ekilex.data.db.udt.records.TypeGovernmentRecord;
 import eki.ekilex.data.db.udt.records.TypeGrammarRecord;
+import eki.ekilex.data.db.udt.records.TypeLangComplexityRecord;
 import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 import eki.ekilex.data.db.udt.records.TypePublicNoteRecord;
 import eki.ekilex.data.db.udt.records.TypeUsageRecord;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -486643555;
+    private static final long serialVersionUID = 817696492;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme</code>
@@ -106,6 +107,11 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
     public final TableField<ViewWwLexemeRecord, Long> LEX_ORDER_BY = createField("lex_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.view_ww_lexeme.lang_complexities</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField("lang_complexities", eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
+
+    /**
      * The column <code>public.view_ww_lexeme.register_codes</code>.
      */
     public final TableField<ViewWwLexemeRecord, String[]> REGISTER_CODES = createField("register_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
@@ -154,11 +160,6 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
      * The column <code>public.view_ww_lexeme.od_lexeme_recommendations</code>.
      */
     public final TableField<ViewWwLexemeRecord, String[]> OD_LEXEME_RECOMMENDATIONS = createField("od_lexeme_recommendations", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.view_ww_lexeme.lang_filter</code>.
-     */
-    public final TableField<ViewWwLexemeRecord, String[]> LANG_FILTER = createField("lang_filter", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.view_ww_lexeme</code> table reference

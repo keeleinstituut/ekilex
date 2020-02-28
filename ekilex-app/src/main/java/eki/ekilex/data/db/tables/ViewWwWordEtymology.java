@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordEtymology extends TableImpl<ViewWwWordEtymologyRecord> {
 
-    private static final long serialVersionUID = -1379914851;
+    private static final long serialVersionUID = 1516258889;
 
     /**
      * The reference instance of <code>public.view_ww_word_etymology</code>
@@ -103,11 +103,6 @@ public class ViewWwWordEtymology extends TableImpl<ViewWwWordEtymologyRecord> {
      * The column <code>public.view_ww_word_etymology.word_etym_order_by</code>.
      */
     public final TableField<ViewWwWordEtymologyRecord, Long> WORD_ETYM_ORDER_BY = createField("word_etym_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_ww_word_etymology.word_etym_sources</code>.
-     */
-    public final TableField<ViewWwWordEtymologyRecord, String[]> WORD_ETYM_SOURCES = createField("word_etym_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word_etymology.word_etym_relations</code>.

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = 587110653;
+    private static final long serialVersionUID = -946707820;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -94,7 +94,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     /**
      * The column <code>public.eki_user_profile.show_lex_meaning_relation_source_lang_words</code>.
      */
-    public final TableField<EkiUserProfileRecord, Boolean> SHOW_LEX_MEANING_RELATION_SOURCE_LANG_WORDS = createField("show_lex_meaning_relation_source_lang_words", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_LEX_MEANING_RELATION_SOURCE_LANG_WORDS = createField("show_lex_meaning_relation_source_lang_words", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.eki_user_profile.show_meaning_relation_first_word_only</code>.
