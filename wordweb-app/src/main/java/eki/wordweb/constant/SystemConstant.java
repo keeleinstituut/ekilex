@@ -26,7 +26,7 @@ public interface SystemConstant {
 
 	String[] SUPPORTED_DESTIN_LANG_FILTERS = new String[] {DESTIN_LANG_ALL, DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS, DESTIN_LANG_OTHER};
 
-	Complexity[] PREFERRED_COMPLEXITY_HIERARCHY = new Complexity[] {Complexity.DETAIL1, Complexity.DETAIL2, Complexity.SIMPLE1, Complexity.SIMPLE2, Complexity.DEFAULT};
+	Complexity[] PREFERRED_COMPLEXITY_HIERARCHY = new Complexity[] {Complexity.DETAIL, Complexity.SIMPLE, Complexity.DEFAULT};
 
 	String DATASET_TYPE_LEX = "lex";
 

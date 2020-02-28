@@ -236,7 +236,19 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		if (CollectionUtils.isNotEmpty(datasetCodes)) {
 			where = where.and(l.DATASET_CODE.in(datasetCodes));
 		}
-		if (Complexity.SIMPLE.equals(lexComplexity)) {
+		if (Complexity.DETAIL.equals(lexComplexity)) {
+			if (CollectionUtils.isNotEmpty(destinLangs)) {
+				Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang");
+				Condition langCompWhere;
+				if (destinLangs.size() == 1) {
+					String destinLang = destinLangs.get(0);
+					langCompWhere = lc.field("lang", String.class).eq(destinLang);
+				} else {
+					langCompWhere = lc.field("lang", String.class).in(destinLangs);
+				}
+				where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
+			}
+		} else if (Complexity.SIMPLE.equals(lexComplexity)) {
 			Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 			Condition langCompWhere = lc.field("complexity", String.class).eq(lexComplexity.name());
 			if (CollectionUtils.isNotEmpty(destinLangs)) {
