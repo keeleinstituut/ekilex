@@ -25,7 +25,7 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
-import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 
 @Component
@@ -46,10 +46,10 @@ public class SearchHelper implements WebConstant {
 	private static final String CRITERION_CLASSIFIER = "cla";
 
 	@Autowired
-	protected CommonDataService commonDataService;
+	protected UserService userService;
 
 	@Autowired
-	protected UserService userService;
+	protected PermissionService permissionService;
 
 	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
 		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
@@ -87,9 +87,10 @@ public class SearchHelper implements WebConstant {
 
 		// datasets
 		if (CollectionUtils.isNotEmpty(selectedDatasets)) {
-			List<String> allDatasets = commonDataService.getDatasetCodes();
-			List<String> validDatasetSelection = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, allDatasets));
-			Collection<String> datasetComparison = CollectionUtils.disjunction(validDatasetSelection, allDatasets);
+			Long userId = userService.getAuthenticatedUser().getId();
+			List<String> userVisibleDatasets = permissionService.getUserVisibleDatasetCodes(userId);
+			List<String> validDatasetSelection = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, userVisibleDatasets));
+			Collection<String> datasetComparison = CollectionUtils.disjunction(validDatasetSelection, userVisibleDatasets);
 			if (CollectionUtils.isNotEmpty(datasetComparison)) {
 				List<String> encodedDatasets = validDatasetSelection.stream().map(dataset -> encode(dataset)).collect(Collectors.toList());
 				String encodedDatasetsStr = StringUtils.join(encodedDatasets, DATASETS_SEPARATOR);
@@ -278,11 +279,12 @@ public class SearchHelper implements WebConstant {
 			}
 		}
 		isValid = validateSearchFilter(simpleSearchFilter, detailSearchFilter);
-		List<String> allDatasetCodes = commonDataService.getDatasetCodes();
+		Long userId = userService.getAuthenticatedUser().getId();
+		List<String> userVisibleDatasets = permissionService.getUserVisibleDatasetCodes(userId);
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			selectedDatasets = new ArrayList<>(allDatasetCodes);
+			selectedDatasets = new ArrayList<>(userVisibleDatasets);
 		} else {
-			selectedDatasets = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, allDatasetCodes));
+			selectedDatasets = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, userVisibleDatasets));
 		}
 		if (detailSearchFilter == null) {
 			detailSearchFilter = initSearchFilter(searchPage);

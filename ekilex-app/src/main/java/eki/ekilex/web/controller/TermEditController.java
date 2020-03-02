@@ -71,6 +71,7 @@ public class TermEditController extends AbstractPageController {
 
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+		List<String> userVisibleDatasetCodes = permissionService.getUserVisibleDatasetCodes(userId);
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
@@ -79,7 +80,7 @@ public class TermEditController extends AbstractPageController {
 			searchFilter = targetMeaningFirstWord;
 		}
 
-		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(targetMeaningId, languagesOrder);
+		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(targetMeaningId, userVisibleDatasetCodes, languagesOrder);
 		List<Meaning> sourceMeanings = lookupService
 				.getMeaningsOfJoinCandidates(searchFilter, userPreferredDatasetCodes, userPermDatasetCodes, languagesOrder, targetMeaningId, userId);
 
@@ -181,7 +182,8 @@ public class TermEditController extends AbstractPageController {
 			Long userId = userService.getAuthenticatedUser().getId();
 			String dataset = sessionBean.getUserRole().getDatasetCode();
 			List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-			List<String> selectedDatasets = getUserPreferredDatasetCodes();
+			List<String> userVisibleDatasetCodes = permissionService.getUserVisibleDatasetCodes(userId);
+			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
 			sessionBean.setNewWordSelectedLanguage(language);
@@ -189,7 +191,7 @@ public class TermEditController extends AbstractPageController {
 
 			boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
 			if (!meaningHasWord) {
-				List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(meaningId, wordValue, userPermDatasetCodes, languagesOrder);
+				List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(meaningId, wordValue, userPermDatasetCodes, userVisibleDatasetCodes, languagesOrder);
 				if (CollectionUtils.isNotEmpty(relationCandidates)) {
 					attributes.addFlashAttribute("dataset", dataset);
 					attributes.addFlashAttribute("wordValue", wordValue);
@@ -204,11 +206,11 @@ public class TermEditController extends AbstractPageController {
 				}				
 			}
 
-			if (!selectedDatasets.contains(dataset)) {
-				selectedDatasets.add(dataset);
-				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
+			if (!userPrefDatasetCodes.contains(dataset)) {
+				userPrefDatasetCodes.add(dataset);
+				userProfileService.updateUserPreferredDatasets(userPrefDatasetCodes, userId);
 			}
-			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+			searchUri = searchHelper.composeSearchUri(userPrefDatasetCodes, wordValue);
 		}
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}

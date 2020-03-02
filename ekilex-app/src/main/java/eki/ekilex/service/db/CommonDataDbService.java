@@ -110,7 +110,7 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	private DSLContext create;
 
 	public Map<String, String> getDatasetNameMap() {
-		return create.select().from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).fetchMap(DATASET.CODE, DATASET.NAME);
+		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
 	@Cacheable(value = CACHE_KEY_DATASET)

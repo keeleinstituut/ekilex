@@ -67,6 +67,13 @@ public abstract class AbstractPageController implements WebConstant {
 		return commonDataService.getDatasets();
 	}
 
+	@ModelAttribute("userVisibleDatasets")
+	public List<Dataset> getUserVisibleDatasets() {
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		return permissionService.getUserVisibleDatasets(userId);
+	}
+
 	@ModelAttribute("userRoleLanguages")
 	public List<Classifier> getUserRoleLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
