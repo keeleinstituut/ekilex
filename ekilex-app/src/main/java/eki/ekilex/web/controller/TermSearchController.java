@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,10 @@ public class TermSearchController extends AbstractSearchController implements Sy
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			Model model) throws Exception {
+
+		if (CollectionUtils.isEmpty(selectedDatasets)) {
+			return "redirect:" + TERM_SEARCH_URI;
+		}
 
 		formDataCleanup(TERM_SEARCH_PAGE, detailSearchFilter);
 
