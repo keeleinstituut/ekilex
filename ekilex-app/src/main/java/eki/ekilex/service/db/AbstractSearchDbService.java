@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
@@ -91,12 +92,14 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 				//no restrictions
 				dsFiltWhere = DSL.trueCondition();
 			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-				//all ds, only public
-				dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC);
+				//all visible ds, only public
+				dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+						.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue())));
 			} else {
-				//all ds, selected perm
+				//all visible ds, selected perm
 				dsFiltWhere = DSL.or(
-						lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC),
+						lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+								.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue()))),
 						lexeme.DATASET_CODE.in(userPermDatasetCodes));
 			}
 		} else {
@@ -135,10 +138,11 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 			if (allDatasetsPermissions) {
 				//no restrictions
 			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-				//all ds, only public
-				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
+				//all visible ds, only public
+				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+						.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue()))));
 			} else {
-				//all ds, selected perm
+				//all visible ds, selected perm
 				Condition permDatasetCodeCond;
 				if (isSinglePermDataset) {
 					String singlePermDatasetCode = userPermDatasetCodes.get(0);
@@ -146,7 +150,10 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 				} else {
 					permDatasetCodeCond = lexeme.DATASET_CODE.in(userPermDatasetCodes);
 				}
-				where = where.and(DSL.or(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC), permDatasetCodeCond));
+				where = where.and(DSL.or(
+						lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+								.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue()))),
+						permDatasetCodeCond));
 			}
 		} else {
 			Condition filteringDatasetCodeCond;
