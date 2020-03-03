@@ -41,6 +41,8 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 
 	private DateFormat timestampFormat;
 
+	private List<String> rootTables;
+
 	private List<String> exportTableNames;
 
 	private List<String> importTableNames;
@@ -74,6 +76,10 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 
 	@Transactional
 	public void initialise() throws Exception {
+
+		String[] rootTableNamesArr = new String[] {DATASET, WORD, PARADIGM, MEANING, COLLOCATION, LEXEME};
+		rootTableNamesArr = toLowerCase(rootTableNamesArr);
+		rootTables = Arrays.asList(rootTableNamesArr);
 
 		String[] importTableNamesArr = new String[] {
 				DATASET, FREEFORM,
@@ -136,6 +142,10 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 	public Timestamp parse(String timestamp) throws Exception {
 		long timestampMs = timestampFormat.parse(timestamp).getTime();
 		return new Timestamp(timestampMs);
+	}
+
+	public List<String> getRootTables() {
+		return rootTables;
 	}
 
 	public List<String> getExportTableNames() {

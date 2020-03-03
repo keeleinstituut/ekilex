@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -79,6 +78,8 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 			DEFINITION, LEXEME_RELATION, MEANING_RELATION, WORD_RELATION, WORD_ETYMOLOGY_RELATION
 			};
 
+	private static final String COMBINED_ENTRY_NAME = "everything";
+
 	@Autowired
 	private TransportService transportService;
 
@@ -101,7 +102,6 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 		File zippedImportFile = new File(importFilePath);
 		ZipFile zipFile = new ZipFile(zippedImportFile);
-		Enumeration<? extends ZipEntry> zipFileEntries = zipFile.entries();
 		ObjectMapper objectMapper = new ObjectMapper();
 		ZipEntry zipEntry;
 		InputStream zipEntryStream;
@@ -109,23 +109,28 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		Object rootData;
 		long t1, t2;
 
-		while (zipFileEntries.hasMoreElements()) {
+		List<String> importEntryNames = new ArrayList<>(transportService.getRootTables());
+		importEntryNames.add(COMBINED_ENTRY_NAME);
+		importEntryNames = importEntryNames.stream().map(importEntryName -> importEntryName + ".json").collect(Collectors.toList());
 
-			zipEntry = zipFileEntries.nextElement();
-			zipEntryStream = zipFile.getInputStream(zipEntry);
-			jsonInputStream = new BufferedInputStream(zipEntryStream);
-			String zipEntryName = zipEntry.getName();
-			logger.info("Starting on file entry \"{}\"", zipEntryName);
-			t1 = System.currentTimeMillis();
-			rootData = objectMapper.readValue(jsonInputStream, Object.class);
-			extractRoot(context, rootData);
-			t2 = System.currentTimeMillis();
-			long timeMillis = t2 - t1;
-			String timeLog = toReadableFormat(timeMillis);
-			logger.info("File entry resolved at {}", timeLog);
-			logger.info("Current record count {}, queue count {}", context.getCreatedRecordCount().getValue(), context.getUnresolvedRecordCount().getValue());
-			jsonInputStream.close();
-			zipEntryStream.close();
+		for (String importEntryName : importEntryNames) {
+			zipEntry = zipFile.getEntry(importEntryName);
+			if (zipEntry != null) {
+				zipEntryStream = zipFile.getInputStream(zipEntry);
+				jsonInputStream = new BufferedInputStream(zipEntryStream);
+				String zipEntryName = zipEntry.getName();
+				logger.info("Starting on file entry \"{}\"", zipEntryName);
+				t1 = System.currentTimeMillis();
+				rootData = objectMapper.readValue(jsonInputStream, Object.class);
+				extractRoot(context, rootData);
+				t2 = System.currentTimeMillis();
+				long timeMillis = t2 - t1;
+				String timeLog = toReadableFormat(timeMillis);
+				logger.info("File entry resolved at {}", timeLog);
+				logger.info("Current record count {}", context.getCreatedRecordCount().getValue());
+				jsonInputStream.close();
+				zipEntryStream.close();
+			}
 		}
 		zipFile.close();
 
