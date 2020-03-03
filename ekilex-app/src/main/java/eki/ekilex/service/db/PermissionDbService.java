@@ -125,6 +125,30 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 				.fetchInto(eki.ekilex.data.DatasetPermission.class);
 	}
 
+	public List<Dataset> getUserVisibleDatasets(Long userId) {
+		Condition userIsAdminCond = DSL
+				.exists(DSL
+						.select(EKI_USER.ID)
+						.from(EKI_USER)
+						.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_ADMIN.isTrue())));
+		Condition userIsMasterCond = DSL
+				.exists(DSL
+						.select(EKI_USER.ID)
+						.from(EKI_USER)
+						.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_MASTER.isTrue())));
+		Condition datasetPermCond = DSL
+				.exists(DSL
+						.select(DATASET_PERMISSION.ID)
+						.from(DATASET_PERMISSION)
+						.where(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE).and(DATASET_PERMISSION.USER_ID.eq(userId))));
+		return create
+				.select(DATASET.CODE, DATASET.NAME)
+				.from(DATASET)
+				.where(DSL.or(DATASET.IS_VISIBLE.isTrue(), userIsAdminCond, userIsMasterCond, datasetPermCond))
+				.orderBy(DATASET.ORDER_BY)
+				.fetchInto(Dataset.class);
+	}
+
 	public List<Dataset> getUserPermDatasets(Long userId) {
 		Condition userIsAdminCond = DSL
 				.exists(DSL
@@ -144,7 +168,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 		return create
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
-				.where(DATASET.IS_VISIBLE.isTrue().and(DSL.or(userIsAdminCond, userIsMasterCond, datasetPermCond)))
+				.where(DSL.or(userIsAdminCond, userIsMasterCond, datasetPermCond))
 				.orderBy(DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);
 	}
@@ -166,7 +190,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 		return create
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
-				.where(DATASET.IS_VISIBLE.isTrue().and(DSL.or(userIsAdminCond, datasetPermCond)))
+				.where(DSL.or(userIsAdminCond, datasetPermCond))
 				.orderBy(DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);
 	}

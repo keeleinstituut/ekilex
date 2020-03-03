@@ -11,7 +11,7 @@
             <tr th:each="word : ${wordsFoundBySearch}">
               <td class="p-0" style="line-height: 0.6rem;">
                 <div class="btn btn-custom pt-0">
-                  <span th:text="${word.value}" class="ttl">vorm 1</span>
+                  <span th:utext="${word.valuePrese}" class="ttl">vorm 1</span>
                   <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
                   <span th:text="${'(' + viewUtil.getLangIso2(word.language) + ')'}"></span>
                 </div>
@@ -138,7 +138,7 @@
             <tr th:each="word : ${wordsFoundBySearch}" th:with="wordExists = ${existingIds != null && #lists.contains(existingIds, word.wordId)}">
               <td class="p-0" style="line-height: 0.6rem;">
                 <div class="btn btn-custom pt-0">
-                  <span th:text="${word.value}" class="ttl">vorm 1</span>
+                  <span th:utext="${word.valuePrese}" class="ttl">vorm 1</span>
                   <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
                   <span th:text="${'(' + viewUtil.getLangIso2(word.language) + ')'}"></span>
                 </div>

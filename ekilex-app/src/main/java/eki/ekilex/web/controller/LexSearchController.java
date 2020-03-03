@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,10 @@ public class LexSearchController extends AbstractSearchController implements Sys
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			Model model) throws Exception {
+
+		if (CollectionUtils.isEmpty(selectedDatasets)) {
+			return "redirect:" + LEX_SEARCH_URI;
+		}
 
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;

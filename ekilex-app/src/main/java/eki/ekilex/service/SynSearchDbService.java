@@ -250,6 +250,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.select(
 						w2.ID.as("word_id"),
 						f2.VALUE,
+						f2.VALUE_PRESE,
 						w2.HOMONYM_NR.as("homonym_number"),
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"),
@@ -269,7 +270,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(f2.MODE.eq(FormMode.WORD.name()))
 								.and(w2.LANG.in(meaningWordLangs))
 				)
-				.groupBy(w2.ID, f2.VALUE, l2.ID)
+				.groupBy(w2.ID, f2.VALUE, f2.VALUE_PRESE, l2.ID)
 				.orderBy(w2.LANG, l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
 	}

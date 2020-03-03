@@ -254,6 +254,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.select(
 						w2.ID.as("word_id"),
 						f2.VALUE,
+						f2.VALUE_PRESE,
 						w2.HOMONYM_NR.as("homonym_number"),
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"),
@@ -270,7 +271,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.MODE.eq(FormMode.WORD.name()))
 						)
-				.groupBy(w2.ID, f2.VALUE, l2.ID)
+				.groupBy(w2.ID, f2.VALUE, f2.VALUE_PRESE, l2.ID)
 				.orderBy(w2.LANG, l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
 	}
@@ -278,7 +279,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 	public eki.ekilex.data.Word getWord(Long wordId) {
 		return create.select(
 				WORD.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word"),
+				DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("word_value"),
+				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word_value_prese"),
 				DSL.field("array_to_string(array_agg(distinct form.vocal_form), ',')").cast(String.class).as("vocal_form"),
 				WORD.HOMONYM_NR,
 				WORD.LANG,

@@ -50,6 +50,24 @@ public class PermissionService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<Dataset> getUserVisibleDatasets(Long userId) {
+		if (userId == null) {
+			return Collections.emptyList();
+		}
+		return permissionDbService.getUserVisibleDatasets(userId);
+	}
+
+	@Transactional
+	public List<String> getUserVisibleDatasetCodes(Long userId) {
+		if (userId == null) {
+			return Collections.emptyList();
+		}
+		List<Dataset> userVisibleDatasets = permissionDbService.getUserVisibleDatasets(userId);
+		List<String> userVisibleDatasetCodes = userVisibleDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+		return userVisibleDatasetCodes;
+	}
+
+	@Transactional
 	public List<String> getUserPermDatasetCodes(Long userId) {
 		if (userId == null) {
 			return Collections.emptyList();

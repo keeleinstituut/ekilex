@@ -857,7 +857,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		return create
 				.select(
 						w.ID.as("word_id"),
-						DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("word"),
+						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word_value"),
+						DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("word_value_prese"),
 						w.HOMONYM_NR,
 						w.LANG.as("word_lang"),
 						w.GENDER_CODE.as("word_gender_code"),

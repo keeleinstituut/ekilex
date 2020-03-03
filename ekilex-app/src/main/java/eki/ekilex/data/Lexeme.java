@@ -14,8 +14,11 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "word_id")
 	private Long wordId;
 
-	@Column(name = "word")
-	private String word;
+	@Column(name = "word_value")
+	private String wordValue;
+
+	@Column(name = "word_value_prese")
+	private String wordValuePrese;
 
 	@Column(name = "homonym_nr")
 	private Integer homonymNumber;
@@ -98,12 +101,20 @@ public class Lexeme extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getWord() {
-		return word;
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
+	}
+
+	public String getWordValuePrese() {
+		return wordValuePrese;
+	}
+
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
 	}
 
 	public Integer getHomonymNumber() {

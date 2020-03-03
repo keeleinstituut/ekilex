@@ -10,6 +10,8 @@ public class MeaningWord extends AbstractDataObject {
 
 	private String value;
 
+	private String valuePrese;
+
 	private Integer homonymNumber;
 
 	private String language;
@@ -36,6 +38,14 @@ public class MeaningWord extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public Integer getHomonymNumber() {

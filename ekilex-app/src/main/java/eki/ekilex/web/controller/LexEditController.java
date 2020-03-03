@@ -208,16 +208,17 @@ public class LexEditController extends AbstractPageController implements SystemC
 	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Long userId = userService.getAuthenticatedUser().getId();
-		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
-		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId);
+		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+		List<String> userVisibleDatasetCodes = permissionService.getUserVisibleDatasetCodes(userId);
+		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId, userVisibleDatasetCodes);
 		Word targetWord = targetWordDetails.getWord();
 		String targetWordValue = targetWord.getValue();
 		String roleDatasetCode = sessionBean.getUserRole().getDatasetCode();
 
 		String encodedWordValue = UriUtils.encode(targetWordValue, UTF_8);
 		String backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
-		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(targetWord, roleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes);
+		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(targetWord, roleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes, userVisibleDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
@@ -304,8 +305,9 @@ public class LexEditController extends AbstractPageController implements SystemC
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
-		List<String> allDatasets = commonDataService.getDatasetCodes();
-		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language, allDatasets);
+		Long userId = userService.getAuthenticatedUser().getId();
+		List<String> userVisibleDatasets = permissionService.getUserVisibleDatasetCodes(userId);
+		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language, userVisibleDatasets);
 		model.addAttribute("meaningWordCandidates", meaningWordCandidates);
 
 		return WORD_SELECT_PAGE;
