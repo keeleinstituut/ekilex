@@ -36,8 +36,8 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Record12;
-import org.jooq.Record7;
+import org.jooq.Record13;
+import org.jooq.Record8;
 import org.jooq.SelectOrderByStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -794,12 +794,14 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 
 		Form f1 = FORM.as("f1");
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
-		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
+		Field<String> wv = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
+		Field<String> wvp = DSL.field("array_to_string(array_agg(distinct f1.value_prese), ',', '*')").cast(String.class);
 
-		Table<Record7<Long, String, Integer, String, String, String, String>> w = DSL
+		Table<Record8<Long, String, String, Integer, String, String, String, String>> w = DSL
 				.select(
 						w1.ID.as("word_id"),
-						wf.as("word"),
+						wv.as("word_value"),
+						wvp.as("word_value_prese"),
 						w1.HOMONYM_NR,
 						w1.LANG,
 						w1.WORD_CLASS,
@@ -851,10 +853,11 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
 								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))));
 
-		Table<Record12<Long, String, Integer, String, String, String, String, String[], String[], String[], Boolean, Boolean>> ww = DSL
+		Table<Record13<Long, String, String, Integer, String, String, String, String, String[], String[], String[], Boolean, Boolean>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
-						w.field("word", String.class),
+						w.field("word_value", String.class),
+						w.field("word_value_prese", String.class),
 						w.field("homonym_nr", Integer.class),
 						w.field("lang", String.class),
 						w.field("word_class", String.class),
@@ -867,7 +870,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 						wtsf.as("is_suffixoid"))
 				.from(w)
 				.orderBy(
-						w.field("word"),
+						w.field("word_value"),
 						w.field("homonym_nr"))
 				.asTable("ww");
 

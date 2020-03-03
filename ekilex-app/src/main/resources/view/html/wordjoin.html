@@ -22,7 +22,7 @@
         <div class="border rounded p-2">
           <div th:if="${targetWordDetails != null}">
             <input type="checkbox" class="mt-2" checked="checked" th:disabled="true"/>
-            <span th:utext="${targetWordDetails.word.value}" class="ttl ml-2"></span>
+            <span th:utext="${targetWordDetails.word.valuePrese}" class="ttl ml-2"></span>
             <span th:text="${targetWordDetails.word.homonymNumber}" th:if="${targetWordDetails.word.homonymNumber > 0}"></span>
             <span th:text="${'(' + viewUtil.getLangIso2(targetWordDetails.word.language) + ')'}" class="ml-2"></span>
             <div th:if="${targetWordDetails.firstDefinitionValue != null}">
@@ -54,7 +54,7 @@
                        th:value="${sourceWordDetails.word.wordId}"
                        th:if="${sourceWordDetails.word.wordId != targetWordDetails.word.wordId}"
                        sec:authorize="#vars.permDataUtil.isSourceWordCrudGranted(#vars.sourceWordDetails.word.wordId, #vars.targetWordDetails.word.wordId, #vars.sessionBean)"/>
-                <span th:utext="${sourceWordDetails.word.value}" class="ttl ml-2"></span>
+                <span th:utext="${sourceWordDetails.word.valuePrese}" class="ttl ml-2"></span>
                 <span th:text="${sourceWordDetails.word.homonymNumber}" th:if="${sourceWordDetails.word.homonymNumber > 0}" class="ml-2"></span>
                 <span th:text="${'(' + viewUtil.getLangIso2(sourceWordDetails.word.language) + ')'}" class="ml-2"></span>
               </div>
@@ -72,7 +72,7 @@
                   <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
                     <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
                       <div class="btn-custom">
-                        <span th:text="${meaningWord.value}"></span>
+                        <span th:utext="${meaningWord.valuePrese}"></span>
                         <span th:text="${meaningWord.homonymNumber}"></span>
                         <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
                       </div>

@@ -87,7 +87,7 @@
         <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
           <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
             <span class="pt-0">
-              <span th:text="${meaningWord.value}"></span>
+              <span th:utext="${meaningWord.valuePrese}"></span>
               <span th:text="${meaningWord.homonymNumber}"></span>
               <span th:text="${'( ' +viewUtil.getLangIso2(meaningWord.language) + ' )'}"></span>
             </span>

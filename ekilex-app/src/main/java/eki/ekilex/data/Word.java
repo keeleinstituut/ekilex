@@ -13,8 +13,11 @@ public class Word extends AbstractDataObject {
 	@Column(name = "word_id")
 	private Long wordId;
 
-	@Column(name = "word")
+	@Column(name = "word_value")
 	private String value;
+
+	@Column(name = "word_value_prese")
+	private String valuePrese;
 
 	@Column(name = "vocal_form")
 	private String vocalForm;
@@ -66,6 +69,14 @@ public class Word extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getVocalForm() {
