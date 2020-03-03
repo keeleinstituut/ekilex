@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -81,8 +80,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 
 	private Set<String> tablesHierarchyPaths;
 
-	private List<String> rootTables;
-
 	private Count totalRecordCount;
 
 	@Override
@@ -91,14 +88,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		totalRecordCount = new Count();
 
 		sqlSelectQueryCache = new HashMap<String, String>();
-
-		rootTables = new ArrayList<>();
-		rootTables.add(DATASET.toLowerCase());
-		rootTables.add(WORD.toLowerCase());
-		rootTables.add(PARADIGM.toLowerCase());
-		rootTables.add(MEANING.toLowerCase());
-		rootTables.add(COLLOCATION.toLowerCase());
-		rootTables.add(LEXEME.toLowerCase());
 
 		tablesHierarchyPaths = new HashSet<String>();
 		tablesHierarchyPaths.add(composePath(DATASET));
@@ -226,7 +215,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		ZipEntry zipEntry;
 		String exportEntryName;
 		List<Map<String, Object>> tableRows;
-		for (String rootTableName : rootTables) {
+		for (String rootTableName : transportService.getRootTables()) {
 			tableRows = getTableRows(rootTableName, datasetCode, isOnlyPublic);
 			if (CollectionUtils.isEmpty(tableRows)) {
 				continue;
