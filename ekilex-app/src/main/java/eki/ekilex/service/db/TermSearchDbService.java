@@ -561,6 +561,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			SearchDatasetsRestriction searchDatasetsRestriction,
 			String resultLang, boolean fetchAll, int offset) {
 
+		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
+
 		Lexeme lo = LEXEME.as("lo");
 		Word wo = WORD.as("wo");
 		Paradigm po = PARADIGM.as("po");
@@ -583,7 +585,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.where(
 						lds.WORD_ID.eq(wo.ID)
 								.and(lds.MEANING_ID.eq(m.field("meaning_id", Long.class)))
-								.and(lds.DATASET_CODE.eq(ds.CODE)))
+								.and(lds.DATASET_CODE.eq(ds.CODE))
+								.and(lds.DATASET_CODE.in(availableDatasetCodes)))
 				.asTable("wdsf");
 
 		SelectJoinStep<Record1<String[]>> wds = DSL

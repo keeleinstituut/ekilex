@@ -12,6 +12,8 @@ public class SearchDatasetsRestriction extends AbstractDataObject {
 
 	private List<String> userPermDatasetCodes;
 
+	private List<String> availableDatasetCodes;
+
 	private boolean noDatasetsFiltering;
 
 	private boolean allDatasetsPermissions;
@@ -34,6 +36,14 @@ public class SearchDatasetsRestriction extends AbstractDataObject {
 
 	public void setUserPermDatasetCodes(List<String> userPermDatasetCodes) {
 		this.userPermDatasetCodes = userPermDatasetCodes;
+	}
+
+	public List<String> getAvailableDatasetCodes() {
+		return availableDatasetCodes;
+	}
+
+	public void setAvailableDatasetCodes(List<String> availableDatasetCodes) {
+		this.availableDatasetCodes = availableDatasetCodes;
 	}
 
 	public boolean isNoDatasetsFiltering() {

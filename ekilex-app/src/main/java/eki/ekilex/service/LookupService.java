@@ -82,11 +82,11 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public MeaningWordCandidates getMeaningWordCandidates(Long sourceMeaningId, String wordValue, String language, List<String> datasets) {
+	public MeaningWordCandidates getMeaningWordCandidates(Long sourceMeaningId, String wordValue, String language) {
 
 		boolean meaningHasWord = lookupDbService.meaningHasWord(sourceMeaningId, wordValue, language);
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
-		WordsResult words = getWords(wordValue, datasets, true, DEFAULT_OFFSET);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
+		WordsResult words = getWords(wordValue, Collections.emptyList(), true, DEFAULT_OFFSET);
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		for (Word word : words.getWords()) {
 			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);
@@ -128,24 +128,23 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordDetails> getWordDetailsOfJoinCandidates(Word targetWord, String roleDatasetCode, List<String> userPrefDatasetCodes,
-			List<String> userPermDatasetCodes, List<String> userVisibleDatasetCodes) {
+	public List<WordDetails> getWordDetailsOfJoinCandidates(Word targetWord, String roleDatasetCode, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
 		List<Long> wordIds = lookupDbService.getWordIdsOfJoinCandidates(targetWord, userPrefDatasetCodes, userPermDatasetCodes);
 		wordIds.sort(Comparator.comparing(wordId -> !permissionDbService.isGrantedForWord(wordId, roleDatasetCode, userPermDatasetCodes)));
 
 		for (Long wordId : wordIds) {
-			WordDetails wordDetails = getWordJoinDetails(wordId, userVisibleDatasetCodes);
+			WordDetails wordDetails = getWordJoinDetails(wordId);
 			wordDetailsList.add(wordDetails);
 		}
 		return wordDetailsList;
 	}
 
 	@Transactional
-	public WordDetails getWordJoinDetails(Long wordId, List<String> userVisibleDatasetCodes) {
+	public WordDetails getWordJoinDetails(Long wordId) {
 
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userVisibleDatasetCodes);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Word word = lexSearchDbService.getWord(wordId);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
@@ -218,22 +217,23 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public Meaning getMeaningOfJoinTarget(Long meaningId, List<String> userVisibleDatasetCodes, List<ClassifierSelect> languagesOrder) {
+	public Meaning getMeaningOfJoinTarget(Long meaningId, List<ClassifierSelect> languagesOrder) {
 
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userVisibleDatasetCodes);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
 		composeMeaningSelectData(meaning, languagesOrder);
 		return meaning;
 	}
 
 	@Transactional
-	public List<Meaning> getMeaningsOfJoinCandidates(String searchFilter, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes,
-			List<ClassifierSelect> languagesOrder, Long excludedMeaningId, Long userId) {
+	public List<Meaning> getMeaningsOfJoinCandidates(String searchFilter, List<String> userPrefDatasetCodes, List<ClassifierSelect> languagesOrder,
+			Long excludedMeaningId, Long userId) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return Collections.emptyList();
 		} else {
-			List<Meaning> meanings = lookupDbService.getMeanings(searchFilter, userPrefDatasetCodes, userPermDatasetCodes, excludedMeaningId);
+			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
+			List<Meaning> meanings = lookupDbService.getMeanings(searchFilter, searchDatasetsRestriction, excludedMeaningId);
 			meanings.sort(Comparator.comparing(meaning -> !permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaning.getMeaningId())));
 			meanings.forEach(meaning -> composeMeaningSelectData(meaning, languagesOrder));
 			return meanings;
@@ -241,12 +241,13 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<Meaning> getMeaningsOfRelationCandidates(Long excludedMeaningId, String wordValue, List<String> userPermDatasetCodes, List<String> userVisibleDatasetCodes, List<ClassifierSelect> languagesOrder) {
+	public List<Meaning> getMeaningsOfRelationCandidates(Long excludedMeaningId, String wordValue, List<ClassifierSelect> languagesOrder) {
 
 		if (StringUtils.isBlank(wordValue)) {
 			return Collections.emptyList();
 		} else {
-			List<Meaning> meanings = lookupDbService.getMeanings(wordValue, userVisibleDatasetCodes, userPermDatasetCodes, excludedMeaningId);
+			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
+			List<Meaning> meanings = lookupDbService.getMeanings(wordValue, searchDatasetsRestriction, excludedMeaningId);
 			meanings.forEach(meaning -> composeMeaningSelectData(meaning, languagesOrder));
 			return meanings;
 		}

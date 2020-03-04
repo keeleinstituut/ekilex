@@ -29,10 +29,10 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -41,7 +41,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
-public class LookupDbService implements DbConstant {
+public class LookupDbService extends AbstractSearchDbService {
 
 	@Autowired
 	private DSLContext create;
@@ -172,9 +172,10 @@ public class LookupDbService implements DbConstant {
 				.fetchInto(WordLexemeMeaningIdTuple.class);
 	}
 
-	public List<eki.ekilex.data.Meaning> getMeanings(String searchFilter, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes, Long excludedMeaningId) {
+	public List<eki.ekilex.data.Meaning> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, Long excludedMeaningId) {
 
 		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_").toLowerCase();
+		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
 
 		Meaning m = MEANING.as("m");
 		Lexeme l = LEXEME.as("l");
@@ -189,6 +190,8 @@ public class LookupDbService implements DbConstant {
 			whereFormValue = f.VALUE.lower().equal(maskedSearchFilter);
 		}
 
+		Condition whereLexemeDataset = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
+
 		Condition whereExcludeMeaningId = DSL.noCondition();
 		if (excludedMeaningId != null) {
 			whereExcludeMeaningId = m.ID.ne(excludedMeaningId);
@@ -200,12 +203,12 @@ public class LookupDbService implements DbConstant {
 				.where(
 						l.MEANING_ID.eq(m.ID)
 								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(l.DATASET_CODE.in(userPrefDatasetCodes))
 								.and(w.ID.eq(l.WORD_ID))
 								.and(p.WORD_ID.eq(w.ID))
 								.and(f.PARADIGM_ID.eq(p.ID))
 								.and(f.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()))
 								.and(whereFormValue)
+								.and(whereLexemeDataset)
 								.and(whereExcludeMeaningId))
 				.asTable("mid");
 

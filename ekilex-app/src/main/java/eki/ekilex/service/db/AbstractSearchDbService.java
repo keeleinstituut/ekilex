@@ -790,7 +790,10 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		return wherew1.and(w1.ID.in(wmlSelect));
 	}
 
-	protected List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, LayerName layerName, List<String> datasetCodes, boolean fetchAll, int offset, DSLContext create) {
+	protected List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, LayerName layerName, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset, DSLContext create) {
+
+		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
+		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
 
 		Form f1 = FORM.as("f1");
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
@@ -815,7 +818,9 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		Field<String[]> dscf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE))
 				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class)).and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class))
+						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(LEXEME.DATASET_CODE.in(availableDatasetCodes)))
 				.groupBy(w.field("word_id")));
 
 		Field<String[]> lpscf;
@@ -829,7 +834,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 									.and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
 					.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class))
 							.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-							.and(LEXEME.DATASET_CODE.in(datasetCodes)))
+							.and(LEXEME.DATASET_CODE.in(filteringDatasetCodes)))
 					.groupBy(w.field("word_id")));
 		}
 

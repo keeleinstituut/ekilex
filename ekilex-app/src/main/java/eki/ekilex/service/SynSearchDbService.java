@@ -53,24 +53,22 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, boolean fetchAll, int offset) {
 
-		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, layerName, filteringDatasetCodes, fetchAll, offset, create);
+		return execute(word, paradigm, where, layerName, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 
 	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, boolean fetchAll, int offset)
 			throws Exception {
 
-		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, layerName, filteringDatasetCodes, fetchAll, offset, create);
+		return execute(w1, p, wordCondition, layerName, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 	
 	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {

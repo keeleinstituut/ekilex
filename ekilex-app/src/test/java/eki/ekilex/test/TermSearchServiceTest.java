@@ -73,6 +73,7 @@ public class TermSearchServiceTest implements SystemConstant {
 		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
 		searchDatasetsRestriction.setFilteringDatasetCodes(new ArrayList<>());
 		searchDatasetsRestriction.setUserPermDatasetCodes(new ArrayList<>());
+		searchDatasetsRestriction.setAvailableDatasetCodes(new ArrayList<>());
 		searchDatasetsRestriction.setNoDatasetsFiltering(true);
 		searchDatasetsRestriction.setAllDatasetsPermissions(true);
 		return searchDatasetsRestriction;
