@@ -17,6 +17,7 @@ import eki.wordweb.data.WordsData;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
 import eki.wordweb.web.util.UserAgentUtil;
+import eki.wordweb.web.util.WebUtil;
 
 public abstract class AbstractController implements WebConstant, SystemConstant {
 
@@ -28,6 +29,9 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 
 	@Value("${wordweb.feedback.service.url:}")
 	protected String feedbackServiceUrl;
+
+	@Autowired
+	protected WebUtil webUtil;
 
 	@Autowired
 	protected UserAgentUtil userAgentUtil;
@@ -135,4 +139,13 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		return sessionBean;
 	}
 
+	protected Integer nullSafe(String value) {
+		if (StringUtils.isBlank(value)) {
+			return null;
+		}
+		if (!StringUtils.isNumeric(value)) {
+			return null;
+		}
+		return new Integer(value);
+	}
 }

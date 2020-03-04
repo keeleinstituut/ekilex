@@ -7,7 +7,7 @@ public interface WebConstant {
 
 	String HOME_PAGE = "index";
 
-	String SEARCH_PAGE = "search";
+	String UNIF_SEARCH_PAGE = "unif-search";
 
 	String LEARN_PAGE = "learn";
 
@@ -31,11 +31,15 @@ public interface WebConstant {
 
 	String HOME_URI = "/";
 
+	@Deprecated
 	String LEX_URI = "/lex";
 
+	@Deprecated
 	String TERM_URI = "/term";
 
 	String UNIF_URI = "/unif";
+
+	String LITE_URI = "/lite";
 
 	String SEARCH_URI = "/search";
 

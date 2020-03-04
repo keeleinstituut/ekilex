@@ -18,8 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.UriUtils;
@@ -37,12 +35,11 @@ import eki.wordweb.service.CorporaServiceRus;
 import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.service.UnifSearchService;
 import eki.wordweb.web.bean.SessionBean;
-import eki.wordweb.web.util.WebUtil;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SearchController extends AbstractController {
+public class UnifSearchController extends AbstractController {
 
 	@Autowired
 	private UnifSearchService unifSearchService;
@@ -56,33 +53,12 @@ public class SearchController extends AbstractController {
 	@Autowired
 	private StatDataCollector statDataCollector;
 
-	@Autowired
-	private WebUtil webUtil;
-
-	@GetMapping(SEARCH_URI)
+	@GetMapping(SEARCH_URI + UNIF_URI)
 	public String home(Model model) {
 
 		populateDefaultSearchModel(model);
 
-		return SEARCH_PAGE;
-	}
-
-	@PostMapping(SEARCH_URI)
-	public String searchWords(
-			@RequestParam(name = "destinLangsStr") String destinLangStr,
-			@RequestParam(name = "datasetCodesStr") String datasetCodesStr,
-			@RequestParam(name = "searchMode") String searchMode,
-			@RequestParam(name = "searchWord") String searchWord,
-			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr) {
-
-		searchWord = StringUtils.trim(searchWord);
-		if (StringUtils.isBlank(searchWord)) {
-			return "redirect:" + SEARCH_PAGE;
-		}
-		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
-		String searchUri = webUtil.composeSearchUri(destinLangStr, datasetCodesStr, searchMode, searchWord, selectedWordHomonymNr);
-
-		return "redirect:" + searchUri;
+		return UNIF_SEARCH_PAGE;
 	}
 
 	@GetMapping({
@@ -129,7 +105,7 @@ public class SearchController extends AbstractController {
 		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
 		statDataCollector.addSearchStat(destinLangs, wordsData.getSearchMode(), wordsData.isResultsExist(), isIeUser);
 
-		return SEARCH_PAGE;
+		return UNIF_SEARCH_PAGE;
 	}
 
 	//backward compatibility support
@@ -175,7 +151,7 @@ public class SearchController extends AbstractController {
 		model.addAttribute("wordData", wordData);
 		populateRecent(sessionBean, wordData);
 
-		return SEARCH_PAGE + " :: worddetails";
+		return UNIF_SEARCH_PAGE + " :: worddetails";
 	}
 
 	private void populateRecent(SessionBean sessionBean, WordData wordData) {
@@ -274,13 +250,4 @@ public class SearchController extends AbstractController {
 		return searchValidation;
 	}
 
-	private Integer nullSafe(String value) {
-		if (StringUtils.isBlank(value)) {
-			return null;
-		}
-		if (!StringUtils.isNumeric(value)) {
-			return null;
-		}
-		return new Integer(value);
-	}
 }
