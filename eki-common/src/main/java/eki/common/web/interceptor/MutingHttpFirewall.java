@@ -1,4 +1,4 @@
-package eki.wordweb.web.interceptor;
+package eki.common.web.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,7 +8,7 @@ import org.springframework.security.web.firewall.FirewalledRequest;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
-import eki.wordweb.exception.MutingRequestRejectedException;
+import eki.common.exception.MutingRequestRejectedException;
 
 public class MutingHttpFirewall extends StrictHttpFirewall {
 

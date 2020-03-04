@@ -32,6 +32,7 @@ public class EkilexApplication {
 
 	public static void main(String[] args) {
 		System.setProperty("org.jooq.no-logo", "true");
+		System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true");
 		SpringApplication.run(EkilexApplication.class, args);
 	}
 

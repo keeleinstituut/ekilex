@@ -5,9 +5,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import eki.common.web.interceptor.MutingHttpFirewall;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.security.EkilexAuthenticationManager;
 
@@ -20,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	private EkilexAuthenticationManager authenticationManager;
 
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers(
 						INDEX_URI,
@@ -51,7 +53,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	}
 
 	@Override
-	protected AuthenticationManager authenticationManager() throws Exception {
+	public void configure(WebSecurity web) throws Exception {
+		super.configure(web);
+		MutingHttpFirewall firewall = new MutingHttpFirewall();
+		firewall.setAllowUrlEncodedSlash(true);
+		web.httpFirewall(firewall);
+	}
+
+	@Override
+	public AuthenticationManager authenticationManager() throws Exception {
 		return authenticationManager;
 	}
+
 }

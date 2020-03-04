@@ -1,4 +1,4 @@
-package eki.wordweb.exception;
+package eki.common.exception;
 
 import org.springframework.security.web.firewall.RequestRejectedException;
 
