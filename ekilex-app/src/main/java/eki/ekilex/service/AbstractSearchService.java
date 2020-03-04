@@ -34,9 +34,10 @@ public abstract class AbstractSearchService extends AbstractService implements S
 		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<Dataset> availableDatasets = permissionDbService.getUserVisibleDatasets(userId);
+		List<String> availableDatasetCodes = availableDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
 		int availableDatasetsCount = availableDatasets.size();
 		int selectedDatasetsCount = selectedDatasetCodes.size();
-		boolean noDatasetsFiltering = selectedDatasetsCount == availableDatasetsCount;
+		boolean noDatasetsFiltering = selectedDatasetCodes.isEmpty() || selectedDatasetsCount == availableDatasetsCount;
 		List<String> filteringDatasetCodes;
 		if (noDatasetsFiltering) {
 			filteringDatasetCodes = Collections.emptyList();
@@ -44,6 +45,7 @@ public abstract class AbstractSearchService extends AbstractService implements S
 			filteringDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		}
 		boolean singleFilteringDataset = filteringDatasetCodes.size() == 1;
+		searchDatasetsRestriction.setAvailableDatasetCodes(availableDatasetCodes);
 		searchDatasetsRestriction.setFilteringDatasetCodes(filteringDatasetCodes);
 		searchDatasetsRestriction.setNoDatasetsFiltering(noDatasetsFiltering);
 		searchDatasetsRestriction.setSingleFilteringDataset(singleFilteringDataset);
@@ -57,9 +59,6 @@ public abstract class AbstractSearchService extends AbstractService implements S
 			userPermDatasetCodes = userPermDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
 			int userPermDatasetsCount = userPermDatasetCodes.size();
 			allDatasetsPermissions = userPermDatasetsCount == availableDatasetsCount;
-			if (allDatasetsPermissions) {
-				userPermDatasetCodes = Collections.emptyList();
-			}			
 		}
 		boolean singlePermDataset = userPermDatasetCodes.size() == 1;
 		searchDatasetsRestriction.setUserPermDatasetCodes(userPermDatasetCodes);

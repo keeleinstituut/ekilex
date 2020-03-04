@@ -210,15 +210,14 @@ public class LexEditController extends AbstractPageController implements SystemC
 		Long userId = userService.getAuthenticatedUser().getId();
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-		List<String> userVisibleDatasetCodes = permissionService.getUserVisibleDatasetCodes(userId);
-		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId, userVisibleDatasetCodes);
+		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId);
 		Word targetWord = targetWordDetails.getWord();
 		String targetWordValue = targetWord.getValue();
 		String roleDatasetCode = sessionBean.getUserRole().getDatasetCode();
 
 		String encodedWordValue = UriUtils.encode(targetWordValue, UTF_8);
 		String backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
-		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(targetWord, roleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes, userVisibleDatasetCodes);
+		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(targetWord, roleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
@@ -305,9 +304,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
-		List<String> userVisibleDatasets = permissionService.getUserVisibleDatasetCodes(userId);
-		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language, userVisibleDatasets);
+		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language);
 		model.addAttribute("meaningWordCandidates", meaningWordCandidates);
 
 		return WORD_SELECT_PAGE;

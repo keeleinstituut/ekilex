@@ -23,7 +23,6 @@ import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -80,7 +79,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, null, Collections.emptyList(), fetchAll, offset, create);
+		return execute(w1, p, wordCondition, null, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -98,7 +97,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm paradigm = PARADIGM.as("p");
 		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, null, Collections.emptyList(), fetchAll, offset, create);
+		return execute(word, paradigm, where, null, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
