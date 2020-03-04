@@ -270,10 +270,6 @@ public interface WebConstant {
 
 	String SEARCH_MODE_DETAIL = "DETAIL";
 
-	String RETURN_PAGE_LEX_SEARCH = "lex_search";
-
-	String RETURN_PAGE_TERM_SEARCH = "term_search";
-
 	// model keys
 
 	String SESSION_BEAN = "sessionBean";
