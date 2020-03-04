@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriUtils;
 
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
@@ -212,16 +211,12 @@ public class LexEditController extends AbstractPageController implements SystemC
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId);
 		Word targetWord = targetWordDetails.getWord();
-		String targetWordValue = targetWord.getValue();
 		String roleDatasetCode = sessionBean.getUserRole().getDatasetCode();
 
-		String encodedWordValue = UriUtils.encode(targetWordValue, UTF_8);
-		String backUrl = WORD_VALUE_BACK_URI + "/" + encodedWordValue + "/" + RETURN_PAGE_LEX_SEARCH;
 		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(targetWord, roleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
-		model.addAttribute("backUrl", backUrl);
 		return WORD_JOIN_PAGE;
 	}
 

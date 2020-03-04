@@ -2,7 +2,6 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -61,21 +60,6 @@ public class BackController extends AbstractPageController {
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
-	}
-
-	@GetMapping(WORD_VALUE_BACK_URI + "/{wordValue}/{returnPage}")
-	public String wordValueBack(@PathVariable("wordValue") String wordValue, @PathVariable("returnPage") String returnPage) {
-
-		List<String> datasets = getUserPreferredDatasetCodes();
-		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
-		String redirectUri = "";
-		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
-			redirectUri = LEX_SEARCH_URI + searchUri;
-		} else if (StringUtils.equals(returnPage, RETURN_PAGE_TERM_SEARCH)) {
-			redirectUri = TERM_SEARCH_URI + searchUri;
-		}
-
-		return "redirect:" + redirectUri;
 	}
 
 }
