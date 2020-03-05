@@ -159,7 +159,7 @@
         <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
           <a href="#" class="mr-2 draggable-meaning droppable-meaning do-refresh">
             <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${meaningWord.value}"></span>
-            <span th:if="${meaningWord.homonymNumber > 1}"
+            <span th:if="${meaningWord.wordHomonymsExist}"
               th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
               th:text="${meaningWord.homonymNumber}">
             </span>

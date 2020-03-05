@@ -14,6 +14,8 @@ public class MeaningWord extends AbstractDataObject {
 
 	private Integer homonymNumber;
 
+	private boolean wordHomonymsExist;
+
 	private String language;
 
 	private Long lexemeId;
@@ -54,6 +56,14 @@ public class MeaningWord extends AbstractDataObject {
 
 	public void setHomonymNumber(Integer homonymNumber) {
 		this.homonymNumber = homonymNumber;
+	}
+
+	public boolean isWordHomonymsExist() {
+		return wordHomonymsExist;
+	}
+
+	public void setWordHomonymsExist(boolean wordHomonymsExist) {
+		this.wordHomonymsExist = wordHomonymsExist;
 	}
 
 	public String getLanguage() {
