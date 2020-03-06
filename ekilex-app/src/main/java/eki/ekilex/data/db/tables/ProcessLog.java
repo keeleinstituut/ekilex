@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProcessLog extends TableImpl<ProcessLogRecord> {
 
-    private static final long serialVersionUID = -2099544157;
+    private static final long serialVersionUID = 1610528757;
 
     /**
      * The reference instance of <code>public.process_log</code>
@@ -73,11 +73,6 @@ public class ProcessLog extends TableImpl<ProcessLogRecord> {
     public final TableField<ProcessLogRecord, Timestamp> EVENT_ON = createField("event_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>public.process_log.layer_name</code>.
-     */
-    public final TableField<ProcessLogRecord, String> LAYER_NAME = createField("layer_name", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.process_log.comment</code>.
      */
     public final TableField<ProcessLogRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.CLOB, this, "");
@@ -96,6 +91,11 @@ public class ProcessLog extends TableImpl<ProcessLogRecord> {
      * The column <code>public.process_log.dataset_code</code>.
      */
     public final TableField<ProcessLogRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+
+    /**
+     * The column <code>public.process_log.layer_name</code>.
+     */
+    public final TableField<ProcessLogRecord, String> LAYER_NAME = createField("layer_name", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.process_log</code> table reference

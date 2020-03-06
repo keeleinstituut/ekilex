@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> implements Record8<Long, String, Timestamp, String, String, String, String, String> {
 
-    private static final long serialVersionUID = 1044752166;
+    private static final long serialVersionUID = 108976012;
 
     /**
      * Setter for <code>public.process_log.id</code>.
@@ -75,72 +75,72 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
     }
 
     /**
-     * Setter for <code>public.process_log.layer_name</code>.
-     */
-    public void setLayerName(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.process_log.layer_name</code>.
-     */
-    public String getLayerName() {
-        return (String) get(3);
-    }
-
-    /**
      * Setter for <code>public.process_log.comment</code>.
      */
     public void setComment(String value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.process_log.comment</code>.
      */
     public String getComment() {
-        return (String) get(4);
+        return (String) get(3);
     }
 
     /**
      * Setter for <code>public.process_log.comment_prese</code>.
      */
     public void setCommentPrese(String value) {
-        set(5, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.process_log.comment_prese</code>.
      */
     public String getCommentPrese() {
-        return (String) get(5);
+        return (String) get(4);
     }
 
     /**
      * Setter for <code>public.process_log.process_state_code</code>.
      */
     public void setProcessStateCode(String value) {
-        set(6, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>public.process_log.process_state_code</code>.
      */
     public String getProcessStateCode() {
-        return (String) get(6);
+        return (String) get(5);
     }
 
     /**
      * Setter for <code>public.process_log.dataset_code</code>.
      */
     public void setDatasetCode(String value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.process_log.dataset_code</code>.
      */
     public String getDatasetCode() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>public.process_log.layer_name</code>.
+     */
+    public void setLayerName(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.process_log.layer_name</code>.
+     */
+    public String getLayerName() {
         return (String) get(7);
     }
 
@@ -205,14 +205,6 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      */
     @Override
     public Field<String> field4() {
-        return ProcessLog.PROCESS_LOG.LAYER_NAME;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Field<String> field5() {
         return ProcessLog.PROCESS_LOG.COMMENT;
     }
 
@@ -220,7 +212,7 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Field<String> field6() {
+    public Field<String> field5() {
         return ProcessLog.PROCESS_LOG.COMMENT_PRESE;
     }
 
@@ -228,7 +220,7 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Field<String> field7() {
+    public Field<String> field6() {
         return ProcessLog.PROCESS_LOG.PROCESS_STATE_CODE;
     }
 
@@ -236,8 +228,16 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Field<String> field8() {
+    public Field<String> field7() {
         return ProcessLog.PROCESS_LOG.DATASET_CODE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Field<String> field8() {
+        return ProcessLog.PROCESS_LOG.LAYER_NAME;
     }
 
     /**
@@ -269,14 +269,6 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      */
     @Override
     public String component4() {
-        return getLayerName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String component5() {
         return getComment();
     }
 
@@ -284,7 +276,7 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public String component6() {
+    public String component5() {
         return getCommentPrese();
     }
 
@@ -292,7 +284,7 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public String component7() {
+    public String component6() {
         return getProcessStateCode();
     }
 
@@ -300,8 +292,16 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public String component8() {
+    public String component7() {
         return getDatasetCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String component8() {
+        return getLayerName();
     }
 
     /**
@@ -333,14 +333,6 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      */
     @Override
     public String value4() {
-        return getLayerName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String value5() {
         return getComment();
     }
 
@@ -348,7 +340,7 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public String value6() {
+    public String value5() {
         return getCommentPrese();
     }
 
@@ -356,7 +348,7 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public String value7() {
+    public String value6() {
         return getProcessStateCode();
     }
 
@@ -364,8 +356,16 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public String value8() {
+    public String value7() {
         return getDatasetCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String value8() {
+        return getLayerName();
     }
 
     /**
@@ -400,15 +400,6 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      */
     @Override
     public ProcessLogRecord value4(String value) {
-        setLayerName(value);
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ProcessLogRecord value5(String value) {
         setComment(value);
         return this;
     }
@@ -417,7 +408,7 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public ProcessLogRecord value6(String value) {
+    public ProcessLogRecord value5(String value) {
         setCommentPrese(value);
         return this;
     }
@@ -426,7 +417,7 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public ProcessLogRecord value7(String value) {
+    public ProcessLogRecord value6(String value) {
         setProcessStateCode(value);
         return this;
     }
@@ -435,8 +426,17 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public ProcessLogRecord value8(String value) {
+    public ProcessLogRecord value7(String value) {
         setDatasetCode(value);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProcessLogRecord value8(String value) {
+        setLayerName(value);
         return this;
     }
 
@@ -470,16 +470,16 @@ public class ProcessLogRecord extends UpdatableRecordImpl<ProcessLogRecord> impl
     /**
      * Create a detached, initialised ProcessLogRecord
      */
-    public ProcessLogRecord(Long id, String eventBy, Timestamp eventOn, String layerName, String comment, String commentPrese, String processStateCode, String datasetCode) {
+    public ProcessLogRecord(Long id, String eventBy, Timestamp eventOn, String comment, String commentPrese, String processStateCode, String datasetCode, String layerName) {
         super(ProcessLog.PROCESS_LOG);
 
         set(0, id);
         set(1, eventBy);
         set(2, eventOn);
-        set(3, layerName);
-        set(4, comment);
-        set(5, commentPrese);
-        set(6, processStateCode);
-        set(7, datasetCode);
+        set(3, comment);
+        set(4, commentPrese);
+        set(5, processStateCode);
+        set(6, datasetCode);
+        set(7, layerName);
     }
 }

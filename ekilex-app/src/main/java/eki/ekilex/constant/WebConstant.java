@@ -214,6 +214,8 @@ public interface WebConstant {
 
 	String CHANGE_ROLE_URI = "/change_role";
 
+	String CHANGE_LAYER_URI = "/change_layer";
+
 	String SYN_SEARCH_PAGE = "synsearch";
 
 	String SYN_SEARCH_URI = "/synsearch";

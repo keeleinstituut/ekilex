@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = -946707820;
+    private static final long serialVersionUID = 514313238;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -110,6 +110,11 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
      * The column <code>public.eki_user_profile.show_meaning_relation_word_datasets</code>.
      */
     public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_WORD_DATASETS = createField("show_meaning_relation_word_datasets", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.eki_user_profile.preferred_layer_name</code>.
+     */
+    public final TableField<EkiUserProfileRecord, String> PREFERRED_LAYER_NAME = createField("preferred_layer_name", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.eki_user_profile</code> table reference

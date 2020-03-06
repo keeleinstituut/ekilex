@@ -76,8 +76,8 @@ public class UserProfileService implements DbConstant, SystemConstant {
 	}
 
 	@Transactional
-	public void updateUserPreferredMeaningRelationWordLangs(List<String> languages, Long userId) {
-		userProfileDbService.updatePreferredMeaningRelationWordLangs(languages, userId);
+	public void updateUserPreferredLayerName(String layerName, Long userId) {
+		userProfileDbService.updateUserPreferredLayerName(layerName, userId);
 	}
 
 	@Transactional

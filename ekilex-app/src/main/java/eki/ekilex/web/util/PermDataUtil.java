@@ -3,10 +3,12 @@ package eki.ekilex.web.util;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityOperation;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.PermissionService;
@@ -14,7 +16,7 @@ import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 
 @Component
-public class PermDataUtil {
+public class PermDataUtil implements SystemConstant {
 
 	private final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.CRUD, AuthorityOperation.OWN);
 
@@ -183,5 +185,17 @@ public class PermDataUtil {
 		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
 		boolean hasMoreThanOnePermission = !user.isHasSingleDatasetPermission();
 		return datasetPermissionsExist && hasMoreThanOnePermission;
+	}
+
+	public boolean isLayerChangeEnabled(SessionBean sessionBean) {
+
+		if (sessionBean == null) {
+			return false;
+		}
+		DatasetPermission userRole = sessionBean.getUserRole();
+		if (userRole == null) {
+			return false;
+		}
+		return StringUtils.equals(userRole.getDatasetCode(), DATASET_SSS);
 	}
 }

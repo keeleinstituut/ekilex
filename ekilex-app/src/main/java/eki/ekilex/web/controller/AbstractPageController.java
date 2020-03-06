@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LayerName;
 import eki.common.constant.SourceType;
 import eki.common.constant.TextDecoration;
 import eki.common.data.CodeValue;
@@ -177,5 +178,10 @@ public abstract class AbstractPageController implements WebConstant {
 	@ModelAttribute("meaningRelationTypes")
 	public List<Classifier> getMeaningRelationTypes() {
 		return commonDataService.getMeaningRelationTypes();
+	}
+
+	@ModelAttribute("layerNames")
+	public List<LayerName> getLayerNames() {
+		return Arrays.asList(LayerName.class.getEnumConstants());
 	}
 }

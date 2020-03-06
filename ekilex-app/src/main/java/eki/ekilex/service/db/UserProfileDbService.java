@@ -64,11 +64,10 @@ public class UserProfileDbService {
 				.execute();
 	}
 
-	public void updatePreferredMeaningRelationWordLangs(List<String> languages, Long userId) {
+	public void updateUserPreferredLayerName(String layerName, Long userId) {
 
-		String[] languagesArray = languages.toArray(new String[0]);
 		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_MEANING_RELATION_WORD_LANGS, languagesArray)
+				.set(EKI_USER_PROFILE.PREFERRED_LAYER_NAME, layerName)
 				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
 				.execute();
 	}
@@ -78,6 +77,7 @@ public class UserProfileDbService {
 		Long userId = userProfile.getUserId();
 		Long recentDatasetPermissionId = userProfile.getRecentDatasetPermissionId();
 		List<String> preferredDatasets = userProfile.getPreferredDatasets();
+		String preferredLayerName = userProfile.getPreferredLayerName();
 		List<String> preferredBilingCandidateLangs = userProfile.getPreferredBilingCandidateLangs();
 		List<String> preferredBilingLexMeaningWordLangs = userProfile.getPreferredBilingLexMeaningWordLangs();
 		List<String> preferredMeaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
@@ -92,6 +92,7 @@ public class UserProfileDbService {
 		if (CollectionUtils.isNotEmpty(preferredDatasets)) {
 			ekiUserProfile.setPreferredDatasets(preferredDatasets.toArray(new String[0]));
 		}
+		ekiUserProfile.setPreferredLayerName(preferredLayerName);
 		if (CollectionUtils.isNotEmpty(preferredBilingCandidateLangs)) {
 			ekiUserProfile.setPreferredBilingCandidateLangs(preferredBilingCandidateLangs.toArray(new String[0]));
 		}

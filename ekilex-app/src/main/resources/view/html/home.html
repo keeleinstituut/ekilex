@@ -17,7 +17,8 @@
              isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)},
              isAdmin=${#vars.permDataUtil.isAdmin()},
              isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()},
-             isRoleChangeEnabled=${#vars.permDataUtil.isRoleChangeEnabled()}">
+             isRoleChangeEnabled=${#vars.permDataUtil.isRoleChangeEnabled()},
+             isLayerChangeEnabled=${#vars.permDataUtil.isLayerChangeEnabled(#vars.sessionBean)}">
         <p>
           <a th:href="@{/lexsearch}">Leksikograafide otsing</a>
         </p>
@@ -51,6 +52,7 @@
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="${#vars.isRoleChangeEnabled}"></th:block>
+        <th:block th:replace="components :: change_layer" sec:authorize="${#vars.isLayerChangeEnabled}"></th:block>
         <hr/>
         <p>
           <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>

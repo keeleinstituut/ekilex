@@ -14,6 +14,8 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private List<String> preferredDatasets;
 
+	private String preferredLayerName;
+
 	private List<String> preferredBilingCandidateLangs;
 
 	private List<String> preferredBilingLexMeaningWordLangs;
@@ -50,6 +52,14 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	public void setPreferredDatasets(List<String> preferredDatasets) {
 		this.preferredDatasets = preferredDatasets;
+	}
+
+	public String getPreferredLayerName() {
+		return preferredLayerName;
+	}
+
+	public void setPreferredLayerName(String preferredLayerName) {
+		this.preferredLayerName = preferredLayerName;
 	}
 
 	public List<String> getPreferredBilingCandidateLangs() {

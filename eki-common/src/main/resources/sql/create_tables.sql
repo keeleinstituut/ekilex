@@ -470,6 +470,7 @@ create table eki_user_profile
   user_id bigint references eki_user(id) on delete cascade not null,
   recent_dataset_permission_id bigint references dataset_permission(id),
   preferred_datasets varchar(10) array,
+  preferred_layer_name varchar(100) null,
   preferred_biling_candidate_langs char(3) array,
   preferred_biling_lex_meaning_word_langs char(3) array,
   preferred_meaning_relation_word_langs char(3) array,

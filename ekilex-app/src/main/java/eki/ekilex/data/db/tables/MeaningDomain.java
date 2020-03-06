@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
 
-    private static final long serialVersionUID = -1202537203;
+    private static final long serialVersionUID = -740240586;
 
     /**
      * The reference instance of <code>public.meaning_domain</code>
@@ -127,7 +127,7 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_DOMAIN_CODE_ORIGIN_IDX, Indexes.MEANING_DOMAIN_MEANING_ID_DOMAIN_CODE_DOMAIN_ORIGIN_KEY, Indexes.MEANING_DOMAIN_MEANING_ID_IDX, Indexes.MEANING_DOMAIN_PKEY);
+        return Arrays.<Index>asList(Indexes.MEANING_DOMAIN_CODE_ORIGIN_IDX, Indexes.MEANING_DOMAIN_LEXEME_ID_IDX, Indexes.MEANING_DOMAIN_MEANING_ID_DOMAIN_CODE_DOMAIN_ORIGIN_KEY, Indexes.MEANING_DOMAIN_PKEY);
     }
 
     /**
