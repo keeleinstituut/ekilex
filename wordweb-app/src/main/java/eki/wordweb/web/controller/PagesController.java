@@ -13,13 +13,7 @@ import eki.wordweb.constant.WebConstant;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class HomeController extends AbstractController {
-
-	@GetMapping(HOME_URI)
-	public String home(Model model) {
-		populateDefaultSearchModel(model);
-		return HOME_PAGE;
-	}
+public class PagesController extends AbstractController {
 
 	@GetMapping(LEARN_URI)
 	public String learn(Model model) {

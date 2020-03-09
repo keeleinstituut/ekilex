@@ -15,12 +15,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record3;
-import org.jooq.Record4;
+import org.jooq.Record5;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
@@ -33,12 +34,12 @@ import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
+import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
 @Component
-public class UnifSearchDbService extends AbstractSearchDbService {
+public class SimpleSearchDbService extends AbstractSearchDbService {
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, List<String> destinLangs, int maxWordCount) {
 
 		String wordInfixLower = StringUtils.lowerCase(wordInfix);
@@ -50,29 +51,43 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
 		Field<String> wgf = DSL.field(DSL.val(WORD_SEARCH_GROUP_WORD));
 
-		Table<Record4<String, String, String, Long>> ws = DSL
+		Table<Record5<String, String, String, Long, TypeLangComplexityRecord[]>> ws = DSL
 				.select(
 						wgf.as("sgroup"),
 						w.WORD,
 						w.CRIT,
-						w.LANG_ORDER_BY)
+						w.LANG_ORDER_BY,
+						w.LANG_COMPLEXITIES)
 				.from(w)
 				.where(
 						w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
-								.and(w.UNACRIT.like(wordInfixCritUnaccent)))
+								.and(w.UNACRIT.like(wordInfixCritUnaccent))
+								.and(w.SIMPLE_EXISTS.isTrue()))
 				.unionAll(DSL
 						.select(
 								wgf.as("sgroup"),
 								aw.WORD,
 								aw.CRIT,
-								aw.LANG_ORDER_BY)
+								aw.LANG_ORDER_BY,
+								aw.LANG_COMPLEXITIES)
 						.from(aw)
 						.where(
 								aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
-										.and(aw.UNACRIT.like(wordInfixCritUnaccent))))
+										.and(aw.UNACRIT.like(wordInfixCritUnaccent))
+										.and(aw.SIMPLE_EXISTS.isTrue())))
 				.asTable("ws");
 
 		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), DSL.inline(wordInfixLower)));
+		Table<?> lc = DSL.unnest(ws.field("lang_complexities")).as("lc", "lang", "complexity");
+		Condition langCompWhere = lc.field("complexity", String.class).eq(Complexity.SIMPLE.name());
+		if (CollectionUtils.isNotEmpty(destinLangs)) {
+			if (destinLangs.size() == 1) {
+				String destinLang = destinLangs.get(0);
+				langCompWhere = langCompWhere.and(lc.field("lang", String.class).eq(destinLang));
+			} else {
+				langCompWhere = langCompWhere.and(lc.field("lang", String.class).in(destinLangs));
+			}
+		}
 
 		Table<Record3<String, String, Integer>> wfs = DSL
 				.select(
@@ -80,7 +95,10 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 						ws.field("word", String.class),
 						wlf.as("lev"))
 				.from(ws)
-				.where(ws.field("crit").like(wordInfixCrit))
+				.where(
+						ws.field("crit").like(wordInfixCrit)
+						.andExists(DSL.selectFrom(lc).where(langCompWhere))
+						)
 				.orderBy(
 						ws.field("lang_order_by"),
 						DSL.field("lev"))
@@ -91,7 +109,10 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 								f.WORD,
 								DSL.field(DSL.val(0)).as("lev"))
 						.from(f)
-						.where(f.SGROUP.eq(WORD_SEARCH_GROUP_FORM).and(f.CRIT.eq(wordInfixLower)))
+						.where(
+								f.SGROUP.eq(WORD_SEARCH_GROUP_FORM)
+								.and(f.CRIT.eq(wordInfixLower))
+								.and(f.SIMPLE_EXISTS.isTrue()))
 						.orderBy(f.WORD)
 						.limit(maxWordCount))
 				.asTable("wfs");
@@ -104,9 +125,9 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 
-	@Override
 	public List<Word> getWords(String searchWord, DataFilter dataFilter) {
 
+		List<String> destinLangs = dataFilter.getDestinLangs();
 		List<String> datasetCodes = dataFilter.getDatasetCodes();
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
@@ -123,6 +144,19 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 			String[] datasetCodesArr = datasetCodes.toArray(new String[0]);
 			where = where.and(PostgresDSL.arrayOverlap(w.DATASET_CODES, datasetCodesArr));
 		}
+
+		Table<?> lc = DSL.unnest(w.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
+		where = where.and(w.LEX_DATASET_EXISTS.isTrue());
+		Condition langCompWhere = lc.field("complexity", String.class).eq(Complexity.SIMPLE.name());
+		if (CollectionUtils.isNotEmpty(destinLangs)) {
+			if (destinLangs.size() == 1) {
+				String destinLang = destinLangs.get(0);
+				langCompWhere = langCompWhere.and(lc.field("lang", String.class).eq(destinLang));
+			} else {
+				langCompWhere = langCompWhere.and(lc.field("lang", String.class).in(destinLangs));
+			}
+		}
+		where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
 
 		return create
 				.select(
@@ -166,17 +200,17 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		if (CollectionUtils.isNotEmpty(datasetCodes)) {
 			where = where.and(l.DATASET_CODE.in(datasetCodes));
 		}
+		Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
+		Condition langCompWhere = lc.field("complexity", String.class).eq(Complexity.SIMPLE.name());
 		if (CollectionUtils.isNotEmpty(destinLangs)) {
-			Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang");
-			Condition langCompWhere;
 			if (destinLangs.size() == 1) {
 				String destinLang = destinLangs.get(0);
-				langCompWhere = lc.field("lang", String.class).eq(destinLang);
+				langCompWhere = langCompWhere.and(lc.field("lang", String.class).eq(destinLang));
 			} else {
-				langCompWhere = lc.field("lang", String.class).in(destinLangs);
+				langCompWhere = langCompWhere.and(lc.field("lang", String.class).in(destinLangs));
 			}
-			where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
 		}
+		where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
 
 		return create
 				.select(
@@ -213,5 +247,4 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 				.fetch()
 				.into(Lexeme.class);
 	}
-
 }

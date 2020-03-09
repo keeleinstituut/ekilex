@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -18,21 +17,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.UriUtils;
 
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.CorporaSentence;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.SearchValidation;
+import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
-import eki.wordweb.service.CorporaServiceEst;
-import eki.wordweb.service.CorporaServiceRus;
-import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.service.UnifSearchService;
 import eki.wordweb.web.bean.SessionBean;
 
@@ -44,30 +42,40 @@ public class UnifSearchController extends AbstractController {
 	@Autowired
 	private UnifSearchService unifSearchService;
 
-	@Autowired
-	private CorporaServiceEst corporaServiceEst;
-
-	@Autowired
-	private CorporaServiceRus corporaServiceRus;
-
-	@Autowired
-	private StatDataCollector statDataCollector;
+	@GetMapping(HOME_URI)
+	public String home(Model model) {
+		populateSearchModel("", new WordsData(), model);
+		return UNIF_HOME_PAGE;
+	}
 
 	@GetMapping(SEARCH_URI + UNIF_URI)
-	public String home(Model model) {
-
-		populateDefaultSearchModel(model);
-
+	public String search(Model model) {
+		populateSearchModel("", new WordsData(), model);
 		return UNIF_SEARCH_PAGE;
 	}
 
+	@PostMapping(SEARCH_URI + UNIF_URI)
+	public String searchWords(
+			@RequestParam(name = "destinLangsStr") String destinLangStr,
+			@RequestParam(name = "datasetCodesStr") String datasetCodesStr,
+			@RequestParam(name = "searchWord") String searchWord,
+			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr) {
+
+		searchWord = StringUtils.trim(searchWord);
+		if (StringUtils.isBlank(searchWord)) {
+			return "redirect:" + SEARCH_URI + UNIF_URI;
+		}
+		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
+		String searchUri = webUtil.composeDetailSearchUri(destinLangStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
+		return "redirect:" + searchUri;
+	}
+
 	@GetMapping({
-			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchMode}/{searchWord}/{homonymNr}",
-			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchMode}/{searchWord}"})
+			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWord}/{homonymNr}",
+			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWord}"})
 	public String searchUnifWordsByUri(
 			@PathVariable(name = "destinLangs") String destinLangsStr,
 			@PathVariable(name = "datasetCodes") String datasetCodesStr,
-			@PathVariable(name = "searchMode") String searchMode,
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			HttpServletRequest request,
@@ -82,7 +90,7 @@ public class UnifSearchController extends AbstractController {
 		}
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
-		SearchValidation searchValidation = validateAndCorrectSearch(destinLangsStr, datasetCodesStr, searchMode, searchWord, homonymNrStr);
+		SearchValidation searchValidation = validateAndCorrectSearch(destinLangsStr, datasetCodesStr, searchWord, homonymNrStr);
 		sessionBean.setSearchWord(searchWord);
 
 		if (sessionBeanNotPresent) {
@@ -94,49 +102,28 @@ public class UnifSearchController extends AbstractController {
 
 		List<String> destinLangs = searchValidation.getDestinLangs();
 		List<String> datasetCodes = searchValidation.getDatasetCodes();
-		searchMode = searchValidation.getSearchMode();
 		sessionBean.setDestinLangs(destinLangs);
 		sessionBean.setDatasetCodes(datasetCodes);
-		sessionBean.setSearchMode(searchMode);
 
 		WordsData wordsData = unifSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
 		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
-		statDataCollector.addSearchStat(destinLangs, wordsData.getSearchMode(), wordsData.isResultsExist(), isIeUser);
+		statDataCollector.addSearchStat(destinLangs, SEARCH_MODE_DETAIL, wordsData.isResultsExist(), isIeUser);
 
 		return UNIF_SEARCH_PAGE;
 	}
 
-	//backward compatibility support
-	@GetMapping({
-			SEARCH_URI + LEX_URI + "/{langPair}/{searchMode}/{searchWord}/{homonymNr}",
-			SEARCH_URI + LEX_URI + "/{langPair}/{searchMode}/{searchWord}"})
-	public String searchLexWordsByUri(
-			@PathVariable(name = "langPair") String langPair,
-			@PathVariable(name = "searchMode") String searchMode,
-			@PathVariable(name = "searchWord") String searchWord,
-			@PathVariable(name = "homonymNr", required = false) String homonymNrStr) {
-
-		Integer homonymNr = nullSafe(homonymNrStr);
-		String searchUri = webUtil.composeSearchUri(DESTIN_LANG_ALL, DATASET_ALL, searchMode, searchWord, homonymNr);
-
-		return "redirect:" + searchUri;
-	}
-
-	@GetMapping(value = "/searchwordfrag/{wordFrag}", produces = "application/json;charset=UTF-8")
+	@GetMapping(value = SEARCH_WORD_FRAG_URI + UNIF_URI + "/{destinLangs}/{wordFrag}", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public Map<String, List<String>> searchWordsByFragment(@PathVariable("wordFrag") String wordFragment) {
+	public Map<String, List<String>> searchWordsByFragment(
+			@PathVariable(name = "destinLangs") String destinLangsStr,
+			@PathVariable("wordFrag") String wordFragment) {
 
-		if (StringUtils.equals(AUTOCOMPLETE_ALG, AUTOCOMPLETE_BY_INFIX_LEV)) {
-			return unifSearchService.getWordsByInfixLev(wordFragment, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
-		} else if (StringUtils.equals(AUTOCOMPLETE_ALG, AUTOCOMPLETE_BY_PREFIX)) {
-			return unifSearchService.getWordsByPrefix(wordFragment, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
-		}
-		return new HashedMap<>();
+		return unifSearchService.getWordsByInfixLev(wordFragment, null, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
 	}
 
-	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
+	@GetMapping(WORD_DETAILS_URI + UNIF_URI + "/{wordId}")
 	public String wordDetails(
 			@PathVariable("wordId") Long wordId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
@@ -144,11 +131,11 @@ public class UnifSearchController extends AbstractController {
 
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
-		String searchMode = sessionBean.getSearchMode();
-		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes, searchMode);
+		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
 		WordData wordData = unifSearchService.getWordData(wordId, searchFilter, DISPLAY_LANG);
 
 		model.addAttribute("wordData", wordData);
+		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
 		populateRecent(sessionBean, wordData);
 
 		return UNIF_SEARCH_PAGE + " :: worddetails";
@@ -160,31 +147,14 @@ public class UnifSearchController extends AbstractController {
 		sessionBean.setRecentWord(wordValue);
 	}
 
-	@GetMapping("/korp/{lang}/{sentence}")
-	public String searchFromCorpora(@PathVariable("lang") String language, @PathVariable("sentence") String sentence, Model model) {
-
-		List<CorporaSentence> textCorpus = new ArrayList<>();
-		if (StringUtils.equalsIgnoreCase(language, "est")) {
-			textCorpus = corporaServiceEst.getSentences(sentence);
-		} else if (StringUtils.equalsIgnoreCase(language, "rus")) {
-			textCorpus = corporaServiceRus.getSentences(sentence);
-		}
-		model.addAttribute("sentences", textCorpus);
-		model.addAttribute("sentence", sentence);
-		model.addAttribute("corp_language", language);
-
-		return "common-search :: korp";
-	}
-
-	private SearchValidation validateAndCorrectSearch(
-			String destinLangsStr, String datasetCodesStr, String searchMode, String searchWord, String homonymNrStr) {
+	private SearchValidation validateAndCorrectSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr) {
 
 		boolean isValid = true;
 
 		// lang
 		String[] destinLangsArr = StringUtils.split(destinLangsStr, UI_FILTER_VALUES_SEPARATOR);
 		List<String> destinLangs = Arrays.stream(destinLangsArr)
-				.filter(destinLang -> StringUtils.equalsAny(destinLang, SUPPORTED_DESTIN_LANG_FILTERS))
+				.filter(destinLang -> StringUtils.equalsAny(destinLang, SUPPORTED_DETAIL_DESTIN_LANG_FILTERS))
 				.collect(Collectors.toList());
 
 		if (destinLangsArr.length != destinLangs.size()) {
@@ -217,15 +187,6 @@ public class UnifSearchController extends AbstractController {
 			isValid = isValid & false;
 		}
 
-		// search mode
-		if (!StringUtils.equalsAny(searchMode, SEARCH_MODE_SIMPLE, SEARCH_MODE_DETAIL)) {
-			searchMode = SEARCH_MODE_DETAIL;
-			isValid = isValid & false;
-		}
-		if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
-			datasetCodes = Arrays.asList(DATASET_ALL);
-		}
-
 		// homonym nr
 		Integer homonymNr = nullSafe(homonymNrStr);
 		if (homonymNr == null) {
@@ -235,13 +196,11 @@ public class UnifSearchController extends AbstractController {
 
 		destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeSearchUri(destinLangsStr, datasetCodesStr, searchMode, searchWord, homonymNr);
+		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, homonymNr);
 
 		SearchValidation searchValidation = new SearchValidation();
-
 		searchValidation.setDestinLangs(destinLangs);
 		searchValidation.setDatasetCodes(datasetCodes);
-		searchValidation.setSearchMode(searchMode);
 		searchValidation.setSearchWord(searchWord);
 		searchValidation.setHomonymNr(homonymNr);
 		searchValidation.setSearchUri(searchUri);
@@ -250,4 +209,45 @@ public class UnifSearchController extends AbstractController {
 		return searchValidation;
 	}
 
+	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
+
+		SessionBean sessionBean = populateCommonModel(model);
+		List<UiFilterElement> langFilter = commonDataService.getUnifLangFilter(DISPLAY_LANG);
+		populateLangFilter(langFilter, sessionBean, model);
+		populateDatasetFilter(sessionBean, model);
+
+		model.addAttribute("searchUri", SEARCH_URI + UNIF_URI);
+		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
+		model.addAttribute("searchWord", searchWord);
+		model.addAttribute("wordsData", wordsData);
+		model.addAttribute("wordData", new WordData());
+	}
+
+	private void populateDatasetFilter(SessionBean sessionBean, Model model) {
+
+		List<UiFilterElement> datasetFilter = commonDataService.getDatasetFilter();
+		List<String> datasetCodes = sessionBean.getDatasetCodes();
+		if (CollectionUtils.isEmpty(datasetCodes)) {
+			datasetCodes = new ArrayList<>();
+			datasetCodes.add(DATASET_ALL);
+			sessionBean.setDatasetCodes(datasetCodes);
+		}
+		String selectedDatasetsStr = null;
+		for (UiFilterElement datasetFilterElement : datasetFilter) {
+			boolean isSelected = datasetCodes.contains(datasetFilterElement.getCode());
+			datasetFilterElement.setSelected(isSelected);
+			if (isSelected) {
+				selectedDatasetsStr = datasetFilterElement.getValue();
+			}
+		}
+		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
+		long selectedDatasetCount = datasetFilter.stream().filter(UiFilterElement::isSelected).count();
+		if (selectedDatasetCount > 1) {
+			selectedDatasetsStr = String.valueOf(selectedDatasetCount);
+		}
+
+		model.addAttribute("datasetFilter", datasetFilter);
+		model.addAttribute("datasetCodesStr", datasetCodesStr);
+		model.addAttribute("selectedDatasetsStr", selectedDatasetsStr);
+	}
 }

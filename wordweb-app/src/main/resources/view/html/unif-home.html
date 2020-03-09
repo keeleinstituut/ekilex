@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(_,~{::links})">
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
+</th:block>
+</head>
+<body class="home-page">
+  <th:block th:replace="common-app :: update-msg"></th:block>
+  <th:block th:replace="common-app :: wcag-search"></th:block>
+  <th:block th:replace="common-app :: ie-user"></th:block>
+  <div class="header-container">
+    <button class="btn menu-btn position-static ml-auto" th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
+      <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
+      <span class="icon icon-menu"></span>
+    </button>
+    <div th:replace="common-app :: menu-links"></div>
+  </div>
+  <div class="container-fluid home-page-content">
+    <div class="row">
+      <div class="col align-self-center main-content-wrapper">
+        <div class="row">
+          <div aria-hidden="true" class="col-12 mb-1 mb-md-2">
+            <span class="icon icon-logo logo-main"></span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 mb-2 mb-md-3 mb-lg-4">
+            <p th:text="#{index.title}">Otsi sõnade tähendusi ja tõlkeid</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
+            <div th:replace="common-search :: search"></div>
+          </div>
+        </div>
+        <div class="logo-wrapper">
+          <ul class="logo-list">
+            <li>
+              <span class="esf-logo mini-logo"></span>
+            </li>
+            <li>
+              <span class="erf-logo mini-logo"></span>
+            </li>
+            <li>
+              <span class="eki-logo mini-logo"></span>
+            </li>
+            <li>
+              <span class="htm-logo mini-logo"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:replace="common-app :: footer-content"></div>
+  <div th:replace="common-app :: feedback-form"></div>
+  <script th:inline="javascript">
+  	var currentPage = /*[[@{/}]]*/"/";
+  	var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";
+  	var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
+  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+  	setActiveMenuItem('search-unif');
+  </script>
+</body>
+</html>

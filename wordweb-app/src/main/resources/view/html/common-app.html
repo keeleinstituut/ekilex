@@ -69,7 +69,7 @@
     </div>
     <th:block th:replace=":: feedback-form"></th:block>
   </th:block>
-  <th:block th:fragment="menu_with_backBtn">
+  <th:block th:fragment="menu-with-back-btn">
     <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="container-fluid header-container">
       <div class="row header-wrap">
@@ -111,8 +111,11 @@
           <span th:text="#{menu.close}">Sulge</span>
           <span class="icon icon-close"></span>
         </button>
-        <a th:href="@{/}" class="menu-item" data-item-name="search">
-          <span th:text="#{menu.search}">Otsing</span>
+        <a th:href="@{/}" class="menu-item" data-item-name="search-unif">
+          <span th:text="#{menu.search.unif}">Otsing</span>
+        </a>
+        <a th:href="@{/lite}" class="menu-item" data-item-name="search-lite">
+          <span th:text="#{menu.search.lite}">Lihtne otsing</span>
         </a>
         <a th:href="@{/about}" class="menu-item" data-item-name="about">
           <span th:text="#{menu.about}">Portaalist</span>

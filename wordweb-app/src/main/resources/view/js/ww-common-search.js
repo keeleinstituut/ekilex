@@ -51,7 +51,8 @@ $(document).ready(function () {
 	var searchWordAutocompleteConfig = {
 		source: function (request, response) {
 			var wordFrag = request.term;
-			var searchWordFragUrlWithParams = searchWordFragUrl + "/" + wordFrag;
+			var destinLangsStr = $("input[name='destinLangsStr']").val();
+			var searchWordFragUrlWithParams = searchWordFragUrl + "/" + destinLangsStr + "/" + wordFrag;
 			$.ajax({
 				url: searchWordFragUrlWithParams,
 				type: "GET",
@@ -390,47 +391,6 @@ $(document).on("click", "a[id^='dataset-']", function (e) {
 	setSelectedWordHomonymNr();
 	clickSearchIfInputExists();
 });
-
-$(document).on("click", "#toggle-detail", function (e) {
-	var searchMode = $("input[name='searchMode']").val();
-	if (searchMode === "simple") {
-		$("input[name='searchMode']").val("detail");
-		$("#toggle-detail").addClass("active");
-		$("#toggle-simple").removeClass("active");
-		setSelectedWordHomonymNr();
-		clickSearchIfInputExists();
-	}
-});
-
-$(document).on("click", "#toggle-simple", function (e) {
-	var searchMode = $("input[name='searchMode']").val();
-	if (searchMode === "detail") {
-		var selectedDatasetCodes = $("a[id^='dataset-'].active").map(function (idx, element) {
-			return $(element).attr("data-filter-code");
-		}).toArray();
-		var selectedSupportedSimpleDatasets = $.grep(selectedDatasetCodes, function(element) {
-			return $.inArray(element, supportedSimpleDatasets) != -1;
-		});
-		if (selectedSupportedSimpleDatasets.length == 0)  {
-			$("#search-mode-simple-confirm-modal").modal("show");
-		} else {
-			activateSearchModeSimple();
-		}
-	}
-});
-
-$(document).on("click", "#search-mode-simple-confirm-btn", function (e) {
-	$("#search-mode-simple-confirm-modal").modal("hide");
-	activateSearchModeSimple();
-});
-
-function activateSearchModeSimple() {
-	$("input[name='searchMode']").val("simple");
-	$("#toggle-simple").addClass("active");
-	$("#toggle-detail").removeClass("active");
-	setSelectedWordHomonymNr();
-	clickSearchIfInputExists();
-}
 
 function setSelectedWordHomonymNr() {
 	var selectedHomonymNr = $("#selected-word-homonym-nr").val();

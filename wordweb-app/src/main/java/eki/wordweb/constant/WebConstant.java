@@ -5,9 +5,13 @@ public interface WebConstant {
 	//TODO should be set by defaults and/or ui
 	String DISPLAY_LANG = "est";
 
-	String HOME_PAGE = "index";
+	String UNIF_HOME_PAGE = "unif-home";
 
 	String UNIF_SEARCH_PAGE = "unif-search";
+
+	String LITE_HOME_PAGE = "simple-home";
+
+	String LITE_SEARCH_PAGE = "simple-search";
 
 	String LEARN_PAGE = "learn";
 
@@ -42,6 +46,8 @@ public interface WebConstant {
 	String LITE_URI = "/lite";
 
 	String SEARCH_URI = "/search";
+
+	String SEARCH_WORD_FRAG_URI = "/searchwordfrag";
 
 	String WORD_DETAILS_URI = "/worddetails";
 
@@ -99,11 +105,5 @@ public interface WebConstant {
 
 	char UI_FILTER_VALUES_SEPARATOR = ',';
 
-	String AUTOCOMPLETE_BY_INFIX_LEV = "infixlev";
-
-	String AUTOCOMPLETE_BY_PREFIX = "pref";
-
 	int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
-
-	String AUTOCOMPLETE_ALG = AUTOCOMPLETE_BY_INFIX_LEV;
 }

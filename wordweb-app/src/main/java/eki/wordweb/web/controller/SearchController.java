@@ -3,8 +3,8 @@ package eki.wordweb.web.controller;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.wordweb.constant.WebConstant;
@@ -14,28 +14,24 @@ import eki.wordweb.constant.WebConstant;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class SearchController extends AbstractController {
 
-	@PostMapping(SEARCH_URI)
-	public String searchWords(
-			@RequestParam(name = "destinLangsStr") String destinLangStr,
-			@RequestParam(name = "datasetCodesStr") String datasetCodesStr,
-			@RequestParam(name = "searchMode") String searchMode,
-			@RequestParam(name = "searchWord") String searchWord,
-			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr) {
+	//backward compatibility support
+	@SuppressWarnings("deprecation")
+	@GetMapping({
+			SEARCH_URI + LEX_URI + "/{langPair}/{searchMode}/{searchWord}/{homonymNr}",
+			SEARCH_URI + LEX_URI + "/{langPair}/{searchMode}/{searchWord}"})
+	public String searchLexWordsByUri(
+			@PathVariable(name = "langPair") String langPair,
+			@PathVariable(name = "searchMode") String searchMode,
+			@PathVariable(name = "searchWord") String searchWord,
+			@PathVariable(name = "homonymNr", required = false) String homonymNrStr) {
 
-		searchWord = StringUtils.trim(searchWord);
-		if (StringUtils.isBlank(searchWord)) {
-			return "redirect:" + SEARCH_URI + UNIF_URI;
-			/* soon...
-			if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-				return "redirect:" + SEARCH_URI + UNIF_URI;
-			} else if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-				return "redirect:" + SEARCH_URI + LITE_URI;
-			}
-			*/
+		Integer homonymNr = nullSafe(homonymNrStr);
+		String searchUri = HOME_URI;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			searchUri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, searchWord, homonymNr);
+		} else if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
+			searchUri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, searchWord, homonymNr);
 		}
-		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
-		String searchUri = webUtil.composeSearchUri(destinLangStr, datasetCodesStr, searchMode, searchWord, selectedWordHomonymNr);
-
 		return "redirect:" + searchUri;
 	}
 }

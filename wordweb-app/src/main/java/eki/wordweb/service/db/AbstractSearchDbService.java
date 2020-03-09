@@ -1,8 +1,16 @@
 package eki.wordweb.service.db;
 
+import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_DEFINITION_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_FREEFORM_SOURCE_LINK;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_SOURCE_LINK;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYMOLOGY;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 
 import java.util.List;
@@ -16,13 +24,27 @@ import org.springframework.cache.annotation.Cacheable;
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.data.CollocationTuple;
+import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.SourceLinksWrapper;
+import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationTuple;
+import eki.wordweb.data.WordSearchElement;
+import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
+import eki.wordweb.data.db.tables.MviewWwFreeformSourceLink;
+import eki.wordweb.data.db.tables.MviewWwLexeme;
+import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
+import eki.wordweb.data.db.tables.MviewWwMeaning;
+import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 
@@ -30,6 +52,10 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 
 	@Autowired
 	protected DSLContext create;
+
+	public abstract Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, List<String> destinLangs, int maxWordCount);
+
+	public abstract List<Word> getWords(String searchWord, DataFilter dataFilter);
 
 	public Word getWord(Long wordId) {
 
@@ -108,6 +134,37 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 				.fetchInto(WordForm.class);
 	}
 
+	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId, DataFilter dataFilter) {
+
+		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
+		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
+		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
+		MviewWwDefinitionSourceLink dsl = MVIEW_WW_DEFINITION_SOURCE_LINK.as("dsl");
+
+		Condition where = l.WORD_ID.eq(wordId);
+
+		return create
+				.select(
+						l.LEXEME_ID,
+						m.MEANING_ID,
+						m.DOMAIN_CODES,
+						m.IMAGE_FILES,
+						m.SYSTEMATIC_POLYSEMY_PATTERNS,
+						m.SEMANTIC_TYPES,
+						m.LEARNER_COMMENTS,
+						m.DEFINITIONS,
+						mr.RELATED_MEANINGS,
+						dsl.SOURCE_LINKS.as("definition_source_links"))
+				.from(
+						l.innerJoin(m).on(m.MEANING_ID.eq(l.MEANING_ID))
+								.leftOuterJoin(mr).on(mr.MEANING_ID.eq(m.MEANING_ID))
+								.leftOuterJoin(dsl).on(dsl.MEANING_ID.eq(m.MEANING_ID)))
+				.where(where)
+				.orderBy(m.MEANING_ID, l.LEXEME_ID)
+				.fetch()
+				.into(LexemeMeaningTuple.class);
+	}
+
 	public List<WordRelationTuple> getWordRelationTuples(Long wordId) {
 
 		MviewWwWordRelation wr = MVIEW_WW_WORD_RELATION.as("wr");
@@ -147,5 +204,81 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 				.where(we.WORD_ID.eq(wordId))
 				.orderBy(we.WORD_ETYM_ORDER_BY)
 				.fetchInto(WordEtymTuple.class);
+	}
+
+	public List<CollocationTuple> getCollocations(Long wordId) {
+
+		MviewWwCollocation c = MVIEW_WW_COLLOCATION.as("c");
+
+		Condition where = c.WORD_ID.eq(wordId);
+
+		return create
+				.select(
+						c.LEXEME_ID,
+						c.WORD_ID,
+						c.POS_GROUP_ID,
+						c.POS_GROUP_CODE,
+						c.REL_GROUP_ID,
+						c.REL_GROUP_NAME,
+						c.COLLOC_ID,
+						c.COLLOC_VALUE,
+						c.COLLOC_DEFINITION,
+						c.COLLOC_USAGES,
+						c.COLLOC_MEMBERS,
+						c.COMPLEXITY)
+				.from(c)
+				.where(where)
+				.orderBy(
+						c.POS_GROUP_ORDER_BY,
+						c.REL_GROUP_ORDER_BY,
+						c.COLLOC_GROUP_ORDER,
+						c.COLLOC_ID)
+				.fetch()
+				.into(CollocationTuple.class);
+	}
+
+	public List<TypeSourceLink> getLexemeSourceLinks(Long wordId) {
+
+		MviewWwLexemeSourceLink sl = MVIEW_WW_LEXEME_SOURCE_LINK.as("sl");
+
+		SourceLinksWrapper sourceLinksWrapper = create
+				.select(sl.SOURCE_LINKS)
+				.from(sl)
+				.where(sl.WORD_ID.eq(wordId))
+				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
+		if (sourceLinksWrapper == null) {
+			return null;
+		}
+		return sourceLinksWrapper.getSourceLinks();
+	}
+
+	public List<TypeSourceLink> getFreeformSourceLinks(Long wordId) {
+
+		MviewWwFreeformSourceLink sl = MVIEW_WW_FREEFORM_SOURCE_LINK.as("sl");
+
+		SourceLinksWrapper sourceLinksWrapper = create
+				.select(sl.SOURCE_LINKS)
+				.from(sl)
+				.where(sl.WORD_ID.eq(wordId))
+				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
+		if (sourceLinksWrapper == null) {
+			return null;
+		}
+		return sourceLinksWrapper.getSourceLinks();
+	}
+
+	public List<TypeSourceLink> getWordEtymSourceLinks(Long wordId) {
+
+		MviewWwWordEtymSourceLink sl = MVIEW_WW_WORD_ETYM_SOURCE_LINK.as("sl");
+
+		SourceLinksWrapper sourceLinksWrapper = create
+				.select(sl.SOURCE_LINKS)
+				.from(sl)
+				.where(sl.WORD_ID.eq(wordId))
+				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
+		if (sourceLinksWrapper == null) {
+			return null;
+		}
+		return sourceLinksWrapper.getSourceLinks();
 	}
 }

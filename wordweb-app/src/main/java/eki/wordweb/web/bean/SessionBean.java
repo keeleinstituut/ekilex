@@ -12,10 +12,6 @@ public class SessionBean extends AbstractDataObject {
 
 	private List<String> datasetCodes;
 
-	private String searchMode;
-
-	private String recentSearchMode;
-
 	private String searchWord;
 
 	private String recentWord;
@@ -34,22 +30,6 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setDatasetCodes(List<String> datasetCodes) {
 		this.datasetCodes = datasetCodes;
-	}
-
-	public String getSearchMode() {
-		return searchMode;
-	}
-
-	public void setSearchMode(String searchMode) {
-		this.searchMode = searchMode;
-	}
-
-	public String getRecentSearchMode() {
-		return recentSearchMode;
-	}
-
-	public void setRecentSearchMode(String recentSearchMode) {
-		this.recentSearchMode = recentSearchMode;
 	}
 
 	public String getSearchWord() {

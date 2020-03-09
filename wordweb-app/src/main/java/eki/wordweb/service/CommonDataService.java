@@ -40,7 +40,7 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<UiFilterElement> getLangFilter(String displayLang) {
+	public List<UiFilterElement> getUnifLangFilter(String displayLang) {
 		Locale locale = LocaleContextHolder.getLocale();
 		String allLangsLabel = messageSource.getMessage("label.search.lang.all", new Object[0], locale);
 		String otherLangsLabel = messageSource.getMessage("label.search.lang.other", new Object[0], locale);
@@ -52,6 +52,20 @@ public class CommonDataService implements SystemConstant {
 			langFilter.add(new UiFilterElement(classifier.getCode(), classifier.getValue(), false));
 		});
 		langFilter.add(new UiFilterElement(DESTIN_LANG_OTHER, otherLangsLabel, false));
+		return langFilter;
+	}
+
+	@Transactional
+	public List<UiFilterElement> getSimpleLangFilter(String displayLang) {
+		Locale locale = LocaleContextHolder.getLocale();
+		String allLangsLabel = messageSource.getMessage("label.search.lang.all", new Object[0], locale);
+		List<String> langCodes = Arrays.asList(DESTIN_LANG_EST, DESTIN_LANG_RUS);
+		List<UiFilterElement> langFilter = new ArrayList<>();
+		langFilter.add(new UiFilterElement(DESTIN_LANG_ALL, allLangsLabel, true));
+		List<Classifier> classifiers = classifierUtil.getClassifiers(ClassifierName.LANGUAGE, langCodes, displayLang);
+		classifiers.forEach(classifier -> {
+			langFilter.add(new UiFilterElement(classifier.getCode(), classifier.getValue(), false));
+		});
 		return langFilter;
 	}
 

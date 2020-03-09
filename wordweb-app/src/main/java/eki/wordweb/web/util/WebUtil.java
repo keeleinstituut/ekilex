@@ -13,10 +13,19 @@ import eki.wordweb.constant.WebConstant;
 @Component
 public class WebUtil implements WebConstant, SystemConstant {
 
-	public String composeSearchUri(String destinLangsStr, String datasetCodesStr, String searchMode, String word, Integer homonymNr) {
+	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr) {
 		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
 		String encodedDatasetCodesStr = encodeSeparatedValuesStr(datasetCodesStr);
-		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLangsStr + "/" + encodedDatasetCodesStr + "/" + searchMode + "/" + encodedWord;
+		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLangsStr + "/" + encodedDatasetCodesStr + "/" + encodedWord;
+		if (homonymNr != null) {
+			searchUri += "/" + homonymNr;
+		}
+		return searchUri;
+	}
+
+	public String composeSimpleSearchUri(String destinLangsStr, String word, Integer homonymNr) {
+		String encodedWord = UriUtils.encode(word, SystemConstant.UTF_8);
+		String searchUri = SEARCH_URI + LITE_URI + "/" + destinLangsStr + "/" + encodedWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}

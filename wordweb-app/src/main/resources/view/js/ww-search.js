@@ -2,8 +2,8 @@ var windowWidthTreshold = 768;
 
 function fetchDetails(wordId, word, lang, wordSelectUrl) {
 	var detailsDiv = $('.word-details');
-	var wordDetailsUrl = applicationUrl + "worddetails/" + wordId;
-	$.get(wordDetailsUrl).done(function(data) {
+	var wordDetailsUrlWithParams = wordDetailsUrl + "/" + wordId;
+	$.get(wordDetailsUrlWithParams).done(function(data) {
 		detailsDiv.replaceWith(data);
 		if (word.indexOf('/') !== -1) {
 			wordSelectUrl = wordSelectUrl.replace(word, encodeURIComponent(word));
@@ -105,7 +105,6 @@ $(document).on("click", "button[name='colloc-usages-btn']", function() {
 	$(this).closest("[id^='collocs-area']").find("[id^='colloc-usages-area']").fadeToggle();
 });
 
-// demo js for interactions between the mobile and desktop modes
 $(document).on("click", ".back", function() {
 	if ($(".homonym-panel").hasClass("d-none")) {
 		$(".word-details").addClass("d-none d-md-block");

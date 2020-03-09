@@ -7,6 +7,7 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordSearchRecord;
+import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
 
-    private static final long serialVersionUID = 1923793449;
+    private static final long serialVersionUID = -237982884;
 
     /**
      * The reference instance of <code>public.mview_ww_word_search</code>
@@ -77,6 +78,16 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
      * The column <code>public.mview_ww_word_search.lang_order_by</code>.
      */
     public final TableField<MviewWwWordSearchRecord, Long> LANG_ORDER_BY = createField("lang_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_search.lang_complexities</code>.
+     */
+    public final TableField<MviewWwWordSearchRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField("lang_complexities", eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_search.simple_exists</code>.
+     */
+    public final TableField<MviewWwWordSearchRecord, Boolean> SIMPLE_EXISTS = createField("simple_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * Create a <code>public.mview_ww_word_search</code> table reference
@@ -124,7 +135,7 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_SEARCH_CRIT_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX, Indexes.MVIEW_WW_WORD_SEARCH_SGROUP_IDX, Indexes.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_SEARCH_CRIT_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX, Indexes.MVIEW_WW_WORD_SEARCH_SGROUP_IDX, Indexes.MVIEW_WW_WORD_SEARCH_SIMPLE_EXISTS_IDX, Indexes.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX);
     }
 
     /**

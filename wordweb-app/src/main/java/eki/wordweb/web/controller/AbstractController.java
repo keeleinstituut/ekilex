@@ -12,9 +12,8 @@ import org.springframework.ui.Model;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.UiFilterElement;
-import eki.wordweb.data.WordData;
-import eki.wordweb.data.WordsData;
 import eki.wordweb.service.CommonDataService;
+import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.web.bean.SessionBean;
 import eki.wordweb.web.util.UserAgentUtil;
 import eki.wordweb.web.util.WebUtil;
@@ -36,24 +35,8 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 	@Autowired
 	protected UserAgentUtil userAgentUtil;
 
-	protected void populateDefaultSearchModel(Model model) {
-		populateSearchModel("", new WordsData(SEARCH_MODE_DETAIL), model);
-	}
-
-	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
-
-		SessionBean sessionBean = populateCommonModel(model);
-		if (StringUtils.isBlank(sessionBean.getSearchMode())) {
-			sessionBean.setSearchMode(SEARCH_MODE_DETAIL);
-		}
-		populateLangFilter(sessionBean, model);
-		populateDatasetFilter(sessionBean, model);
-		sessionBean.setRecentSearchMode(sessionBean.getSearchMode());
-
-		model.addAttribute("searchWord", searchWord);
-		model.addAttribute("wordsData", wordsData);
-		model.addAttribute("wordData", new WordData());
-	}
+	@Autowired
+	protected StatDataCollector statDataCollector;
 
 	protected SessionBean populateCommonModel(Model model) {
 
@@ -69,9 +52,8 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		return sessionBean;
 	}
 
-	private void populateLangFilter(SessionBean sessionBean, Model model) {
+	protected void populateLangFilter(List<UiFilterElement> langFilter, SessionBean sessionBean, Model model) {
 
-		List<UiFilterElement> langFilter = commonDataService.getLangFilter(DISPLAY_LANG);
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> selectedLangs = new ArrayList<>();
 		if (CollectionUtils.isEmpty(destinLangs)) {
@@ -92,36 +74,6 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		model.addAttribute("langFilter", langFilter);
 		model.addAttribute("destinLangsStr", destinLangsStr);
 		model.addAttribute("selectedLangsStr", selectedLangsStr);
-	}
-
-	private void populateDatasetFilter(SessionBean sessionBean, Model model) {
-
-		boolean isSearchModeChange = !StringUtils.equals(sessionBean.getSearchMode(), sessionBean.getRecentSearchMode());
-		List<UiFilterElement> datasetFilter = commonDataService.getDatasetFilter();
-		List<String> datasetCodes = sessionBean.getDatasetCodes();
-		if (CollectionUtils.isEmpty(datasetCodes) || isSearchModeChange) {
-			datasetCodes = new ArrayList<>();
-			datasetCodes.add(DATASET_ALL);
-			sessionBean.setDatasetCodes(datasetCodes);
-		}
-		String selectedDatasetsStr = null;
-		for (UiFilterElement datasetFilterElement : datasetFilter) {
-			boolean isSelected = datasetCodes.contains(datasetFilterElement.getCode());
-			datasetFilterElement.setSelected(isSelected);
-			if (isSelected) {
-				selectedDatasetsStr = datasetFilterElement.getValue();
-			}
-		}
-		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
-		long selectedDatasetCount = datasetFilter.stream().filter(UiFilterElement::isSelected).count();
-		if (selectedDatasetCount > 1) {
-			selectedDatasetsStr = String.valueOf(selectedDatasetCount);
-		}
-
-		model.addAttribute("datasetFilter", datasetFilter);
-		model.addAttribute("datasetCodesStr", datasetCodesStr);
-		model.addAttribute("selectedDatasetsStr", selectedDatasetsStr);
-		model.addAttribute("supportedSimpleDatasets", SUPPORTED_SIMPLE_DATASETS);
 	}
 
 	protected boolean sessionBeanNotPresent(Model model) {

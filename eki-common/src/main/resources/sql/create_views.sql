@@ -66,81 +66,207 @@ select ws.sgroup,
        ws.word,
        ws.crit,
        unaccent(ws.crit) unacrit,
-       ws.lang_order_by
-from ((select 'word' as sgroup,
-              fw.value word,
-              lower(fw.value) crit,
-              (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
-       from form fw,
-            paradigm p,
-            word w,
-            language wl
-       where fw.mode = 'WORD'
-       and   fw.paradigm_id = p.id
-       and   p.word_id = w.id
-       and   w.lang = wl.code
-       and   exists (select w.id
-                     from lexeme as l,
-                          dataset ds
-                     where l.word_id = w.id
-                     and   l.type = 'PRIMARY'
-                     and   l.process_state_code = 'avalik'
-                     and   ds.code = l.dataset_code
-                     and   ds.is_public = true)
-       group by fw.value)
-       union all
-       (select 'as_word' as sgroup,
-              fw.value word,
-              lower(faw.value) crit,
-              (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
-       from form fw,
-            form faw,
-            paradigm p,
-            word w,
-            language wl
-       where fw.mode = 'WORD'
-       and   faw.mode = 'AS_WORD'
-       and   faw.paradigm_id = p.id
-       and   fw.paradigm_id = p.id
-       and   p.word_id = w.id
-       and   w.lang = wl.code
-       and   exists (select w.id
-                     from lexeme as l,
-                          dataset ds
-                     where l.word_id = w.id
-                     and   l.type = 'PRIMARY'
-                     and   l.process_state_code = 'avalik'
-                     and   ds.code = l.dataset_code
-                     and   ds.is_public = true)
-       group by fw.value,
-                faw.value)
-       union all
-       (select 'form' as sgroup,
-              fw.value word,
-              lower(f.value) crit,
-              (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
-       from form fw,
-            form f,
-            paradigm p,
-            word w,
-            language wl
-       where fw.mode = 'WORD'
-       and   f.mode = 'FORM'
-       and   fw.paradigm_id = p.id
-       and   f.paradigm_id = p.id
-       and   p.word_id = w.id
-       and   w.lang = wl.code
-       and   exists (select w.id
-                     from lexeme as l,
-                          dataset ds
-                     where l.word_id = w.id
-                     and   l.type = 'PRIMARY'
-                     and   l.process_state_code = 'avalik'
-                     and   ds.code = l.dataset_code
-                     and   ds.is_public = true)
-       and   fw.value != f.value
-       group by fw.value,
-                f.value)) ws
+       ws.lang_order_by,
+       wlc.lang_complexities,
+       wlc.simple_exists
+from (
+        (select 'word' as sgroup,
+                fw.value word,
+                lower(fw.value) crit,
+                (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
+         from form fw,
+              paradigm p,
+              word w,
+              language wl
+         where fw.mode = 'WORD'
+           and fw.paradigm_id = p.id
+           and p.word_id = w.id
+           and w.lang = wl.code
+           and exists
+             (select w.id
+              from lexeme as l,
+                   dataset ds
+              where l.word_id = w.id
+                and l.type = 'PRIMARY'
+                and l.process_state_code = 'avalik'
+                and ds.code = l.dataset_code
+                and ds.is_public = true)
+         group by fw.value)
+      union all
+        (select 'as_word' as sgroup,
+                fw.value word,
+                lower(faw.value) crit,
+                (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
+         from form fw,
+              form faw,
+              paradigm p,
+              word w,
+              language wl
+         where fw.mode = 'WORD'
+           and faw.mode = 'AS_WORD'
+           and faw.paradigm_id = p.id
+           and fw.paradigm_id = p.id
+           and p.word_id = w.id
+           and w.lang = wl.code
+           and exists
+             (select w.id
+              from lexeme as l,
+                   dataset ds
+              where l.word_id = w.id
+                and l.type = 'PRIMARY'
+                and l.process_state_code = 'avalik'
+                and ds.code = l.dataset_code
+                and ds.is_public = true)
+         group by fw.value,
+                  faw.value)
+      union all
+        (select 'form' as sgroup,
+                fw.value word,
+                lower(f.value) crit,
+                (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
+         from form fw,
+              form f,
+              paradigm p,
+              word w,
+              language wl
+         where fw.mode = 'WORD'
+           and f.mode = 'FORM'
+           and fw.paradigm_id = p.id
+           and f.paradigm_id = p.id
+           and p.word_id = w.id
+           and w.lang = wl.code
+           and exists
+             (select w.id
+              from lexeme as l,
+                   dataset ds
+              where l.word_id = w.id
+                and l.type = 'PRIMARY'
+                and l.process_state_code = 'avalik'
+                and ds.code = l.dataset_code
+                and ds.is_public = true)
+           and fw.value != f.value
+         group by fw.value,
+                  f.value)) ws,
+  (select lc.word,
+          array_agg(distinct row (case
+                                      when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                                      else 'other'
+                                  end, 
+                                  trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities,
+          ('SIMPLE' = any(array_agg(lc.complexity))) simple_exists
+   from (
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = l1.word_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   w2.lang,
+                   l2.complexity
+            from lexeme l1
+            inner join dataset l1ds on l1ds.code = l1.dataset_code
+            inner join lexeme l2 on l2.meaning_id = l1.meaning_id
+            and l2.dataset_code = l1.dataset_code
+            and l2.word_id != l1.word_id
+            inner join dataset l2ds on l2ds.code = l2.dataset_code
+            inner join word w2 on w2.id = l2.word_id
+            where l1.type = 'PRIMARY'
+              and l1.process_state_code = 'avalik'
+              and l1ds.is_public = true
+              and l2.process_state_code = 'avalik'
+              and l2ds.is_public = true)
+         union all
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = l.word_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   coalesce(ff.lang, w.lang) lang,
+                   ff.complexity
+            from word w,
+                 lexeme l,
+                 lexeme_freeform lff,
+                 freeform ff,
+                 dataset ds
+            where l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
+              and ds.code = l.dataset_code
+              and ds.is_public = true
+              and l.word_id = w.id
+              and lff.lexeme_id = l.id
+              and lff.freeform_id = ff.id
+              and ff.type in ('USAGE',
+                              'GRAMMAR',
+                              'GOVERNMENT',
+                              'PUBLIC_NOTE'))
+         union all
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = l.word_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   ut.lang,
+                   u.complexity
+            from lexeme l,
+                 lexeme_freeform lff,
+                 freeform u,
+                 freeform ut,
+                 dataset ds
+            where l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
+              and ds.code = l.dataset_code
+              and ds.is_public = true
+              and lff.lexeme_id = l.id
+              and lff.freeform_id = u.id
+              and u.type = 'USAGE'
+              and ut.parent_id = u.id
+              and ut.type = 'USAGE_TRANSLATION')
+         union all
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = l.word_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   d.lang,
+                   d.complexity
+            from lexeme l,
+                 definition d,
+                 dataset ds
+            where l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
+              and ds.code = l.dataset_code
+              and ds.is_public = true
+              and l.meaning_id = d.meaning_id)
+         union all
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = r.word1_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   w2.lang,
+                   l2.complexity
+            from word_relation r,
+                 lexeme l2,
+                 word w2,
+                 dataset ds
+            where w2.id = r.word2_id
+              and l2.word_id = w2.id
+              and l2.type = 'PRIMARY'
+              and l2.process_state_code = 'avalik'
+              and ds.code = l2.dataset_code
+              and ds.is_public = true
+              and r.word_rel_type_code != 'raw')) lc
+   group by lc.word) wlc
+where ws.word = wlc.word
 order by ws.sgroup,
          ws.word,
          ws.crit;

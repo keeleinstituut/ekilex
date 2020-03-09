@@ -102,28 +102,34 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		return htmlBuf.toString();
 	}
 
-	public String getSearchUri(SessionBean sessionBean, String word, Integer homonymNr) {
+	public String getSearchUri(SessionBean sessionBean, String searchMode, String word, Integer homonymNr) {
 		List<String> destinLangs = sessionBean.getDestinLangs();
-		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
-		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
-		String searchMode = sessionBean.getSearchMode();
-		String uri = webUtil.composeSearchUri(destinLangsStr, datasetCodesStr, searchMode, word, homonymNr);
-		return uri;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			List<String> datasetCodes = sessionBean.getDatasetCodes();
+			String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
+			return webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, word, homonymNr);
+		} else if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
+			return webUtil.composeSimpleSearchUri(destinLangsStr, word, homonymNr);
+		}
+		return null;
 	}
 
-	public String getSearchUri(SessionBean sessionBean, String word) {
+	public String getSearchUri(SessionBean sessionBean, String searchMode, String word) {
 		List<String> destinLangs = sessionBean.getDestinLangs();
-		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
-		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
-		String searchMode = sessionBean.getSearchMode();
-		String uri = webUtil.composeSearchUri(destinLangsStr, datasetCodesStr, searchMode, word, null);
-		return uri;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			List<String> datasetCodes = sessionBean.getDatasetCodes();
+			String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
+			return webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, word, null);
+		} else if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
+			return webUtil.composeSimpleSearchUri(destinLangsStr, word, null);
+		}
+		return null;
 	}
 
 	public String getDetailSearchUri(String word) {
-		String uri = webUtil.composeSearchUri(DESTIN_LANG_ALL, DATASET_ALL, SEARCH_MODE_DETAIL, word, null);
+		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, word, null);
 		return uri;
 	}
 }

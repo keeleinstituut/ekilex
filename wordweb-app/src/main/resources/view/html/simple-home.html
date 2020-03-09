@@ -57,10 +57,11 @@
   <div th:replace="common-app :: footer-content"></div>
   <div th:replace="common-app :: feedback-form"></div>
   <script th:inline="javascript">
-  	var currentPage = /*[[@{/}]]*/"/";
-  	var searchWordFragUrl = /*[[@{/searchwordfrag}]]*/"/searchwordfrag";
+  	var currentPage = /*[[@{/lite}]]*/"/lite";
+  	var searchWordFragUrl = /*[[@{/searchwordfrag/lite}]]*/"/searchwordfrag/lite";
+  	var wordDetailsUrl = /*[[@{/worddetails/lite}]]*/"/worddetails/lite";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
-  	setActiveMenuItem('search');
+  	setActiveMenuItem('search-lite');
   </script>
 </body>
 </html>

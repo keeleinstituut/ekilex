@@ -12,8 +12,6 @@ public class SearchFilter extends AbstractDataObject {
 
 	private List<String> datasetCodes;
 
-	private String searchMode;
-
 	private String searchWord;
 
 	private Integer homonymNr;
@@ -21,10 +19,9 @@ public class SearchFilter extends AbstractDataObject {
 	public SearchFilter() {
 	}
 
-	public SearchFilter(List<String> destinLangs, List<String> datasetCodes, String searchMode) {
+	public SearchFilter(List<String> destinLangs, List<String> datasetCodes) {
 		this.destinLangs = destinLangs;
 		this.datasetCodes = datasetCodes;
-		this.searchMode = searchMode;
 	}
 
 	public List<String> getDestinLangs() {
@@ -41,14 +38,6 @@ public class SearchFilter extends AbstractDataObject {
 
 	public void setDatasetCodes(List<String> datasetCodes) {
 		this.datasetCodes = datasetCodes;
-	}
-
-	public String getSearchMode() {
-		return searchMode;
-	}
-
-	public void setSearchMode(String searchMode) {
-		this.searchMode = searchMode;
 	}
 
 	public String getSearchWord() {
