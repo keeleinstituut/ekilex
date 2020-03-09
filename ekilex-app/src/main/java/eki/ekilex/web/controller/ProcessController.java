@@ -2,12 +2,10 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,14 +16,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.client.HttpClientErrorException;
 
-import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.CreateItemRequest;
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.ProcessLog;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.service.ProcessService;
+import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -41,6 +40,9 @@ public class ProcessController implements WebConstant {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private UserProfileService userProfileService;
 
 	@GetMapping("/meaningprocesslog:{meaningId}")
 	public String meaningProcessLogLink(@PathVariable("meaningId") Long meaningId, Model model) {
@@ -140,19 +142,21 @@ public class ProcessController implements WebConstant {
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping(UPDATE_LAYER_COMPLETE_URI + "/{wordId}/{opCode}")
+	@PostMapping(UPDATE_LAYER_COMPLETE_URI + "/{wordId}")
 	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
 	public String updateLayerProcessStateComplete(
 			@PathVariable Long wordId,
-			@PathVariable String opCode,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		LayerName layerName = getLayerName(opCode);
-		String userName = userService.getAuthenticatedUser().getName();
+		EkiUser user = userService.getAuthenticatedUser();
+		String userName = user.getName();
+		Long userId = user.getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		String layerName = userProfile.getPreferredLayerName();
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 
-		logger.debug("Updating {} layer process state complete for word \"{}\"", layerName.name(), wordId);
+		logger.debug("Updating {} layer process state complete for word \"{}\"", layerName, wordId);
 		processService.updateLayerProcessStateComplete(wordId, userName, datasetCode, layerName);
 
 		return RESPONSE_OK_VER2;
@@ -160,29 +164,19 @@ public class ProcessController implements WebConstant {
 
 	@PostMapping(UPDATE_LAYER_PROCESS_STATE_URI)
 	@ResponseBody
-	public String updateLayerProcessState(@RequestBody UpdateItemRequest itemData) {
+	public String updateSynLayerProcessState(@RequestBody UpdateItemRequest itemData) {
 
-		String userName = userService.getAuthenticatedUser().getName();
-		String opCode = itemData.getOpCode();
+		EkiUser user = userService.getAuthenticatedUser();
+		String userName = user.getName();
+		Long userId = user.getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		String layerName = userProfile.getPreferredLayerName();
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
-		LayerName layerName = getLayerName(opCode);
 
-		logger.debug("Updating {} layer process state for lexeme \"{}\"", layerName.name(), lexemeId);
+		logger.debug("Updating {} layer process state for lexeme \"{}\"", layerName, lexemeId);
 		processService.updateSynProcessState(lexemeId, userName, processStateCode, layerName);
 
 		return RESPONSE_OK_VER2;
-	}
-
-	private LayerName getLayerName(String opCode) {
-
-		if (StringUtils.equals(opCode, "syn")) {
-			return LayerName.SYN;
-		} else if (StringUtils.equals(opCode, "biling")) {
-			return LayerName.BILING_RUS;
-		} else {
-			logger.error("Unknown opCode \"{}\" when updating layer process state", opCode);
-			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Unknown opCode");
-		}
 	}
 }

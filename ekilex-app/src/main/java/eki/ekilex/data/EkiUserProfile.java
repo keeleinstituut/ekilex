@@ -16,9 +16,9 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private String preferredLayerName;
 
-	private List<String> preferredBilingCandidateLangs;
+	private List<String> preferredSynCandidateLangs;
 
-	private List<String> preferredBilingLexMeaningWordLangs;
+	private List<String> preferredSynLexMeaningWordLangs;
 
 	private List<String> preferredMeaningRelationWordLangs;
 
@@ -62,20 +62,20 @@ public class EkiUserProfile extends AbstractDataObject {
 		this.preferredLayerName = preferredLayerName;
 	}
 
-	public List<String> getPreferredBilingCandidateLangs() {
-		return preferredBilingCandidateLangs;
+	public List<String> getPreferredSynCandidateLangs() {
+		return preferredSynCandidateLangs;
 	}
 
-	public void setPreferredBilingCandidateLangs(List<String> preferredBilingCandidateLangs) {
-		this.preferredBilingCandidateLangs = preferredBilingCandidateLangs;
+	public void setPreferredSynCandidateLangs(List<String> preferredSynCandidateLangs) {
+		this.preferredSynCandidateLangs = preferredSynCandidateLangs;
 	}
 
-	public List<String> getPreferredBilingLexMeaningWordLangs() {
-		return preferredBilingLexMeaningWordLangs;
+	public List<String> getPreferredSynLexMeaningWordLangs() {
+		return preferredSynLexMeaningWordLangs;
 	}
 
-	public void setPreferredBilingLexMeaningWordLangs(List<String> preferredBilingLexMeaningWordLangs) {
-		this.preferredBilingLexMeaningWordLangs = preferredBilingLexMeaningWordLangs;
+	public void setPreferredSynLexMeaningWordLangs(List<String> preferredSynLexMeaningWordLangs) {
+		this.preferredSynLexMeaningWordLangs = preferredSynLexMeaningWordLangs;
 	}
 
 	public List<String> getPreferredMeaningRelationWordLangs() {

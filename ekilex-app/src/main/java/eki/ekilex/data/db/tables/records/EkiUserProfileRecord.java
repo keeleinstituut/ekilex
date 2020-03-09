@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileRecord> implements Record12<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String> {
 
-    private static final long serialVersionUID = -1332985784;
+    private static final long serialVersionUID = -1981378104;
 
     /**
      * Setter for <code>public.eki_user_profile.id</code>.
@@ -87,30 +87,30 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
     }
 
     /**
-     * Setter for <code>public.eki_user_profile.preferred_biling_candidate_langs</code>.
+     * Setter for <code>public.eki_user_profile.preferred_syn_candidate_langs</code>.
      */
-    public void setPreferredBilingCandidateLangs(String... value) {
+    public void setPreferredSynCandidateLangs(String... value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.eki_user_profile.preferred_biling_candidate_langs</code>.
+     * Getter for <code>public.eki_user_profile.preferred_syn_candidate_langs</code>.
      */
-    public String[] getPreferredBilingCandidateLangs() {
+    public String[] getPreferredSynCandidateLangs() {
         return (String[]) get(4);
     }
 
     /**
-     * Setter for <code>public.eki_user_profile.preferred_biling_lex_meaning_word_langs</code>.
+     * Setter for <code>public.eki_user_profile.preferred_syn_lex_meaning_word_langs</code>.
      */
-    public void setPreferredBilingLexMeaningWordLangs(String... value) {
+    public void setPreferredSynLexMeaningWordLangs(String... value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>public.eki_user_profile.preferred_biling_lex_meaning_word_langs</code>.
+     * Getter for <code>public.eki_user_profile.preferred_syn_lex_meaning_word_langs</code>.
      */
-    public String[] getPreferredBilingLexMeaningWordLangs() {
+    public String[] getPreferredSynLexMeaningWordLangs() {
         return (String[]) get(5);
     }
 
@@ -267,7 +267,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public Field<String[]> field5() {
-        return EkiUserProfile.EKI_USER_PROFILE.PREFERRED_BILING_CANDIDATE_LANGS;
+        return EkiUserProfile.EKI_USER_PROFILE.PREFERRED_SYN_CANDIDATE_LANGS;
     }
 
     /**
@@ -275,7 +275,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public Field<String[]> field6() {
-        return EkiUserProfile.EKI_USER_PROFILE.PREFERRED_BILING_LEX_MEANING_WORD_LANGS;
+        return EkiUserProfile.EKI_USER_PROFILE.PREFERRED_SYN_LEX_MEANING_WORD_LANGS;
     }
 
     /**
@@ -363,7 +363,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public String[] component5() {
-        return getPreferredBilingCandidateLangs();
+        return getPreferredSynCandidateLangs();
     }
 
     /**
@@ -371,7 +371,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public String[] component6() {
-        return getPreferredBilingLexMeaningWordLangs();
+        return getPreferredSynLexMeaningWordLangs();
     }
 
     /**
@@ -459,7 +459,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public String[] value5() {
-        return getPreferredBilingCandidateLangs();
+        return getPreferredSynCandidateLangs();
     }
 
     /**
@@ -467,7 +467,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public String[] value6() {
-        return getPreferredBilingLexMeaningWordLangs();
+        return getPreferredSynLexMeaningWordLangs();
     }
 
     /**
@@ -559,7 +559,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public EkiUserProfileRecord value5(String... value) {
-        setPreferredBilingCandidateLangs(value);
+        setPreferredSynCandidateLangs(value);
         return this;
     }
 
@@ -568,7 +568,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
      */
     @Override
     public EkiUserProfileRecord value6(String... value) {
-        setPreferredBilingLexMeaningWordLangs(value);
+        setPreferredSynLexMeaningWordLangs(value);
         return this;
     }
 
@@ -660,15 +660,15 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
     /**
      * Create a detached, initialised EkiUserProfileRecord
      */
-    public EkiUserProfileRecord(Long id, Long userId, Long recentDatasetPermissionId, String[] preferredDatasets, String[] preferredBilingCandidateLangs, String[] preferredBilingLexMeaningWordLangs, String[] preferredMeaningRelationWordLangs, Boolean showLexMeaningRelationSourceLangWords, Boolean showMeaningRelationFirstWordOnly, Boolean showMeaningRelationMeaningId, Boolean showMeaningRelationWordDatasets, String preferredLayerName) {
+    public EkiUserProfileRecord(Long id, Long userId, Long recentDatasetPermissionId, String[] preferredDatasets, String[] preferredSynCandidateLangs, String[] preferredSynLexMeaningWordLangs, String[] preferredMeaningRelationWordLangs, Boolean showLexMeaningRelationSourceLangWords, Boolean showMeaningRelationFirstWordOnly, Boolean showMeaningRelationMeaningId, Boolean showMeaningRelationWordDatasets, String preferredLayerName) {
         super(EkiUserProfile.EKI_USER_PROFILE);
 
         set(0, id);
         set(1, userId);
         set(2, recentDatasetPermissionId);
         set(3, preferredDatasets);
-        set(4, preferredBilingCandidateLangs);
-        set(5, preferredBilingLexMeaningWordLangs);
+        set(4, preferredSynCandidateLangs);
+        set(5, preferredSynLexMeaningWordLangs);
         set(6, preferredMeaningRelationWordLangs);
         set(7, showLexMeaningRelationSourceLangWords);
         set(8, showMeaningRelationFirstWordOnly);

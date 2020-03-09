@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.DbConstant;
-import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -75,7 +74,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	private LookupDbService lookupDbService;
 
 	@Transactional
-	public WordsResult getWords(String searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) {
+	public WordsResult getWords(String searchFilter, List<String> selectedDatasetCodes, String layerName, boolean fetchAll, int offset) {
 
 		List<Word> words;
 		int wordCount;
@@ -103,7 +102,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordsResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) throws Exception {
+	public WordsResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, String layerName, boolean fetchAll, int offset) throws Exception {
 
 		List<Word> words;
 		int wordCount;
@@ -131,7 +130,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordSynDetails getWordSynDetails(Long wordId, String datasetCode, LayerName layerName, List<String> candidateLangs, List<String> meaningWordLangs) {
+	public WordSynDetails getWordSynDetails(Long wordId, String datasetCode, String layerName, List<String> candidateLangs, List<String> meaningWordLangs) {
 
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
@@ -147,7 +146,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<SynRelation> relations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(candidateLangs)) {
-			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs, classifierLabelLang, classifierLabelTypeDescrip);
+			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs);
 		}
 
 		wordDetails.setLexemes(synLexemes);

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = 514313238;
+    private static final long serialVersionUID = -2008428158;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -77,14 +77,14 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     public final TableField<EkiUserProfileRecord, String[]> PREFERRED_DATASETS = createField("preferred_datasets", org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.eki_user_profile.preferred_biling_candidate_langs</code>.
+     * The column <code>public.eki_user_profile.preferred_syn_candidate_langs</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_BILING_CANDIDATE_LANGS = createField("preferred_biling_candidate_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_SYN_CANDIDATE_LANGS = createField("preferred_syn_candidate_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.eki_user_profile.preferred_biling_lex_meaning_word_langs</code>.
+     * The column <code>public.eki_user_profile.preferred_syn_lex_meaning_word_langs</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_BILING_LEX_MEANING_WORD_LANGS = createField("preferred_biling_lex_meaning_word_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_SYN_LEX_MEANING_WORD_LANGS = createField("preferred_syn_lex_meaning_word_langs", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_meaning_relation_word_langs</code>.

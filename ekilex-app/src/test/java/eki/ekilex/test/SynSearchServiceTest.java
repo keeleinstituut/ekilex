@@ -38,7 +38,7 @@ public class SynSearchServiceTest extends AbstractTest {
 
 	@Test
 	public void testGetSynRelationsTuples() {
-		List<SynRelation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"), "est", "descrip");
+		List<SynRelation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"));
 		assertThat(relations.size()).isEqualTo(2);
 	}
 }

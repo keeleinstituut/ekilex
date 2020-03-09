@@ -1,14 +1,15 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
-import static eki.ekilex.data.db.Tables.LAYER_STATE;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Table;
@@ -16,7 +17,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.LayerName;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.ProcessLog;
 
@@ -190,7 +190,7 @@ public class ProcessDbService {
 		return lexemeData;
 	}
 
-	public LexemeData getLexemeData(Long lexemeId, LayerName layerName) {
+	public LexemeData getLexemeData(Long lexemeId, String layerName) {
 
 		LexemeData lexemeData = create
 				.select(
@@ -198,13 +198,13 @@ public class ProcessDbService {
 						LEXEME.PROCESS_STATE_CODE,
 						LEXEME.DATASET_CODE,
 						LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
-				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
+				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName))))
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(LexemeData.class);
 		return lexemeData;
 	}
 
-	public List<LexemeData> getLexemeDatas(Long wordId, String datasetCode, LayerName layerName) {
+	public List<LexemeData> getLexemeDatas(Long wordId, String datasetCode, String layerName) {
 
 		return create
 				.select(
@@ -212,7 +212,7 @@ public class ProcessDbService {
 						LEXEME.PROCESS_STATE_CODE,
 						LEXEME.DATASET_CODE,
 						LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
-				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
+				.from(LEXEME.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName))))
 				.where(LEXEME.WORD_ID.eq(wordId).and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchInto(LexemeData.class);
 	}
@@ -223,7 +223,7 @@ public class ProcessDbService {
 		createLexemeProcessLog(lexemeId, processLogId);
 	}
 
-	public void createLexemeProcessLog(Long lexemeId, String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode, LayerName layerName) {
+	public void createLexemeProcessLog(Long lexemeId, String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode, String layerName) {
 
 		Long processLogId = createProcessLog(eventBy, comment, commentPrese, processStateCode, datasetCode, layerName);
 		createLexemeProcessLog(lexemeId, processLogId);
@@ -297,9 +297,9 @@ public class ProcessDbService {
 		return processLogId;
 	}
 
-	private Long createProcessLog(String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode, LayerName layerName) {
+	private Long createProcessLog(String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode, String layerName) {
 
-		if (layerName == null) {
+		if (StringUtils.isEmpty(layerName)) {
 			return createProcessLog(eventBy, comment, commentPrese, processStateCode, datasetCode);
 		}
 	
@@ -318,7 +318,7 @@ public class ProcessDbService {
 						commentPrese,
 						processStateCode,
 						datasetCode,
-						layerName.name())
+						layerName)
 				.returning(PROCESS_LOG.ID)
 				.fetchOne()
 				.getId();
@@ -334,12 +334,12 @@ public class ProcessDbService {
 				.execute();
 	}
 
-	public void createOrUpdateLayerProcessState(Long lexemeId, LayerName layerName, String processStateCode) {
+	public void createOrUpdateLayerProcessState(Long lexemeId, String layerName, String processStateCode) {
 
 		int updateCount = create
 				.update(LAYER_STATE)
 				.set(LAYER_STATE.PROCESS_STATE_CODE, processStateCode)
-				.where(LAYER_STATE.LEXEME_ID.eq(lexemeId).and(LAYER_STATE.LAYER_NAME.eq(layerName.name())))
+				.where(LAYER_STATE.LEXEME_ID.eq(lexemeId).and(LAYER_STATE.LAYER_NAME.eq(layerName)))
 				.execute();
 
 		if (updateCount == 0) {
@@ -351,7 +351,7 @@ public class ProcessDbService {
 						LAYER_STATE.PROCESS_STATE_CODE)
 				.values(
 						lexemeId,
-						layerName.name(),
+						layerName,
 						processStateCode)
 				.execute();
 		}

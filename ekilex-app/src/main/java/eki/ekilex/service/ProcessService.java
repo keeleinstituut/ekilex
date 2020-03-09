@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
-import eki.common.constant.LayerName;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.ProcessLog;
@@ -75,7 +74,7 @@ public class ProcessService implements DbConstant {
 	}
 
 	@Transactional
-	public void updateLayerProcessStateComplete(Long wordId, String userName, String datasetCode, LayerName layerName) {
+	public void updateLayerProcessStateComplete(Long wordId, String userName, String datasetCode, String layerName) {
 
 		final String newProcessStateCode = PROCESS_STATE_COMPLETE;
 		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
@@ -90,7 +89,7 @@ public class ProcessService implements DbConstant {
 	}
 
 	@Transactional
-	public void updateSynProcessState(Long lexemeId, String userName, String processStateCode, LayerName layerName) {
+	public void updateSynProcessState(Long lexemeId, String userName, String processStateCode, String layerName) {
 
 		LexemeData lexemeData = processDbService.getLexemeData(lexemeId, layerName);
 		String datasetCode = lexemeData.getDatasetCode();

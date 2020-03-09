@@ -21,7 +21,6 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
-import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchCriterionGroup;
@@ -51,7 +50,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, boolean fetchAll, int offset) {
+	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, String layerName, boolean fetchAll, int offset) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
@@ -60,7 +59,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		return execute(word, paradigm, where, layerName, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 
-	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, boolean fetchAll, int offset)
+	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String layerName, boolean fetchAll, int offset)
 			throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
@@ -71,7 +70,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		return execute(w1, p, wordCondition, layerName, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 	
-	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {
 
 		WordRelation r = WORD_RELATION.as("r");
 		WordRelation oppr = WORD_RELATION.as("oppr");
@@ -153,7 +152,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynRelation.class);
 	}
 
-	public List<WordSynLexeme> getWordPrimarySynonymLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName) {
+	public List<WordSynLexeme> getWordPrimarySynonymLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String layerName) {
 
 		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
 
@@ -169,7 +168,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
 				.from(LEXEME
 						.innerJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE))
-						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name())))
+						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName)))
 						)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)

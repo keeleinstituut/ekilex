@@ -26,12 +26,8 @@
           <a th:href="@{/termsearch}">Terminoloogide otsing</a>
         </p>
         <p>
-          <a th:href="@{/synsearch}" th:if="${#vars.isCrudRoleSelected}">Sünonüümide otsing</a>
-          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</span>
-        </p>
-        <p>
-          <a th:href="@{/bilingsearch}" th:if="${#vars.isCrudRoleSelected}">Kakskeelsete vastete otsing</a>
-          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll kakskeelsete vastete otsinguks">Kakskeelsete vastete otsing</span>
+          <a th:href="@{/synsearch}" th:if="${#vars.isCrudRoleSelected}">Vastete otsing</a>
+          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll vastete otsinguks">Vastete otsing</span>
         </p>
         <p>
           <a th:href="@{/sourcesearch}">Allikate otsing</a>

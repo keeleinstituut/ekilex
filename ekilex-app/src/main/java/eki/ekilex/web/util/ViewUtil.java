@@ -78,6 +78,7 @@ public class ViewUtil implements InitializingBean {
 	}
 
 	public String getLayerText(String layerName) {
+
 		Locale locale = LocaleContextHolder.getLocale();
 		String messageKey = "layername.";
 		if (StringUtils.isEmpty(layerName)) {
