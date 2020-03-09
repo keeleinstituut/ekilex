@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LayerName;
 import eki.common.constant.SourceType;
 import eki.common.constant.TextDecoration;
 import eki.common.data.CodeValue;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ComplexitySelect;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
@@ -139,8 +142,17 @@ public abstract class AbstractPageController implements WebConstant {
 	}
 
 	@ModelAttribute("complexities")
-	public List<Complexity> getComplexities() {
-		return Arrays.asList(Complexity.values());
+	public List<ComplexitySelect> getComplexities() {
+
+		List<ComplexitySelect> complexities = new ArrayList<>();
+		complexities.add(new ComplexitySelect(Complexity.DEFAULT, false));
+		complexities.add(new ComplexitySelect(Complexity.SIMPLE, false));
+		complexities.add(new ComplexitySelect(Complexity.DETAIL, false));
+		complexities.add(new ComplexitySelect(Complexity.SIMPLE1, true));
+		complexities.add(new ComplexitySelect(Complexity.DETAIL1, true));
+		complexities.add(new ComplexitySelect(Complexity.SIMPLE2, true));
+		complexities.add(new ComplexitySelect(Complexity.DETAIL2, true));
+		return complexities;
 	}
 
 	@ModelAttribute("wordGenders")
@@ -166,5 +178,10 @@ public abstract class AbstractPageController implements WebConstant {
 	@ModelAttribute("meaningRelationTypes")
 	public List<Classifier> getMeaningRelationTypes() {
 		return commonDataService.getMeaningRelationTypes();
+	}
+
+	@ModelAttribute("layerNames")
+	public List<LayerName> getLayerNames() {
+		return Arrays.asList(LayerName.class.getEnumConstants());
 	}
 }

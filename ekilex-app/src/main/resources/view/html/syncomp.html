@@ -3,18 +3,19 @@
 <head></head>
 <body>
   <div id="synCandidatesListDiv"
-    class="overflow-auto h-100 keyboard-nav-list"
-    data-panel-index="3"
-    th:attrappend="data-active-panel=${markedSynWordId != null}?'true'"
-    th:fragment="syn_candidate_list">
+       class="overflow-auto h-100 keyboard-nav-list"
+       data-panel-index="3"
+       th:attrappend="data-active-panel=${markedSynWordId != null}?'true'"
+       th:fragment="syn_candidate_list">
     <ul th:if="${not #lists.isEmpty(details.relations)}" width="100%" class="orderable list-unstyled p-0" data-op-code="word_relation">
       <li th:each="synRelation,relationIter : ${details.relations}"
-        th:data-id="${synRelation.id}"
-        th:data-orderby="${synRelation.orderBy}"
-        th:data-navigate-index="${relationIter.index}"
-        th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.relatedWordId ? 'navigate-marked' : ''}"
-        th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.relatedWordId}?'true'">
-        <div class="draggable-synonym d-flex flex-row hover-actions-container align-items-center pl-1" th:data-word-id="${synRelation.relatedWordId}" th:data-word="${synRelation.relatedWord}">
+          th:data-id="${synRelation.id}"
+          th:data-orderby="${synRelation.orderBy}"
+          th:data-navigate-index="${relationIter.index}"
+          th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.relatedWordId ? 'navigate-marked' : ''}"
+          th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.relatedWordId}?'true'">
+        <div class="draggable-synonym d-flex flex-row hover-actions-container align-items-center pl-1" th:data-word-id="${synRelation.relatedWordId}"
+             th:data-word="${synRelation.relatedWord}">
           <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
             <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
           </span>
@@ -60,9 +61,9 @@
             <p th:if="${#lists.isEmpty(synRelation.relationParams)}">Andmed puuduvad</p>
           </div>
           <span th:if="${synRelation.oppositeRelationStatus != null}"
-            th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}"
-            data-toggle="tooltip"
-            class="border-left border-light px-2">
+                th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}"
+                data-toggle="tooltip"
+                class="border-left border-light px-2">
             <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i>
           </span>
           <span th:if="${synRelation.oppositeRelationStatus == null}" title="Seos puudub" data-toggle="tooltip" class="border-left border-light px-2">
@@ -71,7 +72,7 @@
         </div>
       </li>
     </ul>
-    <p th:unless="${not #lists.isEmpty(details.relations)}" class="text-secondary font-italic p-3">Sünonüümi kandidaadid puuduvad</p>
+    <p th:unless="${not #lists.isEmpty(details.relations)}" class="text-secondary font-italic p-3">Vastete kandidaadid puuduvad valitud keeltes</p>
   </div>
 
   <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100" th:fragment="syn_word_result_list">
@@ -87,10 +88,11 @@
             </div>
             <div class="overflow-auto h-100 keyboard-nav-list" data-panel-index="1">
               <ul id="results" class="mb-0 pb-3 list-group ">
-                <li th:each="word, wordIter : ${wordsResult.words}" class="list-group-item search-result-item navigate-item border-left-0 border-right-0 rounded-0 p-0"
-                  th:data-navigate-index="${wordIter.index}"
-                  th:attrappend="data-navigate-selected=${wordIter.index == 0}?'true'"
-                  th:classappend="${wordIter.index == 0 ? 'navigate-selected active': ''}">
+                <li th:each="word, wordIter : ${wordsResult.words}"
+                    class="list-group-item search-result-item navigate-item border-left-0 border-right-0 rounded-0 p-0"
+                    th:data-navigate-index="${wordIter.index}"
+                    th:attrappend="data-navigate-selected=${wordIter.index == 0}?'true'"
+                    th:classappend="${wordIter.index == 0 ? 'navigate-selected active': ''}">
                   <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="synDetailsBtn">
                     <span class="d-flex align-items-center">
                       <span class="badge badge-light mr-2" th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
@@ -104,7 +106,7 @@
                           <span th:unless="${wordDatasetIter.last}">,</span>
                         </span>
                       </small>
-                      <span class="badge badge-pill badge-light ml-auto ">
+                      <span class="badge badge-pill badge-light ml-auto" th:if="${permDataUtil.isProcessStateChangeEnabled(sessionBean)}">
                         <span th:each="layerProcessStateCode,layerProcessStateIter : ${word.layerProcessStateCodes}">
                           <span th:text="${layerProcessStateCode}"></span>
                           <span th:unless="${layerProcessStateIter.last}">,</span>
@@ -146,37 +148,37 @@
 
   <th:block th:fragment="meaning_words_data(showLangLabel)" th:if="${not #lists.isEmpty(lexeme.meaningWordLangGroups)}">
     <div th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}"
-      class="orderable d-flex flex-row flex-wrap"
-      data-op-code="lexeme_meaning_word"
-      th:data-additional-info="${lexeme.lexemeId}">
+         class="orderable d-flex flex-row flex-wrap"
+         data-op-code="lexeme_meaning_word"
+         th:data-additional-info="${lexeme.lexemeId}">
       <span th:if="${showLangLabel}" th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
       <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
-        th:data-id="${meaningWord.lexemeId}"
-        th:data-orderby="${meaningWord.orderBy}"
-        th:data-orderpos="${meaningWordIter.index}">
+           th:data-id="${meaningWord.lexemeId}"
+           th:data-orderby="${meaningWord.orderBy}"
+           th:data-orderpos="${meaningWordIter.index}">
         <div th:replace="syndialog :: edit_meaning_word_lexeme_weight_dlg"></div>
         <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
         <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
           <a href="#" class="mr-2 draggable-meaning droppable-meaning do-refresh">
             <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${meaningWord.value}"></span>
-            <span th:if="${meaningWord.homonymNumber > 1}"
-              th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
-              th:text="${meaningWord.homonymNumber}">
+            <span th:if="${meaningWord.wordHomonymsExist}"
+                  th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
+                  th:text="${meaningWord.homonymNumber}">
             </span>
             <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
           </a>
           <button type="button" class="hover-actions btn badge badge-secondary btn-xs"
-            title="Muuda sünonüümi ilmiku kaalu"
-            data-toggle="modal"
-            th:data-target="${'#editSynLexemeWeightDlg_' + meaningWord.lexemeId}"
-            sec:authorize="${#vars.isLexemeCrudGranted}">
+                  title="Muuda sünonüümi ilmiku kaalu"
+                  data-toggle="modal"
+                  th:data-target="${'#editSynLexemeWeightDlg_' + meaningWord.lexemeId}"
+                  sec:authorize="${#vars.isLexemeCrudGranted}">
             <i class="fa fa-edit" aria-hidden="true"></i>
           </button>
           <button type="button" class="hover-actions btn btn-secondary btn-xs ml-2"
-            th:data-id="${meaningWord.lexemeId}"
-            data-callback="refreshDetails"
-            data-toggle="deleteLexemeAndWordAndMeaning"
-            sec:authorize="${#vars.isLexemeCrudGranted}">
+                  th:data-id="${meaningWord.lexemeId}"
+                  data-callback="refreshDetails"
+                  data-toggle="deleteLexemeAndWordAndMeaning"
+                  sec:authorize="${#vars.isLexemeCrudGranted}">
             <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda sünonüüm"></i>
           </button>
           <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
@@ -189,18 +191,18 @@
     <span class="text-secondary mr-1"> Logid </span>
     <div class="btn-group ">
       <a th:href="@{'/wordprocesslog:' + ${wordId}}" data-toggle="modal"
-        data-target="#processLogDlg"
-        class="btn btn-secondary btn-compact position-relative pr-1"
-        sec:authorize="${#vars.isWordCrudGranted}">
+         data-target="#processLogDlg"
+         class="btn btn-secondary btn-compact position-relative pr-1"
+         sec:authorize="${#vars.isWordCrudGranted}">
         <span class="d-block" data-toggle="tooltip" title="Vaata kommentaare">
           Kommentaarid
           <span class="badge badge-counter" th:text="${details.wordProcessLogCount}" th:classappend="${details.wordProcessLogCount > 0}?'badge-danger':'badge-secondary'">0</span>
         </span>
       </a>
       <button type="button" class="btn btn-secondary btn-compact px-0"
-        data-toggle="modal"
-        th:data-target="${'#addWordProcessLogDlg_' + wordId}"
-        sec:authorize="${#vars.isWordCrudGranted}">
+              data-toggle="modal"
+              th:data-target="${'#addWordProcessLogDlg_' + wordId}"
+              sec:authorize="${#vars.isWordCrudGranted}">
         <i class="action-icon fa fa-plus px-2 d-block" aria-hidden="true" title="Lisa kommentaar" data-toggle="tooltip"></i>
       </button>
     </div>
@@ -215,9 +217,9 @@
       </div>
     </div>
     <a th:href="@{'/wordlifecyclelog:' + ${wordId}}" data-toggle="modal"
-      data-target="#wordLifecycleLogDlg"
-      class="btn btn-secondary btn-compact ml-2"
-      sec:authorize="${#vars.isWordCrudGranted}">Tegevused</a>
+       data-target="#wordLifecycleLogDlg"
+       class="btn btn-secondary btn-compact ml-2"
+       sec:authorize="${#vars.isWordCrudGranted}">Tegevused</a>
     <div id="wordLifecycleLogDlg" class="modal" role="dialog">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">

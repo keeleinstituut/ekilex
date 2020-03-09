@@ -1,11 +1,11 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
-import static eki.ekilex.data.db.Tables.LAYER_STATE;
 
 import java.util.List;
 
@@ -299,7 +299,7 @@ public class ProcessDbService {
 
 	private Long createProcessLog(String eventBy, String comment, String commentPrese, String processStateCode, String datasetCode, LayerName layerName) {
 
-		if (layerName == null) {
+		if (LayerName.NONE.equals(layerName)) {
 			return createProcessLog(eventBy, comment, commentPrese, processStateCode, datasetCode);
 		}
 	

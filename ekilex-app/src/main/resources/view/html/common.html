@@ -41,7 +41,7 @@
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
   </th:block>
   <th:block th:fragment="nav_bar">
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary main-navigation" th:classappend="${activeItem != 'syn' && activeItem != 'biling'} ? 'fixed-top' :''">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary main-navigation" th:classappend="${activeItem != 'syn'} ? 'fixed-top' :''">
       <a th:href="@{/}">
         <span th:if="${activeItem == 'home'}" class="text-white">
           Ekilex <small class="pl-2" th:text="${'v.' + appData.appVersion}">1.0.0</small>
@@ -64,8 +64,7 @@
                    isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()}">
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-              <a class="dropdown-item side-menu-item" sec:authorize="${#vars.isCrudRoleSelected}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Sünonüümid</a>
-              <a class="dropdown-item side-menu-item" sec:authorize="${#vars.isCrudRoleSelected}" th:classappend="${activeItem == 'biling' ? 'active' : ''}" th:href="@{/bilingsearch}">Kakskeelsed vasted</a>
+              <a class="dropdown-item side-menu-item" sec:authorize="${#vars.isCrudRoleSelected}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Vasted</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
@@ -109,7 +108,7 @@
             aria-selected="true">Detailotsing</a>
         </li>
       </ul>
-      <th:block th:if="${activeItem == 'syn' || activeItem == 'biling'}">
+      <th:block th:if="${activeItem == 'syn'}">
         <button class="btn btn-primary mr-3" type="button" data-toggle="modal" data-target="#synTutorialDlg">
           <i class="fa fa-question-circle-o" aria-hidden="true"></i> Kasutusjuhend
         </button>
@@ -130,8 +129,13 @@
                 <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
                 <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
                   <th:block th:with="selectedRole = ${sessionBean.userRole}">
-                    <small class="w-100 text-truncate user-menu-active-role" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
-                      th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"> </small>
+                    <small class="w-100 text-truncate user-menu-active-role"
+                           th:with="
+                             permissionName=#{|authorityoperation.${selectedRole.authOperation}|},
+                             selectedLayer = ${userProfile.preferredLayerName}">
+                      <span th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></span>
+                      <span th:if="${permDataUtil.isLayerChangeEnabled(sessionBean)}" th:text="' (' + #{|layername.${selectedLayer.name()}|} + ')'"></span>
+                    </small>
                   </th:block>
                 </th:block>
               </span>
@@ -152,6 +156,20 @@
                 </th:block>
               </th:block>
               <div class="dropdown-divider"></div>
+              <th:block th:if="${permDataUtil.isLayerChangeEnabled(sessionBean)}">
+                <th:block th:with="selectedLayer = ${userProfile.preferredLayerName}">
+                  <div>
+                    <div class="dropdown-header pb-0">Aktiivne kiht</div>
+                    <div class="px-3 d-flex flex-row">
+                      <span class="pr-3" th:text="#{|layername.${selectedLayer.name()}|}"></span>
+                      <a th:href="@{/home}" class="text-nowrap">
+                        <i class="fa fa-pencil" aria-hidden="true"></i> Vaheta
+                      </a>
+                    </div>
+                  </div>
+                </th:block>
+                <div class="dropdown-divider"></div>
+              </th:block>
               <a class="dropdown-item" th:href="@{/userprofile}">
                 Kasutaja profiili haldus <i class="fa fa-user" aria-hidden="true"></i>
               </a>

@@ -30,4 +30,6 @@ public interface SystemConstant {
 
 	String CACHE_KEY_USER = "user";
 
+	String DATASET_SSS = "sss";
+
 }

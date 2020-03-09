@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LayerName;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.MeaningWord;
@@ -79,7 +80,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, null, searchDatasetsRestriction, fetchAll, offset, create);
+		return execute(w1, p, wordCondition, LayerName.NONE, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -97,7 +98,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm paradigm = PARADIGM.as("p");
 		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, null, searchDatasetsRestriction, fetchAll, offset, create);
+		return execute(word, paradigm, where, LayerName.NONE, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {

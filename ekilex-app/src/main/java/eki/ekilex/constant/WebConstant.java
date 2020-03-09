@@ -214,6 +214,8 @@ public interface WebConstant {
 
 	String CHANGE_ROLE_URI = "/change_role";
 
+	String CHANGE_LAYER_URI = "/change_layer";
+
 	String SYN_SEARCH_PAGE = "synsearch";
 
 	String SYN_SEARCH_URI = "/synsearch";
@@ -226,15 +228,9 @@ public interface WebConstant {
 
 	String SYN_SEARCH_WORDS = "/syn_search_words";
 
-	String BILING_SEARCH_PAGE = "bilingsearch";
+	String UPDATE_SYN_CANDIDATE_LANGS_URI = "/update_syn_candidate_langs";
 
-	String BILING_SEARCH_URI = "/bilingsearch";
-
-	String BILING_WORD_DETAILS_URI = "/biling_worddetails";
-
-	String UPDATE_BILING_CANDIDATE_LANGS_URI = "/update_biling_candidate_langs";
-
-	String UPDATE_BILING_MEANING_WORD_LANGS_URI = "/update_biling_meaning_word_langs";
+	String UPDATE_SYN_MEANING_WORD_LANGS_URI = "/update_syn_meaning_word_langs";
 
 	String UPDATE_LAYER_COMPLETE_URI = "/update_layer_complete";
 
@@ -253,8 +249,6 @@ public interface WebConstant {
 	String LEX_BACK_URI = "/lexback";
 
 	String MEANING_BACK_URI = "/meaningback";
-
-	String WORD_VALUE_BACK_URI = "/wordvalueback";
 
 	String PAGE_FRAGMENT_ELEM = " :: ";
 

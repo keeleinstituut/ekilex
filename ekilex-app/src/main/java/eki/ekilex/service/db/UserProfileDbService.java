@@ -9,6 +9,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.db.tables.records.EkiUserProfileRecord;
 
@@ -46,11 +47,11 @@ public class UserProfileDbService {
 				.execute();
 	}
 
-	public void updatePreferredBilingCandidateLangs(List<String> languages, Long userId) {
+	public void updatePreferredSynCandidateLangs(List<String> languages, Long userId) {
 
 		String[] languagesArray = languages.toArray(new String[0]);
 		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_BILING_CANDIDATE_LANGS, languagesArray)
+				.set(EKI_USER_PROFILE.PREFERRED_SYN_CANDIDATE_LANGS, languagesArray)
 				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
 				.execute();
 	}
@@ -59,16 +60,15 @@ public class UserProfileDbService {
 
 		String[] languagesArray = languages.toArray(new String[0]);
 		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_BILING_LEX_MEANING_WORD_LANGS, languagesArray)
+				.set(EKI_USER_PROFILE.PREFERRED_SYN_LEX_MEANING_WORD_LANGS, languagesArray)
 				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
 				.execute();
 	}
 
-	public void updatePreferredMeaningRelationWordLangs(List<String> languages, Long userId) {
+	public void updateUserPreferredLayerName(LayerName layerName, Long userId) {
 
-		String[] languagesArray = languages.toArray(new String[0]);
 		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_MEANING_RELATION_WORD_LANGS, languagesArray)
+				.set(EKI_USER_PROFILE.PREFERRED_LAYER_NAME, layerName.name())
 				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
 				.execute();
 	}
@@ -78,8 +78,9 @@ public class UserProfileDbService {
 		Long userId = userProfile.getUserId();
 		Long recentDatasetPermissionId = userProfile.getRecentDatasetPermissionId();
 		List<String> preferredDatasets = userProfile.getPreferredDatasets();
-		List<String> preferredBilingCandidateLangs = userProfile.getPreferredBilingCandidateLangs();
-		List<String> preferredBilingLexMeaningWordLangs = userProfile.getPreferredBilingLexMeaningWordLangs();
+		LayerName preferredLayerName = userProfile.getPreferredLayerName();
+		List<String> preferredSynCandidateLangs = userProfile.getPreferredSynCandidateLangs();
+		List<String> preferredSynLexMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 		List<String> preferredMeaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
 		boolean showLexMeaningRelationSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
 		boolean showMeaningRelationFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
@@ -92,11 +93,12 @@ public class UserProfileDbService {
 		if (CollectionUtils.isNotEmpty(preferredDatasets)) {
 			ekiUserProfile.setPreferredDatasets(preferredDatasets.toArray(new String[0]));
 		}
-		if (CollectionUtils.isNotEmpty(preferredBilingCandidateLangs)) {
-			ekiUserProfile.setPreferredBilingCandidateLangs(preferredBilingCandidateLangs.toArray(new String[0]));
+		ekiUserProfile.setPreferredLayerName(preferredLayerName.name());
+		if (CollectionUtils.isNotEmpty(preferredSynCandidateLangs)) {
+			ekiUserProfile.setPreferredSynCandidateLangs(preferredSynCandidateLangs.toArray(new String[0]));
 		}
-		if (CollectionUtils.isNotEmpty(preferredBilingLexMeaningWordLangs)) {
-			ekiUserProfile.setPreferredBilingLexMeaningWordLangs(preferredBilingLexMeaningWordLangs.toArray(new String[0]));
+		if (CollectionUtils.isNotEmpty(preferredSynLexMeaningWordLangs)) {
+			ekiUserProfile.setPreferredSynLexMeaningWordLangs(preferredSynLexMeaningWordLangs.toArray(new String[0]));
 		}
 		if (CollectionUtils.isNotEmpty(preferredMeaningRelationWordLangs)) {
 			ekiUserProfile.setPreferredMeaningRelationWordLangs(preferredMeaningRelationWordLangs.toArray(new String[0]));

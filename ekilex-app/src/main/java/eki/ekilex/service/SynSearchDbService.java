@@ -71,7 +71,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		return execute(w1, p, wordCondition, layerName, searchDatasetsRestriction, fetchAll, offset, create);
 	}
 	
-	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {
 
 		WordRelation r = WORD_RELATION.as("r");
 		WordRelation oppr = WORD_RELATION.as("oppr");
@@ -240,9 +240,13 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
+		Lexeme lh = LEXEME.as("lh");
 		Word w2 = WORD.as("w2");
+		Word wh = WORD.as("wh");
 		Paradigm p2 = PARADIGM.as("p2");
+		Paradigm ph = PARADIGM.as("ph");
 		Form f2 = FORM.as("f2");
+		Form fh = FORM.as("fh");
 
 		return create
 				.select(
@@ -250,6 +254,20 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						f2.VALUE,
 						f2.VALUE_PRESE,
 						w2.HOMONYM_NR.as("homonym_number"),
+						DSL.field(DSL.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
+								.from(fh, ph, wh)
+								.where(
+										fh.VALUE.eq(f2.VALUE)
+												.and(fh.MODE.eq(FormMode.WORD.name()))
+												.and(fh.PARADIGM_ID.eq(ph.ID))
+												.and(ph.WORD_ID.eq(wh.ID))
+												.andExists(DSL
+														.select(lh.ID)
+														.from(lh)
+														.where(
+																lh.WORD_ID.eq(wh.ID)
+																.and(lh.DATASET_CODE.eq(l2.DATASET_CODE)))))
+								.groupBy(fh.VALUE)).as("word_homonyms_exist"),
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"),
 						l2.TYPE.as("lexeme_type"),

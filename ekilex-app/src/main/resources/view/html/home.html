@@ -17,7 +17,8 @@
              isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)},
              isAdmin=${#vars.permDataUtil.isAdmin()},
              isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()},
-             isRoleChangeEnabled=${#vars.permDataUtil.isRoleChangeEnabled()}">
+             isRoleChangeEnabled=${#vars.permDataUtil.isRoleChangeEnabled()},
+             isLayerChangeEnabled=${#vars.permDataUtil.isLayerChangeEnabled(#vars.sessionBean)}">
         <p>
           <a th:href="@{/lexsearch}">Leksikograafide otsing</a>
         </p>
@@ -25,12 +26,8 @@
           <a th:href="@{/termsearch}">Terminoloogide otsing</a>
         </p>
         <p>
-          <a th:href="@{/synsearch}" th:if="${#vars.isCrudRoleSelected}">Sünonüümide otsing</a>
-          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll sünonüümide otsinguks">Sünonüümide otsing</span>
-        </p>
-        <p>
-          <a th:href="@{/bilingsearch}" th:if="${#vars.isCrudRoleSelected}">Kakskeelsete vastete otsing</a>
-          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll kakskeelsete vastete otsinguks">Kakskeelsete vastete otsing</span>
+          <a th:href="@{/synsearch}" th:if="${#vars.isCrudRoleSelected}">Vastete otsing</a>
+          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll vastete otsinguks">Vastete otsing</span>
         </p>
         <p>
           <a th:href="@{/sourcesearch}">Allikate otsing</a>
@@ -51,6 +48,7 @@
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="${#vars.isRoleChangeEnabled}"></th:block>
+        <th:block th:replace="components :: change_layer" sec:authorize="${#vars.isLayerChangeEnabled}"></th:block>
         <hr/>
         <p>
           <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>

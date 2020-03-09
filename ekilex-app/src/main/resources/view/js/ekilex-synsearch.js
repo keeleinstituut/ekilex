@@ -22,15 +22,9 @@ function initialise() {
 		$(this).parents(".popover").popover('hide');
 	});
 
-	$(document).on("click", "#synLayerCompleteBtn", function() {
-
+	$(document).on("click", "#layerCompleteBtn", function() {
 		let wordId = $(this).data('word-id');
-		setLayerComplete(wordId, "syn");
-	});
-
-	$(document).on("click", "#bilingLayerCompleteBtn", function() {
-		let wordId = $(this).data('word-id');
-		setLayerComplete(wordId, "biling");
+		setLayerComplete(wordId);
 	});
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
@@ -52,10 +46,7 @@ function initialise() {
 		$("#syn_select_wait_" + id).show();
 		openWaitDlg();
 
-		let isBiling = $("#bilingSearchForm").length === 1;
-		let wordDetailsUriPart = isBiling ? "biling_worddetails/" : "syn_worddetails/";
-		let detailsUrl =  applicationUrl + wordDetailsUriPart + id;
-
+		let detailsUrl =  applicationUrl + "syn_worddetails/" + id;
 		if (markedSynWordId != undefined) {
 			detailsUrl += '?markedSynWordId=' + markedSynWordId;
 		}
@@ -238,6 +229,36 @@ function initialise() {
 			dlg.find('.modal-body').html(data);
 		});
 	});
+
+	$(document).on("click", "#updateSynCandidateLangsSubmitBtn", function(e) {
+		e.preventDefault();
+		let dlg = $("#selectSynCandidateLangDlg");
+		validateAndSubmitLangSelectForm(dlg);
+	});
+
+	$(document).on("click", "#updateSynMeaningWordLangsBtn", function(e) {
+		e.preventDefault();
+		let dlg = $("#selectSynMeaningWordLangDlg");
+		validateAndSubmitLangSelectForm(dlg);
+	});
+}
+
+function validateAndSubmitLangSelectForm(dlg) {
+	let form = dlg.find('form');
+	if (checkRequiredFields(form)) {
+		$.ajax({
+			url: form.attr('action'),
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function() {
+			dlg.modal('hide');
+			refreshDetails();
+		}).fail(function(data) {
+			dlg.modal('hide');
+			console.log(data);
+			openAlertDlg('Viga! Keele valik ebaõnnestus');
+		});
+	}
 }
 
 function activateSynCandidatesList() {
@@ -314,8 +335,8 @@ function doPostRelationChange(actionUrl, callbackFunc) {
 	});
 }
 
-function setLayerComplete(wordId, layerType) {
-	let actionUrl = applicationUrl + "update_layer_complete/" + wordId + "/" + layerType;
+function setLayerComplete(wordId) {
+	let actionUrl = applicationUrl + "update_layer_complete/" + wordId;
 	let callbackFunc = () => refreshDetails();
 	doPostRelationChange(actionUrl, callbackFunc);
 }

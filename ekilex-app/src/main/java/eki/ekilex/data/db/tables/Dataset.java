@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dataset extends TableImpl<DatasetRecord> {
 
-    private static final long serialVersionUID = 1475866759;
+    private static final long serialVersionUID = -1083685425;
 
     /**
      * The reference instance of <code>public.dataset</code>
@@ -87,14 +87,14 @@ public class Dataset extends TableImpl<DatasetRecord> {
     public final TableField<DatasetRecord, Boolean> IS_PUBLIC = createField("is_public", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
-     * The column <code>public.dataset.is_superior</code>.
-     */
-    public final TableField<DatasetRecord, Boolean> IS_SUPERIOR = createField("is_superior", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
-
-    /**
      * The column <code>public.dataset.order_by</code>.
      */
     public final TableField<DatasetRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('dataset_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
+     * The column <code>public.dataset.is_superior</code>.
+     */
+    public final TableField<DatasetRecord, Boolean> IS_SUPERIOR = createField("is_superior", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.dataset</code> table reference

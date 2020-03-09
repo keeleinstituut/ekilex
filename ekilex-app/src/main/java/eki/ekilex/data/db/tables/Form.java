@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = 2138769176;
+    private static final long serialVersionUID = 1729295293;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -134,7 +134,7 @@ public class Form extends TableImpl<FormRecord> {
     /**
      * The column <code>public.form.order_by</code>.
      */
-    public final TableField<FormRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('form_order_by_seq1'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FormRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('form_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.form</code> table reference

@@ -147,7 +147,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<SynRelation> relations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(candidateLangs)) {
-			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs, classifierLabelLang, classifierLabelTypeDescrip);
+			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs);
 		}
 
 		wordDetails.setLexemes(synLexemes);

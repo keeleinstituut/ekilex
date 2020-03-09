@@ -824,7 +824,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 				.groupBy(w.field("word_id")));
 
 		Field<String[]> lpscf;
-		if (layerName == null) {
+		if (LayerName.NONE.equals(layerName)) {
 			lpscf = DSL.field(DSL.val(new String[0]));
 		} else {
 			lpscf = DSL.field(DSL

@@ -83,7 +83,7 @@
               <div class="col-md-4 mt-2">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
@@ -94,7 +94,7 @@
               <div class="col-md-4 mt-2">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
@@ -203,7 +203,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
@@ -225,14 +225,16 @@
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.value}">
             <input type="hidden" name="code" th:value="${definition.typeCode}">
+            <input type="hidden" name="complexity" th:value="${definition.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
+                <select required class="form-control" name="complexity">
                   <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == definition.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
+                          th:value="${complexity.value}"
+                          th:selected="${complexity.value == definition.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity.value}}"
+                          th:disabled="${complexity.disabled}">value
                   </option>
                 </select>
               </div>
@@ -367,7 +369,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
@@ -387,6 +389,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${government.id}">
             <input type="hidden" name="opCode" value="government">
+            <input type="hidden" name="complexity" th:value="${government.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${government.value}"></textarea>
@@ -394,11 +397,12 @@
             </div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
+                <select required class="form-control" name="complexity">
                   <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == government.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
+                          th:value="${complexity.value}"
+                          th:selected="${complexity.value == government.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity.value}}"
+                          th:disabled="${complexity.disabled}">value
                   </option>
                 </select>
               </div>
@@ -426,7 +430,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
@@ -443,7 +447,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/personsearchajax}">
+          <form th:action="@{/personsearch}">
             <div class="form-row">
               <div class="col-12">
                 <div class="form-group row">
@@ -487,14 +491,16 @@
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.value}">
+            <input type="hidden" name="complexity" th:value="${usage.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
+                <select required class="form-control" name="complexity">
                   <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == usage.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
+                          th:value="${complexity.value}"
+                          th:selected="${complexity.value == usage.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity.value}}"
+                          th:disabled="${complexity.disabled}">value
                   </option>
                 </select>
               </div>
@@ -603,7 +609,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
@@ -624,14 +630,16 @@
             <input type="hidden" name="id" th:value="${publicNote.id}">
             <input type="hidden" name="opCode" value="lexeme_public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
+            <input type="hidden" name="complexity" th:value="${publicNote.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
+                <select required class="form-control" name="complexity">
                   <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == publicNote.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
+                          th:value="${complexity.value}"
+                          th:selected="${complexity.value == publicNote.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity.value}}"
+                          th:disabled="${complexity.disabled}">value
                   </option>
                 </select>
               </div>
@@ -980,7 +988,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
@@ -1000,6 +1008,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${grammar.id}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
+            <input type="hidden" name="complexity" th:value="${grammar.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="2" name="value" th:text="${grammar.valueText}"></textarea>
@@ -1007,8 +1016,8 @@
             </div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:selected="${complexity == grammar.complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value
+                <select required class="form-control" name="complexity">
+                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:selected="${complexity.value == grammar.complexity}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value
                   </option>
                 </select>
               </div>
@@ -1346,8 +1355,9 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_complexity">
+            <input type="hidden" name="value" th:value="${lexeme.complexity}">
             <select class="form-control" name="value">
-              <option th:each="complexity : ${complexities}" th:value="${complexity}" th:selected="${complexity == lexeme.complexity}" th:text="#{'enum.complexity.' + ${complexity}}"></option>
+              <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:selected="${complexity.value == lexeme.complexity}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}"></option>
             </select>
           </div>
         </form>

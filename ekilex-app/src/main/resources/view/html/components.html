@@ -211,15 +211,27 @@
   <th:block th:fragment="change_role">
     <hr/>
     <form method="post" id="changeRoleForm" th:action="@{change_role}">
-      <div th:class="${verticalLayout == true ? 'px-3 d-flex flex-wrap' : 'row'}">
-        <label th:class="${verticalLayout == true ? 'w-100' : 'col-form-label col-auto'}" >Vali roll:</label>
-        <select th:class="${verticalLayout == true ? 'w-100 form-control' : 'form-control col-2'}"  id="changeRoleSelect" name="permissionId">
+      <div class="row">
+        <label class="col-form-label col-auto">Vali roll:</label>
+        <select class="form-control col-2" id="changeRoleSelect" name="permissionId">
           <option value="" hidden disabled th:selected="${sessionBean.userRole == null}"></option>
           <th:block th:each="datasetPermission : ${userDatasetPermissions}">
             <option th:with="permissionName=#{|authorityoperation.${datasetPermission.authOperation}|}"
                     th:value="${datasetPermission.id}" th:text="${datasetPermission.datasetName + ' (' + permissionName + ')'
                       + (datasetPermission.authLang != null ? ' - ' + datasetPermission.authLangValue : '')}"
                     th:selected="${permDataUtil.isRoleSelected(sessionBean, datasetPermission)}"/>
+          </th:block>
+        </select>
+      </div>
+    </form>
+  </th:block>
+  <th:block th:fragment="change_layer">
+    <form method="post" th:action="@{/change_layer}">
+      <div class="row mt-3">
+        <label class="col-form-label col-auto">Vali kiht:</label>
+        <select th:with="selectedLayer = ${userProfile.preferredLayerName}" class="form-control col-2" id="changeLayerSelect" name="layerName">
+          <th:block th:each="layer : ${layerNames}">
+            <option th:value="${layer}" th:text="#{|layername.${layer.name()}|}" th:selected="${selectedLayer == layer}"/>
           </th:block>
         </select>
       </div>

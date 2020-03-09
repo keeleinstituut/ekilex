@@ -70,4 +70,5 @@ public class ViewUtil implements InitializingBean {
 		}
 		return htmlBuf.toString();
 	}
+
 }

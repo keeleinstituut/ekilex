@@ -25,10 +25,10 @@
   <div th:replace="syncomp :: syn_word_result_list"></div>
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:data-id="${wordId}" id="syn_details_div" class="h-100"
-      th:with="
-          isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
-          isWordLexemeCrudGranted=${#vars.permDataUtil.isWordLexemeCrudGranted(#vars.wordId, #vars.sessionBean)}
-          ">
+         th:with="
+           isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
+           isWordLexemeCrudGranted=${#vars.permDataUtil.isWordLexemeCrudGranted(#vars.wordId, #vars.sessionBean)},
+           isProcessStateChangeEnabled=${#vars.permDataUtil.isProcessStateChangeEnabled(#vars.sessionBean)}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div th:replace="syndialog :: add_word_process_log_dlg"></div>
       <div class="navigate-panel card shadow h-100">
@@ -36,24 +36,30 @@
           <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
             <h1 th:utext="${details.word}" class="mr-3 mb-0">Aktiivne sõna</h1>
             <button type="button" class="btn btn-secondary btn-compact"
-              id="synLayerCompleteBtn"
-              th:data-word-id="${wordId}"
-              th:disabled="${details.synLayerComplete}"
-              sec:authorize="${#vars.isWordLexemeCrudGranted}">Märgi tehtuks
+                    id="layerCompleteBtn"
+                    th:data-word-id="${wordId}"
+                    th:disabled="${details.synLayerComplete}"
+                    th:if="${#vars.isProcessStateChangeEnabled}"
+                    sec:authorize="${#vars.isWordLexemeCrudGranted}">Märgi tehtuks
+            </button>
+            <button type="button" class="btn px-2 rounded-0" data-toggle="modal" data-target="#selectSynMeaningWordLangDlg">
+              <span th:title="#{syn.choose.meaning.word.languages}" data-toggle="tooltip">
+                <i class="action-icon fa fa-globe" aria-hidden="true"></i>
+              </span>
             </button>
             <div th:replace="syncomp :: syn_logdata"></div>
           </div>
           <div class="row no-gutters h-100">
             <div class="col-8 overflow-auto h-100 keyboard-nav-list lexeme-list" data-panel-index="2" th:attrappend="data-marked-word-id=${markedSynWordId != null}?${markedSynWordId}">
               <div class="px-3 droppable-lexeme border-bottom border-light lexeme-list-item"
-                th:each="lexeme, lexemeIter : ${details.lexemes}"
-                th:classappend="${lexemeIter.first} ? 'pb-2' : 'py-2'"
-                th:data-meaning-id="${lexeme.meaningId}"
-                th:data-lexeme-id="${lexeme.lexemeId}"
-                th:data-navigate-index="${lexemeIter.index}"
-                th:with="
-                  isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
-                  isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
+                   th:each="lexeme, lexemeIter : ${details.lexemes}"
+                   th:classappend="${lexemeIter.first} ? 'pb-2' : 'py-2'"
+                   th:data-meaning-id="${lexeme.meaningId}"
+                   th:data-lexeme-id="${lexeme.lexemeId}"
+                   th:data-navigate-index="${lexemeIter.index}"
+                   th:with="
+                     isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
+                     isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
                 <div th:replace="syndialog :: edit_lexeme_syn_process_state_dlg"></div>
                 <div data-lexeme-title class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() > 2} ? 'pl-4': ''">
                   <div class="d-flex align-items-start flex-wrap pt-2">
@@ -63,10 +69,11 @@
                     <span class="pl-0 pr-2">
                       <span th:text="${lexeme.layerProcessStateCode}"></span>
                       <button type="button" class="btn badge badge-primary"
-                        title="Muuda"
-                        data-toggle="modal"
-                        th:data-target="${'#editLexemeSynProcessStateDlg_' + lexeme.lexemeId}"
-                        sec:authorize="${#vars.isLexemeCrudGranted}">
+                              title="Muuda"
+                              data-toggle="modal"
+                              th:data-target="${'#editLexemeSynProcessStateDlg_' + lexeme.lexemeId}"
+                              th:if="${#vars.isProcessStateChangeEnabled}"
+                              sec:authorize="${#vars.isLexemeCrudGranted}">
                         <i class="fa fa-caret-down" aria-hidden="true"></i>
                       </button>
                     </span>
@@ -74,7 +81,7 @@
                   </div>
                   <th:block th:replace="syncomp :: definitions_data"></th:block>
                   <th:block th:replace="syncomp :: usages_data"></th:block>
-                  <th:block th:replace="syncomp :: meaning_words_data(false)"></th:block>
+                  <th:block th:replace="syncomp :: meaning_words_data(true)"></th:block>
                 </div>
               </div>
             </div>
@@ -83,6 +90,12 @@
                 <div class="d-flex bg-light px-2 align-items-center">
                   <span th:text="#{syn.candidates.title}">Sünonüümide kandidaadid</span>
                   <div class="ml-auto d-flex flex-row align-items-center">
+                    <span class="border-left py-2"></span>
+                    <button type="button" class="btn btn-light px-2 rounded-0" data-toggle="modal" data-target="#selectSynCandidateLangDlg">
+                      <span th:title="#{syn.choose.candidates.languages}" data-toggle="tooltip">
+                        <i class="action-icon fa fa-globe" aria-hidden="true"></i>
+                      </span>
+                    </button>
                     <span class="border-left py-2"></span>
                     <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0" th:disabled="${markedSynWordId != null}">
                       <span th:title="#{syn.manual.mode}" data-toggle="tooltip">
@@ -104,6 +117,8 @@
         </div>
       </div>
     </div>
+    <div th:replace="syndialog :: #selectSynCandidateLangDlg"></div>
+    <div th:replace="syndialog :: #selectSynMeaningWordLangDlg"></div>
     <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.relations}, ${details.language}, ${details.morphCode})"></div>
     <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
@@ -122,7 +137,7 @@
   <div th:replace="common :: #confirmDlg"></div>
   <div th:replace="syndialog :: #synTutorialDlg"></div>
   <script th:inline="javascript">
-  	initialise();
+	  initialise();
   </script>
 </body>
 </html>

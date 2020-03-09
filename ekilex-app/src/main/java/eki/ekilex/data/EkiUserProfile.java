@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import eki.common.constant.LayerName;
 import eki.common.data.AbstractDataObject;
 
 public class EkiUserProfile extends AbstractDataObject {
@@ -14,9 +15,11 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private List<String> preferredDatasets;
 
-	private List<String> preferredBilingCandidateLangs;
+	private LayerName preferredLayerName;
 
-	private List<String> preferredBilingLexMeaningWordLangs;
+	private List<String> preferredSynCandidateLangs;
+
+	private List<String> preferredSynLexMeaningWordLangs;
 
 	private List<String> preferredMeaningRelationWordLangs;
 
@@ -52,20 +55,28 @@ public class EkiUserProfile extends AbstractDataObject {
 		this.preferredDatasets = preferredDatasets;
 	}
 
-	public List<String> getPreferredBilingCandidateLangs() {
-		return preferredBilingCandidateLangs;
+	public LayerName getPreferredLayerName() {
+		return preferredLayerName;
 	}
 
-	public void setPreferredBilingCandidateLangs(List<String> preferredBilingCandidateLangs) {
-		this.preferredBilingCandidateLangs = preferredBilingCandidateLangs;
+	public void setPreferredLayerName(LayerName preferredLayerName) {
+		this.preferredLayerName = preferredLayerName;
 	}
 
-	public List<String> getPreferredBilingLexMeaningWordLangs() {
-		return preferredBilingLexMeaningWordLangs;
+	public List<String> getPreferredSynCandidateLangs() {
+		return preferredSynCandidateLangs;
 	}
 
-	public void setPreferredBilingLexMeaningWordLangs(List<String> preferredBilingLexMeaningWordLangs) {
-		this.preferredBilingLexMeaningWordLangs = preferredBilingLexMeaningWordLangs;
+	public void setPreferredSynCandidateLangs(List<String> preferredSynCandidateLangs) {
+		this.preferredSynCandidateLangs = preferredSynCandidateLangs;
+	}
+
+	public List<String> getPreferredSynLexMeaningWordLangs() {
+		return preferredSynLexMeaningWordLangs;
+	}
+
+	public void setPreferredSynLexMeaningWordLangs(List<String> preferredSynLexMeaningWordLangs) {
+		this.preferredSynLexMeaningWordLangs = preferredSynLexMeaningWordLangs;
 	}
 
 	public List<String> getPreferredMeaningRelationWordLangs() {
