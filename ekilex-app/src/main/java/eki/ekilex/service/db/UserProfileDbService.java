@@ -9,6 +9,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.db.tables.records.EkiUserProfileRecord;
 
@@ -64,10 +65,10 @@ public class UserProfileDbService {
 				.execute();
 	}
 
-	public void updateUserPreferredLayerName(String layerName, Long userId) {
+	public void updateUserPreferredLayerName(LayerName layerName, Long userId) {
 
 		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_LAYER_NAME, layerName)
+				.set(EKI_USER_PROFILE.PREFERRED_LAYER_NAME, layerName.name())
 				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
 				.execute();
 	}
@@ -77,7 +78,7 @@ public class UserProfileDbService {
 		Long userId = userProfile.getUserId();
 		Long recentDatasetPermissionId = userProfile.getRecentDatasetPermissionId();
 		List<String> preferredDatasets = userProfile.getPreferredDatasets();
-		String preferredLayerName = userProfile.getPreferredLayerName();
+		LayerName preferredLayerName = userProfile.getPreferredLayerName();
 		List<String> preferredSynCandidateLangs = userProfile.getPreferredSynCandidateLangs();
 		List<String> preferredSynLexMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 		List<String> preferredMeaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
@@ -92,7 +93,7 @@ public class UserProfileDbService {
 		if (CollectionUtils.isNotEmpty(preferredDatasets)) {
 			ekiUserProfile.setPreferredDatasets(preferredDatasets.toArray(new String[0]));
 		}
-		ekiUserProfile.setPreferredLayerName(preferredLayerName);
+		ekiUserProfile.setPreferredLayerName(preferredLayerName.name());
 		if (CollectionUtils.isNotEmpty(preferredSynCandidateLangs)) {
 			ekiUserProfile.setPreferredSynCandidateLangs(preferredSynCandidateLangs.toArray(new String[0]));
 		}

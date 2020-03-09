@@ -230,9 +230,8 @@
       <div class="row mt-3">
         <label class="col-form-label col-auto">Vali kiht:</label>
         <select th:with="selectedLayer = ${userProfile.preferredLayerName}" class="form-control col-2" id="changeLayerSelect" name="layerName">
-          <option value="" th:selected="${#strings.isEmpty(selectedLayer)}" th:text="#{layername.none}"></option>
           <th:block th:each="layer : ${layerNames}">
-            <option th:value="${layer}" th:text="${viewUtil.getLayerText(layer.name())}" th:selected="${selectedLayer == layer.name()}"/>
+            <option th:value="${layer}" th:text="#{|layername.${layer.name()}|}" th:selected="${selectedLayer == layer}"/>
           </th:block>
         </select>
       </div>

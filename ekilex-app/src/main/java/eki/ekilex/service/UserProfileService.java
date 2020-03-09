@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DbConstant;
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
@@ -37,12 +38,17 @@ public class UserProfileService implements DbConstant, SystemConstant {
 		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
 
 		if (userProfile != null) {
+			LayerName layerName = userProfile.getPreferredLayerName();
 			List<String> synCandidateLangs = userProfile.getPreferredSynCandidateLangs();
 			List<String> synLexMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 			List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
 			List<Classifier> allLangs = commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<String> allLangCodes = allLangs.stream().map(Classifier::getCode).collect(Collectors.toList());
 
+			if (layerName == null) {
+				layerName = LayerName.NONE;
+				userProfile.setPreferredLayerName(layerName);
+			}
 			if (CollectionUtils.isEmpty(synCandidateLangs)) {
 				synCandidateLangs = allLangCodes;
 				userProfile.setPreferredSynCandidateLangs(synCandidateLangs);
@@ -76,7 +82,7 @@ public class UserProfileService implements DbConstant, SystemConstant {
 	}
 
 	@Transactional
-	public void updateUserPreferredLayerName(String layerName, Long userId) {
+	public void updateUserPreferredLayerName(LayerName layerName, Long userId) {
 		userProfileDbService.updateUserPreferredLayerName(layerName, userId);
 	}
 

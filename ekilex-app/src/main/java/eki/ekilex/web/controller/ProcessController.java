@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.EkiUser;
@@ -153,7 +154,7 @@ public class ProcessController implements WebConstant {
 		String userName = user.getName();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		String layerName = userProfile.getPreferredLayerName();
+		LayerName layerName = userProfile.getPreferredLayerName();
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 
 		logger.debug("Updating {} layer process state complete for word \"{}\"", layerName, wordId);
@@ -170,7 +171,7 @@ public class ProcessController implements WebConstant {
 		String userName = user.getName();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		String layerName = userProfile.getPreferredLayerName();
+		LayerName layerName = userProfile.getPreferredLayerName();
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 

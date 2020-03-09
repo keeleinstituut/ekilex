@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityOperation;
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -25,6 +28,9 @@ public class PermDataUtil implements SystemConstant {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private UserProfileService userProfileService;
 
 	public boolean isRoleSelected(SessionBean sessionBean) {
 		if (sessionBean == null) {
@@ -197,5 +203,17 @@ public class PermDataUtil implements SystemConstant {
 			return false;
 		}
 		return StringUtils.equals(userRole.getDatasetCode(), DATASET_SSS);
+	}
+
+	public boolean isProcessStateChangeEnabled(SessionBean sessionBean) {
+
+		boolean isLayerChangeEnabled = isLayerChangeEnabled(sessionBean);
+		if (!isLayerChangeEnabled) {
+			return false;
+		}
+		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		LayerName layerName = userProfile.getPreferredLayerName();
+		return !LayerName.NONE.equals(layerName);
 	}
 }

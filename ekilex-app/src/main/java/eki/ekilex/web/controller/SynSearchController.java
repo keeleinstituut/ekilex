@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.DbConstant;
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
@@ -88,7 +89,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		Long userId = userService.getAuthenticatedUser().getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		String layerName = userProfile.getPreferredLayerName();
+		LayerName layerName = userProfile.getPreferredLayerName();
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYN_SEARCH_URI);
 		logger.debug(searchUri);
 
@@ -144,7 +145,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> candidateLangCodes = userProfile.getPreferredSynCandidateLangs();
 		List<String> meaningWordLangCodes = userProfile.getPreferredSynLexMeaningWordLangs();
-		String layerName = userProfile.getPreferredLayerName();
+		LayerName layerName = userProfile.getPreferredLayerName();
 
 		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, layerName, candidateLangCodes, meaningWordLangCodes);
 

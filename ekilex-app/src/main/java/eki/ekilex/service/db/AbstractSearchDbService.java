@@ -45,6 +45,7 @@ import org.jooq.impl.DSL;
 import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -789,7 +790,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 		return wherew1.and(w1.ID.in(wmlSelect));
 	}
 
-	protected List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, String layerName, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset, DSLContext create) {
+	protected List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, LayerName layerName, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset, DSLContext create) {
 
 		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
 		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
@@ -823,14 +824,14 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 				.groupBy(w.field("word_id")));
 
 		Field<String[]> lpscf;
-		if (StringUtils.isEmpty(layerName)) {
+		if (LayerName.NONE.equals(layerName)) {
 			lpscf = DSL.field(DSL.val(new String[0]));
 		} else {
 			lpscf = DSL.field(DSL
 					.select(DSL.arrayAggDistinct(DSL.coalesce(LAYER_STATE.PROCESS_STATE_CODE, "!")))
 					.from(LEXEME.leftOuterJoin(LAYER_STATE)
 							.on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID)
-									.and(LAYER_STATE.LAYER_NAME.eq(layerName))))
+									.and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
 					.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class))
 							.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 							.and(LEXEME.DATASET_CODE.in(filteringDatasetCodes)))

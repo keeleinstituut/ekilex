@@ -132,10 +132,9 @@
                     <small class="w-100 text-truncate user-menu-active-role"
                            th:with="
                              permissionName=#{|authorityoperation.${selectedRole.authOperation}|},
-                             selectedLayer = ${userProfile.preferredLayerName},
-                             layerName=${viewUtil.getLayerText(selectedLayer)}">
+                             selectedLayer = ${userProfile.preferredLayerName}">
                       <span th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></span>
-                      <span th:if="${permDataUtil.isLayerChangeEnabled(sessionBean)}" th:text="' (' + ${layerName} + ')'"></span>
+                      <span th:if="${permDataUtil.isLayerChangeEnabled(sessionBean)}" th:text="' (' + #{|layername.${selectedLayer.name()}|} + ')'"></span>
                     </small>
                   </th:block>
                 </th:block>
@@ -162,7 +161,7 @@
                   <div>
                     <div class="dropdown-header pb-0">Aktiivne kiht</div>
                     <div class="px-3 d-flex flex-row">
-                      <span class="pr-3" th:text="${viewUtil.getLayerText(selectedLayer)}"></span>
+                      <span class="pr-3" th:text="#{|layername.${selectedLayer.name()}|}"></span>
                       <a th:href="@{/home}" class="text-nowrap">
                         <i class="fa fa-pencil" aria-hidden="true"></i> Vaheta
                       </a>

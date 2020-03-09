@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
@@ -61,7 +62,7 @@ public class HomeController extends AbstractPageController {
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			Long userId = user.getId();
 			EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-			String layerName = userProfile.getPreferredLayerName();
+			LayerName layerName = userProfile.getPreferredLayerName();
 			model.addAttribute("layerName", layerName);
 			populateStatData(model);
 			populateRecentRole(user, model);
@@ -165,7 +166,7 @@ public class HomeController extends AbstractPageController {
 	}
 
 	@PostMapping(CHANGE_LAYER_URI)
-	public String changeLayer(@RequestParam String layerName, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String changeLayer(@RequestParam LayerName layerName, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		logger.debug("User initiated layer change, layer name: {}", layerName);
 

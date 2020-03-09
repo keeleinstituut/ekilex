@@ -2,5 +2,5 @@ package eki.common.constant;
 
 public enum LayerName {
 
-	SYN, BILING_RUS
+	NONE, SYN, BILING_RUS
 }
