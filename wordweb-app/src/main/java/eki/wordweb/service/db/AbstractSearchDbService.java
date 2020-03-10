@@ -27,6 +27,7 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.SourceLinksWrapper;
 import eki.wordweb.data.TypeSourceLink;
@@ -36,10 +37,12 @@ import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
+import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
@@ -57,6 +60,73 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 
 	public abstract List<Word> getWords(String searchWord, DataFilter dataFilter);
 
+	public abstract List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter);
+
+	protected List<Word> getWords(MviewWwWord wordTable, Condition where) {
+
+		return create
+				.select(
+						wordTable.WORD_ID,
+						wordTable.WORD,
+						wordTable.WORD_PRESE,
+						wordTable.AS_WORD,
+						wordTable.WORD_CLASS,
+						wordTable.LANG,
+						wordTable.HOMONYM_NR,
+						wordTable.WORD_TYPE_CODES,
+						wordTable.MORPH_CODE,
+						wordTable.DISPLAY_MORPH_CODE,
+						wordTable.ASPECT_CODE,
+						wordTable.MEANING_WORDS,
+						wordTable.DEFINITIONS,
+						wordTable.OD_WORD_RECOMMENDATIONS,
+						wordTable.LEX_DATASET_EXISTS,
+						wordTable.TERM_DATASET_EXISTS,
+						wordTable.FORMS_EXIST)
+				.from(wordTable)
+				.where(where)
+				.orderBy(wordTable.LEX_DATASET_EXISTS.desc(), wordTable.LANG, wordTable.HOMONYM_NR)
+				.fetchInto(Word.class);
+	}
+
+	protected List<Lexeme> getLexemes(
+			MviewWwLexeme lexemeTable, MviewWwDataset datasetTable, MviewWwLexemeRelation lexemeRelationTable, Condition where) {
+
+		return create
+				.select(
+						lexemeTable.LEXEME_ID,
+						lexemeTable.MEANING_ID,
+						lexemeTable.DATASET_CODE,
+						datasetTable.NAME.as("dataset_name"),
+						lexemeTable.DATASET_TYPE,
+						lexemeTable.LEVEL1,
+						lexemeTable.LEVEL2,
+						lexemeTable.COMPLEXITY,
+						lexemeTable.WEIGHT,
+						lexemeTable.LEX_ORDER_BY,
+						lexemeTable.REGISTER_CODES,
+						lexemeTable.POS_CODES,
+						lexemeTable.DERIV_CODES,
+						lexemeTable.MEANING_WORDS,
+						lexemeTable.ADVICE_NOTES,
+						lexemeTable.PUBLIC_NOTES,
+						lexemeTable.GRAMMARS,
+						lexemeTable.GOVERNMENTS,
+						lexemeTable.USAGES,
+						lexemeTable.OD_LEXEME_RECOMMENDATIONS,
+						lexemeRelationTable.RELATED_LEXEMES)
+				.from(lexemeTable
+						.innerJoin(datasetTable).on(datasetTable.CODE.eq(lexemeTable.DATASET_CODE))
+						.leftOuterJoin(lexemeRelationTable).on(lexemeRelationTable.LEXEME_ID.eq(lexemeTable.LEXEME_ID)))
+				.where(where)
+				.orderBy(
+						lexemeTable.DATASET_TYPE,
+						lexemeTable.LEVEL1,
+						lexemeTable.LEVEL2,
+						lexemeTable.LEX_ORDER_BY)
+				.fetchInto(Lexeme.class);
+	}
+
 	public Word getWord(Long wordId) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
@@ -65,6 +135,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 				.select(
 						w.WORD_ID,
 						w.WORD,
+						w.WORD_PRESE,
 						w.AS_WORD,
 						w.HOMONYM_NR,
 						w.WORD_CLASS,
@@ -81,8 +152,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						w.FORMS_EXIST)
 				.from(w)
 				.where(w.WORD_ID.eq(wordId))
-				.fetchOne()
-				.into(Word.class);
+				.fetchOneInto(Word.class);
 	}
 
 	public Map<Long, List<Form>> getWordForms(Long wordId, Integer maxDisplayLevel) {
@@ -134,7 +204,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 				.fetchInto(WordForm.class);
 	}
 
-	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId, DataFilter dataFilter) {
+	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId) {
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
@@ -161,8 +231,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 								.leftOuterJoin(dsl).on(dsl.MEANING_ID.eq(m.MEANING_ID)))
 				.where(where)
 				.orderBy(m.MEANING_ID, l.LEXEME_ID)
-				.fetch()
-				.into(LexemeMeaningTuple.class);
+				.fetchInto(LexemeMeaningTuple.class);
 	}
 
 	public List<WordRelationTuple> getWordRelationTuples(Long wordId) {
@@ -178,8 +247,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						wr.WORD_GROUP_MEMBERS)
 				.from(wr)
 				.where(wr.WORD_ID.eq(wordId))
-				.fetch()
-				.into(WordRelationTuple.class);
+				.fetchInto(WordRelationTuple.class);
 	}
 
 
@@ -233,8 +301,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						c.REL_GROUP_ORDER_BY,
 						c.COLLOC_GROUP_ORDER,
 						c.COLLOC_ID)
-				.fetch()
-				.into(CollocationTuple.class);
+				.fetchInto(CollocationTuple.class);
 	}
 
 	public List<TypeSourceLink> getLexemeSourceLinks(Long wordId) {

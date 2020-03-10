@@ -71,7 +71,7 @@
                           th:text="${langData.codeIso2}"
                           th:title="${langData.label}">1</span>
                     <span class="homonym-name-container">
-                      <span class="homonym-name pr-2" th:text="${(word.suffixoid ? '-' : '') + word.word + (word.prefixoid ? '-' : '')}">tee</span>
+                      <span class="homonym-name" th:utext="${viewUtil.getMarkupHtml(word)}">tee</span>
                     </span>
                     <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
                   </span>
@@ -88,7 +88,7 @@
     <div class="col-12 content-title">
       <h3 class="mb-0">
         <span class="additional-meta lang-code" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-        <span class="homonym-name" th:classappend="${wordData.word.foreignWord ? 'font-italic' : ''}" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
+        <span class="homonym-name" th:utext="${viewUtil.getMarkupHtml(wordData.word)}">tee</span>
         <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
         <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableAudioFile != null}"
                 th:data-url-to-audio="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">

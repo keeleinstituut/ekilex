@@ -7,12 +7,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.TextDecoration;
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.TypeCollocMember;
+import eki.wordweb.data.Word;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
 
@@ -28,6 +30,7 @@ public class ViewUtil implements WebConstant, SystemConstant {
 	private Map<String, LanguageData> langDataMap = null;
 
 	public LanguageData getLangData(String langIso3) {
+
 		if (StringUtils.isBlank(langIso3)) {
 			return new LanguageData(langIso3, "-", "-");
 		}
@@ -39,6 +42,32 @@ public class ViewUtil implements WebConstant, SystemConstant {
 			return new LanguageData(langIso3, "?", "?");
 		}
 		return langData;
+	}
+
+	public String getMarkupHtml(Word word) {
+
+		String wordPrese = new String(word.getWordPrese());
+		if (word.isSuffixoid()) {
+			wordPrese = "-" + wordPrese;
+		} else if (word.isPrefixoid()) {
+			wordPrese = wordPrese + "-";
+		}
+		StringBuilder htmlBuf = new StringBuilder();
+		htmlBuf.append("<span class='pr-2'>");
+		String foreignMarkupCode = TextDecoration.FOREIGN.getCode();
+		if (word.isForeignWord() && !StringUtils.contains(wordPrese, foreignMarkupCode)) {
+			htmlBuf.append('<');
+			htmlBuf.append(foreignMarkupCode);
+			htmlBuf.append('>');
+			htmlBuf.append(wordPrese);
+			htmlBuf.append("</");
+			htmlBuf.append(foreignMarkupCode);
+			htmlBuf.append('>');
+		} else {
+			htmlBuf.append(wordPrese);
+		}
+		htmlBuf.append("</span>");
+		return htmlBuf.toString();
 	}
 
 	public String getTooltipHtml(DisplayColloc colloc) {

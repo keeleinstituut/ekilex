@@ -117,6 +117,7 @@ dblink(
 	'select * from view_ww_word') as word(
 	word_id bigint,
 	word text,
+	word_prese text,
 	as_word text,
 	lang char(3),
 	homonym_nr integer,

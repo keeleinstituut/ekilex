@@ -276,6 +276,7 @@ create view view_ww_word
 as
 select w.word_id,
        w.word,
+       w.word_prese,
        w.as_word,
        w.lang,
        w.homonym_nr,
@@ -294,6 +295,7 @@ select w.word_id,
        w.forms_exist
 from (select w.id as word_id,
              array_to_string(array_agg(distinct f.value),',','*') as word,
+             array_to_string(array_agg(distinct f.value_prese),',','*') as word_prese,
              (select array_agg(distinct f.value)
 	          from paradigm p,
 	               form f

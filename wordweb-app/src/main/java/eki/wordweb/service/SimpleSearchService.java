@@ -76,7 +76,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		if (CollectionUtils.isNotEmpty(freeformSourceLinks)) {
 			freeformSourceLinkMap = freeformSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
 		}
-		List<LexemeMeaningTuple> lexemeMeaningTuples = simpleSearchDbService.getLexemeMeaningTuples(wordId, dataFilter);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = simpleSearchDbService.getLexemeMeaningTuples(wordId);
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
 
 		if (CollectionUtils.isNotEmpty(lexemes)) {

@@ -12,6 +12,8 @@ public class Word extends WordTypeData {
 
 	private String word;
 
+	private String wordPrese;
+
 	private String asWord;
 
 	private String wordClass;
@@ -80,6 +82,14 @@ public class Word extends WordTypeData {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public String getWordPrese() {
+		return wordPrese;
+	}
+
+	public void setWordPrese(String wordPrese) {
+		this.wordPrese = wordPrese;
 	}
 
 	public String getAsWord() {

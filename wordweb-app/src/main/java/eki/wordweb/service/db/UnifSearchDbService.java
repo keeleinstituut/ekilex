@@ -124,31 +124,10 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 			where = where.and(PostgresDSL.arrayOverlap(w.DATASET_CODES, datasetCodesArr));
 		}
 
-		return create
-				.select(
-						w.WORD_ID,
-						w.WORD,
-						w.AS_WORD,
-						w.WORD_CLASS,
-						w.LANG,
-						w.HOMONYM_NR,
-						w.WORD_TYPE_CODES,
-						w.MORPH_CODE,
-						w.DISPLAY_MORPH_CODE,
-						w.ASPECT_CODE,
-						w.MEANING_WORDS,
-						w.DEFINITIONS,
-						w.OD_WORD_RECOMMENDATIONS,
-						w.LEX_DATASET_EXISTS,
-						w.TERM_DATASET_EXISTS,
-						w.FORMS_EXIST)
-				.from(w)
-				.where(where)
-				.orderBy(w.LEX_DATASET_EXISTS.desc(), w.LANG, w.HOMONYM_NR)
-				.fetch()
-				.into(Word.class);
+		return getWords(w, where);
 	}
 
+	@Override
 	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {
 
 		DatasetType datasetType = dataFilter.getDatasetType();
@@ -178,40 +157,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 			where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
 		}
 
-		return create
-				.select(
-						l.LEXEME_ID,
-						l.MEANING_ID,
-						l.DATASET_CODE,
-						ds.NAME.as("dataset_name"),
-						l.DATASET_TYPE,
-						l.LEVEL1,
-						l.LEVEL2,
-						l.COMPLEXITY,
-						l.WEIGHT,
-						l.LEX_ORDER_BY,
-						l.REGISTER_CODES,
-						l.POS_CODES,
-						l.DERIV_CODES,
-						l.MEANING_WORDS,
-						l.ADVICE_NOTES,
-						l.PUBLIC_NOTES,
-						l.GRAMMARS,
-						l.GOVERNMENTS,
-						l.USAGES,
-						l.OD_LEXEME_RECOMMENDATIONS,
-						lr.RELATED_LEXEMES)
-				.from(l
-						.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE))
-						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
-				.where(where)
-				.orderBy(
-						l.DATASET_TYPE,
-						l.LEVEL1,
-						l.LEVEL2,
-						l.LEX_ORDER_BY)
-				.fetch()
-				.into(Lexeme.class);
+		return getLexemes(l, ds, lr, where);
 	}
 
 }
