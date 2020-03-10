@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -166,7 +167,8 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<MeaningWordLangGroup> meaningWordLangGroups = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(meaningWordLangs)) {
-			List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, meaningWordLangs);
+			List<LexemeType> lexemeTypes = Arrays.asList(LexemeType.PRIMARY, LexemeType.SECONDARY);
+			List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, meaningWordLangs, lexemeTypes);
 			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, mainWordLanguage);
 		}
 
@@ -215,7 +217,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
 
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
-		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Collections.singletonList(wordDetails.getLanguage()));
+		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Collections.singletonList(wordDetails.getLanguage()), Collections.singletonList(LexemeType.PRIMARY));
 
 		for (MeaningWord meaningWord : meaningWords) {
 			Long meaningWordRelationId = synSearchDbService.getRelationId(meaningWord.getWordId(), wordId, RAW_RELATION_CODE);
@@ -223,7 +225,7 @@ public class SynSearchService extends AbstractWordSearchService {
 			if (meaningWordRelationId != null) {
 				LogData oppositeRelationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, meaningWordRelationId,
 						RelationStatus.PROCESSED.name());
-				createLifecycleLog(oppositeRelationLogData );
+				createLifecycleLog(oppositeRelationLogData);
 				synSearchDbService.changeRelationStatus(meaningWordRelationId, RelationStatus.PROCESSED.name());
 			}
 		}

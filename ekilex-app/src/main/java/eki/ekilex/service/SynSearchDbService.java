@@ -236,7 +236,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchOneInto(WordSynDetails.class);
 	}
 
-	public List<MeaningWord> getSynMeaningWords(Long lexemeId, List<String> meaningWordLangs) {
+	public List<MeaningWord> getSynMeaningWords(Long lexemeId, List<String> meaningWordLangs, List<LexemeType> lexemeTypes) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -276,11 +276,11 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.from(l1, l2, w2, p2, f2)
 				.where(
 						l1.ID.eq(lexemeId)
-								//TODO what lexeme type?
 								.and(l2.MEANING_ID.eq(l1.MEANING_ID))
 								.and(l2.ID.ne(l1.ID))
 								.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
 								.and(l2.WORD_ID.eq(w2.ID))
+								.and(l2.TYPE.in(lexemeTypes))
 								.and(p2.WORD_ID.eq(w2.ID))
 								.and(f2.PARADIGM_ID.eq(p2.ID))
 								.and(f2.MODE.eq(FormMode.WORD.name()))
