@@ -108,7 +108,7 @@ public class UnifSearchService extends AbstractSearchService {
 		// word common
 		wordConversionUtil.composeCommon(word, lexemes);
 
-		return composeWordData(word, paradigmFormsMap, paradigms, lexemes);
+		return composeWordData(word, paradigmFormsMap, paradigms, lexLexemes, termLexemes);
 	}
 
 	@Override

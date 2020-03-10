@@ -1,6 +1,7 @@
 package eki.wordweb.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		// word common
 		wordConversionUtil.composeCommon(word, lexemes);
 
-		return composeWordData(word, paradigmFormsMap, paradigms, lexemes);
+		return composeWordData(word, paradigmFormsMap, paradigms, lexemes, Collections.emptyList());
 	}
 
 	@Override
