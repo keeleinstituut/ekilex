@@ -11,14 +11,19 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.FormMode;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
+import eki.wordweb.data.Form;
+import eki.wordweb.data.Lexeme;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.Word;
@@ -147,4 +152,37 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		}
 	}
 
+	protected WordData composeWordData(Word word, Map<Long, List<Form>> paradigmFormsMap, List<Paradigm> paradigms, List<Lexeme> lexemes) {
+
+		boolean lexemesExist = CollectionUtils.isNotEmpty(lexemes);
+		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(word.getRelatedWords());
+		boolean multipleLexLexemesExist = CollectionUtils.size(lexemes) > 1;
+		String firstAvailableVocalForm = null;
+		String firstAvailableAudioFile = null;
+		boolean isUnknownForm = false;
+		if (MapUtils.isNotEmpty(paradigmFormsMap)) {
+			Form firstAvailableWordForm = paradigmFormsMap.values().stream()
+					.filter(forms -> forms.stream().anyMatch(form -> form.getMode().equals(FormMode.WORD)))
+					.map(forms -> forms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst().orElse(null))
+					.findFirst().orElse(null);
+			if (firstAvailableWordForm != null) {
+				firstAvailableVocalForm = firstAvailableWordForm.getVocalForm();
+				firstAvailableAudioFile = firstAvailableWordForm.getAudioFile();
+				isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstAvailableWordForm.getMorphCode());
+			}
+		}
+
+		WordData wordData = new WordData();
+		wordData.setWord(word);
+		wordData.setLexLexemes(lexemes);
+		wordData.setTermLexemes(Collections.emptyList());
+		wordData.setParadigms(paradigms);
+		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
+		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
+		wordData.setUnknownForm(isUnknownForm);
+		wordData.setRelevantDataExists(relevantDataExists);
+		wordData.setLexemesExist(lexemesExist);
+		wordData.setMultipleLexLexemesExist(multipleLexLexemesExist);
+		return wordData;
+	}
 }

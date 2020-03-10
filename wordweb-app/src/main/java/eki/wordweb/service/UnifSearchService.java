@@ -8,14 +8,12 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
-import eki.common.constant.FormMode;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
@@ -107,36 +105,10 @@ public class UnifSearchService extends AbstractSearchService {
 					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 		}
 
-		// resulting flags
+		// word common
 		wordConversionUtil.composeCommon(word, lexemes);
-		boolean lexResultsExist = CollectionUtils.isNotEmpty(lexemes);
-		boolean multipleLexLexemesExist = CollectionUtils.size(lexLexemes) > 1;
-		String firstAvailableVocalForm = null;
-		String firstAvailableAudioFile = null;
-		boolean isUnknownForm = false;
-		if (MapUtils.isNotEmpty(paradigmFormsMap)) {
-			Form firstAvailableWordForm = paradigmFormsMap.values().stream()
-					.filter(forms -> forms.stream().anyMatch(form -> form.getMode().equals(FormMode.WORD)))
-					.map(forms -> forms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst().orElse(null))
-					.findFirst().orElse(null);
-			if (firstAvailableWordForm != null) {
-				firstAvailableVocalForm = firstAvailableWordForm.getVocalForm();
-				firstAvailableAudioFile = firstAvailableWordForm.getAudioFile();
-				isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstAvailableWordForm.getMorphCode());
-			}
-		}
 
-		WordData wordData = new WordData();
-		wordData.setWord(word);
-		wordData.setLexLexemes(lexLexemes);
-		wordData.setTermLexemes(termLexemes);
-		wordData.setParadigms(paradigms);
-		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
-		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
-		wordData.setUnknownForm(isUnknownForm);
-		wordData.setLexResultsExist(lexResultsExist);
-		wordData.setMultipleLexLexemesExist(multipleLexLexemesExist);
-		return wordData;
+		return composeWordData(word, paradigmFormsMap, paradigms, lexemes);
 	}
 
 	@Override

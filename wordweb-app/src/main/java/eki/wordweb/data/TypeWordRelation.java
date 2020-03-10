@@ -7,51 +7,11 @@ public class TypeWordRelation extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long wordId;
-
-	private String word;
-
-	private String wordLang;
-
-	private Integer homonymNr;
-
 	private Complexity[] lexComplexities;
 
 	private String wordRelTypeCode;
 
 	private Classifier wordRelType;
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
-	}
-
-	public String getWordLang() {
-		return wordLang;
-	}
-
-	public void setWordLang(String wordLang) {
-		this.wordLang = wordLang;
-	}
-
-	public Integer getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
-	}
 
 	public Complexity[] getLexComplexities() {
 		return lexComplexities;

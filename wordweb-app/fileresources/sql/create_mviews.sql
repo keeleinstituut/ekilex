@@ -76,12 +76,20 @@ create type type_meaning_word as (
 				mw_lex_value_state_code varchar(100),
 				word_id bigint,
 				word text,
+				word_prese text,
 				homonym_nr integer,
 				lang char(3),
 				word_type_codes varchar(100) array,
 				aspect_code varchar(100));
 create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
-create type type_word_relation as (word_id bigint, word text, word_lang char(3), homonym_nr integer, lex_complexities varchar(100) array, word_type_codes varchar(100) array, word_rel_type_code varchar(100));
+create type type_word_relation as (
+				word_id bigint,
+				word text,
+				lang char(3),
+				homonym_nr integer,
+				lex_complexities varchar(100) array,
+				word_type_codes varchar(100) array,
+				word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (
 				meaning_id bigint,

@@ -32,7 +32,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
 
-    private static final long serialVersionUID = -1908224040;
+    private static final long serialVersionUID = 1473953950;
 
     /**
      * The reference instance of <code>public.type_meaning_word</code>
@@ -96,6 +96,11 @@ public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
      * The attribute <code>public.type_meaning_word.word</code>.
      */
     public static final UDTField<TypeMeaningWordRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, TYPE_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_meaning_word.word_prese</code>.
+     */
+    public static final UDTField<TypeMeaningWordRecord, String> WORD_PRESE = createField("word_prese", org.jooq.impl.SQLDataType.CLOB, TYPE_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_meaning_word.homonym_nr</code>.

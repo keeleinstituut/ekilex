@@ -107,17 +107,21 @@
       </h3>
     </div>
   </th:block>
+  <th:block th:fragment="no-lexemes-exist">
+    <div class="level-3-panel meaning-panel row d-block" th:if="${!wordData.lexemesExist}">
+      <div class="col-12 meaning">
+        <span th:text="#{label.word.has.no.description}">Selle sõna kirjeldust veel ei ole</span>
+        <span th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
+          <span th:text="#{label.word.suggest}">Seni vaata</span>
+          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, wordData.word.relatedWords.get(0).word)}}" th:text="${wordData.word.relatedWords.get(0).word}"> </a>
+        </span>
+      </div>
+    </div>
+  </th:block>
   <th:block th:fragment="lexeme-data">
     <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-5 pl-4': ''">
       <div class="col-12 dictionary-source" th:if="${lexeme.datasetName != null}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</div>
       <div class="col-12 meaning">
-        <div th:if="${lexeme.emptyLexeme}">
-          <span th:text="#{label.word.has.no.description}">Selle sõna kirjeldust veel ei ole</span>
-          <span th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
-            <span th:text="#{label.word.suggest}">Seni vaata</span>
-            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, wordData.word.relatedWords.get(0).word)}}" th:text="${wordData.word.relatedWords.get(0).word}"> </a>
-          </span>
-        </div>
         <div class="definition-row definition-area">
           <strong class="mr-2 definition-value font-weight-bold" th:if="${wordData.multipleLexLexemesExist}" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
           <th:block th:if="${not #lists.isEmpty(lexeme.poses) && !wordData.word.singlePos}">
@@ -157,7 +161,7 @@
               <span th:text="#{label.same.as}">sama mis</span>
               <span th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}">
                 <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
-                  <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>
+                  <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}">tee</span>
                 </a>
                 <span th:if="${meaningWord.additionalDataExists}" class="rections">
                   <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
@@ -181,7 +185,7 @@
               <span th:with="langData=${viewUtil.getLangData(meaningWordEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
               <span th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
                 <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
-                  <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>
+                  <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}">tee</span>
                 </a>
                 <span th:if="${meaningWord.additionalDataExists}" class="rections">
                   <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"

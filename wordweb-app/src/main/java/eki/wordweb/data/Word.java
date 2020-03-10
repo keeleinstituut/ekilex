@@ -8,19 +8,7 @@ public class Word extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long wordId;
-
-	private String word;
-
-	private String wordPrese;
-
-	private String asWord;
-
 	private String wordClass;
-
-	private String lang;
-
-	private Integer homonymNr;
 
 	private String morphCode;
 
@@ -68,60 +56,12 @@ public class Word extends WordTypeData {
 
 	private boolean selected;
 
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
-	}
-
-	public String getWordPrese() {
-		return wordPrese;
-	}
-
-	public void setWordPrese(String wordPrese) {
-		this.wordPrese = wordPrese;
-	}
-
-	public String getAsWord() {
-		return asWord;
-	}
-
-	public void setAsWord(String asWord) {
-		this.asWord = asWord;
-	}
-
 	public String getWordClass() {
 		return wordClass;
 	}
 
 	public void setWordClass(String wordClass) {
 		this.wordClass = wordClass;
-	}
-
-	public String getLang() {
-		return lang;
-	}
-
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
-
-	public Integer getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
 	}
 
 	public String getMorphCode() {

@@ -40,12 +40,20 @@ create type type_meaning_word as (
 				mw_lex_value_state_code varchar(100),
 				word_id bigint,
 				word text,
+				word_prese text,
 				homonym_nr integer,
 				lang char(3),
 				word_type_codes varchar(100) array,
 				aspect_code varchar(100));
 create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
-create type type_word_relation as (word_id bigint, word text, word_lang char(3), homonym_nr integer, lex_complexities varchar(100) array, word_type_codes varchar(100) array, word_rel_type_code varchar(100));
+create type type_word_relation as (
+				word_id bigint,
+				word text,
+				lang char(3),
+				homonym_nr integer,
+				lex_complexities varchar(100) array,
+				word_type_codes varchar(100) array,
+				word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (
 				meaning_id bigint,
@@ -369,6 +377,7 @@ from (select w.id as word_id,
                             null,
                           	mw.mw_word_id,
                           	mw.mw_word,
+                          	mw.mw_word_prese,
                           	mw.mw_homonym_nr,
                           	mw.mw_lang,
                           	mw.mw_word_type_codes,
@@ -392,6 +401,7 @@ from (select w.id as word_id,
                                 l2.weight mw_lex_weight,
                                 w2.id mw_word_id,
                                 f2.value mw_word,
+                                f2.value_prese mw_word_prese,
                                 w2.homonym_nr mw_homonym_nr,
                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
@@ -715,6 +725,7 @@ from lexeme l
                           	mw.mw_lex_value_state_code,
                           	mw.mw_word_id,
                           	mw.mw_word,
+                          	mw.mw_word_prese,
                           	mw.mw_homonym_nr,
                           	mw.mw_lang,
                           	mw.mw_word_type_codes,
@@ -751,6 +762,7 @@ from lexeme l
                    				l2.value_state_code mw_lex_value_state_code,
                                 w2.id mw_word_id,
                                 f2.value mw_word,
+                                f2.value_prese mw_word_prese,
                                 w2.homonym_nr mw_homonym_nr,
                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)

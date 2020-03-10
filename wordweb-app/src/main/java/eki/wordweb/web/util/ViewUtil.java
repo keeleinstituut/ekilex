@@ -11,10 +11,10 @@ import eki.common.constant.TextDecoration;
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
+import eki.wordweb.data.DecoratedWordType;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.TypeCollocMember;
-import eki.wordweb.data.Word;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
 
@@ -44,7 +44,7 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		return langData;
 	}
 
-	public String getMarkupHtml(Word word) {
+	public String getMarkupHtml(DecoratedWordType word) {
 
 		String wordPrese = new String(word.getWordPrese());
 		if (word.isSuffixoid()) {

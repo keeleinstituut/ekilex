@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
 
-    private static final long serialVersionUID = -601845760;
+    private static final long serialVersionUID = -1791720719;
 
     /**
      * The reference instance of <code>public.type_word_relation</code>
@@ -55,9 +55,9 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
     public static final UDTField<TypeWordRelationRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, TYPE_WORD_RELATION, "");
 
     /**
-     * The attribute <code>public.type_word_relation.word_lang</code>.
+     * The attribute <code>public.type_word_relation.lang</code>.
      */
-    public static final UDTField<TypeWordRelationRecord, String> WORD_LANG = createField("word_lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_WORD_RELATION, "");
+    public static final UDTField<TypeWordRelationRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_WORD_RELATION, "");
 
     /**
      * The attribute <code>public.type_word_relation.homonym_nr</code>.

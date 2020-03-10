@@ -22,7 +22,9 @@ public class WordData extends AbstractDataObject {
 
 	private boolean unknownForm;
 
-	private boolean lexResultsExist;
+	private boolean relevantDataExists;
+
+	private boolean lexemesExist;
 
 	private boolean multipleLexLexemesExist;
 
@@ -82,12 +84,20 @@ public class WordData extends AbstractDataObject {
 		this.unknownForm = unknownForm;
 	}
 
-	public boolean isLexResultsExist() {
-		return lexResultsExist;
+	public boolean isRelevantDataExists() {
+		return relevantDataExists;
 	}
 
-	public void setLexResultsExist(boolean lexResultsExist) {
-		this.lexResultsExist = lexResultsExist;
+	public void setRelevantDataExists(boolean relevantDataExists) {
+		this.relevantDataExists = relevantDataExists;
+	}
+
+	public boolean isLexemesExist() {
+		return lexemesExist;
+	}
+
+	public void setLexemesExist(boolean lexemesExist) {
+		this.lexemesExist = lexemesExist;
 	}
 
 	public boolean isMultipleLexLexemesExist() {

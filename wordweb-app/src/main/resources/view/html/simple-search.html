@@ -49,23 +49,26 @@
     </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
-      <div class="col-12 pt-2 ml-2" th:if="${!wordData.lexResultsExist}">
+      <div class="col-12 pt-2 ml-2" th:if="${!wordData.relevantDataExists}">
         <div class="row">
           <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>
         </div>
       </div>
-      <div class="col-12  d-md-block" th:if="${wordData.lexResultsExist}">
+      <div class="col-12 d-md-block" th:if="${wordData.relevantDataExists}">
         <div class="row">
           <div class="col-md-7 col-lg-8 main-data">
             <div class="row">
               <th:block th:replace="common-search :: word-data"></th:block>
             </div>
             <div class="level-2-panel">
-              <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-                <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.lexLexemes}">
-                  <div th:replace="common-search :: lexeme-data"></div>
-                </section>
+              <th:block th:if="${wordData.lexemesExist}">
+                <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
+                  <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.lexLexemes}">
+                    <div th:replace="common-search :: lexeme-data"></div>
+                  </section>
+                </th:block>
               </th:block>
+              <div th:replace="common-search :: no-lexemes-exist"></div>
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data sidebar">

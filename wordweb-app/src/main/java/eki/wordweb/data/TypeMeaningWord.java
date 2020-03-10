@@ -5,7 +5,7 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
 
-public class TypeMeaningWord extends WordTypeData implements ComplexityType, LangType {
+public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,14 +28,6 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType, Lan
 	private String mwLexValueStateCode;
 
 	private Classifier mwLexValueState;
-
-	private Long wordId;
-
-	private String word;
-
-	private Integer homonymNr;
-
-	private String lang;
 
 	private String aspectCode;
 
@@ -126,39 +118,6 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType, Lan
 
 	public void setMwLexValueState(Classifier mwLexValueState) {
 		this.mwLexValueState = mwLexValueState;
-	}
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
-	}
-
-	public Integer getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
-	}
-
-	@Override
-	public String getLang() {
-		return lang;
-	}
-
-	public void setLang(String lang) {
-		this.lang = lang;
 	}
 
 	public String getAspectCode() {
