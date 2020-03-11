@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -87,6 +88,56 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Definition d = DEFINITION.as("d");
 		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
+		Field<TypeWordRelParamRecord[]> relp = DSL
+				.select(DSL.field("array_agg(row(rp.name, rp.value)::type_word_rel_param)", TypeWordRelParamRecord[].class))
+				.from(rp)
+				.where(rp.WORD_RELATION_ID.eq(r.ID))
+				.groupBy(rp.WORD_RELATION_ID)
+				.asField();
+
+		Field<String[]> rwd = DSL
+				.select(DSL.arrayAgg(d.VALUE).orderBy(l.ORDER_BY, d.ORDER_BY))
+				.from(l, d)
+				.where(
+						l.WORD_ID.eq(r.WORD2_ID)
+								.and(l.DATASET_CODE.eq(datasetCode))
+								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(l.MEANING_ID.eq(d.MEANING_ID))
+								.and(DSL.or(d.COMPLEXITY.like("DETAIL%"), d.COMPLEXITY.like("SIMPLE%"))))
+				.groupBy(l.WORD_ID)
+				.asField();
+
+		Field<Boolean> rwip = DSL.field(DSL.exists(DSL
+				.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
+				.from(wt)
+				.where(wt.WORD_ID.eq(r.WORD2_ID)
+						.and(wt.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))
+				.groupBy(wt.WORD_ID)));
+
+		Field<Boolean> rwis = DSL.field(DSL.exists(DSL
+				.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
+				.from(wt)
+				.where(wt.WORD_ID.eq(r.WORD2_ID)
+						.and(wt.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))
+				.groupBy(wt.WORD_ID)));
+
+		Field<Boolean> rwhe = DSL
+				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
+				.from(fh, ph, wh)
+				.where(
+						fh.VALUE.eq(f2.VALUE)
+								.and(fh.MODE.eq(FormMode.WORD.name()))
+								.and(fh.PARADIGM_ID.eq(ph.ID))
+								.and(ph.WORD_ID.eq(wh.ID))
+								.andExists(DSL
+										.select(lh.ID)
+										.from(lh)
+										.where(
+												lh.WORD_ID.eq(wh.ID)
+														.and(lh.DATASET_CODE.eq(datasetCode)))))
+				.groupBy(fh.VALUE)
+				.asField();
+
 		return create.selectDistinct(
 				r.ID,
 				r.RELATION_STATUS,
@@ -96,47 +147,11 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				f2.VALUE.as("related_word"),
 				w2.HOMONYM_NR.as("related_word_homonym_nr"),
 				w2.LANG.as("related_word_lang"),
-				DSL.field(DSL.select(DSL.field("array_agg(row(rp.name, rp.value)::type_word_rel_param)", TypeWordRelParamRecord[].class))
-						.from(rp)
-						.where(rp.WORD_RELATION_ID.eq(r.ID))
-						.groupBy(rp.WORD_RELATION_ID)).as("relation_params"),
-				DSL.field(DSL.select(DSL.arrayAgg(d.VALUE).orderBy(l.ORDER_BY, d.ORDER_BY))
-						.from(l, d)
-						.where(
-								l.WORD_ID.eq(r.WORD2_ID)
-										.and(l.DATASET_CODE.eq(datasetCode))
-										.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
-										.and(l.MEANING_ID.eq(d.MEANING_ID))
-										.and(DSL.or(d.COMPLEXITY.like("DETAIL%"), d.COMPLEXITY.like("SIMPLE%"))))
-						.groupBy(l.WORD_ID)).as("related_word_definitions"),
-				DSL.field(DSL.exists(
-						DSL.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
-								.from(wt)
-								.where(wt.WORD_ID.eq(r.WORD2_ID)
-										.and(wt.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))
-								.groupBy(wt.WORD_ID)))
-						.as("related_word_is_prefixoid"),
-				DSL.field(DSL.exists(
-						DSL.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
-								.from(wt)
-								.where(wt.WORD_ID.eq(r.WORD2_ID)
-										.and(wt.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))
-								.groupBy(wt.WORD_ID)))
-						.as("related_word_is_suffixoid"),
-				DSL.field(DSL.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
-						.from(fh, ph, wh)
-						.where(
-								fh.VALUE.eq(f2.VALUE)
-										.and(fh.MODE.eq(FormMode.WORD.name()))
-										.and(fh.PARADIGM_ID.eq(ph.ID))
-										.and(ph.WORD_ID.eq(wh.ID))
-										.andExists(DSL
-												.select(lh.ID)
-												.from(lh)
-												.where(
-														lh.WORD_ID.eq(wh.ID)
-																.and(lh.DATASET_CODE.eq(datasetCode)))))
-						.groupBy(fh.VALUE)).as("related_word_homonyms_exist"))
+				relp.as("relation_params"),
+				rwd.as("related_word_definitions"),
+				rwip.as("related_word_is_prefixoid"),
+				rwis.as("related_word_is_suffixoid"),
+				rwhe.as("related_word_homonyms_exist"))
 				.from(r
 						.leftOuterJoin(oppr).on(
 								oppr.WORD1_ID.eq(r.WORD2_ID)
@@ -248,26 +263,30 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Form f2 = FORM.as("f2");
 		Form fh = FORM.as("fh");
 
+		Field<Boolean> whe = DSL
+				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
+				.from(fh, ph, wh)
+				.where(
+						fh.VALUE.eq(f2.VALUE)
+								.and(fh.MODE.eq(FormMode.WORD.name()))
+								.and(fh.PARADIGM_ID.eq(ph.ID))
+								.and(ph.WORD_ID.eq(wh.ID))
+								.andExists(DSL
+										.select(lh.ID)
+										.from(lh)
+										.where(
+												lh.WORD_ID.eq(wh.ID)
+														.and(lh.DATASET_CODE.eq(l2.DATASET_CODE)))))
+				.groupBy(fh.VALUE)
+				.asField();
+
 		return create
 				.select(
 						w2.ID.as("word_id"),
 						f2.VALUE,
 						f2.VALUE_PRESE,
 						w2.HOMONYM_NR.as("homonym_number"),
-						DSL.field(DSL.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
-								.from(fh, ph, wh)
-								.where(
-										fh.VALUE.eq(f2.VALUE)
-												.and(fh.MODE.eq(FormMode.WORD.name()))
-												.and(fh.PARADIGM_ID.eq(ph.ID))
-												.and(ph.WORD_ID.eq(wh.ID))
-												.andExists(DSL
-														.select(lh.ID)
-														.from(lh)
-														.where(
-																lh.WORD_ID.eq(wh.ID)
-																.and(lh.DATASET_CODE.eq(l2.DATASET_CODE)))))
-								.groupBy(fh.VALUE)).as("word_homonyms_exist"),
+						whe.as("word_homonyms_exist"),
 						w2.LANG.as("language"),
 						l2.ID.as("lexeme_id"),
 						l2.TYPE.as("lexeme_type"),
