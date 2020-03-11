@@ -115,7 +115,7 @@
                       data-toggle="modal"
                       data-target="#newWordDlg"
                       th:data-meaning-id="${meaningId}"
-                      sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">Uus termin</button>
+                      sec:authorize="#vars.userRoleData.roleSelected and #vars.isMeaningAnyLexemeCrudGranted">Uus termin</button>
               <button class="btn btn-warning font-weight-bold btn-sm" type="button"
                       th:data-id="${meaningId}"
                       data-callback="doNewSearch"

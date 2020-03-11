@@ -677,7 +677,7 @@
     </div>
   </div>
   <div th:id="${'addMeaningProcessLogDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_process_log_dlg">
-    <div class="modal-dialog modal-lg" role="document" th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+    <div class="modal-dialog modal-lg" role="document" th:if="${userRoleData.roleSelected}">
       <div class="modal-content">
         <form th:action="@{/create_meaning_process_log}" method="post">
           <div class="modal-body">
@@ -699,7 +699,7 @@
     </div>
   </div>
   <div th:id="${'addDefinitionDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_definition_dlg">
-    <div class="modal-dialog modal-lg" role="document" th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+    <div class="modal-dialog modal-lg" role="document" th:if="${userRoleData.roleSelected}">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
@@ -1034,7 +1034,7 @@
     </div>
   </div>
   <div id="newWordDlg" class="modal" role="dialog" th:fragment="new_word_dlg">
-    <div class="modal-dialog" role="document" th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+    <div class="modal-dialog" role="document" th:if="${userRoleData.roleSelected}">
       <div class="modal-content">
         <form id="addWordForm" th:action="@{/term_create_word}" method="post">
           <div class="modal-body">
