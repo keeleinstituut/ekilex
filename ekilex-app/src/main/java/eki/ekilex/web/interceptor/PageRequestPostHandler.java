@@ -93,10 +93,8 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 		if (!modelMap.containsKey(USER_ROLE_DATA_KEY)) {
 			SessionBean sessionBean = (SessionBean) modelMap.get(SESSION_BEAN);
-			if (sessionBean != null) {
-				EkiUserRoleData roleData = userProfileUtil.getUserRoleData(sessionBean);
-				modelMap.addAttribute(USER_ROLE_DATA_KEY, roleData);
-			}
+			EkiUserRoleData roleData = userProfileUtil.getUserRoleData(sessionBean);
+			modelMap.addAttribute(USER_ROLE_DATA_KEY, roleData);
 		}
 
 		logRequestProcessTime(request);

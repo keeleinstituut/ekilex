@@ -37,6 +37,11 @@ public class UserProfileUtil implements SystemConstant {
 
 	public EkiUserRoleData getUserRoleData(SessionBean sessionBean) {
 
+		EkiUserRoleData ekiUserRoleData = new EkiUserRoleData();
+		if (sessionBean == null) {
+			 return ekiUserRoleData;
+		}
+
 		DatasetPermission userRole = sessionBean.getUserRole();
 		EkiUser user = userService.getAuthenticatedUser();
 		Long userId = user.getId();
@@ -50,7 +55,6 @@ public class UserProfileUtil implements SystemConstant {
 		boolean isLayerChangeEnabled = isLayerChangeEnabled(userRole);
 		boolean isProcessStateChangeEnabled = isProcessStateChangeEnabled(isLayerChangeEnabled, userId);
 
-		EkiUserRoleData ekiUserRoleData = new EkiUserRoleData();
 		ekiUserRoleData.setAdmin(isAdmin);
 		ekiUserRoleData.setRoleSelected(isRoleSelected);
 		ekiUserRoleData.setCrudRoleSelected(isCrudRoleSelected);
