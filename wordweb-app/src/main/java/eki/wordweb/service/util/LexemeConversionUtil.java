@@ -217,6 +217,10 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Map<String, List<TypeDefinition>> definitionsByLangUnordered = definitions.stream().collect(Collectors.groupingBy(TypeDefinition::getLang));
 			Map<String, List<TypeDefinition>> definitionsByLangOrdered = composeOrderedMap(definitionsByLangUnordered, langOrderByMap);
 			lexeme.setDefinitionsByLang(definitionsByLangOrdered);
+			definitions.forEach(definition -> {
+				boolean subDataExists = CollectionUtils.isNotEmpty(definition.getPublicNotes()) || CollectionUtils.isNotEmpty(definition.getSourceLinks());
+				definition.setSubDataExists(subDataExists);
+			});
 		}
 
 		List<TypeFreeform> publicNotes = tuple.getPublicNotes();

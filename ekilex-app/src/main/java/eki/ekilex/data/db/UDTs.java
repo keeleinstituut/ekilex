@@ -7,13 +7,12 @@ package eki.ekilex.data.db;
 import eki.ekilex.data.db.udt.TypeCollocMember;
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
-import eki.ekilex.data.db.udt.TypeGovernment;
-import eki.ekilex.data.db.udt.TypeGrammar;
+import eki.ekilex.data.db.udt.TypeFreeform;
+import eki.ekilex.data.db.udt.TypeImageFile;
 import eki.ekilex.data.db.udt.TypeLangComplexity;
 import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeMeaningWord;
-import eki.ekilex.data.db.udt.TypePublicNote;
 import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
@@ -53,14 +52,14 @@ public class UDTs {
     public static TypeDomain TYPE_DOMAIN = eki.ekilex.data.db.udt.TypeDomain.TYPE_DOMAIN;
 
     /**
-     * The type <code>public.type_government</code>
+     * The type <code>public.type_freeform</code>
      */
-    public static TypeGovernment TYPE_GOVERNMENT = eki.ekilex.data.db.udt.TypeGovernment.TYPE_GOVERNMENT;
+    public static TypeFreeform TYPE_FREEFORM = eki.ekilex.data.db.udt.TypeFreeform.TYPE_FREEFORM;
 
     /**
-     * The type <code>public.type_grammar</code>
+     * The type <code>public.type_image_file</code>
      */
-    public static TypeGrammar TYPE_GRAMMAR = eki.ekilex.data.db.udt.TypeGrammar.TYPE_GRAMMAR;
+    public static TypeImageFile TYPE_IMAGE_FILE = eki.ekilex.data.db.udt.TypeImageFile.TYPE_IMAGE_FILE;
 
     /**
      * The type <code>public.type_lang_complexity</code>
@@ -81,11 +80,6 @@ public class UDTs {
      * The type <code>public.type_meaning_word</code>
      */
     public static TypeMeaningWord TYPE_MEANING_WORD = eki.ekilex.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
-
-    /**
-     * The type <code>public.type_public_note</code>
-     */
-    public static TypePublicNote TYPE_PUBLIC_NOTE = eki.ekilex.data.db.udt.TypePublicNote.TYPE_PUBLIC_NOTE;
 
     /**
      * The type <code>public.type_source_link</code>

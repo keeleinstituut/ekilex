@@ -100,12 +100,13 @@ import eki.ekilex.data.db.tables.ViewWwCollocation;
 import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwDefinitionSourceLink;
 import eki.ekilex.data.db.tables.ViewWwForm;
-import eki.ekilex.data.db.tables.ViewWwFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
+import eki.ekilex.data.db.tables.ViewWwLexemeFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexemeRelation;
 import eki.ekilex.data.db.tables.ViewWwLexemeSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
+import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.tables.ViewWwWord;
@@ -629,14 +630,14 @@ public class Tables {
     public static final ViewWwForm VIEW_WW_FORM = eki.ekilex.data.db.tables.ViewWwForm.VIEW_WW_FORM;
 
     /**
-     * The table <code>public.view_ww_freeform_source_link</code>.
-     */
-    public static final ViewWwFreeformSourceLink VIEW_WW_FREEFORM_SOURCE_LINK = eki.ekilex.data.db.tables.ViewWwFreeformSourceLink.VIEW_WW_FREEFORM_SOURCE_LINK;
-
-    /**
      * The table <code>public.view_ww_lexeme</code>.
      */
     public static final ViewWwLexeme VIEW_WW_LEXEME = eki.ekilex.data.db.tables.ViewWwLexeme.VIEW_WW_LEXEME;
+
+    /**
+     * The table <code>public.view_ww_lexeme_freeform_source_link</code>.
+     */
+    public static final ViewWwLexemeFreeformSourceLink VIEW_WW_LEXEME_FREEFORM_SOURCE_LINK = eki.ekilex.data.db.tables.ViewWwLexemeFreeformSourceLink.VIEW_WW_LEXEME_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_lexeme_relation</code>.
@@ -657,6 +658,11 @@ public class Tables {
      * The table <code>public.view_ww_meaning</code>.
      */
     public static final ViewWwMeaning VIEW_WW_MEANING = eki.ekilex.data.db.tables.ViewWwMeaning.VIEW_WW_MEANING;
+
+    /**
+     * The table <code>public.view_ww_meaning_freeform_source_link</code>.
+     */
+    public static final ViewWwMeaningFreeformSourceLink VIEW_WW_MEANING_FREEFORM_SOURCE_LINK = eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink.VIEW_WW_MEANING_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_meaning_relation</code>.

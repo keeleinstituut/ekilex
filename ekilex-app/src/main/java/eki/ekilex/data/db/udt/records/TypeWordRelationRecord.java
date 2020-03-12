@@ -27,7 +27,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord> implements Record7<Long, String, String, Integer, String[], String[], String> {
 
-    private static final long serialVersionUID = -138889504;
+    private static final long serialVersionUID = -745565593;
 
     /**
      * Setter for <code>public.type_word_relation.word_id</code>.
@@ -58,16 +58,16 @@ public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord
     }
 
     /**
-     * Setter for <code>public.type_word_relation.word_lang</code>.
+     * Setter for <code>public.type_word_relation.lang</code>.
      */
-    public void setWordLang(String value) {
+    public void setLang(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.type_word_relation.word_lang</code>.
+     * Getter for <code>public.type_word_relation.lang</code>.
      */
-    public String getWordLang() {
+    public String getLang() {
         return (String) get(2);
     }
 
@@ -168,7 +168,7 @@ public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord
      */
     @Override
     public Field<String> field3() {
-        return TypeWordRelation.WORD_LANG;
+        return TypeWordRelation.LANG;
     }
 
     /**
@@ -224,7 +224,7 @@ public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord
      */
     @Override
     public String component3() {
-        return getWordLang();
+        return getLang();
     }
 
     /**
@@ -280,7 +280,7 @@ public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord
      */
     @Override
     public String value3() {
-        return getWordLang();
+        return getLang();
     }
 
     /**
@@ -338,7 +338,7 @@ public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord
      */
     @Override
     public TypeWordRelationRecord value3(String value) {
-        setWordLang(value);
+        setLang(value);
         return this;
     }
 
@@ -407,12 +407,12 @@ public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord
     /**
      * Create a detached, initialised TypeWordRelationRecord
      */
-    public TypeWordRelationRecord(Long wordId, String word, String wordLang, Integer homonymNr, String[] lexComplexities, String[] wordTypeCodes, String wordRelTypeCode) {
+    public TypeWordRelationRecord(Long wordId, String word, String lang, Integer homonymNr, String[] lexComplexities, String[] wordTypeCodes, String wordRelTypeCode) {
         super(TypeWordRelation.TYPE_WORD_RELATION);
 
         set(0, wordId);
         set(1, word);
-        set(2, wordLang);
+        set(2, lang);
         set(3, homonymNr);
         set(4, lexComplexities);
         set(5, wordTypeCodes);

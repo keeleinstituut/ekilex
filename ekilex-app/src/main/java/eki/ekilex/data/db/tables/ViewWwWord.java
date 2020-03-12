@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = 1215921739;
+    private static final long serialVersionUID = 1165665007;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -60,6 +60,11 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
      * The column <code>public.view_ww_word.word</code>.
      */
     public final TableField<ViewWwWordRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_word.word_prese</code>.
+     */
+    public final TableField<ViewWwWordRecord, String> WORD_PRESE = createField("word_prese", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_word.as_word</code>.

@@ -6,6 +6,7 @@ package eki.ekilex.data.db.tables;
 
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwWordSearchRecord;
+import eki.ekilex.data.db.udt.records.TypeLangComplexityRecord;
 
 import javax.annotation.Generated;
 
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordSearch extends TableImpl<ViewWwWordSearchRecord> {
 
-    private static final long serialVersionUID = -539559561;
+    private static final long serialVersionUID = 1703588121;
 
     /**
      * The reference instance of <code>public.view_ww_word_search</code>
@@ -72,6 +73,16 @@ public class ViewWwWordSearch extends TableImpl<ViewWwWordSearchRecord> {
      * The column <code>public.view_ww_word_search.lang_order_by</code>.
      */
     public final TableField<ViewWwWordSearchRecord, Long> LANG_ORDER_BY = createField("lang_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_word_search.lang_complexities</code>.
+     */
+    public final TableField<ViewWwWordSearchRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField("lang_complexities", eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_word_search.simple_exists</code>.
+     */
+    public final TableField<ViewWwWordSearchRecord, Boolean> SIMPLE_EXISTS = createField("simple_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * Create a <code>public.view_ww_word_search</code> table reference

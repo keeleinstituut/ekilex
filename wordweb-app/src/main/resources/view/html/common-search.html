@@ -123,7 +123,8 @@
       <div class="col-12 dictionary-source" th:if="${lexeme.datasetName != null}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</div>
       <div class="col-12 meaning">
         <div class="definition-row definition-area">
-          <strong class="mr-2 definition-value font-weight-bold" th:if="${wordData.multipleLexLexemesExist}" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
+          <strong class="mr-2 definition-value font-weight-bold" th:if="${lexeme.datasetType.name() == 'LEX' && wordData.multipleLexLexemesExist}" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
+          <strong class="mr-2 definition-value font-weight-bold" th:if="${lexeme.datasetType.name() == 'TERM'}" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></strong>
           <th:block th:if="${not #lists.isEmpty(lexeme.poses) && !wordData.word.singlePos}">
             <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
           </th:block>
@@ -136,20 +137,27 @@
             <div class="mb-0" th:each="definitionEntry : ${lexeme.definitionsByLang}">
               <span class="additional-meta lang-code lang-code-sm" th:with="langData=${viewUtil.getLangData(definitionEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
               <span th:each="definition,definitionIter : ${definitionEntry.value}">
-                <th:block th:if="${#lists.isEmpty(definition.sourceLinks)}">
-                  <span class="definition-value" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
+                <th:block th:if="${!definition.subDataExists}">
+                  <span class="definition-value" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
                 </th:block>
-                <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
-                  <span class="definition-value" th:utext="${definition.valuePrese}"> </span>
-                  [
-                  <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
-                    <button type="button" class="source-link btn btn-link p-0" data-toggle="popover" th:title="#{label.source}" th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
-                      <span th:utext="${sourceLink.name + ' - '}" th:if="${sourceLink.name != null}"></span>
-                      <span th:utext="${sourceLink.value}"></span>
-                    </button>
-                    <span th:unless="${sourceLinkIter.last}">&nbsp;</span>
+                <th:block th:if="${definition.subDataExists}">
+                  <span class="definition-value" th:utext="${definition.valuePrese}"></span>
+                  <th:block th:if="${not #lists.isEmpty(definition.publicNotes)}">
+                    <span th:each="note : ${definition.publicNotes}">
+                      <span class="additional-meta" th:utext="${note}"></span>
+                    </span>
                   </th:block>
-                  ]
+                  <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
+                    [
+                    <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
+                      <button type="button" class="source-link btn btn-link p-0" data-toggle="popover" th:title="#{label.source}" th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                        <span th:utext="${sourceLink.name + ' - '}" th:if="${sourceLink.name != null}"></span>
+                        <span th:utext="${sourceLink.value}"></span>
+                      </button>
+                      <span th:unless="${sourceLinkIter.last}">&nbsp;</span>
+                    </th:block>
+                    ]
+                  </th:block>  
                 </th:block>
               </span>
             </div>

@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexemeSourceLink extends TableImpl<ViewWwLexemeSourceLinkRecord> {
 
-    private static final long serialVersionUID = 1719185493;
+    private static final long serialVersionUID = 1048768329;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme_source_link</code>
@@ -50,9 +50,9 @@ public class ViewWwLexemeSourceLink extends TableImpl<ViewWwLexemeSourceLinkReco
     }
 
     /**
-     * The column <code>public.view_ww_lexeme_source_link.word_id</code>.
+     * The column <code>public.view_ww_lexeme_source_link.lexeme_id</code>.
      */
-    public final TableField<ViewWwLexemeSourceLinkRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwLexemeSourceLinkRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_lexeme_source_link.source_links</code>.

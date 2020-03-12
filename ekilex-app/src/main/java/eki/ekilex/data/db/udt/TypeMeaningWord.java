@@ -5,7 +5,7 @@ package eki.ekilex.data.db.udt;
 
 
 import eki.ekilex.data.db.Public;
-import eki.ekilex.data.db.udt.records.TypeGovernmentRecord;
+import eki.ekilex.data.db.udt.records.TypeFreeformRecord;
 import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 
 import java.math.BigDecimal;
@@ -32,7 +32,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
 
-    private static final long serialVersionUID = -1254369018;
+    private static final long serialVersionUID = -558886732;
 
     /**
      * The reference instance of <code>public.type_meaning_word</code>
@@ -75,7 +75,7 @@ public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
     /**
      * The attribute <code>public.type_meaning_word.mw_lex_governments</code>.
      */
-    public static final UDTField<TypeMeaningWordRecord, TypeGovernmentRecord[]> MW_LEX_GOVERNMENTS = createField("mw_lex_governments", eki.ekilex.data.db.udt.TypeGovernment.TYPE_GOVERNMENT.getDataType().getArrayDataType(), TYPE_MEANING_WORD, "");
+    public static final UDTField<TypeMeaningWordRecord, TypeFreeformRecord[]> MW_LEX_GOVERNMENTS = createField("mw_lex_governments", eki.ekilex.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), TYPE_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_meaning_word.mw_lex_register_codes</code>.
@@ -96,6 +96,11 @@ public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
      * The attribute <code>public.type_meaning_word.word</code>.
      */
     public static final UDTField<TypeMeaningWordRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, TYPE_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_meaning_word.word_prese</code>.
+     */
+    public static final UDTField<TypeMeaningWordRecord, String> WORD_PRESE = createField("word_prese", org.jooq.impl.SQLDataType.CLOB, TYPE_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_meaning_word.homonym_nr</code>.

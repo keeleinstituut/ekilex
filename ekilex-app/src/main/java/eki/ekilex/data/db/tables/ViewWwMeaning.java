@@ -8,6 +8,8 @@ import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwMeaningRecord;
 import eki.ekilex.data.db.udt.records.TypeDefinitionRecord;
 import eki.ekilex.data.db.udt.records.TypeDomainRecord;
+import eki.ekilex.data.db.udt.records.TypeFreeformRecord;
+import eki.ekilex.data.db.udt.records.TypeImageFileRecord;
 
 import javax.annotation.Generated;
 
@@ -35,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
 
-    private static final long serialVersionUID = -279335735;
+    private static final long serialVersionUID = 1080182957;
 
     /**
      * The reference instance of <code>public.view_ww_meaning</code>
@@ -63,7 +65,7 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
     /**
      * The column <code>public.view_ww_meaning.image_files</code>.
      */
-    public final TableField<ViewWwMeaningRecord, String[]> IMAGE_FILES = createField("image_files", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwMeaningRecord, TypeImageFileRecord[]> IMAGE_FILES = createField("image_files", eki.ekilex.data.db.udt.TypeImageFile.TYPE_IMAGE_FILE.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_meaning.systematic_polysemy_patterns</code>.
@@ -79,6 +81,11 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
      * The column <code>public.view_ww_meaning.learner_comments</code>.
      */
     public final TableField<ViewWwMeaningRecord, String[]> LEARNER_COMMENTS = createField("learner_comments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_meaning.public_notes</code>.
+     */
+    public final TableField<ViewWwMeaningRecord, TypeFreeformRecord[]> PUBLIC_NOTES = createField("public_notes", eki.ekilex.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_meaning.definitions</code>.

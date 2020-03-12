@@ -23,7 +23,11 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	private Complexity complexity;
 
+	private List<String> publicNotes;
+
 	private List<TypeSourceLink> sourceLinks;
+
+	private boolean subDataExists;
 
 	@Override
 	public Long getOwnerId() {
@@ -79,12 +83,21 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 		this.lang = lang;
 	}
 
+	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public List<String> getPublicNotes() {
+		return publicNotes;
+	}
+
+	public void setPublicNotes(List<String> publicNotes) {
+		this.publicNotes = publicNotes;
 	}
 
 	@Override
@@ -95,6 +108,14 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 	@Override
 	public void setSourceLinks(List<TypeSourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
+	}
+
+	public boolean isSubDataExists() {
+		return subDataExists;
+	}
+
+	public void setSubDataExists(boolean subDataExists) {
+		this.subDataExists = subDataExists;
 	}
 
 }

@@ -2,7 +2,7 @@
 -- create extension unaccent;
 
 create type type_lang_complexity as (lang varchar(10), complexity varchar(100));
-create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
+create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100), public_notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_image_file as (freeform_id bigint, image_file text, image_title text);
 create type type_source_link as (
@@ -514,7 +514,8 @@ from (select w.id as word_id,
                             wd.value,
                             wd.value_prese,
                             wd.lang,
-                            wd.complexity
+                            wd.complexity,
+                            null
                           )::type_definition 
                           order by
                           wd.level1,
@@ -610,15 +611,16 @@ from (select m.id
       where exists (select l.id
                     from lexeme as l,
                          dataset ds
-                    where l.meaning_id = m.id 
-                    and l.type = 'PRIMARY'
-                    and l.process_state_code = 'avalik'
-                    and ds.code = l.dataset_code
-                    and ds.is_public = true)) m
+                    where l.meaning_id = m.id
+                    and   l.type = 'PRIMARY'
+                    and   l.process_state_code = 'avalik'
+                    and   ds.code = l.dataset_code
+                    and   ds.is_public = true)) m
   left outer join (select m_dom.meaning_id,
-                          array_agg(row (m_dom.domain_origin,m_dom.domain_code)::type_domain order by m_dom.order_by) domain_codes
+                          array_agg(row (m_dom.domain_origin, m_dom.domain_code)::type_domain order by m_dom.order_by) domain_codes
                    from meaning_domain m_dom
-                   group by m_dom.meaning_id) m_dom on m_dom.meaning_id = m.id
+                   group by m_dom.meaning_id) m_dom
+               on m_dom.meaning_id = m.id
   left outer join (select d.meaning_id,
                           array_agg(row (
                             null,
@@ -627,17 +629,46 @@ from (select m.id
                             d.value,
                             d.value_prese,
                             d.lang,
-                            d.complexity
+                            d.complexity,
+                            d.public_notes
                           )::type_definition
-                          order by d.order_by
+                          order by
+                          d.order_by
                           ) definitions
-                   from definition d
-                   group by d.meaning_id) d on d.meaning_id = m.id
+                   from (select d.meaning_id,
+                                d.id,
+                                d.value,
+                                d.value_prese,
+                                d.lang,
+                                d.complexity,
+                                d.order_by,
+                                (select array_agg(ff.value_prese order by ff.order_by)
+                                 from definition_freeform dff,
+                                      freeform ff
+                                 where dff.definition_id = d.id
+                                 and   ff.id = dff.freeform_id
+                                 and   ff.type = 'PUBLIC_NOTE'
+                                 group by dff.definition_id) public_notes
+                         from definition d) d
+                   group by d.meaning_id) d
+               on d.meaning_id = m.id
   left outer join (select mff.meaning_id,
-                          array_agg(row (ff_if.id, ff_if.value_text, ff_it.value_text)::type_image_file order by ff_if.order_by, ff_it.order_by) image_files
+                          array_agg(row (
+                            ff_if.id,
+                            ff_if.value_text,
+                            ff_it.value_text
+                          )::type_image_file
+                          order by
+                          ff_if.order_by,
+                          ff_it.order_by
+                          ) image_files
                    from meaning_freeform mff
-                        inner join freeform ff_if on ff_if.id = mff.freeform_id and ff_if.type = 'IMAGE_FILE'
-                        left outer join freeform ff_it on ff_it.parent_id = ff_if.id and ff_it.type = 'IMAGE_TITLE'
+                     inner join freeform ff_if
+                             on ff_if.id = mff.freeform_id
+                            and ff_if.type = 'IMAGE_FILE'
+                     left outer join freeform ff_it
+                                  on ff_it.parent_id = ff_if.id
+                                 and ff_it.type = 'IMAGE_TITLE'
                    group by mff.meaning_id) m_img on m_img.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
