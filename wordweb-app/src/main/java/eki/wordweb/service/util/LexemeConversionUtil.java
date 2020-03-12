@@ -1,6 +1,7 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
-import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.common.data.OrderedMap;
@@ -19,12 +19,11 @@ import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.TypeDefinition;
-import eki.wordweb.data.TypeGovernment;
-import eki.wordweb.data.TypeGrammar;
+import eki.wordweb.data.TypeFreeform;
+import eki.wordweb.data.TypeImageFile;
 import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
 import eki.wordweb.data.TypeMeaningWord;
-import eki.wordweb.data.TypePublicNote;
 import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.TypeUsage;
 
@@ -39,8 +38,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			DatasetType datasetType,
 			String wordLang,
 			List<Lexeme> lexemes,
-			Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap,
-			Map<Long, List<TypeSourceLink>> freeformSourceLinkMap,
 			Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap,
 			List<String> allRelatedWordValues,
 			Map<String, Long> langOrderByMap,
@@ -58,8 +55,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		for (Lexeme lexeme : lexemes) {
 
 			Long lexemeId = lexeme.getLexemeId();
-			populateLexeme(lexeme, lexemeSourceLinkMap, lexComplexity, displayLang);
-			populateUsages(lexeme, wordLang, freeformSourceLinkMap, destinLangs, lexComplexity, displayLang);
+			populateLexeme(lexeme, lexComplexity, displayLang);
+			populateUsages(lexeme, wordLang, destinLangs, lexComplexity, displayLang);
 			populateRelatedLexemes(lexeme, lexComplexity, displayLang);
 			populateMeaningWords(lexeme, wordLang, langOrderByMap, destinLangs, lexComplexity, displayLang);
 			filterMeaningWords(lexeme, allRelatedWordValues);
@@ -72,7 +69,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	private void populateLexeme(Lexeme lexeme, Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap, Complexity lexComplexity, String displayLang) {
+	private void populateLexeme(Lexeme lexeme, Complexity lexComplexity, String displayLang) {
 
 		if (DatasetType.LEX.equals(lexeme.getDatasetType())) {
 			lexeme.setDatasetName(null);
@@ -81,28 +78,39 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setCollocationPosGroups(new ArrayList<>());
 
-		List<TypePublicNote> publicNotes = lexeme.getPublicNotes();
-		List<TypeGrammar> grammars = lexeme.getGrammars();
-		List<TypeGovernment> governments = lexeme.getGovernments();
+		List<TypeFreeform> publicNotes = lexeme.getLexemePublicNotes();
+		List<TypeFreeform> grammars = lexeme.getGrammars();
+		List<TypeFreeform> governments = lexeme.getGovernments();
 
-		lexeme.setPublicNotes(filter(publicNotes, lexComplexity));
+		lexeme.setLexemePublicNotes(filter(publicNotes, lexComplexity));
 		lexeme.setGrammars(filter(grammars, lexComplexity));
 		lexeme.setGovernments(filterPreferred(governments, lexComplexity));
-
-		List<TypeSourceLink> lexemeSourceLinks = lexemeSourceLinkMap.get(lexeme.getLexemeId());
-		lexeme.setLexemeSourceLinks(lexemeSourceLinks);
 
 		classifierUtil.applyClassifiers(lexeme, displayLang);
 	}
 
-	private void populateUsages(Lexeme lexeme, String wordLang, Map<Long, List<TypeSourceLink>> freeformSourceLinkMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
+	private void populateUsages(
+			Lexeme lexeme,
+			String wordLang,
+			List<String> destinLangs,
+			Complexity lexComplexity,
+			String displayLang) {
+
 		List<TypeUsage> usages = lexeme.getUsages();
 		if (CollectionUtils.isEmpty(usages)) {
 			return;
 		}
+
+		List<TypeSourceLink> lexemeFreeformSourceLinks = lexeme.getLexemeFreeformSourceLinks();
+		Map<Long, List<TypeSourceLink>> lexemeFreeformSourceLinkMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(lexemeFreeformSourceLinks)) {
+			lexemeFreeformSourceLinkMap = lexemeFreeformSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
+		}
+
 		usages = filter(usages, wordLang, destinLangs);
 		usages = filterPreferred(usages, lexComplexity);
 		lexeme.setUsages(usages);
+
 		for (TypeUsage usage : usages) {
 			// TODO based on reasonable expectation that all translations are in fact in rus
 			if (!isDestinLangAlsoRus(destinLangs)) {
@@ -110,7 +118,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			}
 			classifierUtil.applyClassifiers(usage, displayLang);
 			Long usageId = usage.getUsageId();
-			List<TypeSourceLink> usageSourceLinks = freeformSourceLinkMap.get(usageId);
+			List<TypeSourceLink> usageSourceLinks = lexemeFreeformSourceLinkMap.get(usageId);
 			if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
 				usageSourceLinks.forEach(sourceLink -> {
 					boolean isTranslator = ReferenceType.TRANSLATOR.equals(sourceLink.getType());
@@ -183,11 +191,11 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	}
 
 	//masking syms added at aggregation because nested complex type array masking fail by postgres
-	private void cleanEscapeSym(List<TypeGovernment> governments) {
+	private void cleanEscapeSym(List<TypeFreeform> governments) {
 		if (CollectionUtils.isEmpty(governments)) {
 			return;
 		}
-		for (TypeGovernment government : governments) {
+		for (TypeFreeform government : governments) {
 			String cleanValue = StringUtils.replaceChars(government.getValue(), '`', ' ');
 			government.setValue(cleanValue);
 		}
@@ -198,32 +206,29 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			LexemeMeaningTuple tuple, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
 		List<TypeDefinition> definitions = tuple.getDefinitions();
+		List<TypeSourceLink> allDefinitionSourceLinks = tuple.getDefinitionSourceLinks();
+		List<TypeSourceLink> meaningFreeformSourceLinks = tuple.getFreeformSourceLinks();
 
 		if (CollectionUtils.isNotEmpty(definitions)) {
 			definitions = filter(definitions, wordLang, destinLangs);
 			definitions = filterPreferred(definitions, lexComplexity);
+			applySourceLinks(definitions, allDefinitionSourceLinks);
 			lexeme.setDefinitions(definitions);
-			List<TypeSourceLink> allDefinitionSourceLinks = tuple.getDefinitionSourceLinks();
-			if (CollectionUtils.isNotEmpty(allDefinitionSourceLinks)) {
-				Map<Long, List<TypeSourceLink>> definitionSourceLinksMap = allDefinitionSourceLinks.stream()
-						.filter(sourceLink -> ReferenceOwner.DEFINITION.equals(sourceLink.getRefOwner()))
-						.collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
-				definitions.forEach(definition -> {
-					Long definitionId = definition.getDefinitionId();
-					List<TypeSourceLink> sourceLinks = definitionSourceLinksMap.get(definitionId);
-					definition.setSourceLinks(sourceLinks);
-				});
-			}
 			Map<String, List<TypeDefinition>> definitionsByLangUnordered = definitions.stream().collect(Collectors.groupingBy(TypeDefinition::getLang));
 			Map<String, List<TypeDefinition>> definitionsByLangOrdered = composeOrderedMap(definitionsByLangUnordered, langOrderByMap);
 			lexeme.setDefinitionsByLang(definitionsByLangOrdered);
 		}
 
+		List<TypeFreeform> publicNotes = tuple.getPublicNotes();
+		applySourceLinks(publicNotes, meaningFreeformSourceLinks);
+		lexeme.setMeaningPublicNotes(publicNotes);
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 
-		if (Complexity.SIMPLE.equals(lexComplexity)) {
-			lexeme.setImageFiles(tuple.getImageFiles());
+		if (!Complexity.DETAIL.equals(lexComplexity)) {
+			List<TypeImageFile> imageFiles = tuple.getImageFiles();
+			applySourceLinks(imageFiles, meaningFreeformSourceLinks);
+			lexeme.setImageFiles(imageFiles);
 			lexeme.setLearnerComments(tuple.getLearnerComments());
 		}
 		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);

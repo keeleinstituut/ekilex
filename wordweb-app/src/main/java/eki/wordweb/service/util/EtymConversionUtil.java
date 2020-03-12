@@ -1,6 +1,7 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class EtymConversionUtil {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void composeWordEtymology(Word word, List<WordEtymTuple> wordEtymTuples, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap, String displayLang) {
+	public void composeWordEtymology(Word word, List<WordEtymTuple> wordEtymTuples, String displayLang) {
 
 		if (CollectionUtils.isEmpty(wordEtymTuples)) {
 			return;
@@ -33,7 +34,12 @@ public class EtymConversionUtil {
 		});
 
 		Long headwordId = word.getWordId();
+		List<TypeSourceLink> wordEtymSourceLinks = word.getWordEtymSourceLinks();
 
+		Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
+			wordEtymSourceLinkMap = wordEtymSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
+		}
 		Map<Long, List<WordEtymTuple>> etymAltsMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId));
 
 		WordEtymTuple headwordEtymTuple = etymAltsMap.get(headwordId).get(0);

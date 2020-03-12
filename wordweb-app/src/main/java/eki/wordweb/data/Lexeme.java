@@ -35,11 +35,13 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private List<String> adviceNotes;
 
-	private List<TypePublicNote> publicNotes;
+	private List<TypeFreeform> lexemePublicNotes;
 
-	private List<TypeGrammar> grammars;
+	private List<TypeFreeform> meaningPublicNotes;
 
-	private List<TypeGovernment> governments;
+	private List<TypeFreeform> grammars;
+
+	private List<TypeFreeform> governments;
 
 	private List<TypeUsage> usages;
 
@@ -59,7 +61,7 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private List<Classifier> domains;
 
-	private List<String> imageFiles;
+	private List<TypeImageFile> imageFiles;
 
 	private List<String> systematicPolysemyPatterns;
 
@@ -94,6 +96,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 	private List<DisplayColloc> limitedPrimaryDisplayCollocs;
 
 	private List<TypeSourceLink> lexemeSourceLinks;
+
+	private List<TypeSourceLink> lexemeFreeformSourceLinks;
 
 	private boolean missingMatchWords;
 
@@ -194,27 +198,35 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.adviceNotes = adviceNotes;
 	}
 
-	public List<TypePublicNote> getPublicNotes() {
-		return publicNotes;
+	public List<TypeFreeform> getLexemePublicNotes() {
+		return lexemePublicNotes;
 	}
 
-	public void setPublicNotes(List<TypePublicNote> publicNotes) {
-		this.publicNotes = publicNotes;
+	public void setLexemePublicNotes(List<TypeFreeform> lexemePublicNotes) {
+		this.lexemePublicNotes = lexemePublicNotes;
 	}
 
-	public List<TypeGrammar> getGrammars() {
+	public List<TypeFreeform> getMeaningPublicNotes() {
+		return meaningPublicNotes;
+	}
+
+	public void setMeaningPublicNotes(List<TypeFreeform> meaningPublicNotes) {
+		this.meaningPublicNotes = meaningPublicNotes;
+	}
+
+	public List<TypeFreeform> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<TypeGrammar> grammars) {
+	public void setGrammars(List<TypeFreeform> grammars) {
 		this.grammars = grammars;
 	}
 
-	public List<TypeGovernment> getGovernments() {
+	public List<TypeFreeform> getGovernments() {
 		return governments;
 	}
 
-	public void setGovernments(List<TypeGovernment> governments) {
+	public void setGovernments(List<TypeFreeform> governments) {
 		this.governments = governments;
 	}
 
@@ -290,11 +302,11 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.domains = domains;
 	}
 
-	public List<String> getImageFiles() {
+	public List<TypeImageFile> getImageFiles() {
 		return imageFiles;
 	}
 
-	public void setImageFiles(List<String> imageFiles) {
+	public void setImageFiles(List<TypeImageFile> imageFiles) {
 		this.imageFiles = imageFiles;
 	}
 
@@ -432,6 +444,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	public void setLexemeSourceLinks(List<TypeSourceLink> lexemeSourceLinks) {
 		this.lexemeSourceLinks = lexemeSourceLinks;
+	}
+
+	public List<TypeSourceLink> getLexemeFreeformSourceLinks() {
+		return lexemeFreeformSourceLinks;
+	}
+
+	public void setLexemeFreeformSourceLinks(List<TypeSourceLink> lexemeFreeformSourceLinks) {
+		this.lexemeFreeformSourceLinks = lexemeFreeformSourceLinks;
 	}
 
 	public boolean isMissingMatchWords() {

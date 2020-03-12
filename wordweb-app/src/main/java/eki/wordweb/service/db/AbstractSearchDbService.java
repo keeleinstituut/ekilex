@@ -3,10 +3,11 @@ package eki.wordweb.service.db;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_DEFINITION_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_FREEFORM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYMOLOGY;
@@ -29,8 +30,6 @@ import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
-import eki.wordweb.data.SourceLinksWrapper;
-import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
@@ -40,11 +39,12 @@ import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
-import eki.wordweb.data.db.tables.MviewWwFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
+import eki.wordweb.data.db.tables.MviewWwLexemeFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
+import eki.wordweb.data.db.tables.MviewWwMeaningFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
@@ -89,47 +89,54 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 				.fetchInto(Word.class);
 	}
 
-	protected List<Lexeme> getLexemes(
-			MviewWwLexeme lexemeTable, MviewWwDataset datasetTable, MviewWwLexemeRelation lexemeRelationTable, Condition where) {
+	protected List<Lexeme> getLexemes(MviewWwLexeme l, MviewWwDataset ds, MviewWwLexemeRelation lr, Condition where) {
+
+		MviewWwLexemeSourceLink lsl = MVIEW_WW_LEXEME_SOURCE_LINK.as("lsl");
+		MviewWwLexemeFreeformSourceLink ffsl = MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK.as("ffsl");
 
 		return create
 				.select(
-						lexemeTable.LEXEME_ID,
-						lexemeTable.MEANING_ID,
-						lexemeTable.DATASET_CODE,
-						datasetTable.NAME.as("dataset_name"),
-						lexemeTable.DATASET_TYPE,
-						lexemeTable.LEVEL1,
-						lexemeTable.LEVEL2,
-						lexemeTable.COMPLEXITY,
-						lexemeTable.WEIGHT,
-						lexemeTable.LEX_ORDER_BY,
-						lexemeTable.REGISTER_CODES,
-						lexemeTable.POS_CODES,
-						lexemeTable.DERIV_CODES,
-						lexemeTable.MEANING_WORDS,
-						lexemeTable.ADVICE_NOTES,
-						lexemeTable.PUBLIC_NOTES,
-						lexemeTable.GRAMMARS,
-						lexemeTable.GOVERNMENTS,
-						lexemeTable.USAGES,
-						lexemeTable.OD_LEXEME_RECOMMENDATIONS,
-						lexemeRelationTable.RELATED_LEXEMES)
-				.from(lexemeTable
-						.innerJoin(datasetTable).on(datasetTable.CODE.eq(lexemeTable.DATASET_CODE))
-						.leftOuterJoin(lexemeRelationTable).on(lexemeRelationTable.LEXEME_ID.eq(lexemeTable.LEXEME_ID)))
+						l.LEXEME_ID,
+						l.MEANING_ID,
+						l.DATASET_CODE,
+						ds.NAME.as("dataset_name"),
+						l.DATASET_TYPE,
+						l.LEVEL1,
+						l.LEVEL2,
+						l.COMPLEXITY,
+						l.WEIGHT,
+						l.LEX_ORDER_BY,
+						l.REGISTER_CODES,
+						l.POS_CODES,
+						l.DERIV_CODES,
+						l.MEANING_WORDS,
+						l.ADVICE_NOTES,
+						l.PUBLIC_NOTES,
+						l.GRAMMARS,
+						l.GOVERNMENTS,
+						l.USAGES,
+						l.OD_LEXEME_RECOMMENDATIONS,
+						lsl.SOURCE_LINKS.as("lexeme_source_links"),
+						ffsl.SOURCE_LINKS.as("lexeme_freeform_source_links"),
+						lr.RELATED_LEXEMES)
+				.from(l
+						.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE))
+						.leftOuterJoin(lsl).on(lsl.LEXEME_ID.eq(l.LEXEME_ID))
+						.leftOuterJoin(ffsl).on(ffsl.LEXEME_ID.eq(l.LEXEME_ID))
+						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
 				.orderBy(
-						lexemeTable.DATASET_TYPE,
-						lexemeTable.LEVEL1,
-						lexemeTable.LEVEL2,
-						lexemeTable.LEX_ORDER_BY)
+						l.DATASET_TYPE,
+						l.LEVEL1,
+						l.LEVEL2,
+						l.LEX_ORDER_BY)
 				.fetchInto(Lexeme.class);
 	}
 
 	public Word getWord(Long wordId) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
+		MviewWwWordEtymSourceLink wesl = MVIEW_WW_WORD_ETYM_SOURCE_LINK.as("wesl");
 
 		return create
 				.select(
@@ -146,11 +153,12 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						w.ASPECT_CODE,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
+						wesl.SOURCE_LINKS.as("word_etym_source_links"),
 						w.OD_WORD_RECOMMENDATIONS,
 						w.LEX_DATASET_EXISTS,
 						w.TERM_DATASET_EXISTS,
 						w.FORMS_EXIST)
-				.from(w)
+				.from(w.leftOuterJoin(wesl).on(wesl.WORD_ID.eq(wordId)))
 				.where(w.WORD_ID.eq(wordId))
 				.fetchOneInto(Word.class);
 	}
@@ -209,6 +217,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
 		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
+		MviewWwMeaningFreeformSourceLink ffsl = MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK.as("ffsl");
 		MviewWwDefinitionSourceLink dsl = MVIEW_WW_DEFINITION_SOURCE_LINK.as("dsl");
 
 		Condition where = l.WORD_ID.eq(wordId);
@@ -222,12 +231,15 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						m.SYSTEMATIC_POLYSEMY_PATTERNS,
 						m.SEMANTIC_TYPES,
 						m.LEARNER_COMMENTS,
+						m.PUBLIC_NOTES,
 						m.DEFINITIONS,
 						mr.RELATED_MEANINGS,
+						ffsl.SOURCE_LINKS.as("freeform_source_links"),
 						dsl.SOURCE_LINKS.as("definition_source_links"))
 				.from(
 						l.innerJoin(m).on(m.MEANING_ID.eq(l.MEANING_ID))
 								.leftOuterJoin(mr).on(mr.MEANING_ID.eq(m.MEANING_ID))
+								.leftOuterJoin(ffsl).on(ffsl.MEANING_ID.eq(m.MEANING_ID))
 								.leftOuterJoin(dsl).on(dsl.MEANING_ID.eq(m.MEANING_ID)))
 				.where(where)
 				.orderBy(m.MEANING_ID, l.LEXEME_ID)
@@ -249,7 +261,6 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 				.where(wr.WORD_ID.eq(wordId))
 				.fetchInto(WordRelationTuple.class);
 	}
-
 
 	public List<WordEtymTuple> getWordEtymologyTuples(Long wordId) {
 
@@ -302,50 +313,5 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 						c.COLLOC_GROUP_ORDER,
 						c.COLLOC_ID)
 				.fetchInto(CollocationTuple.class);
-	}
-
-	public List<TypeSourceLink> getLexemeSourceLinks(Long wordId) {
-
-		MviewWwLexemeSourceLink sl = MVIEW_WW_LEXEME_SOURCE_LINK.as("sl");
-
-		SourceLinksWrapper sourceLinksWrapper = create
-				.select(sl.SOURCE_LINKS)
-				.from(sl)
-				.where(sl.WORD_ID.eq(wordId))
-				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
-		if (sourceLinksWrapper == null) {
-			return null;
-		}
-		return sourceLinksWrapper.getSourceLinks();
-	}
-
-	public List<TypeSourceLink> getFreeformSourceLinks(Long wordId) {
-
-		MviewWwFreeformSourceLink sl = MVIEW_WW_FREEFORM_SOURCE_LINK.as("sl");
-
-		SourceLinksWrapper sourceLinksWrapper = create
-				.select(sl.SOURCE_LINKS)
-				.from(sl)
-				.where(sl.WORD_ID.eq(wordId))
-				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
-		if (sourceLinksWrapper == null) {
-			return null;
-		}
-		return sourceLinksWrapper.getSourceLinks();
-	}
-
-	public List<TypeSourceLink> getWordEtymSourceLinks(Long wordId) {
-
-		MviewWwWordEtymSourceLink sl = MVIEW_WW_WORD_ETYM_SOURCE_LINK.as("sl");
-
-		SourceLinksWrapper sourceLinksWrapper = create
-				.select(sl.SOURCE_LINKS)
-				.from(sl)
-				.where(sl.WORD_ID.eq(wordId))
-				.fetchOptionalInto(SourceLinksWrapper.class).orElse(null);
-		if (sourceLinksWrapper == null) {
-			return null;
-		}
-		return sourceLinksWrapper.getSourceLinks();
 	}
 }

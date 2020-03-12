@@ -32,6 +32,8 @@ public class Word extends WordTypeData {
 
 	private WordEtymology wordEtymology;
 
+	private List<TypeSourceLink> wordEtymSourceLinks;
+
 	private List<TypeWordRelation> relatedWords;
 
 	private List<WordRelationGroup> limitedRelatedWordTypeGroups;
@@ -150,6 +152,14 @@ public class Word extends WordTypeData {
 
 	public void setWordEtymology(WordEtymology wordEtymology) {
 		this.wordEtymology = wordEtymology;
+	}
+
+	public List<TypeSourceLink> getWordEtymSourceLinks() {
+		return wordEtymSourceLinks;
+	}
+
+	public void setWordEtymSourceLinks(List<TypeSourceLink> wordEtymSourceLinks) {
+		this.wordEtymSourceLinks = wordEtymSourceLinks;
 	}
 
 	public List<TypeWordRelation> getRelatedWords() {

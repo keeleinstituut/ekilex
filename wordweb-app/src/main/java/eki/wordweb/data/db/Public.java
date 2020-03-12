@@ -11,11 +11,12 @@ import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
-import eki.wordweb.data.db.tables.MviewWwFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
+import eki.wordweb.data.db.tables.MviewWwLexemeFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
+import eki.wordweb.data.db.tables.MviewWwMeaningFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
@@ -27,13 +28,12 @@ import eki.wordweb.data.db.tables.SimilarityJudgementResult;
 import eki.wordweb.data.db.udt.TypeCollocMember;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
-import eki.wordweb.data.db.udt.TypeGovernment;
-import eki.wordweb.data.db.udt.TypeGrammar;
+import eki.wordweb.data.db.udt.TypeFreeform;
+import eki.wordweb.data.db.udt.TypeImageFile;
 import eki.wordweb.data.db.udt.TypeLangComplexity;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
 import eki.wordweb.data.db.udt.TypeMeaningWord;
-import eki.wordweb.data.db.udt.TypePublicNote;
 import eki.wordweb.data.db.udt.TypeSourceLink;
 import eki.wordweb.data.db.udt.TypeUsage;
 import eki.wordweb.data.db.udt.TypeWordEtymRelation;
@@ -65,7 +65,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1516561330;
+    private static final long serialVersionUID = 1328215275;
 
     /**
      * The reference instance of <code>public</code>
@@ -108,14 +108,14 @@ public class Public extends SchemaImpl {
     public final MviewWwForm MVIEW_WW_FORM = eki.wordweb.data.db.tables.MviewWwForm.MVIEW_WW_FORM;
 
     /**
-     * The table <code>public.mview_ww_freeform_source_link</code>.
-     */
-    public final MviewWwFreeformSourceLink MVIEW_WW_FREEFORM_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwFreeformSourceLink.MVIEW_WW_FREEFORM_SOURCE_LINK;
-
-    /**
      * The table <code>public.mview_ww_lexeme</code>.
      */
     public final MviewWwLexeme MVIEW_WW_LEXEME = eki.wordweb.data.db.tables.MviewWwLexeme.MVIEW_WW_LEXEME;
+
+    /**
+     * The table <code>public.mview_ww_lexeme_freeform_source_link</code>.
+     */
+    public final MviewWwLexemeFreeformSourceLink MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwLexemeFreeformSourceLink.MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_lexeme_relation</code>.
@@ -131,6 +131,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_meaning</code>.
      */
     public final MviewWwMeaning MVIEW_WW_MEANING = eki.wordweb.data.db.tables.MviewWwMeaning.MVIEW_WW_MEANING;
+
+    /**
+     * The table <code>public.mview_ww_meaning_freeform_source_link</code>.
+     */
+    public final MviewWwMeaningFreeformSourceLink MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK = eki.wordweb.data.db.tables.MviewWwMeaningFreeformSourceLink.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_meaning_relation</code>.
@@ -219,11 +224,12 @@ public class Public extends SchemaImpl {
             MviewWwDataset.MVIEW_WW_DATASET,
             MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK,
             MviewWwForm.MVIEW_WW_FORM,
-            MviewWwFreeformSourceLink.MVIEW_WW_FREEFORM_SOURCE_LINK,
             MviewWwLexeme.MVIEW_WW_LEXEME,
+            MviewWwLexemeFreeformSourceLink.MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK,
             MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION,
             MviewWwLexemeSourceLink.MVIEW_WW_LEXEME_SOURCE_LINK,
             MviewWwMeaning.MVIEW_WW_MEANING,
+            MviewWwMeaningFreeformSourceLink.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK,
             MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION,
             MviewWwWord.MVIEW_WW_WORD,
             MviewWwWordEtymSourceLink.MVIEW_WW_WORD_ETYM_SOURCE_LINK,
@@ -246,13 +252,12 @@ public class Public extends SchemaImpl {
             TypeCollocMember.TYPE_COLLOC_MEMBER,
             TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
-            TypeGovernment.TYPE_GOVERNMENT,
-            TypeGrammar.TYPE_GRAMMAR,
+            TypeFreeform.TYPE_FREEFORM,
+            TypeImageFile.TYPE_IMAGE_FILE,
             TypeLangComplexity.TYPE_LANG_COMPLEXITY,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeMeaningWord.TYPE_MEANING_WORD,
-            TypePublicNote.TYPE_PUBLIC_NOTE,
             TypeSourceLink.TYPE_SOURCE_LINK,
             TypeUsage.TYPE_USAGE,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,

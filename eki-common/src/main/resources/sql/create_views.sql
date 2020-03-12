@@ -4,6 +4,7 @@
 create type type_lang_complexity as (lang varchar(10), complexity varchar(100));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100));
 create type type_domain as (origin varchar(100), code varchar(100));
+create type type_image_file as (freeform_id bigint, image_file text, image_title text);
 create type type_source_link as (
 				ref_owner varchar(100),
 				owner_id bigint,
@@ -25,9 +26,7 @@ create type type_usage as (
 				usage_definitions text array,
 				od_usage_definitions text array,
 				od_usage_alternatives text array);
-create type type_public_note as (value text, complexity varchar(100));
-create type type_grammar as (value text, complexity varchar(100));
-create type type_government as (value text, complexity varchar(100));
+create type type_freeform as (freeform_id bigint, type varchar(100), value text, complexity varchar(100));
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_meaning_word as (
 				lexeme_id bigint,
@@ -35,7 +34,7 @@ create type type_meaning_word as (
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
 				mw_lex_weight numeric(5,4),
-				mw_lex_governments type_government array,
+				mw_lex_governments type_freeform array,
 				mw_lex_register_codes varchar(100) array,
 				mw_lex_value_state_code varchar(100),
 				word_id bigint,
@@ -508,7 +507,21 @@ from (select w.id as word_id,
                           and r.word_rel_type_code != 'raw')) lc
                    group by lc.word_id) lc on lc.word_id = w.word_id
   left outer join (select wd.word_id,
-                          array_agg(row (wd.lexeme_id,wd.meaning_id,wd.definition_id,wd.value,wd.value_prese,wd.lang,wd.complexity)::type_definition order by wd.level1,wd.level2,wd.lex_order_by,wd.d_order_by) definitions
+                          array_agg(row (
+                            wd.lexeme_id,
+                            wd.meaning_id,
+                            wd.definition_id,
+                            wd.value,
+                            wd.value_prese,
+                            wd.lang,
+                            wd.complexity
+                          )::type_definition 
+                          order by
+                          wd.level1,
+                          wd.level2,
+                          wd.lex_order_by,
+                          wd.def_order_by
+                          ) definitions
                    from (select l.word_id,
                                 l.id lexeme_id,
                                 l.meaning_id,
@@ -520,7 +533,7 @@ from (select w.id as word_id,
                                 d.value_prese,
                                 d.lang,
                                 d.complexity,
-                                d.order_by d_order_by
+                                d.order_by def_order_by
                          from lexeme l
                            inner join dataset ds on ds.code = l.dataset_code
                            inner join definition d on d.meaning_id = l.meaning_id
@@ -590,6 +603,7 @@ select m.id meaning_id,
        m_spp.systematic_polysemy_patterns,
        m_smt.semantic_types,
        m_lcm.learner_comments,
+       m_pnt.public_notes,
        d.definitions
 from (select m.id
       from meaning m
@@ -606,17 +620,25 @@ from (select m.id
                    from meaning_domain m_dom
                    group by m_dom.meaning_id) m_dom on m_dom.meaning_id = m.id
   left outer join (select d.meaning_id,
-                          array_agg(row (null,d.meaning_id,d.id,d.value,d.value_prese,d.lang,d.complexity)::type_definition order by d.order_by) definitions
+                          array_agg(row (
+                            null,
+                            d.meaning_id,
+                            d.id,
+                            d.value,
+                            d.value_prese,
+                            d.lang,
+                            d.complexity
+                          )::type_definition
+                          order by d.order_by
+                          ) definitions
                    from definition d
-                   --where d.complexity in ('SIMPLE1', 'SIMPLE2', 'DETAIL1', 'DETAIL2')
                    group by d.meaning_id) d on d.meaning_id = m.id
-  left outer join (select mf.meaning_id,
-                          array_agg(ff.value_text order by ff.order_by) image_files
-                   from meaning_freeform mf,
-                        freeform ff
-                   where mf.freeform_id = ff.id
-                   and   ff.type = 'IMAGE_FILE'
-                   group by mf.meaning_id) m_img on m_img.meaning_id = m.id
+  left outer join (select mff.meaning_id,
+                          array_agg(row (ff_if.id, ff_if.value_text, ff_it.value_text)::type_image_file order by ff_if.order_by, ff_it.order_by) image_files
+                   from meaning_freeform mff
+                        inner join freeform ff_if on ff_if.id = mff.freeform_id and ff_if.type = 'IMAGE_FILE'
+                        left outer join freeform ff_it on ff_it.parent_id = ff_if.id and ff_it.type = 'IMAGE_TITLE'
+                   group by mff.meaning_id) m_img on m_img.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
                    from meaning_freeform mf,
@@ -638,6 +660,13 @@ from (select m.id
                    where mf.freeform_id = ff.id
                    and   ff.type = 'LEARNER_COMMENT'
                    group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
+  left outer join (select mf.meaning_id,
+                          array_agg(row (ff.id, ff.type, ff.value_prese, ff.complexity)::type_freeform order by ff.order_by) public_notes
+                   from meaning_freeform mf,
+                        freeform ff
+                   where mf.freeform_id = ff.id
+                   and   ff.type = 'PUBLIC_NOTE'
+                   group by mf.meaning_id) m_pnt on m_pnt.meaning_id = m.id
 order by m.id;
 
 -- lexeme details - OK
@@ -686,21 +715,21 @@ from lexeme l
                    and   ff.type = 'ADVICE_NOTE'
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.value_prese,ff.complexity)::type_public_note order by ff.order_by) public_notes
+                          array_agg(row (ff.id, ff.type, ff.value_prese,ff.complexity)::type_freeform order by ff.order_by) public_notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'PUBLIC_NOTE'
                    group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.value_text,ff.complexity)::type_grammar order by ff.order_by) grammars
+                          array_agg(row (ff.id, ff.type, ff.value_text,ff.complexity)::type_freeform order by ff.order_by) grammars
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GRAMMAR'
                    group by lf.lexeme_id) gramm on gramm.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.value_text,ff.complexity)::type_government order by ff.order_by) governments
+                          array_agg(row (ff.id, ff.type, ff.value_text,ff.complexity)::type_freeform order by ff.order_by) governments
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -748,7 +777,7 @@ from lexeme l
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
                                 --NB! space sym replaced by temp placeholder because nested complex type array masking failure by postgres
-                                (select array_agg(row (replace(ff.value_text, ' ', '`'),ff.complexity)::type_government order by ff.order_by)
+                                (select array_agg(row (ff.id, ff.type, replace(ff.value_text, ' ', '`'),ff.complexity)::type_freeform order by ff.order_by)
 			                     from lexeme_freeform lf,
 			                          freeform ff
 			                     where lf.lexeme_id = l2.id
@@ -1335,62 +1364,24 @@ group by r.m1_id;
 
 
 -- source links
-create view view_ww_lexeme_source_link 
-as
-select l.word_id,
-       array_agg(row ('LEXEME', lsl.lexeme_id, lsl.id, lsl.type, lsl.name, lsl.value, lsl.order_by, s.source_id, s.source_props)::type_source_link order by l.id, lsl.order_by) source_links
-from lexeme l,
-     dataset ds,
-     lexeme_source_link lsl,
-     (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
-      from source s,
-           source_freeform sff,
-           freeform ff
-      where sff.source_id = s.id
-      and   sff.freeform_id = ff.id
-      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
-      group by s.id) s
-where l.type = 'PRIMARY'
-and   l.process_state_code = 'avalik'
-and   lsl.lexeme_id = l.id
-and   lsl.source_id = s.source_id
-and   ds.code = l.dataset_code
-and   ds.is_public = true
-group by l.word_id
-order by l.word_id;
-
-create view view_ww_freeform_source_link 
-as
-select l.word_id,
-       array_agg(row ('FREEFORM', ffsl.freeform_id, ffsl.id, ffsl.type, ffsl.name, ffsl.value, ffsl.order_by, s.source_id, s.source_props)::type_source_link order by l.id, lff.id, ffsl.order_by) source_links
-from lexeme l,
-     dataset ds,
-     lexeme_freeform lff,
-     freeform_source_link ffsl,
-     (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
-      from source s,
-           source_freeform sff,
-           freeform ff
-      where sff.source_id = s.id
-      and   sff.freeform_id = ff.id
-      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
-      group by s.id) s
-where l.type = 'PRIMARY'
-and   l.process_state_code = 'avalik'
-and   lff.lexeme_id = l.id
-and   lff.freeform_id = ffsl.freeform_id
-and   ffsl.source_id = s.source_id
-and   ds.code = l.dataset_code
-and   ds.is_public = true
-group by l.word_id
-order by l.word_id;
-
 create view view_ww_word_etym_source_link 
 as
 select we.word_id,
-       array_agg(row ('WORD_ETYM', wesl.word_etym_id, wesl.id, wesl.type, wesl.name, wesl.value, wesl.order_by, s.source_id, s.source_props)::type_source_link order by we.id, wesl.order_by) source_links
+       array_agg(row (
+         'WORD_ETYM',
+         wesl.word_etym_id,
+         wesl.id,
+         wesl.type,
+         wesl.name,
+         wesl.value,
+         wesl.order_by,
+         s.source_id,
+         s.source_props
+       )::type_source_link
+       order by
+       we.id,
+       wesl.order_by
+       ) source_links
 from word_etymology we,
      word_etymology_source_link wesl,
      (select s.id source_id,
@@ -1415,10 +1406,159 @@ and   exists (select l.id
 group by we.word_id
 order by we.word_id;
 
+create view view_ww_lexeme_source_link 
+as
+select l.id lexeme_id,
+       array_agg(row (
+         'LEXEME',
+         l.id,
+         lsl.id,
+         lsl.type,
+         lsl.name,
+         lsl.value,
+         lsl.order_by,
+         s.source_id,
+         s.source_props
+       )::type_source_link
+       order by
+       l.id,
+       lsl.order_by
+       ) source_links
+from lexeme l,
+     dataset ds,
+     lexeme_source_link lsl,
+     (select s.id source_id,
+             array_agg(ff.value_prese order by ff.order_by) source_props
+      from source s,
+           source_freeform sff,
+           freeform ff
+      where sff.source_id = s.id
+      and   sff.freeform_id = ff.id
+      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
+      group by s.id) s
+where l.type = 'PRIMARY'
+and   l.process_state_code = 'avalik'
+and   lsl.lexeme_id = l.id
+and   lsl.source_id = s.source_id
+and   ds.code = l.dataset_code
+and   ds.is_public = true
+group by l.id
+order by l.id;
+
+create view view_ww_lexeme_freeform_source_link 
+as
+select l.id lexeme_id,
+       array_agg(row (
+         'FREEFORM',
+         ffsl.freeform_id,
+         ffsl.id,
+         ffsl.type,
+         ffsl.name,
+         ffsl.value,
+         ffsl.order_by,
+         s.source_id,
+         s.source_props
+       )::type_source_link
+       order by
+       lff.id,
+       ffsl.order_by
+       ) source_links
+from lexeme l,
+     dataset ds,
+     lexeme_freeform lff,
+     freeform_source_link ffsl,
+     (select s.id source_id,
+             array_agg(ff.value_prese order by ff.order_by) source_props
+      from source s,
+           source_freeform sff,
+           freeform ff
+      where sff.source_id = s.id
+      and   sff.freeform_id = ff.id
+      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
+      group by s.id) s
+where l.type = 'PRIMARY'
+and   l.process_state_code = 'avalik'
+and   lff.lexeme_id = l.id
+and   lff.freeform_id = ffsl.freeform_id
+and   ffsl.source_id = s.source_id
+and   ds.code = l.dataset_code
+and   ds.is_public = true
+group by l.id
+order by l.id;
+
+create view view_ww_meaning_freeform_source_link 
+as
+select ffsl.meaning_id,
+       array_agg(row (
+         'FREEFORM',
+         ffsl.freeform_id,
+         ffsl.source_link_id,
+         ffsl.type,
+         ffsl.name,
+         ffsl.value,
+         ffsl.order_by,
+         ffsl.source_id,
+         ffsl.source_props
+       )::type_source_link
+       order by
+       ffsl.freeform_id,
+       ffsl.order_by
+       ) source_links
+from (select mff.meaning_id,
+             mff.freeform_id,
+             ffsl.id source_link_id,
+             ffsl.type,
+             ffsl.name,
+             ffsl.value,
+             ffsl.order_by,
+             s.source_id,
+             s.source_props
+      from lexeme l,
+           dataset ds,
+           meaning_freeform mff,
+           freeform_source_link ffsl,
+           (select s.id source_id,
+                   array_agg(ff.value_prese order by ff.order_by) source_props
+            from source s,
+                 source_freeform sff,
+                 freeform ff
+            where sff.source_id = s.id
+            and   sff.freeform_id = ff.id
+            and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
+            group by s.id) s
+      where l.type = 'PRIMARY'
+      and   l.process_state_code = 'avalik'
+      and   l.meaning_id = mff.meaning_id
+      and   ffsl.freeform_id = mff.freeform_id
+      and   ffsl.source_id = s.source_id
+      and   ds.code = l.dataset_code
+      and   ds.is_public = true
+      group by mff.meaning_id,
+               mff.freeform_id,
+               ffsl.id,
+               s.source_id,
+               s.source_props) ffsl
+group by ffsl.meaning_id
+order by ffsl.meaning_id;
+
 create view view_ww_definition_source_link 
 as
 select dsl.meaning_id,
-       array_agg(row ('DEFINITION', dsl.definition_id, dsl.source_link_id, dsl.type, dsl.name, dsl.value, dsl.order_by, dsl.source_id, dsl.source_props)::type_source_link order by dsl.definition_id, dsl.order_by) source_links
+       array_agg(row (
+         'DEFINITION',
+         dsl.definition_id,
+         dsl.source_link_id,
+         dsl.type,
+         dsl.name,
+         dsl.value,
+         dsl.order_by,
+         dsl.source_id,
+         dsl.source_props
+       )::type_source_link
+       order by
+       dsl.definition_id,
+       dsl.order_by
+       ) source_links
 from (select d.meaning_id,
              d.id definition_id,
              dsl.id source_link_id,

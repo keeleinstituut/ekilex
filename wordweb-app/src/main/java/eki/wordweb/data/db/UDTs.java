@@ -7,13 +7,12 @@ package eki.wordweb.data.db;
 import eki.wordweb.data.db.udt.TypeCollocMember;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
-import eki.wordweb.data.db.udt.TypeGovernment;
-import eki.wordweb.data.db.udt.TypeGrammar;
+import eki.wordweb.data.db.udt.TypeFreeform;
+import eki.wordweb.data.db.udt.TypeImageFile;
 import eki.wordweb.data.db.udt.TypeLangComplexity;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
 import eki.wordweb.data.db.udt.TypeMeaningWord;
-import eki.wordweb.data.db.udt.TypePublicNote;
 import eki.wordweb.data.db.udt.TypeSourceLink;
 import eki.wordweb.data.db.udt.TypeUsage;
 import eki.wordweb.data.db.udt.TypeWordEtymRelation;
@@ -51,14 +50,14 @@ public class UDTs {
     public static TypeDomain TYPE_DOMAIN = eki.wordweb.data.db.udt.TypeDomain.TYPE_DOMAIN;
 
     /**
-     * The type <code>public.type_government</code>
+     * The type <code>public.type_freeform</code>
      */
-    public static TypeGovernment TYPE_GOVERNMENT = eki.wordweb.data.db.udt.TypeGovernment.TYPE_GOVERNMENT;
+    public static TypeFreeform TYPE_FREEFORM = eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM;
 
     /**
-     * The type <code>public.type_grammar</code>
+     * The type <code>public.type_image_file</code>
      */
-    public static TypeGrammar TYPE_GRAMMAR = eki.wordweb.data.db.udt.TypeGrammar.TYPE_GRAMMAR;
+    public static TypeImageFile TYPE_IMAGE_FILE = eki.wordweb.data.db.udt.TypeImageFile.TYPE_IMAGE_FILE;
 
     /**
      * The type <code>public.type_lang_complexity</code>
@@ -79,11 +78,6 @@ public class UDTs {
      * The type <code>public.type_meaning_word</code>
      */
     public static TypeMeaningWord TYPE_MEANING_WORD = eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
-
-    /**
-     * The type <code>public.type_public_note</code>
-     */
-    public static TypePublicNote TYPE_PUBLIC_NOTE = eki.wordweb.data.db.udt.TypePublicNote.TYPE_PUBLIC_NOTE;
 
     /**
      * The type <code>public.type_source_link</code>

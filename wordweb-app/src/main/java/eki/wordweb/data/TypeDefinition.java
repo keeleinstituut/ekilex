@@ -5,7 +5,7 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
-public class TypeDefinition extends AbstractDataObject implements ComplexityType, LangType {
+public class TypeDefinition extends AbstractDataObject implements ComplexityType, LangType, SourceLinkType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,6 +24,11 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 	private Complexity complexity;
 
 	private List<TypeSourceLink> sourceLinks;
+
+	@Override
+	public Long getOwnerId() {
+		return definitionId;
+	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -82,10 +87,12 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 		this.complexity = complexity;
 	}
 
+	@Override
 	public List<TypeSourceLink> getSourceLinks() {
 		return sourceLinks;
 	}
 
+	@Override
 	public void setSourceLinks(List<TypeSourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
 	}

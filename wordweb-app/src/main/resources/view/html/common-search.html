@@ -221,12 +221,12 @@
             <div class="dependence-unit" th:data-words="${usage.usage}" th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
               <span class="example-text" th:utext="${usage.usagePrese}"></span>
               <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
-                <div class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
+                <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
                   <span th:if="${sourceLink.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
                   <button type="button" class="source-link btn btn-link p-0" data-toggle="popover" th:title="#{label.source}" th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
                     <span th:text="${sourceLink.value}"></span>
                   </button>
-                </div>
+                </span>
               </th:block>
               <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}">
                 <span class="icon icon-speaker"></span>
@@ -257,7 +257,19 @@
           <span th:text="#{button.see.more}"></span>
         </button>
         <div class="mt-3" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
-          <img class="homonym-image" th:each="imageFile : ${lexeme.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}">
+          <th:block th:each="imageFile : ${lexeme.imageFiles}">
+            <div>
+              <img class="homonym-image" th:src="@{'/files/images/' + ${imageFile.imageFile}}">
+              <div class="additional-meta text-center" th:utext="${imageFile.imageTitle}"></div>
+              <th:block th:if="${not #lists.isEmpty(imageFile.sourceLinks)}">
+                <div th:each="sourceLink : ${imageFile.sourceLinks}">
+                  <button type="button" class="source-link btn btn-link p-0" data-toggle="popover" th:title="#{label.source}" th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                    <span th:text="${sourceLink.value}"></span>
+                  </button>
+                </div>
+              </th:block>
+            </div>
+          </th:block>
         </div>
       </div>
       <div class="col-lg meaning-meta">
@@ -322,12 +334,26 @@
               <div th:each="note : ${lexeme.learnerComments}" th:utext="${note}"></div>
             </div>
           </div>
-          <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
+          <div class="row" th:if="${(not #lists.isEmpty(lexeme.lexemePublicNotes)) or (not #lists.isEmpty(lexeme.meaningPublicNotes))}">
             <div class="col-6">
               <b th:text="#{label.public.note}">Hea teada</b>
             </div>
             <div class="col-12">
-              <div th:each="note : ${lexeme.publicNotes}" th:utext="${note.value}"></div>
+              <th:block th:if="${not #lists.isEmpty(lexeme.lexemePublicNotes)}">
+                <div th:each="note : ${lexeme.lexemePublicNotes}" th:utext="${note.value}"></div>
+              </th:block>
+              <th:block th:if="${not #lists.isEmpty(lexeme.meaningPublicNotes)}">
+                <div th:each="note : ${lexeme.meaningPublicNotes}">
+                  <span th:utext="${note.value}"></span>
+                  <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
+                    <span th:each="sourceLink : ${note.sourceLinks}">
+                      <button type="button" class="source-link btn btn-link p-0" data-toggle="popover" th:title="#{label.source}" th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                        <span th:text="${sourceLink.value}"></span>
+                      </button>
+                    </span>
+                  </th:block>
+                </div>
+              </th:block>
             </div>
           </div>
           <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeSourceLinks)}">

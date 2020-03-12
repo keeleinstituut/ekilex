@@ -7,11 +7,9 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
-import eki.wordweb.data.db.udt.records.TypeGovernmentRecord;
-import eki.wordweb.data.db.udt.records.TypeGrammarRecord;
+import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
-import eki.wordweb.data.db.udt.records.TypePublicNoteRecord;
 import eki.wordweb.data.db.udt.records.TypeUsageRecord;
 
 import java.math.BigDecimal;
@@ -45,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 266989458;
+    private static final long serialVersionUID = 2012890593;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -143,17 +141,17 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     /**
      * The column <code>public.mview_ww_lexeme.public_notes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypePublicNoteRecord[]> PUBLIC_NOTES = createField("public_notes", eki.wordweb.data.db.udt.TypePublicNote.TYPE_PUBLIC_NOTE.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, TypeFreeformRecord[]> PUBLIC_NOTES = createField("public_notes", eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.grammars</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypeGrammarRecord[]> GRAMMARS = createField("grammars", eki.wordweb.data.db.udt.TypeGrammar.TYPE_GRAMMAR.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, TypeFreeformRecord[]> GRAMMARS = createField("grammars", eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.governments</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypeGovernmentRecord[]> GOVERNMENTS = createField("governments", eki.wordweb.data.db.udt.TypeGovernment.TYPE_GOVERNMENT.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, TypeFreeformRecord[]> GOVERNMENTS = createField("governments", eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.usages</code>.

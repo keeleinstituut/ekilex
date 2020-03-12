@@ -9,6 +9,8 @@ import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
 import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeDomainRecord;
+import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
+import eki.wordweb.data.db.udt.records.TypeImageFileRecord;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = 1939552898;
+    private static final long serialVersionUID = -1593141244;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -68,7 +70,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     /**
      * The column <code>public.mview_ww_meaning.image_files</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String[]> IMAGE_FILES = createField("image_files", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, TypeImageFileRecord[]> IMAGE_FILES = createField("image_files", eki.wordweb.data.db.udt.TypeImageFile.TYPE_IMAGE_FILE.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.systematic_polysemy_patterns</code>.
@@ -84,6 +86,11 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      * The column <code>public.mview_ww_meaning.learner_comments</code>.
      */
     public final TableField<MviewWwMeaningRecord, String[]> LEARNER_COMMENTS = createField("learner_comments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_meaning.public_notes</code>.
+     */
+    public final TableField<MviewWwMeaningRecord, TypeFreeformRecord[]> PUBLIC_NOTES = createField("public_notes", eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.definitions</code>.

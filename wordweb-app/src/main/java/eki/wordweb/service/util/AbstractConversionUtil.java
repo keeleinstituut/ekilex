@@ -1,7 +1,9 @@
 package eki.wordweb.service.util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,7 +16,9 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.LangType;
+import eki.wordweb.data.SourceLinkType;
 import eki.wordweb.data.TypeMeaningWord;
+import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordTypeData;
 
@@ -123,5 +127,23 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 			return true;
 		}
 		return false;
+	}
+
+	protected <T extends SourceLinkType> void applySourceLinks(List<T> list, List<TypeSourceLink> allSourceLinks) {
+		if (CollectionUtils.isEmpty(list)) {
+			return;
+		}
+		if (CollectionUtils.isEmpty(allSourceLinks)) {
+			return;
+		}
+		Map<Long, List<TypeSourceLink>> sourceLinkMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(allSourceLinks)) {
+			sourceLinkMap = allSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
+		}
+		for (T entity : list) {
+			Long ownerId = entity.getOwnerId();
+			List<TypeSourceLink> sourceLinks = sourceLinkMap.get(ownerId);
+			entity.setSourceLinks(sourceLinks);
+		}
 	}
 }

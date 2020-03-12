@@ -14,7 +14,7 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	private List<TypeDomain> domainCodes;
 
-	private List<String> imageFiles;
+	private List<TypeImageFile> imageFiles;
 
 	private List<String> systematicPolysemyPatterns;
 
@@ -22,9 +22,13 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	private List<String> learnerComments;
 
+	private List<TypeFreeform> publicNotes;
+
 	private List<TypeDefinition> definitions;
 
 	private List<TypeMeaningRelation> relatedMeanings;
+
+	private List<TypeSourceLink> freeformSourceLinks;
 
 	private List<TypeSourceLink> definitionSourceLinks;
 
@@ -52,11 +56,11 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 		this.domainCodes = domainCodes;
 	}
 
-	public List<String> getImageFiles() {
+	public List<TypeImageFile> getImageFiles() {
 		return imageFiles;
 	}
 
-	public void setImageFiles(List<String> imageFiles) {
+	public void setImageFiles(List<TypeImageFile> imageFiles) {
 		this.imageFiles = imageFiles;
 	}
 
@@ -84,6 +88,14 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 		this.learnerComments = learnerComments;
 	}
 
+	public List<TypeFreeform> getPublicNotes() {
+		return publicNotes;
+	}
+
+	public void setPublicNotes(List<TypeFreeform> publicNotes) {
+		this.publicNotes = publicNotes;
+	}
+
 	public List<TypeDefinition> getDefinitions() {
 		return definitions;
 	}
@@ -98,6 +110,14 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	public void setRelatedMeanings(List<TypeMeaningRelation> relatedMeanings) {
 		this.relatedMeanings = relatedMeanings;
+	}
+
+	public List<TypeSourceLink> getFreeformSourceLinks() {
+		return freeformSourceLinks;
+	}
+
+	public void setFreeformSourceLinks(List<TypeSourceLink> freeformSourceLinks) {
+		this.freeformSourceLinks = freeformSourceLinks;
 	}
 
 	public List<TypeSourceLink> getDefinitionSourceLinks() {

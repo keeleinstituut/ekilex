@@ -2,7 +2,6 @@ package eki.wordweb.service;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchFilter;
-import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordRelationTuple;
@@ -64,16 +62,6 @@ public class SimpleSearchService extends AbstractSearchService {
 
 		// lexeme data
 		List<Lexeme> lexemes = simpleSearchDbService.getLexemes(wordId, dataFilter);
-		List<TypeSourceLink> lexemeSourceLinks = simpleSearchDbService.getLexemeSourceLinks(wordId);
-		Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap = new HashMap<>();
-		if (CollectionUtils.isNotEmpty(lexemeSourceLinks)) {
-			lexemeSourceLinkMap = lexemeSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
-		}
-		List<TypeSourceLink> freeformSourceLinks = simpleSearchDbService.getFreeformSourceLinks(wordId);
-		Map<Long, List<TypeSourceLink>> freeformSourceLinkMap = new HashMap<>();
-		if (CollectionUtils.isNotEmpty(freeformSourceLinks)) {
-			freeformSourceLinkMap = freeformSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
-		}
 		List<LexemeMeaningTuple> lexemeMeaningTuples = simpleSearchDbService.getLexemeMeaningTuples(wordId);
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
 
@@ -81,7 +69,7 @@ public class SimpleSearchService extends AbstractSearchService {
 			List<CollocationTuple> collocTuples = simpleSearchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
 			lexemeConversionUtil.compose(
-					DatasetType.LEX, wordLang, lexemes, lexemeSourceLinkMap, freeformSourceLinkMap, lexemeMeaningTupleMap,
+					DatasetType.LEX, wordLang, lexemes, lexemeMeaningTupleMap,
 					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 			lexemes = lexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			collocConversionUtil.compose(wordId, lexemes, collocTuples, dataFilter, displayLang);

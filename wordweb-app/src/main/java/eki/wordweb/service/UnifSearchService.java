@@ -1,6 +1,5 @@
 package eki.wordweb.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,7 +20,6 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchFilter;
-import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
@@ -57,12 +55,7 @@ public class UnifSearchService extends AbstractSearchService {
 		List<WordRelationTuple> wordRelationTuples = unifSearchDbService.getWordRelationTuples(wordId);
 		wordConversionUtil.composeWordRelations(word, wordRelationTuples, lexComplexity, displayLang);
 		List<WordEtymTuple> wordEtymTuples = unifSearchDbService.getWordEtymologyTuples(wordId);
-		List<TypeSourceLink> wordEtymSourceLinks = unifSearchDbService.getWordEtymSourceLinks(wordId);
-		Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap = new HashMap<>();
-		if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
-			wordEtymSourceLinkMap = wordEtymSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
-		}
-		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, wordEtymSourceLinkMap, displayLang);
+		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = unifSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
@@ -70,16 +63,6 @@ public class UnifSearchService extends AbstractSearchService {
 
 		// lexeme data
 		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
-		List<TypeSourceLink> lexemeSourceLinks = unifSearchDbService.getLexemeSourceLinks(wordId);
-		Map<Long, List<TypeSourceLink>> lexemeSourceLinkMap = new HashMap<>();
-		if (CollectionUtils.isNotEmpty(lexemeSourceLinks)) {
-			lexemeSourceLinkMap = lexemeSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
-		}
-		List<TypeSourceLink> freeformSourceLinks = unifSearchDbService.getFreeformSourceLinks(wordId);
-		Map<Long, List<TypeSourceLink>> freeformSourceLinkMap = new HashMap<>();
-		if (CollectionUtils.isNotEmpty(freeformSourceLinks)) {
-			freeformSourceLinkMap = freeformSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
-		}
 		List<LexemeMeaningTuple> lexemeMeaningTuples = unifSearchDbService.getLexemeMeaningTuples(wordId);
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
 		Map<DatasetType, List<Lexeme>> lexemeGroups = lexemes.stream().collect(Collectors.groupingBy(Lexeme::getDatasetType));
@@ -90,7 +73,7 @@ public class UnifSearchService extends AbstractSearchService {
 			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
 			lexemeConversionUtil.compose(
-					DatasetType.LEX, wordLang, lexLexemes, lexemeSourceLinkMap, freeformSourceLinkMap, lexemeMeaningTupleMap,
+					DatasetType.LEX, wordLang, lexLexemes, lexemeMeaningTupleMap,
 					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
@@ -101,7 +84,7 @@ public class UnifSearchService extends AbstractSearchService {
 		List<Lexeme> termLexemes = lexemeGroups.get(DatasetType.TERM);
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
 			lexemeConversionUtil.compose(
-					DatasetType.TERM, wordLang, termLexemes, lexemeSourceLinkMap, freeformSourceLinkMap, lexemeMeaningTupleMap,
+					DatasetType.TERM, wordLang, termLexemes, lexemeMeaningTupleMap,
 					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 		}
 
