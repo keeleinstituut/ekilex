@@ -58,20 +58,17 @@
           </a>
           <div>
             <div class="dropdown-header">Rakenduse valik</div>
-            <div th:with="
-                   isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)},
-                   isAdmin=${#vars.permDataUtil.isAdmin()},
-                   isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()}">
+            <div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-              <a class="dropdown-item side-menu-item" sec:authorize="${#vars.isCrudRoleSelected}" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Vasted</a>
+              <a class="dropdown-item side-menu-item" sec:authorize="#vars.userRoleData.crudRoleSelected" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Vasted</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
-                sec:authorize="${isAuthenticated() && (#vars.isAdmin)}">Morfoloogia haldus</a>
+                 sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}"
-                sec:authorize="${isAuthenticated() && (#vars.isDatasetOwnerOrAdmin)}" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
+                 sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
               <div class="dropdown-divider"></div>
             </div>
@@ -81,7 +78,7 @@
       <button type="button" class="btn btn-primary rounded-0"
         data-toggle="modal"
         data-target="#newWordDlg"
-        sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean)"
+        sec:authorize="#vars.userRoleData.roleSelected"
         th:if="${activeItem == 'lex' || activeItem == 'term'}">
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
         <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
@@ -127,21 +124,21 @@
             <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown">
               <span class="d-flex flex-wrap">
                 <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
-                <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+                <th:block th:if="${userRoleData.roleSelected}">
                   <th:block th:with="selectedRole = ${sessionBean.userRole}">
                     <small class="w-100 text-truncate user-menu-active-role"
                            th:with="
                              permissionName=#{|authorityoperation.${selectedRole.authOperation}|},
                              selectedLayer = ${userProfile.preferredLayerName}">
                       <span th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></span>
-                      <span th:if="${permDataUtil.isLayerChangeEnabled(sessionBean)}" th:text="' (' + #{|layername.${selectedLayer.name()}|} + ')'"></span>
+                      <span th:if="${userRoleData.layerChangeEnabled}" th:text="' (' + #{|layername.${selectedLayer.name()}|} + ')'"></span>
                     </small>
                   </th:block>
                 </th:block>
               </span>
             </button>
             <div class="dropdown-menu dropdown-menu-right user-menu-content">
-              <th:block th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+              <th:block th:if="${userRoleData.roleSelected}">
                 <th:block th:with="selectedRole = ${sessionBean.userRole}">
                   <div>
                     <div class="dropdown-header pb-0">Aktiivne roll</div>
@@ -156,7 +153,7 @@
                 </th:block>
               </th:block>
               <div class="dropdown-divider"></div>
-              <th:block th:if="${permDataUtil.isLayerChangeEnabled(sessionBean)}">
+              <th:block th:if="${userRoleData.layerChangeEnabled}">
                 <th:block th:with="selectedLayer = ${userProfile.preferredLayerName}">
                   <div>
                     <div class="dropdown-header pb-0">Aktiivne kiht</div>

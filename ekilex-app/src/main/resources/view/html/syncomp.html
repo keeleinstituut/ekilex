@@ -106,7 +106,7 @@
                           <span th:unless="${wordDatasetIter.last}">,</span>
                         </span>
                       </small>
-                      <span class="badge badge-pill badge-light ml-auto" th:if="${permDataUtil.isProcessStateChangeEnabled(sessionBean)}">
+                      <span class="badge badge-pill badge-light ml-auto" th:if="${userRoleData.processStateChangeEnabled}">
                         <span th:each="layerProcessStateCode,layerProcessStateIter : ${word.layerProcessStateCodes}">
                           <span th:text="${layerProcessStateCode}"></span>
                           <span th:unless="${layerProcessStateIter.last}">,</span>

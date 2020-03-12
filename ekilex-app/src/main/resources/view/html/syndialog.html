@@ -59,7 +59,7 @@
     </div>
   </div>
   <div th:id="${'addWordProcessLogDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_process_log_dlg">
-    <div class="modal-dialog modal-lg" role="document" th:if="${permDataUtil.isRoleSelected(sessionBean)}">
+    <div class="modal-dialog modal-lg" role="document" th:if="${userRoleData.roleSelected}">
       <div class="modal-content">
         <form th:action="@{/create_word_process_log}" method="post">
           <div class="modal-body">

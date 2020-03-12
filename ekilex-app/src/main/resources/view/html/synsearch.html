@@ -27,8 +27,7 @@
     <div th:data-id="${wordId}" id="syn_details_div" class="h-100"
          th:with="
            isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
-           isWordLexemeCrudGranted=${#vars.permDataUtil.isWordLexemeCrudGranted(#vars.wordId, #vars.sessionBean)},
-           isProcessStateChangeEnabled=${#vars.permDataUtil.isProcessStateChangeEnabled(#vars.sessionBean)}">
+           isWordLexemeCrudGranted=${#vars.permDataUtil.isWordLexemeCrudGranted(#vars.wordId, #vars.sessionBean)}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div th:replace="syndialog :: add_word_process_log_dlg"></div>
       <div class="navigate-panel card shadow h-100">
@@ -39,7 +38,7 @@
                     id="layerCompleteBtn"
                     th:data-word-id="${wordId}"
                     th:disabled="${details.synLayerComplete}"
-                    th:if="${#vars.isProcessStateChangeEnabled}"
+                    th:if="${userRoleData.processStateChangeEnabled}"
                     sec:authorize="${#vars.isWordLexemeCrudGranted}">Märgi tehtuks
             </button>
             <button type="button" class="btn px-2 rounded-0" data-toggle="modal" data-target="#selectSynMeaningWordLangDlg">
@@ -72,7 +71,7 @@
                               title="Muuda"
                               data-toggle="modal"
                               th:data-target="${'#editLexemeSynProcessStateDlg_' + lexeme.lexemeId}"
-                              th:if="${#vars.isProcessStateChangeEnabled}"
+                              th:if="${userRoleData.processStateChangeEnabled}"
                               sec:authorize="${#vars.isLexemeCrudGranted}">
                         <i class="fa fa-caret-down" aria-hidden="true"></i>
                       </button>

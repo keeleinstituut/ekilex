@@ -280,6 +280,8 @@ public interface WebConstant {
 
 	String USER_PROFILE_KEY = "userProfile";
 
+	String USER_ROLE_DATA_KEY = "userRoleData";
+
 	String SEARCH_WORD_KEY = "searchWord";
 
 	String REQUEST_START_TIME_KEY = "request_start_time";

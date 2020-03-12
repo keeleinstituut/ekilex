@@ -50,8 +50,8 @@
                 <th:block th:each="userPerm : ${ekiUserPermissions}"
                           th:with="
                             isOwnPermission=${#vars.permDataUtil.isOwnPermission(userPerm.id)},
-                            isAdmin=${#vars.permDataUtil.isAdmin()},
-                            isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()}">
+                            isAdmin=${#vars.userRoleData.admin},
+                            isDatasetOwnerOrAdmin=${#vars.userRoleData.datasetOwnerOrAdmin}">
                   <tr>
                     <td class="m-1 p-1 text-center">
                       <span th:if="${userPerm.enablePending}" class="fa fa-circle"></span>

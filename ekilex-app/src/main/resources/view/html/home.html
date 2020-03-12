@@ -12,13 +12,7 @@
       <div class="card-header">
         <h5 class="card-title" th:text="#{index.title}">Tere</h5>
       </div>
-      <div class="card-body"
-           th:with="
-             isCrudRoleSelected=${#vars.permDataUtil.isCrudRoleSelected(#vars.sessionBean)},
-             isAdmin=${#vars.permDataUtil.isAdmin()},
-             isDatasetOwnerOrAdmin=${#vars.permDataUtil.isDatasetOwnerOrAdmin()},
-             isRoleChangeEnabled=${#vars.permDataUtil.isRoleChangeEnabled()},
-             isLayerChangeEnabled=${#vars.permDataUtil.isLayerChangeEnabled(#vars.sessionBean)}">
+      <div class="card-body">
         <p>
           <a th:href="@{/lexsearch}">Leksikograafide otsing</a>
         </p>
@@ -26,8 +20,8 @@
           <a th:href="@{/termsearch}">Terminoloogide otsing</a>
         </p>
         <p>
-          <a th:href="@{/synsearch}" th:if="${#vars.isCrudRoleSelected}">Vastete otsing</a>
-          <span th:unless="${#vars.isCrudRoleSelected}" title="Vali roll vastete otsinguks">Vastete otsing</span>
+          <a th:href="@{/synsearch}" th:if="${userRoleData.crudRoleSelected}">Vastete otsing</a>
+          <span th:unless="${userRoleData.crudRoleSelected}" title="Vali roll vastete otsinguks">Vastete otsing</span>
         </p>
         <p>
           <a th:href="@{/sourcesearch}">Allikate otsing</a>
@@ -36,19 +30,19 @@
           <hr />
         </p>
         <p>
-          <a th:href="@{/morphology}" sec:authorize="${#vars.isAdmin}">Morfoloogia haldus</a>
+          <a th:href="@{/morphology}" sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
         </p>
         <p>
           <a th:href="@{/datasets}">Sõnakogude haldus</a>
         </p>
-        <p sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
+        <p sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">
           <a th:href="@{/permissions}">Õiguste haldus</a>
         </p>
         <p>
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
-        <th:block th:replace="components :: change_role" sec:authorize="${#vars.isRoleChangeEnabled}"></th:block>
-        <th:block th:replace="components :: change_layer" sec:authorize="${#vars.isLayerChangeEnabled}"></th:block>
+        <th:block th:replace="components :: change_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
+        <th:block th:replace="components :: change_layer" sec:authorize="#vars.userRoleData.layerChangeEnabled"></th:block>
         <hr/>
         <p>
           <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>

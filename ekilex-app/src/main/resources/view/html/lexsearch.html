@@ -283,7 +283,7 @@
                       <button class="btn btn-sm btn-primary" data-toggle="modal"
                               data-target="#newWordDlg"
                               th:data-meaning-id="${lexeme.meaningId}"
-                              sec:authorize="#vars.permDataUtil.isRoleSelected(#vars.sessionBean) and #vars.isMeaningAnyLexemeCrudGranted">Uus keelend</button>
+                              sec:authorize="#vars.userRoleData.roleSelected and #vars.isMeaningAnyLexemeCrudGranted">Uus keelend</button>
                       <button th:id="${'duplicateEmptyLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
                               title="Loo uus ilmik ja tähendus"
                               th:data-lexeme-id="${lexeme.lexemeId}"
