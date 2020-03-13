@@ -677,6 +677,34 @@ public class CudService extends AbstractService {
 		createLifecycleLog(logData);
 	}
 
+	@Transactional
+	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode, String weightStr) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		Long createdWordId = cudDbService.createWordAndLexeme(value, valuePrese, datasetCode, language, morphCode, null);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
+		createLifecycleLog(logData);
+
+		SynRelation createdRelation = cudDbService.addSynRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+		Long createdRelationId = createdRelation.getId();
+		moveCreatedRelationToFirst(existingWordId, createdRelationId);
+		BigDecimal weight = new BigDecimal(weightStr);
+		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
+	}
+
+	@Transactional
+	public void createSynRelation(Long word1Id, Long word2Id, String weightStr, String datasetCode) {
+
+		boolean word2DatasetLexemeExists = cudDbService.wordLexemeExists(word2Id, datasetCode);
+		if (!word2DatasetLexemeExists) {
+			createLexeme(word2Id, datasetCode, null);
+		}
+		SynRelation createdRelation = cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+		Long createdRelationId = createdRelation.getId();
+		moveCreatedRelationToFirst(word1Id, createdRelationId);
+		BigDecimal weight = new BigDecimal(weightStr);
+		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
+	}
+
 	// --- DELETE ---
 
 	@Transactional
@@ -979,34 +1007,6 @@ public class CudService extends AbstractService {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, freeformId, null);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(freeformId);
-	}
-
-	@Transactional
-	public void addSynRelation(Long word1Id, Long word2Id, String weightStr, String datasetCode) {
-
-		boolean word2DatasetLexemeExists = cudDbService.wordLexemeExists(word2Id, datasetCode);
-		if (!word2DatasetLexemeExists) {
-			createLexeme(word2Id, datasetCode, null);
-		}
-		SynRelation createdRelation = cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		Long createdRelationId = createdRelation.getId();
-		moveCreatedRelationToFirst(word1Id, createdRelationId);
-		BigDecimal weight = new BigDecimal(weightStr);
-		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
-	}
-
-	@Transactional
-	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode, String weightStr) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
-		Long createdWordId = cudDbService.createWordAndLexeme(value, valuePrese, datasetCode, language, morphCode, null);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
-		createLifecycleLog(logData);
-
-		SynRelation createdRelation = cudDbService.addSynRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		Long createdRelationId = createdRelation.getId();
-		moveCreatedRelationToFirst(existingWordId, createdRelationId);
-		BigDecimal weight = new BigDecimal(weightStr);
-		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 	}
 
 	private void moveCreatedRelationToFirst(Long wordId, Long relationId) {

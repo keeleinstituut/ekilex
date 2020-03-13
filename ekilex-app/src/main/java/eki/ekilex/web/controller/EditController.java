@@ -176,7 +176,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "create_raw_relation":
 			datasetCode = sessionBean.getUserRole().getDatasetCode();
-			cudService.addSynRelation(itemData.getId(), itemData.getId2(), itemData.getValue2(), datasetCode);
+			cudService.createSynRelation(itemData.getId(), itemData.getId2(), itemData.getValue2(), datasetCode);
 			break;
 		case "create_syn_word":
 			datasetCode = sessionBean.getUserRole().getDatasetCode();
