@@ -221,11 +221,10 @@ public class LexEditController extends AbstractPageController implements SystemC
 	}
 
 	@PostMapping(WORD_JOIN_URI)
-	public String joinWords(@RequestParam("targetWordId") Long targetWordId, @RequestParam("sourceWordIds") List<Long> sourceWordIds,
-			@RequestParam("backUrl") String backUrl) {
+	public String joinWords(@RequestParam("targetWordId") Long targetWordId, @RequestParam("sourceWordIds") List<Long> sourceWordIds) {
 
-		compositionService.joinWords(targetWordId, sourceWordIds);
-		return "redirect:" + backUrl;
+		Long joinedWordId = compositionService.joinWords(targetWordId, sourceWordIds);
+		return "redirect:" + WORD_BACK_URI + "/" + joinedWordId;
 	}
 
 	@PostMapping(LEX_CREATE_WORD_URI)

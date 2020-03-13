@@ -41,7 +41,6 @@
       <div class="card-body" th:if="${not #lists.isEmpty(sourceWordDetailsList)}">
         <form th:action="@{/wordjoin}" method="post">
           <input type="hidden" name="targetWordId" th:value="${targetWordDetails.word.wordId}">
-          <input type="hidden" name="backUrl" th:value="${backUrl}">
             <button type="button" class="btn btn-primary" id="joinWordsBtn"
                     data-toggle="join-confirm"
                     data-placement="right"
