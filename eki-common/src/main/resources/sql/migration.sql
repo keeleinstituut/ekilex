@@ -52,4 +52,47 @@ where l_est.type = 'PRIMARY'
                               where dd.definition_id = d.id
                                 and dd.dataset_code = 'sss'));
 
--- kuni siiani testis 12.03.2020
+-- mitteainsad evst tulevad tähendused mitteavalikuks:
+update lexeme l
+set process_state_code = 'läbi vaatamata'
+from (select m.id
+      from meaning m
+      where exists(select l.id
+                   from lexeme l, word w
+                   where l.meaning_id = m.id
+                     and l.type = 'PRIMARY'
+                     and l.dataset_code = 'sss'
+                     and l.word_id = w.id
+                     and w.lang = 'est'
+                     and exists(select l2.id
+                                from lexeme l2
+                                where l2.word_id = l.word_id
+                                  and l2.id != l.id
+                                  and l2.type = 'PRIMARY'
+                                  and l2.dataset_code = 'sss')
+                     and not exists(select l3.id
+                                    from lexeme l3, word w3
+                                    where l3.meaning_id = l.meaning_id
+                                      and l3.id != l.id
+                                      and l3.type = 'PRIMARY'
+                                      and l3.dataset_code = 'sss'
+                                      and l3.word_id = w3.id
+                                      and w3.lang = 'est'))
+        and exists(select l.id
+                   from lexeme l, word w
+                   where l.meaning_id = m.id
+                     and l.type = 'PRIMARY'
+                     and l.dataset_code = 'sss'
+                     and l.word_id = w.id
+                     and w.lang = 'rus')
+        and not exists(select d.id
+                       from definition d
+                       where d.meaning_id = m.id
+                         and d.complexity in ('SIMPLE1', 'DETAIL1', 'DETAIL')
+                         and exists(select dd.definition_id
+                                    from definition_dataset dd
+                                    where dd.definition_id = d.id
+                                      and dd.dataset_code = 'sss'))) as meaning_ids
+where l.meaning_id = meaning_ids.id;
+
+-- kuni siiani testis 13.03.2020
