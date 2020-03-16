@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -270,7 +271,21 @@ public class CompositionDbService implements DbConstant {
 		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, lexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
 		create.update(LEXEME_PROCESS_LOG).set(LEXEME_PROCESS_LOG.LEXEME_ID, lexemeId).where(LEXEME_PROCESS_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
 		joinLexemeRelations(lexemeId, sourceLexemeId);
+		joinLexemeProcessStateCodes(lexemeId, sourceLexemeId);
 		create.delete(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).execute();
+	}
+
+	private void joinLexemeProcessStateCodes(Long targetLexemeId, Long sourceLexemeId) {
+
+		String targetLexemeProcessStateCode = create.select(LEXEME.PROCESS_STATE_CODE).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(String.class);
+		if (StringUtils.equals(PROCESS_STATE_PUBLIC, targetLexemeProcessStateCode)) {
+			return;
+		}
+
+		String sourceLexemeProcessStateCode = create.select(LEXEME.PROCESS_STATE_CODE).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(String.class);
+		if (StringUtils.equals(PROCESS_STATE_PUBLIC, sourceLexemeProcessStateCode)) {
+			create.update(LEXEME).set(LEXEME.PROCESS_STATE_CODE, PROCESS_STATE_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
+		}
 	}
 
 	private void joinLexemeCollocations(Long lexemeId, Long sourceLexemeId) {
@@ -578,7 +593,7 @@ public class CompositionDbService implements DbConstant {
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
 		clonedLexeme.changed(LEXEME.FREQUENCY_GROUP_CODE, false);
 		clonedLexeme.changed(LEXEME.CORPUS_FREQUENCY, false);
-		clonedLexeme.setProcessStateCode(PROCESS_STATE_IN_WORK);
+		clonedLexeme.setProcessStateCode(PROCESS_STATE_PUBLIC);
 		clonedLexeme.store();
 		return clonedLexeme.getId();
 	}

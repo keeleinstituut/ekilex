@@ -530,7 +530,7 @@ public class CudDbService implements DbConstant {
 						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 				.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-						1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
+						1, 1, PROCESS_STATE_PUBLIC, COMPLEXITY_DETAIL)
 				.execute();
 		return wordId;
 	}
@@ -785,7 +785,7 @@ public class CudDbService implements DbConstant {
 							LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 							LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 					.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-							lexemeLevel1, 1, PROCESS_STATE_IN_WORK, COMPLEXITY_DETAIL)
+							lexemeLevel1, 1, PROCESS_STATE_PUBLIC, COMPLEXITY_DETAIL)
 					.returning(LEXEME.ID)
 					.fetchOne()
 					.getId();
