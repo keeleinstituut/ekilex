@@ -48,14 +48,14 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
 
-		setIeUserFlag(request);
-
 		if (request.getAttribute("javax.servlet.error.status_code") != null) {
 			return;
 		}
 		if (modelAndView == null) {
 			return;
 		}
+
+		setIeUserFlag(request);
 
 		ModelMap modelMap = modelAndView.getModelMap();
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
