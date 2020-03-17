@@ -113,27 +113,27 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		if (CollectionUtils.isEmpty(wordRelationTuples)) {
 			return;
 		}
-		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
-		List<String> wordRelTypeCodes = wordRelTypes.stream().map(Classifier::getCode).collect(Collectors.toList());
 		word.setWordGroups(new ArrayList<>());
 		word.setRelatedWords(new ArrayList<>());
+		word.setLimitedRelatedWordTypeGroups(new ArrayList<>());
+		word.setRelatedWordTypeGroups(new ArrayList<>());
+
+		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
+		List<String> wordRelTypeCodes = wordRelTypes.stream().map(Classifier::getCode).collect(Collectors.toList());
+
 		for (WordRelationTuple tuple : wordRelationTuples) {
 			List<TypeWordRelation> relatedWords = tuple.getRelatedWords();
-			if (CollectionUtils.isNotEmpty(relatedWords) && (lexComplexity != null)) {
+			if (CollectionUtils.isNotEmpty(relatedWords) && Complexity.SIMPLE.equals(lexComplexity)) {
 				relatedWords = relatedWords.stream()
 						.filter(relation -> ArrayUtils.contains(relation.getLexComplexities(), lexComplexity))
 						.collect(Collectors.toList());
 			}
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				word.getRelatedWords().addAll(relatedWords);
-			}
-			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				for (TypeWordRelation wordRelation : relatedWords) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
 					setWordTypeFlags(wordRelation);
 				}
-				word.setLimitedRelatedWordTypeGroups(new ArrayList<>());
-				word.setRelatedWordTypeGroups(new ArrayList<>());
 				Map<String, List<TypeWordRelation>> relatedWordsMap = relatedWords.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
 				for (String wordRelTypeCode : wordRelTypeCodes) {
 					List<TypeWordRelation> relatedWordsOfType = relatedWordsMap.get(wordRelTypeCode);
@@ -163,7 +163,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 				}
 			}
 			List<TypeWordRelation> wordGroupMembers = tuple.getWordGroupMembers();
-			if (CollectionUtils.isNotEmpty(wordGroupMembers) && (lexComplexity != null)) {
+			if (CollectionUtils.isNotEmpty(wordGroupMembers) && Complexity.SIMPLE.equals(lexComplexity)) {
 				wordGroupMembers = wordGroupMembers.stream()
 						.filter(member -> ArrayUtils.contains(member.getLexComplexities(), lexComplexity))
 						.collect(Collectors.toList());
