@@ -1226,6 +1226,7 @@ create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_g
 create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);
 create index lex_colloc_rel_group_id_idx on lex_colloc(rel_group_id);
 create index lex_colloc_collocation_id_idx on lex_colloc(collocation_id);
+create index collocation_value_idx on collocation(value);
 create index lexeme_frequency_lexeme_id_idx on lexeme_frequency(lexeme_id);
 create index lexeme_frequency_source_name_idx on lexeme_frequency(source_name);
 create index lexeme_register_lexeme_id_idx on lexeme_register(lexeme_id);

@@ -10,4 +10,5 @@ public interface SystemConstant {
 
 	char CSV_UNDEFINED_CELL = '?';
 
+	String DATASET_SSS = "sss";
 }
