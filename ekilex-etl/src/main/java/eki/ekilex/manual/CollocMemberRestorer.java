@@ -21,8 +21,17 @@ public class CollocMemberRestorer extends AbstractLoader {
 			CollocMemberRestorerRunner collocMemberRestorerRunner = getComponent(CollocMemberRestorerRunner.class);
 
 			String kolFilePath = confService.getMandatoryConfProperty("kol.data.file");
+			String reportFilePath = "missing_colloc_member_candidates.txt";
+			String originalLexemeDataFilePath = "/projects/eki/data/dictionaries/imp/sss_19-09-27/lexeme.json";
+			String originalParadigmDataFilePath = "/projects/eki/data/dictionaries/imp/sss_19-09-27/paradigm.json";
+			String transformedLexemeDataFilePath = "lexeme-transform.json";
+			String transformedParadigmDataFilePath = "paradigm-transform.json";
+
 			collocMemberRestorerRunner.initialise();
-			collocMemberRestorerRunner.execute(kolFilePath);
+			//collocMemberRestorerRunner.analyseOriginalSourceFile(kolFilePath, reportFilePath);
+			//collocMemberRestorerRunner.transformLexemeExportFile(originalLexemeDataFilePath, transformedLexemeDataFilePath);
+			//collocMemberRestorerRunner.transformParadigmExportFile(originalParadigmDataFilePath, transformedParadigmDataFilePath);
+			collocMemberRestorerRunner.analyseOriginalImportFile(transformedLexemeDataFilePath, transformedParadigmDataFilePath, reportFilePath);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
