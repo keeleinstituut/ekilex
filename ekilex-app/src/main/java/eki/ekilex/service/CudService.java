@@ -438,6 +438,10 @@ public class CudService extends AbstractService {
 			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
 			createLifecycleLog(relationLogData);
 			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
+				boolean oppositeRelationExists = cudDbService.wordRelationExists(targetWordId, wordId, oppositeRelationTypeCode);
+				if (oppositeRelationExists) {
+					return;
+				}
 				Long oppositeRelationId = cudDbService.createWordRelation(targetWordId, wordId, oppositeRelationTypeCode);
 				LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, oppositeRelationId);
 				createLifecycleLog(oppositeRelationLogData);
@@ -538,6 +542,10 @@ public class CudService extends AbstractService {
 		LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId, relationType);
 		createLifecycleLog(relationLogData);
 		if (StringUtils.isNotEmpty(oppositeRelationType)) {
+			boolean oppositeRelationExists = cudDbService.lexemeRelationExists(lexemeId2, lexemeId1, oppositeRelationType);
+			if (oppositeRelationExists) {
+				return;
+			}
 			Long oppositeRelationId = cudDbService.createLexemeRelation(lexemeId2, lexemeId1, oppositeRelationType);
 			LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
 			createLifecycleLog(oppositeRelationLogData);
@@ -566,6 +574,10 @@ public class CudService extends AbstractService {
 		LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
 		createLifecycleLog(relationLogData);
 		if (StringUtils.isNotEmpty(oppositeRelationType)) {
+			boolean oppositeRelationExists = cudDbService.meaningRelationExists(meaningId2, meaningId1, oppositeRelationType);
+			if (oppositeRelationExists) {
+				return;
+			}
 			Long oppositeRelationId = cudDbService.createMeaningRelation(meaningId2, meaningId1, oppositeRelationType);
 			LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
 			createLifecycleLog(oppositeRelationLogData);

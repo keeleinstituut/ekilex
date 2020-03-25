@@ -88,6 +88,10 @@ public class CompositionService extends AbstractService {
 			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
 			createLifecycleLog(relationLogData);
 			if (StringUtils.isNotEmpty(oppositeRelationType)) {
+				boolean oppositeRelationExists = cudDbService.meaningRelationExists(relatedMeaningId, meaningId, oppositeRelationType);
+				if (oppositeRelationExists) {
+					return;
+				}
 				Long oppositeRelationId = cudDbService.createMeaningRelation(relatedMeaningId, meaningId, oppositeRelationType);
 				LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
 				createLifecycleLog(oppositeRelationLogData);

@@ -220,6 +220,42 @@ public class CudDbService implements DbConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public boolean wordRelationExists(Long wordId1, Long wordId2, String relationType) {
+
+		return create
+				.select(field(DSL.count(WORD_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(WORD_RELATION)
+				.where(
+						WORD_RELATION.WORD1_ID.eq(wordId1)
+								.and(WORD_RELATION.WORD2_ID.eq(wordId2))
+								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean lexemeRelationExists(Long lexemeId1, Long lexemeId2, String relationType) {
+
+		return create
+				.select(field(DSL.count(LEX_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(LEX_RELATION)
+				.where(
+						LEX_RELATION.LEXEME1_ID.eq(lexemeId1)
+								.and(LEX_RELATION.LEXEME2_ID.eq(lexemeId2))
+								.and(LEX_RELATION.LEX_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
+
+		return create
+				.select(field(DSL.count(MEANING_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(MEANING_RELATION)
+				.where(
+						MEANING_RELATION.MEANING1_ID.eq(meaningId1)
+								.and(MEANING_RELATION.MEANING2_ID.eq(meaningId2))
+								.and(MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
 	public void updateFreeformTextValue(Long id, String value, String valuePrese) {
 		create.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, value)
