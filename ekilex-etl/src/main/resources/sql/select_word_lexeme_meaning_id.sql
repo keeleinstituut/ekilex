@@ -10,7 +10,8 @@ select l.id lexeme_id,
        w.lang,
        w.homonym_nr,
        l.order_by,
-       l.meaning_id
+       l.meaning_id,
+       l.dataset_code
 from lexeme l,
      word w
 where w.id = :wordId
