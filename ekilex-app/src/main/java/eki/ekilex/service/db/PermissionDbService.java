@@ -488,7 +488,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 	public boolean isGrantedForDefinition(Long userId, Long definitionId, String authItem, List<String> authOps) {
 
 		return create
-				.select(field((DSL.count(DEFINITION.ID).gt(0))).as("is_granted"))
+				.select(field(DSL.count(DEFINITION.ID).gt(0)).as("is_granted"))
 				.from(DEFINITION)
 				.where(
 						DEFINITION.ID.eq(definitionId)
@@ -518,7 +518,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 			langCond = DEFINITION.LANG.eq(lang);
 		}
 		return create
-				.select(field((DSL.count(DEFINITION.ID).gt(0))).as("is_granted"))
+				.select(field(DSL.count(DEFINITION.ID).gt(0)).as("is_granted"))
 				.from(DEFINITION)
 				.where(
 						DEFINITION.ID.eq(definitionId)
@@ -538,7 +538,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 	public boolean isGrantedForUsage(Long userId, Long usageId, String authItem, List<String> authOps) {
 
 		return create
-				.select(field((DSL.count(FREEFORM.ID).gt(0))).as("is_granted"))
+				.select(field(DSL.count(FREEFORM.ID).gt(0)).as("is_granted"))
 				.from(FREEFORM)
 				.where(
 						FREEFORM.ID.eq(usageId)
@@ -570,7 +570,7 @@ public class PermissionDbService implements SystemConstant, DbConstant {
 			langCond = FREEFORM.LANG.eq(lang);
 		}
 		return create
-				.select(field((DSL.count(FREEFORM.ID).gt(0))).as("is_granted"))
+				.select(field(DSL.count(FREEFORM.ID).gt(0)).as("is_granted"))
 				.from(FREEFORM, LEXEME, LEXEME_FREEFORM)
 				.where(
 						FREEFORM.ID.eq(usageId)

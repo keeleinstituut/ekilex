@@ -23,4 +23,6 @@ public interface DbConstant {
 	String FORCE_QUERY_LOG = "'force query log'";
 
 	String LANGUAGE_CODE_EST = "est";
+
+	String LANGUAGE_CODE_RUS = "rus";
 }

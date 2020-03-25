@@ -23,15 +23,9 @@ public class WordLexemeMeaning extends AbstractDataObject {
 
 	private Long meaningId;
 
-	public WordLexemeMeaning(
-			Long lexemeId,
-			Complexity complexity,
-			Long wordId,
-			String word,
-			String lang,
-			Integer homonymNr,
-			Long orderBy,
-			Long meaningId) {
+	private String datasetCode;
+
+	public WordLexemeMeaning(Long lexemeId, Complexity complexity, Long wordId, String word, String lang, Integer homonymNr, Long orderBy, Long meaningId, String datasetCode) {
 
 		this.lexemeId = lexemeId;
 		this.complexity = complexity;
@@ -41,6 +35,7 @@ public class WordLexemeMeaning extends AbstractDataObject {
 		this.homonymNr = homonymNr;
 		this.orderBy = orderBy;
 		this.meaningId = meaningId;
+		this.datasetCode = datasetCode;
 	}
 
 	public Long getLexemeId() {
@@ -73,5 +68,9 @@ public class WordLexemeMeaning extends AbstractDataObject {
 
 	public Long getMeaningId() {
 		return meaningId;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
 	}
 }

@@ -1,11 +1,7 @@
 package eki.ekilex.runner;
 
 import java.io.InputStream;
-import java.sql.Array;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -19,28 +15,22 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.DbConstant;
-import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
+import eki.ekilex.data.transform.WordId;
 import eki.ekilex.data.transform.WordLexemeMeaning;
-import eki.ekilex.service.MergeService;
+import eki.ekilex.data.util.WordIdRowMapper;
 
 @Component
-public class SimilarWordMergeRunner extends AbstractLoaderRunner implements DbConstant {
+public class SimilarWordMergeRunner extends AbstractMergerRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(SimilarWordMergeRunner.class);
 
 	private static final String SQL_SELECT_SIMLAR_WORD_IDS = "sql/select_similar_word_ids.sql";
 
 	private String sqlSelectSimilarWordIds;
-
-	@Autowired
-	private MergeService mergeService;
 
 	@Override
 	public String getDataset() {
@@ -145,50 +135,12 @@ public class SimilarWordMergeRunner extends AbstractLoaderRunner implements DbCo
 		logger.debug("About to delete {} words", deleteWordIds.size());
 		deleteWords(deleteWordIds, failedDeleteWordIds, deleteCountMap);
 		logger.info(">>>> Failed word delete count: {}", failedDeleteWordIds.size());
-
-		logger.info(">>>> Update counts are as following:");
-		for (Entry<String, Count> updateCountEntry : updateCountMap.entrySet()) {
-			logger.info("{} : {}", updateCountEntry.getKey(), updateCountEntry.getValue().getValue());
-		}
-
-		logger.info(">>>> Delete counts are as following:");
-		for (Entry<String, Count> deleteCountEntry : deleteCountMap.entrySet()) {
-			logger.info("{} : {}", deleteCountEntry.getKey(), deleteCountEntry.getValue().getValue());
-		}
-
+		logCounts(">>>> Update counts are as following:", updateCountMap);
+		logCounts(">>>> Delete counts are as following:", deleteCountMap);
 		logger.info(">>>> Similar word set merge count: {}", similarWordSetMergeCount.getValue());
 		logger.info(">>>> Total similar word merge count: {}", similarWordMergeCount.getValue());
 
 		end();
-	}
-
-	private List<List<Long>> collectSimilarWordIdSets(Map<Long, WordId> simWordIdMap) {
-
-		for (WordId wordIdObj : simWordIdMap.values()) {
-			Long wordId = wordIdObj.getWordId();
-			List<Long> combSimWordIds = new ArrayList<>();
-			combSimWordIds.add(wordId);
-			appendSimWordIds(combSimWordIds, wordIdObj, simWordIdMap);
-			if (combSimWordIds.size() > 1) {
-				combSimWordIds = combSimWordIds.stream().sorted().collect(Collectors.toList());
-			}
-			wordIdObj.setSimWordIds(combSimWordIds);
-		}
-		List<List<Long>> simWordIdsSets = simWordIdMap.values().stream().map(WordId::getSimWordIds).distinct().collect(Collectors.toList());
-		return simWordIdsSets;
-	}
-
-	private void appendSimWordIds(List<Long> srcSimWordIds, WordId currWordIdObj, Map<Long, WordId> simWordIdMap) {
-
-		List<Long> currSimWordIds = currWordIdObj.getSimWordIds();
-		for (Long currSimWordId : currSimWordIds) {
-			if (srcSimWordIds.contains(currSimWordId)) {
-				continue;
-			}
-			srcSimWordIds.add(currSimWordId);
-			WordId currSimWordIdObj = simWordIdMap.get(currSimWordId);
-			appendSimWordIds(srcSimWordIds, currSimWordIdObj, simWordIdMap);
-		}
 	}
 
 	private Map<Long, WordId> getSimWordIdMap() throws Exception {
@@ -250,47 +202,4 @@ public class SimilarWordMergeRunner extends AbstractLoaderRunner implements DbCo
 		}
 	}
 
-	class WordId extends AbstractDataObject {
-
-		private static final long serialVersionUID = 1L;
-
-		private Long wordId;
-
-		private List<Long> simWordIds;
-
-		public WordId(Long wordId, List<Long> similarWordIds) {
-			this.wordId = wordId;
-			this.simWordIds = similarWordIds;
-		}
-
-		public Long getWordId() {
-			return wordId;
-		}
-
-		public void setWordId(Long wordId) {
-			this.wordId = wordId;
-		}
-
-		public List<Long> getSimWordIds() {
-			return simWordIds;
-		}
-
-		public void setSimWordIds(List<Long> simWordIds) {
-			this.simWordIds = simWordIds;
-		}
-
-	}
-
-	class WordIdRowMapper implements RowMapper<WordId> {
-
-		@Override
-		public WordId mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-			Long wordId = rs.getObject("word_id", Long.class);
-			Array simWordIdsPgArr = rs.getArray("sim_word_ids");
-			Long[] simWordIdsArr = (Long[]) simWordIdsPgArr.getArray();
-			List<Long> simWordIds = Arrays.asList(simWordIdsArr);
-			return new WordId(wordId, simWordIds);
-		}
-	}
 }

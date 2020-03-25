@@ -32,6 +32,8 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 
 	private static final String SQL_SELECT_WORD_LEXEME_MEANING_ID_NO_DS = "sql/select_word_lexeme_meaning_id.sql";
 
+	private static final String SQL_UPDATE_FORM_DISPLAY_FORM = "sql/update_form_display_form.sql";
+
 	private final String sqlReassignLexemeToMeaning = "update lexeme set meaning_id = :targetMeaningId where id = :sourceLexemeId";
 
 	private final String sqlReassignLexemeToWord = "update lexeme set word_id = :targetWordId where id = :sourceLexemeId";
@@ -68,9 +70,13 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 
 	private final String sqlDeleteWord = "delete from " + WORD + " w where w.id = :wordId and not exists (select l.id from " + LEXEME + " l where l.word_id = w.id)";
 
+	private String sqlSelectWordLexemesMaxFirstLevel = "select max(lex.level1) from " + LEXEME + " lex where lex.word_id = :wordId";
+
 	private String sqlSelectWordLexemeMeaningIdForDs;
 
 	private String sqlSelectWordLexemeMeaningIdNoDs;
+
+	private String sqlUpdateFormDisplayForm;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -85,6 +91,10 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_LEXEME_MEANING_ID_NO_DS);
 		sqlSelectWordLexemeMeaningIdNoDs = IOUtils.toString(resourceFileInputStream, UTF_8);
 		resourceFileInputStream.close();
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_UPDATE_FORM_DISPLAY_FORM);
+		sqlUpdateFormDisplayForm = IOUtils.toString(resourceFileInputStream, UTF_8);
+		resourceFileInputStream.close();
 	}
 
 	@Autowired
@@ -96,6 +106,7 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 		updateCountMap.put(WORD_WORD_TYPE, new Count());
 		updateCountMap.put(WORD_GUID, new Count());
 		updateCountMap.put(WORD_ETYMOLOGY, new Count());
+		updateCountMap.put(WORD_ETYMOLOGY_RELATION, new Count());
 		updateCountMap.put(WORD_GROUP_MEMBER, new Count());
 		updateCountMap.put(WORD_LIFECYCLE_LOG, new Count());
 		updateCountMap.put(WORD_PROCESS_LOG, new Count());
@@ -169,6 +180,29 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 		return lexemeIds;
 	}
 
+	public Long getLexemeId(Long wordId, Long meaningId, String datasetCode) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("word_id", wordId);
+		paramMap.put("meaning_id", meaningId);
+		paramMap.put("dataset_code", datasetCode);
+		Map<String, Object> lexemeResult = basicDbService.select(LEXEME, paramMap);
+		if (lexemeResult == null) {
+			return null;
+		} else {
+			Long lexemeId = (Long) lexemeResult.get("id");
+			return lexemeId;
+		}
+	}
+
+	public Integer getWordLexemesMaxFirstLevel(Long wordId) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("wordId", wordId);
+		Map<String, Object> maxLevelMap = basicDbService.queryForMap(sqlSelectWordLexemesMaxFirstLevel, paramMap);
+		return (Integer) maxLevelMap.get("max");
+	}
+
 	public void moveData(String dataFkName, Long targetDataId, List<Long> sourceDataIds, String dataTableName, String[] notExistsFieldName, Map<String, Count> updateCountMap) throws Exception {
 
 		Map<String, Object> criteriaParamMap;
@@ -202,6 +236,7 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_GUID, new String[] {"dataset_code"}, updateCountMap);
 		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_WORD_TYPE, new String[] {"word_type_code"}, updateCountMap);
 		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_ETYMOLOGY, null, updateCountMap);
+		moveData("related_word_id", targetWordId, sourceMergingWordIds, WORD_ETYMOLOGY_RELATION, new String[] {"word_etym_id"}, updateCountMap);
 		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_GROUP_MEMBER, new String[] {"word_group_id"}, updateCountMap);
 		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_LIFECYCLE_LOG, null, updateCountMap);
 		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_PROCESS_LOG, null, updateCountMap);
@@ -320,6 +355,20 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 		paramMap.put("targetWordId", targetWordId);
 		paramMap.put("sourceLexemeIds", sourceLexemeIds);
 		int updateCount = basicDbService.executeScript(sqlReassignLexemesToWord, paramMap);
+		updateCountMap.get(LEXEME).increment(updateCount);
+	}
+
+	public void reassignLexemeToWordAndUpdateLevels(Long targetWordId, Long sourceLexemeId, int level1, int level2, Map<String, Count> updateCountMap) throws Exception {
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("id", sourceLexemeId);
+
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("word_id", targetWordId);
+		valueParamMap.put("level1", level1);
+		valueParamMap.put("level2", level2);
+
+		int updateCount = basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
 		updateCountMap.get(LEXEME).increment(updateCount);
 	}
 
@@ -485,6 +534,14 @@ public class MergeService implements TableName, SystemConstant, InitializingBean
 			updateCount = basicDbService.updateIfNotExists(MEANING_RELATION, criteriaParamMap, valueParamMap, notExistsFields);
 			updateCountMap.get(MEANING_RELATION).increment(updateCount);
 		}
+	}
+
+	public void moveDisplayForm(Long targetWordId, Long sourceWordId) {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("wordId1", targetWordId);
+		paramMap.put("wordId2", sourceWordId);
+		basicDbService.executeScript(sqlUpdateFormDisplayForm, paramMap);
 	}
 
 	public void deleteMeanings(List<Long> meaningIds, List<Long> failedDeleteMeaningIds, Map<String, Count> deleteCountMap) throws Exception {
