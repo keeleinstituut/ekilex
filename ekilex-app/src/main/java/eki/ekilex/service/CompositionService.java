@@ -88,7 +88,7 @@ public class CompositionService extends AbstractService {
 			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
 			createLifecycleLog(relationLogData);
 			if (StringUtils.isNotEmpty(oppositeRelationType)) {
-				boolean oppositeRelationExists = cudDbService.meaningRelationExists(relatedMeaningId, meaningId, oppositeRelationType);
+				boolean oppositeRelationExists = lookupDbService.meaningRelationExists(relatedMeaningId, meaningId, oppositeRelationType);
 				if (oppositeRelationExists) {
 					return;
 				}
@@ -260,16 +260,16 @@ public class CompositionService extends AbstractService {
 				if (existingLexeme1Id.equals(existingLexemeId)) {
 					if (existingLexemeIdAndDuplicateLexemeIdMap.containsKey(existingLexeme2Id)) {
 						Long duplicateLexeme2Id = existingLexemeIdAndDuplicateLexemeIdMap.get(existingLexeme2Id);
-						compositionDbService.createLexemeRelation(duplicateLexemeId, duplicateLexeme2Id, lexRelTypeCode);
+						cudDbService.createLexemeRelation(duplicateLexemeId, duplicateLexeme2Id, lexRelTypeCode);
 					} else {
-						compositionDbService.createLexemeRelation(duplicateLexemeId, existingLexeme2Id, lexRelTypeCode);
+						cudDbService.createLexemeRelation(duplicateLexemeId, existingLexeme2Id, lexRelTypeCode);
 					}
 				} else {
 					if (existingLexemeIdAndDuplicateLexemeIdMap.containsKey(existingLexeme1Id)) {
 						Long duplicateLexeme1Id = existingLexemeIdAndDuplicateLexemeIdMap.get(existingLexeme1Id);
-						compositionDbService.createLexemeRelation(duplicateLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+						cudDbService.createLexemeRelation(duplicateLexeme1Id, duplicateLexemeId, lexRelTypeCode);
 					} else {
-						compositionDbService.createLexemeRelation(existingLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+						cudDbService.createLexemeRelation(existingLexeme1Id, duplicateLexemeId, lexRelTypeCode);
 					}
 				}
 			}

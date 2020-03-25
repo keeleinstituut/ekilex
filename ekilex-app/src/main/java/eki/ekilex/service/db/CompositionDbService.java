@@ -232,20 +232,6 @@ public class CompositionDbService implements DbConstant {
 				.fetch();
 	}
 
-	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String lexRelTypeCode) {
-
-		create.insertInto(LEX_RELATION, LEX_RELATION.LEXEME1_ID, LEX_RELATION.LEXEME2_ID, LEX_RELATION.LEX_REL_TYPE_CODE)
-				.select(DSL
-						.select(DSL.val(lexemeId1), DSL.val(lexemeId2), DSL.val(lexRelTypeCode))
-						.whereNotExists(DSL
-								.select(LEX_RELATION.ID)
-								.from(LEX_RELATION)
-								.where(LEX_RELATION.LEXEME1_ID.eq(lexemeId1)
-										.and(LEX_RELATION.LEXEME2_ID.eq(lexemeId2))
-										.and(LEX_RELATION.LEX_REL_TYPE_CODE.eq(lexRelTypeCode)))))
-				.execute();
-	}
-
 	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
 
 		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();

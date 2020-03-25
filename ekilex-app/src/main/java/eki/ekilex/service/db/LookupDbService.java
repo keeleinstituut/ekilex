@@ -2,16 +2,22 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LEX_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_GROUP;
+import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static org.jooq.impl.DSL.field;
 
 import java.util.List;
 import java.util.Map;
@@ -414,6 +420,15 @@ public class LookupDbService extends AbstractSearchDbService {
 		return noOtherMeaningsExist;
 	}
 
+	public boolean isMemberOfWordRelationGroup(Long groupId, Long wordId) {
+		Long id = create.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP.ID.eq(groupId).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
+				.fetchOneInto(Long.class);
+		boolean exists = (id != null);
+		return exists;
+	}
+
 	public boolean secondaryMeaningLexemeExists(Long meaningId, String datasetCode) {
 
 		return create
@@ -434,6 +449,58 @@ public class LookupDbService extends AbstractSearchDbService {
 						LEXEME.WORD_ID.in(wordIds)
 								.and(LEXEME.TYPE.eq(LexemeType.SECONDARY.name()))
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordLexemeExists(Long wordId, String datasetCode) {
+
+		return create
+				.select(field(DSL.count(WORD.ID).gt(0)).as("word_lexeme_exists"))
+				.from(WORD)
+				.where(
+						WORD.ID.eq(wordId)
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID)
+												.and(LEXEME.DATASET_CODE.eq(datasetCode))
+												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordRelationExists(Long wordId1, Long wordId2, String relationType) {
+
+		return create
+				.select(field(DSL.count(WORD_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(WORD_RELATION)
+				.where(
+						WORD_RELATION.WORD1_ID.eq(wordId1)
+								.and(WORD_RELATION.WORD2_ID.eq(wordId2))
+								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean lexemeRelationExists(Long lexemeId1, Long lexemeId2, String relationType) {
+
+		return create
+				.select(field(DSL.count(LEX_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(LEX_RELATION)
+				.where(
+						LEX_RELATION.LEXEME1_ID.eq(lexemeId1)
+								.and(LEX_RELATION.LEXEME2_ID.eq(lexemeId2))
+								.and(LEX_RELATION.LEX_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
+
+		return create
+				.select(field(DSL.count(MEANING_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(MEANING_RELATION)
+				.where(
+						MEANING_RELATION.MEANING1_ID.eq(meaningId1)
+								.and(MEANING_RELATION.MEANING2_ID.eq(meaningId2))
+								.and(MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(relationType)))
 				.fetchSingleInto(Boolean.class);
 	}
 
