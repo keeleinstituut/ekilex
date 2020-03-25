@@ -27,7 +27,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -71,7 +70,6 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 	private final String collocRelGroupExp = "x:relg";
 	private final String collocGroupExp = "x:colg";
 
-	private final String wordHomonymNrAttr = "i";
 	private final String collocConjunctAttr = "jv";
 	private final String lemmaDataAttr = "lemposvk";
 
@@ -147,15 +145,13 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 
 		Element headerNode, contentNode, wordNode, wordGroupNode, wordPosNode;
 		List<Node> collocGroupNodes;
-		Attribute wordHomonymNumAttr;
 		String word;
-		Integer wordHomonymNum;
 		List<CollocMember> collocMembers;
 		List<CollocWordsRecord> existingCollocRecords;
-		List<String> parsedCollocMemberWords;
+		List<String> sourceCollocMemberWords;
 		List<String> existingCollocMemberWords;
 
-		List<WordCollocAss> missingWordCollocAssots = new ArrayList<>();
+		List<IncompleteColloc> incompleteCollocs = new ArrayList<>();
 
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -174,11 +170,6 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 				continue;
 			}
 			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-			wordHomonymNumAttr = wordNode.attribute(wordHomonymNrAttr);
-			wordHomonymNum = 1;
-			if (wordHomonymNumAttr != null) {
-				wordHomonymNum = Integer.valueOf(wordHomonymNumAttr.getValue());
-			}
 			word = wordNode.getTextTrim();
 			word = textDecorationService.cleanEkiEntityMarkup(word);
 
@@ -195,23 +186,25 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 
 				List<List<CollocMember>> collocMembersPermutations = composeCollocMembersPermutations(collocMembers);
 
-				for (List<CollocMember> collocMembersPermutation : collocMembersPermutations) {
+				for (List<CollocMember> sourceCollocMembers : collocMembersPermutations) {
 
-					String collocation = composeCollocValue(collocMembersPermutation);
-					parsedCollocMemberWords = collocMembersPermutation.stream().map(CollocMember::getWord).collect(Collectors.toList());
+					String collocationValue = composeCollocValue(sourceCollocMembers);
+					sourceCollocMemberWords = sourceCollocMembers.stream().map(CollocMember::getWord).collect(Collectors.toList());
 
-					existingCollocRecords = getCollocWordsRecords(collocation);
+					existingCollocRecords = getCollocWordsRecords(collocationValue);
 
 					if (CollectionUtils.isEmpty(existingCollocRecords)) {
-						logger.warn("No such collocation exists: {}", collocation);
+						logger.warn("No such collocation exists: {}", collocationValue);
 					} else {
 						for (CollocWordsRecord existingCollocRecord : existingCollocRecords) {
 
 							existingCollocMemberWords = existingCollocRecord.getMemberWords();
-							if (collocMembersPermutation.size() > existingCollocMemberWords.size()) {
-								Collection<String> missingCollocMemberWords = CollectionUtils.disjunction(parsedCollocMemberWords, existingCollocMemberWords);
+							if (existingCollocMemberWords.size() < sourceCollocMembers.size()) {
+								Collection<String> missingCollocMemberWords = CollectionUtils.disjunction(sourceCollocMemberWords, existingCollocMemberWords);
 								if (missingCollocMemberWords.contains(word)) {
-									missingWordCollocAssots.add(new WordCollocAss(word, existingCollocRecord.getCollocationId()));
+									Long collocationId = existingCollocRecord.getCollocationId();
+									IncompleteColloc incompleteColloc = new IncompleteColloc(collocationId, collocationValue, new ArrayList<>(missingCollocMemberWords));
+									incompleteCollocs.add(incompleteColloc);
 								}
 							}
 						}
@@ -227,28 +220,43 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 			}
 		}
 
-		for (WordCollocAss missingWordCollocAss : missingWordCollocAssots) {
+		for (IncompleteColloc incompleteColloc : incompleteCollocs) {
 
-			String missingCollocMemberWord = missingWordCollocAss.getWord();
-			Long collocationId = missingWordCollocAss.getCollocationId();
-			List<WordIdCandidate> allWordIdCandidates = getWordIdCandidates(missingCollocMemberWord);
-			if (CollectionUtils.isEmpty(allWordIdCandidates)) {
-				appendToReport(reportFileBufferedOutputStream, missingCollocMemberWord, CSV_EMPTY_CELL, CSV_EMPTY_CELL, collocationId);
-			} else {
-				List<WordIdCandidate> wordIdCandidatesWithLexemes = allWordIdCandidates.stream()
-						.filter(wordIdCandidate -> CollectionUtils.isNotEmpty(wordIdCandidate.getLexemeIdCandidates()))
-						.collect(Collectors.toList());
-				if (CollectionUtils.isEmpty(wordIdCandidatesWithLexemes)) {
-					List<Long> wordIdCandidates = allWordIdCandidates.stream().map(WordIdCandidate::getWordId).collect(Collectors.toList());
-					String wordIdCandidatesStr = StringUtils.join(wordIdCandidates, ", ");
-					appendToReport(reportFileBufferedOutputStream, missingCollocMemberWord, wordIdCandidatesStr, CSV_EMPTY_CELL, collocationId);
+			Long collocationId = incompleteColloc.getCollocationId();
+			String collocationValue = incompleteColloc.getCollocationValue();
+			List<String> missingCollocMemberWords = incompleteColloc.getMissingCollocMemberWords();
+
+			Object wordIdCandidatesCell;
+			Object lexemeIdCandidatesCell;
+			for (String missingCollocMemberWord : missingCollocMemberWords) {
+				List<WordIdCandidate> allWordIdCandidates = getWordIdCandidates(missingCollocMemberWord);
+				if (CollectionUtils.isEmpty(allWordIdCandidates)) {
+					wordIdCandidatesCell = CSV_EMPTY_CELL;
+					lexemeIdCandidatesCell = CSV_EMPTY_CELL;
 				} else {
-					for (WordIdCandidate wordIdCandidate : wordIdCandidatesWithLexemes) {
-						List<Long> lexemeIdCandidates = wordIdCandidate.getLexemeIdCandidates();
-						String lexemeIdCandidatesStr = StringUtils.join(lexemeIdCandidates, ", ");
-						appendToReport(reportFileBufferedOutputStream, missingCollocMemberWord, wordIdCandidate.getWordId(), lexemeIdCandidatesStr, collocationId);
+					List<Long> wordIdCandidates = allWordIdCandidates.stream().map(WordIdCandidate::getWordId).collect(Collectors.toList());
+					List<WordIdCandidate> wordIdCandidatesWithLexemes = allWordIdCandidates.stream()
+							.filter(wordIdCandidate -> CollectionUtils.isNotEmpty(wordIdCandidate.getLexemeIdCandidates()))
+							.collect(Collectors.toList());
+					if (CollectionUtils.isEmpty(wordIdCandidatesWithLexemes)) {
+						wordIdCandidatesCell = StringUtils.join(wordIdCandidates, ',');
+						lexemeIdCandidatesCell = CSV_EMPTY_CELL;
+					} else {
+						WordIdCandidate singleWordIdCandidate = wordIdCandidatesWithLexemes.get(0);
+						List<Long> lexemeIdCandidates = singleWordIdCandidate.getLexemeIdCandidates();
+						if ((wordIdCandidatesWithLexemes.size() == 1) && (lexemeIdCandidates.size() == 1)) {
+							wordIdCandidatesCell = singleWordIdCandidate.getWordId();
+							lexemeIdCandidatesCell = lexemeIdCandidates.get(0);
+						} else if (wordIdCandidatesWithLexemes.size() == 1) {
+							wordIdCandidatesCell = singleWordIdCandidate.getWordId();
+							lexemeIdCandidatesCell = StringUtils.join(lexemeIdCandidates, ',');
+						} else {
+							wordIdCandidatesCell = StringUtils.join(wordIdCandidates, ',');
+							lexemeIdCandidatesCell = CSV_EMPTY_CELL;
+						}
 					}
 				}
+				appendToReport(reportFileBufferedOutputStream, collocationId, collocationValue, missingCollocMemberWord, wordIdCandidatesCell, lexemeIdCandidatesCell);
 			}
 		}
 
@@ -256,7 +264,7 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 		reportFileBufferedOutputStream.close();
 
 		logger.info("Invalid colloc count: {}", invalidCollocCount.getValue());
-		logger.info("Missing word colloc ass count: {}", missingWordCollocAssots.size());
+		logger.info("Incomplete colloc count: {}", incompleteCollocs.size());
 	}
 
 	private List<CollocWordsRecord> getCollocWordsRecords(String collocation) throws Exception {
@@ -658,7 +666,7 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 						} else {
 							resolvedWordIdCell = resolvedWordId;
 						}
-						appendToReport(reportFileBufferedOutputStream, collocationId, collocationValue, sourceWordValue, resolvedWordIdCell);
+						appendToReport(reportFileBufferedOutputStream, collocationId, collocationValue, sourceWordValue, resolvedWordIdCell, CSV_EMPTY_CELL);
 					}
 				}
 			}
@@ -990,25 +998,32 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 		}
 	}
 
-	class WordCollocAss extends AbstractDataObject {
+	class IncompleteColloc extends AbstractDataObject {
 
 		private static final long serialVersionUID = 1L;
 
-		private String word;
-
 		private Long collocationId;
 
-		public WordCollocAss(String word, Long collocationId) {
-			this.word = word;
-			this.collocationId = collocationId;
-		}
+		private String collocationValue;
 
-		public String getWord() {
-			return word;
+		private List<String> missingCollocMemberWords;
+
+		public IncompleteColloc(Long collocationId, String collocationValue, List<String> missingCollocMemberWords) {
+			this.collocationId = collocationId;
+			this.collocationValue = collocationValue;
+			this.missingCollocMemberWords = missingCollocMemberWords;
 		}
 
 		public Long getCollocationId() {
 			return collocationId;
+		}
+
+		public String getCollocationValue() {
+			return collocationValue;
+		}
+
+		public List<String> getMissingCollocMemberWords() {
+			return missingCollocMemberWords;
 		}
 	}
 

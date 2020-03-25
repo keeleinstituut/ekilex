@@ -6,7 +6,6 @@ from word w
               and l.dataset_code = :datasetCode
               and l.type = 'PRIMARY'
               and l.complexity = 'DETAIL'
-              and exists (select lc.id from lex_colloc lc where lc.lexeme_id = l.id)
 where exists (select f.id
               from paradigm p,
                    form f
