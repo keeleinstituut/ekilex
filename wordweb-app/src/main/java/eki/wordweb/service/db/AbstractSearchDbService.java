@@ -96,6 +96,7 @@ public abstract class AbstractSearchDbService implements DbConstant, SystemConst
 
 		return create
 				.select(
+						l.WORD_ID,
 						l.LEXEME_ID,
 						l.MEANING_ID,
 						l.DATASET_CODE,

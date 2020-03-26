@@ -411,7 +411,7 @@ from (select w.id as word_id,
                                 l2.order_by mw_lex_order_by
                          from lexeme l1
                            inner join dataset l1ds on l1ds.code = l1.dataset_code
-                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id --and l2.dataset_code = 'sss'
+                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id
                            inner join dataset l2ds on l2ds.code = l2.dataset_code
                            inner join word w2 on w2.id = l2.word_id
                            inner join paradigm p2 on p2.word_id = w2.id
@@ -833,7 +833,7 @@ from lexeme l
                                 l2.order_by mw_lex_order_by
                          from lexeme l1
                            inner join dataset l1ds on l1ds.code = l1.dataset_code
-                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id
+                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id --and l2.word_id != l1.word_id
                            inner join dataset l2ds on l2ds.code = l2.dataset_code
                            inner join word w2 on w2.id = l2.word_id
                            inner join paradigm p2 on p2.word_id = w2.id
@@ -1898,7 +1898,7 @@ create view view_ww_classifier
 		c.code,
 		cl.value,
 		cl.lang,
-		cl.type,
+		'wordweb' as type, --really?
 		c.order_by
 	from 
 		domain c,

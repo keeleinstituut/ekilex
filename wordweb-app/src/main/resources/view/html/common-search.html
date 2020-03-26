@@ -123,8 +123,13 @@
       <div class="col-12 dictionary-source" th:if="${lexeme.datasetName != null}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</div>
       <div class="col-12 meaning">
         <div class="definition-row definition-area">
-          <strong class="mr-2 definition-value font-weight-bold" th:if="${lexeme.datasetType.name() == 'LEX' && wordData.multipleLexLexemesExist}" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
-          <strong class="mr-2 definition-value font-weight-bold" th:if="${lexeme.datasetType.name() == 'TERM'}" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></strong>
+          <th:block th:if="${lexeme.datasetType.name() == 'LEX' && wordData.multipleLexLexemesExist}">
+            <strong class="mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
+          </th:block>
+          <th:block th:if="${lexeme.datasetType.name() == 'TERM'}">
+            <span>ID:</span>
+            <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
+          </th:block>
           <th:block th:if="${not #lists.isEmpty(lexeme.poses) && !wordData.word.singlePos}">
             <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
           </th:block>
@@ -182,7 +187,7 @@
                     <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                   </th:block>
                 </span>
-                <span th:unless="${meaningWordIter.last}" class="pr-1" th:style="${meaningWord.additionalDataExists ? '' : 'margin-left: -2px'}">,</span>
+                <span th:unless="${meaningWordIter.last}" th:style="${meaningWord.additionalDataExists ? '' : 'margin-left: -3px'}">,</span>
               </span>
             </span>
           </div>
@@ -192,7 +197,8 @@
             <div th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
               <span th:with="langData=${viewUtil.getLangData(meaningWordEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
               <span th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
-                <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word">
+                <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}"
+                   class="matching-word" th:style="${meaningWord.wordId == wordId ? 'border-bottom: 1px #7F8891 dashed;' : ''}">
                   <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}">tee</span>
                 </a>
                 <span th:if="${meaningWord.additionalDataExists}" class="rections">
@@ -206,7 +212,7 @@
                     <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                   </th:block>
                 </span>
-                <span th:unless="${meaningWordIter.last}" class="pr-1" th:style="${meaningWord.additionalDataExists ? '' : 'margin-left: -2px'}">,</span>
+                <span th:unless="${meaningWordIter.last}" th:style="${meaningWord.additionalDataExists ? '' : 'margin-left: -2px'}">,</span>
               </span>
             </div>
           </div>

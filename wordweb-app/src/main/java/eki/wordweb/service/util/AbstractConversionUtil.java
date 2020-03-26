@@ -38,7 +38,7 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 			isPrefixoid = wordTypeCodes.contains(PREFIXOID_WORD_TYPE_CODE);
 			isSuffixoid = wordTypeCodes.contains(SUFFIXOID_WORD_TYPE_CODE);
 			isAbbreviationWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(ABBREVIATION_WORD_TYPE_CODES));
-			isForeignWord = wordTypeCodes.contains(FOREIGN_WORD_TYPE_CODE);
+			isForeignWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(FOREIGN_WORD_TYPE_CODES));
 		}
 		wordTypeData.setPrefixoid(isPrefixoid);
 		wordTypeData.setSuffixoid(isSuffixoid);

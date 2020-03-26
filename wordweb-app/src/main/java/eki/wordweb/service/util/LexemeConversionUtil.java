@@ -45,10 +45,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			String displayLang) {
 
 		List<String> destinLangs = dataFilter.getDestinLangs();
-		Complexity lexComplexity;
-		if (DatasetType.TERM.equals(datasetType)) {
-			lexComplexity = null;
-		} else {
+		Complexity lexComplexity = null;
+		if (DatasetType.LEX.equals(datasetType)) {
 			lexComplexity = dataFilter.getLexComplexity();
 		}
 
@@ -84,7 +82,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		lexeme.setLexemePublicNotes(filter(publicNotes, lexComplexity));
 		lexeme.setGrammars(filter(grammars, lexComplexity));
-		lexeme.setGovernments(filterPreferred(governments, lexComplexity));
+		lexeme.setGovernments(filterSimpleOnly(governments, lexComplexity));
 
 		classifierUtil.applyClassifiers(lexeme, displayLang);
 	}
@@ -163,6 +161,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (CollectionUtils.isEmpty(meaningWords)) {
 			return;
 		}
+		if (DatasetType.LEX.equals(lexeme.getDatasetType())) {
+			meaningWords = meaningWords.stream().filter(meaningWord -> !meaningWord.getWordId().equals(lexeme.getWordId())).collect(Collectors.toList());
+		}
 		meaningWords = filter(meaningWords, wordLang, destinLangs);
 		meaningWords = filterSimpleOnly(meaningWords, lexComplexity);
 
@@ -176,7 +177,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 					|| CollectionUtils.isNotEmpty(meaningWord.getMwLexRegisters())
 					|| CollectionUtils.isNotEmpty(meaningWord.getMwLexGovernments());
 			meaningWord.setAdditionalDataExists(additionalDataExists);
-			if (StringUtils.equals(wordLang, meaningWordLang)) {
+			if (DatasetType.LEX.equals(lexeme.getDatasetType()) && StringUtils.equals(wordLang, meaningWordLang)) {
 				lexeme.getSourceLangMeaningWords().add(meaningWord);
 			} else {
 				lexeme.getDestinLangMatchWords().add(meaningWord);

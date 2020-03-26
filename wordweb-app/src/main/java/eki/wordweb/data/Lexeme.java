@@ -13,6 +13,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private static final long serialVersionUID = 1L;
 
+	private Long wordId;
+
 	private Long lexemeId;
 
 	private Long meaningId;
@@ -104,6 +106,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 	private boolean moreSecondaryCollocs;
 
 	private boolean emptyLexeme;
+
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
+	}
 
 	public Long getLexemeId() {
 		return lexemeId;

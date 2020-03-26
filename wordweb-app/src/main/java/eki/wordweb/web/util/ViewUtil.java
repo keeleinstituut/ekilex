@@ -53,7 +53,7 @@ public class ViewUtil implements WebConstant, SystemConstant {
 			wordPrese = wordPrese + "-";
 		}
 		StringBuilder htmlBuf = new StringBuilder();
-		htmlBuf.append("<span class='pr-2'>");
+		htmlBuf.append("<span>");
 		String foreignMarkupCode = TextDecoration.FOREIGN.getCode();
 		if (word.isForeignWord() && !StringUtils.contains(wordPrese, foreignMarkupCode)) {
 			htmlBuf.append('<');
