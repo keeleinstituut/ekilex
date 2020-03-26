@@ -416,7 +416,7 @@ public class CudService extends AbstractService {
 				cudDbService.createWordRelationGroupMember(groupId, targetWordId);
 				doLogging = true;
 			} else {
-				if (!cudDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
+				if (!lookupDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
 					List<Map<String, Object>> wordRelationGroupMembers = cudDbService.getWordRelationGroupMembers(groupId);
 					previousLogValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 					cudDbService.createWordRelationGroupMember(groupId, targetWordId);
@@ -438,7 +438,7 @@ public class CudService extends AbstractService {
 			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
 			createLifecycleLog(relationLogData);
 			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
-				boolean oppositeRelationExists = cudDbService.wordRelationExists(targetWordId, wordId, oppositeRelationTypeCode);
+				boolean oppositeRelationExists = lookupDbService.wordRelationExists(targetWordId, wordId, oppositeRelationTypeCode);
 				if (oppositeRelationExists) {
 					return;
 				}
@@ -542,7 +542,7 @@ public class CudService extends AbstractService {
 		LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId, relationType);
 		createLifecycleLog(relationLogData);
 		if (StringUtils.isNotEmpty(oppositeRelationType)) {
-			boolean oppositeRelationExists = cudDbService.lexemeRelationExists(lexemeId2, lexemeId1, oppositeRelationType);
+			boolean oppositeRelationExists = lookupDbService.lexemeRelationExists(lexemeId2, lexemeId1, oppositeRelationType);
 			if (oppositeRelationExists) {
 				return;
 			}
@@ -574,7 +574,7 @@ public class CudService extends AbstractService {
 		LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
 		createLifecycleLog(relationLogData);
 		if (StringUtils.isNotEmpty(oppositeRelationType)) {
-			boolean oppositeRelationExists = cudDbService.meaningRelationExists(meaningId2, meaningId1, oppositeRelationType);
+			boolean oppositeRelationExists = lookupDbService.meaningRelationExists(meaningId2, meaningId1, oppositeRelationType);
 			if (oppositeRelationExists) {
 				return;
 			}
@@ -696,7 +696,7 @@ public class CudService extends AbstractService {
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
 		createLifecycleLog(logData);
 
-		SynRelation createdRelation = cudDbService.addSynRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+		SynRelation createdRelation = cudDbService.createSynRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		Long createdRelationId = createdRelation.getId();
 		moveCreatedRelationToFirst(existingWordId, createdRelationId);
 		BigDecimal weight = new BigDecimal(weightStr);
@@ -706,11 +706,11 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void createSynRelation(Long word1Id, Long word2Id, String weightStr, String datasetCode) {
 
-		boolean word2DatasetLexemeExists = cudDbService.wordLexemeExists(word2Id, datasetCode);
+		boolean word2DatasetLexemeExists = lookupDbService.wordLexemeExists(word2Id, datasetCode);
 		if (!word2DatasetLexemeExists) {
 			createLexeme(word2Id, datasetCode, null);
 		}
-		SynRelation createdRelation = cudDbService.addSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+		SynRelation createdRelation = cudDbService.createSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		Long createdRelationId = createdRelation.getId();
 		moveCreatedRelationToFirst(word1Id, createdRelationId);
 		BigDecimal weight = new BigDecimal(weightStr);
