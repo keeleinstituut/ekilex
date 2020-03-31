@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
+import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -45,6 +46,7 @@ import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordStress;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -57,6 +59,8 @@ public class LookupService extends AbstractWordSearchService {
 
 	private final static String classifierLabelLang = "est";
 	private final static String classifierLabelTypeDescrip = "descrip";
+
+	private final static String displayFormStressMark = "\"";
 
 	@Autowired
 	private LookupDbService lookupDbService;
@@ -76,9 +80,47 @@ public class LookupService extends AbstractWordSearchService {
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
+	@Autowired
+	private TextDecorationService textDecorationService;
+
 	@Transactional
 	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
 		return lookupDbService.meaningHasWord(meaningId, wordValue, language);
+	}
+
+	@Transactional
+	public boolean isValidWordStressAndMarkup(Long targetWordId, Long sourceWordId) {
+
+		WordStress targetWordStress = lookupDbService.getWordStressData(targetWordId);
+		String targetDisplayForm = targetWordStress.getDisplayForm();
+		String targetValuePrese = targetWordStress.getValuePrese();
+
+		WordStress sourceWordStress = lookupDbService.getWordStressData(sourceWordId);
+		String sourceDisplayForm = sourceWordStress.getDisplayForm();
+		String sourceValuePrese = sourceWordStress.getValuePrese();
+
+		if (!StringUtils.equals(targetDisplayForm, sourceDisplayForm)) {
+			if (targetDisplayForm != null && sourceDisplayForm != null) {
+				boolean targetContainsStress = targetDisplayForm.contains(displayFormStressMark);
+				boolean sourceContainsStress = sourceDisplayForm.contains(displayFormStressMark);
+				if (targetContainsStress && sourceContainsStress) {
+					return false;
+				} else if (!targetContainsStress && !sourceContainsStress) {
+					return false;
+				}
+			}
+		}
+
+		if (StringUtils.equals(targetValuePrese, sourceValuePrese)) {
+			return true;
+		}
+
+		boolean isTargetWordDecorated = textDecorationService.isDecorated(targetValuePrese);
+		boolean isSourceWordDecorated = textDecorationService.isDecorated(sourceValuePrese);
+		if (isTargetWordDecorated && isSourceWordDecorated) {
+			return false;
+		}
+		return true;
 	}
 
 	@Transactional
@@ -131,14 +173,23 @@ public class LookupService extends AbstractWordSearchService {
 	public List<WordDetails> getWordDetailsOfJoinCandidates(Word targetWord, String roleDatasetCode, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
-		List<Long> wordIds = lookupDbService.getWordIdsOfJoinCandidates(targetWord, userPrefDatasetCodes, userPermDatasetCodes);
-		wordIds.sort(Comparator.comparing(wordId -> !permissionDbService.isGrantedForWord(wordId, roleDatasetCode, userPermDatasetCodes)));
+		Long targetWordId = targetWord.getWordId();
+		List<Long> sourceWordIds = lookupDbService.getWordIdsOfJoinCandidates(targetWord, userPrefDatasetCodes, userPermDatasetCodes);
+		sourceWordIds.sort(Comparator.comparing(sourceWordId -> !isWordJoinGranted(sourceWordId, targetWordId, roleDatasetCode, userPermDatasetCodes)));
 
-		for (Long wordId : wordIds) {
-			WordDetails wordDetails = getWordJoinDetails(wordId);
+		for (Long sourceWordId : sourceWordIds) {
+			WordDetails wordDetails = getWordJoinDetails(sourceWordId);
 			wordDetailsList.add(wordDetails);
 		}
 		return wordDetailsList;
+	}
+
+	private boolean isWordJoinGranted(Long sourceWordId, Long targetWordId, String roleDatasetCode, List<String> userPermDatasetCodes) {
+
+		if (!permissionDbService.isGrantedForWord(sourceWordId, roleDatasetCode, userPermDatasetCodes)) {
+			return false;
+		}
+		return isValidWordStressAndMarkup(targetWordId, sourceWordId);
 	}
 
 	@Transactional

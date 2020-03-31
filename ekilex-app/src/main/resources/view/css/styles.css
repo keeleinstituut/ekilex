@@ -12654,6 +12654,11 @@ td {
   color: #000;
 }
 
+.wttl {
+  font-size: 120%;
+  color: #000;
+}
+
 .stxt {
   font-style: italic;
   color: #666;
@@ -16271,7 +16276,7 @@ footer p {
 
 .user-menu-btn {
   position: relative;
-  max-width: 300px;
+  max-width: 200px;
   padding-right: 2rem;
   padding-bottom: 0.25rem;
   border-radius: 0;

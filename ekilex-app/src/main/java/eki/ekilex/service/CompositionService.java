@@ -18,10 +18,12 @@ import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
+import eki.common.service.TextDecorationService;
 import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
@@ -35,6 +37,8 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 public class CompositionService extends AbstractService {
 
 	private static final int DEFAULT_LEXEME_LEVEL = 1;
+
+	private static final String displayFormStressMark = "\"";
 
 	@Autowired
 	private CompositionDbService compositionDbService;
@@ -50,6 +54,9 @@ public class CompositionService extends AbstractService {
 
 	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;
+
+	@Autowired
+	private TextDecorationService textDecorationService;
 
 	@Transactional
 	public void createWordAndMeaningAndRelations(CreateWordAndMeaningAndRelationsData createWordAndMeaningAndRelationsData) {
@@ -349,11 +356,44 @@ public class CompositionService extends AbstractService {
 		createLifecycleLog(logData);
 
 		compositionDbService.joinWordData(targetWordId, sourceWordId);
+		joinWordStressAndMarkupData(targetWordId, sourceWordId);
 		joinLexemeData(targetWordId, sourceWordId);
 		joinParadigms(targetWordId, sourceWordId);
 		cudDbService.deleteWord(sourceWordId);
 
 		return targetWordId;
+	}
+
+	private void joinWordStressAndMarkupData(Long targetWordId, Long sourceWordId) {
+
+		WordStress targetWordStress = lookupDbService.getWordStressData(targetWordId);
+		String targetDisplayForm = targetWordStress.getDisplayForm();
+		String targetValuePrese = targetWordStress.getValuePrese();
+		Long targetFormId = targetWordStress.getFormId();
+
+		WordStress sourceWordStress = lookupDbService.getWordStressData(sourceWordId);
+		String sourceDisplayForm = sourceWordStress.getDisplayForm();
+		String sourceValuePrese = sourceWordStress.getValuePrese();
+
+		if (sourceDisplayForm != null) {
+			if (targetDisplayForm == null) {
+				cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
+			} else {
+				boolean targetContainsStress = targetDisplayForm.contains(displayFormStressMark);
+				boolean sourceContainsStress = sourceDisplayForm.contains(displayFormStressMark);
+				if (!targetContainsStress && sourceContainsStress) {
+					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
+				}
+			}
+		}
+
+		if (!StringUtils.equals(targetValuePrese, sourceValuePrese)) {
+			boolean isTargetWordDecorated = textDecorationService.isDecorated(targetValuePrese);
+			boolean isSourceWordDecorated = textDecorationService.isDecorated(sourceValuePrese);
+			if (!isTargetWordDecorated && isSourceWordDecorated) {
+				cudDbService.updateFormValuePrese(targetFormId, sourceValuePrese);
+			}
+		}
 	}
 
 	private void joinLexemeData(Long targetWordId, Long sourceWordId) {
@@ -395,11 +435,11 @@ public class CompositionService extends AbstractService {
 
 	private void joinParadigms(Long targetWordId, Long sourceWordId) {
 
-		boolean wordHasForms = compositionDbService.wordHasForms(targetWordId);
+		boolean wordHasForms = lookupDbService.wordHasForms(targetWordId);
 		if (wordHasForms) {
 			return;
 		}
-		boolean sourceWordHasForms = compositionDbService.wordHasForms(sourceWordId);
+		boolean sourceWordHasForms = lookupDbService.wordHasForms(sourceWordId);
 		if (sourceWordHasForms) {
 			compositionDbService.joinParadigms(targetWordId, sourceWordId);
 		}

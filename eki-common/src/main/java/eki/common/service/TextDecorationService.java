@@ -206,6 +206,12 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		return replaceByPattern(pattern, text, preDecoration, postDecoration);
 	}
 
+	public boolean isDecorated(String text) {
+		Pattern pattern = Pattern.compile("<eki-[^>]*>.*?</eki-[^>]*>");
+		Matcher matcher = pattern.matcher(text);
+		return matcher.find();
+	}
+
 	private String replaceByPattern(Pattern pattern, String text, String preDecoration, String postDecoration) {
 		return replaceByPattern(pattern, text, preDecoration, postDecoration, null);
 	}
