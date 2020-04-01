@@ -40,6 +40,7 @@ import eki.common.constant.LexemeType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
@@ -76,6 +77,18 @@ public class LookupDbService extends AbstractSearchDbService {
 								.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.groupBy(WORD.ID)
 				.fetchInto(String.class);
+	}
+
+	public WordStress getWordStressData(Long wordId) {
+
+		return create
+				.select(FORM.ID.as("form_id"), FORM.VALUE_PRESE, FORM.DISPLAY_FORM)
+				.from(FORM, PARADIGM)
+				.where(
+						PARADIGM.WORD_ID.eq(wordId)
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.fetchSingleInto(WordStress.class);
 	}
 
 	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
@@ -317,6 +330,18 @@ public class LookupDbService extends AbstractSearchDbService {
 						.and(FORM.VALUE.eq(wordValue))
 						.and(WORD.LANG.eq(language))
 						)
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordHasForms(Long wordId) {
+
+		return create
+				.select(field(DSL.count(FORM.ID).gt(0)).as("has_forms"))
+				.from(PARADIGM, FORM)
+				.where(
+						PARADIGM.WORD_ID.eq(wordId)
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.FORM.name())))
 				.fetchSingleInto(Boolean.class);
 	}
 

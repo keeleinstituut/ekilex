@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
@@ -20,6 +21,9 @@ public class PermDataUtil implements SystemConstant {
 
 	@Autowired
 	private PermissionService permissionService;
+
+	@Autowired
+	private LookupService lookupService;
 
 	@Autowired
 	private UserService userService;
@@ -112,6 +116,11 @@ public class PermDataUtil implements SystemConstant {
 		}
 		String roleDatasetCode = userRole.getDatasetCode();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+
+		boolean isValidWordStressAndMarkup = lookupService.isValidWordStressAndMarkup(targetWordId, sourceWordId);
+		if (!isValidWordStressAndMarkup) {
+			return false;
+		}
 
 		boolean isSourceWordCrudGranted = permissionService.isGrantedForWord(sourceWordId, roleDatasetCode, userPermDatasetCodes);
 		if (isSourceWordCrudGranted) {

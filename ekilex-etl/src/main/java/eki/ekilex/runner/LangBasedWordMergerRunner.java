@@ -162,6 +162,8 @@ public class LangBasedWordMergerRunner extends AbstractMergerRunner {
 		logCounts(">>>> Update counts are as following:", updateCountMap);
 		logCounts(">>>> Delete counts are as following:", deleteCountMap);
 		logger.info("{} words not merged because of different word stress", notValidStressCount.getValue());
+
+		end();
 	}
 
 	private void mergeWords(List<List<Long>> wordIdSets, Map<String, Count> updateCountMap, Map<String, Count> deleteCountMap, Count notValidStressCount) throws Exception {

@@ -1135,18 +1135,6 @@ public class CompositionDbService implements GlobalConstant {
 				.execute();
 	}
 
-	public boolean wordHasForms(Long wordId) {
-
-		return create
-				.select(field(DSL.count(FORM.ID).gt(0)).as("has_forms"))
-				.from(PARADIGM, FORM)
-				.where(
-						PARADIGM.WORD_ID.eq(wordId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.FORM.name())))
-				.fetchSingleInto(Boolean.class);
-	}
-
 	public void joinParadigms(Long wordId, Long sourceWordId) {
 
 		create.delete(PARADIGM)

@@ -475,6 +475,22 @@ public class CudDbService implements GlobalConstant {
 				.execute();
 	}
 
+	public void updateFormDisplayForm(Long formId, String displayForm) {
+		create
+				.update(FORM)
+				.set(FORM.DISPLAY_FORM, displayForm)
+				.where(FORM.ID.eq(formId))
+				.execute();
+	}
+
+	public void updateFormValuePrese(Long formId, String valuePrese) {
+		create
+				.update(FORM)
+				.set(FORM.VALUE_PRESE, valuePrese)
+				.where(FORM.ID.eq(formId))
+				.execute();
+	}
+
 	public Long createWordAndLexeme(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))
