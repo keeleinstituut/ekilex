@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.FreeformType;
 import eki.common.constant.OrderingField;
 import eki.ekilex.constant.SystemConstant;
@@ -54,7 +54,7 @@ import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.EkiUserProfile;
 
 @Component
-public class PermissionDbService implements SystemConstant, DbConstant {
+public class PermissionDbService implements SystemConstant, GlobalConstant {
 
 	private DSLContext create;
 

@@ -30,12 +30,12 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
 
 @Component
-public class StatDataDbService implements DbConstant {
+public class StatDataDbService implements GlobalConstant {
 
 	final private DSLContext create;
 

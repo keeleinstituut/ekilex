@@ -148,7 +148,6 @@ public class LookupService extends AbstractWordSearchService {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Word word = lexSearchDbService.getWord(wordId);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
-		conversionUtil.setWordTypeFlags(word, wordTypes);
 		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
@@ -180,7 +179,7 @@ public class LookupService extends AbstractWordSearchService {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {
 					if (wordHomonymNumber.isPresent()) {
-						if (!word.getHomonymNumber().equals(wordHomonymNumber.get())) {
+						if (!word.getHomonymNr().equals(wordHomonymNumber.get())) {
 							continue;
 						}
 					}

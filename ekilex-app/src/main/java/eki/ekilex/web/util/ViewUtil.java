@@ -10,6 +10,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.TextDecoration;
+import eki.ekilex.data.DecoratedWordType;
 import eki.ekilex.service.CommonDataService;
 
 @Component
@@ -43,6 +45,32 @@ public class ViewUtil implements InitializingBean {
 			return "?";
 		}
 		return langIso2;
+	}
+
+	public String getMarkupHtml(DecoratedWordType word) {
+
+		String wordPrese = new String(word.getWordValuePrese());
+		if (word.isSuffixoid()) {
+			wordPrese = "-" + wordPrese;
+		} else if (word.isPrefixoid()) {
+			wordPrese = wordPrese + "-";
+		}
+		StringBuilder htmlBuf = new StringBuilder();
+		htmlBuf.append("<span>");
+		String foreignMarkupCode = TextDecoration.FOREIGN.getCode();
+		if (word.isForeign() && !StringUtils.contains(wordPrese, foreignMarkupCode)) {
+			htmlBuf.append('<');
+			htmlBuf.append(foreignMarkupCode);
+			htmlBuf.append('>');
+			htmlBuf.append(wordPrese);
+			htmlBuf.append("</");
+			htmlBuf.append(foreignMarkupCode);
+			htmlBuf.append('>');
+		} else {
+			htmlBuf.append(wordPrese);
+		}
+		htmlBuf.append("</span>");
+		return htmlBuf.toString();
 	}
 
 	public String getFormattedLexemeWeight(Float lexemeWeight) {

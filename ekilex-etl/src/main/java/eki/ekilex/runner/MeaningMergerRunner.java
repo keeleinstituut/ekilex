@@ -20,14 +20,14 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.WordLexemeMeaning;
 import eki.ekilex.service.MergeService;
 
 @Component
-public class MeaningMergerRunner extends AbstractLoaderRunner implements DbConstant {
+public class MeaningMergerRunner extends AbstractLoaderRunner implements GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(MeaningMergerRunner.class);
 

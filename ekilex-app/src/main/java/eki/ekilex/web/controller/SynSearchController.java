@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
@@ -41,7 +41,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SynSearchController extends AbstractSearchController implements SystemConstant, DbConstant {
+public class SynSearchController extends AbstractSearchController implements SystemConstant, GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SynSearchController.class);
 

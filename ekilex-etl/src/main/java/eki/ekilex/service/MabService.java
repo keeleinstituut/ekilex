@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
+import eki.common.constant.GlobalConstant;
 import eki.common.data.AbstractDataObject;
 import eki.common.exception.DataLoadingException;
 import eki.common.service.db.BasicDbService;
@@ -35,7 +36,7 @@ import eki.ekilex.data.transform.ParadigmFormTuple;
 import eki.ekilex.data.transform.WordParadigms;
 
 @Component
-public class MabService implements SystemConstant, InitializingBean {
+public class MabService implements SystemConstant, GlobalConstant, InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(MabService.class);
 

@@ -16,11 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.transform.Lexeme;
 
 @Component
-public class LexemeLevelsSorterRunner extends AbstractLoaderRunner implements DbConstant {
+public class LexemeLevelsSorterRunner extends AbstractLoaderRunner implements GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(LexemeLevelsSorterRunner.class);
 

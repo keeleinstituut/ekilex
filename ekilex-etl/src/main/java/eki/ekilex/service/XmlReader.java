@@ -8,10 +8,10 @@ import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.constant.SystemConstant;
+import eki.common.constant.GlobalConstant;
 
 @Component
-public class XmlReader implements SystemConstant {
+public class XmlReader implements GlobalConstant {
 
 	public Document readDocument(String dataXmlFilePath) throws Exception {
 

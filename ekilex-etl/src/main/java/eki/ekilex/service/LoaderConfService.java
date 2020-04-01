@@ -21,6 +21,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.GlobalConstant;
 import eki.common.exception.DataLoadingException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.DatasetId;
@@ -28,7 +29,7 @@ import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Mnr;
 
 @Component
-public class LoaderConfService implements InitializingBean, SystemConstant {
+public class LoaderConfService implements InitializingBean, SystemConstant, GlobalConstant {
 
 	private static final String TERMEKI_KEY_PART = ".termeki.";
 

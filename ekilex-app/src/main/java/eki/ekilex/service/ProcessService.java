@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.LexemeData;
@@ -16,7 +16,7 @@ import eki.ekilex.data.ProcessLog;
 import eki.ekilex.service.db.ProcessDbService;
 
 @Component
-public class ProcessService implements DbConstant {
+public class ProcessService implements GlobalConstant {
 
 	private static final String PROCESS_STATE_DELETED_MESSAGE = " - haldusolek kustutatud";
 

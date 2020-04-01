@@ -2,13 +2,15 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class TypeTermMeaningWord extends AbstractDataObject {
+public class TypeTermMeaningWord extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long wordId;
 
-	private String word;
+	private String wordValue;
+
+	private String wordValuePrese;
 
 	private Integer homonymNr;
 
@@ -16,13 +18,15 @@ public class TypeTermMeaningWord extends AbstractDataObject {
 
 	private String[] wordTypeCodes;
 
-	private String[] datasetCodes;
-
-	private boolean matchingWord;
-
 	private boolean prefixoid;
 
 	private boolean suffixoid;
+
+	private boolean foreign;
+
+	private boolean matchingWord;
+
+	private String[] datasetCodes;
 
 	public Long getWordId() {
 		return wordId;
@@ -32,12 +36,24 @@ public class TypeTermMeaningWord extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getWord() {
-		return word;
+	@Override
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	@Override
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
+	}
+
+	@Override
+	public String getWordValuePrese() {
+		return wordValuePrese;
+	}
+
+	@Override
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
 	}
 
 	public Integer getHomonymNr() {
@@ -56,20 +72,44 @@ public class TypeTermMeaningWord extends AbstractDataObject {
 		this.lang = lang;
 	}
 
+	@Override
 	public String[] getWordTypeCodes() {
 		return wordTypeCodes;
 	}
 
+	@Override
 	public void setWordTypeCodes(String[] wordTypeCodes) {
 		this.wordTypeCodes = wordTypeCodes;
 	}
 
-	public String[] getDatasetCodes() {
-		return datasetCodes;
+	@Override
+	public boolean isPrefixoid() {
+		return prefixoid;
 	}
 
-	public void setDatasetCodes(String[] datasetCodes) {
-		this.datasetCodes = datasetCodes;
+	@Override
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	@Override
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	@Override
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	@Override
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	@Override
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
 	}
 
 	public boolean isMatchingWord() {
@@ -80,20 +120,12 @@ public class TypeTermMeaningWord extends AbstractDataObject {
 		this.matchingWord = matchingWord;
 	}
 
-	public boolean isPrefixoid() {
-		return prefixoid;
+	public String[] getDatasetCodes() {
+		return datasetCodes;
 	}
 
-	public void setPrefixoid(boolean prefixoid) {
-		this.prefixoid = prefixoid;
-	}
-
-	public boolean isSuffixoid() {
-		return suffixoid;
-	}
-
-	public void setSuffixoid(boolean suffixoid) {
-		this.suffixoid = suffixoid;
+	public void setDatasetCodes(String[] datasetCodes) {
+		this.datasetCodes = datasetCodes;
 	}
 
 }

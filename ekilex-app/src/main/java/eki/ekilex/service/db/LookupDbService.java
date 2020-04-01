@@ -104,8 +104,8 @@ public class LookupDbService extends AbstractSearchDbService {
 
 	public List<Long> getWordIdsOfJoinCandidates(eki.ekilex.data.Word targetWord, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
 
-		String wordValue = targetWord.getValue();
-		String wordLang = targetWord.getLanguage();
+		String wordValue = targetWord.getWordValue();
+		String wordLang = targetWord.getLang();
 		Long wordIdToExclude = targetWord.getWordId();
 		boolean isPrefixoid = targetWord.isPrefixoid();
 		boolean isSuffixoid = targetWord.isSuffixoid();

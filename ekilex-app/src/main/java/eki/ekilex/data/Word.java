@@ -2,58 +2,41 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import eki.common.data.AbstractDataObject;
 
-public class Word extends AbstractDataObject {
+public class Word extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "word_id")
 	private Long wordId;
 
-	@Column(name = "word_value")
-	private String value;
+	private String wordValue;
 
-	@Column(name = "word_value_prese")
-	private String valuePrese;
+	private String wordValuePrese;
 
-	@Column(name = "vocal_form")
 	private String vocalForm;
 
-	@Column(name = "homonym_nr")
-	private Integer homonymNumber;
+	private Integer homonymNr;
 
-	@Column(name = "lang")
-	private String language;
+	private String lang;
 
-	@Column(name = "word_class")
 	private String wordClass;
 
-	@Column(name = "gender_code")
 	private String genderCode;
 
-	@Column(name = "aspect_code")
 	private String aspectCode;
 
-	@Column(name = "word_type_codes")
 	private String[] wordTypeCodes;
 
-	@Column(name = "dataset_codes")
-	private String[] datasetCodes;
-
-	@Column(name = "is_prefixoid")
 	private boolean prefixoid;
 
-	@Column(name = "is_suffixoid")
 	private boolean suffixoid;
 
-	@Column(name = "layer_process_state_codes")
-	List<String> layerProcessStateCodes;
+	private boolean foreign;
 
-	public Word() {
-	}
+	private String[] datasetCodes;
+
+	private List<String> layerProcessStateCodes;
 
 	public Long getWordId() {
 		return wordId;
@@ -63,20 +46,24 @@ public class Word extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getValue() {
-		return value;
+	@Override
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	@Override
+	public void setWordValue(String value) {
+		this.wordValue = value;
 	}
 
-	public String getValuePrese() {
-		return valuePrese;
+	@Override
+	public String getWordValuePrese() {
+		return wordValuePrese;
 	}
 
-	public void setValuePrese(String valuePrese) {
-		this.valuePrese = valuePrese;
+	@Override
+	public void setWordValuePrese(String valuePrese) {
+		this.wordValuePrese = valuePrese;
 	}
 
 	public String getVocalForm() {
@@ -87,20 +74,20 @@ public class Word extends AbstractDataObject {
 		this.vocalForm = vocalForm;
 	}
 
-	public Integer getHomonymNumber() {
-		return homonymNumber;
+	public Integer getHomonymNr() {
+		return homonymNr;
 	}
 
-	public void setHomonymNumber(Integer homonymNumber) {
-		this.homonymNumber = homonymNumber;
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 
-	public String getLanguage() {
-		return language;
+	public String getLang() {
+		return lang;
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 	public String getWordClass() {
@@ -127,12 +114,44 @@ public class Word extends AbstractDataObject {
 		this.aspectCode = aspectCode;
 	}
 
+	@Override
 	public String[] getWordTypeCodes() {
 		return wordTypeCodes;
 	}
 
+	@Override
 	public void setWordTypeCodes(String[] wordTypeCodes) {
 		this.wordTypeCodes = wordTypeCodes;
+	}
+
+	@Override
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	@Override
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	@Override
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	@Override
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	@Override
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	@Override
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
 	}
 
 	public String[] getDatasetCodes() {
@@ -141,22 +160,6 @@ public class Word extends AbstractDataObject {
 
 	public void setDatasetCodes(String[] datasetCodes) {
 		this.datasetCodes = datasetCodes;
-	}
-
-	public boolean isPrefixoid() {
-		return prefixoid;
-	}
-
-	public void setPrefixoid(boolean prefixoid) {
-		this.prefixoid = prefixoid;
-	}
-
-	public boolean isSuffixoid() {
-		return suffixoid;
-	}
-
-	public void setSuffixoid(boolean suffixoid) {
-		this.suffixoid = suffixoid;
 	}
 
 	public List<String> getLayerProcessStateCodes() {

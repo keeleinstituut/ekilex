@@ -1,11 +1,10 @@
 select w.id word_id,
-       array_remove(array_agg(l.id), null) lexeme_id_candidates
+       array_remove(array_agg(l.id order by l.order_by), null) lexeme_id_candidates
 from word w
   left outer join lexeme l
                on l.word_id = w.id
               and l.dataset_code = :datasetCode
               and l.type = 'PRIMARY'
-              and l.complexity = 'DETAIL'
 where exists (select f.id
               from paradigm p,
                    form f

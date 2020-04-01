@@ -62,6 +62,7 @@ import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
+import eki.ekilex.data.db.tables.WordRelation;
 
 @Component
 public class LexSearchDbService extends AbstractSearchDbService {
@@ -250,13 +251,22 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm p2 = PARADIGM.as("p2");
 		Form f2 = FORM.as("f2");
 
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+
 		return create
 				.select(
 						w2.ID.as("word_id"),
-						f2.VALUE,
-						f2.VALUE_PRESE,
-						w2.HOMONYM_NR.as("homonym_number"),
-						w2.LANG.as("language"),
+						f2.VALUE.as("word_value"),
+						f2.VALUE_PRESE.as("word_value_prese"),
+						w2.HOMONYM_NR,
+						w2.LANG,
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
 						l2.ORDER_BY)
@@ -277,28 +287,43 @@ public class LexSearchDbService extends AbstractSearchDbService {
 	}
 
 	public eki.ekilex.data.Word getWord(Long wordId) {
+
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+		Lexeme l = LEXEME.as("l");
+
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+
 		return create.select(
-				WORD.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("word_value"),
-				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("word_value_prese"),
-				DSL.field("array_to_string(array_agg(distinct form.vocal_form), ',')").cast(String.class).as("vocal_form"),
-				WORD.HOMONYM_NR,
-				WORD.LANG,
-				WORD.WORD_CLASS,
-				WORD.GENDER_CODE,
-				WORD.ASPECT_CODE)
-				.from(WORD, PARADIGM, FORM)
-				.where(WORD.ID.eq(wordId)
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
+				w.ID.as("word_id"),
+				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").cast(String.class).as("word_value"),
+				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')").cast(String.class).as("word_value_prese"),
+				DSL.field("array_to_string(array_agg(distinct f.vocal_form), ',')").cast(String.class).as("vocal_form"),
+				w.HOMONYM_NR,
+				w.LANG,
+				w.WORD_CLASS,
+				w.GENDER_CODE,
+				w.ASPECT_CODE,
+				wtf.as("word_type_codes"),
+				wtpf.as("prefixoid"),
+				wtsf.as("suffixoid"),
+				wtz.as("foreign"))
+				.from(w, p, f)
+				.where(w.ID.eq(wordId)
+						.and(p.WORD_ID.eq(w.ID))
+						.and(f.PARADIGM_ID.eq(p.ID))
+						.and(f.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
 						.andExists(DSL
-								.select(LEXEME.ID)
-								.from(LEXEME)
+								.select(l.ID)
+								.from(l)
 								.where(
-										LEXEME.WORD_ID.eq(WORD.ID)
-												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
-				.groupBy(WORD.ID)
+										l.WORD_ID.eq(w.ID)
+												.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+				.groupBy(w.ID)
 				.fetchOptionalInto(eki.ekilex.data.Word.class)
 				.orElse(null);
 	}
@@ -313,65 +338,81 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Form f2 = FORM.as("f2");
 		WordRelTypeLabel wrtl = WORD_REL_TYPE_LABEL.as("wrtl");
 
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+
 		return create
 				.selectDistinct(
-						wgrm2.ID.as("id"),
+						wgrm2.ID,
 						wgr.ID.as("group_id"),
 						w2.ID.as("word_id"),
-						f2.ID.as("form_id"),
-						f2.VALUE.as("word"),
+						f2.VALUE.as("word_value"),
+						f2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
 						wrtl.VALUE.as("rel_type_label"),
-						wgrm2.ORDER_BY.as("order_by"))
+						wgrm2.ORDER_BY)
 				.from(
-						wgr.leftOuterJoin(wrtl).on(
-								wgr.WORD_REL_TYPE_CODE.eq(wrtl.CODE)
-										.and(wrtl.LANG.eq(classifierLabelLang)
-												.and(wrtl.TYPE.eq(classifierLabelTypeCode)))),
-						wgrm1,
-						wgrm2,
-						w2,
-						p2,
-						f2)
-				.where(
-						wgrm1.WORD_ID.eq(wordId)
-								.and(wgrm1.WORD_GROUP_ID.eq(wgr.ID))
-								.and(wgrm2.WORD_GROUP_ID.eq(wgr.ID))
-								.and(w2.ID.eq(wgrm2.WORD_ID))
-								.and(p2.WORD_ID.eq(w2.ID))
-								.and(f2.PARADIGM_ID.eq(p2.ID))
-								.and(f2.MODE.eq(FormMode.WORD.name())))
+						wgrm1
+								.innerJoin(wgr).on(wgr.ID.eq(wgrm1.WORD_GROUP_ID))
+								.innerJoin(wgrm2).on(wgrm2.WORD_GROUP_ID.eq(wgr.ID))
+								.innerJoin(w2).on(w2.ID.eq(wgrm2.WORD_ID))
+								.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
+								.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
+								.leftOuterJoin(wrtl).on(
+										wgr.WORD_REL_TYPE_CODE.eq(wrtl.CODE)
+												.and(wrtl.LANG.eq(classifierLabelLang)
+														.and(wrtl.TYPE.eq(classifierLabelTypeCode)))))
+				.where(wgrm1.WORD_ID.eq(wordId))
 				.orderBy(wgrm2.ORDER_BY)
 				.fetchInto(Relation.class);
 	}
 
 	public List<Relation> getWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
+		WordRelation r = WORD_RELATION.as("r");
+		Lexeme l2 = LEXEME.as("l2");
+		Word w2 = WORD.as("w2");
+		Paradigm p2 = PARADIGM.as("p2");
+		Form f2 = FORM.as("f2");
+		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
+
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+
 		return create
 				.selectDistinct(
-						WORD_RELATION.ID.as("id"),
-						FORM.VALUE.as("word"),
-						WORD.ID.as("word_id"),
-						WORD.LANG.as("word_lang"),
-						WORD_RELATION.WORD_REL_TYPE_CODE.as("rel_type_code"),
-						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
-						WORD_RELATION.RELATION_STATUS.as("relation_status"),
-						WORD_RELATION.ORDER_BY.as("order_by"))
+						r.ID.as("id"),
+						w2.ID.as("word_id"),
+						f2.VALUE.as("word_value"),
+						f2.VALUE_PRESE.as("word_value_prese"),
+						w2.LANG.as("word_lang"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						r.WORD_REL_TYPE_CODE.as("rel_type_code"),
+						rtl.VALUE.as("rel_type_label"),
+						r.RELATION_STATUS,
+						r.ORDER_BY)
 				.from(
-						WORD_RELATION.leftOuterJoin(WORD_REL_TYPE_LABEL).on(
-								WORD_RELATION.WORD_REL_TYPE_CODE.eq(WORD_REL_TYPE_LABEL.CODE)
-										.and(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-												.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
-						WORD,
-						PARADIGM,
-						FORM)
-				.where(
-						WORD_RELATION.WORD1_ID.eq(wordId)
-								.and(WORD_RELATION.WORD2_ID.eq(WORD.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.orderBy(WORD_RELATION.ORDER_BY)
+						r
+								.innerJoin(w2).on(w2.ID.eq(r.WORD2_ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
+								.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
+								.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
+								.leftOuterJoin(rtl).on(
+										r.WORD_REL_TYPE_CODE.eq(rtl.CODE)
+												.and(rtl.LANG.eq(classifierLabelLang)
+														.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
+				.where(r.WORD1_ID.eq(wordId))
+				.orderBy(r.ORDER_BY)
 				.fetchInto(Relation.class);
 	}
 

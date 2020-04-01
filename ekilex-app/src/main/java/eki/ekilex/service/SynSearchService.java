@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
@@ -46,6 +46,7 @@ import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.ProcessDbService;
+import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
 public class SynSearchService extends AbstractWordSearchService {
@@ -138,12 +139,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
 		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
-		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(DbConstant.PROCESS_STATE_COMPLETE, lexemeData.getLayerProcessStateCode()));
+		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(GlobalConstant.PROCESS_STATE_COMPLETE, lexemeData.getLayerProcessStateCode()));
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
-		String mainWordLang = wordDetails.getLanguage();
+		String headwordLang = wordDetails.getLang();
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName);
-		synLexemes.forEach(lexeme -> populateLexeme(lexeme, mainWordLang, meaningWordLangs));
+		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, meaningWordLangs));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
 		List<SynRelation> relations = Collections.emptyList();
@@ -159,7 +160,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		return wordDetails;
 	}
 
-	private void populateLexeme(WordSynLexeme lexeme, String mainWordLanguage, List<String> meaningWordLangs) {
+	private void populateLexeme(WordSynLexeme lexeme, String headwordLanguage, List<String> meaningWordLangs) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
@@ -169,7 +170,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		if (CollectionUtils.isNotEmpty(meaningWordLangs)) {
 			List<LexemeType> lexemeTypes = Arrays.asList(LexemeType.PRIMARY, LexemeType.SECONDARY);
 			List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, meaningWordLangs, lexemeTypes);
-			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, mainWordLanguage);
+			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, headwordLanguage);
 		}
 
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
@@ -217,7 +218,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
 
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
-		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Collections.singletonList(wordDetails.getLanguage()), Collections.singletonList(LexemeType.PRIMARY));
+		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Collections.singletonList(wordDetails.getLang()), Collections.singletonList(LexemeType.PRIMARY));
 
 		for (MeaningWord meaningWord : meaningWords) {
 			Long meaningWordRelationId = synSearchDbService.getRelationId(meaningWord.getWordId(), wordId, RAW_RELATION_CODE);

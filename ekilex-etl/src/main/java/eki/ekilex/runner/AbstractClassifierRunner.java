@@ -21,6 +21,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.Classifier;
@@ -30,7 +31,7 @@ import eki.ekilex.service.XmlReader;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 
-public abstract class AbstractClassifierRunner implements InitializingBean, SystemConstant, TableName {
+public abstract class AbstractClassifierRunner implements InitializingBean, SystemConstant, GlobalConstant, TableName {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractClassifierRunner.class);
 

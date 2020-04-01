@@ -10,7 +10,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
@@ -21,7 +21,7 @@ import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserProfileDbService;
 
 @Component
-public class UserProfileService implements DbConstant, SystemConstant {
+public class UserProfileService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	private UserProfileDbService userProfileDbService;

@@ -30,7 +30,7 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
@@ -42,7 +42,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.WordFreeform;
 
 @Component
-public class LifecycleLogDbServiceHelper implements DbConstant {
+public class LifecycleLogDbServiceHelper implements GlobalConstant {
 
 	public Map<String, Object> getFirstDepthFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
 

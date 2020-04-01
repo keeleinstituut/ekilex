@@ -16,8 +16,7 @@
           <th:block th:if="${resultRow.meaningWordsExist}">
             <div th:each="meaningWord : ${resultRow.meaningWords}" class="row" th:classappend="${meaningWord.matchingWord ? '' : 'other-word'}">
               <span class="ml-1">
-                <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}"
-                      th:class="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
+                <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}" th:class="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
                 <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
                 <span class="ctxt" style="margin-top: 2px;">
                   <span th:each="datasetCode,itemIter : ${meaningWord.datasetCodes}">

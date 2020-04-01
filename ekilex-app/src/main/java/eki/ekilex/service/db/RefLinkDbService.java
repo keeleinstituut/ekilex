@@ -9,10 +9,10 @@ import org.jooq.Record3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 
 @Component
-public class RefLinkDbService implements DbConstant {
+public class RefLinkDbService implements GlobalConstant {
 
 	private DSLContext create;
 

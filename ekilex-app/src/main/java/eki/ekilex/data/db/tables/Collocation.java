@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Collocation extends TableImpl<CollocationRecord> {
 
-    private static final long serialVersionUID = 746407231;
+    private static final long serialVersionUID = -376878570;
 
     /**
      * The reference instance of <code>public.collocation</code>
@@ -138,7 +138,7 @@ public class Collocation extends TableImpl<CollocationRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.COLLOCATION_PKEY);
+        return Arrays.<Index>asList(Indexes.COLLOCATION_PKEY, Indexes.COLLOCATION_VALUE_IDX);
     }
 
     /**

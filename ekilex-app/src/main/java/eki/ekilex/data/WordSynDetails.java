@@ -4,15 +4,21 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordSynDetails extends AbstractDataObject {
+public class WordSynDetails extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
-	private String word;
+	private Long wordId;
 
-	private String language;
+	private String wordValue;
+
+	private String wordValuePrese;
+
+	private String lang;
 
 	private String morphCode;
+
+	private String[] wordTypeCodes;
 
 	private List<WordSynLexeme> lexemes;
 
@@ -22,20 +28,46 @@ public class WordSynDetails extends AbstractDataObject {
 
 	private Integer wordProcessLogCount;
 
-	public String getWord() {
-		return word;
+	private boolean prefixoid;
+
+	private boolean suffixoid;
+
+	private boolean foreign;
+
+	public Long getWordId() {
+		return wordId;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
 	}
 
-	public String getLanguage() {
-		return language;
+	@Override
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
+	@Override
+	public void setWordValue(String word) {
+		this.wordValue = word;
+	}
+
+	@Override
+	public String getWordValuePrese() {
+		return wordValuePrese;
+	}
+
+	@Override
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 	public String getMorphCode() {
@@ -44,6 +76,16 @@ public class WordSynDetails extends AbstractDataObject {
 
 	public void setMorphCode(String morphCode) {
 		this.morphCode = morphCode;
+	}
+
+	@Override
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
+	}
+
+	@Override
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
 	}
 
 	public List<WordSynLexeme> getLexemes() {
@@ -77,4 +119,35 @@ public class WordSynDetails extends AbstractDataObject {
 	public void setWordProcessLogCount(Integer wordProcessLogCount) {
 		this.wordProcessLogCount = wordProcessLogCount;
 	}
+
+	@Override
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	@Override
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	@Override
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	@Override
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	@Override
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	@Override
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
+	}
+
 }

@@ -38,3 +38,7 @@ where complexity = 'DEFAULT'
                  from definition_dataset dd
                  where dd.definition_id = d.id
                    and dd.dataset_code != 'sss');
+
+-- ekilex:
+drop type type_term_meaning_word;
+create type type_term_meaning_word as (word_id bigint, word_value text, word_value_prese text, homonym_nr integer, lang char(3), word_type_codes varchar(100) array, prefixoid boolean, suffixoid boolean, "foreign" boolean, matching_word boolean, dataset_codes varchar(10) array);

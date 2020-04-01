@@ -35,7 +35,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.TableName;
 import eki.common.data.Count;
 import eki.ekilex.data.transport.ForeignKey;
@@ -43,7 +43,7 @@ import eki.ekilex.data.transport.TableColumn;
 import eki.ekilex.service.TransportService;
 
 @Component
-public class DatasetExporterRunner extends AbstractLoaderCommons implements InitializingBean, TableName, DbConstant {
+public class DatasetExporterRunner extends AbstractLoaderCommons implements TableName, GlobalConstant, InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(DatasetExporterRunner.class);
 

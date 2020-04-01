@@ -589,7 +589,7 @@
                   <td class="pr-3">
                     <th:block th:each="relation, relIter : ${relations}">
                       <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
-                        <span th:text="${relation.word}"></span>
+                        <span th:utext="${viewUtil.getMarkupHtml(relation)}"></span>
                         <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         <th:block th:each="datasetCode, dsIter : ${relation.wordLexemeDatasetCodes}">
                           <span th:if="${dsIter.first}">[</span>
@@ -623,7 +623,7 @@
                     </th:block>
                   </td>
                   <td>
-                    <span th:text="${relations.get(0).relationTypeLabel}"></span>
+                    <span th:text="${relations.get(0).relTypeLabel}"></span>
                     <button type="button" class="btn badge badge-warning"
                             data-placement="right"
                             th:data-id="${relations.get(0).id}"
@@ -702,7 +702,7 @@
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
                   <div class="hidden-buttons">
-                    <span th:id="${'word-value-' + lexeme.wordId}" th:utext="${lexeme.wordValuePrese}" class="ttl word-value"></span>
+                    <span th:id="${'word-value-' + lexeme.wordId}" th:utext="${viewUtil.getMarkupHtml(lexeme)}" class="ttl word-value"></span>
                     <button type="button" class="btn badge badge-primary"
                             title="Muuda"
                             data-toggle="modal"
@@ -899,7 +899,7 @@
                       </td>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
-                          <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                          <span th:text="${viewUtil.getMarkupHtml(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"
@@ -911,7 +911,7 @@
                         </button>
                       </td>
                       <td class="invisible-buttons">
-                        <span th:text="${relation.relationTypeLabel}"></span>
+                        <span th:text="${relation.relTypeLabel}"></span>
                       </td>
                     </tr>
                   </table>

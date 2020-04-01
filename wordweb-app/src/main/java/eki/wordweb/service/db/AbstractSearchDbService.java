@@ -22,7 +22,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.FormMode;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
@@ -51,7 +51,7 @@ import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 
-public abstract class AbstractSearchDbService implements DbConstant, SystemConstant {
+public abstract class AbstractSearchDbService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	protected DSLContext create;

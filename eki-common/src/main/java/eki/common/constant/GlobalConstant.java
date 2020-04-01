@@ -1,6 +1,10 @@
 package eki.common.constant;
 
-public interface DbConstant {
+public interface GlobalConstant {
+
+	String UTF_8 = "UTF-8";
+
+	String DATASET_SSS = "sss";
 
 	String PROCESS_STATE_PUBLIC = "avalik";
 
@@ -17,6 +21,10 @@ public interface DbConstant {
 	String WORD_TYPE_CODE_SUFFIXOID = "sf";
 
 	String WORD_TYPE_CODE_ABBREVIATION = "l";
+
+	String[] WORD_TYPE_CODES_ABBREVIATION = new String[] {"l", "th"};
+
+	String[] WORD_TYPE_CODES_FOREIGN = new String[] {"z", "lz"};
 
 	String IGNORE_QUERY_LOG = "'ignore query log'";
 

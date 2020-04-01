@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriUtils;
 
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
@@ -29,7 +29,7 @@ import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 
 @Component
-public class SearchHelper implements WebConstant {
+public class SearchHelper implements WebConstant, GlobalConstant {
 
 	private static final char PATH_SEPARATOR = '/';
 	private static final char DATASETS_SEPARATOR = ',';
@@ -354,10 +354,10 @@ public class SearchHelper implements WebConstant {
 	}
 
 	private String encode(String value) {
-		return UriUtils.encode(value, SystemConstant.UTF_8);
+		return UriUtils.encode(value, UTF_8);
 	}
 
 	private String decode(String value) {
-		return UriUtils.decode(value, SystemConstant.UTF_8);
+		return UriUtils.decode(value, UTF_8);
 	}
 }

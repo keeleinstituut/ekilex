@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.data.SynRelation;
-import eki.ekilex.service.SynSearchDbService;
+import eki.ekilex.service.db.SynSearchDbService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)

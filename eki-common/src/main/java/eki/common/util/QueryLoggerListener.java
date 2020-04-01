@@ -8,9 +8,9 @@ import org.jooq.impl.DefaultExecuteListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 
-public class QueryLoggerListener extends DefaultExecuteListener implements DbConstant {
+public class QueryLoggerListener extends DefaultExecuteListener implements GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(QueryLoggerListener.class);
 

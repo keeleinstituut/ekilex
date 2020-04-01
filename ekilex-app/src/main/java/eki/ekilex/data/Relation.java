@@ -2,61 +2,53 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import eki.common.constant.RelationStatus;
 import eki.common.data.AbstractDataObject;
 
-public class Relation extends AbstractDataObject {
+public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "group_id")
 	private Long groupId;
 
-	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
-	@Column(name = "lex_value_state_codes")
 	private List<String> lexemeValueStateCodes;
 
-	@Column(name = "lex_register_codes")
 	private List<String> lexemeRegisterCodes;
 
-	@Column(name = "lex_government_values")
 	private List<String> lexemeGovernmentValues;
 
-	@Column(name = "meaning_id")
 	private Long meaningId;
 
-	@Column(name = "word_id")
 	private Long wordId;
 
-	@Column(name = "word")
-	private String word;
+	private String wordValue;
 
-	@Column(name = "word_lang")
+	private String wordValuePrese;
+
 	private String wordLang;
 
-	@Column(name = "word_aspect_code")
 	private String wordAspectCode;
 
-	@Column(name = "word_lexeme_dataset_codes")
+	private String[] wordTypeCodes;
+
+	private boolean prefixoid;
+
+	private boolean suffixoid;
+
+	private boolean foreign;
+
 	private List<String> wordLexemeDatasetCodes;
 
-	@Column(name = "rel_type_code")
-	private String relationTypeCode;
+	private String relTypeCode;
 
-	@Column(name = "rel_type_label")
-	private String relationTypeLabel;
+	private String relTypeLabel;
 
-	@Column(name = "order_by")
 	private Long orderBy;
 
-	@Column(name = "relation_status")
 	private RelationStatus relationStatus;
 
 	public Long getId() {
@@ -123,12 +115,24 @@ public class Relation extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getWord() {
-		return word;
+	@Override
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	@Override
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
+	}
+
+	@Override
+	public String getWordValuePrese() {
+		return wordValuePrese;
+	}
+
+	@Override
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
 	}
 
 	public String getWordLang() {
@@ -147,6 +151,46 @@ public class Relation extends AbstractDataObject {
 		this.wordAspectCode = wordAspectCode;
 	}
 
+	@Override
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
+	}
+
+	@Override
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
+	}
+
+	@Override
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	@Override
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	@Override
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	@Override
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	@Override
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	@Override
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
+	}
+
 	public List<String> getWordLexemeDatasetCodes() {
 		return wordLexemeDatasetCodes;
 	}
@@ -155,12 +199,20 @@ public class Relation extends AbstractDataObject {
 		this.wordLexemeDatasetCodes = wordLexemeDatasetCodes;
 	}
 
-	public String getRelationTypeLabel() {
-		return relationTypeLabel;
+	public String getRelTypeCode() {
+		return relTypeCode;
 	}
 
-	public void setRelationTypeLabel(String relationTypeLabel) {
-		this.relationTypeLabel = relationTypeLabel;
+	public void setRelTypeCode(String relTypeLabel) {
+		this.relTypeCode = relTypeLabel;
+	}
+
+	public String getRelTypeLabel() {
+		return relTypeLabel;
+	}
+
+	public void setRelTypeLabel(String relTypeLabel) {
+		this.relTypeLabel = relTypeLabel;
 	}
 
 	public Long getOrderBy() {
@@ -171,14 +223,6 @@ public class Relation extends AbstractDataObject {
 		this.orderBy = orderBy;
 	}
 
-	public String getRelationTypeCode() {
-		return relationTypeCode;
-	}
-
-	public void setRelationTypeCode(String relationTypeCode) {
-		this.relationTypeCode = relationTypeCode;
-	}
-
 	public RelationStatus getRelationStatus() {
 		return relationStatus;
 	}
@@ -186,4 +230,5 @@ public class Relation extends AbstractDataObject {
 	public void setRelationStatus(RelationStatus relationStatus) {
 		this.relationStatus = relationStatus;
 	}
+
 }

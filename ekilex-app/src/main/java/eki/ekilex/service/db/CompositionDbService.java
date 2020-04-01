@@ -56,7 +56,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LexCollocationGroupTuple;
@@ -96,7 +96,7 @@ import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 
 @Component
-public class CompositionDbService implements DbConstant {
+public class CompositionDbService implements GlobalConstant {
 
 	@Autowired
 	private DSLContext create;

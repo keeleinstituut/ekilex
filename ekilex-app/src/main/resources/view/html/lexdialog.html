@@ -754,7 +754,7 @@
         <form th:action="@{/update_word_value}" method="post">
           <div class="modal-body">
             <input type="hidden" name="wordId" th:value="${wordId}">
-            <input type="hidden" name="value" th:value="${details.word.valuePrese}">
+            <input type="hidden" name="value" th:value="${details.word.wordValuePrese}">
             <div class="form-group row eki-editor">
               <div class="col-md-12 pb-3">
                 <div class="float-right">
@@ -905,7 +905,7 @@
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_lang">
             <select required class="form-control" name="value">
-              <option th:each="item : ${allLanguages}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.word.language}">value</option>
+              <option th:each="item : ${allLanguages}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.word.lang}">value</option>
             </select>
           </div>
         </form>

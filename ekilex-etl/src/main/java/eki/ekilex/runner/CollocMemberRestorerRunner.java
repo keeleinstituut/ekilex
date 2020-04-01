@@ -220,6 +220,8 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 			}
 		}
 
+		incompleteCollocs = incompleteCollocs.stream().distinct().collect(Collectors.toList());
+
 		for (IncompleteColloc incompleteColloc : incompleteCollocs) {
 
 			Long collocationId = incompleteColloc.getCollocationId();

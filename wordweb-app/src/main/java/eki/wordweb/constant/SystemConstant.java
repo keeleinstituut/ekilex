@@ -1,10 +1,9 @@
 package eki.wordweb.constant;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.GlobalConstant;
 
 public interface SystemConstant {
-
-	String UTF_8 = "UTF-8";
 
 	String DESTIN_LANG_ALL = "dlall";
 
@@ -18,9 +17,7 @@ public interface SystemConstant {
 
 	String DATASET_ALL = "dsall";
 
-	String DATASET_SSS = "sss";
-
-	String[] SUPPORTED_SIMPLE_DATASETS = new String[] {DATASET_ALL, DATASET_SSS};
+	String[] SUPPORTED_SIMPLE_DATASETS = new String[] {DATASET_ALL, GlobalConstant.DATASET_SSS};
 
 	String[] SUPPORTED_DESTIN_LANGS = new String[] {DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS};
 
@@ -53,14 +50,6 @@ public interface SystemConstant {
 	String CACHE_KEY_CORPORA = "corpora";
 
 	String UNKNOWN_FORM_CODE = "??";
-
-	String[] ABBREVIATION_WORD_TYPE_CODES = new String[] {"l", "th"};
-
-	String PREFIXOID_WORD_TYPE_CODE = "pf";
-
-	String SUFFIXOID_WORD_TYPE_CODE = "sf";
-
-	String[] FOREIGN_WORD_TYPE_CODES = new String[] {"z", "lz"};
 
 	Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
 

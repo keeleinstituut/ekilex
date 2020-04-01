@@ -2,21 +2,29 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class MeaningWord extends AbstractDataObject {
+public class MeaningWord extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long wordId;
 
-	private String value;
+	private String wordValue;
 
-	private String valuePrese;
+	private String wordValuePrese;
 
-	private Integer homonymNumber;
+	private Integer homonymNr;
 
 	private boolean wordHomonymsExist;
 
-	private String language;
+	private String lang;
+
+	private String[] wordTypeCodes;
+
+	private boolean prefixoid;
+
+	private boolean suffixoid;
+
+	private boolean foreign;
 
 	private Long lexemeId;
 
@@ -34,28 +42,32 @@ public class MeaningWord extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getValue() {
-		return value;
+	@Override
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	@Override
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
-	public String getValuePrese() {
-		return valuePrese;
+	@Override
+	public String getWordValuePrese() {
+		return wordValuePrese;
 	}
 
-	public void setValuePrese(String valuePrese) {
-		this.valuePrese = valuePrese;
+	@Override
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
 	}
 
-	public Integer getHomonymNumber() {
-		return homonymNumber;
+	public Integer getHomonymNr() {
+		return homonymNr;
 	}
 
-	public void setHomonymNumber(Integer homonymNumber) {
-		this.homonymNumber = homonymNumber;
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 
 	public boolean isWordHomonymsExist() {
@@ -66,12 +78,52 @@ public class MeaningWord extends AbstractDataObject {
 		this.wordHomonymsExist = wordHomonymsExist;
 	}
 
-	public String getLanguage() {
-		return language;
+	public String getLang() {
+		return lang;
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	@Override
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
+	}
+
+	@Override
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
+	}
+
+	@Override
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	@Override
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	@Override
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	@Override
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	@Override
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	@Override
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
 	}
 
 	public Long getLexemeId() {

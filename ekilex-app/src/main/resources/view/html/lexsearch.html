@@ -52,7 +52,7 @@
           <div class="border-bottom px-2  py-2">
             <div class="d-flex flex-row align-items-center">
               <div class="hover-actions-container hover-actions-container-outline">
-                <h1 th:id="${'word-value-' + wordId}" th:utext="${details.word.valuePrese}" class="mb-0">Aktiivne sõna</h1>
+                <h1 th:id="${'word-value-' + wordId}" th:utext="${viewUtil.getMarkupHtml(details.word)}" class="mb-0">Aktiivne sõna</h1>
                 <div class="hover-actions hover-actions-bottom-right">
                   <button type="button" class="btn btn-compact btn-secondary"
                           title="Muuda"
@@ -175,8 +175,8 @@
                         <span th:unless="${lexeme.wordLang == meaningWordLangGroup.lang}" th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
                         <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
                           <span class="btn-custom">
-                            <span th:text="${meaningWord.value}"></span>
-                            <span th:text="${meaningWord.homonymNumber}"></span>
+                            <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}"></span>
+                            <span th:text="${meaningWord.homonymNr}"></span>
                             <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
                             <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                           </span>
@@ -241,8 +241,8 @@
                                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
                               </button>
                               <button type="button" class="btn btn-link p-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
-                                <span th:text="${meaningWord.value}"></span>
-                                <span th:text="${meaningWord.homonymNumber}"></span>
+                                <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}"></span>
+                                <span th:text="${meaningWord.homonymNr}"></span>
                                 <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
                               </button>
                               <button type="button" class="btn badge badge-primary"
@@ -654,7 +654,7 @@
                           <td class="pr-3">
                             <th:block th:each="relation, iter : ${relations}">
                               <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                                <span th:text="${relation.word}"></span>
+                                <span th:utext="${viewUtil.getMarkupHtml(relation)}"></span>
                                 <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                                 <th:block th:each="datasetCode, dsIter : ${relation.wordLexemeDatasetCodes}">
                                   <span th:if="${dsIter.first}">[</span>
@@ -688,7 +688,7 @@
                             </th:block>
                           </td>
                           <td>
-                            <span th:text="${relations.get(0).relationTypeLabel}"></span>
+                            <span th:text="${relations.get(0).relTypeLabel}"></span>
                             <button type="button" class="btn badge badge-warning"
                                     data-placement="right"
                                     th:data-id="${relations.get(0).id}"
@@ -1086,7 +1086,7 @@
                           </td>
                           <td class="pr-3 invisible-buttons">
                             <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                              <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                              <span th:utext="${viewUtil.getMarkupHtml(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                             </button>
                             <button type="button" class="btn badge badge-warning"
                                     th:data-id="${relation.id}"
@@ -1098,7 +1098,7 @@
                             </button>
                           </td>
                           <td class="invisible-buttons">
-                            <span th:text="${relation.relationTypeLabel}"></span>
+                            <span th:text="${relation.relTypeLabel}"></span>
                           </td>
                         </tr>
                       </table>
@@ -1301,7 +1301,7 @@
                       </td>
                       <td class="invisible-buttons">
                         <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                          <span th:text="${relation.word + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                          <span th:utext="${viewUtil.getMarkupHtml(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"
@@ -1313,7 +1313,7 @@
                         </button>
                       </td>
                       <td>
-                        <span th:text="${relation.relationTypeLabel}"></span>
+                        <span th:text="${relation.relTypeLabel}"></span>
                       </td>
                     </tr>
                   </table>
@@ -1322,7 +1322,7 @@
                       <td class="invisible-buttons">
                         <span th:each="relation, itemIter : ${wordGroup.members}">
                           <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                            <span th:text="${relation.word}"></span>
+                            <span th:utext="${viewUtil.getMarkupHtml(relation)}"></span>
                           </button>
                           <button type="button" class="btn badge badge-warning"
                                   th:data-id="${relation.id}"

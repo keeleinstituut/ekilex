@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.WordId;
 import eki.ekilex.data.transform.WordLexemeMeaning;
 import eki.ekilex.service.MergeService;
 
-public abstract class AbstractMergerRunner extends AbstractLoaderRunner implements DbConstant {
+public abstract class AbstractMergerRunner extends AbstractLoaderRunner implements GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractMergerRunner.class);
 

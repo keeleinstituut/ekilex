@@ -314,7 +314,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
 		cudService.createLexeme(wordId, dataset, meaningId);
 		Word word = lexSearchService.getWord(wordId);
-		String wordValue = word.getValue();
+		String wordValue = word.getWordValue();
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		if (!selectedDatasets.contains(dataset)) {
 			Long userId = userService.getAuthenticatedUser().getId();

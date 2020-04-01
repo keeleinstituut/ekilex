@@ -20,7 +20,6 @@ import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collections;
@@ -32,13 +31,12 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record12;
+import org.jooq.Record11;
+import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
-import org.jooq.Record7;
 import org.jooq.SelectHavingStep;
-import org.jooq.SelectJoinStep;
 import org.jooq.SelectOrderByStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -51,12 +49,12 @@ import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
+import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
@@ -77,7 +75,6 @@ import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
-import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
 
 @Component
@@ -571,13 +568,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Form fm = FORM.as("fm");
 		Lexeme lds = LEXEME.as("lds");
 		Dataset ds = DATASET.as("ds");
-		WordWordType wt = WORD_WORD_TYPE.as("wt");
 		Language wol = LANGUAGE.as("wol");
 
-		SelectHavingStep<Record1<String[]>> wts = DSL
-				.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
-				.from(wt).where(wt.WORD_ID.eq(wo.ID))
-				.groupBy(wt.WORD_ID);
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(wo.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(wo.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(wo.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(wo.ID);
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -589,9 +585,9 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(lds.DATASET_CODE.in(availableDatasetCodes)))
 				.asTable("wdsf");
 
-		SelectJoinStep<Record1<String[]>> wds = DSL
+		Field<String[]> wds = DSL.field(DSL
 				.select(DSL.arrayAgg(wdsf.field("dataset_code", String.class)).orderBy(wdsf.field("order_by")))
-				.from(wdsf);
+				.from(wdsf));
 
 		Condition wherelods = composeLexemeDatasetsCondition(lo, searchDatasetsRestriction);
 
@@ -600,17 +596,21 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewo = wherewo.and(wo.LANG.eq(resultLang));
 		}
 
-		Table<Record12<Long, Long, String, Long, String, Integer, String, String[], String[], Boolean, Long, Long>> mm = DSL
+		Table<Record16<Long, Long, String, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], Boolean, Long, Long>> mm = DSL
 				.select(
 						m.field("meaning_id", Long.class),
 						pm.WORD_ID.as("order_by_word_id"),
 						fm.VALUE.as("order_by_word"),
 						wo.ID.as("word_id"),
-						fo.VALUE.as("word"),
+						fo.VALUE.as("word_value"),
+						fo.VALUE_PRESE.as("word_value_prese"),
 						wo.HOMONYM_NR,
 						wo.LANG,
-						DSL.field(wts).as("word_type_codes"),
-						DSL.field(wds).as("dataset_codes"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						wds.as("dataset_codes"),
 						DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class)))).as("matching_word"),
 						wol.ORDER_BY.as("lang_order_by"),
 						lo.ORDER_BY.as("lex_order_by"))
@@ -630,12 +630,16 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array_agg(row ("
 						+ "m.word_id,"
-						+ "m.word,"
+						+ "m.word_value,"
+						+ "m.word_value_prese,"
 						+ "m.homonym_nr,"
 						+ "m.lang,"
 						+ "m.word_type_codes,"
-						+ "m.dataset_codes,"
-						+ "m.matching_word"
+						+ "m.prefixoid,"
+						+ "m.suffixoid,"
+						+ "m.foreign,"
+						+ "m.matching_word,"
+						+ "m.dataset_codes"
 						+ ")::type_term_meaning_word "
 						+ "order by "
 						+ "m.lang_order_by,"
@@ -702,12 +706,11 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Form fm = FORM.as("fm");
 		Lexeme lds = LEXEME.as("lds");
 		Dataset ds = DATASET.as("ds");
-		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
-		SelectHavingStep<Record1<String[]>> wts = DSL
-				.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
-				.from(wt).where(wt.WORD_ID.eq(wmid.field("word_id", Long.class)))
-				.groupBy(wt.WORD_ID);
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(wmid.field("word_id", Long.class));
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -718,24 +721,28 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(lds.DATASET_CODE.eq(ds.CODE)))
 				.asTable("wdsf");
 
-		SelectJoinStep<Record1<String[]>> wds = DSL
+		Field<String[]> wds = DSL.field(DSL
 				.select(DSL.arrayAgg(wdsf.field("dataset_code", String.class)).orderBy(wdsf.field("order_by")))
-				.from(wdsf);
+				.from(wdsf));
 
 		Condition wherewm = wm.ID.eq(wmid.field("word_id", Long.class));
 		if (StringUtils.isNotBlank(resultLang)) {
 			wherewm = wherewm.and(wm.LANG.eq(resultLang));
 		}
 
-		Table<Record7<Long, Long, String, Integer, String, String[], String[]>> wmm = DSL
+		Table<Record11<Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[]>> wmm = DSL
 				.select(
-						wmid.field("word_id", Long.class),
 						wmid.field("meaning_id", Long.class),
-						fm.VALUE.as("word"),
+						wmid.field("word_id", Long.class),
+						fm.VALUE.as("word_value"),
+						fm.VALUE_PRESE.as("word_value_prese"),
 						wm.HOMONYM_NR,
 						wm.LANG,
-						DSL.field(wts).as("word_type_codes"),
-						DSL.field(wds).as("dataset_codes"))
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						wds.as("dataset_codes"))
 				.from(wmid
 						.innerJoin(wm).on(wherewm)
 						.innerJoin(pm).on(pm.WORD_ID.eq(wm.ID))
@@ -744,6 +751,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						wmid.field("word_id"),
 						wmid.field("meaning_id"),
 						fm.VALUE,
+						fm.VALUE_PRESE,
 						wm.HOMONYM_NR,
 						wm.LANG)
 				.asTable("wm");
@@ -751,12 +759,16 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array(select row ("
 						+ "wm.word_id,"
-						+ "wm.word,"
+						+ "wm.word_value,"
+						+ "wm.word_value_prese,"
 						+ "wm.homonym_nr,"
 						+ "wm.lang,"
 						+ "wm.word_type_codes,"
-						+ "wm.dataset_codes,"
-						+ "true"
+						+ "wm.prefixoid,"
+						+ "wm.suffixoid,"
+						+ "wm.foreign,"
+						+ "true,"
+						+ "wm.dataset_codes"
 						+ ")::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
 
 		int limit = MAX_RESULTS_LIMIT;
@@ -769,7 +781,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						wmm.field("meaning_id", Long.class),
 						mw.as("meaning_words"))
 				.from(wmm)
-				.orderBy(wmm.field("word"), wmm.field("homonym_nr"))
+				.orderBy(wmm.field("word_value"), wmm.field("homonym_nr"))
 				.limit(limit)
 				.offset(offset)
 				.fetchInto(TermMeaning.class);
@@ -857,14 +869,13 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.groupBy(lf.LEXEME_ID)
 				.asField();
 
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+
 		return create
 				.select(
-						w.ID.as("word_id"),
-						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word_value"),
-						DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("word_value_prese"),
-						w.HOMONYM_NR,
-						w.LANG.as("word_lang"),
-						w.GENDER_CODE.as("word_gender_code"),
 						l.ID.as("lexeme_id"),
 						l.MEANING_ID,
 						l.DATASET_CODE.as("dataset"),
@@ -874,8 +885,18 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						lfreq.as("lexeme_frequencies"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
-						l.COMPLEXITY.as("lexeme_complexity"),
-						l.ORDER_BY)
+						l.COMPLEXITY,
+						l.ORDER_BY,
+						l.WORD_ID,
+						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word_value"),
+						DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("word_value_prese"),
+						w.HOMONYM_NR,
+						w.LANG.as("word_lang"),
+						w.GENDER_CODE.as("word_gender_code"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"))
 				.from(f, p, w, l)
 				.where(
 						l.ID.eq(lexemeId)

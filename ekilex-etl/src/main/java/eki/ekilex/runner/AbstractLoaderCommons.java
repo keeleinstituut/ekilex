@@ -10,13 +10,14 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.TableName;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.service.XmlReader;
 
-public abstract class AbstractLoaderCommons implements SystemConstant, TableName {
+public abstract class AbstractLoaderCommons implements SystemConstant, GlobalConstant, TableName {
 
 	@Autowired
 	protected XmlReader xmlReader;

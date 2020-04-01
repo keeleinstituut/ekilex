@@ -24,8 +24,8 @@ import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -60,14 +60,13 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.data.Word;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymRel;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 
 @Component
-public class ConversionUtil implements DbConstant {
+public class ConversionUtil implements GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 
@@ -563,7 +562,7 @@ public class ConversionUtil implements DbConstant {
 			WordGroup wordGroup = new WordGroup();
 			wordGroup.setId(groupId);
 			wordGroup.setMembers(memberGroups.get(groupId));
-			wordGroup.setGroupTypeLabel(wordGroup.getMembers().get(0).getRelationTypeLabel());
+			wordGroup.setGroupTypeLabel(wordGroup.getMembers().get(0).getRelTypeLabel());
 			groups.add(wordGroup);
 		}
 		return groups;
@@ -785,24 +784,14 @@ public class ConversionUtil implements DbConstant {
 		collocation.getCollocMembers().add(collocMember);
 	}
 
-	public void setWordTypeFlags(Word word, List<Classifier> wordTypes) {
-
-		if (CollectionUtils.isNotEmpty(wordTypes)) {
-			boolean isPrefixoid = wordTypes.stream().anyMatch(type -> type.getCode().equals(WORD_TYPE_CODE_PREFIXOID));
-			boolean isSuffixoid = wordTypes.stream().anyMatch(type -> type.getCode().equals(WORD_TYPE_CODE_SUFFIXOID));
-			word.setPrefixoid(isPrefixoid);
-			word.setSuffixoid(isSuffixoid);
-		}
-	}
-
-	public List<MeaningWordLangGroup> composeMeaningWordLangGroups(List<MeaningWord> meaningWords, String mainWordLang) {
+	public List<MeaningWordLangGroup> composeMeaningWordLangGroups(List<MeaningWord> meaningWords, String headwordLang) {
 
 		List<MeaningWordLangGroup> meaningWordLangGroups = new ArrayList<>();
 		Map<String, MeaningWordLangGroup> meaningWordLangGroupMap = new HashMap<>();
 		List<MeaningWord> meaningWordsOrderBy = meaningWords.stream().sorted(Comparator.comparing(MeaningWord::getOrderBy)).collect(Collectors.toList());
 
 		for (MeaningWord meaningWord : meaningWordsOrderBy) {
-			String lang = meaningWord.getLanguage();
+			String lang = meaningWord.getLang();
 			MeaningWordLangGroup meaningWordLangGroup = meaningWordLangGroupMap.get(lang);
 			if (meaningWordLangGroup == null) {
 				meaningWordLangGroup = new MeaningWordLangGroup();
@@ -814,7 +803,7 @@ public class ConversionUtil implements DbConstant {
 			meaningWordLangGroup.getMeaningWords().add(meaningWord);
 		}
 
-		meaningWordLangGroups.sort(Comparator.comparing(meaningWordLangGroup -> !StringUtils.equals(meaningWordLangGroup.getLang(), mainWordLang)));
+		meaningWordLangGroups.sort(Comparator.comparing(meaningWordLangGroup -> !StringUtils.equals(meaningWordLangGroup.getLang(), headwordLang)));
 		return meaningWordLangGroups;
 	}
 }

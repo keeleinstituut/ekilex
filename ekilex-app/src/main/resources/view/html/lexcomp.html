@@ -11,9 +11,9 @@
         <li th:each="word : ${wordsResult.words}" class="list-group-item search-result-item border-left-0 border-right-0 rounded-0 p-0">
           <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="detailsBtn">
             <span class="d-flex align-items-center">
-              <span class="badge badge-light mr-2" th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-              <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}">vorm 1</span>
-              <span th:text="${'(' + viewUtil.getLangIso2(word.language) + ')'}" class="ml-1"></span>
+              <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
+              <span th:utext="${viewUtil.getMarkupHtml(word)}">vorm 1</span>
+              <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}" class="ml-1"></span>
             </span>
             <small class="d-flex">
               <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
@@ -366,7 +366,7 @@
     </div>
   </div>
   <div class="mr-1" th:fragment="word_lang">
-    <th:block th:if="${#strings.isEmpty(details.word.language)}">
+    <th:block th:if="${#strings.isEmpty(details.word.lang)}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
               data-toggle="modal"
               th:data-target="${'#addWordLangDlg_' + wordId}"
@@ -374,9 +374,9 @@
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Keel
       </button>
     </th:block>
-    <th:block th:unless="${#strings.isEmpty(details.word.language)}">
+    <th:block th:unless="${#strings.isEmpty(details.word.lang)}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.language, allLanguages)}" data-toggle="tooltip" title="Keel"></span>
+        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.lang, allLanguages)}" data-toggle="tooltip" title="Keel"></span>
         <div class="hover-actions">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"

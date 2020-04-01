@@ -27,10 +27,10 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 
 @Component
-public class MaintenanceDbService implements DbConstant {
+public class MaintenanceDbService implements GlobalConstant {
 
 	private static final String DATASET_CODE_MAB = "mab";
 

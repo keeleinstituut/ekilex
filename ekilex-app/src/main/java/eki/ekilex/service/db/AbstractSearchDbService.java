@@ -17,7 +17,6 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -36,15 +35,16 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Record13;
+import org.jooq.Record14;
 import org.jooq.Record8;
 import org.jooq.SelectOrderByStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -73,8 +73,12 @@ import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
+import eki.ekilex.service.db.util.SubqueryHelper;
 
-public abstract class AbstractSearchDbService implements SystemConstant, DbConstant {
+public abstract class AbstractSearchDbService implements SystemConstant, GlobalConstant {
+
+	@Autowired
+	protected SubqueryHelper subqueryHelper;
 
 	private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -838,27 +842,12 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 					.groupBy(w.field("word_id")));
 		}
 
-		Field<String[]> wtf = DSL.field(DSL
-				.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
-				.from(WORD_WORD_TYPE)
-				.where(WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class)))
-				.groupBy(w.field("word_id")));
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.field("word_id", Long.class));
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.field("word_id", Long.class));
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.field("word_id", Long.class));
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.field("word_id", Long.class));
 
-		Field<Boolean> wtpf = DSL.field(DSL.exists(DSL
-				.select(WORD_WORD_TYPE.ID)
-				.from(WORD_WORD_TYPE)
-				.where(
-						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
-								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))));
-
-		Field<Boolean> wtsf = DSL.field(DSL.exists(DSL
-				.select(WORD_WORD_TYPE.ID)
-				.from(WORD_WORD_TYPE)
-				.where(
-						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
-								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))));
-
-		Table<Record13<Long, String, String, Integer, String, String, String, String, String[], String[], String[], Boolean, Boolean>> ww = DSL
+		Table<Record14<Long, String, String, Integer, String, String, String, String, String[], String[], String[], Boolean, Boolean, Boolean>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
 						w.field("word_value", String.class),
@@ -871,8 +860,9 @@ public abstract class AbstractSearchDbService implements SystemConstant, DbConst
 						dscf.as("dataset_codes"),
 						lpscf.as("layer_process_state_codes"),
 						wtf.as("word_type_codes"),
-						wtpf.as("is_prefixoid"),
-						wtsf.as("is_suffixoid"))
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"))
 				.from(w)
 				.orderBy(
 						w.field("word_value"),

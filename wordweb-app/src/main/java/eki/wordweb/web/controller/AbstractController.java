@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 
+import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.UiFilterElement;
@@ -18,7 +19,7 @@ import eki.wordweb.web.bean.SessionBean;
 import eki.wordweb.web.util.UserAgentUtil;
 import eki.wordweb.web.util.WebUtil;
 
-public abstract class AbstractController implements WebConstant, SystemConstant {
+public abstract class AbstractController implements WebConstant, SystemConstant, GlobalConstant {
 
 	@Autowired
 	protected CommonDataService commonDataService;

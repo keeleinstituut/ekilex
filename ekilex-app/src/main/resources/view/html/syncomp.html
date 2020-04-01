@@ -95,9 +95,9 @@
                     th:classappend="${wordIter.index == 0 ? 'navigate-selected active': ''}">
                   <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="synDetailsBtn">
                     <span class="d-flex align-items-center">
-                      <span class="badge badge-light mr-2" th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-                      <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}">vorm 1</span>
-                      <span th:text="${'(' + viewUtil.getLangIso2(word.language) + ')'}"></span>
+                      <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
+                      <span th:utext="${viewUtil.getMarkupHtml(word)}">vorm 1</span>
+                      <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
                     </span>
                     <span class="d-flex align-items-start">
                       <small>
@@ -160,10 +160,10 @@
         <input type="hidden" class="meaning-word-id" th:value="${meaningWord.wordId}"/>
         <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
           <a href="#" class="mr-2 draggable-meaning droppable-meaning do-refresh">
-            <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:text="${meaningWord.value}"></span>
+            <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:utext="${viewUtil.getMarkupHtml(meaningWord)}"></span>
             <span th:if="${meaningWord.wordHomonymsExist}"
                   th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
-                  th:text="${meaningWord.homonymNumber}">
+                  th:text="${meaningWord.homonymNr}">
             </span>
             <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
           </a>

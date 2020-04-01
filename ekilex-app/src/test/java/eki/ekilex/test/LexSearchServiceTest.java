@@ -244,7 +244,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 3, words.size());
-		assertEquals("Incorrect match", "hiirhall", words.get(0).getValue());
+		assertEquals("Incorrect match", "hiirhall", words.get(0).getWordValue());
 	}
 
 	@Test
@@ -281,7 +281,7 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
-		assertEquals("Incorrect match", "väär", word.getValue());
+		assertEquals("Incorrect match", "väär", word.getWordValue());
 
 		// case #2
 		formGroup.getSearchCriteria().clear();
@@ -299,7 +299,7 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
-		assertEquals("Incorrect match", "hall", word.getValue());
+		assertEquals("Incorrect match", "hall", word.getWordValue());
 
 		// case #3
 		formGroup.getSearchCriteria().clear();
@@ -317,8 +317,8 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
-		assertEquals("Incorrect match", "hall", word.getValue());
-		assertEquals("Incorrect match", new Integer(2), word.getHomonymNumber());
+		assertEquals("Incorrect match", "hall", word.getWordValue());
+		assertEquals("Incorrect match", new Integer(2), word.getHomonymNr());
 	}
 
 	@Test
@@ -355,9 +355,9 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 		word = words.get(0);
-		assertEquals("Incorrect match", "hall", word.getValue());
+		assertEquals("Incorrect match", "hall", word.getWordValue());
 		word = words.get(1);
-		assertEquals("Incorrect match", "холл", word.getValue());
+		assertEquals("Incorrect match", "холл", word.getWordValue());
 	}
 
 	@Test
@@ -394,7 +394,7 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
-		assertEquals("Incorrect match", "hall", word.getValue());
+		assertEquals("Incorrect match", "hall", word.getWordValue());
 	}
 
 	@Test
@@ -431,7 +431,7 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
-		assertEquals("Incorrect match", "tumehall", word.getValue());
+		assertEquals("Incorrect match", "tumehall", word.getWordValue());
 	}
 
 	private SearchDatasetsRestriction createDefaultSearchDatasetsRestriction() {

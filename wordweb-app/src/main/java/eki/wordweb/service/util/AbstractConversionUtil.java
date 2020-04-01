@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.ComplexityType;
@@ -22,7 +23,7 @@ import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordTypeData;
 
-public abstract class AbstractConversionUtil implements WebConstant, SystemConstant {
+public abstract class AbstractConversionUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	@Autowired
 	protected ClassifierUtil classifierUtil;
@@ -35,10 +36,10 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		boolean isForeignWord = false;
 		List<String> wordTypeCodes = wordTypeData.getWordTypeCodes();
 		if (CollectionUtils.isNotEmpty(wordTypeCodes)) {
-			isPrefixoid = wordTypeCodes.contains(PREFIXOID_WORD_TYPE_CODE);
-			isSuffixoid = wordTypeCodes.contains(SUFFIXOID_WORD_TYPE_CODE);
-			isAbbreviationWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(ABBREVIATION_WORD_TYPE_CODES));
-			isForeignWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(FOREIGN_WORD_TYPE_CODES));
+			isPrefixoid = wordTypeCodes.contains(WORD_TYPE_CODE_PREFIXOID);
+			isSuffixoid = wordTypeCodes.contains(WORD_TYPE_CODE_SUFFIXOID);
+			isAbbreviationWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(WORD_TYPE_CODES_ABBREVIATION));
+			isForeignWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(WORD_TYPE_CODES_FOREIGN));
 		}
 		wordTypeData.setPrefixoid(isPrefixoid);
 		wordTypeData.setSuffixoid(isSuffixoid);

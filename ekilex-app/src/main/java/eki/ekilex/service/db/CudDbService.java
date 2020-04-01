@@ -47,7 +47,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
@@ -76,7 +76,7 @@ import eki.ekilex.data.db.tables.records.WordRelationRecord;
 import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 
 @Component
-public class CudDbService implements DbConstant {
+public class CudDbService implements GlobalConstant {
 
 	private DSLContext create;
 

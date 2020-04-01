@@ -2,8 +2,6 @@ package eki.ekilex.constant;
 
 public interface SystemConstant {
 
-	String UTF_8 = "UTF-8";
-
 	int MAX_RESULTS_LIMIT = 50;
 
 	int DEFAULT_OFFSET = 0;
@@ -29,7 +27,5 @@ public interface SystemConstant {
 	String CACHE_KEY_DATASET = "dataset";
 
 	String CACHE_KEY_USER = "user";
-
-	String DATASET_SSS = "sss";
 
 }

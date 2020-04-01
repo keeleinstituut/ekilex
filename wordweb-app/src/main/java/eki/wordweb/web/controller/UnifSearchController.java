@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.UriUtils;
 
-import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.SearchValidation;
@@ -89,7 +88,7 @@ public class UnifSearchController extends AbstractController {
 			sessionBean = getSessionBean(model);
 		}
 
-		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
+		searchWord = UriUtils.decode(searchWord, UTF_8);
 		SearchValidation searchValidation = validateAndCorrectSearch(destinLangsStr, datasetCodesStr, searchWord, homonymNrStr);
 		sessionBean.setSearchWord(searchWord);
 
@@ -172,7 +171,7 @@ public class UnifSearchController extends AbstractController {
 		List<String> supportedDatasetCodes = commonDataService.getSupportedDatasetCodes();
 		String[] datasetCodesArr = StringUtils.split(datasetCodesStr, UI_FILTER_VALUES_SEPARATOR);
 		List<String> datasetCodes = Arrays.stream(datasetCodesArr)
-				.map(datasetCode -> UriUtils.decode(datasetCode, SystemConstant.UTF_8))
+				.map(datasetCode -> UriUtils.decode(datasetCode, UTF_8))
 				.filter(datasetCode -> supportedDatasetCodes.contains(datasetCode))
 				.collect(Collectors.toList());
 

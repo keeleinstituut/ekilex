@@ -2,70 +2,58 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
-public class Lexeme extends AbstractDataObject {
+public class Lexeme extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "word_id")
-	private Long wordId;
-
-	@Column(name = "word_value")
-	private String wordValue;
-
-	@Column(name = "word_value_prese")
-	private String wordValuePrese;
-
-	@Column(name = "homonym_nr")
-	private Integer homonymNumber;
-
-	@Column(name = "word_lang")
-	private String wordLang;
-
-	@Column(name = "word_gender_code")
-	private String wordGenderCode;
-
-	@Column(name = "word_display_morph_code")
-	private String wordDisplayMorphCode;
-
-	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
-	@Column(name = "meaning_id")
 	private Long meaningId;
 
-	@Column(name = "dataset")
 	private String dataset;
 
-	@Column(name = "level1")
 	private Integer level1;
 
-	@Column(name = "level2")
 	private Integer level2;
 
 	private String levels;
 
-	@Column(name = "lexeme_frequency_group_code")
 	private String lexemeFrequencyGroupCode;
 
-	@Column(name = "lexeme_frequencies")
 	private List<String> lexemeFrequencies;
 
-	@Column(name = "lexeme_value_state_code")
 	private String lexemeValueStateCode;
 
-	@Column(name = "lexeme_process_state_code")
 	private String lexemeProcessStateCode;
 
-	@Column(name = "lexeme_complexity")
 	private Complexity complexity;
 
-	@Column(name = "order_by")
 	private Long orderBy;
+
+	private Long wordId;
+
+	private String wordValue;
+
+	private String wordValuePrese;
+
+	private Integer homonymNr;
+
+	private String wordLang;
+
+	private String wordGenderCode;
+
+	private String wordDisplayMorphCode;
+
+	private String[] wordTypeCodes;
+
+	private boolean prefixoid;
+
+	private boolean suffixoid;
+
+	private boolean foreign;
 
 	private List<Classifier> wordTypes;
 
@@ -92,62 +80,6 @@ public class Lexeme extends AbstractDataObject {
 	private List<Relation> lexemeRelations;
 
 	private boolean classifiersExist;
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
-	}
-
-	public String getWordValue() {
-		return wordValue;
-	}
-
-	public void setWordValue(String wordValue) {
-		this.wordValue = wordValue;
-	}
-
-	public String getWordValuePrese() {
-		return wordValuePrese;
-	}
-
-	public void setWordValuePrese(String wordValuePrese) {
-		this.wordValuePrese = wordValuePrese;
-	}
-
-	public Integer getHomonymNumber() {
-		return homonymNumber;
-	}
-
-	public void setHomonymNumber(Integer homonymNumber) {
-		this.homonymNumber = homonymNumber;
-	}
-
-	public String getWordLang() {
-		return wordLang;
-	}
-
-	public void setWordLang(String wordLang) {
-		this.wordLang = wordLang;
-	}
-
-	public String getWordGenderCode() {
-		return wordGenderCode;
-	}
-
-	public void setWordGenderCode(String wordGenderCode) {
-		this.wordGenderCode = wordGenderCode;
-	}
-
-	public String getWordDisplayMorphCode() {
-		return wordDisplayMorphCode;
-	}
-
-	public void setWordDisplayMorphCode(String wordDisplayMorphCode) {
-		this.wordDisplayMorphCode = wordDisplayMorphCode;
-	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -235,6 +167,114 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
+	}
+
+	@Override
+	public String getWordValue() {
+		return wordValue;
+	}
+
+	@Override
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
+	}
+
+	@Override
+	public String getWordValuePrese() {
+		return wordValuePrese;
+	}
+
+	@Override
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
+	}
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
+	}
+
+	public String getWordLang() {
+		return wordLang;
+	}
+
+	public void setWordLang(String wordLang) {
+		this.wordLang = wordLang;
+	}
+
+	public String getWordGenderCode() {
+		return wordGenderCode;
+	}
+
+	public void setWordGenderCode(String wordGenderCode) {
+		this.wordGenderCode = wordGenderCode;
+	}
+
+	public String getWordDisplayMorphCode() {
+		return wordDisplayMorphCode;
+	}
+
+	public void setWordDisplayMorphCode(String wordDisplayMorphCode) {
+		this.wordDisplayMorphCode = wordDisplayMorphCode;
+	}
+
+	@Override
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
+	}
+
+	@Override
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
+	}
+
+	@Override
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	@Override
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	@Override
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	@Override
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	@Override
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	@Override
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
 	}
 
 	public List<Classifier> getWordTypes() {
@@ -325,14 +365,6 @@ public class Lexeme extends AbstractDataObject {
 		this.sourceLinks = sourceLinks;
 	}
 
-	public boolean isClassifiersExist() {
-		return classifiersExist;
-	}
-
-	public void setClassifiersExist(boolean classifiersExist) {
-		this.classifiersExist = classifiersExist;
-	}
-
 	public List<Relation> getLexemeRelations() {
 		return lexemeRelations;
 	}
@@ -341,11 +373,12 @@ public class Lexeme extends AbstractDataObject {
 		this.lexemeRelations = lexemeRelations;
 	}
 
-	public Long getOrderBy() {
-		return orderBy;
+	public boolean isClassifiersExist() {
+		return classifiersExist;
 	}
 
-	public void setOrderBy(Long orderBy) {
-		this.orderBy = orderBy;
+	public void setClassifiersExist(boolean classifiersExist) {
+		this.classifiersExist = classifiersExist;
 	}
+
 }

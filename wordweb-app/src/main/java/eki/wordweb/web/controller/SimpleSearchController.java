@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.UriUtils;
 
-import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.SearchValidation;
@@ -86,7 +85,7 @@ public class SimpleSearchController extends AbstractController {
 			sessionBean = getSessionBean(model);
 		}
 
-		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
+		searchWord = UriUtils.decode(searchWord, UTF_8);
 		SearchValidation searchValidation = validateAndCorrectSearch(destinLangsStr, searchWord, homonymNrStr);
 		sessionBean.setSearchWord(searchWord);
 

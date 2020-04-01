@@ -1,4 +1,4 @@
-package eki.ekilex.service;
+package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
@@ -21,6 +21,7 @@ import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
@@ -41,7 +42,6 @@ import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
-import eki.ekilex.service.db.AbstractSearchDbService;
 
 @Component
 public class SynSearchDbService extends AbstractSearchDbService {
@@ -103,7 +103,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(l.DATASET_CODE.eq(datasetCode))
 								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
 								.and(l.MEANING_ID.eq(d.MEANING_ID))
-								.and(DSL.or(d.COMPLEXITY.like("DETAIL%"), d.COMPLEXITY.like("SIMPLE%"))))
+								.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%"))))
 				.groupBy(l.WORD_ID)
 				.asField();
 
@@ -230,24 +230,40 @@ public class SynSearchDbService extends AbstractSearchDbService {
 	}
 
 	public WordSynDetails getWordDetails(Long wordId) {
+
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+		Lexeme l = LEXEME.as("l");
+
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+
 		return create.select(
-				WORD.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')", String.class).as("word"),
-				DSL.field("array_to_string(array_agg(distinct form.morph_code), ',', '*')", String.class).as("morphCode"),
-				WORD.LANG.as("language"))
-				.from(WORD, PARADIGM, FORM)
-				.where(WORD.ID.eq(wordId)
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
+				w.ID.as("word_id"),
+				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("wordValue"),
+				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("wordValuePrese"),
+				w.LANG,
+				DSL.field("array_to_string(array_agg(distinct f.morph_code), ',', '*')", String.class).as("morphCode"),
+				wtf.as("word_type_codes"),
+				wtpf.as("prefixoid"),
+				wtsf.as("suffixoid"),
+				wtz.as("foreign"))
+				.from(w, p, f)
+				.where(w.ID.eq(wordId)
+						.and(p.WORD_ID.eq(w.ID))
+						.and(f.PARADIGM_ID.eq(p.ID))
+						.and(f.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
 						.andExists(DSL
-								.select(LEXEME.ID)
-								.from(LEXEME)
+								.select(l.ID)
+								.from(l)
 								.where(
-										LEXEME.WORD_ID.eq(WORD.ID)
+										l.WORD_ID.eq(w.ID)
 										//TODO what lexeme type?
 										)))
-				.groupBy(WORD.ID)
+				.groupBy(w.ID)
 				.fetchOneInto(WordSynDetails.class);
 	}
 
@@ -262,6 +278,11 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Paradigm ph = PARADIGM.as("ph");
 		Form f2 = FORM.as("f2");
 		Form fh = FORM.as("fh");
+
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
 
 		Field<Boolean> whe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
@@ -283,11 +304,15 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		return create
 				.select(
 						w2.ID.as("word_id"),
-						f2.VALUE,
-						f2.VALUE_PRESE,
-						w2.HOMONYM_NR.as("homonym_number"),
+						f2.VALUE.as("word_value"),
+						f2.VALUE_PRESE.as("word_value_prese"),
+						w2.HOMONYM_NR,
 						whe.as("word_homonyms_exist"),
-						w2.LANG.as("language"),
+						w2.LANG,
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
 						l2.ID.as("lexeme_id"),
 						l2.TYPE.as("lexeme_type"),
 						l2.WEIGHT.as("lexeme_weight"),

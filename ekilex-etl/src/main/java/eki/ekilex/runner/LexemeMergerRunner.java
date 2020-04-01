@@ -24,7 +24,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.DbConstant;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
@@ -63,7 +63,7 @@ import eki.ekilex.data.util.WordMeaningPairRowMapper;
 import eki.ekilex.service.ReportComposer;
 
 @Component
-public class LexemeMergerRunner extends AbstractLoaderRunner implements DbConstant {
+public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(LexemeMergerRunner.class);
 

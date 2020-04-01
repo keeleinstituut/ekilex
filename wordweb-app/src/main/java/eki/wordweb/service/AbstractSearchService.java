@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FormMode;
+import eki.common.constant.GlobalConstant;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
@@ -40,7 +41,7 @@ import eki.wordweb.service.util.LexemeConversionUtil;
 import eki.wordweb.service.util.ParadigmConversionUtil;
 import eki.wordweb.service.util.WordConversionUtil;
 
-public abstract class AbstractSearchService implements SystemConstant, WebConstant {
+public abstract class AbstractSearchService implements SystemConstant, WebConstant, GlobalConstant {
 
 	@Autowired
 	protected CommonDataDbService commonDataDbService;

@@ -55,10 +55,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record1;
 import org.jooq.Record3;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectHavingStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,9 +63,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.DbConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
@@ -90,6 +87,8 @@ import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Language;
+import eki.ekilex.data.db.tables.LexRelTypeLabel;
+import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeRegister;
@@ -101,13 +100,17 @@ import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.service.db.util.SubqueryHelper;
 
 //only common use data reading!
 @Component
-public class CommonDataDbService implements DbConstant, SystemConstant {
+public class CommonDataDbService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	private DSLContext create;
+
+	@Autowired
+	private SubqueryHelper subqueryHelper;
 
 	public Map<String, String> getDatasetNameMap() {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
@@ -586,83 +589,91 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 
 		MeaningRelation mr = MEANING_RELATION.as("mr");
 		MeaningRelTypeLabel mrtl = MEANING_REL_TYPE_LABEL.as("mrtl");
-		Meaning m = MEANING.as("m");
-		Lexeme l = LEXEME.as("l");
+		Meaning m2 = MEANING.as("m2");
+		Lexeme l2 = LEXEME.as("l2");
 		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform ff = FREEFORM.as("ff");
-		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
+		Word w2 = WORD.as("w2");
+		Paradigm p2 = PARADIGM.as("p2");
+		Form f2 = FORM.as("f2");
 
-		SelectConditionStep<Record1<String>> mrl = DSL
+		Field<String> mrl = DSL.field(DSL
 				.select(mrtl.VALUE)
 				.from(mrtl)
 				.where(mr.MEANING_REL_TYPE_CODE.eq(mrtl.CODE))
-						.and(mrtl.LANG.eq(classifierLabelLang))
-						.and(mrtl.TYPE.eq(classifierLabelTypeCode));
+				.and(mrtl.LANG.eq(classifierLabelLang))
+				.and(mrtl.TYPE.eq(classifierLabelTypeCode)));
 
-		SelectHavingStep<Record1<String[]>> lvscs = DSL
-				.select(DSL.arrayAggDistinct(l.VALUE_STATE_CODE))
-				.from(l)
-				.where(l.MEANING_ID.eq(m.ID)
-						.and(l.WORD_ID.eq(w.ID))
-						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-						.and(l.VALUE_STATE_CODE.isNotNull()))
-				.groupBy(l.WORD_ID, l.MEANING_ID);
+		Field<String[]> lvscs = DSL.field(DSL
+				.select(DSL.arrayAggDistinct(l2.VALUE_STATE_CODE))
+				.from(l2)
+				.where(l2.MEANING_ID.eq(m2.ID)
+						.and(l2.WORD_ID.eq(w2.ID))
+						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l2.VALUE_STATE_CODE.isNotNull()))
+				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
-		SelectHavingStep<Record1<String[]>> lrcs = DSL
+		Field<String[]> lrcs = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(lr.REGISTER_CODE))
-				.from(lr, l)
-				.where(l.MEANING_ID.eq(m.ID)
-						.and(l.WORD_ID.eq(w.ID))
-						.and(lr.LEXEME_ID.eq(l.ID))
-						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(l.WORD_ID, l.MEANING_ID);
+				.from(lr, l2)
+				.where(l2.MEANING_ID.eq(m2.ID)
+						.and(l2.WORD_ID.eq(w2.ID))
+						.and(lr.LEXEME_ID.eq(l2.ID))
+						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
-		SelectHavingStep<Record1<String[]>> lgvs = DSL
+		Field<String[]> lgvs = DSL.field(DSL
 				.select(DSL.arrayAgg(ff.VALUE_PRESE))
-				.from(ff, lff, l)
-				.where(l.MEANING_ID.eq(m.ID)
-						.and(l.WORD_ID.eq(w.ID))
-						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-						.and(lff.LEXEME_ID.eq(l.ID))
+				.from(ff, lff, l2)
+				.where(l2.MEANING_ID.eq(m2.ID)
+						.and(l2.WORD_ID.eq(w2.ID))
+						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(lff.LEXEME_ID.eq(l2.ID))
 						.and(ff.ID.eq(lff.FREEFORM_ID))
 						.and(ff.TYPE.eq(FreeformType.GOVERNMENT.name())))
-				.groupBy(l.WORD_ID, l.MEANING_ID);
+				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
-		SelectHavingStep<Record1<String[]>> wlds = DSL
-				.select(DSL.arrayAggDistinct(l.DATASET_CODE))
-				.from(l)
-				.where(l.WORD_ID.eq(w.ID)
-						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(l.WORD_ID);
+		Field<String[]> wlds = DSL.field(DSL
+				.select(DSL.arrayAggDistinct(l2.DATASET_CODE))
+				.from(l2)
+				.where(l2.WORD_ID.eq(w2.ID)
+						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(l2.WORD_ID));
+
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
 
 		return create
 				.select(
 						mr.ID.as("id"),
-						DSL.field(mrl).as("rel_type_label"),
-						m.ID.as("meaning_id"),
-						DSL.field(lvscs).as("lex_value_state_codes"),
-						DSL.field(lrcs).as("lex_register_codes"),
-						DSL.field(lgvs).as("lex_government_values"),
-						w.ID.as("word_id"),
-						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").as("word"),
-						w.LANG.as("word_lang"),
-						w.ASPECT_CODE.as("word_aspect_code"),
-						DSL.field(wlds).as("word_lexeme_dataset_codes"))
+						m2.ID.as("meaning_id"),
+						lvscs.as("lex_value_state_codes"),
+						lrcs.as("lex_register_codes"),
+						lgvs.as("lex_government_values"),
+						w2.ID.as("word_id"),
+						DSL.field("array_to_string(array_agg(distinct f2.value), ',', '*')").as("word_value"),
+						DSL.field("array_to_string(array_agg(distinct f2.value_prese), ',', '*')").as("word_value_prese"),
+						w2.LANG.as("word_lang"),
+						w2.ASPECT_CODE.as("word_aspect_code"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						wlds.as("word_lexeme_dataset_codes"),
+						mrl.as("rel_type_label")
+						)
 				.from(
-						mr,
-						m,
-						l.innerJoin(w).on(w.ID.eq(l.WORD_ID))
-						.innerJoin(p).on(p.WORD_ID.eq(w.ID))
-						.innerJoin(f).on(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
-				.where(
-						mr.MEANING1_ID.eq(meaningId)
-								.and(mr.MEANING2_ID.eq(m.ID))
-								.and(l.MEANING_ID.eq(m.ID))
-								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(m.ID, mr.ID, w.ID)
+						mr
+								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
+								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID))
+								.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
+								.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name()))))
+				.where(mr.MEANING1_ID.eq(meaningId))
+				.groupBy(m2.ID, mr.ID, w2.ID)
 				.orderBy(mr.ID)
 				.fetchInto(Relation.class);
 	}
@@ -949,35 +960,47 @@ public class CommonDataDbService implements DbConstant, SystemConstant {
 	}
 
 	public List<Relation> getLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		LexRelation r = LEX_RELATION.as("r");
+		LexRelTypeLabel rtl = LEX_REL_TYPE_LABEL.as("rtl");
+		Lexeme l2 = LEXEME.as("l2");
+		Word w2 = WORD.as("w2");
+		Paradigm p2 = PARADIGM.as("p2");
+		Form f2 = FORM.as("f2");
+
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+
 		return create
 				.select(
-						LEX_RELATION.ID.as("id"),
-						LEXEME.ID.as("lexeme_id"),
-						WORD.ID.as("word_id"),
-						FORM.VALUE.as("word"),
-						WORD.LANG.as("word_lang"),
-						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
-						LEX_RELATION.ORDER_BY.as("order_by"),
-						LEXEME.MEANING_ID.as("meaning_id"))
+						r.ID,
+						l2.ID.as("lexeme_id"),
+						l2.MEANING_ID,
+						l2.WORD_ID,
+						f2.VALUE.as("word_value"),
+						f2.VALUE_PRESE.as("word_value_prese"),
+						w2.LANG.as("word_lang"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						rtl.VALUE.as("rel_type_label"),
+						r.ORDER_BY)
 				.from(
-						LEX_RELATION.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
-								LEX_RELATION.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
-										.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-												.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
-						LEXEME,
-						WORD,
-						PARADIGM,
-						FORM)
-				.where(
-						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
-								.and(LEX_RELATION.LEXEME2_ID.eq(LEXEME.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(LEX_RELATION.ID, LEXEME.ID, WORD.ID, FORM.VALUE, LEX_REL_TYPE_LABEL.VALUE)
-				.orderBy(LEX_RELATION.ORDER_BY)
+						r
+						.innerJoin(l2).on(l2.ID.eq(r.LEXEME2_ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID))
+						.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
+						.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID)).and(f2.MODE.eq(FormMode.WORD.name()))
+						.leftOuterJoin(rtl).on(
+								r.LEX_REL_TYPE_CODE.eq(rtl.CODE)
+										.and(rtl.LANG.eq(classifierLabelLang)
+												.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
+				.where(r.LEXEME1_ID.eq(lexemeId))
+				.groupBy(r.ID, l2.ID, w2.ID, f2.VALUE, f2.VALUE_PRESE, rtl.VALUE)
+				.orderBy(r.ORDER_BY)
 				.fetchInto(Relation.class);
 	}
 

@@ -141,6 +141,7 @@ public class Indexes {
     public static final Index ASPECT_PKEY = Indexes0.ASPECT_PKEY;
     public static final Index ASPECT_LABEL_CODE_LANG_TYPE_KEY = Indexes0.ASPECT_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index COLLOCATION_PKEY = Indexes0.COLLOCATION_PKEY;
+    public static final Index COLLOCATION_VALUE_IDX = Indexes0.COLLOCATION_VALUE_IDX;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_IDX;
     public static final Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Indexes0.COLLOCATION_FREEFORM_FREEFORM_ID_IDX;
@@ -416,6 +417,7 @@ public class Indexes {
         public static Index ASPECT_PKEY = Internal.createIndex("aspect_pkey", Aspect.ASPECT, new OrderField[] { Aspect.ASPECT.CODE }, true);
         public static Index ASPECT_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("aspect_label_code_lang_type_key", AspectLabel.ASPECT_LABEL, new OrderField[] { AspectLabel.ASPECT_LABEL.CODE, AspectLabel.ASPECT_LABEL.LANG, AspectLabel.ASPECT_LABEL.TYPE }, true);
         public static Index COLLOCATION_PKEY = Internal.createIndex("collocation_pkey", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.ID }, true);
+        public static Index COLLOCATION_VALUE_IDX = Internal.createIndex("collocation_value_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.VALUE }, false);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Internal.createIndex("collocation_freeform_collocation_id_freeform_id_key", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID, CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, true);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Internal.createIndex("collocation_freeform_collocation_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID }, false);
         public static Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("collocation_freeform_freeform_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, false);

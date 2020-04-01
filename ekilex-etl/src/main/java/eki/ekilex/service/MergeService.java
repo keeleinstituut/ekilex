@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.TableName;
 import eki.common.data.Count;
 import eki.common.service.db.BasicDbService;
@@ -26,7 +27,7 @@ import eki.ekilex.data.util.FreeformRowMapper;
 import eki.ekilex.data.util.WordLexemeMeaningRowMapper;
 
 @Component
-public class MergeService implements TableName, SystemConstant, InitializingBean {
+public class MergeService implements TableName, SystemConstant, GlobalConstant, InitializingBean {
 
 	private static final String SQL_SELECT_WORD_LEXEME_MEANING_ID_FOR_DS = "sql/select_word_lexeme_meaning_id_for_dataset.sql";
 

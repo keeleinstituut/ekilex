@@ -24,9 +24,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eki.common.constant.GlobalConstant;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.imp.Form;
 import eki.ekilex.data.imp.Paradigm;
 import eki.ekilex.data.imp.ParadigmWrapper;
@@ -35,7 +35,7 @@ import eki.ekilex.data.imp.ParadigmWrapper;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
 @Transactional
-public class ArbitraryTest implements SystemConstant {
+public class ArbitraryTest implements GlobalConstant {
 
 	private static final String DUMMY_TABLE = "dummy_table";
 
