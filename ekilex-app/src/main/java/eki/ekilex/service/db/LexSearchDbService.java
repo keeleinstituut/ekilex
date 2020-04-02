@@ -30,7 +30,6 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -49,11 +48,14 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeFrequency;
+import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
@@ -170,76 +172,134 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(ParadigmFormTuple.class);
 	}
 
-	private SelectField<?>[] getWordLexemeSelectFields() {
-
-		Field<String[]> lfreq = DSL
-				.select(DSL.arrayAgg(DSL.concat(
-						LEXEME_FREQUENCY.SOURCE_NAME, DSL.val(" - "),
-						LEXEME_FREQUENCY.RANK, DSL.val(" - "),
-						LEXEME_FREQUENCY.VALUE)))
-				.from(LEXEME_FREQUENCY)
-				.where(LEXEME_FREQUENCY.LEXEME_ID.eq(LEXEME.ID))
-				.groupBy(LEXEME_FREQUENCY.LEXEME_ID)
-				.asField();
-
-		return new Field<?>[] {
-				DSL.arrayAggDistinct(FORM.VALUE).as("words"),
-				DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
-				WORD.LANG.as("word_lang"),
-				WORD.ID.as("word_id"),
-				WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
-				WORD.GENDER_CODE,
-				WORD.ASPECT_CODE.as("word_aspect_code"),
-				WORD.HOMONYM_NR.as("word_homonym_number"),
-				LEXEME.ID.as("lexeme_id"),
-				LEXEME.MEANING_ID,
-				LEXEME.DATASET_CODE.as("dataset"),
-				LEXEME.LEVEL1,
-				LEXEME.LEVEL2,
-				LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-				LEXEME.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
-				lfreq.as("lexeme_frequencies"),
-				LEXEME.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
-				LEXEME.WEIGHT.as("lexeme_weight"),
-				LEXEME.COMPLEXITY.as("lexeme_complexity")
-		};
-	}
-
 	public List<WordLexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+		Meaning m = MEANING.as("m");
+		Lexeme l = LEXEME.as("l");
+		Dataset ds = DATASET.as("ds");
+		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 
-		return create.select(getWordLexemeSelectFields())
-				.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+
+		Condition dsWhere = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
+
+		Field<String[]> lff = DSL
+				.select(DSL.arrayAgg(DSL.concat(
+						lf.SOURCE_NAME, DSL.val(" - "),
+						lf.RANK, DSL.val(" - "),
+						lf.VALUE)))
+				.from(lf)
+				.where(lf.LEXEME_ID.eq(l.ID))
+				.groupBy(lf.LEXEME_ID)
+				.asField();
+
+		return create.select(
+				w.ID.as("word_id"),
+				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").as("word_value"),
+				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')").as("word_value_prese"),
+				w.LANG.as("word_lang"),
+				w.HOMONYM_NR.as("word_homonym_nr"),
+				w.GENDER_CODE.as("word_gender_code"),
+				w.ASPECT_CODE.as("word_aspect_code"),
+				w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
+				wtf.as("word_type_codes"),
+				wtpf.as("prefixoid"),
+				wtsf.as("suffixoid"),
+				wtz.as("foreign"),
+				l.ID.as("lexeme_id"),
+				l.MEANING_ID,
+				ds.NAME.as("dataset_name"),
+				l.DATASET_CODE,
+				l.LEVEL1,
+				l.LEVEL2,
+				l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+				l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
+				l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
+				lff.as("lexeme_frequencies"),
+				l.COMPLEXITY,
+				l.WEIGHT)
+				.from(f, p, w, l, m, ds)
 				.where(
-						WORD.ID.eq(wordId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(dsWhere)
-				)
-				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
-				.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2)
+						w.ID.eq(wordId)
+								.and(f.PARADIGM_ID.eq(p.ID))
+								.and(f.MODE.eq(FormMode.WORD.name()))
+								.and(p.WORD_ID.eq(w.ID))
+								.and(l.WORD_ID.eq(w.ID))
+								.and(l.MEANING_ID.eq(m.ID))
+								.and(l.DATASET_CODE.eq(ds.CODE))
+								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(dsWhere))
+				.groupBy(w.ID, l.ID, m.ID, ds.CODE)
+				.orderBy(w.ID, ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
 				.fetchInto(WordLexeme.class);
 	}
 
 	public WordLexeme getLexeme(Long lexemeId) {
 
-		return create.select(getWordLexemeSelectFields())
-				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+		Meaning m = MEANING.as("m");
+		Lexeme l = LEXEME.as("l");
+		Dataset ds = DATASET.as("ds");
+		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
+
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+
+		Field<String[]> lff = DSL
+				.select(DSL.arrayAgg(DSL.concat(
+						lf.SOURCE_NAME, DSL.val(" - "),
+						lf.RANK, DSL.val(" - "),
+						lf.VALUE)))
+				.from(lf)
+				.where(lf.LEXEME_ID.eq(l.ID))
+				.groupBy(lf.LEXEME_ID)
+				.asField();
+
+		return create.select(
+				w.ID.as("word_id"),
+				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").as("word_value"),
+				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')").as("word_value_prese"),
+				w.LANG.as("word_lang"),
+				w.HOMONYM_NR.as("word_homonym_nr"),
+				w.GENDER_CODE.as("word_gender_code"),
+				w.ASPECT_CODE.as("word_aspect_code"),
+				w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
+				wtf.as("word_type_codes"),
+				wtpf.as("prefixoid"),
+				wtsf.as("suffixoid"),
+				wtz.as("foreign"),
+				l.ID.as("lexeme_id"),
+				l.MEANING_ID,
+				ds.NAME.as("dataset_name"),
+				l.DATASET_CODE,
+				l.LEVEL1,
+				l.LEVEL2,
+				l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+				l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
+				l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
+				lff.as("lexeme_frequencies"),
+				l.COMPLEXITY,
+				l.WEIGHT)
+				.from(f, p, w, l, m, ds)
 				.where(
-						LEXEME.ID.eq(lexemeId)
-								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
-				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
-				.orderBy(WORD.ID)
+						l.ID.eq(lexemeId)
+								.and(l.WORD_ID.eq(w.ID))
+								.and(p.WORD_ID.eq(w.ID))
+								.and(f.PARADIGM_ID.eq(p.ID))
+								.and(f.MODE.eq(FormMode.WORD.name()))
+								.and(l.MEANING_ID.eq(m.ID))
+								.and(l.DATASET_CODE.eq(ds.CODE)))
+				.groupBy(w.ID, l.ID, m.ID, ds.CODE)
 				.fetchSingleInto(WordLexeme.class);
 	}
 

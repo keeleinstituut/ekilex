@@ -878,7 +878,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.select(
 						l.ID.as("lexeme_id"),
 						l.MEANING_ID,
-						l.DATASET_CODE.as("dataset"),
+						l.DATASET_CODE,
 						l.LEVEL1,
 						l.LEVEL2,
 						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),

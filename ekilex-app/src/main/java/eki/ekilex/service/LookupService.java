@@ -196,14 +196,13 @@ public class LookupService extends AbstractWordSearchService {
 	public WordDetails getWordJoinDetails(Long wordId) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
-		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Word word = lexSearchDbService.getWord(wordId);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 
-		lexemes.forEach(lexeme -> populateLexemeWithMinimalData(lexeme, datasetNameMap));
+		lexemes.forEach(lexeme -> populateLexemeWithMinimalData(lexeme));
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 		String firstDefinitionValue = getFirstDefinitionValue(lexemes);
 
@@ -251,7 +250,7 @@ public class LookupService extends AbstractWordSearchService {
 								commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 						List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 
-						lexeme.setDataset(datasetName);
+						lexeme.setDatasetName(datasetName);
 						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 						lexeme.setDefinitions(definitions);
 						lexeme.setGovernments(governments);
@@ -350,10 +349,10 @@ public class LookupService extends AbstractWordSearchService {
 					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			List<SourceLink> lexemeRefLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
-			String dataset = lexeme.getDataset();
+			String dataset = lexeme.getDatasetCode();
 			dataset = datasetNameMap.get(dataset);
 
-			lexeme.setDataset(dataset);
+			lexeme.setDatasetCode(dataset);
 			lexeme.setWordTypes(wordTypes);
 			lexeme.setUsages(usages);
 			lexeme.setSourceLinks(lexemeRefLinks);
@@ -367,12 +366,11 @@ public class LookupService extends AbstractWordSearchService {
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 	}
 
-	private void populateLexemeWithMinimalData(WordLexeme lexeme, Map<String, String> datasetNameMap) {
+	private void populateLexemeWithMinimalData(WordLexeme lexeme) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
-		String datasetName = datasetNameMap.get(datasetCode);
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
@@ -380,7 +378,6 @@ public class LookupService extends AbstractWordSearchService {
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 
-		lexeme.setDataset(datasetName);
 		lexeme.setPos(lexemePos);
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		lexeme.setDefinitions(definitions);

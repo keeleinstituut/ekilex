@@ -5,7 +5,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -68,7 +67,6 @@ public class LexSearchService extends AbstractWordSearchService {
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Word word = lexSearchDbService.getWord(wordId);
 		if (word == null) {
 			return null;
@@ -86,7 +84,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
-		lexemes.forEach(lexeme -> populateLexeme(lexeme, datasetNameMap, languagesOrder, userProfile));
+		lexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, userProfile));
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
@@ -109,8 +107,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
 		if (lexeme != null) {
-			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-			populateLexeme(lexeme, datasetNameMap);
+			populateLexeme(lexeme);
 		}
 		return lexeme;
 	}
@@ -150,11 +147,11 @@ public class LexSearchService extends AbstractWordSearchService {
 		return lexSearchDbService.getWord(wordId);
 	}
 
-	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap) {
-		populateLexeme(lexeme, datasetNameMap, null, null);
+	private void populateLexeme(WordLexeme lexeme) {
+		populateLexeme(lexeme, null, null);
 	}
 
-	private void populateLexeme(WordLexeme lexeme, Map<String, String> datasetNameMap, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile) {
+	private void populateLexeme(WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
@@ -165,7 +162,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		String datasetCode = lexeme.getDatasetCode();
 		String wordLang = lexeme.getWordLang();
 
-		String datasetName = datasetNameMap.get(datasetCode);
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, wordLang);
 		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
@@ -198,7 +194,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 
-		lexeme.setDataset(datasetName);
 		lexeme.setPos(lexemePos);
 		lexeme.setDerivs(lexemeDerivs);
 		lexeme.setRegisters(lexemeRegisters);

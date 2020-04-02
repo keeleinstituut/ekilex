@@ -13,7 +13,7 @@ public class Lexeme extends AbstractDataObject implements DecoratedWordType {
 
 	private Long meaningId;
 
-	private String dataset;
+	private String datasetCode;
 
 	private Integer level1;
 
@@ -97,12 +97,12 @@ public class Lexeme extends AbstractDataObject implements DecoratedWordType {
 		this.meaningId = meaningId;
 	}
 
-	public String getDataset() {
-		return dataset;
+	public String getDatasetCode() {
+		return datasetCode;
 	}
 
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
 	public Integer getLevel1() {

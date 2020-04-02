@@ -14,7 +14,7 @@
                   <div class="form-group row">
                     <input type="hidden" name="language" th:value="${language}" />
                     <input type="hidden" name="morphCode" th:value="${morphCode}" />
-                    <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.relatedWordId}" />
+                    <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}" />
                     <div class="col-8">
                       <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
                     </div>

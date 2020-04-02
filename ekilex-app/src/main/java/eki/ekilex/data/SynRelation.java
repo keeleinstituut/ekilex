@@ -5,35 +5,41 @@ import java.util.List;
 import eki.common.constant.RelationStatus;
 import eki.common.data.AbstractDataObject;
 
-public class SynRelation extends AbstractDataObject {
+public class SynRelation extends AbstractDataObject implements DecoratedWordType {
 
-	private static final long serialVersionUID = 1896105442587879210L;
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
 	private RelationStatus relationStatus;
 
-	private Long orderBy;
-
 	private RelationStatus oppositeRelationStatus;
-
-	private Long relatedWordId;
-
-	private String relatedWord;
-
-	private Integer relatedWordHomonymNr;
-
-	private String relatedWordLang;
 
 	private List<TypeWordRelParam> relationParams;
 
-	private List<String> relatedWordDefinitions;
+	private Long orderBy;
 
-	private boolean relatedWordIsPrefixoid;
+	private Long wordId;
 
-	private boolean relatedWordIsSuffixoid;
+	private String wordValue;
 
-	private boolean relatedWordHomonymsExist;
+	private String wordValuePrese;
+
+	private Integer wordHomonymNr;
+
+	private boolean homonymsExist;
+
+	private String wordLang;
+
+	private String[] wordTypeCodes;
+
+	private boolean prefixoid;
+
+	private boolean suffixoid;
+
+	private boolean foreign;
+
+	private List<String> wordDefinitions;
 
 	public Long getId() {
 		return id;
@@ -51,52 +57,12 @@ public class SynRelation extends AbstractDataObject {
 		this.relationStatus = relationStatus;
 	}
 
-	public Long getOrderBy() {
-		return orderBy;
-	}
-
-	public void setOrderBy(Long orderBy) {
-		this.orderBy = orderBy;
-	}
-
 	public RelationStatus getOppositeRelationStatus() {
 		return oppositeRelationStatus;
 	}
 
 	public void setOppositeRelationStatus(RelationStatus oppositeRelationStatus) {
 		this.oppositeRelationStatus = oppositeRelationStatus;
-	}
-
-	public Long getRelatedWordId() {
-		return relatedWordId;
-	}
-
-	public void setRelatedWordId(Long relatedWordId) {
-		this.relatedWordId = relatedWordId;
-	}
-
-	public String getRelatedWord() {
-		return relatedWord;
-	}
-
-	public void setRelatedWord(String relatedWord) {
-		this.relatedWord = relatedWord;
-	}
-
-	public Integer getRelatedWordHomonymNr() {
-		return relatedWordHomonymNr;
-	}
-
-	public void setRelatedWordHomonymNr(Integer relatedWordHomonymNr) {
-		this.relatedWordHomonymNr = relatedWordHomonymNr;
-	}
-
-	public String getRelatedWordLang() {
-		return relatedWordLang;
-	}
-
-	public void setRelatedWordLang(String relatedWordLang) {
-		this.relatedWordLang = relatedWordLang;
 	}
 
 	public List<TypeWordRelParam> getRelationParams() {
@@ -107,36 +73,112 @@ public class SynRelation extends AbstractDataObject {
 		this.relationParams = relationParams;
 	}
 
-	public List<String> getRelatedWordDefinitions() {
-		return relatedWordDefinitions;
+	public Long getOrderBy() {
+		return orderBy;
 	}
 
-	public void setRelatedWordDefinitions(List<String> relatedWordDefinitions) {
-		this.relatedWordDefinitions = relatedWordDefinitions;
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 
-	public boolean isRelatedWordIsPrefixoid() {
-		return relatedWordIsPrefixoid;
+	public Long getWordId() {
+		return wordId;
 	}
 
-	public void setRelatedWordIsPrefixoid(boolean relatedWordIsPrefixoid) {
-		this.relatedWordIsPrefixoid = relatedWordIsPrefixoid;
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
 	}
 
-	public boolean isRelatedWordIsSuffixoid() {
-		return relatedWordIsSuffixoid;
+	@Override
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setRelatedWordIsSuffixoid(boolean relatedWordIsSuffixoid) {
-		this.relatedWordIsSuffixoid = relatedWordIsSuffixoid;
+	@Override
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
-	public boolean isRelatedWordHomonymsExist() {
-		return relatedWordHomonymsExist;
+	@Override
+	public String getWordValuePrese() {
+		return wordValuePrese;
 	}
 
-	public void setRelatedWordHomonymsExist(boolean relatedWordHomonymsExist) {
-		this.relatedWordHomonymsExist = relatedWordHomonymsExist;
+	@Override
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
+	}
+
+	public Integer getWordHomonymNr() {
+		return wordHomonymNr;
+	}
+
+	public void setWordHomonymNr(Integer wordHomonymNr) {
+		this.wordHomonymNr = wordHomonymNr;
+	}
+
+	public boolean isHomonymsExist() {
+		return homonymsExist;
+	}
+
+	public void setHomonymsExist(boolean homonymsExist) {
+		this.homonymsExist = homonymsExist;
+	}
+
+	public String getWordLang() {
+		return wordLang;
+	}
+
+	public void setWordLang(String wordLang) {
+		this.wordLang = wordLang;
+	}
+
+	@Override
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
+	}
+
+	@Override
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
+	}
+
+	@Override
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	@Override
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	@Override
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	@Override
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	@Override
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	@Override
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
+	}
+
+	public List<String> getWordDefinitions() {
+		return wordDefinitions;
+	}
+
+	public void setWordDefinitions(List<String> wordDefinitions) {
+		this.wordDefinitions = wordDefinitions;
 	}
 
 }

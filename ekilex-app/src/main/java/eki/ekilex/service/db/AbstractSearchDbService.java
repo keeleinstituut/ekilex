@@ -847,7 +847,7 @@ public abstract class AbstractSearchDbService implements SystemConstant, GlobalC
 		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.field("word_id", Long.class));
 
-		Table<Record14<Long, String, String, Integer, String, String, String, String, String[], String[], String[], Boolean, Boolean, Boolean>> ww = DSL
+		Table<Record14<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, String[], String[]>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
 						w.field("word_value", String.class),
@@ -857,12 +857,12 @@ public abstract class AbstractSearchDbService implements SystemConstant, GlobalC
 						w.field("word_class", String.class),
 						w.field("gender_code", String.class),
 						w.field("aspect_code", String.class),
-						dscf.as("dataset_codes"),
-						lpscf.as("layer_process_state_codes"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
-						wtz.as("foreign"))
+						wtz.as("foreign"),
+						dscf.as("dataset_codes"),
+						lpscf.as("layer_process_state_codes"))
 				.from(w)
 				.orderBy(
 						w.field("word_value"),

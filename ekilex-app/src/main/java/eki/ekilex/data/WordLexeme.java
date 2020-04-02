@@ -2,73 +2,63 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.LexemeLevel;
 
-public class WordLexeme extends AbstractDataObject implements LexemeLevel {
+public class WordLexeme extends AbstractDataObject implements LexemeLevel, DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "words")
-	private String[] words;
-
-	@Column(name = "word_lang")
-	private String wordLang;
-
-	@Column(name = "word_display_morph_code")
-	private String wordDisplayMorphCode;
-
-	@Column(name = "word_id")
 	private Long wordId;
 
-	@Column(name = "word_homonym_number")
-	private Integer wordHomonymNumber;
+	private String wordValue;
 
-	@Column(name = "lexeme_id")
+	private String wordValuePrese;
+
+	private String wordLang;
+
+	private Integer wordHomonymNr;
+
+	private String wordGenderCode;
+
+	private String wordAspectCode;
+
+	private String wordDisplayMorphCode;
+
+	private String[] wordTypeCodes;
+
+	private boolean prefixoid;
+
+	private boolean suffixoid;
+
+	private boolean foreign;
+
 	private Long lexemeId;
 
-	@Column(name = "meaning_id")
 	private Long meaningId;
 
-	private String dataset;
+	private String datasetName;
 
-	@Column(name = "dataset")
 	private String datasetCode;
 
-	@Column(name = "level1")
 	private Integer level1;
 
-	@Column(name = "level2")
 	private Integer level2;
 
 	private String levels;
 
-	@Column(name = "lexeme_value_state_code")
 	private String lexemeValueStateCode;
 
-	@Column(name = "lexeme_frequency_group_code")
-	private String lexemeFrequencyGroupCode;
-
-	@Column(name = "lexeme_frequencies")
-	private List<String> lexemeFrequencies;
-
-	@Column(name = "lexeme_process_state_code")
 	private String lexemeProcessStateCode;
 
-	@Column(name = "lexeme_complexity")
+	private String lexemeFrequencyGroupCode;
+
+	private List<String> lexemeFrequencies;
+
 	private Complexity complexity;
 
-	@Column(name = "lexeme_weight")
 	private Float weight;
-
-	@Column(name = "gender_code")
-	private String genderCode;
-
-	@Column(name = "word_aspect_code")
-	private String wordAspectCode;
 
 	private List<Classifier> wordTypes;
 
@@ -118,12 +108,32 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
-	public String[] getWords() {
-		return words;
+	public Long getWordId() {
+		return wordId;
 	}
 
-	public void setWords(String[] words) {
-		this.words = words;
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
+	}
+
+	@Override
+	public String getWordValue() {
+		return wordValue;
+	}
+
+	@Override
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
+	}
+
+	@Override
+	public String getWordValuePrese() {
+		return wordValuePrese;
+	}
+
+	@Override
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
 	}
 
 	public String getWordLang() {
@@ -134,6 +144,30 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.wordLang = wordLang;
 	}
 
+	public Integer getWordHomonymNr() {
+		return wordHomonymNr;
+	}
+
+	public void setWordHomonymNr(Integer wordHomonymNr) {
+		this.wordHomonymNr = wordHomonymNr;
+	}
+
+	public String getWordGenderCode() {
+		return wordGenderCode;
+	}
+
+	public void setWordGenderCode(String wordGenderCode) {
+		this.wordGenderCode = wordGenderCode;
+	}
+
+	public String getWordAspectCode() {
+		return wordAspectCode;
+	}
+
+	public void setWordAspectCode(String wordAspectCode) {
+		this.wordAspectCode = wordAspectCode;
+	}
+
 	public String getWordDisplayMorphCode() {
 		return wordDisplayMorphCode;
 	}
@@ -142,20 +176,44 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.wordDisplayMorphCode = wordDisplayMorphCode;
 	}
 
-	public Long getWordId() {
-		return wordId;
+	@Override
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
 	}
 
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
+	@Override
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
 	}
 
-	public Integer getWordHomonymNumber() {
-		return wordHomonymNumber;
+	@Override
+	public boolean isPrefixoid() {
+		return prefixoid;
 	}
 
-	public void setWordHomonymNumber(Integer wordHomonymNumber) {
-		this.wordHomonymNumber = wordHomonymNumber;
+	@Override
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	@Override
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	@Override
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	@Override
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	@Override
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
 	}
 
 	public Long getLexemeId() {
@@ -174,14 +232,15 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.meaningId = meaningId;
 	}
 
-	public String getDataset() {
-		return dataset;
+	public String getDatasetName() {
+		return datasetName;
 	}
 
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
+	public void setDatasetName(String datasetName) {
+		this.datasetName = datasetName;
 	}
 
+	@Override
 	public String getDatasetCode() {
 		return datasetCode;
 	}
@@ -190,6 +249,7 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.datasetCode = datasetCode;
 	}
 
+	@Override
 	public Integer getLevel1() {
 		return level1;
 	}
@@ -198,6 +258,7 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.level1 = level1;
 	}
 
+	@Override
 	public Integer getLevel2() {
 		return level2;
 	}
@@ -206,10 +267,12 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.level2 = level2;
 	}
 
+	@Override
 	public String getLevels() {
 		return levels;
 	}
 
+	@Override
 	public void setLevels(String levels) {
 		this.levels = levels;
 	}
@@ -220,6 +283,14 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setLexemeValueStateCode(String lexemeValueStateCode) {
 		this.lexemeValueStateCode = lexemeValueStateCode;
+	}
+
+	public String getLexemeProcessStateCode() {
+		return lexemeProcessStateCode;
+	}
+
+	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
+		this.lexemeProcessStateCode = lexemeProcessStateCode;
 	}
 
 	public String getLexemeFrequencyGroupCode() {
@@ -238,14 +309,6 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 		this.lexemeFrequencies = lexemeFrequencies;
 	}
 
-	public String getLexemeProcessStateCode() {
-		return lexemeProcessStateCode;
-	}
-
-	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
-		this.lexemeProcessStateCode = lexemeProcessStateCode;
-	}
-
 	public Complexity getComplexity() {
 		return complexity;
 	}
@@ -260,22 +323,6 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 
 	public void setWeight(Float weight) {
 		this.weight = weight;
-	}
-
-	public String getGenderCode() {
-		return genderCode;
-	}
-
-	public void setGenderCode(String genderCode) {
-		this.genderCode = genderCode;
-	}
-
-	public String getWordAspectCode() {
-		return wordAspectCode;
-	}
-
-	public void setWordAspectCode(String wordAspectCode) {
-		this.wordAspectCode = wordAspectCode;
 	}
 
 	public List<Classifier> getWordTypes() {
@@ -469,5 +516,5 @@ public class WordLexeme extends AbstractDataObject implements LexemeLevel {
 	public void setLexemeOrMeaningClassifiersExist(boolean lexemeOrMeaningClassifiersExist) {
 		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
 	}
-	
+
 }

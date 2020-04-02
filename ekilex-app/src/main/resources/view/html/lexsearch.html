@@ -52,7 +52,7 @@
           <div class="border-bottom px-2  py-2">
             <div class="d-flex flex-row align-items-center">
               <div class="hover-actions-container hover-actions-container-outline">
-                <h1 th:id="${'word-value-' + wordId}" th:utext="${viewUtil.getMarkupHtml(details.word)}" class="mb-0">Aktiivne sõna</h1>
+                <h1 th:id="${'word-value-' + wordId}" th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mb-0">Aktiivne sõna</h1>
                 <div class="hover-actions hover-actions-bottom-right">
                   <button type="button" class="btn btn-compact btn-secondary"
                           title="Muuda"
@@ -175,7 +175,7 @@
                         <span th:unless="${lexeme.wordLang == meaningWordLangGroup.lang}" th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
                         <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
                           <span class="btn-custom">
-                            <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}"></span>
+                            <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
                             <span th:text="${meaningWord.homonymNr}"></span>
                             <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
                             <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
@@ -184,7 +184,7 @@
                       </div>
                     </div>
                     <div class="ml-auto d-flex flex-row align-items-center">
-                      <b th:text="${lexeme.dataset}" class="mr-2"></b>
+                      <b th:text="${lexeme.datasetName}" class="mr-2"></b>
                       <button type="button" class="btn btn-secondary btn-sm btn-toggle"
                               title="Näita detaile"
                               th:data-toggle-target="${'lexBody_' + lexeme.lexemeId}">
@@ -241,7 +241,7 @@
                                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
                               </button>
                               <button type="button" class="btn btn-link p-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
-                                <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}"></span>
+                                <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
                                 <span th:text="${meaningWord.homonymNr}"></span>
                                 <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
                               </button>
@@ -300,7 +300,7 @@
                          sec:authorize="${#vars.isLexemeCrudGranted}">Menetluse logi</a>
                     </div>
                     <div class="ml-auto">
-                      <b th:text="${lexeme.dataset}"></b>
+                      <b th:text="${lexeme.datasetName}"></b>
                     </div>
                   </div>
                   <div>
@@ -654,7 +654,7 @@
                           <td class="pr-3">
                             <th:block th:each="relation, iter : ${relations}">
                               <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                                <span th:utext="${viewUtil.getMarkupHtml(relation)}"></span>
+                                <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                                 <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                                 <th:block th:each="datasetCode, dsIter : ${relation.wordLexemeDatasetCodes}">
                                   <span th:if="${dsIter.first}">[</span>
@@ -1086,7 +1086,7 @@
                           </td>
                           <td class="pr-3 invisible-buttons">
                             <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                              <span th:utext="${viewUtil.getMarkupHtml(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                              <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                             </button>
                             <button type="button" class="btn badge badge-warning"
                                     th:data-id="${relation.id}"
@@ -1301,7 +1301,7 @@
                       </td>
                       <td class="invisible-buttons">
                         <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                          <span th:utext="${viewUtil.getMarkupHtml(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                          <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"
@@ -1322,7 +1322,7 @@
                       <td class="invisible-buttons">
                         <span th:each="relation, itemIter : ${wordGroup.members}">
                           <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
-                            <span th:utext="${viewUtil.getMarkupHtml(relation)}"></span>
+                            <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                           </button>
                           <button type="button" class="btn badge badge-warning"
                                   th:data-id="${relation.id}"

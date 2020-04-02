@@ -154,9 +154,9 @@
     <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
       <div class="border rounded mb-2 p-2" th:each="lexeme : ${lexemeLangGroup.lexemes}">
         <div>
-          <span th:utext="${lexeme.wordValuePrese}" class="font-weight-bold"></span>
+          <span th:utext="${viewUtil.getWordValueMarkup(lexeme)}" class="font-weight-bold"></span>
           <span th:text="${'(' + viewUtil.getLangIso2(lexeme.wordLang) + ')'}" class="ml-2"></span>
-          <b class="float-right" th:text="${lexeme.dataset}"></b>
+          <b class="float-right" th:text="${lexeme.datasetCode}"></b>
         </div>
         <div class="row">
           <div class="col-1 pr-0">

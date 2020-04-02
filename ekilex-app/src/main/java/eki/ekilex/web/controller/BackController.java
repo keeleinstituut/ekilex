@@ -46,7 +46,7 @@ public class BackController extends AbstractPageController {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
-		String firstWordValue = lexeme.getWords()[0];
+		String firstWordValue = lexeme.getWordValue();
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;

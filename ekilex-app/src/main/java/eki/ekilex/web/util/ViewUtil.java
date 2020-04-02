@@ -47,7 +47,7 @@ public class ViewUtil implements InitializingBean {
 		return langIso2;
 	}
 
-	public String getMarkupHtml(DecoratedWordType word) {
+	public String getWordValueMarkup(DecoratedWordType word) {
 
 		String wordPrese = new String(word.getWordValuePrese());
 		if (word.isSuffixoid()) {

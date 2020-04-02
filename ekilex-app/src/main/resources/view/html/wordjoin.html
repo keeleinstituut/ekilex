@@ -22,9 +22,9 @@
         <div class="border rounded p-2">
           <div th:if="${targetWordDetails != null}">
             <input type="checkbox" class="mt-2" checked="checked" th:disabled="true"/>
-            <span th:utext="${targetWordDetails.word.valuePrese}" class="wttl ml-2"></span>
-            <span th:text="${targetWordDetails.word.homonymNumber}" th:if="${targetWordDetails.word.homonymNumber > 0}"></span>
-            <span th:text="${'(' + viewUtil.getLangIso2(targetWordDetails.word.language) + ')'}" class="ml-2"></span>
+            <span th:utext="${viewUtil.getWordValueMarkup(targetWordDetails.word)}" class="wttl ml-2"></span>
+            <span th:text="${targetWordDetails.word.homonymNr}" th:if="${targetWordDetails.word.homonymNr > 0}"></span>
+            <span th:text="${'(' + viewUtil.getLangIso2(targetWordDetails.word.lang) + ')'}" class="ml-2"></span>
             <div th:if="${targetWordDetails.firstDefinitionValue != null}">
               <span th:utext="${targetWordDetails.firstDefinitionValue}"></span>
             </div>
@@ -53,9 +53,9 @@
                        th:value="${sourceWordDetails.word.wordId}"
                        th:if="${sourceWordDetails.word.wordId != targetWordDetails.word.wordId}"
                        sec:authorize="#vars.permDataUtil.isSourceWordCrudGranted(#vars.sourceWordDetails.word.wordId, #vars.targetWordDetails.word.wordId, #vars.sessionBean)"/>
-                <span th:utext="${sourceWordDetails.word.valuePrese}" class="wttl ml-2"></span>
-                <span th:text="${sourceWordDetails.word.homonymNumber}" th:if="${sourceWordDetails.word.homonymNumber > 0}" class="ml-2"></span>
-                <span th:text="${'(' + viewUtil.getLangIso2(sourceWordDetails.word.language) + ')'}" class="ml-2"></span>
+                <span th:utext="${viewUtil.getWordValueMarkup(sourceWordDetails.word)}" class="wttl ml-2"></span>
+                <span th:text="${sourceWordDetails.word.homonymNr}" th:if="${sourceWordDetails.word.homonymNr > 0}" class="ml-2"></span>
+                <span th:text="${'(' + viewUtil.getLangIso2(sourceWordDetails.word.lang) + ')'}" class="ml-2"></span>
               </div>
               <th:block th:replace=":: gender(${sourceWordDetails})"></th:block>
               <th:block th:replace=":: word_types(${sourceWordDetails})"></th:block>
@@ -71,15 +71,15 @@
                   <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
                     <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
                       <div class="btn-custom">
-                        <span th:utext="${meaningWord.valuePrese}"></span>
-                        <span th:text="${meaningWord.homonymNumber}"></span>
-                        <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.language) + ')'}"></span>
+                        <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+                        <span th:text="${meaningWord.homonymNr}"></span>
+                        <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
                       </div>
                       <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                     </th:block>
                   </th:block>
                   <div class="ml-auto">
-                    <b th:text="${lexeme.dataset}"></b>
+                    <b th:text="${lexeme.datasetName}"></b>
                   </div>
                 </div>
                 <div class="d-flex align-items-center flex-wrap" th:if="${not #lists.isEmpty(lexeme.definitions)}">

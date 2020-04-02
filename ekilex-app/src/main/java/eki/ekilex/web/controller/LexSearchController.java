@@ -1,7 +1,7 @@
 package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -156,7 +156,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
-		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
+		List<String> datasets = Arrays.asList(lexeme.getDatasetCode());
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 

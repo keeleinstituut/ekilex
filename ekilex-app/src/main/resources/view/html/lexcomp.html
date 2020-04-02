@@ -12,7 +12,7 @@
           <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="detailsBtn">
             <span class="d-flex align-items-center">
               <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
-              <span th:utext="${viewUtil.getMarkupHtml(word)}">vorm 1</span>
+              <span th:utext="${viewUtil.getWordValueMarkup(word)}">vorm 1</span>
               <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}" class="ml-1"></span>
             </span>
             <small class="d-flex">
@@ -467,7 +467,7 @@
       </button>
     </th:block>
     <th:block th:unless="${#lists.isEmpty(details.wordTypes)}">
-      <span th:each="classif,classifIter : ${details.wordTypes}" data-toggle="tooltip" title="Sõna tüüp" class="hover-actions-container hover-actions-container-outline">
+      <div th:each="classif,classifIter : ${details.wordTypes}" data-toggle="tooltip" title="Sõna tüüp" class="hover-actions-container hover-actions-container-outline">
         <span th:replace="lexdialog :: edit_word_type_dlg"></span>
         <span th:text="${classif.code}"></span>
         <th:block th:unless="${classif.code == classif.value}">
@@ -500,7 +500,7 @@
           </div>
         </div>
         <span th:unless="${classifIter.last}">,</span>
-      </span>
+      </div>
     </th:block>
   </div>
   <div class="mr-1" th:fragment="word_aspect">

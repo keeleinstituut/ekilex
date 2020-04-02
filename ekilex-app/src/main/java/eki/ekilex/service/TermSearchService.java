@@ -184,10 +184,10 @@ public class TermSearchService extends AbstractSearchService {
 					|| CollectionUtils.isNotEmpty(lexemeRegisters)
 					|| CollectionUtils.isNotEmpty(lexemeGrammars);
 
-			String dataset = lexeme.getDataset();
+			String dataset = lexeme.getDatasetCode();
 			dataset = datasetNameMap.get(dataset);
 
-			lexeme.setDataset(dataset);
+			lexeme.setDatasetCode(dataset);
 			lexeme.setWordTypes(wordTypes);
 			lexeme.setPos(lexemePos);
 			lexeme.setDerivs(lexemeDerivs);

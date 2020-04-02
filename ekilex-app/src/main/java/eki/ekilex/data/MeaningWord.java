@@ -14,7 +14,7 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	private Integer homonymNr;
 
-	private boolean wordHomonymsExist;
+	private boolean homonymsExist;
 
 	private String lang;
 
@@ -70,12 +70,12 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 		this.homonymNr = homonymNr;
 	}
 
-	public boolean isWordHomonymsExist() {
-		return wordHomonymsExist;
+	public boolean isHomonymsExist() {
+		return homonymsExist;
 	}
 
-	public void setWordHomonymsExist(boolean wordHomonymsExist) {
-		this.wordHomonymsExist = wordHomonymsExist;
+	public void setHomonymsExist(boolean homonymsExist) {
+		this.homonymsExist = homonymsExist;
 	}
 
 	public String getLang() {

@@ -81,15 +81,15 @@
       </div>
       <div class="col">
         <span>
-          <span th:text="${#strings.listJoin(lexeme.words, ', ')}" class="ttl"></span>
+          <span th:utext="${viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
           &nbsp;
         </span>
         <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
           <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
             <span class="pt-0">
-              <span th:utext="${meaningWord.valuePrese}"></span>
-              <span th:text="${meaningWord.homonymNumber}"></span>
-              <span th:text="${'( ' +viewUtil.getLangIso2(meaningWord.language) + ' )'}"></span>
+              <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+              <span th:text="${meaningWord.homonymNr}"></span>
+              <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
             </span>
             <span th:unless="${meaningWordIter.last}">|</span>
           </span>
@@ -98,7 +98,7 @@
           <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
         </span>
         <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
-        <b th:text="${lexeme.dataset}" class="float-right"></b>
+        <b th:text="${lexeme.datasetName}" class="float-right"></b>
       </div>
     </div>
     <div th:if="${not #lists.isEmpty(lexeme.definitions)}">

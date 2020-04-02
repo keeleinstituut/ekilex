@@ -589,7 +589,7 @@
                   <td class="pr-3">
                     <th:block th:each="relation, relIter : ${relations}">
                       <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
-                        <span th:utext="${viewUtil.getMarkupHtml(relation)}"></span>
+                        <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                         <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         <th:block th:each="datasetCode, dsIter : ${relation.wordLexemeDatasetCodes}">
                           <span th:if="${dsIter.first}">[</span>
@@ -702,7 +702,7 @@
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
                   <div class="hidden-buttons">
-                    <span th:id="${'word-value-' + lexeme.wordId}" th:utext="${viewUtil.getMarkupHtml(lexeme)}" class="ttl word-value"></span>
+                    <span th:id="${'word-value-' + lexeme.wordId}" th:utext="${viewUtil.getWordValueMarkup(lexeme)}" class="ttl word-value"></span>
                     <button type="button" class="btn badge badge-primary"
                             title="Muuda"
                             data-toggle="modal"
@@ -738,7 +738,7 @@
                      sec:authorize="${#vars.isLexemeCrudGranted}">Menetluse logi</a>
                 </div>
                 <div class="ml-2">
-                  <b th:text="${lexeme.dataset}"></b>
+                  <b th:text="${lexeme.datasetCode}"></b>
                 </div>
                 <div class="ml-2">
                   <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isMeaningCrudGranted}"></th:block>
@@ -899,7 +899,7 @@
                       </td>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
-                          <span th:text="${viewUtil.getMarkupHtml(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                          <span th:text="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"

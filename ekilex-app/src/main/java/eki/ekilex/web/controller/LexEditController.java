@@ -73,14 +73,14 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
-		String targetLexemeWord = targetLexeme.getWords()[0];
+		String targetLexemeWord = targetLexeme.getWordValue();
 		if (searchFilter == null) {
 			searchFilter = targetLexemeWord;
 		}
 
 		Optional<Integer> wordHomonymNumber;
 		if (StringUtils.equals(searchFilter, targetLexemeWord)) {
-			Integer sourceHomonymNumber = targetLexeme.getWordHomonymNumber();
+			Integer sourceHomonymNumber = targetLexeme.getWordHomonymNr();
 			wordHomonymNumber = Optional.of(sourceHomonymNumber);
 		} else {
 			wordHomonymNumber = Optional.empty();
@@ -144,7 +144,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(targetLexemeId);
 		List<String> datasets = getUserPreferredDatasetCodes();
-		String firstWordValue = lexeme.getWords()[0];
+		String firstWordValue = lexeme.getWordValue();
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
@@ -157,7 +157,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 		compositionService.separateLexemeMeanings(lexemeId);
 
 		List<String> datasets = getUserPreferredDatasetCodes();
-		String firstWordValue = lexeme.getWords()[0];
+		String firstWordValue = lexeme.getWordValue();
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;

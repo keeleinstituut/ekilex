@@ -9,7 +9,6 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,6 +17,8 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
+import org.jooq.Record15;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +41,6 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
-import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 
 @Component
@@ -71,7 +71,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 		return execute(w1, p, wordCondition, layerName, searchDatasetsRestriction, fetchAll, offset, create);
 	}
-	
+
 	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {
 
 		WordRelation r = WORD_RELATION.as("r");
@@ -83,10 +83,9 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Paradigm ph = PARADIGM.as("ph");
 		Form f2 = FORM.as("f2");
 		Form fh = FORM.as("fh");
-		Lexeme l = LEXEME.as("l");
+		Lexeme l2 = LEXEME.as("l");
 		Lexeme lh = LEXEME.as("lh");
 		Definition d = DEFINITION.as("d");
-		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
 		Field<TypeWordRelParamRecord[]> relp = DSL
 				.select(DSL.field("array_agg(row(rp.name, rp.value)::type_word_rel_param)", TypeWordRelParamRecord[].class))
@@ -96,75 +95,87 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.asField();
 
 		Field<String[]> rwd = DSL
-				.select(DSL.arrayAgg(d.VALUE).orderBy(l.ORDER_BY, d.ORDER_BY))
-				.from(l, d)
+				.select(DSL.arrayAgg(d.VALUE).orderBy(l2.ORDER_BY, d.ORDER_BY))
+				.from(l2, d)
 				.where(
-						l.WORD_ID.eq(r.WORD2_ID)
-								.and(l.DATASET_CODE.eq(datasetCode))
-								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
-								.and(l.MEANING_ID.eq(d.MEANING_ID))
+						l2.WORD_ID.eq(r.WORD2_ID)
+								.and(l2.DATASET_CODE.eq(datasetCode))
+								.and(l2.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(l2.MEANING_ID.eq(d.MEANING_ID))
 								.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%"))))
-				.groupBy(l.WORD_ID)
+				.groupBy(l2.WORD_ID)
 				.asField();
 
-		Field<Boolean> rwip = DSL.field(DSL.exists(DSL
-				.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
-				.from(wt)
-				.where(wt.WORD_ID.eq(r.WORD2_ID)
-						.and(wt.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))
-				.groupBy(wt.WORD_ID)));
+		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
 
-		Field<Boolean> rwis = DSL.field(DSL.exists(DSL
-				.select(DSL.arrayAgg(wt.WORD_TYPE_CODE))
-				.from(wt)
-				.where(wt.WORD_ID.eq(r.WORD2_ID)
-						.and(wt.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))
-				.groupBy(wt.WORD_ID)));
+		Table<Record15<Long, String, String, TypeWordRelParamRecord[], Long, Long, Object, Object, Integer, String, String[], Boolean, Boolean, Boolean, String[]>> rr = DSL.select(
+				r.ID,
+				r.RELATION_STATUS,
+				oppr.RELATION_STATUS.as("opposite_relation_status"),
+				relp.as("relation_params"),
+				r.ORDER_BY,
+				w2.ID.as("word_id"),
+				DSL.field("array_to_string(array_agg(distinct f2.value), ',', '*')").as("word_value"),
+				DSL.field("array_to_string(array_agg(distinct f2.value_prese), ',', '*')").as("word_value_prese"),
+				w2.HOMONYM_NR.as("word_homonym_nr"),
+				w2.LANG.as("word_lang"),
+				wtf.as("word_type_codes"),
+				wtpf.as("prefixoid"),
+				wtsf.as("suffixoid"),
+				wtz.as("foreign"),
+				rwd.as("word_definitions"))
+				.from(r
+						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
+						.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
+						.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
+						.leftOuterJoin(oppr).on(
+								oppr.WORD1_ID.eq(r.WORD2_ID)
+										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
+										.and(oppr.WORD_REL_TYPE_CODE.eq(r.WORD_REL_TYPE_CODE))))
+				.where(
+						r.WORD1_ID.eq(wordId)
+								.and(r.WORD_REL_TYPE_CODE.eq(relationType))
+								.and(w2.LANG.in(wordLangs)))
+				.groupBy(r.ID, w2.ID, oppr.RELATION_STATUS)
+				.asTable("r");
 
 		Field<Boolean> rwhe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
 				.from(fh, ph, wh)
 				.where(
-						fh.VALUE.eq(f2.VALUE)
+						fh.VALUE.eq(rr.field("word_value", String.class))
 								.and(fh.MODE.eq(FormMode.WORD.name()))
 								.and(fh.PARADIGM_ID.eq(ph.ID))
 								.and(ph.WORD_ID.eq(wh.ID))
 								.andExists(DSL
 										.select(lh.ID)
 										.from(lh)
-										.where(
-												lh.WORD_ID.eq(wh.ID)
-														.and(lh.DATASET_CODE.eq(datasetCode)))))
+										.where(lh.WORD_ID.eq(wh.ID).and(lh.DATASET_CODE.eq(datasetCode)))))
 				.groupBy(fh.VALUE)
 				.asField();
 
-		return create.selectDistinct(
-				r.ID,
-				r.RELATION_STATUS,
-				r.ORDER_BY,
-				oppr.RELATION_STATUS.as("opposite_relation_status"),
-				w2.ID.as("related_word_id"),
-				f2.VALUE.as("related_word"),
-				w2.HOMONYM_NR.as("related_word_homonym_nr"),
-				w2.LANG.as("related_word_lang"),
-				relp.as("relation_params"),
-				rwd.as("related_word_definitions"),
-				rwip.as("related_word_is_prefixoid"),
-				rwis.as("related_word_is_suffixoid"),
-				rwhe.as("related_word_homonyms_exist"))
-				.from(r
-						.leftOuterJoin(oppr).on(
-								oppr.WORD1_ID.eq(r.WORD2_ID)
-										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
-										.and(oppr.WORD_REL_TYPE_CODE.eq(r.WORD_REL_TYPE_CODE)))
-						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID))
-						.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
-						.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name()))))
-				.where(
-						r.WORD1_ID.eq(wordId)
-						.and(r.WORD_REL_TYPE_CODE.eq(relationType))
-						.and(w2.LANG.in(wordLangs)))
-				.orderBy(r.ORDER_BY)
+		return create.select(
+				rr.field("id"),
+				rr.field("relation_status"),
+				rr.field("opposite_relation_status"),
+				rr.field("relation_params"),
+				rr.field("order_by"),
+				rr.field("word_id"),
+				rr.field("word_value"),
+				rr.field("word_value_prese"),
+				rr.field("word_homonym_nr"),
+				rwhe.as("homonyms_exist"),
+				rr.field("word_lang"),
+				rr.field("word_type_codes"),
+				rr.field("prefixoid"),
+				rr.field("suffixoid"),
+				rr.field("foreign"),
+				rr.field("word_definitions"))
+				.from(rr)
+				.orderBy(rr.field("order_by"))
 				.fetchInto(SynRelation.class);
 	}
 
@@ -184,8 +195,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
 				.from(LEXEME
 						.innerJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE))
-						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name())))
-						)
+						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
@@ -205,9 +215,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Record1<Long> relationRecord = create.select(WORD_RELATION.ID)
 				.from(WORD_RELATION)
 				.where(WORD_RELATION.WORD1_ID.eq(word1Id)
-								.and(WORD_RELATION.WORD2_ID.eq(word2Id))
-								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType))
-						)
+						.and(WORD_RELATION.WORD2_ID.eq(word2Id))
+						.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType)))
 				.fetchOne();
 
 		return relationRecord != null ? relationRecord.get(WORD_RELATION.ID) : null;
@@ -222,8 +231,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.select(DSL.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode), DSL.val(lexemeType.name()), DSL.val(BigDecimal.valueOf(lexemeWeight)),
 						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
 						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(existingLexemeId)))
+						.from(LEXEME)
+						.where(LEXEME.ID.eq(existingLexemeId)))
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
@@ -259,10 +268,9 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						.andExists(DSL
 								.select(l.ID)
 								.from(l)
-								.where(
-										l.WORD_ID.eq(w.ID)
+								.where(l.WORD_ID.eq(w.ID)
 										//TODO what lexeme type?
-										)))
+				)))
 				.groupBy(w.ID)
 				.fetchOneInto(WordSynDetails.class);
 	}
@@ -307,7 +315,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						f2.VALUE.as("word_value"),
 						f2.VALUE_PRESE.as("word_value_prese"),
 						w2.HOMONYM_NR,
-						whe.as("word_homonyms_exist"),
+						whe.as("homonyms_exist"),
 						w2.LANG,
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
@@ -328,8 +336,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(p2.WORD_ID.eq(w2.ID))
 								.and(f2.PARADIGM_ID.eq(p2.ID))
 								.and(f2.MODE.eq(FormMode.WORD.name()))
-								.and(w2.LANG.in(meaningWordLangs))
-				)
+								.and(w2.LANG.in(meaningWordLangs)))
 				.groupBy(w2.ID, f2.VALUE, f2.VALUE_PRESE, l2.ID)
 				.orderBy(w2.LANG, l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
@@ -339,15 +346,14 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 
 		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
-					.from(WORD_RELATION, wr2)
-					.where(
-							WORD_RELATION.WORD1_ID.eq(wr2.WORD1_ID)
-									.and(wr2.ID.eq(relationId))
-									.and(WORD_RELATION.ORDER_BY.ge(wr2.ORDER_BY))
-									.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
-					)
-					.orderBy(WORD_RELATION.ORDER_BY)
-					.fetchInto(SynRelation.class);
+				.from(WORD_RELATION, wr2)
+				.where(
+						WORD_RELATION.WORD1_ID.eq(wr2.WORD1_ID)
+								.and(wr2.ID.eq(relationId))
+								.and(WORD_RELATION.ORDER_BY.ge(wr2.ORDER_BY))
+								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode)))
+				.orderBy(WORD_RELATION.ORDER_BY)
+				.fetchInto(SynRelation.class);
 	}
 
 	public List<TypeWordRelParam> getWordRelationParams(Long wordRelationId) {
