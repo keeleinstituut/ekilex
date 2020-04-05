@@ -16,10 +16,6 @@ public class Word extends WordTypeData {
 
 	private Classifier displayMorph;
 
-	private String aspectCode;
-
-	private Classifier aspect;
-
 	private List<TypeMeaningWord> meaningWords;
 
 	private String meaningWordsWrapup;
@@ -88,22 +84,6 @@ public class Word extends WordTypeData {
 
 	public void setDisplayMorph(Classifier displayMorph) {
 		this.displayMorph = displayMorph;
-	}
-
-	public String getAspectCode() {
-		return aspectCode;
-	}
-
-	public void setAspectCode(String aspectCode) {
-		this.aspectCode = aspectCode;
-	}
-
-	public Classifier getAspect() {
-		return aspect;
-	}
-
-	public void setAspect(Classifier aspect) {
-		this.aspect = aspect;
 	}
 
 	public List<TypeMeaningWord> getMeaningWords() {

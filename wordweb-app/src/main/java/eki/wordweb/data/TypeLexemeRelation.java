@@ -1,22 +1,13 @@
 package eki.wordweb.data;
 
 import eki.common.constant.Complexity;
-import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-public class TypeLexemeRelation extends AbstractDataObject implements ComplexityType, LangType {
+public class TypeLexemeRelation extends WordTypeData implements ComplexityType, LangType, DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long lexemeId;
-
-	private Long wordId;
-
-	private String word;
-
-	private String wordLang;
-
-	private Integer homonymNr;
 
 	private Complexity complexity;
 
@@ -30,43 +21,6 @@ public class TypeLexemeRelation extends AbstractDataObject implements Complexity
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
-	}
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
-	}
-
-	@Override
-	public String getLang() {
-		return wordLang;
-	}
-
-	public String getWordLang() {
-		return wordLang;
-	}
-
-	public void setWordLang(String wordLang) {
-		this.wordLang = wordLang;
-	}
-
-	public Integer getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
 	}
 
 	@Override
@@ -93,4 +47,5 @@ public class TypeLexemeRelation extends AbstractDataObject implements Complexity
 	public void setLexRelType(Classifier lexRelType) {
 		this.lexRelType = lexRelType;
 	}
+
 }

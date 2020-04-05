@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
 
-    private static final long serialVersionUID = -195569805;
+    private static final long serialVersionUID = -1852892848;
 
     /**
      * The reference instance of <code>public.type_word_relation</code>
@@ -55,9 +55,9 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
     public static final UDTField<TypeWordRelationRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, TYPE_WORD_RELATION, "");
 
     /**
-     * The attribute <code>public.type_word_relation.lang</code>.
+     * The attribute <code>public.type_word_relation.word_prese</code>.
      */
-    public static final UDTField<TypeWordRelationRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_WORD_RELATION, "");
+    public static final UDTField<TypeWordRelationRecord, String> WORD_PRESE = createField("word_prese", org.jooq.impl.SQLDataType.CLOB, TYPE_WORD_RELATION, "");
 
     /**
      * The attribute <code>public.type_word_relation.homonym_nr</code>.
@@ -65,14 +65,19 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
     public static final UDTField<TypeWordRelationRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_WORD_RELATION, "");
 
     /**
-     * The attribute <code>public.type_word_relation.lex_complexities</code>.
+     * The attribute <code>public.type_word_relation.lang</code>.
      */
-    public static final UDTField<TypeWordRelationRecord, String[]> LEX_COMPLEXITIES = createField("lex_complexities", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_RELATION, "");
+    public static final UDTField<TypeWordRelationRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_WORD_RELATION, "");
 
     /**
      * The attribute <code>public.type_word_relation.word_type_codes</code>.
      */
     public static final UDTField<TypeWordRelationRecord, String[]> WORD_TYPE_CODES = createField("word_type_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_word_relation.lex_complexities</code>.
+     */
+    public static final UDTField<TypeWordRelationRecord, String[]> LEX_COMPLEXITIES = createField("lex_complexities", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_RELATION, "");
 
     /**
      * The attribute <code>public.type_word_relation.word_rel_type_code</code>.

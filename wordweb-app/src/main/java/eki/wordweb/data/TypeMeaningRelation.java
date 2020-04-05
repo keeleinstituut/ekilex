@@ -3,26 +3,13 @@ package eki.wordweb.data;
 import java.util.List;
 
 import eki.common.constant.Complexity;
-import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-public class TypeMeaningRelation extends AbstractDataObject implements ComplexityType {
+public class TypeMeaningRelation extends WordTypeData implements ComplexityType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long meaningId;
-
-	private Long wordId;
-
-	private String word;
-
-	private String wordLang;
-
-	private Integer homonymNr;
-
-	private String aspectCode;
-
-	private Classifier aspect;
 
 	private Complexity complexity;
 
@@ -48,54 +35,7 @@ public class TypeMeaningRelation extends AbstractDataObject implements Complexit
 		this.meaningId = meaningId;
 	}
 
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
-	}
-
-	public String getWordLang() {
-		return wordLang;
-	}
-
-	public void setWordLang(String wordLang) {
-		this.wordLang = wordLang;
-	}
-
-	public Integer getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
-	}
-
-	public String getAspectCode() {
-		return aspectCode;
-	}
-
-	public void setAspectCode(String aspectCode) {
-		this.aspectCode = aspectCode;
-	}
-
-	public Classifier getAspect() {
-		return aspect;
-	}
-
-	public void setAspect(Classifier aspect) {
-		this.aspect = aspect;
-	}
-
+	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}

@@ -44,7 +44,7 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		return langData;
 	}
 
-	public String getMarkupHtml(DecoratedWordType word) {
+	public String getWordValueMarkup(DecoratedWordType word) {
 
 		String wordPrese = new String(word.getWordPrese());
 		if (word.isSuffixoid()) {

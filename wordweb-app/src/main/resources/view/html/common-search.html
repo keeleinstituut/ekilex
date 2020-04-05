@@ -71,7 +71,7 @@
                           th:text="${langData.codeIso2}"
                           th:title="${langData.label}">1</span>
                     <span class="homonym-name-container">
-                      <span class="homonym-name" th:utext="${viewUtil.getMarkupHtml(word)}">tee</span>
+                      <span class="homonym-name" th:utext="${viewUtil.getWordValueMarkup(word)}">tee</span>
                     </span>
                     <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
                   </span>
@@ -88,7 +88,7 @@
     <div class="col-12 content-title">
       <h3 class="mb-0">
         <span class="additional-meta lang-code" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-        <span class="homonym-name" th:utext="${viewUtil.getMarkupHtml(wordData.word)}">tee</span>
+        <span class="homonym-name" th:utext="${viewUtil.getWordValueMarkup(wordData.word)}">tee</span>
         <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
         <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableAudioFile != null}"
                 th:data-url-to-audio="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">
@@ -174,7 +174,7 @@
               <span th:text="#{label.same.as}">sama mis</span>
               <span th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}">
                 <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
-                  <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}">tee</span>
+                  <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                 </a>
                 <span th:if="${meaningWord.additionalDataExists}" class="rections">
                   <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
@@ -199,7 +199,7 @@
               <span th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
                 <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}"
                    class="matching-word" th:style="${meaningWord.wordId == wordId ? 'border-bottom: 1px #7F8891 dashed;' : ''}">
-                  <span th:utext="${viewUtil.getMarkupHtml(meaningWord)}">tee</span>
+                  <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                 </a>
                 <span th:if="${meaningWord.additionalDataExists}" class="rections">
                   <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
@@ -293,7 +293,8 @@
               <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                 <span th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
-                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
+                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}"
+                     th:utext="${viewUtil.getWordValueMarkup(relation) + (relationIter.last ? '' : ',')}"></a>
                 </th:block>
               </div>
             </div>
@@ -304,7 +305,7 @@
                 <span th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                   <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
-                    <span th:text="${relation.word}"></span>
+                    <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                     <th:block th:if="${relation.aspect != null}">
                       <span th:text="${'[' + relation.aspect.value + ']'}"></span>
                     </th:block>

@@ -17,9 +17,13 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 
 	private String asWord;
 
+	private Integer homonymNr;
+
 	private String lang;
 
-	private Integer homonymNr;
+	private String aspectCode;
+
+	private Classifier aspect;
 
 	private List<String> wordTypeCodes;
 
@@ -67,6 +71,14 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 		this.asWord = asWord;
 	}
 
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
+	}
+
 	@Override
 	public String getLang() {
 		return lang;
@@ -76,14 +88,23 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 		this.lang = lang;
 	}
 
-	public Integer getHomonymNr() {
-		return homonymNr;
+	public String getAspectCode() {
+		return aspectCode;
 	}
 
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
+	public void setAspectCode(String aspectCode) {
+		this.aspectCode = aspectCode;
 	}
 
+	public Classifier getAspect() {
+		return aspect;
+	}
+
+	public void setAspect(Classifier aspect) {
+		this.aspect = aspect;
+	}
+
+	@Override
 	public List<String> getWordTypeCodes() {
 		return wordTypeCodes;
 	}

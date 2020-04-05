@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
 
-    private static final long serialVersionUID = 1291908462;
+    private static final long serialVersionUID = 1806866402;
 
     /**
      * The reference instance of <code>public.type_meaning_relation</code>
@@ -60,9 +60,9 @@ public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
     public static final UDTField<TypeMeaningRelationRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, TYPE_MEANING_RELATION, "");
 
     /**
-     * The attribute <code>public.type_meaning_relation.word_lang</code>.
+     * The attribute <code>public.type_meaning_relation.word_prese</code>.
      */
-    public static final UDTField<TypeMeaningRelationRecord, String> WORD_LANG = createField("word_lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_MEANING_RELATION, "");
+    public static final UDTField<TypeMeaningRelationRecord, String> WORD_PRESE = createField("word_prese", org.jooq.impl.SQLDataType.CLOB, TYPE_MEANING_RELATION, "");
 
     /**
      * The attribute <code>public.type_meaning_relation.homonym_nr</code>.
@@ -70,9 +70,19 @@ public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
     public static final UDTField<TypeMeaningRelationRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_MEANING_RELATION, "");
 
     /**
+     * The attribute <code>public.type_meaning_relation.lang</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_MEANING_RELATION, "");
+
+    /**
      * The attribute <code>public.type_meaning_relation.aspect_code</code>.
      */
     public static final UDTField<TypeMeaningRelationRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_meaning_relation.word_type_codes</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, String[]> WORD_TYPE_CODES = createField("word_type_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_MEANING_RELATION, "");
 
     /**
      * The attribute <code>public.type_meaning_relation.complexity</code>.

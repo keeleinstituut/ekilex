@@ -150,6 +150,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setRelatedLexemes(relatedLexemes);
 		for (TypeLexemeRelation lexemeRelation : relatedLexemes) {
 			classifierUtil.applyClassifiers(lexemeRelation, displayLang);
+			setWordTypeFlags(lexemeRelation);
 		}
 		Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType = relatedLexemes.stream().collect(Collectors.groupingBy(TypeLexemeRelation::getLexRelType));
 		lexeme.setRelatedLexemesByType(relatedLexemesByType);
@@ -251,6 +252,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			for (TypeMeaningRelation meaningRelation : relatedMeanings) {
 				classifierUtil.applyClassifiers(meaningRelation, displayLang);
+				setWordTypeFlags(meaningRelation);
 			}
 		}
 		lexeme.setRelatedMeanings(relatedMeanings);
@@ -271,8 +273,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 	private int compareLangOrderby(TypeMeaningRelation relation1, TypeMeaningRelation relation2, String sourceLang, Map<String, Long> langOrderByMap) {
 
-		String lang1 = relation1.getWordLang();
-		String lang2 = relation2.getWordLang();
+		String lang1 = relation1.getLang();
+		String lang2 = relation2.getLang();
 
 		if (StringUtils.equals(sourceLang, lang1) && StringUtils.equals(sourceLang, lang2)) {
 			return 0;
@@ -283,7 +285,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (StringUtils.equals(sourceLang, lang2)) {
 			return 1;
 		}
-		return (int) (langOrderByMap.get(lang1) - langOrderByMap.get(lang2));
+		Long lang1OrderBy = langOrderByMap.get(lang1);
+		Long lang2OrderBy = langOrderByMap.get(lang2);
+		return (int) (lang1OrderBy - lang2OrderBy);
 	}
 
 	private void filterMeaningWords(Lexeme lexeme, List<String> allRelatedWordValues) {

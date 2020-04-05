@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeLexemeRelation extends UDTImpl<TypeLexemeRelationRecord> {
 
-    private static final long serialVersionUID = -142472420;
+    private static final long serialVersionUID = -1627758132;
 
     /**
      * The reference instance of <code>public.type_lexeme_relation</code>
@@ -60,14 +60,24 @@ public class TypeLexemeRelation extends UDTImpl<TypeLexemeRelationRecord> {
     public static final UDTField<TypeLexemeRelationRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, TYPE_LEXEME_RELATION, "");
 
     /**
-     * The attribute <code>public.type_lexeme_relation.word_lang</code>.
+     * The attribute <code>public.type_lexeme_relation.word_prese</code>.
      */
-    public static final UDTField<TypeLexemeRelationRecord, String> WORD_LANG = createField("word_lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_LEXEME_RELATION, "");
+    public static final UDTField<TypeLexemeRelationRecord, String> WORD_PRESE = createField("word_prese", org.jooq.impl.SQLDataType.CLOB, TYPE_LEXEME_RELATION, "");
 
     /**
      * The attribute <code>public.type_lexeme_relation.homonym_nr</code>.
      */
     public static final UDTField<TypeLexemeRelationRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_LEXEME_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_lexeme_relation.lang</code>.
+     */
+    public static final UDTField<TypeLexemeRelationRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_LEXEME_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_lexeme_relation.word_type_codes</code>.
+     */
+    public static final UDTField<TypeLexemeRelationRecord, String[]> WORD_TYPE_CODES = createField("word_type_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_LEXEME_RELATION, "");
 
     /**
      * The attribute <code>public.type_lexeme_relation.complexity</code>.

@@ -48,19 +48,31 @@ create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, i
 create type type_word_relation as (
 				word_id bigint,
 				word text,
-				lang char(3),
+				word_prese text,
 				homonym_nr integer,
-				lex_complexities varchar(100) array,
+				lang char(3),
 				word_type_codes varchar(100) array,
+				lex_complexities varchar(100) array,
 				word_rel_type_code varchar(100));
-create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), homonym_nr integer, complexity varchar(100), lex_rel_type_code varchar(100));
+create type type_lexeme_relation as (
+                lexeme_id bigint,
+                word_id bigint,
+                word text,
+                word_prese text,
+                homonym_nr integer,
+                lang char(3),
+                word_type_codes varchar(100) array,
+                complexity varchar(100),
+                lex_rel_type_code varchar(100));
 create type type_meaning_relation as (
 				meaning_id bigint,
 				word_id bigint,
 				word text,
-				word_lang char(3),
+				word_prese text,
 				homonym_nr integer,
+				lang char(3),
 				aspect_code varchar(100),
+				word_type_codes varchar(100) array,
 				complexity varchar(100),
 				lex_value_state_codes varchar(100) array,
 				lex_register_codes varchar(100) array,
@@ -1170,15 +1182,26 @@ select w.id word_id,
        wg.word_group_members
 from word w
   left outer join (select w1.id word_id,
-                          array_agg(row (wr.related_word_id,wr.related_word,wr.related_word_lang,wr.related_word_homonym_nr,wr.lex_complexities,wr.word_type_codes,wr.word_rel_type_code)::type_word_relation order by wr.word_rel_order_by) related_words
+                          array_agg(row (
+                            wr.related_word_id,
+                            wr.related_word,
+                            wr.related_word_prese,
+                            wr.related_word_homonym_nr,
+                            wr.related_word_lang,
+                            wr.word_type_codes,
+                            wr.lex_complexities,
+                            wr.word_rel_type_code
+                          )::type_word_relation order by wr.word_rel_order_by) related_words
                    from word w1
                      inner join (select distinct r.word1_id,
                                         r.word2_id related_word_id,
                                         r.word_rel_type_code,
                                         r.order_by word_rel_order_by,
                                         w2.word related_word,
-                                        w2.lang related_word_lang,
+                                        w2.word_prese related_word_prese,
                                         w2.homonym_nr related_word_homonym_nr,
+                                        w2.lang related_word_lang,
+                                        w2.word_type_codes,
                                         (select array_agg(distinct lc.complexity)
                                          from lexeme lc,
                                               dataset ds
@@ -1187,19 +1210,18 @@ from word w
                                          and lc.process_state_code = 'avalik'
                                          and ds.code = lc.dataset_code
                                          and ds.is_public = true
-                                         group by lc.word_id) as lex_complexities,
-                                        (select array_agg(wt.word_type_code order by wt.order_by)
-                                         from word_word_type wt
-                                         where wt.word_id = w2.id
-                                         group by wt.word_id) word_type_codes
+                                         group by lc.word_id) as lex_complexities
                                  from word_relation r,
                                       (select w.id,
                                               (array_agg(distinct f.value)) [1] as word,
+                                              (array_agg(distinct f.value_prese)) [1] as word_prese,
+                                              w.homonym_nr,
                                               w.lang,
-                                              w.homonym_nr
+                                              array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                                        from word as w
                                          join paradigm as p on p.word_id = w.id
                                          join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
+                                         left outer join word_word_type as wt on wt.word_id = w.id
                                        where exists (select l.id
                                                      from lexeme as l,
                                                           dataset ds
@@ -1215,14 +1237,25 @@ from word w
   left outer join (select wg.word_id,
                           wg.word_group_id,
                           wg.word_rel_type_code,
-                          array_agg(row (wg.group_member_word_id,wg.group_member_word,wg.group_member_word_lang,wg.group_member_homonym_nr,wg.lex_complexities,wg.word_type_codes,wg.word_rel_type_code)::type_word_relation order by wg.group_member_order_by) word_group_members
+                          array_agg(row (
+                            wg.group_member_word_id,
+                            wg.group_member_word,
+                            wg.group_member_word_prese,
+                            wg.group_member_homonym_nr,
+                            wg.group_member_word_lang,
+                            wg.word_type_codes,
+                            wg.lex_complexities,
+                            wg.word_rel_type_code
+                          )::type_word_relation order by wg.group_member_order_by) word_group_members
                    from (select distinct w1.id word_id,
                                 wg.id word_group_id,
                                 wg.word_rel_type_code,
                                 w2.id group_member_word_id,
                                 w2.word group_member_word,
-                                w2.lang group_member_word_lang,
+                                w2.word_prese group_member_word_prese,
                                 w2.homonym_nr group_member_homonym_nr,
+                                w2.lang group_member_word_lang,
+                                w2.word_type_codes,
                                 (select array_agg(distinct lc.complexity)
                                  from lexeme lc,
                                       dataset ds
@@ -1232,19 +1265,18 @@ from word w
                                  and ds.code = lc.dataset_code
                                  and ds.is_public = true
                                  group by lc.word_id) as lex_complexities,
-                                (select array_agg(wt.word_type_code order by wt.order_by)
-                                 from word_word_type wt
-                                 where wt.word_id = w2.id
-                                 group by wt.word_id) word_type_codes,
                                 wgm2.order_by group_member_order_by
                          from word w1,
                               (select w.id,
                                       (array_agg(distinct f.value)) [1] as word,
+                                      (array_agg(distinct f.value_prese)) [1] as word_prese,
+                                      w.homonym_nr,
                                       w.lang,
-                                      w.homonym_nr
+                                      array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                                from word as w
                                  join paradigm as p on p.word_id = w.id
                                  join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
+                                 left outer join word_word_type as wt on wt.word_id = w.id
                                where exists (select l.id
                                              from lexeme as l,
                                                   dataset ds
@@ -1280,38 +1312,46 @@ and   exists (select l.id
 create view view_ww_lexeme_relation 
 as
 select r.lexeme1_id lexeme_id,
-       array_agg(row (l2.related_lexeme_id,l2.related_word_id,l2.related_word,l2.related_word_lang,l2.related_word_homonym_nr,l2.complexity,r.lex_rel_type_code)::type_lexeme_relation order by r.order_by) related_lexemes
+       array_agg(row (
+         l2.lexeme_id,
+         w2.word_id,
+         w2.word,
+         w2.word_prese,
+         w2.homonym_nr,
+         w2.lang,
+         w2.word_type_codes,
+         l2.complexity,
+         r.lex_rel_type_code
+       )::type_lexeme_relation order by r.order_by) related_lexemes
 from lex_relation r
-  inner join (select l2.id related_lexeme_id,
-                     w2.id related_word_id,
-                     w2.lang related_word_lang,
-                     w2.homonym_nr related_word_homonym_nr,
-                     f2.value related_word,
-                     l2.complexity
-              from lexeme l2,
-                   word w2,
-                   paradigm p2,
-                   form f2,
-                   dataset l2ds
-              where f2.mode = 'WORD'
-              and   f2.paradigm_id = p2.id
-              and   p2.word_id = w2.id
-              and   l2.word_id = w2.id
-              and   l2.type = 'PRIMARY'
-              and   l2.process_state_code = 'avalik'
-              and   l2ds.code = l2.dataset_code
-              and   l2ds.is_public = true
-              group by l2.id,
-                       w2.id,
-                       f2.value) l2 on l2.related_lexeme_id = r.lexeme2_id
+  inner join (select l.id lexeme_id,
+                     l.word_id,
+                     l.complexity
+              from lexeme l,
+                   dataset lds
+              where l.type = 'PRIMARY'
+              and   l.process_state_code = 'avalik'
+              and   lds.code = l.dataset_code
+              and   lds.is_public = true) l2 on l2.lexeme_id = r.lexeme2_id
+  inner join (select w.id word_id,
+                     (array_agg(distinct f.value))[1] as word,
+                     (array_agg(distinct f.value_prese))[1] as word_prese,
+                     w.homonym_nr,
+                     w.lang,
+                     array_agg(wt.word_type_code order by wt.order_by) word_type_codes
+              from word as w
+                join paradigm as p on p.word_id = w.id
+                join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
+                left outer join word_word_type as wt on wt.word_id = w.id
+              group by w.id) as w2 on w2.word_id = l2.word_id
 where exists (select l1.id
               from lexeme l1,
                    dataset l1ds
               where l1.id = r.lexeme1_id
-              and l1.type = 'PRIMARY'
-              and l1.process_state_code = 'avalik'
-              and l1ds.code = l1.dataset_code
-              and l1ds.is_public = true)
+              and   l1.type = 'PRIMARY'
+              and   l1.process_state_code = 'avalik'
+              and   l1ds.code = l1.dataset_code
+              and   l1ds.is_public = true)
 group by r.lexeme1_id;
 
 
@@ -1319,15 +1359,34 @@ group by r.lexeme1_id;
 create view view_ww_meaning_relation
 as
 select r.m1_id meaning_id,
-       array_agg(row (r.m2_id,r.word_id,r.word,r.word_lang,r.homonym_nr,r.aspect_code,r.complexity,r.lex_value_state_codes,r.lex_register_codes,r.lex_government_values,r.meaning_rel_type_code)::type_meaning_relation order by r.order_by, r.lex_order_by) related_meanings
+       array_agg(row (
+         r.m2_id,
+         r.word_id,
+         r.word,
+         r.word_prese,
+         r.homonym_nr,
+         r.word_lang,
+         r.aspect_code,
+         r.word_type_codes,
+         r.complexity,
+         r.lex_value_state_codes,
+         r.lex_register_codes,
+         r.lex_government_values,
+         r.meaning_rel_type_code
+       )::type_meaning_relation order by r.order_by, r.lex_order_by) related_meanings
 from (select mr.meaning1_id m1_id,
              mr.meaning2_id m2_id,
              w.id word_id,
-             array_to_string(array_agg(distinct f.value), ',', '*') word,
-             w.lang word_lang,
+             (array_agg(distinct f.value))[1] word,
+             (array_agg(distinct f.value_prese))[1] word_prese,
              w.homonym_nr,
+             w.lang word_lang,
              w.aspect_code aspect_code,
              l.complexity,
+             (select array_agg(wt.word_type_code)
+              from word_word_type wt
+              where wt.word_id = w.id
+              group by w.id) word_type_codes,
              (select array_agg(distinct l.value_state_code)
               from lexeme l,
                    dataset l_ds
@@ -1369,20 +1428,14 @@ from (select mr.meaning1_id m1_id,
              l.order_by lex_order_by,
              mr.meaning_rel_type_code meaning_rel_type_code,
              mr.order_by
-      from meaning_relation mr,
-           meaning m,
-           lexeme l
-             join word w on w.id = l.word_id
-             join paradigm p on p.word_id = w.id
-             join form f on (f.paradigm_id = p.id and f.mode = 'WORD'),
-           dataset l_ds
-      where mr.meaning2_id = m.id
-        and l.meaning_id = m.id
-        and l.type = 'PRIMARY'
-        and l.process_state_code = 'avalik'
-        and l_ds.code = l.dataset_code
-        and l_ds.is_public = true
-        and exists(select lex.id
+      from meaning_relation mr
+           join meaning m on m.id = mr.meaning2_id
+           join lexeme l on l.meaning_id = m.id and l.type = 'PRIMARY' and l.process_state_code = 'avalik'
+           join word w on w.id = l.word_id
+           join paradigm p on p.word_id = w.id
+           join form f on f.paradigm_id = p.id and f.mode = 'WORD'
+           join dataset l_ds on l_ds.code = l.dataset_code and l_ds.is_public = true
+      where exists(select lex.id
                    from lexeme lex,
                         dataset lex_ds
                    where lex.meaning_id = mr.meaning1_id
