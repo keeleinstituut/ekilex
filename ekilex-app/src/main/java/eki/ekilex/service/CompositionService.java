@@ -435,8 +435,8 @@ public class CompositionService extends AbstractService {
 
 	private void joinParadigms(Long targetWordId, Long sourceWordId) {
 
-		boolean wordHasForms = lookupDbService.wordHasForms(targetWordId);
-		if (wordHasForms) {
+		boolean targetWordHasForms = lookupDbService.wordHasForms(targetWordId);
+		if (targetWordHasForms) {
 			return;
 		}
 		boolean sourceWordHasForms = lookupDbService.wordHasForms(sourceWordId);

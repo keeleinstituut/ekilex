@@ -387,6 +387,38 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>testsrvmergeruswordstress</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>/var/apps/cli/appresources-console</directory>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>java</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<mainClass>eki.ekilex.manual.RusWordStressMerger</mainClass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+		<profile>
 			<id>testsrvsortlexlevels</id>
 			<build>
 				<resources>
@@ -795,6 +827,38 @@
 						</executions>
 						<configuration>
 							<mainClass>eki.ekilex.manual.LangBasedWordMerger</mainClass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+		<profile>
+			<id>prodsrvmergeruswordstress</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>${project.basedir}/envresources/prodc</directory>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>java</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<mainClass>eki.ekilex.manual.RusWordStressMerger</mainClass>
 						</configuration>
 					</plugin>
 				</plugins>

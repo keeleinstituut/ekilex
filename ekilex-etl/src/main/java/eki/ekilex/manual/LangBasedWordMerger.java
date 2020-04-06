@@ -35,7 +35,8 @@ public class LangBasedWordMerger extends AbstractLoader {
 			}
 
 			LangBasedWordMergerRunner langBasedWordMergerRunner = getComponent(LangBasedWordMergerRunner.class);
-			langBasedWordMergerRunner.execute(wordLangCode, excludedWordsFilePath);
+			boolean doReports = confService.doReports();
+			langBasedWordMergerRunner.execute(wordLangCode, excludedWordsFilePath, doReports);
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {

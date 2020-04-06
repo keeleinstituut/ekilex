@@ -33,8 +33,6 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 
 	private static final String SQL_SELECT_WORD_LEXEME_MEANING_ID_NO_DS = "sql/select_word_lexeme_meaning_id.sql";
 
-	private static final String SQL_UPDATE_FORM_DISPLAY_FORM = "sql/update_form_display_form.sql";
-
 	private final String sqlReassignLexemeToMeaning = "update lexeme set meaning_id = :targetMeaningId where id = :sourceLexemeId";
 
 	private final String sqlReassignLexemeToWord = "update lexeme set word_id = :targetWordId where id = :sourceLexemeId";
@@ -77,8 +75,6 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 
 	private String sqlSelectWordLexemeMeaningIdNoDs;
 
-	private String sqlUpdateFormDisplayForm;
-
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
@@ -93,9 +89,6 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 		sqlSelectWordLexemeMeaningIdNoDs = IOUtils.toString(resourceFileInputStream, UTF_8);
 		resourceFileInputStream.close();
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_UPDATE_FORM_DISPLAY_FORM);
-		sqlUpdateFormDisplayForm = IOUtils.toString(resourceFileInputStream, UTF_8);
-		resourceFileInputStream.close();
 	}
 
 	@Autowired
@@ -133,6 +126,7 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 		updateCountMap.put(LEXEME_LIFECYCLE_LOG, new Count());
 		updateCountMap.put(LEXEME_PROCESS_LOG, new Count());
 		updateCountMap.put(LEXEME_RELATION, new Count());
+		updateCountMap.put(PARADIGM, new Count());
 		return updateCountMap;
 	}
 
@@ -537,14 +531,6 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 		}
 	}
 
-	public void moveDisplayForm(Long targetWordId, Long sourceWordId) {
-
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("wordId1", targetWordId);
-		paramMap.put("wordId2", sourceWordId);
-		basicDbService.executeScript(sqlUpdateFormDisplayForm, paramMap);
-	}
-
 	public void deleteMeanings(List<Long> meaningIds, List<Long> failedDeleteMeaningIds, Map<String, Count> deleteCountMap) throws Exception {
 
 		Map<String, Object> params;
@@ -582,5 +568,23 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 												(Objects.nonNull(tf.getValueDate()) && tf.getValueDate().equals(sf.getValueDate())))))
 				.map(Freeform::getFreeformId)
 				.collect(Collectors.toList());
+	}
+
+	public void updateFormValuePrese(Long formId, String valuePrese) throws Exception {
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("id", formId);
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("value_prese", valuePrese);
+		basicDbService.update(FORM, criteriaParamMap, valueParamMap);
+	}
+
+	public void updateFormDisplayForm(Long formId, String displayForm) throws Exception {
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("id", formId);
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("display_form", displayForm);
+		basicDbService.update(FORM, criteriaParamMap, valueParamMap);
 	}
 }

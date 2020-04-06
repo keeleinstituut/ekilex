@@ -17,4 +17,5 @@ where w1.lang = :wordLang
   and f1.value not in (:excludedWordValues)
   and w1.id != w2.id
   {wordTypeCodesCondition}
-group by w1.id
+group by w1.id, f1.value
+order by f1.value
