@@ -75,9 +75,10 @@ public class UnifSearchService extends AbstractSearchService {
 			lexemeConversionUtil.compose(
 					DatasetType.LEX, wordLang, lexLexemes, lexemeMeaningTupleMap,
 					allRelatedWords, langOrderByMap, dataFilter, displayLang);
-			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexLexemes);
+			lexemeConversionUtil.flagEmptyLexemes(lexLexemes);
+			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());			
 		}
 
 		// term conv

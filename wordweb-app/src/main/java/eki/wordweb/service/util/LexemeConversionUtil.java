@@ -34,6 +34,29 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		return filterSimpleOnly(lexemes, lexComplexity);
 	}
 
+	public void flagEmptyLexemes(List<Lexeme> lexemes) {
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
+		}
+		lexemes.forEach(lexeme -> {
+			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
+			lexeme.setEmptyLexeme(isEmptyLexeme);
+		});
+	}
+
+	private boolean isEmptyLexeme(Lexeme lexeme) {
+		return CollectionUtils.isEmpty(lexeme.getDefinitions())
+				&& CollectionUtils.isEmpty(lexeme.getUsages())
+				&& CollectionUtils.isEmpty(lexeme.getSourceLangMeaningWords())
+				&& CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords())
+				&& CollectionUtils.isEmpty(lexeme.getRelatedLexemes())
+				&& CollectionUtils.isEmpty(lexeme.getDomains())
+				&& CollectionUtils.isEmpty(lexeme.getCollocationPosGroups());
+		//not much of a content?
+		//&& CollectionUtils.isEmpty(lexeme.getRegisters()) 
+		//&& CollectionUtils.isEmpty(lexeme.getGovernments())
+	}
+
 	public void compose(
 			DatasetType datasetType,
 			String wordLang,
@@ -61,9 +84,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
 			populateMeaning(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, destinLangs, lexComplexity, displayLang);
 			populateRelatedMeanings(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, lexComplexity, displayLang);
-
-			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
-			lexeme.setEmptyLexeme(isEmptyLexeme);
 		}
 	}
 
@@ -305,18 +325,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningWords = meaningWords.stream().filter(meaningWord -> !relatedLexemeWordValues.contains(meaningWord.getWord())).collect(Collectors.toList());
 		}
 		lexeme.setMeaningWords(meaningWords);
-	}
-
-	private boolean isEmptyLexeme(Lexeme lexeme) {
-		return CollectionUtils.isEmpty(lexeme.getDefinitions())
-				&& CollectionUtils.isEmpty(lexeme.getUsages())
-				&& CollectionUtils.isEmpty(lexeme.getSourceLangMeaningWords())
-				&& CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords())
-				&& CollectionUtils.isEmpty(lexeme.getRelatedLexemes())
-				&& CollectionUtils.isEmpty(lexeme.getDomains());
-		//not much of a content?
-		//&& CollectionUtils.isEmpty(lexeme.getRegisters()) 
-		//&& CollectionUtils.isEmpty(lexeme.getGovernments())
 	}
 
 	private <T> OrderedMap<String, List<T>> composeOrderedMap(Map<String, List<T>> langKeyUnorderedMap, Map<String, Long> langOrderByMap) {

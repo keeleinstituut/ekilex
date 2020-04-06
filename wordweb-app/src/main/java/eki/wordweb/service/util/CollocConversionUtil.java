@@ -32,6 +32,13 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 
 	public void compose(Long wordId, List<Lexeme> lexemes, List<CollocationTuple> collocTuples, DataFilter dataFilter, String displayLang) {
 
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
+		}
+		if (CollectionUtils.isEmpty(collocTuples)) {
+			return;
+		}
+
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 		collocTuples = filterSimpleOnly(collocTuples, lexComplexity);
 

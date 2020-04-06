@@ -3,6 +3,7 @@ package eki.common.service.util;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,10 @@ import eki.common.data.LexemeLevel;
 public class LexemeLevelPreseUtil {
 
 	public void combineLevels(List<? extends LexemeLevel> lexemes) {
+
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
+		}
 
 		String previousLexemeDatasetCode = "";
 		Integer previousLevel1 = null;
