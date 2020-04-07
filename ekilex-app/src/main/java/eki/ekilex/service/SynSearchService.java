@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
@@ -208,7 +209,10 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(relationId);
 		Float lexemeWeight = getCalculatedLexemeWeight(typeWordRelParams);
 
-		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, lexemeWeight, existingLexemeId);
+		boolean simpleComplexityExists = lookupDbService.wordLexemesComplexityExists(existingLexemeId, Complexity.SIMPLE);
+		Complexity complexity = simpleComplexityExists ? Complexity.SIMPLE : Complexity.DETAIL;
+
+		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, lexemeWeight, complexity);
 		String synWordValue = lookupDbService.getWordValue(wordId);
 		LogData matchLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, existingLexemeId, synWordValue);
 		createLifecycleLog(matchLogData);
