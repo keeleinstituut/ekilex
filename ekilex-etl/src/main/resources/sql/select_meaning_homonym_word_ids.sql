@@ -22,4 +22,5 @@ where l1.meaning_id = l2.meaning_id
   and w2.lang = :wordLang
   and f1.value = f2.value
   {wordTypeCodesCondition}
-group by l1.word_id
+group by l1.word_id, f1.value
+order by f1.value

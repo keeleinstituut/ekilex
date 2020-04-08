@@ -223,16 +223,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 	}
 
-	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Float lexemeWeight, Long existingLexemeId) {
-		return create.insertInto(LEXEME,
-				LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE, LEXEME.WEIGHT,
-				LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
-				LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
-				.select(DSL.select(DSL.val(wordId), DSL.val(meaningId), DSL.val(datasetCode), DSL.val(lexemeType.name()), DSL.val(BigDecimal.valueOf(lexemeWeight)),
-						LEXEME.FREQUENCY_GROUP_CODE, LEXEME.CORPUS_FREQUENCY, LEXEME.LEVEL1, LEXEME.LEVEL2,
-						LEXEME.VALUE_STATE_CODE, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
-						.from(LEXEME)
-						.where(LEXEME.ID.eq(existingLexemeId)))
+	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Float lexemeWeight, Complexity complexity) {
+		return create
+				.insertInto(LEXEME, LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE, LEXEME.WEIGHT, LEXEME.COMPLEXITY)
+				.values(wordId, meaningId, datasetCode, lexemeType.name(), BigDecimal.valueOf(lexemeWeight), complexity.name())
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();

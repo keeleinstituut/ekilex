@@ -35,6 +35,7 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.Classifier;
@@ -526,6 +527,21 @@ public class LookupDbService extends AbstractSearchDbService {
 						MEANING_RELATION.MEANING1_ID.eq(meaningId1)
 								.and(MEANING_RELATION.MEANING2_ID.eq(meaningId2))
 								.and(MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordLexemesComplexityExists(Long lexemeId, Complexity complexity) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+
+		return create
+				.select(DSL.field(DSL.count(l2.ID).gt(0)).as("complexity_exists"))
+				.from(l1, l2)
+				.where(
+						l1.ID.eq(lexemeId)
+								.and(l2.WORD_ID.eq(l1.WORD_ID))
+								.and(l2.COMPLEXITY.eq(complexity.name())))
 				.fetchSingleInto(Boolean.class);
 	}
 

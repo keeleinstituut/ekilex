@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -181,7 +180,7 @@ public class WordMergerRunner extends AbstractMergerRunner {
 
 	private void joinWords(Long targetWordId, Long sourceWordId, Map<String, Count> updateCountMap, Map<String, Count> deleteCountMap) throws Exception {
 
-		mergeService.moveWordsData(targetWordId, Collections.singletonList(sourceWordId), updateCountMap);
+		mergeService.moveWordsData(targetWordId, Arrays.asList(sourceWordId), updateCountMap);
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("id", targetWordId);
@@ -189,7 +188,7 @@ public class WordMergerRunner extends AbstractMergerRunner {
 		valueParamMap.put("homonym_nr", DEFAULT_HOMONYM_NUMBER);
 		basicDbService.update(WORD, criteriaParamMap, valueParamMap);
 
-		joinLexemeData(targetWordId, sourceWordId, updateCountMap, deleteCountMap);
+		mergeLexemeData(targetWordId, sourceWordId, updateCountMap, deleteCountMap);
 
 		basicDbService.delete(WORD, sourceWordId);
 		deleteCountMap.get(WORD).increment(1);
