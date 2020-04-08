@@ -1097,80 +1097,137 @@ create view view_ww_word_etymology
 as
 with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, word_etym_rel_id, related_word_id, related_word_ids) as
 (
-  (select we.word_id,
-          we.word_id word_etym_word_id,
-          we.id word_etym_id,
-          wer.id word_etym_rel_id,
-          wer.related_word_id,
-          array[we.word_id] as related_word_ids
-   from word_etymology we
-     left outer join word_etymology_relation wer on wer.word_etym_id = we.id
-   order by we.order_by,
-            wer.order_by)
-   union all
-   (select rec.word_id,
-           we.word_id word_etym_word_id,
-           we.id word_etym_id,
-           wer.id word_etym_rel_id,
-           wer.related_word_id,
-           (rec.related_word_ids || we.word_id) as related_word_ids
-    from word_etym_recursion rec
-      inner join word_etymology we on we.word_id = rec.related_word_id
+  (
+    select
+      we.word_id,
+      we.word_id word_etym_word_id,
+      we.id word_etym_id,
+      wer.id word_etym_rel_id,
+      wer.related_word_id,
+      array[we.word_id] as related_word_ids
+    from
+      word_etymology we
       left outer join word_etymology_relation wer on wer.word_etym_id = we.id
-    where rec.related_word_id != any(rec.related_word_ids)
-    order by we.order_by,
-             wer.order_by)
+    order by
+      we.order_by,
+      wer.order_by
+  )
+  union all
+    (
+      select
+        rec.word_id,
+        we.word_id word_etym_word_id,
+        we.id word_etym_id,
+        wer.id word_etym_rel_id,
+        wer.related_word_id,
+        (
+          rec.related_word_ids || we.word_id
+        ) as related_word_ids
+      from
+        word_etym_recursion rec
+        inner join word_etymology we on we.word_id = rec.related_word_id
+        left outer join word_etymology_relation wer on wer.word_etym_id = we.id
+      where
+        rec.related_word_id != any(rec.related_word_ids)
+      order by
+        we.order_by,
+        wer.order_by
+    )
 )
-select rec.word_id,
-       rec.word_etym_id,
-       rec.word_etym_word_id,
-       f2.value word,
-       w2.lang word_lang,
-       mw2.meaning_words,
-       we.etymology_type_code,
-       we.etymology_year,
-       we.comment_prese word_etym_comment,
-       we.is_questionable word_etym_is_questionable,
-       we.order_by word_etym_order_by,
-       array_agg(row(wer.id,wer.comment_prese,wer.is_questionable,wer.is_compound,wer.related_word_id)::type_word_etym_relation order by wer.order_by) word_etym_relations
-from word_etym_recursion rec
+select
+  rec.word_id,
+  rec.word_etym_id,
+  rec.word_etym_word_id,
+  w.word,
+  w.lang word_lang,
+  mw2.meaning_words,
+  we.etymology_type_code,
+  we.etymology_year,
+  we.comment_prese word_etym_comment,
+  we.is_questionable word_etym_is_questionable,
+  we.order_by word_etym_order_by,
+  array_agg(
+    row(
+      wer.id,
+      wer.comment_prese,
+      wer.is_questionable,
+      wer.is_compound,
+      wer.related_word_id
+    ):: type_word_etym_relation
+    order by wer.order_by
+  ) word_etym_relations
+from
+  word_etym_recursion rec
   inner join word_etymology we on we.id = rec.word_etym_id
+  inner join (
+    select
+      w.id,
+      w.lang,
+      (array_agg(distinct f.value)) [1] word
+    from
+      word w,
+      paradigm p,
+      form f
+    where
+      p.word_id = w.id
+      and f.paradigm_id = p.id
+      and f.mode = 'WORD'
+      and exists (
+        select
+          l.id
+        from
+          lexeme l,
+          dataset ds
+        where
+        l.word_id = w.id
+        and l.type = 'PRIMARY'
+        and l.process_state_code = 'avalik'
+        and ds.code = l.dataset_code
+        and ds.type = 'LEX')
+    group by
+      w.id
+  ) w on w.id = rec.word_etym_word_id
   left outer join word_etymology_relation wer on wer.id = rec.word_etym_rel_id
-  left outer join word w2 on w2.id = rec.word_etym_word_id
-  left outer join paradigm p2 on p2.word_id = w2.id
-  left outer join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
-  left outer join (select l1.word_id,
-                          array_agg(distinct f2.value) meaning_words
-                   from lexeme l1,
-                        meaning m,
-                        lexeme l2,
-                        word w2,
-                        paradigm p2,
-                        form f2
-                   where l1.meaning_id = m.id
-                   and   l2.meaning_id = m.id
-                   and   l1.word_id != l2.word_id
-                   and   l1.type = 'PRIMARY'
-                   and   l1.process_state_code = 'avalik'
-                   and   l2.dataset_code = 'ety'
-                   and   l2.type = 'PRIMARY'
-                   and   l2.process_state_code = 'avalik'
-                   and   l2.word_id = w2.id
-                   and   p2.word_id = w2.id
-                   and   w2.lang = 'est'
-                   and   f2.paradigm_id = p2.id
-                   and   f2.mode = 'WORD'
-                   group by l1.word_id) mw2 on mw2.word_id = rec.word_etym_word_id
-group by rec.word_id,
-         rec.word_etym_id,
-         rec.word_etym_word_id,
-         mw2.meaning_words,
-         we.id,
-         w2.id,
-         p2.id,
-         f2.id
-order by rec.word_id,
-         we.order_by;
+  left outer join (
+    select
+      l1.word_id,
+      array_agg(distinct f2.value) meaning_words
+    from
+      lexeme l1,
+      meaning m,
+      lexeme l2,
+      word w2,
+      paradigm p2,
+      form f2
+    where
+      l1.meaning_id = m.id
+      and l2.meaning_id = m.id
+      and l1.word_id != l2.word_id
+      and l1.type = 'PRIMARY'
+      and l1.process_state_code = 'avalik'
+      and l2.dataset_code = 'ety'
+      and l2.type = 'PRIMARY'
+      and l2.process_state_code = 'avalik'
+      and l2.word_id = w2.id
+      and p2.word_id = w2.id
+      and w2.lang = 'est'
+      and f2.paradigm_id = p2.id
+      and f2.mode = 'WORD'
+    group by
+      l1.word_id
+  ) mw2 on mw2.word_id = rec.word_etym_word_id
+group by
+  rec.word_id,
+  rec.word_etym_id,
+  rec.word_etym_word_id,
+  mw2.meaning_words,
+  we.id,
+  w.id,
+  w.word,
+  w.lang
+order by
+  rec.word_id,
+  we.order_by;
 
 -- word relations - OK
 create view view_ww_word_relation 
