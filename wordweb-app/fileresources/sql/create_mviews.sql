@@ -144,6 +144,7 @@ dblink(
 	word_prese text,
 	as_word text,
 	lang char(3),
+	lang_order_by bigint,
 	homonym_nr integer,
 	word_class varchar(100),
 	word_type_codes varchar(100) array,

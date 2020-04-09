@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 1682370258;
+    private static final long serialVersionUID = 1857690451;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -80,6 +80,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.lang</code>.
      */
     public final TableField<MviewWwWordRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.lang_order_by</code>.
+     */
+    public final TableField<MviewWwWordRecord, Long> LANG_ORDER_BY = createField("lang_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_word.homonym_nr</code>.

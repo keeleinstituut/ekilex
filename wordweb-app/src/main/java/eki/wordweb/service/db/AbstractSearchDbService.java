@@ -85,7 +85,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						wordTable.FORMS_EXIST)
 				.from(wordTable)
 				.where(where)
-				.orderBy(wordTable.LEX_DATASET_EXISTS.desc(), wordTable.LANG, wordTable.HOMONYM_NR)
+				.orderBy(wordTable.LEX_DATASET_EXISTS.desc(), wordTable.LANG_ORDER_BY, wordTable.HOMONYM_NR)
 				.fetchInto(Word.class);
 	}
 

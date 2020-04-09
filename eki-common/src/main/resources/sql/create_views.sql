@@ -298,6 +298,7 @@ select w.word_id,
        w.word_prese,
        w.as_word,
        w.lang,
+       w.lang_order_by,
        w.homonym_nr,
        w.word_class,
        wt.word_type_codes,
@@ -322,6 +323,10 @@ from (select w.id as word_id,
 	          and   f.paradigm_id = p.id
 	          and   f.mode = 'AS_WORD')[1] as as_word,
              w.lang,
+             (select lc.order_by
+              from language lc
+              where lc.code = w.lang
+              limit 1) lang_order_by,
              w.homonym_nr,
              w.word_class,
              w.morph_code,
