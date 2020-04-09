@@ -21,10 +21,6 @@ public class RusWordStressMergerRunner extends AbstractMergerRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(RusWordStressMergerRunner.class);
 
-	private static final char RUSSIAN_CHAR_Ё = 'Ё';
-
-	private static final char RUSSIAN_CHAR_ё = 'ё';
-
 	private static final char DISPLAY_FORM_STRESS_CHAR = '"';
 
 	private static final String STRESS_MARKUP_BEGINNING = "<eki-stress>";
@@ -150,12 +146,6 @@ public class RusWordStressMergerRunner extends AbstractMergerRunner {
 				continue;
 			}
 
-			boolean iStressLetter = RUSSIAN_CHAR_Ё == displayFormChar || RUSSIAN_CHAR_ё == displayFormChar;
-			if (iStressLetter) {
-				surroundWithStressMarkup(valuePreseBuilder, displayFormChar);
-				continue;
-			}
-
 			valuePreseBuilder.append(displayFormChar);
 		}
 		return valuePreseBuilder.toString();
@@ -170,12 +160,8 @@ public class RusWordStressMergerRunner extends AbstractMergerRunner {
 
 	private boolean isDecorated(String text) {
 
-		String textWithoutStressDecoration = text
-				.replace(STRESS_MARKUP_BEGINNING + RUSSIAN_CHAR_Ё + STRESS_MARKUP_END, String.valueOf(RUSSIAN_CHAR_Ё))
-				.replace(STRESS_MARKUP_BEGINNING + RUSSIAN_CHAR_ё + STRESS_MARKUP_END, String.valueOf(RUSSIAN_CHAR_ё));
-
 		Pattern pattern = Pattern.compile("<eki-[^>]*>.*?</eki-[^>]*>");
-		Matcher matcher = pattern.matcher(textWithoutStressDecoration);
+		Matcher matcher = pattern.matcher(text);
 		return matcher.find();
 	}
 

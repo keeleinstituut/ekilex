@@ -35,6 +35,10 @@ public class LangBasedWordMergerRunner extends AbstractMergerRunner {
 
 	private static final String DISPLAY_FORM_STRESS_MARK = "\"";
 
+	private static final String DISPLAY_FORM_IGNORE_1 = "[";
+
+	private static final String DISPLAY_FORM_IGNORE_2 = "]";
+
 	private static final String REPORT_WORD_MERGER_INVALID_STRESS = "word_merger_invalid_stress";
 
 	private static final String REPORT_WORD_MERGER_INVALID_DISPLAY_FORM_STRESS = "word_merger_invalid_display_form_stress";
@@ -294,7 +298,8 @@ public class LangBasedWordMergerRunner extends AbstractMergerRunner {
 		String sourceDisplayForm = sourceWordStress.getDisplayForm();
 		String sourceValuePrese = sourceWordStress.getValuePrese();
 
-		if (!StringUtils.equals(targetDisplayForm, sourceDisplayForm)) {
+		boolean isDisplayFormEqual = displayFormEquals(targetDisplayForm, sourceDisplayForm);
+		if (!isDisplayFormEqual) {
 			if (targetDisplayForm != null && sourceDisplayForm != null) {
 				boolean targetContainsStress = targetDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
 				boolean sourceContainsStress = sourceDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
@@ -319,6 +324,17 @@ public class LangBasedWordMergerRunner extends AbstractMergerRunner {
 			return false;
 		}
 		return true;
+	}
+
+	private boolean displayFormEquals(String targetDisplayForm, String sourceDisplayForm) {
+
+		String cleanedTargetDisplayForm = StringUtils.remove(targetDisplayForm, DISPLAY_FORM_IGNORE_1);
+		cleanedTargetDisplayForm = StringUtils.remove(cleanedTargetDisplayForm, DISPLAY_FORM_IGNORE_2);
+
+		String cleanedSourceDisplayForm = StringUtils.remove(sourceDisplayForm, DISPLAY_FORM_IGNORE_1);
+		cleanedSourceDisplayForm = StringUtils.remove(cleanedSourceDisplayForm, DISPLAY_FORM_IGNORE_2);
+
+		return StringUtils.equals(cleanedTargetDisplayForm, cleanedSourceDisplayForm);
 	}
 
 	private boolean wordHasForms(Long wordId) throws Exception {
