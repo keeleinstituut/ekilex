@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class CorporaServiceEst extends AbstractCorporaService {
 					.queryParam("show", "pos")
 					.queryParam("sort", "random")
 					.queryParam("random_seed", abs(seedGenerator.nextInt()))
+					.encode(Charset.forName(UTF_8))
 					.build()
 					.toUri();
 		}

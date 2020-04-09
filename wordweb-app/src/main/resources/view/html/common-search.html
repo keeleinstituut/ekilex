@@ -231,45 +231,48 @@
           <i th:each="government,iter : ${lexeme.governments}" th:text="${government.value + (iter.last ? '' : ', ')}"> </i>
         </div>
         <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
-          <div class="dependence example-item" th:each="usage : ${lexeme.usages}">
-            <div class="dependence-unit" th:data-words="${usage.usage}" th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
-              <span class="example-text" th:utext="${usage.usagePrese}"></span>
-              <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
-                <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
-                  <span th:if="${sourceLink.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
-                  <button type="button" class="source-link btn btn-link p-0" data-toggle="popover" th:title="#{label.source}" th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
-                    <span th:text="${sourceLink.value}"></span>
-                  </button>
-                </span>
-              </th:block>
-              <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}">
-                <span class="icon icon-speaker"></span>
-              </button>
-              <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
-                <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:utext="${usageTranslation}"></span>
-              </th:block>
-              <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
-                <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" th:utext="${usageDefinition}"></span>
-              </th:block>
-              <th:block th:if="${not #lists.isEmpty(usage.odUsageDefinitions)}">
-                <div class="example-text">
-                  <span>ÕS soovitab:</span>
-                  <span th:each="odUsageDefinition : ${usage.odUsageDefinitions}" th:utext="${odUsageDefinition}"></span>
-                </div>
-              </th:block>
-              <th:block th:if="${not #lists.isEmpty(usage.odUsageAlternatives)}">
-                <div class="example-text">
-                  <span>=</span>
-                  <span th:each="odUsageAlternative : ${usage.odUsageAlternatives}" th:utext="${odUsageAlternative}"></span>
-                </div>
-              </th:block>
+          <th:block th:each="usage,usageIter : ${lexeme.usages}"
+                    th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
+            <div class="usage-item" th:data-collapse="${isCollapsable}" th:classappend="${isCollapsable ? 'd-none' : ''}">
+              <div th:data-words="${usage.usage}" th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
+                <span class="example-text" th:utext="${usage.usagePrese}"></span>
+                <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                  <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
+                    <span th:if="${sourceLink.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
+                    <button type="button" class="source-link btn btn-link p-0" data-toggle="popover" th:title="#{label.source}" th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                      <span th:text="${sourceLink.value}"></span>
+                    </button>
+                  </span>
+                </th:block>
+                <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}">
+                  <span class="icon icon-speaker"></span>
+                </button>
+                <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
+                  <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:utext="${usageTranslation}"></span>
+                </th:block>
+                <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
+                  <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" th:utext="${usageDefinition}"></span>
+                </th:block>
+                <th:block th:if="${not #lists.isEmpty(usage.odUsageDefinitions)}">
+                  <div class="example-text">
+                    <span>ÕS soovitab:</span>
+                    <span th:each="odUsageDefinition : ${usage.odUsageDefinitions}" style="padding: .5rem .5rem .25rem" th:utext="${odUsageDefinition}"></span>
+                  </div>
+                </th:block>
+                <th:block th:if="${not #lists.isEmpty(usage.odUsageAlternatives)}">
+                  <div class="example-text">
+                    <span>=</span>
+                    <span th:each="odUsageAlternative : ${usage.odUsageAlternatives}" style="padding: .5rem .5rem .25rem" th:utext="${odUsageAlternative}"></span>
+                  </div>
+                </th:block>
+              </div>
             </div>
-          </div>
+          </th:block>
+          <button class="show-more text-left m-2" name="expand-usages-btn" aria-expanded="false" th:data-see-more="#{button.see.more}" th:data-see-less="#{button.see.less}" th:if="${lexeme.moreUsages}">
+            <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
+            <span th:text="#{button.see.more}"></span>
+          </button>
         </div>
-        <button class="show-more" aria-expanded="false" name="colloc-usages-btn" th:data-see-more="#{button.see.more}" th:data-see-less="#{button.see.less}" th:if="${lexeme.moreUsages}">
-          <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
-          <span th:text="#{button.see.more}"></span>
-        </button>
         <div class="mt-3" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
           <th:block th:each="imageFile : ${lexeme.imageFiles}">
             <div>

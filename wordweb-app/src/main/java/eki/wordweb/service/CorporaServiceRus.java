@@ -3,6 +3,7 @@ package eki.wordweb.service;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ public class CorporaServiceRus extends AbstractCorporaService {
 					.queryParam("async", "0")
 					.queryParam("pagesize", "15")
 					.queryParam("q", "q" + parseSentenceToQueryString(sentence))
+					.encode(Charset.forName(UTF_8))
 					.build()
 					.toUri();
 		}

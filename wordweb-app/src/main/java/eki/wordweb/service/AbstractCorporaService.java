@@ -1,5 +1,6 @@
 package eki.wordweb.service;
 
+import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CorporaSentence;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractCorporaService implements SystemConstant {
+public abstract class AbstractCorporaService implements SystemConstant, GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractCorporaService.class);
 

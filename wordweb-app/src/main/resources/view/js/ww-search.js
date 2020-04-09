@@ -58,6 +58,8 @@ $(document).on("click", ".menu-btn", function () {
 });
 
 $(document).on("click", ".show-more", function() {
+
+	// button behaviour
 	let buttonText = '';
 	if ($(this).attr('aria-expanded') === 'false') {
 		$(this).attr('aria-expanded', 'true');
@@ -69,19 +71,22 @@ $(document).on("click", ".show-more", function() {
 		buttonText = $(this).data("see-more");
 	}
 	$(this).find("span").text(buttonText);
-});
 
-
-$(document).on("click", ".show-more", function() {
-	$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel").toggleClass("expand");
+	// content behaviour (this is shit, compliments to Trin****)
+	$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel")
+			.toggleClass("expand");
 
 	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options, .sentence-wrapper")
+			.find(".colloc-col, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .secondary-morph, .word-options, .sentence-wrapper")
 			.toggleClass("fade-target");
 
-	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel").find(
-			".colloc-fulldata .colloc-col:lt(3), .dependencies .dependence:lt(3), .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
+	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
+			.find(".colloc-fulldata .colloc-col:lt(3), .dependencies .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
 			.removeClass("fade-target");
+});
+
+$(document).on("click", "[name='expand-usages-btn']", function() {
+	$(this).closest(".dependence-group").find(".usage-item[data-collapse='true']").toggleClass("d-none");
 });
 
 $(window).on("popstate", function(e) {

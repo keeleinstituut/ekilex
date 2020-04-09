@@ -28,17 +28,17 @@ public class CorporaController {
 	@Autowired
 	private CorporaServiceRus corporaServiceRus;
 
-	@GetMapping("/korp/{lang}/{sentence}")
-	public String searchFromCorpora(@PathVariable("lang") String language, @PathVariable("sentence") String sentence, Model model) {
+	@GetMapping("/korp/{lang}/{word}")
+	public String searchFromCorpora(@PathVariable("lang") String language, @PathVariable("word") String word, Model model) {
 
 		List<CorporaSentence> textCorpus = new ArrayList<>();
 		if (StringUtils.equalsIgnoreCase(language, "est")) {
-			textCorpus = corporaServiceEst.getSentences(sentence);
+			textCorpus = corporaServiceEst.getSentences(word);
 		} else if (StringUtils.equalsIgnoreCase(language, "rus")) {
-			textCorpus = corporaServiceRus.getSentences(sentence);
+			textCorpus = corporaServiceRus.getSentences(word);
 		}
 		model.addAttribute("sentences", textCorpus);
-		model.addAttribute("sentence", sentence);
+		model.addAttribute("sentence", word);
 		model.addAttribute("corp_language", language);
 
 		return "common-search :: korp";
