@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record15;
@@ -45,12 +44,6 @@ import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 
 @Component
 public class SynSearchDbService extends AbstractSearchDbService {
-
-	private DSLContext create;
-
-	public SynSearchDbService(DSLContext context) {
-		create = context;
-	}
 
 	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, boolean fetchAll, int offset) {
 
@@ -106,10 +99,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.groupBy(l2.WORD_ID)
 				.asField();
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
 		Table<Record15<Long, String, String, TypeWordRelParamRecord[], Long, Long, Object, Object, Integer, String, String[], Boolean, Boolean, Boolean, String[]>> rr = DSL.select(
 				r.ID,
@@ -239,10 +232,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Form f = FORM.as("f");
 		Lexeme l = LEXEME.as("l");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+		Field<String[]> wtf = getWordTypesField(w.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
 		return create.select(
 				w.ID.as("word_id"),
@@ -281,10 +274,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Form f2 = FORM.as("f2");
 		Form fh = FORM.as("fh");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
 		Field<Boolean> whe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))

@@ -28,7 +28,6 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record11;
@@ -40,7 +39,6 @@ import org.jooq.SelectHavingStep;
 import org.jooq.SelectOrderByStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
@@ -79,9 +77,6 @@ import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
 
 @Component
 public class TermSearchDbService extends AbstractSearchDbService {
-
-	@Autowired
-	private DSLContext create;
 
 	// simple search
 
@@ -570,10 +565,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Dataset ds = DATASET.as("ds");
 		Language wol = LANGUAGE.as("wol");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(wo.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(wo.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(wo.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(wo.ID);
+		Field<String[]> wtf = getWordTypesField(wo.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(wo.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(wo.ID);
+		Field<Boolean> wtz = getWordIsForeignField(wo.ID);
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -707,10 +702,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Lexeme lds = LEXEME.as("lds");
 		Dataset ds = DATASET.as("ds");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(wmid.field("word_id", Long.class));
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(wmid.field("word_id", Long.class));
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(wmid.field("word_id", Long.class));
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(wmid.field("word_id", Long.class));
+		Field<String[]> wtf = getWordTypesField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtpf = getWordIsPrefixoidField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtsf = getWordIsSuffixoidField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtz = getWordIsForeignField(wmid.field("word_id", Long.class));
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -869,10 +864,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.groupBy(lf.LEXEME_ID)
 				.asField();
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+		Field<String[]> wtf = getWordTypesField(w.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
 		return create
 				.select(

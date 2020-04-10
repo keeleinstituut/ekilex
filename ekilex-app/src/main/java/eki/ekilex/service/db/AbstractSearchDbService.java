@@ -40,16 +40,13 @@ import org.jooq.Record8;
 import org.jooq.SelectOrderByStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
@@ -73,61 +70,10 @@ import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
-import eki.ekilex.service.db.util.SubqueryHelper;
 
-public abstract class AbstractSearchDbService implements SystemConstant, GlobalConstant {
-
-	@Autowired
-	protected SubqueryHelper subqueryHelper;
+public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 	private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
-	protected Condition composeLexemeDatasetsCondition(Lexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction) {
-
-		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
-		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
-		boolean noDatasetsFiltering = searchDatasetsRestriction.isNoDatasetsFiltering();
-		boolean allDatasetsPermissions = searchDatasetsRestriction.isAllDatasetsPermissions();
-
-		Condition dsFiltWhere;
-
-		if (noDatasetsFiltering) {
-			if (allDatasetsPermissions) {
-				//no restrictions
-				dsFiltWhere = DSL.trueCondition();
-			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-				//all visible ds, only public
-				dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
-						.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue())));
-			} else {
-				//all visible ds, selected perm
-				dsFiltWhere = DSL.or(
-						lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
-								.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue()))),
-						lexeme.DATASET_CODE.in(userPermDatasetCodes));
-			}
-		} else {
-			if (allDatasetsPermissions) {
-				//selected ds, full perm
-				dsFiltWhere = lexeme.DATASET_CODE.in(filteringDatasetCodes);
-			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-				//selected ds, only public
-				dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
-			} else {
-				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
-				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
-					//selected ds, only public
-					dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
-				} else {
-					//selected ds, some perm, some public
-					dsFiltWhere = DSL.or(
-							lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)),
-							lexeme.DATASET_CODE.in(filteringPermDatasetCodes));
-				}
-			}
-		}
-		return dsFiltWhere;
-	}
 
 	protected Condition applyDatasetRestrictions(Lexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction, Condition where) {
 
@@ -842,10 +788,10 @@ public abstract class AbstractSearchDbService implements SystemConstant, GlobalC
 					.groupBy(w.field("word_id")));
 		}
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.field("word_id", Long.class));
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.field("word_id", Long.class));
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.field("word_id", Long.class));
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.field("word_id", Long.class));
+		Field<String[]> wtf = getWordTypesField(w.field("word_id", Long.class));
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w.field("word_id", Long.class));
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w.field("word_id", Long.class));
+		Field<Boolean> wtz = getWordIsForeignField(w.field("word_id", Long.class));
 
 		Table<Record14<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, String[], String[]>> ww = DSL
 				.select(

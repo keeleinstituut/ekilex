@@ -26,7 +26,6 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import java.util.List;
 
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -68,12 +67,6 @@ import eki.ekilex.data.db.tables.WordRelation;
 
 @Component
 public class LexSearchDbService extends AbstractSearchDbService {
-
-	private DSLContext create;
-
-	public LexSearchDbService(DSLContext context) {
-		create = context;
-	}
 
 	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset)
 			throws Exception {
@@ -182,10 +175,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Dataset ds = DATASET.as("ds");
 		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+		Field<String[]> wtf = getWordTypesField(w.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
 		Condition dsWhere = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
 
@@ -250,10 +243,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Dataset ds = DATASET.as("ds");
 		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+		Field<String[]> wtf = getWordTypesField(w.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
 		Field<String[]> lff = DSL
 				.select(DSL.arrayAgg(DSL.concat(
@@ -311,10 +304,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm p2 = PARADIGM.as("p2");
 		Form f2 = FORM.as("f2");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
 		return create
 				.select(
@@ -353,10 +346,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Form f = FORM.as("f");
 		Lexeme l = LEXEME.as("l");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w.ID);
+		Field<String[]> wtf = getWordTypesField(w.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
 		return create.select(
 				w.ID.as("word_id"),
@@ -398,10 +391,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Form f2 = FORM.as("f2");
 		WordRelTypeLabel wrtl = WORD_REL_TYPE_LABEL.as("wrtl");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
 		return create
 				.selectDistinct(
@@ -442,10 +435,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Form f2 = FORM.as("f2");
 		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
 		return create
 				.selectDistinct(

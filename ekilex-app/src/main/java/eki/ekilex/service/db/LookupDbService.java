@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record2;
@@ -32,7 +31,6 @@ import org.jooq.Record4;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
@@ -49,36 +47,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
-public class LookupDbService extends AbstractSearchDbService {
-
-	@Autowired
-	private DSLContext create;
-
-	public String getWordValue(Long wordId) {
-		return create
-				.select(DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')", String.class))
-				.from(WORD, PARADIGM, FORM)
-				.where(
-						WORD.ID.eq(wordId)
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(WORD.ID)
-				.fetchOneInto(String.class);
-	}
-
-	public List<String> getWordsValues(List<Long> wordIds) {
-		return create
-				.select(DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')", String.class))
-				.from(WORD, PARADIGM, FORM)
-				.where(
-						WORD.ID.in(wordIds)
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(WORD.ID)
-				.fetchInto(String.class);
-	}
+public class LookupDbService extends AbstractDataDbService {
 
 	public WordStress getWordStressData(Long wordId) {
 

@@ -65,9 +65,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -100,17 +98,13 @@ import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.service.db.util.SubqueryHelper;
 
 //only common use data reading!
 @Component
-public class CommonDataDbService implements GlobalConstant, SystemConstant {
+public class CommonDataDbService extends AbstractDataDbService {
 
 	@Autowired
 	private DSLContext create;
-
-	@Autowired
-	private SubqueryHelper subqueryHelper;
 
 	public Map<String, String> getDatasetNameMap() {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
@@ -641,10 +635,10 @@ public class CommonDataDbService implements GlobalConstant, SystemConstant {
 						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(l2.WORD_ID));
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
 		return create
 				.select(
@@ -968,10 +962,10 @@ public class CommonDataDbService implements GlobalConstant, SystemConstant {
 		Paradigm p2 = PARADIGM.as("p2");
 		Form f2 = FORM.as("f2");
 
-		Field<String[]> wtf = subqueryHelper.getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = subqueryHelper.getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = subqueryHelper.getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = subqueryHelper.getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
 		return create
 				.select(

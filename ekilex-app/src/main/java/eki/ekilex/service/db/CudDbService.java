@@ -42,12 +42,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
@@ -76,13 +74,7 @@ import eki.ekilex.data.db.tables.records.WordRelationRecord;
 import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 
 @Component
-public class CudDbService implements GlobalConstant {
-
-	private DSLContext create;
-
-	public CudDbService(DSLContext context) {
-		create = context;
-	}
+public class CudDbService extends AbstractDataDbService {
 
 	public Long getWordWordTypeId(Long wordId, String typeCode) {
 		WordWordTypeRecord wordWordTypeRecord = create.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
@@ -1001,6 +993,7 @@ public class CudDbService implements GlobalConstant {
 	}
 
 	public void deleteWord(Long wordId) {
+		String wordValue = getWordValue(wordId);
 		create.delete(LIFECYCLE_LOG)
 				.where(LIFECYCLE_LOG.ID.in(DSL
 						.select(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
@@ -1022,6 +1015,12 @@ public class CudDbService implements GlobalConstant {
 		create.delete(WORD)
 				.where(WORD.ID.eq(wordId))
 				.execute();
+		adjustWordHomonymNrs(wordValue);
+	}
+
+	private void adjustWordHomonymNrs(String wordValue) {
+
+		//TODO implement
 	}
 
 	public void deleteWordWordType(Long wordWordTypeId) {

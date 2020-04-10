@@ -5,7 +5,6 @@ import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -38,7 +37,6 @@ import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
-import static org.jooq.impl.DSL.field;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -57,7 +55,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.FormMode;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LexCollocationGroupTuple;
 import eki.ekilex.data.LexCollocationTuple;
@@ -105,37 +102,6 @@ public class CompositionDbService implements GlobalConstant {
 		return create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 	}
 
-	public List<LexemeRecord> getMeaningLexemes(Long meaningId) {
-		return create
-				.selectFrom(LEXEME).where(
-						LEXEME.MEANING_ID.eq(meaningId))
-				.fetch();
-	}
-
-	public List<LexemeRecord> getMeaningLexemes(Long meaningId, String datasetCode) {
-		return create
-				.selectFrom(LEXEME).where(
-					LEXEME.MEANING_ID.eq(meaningId)
-					.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetch();
-	}
-
-	public List<LexemeRecord> getMeaningLexemes(Long meaningId, List<String> userPermDatasetCodes) {
-		return create
-				.selectFrom(LEXEME).where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
-										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
-				.fetch();
-	}
-
-	public List<LexemeRecord> getWordLexemes(Long wordId) {
-		return create
-				.selectFrom(LEXEME).where(
-					LEXEME.WORD_ID.eq(wordId))
-				.fetch();
-	}
-
 	public LexemeRecord getLexeme(Long wordId, Long meaningId, String datasetCode) {
 		return create
 				.selectFrom(LEXEME)
@@ -144,21 +110,6 @@ public class CompositionDbService implements GlobalConstant {
 								.and(LEXEME.MEANING_ID.eq(meaningId))
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchOne();
-	}
-
-	public List<DefinitionRecord> getMeaningDefinitions(Long meaningId) {
-		return create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).fetch();
-	}
-
-	public String getFirstDefinitionOfMeaning(Long meaningId) {
-		String definition = create
-				.select(DEFINITION.VALUE_PRESE)
-				.from(DEFINITION)
-				.where(DEFINITION.MEANING_ID.eq(meaningId))
-				.orderBy(DEFINITION.ORDER_BY)
-				.limit(1)
-				.fetchOneInto(String.class);
-		return definition;
 	}
 
 	public List<LexemeRecord> getLexemesWithHigherLevel1(Long wordId, String datasetCode, Integer level1) {
@@ -191,6 +142,52 @@ public class CompositionDbService implements GlobalConstant {
 						.and(LEXEME.LEVEL1.eq(level1))
 						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchOneInto(Integer.class);
+	}
+
+	public List<LexemeRecord> getWordLexemes(Long wordId) {
+		return create
+				.selectFrom(LEXEME).where(
+					LEXEME.WORD_ID.eq(wordId))
+				.fetch();
+	}
+
+	public List<LexemeRecord> getMeaningLexemes(Long meaningId) {
+		return create
+				.selectFrom(LEXEME).where(
+						LEXEME.MEANING_ID.eq(meaningId))
+				.fetch();
+	}
+
+	public List<LexemeRecord> getMeaningLexemes(Long meaningId, String datasetCode) {
+		return create
+				.selectFrom(LEXEME).where(
+					LEXEME.MEANING_ID.eq(meaningId)
+					.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetch();
+	}
+
+	public List<LexemeRecord> getMeaningLexemes(Long meaningId, List<String> userPermDatasetCodes) {
+		return create
+				.selectFrom(LEXEME).where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
+				.fetch();
+	}
+
+	public List<DefinitionRecord> getMeaningDefinitions(Long meaningId) {
+		return create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).fetch();
+	}
+
+	public String getFirstDefinitionOfMeaning(Long meaningId) {
+		String definition = create
+				.select(DEFINITION.VALUE_PRESE)
+				.from(DEFINITION)
+				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.orderBy(DEFINITION.ORDER_BY)
+				.limit(1)
+				.fetchOneInto(String.class);
+		return definition;
 	}
 
 	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
