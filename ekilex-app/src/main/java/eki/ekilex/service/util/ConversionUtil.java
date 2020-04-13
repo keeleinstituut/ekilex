@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
@@ -67,8 +65,6 @@ import eki.ekilex.data.WordGroup;
 
 @Component
 public class ConversionUtil implements GlobalConstant {
-
-	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 
 	public static String getClassifierValue(String code, List<Classifier> classifiers) {
 		Optional<Classifier> classifier = classifiers.stream().filter(c -> c.getCode().equals(code)).findFirst();
@@ -139,101 +135,10 @@ public class ConversionUtil implements GlobalConstant {
 			form.setFormFrequencies(tuple.getFormFrequencies());
 			forms.add(form);
 		}
-		composeParadigmTitles(paradigms);
 		flagFormMorphCodes(paradigms);
 		flagFormsExist(paradigms);
 
 		return paradigms;
-	}
-
-	private void composeParadigmTitles(List<Paradigm> paradigms) {
-
-		if (CollectionUtils.isEmpty(paradigms)) {
-			return;
-		}
-		if (paradigms.size() == 1) {
-			Paradigm paradigm = paradigms.get(0);
-			String title = getFirstAvailableTitle(paradigm, FormMode.FORM);
-			if (StringUtils.isBlank(title)) {
-				title = getFirstAvailableTitle(paradigm, FormMode.WORD);
-			}
-			String inflectionTypeNr = paradigm.getInflectionTypeNr();
-			if (StringUtils.isNotBlank(inflectionTypeNr)) {
-				title = title + " " + inflectionTypeNr;
-			}
-			paradigm.setTitle(title);
-		} else {
-			for (Paradigm paradigm : paradigms) {
-				String title = getFirstDifferentTitle(paradigm, paradigms);
-				if (StringUtils.isBlank(title)) {
-					logger.warn("Could not compose paradigm title. Fix this!");
-				}
-				String inflectionTypeNr = paradigm.getInflectionTypeNr();
-				if (StringUtils.isNotBlank(inflectionTypeNr)) {
-					title = title + " " + inflectionTypeNr;
-				}
-				paradigm.setTitle(title);
-			}
-		}
-	}
-
-	private String getFirstAvailableTitle(Paradigm paradigm, FormMode mode) {
-
-		List<Form> forms = paradigm.getForms();
-		for (Form form : forms) {
-			if (form.getMode().equals(mode)) {
-				String title = form.getDisplayForm();
-				if (StringUtils.isBlank(title)) {
-					title = form.getValue();
-				}
-				return title;
-			}
-		}
-		return null;
-	}
-
-	private String getFirstDifferentTitle(Paradigm paradigm, List<Paradigm> paradigms) {
-
-		List<Form> forms = paradigm.getForms();
-		Long paradigmId = paradigm.getParadigmId();
-		for (Form form : forms) {
-			String thisMorphCode = form.getMorphCode();
-			String titleCandidate = form.getDisplayForm();
-			if (StringUtils.isBlank(titleCandidate)) {
-				titleCandidate = form.getValue();
-			}
-			boolean isDifferentTitle = isDifferentTitle(paradigms, paradigmId, thisMorphCode, titleCandidate);
-			if (isDifferentTitle) {
-				return titleCandidate;
-			}
-		}
-		return null;
-	}
-
-	private boolean isDifferentTitle(List<Paradigm> paradigms, Long currentParadigmId, String currentMorphCode, String currentTitle) {
-
-		for (Paradigm otherParadigm : paradigms) {
-			if (currentParadigmId.equals(otherParadigm.getParadigmId())) {
-				continue;
-			}
-			List<Form> otherForms = otherParadigm.getForms();
-			for (Form otherForm : otherForms) {
-				String otherMorphCode = otherForm.getMorphCode();
-				if (!StringUtils.equals(currentMorphCode, otherMorphCode)) {
-					continue;
-				}
-				String otherTitle = otherForm.getDisplayForm();
-				if (StringUtils.isBlank(otherTitle)) {
-					otherTitle = otherForm.getValue();
-				}
-				if (StringUtils.equals(currentTitle, otherTitle)) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	private void flagFormMorphCodes(List<Paradigm> paradigms) {

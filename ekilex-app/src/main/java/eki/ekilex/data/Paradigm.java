@@ -10,8 +10,6 @@ public class Paradigm extends AbstractDataObject {
 
 	private Long paradigmId;
 
-	private String title;
-
 	private String inflectionTypeNr;
 
 	private List<Form> forms;
@@ -24,14 +22,6 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setParadigmId(Long paradigmId) {
 		this.paradigmId = paradigmId;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getInflectionTypeNr() {
