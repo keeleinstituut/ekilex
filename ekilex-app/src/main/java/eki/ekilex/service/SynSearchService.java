@@ -35,6 +35,7 @@ import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Usage;
@@ -213,7 +214,8 @@ public class SynSearchService extends AbstractWordSearchService {
 		Complexity complexity = simpleComplexityExists ? Complexity.SIMPLE : Complexity.DETAIL;
 
 		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, lexemeWeight, complexity);
-		String synWordValue = lookupDbService.getWordValue(wordId);
+		SimpleWord synWord = lookupDbService.getSimpleWord(wordId);
+		String synWordValue = synWord.getWordValue();
 		LogData matchLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, existingLexemeId, synWordValue);
 		createLifecycleLog(matchLogData);
 

@@ -53,12 +53,10 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -102,9 +100,6 @@ import eki.ekilex.data.db.tables.Word;
 //only common use data reading!
 @Component
 public class CommonDataDbService extends AbstractDataDbService {
-
-	@Autowired
-	private DSLContext create;
 
 	public Map<String, String> getDatasetNameMap() {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);

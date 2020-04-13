@@ -42,18 +42,29 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Field;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Result;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LexemeType;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
@@ -993,7 +1004,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void deleteWord(Long wordId) {
-		String wordValue = getWordValue(wordId);
+		SimpleWord word = getSimpleWord(wordId);
 		create.delete(LIFECYCLE_LOG)
 				.where(LIFECYCLE_LOG.ID.in(DSL
 						.select(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
@@ -1015,12 +1026,74 @@ public class CudDbService extends AbstractDataDbService {
 		create.delete(WORD)
 				.where(WORD.ID.eq(wordId))
 				.execute();
-		adjustWordHomonymNrs(wordValue);
+		adjustWordHomonymNrs(word);
 	}
 
-	private void adjustWordHomonymNrs(String wordValue) {
+	private void adjustWordHomonymNrs(SimpleWord word) {
 
-		//TODO implement
+		String wordValue = word.getWordValue();
+		String lang = word.getLang();
+
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+
+		Field<Integer> dsobf = DSL
+				.select(DSL.when(DSL.count(l.ID).gt(0), 1).otherwise(2))
+				.from(l)
+				.where(
+						l.WORD_ID.eq(w.ID)
+								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(l.DATASET_CODE.eq(DATASET_SSS)))
+				.asField();
+
+		Table<Record3<Long, Integer, Integer>> ww = DSL
+				.select(
+						w.ID,
+						w.HOMONYM_NR,
+						dsobf.as("ds_order_by"))
+				.from(w)
+				.where(
+						w.LANG.eq(lang)
+								.andExists(DSL
+										.select(l.ID)
+										.from(l)
+										.where(
+												l.WORD_ID.eq(w.ID)
+														.and(l.TYPE.eq(LexemeType.PRIMARY.name()))))
+								.andExists(DSL
+										.select(f.ID)
+										.from(p, f)
+										.where(
+												p.WORD_ID.eq(w.ID)
+														.and(f.PARADIGM_ID.eq(p.ID))
+														.and(f.MODE.eq(FormMode.WORD.name()))
+														.and(f.VALUE.eq(wordValue)))))
+				.asTable("w");
+
+		Result<Record2<Long, Integer>> homonyms = create
+				.select(
+						ww.field("id", Long.class),
+						ww.field("homonym_nr", Integer.class))
+				.from(ww)
+				.orderBy(
+						ww.field("ds_order_by"),
+						ww.field("homonym_nr"),
+						ww.field("id"))
+				.fetch();
+
+		if (CollectionUtils.isNotEmpty(homonyms)) {
+			int homonymNrIter = 1;
+			for (Record2<Long, Integer> homonym : homonyms) {
+				Long adjWordId = homonym.get("id", Long.class);
+				Integer adjHomonymNr = homonym.get("homonym_nr", Integer.class);
+				if (adjHomonymNr != homonymNrIter) {
+					create.update(WORD).set(WORD.HOMONYM_NR, homonymNrIter).where(WORD.ID.eq(adjWordId)).execute();
+				}
+				homonymNrIter++;
+			}
+		}
 	}
 
 	public void deleteWordWordType(Long wordWordTypeId) {

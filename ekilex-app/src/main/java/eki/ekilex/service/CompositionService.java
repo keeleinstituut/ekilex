@@ -22,6 +22,7 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -345,8 +346,8 @@ public class CompositionService extends AbstractService {
 
 	private Long joinWords(Long firstWordId, Long secondWordId) {
 
-		String wordValue = lookupDbService.getWordValue(firstWordId);
-
+		SimpleWord firstWord = lookupDbService.getSimpleWord(firstWordId);
+		String wordValue = firstWord.getWordValue();
 		Integer firstWordHomonymNum = compositionDbService.getWordHomonymNum(firstWordId);
 		Integer secondWordHomonymNum = compositionDbService.getWordHomonymNum(secondWordId);
 		Long targetWordId = firstWordHomonymNum <= secondWordHomonymNum ? firstWordId : secondWordId;
