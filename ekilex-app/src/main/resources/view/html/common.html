@@ -41,7 +41,7 @@
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
   </th:block>
   <th:block th:fragment="nav_bar">
-    <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem != 'syn' ? 'fixed-top' : ''}">
+    <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'syn' ? '' : 'fixed-top'}">
       <a th:href="@{/}">
         <span th:if="${activeItem == 'home'}" class="text-white">
           Ekilex <small class="pl-2" th:text="${'v.' + appData.appVersion}">1.0.0</small>
@@ -113,7 +113,7 @@
           <i class="fa fa-question-circle-o" aria-hidden="true"></i> Kasutusjuhend
         </button>
       </th:block>
-      <div class="navbar-nav">
+      <div class="navbar-nav" th:classappend="${searchMode == null ? 'ml-auto' : ''}">
         <th:block sec:authorize="isAuthenticated()">
           <div class="btn mr-3" style="font-size: 16px">
             <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" title="Kasutajatugi">
