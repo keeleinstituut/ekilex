@@ -1,12 +1,14 @@
 package eki.ekilex.runner;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,8 @@ public class RusWordStressMergerRunner extends AbstractMergerRunner {
 	private static Logger logger = LoggerFactory.getLogger(RusWordStressMergerRunner.class);
 
 	private static final char DISPLAY_FORM_STRESS_CHAR = '"';
+
+	private static final List<Character> DISPLAY_FORM_IGNORE_IN_COMPARISON_CHAR_LIST = ListUtils.unmodifiableList(Arrays.asList('[', ']', '*'));
 
 	private static final String STRESS_MARKUP_BEGINNING = "<eki-stress>";
 
@@ -140,9 +144,14 @@ public class RusWordStressMergerRunner extends AbstractMergerRunner {
 				continue;
 			}
 
-			boolean isStressMark = DISPLAY_FORM_STRESS_CHAR == displayFormChar;
-			if (isStressMark) {
+			boolean isStressChar = DISPLAY_FORM_STRESS_CHAR == displayFormChar;
+			if (isStressChar) {
 				surroundWithStressMarkup = true;
+				continue;
+			}
+
+			boolean isIgnoreChar = DISPLAY_FORM_IGNORE_IN_COMPARISON_CHAR_LIST.contains(displayFormChar);
+			if (isIgnoreChar) {
 				continue;
 			}
 

@@ -38,7 +38,7 @@ public class CompositionService extends AbstractService {
 
 	private static final int DEFAULT_LEXEME_LEVEL = 1;
 
-	private static final String displayFormStressMark = "\"";
+	private static final String DISPLAY_FORM_STRESS_MARK = "\"";
 
 	@Autowired
 	private CompositionDbService compositionDbService;
@@ -379,9 +379,13 @@ public class CompositionService extends AbstractService {
 			if (targetDisplayForm == null) {
 				cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
 			} else {
-				boolean targetContainsStress = targetDisplayForm.contains(displayFormStressMark);
-				boolean sourceContainsStress = sourceDisplayForm.contains(displayFormStressMark);
+				boolean targetContainsStress = targetDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
+				boolean sourceContainsStress = sourceDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
 				if (!targetContainsStress && sourceContainsStress) {
+					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
+				} else if (targetContainsStress && !sourceContainsStress) {
+					// do nothing
+				} else if (targetDisplayForm.length() < sourceDisplayForm.length()) {
 					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
 				}
 			}
