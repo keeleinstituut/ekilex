@@ -209,7 +209,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(relationId);
 		Float lexemeWeight = getCalculatedLexemeWeight(typeWordRelParams);
 
-		boolean simpleComplexityExists = lookupDbService.wordLexemesComplexityExists(existingLexemeId, Complexity.SIMPLE);
+		boolean simpleComplexityExists = lookupDbService.wordPrimaryLexemesComplexityExists(existingLexemeId, Complexity.SIMPLE);
 		Complexity complexity = simpleComplexityExists ? Complexity.SIMPLE : Complexity.DETAIL;
 
 		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, lexemeWeight, complexity);
