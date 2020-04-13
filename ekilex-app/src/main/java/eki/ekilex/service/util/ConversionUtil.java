@@ -285,6 +285,7 @@ public class ConversionUtil implements GlobalConstant {
 				usage.setValue(tuple.getUsageValue());
 				usage.setLang(tuple.getUsageLang());
 				usage.setComplexity(tuple.getUsageComplexity());
+				usage.setOrderBy(tuple.getUsageOrderBy());
 				usage.setTypeCode(tuple.getUsageTypeCode());
 				usage.setTypeValue(tuple.getUsageTypeValue());
 				usage.setTranslations(new ArrayList<>());

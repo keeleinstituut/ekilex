@@ -717,30 +717,41 @@
                       </span>
                     </div>
                     <div class="col pl-0">
-                      <th:block th:each="government : ${lexeme.governments}">
-                        <div th:replace="lexdialog :: edit_government_dlg"></div>
-                        <div class="row">
-                          <div class="col hidden-buttons">
-                            <span class="pr-3" th:text="${government.value}"></span>
-                            <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${government.complexity}} + ')'"></span>
-                            <button type="button" class="btn badge badge-primary"
-                                    title="Muuda"
-                                    data-toggle="modal"
-                                    th:data-target="${'#editGovernmentDlg_' + lexeme.lexemeId + '_' + government.id}"
-                                    sec:authorize="${#vars.isLexemeCrudGranted}">
-                              <i class="fa fa-edit" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn badge badge-warning"
-                                    th:data-id="${government.id}"
-                                    th:data-op-code="government"
-                                    data-toggle="delete-confirm"
-                                    data-placement="right"
-                                    sec:authorize="${#vars.isLexemeCrudGranted}">
-                              <i class="fa fa-remove" aria-hidden="true"></i>
-                            </button>
+                      <div class="orderable" data-op-code="government">
+                        <div th:each="government, itemIter : ${lexeme.governments}"
+                             th:data-id="${government.id}"
+                             th:data-orderby="${government.orderBy}">
+                          <div th:replace="lexdialog :: edit_government_dlg"></div>
+                          <div class="row">
+                            <div class="action-column">
+                              <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isMeaningCrudGranted}"></th:block>
+                            </div>
+                            <div class="col hidden-buttons">
+                              <div class="action-buttons-anchor">
+                                <span class="pr-3" th:text="${government.value}"></span>
+                                <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${government.complexity}} + ')'"></span>
+                                <div class="action-buttons-2">
+                                  <button type="button" class="btn badge badge-primary"
+                                          title="Muuda"
+                                          data-toggle="modal"
+                                          th:data-target="${'#editGovernmentDlg_' + lexeme.lexemeId + '_' + government.id}"
+                                          sec:authorize="${#vars.isLexemeCrudGranted}">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                  </button>
+                                  <button type="button" class="btn badge badge-warning"
+                                          th:data-id="${government.id}"
+                                          data-op-code="government"
+                                          data-toggle="delete-confirm"
+                                          data-placement="right"
+                                          sec:authorize="${#vars.isLexemeCrudGranted}">
+                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </th:block>
+                      </div>
                     </div>
                   </div>
                   <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
@@ -757,91 +768,100 @@
                     </div>
                     <div class="col pl-0">
                       <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
-                        <div th:each="usage,usageIter : ${lexeme.usages}" th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}">
+                        <div class="orderable" data-op-code="usage">
+                          <div th:each="usage,usageIter : ${lexeme.usages}"
+                               th:with="isUsageCrudGranted=${#authorization.expression('hasPermission(#vars.usage.id, ''USAGE'', ''DATASET:CRUD'')')}"
+                               th:data-id="${usage.id}"
+                               th:data-orderby="${usage.orderBy}">
                           <div th:replace="lexdialog :: edit_usage_dlg"></div>
                           <div th:replace="lexdialog :: add_usage_member_dlg"></div>
                           <div th:replace="lexdialog :: add_usage_author_dlg"></div>
                           <div class="row">
+                            <div class="action-column">
+                              <th:block th:replace="common :: ordering_buttons(${usageIter})" sec:authorize="${#vars.isUsageCrudGranted}"></th:block>
+                            </div>
                             <div class="col invisible-buttons">
-                              <div class="d-inline-block" th:utext="${usage.value}"></div>
-                              <div class="d-inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
-                              <div class="d-inline-block ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'"></div>
-                              <div th:if="${#lists.isEmpty(usage.authors)}" class="show-on-mouseover" sec:authorize="${#vars.isUsageCrudGranted}">
-                                (
-                                <button type="button" class="btn badge badge-success hidden"
-                                        title="Lisa autor/tõlkija"
-                                        data-toggle="modal"
-                                        th:data-target="${'#addUsageAuthorDlg_' + usage.id}"
-                                        sec:authorize="${#vars.isUsageCrudGranted}">
-                                  <i class="fa fa-plus" aria-hidden="true"></i>
-                                </button>
-                                )
-                              </div>
-                              <div class="d-inline-block" th:if="${not #lists.isEmpty(usage.authors)}">
-                                (
-                                <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
-                                  <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
-                                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></a>
-                                  <button type="button" class="btn badge badge-warning hidden"
-                                          th:data-id="${sourceLink.id}"
-                                          data-op-code="usage_author"
-                                          data-toggle="delete-confirm"
-                                          data-placement="right"
+                              <div class="action-buttons-anchor">
+                                <div class="d-inline-block" th:utext="${usage.value}"></div>
+                                <div class="d-inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
+                                <div class="d-inline-block ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'"></div>
+                                <div th:if="${#lists.isEmpty(usage.authors)}" class="show-on-mouseover" sec:authorize="${#vars.isUsageCrudGranted}">
+                                  (
+                                  <button type="button" class="btn badge badge-success hidden"
+                                          title="Lisa autor/tõlkija"
+                                          data-toggle="modal"
+                                          th:data-target="${'#addUsageAuthorDlg_' + usage.id}"
                                           sec:authorize="${#vars.isUsageCrudGranted}">
-                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
                                   </button>
-                                  <span th:unless="${sourceLinkIter.last}">,</span>
-                                </span>
-                                <button type="button" class="btn badge badge-success hidden"
-                                        title="Lisa autor/tõlkija"
+                                  )
+                                </div>
+                                <div class="d-inline-block" th:if="${not #lists.isEmpty(usage.authors)}">
+                                  (
+                                  <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
+                                    <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
+                                    <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></a>
+                                    <button type="button" class="btn badge badge-warning hidden"
+                                            th:data-id="${sourceLink.id}"
+                                            data-op-code="usage_author"
+                                            data-toggle="delete-confirm"
+                                            data-placement="right"
+                                            sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-remove" aria-hidden="true"></i>
+                                    </button>
+                                    <span th:unless="${sourceLinkIter.last}">,</span>
+                                  </span>
+                                  <button type="button" class="btn badge badge-success hidden"
+                                          title="Lisa autor/tõlkija"
+                                          th:data-id="${usage.id}"
+                                          data-toggle="modal"
+                                          th:data-target="${'#addUsageAuthorDlg_' + usage.id}"
+                                          sec:authorize="${#vars.isUsageCrudGranted}">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
+                                  )
+                                </div>
+                                <div class="d-inline-block" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                                  [
+                                  <span th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}">
+                                    <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:if="${sourceLink.value != null}">
+                                      <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                                      <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
+                                    </a>
+                                    <button type="button" class="btn badge badge-warning"
+                                            th:data-id="${sourceLink.id}"
+                                            data-op-code="usage_source_link"
+                                            data-toggle="delete-confirm"
+                                            data-placement="right"
+                                            sec:authorize="${#vars.isUsageCrudGranted}">
+                                      <i class="fa fa-remove" aria-hidden="true"></i>
+                                    </button>
+                                  </span>
+                                  ]
+                                </div>
+                                <button type="button" class="btn badge badge-primary"
+                                        title="Muuda"
+                                        data-toggle="modal"
+                                        th:data-target="${'#editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}"
+                                        sec:authorize="${#vars.isUsageCrudGranted}">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn badge badge-warning"
                                         th:data-id="${usage.id}"
+                                        data-op-code="usage"
+                                        data-toggle="delete-confirm"
+                                        data-placement="right"
+                                        sec:authorize="${#vars.isUsageCrudGranted}">
+                                  <i class="fa fa-remove" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn badge badge-success"
+                                        title="Lisa kasutusnäitele andmeid"
                                         data-toggle="modal"
-                                        th:data-target="${'#addUsageAuthorDlg_' + usage.id}"
+                                        th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
                                         sec:authorize="${#vars.isUsageCrudGranted}">
                                   <i class="fa fa-plus" aria-hidden="true"></i>
                                 </button>
-                                )
                               </div>
-                              <div class="d-inline-block" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
-                                [
-                                <span th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}">
-                                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:if="${sourceLink.value != null}">
-                                    <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                                    <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
-                                  </a>
-                                  <button type="button" class="btn badge badge-warning"
-                                          th:data-id="${sourceLink.id}"
-                                          data-op-code="usage_source_link"
-                                          data-toggle="delete-confirm"
-                                          data-placement="right"
-                                          sec:authorize="${#vars.isUsageCrudGranted}">
-                                    <i class="fa fa-remove" aria-hidden="true"></i>
-                                  </button>
-                                </span>
-                                ]
-                              </div>
-                              <button type="button" class="btn badge badge-primary"
-                                      title="Muuda"
-                                      data-toggle="modal"
-                                      th:data-target="${'#editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}"
-                                      sec:authorize="${#vars.isUsageCrudGranted}">
-                                <i class="fa fa-edit" aria-hidden="true"></i>
-                              </button>
-                              <button type="button" class="btn badge badge-warning"
-                                      th:data-id="${usage.id}"
-                                      data-op-code="usage"
-                                      data-toggle="delete-confirm"
-                                      data-placement="right"
-                                      sec:authorize="${#vars.isUsageCrudGranted}">
-                                <i class="fa fa-remove" aria-hidden="true"></i>
-                              </button>
-                              <button type="button" class="btn badge badge-success"
-                                      title="Lisa kasutusnäitele andmeid"
-                                      data-toggle="modal"
-                                      th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
-                                      sec:authorize="${#vars.isUsageCrudGranted}">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                              </button>
                             </div>
                           </div>
                           <div th:if="${not #lists.isEmpty(usage.translations)}" class="col pl-0">
@@ -997,6 +1017,7 @@
                             <hr/>
                           </div>
                         </div>
+                        </div>
                       </th:block>
                     </div>
                   </div>
@@ -1079,7 +1100,7 @@
                       </button>
                     </div>
                     <div class="col pl-0">
-                      <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
+                      <table class="orderable" data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                         <tr th:each="relation, itemIter : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                           <td class="action-column">
                             <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isLexemeCrudGranted}"></th:block>
@@ -1294,7 +1315,7 @@
                           sec:authorize="${#vars.isWordCrudGranted}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <table class="orderable" th:data-op-code="word_relation" th:if="${not #lists.isEmpty(details.wordRelations)}">
+                  <table class="orderable" data-op-code="word_relation" th:if="${not #lists.isEmpty(details.wordRelations)}">
                     <tr th:each="relation, itemIter : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                       <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isWordCrudGranted}"></th:block>

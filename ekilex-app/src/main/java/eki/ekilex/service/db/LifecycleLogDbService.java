@@ -918,7 +918,7 @@ public class LifecycleLogDbService {
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			}
-		} if (LifecycleEntity.MEANING.equals(entity)) {
+		} else if (LifecycleEntity.MEANING.equals(entity)) {
 			if (LifecycleProperty.DOMAIN.equals(property)) {
 				Map<String, Object> entityData = helper.getMeaningDomainData(create, entityId);
 				String domainCode = (String) entityData.get("domain_code");
@@ -934,6 +934,38 @@ public class LifecycleLogDbService {
 				logData.setEntityId(meaningId);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
+			}
+		} else if (LifecycleEntity.GOVERNMENT.equals(entity)) {
+			if (LifecycleProperty.ID.equals(property)) {
+				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.GOVERNMENT);
+				String governmentValue = (String) entityData.get("value_text");
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				Long prevOrderBy = (Long) entityData.get("order_by");
+				if (newOrderby.equals(prevOrderBy)) {
+					return;
+				}
+				String recent = prevOrderBy + ") " + governmentValue;
+				String entry = newOrderby + ") " + governmentValue;
+				logData.setRecent(recent);
+				logData.setEntry(entry);
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+			}
+		} else if (LifecycleEntity.USAGE.equals(entity)) {
+			if (LifecycleProperty.ID.equals(property)) {
+				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.USAGE);
+				String usageValue = (String) entityData.get("value_text");
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				Long prevOrderBy = (Long) entityData.get("order_by");
+				if (newOrderby.equals(prevOrderBy)) {
+					return;
+				}
+				String recent = prevOrderBy + ") " + usageValue;
+				String entry = newOrderby + ") " + usageValue;
+				logData.setRecent(recent);
+				logData.setEntry(entry);
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			}
 		}
 	}

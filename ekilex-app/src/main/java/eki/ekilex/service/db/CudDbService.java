@@ -260,11 +260,20 @@ public class CudDbService extends AbstractDataDbService {
 				.where(LEXEME.ID.eq(item.getId()))
 				.execute();
 	}
+
 	public void updateMeaningDomainOrderby(ListData item) {
 		create
 				.update(MEANING_DOMAIN)
 				.set(MEANING_DOMAIN.ORDER_BY, item.getOrderby())
 				.where(MEANING_DOMAIN.ID.eq(item.getId()))
+				.execute();
+	}
+
+	public void updateFreeformOrderby(ListData item) {
+		create
+				.update(FREEFORM)
+				.set(FREEFORM.ORDER_BY, item.getOrderby())
+				.where(FREEFORM.ID.eq(item.getId()))
 				.execute();
 	}
 

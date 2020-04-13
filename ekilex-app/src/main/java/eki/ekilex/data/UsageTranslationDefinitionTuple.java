@@ -23,6 +23,9 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 	@Column(name = "usage_complexity")
 	private Complexity usageComplexity;
 
+	@Column(name = "usage_order_by")
+	private Long usageOrderBy;
+
 	@Column(name = "usage_type_code")
 	private String usageTypeCode;
 
@@ -110,6 +113,14 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	public void setUsageComplexity(Complexity usageComplexity) {
 		this.usageComplexity = usageComplexity;
+	}
+
+	public Long getUsageOrderBy() {
+		return usageOrderBy;
+	}
+
+	public void setUsageOrderBy(Long usageOrderBy) {
+		this.usageOrderBy = usageOrderBy;
 	}
 
 	public String getUsageTypeCode() {

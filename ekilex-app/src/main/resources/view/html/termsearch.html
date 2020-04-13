@@ -892,7 +892,7 @@
                   </button>
                 </div>
                 <div class="col pl-0">
-                  <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
+                  <table class="orderable" data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                     <tr th:each="relation, itemIter : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                       <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isLexemeCrudGranted}"></th:block>

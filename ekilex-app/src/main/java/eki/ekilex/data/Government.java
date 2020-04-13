@@ -15,6 +15,8 @@ public class Government extends AbstractDataObject {
 
 	private Complexity complexity;
 
+	private Long orderBy;
+
 	public Long getId() {
 		return id;
 	}
@@ -45,6 +47,14 @@ public class Government extends AbstractDataObject {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 
 }
