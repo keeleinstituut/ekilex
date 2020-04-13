@@ -499,19 +499,15 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean wordPrimaryLexemesComplexityExists(Long lexemeId, Complexity complexity) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
+	public boolean wordPrimaryLexemesComplexityExists(Long wordId, Complexity complexity) {
 
 		return create
-				.select(DSL.field(DSL.count(l2.ID).gt(0)).as("complexity_exists"))
-				.from(l1, l2)
+				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("complexity_exists"))
+				.from(LEXEME)
 				.where(
-						l1.ID.eq(lexemeId)
-								.and(l2.WORD_ID.eq(l1.WORD_ID))
-								.and(l2.TYPE.eq(LexemeType.PRIMARY.name()))
-								.and(l2.COMPLEXITY.eq(complexity.name())))
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.COMPLEXITY.eq(complexity.name())))
 				.fetchSingleInto(Boolean.class);
 	}
 
