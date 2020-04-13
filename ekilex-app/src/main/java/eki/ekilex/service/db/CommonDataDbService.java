@@ -782,7 +782,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						g.ID,
 						g.VALUE_TEXT.as("value"),
 						gt.CLASSIF_CODE.as("type_code"),
-						g.COMPLEXITY)
+						g.COMPLEXITY,
+						g.ORDER_BY)
 				.from(
 						glff.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())))
 								.leftOuterJoin(gt).on(gt.PARENT_ID.eq(g.ID).and(gt.TYPE.eq(FreeformType.GOVERNMENT_TYPE.name()))))
@@ -826,6 +827,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						u.VALUE_PRESE.as("usage_value"),
 						u.LANG.as("usage_lang"),
 						u.COMPLEXITY.as("usage_complexity"),
+						u.ORDER_BY.as("usage_order_by"),
 						utype.CLASSIF_CODE.as("usage_type_code"),
 						utypelbl.VALUE.as("usage_type_value"),
 						ut.ID.as("usage_translation_id"),

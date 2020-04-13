@@ -17,6 +17,8 @@ public class Usage extends AbstractDataObject {
 
 	private Complexity complexity;
 
+	private Long orderBy;
+
 	private String typeCode;
 
 	private String typeValue;
@@ -63,6 +65,14 @@ public class Usage extends AbstractDataObject {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 
 	public String getTypeCode() {

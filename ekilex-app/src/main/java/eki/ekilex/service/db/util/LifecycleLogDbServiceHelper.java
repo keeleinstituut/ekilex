@@ -52,7 +52,8 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 				.select(
 						lff.LEXEME_ID,
 						ff1.VALUE_TEXT,
-						ff1.VALUE_PRESE)
+						ff1.VALUE_PRESE,
+						ff1.ORDER_BY)
 				.from(lff, ff1)
 				.where(
 						lff.FREEFORM_ID.eq(ff1.ID)

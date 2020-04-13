@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,10 +59,9 @@ import eki.ekilex.service.db.TermSearchDbService;
 @Component
 public class LookupService extends AbstractWordSearchService {
 
-	private final static String classifierLabelLang = "est";
-	private final static String classifierLabelTypeDescrip = "descrip";
+	private final static String DISPLAY_FORM_STRESS_MARK = "\"";
 
-	private final static String displayFormStressMark = "\"";
+	private static final List<String> DISPLAY_FORM_IGNORE_IN_COMPARISON_SYMBOL_LIST = ListUtils.unmodifiableList(Arrays.asList("[", "]", "*"));
 
 	@Autowired
 	private LookupDbService lookupDbService;
@@ -99,10 +100,11 @@ public class LookupService extends AbstractWordSearchService {
 		String sourceDisplayForm = sourceWordStress.getDisplayForm();
 		String sourceValuePrese = sourceWordStress.getValuePrese();
 
-		if (!StringUtils.equals(targetDisplayForm, sourceDisplayForm)) {
+		boolean isDisplayFormEqual = displayFormEquals(targetDisplayForm, sourceDisplayForm);
+		if (!isDisplayFormEqual) {
 			if (targetDisplayForm != null && sourceDisplayForm != null) {
-				boolean targetContainsStress = targetDisplayForm.contains(displayFormStressMark);
-				boolean sourceContainsStress = sourceDisplayForm.contains(displayFormStressMark);
+				boolean targetContainsStress = targetDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
+				boolean sourceContainsStress = sourceDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
 				if (targetContainsStress && sourceContainsStress) {
 					return false;
 				} else if (!targetContainsStress && !sourceContainsStress) {
@@ -121,6 +123,19 @@ public class LookupService extends AbstractWordSearchService {
 			return false;
 		}
 		return true;
+	}
+
+	private boolean displayFormEquals(String targetDisplayForm, String sourceDisplayForm) {
+
+		String cleanedTargetDisplayForm = targetDisplayForm;
+		String cleanedSourceDisplayForm = sourceDisplayForm;
+
+		for (String ignoreSymbol : DISPLAY_FORM_IGNORE_IN_COMPARISON_SYMBOL_LIST) {
+			cleanedTargetDisplayForm = StringUtils.remove(cleanedTargetDisplayForm, ignoreSymbol);
+			cleanedSourceDisplayForm = StringUtils.remove(cleanedSourceDisplayForm, ignoreSymbol);
+		}
+
+		return StringUtils.equals(cleanedTargetDisplayForm, cleanedSourceDisplayForm);
 	}
 
 	@Transactional
@@ -148,7 +163,7 @@ public class LookupService extends AbstractWordSearchService {
 				List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 				lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 				List<DefinitionRefTuple> definitionRefTuples =
-						commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+						commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 				List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
 				allDefinitionValues.addAll(lexemeDefinitionValues);
@@ -197,7 +212,7 @@ public class LookupService extends AbstractWordSearchService {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 		Word word = lexSearchDbService.getWord(wordId);
-		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
+		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
@@ -243,11 +258,11 @@ public class LookupService extends AbstractWordSearchService {
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 						List<DefinitionRefTuple> definitionRefTuples =
-								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 						List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 						List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-								commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+								commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 						List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 
 						lexeme.setDatasetName(datasetName);
@@ -373,9 +388,9 @@ public class LookupService extends AbstractWordSearchService {
 		String datasetCode = lexeme.getDatasetCode();
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
-		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 
 		lexeme.setPos(lexemePos);

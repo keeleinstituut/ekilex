@@ -131,6 +131,24 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
+	public void updateGovernmentOrdering(List<ListData> items) {
+		for (ListData item : items) {
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.GOVERNMENT, LifecycleProperty.ID, item);
+			createListOrderingLifecycleLog(logData);
+			cudDbService.updateFreeformOrderby(item);
+		}
+	}
+
+	@Transactional
+	public void updateUsageOrdering(List<ListData> items) {
+		for (ListData item : items) {
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.USAGE, LifecycleProperty.ID, item);
+			createListOrderingLifecycleLog(logData);
+			cudDbService.updateFreeformOrderby(item);
+		}
+	}
+
+	@Transactional
 	public void updateLexemeMeaningWordOrdering(List<ListData> items, Long lexemeId) {
 		LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, lexemeId);
 		createLifecycleLog(logData);

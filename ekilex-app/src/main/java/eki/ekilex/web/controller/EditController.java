@@ -346,6 +346,12 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "meaning_domain":
 			cudService.updateMeaningDomainOrdering(items);
 			break;
+		case "government":
+			cudService.updateGovernmentOrdering(items);
+			break;
+		case "usage":
+			cudService.updateUsageOrdering(items);
+			break;
 		case "lexeme_meaning_word":
 			Long lexemeId = listData.getAdditionalInfo();
 			cudService.updateLexemeMeaningWordOrdering(items, lexemeId);

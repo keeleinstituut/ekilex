@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import javax.persistence.Column;
-
 import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
@@ -11,73 +9,52 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "usage_id")
 	private Long usageId;
 
-	@Column(name = "usage_value")
 	private String usageValue;
 
-	@Column(name = "usage_lang")
 	private String usageLang;
 
-	@Column(name = "usage_complexity")
 	private Complexity usageComplexity;
 
-	@Column(name = "usage_type_code")
+	private Long usageOrderBy;
+
 	private String usageTypeCode;
 
-	@Column(name = "usage_type_value")
 	private String usageTypeValue;
 
-	@Column(name = "usage_translation_id")
 	private Long usageTranslationId;
 
-	@Column(name = "usage_translation_value")
 	private String usageTranslationValue;
 
-	@Column(name = "usage_translation_lang")
 	private String usageTranslationLang;
 
-	@Column(name = "usage_definition_id")
 	private Long usageDefinitionId;
 
-	@Column(name = "usage_definition_value")
 	private String usageDefinitionValue;
 
-	@Column(name = "usage_definition_lang")
 	private String usageDefinitionLang;
 
-	@Column(name = "od_usage_definition_id")
 	private Long odUsageDefinitionId;
 
-	@Column(name = "od_usage_definition_value")
 	private String odUsageDefinitionValue;
 
-	@Column(name = "od_usage_alternative_id")
 	private Long odUsageAlternativeId;
 
-	@Column(name = "od_usage_alternative_value")
 	private String odUsageAlternativeValue;
 
-	@Column(name = "usage_source_link_id")
 	private Long usageSourceLinkId;
 
-	@Column(name = "usage_source_link_type")
 	private ReferenceType usageSourceLinkType;
 
-	@Column(name = "usage_source_link_name")
 	private String usageSourceLinkName;
 
-	@Column(name = "usage_source_link_value")
 	private String usageSourceLinkValue;
 
-	@Column(name = "usage_source_id")
 	private Long usageSourceId;
 
-	@Column(name = "usage_source_type")
 	private SourceType usageSourceType;
 
-	@Column(name = "usage_source_name")
 	private String usageSourceName;
 
 	public Long getUsageId() {
@@ -110,6 +87,14 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	public void setUsageComplexity(Complexity usageComplexity) {
 		this.usageComplexity = usageComplexity;
+	}
+
+	public Long getUsageOrderBy() {
+		return usageOrderBy;
+	}
+
+	public void setUsageOrderBy(Long usageOrderBy) {
+		this.usageOrderBy = usageOrderBy;
 	}
 
 	public String getUsageTypeCode() {
