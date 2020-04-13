@@ -1282,7 +1282,7 @@
                 <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
                   <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2 mb-2">
                     <button class="btn btn-info ml-3" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">
-                      <span th:text="${paradigmIter.count + '.'}"></span>
+                      <span th:text="${paradigmIter.count + '.'}" th:if="${paradigmIter.size > 1}"></span>
                       <span>vormid</span>
                     </button>
                     <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="collapse p-1">
