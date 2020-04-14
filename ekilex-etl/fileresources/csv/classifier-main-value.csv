@@ -2174,6 +2174,7 @@ word_type	ys	ühendsidesõna (nii et)	est	descrip
 word_type	ys	sidesõna	est	wordweb
 word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
 word_type	f	fras-väljend	est	descrip
+word_type	f	väljend	est	wordweb
 word_type	f	multiword expression	eng	descrip
 word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
 word_type	g	täiendsõna	est	wordweb
