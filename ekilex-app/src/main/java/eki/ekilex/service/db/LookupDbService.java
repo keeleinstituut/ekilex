@@ -286,6 +286,15 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(LexemeType.class);
 	}
 
+	public String getLexemeProcessStateCode(Long lexemeId) {
+
+		return create
+				.select(LEXEME.PROCESS_STATE_CODE)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(String.class);
+	}
+
 	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
 
 		return create
@@ -510,5 +519,7 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(LEXEME.COMPLEXITY.eq(complexity.name())))
 				.fetchSingleInto(Boolean.class);
 	}
+
+
 
 }
