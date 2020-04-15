@@ -16575,6 +16575,10 @@ footer p {
   min-width: 300px;
 }
 
+.tooltip {
+  pointer-events: none;
+}
+
 .ui-draggable-dragging {
   background: #fff;
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
