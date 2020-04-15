@@ -108,3 +108,19 @@ end adj_homon_nr_block $$;
 drop type temp_word_data_tuple;
 -- protseduuri lõpp
 
+-- kustutab ilmikud, mille tähendustel on ainult vene info. Igaöine automaatne kustutaja kustutab 'rippuma' jäänud keelendid ja tähendused
+delete
+from lexeme l1 using word w1
+where l1.dataset_code = 'sss'
+  and l1.type = 'PRIMARY'
+  and l1.word_id = w1.id
+  and w1.lang = 'rus'
+  and not exists(select l2.id
+                 from lexeme l2,
+                      word w2
+                 where l2.meaning_id = l1.meaning_id
+                   and l2.id != l1.id
+                   and l2.dataset_code = 'sss'
+                   and l2.type = 'PRIMARY'
+                   and l2.word_id = w2.id
+                   and w2.lang != 'rus');

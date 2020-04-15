@@ -49,14 +49,14 @@ where value_prese like '%<eki-stress>ё</eki-stress>%';
 -- kõigi sõnakogude ülene homonüümi numbrite järjestamise protseduur koos ajutise andmetüübiga
 create type temp_word_data_tuple as (word_id bigint, homonym_nr integer);
 
-do $$ 
+do $$
 <<adj_homon_nr_block>>
 declare
   ordered_homonym_nrs_str_pattern text := array_to_string(array (select generate_series(1, 100)), '-', '');
   word_row record;
   adj_word_ids temp_word_data_tuple;
   homonym_nr_iter integer;
-begin 
+begin
   for word_row in
     (select w.word,
            w.lang,
@@ -72,7 +72,7 @@ begin
                        (select case
                                  when count(l.id) > 0 then 1
                                  else 2
-                               end 
+                               end
                         from lexeme l
                         where l.word_id = w.id
                         and   l.type = 'PRIMARY'
@@ -96,7 +96,7 @@ begin
   loop
     homonym_nr_iter := 1;
     foreach adj_word_ids in array word_row.word_ids
-    loop 
+    loop
       if homonym_nr_iter != adj_word_ids.homonym_nr then
         update word set homonym_nr = homonym_nr_iter where id = adj_word_ids.word_id;
       end if;
@@ -107,3 +107,20 @@ end adj_homon_nr_block $$;
 
 drop type temp_word_data_tuple;
 -- protseduuri lõpp
+
+-- kustutab ilmikud, mille tähendustel on ainult vene info. Igaöine automaatne kustutaja kustutab 'rippuma' jäänud keelendid ja tähendused
+delete
+from lexeme l1 using word w1
+where l1.dataset_code = 'sss'
+  and l1.type = 'PRIMARY'
+  and l1.word_id = w1.id
+  and w1.lang = 'rus'
+  and not exists(select l2.id
+                 from lexeme l2,
+                      word w2
+                 where l2.meaning_id = l1.meaning_id
+                   and l2.id != l1.id
+                   and l2.dataset_code = 'sss'
+                   and l2.type = 'PRIMARY'
+                   and l2.word_id = w2.id
+                   and w2.lang != 'rus');
