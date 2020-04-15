@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import javax.persistence.Column;
-
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
@@ -9,22 +7,16 @@ public class SourceLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "name")
 	private String name;
 
-	@Column(name = "value")
 	private String value;
 
-	@Column(name = "owner_id")
 	private Long ownerId;
 
-	@Column(name = "type")
 	private ReferenceType type;
 
-	@Column(name = "source_id")
 	private Long sourceId;
 
 	public Long getId() {

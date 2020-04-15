@@ -503,6 +503,28 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateMeaningLexemesProcessStateCode(Long meaningId, String processStateCode) {
+		create
+				.update(LEXEME)
+				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.PROCESS_STATE_CODE.ne(processStateCode)))
+				.execute();
+	}
+
+	public void updateWordLexemesProcessStateCode(Long wordId, String processStateCode) {
+		create
+				.update(LEXEME)
+				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.PROCESS_STATE_CODE.ne(processStateCode)))
+				.execute();
+	}
+
 	public Long createWordAndLexeme(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))

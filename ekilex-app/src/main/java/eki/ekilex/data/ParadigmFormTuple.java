@@ -2,8 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
@@ -11,37 +9,26 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "paradigm_id")
 	private Long paradigmId;
 
-	@Column(name = "inflection_type_nr")
 	private String inflectionTypeNr;
 
-	@Column(name = "form_id")
 	private Long formId;
 
-	@Column(name = "form")
 	private String form;
 
-	@Column(name = "mode")
 	private FormMode mode;
 
-	@Column(name = "components")
 	private String[] components;
 
-	@Column(name = "display_form")
 	private String displayForm;
 
-	@Column(name = "vocal_form")
 	private String vocalForm;
 
-	@Column(name = "morph_code")
 	private String morphCode;
 
-	@Column(name = "morph_value")
 	private String morphValue;
 
-	@Column(name = "form_frequencies")
 	private List<String> formFrequencies;
 
 	public Long getParadigmId() {
