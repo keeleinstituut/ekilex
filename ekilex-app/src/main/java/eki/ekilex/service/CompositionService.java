@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -22,6 +23,7 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -34,11 +36,11 @@ import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
-public class CompositionService extends AbstractService {
+public class CompositionService extends AbstractService implements GlobalConstant {
 
 	private static final int DEFAULT_LEXEME_LEVEL = 1;
 
-	private static final String displayFormStressMark = "\"";
+	private static final String DISPLAY_FORM_STRESS_MARK = "\"";
 
 	@Autowired
 	private CompositionDbService compositionDbService;
@@ -345,8 +347,8 @@ public class CompositionService extends AbstractService {
 
 	private Long joinWords(Long firstWordId, Long secondWordId) {
 
-		String wordValue = lookupDbService.getWordValue(firstWordId);
-
+		SimpleWord firstWord = lookupDbService.getSimpleWord(firstWordId);
+		String wordValue = firstWord.getWordValue();
 		Integer firstWordHomonymNum = compositionDbService.getWordHomonymNum(firstWordId);
 		Integer secondWordHomonymNum = compositionDbService.getWordHomonymNum(secondWordId);
 		Long targetWordId = firstWordHomonymNum <= secondWordHomonymNum ? firstWordId : secondWordId;
@@ -379,9 +381,13 @@ public class CompositionService extends AbstractService {
 			if (targetDisplayForm == null) {
 				cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
 			} else {
-				boolean targetContainsStress = targetDisplayForm.contains(displayFormStressMark);
-				boolean sourceContainsStress = sourceDisplayForm.contains(displayFormStressMark);
+				boolean targetContainsStress = targetDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
+				boolean sourceContainsStress = sourceDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
 				if (!targetContainsStress && sourceContainsStress) {
+					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
+				} else if (targetContainsStress && !sourceContainsStress) {
+					// do nothing
+				} else if (targetDisplayForm.length() < sourceDisplayForm.length()) {
 					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
 				}
 			}
@@ -398,6 +404,7 @@ public class CompositionService extends AbstractService {
 
 	private void joinLexemeData(Long targetWordId, Long sourceWordId) {
 
+		boolean updateLexemesProcessStateToPublic = false;
 		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
 		for (LexemeRecord sourceWordLexeme : sourceWordLexemes) {
 			Long sourceWordLexemeId = sourceWordLexeme.getId();
@@ -414,6 +421,10 @@ public class CompositionService extends AbstractService {
 
 				if (isTargetWordLexemePrimaryType && isSourceWordLexemePrimaryType) {
 					compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
+					String targetLexemeProcessStateCode = lookupDbService.getLexemeProcessStateCode(targetWordLexemeId);
+					if (StringUtils.equals(PROCESS_STATE_PUBLIC, targetLexemeProcessStateCode)) {
+						updateLexemesProcessStateToPublic = true;
+					}
 				} else if (isSourceWordLexemePrimaryType) {
 					cudDbService.deleteLexeme(targetWordLexemeId);
 					connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
@@ -423,6 +434,10 @@ public class CompositionService extends AbstractService {
 			} else {
 				connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
 			}
+		}
+		if (updateLexemesProcessStateToPublic) {
+			cudDbService.updateWordLexemesProcessStateCode(targetWordId, PROCESS_STATE_PUBLIC);
+			cudDbService.updateWordLexemesProcessStateCode(sourceWordId, PROCESS_STATE_PUBLIC);
 		}
 	}
 
@@ -498,6 +513,7 @@ public class CompositionService extends AbstractService {
 		List<IdPair> meaningsCommonWordsLexemeIdPairs = compositionDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);
 		boolean meaningsShareCommonWord = CollectionUtils.isNotEmpty(meaningsCommonWordsLexemeIdPairs);
 		if (meaningsShareCommonWord) {
+			boolean updateLexemesProcessStateToPublic = false;
 			for (IdPair lexemeIdPair : meaningsCommonWordsLexemeIdPairs) {
 				Long targetLexemeId = lexemeIdPair.getId1();
 				Long sourceLexemeId = lexemeIdPair.getId2();
@@ -515,6 +531,10 @@ public class CompositionService extends AbstractService {
 					createLifecycleLog(logData);
 
 					compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
+					String targetLexemeProcessStateCode = lookupDbService.getLexemeProcessStateCode(targetLexemeId);
+					if (StringUtils.equals(PROCESS_STATE_PUBLIC, targetLexemeProcessStateCode)) {
+						updateLexemesProcessStateToPublic = true;
+					}
 				} else if (isSourceLexemePrimaryType) {
 					Long targetLexemeWordId = targetLexeme.getWordId();
 					String datasetCode = targetLexeme.getDatasetCode();
@@ -523,6 +543,11 @@ public class CompositionService extends AbstractService {
 				} else {
 					cudDbService.deleteLexeme(sourceLexemeId);
 				}
+			}
+
+			if (updateLexemesProcessStateToPublic) {
+				cudDbService.updateMeaningLexemesProcessStateCode(targetMeaningId, PROCESS_STATE_PUBLIC);
+				cudDbService.updateMeaningLexemesProcessStateCode(sourceMeaningId, PROCESS_STATE_PUBLIC);
 			}
 		}
 	}

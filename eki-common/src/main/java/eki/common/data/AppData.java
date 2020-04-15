@@ -4,11 +4,21 @@ public class AppData extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private boolean testEnv;
+
 	private String appName;
 
 	private String appVersion;
 
 	private long sessionTimeoutSec;
+
+	public boolean isTestEnv() {
+		return testEnv;
+	}
+
+	public void setTestEnv(boolean testEnv) {
+		this.testEnv = testEnv;
+	}
 
 	public String getAppName() {
 		return appName;

@@ -1,7 +1,10 @@
 package eki.common.web;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Duration;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
@@ -29,9 +32,17 @@ public class AppDataHolder {
 			return appData;
 		}
 
+		boolean isTestEnv = false;
+		try {
+			String hostname = InetAddress.getLocalHost().getHostName();
+			isTestEnv = StringUtils.containsIgnoreCase(hostname, "test");
+		} catch (UnknownHostException e) {
+		}
+
 		long sessionTimeoutSec = sessionTimeout.getSeconds();
 
 		appData = new AppData();
+		appData.setTestEnv(isTestEnv);
 		appData.setAppName(appName);
 		appData.setAppVersion(appVersion);
 		appData.setSessionTimeoutSec(sessionTimeoutSec);

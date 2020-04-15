@@ -20,24 +20,34 @@ import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SimpleWord;
+import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Word;
 
 public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	protected DSLContext create;
 
-	public String getWordValue(Long wordId) {
+	public SimpleWord getSimpleWord(Long wordId) {
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
 		return create
-				.select(DSL.field("(array_agg(distinct form.value))[1]", String.class))
-				.from(WORD, PARADIGM, FORM)
+				.select(
+						w.ID.as("word_id"),
+						DSL.field("(array_agg(distinct f.value))[1]", String.class).as("word_value"),
+						w.LANG)
+				.from(w, p, f)
 				.where(
-						WORD.ID.eq(wordId)
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(WORD.ID)
-				.fetchOneInto(String.class);
+						w.ID.eq(wordId)
+								.and(p.WORD_ID.eq(w.ID))
+								.and(f.PARADIGM_ID.eq(p.ID))
+								.and(f.MODE.eq(FormMode.WORD.name())))
+				.groupBy(w.ID)
+				.fetchOneInto(SimpleWord.class);
 	}
 
 	public List<String> getWordsValues(List<Long> wordIds) {

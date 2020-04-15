@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,9 +36,7 @@ public class LangBasedWordMergerRunner extends AbstractMergerRunner {
 
 	private static final String DISPLAY_FORM_STRESS_MARK = "\"";
 
-	private static final String DISPLAY_FORM_IGNORE_1 = "[";
-
-	private static final String DISPLAY_FORM_IGNORE_2 = "]";
+	private static final List<String> DISPLAY_FORM_IGNORE_IN_COMPARISON_SYMBOL_LIST = ListUtils.unmodifiableList(Arrays.asList("[", "]", "*"));
 
 	private static final String REPORT_WORD_MERGER_INVALID_STRESS = "word_merger_invalid_stress";
 
@@ -248,6 +247,10 @@ public class LangBasedWordMergerRunner extends AbstractMergerRunner {
 				boolean sourceContainsStress = sourceDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
 				if (!targetContainsStress && sourceContainsStress) {
 					mergeService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
+				} else if (targetContainsStress && !sourceContainsStress) {
+					// do nothing
+				} else if (targetDisplayForm.length() < sourceDisplayForm.length()) {
+					mergeService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
 				}
 			}
 		}
@@ -328,11 +331,13 @@ public class LangBasedWordMergerRunner extends AbstractMergerRunner {
 
 	private boolean displayFormEquals(String targetDisplayForm, String sourceDisplayForm) {
 
-		String cleanedTargetDisplayForm = StringUtils.remove(targetDisplayForm, DISPLAY_FORM_IGNORE_1);
-		cleanedTargetDisplayForm = StringUtils.remove(cleanedTargetDisplayForm, DISPLAY_FORM_IGNORE_2);
+		String cleanedTargetDisplayForm = targetDisplayForm;
+		String cleanedSourceDisplayForm = sourceDisplayForm;
 
-		String cleanedSourceDisplayForm = StringUtils.remove(sourceDisplayForm, DISPLAY_FORM_IGNORE_1);
-		cleanedSourceDisplayForm = StringUtils.remove(cleanedSourceDisplayForm, DISPLAY_FORM_IGNORE_2);
+		for (String ignoreSymbol : DISPLAY_FORM_IGNORE_IN_COMPARISON_SYMBOL_LIST) {
+			cleanedTargetDisplayForm = StringUtils.remove(cleanedTargetDisplayForm, ignoreSymbol);
+			cleanedSourceDisplayForm = StringUtils.remove(cleanedSourceDisplayForm, ignoreSymbol);
+		}
 
 		return StringUtils.equals(cleanedTargetDisplayForm, cleanedSourceDisplayForm);
 	}
