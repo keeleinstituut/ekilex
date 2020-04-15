@@ -25,6 +25,7 @@ import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
@@ -85,9 +86,14 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 
 		if (!importMeaningData) {
-			Long wordId = cudDbService.createWordAndLexeme(wordValue, wordValue, dataset, language, morphCode, meaningId);
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue);
-			createLifecycleLog(logData);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(wordValue, wordValue, dataset, language, morphCode, meaningId);
+			Long wordId = wordLexemeMeaningId.getWordId();
+			Long lexemeId = wordLexemeMeaningId.getLexemeId();
+
+			LogData wordLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue);
+			createLifecycleLog(wordLogData);
+			LogData lexemeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, dataset);
+			createLifecycleLog(lexemeLogData);
 		}
 
 		if (createRelation) {

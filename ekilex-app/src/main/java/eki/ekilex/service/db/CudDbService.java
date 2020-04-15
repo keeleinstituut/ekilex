@@ -61,6 +61,7 @@ import eki.ekilex.data.ListData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Paradigm;
@@ -525,7 +526,10 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public Long createWordAndLexeme(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
+	public WordLexemeMeaningIdTuple createWordAndLexeme(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
+
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
+
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD, PARADIGM, FORM)
@@ -536,27 +540,39 @@ public class CudDbService extends AbstractDataDbService {
 								.and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID)))
 				.fetchOneInto(Integer.class);
+
 		int homonymNumber = 1;
 		if (currentHomonymNumber != null) {
 			homonymNumber = currentHomonymNumber + 1;
 		}
+
 		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
+
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
+
 		create
 				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.VALUE_PRESE, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS)
 				.values(paradigmId, value, value, valuePrese, FormMode.WORD.name(), morphCode, true)
 				.execute();
+
 		if (meaningId == null) {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		}
-		create
+
+		Long lexemeId = create
 				.insertInto(
 						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
 				.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
 						1, 1, PROCESS_STATE_PUBLIC, COMPLEXITY_DETAIL)
-				.execute();
-		return wordId;
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
+
+		wordLexemeMeaningId.setWordId(wordId);
+		wordLexemeMeaningId.setLexemeId(lexemeId);
+		wordLexemeMeaningId.setMeaningId(meaningId);
+		return wordLexemeMeaningId;
 	}
 
 	public Long createWordType(Long wordId, String typeCode) {
