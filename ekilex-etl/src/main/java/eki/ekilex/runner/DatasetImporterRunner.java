@@ -92,7 +92,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		return "Ekilex faililaadur";
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void execute(boolean isCreate, boolean isAppend, String importFilePath) throws Exception {
 
 		String importCode = CodeGenerator.generateUniqueId();
@@ -141,6 +141,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		logger.info("Remaining unresolved {} records", context.getUnresolvedRecordCount().getValue());
 		logger.info("Resolved {} meaning links", context.getResolvedMeaningLinkCount().getValue());
 		logger.info("Unresolved {} meaning links", context.getUnresolvedMeaningLinkCount().getValue());
+		logger.info("Ignored tables: {}", context.getIgnoredTableNames());
 
 		logger.info("Done with import");
 	}
@@ -218,8 +219,13 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMapForImport().get(tableName);
 		boolean queueExists = queueId != null;
 
-		FkReassignResult fkReassignResult = reassignFks(importCode, dataMap, tableColumnsMap);
-		if (fkReassignResult.isSuccess()) {
+		FkReassignResult fkReassignResult = reassignFks(importCode, dataMap, tableColumnsMap, context);
+		if (fkReassignResult.isIgnore()) {
+			List<String> ignoredTableNames = context.getIgnoredTableNames();
+			if (!ignoredTableNames.contains(tableName)) {
+				ignoredTableNames.add(tableName);
+			}
+		} else if (fkReassignResult.isSuccess()) {
 			Map<String, Object> reassignedDataMap = fkReassignResult.getReassignedDataMap();
 			Map<String, Object> truncDataMap = truncate(reassignedDataMap, tableColumnsMap);
 			Long targetId = null;
@@ -439,63 +445,110 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		return value;
 	}
 
-	private FkReassignResult reassignFks(String importCode, Map<String, Object> dataMap, Map<String, TableColumn> tableColumnsMap) throws Exception {
+	private FkReassignResult reassignFks(String importCode, Map<String, Object> dataMap, Map<String, TableColumn> tableColumnsMap, Context context) throws Exception {
 
-		FkReassignResult fkReassignResult = new FkReassignResult();
+		boolean isCreate = context.isCreate();
+
+		Map<String, Map<String, List<TableColumn>>> fkColumnsMap = tableColumnsMap.values().stream()
+				.filter(tableColumn -> StringUtils.isNotBlank(tableColumn.getFkTableName()))
+				.filter(tableColumn -> dataMap.get(tableColumn.getColumnName()) != null)
+				.collect(Collectors.groupingBy(TableColumn::getFkTableName, Collectors.groupingBy(TableColumn::getFkColumnName)));
+
 		Map<String, Object> reassignedDataMap = new HashMap<>(dataMap);
-		fkReassignResult.setReassignedDataMap(reassignedDataMap);
-
-		Map<String, TableColumn> fkColumnsMap = tableColumnsMap.entrySet().stream().filter(entry -> {
-			return StringUtils.isNotBlank(entry.getValue().getFkTableName());
-		}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		boolean fkReassignSuccess = false;
 		boolean missingReference = false;
+		boolean ignore = false;
+
 		if (MapUtils.isEmpty(fkColumnsMap)) {
 			fkReassignSuccess = true;
 		} else {
 			List<String> supportedTableNames = transportService.getImportTableNames();
 			Map<String, Object> tempFkMap = new HashMap<>();
-			int fksCovered = 0;
-			for (TableColumn tableFkColumn : fkColumnsMap.values()) {
-				String columnName = tableFkColumn.getColumnName();
-				String fkTableName = tableFkColumn.getFkTableName();
-				String fkColumnName = tableFkColumn.getFkColumnName();
-				Object columnValue = dataMap.get(columnName);
-				if (columnValue == null) {
-					fksCovered++;
-					continue;
-				}
-				Object mappedPkValue = null;
-				if (!supportedTableNames.contains(fkTableName)) {
-					mappedPkValue = columnValue;
-				} else if (StringUtils.equalsIgnoreCase(DATASET, fkTableName)) {
-					mappedPkValue = columnValue;
-				} else {
-					List<Object> pkMapping = getPkMapping(importCode, fkTableName, columnValue);
-					if (CollectionUtils.isEmpty(pkMapping)) {
-						boolean recordExists = recordExists(fkTableName, fkColumnName, columnValue);
-						if (recordExists) {
-							mappedPkValue = columnValue;
+			for (Entry<String, Map<String, List<TableColumn>>> fkCompositeMapEntry : fkColumnsMap.entrySet()) {
+				String fkTableName = fkCompositeMapEntry.getKey();
+				Map<String, List<TableColumn>> fkCompositeMap = fkCompositeMapEntry.getValue();
+				if (fkCompositeMap.size() == 1) {
+					//single
+					List<TableColumn> singleFkColumns = fkCompositeMap.values().iterator().next();
+					for (TableColumn tableFkColumn : singleFkColumns) {
+						String fkColumnName = tableFkColumn.getFkColumnName();
+						boolean isNotNullable = !tableFkColumn.isNullable();
+						String columnName = tableFkColumn.getColumnName();
+						Object columnValue = dataMap.get(columnName);
+						if (!isNotNullable && (columnValue == null)) {
+							String tableName = tableFkColumn.getTableName();
+							throw new DataLoadingException("Not nullable field is empty: " + tableName + "." + columnName);
+						}
+						if (!supportedTableNames.contains(fkTableName)) {
+							boolean recordExists = recordExists(fkTableName, fkColumnName, columnValue);
+							if (recordExists) {
+								tempFkMap.put(columnName, columnValue);
+							} else if (isNotNullable) {
+								throw new DataLoadingException("Missing not nullable reference: " + fkTableName + "." + fkColumnName + "=" + columnValue);
+								//set ignore instead if want to skip unavailable dependencies
+								//ignore = true;
+							} else {
+								ignore = true;
+							}
+						} else if (StringUtils.equalsIgnoreCase(DATASET, fkTableName)) {
+							tempFkMap.put(columnName, columnValue);
 						} else {
-							missingReference = true;
-							break;
+							List<Object> pkMapping = getPkMapping(importCode, fkTableName, columnValue);
+							if (CollectionUtils.isEmpty(pkMapping)) {
+								if (isCreate) {
+									missingReference = true;
+								} else {
+									boolean recordExists = recordExists(fkTableName, fkColumnName, columnValue);
+									if (recordExists) {
+										tempFkMap.put(columnName, columnValue);
+									} else {
+										missingReference = true;
+									}
+								}
+							} else {
+								tempFkMap.put(columnName, pkMapping.get(0));
+							}
+						}
+					}
+				} else {
+					//composite
+					List<TableColumn> compositeFkColumns = new ArrayList<>();
+					fkCompositeMap.values().forEach(fkTableColumns -> compositeFkColumns.addAll(fkTableColumns));
+					boolean recordExists = recordExists(compositeFkColumns, dataMap);
+					boolean isNotNullable = compositeFkColumns.stream().anyMatch(tableColumn -> !tableColumn.isNullable());
+					if (!supportedTableNames.contains(fkTableName)) {
+						if (recordExists) {
+							for (TableColumn tableFkColumn : compositeFkColumns) {
+								String columnName = tableFkColumn.getColumnName();
+								Object columnValue = dataMap.get(columnName);
+								tempFkMap.put(columnName, columnValue);
+							}
+						} else if (isNotNullable) {
+							List<String> fkColumnValues = compositeFkColumns.stream().map(tableFkColumn -> {
+								String fkColumnName = tableFkColumn.getFkColumnName();
+								String columnName = tableFkColumn.getColumnName();
+								Object columnValue = dataMap.get(columnName);
+								return fkColumnName + "=" + columnValue;
+							}).collect(Collectors.toList());
+							throw new DataLoadingException("Missing not nullable reference: " + fkTableName + "." + fkColumnValues);
+						} else {
+							ignore = true;
 						}
 					} else {
-						mappedPkValue = pkMapping.get(0);
+						throw new DataLoadingException("Unable to handle composite fk mapping");
 					}
 				}
-				if (mappedPkValue != null) {
-					tempFkMap.put(columnName, mappedPkValue);
-					fksCovered++;
-				}
 			}
-			fkReassignSuccess = fksCovered == fkColumnsMap.size();
+			fkReassignSuccess = !missingReference && !ignore;
 			if (fkReassignSuccess) {
 				tempFkMap.forEach((columnName, columnValue) -> reassignedDataMap.put(columnName, columnValue));
 			}
 		}
+		FkReassignResult fkReassignResult = new FkReassignResult();
 		fkReassignResult.setSuccess(fkReassignSuccess);
 		fkReassignResult.setMissingReference(missingReference);
+		fkReassignResult.setIgnore(ignore);
+		fkReassignResult.setReassignedDataMap(reassignedDataMap);
 		return fkReassignResult;
 	}
 
@@ -543,6 +596,20 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 			}
 		}
 		return dataMapCopy;
+	}
+
+	private boolean recordExists(List<TableColumn> tableFkColumns, Map<String, Object> dataMap) throws Exception {
+		TableColumn tableFirstFkColumn = tableFkColumns.get(0);
+		String fkTableName = tableFirstFkColumn.getFkTableName();
+		Map<String, Object> fkRecordParamMap = new HashMap<>();
+		for (TableColumn tableFkColumn : tableFkColumns) {
+			String columnName = tableFkColumn.getColumnName();
+			String fkColumnName = tableFkColumn.getFkColumnName();
+			Object columnValue = dataMap.get(columnName);
+			fkRecordParamMap.put(fkColumnName, columnValue);
+		}
+		Map<String, Object> result = basicDbService.select(fkTableName, fkRecordParamMap);
+		return MapUtils.isNotEmpty(result);
 	}
 
 	private boolean recordExists(String tableName, String idFieldName, Object id) throws Exception {
@@ -889,6 +956,8 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 		private boolean missingReference;
 
+		private boolean ignore;
+
 		private Map<String, Object> reassignedDataMap;
 
 		public boolean isSuccess() {
@@ -905,6 +974,14 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 		public void setMissingReference(boolean missingReference) {
 			this.missingReference = missingReference;
+		}
+
+		public boolean isIgnore() {
+			return ignore;
+		}
+
+		public void setIgnore(boolean ignore) {
+			this.ignore = ignore;
 		}
 
 		public Map<String, Object> getReassignedDataMap() {
@@ -938,6 +1015,8 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 		private String recentQueueSignature;
 
+		private List<String> ignoredTableNames;
+
 		public Context(boolean create, boolean append, String importCode) {
 			this.create = create;
 			this.append = append;
@@ -948,6 +1027,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 			this.resolvedMeaningLinkCount = new Count();
 			this.unresolvedMeaningLinkCount = new Count();
 			this.recentQueueSignature = null;
+			this.ignoredTableNames = new ArrayList<>();
 		}
 
 		public boolean isCreate() {
@@ -988,6 +1068,10 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 		public String getRecentQueueSignature() {
 			return recentQueueSignature;
+		}
+
+		public List<String> getIgnoredTableNames() {
+			return ignoredTableNames;
 		}
 	}
 
