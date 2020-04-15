@@ -31,6 +31,7 @@
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div th:replace="syndialog :: add_word_process_log_dlg"></div>
       <div class="navigate-panel card shadow h-100">
+
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
             <h1 th:utext="${viewUtil.getWordValueMarkup(details)}" class="mr-3 mb-0">Aktiivne sõna</h1>
@@ -48,7 +49,7 @@
             </button>
             <div th:replace="syncomp :: syn_logdata"></div>
           </div>
-          <div class="row no-gutters h-100">
+          <div class="row no-gutters h-100 overflow-hidden">
             <div class="col-8 overflow-auto h-100 keyboard-nav-list lexeme-list" data-panel-index="2" th:attrappend="data-marked-word-id=${markedSynWordId != null}?${markedSynWordId}">
               <div class="px-3 droppable-lexeme border-bottom border-light lexeme-list-item"
                    th:each="lexeme, lexemeIter : ${details.lexemes}"
