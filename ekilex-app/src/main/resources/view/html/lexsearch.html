@@ -16,14 +16,14 @@
 </head>
 <body class="body-with-navbar compacted d-flex flex-column">
   <th:block th:replace="common :: nav_bar(activeItem = 'lex')"></th:block>
-  <div class="card shadow rounded-0 mt-n3 border-0">
+  <div class="card shadow rounded-0 border-0">
     <div class="card-body px-2 py-3">
       <form id="searchForm" th:action="@{/lexsearch}" method="post">
         <th:block th:replace="search :: search_form('lex_search', true)"></th:block>
       </form>
     </div>
   </div>
-  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100">
+  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-auto">
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>
     </div>

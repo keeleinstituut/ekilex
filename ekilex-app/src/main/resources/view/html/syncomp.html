@@ -75,7 +75,7 @@
     <p th:unless="${not #lists.isEmpty(details.relations)}" class="text-secondary font-italic p-3">Vastete kandidaadid puuduvad valitud keeltes</p>
   </div>
 
-  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100" th:fragment="syn_word_result_list">
+  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-hidden" th:fragment="syn_word_result_list">
     <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{common.not.found}">Not found.</div>
     </div>

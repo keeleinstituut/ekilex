@@ -12772,7 +12772,7 @@ input:checked + .slider:before {
 
 .body-with-navbar {
   height: 100vh;
-  padding-top: 4rem;
+  padding-top: 3rem;
 }
 
 .body-with-navbar hr {
