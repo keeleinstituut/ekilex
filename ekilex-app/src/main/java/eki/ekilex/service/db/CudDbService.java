@@ -337,6 +337,17 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateAsWordValue(Long wordId, String valueAsWord) {
+		create.update(FORM)
+				.set(FORM.VALUE, valueAsWord)
+				.set(FORM.VALUE_PRESE, valueAsWord)
+				.from(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.AS_WORD.name())))
+				.execute();
+	}
+
 	public void updateWordVocalForm(Long wordId, String vocalForm) {
 		create.update(FORM)
 				.set(FORM.VOCAL_FORM, vocalForm)

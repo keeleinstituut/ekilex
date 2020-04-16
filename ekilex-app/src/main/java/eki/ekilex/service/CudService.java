@@ -24,6 +24,7 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.LogData;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -63,8 +64,14 @@ public class CudService extends AbstractService {
 	public void updateWordValue(Long wordId, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
 		createLifecycleLog(logData);
+		SimpleWord simpleWord = cudDbService.getSimpleWord(wordId);
+		String lang = simpleWord.getLang();
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String valueAsWord = textDecorationService.removeAccents(value, lang);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
+		if (StringUtils.isNotEmpty(valueAsWord)) {
+			cudDbService.updateAsWordValue(wordId, valueAsWord);
+		}
 	}
 
 	@Transactional
