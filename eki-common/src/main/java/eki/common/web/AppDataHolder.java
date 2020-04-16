@@ -1,7 +1,5 @@
 package eki.common.web;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.time.Duration;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +12,9 @@ import eki.common.data.AppData;
 @ConditionalOnWebApplication
 @Component
 public class AppDataHolder {
+
+	@Value("${info.env.name:#{null}}")
+	private String envName;
 
 	@Value("${info.app.name}")
 	private String appName;
@@ -32,17 +33,13 @@ public class AppDataHolder {
 			return appData;
 		}
 
-		boolean isTestEnv = false;
-		try {
-			String hostname = InetAddress.getLocalHost().getHostName();
-			isTestEnv = StringUtils.containsIgnoreCase(hostname, "test");
-		} catch (UnknownHostException e) {
-		}
-
 		long sessionTimeoutSec = sessionTimeout.getSeconds();
 
+		boolean isDevEnv = StringUtils.isNotEmpty(envName);
+
 		appData = new AppData();
-		appData.setTestEnv(isTestEnv);
+		appData.setDevEnv(isDevEnv);
+		appData.setEnvName(envName);
 		appData.setAppName(appName);
 		appData.setAppVersion(appVersion);
 		appData.setSessionTimeoutSec(sessionTimeoutSec);

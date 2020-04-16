@@ -4,7 +4,9 @@ public class AppData extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private boolean testEnv;
+	private boolean devEnv;
+
+	private String envName;
 
 	private String appName;
 
@@ -12,12 +14,20 @@ public class AppData extends AbstractDataObject {
 
 	private long sessionTimeoutSec;
 
-	public boolean isTestEnv() {
-		return testEnv;
+	public boolean isDevEnv() {
+		return devEnv;
 	}
 
-	public void setTestEnv(boolean testEnv) {
-		this.testEnv = testEnv;
+	public void setDevEnv(boolean devEnv) {
+		this.devEnv = devEnv;
+	}
+
+	public String getEnvName() {
+		return envName;
+	}
+
+	public void setEnvName(String envName) {
+		this.envName = envName;
 	}
 
 	public String getAppName() {

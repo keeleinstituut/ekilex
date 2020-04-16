@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toMap;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.Normalizer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,9 +89,6 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 	protected static final String DEFAULT_PROCESS_STATE_CODE = "avalik";
 
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
-
-	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
-	private static final String[] DISCLOSED_DIACRITIC_LANGS = new String[] {"rus"};
 
 	protected static final String EXT_SOURCE_ID_NA = "n/a";
 	protected static final String EKI_CLASSIFIER_STAATUS = "staatus";
@@ -203,41 +199,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 	}
 
 	protected String removeAccents(String value, String lang) {
-		if (StringUtils.isBlank(value)) {
-			return null;
-		}
-		if (ArrayUtils.contains(DISCLOSED_DIACRITIC_LANGS, lang)) {
-			return null;
-		}
-		boolean isAlreadyClean = Normalizer.isNormalized(value, Normalizer.Form.NFD);
-		if (isAlreadyClean) {
-			return null;
-		}
-		StringBuffer cleanValueBuf = new StringBuffer();
-		char[] chars = value.toCharArray();
-		String decomposedChars;
-		String charAsStr;
-		char primaryChar;
-		for (char c : chars) {
-			boolean isReservedChar = ArrayUtils.contains(RESERVED_DIACRITIC_CHARS, c);
-			if (isReservedChar) {
-				cleanValueBuf.append(c);
-			} else {
-				charAsStr = Character.toString(c);
-				decomposedChars = Normalizer.normalize(charAsStr, Normalizer.Form.NFD);
-				if (decomposedChars.length() > 1) {
-					primaryChar = decomposedChars.charAt(0);
-					cleanValueBuf.append(primaryChar);
-				} else {
-					cleanValueBuf.append(c);
-				}
-			}
-		}
-		String cleanValue = cleanValueBuf.toString();
-		if (StringUtils.equals(value, cleanValue)) {
-			return null;
-		}
-		return cleanValue;
+		return textDecorationService.removeAccents(value, lang);
 	}
 
 	private void deleteFloatingData() throws Exception {

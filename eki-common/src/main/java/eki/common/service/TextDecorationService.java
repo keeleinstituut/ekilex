@@ -1,10 +1,12 @@
 package eki.common.service;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -39,6 +41,10 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 	private static final int REPLACE_MARKUP = 1;
 
 	private static final int SURROUND_CHAR_BY_MARKUP = 2;
+
+	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
+
+	private static final String[] DISCLOSED_DIACRITIC_LANGS = new String[] {"rus"};
 
 	private List<TextDecorationDescriptor> allEkiMarkupDescriptors;
 
@@ -210,6 +216,44 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		Pattern pattern = Pattern.compile("<eki-[^>]*>.*?</eki-[^>]*>");
 		Matcher matcher = pattern.matcher(text);
 		return matcher.find();
+	}
+
+	public String removeAccents(String value, String lang) {
+		if (StringUtils.isBlank(value)) {
+			return null;
+		}
+		if (ArrayUtils.contains(DISCLOSED_DIACRITIC_LANGS, lang)) {
+			return null;
+		}
+		boolean isAlreadyClean = Normalizer.isNormalized(value, Normalizer.Form.NFD);
+		if (isAlreadyClean) {
+			return null;
+		}
+		StringBuffer cleanValueBuf = new StringBuffer();
+		char[] chars = value.toCharArray();
+		String decomposedChars;
+		String charAsStr;
+		char primaryChar;
+		for (char c : chars) {
+			boolean isReservedChar = ArrayUtils.contains(RESERVED_DIACRITIC_CHARS, c);
+			if (isReservedChar) {
+				cleanValueBuf.append(c);
+			} else {
+				charAsStr = Character.toString(c);
+				decomposedChars = Normalizer.normalize(charAsStr, Normalizer.Form.NFD);
+				if (decomposedChars.length() > 1) {
+					primaryChar = decomposedChars.charAt(0);
+					cleanValueBuf.append(primaryChar);
+				} else {
+					cleanValueBuf.append(c);
+				}
+			}
+		}
+		String cleanValue = cleanValueBuf.toString();
+		if (StringUtils.equals(value, cleanValue)) {
+			return null;
+		}
+		return cleanValue;
 	}
 
 	private String replaceByPattern(Pattern pattern, String text, String preDecoration, String postDecoration) {

@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -525,7 +526,7 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public Long createWordAndLexeme(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
+	public Long createWordAndLexeme(String value, String valuePrese, String valueAsWord, String language, String morphCode, String datasetCode, Long meaningId) {
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD, PARADIGM, FORM)
@@ -543,9 +544,15 @@ public class CudDbService extends AbstractDataDbService {
 		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 		create
-				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.VALUE_PRESE, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS)
-				.values(paradigmId, value, value, valuePrese, FormMode.WORD.name(), morphCode, true)
+				.insertInto(FORM, FORM.PARADIGM_ID, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS, FORM.VALUE, FORM.VALUE_PRESE, FORM.DISPLAY_FORM)
+				.values(paradigmId, FormMode.WORD.name(), morphCode, true, value, valuePrese, value)
 				.execute();
+		if (StringUtils.isNotBlank(valueAsWord)) {
+			create
+					.insertInto(FORM, FORM.PARADIGM_ID, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS, FORM.VALUE, FORM.VALUE_PRESE)
+					.values(paradigmId, FormMode.AS_WORD.name(), morphCode, true, valueAsWord, valueAsWord)
+					.execute();
+		}
 		if (meaningId == null) {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		}

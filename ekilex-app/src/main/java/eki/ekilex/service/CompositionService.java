@@ -85,7 +85,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 
 		if (!importMeaningData) {
-			Long wordId = cudDbService.createWordAndLexeme(wordValue, wordValue, dataset, language, morphCode, meaningId);
+			Long wordId = cudDbService.createWordAndLexeme(wordValue, wordValue, null, language, morphCode, dataset, meaningId);
 			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue);
 			createLifecycleLog(logData);
 		}
