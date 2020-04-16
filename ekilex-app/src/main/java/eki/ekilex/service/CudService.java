@@ -408,11 +408,18 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createWord(Long meaningId, String valuePrese, String language, String morphCode, String datasetCode) {
+
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
-		Long wordId = cudDbService.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, meaningId);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
-		createLifecycleLog(logData);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, meaningId);
+
+		Long wordId = wordLexemeMeaningId.getWordId();
+		Long lexemeId = wordLexemeMeaningId.getLexemeId();
+
+		LogData wordLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
+		createLifecycleLog(wordLogData);
+		LogData lexemeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
+		createLifecycleLog(lexemeLogData);
 	}
 
 	@Transactional
@@ -712,7 +719,9 @@ public class CudService extends AbstractService {
 	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode, String weightStr) {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
-		Long createdWordId = cudDbService.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, null);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, null);
+		Long createdWordId = wordLexemeMeaningId.getWordId();
+
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
 		createLifecycleLog(logData);
 

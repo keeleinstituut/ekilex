@@ -16,7 +16,7 @@
 </head>
 <body class="body-with-navbar compacted">
   <th:block th:replace="common :: nav_bar(activeItem = 'term')"></th:block>
-  <div class="card shadow rounded-0 mt-n3 border-0">
+  <div class="card shadow rounded-0 border-0">
     <div class="card-body px-2 py-3">
       <form id="searchForm" th:action="@{/termsearch}" method="post">
         <th:block th:replace="search :: search_form('term_search', true)"></th:block>
