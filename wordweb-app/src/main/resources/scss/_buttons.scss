@@ -1,0 +1,15 @@
+.btn-icon{
+  @include button-variant(transparent, transparent, $hover-background: $gray-010, $hover-border: $gray-010, $active-background: $gray-100, $active-border: $gray-100);
+  color: $gray-300;
+  @include box-shadow(none);
+}
+
+/* stylelint-disable */
+.btn-group-toggle > .btn input[type="radio"],
+.btn-group-toggle > .btn input[type="checkbox"],
+.btn-group-toggle > .btn-group > .btn input[type="radio"],
+.btn-group-toggle > .btn-group > .btn input[type="checkbox"] {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}

@@ -1,0 +1,17 @@
+.logo{
+  display: block;
+  background: url("../images/sonaveeb-dt-logo.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.logo-big{
+  width: 270px;
+  height: 93px;
+  margin: 0 auto;
+
+  @include media-breakpoint-up(md) {
+    width: 372px;
+    height: 93px;
+    margin-bottom: 55px;
+  }
+}

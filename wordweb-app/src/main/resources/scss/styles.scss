@@ -4,6 +4,7 @@
 //Import Bootstrap
 @import "bootstrap-import";
 
+@import "font-imports";
 
 //Import custom styles
 @import "homonym";
@@ -17,4 +18,15 @@
 @import "content-title";
 @import "meaning-panel";
 @import "recommended-usage-label";
-
+@import "general-layout";
+@import "pages/pages";
+@import "header";
+@import "header-menu";
+@import "header-btns";
+@import "custom-icons";
+@import "random-styles";
+@import "alert";
+@import "logo";
+@import "footer";
+@import "main-search";
+@import "buttons";

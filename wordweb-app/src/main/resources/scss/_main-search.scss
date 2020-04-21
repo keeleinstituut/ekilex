@@ -1,0 +1,36 @@
+.main-search-input{
+  height: 64px;
+  padding: 1.125rem 9.5rem 1.125rem 1.15625rem;
+  border-color: $gray-100;
+  @include border-radius(30px);
+  @include box-shadow(0 4px 8px rgba(0,0,0,.25));
+}
+
+.main-search-btns {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+}
+
+.speak-btn{
+  font-size: 28px;
+}
+
+.search-btn{
+  right: .3125rem;
+  margin-left: 16px;
+  font-size: 20px;
+  @include border-radius(20px);
+  @include box-shadow(0 .125rem .625rem rgba(0, 17, 36, .3));
+}
+
+.clear-btn,
+.speak-btn,
+.search-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  @include border-radius(62.4375rem);
+}
+

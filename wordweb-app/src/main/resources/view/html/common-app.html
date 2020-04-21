@@ -30,9 +30,9 @@
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
     <link rel="stylesheet" th:href="@{/view/css/jquery-ui.min.css}" />
-    <link rel="stylesheet" th:href="@{/view/css/bootstrap-wordweb.css}" />
+   <!-- <link rel="stylesheet" th:href="@{/view/css/bootstrap-wordweb.css}" />
     <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
-    <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />-->
     <link rel="stylesheet" th:href="@{/view/css/font-import.css}" />
     <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
     <link rel="stylesheet" th:href="@{/view/css/eki-markup.css}" />
@@ -60,6 +60,17 @@
           <a class="eki-logo-wrapper" th:aria-label="|portaal.eki.ee #{aria.new.window}|" href="http://portaal.eki.ee/" target="_blank">
             <span class="eki-logo mini-logo"></span>
           </a>
+          <div class="dropdown lang-btn">
+            <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span th:text="#{menu.current.lang}"></span>
+              <span class="icon icon-chevron-left"></span>
+            </a>
+            <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
+              <a role="link" class="dropdown-item" href="?lang=et">EST</a>
+              <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
+              <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
+            </div>
+          </div>
           <button role="button" aria-expanded="false" data-toggle="collapse" data-target="#headerLinks" class="btn menu-btn">
             <span class="icon icon-menu"></span>
           </button>
@@ -84,6 +95,17 @@
           <div class="back mt-2">
             <span class="icon icon-back"></span>
           </div>
+          <div class="dropdown lang-btn">
+            <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span th:text="#{menu.current.lang}"></span>
+              <span class="icon icon-chevron-left"></span>
+            </a>
+            <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
+              <a role="link" class="dropdown-item" href="?lang=et">EST</a>
+              <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
+              <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
+            </div>
+          </div>
           <button role="button" aria-expanded="false" data-toggle="collapse" data-target="#headerLinks" class="btn menu-btn">
             <span class="icon icon-menu"></span>
           </button>
@@ -94,45 +116,37 @@
     <th:block th:replace=":: feedback-form"></th:block>
   </th:block>
   <th:block th:fragment="menu-links">
-    <div id="headerLinks">
-      <div class="header-links" role="navbar">
-        <div class="dropdown lang-btn">
-          <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span th:text="#{menu.current.lang}"></span>
-            <span class="icon icon-chevron-left"></span>
-          </a>
-          <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
-            <a role="link" class="dropdown-item" href="?lang=et">EST</a>
-            <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
-            <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
-          </div>
+    <div id="headerLinks" class="navbar navbar-dark">
+      <div class="header-links navbar-nav" role="navbar">
+        <div class="d-flex mb-4">
+          <button class="btn menu-btn px-0 ml-auto text-white" data-toggle="collapse" data-target="#headerLinks">
+            <span th:text="#{menu.close}">Sulge</span>
+            <span class="fas fa-times"></span>
+          </button>
         </div>
-        <button class="btn menu-btn float-right clear-both" data-toggle="collapse" data-target="#headerLinks">
-          <span th:text="#{menu.close}">Sulge</span>
-          <span class="icon icon-close"></span>
-        </button>
-        <a th:href="@{/}" class="menu-item" data-item-name="search-unif">
+
+        <a th:href="@{/}" class="nav-link menu-item" data-item-name="search-unif">
           <span th:text="#{menu.search.unif}">Otsing</span>
         </a>
-        <a th:href="@{/lite}" class="menu-item" data-item-name="search-lite">
+        <a th:href="@{/lite}" class="nav-link menu-item" data-item-name="search-lite">
           <span th:text="#{menu.search.lite}">Lihtne otsing</span>
         </a>
-        <a th:href="@{/about}" class="menu-item" data-item-name="about">
+        <a th:href="@{/about}" class="nav-link menu-item" data-item-name="about">
           <span th:text="#{menu.about}">Portaalist</span>
         </a>
-        <a th:href="@{/teacher-tools}" class="menu-item" data-item-name="ttools">
+        <a th:href="@{/teacher-tools}" class="nav-link menu-item" data-item-name="ttools">
           <span th:text="#{menu.ttools}">Õpetaja tööriistad</span>
         </a>
-        <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
+        <a th:href="@{/learn}" class="nav-link menu-item" data-item-name="learn">
           <span th:text="#{menu.learn}">Õpi eesti keelt</span>
         </a>
-        <a aria-hidden="true" th:href="@{/games}" class="menu-item" data-item-name="games">
+        <a aria-hidden="true" th:href="@{/games}" class="nav-link menu-item" data-item-name="games">
           <span th:text="#{menu.games}">Keelemängud</span>
         </a>
-        <a th:href="@{/contacts}" class="menu-item" data-item-name="contacts">
+        <a th:href="@{/contacts}" class="nav-link menu-item" data-item-name="contacts">
           <span th:text="#{menu.contacts}">Kontakt</span>
         </a>
-        <a th:href="@{/#}" role="button" data-toggle="modal" data-target="#feedbackModal" class="menu-item" data-item-name="feedback">
+        <a th:href="@{/#}" role="button" data-toggle="modal" data-target="#feedbackModal" class="nav-link menu-item" data-item-name="feedback">
           <span th:text="#{menu.feedback}">Tagasiside</span>
         </a>
         <a class="menu-item" href="#">
@@ -248,7 +262,7 @@
   </th:block>
   <!-- Footer -->
   <th:block th:fragment="footer-content">
-    <footer role="contentinfo" class="footer">
+    <footer role="contentinfo" class="footer mt-auto">
       <div class="container footer-wrapper">
         <div class="row">
           <div class="col-12 col-sm-6 col-md-4">

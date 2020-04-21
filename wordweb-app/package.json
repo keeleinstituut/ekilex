@@ -20,6 +20,7 @@
     "css-compile": "node-sass --output-style expanded --source-map true --source-map-contents true --precision 6 src/main/resources/scss/styles.scss src/main/resources/view/css/styles.css",
     "css-lint-stylelint": "stylelint \"src/main/resources/scss/*.scss\" --cache --cache-location .cache/.stylelintcache",
     "css-prefix": "postcss --config build/postcss.config.js --replace \"src/main/resources/view/css/*.css\"",
+    "fix-scss": "stylelint \"src/main/resources/scss/**/*.scss\" --fix ",
     "watch": "npm-run-all --parallel watch-css watch-html watch-js",
     "watch-css": "nodemon --watch src/main/resources/scss/ --ext scss --exec \"npm run css\"",
     "watch-html": "nodemon --watch src/main/resources/view/html/ --ext html --exec \"npm run clean-and-copy-html\"",
@@ -27,7 +28,9 @@
   },
   "author": "TripleDev OÜ",
   "license": "",
-  "dependencies": {},
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0"
+  },
   "devDependencies": {
     "autoprefixer": "^9.7.4",
     "bootstrap": "^4.4.1",

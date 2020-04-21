@@ -1,0 +1,22 @@
+/* stylelint-disable */
+
+.header-container {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.header-container.show-header {
+  z-index: 999;
+}
+
+.header-wrap {
+  height: 4.375rem;
+}
+
+.header-container .eki-logo {
+  width: calc(16.875rem / 2.5);
+  height: calc(6.25rem / 2.5);
+  margin: 1rem auto 0;
+  background-size: calc(16.875rem / 2.5) calc(6.25rem / 2.5);
+}

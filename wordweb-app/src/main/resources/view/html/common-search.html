@@ -6,23 +6,24 @@
     <div class="search-main">
       <form th:action="@{${searchUri}}" th:method="post" name="searchForm">
         <div>
-          <input type="text" id="search" role="search" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
+          <input type="text" id="search" role="search" class="main-search-input form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
           <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
           <input type="hidden" name="datasetCodesStr" th:value="${datasetCodesStr}" />
           <input type="hidden" name="selectedWordHomonymNr"/>
         </div>
-        <div class="extra-buttons">
-          <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">
-            <span class="icon icon-close"></span>
+        <div class="main-search-btns">
+          <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="btn btn-icon clear-btn" style="display: none;">
+            <span class="fas fa-times"></span>
           </button>
-          <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:title="#{button.label.start.rec}">
-            <span class="icon icon-mic"></span>
+          <button type="button" id="start-rec-btn" class="btn btn-icon speak-btn" th:title="#{button.label.start.rec}">
+            <span class="fas fa-microphone"></span>
           </button>
-          <button type="button" th:aria-label="#{aria.search.stoprecord}" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
-        </div>
-        <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="btn btn-green search-btn">
-          <span class="icon icon-search"></span>
+          <button type="button" th:aria-label="#{aria.search.stoprecord}" id="stop-rec-btn" class="btn btn-icon" hidden th:text="#{button.label.stop.rec}">Finish</button>
+
+        <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="btn btn-success search-btn">
+          <span class="fas fa-search"></span>
         </button>
+        </div>
       </form>
     </div>
   </th:block>
