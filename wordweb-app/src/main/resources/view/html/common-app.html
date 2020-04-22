@@ -33,7 +33,6 @@
    <!-- <link rel="stylesheet" th:href="@{/view/css/bootstrap-wordweb.css}" />
     <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
     <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />-->
-    <link rel="stylesheet" th:href="@{/view/css/font-import.css}" />
     <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
     <link rel="stylesheet" th:href="@{/view/css/eki-markup.css}" />
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
@@ -53,28 +52,10 @@
     <div class="container-fluid header-container">
       <div class="row header-wrap">
         <div class="col-12">
-          <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo">
-            <span class="icon icon-logo-s d-md-none"></span>
-            <span class="icon icon-logo d-none d-md-block"></span>
+          <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header">
+            <span class="sr-only">Sõnaveebi logo</span>
           </a>
-          <a class="eki-logo-wrapper" th:aria-label="|portaal.eki.ee #{aria.new.window}|" href="http://portaal.eki.ee/" target="_blank">
-            <span class="eki-logo mini-logo"></span>
-          </a>
-          <div class="dropdown lang-btn">
-            <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span th:text="#{menu.current.lang}"></span>
-              <span class="icon icon-chevron-left"></span>
-            </a>
-            <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
-              <a role="link" class="dropdown-item" href="?lang=et">EST</a>
-              <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
-              <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
-            </div>
-          </div>
-          <button role="button" aria-expanded="false" data-toggle="collapse" data-target="#headerLinks" class="btn menu-btn">
-            <span class="icon icon-menu"></span>
-          </button>
-          <div th:replace=":: menu-links"></div>
+          <div th:replace=":: lang-and-menu-btn"></div>
         </div>
       </div>
     </div>
@@ -84,39 +65,48 @@
     <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="container-fluid header-container">
       <div class="row header-wrap">
-        <div class="col-12">
-          <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo">
-            <span class="icon icon-logo-s d-md-none"></span>
-            <span class="icon icon-logo d-none d-md-block"></span>
-          </a>
-          <a class="eki-logo-wrapper" th:aria-label="|portaal.eki.ee #{aria.new.window}|" href="http://portaal.eki.ee/" target="_blank">
-            <span class="eki-logo mini-logo"></span>
-          </a>
-          <div class="back mt-2">
-            <span class="icon icon-back"></span>
-          </div>
-          <div class="dropdown lang-btn">
-            <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span th:text="#{menu.current.lang}"></span>
-              <span class="icon icon-chevron-left"></span>
+        <div class="col-12 d-flex align-items-center px-0">
+          <div class="mr-auto">
+            <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header">
+              <span class="sr-only">Sõnaveebi logo</span>
             </a>
-            <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
-              <a role="link" class="dropdown-item" href="?lang=et">EST</a>
-              <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
-              <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
+            <div class="back mt-2">
+              <span class="icon icon-back"></span>
             </div>
           </div>
-          <button role="button" aria-expanded="false" data-toggle="collapse" data-target="#headerLinks" class="btn menu-btn">
-            <span class="icon icon-menu"></span>
-          </button>
-          <div th:replace=":: menu-links"></div>
+          <div class="search-panel w-100">
+            <div class="align-self-center" id="language-detail-panel">
+              <div th:replace="common-search :: search(pageContext = 'search')"></div>
+            </div>
+          </div>
+          <div th:replace=":: lang-and-menu-btn"></div>
+
         </div>
       </div>
     </div>
     <th:block th:replace=":: feedback-form"></th:block>
   </th:block>
+  <th:block th:fragment="lang-and-menu-btn">
+    <div class="ml-auto d-flex flex-row align-items-center">
+      <div class="dropdown lang-btn">
+        <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span th:text="#{menu.current.lang}"></span>
+        </a>
+        <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
+          <a role="link" class="dropdown-item" href="?lang=et">EST</a>
+          <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
+          <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
+        </div>
+      </div>
+      <button class="btn menu-btn btn-link align-items-center text-uppercase d-flex position-relative " th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
+        <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
+        <span class="icon icon-menu p-0 ml-2"></span>
+      </button>
+      <div th:replace=":: menu-links"></div>
+    </div>
+  </th:block>
   <th:block th:fragment="menu-links">
-    <div id="headerLinks" class="navbar navbar-dark">
+    <div id="headerLinks" class="navbar navbar-dark collapse">
       <div class="header-links navbar-nav" role="navbar">
         <div class="d-flex mb-4">
           <button class="btn menu-btn px-0 ml-auto text-white" data-toggle="collapse" data-target="#headerLinks">
@@ -128,8 +118,9 @@
         <a th:href="@{/}" class="nav-link menu-item" data-item-name="search-unif">
           <span th:text="#{menu.search.unif}">Otsing</span>
         </a>
-        <a th:href="@{/lite}" class="nav-link menu-item" data-item-name="search-lite">
-          <span th:text="#{menu.search.lite}">Lihtne otsing</span>
+        <a th:href="@{/lite}" target="_blank" class="nav-link menu-item" data-item-name="search-lite">
+          <span th:text="#{menu.search.lite}">Keeleõppija sõnaveeb</span>
+          <i class="fas fa-external-link-alt" aria-hidden="true"></i>
         </a>
         <a th:href="@{/about}" class="nav-link menu-item" data-item-name="about">
           <span th:text="#{menu.about}">Portaalist</span>

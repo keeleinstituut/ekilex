@@ -11,24 +11,7 @@
   <th:block th:replace="common-app :: wcag-search"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div class="header-container d-flex">
-    <div class="ml-auto d-flex flex-row">
-      <div class="dropdown lang-btn">
-        <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span th:text="#{menu.current.lang}"></span>
-        </a>
-        <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
-          <a role="link" class="dropdown-item" href="?lang=et">EST</a>
-          <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
-          <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
-        </div>
-      </div>
-      <button class="btn menu-btn btn-link align-items-center text-uppercase d-flex position-static " th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
-        <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
-        <span class="icon icon-menu p-0 ml-2"></span>
-      </button>
-    </div>
-
-    <div th:replace="common-app :: menu-links"></div>
+    <div th:replace="common-app :: lang-and-menu-btn"></div>
   </div>
 
   <div class="container-fluid home-page-content">
@@ -49,8 +32,14 @@
             <div th:replace="common-search :: search"></div>
           </div>
         </div>
+        <div class="text-center mt-5">
+          <a th:href="@{/lite}" target="_blank" class="link simple-search-brand-link" data-item-name="search-lite">
+            <span th:text="#{menu.search.lite}">Keeleõppija sõnaveeb</span>
+            <i class="fas fa-external-link-alt ml-2" aria-hidden="true"></i>
+          </a>
+        </div>
         <div class="logo-wrapper">
-          <ul class="logo-list">
+          <ul class="logo-list list-unstyled">
             <li>
               <span class="esf-logo mini-logo"></span>
             </li>

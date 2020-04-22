@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
   <!-- search -->
-  <th:block th:fragment="search">
-    <div class="search-main">
+  <th:block th:fragment="search" th:with="pageContext=${pageContext}?:''">
+    <div class="main-search" th:classappend="${pageContext == 'search' ? 'compact' : ''}" >
       <form th:action="@{${searchUri}}" th:method="post" name="searchForm">
         <div>
-          <input type="text" id="search" role="search" class="main-search-input form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
+          <input type="text" id="search" role="search" class="main-search-input form-control search-phrase" th:classappend="${pageContext == 'search' ? 'compact' : ''}" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
           <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
           <input type="hidden" name="datasetCodesStr" th:value="${datasetCodesStr}" />
           <input type="hidden" name="selectedWordHomonymNr"/>
@@ -56,15 +56,15 @@
   <th:block th:fragment="homonyms">
     <div th:if="${wordsData.resultsExist}" class="row border-bottom overflow-hidden homonym-panel"
          th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
-      <ul class="homonym-list w-100">
-        <li th:each="word : ${wordsData.fullMatchWords}">
+      <ul class="homonym-list list-unstyled w-100">
+        <li class="homonym-list-item" th:each="word : ${wordsData.fullMatchWords}">
           <form class="h-100">
             <input type="hidden" name="word-id" th:value="${word.wordId}" />
             <input type="hidden" name="word-value" th:value="${word.word}" />
             <input type="hidden" name="word-lang" th:value="${word.lang}" />
             <input type="hidden" name="word-selected" th:value="${word.selected}" />
             <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, searchMode, word.word, word.homonymNr)}}" />
-            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item border-left">
+            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
                 <span class="homonym-item-wrap">
                   <span class="homonym-header d-flex align-items-center">
                     <span class="text-muted mr-1 lang-code lang-code-sm"

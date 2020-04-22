@@ -29,7 +29,8 @@ $blue: $blue-400;
 $red: $red-400;
 $green: $green-400;
 
-$primary:   $blue-300;
+$primary: $blue-300;
+$success: $green-400;
 
 $font-weight-bold: 900;
 
@@ -38,6 +39,7 @@ $font-family-sans-serif:     "Inter", -apple-system, blinkmacsystemfont, "Segoe 
 // stylelint-enable value-keyword-case
 
 $body-bg: $gray-010;
+$body-color:                $gray-900;
 
 
 $font-size-base: 1rem; //16px // Assumes the browser default, typically `16px`
@@ -52,4 +54,6 @@ $h6-font-size:                $font-size-base;
 
 $enable-shadows: true;
 
-$fa-font-path: "../webfonts";
+$fa-font-path: "../fonts/fontawesome";
+
+$border-color:                $gray-200;

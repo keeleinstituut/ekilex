@@ -1,9 +1,29 @@
+.search-wrap {
+  position: sticky;
+  top: 70px;
+  z-index: 111;
+  width: 100%;
+}
+.search-panel{
+  @include media-breakpoint-up(md){
+    padding: 0 124px;
+  }
+}
+
+.main-search {
+  position: relative;
+}
+
 .main-search-input{
   height: 64px;
   padding: 1.125rem 9.5rem 1.125rem 1.15625rem;
   border-color: $gray-100;
   @include border-radius(30px);
   @include box-shadow(0 4px 8px rgba(0,0,0,.25));
+
+  &.compact{
+    height: 48px;
+  }
 }
 
 .main-search-btns {
@@ -13,12 +33,12 @@
   transform: translateY(-50%);
 }
 
-.speak-btn{
+.speak-btn,
+.clear-btn{
   font-size: 28px;
 }
 
 .search-btn{
-  right: .3125rem;
   margin-left: 16px;
   font-size: 20px;
   @include border-radius(20px);

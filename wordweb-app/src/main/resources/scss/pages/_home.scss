@@ -38,3 +38,17 @@
     margin: 0 auto .5rem;
   }
 }
+
+.simple-search-brand-link{
+  display: inline-flex;
+  align-items: center;
+  margin: 0 auto;
+  &::before{
+    width: 36px;
+    height: 32px;
+    margin-right: 5px;
+    content: "";
+    background: url("../images/sonaveeb-light-logo.svg") no-repeat;
+    background-size: contain;
+  }
+}

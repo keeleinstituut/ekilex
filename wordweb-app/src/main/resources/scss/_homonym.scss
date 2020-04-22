@@ -31,14 +31,12 @@
   width: 1.375rem;
   height: 1.375rem;
   padding-top: .125rem;
-  font-family: "Klavika", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: .75rem;
   font-weight: 700;
   color: #fff;
   text-align: center;
   background-color: #001124;
   border-radius: 6.25rem;
-  -webkit-transition: 0ms !important;
   transition: 0ms !important;
 }
 
@@ -60,16 +58,21 @@
     overflow: hidden;
   }
   .homonym-list {
-    display: -webkit-box;
     display: flex;
     margin-bottom: -15px;
     overflow: hidden;
     overflow-x: scroll;
     white-space: nowrap;
+
+    .homonym-list-item:first-child{
+      .homonym-item{
+        border-left: 0;
+        @include border-top-left-radius(5px);
+      }
+    }
   }
 
   .homonym-item {
-    display: -webkit-box;
     display: flex;
     height: 100%;
   }
