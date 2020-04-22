@@ -846,6 +846,14 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
+	public void deleteMeaningLexemes(Long lexemeId) {
+		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningSameLangAndDatasetLexemeIds(lexemeId);
+		for (Long lexemeIdToDelete : lexemeIdsToDelete) {
+			deleteLexeme(lexemeIdToDelete);
+		}
+	}
+
+	@Transactional
 	public void deleteUsage(Long id) {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, null);
 		createLifecycleLog(logData);

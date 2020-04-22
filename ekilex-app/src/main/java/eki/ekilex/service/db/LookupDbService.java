@@ -295,6 +295,27 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(String.class);
 	}
 
+	public List<Long> getMeaningSameLangAndDatasetLexemeIds(Long lexemeId) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Word w1 = WORD.as("w1");
+		Word w2 = WORD.as("w2");
+
+		return create
+				.select(l2.ID)
+				.from(l1, l2, w1, w2)
+				.where(
+						l1.ID.eq(lexemeId)
+								.and(w1.ID.eq(l1.WORD_ID))
+								.and(l2.MEANING_ID.eq(l1.MEANING_ID))
+								.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(w2.ID.eq(l2.WORD_ID))
+								.and(w2.LANG.eq(w1.LANG)))
+				.fetchInto(Long.class);
+	}
+
 	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
 
 		return create
@@ -354,6 +375,21 @@ public class LookupDbService extends AbstractDataDbService {
 		return count == 0;
 	}
 
+	public boolean areOnlyLexemesForMeaning(List<Long> lexemeIds) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		int count = create
+				.fetchCount(DSL
+						.select(l2.ID)
+						.from(l1, l2)
+						.where(
+								l1.ID.in(lexemeIds)
+										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+										.and(l1.ID.ne(l2.ID))));
+		return count == lexemeIds.size();
+	}
+
 	public boolean isOnlyPrimaryLexemeForWord(Long lexemeId) {
 
 		Lexeme l1 = LEXEME.as("l1");
@@ -366,8 +402,8 @@ public class LookupDbService extends AbstractDataDbService {
 								l1.ID.eq(lexemeId)
 										.and(l1.WORD_ID.eq(l2.WORD_ID))
 										.and(l1.ID.ne(l2.ID))
-										.and(l1.TYPE.eq(LexemeType.PRIMARY.name()))
-										.and(l2.TYPE.eq(LexemeType.PRIMARY.name()))));
+										.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))));
 		return count == 0;
 	}
 
@@ -383,9 +419,26 @@ public class LookupDbService extends AbstractDataDbService {
 								l1.ID.eq(lexemeId)
 										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
 										.and(l1.ID.ne(l2.ID))
-										.and(l1.TYPE.eq(LexemeType.PRIMARY.name()))
-										.and(l2.TYPE.eq(LexemeType.PRIMARY.name()))));
+										.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))));
 		return count == 0;
+	}
+
+	public boolean areOnlyPrimaryLexemesForMeaning(List<Long> lexemeIds) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		int count = create
+				.fetchCount(DSL
+						.select(l2.ID)
+						.from(l1, l2)
+						.where(
+								l1.ID.in(lexemeIds)
+										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+										.and(l1.ID.ne(l2.ID))
+										.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))));
+		return count == lexemeIds.size();
 	}
 
 	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
@@ -412,8 +465,8 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(l1.WORD_ID.eq(l2.WORD_ID))
 								.and(l1.DATASET_CODE.eq(datasetCode))
 								.and(l1.ID.ne(l2.ID))
-								.and(l1.TYPE.eq(LexemeType.PRIMARY.name()))
-								.and(l2.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(DSL.or(
 										l1.MEANING_ID.ne(l2.MEANING_ID),
 										l1.MEANING_ID.eq(l2.MEANING_ID).and(l1.DATASET_CODE.ne(l2.DATASET_CODE))))
@@ -515,11 +568,9 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.COMPLEXITY.eq(complexity.name())))
 				.fetchSingleInto(Boolean.class);
 	}
-
-
 
 }

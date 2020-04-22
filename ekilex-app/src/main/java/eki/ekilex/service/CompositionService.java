@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
@@ -416,14 +415,14 @@ public class CompositionService extends AbstractService implements GlobalConstan
 			Long sourceWordLexemeId = sourceWordLexeme.getId();
 			Long sourceWordLexemeMeaningId = sourceWordLexeme.getMeaningId();
 			String sourceWordLexemeDatasetCode = sourceWordLexeme.getDatasetCode();
-			boolean isSourceWordLexemePrimaryType = StringUtils.equals(sourceWordLexeme.getType(), LexemeType.PRIMARY.name());
+			boolean isSourceWordLexemePrimaryType = StringUtils.equals(sourceWordLexeme.getType(), LEXEME_TYPE_PRIMARY);
 
 			LexemeRecord targetWordLexeme = compositionDbService.getLexeme(targetWordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
 			boolean targetLexemeExists = targetWordLexeme != null;
 
 			if (targetLexemeExists) {
 				Long targetWordLexemeId = targetWordLexeme.getId();
-				boolean isTargetWordLexemePrimaryType = StringUtils.equals(targetWordLexeme.getType(), LexemeType.PRIMARY.name());
+				boolean isTargetWordLexemePrimaryType = StringUtils.equals(targetWordLexeme.getType(), LEXEME_TYPE_PRIMARY);
 
 				if (isTargetWordLexemePrimaryType && isSourceWordLexemePrimaryType) {
 					compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
@@ -525,8 +524,8 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				Long sourceLexemeId = lexemeIdPair.getId2();
 				LexemeRecord targetLexeme = compositionDbService.getLexeme(targetLexemeId);
 				LexemeRecord sourceLexeme = compositionDbService.getLexeme(sourceLexemeId);
-				boolean isTargetLexemePrimaryType = StringUtils.equals(targetLexeme.getType(), LexemeType.PRIMARY.name());
-				boolean isSourceLexemePrimaryType = StringUtils.equals(sourceLexeme.getType(), LexemeType.PRIMARY.name());
+				boolean isTargetLexemePrimaryType = StringUtils.equals(targetLexeme.getType(), LEXEME_TYPE_PRIMARY);
+				boolean isSourceLexemePrimaryType = StringUtils.equals(sourceLexeme.getType(), LEXEME_TYPE_PRIMARY);
 
 				if (isTargetLexemePrimaryType && isSourceLexemePrimaryType) {
 					updateLexemeLevels(sourceLexemeId, "delete");

@@ -288,11 +288,22 @@
                               title="Loo uus ilmik ja tähendus"
                               th:data-lexeme-id="${lexeme.lexemeId}"
                               sec:authorize="${#vars.isLexemeCrudGranted}">Uus tähendus</button>
-                      <button class="btn btn-warning font-weight-bold btn-sm" type="button"
-                              th:data-id="${lexeme.lexemeId}"
-                              data-callback="doNewSearch"
-                              data-toggle="deleteLexemeAndWordAndMeaning"
-                              sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta</button>
+                      <span class="dropdown" sec:authorize="${#vars.isLexemeCrudGranted}">
+                        <button class="btn btn-warning font-weight-bold btn-sm"
+                                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Kustuta</button>
+                        <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="btn btn-secondary font-weight-bold btn-sm"
+                                  th:data-id="${lexeme.lexemeId}"
+                                  data-callback="doNewSearch"
+                                  data-toggle="deleteLexemeAndWordAndMeaning"
+                                  sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta koos tähendusega</a>
+                          <a class="btn btn-secondary font-weight-bold btn-sm"
+                                  th:data-id="${lexeme.lexemeId}"
+                                  data-callback="doNewSearch"
+                                  data-toggle="deleteMeaningLexemesAndWordsAndMeaning"
+                                  sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta koos vastete ja tähendusega</a>
+                        </span>
+                      </span>
                       <a th:href="@{'/lexemeandmeaningprocesslog:' + ${lexeme.lexemeId}}"
                          data-toggle="modal"
                          data-target="#processLogDlg"
@@ -1406,6 +1417,12 @@
           btnCancelLabel : 'Ei',
           title : 'Kinnita kustutamine',
           onConfirm : deleteLexemeAndWordAndMeaning
+        });
+        $('[data-toggle=deleteMeaningLexemesAndWordsAndMeaning]').confirmation({
+          btnOkLabel : 'Jah',
+          btnCancelLabel : 'Ei',
+          title : 'Kinnita kustutamine',
+          onConfirm : deleteMeaningLexemesAndWordsAndMeaning
         });
   	  </script>
     </div>
