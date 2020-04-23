@@ -152,7 +152,6 @@ h2 {
 .label {
   color: #AAA;
   font-weight: 600;
-  font-family: "Noto Sans", sans-serif;
   font-size: 0.6875rem;
 }
 
@@ -361,7 +360,6 @@ h2 {
 }
 
 .key {
-  font-family: "Noto Sans", sans-serif;
   color: #999;
   display: inline-block;
   width: 100%;
@@ -380,7 +378,6 @@ h2 {
 }
 
 .btn-space {
-  font-family: "Noto Sans", sans-serif;
   color: #999;
   display: inline-block;
   width: 18.75rem;
@@ -477,7 +474,6 @@ h2 {
   display: -webkit-inline-box;
   display: inline-flex;
   vertical-align: middle;
-  font-family: "Noto Sans", sans-serif;
   margin-left: 0.625rem;
 }
 
@@ -497,26 +493,22 @@ h2 {
 .circle-legend.popular, .circle-answers.popular {
   background: #eee;
   border: 0.1875rem solid #eee;
-  font-family: "Noto Sans", sans-serif;
   font-weight: 700;
 }
 
 .circle-legend.popular, .circle-answers.popular {
   background: #eee;
   border: 0.1875rem solid #eee;
-  font-family: "Noto Sans", sans-serif;
   font-weight: 700;
 }
 
 .circle-answers.respondent-popular {
   border: 0.1875rem solid #094;
   background: #eee;
-  font-family: "Noto Sans", sans-serif;
   font-weight: 700;
 }
 
 .fatty-game-title {
-  font-family: "Noto Sans", sans-serif;
   font-size: 1.375rem;
   font-weight: 700;
 }
@@ -526,7 +518,6 @@ h2 {
 }
 
 .legend-text {
-  font-family: "Noto Sans", sans-serif;
   font-size: 0.75rem;
 }
 
@@ -681,7 +672,6 @@ h2 {
 .tx-large {
   text-align: center;
   font-size: 1.75rem;
-  font-family: "pt_serifregular", arial, sans-serif;
   font-weight: bold;
 }
 
@@ -782,13 +772,13 @@ h2 {
 
 /*LEXICAL vol2*/
 .text-question {
-  font-family: "Noto Sans", sans-serif;
+
   color: #999;
   font-size: 1rem;
 }
 
 .text-esc {
-  font-family: "Noto Sans", sans-serif;
+
   font-size: 0.875rem;
   color: #999;
 }
@@ -870,7 +860,7 @@ h2 {
 }
 
 .text-hint {
-  font-family: "Noto Sans", sans-serif;
+
   font-weight: 400;
   font-style: normal;
   color: #1E1E1E;
@@ -880,14 +870,14 @@ h2 {
   text-transform: uppercase;
   font-size: 2rem;
   font-weight: 700;
-  font-family: "Noto Sans", sans-serif;
+
 }
 
 .fat-text-red {
   text-transform: uppercase;
   font-size: 2rem;
   font-weight: 700;
-  font-family: "Noto Sans", sans-serif;
+
   color: #E5312A;
 }
 
@@ -904,7 +894,7 @@ h2 {
 }
 
 .sub-text {
-  font-family: "Noto Sans", sans-serif;
+
   font-weight: 400;
   font-size: 1.125rem;
   color: #666;
@@ -957,7 +947,7 @@ h2 {
 }
 
 .low-itensity {
-  font-family: "Noto Sans", sans-serif;
+
   font-weight: 700;
   font-style: normal;
   font-size: 0.75rem;
@@ -971,7 +961,7 @@ h2 {
 }
 
 .high-itensity {
-  font-family: "Noto Sans", sans-serif;
+
   font-weight: 700;
   font-style: normal;
   font-size: 0.75rem;
@@ -997,7 +987,7 @@ h2 {
 }
 
 .btn-bordered {
-  font-family: "Noto Sans", sans-serif;
+
   background-color: #fff;
   border-color: #094;
   color: #094;
@@ -1122,7 +1112,7 @@ h2 {
 }
 
 .your-result {
-  font-family: "Noto Sans", sans-serif;
+
   font-weight: 700;
   color: #094;
   font-size: 1.875rem;
@@ -1131,14 +1121,14 @@ h2 {
 .result-label {
   font-size: 0.8125rem;
   margin-bottom: -0.3125rem;
-  font-family: "Noto Sans", sans-serif;
+
 }
 
 .btn-group {
   font-size: 0.875rem;
   margin-bottom: 3.4375rem;
   margin-top: 0.875rem;
-  font-family: "Noto Sans", sans-serif;
+
 }
 
 .btn-group > button.btn.btn-default {
@@ -1164,12 +1154,12 @@ h2 {
 
 /*univGameResultPage*/
 .results-table {
-  font-family: "Noto Sans", sans-serif;
+
   font-size: 0.75rem;
 }
 
 .results-table td {
-  font-family: "Noto Sans", sans-serif;
+
   border-bottom: 0.0625rem solid #FFF;
   border-top: 0.0625rem solid #FFF;
 }
@@ -1190,12 +1180,12 @@ h2 {
 
 .results-table th {
   border-bottom: 0.0625rem solid #ddd;
-  font-family: "Noto Sans", sans-serif;
+
   font-weight: 700;
 }
 
 .results-table .speed-number {
-  font-family: "Noto Sans", sans-serif;
+
   font-weight: 700;
 }
 
@@ -1205,7 +1195,7 @@ h2 {
 
 td.total-nr {
   width: 2.5rem;
-  font-family: "Noto Sans", sans-serif;
+
   font-weight: 700;
 }
 

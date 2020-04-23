@@ -1,16 +1,10 @@
-/* stylelint-disable */
-
 .header-container {
   position: sticky;
   top: 0;
   z-index: 2;
   background: $body-bg;
-  @include media-breakpoint-up(md){
-    padding: 8px 0;
+  &.show-header {
+    z-index: 999;
   }
-}
-
-.header-container.show-header {
-  z-index: 999;
 }
 

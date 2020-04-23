@@ -17,8 +17,8 @@
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu-with-back-btn"></div>
 
-  <div class="container-fluid homonym-page mt-3 bottom-gutter">
-    <div class="container search-results-header px-0">
+  <div class="container-fluid homonym-page mt-3 mb-5">
+    <div class="search-results-header px-0">
       <div class="d-flex flex-row flex-wrap flex-md-nowrap align-items-start align-items-md-center pb-3">
         <th:block th:replace="common-search :: form-match"></th:block>
         <th:block th:replace="common-search :: lang-filter"></th:block>
@@ -50,7 +50,7 @@
         <span th:text="#{'label.word.not.found.detail'}">Ei leidnud midagi</span>
       </div>
     </div>
-    <div role="main" class="content-panel bg-white container">
+    <div role="main" class="content-panel px-3 pt-2">
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details"></div>
     </div>

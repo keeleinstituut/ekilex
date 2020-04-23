@@ -65,14 +65,11 @@
     <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="container-fluid header-container">
       <div class="row header-wrap">
-        <div class="col-12 d-flex align-items-center px-0">
+        <div class="col-12 d-flex align-items-center px-xl-0">
           <div class="mr-auto">
             <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header">
               <span class="sr-only">Sõnaveebi logo</span>
             </a>
-            <div class="back mt-2">
-              <span class="icon icon-back"></span>
-            </div>
           </div>
           <div class="search-panel w-100">
             <div class="align-self-center" id="language-detail-panel">
@@ -88,7 +85,7 @@
   </th:block>
   <th:block th:fragment="lang-and-menu-btn">
     <div class="ml-auto d-flex flex-row align-items-center">
-      <div class="dropdown lang-btn">
+      <div class="dropdown lang-btn d-none d-md-block">
         <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span th:text="#{menu.current.lang}"></span>
         </a>
@@ -109,6 +106,16 @@
     <div id="headerLinks" class="navbar navbar-dark collapse">
       <div class="header-links navbar-nav" role="navbar">
         <div class="d-flex mb-4">
+          <div class="dropdown lang-btn d-md-none">
+            <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span th:text="#{menu.current.lang}"></span>
+            </a>
+            <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
+              <a role="link" class="dropdown-item" href="?lang=et">EST</a>
+              <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
+              <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
+            </div>
+          </div>
           <button class="btn menu-btn px-0 ml-auto text-white" data-toggle="collapse" data-target="#headerLinks">
             <span th:text="#{menu.close}">Sulge</span>
             <span class="fas fa-times"></span>

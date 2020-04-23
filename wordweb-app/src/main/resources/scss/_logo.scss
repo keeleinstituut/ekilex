@@ -1,12 +1,21 @@
 .logo{
   display: block;
-  background: url("../images/sonaveeb-dt-logo.svg");
+  background-image: url("../images/sonaveeb-logo-sm.svg");
   background-repeat: no-repeat;
   background-size: contain;
+  @include media-breakpoint-up(md){
+    background-image: url("../images/sonaveeb-logo-lg.svg");
+
+  }
 }
 .logo-header{
-  width: 186px;
-  height: 47px;
+  width: 48px;
+  height: 42px;
+
+  @include media-breakpoint-up(md){
+    width: 186px;
+    height: 47px;
+  }
 }
 .logo-big{
   width: 270px;

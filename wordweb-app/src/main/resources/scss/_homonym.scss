@@ -2,7 +2,6 @@
 /* stylelint-disable */
 .homonym-item-wrap {
   display: block;
-  -webkit-transition: 0ms !important;
   transition: 0ms !important;
 }
 
@@ -20,7 +19,6 @@
 .homonym-name {
   font-weight: 900;
   color: #001124;
-  -webkit-transition: 0ms !important;
   transition: 0ms !important;
 }
 
@@ -53,149 +51,110 @@
   color: #7f8891 !important;
 }
 
-@media (min-width: 768px) {
-  .homonym-panel {
+.homonym-panel {
+  @include media-breakpoint-up(md) {
     overflow: hidden;
+    border-bottom: 1px solid $border-color;
   }
-  .homonym-list {
+}
+
+.homonym-list-toggle {
+  width: 100%;
+  background: $white;
+  border: 3px solid $gray-300;
+  margin-bottom: 24px;
+  padding: 9px 16px;
+  @include border-radius(10px);
+
+  .homonym-item-wrap {
+    width: 100%;
+    display: flex;
+  }
+}
+
+.homonym-list {
+  background: $white;
+  @include media-breakpoint-down(sm) {
+
+    display: none;
+    border: 3px solid $gray-300;
+    @include border-radius(10px);
+    &.expand {
+      display: block;
+    }
+
+  }
+  @include media-breakpoint-up(md) {
     display: flex;
     margin-bottom: -15px;
     overflow: hidden;
     overflow-x: scroll;
     white-space: nowrap;
+  }
 
-    .homonym-list-item:first-child{
-      .homonym-item{
-        border-left: 0;
-        @include border-top-left-radius(5px);
-      }
+  .homonym-list-item:last-child .homonym-item {
+    border-bottom: 0;
+  }
+}
+
+.homonym-list-item {
+  @include media-breakpoint-down(sm) {
+
+    &.selected {
+      background: $blue-300;
+      color: $white;
     }
   }
 
-  .homonym-item {
+  &.selected {
+    .homonym-item {
+      @include media-breakpoint-up(md) {
+        background: $white;
+      }
+    }
+  }
+}
+
+.homonym-item {
+  position: relative;
+  display: block;
+  padding: 1.25rem;
+  padding-right: 3.75rem;
+  margin-left: -1px;
+  overflow: hidden;
+  border-bottom: 1px #d8d8d8 solid;
+
+  @include media-breakpoint-up(md) {
     display: flex;
     height: 100%;
-  }
-  .homonym-item:hover {
-    text-decoration: none;
-  }
-  .homonym-item .homonym-name-container {
-    position: relative;
-    display: inline-block;
-    max-width: calc(100% - 24px);
-    padding-right: .375rem;
-  }
-
-  .homonym-item .homonym-nr {
-    display: inline-block;
-    color: #fff;
-  }
-  .homonym-item {
     position: relative;
     background: $gray-100;
   }
 
-  .homonym-item * {
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .homonym-item .homonym-item-wrap {
-    display: -webkit-box;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    flex-direction: column;
+  &.selected {
+    @include media-breakpoint-up(md) {
+      background: $white;
+    }
+
+    .homonym-item-wrap {
+      @include media-breakpoint-up(md) {
+        background-color: $white;
+      }
+    }
+
+    .homonym-nr {
+      @include media-breakpoint-up(md) {
+        font-weight: $font-weight-bold;
+        background-color: $white;
+      }
+    }
   }
 
-
-  .homonym-item .homonym-item-wrap {
-    width: 15rem !important;
-    padding: .9375rem 1.5625rem;
-
+  &:hover {
+    text-decoration: none;
   }
 
-  .homonym-item.selected {
-    background: white;
-  }
-  .homonym-item.selected .homonym-item-wrap {
-    background-color: #fff;
-  }
-
-  .homonym-item.selected .homonym-nr {
-    font-weight: 700;
-    background-color: #fff;
-  }
-  .word-details-homonym-nr {
-    position: relative;
-    top: -.25rem;
-    display: inline-block;
-    width: 1.75rem;
-    height: 1.75rem;
-    font-weight: 700;
-    line-height: 1.6;
-    color: #fff;
-    text-align: center;
-    background-color: #07f;
-    border-radius: 6.25rem;
-    -webkit-transition: 0ms !important;
-    transition: 0ms !important;
-  }
-
-  .homonym-item span {
-    display: block;
-    margin-bottom: 0;
-    color: #001124;
-    text-overflow: ellipsis;
-    -webkit-transition: 0ms !important;
-    transition: 0ms !important;
-  }
-  .homonym-item .homonym-header {
-    font-family: "Klavika";
-    font-size: 1.25rem;
-  }
-  .homonym-intro {
-    max-height: 1.5rem;
-    margin-top: auto;
-  }
-  .homonym-matches {
-    margin-bottom: auto;
-  }
-}
-
-
-@media (max-width: 767px) {
-
-  .homonym-item {
-    position: relative;
-    display: block;
-    padding: 1.25rem;
-    padding-right: 3.75rem;
-    margin-left: -1px;
-    overflow: hidden;
-    border-bottom: 1px #d8d8d8 solid;
-  }
-  .homonym-item.last-selected {
-    margin-top: -1px;
-    background-color: rgba(0, 17, 36, .15);
-    border-top: 1px solid #fff;
-    border-bottom-color: #fff;
-  }
-  .homonym-item.last-selected *:not(.homonym-nr),
-  .homonym-item.last-selected *::after {
-    color: #07f !important;
-  }
-  .homonym-item.last-selected .homonym-nr {
-    background-color: #07f;
-  }
-  .homonym-item *:not(.homonym-nr) {
-    display: -webkit-box;
-    display: flex;
-    align-items: center;
-    float: left;
-    white-space: nowrap;
-    -webkit-box-align: center;
-  }
-  .homonym-item::after {
+  &::after {
     position: absolute;
     top: 50%;
     right: 1.25rem;
@@ -205,6 +164,94 @@
     font-family: "material-icons";
     color: #7f8891;
     content: "\e908";
+  }
+
+  .homonym-name-container {
+    @include media-breakpoint-up(md) {
+      position: relative;
+      display: inline-block;
+      max-width: calc(100% - 24px);
+      padding-right: .375rem;
+    }
+  }
+
+  .homonym-nr {
+    @include media-breakpoint-up(md) {
+      display: inline-block;
+      color: $white;
+    }
+  }
+
+  .homonym-item-wrap {
+    @include media-breakpoint-up(md) {
+      display: flex;
+      flex-direction: column;
+      width: 15rem !important;
+      padding: .9375rem 1.5625rem;
+      margin-bottom: 0;
+      color: #001124;
+      text-overflow: ellipsis;
+      transition: 0ms !important;
+    }
+  }
+
+  .homonym-header {
+    @include media-breakpoint-up(md) {
+      font-size: 1.25rem;
+    }
+  }
+
+  * {
+    @include media-breakpoint-up(md) {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+  }
+}
+
+
+.word-details-homonym-nr {
+  @include media-breakpoint-up(md) {
+    position: relative;
+    top: -.25rem;
+    display: inline-block;
+    width: 1.75rem;
+    height: 1.75rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: $white;
+    text-align: center;
+    border-radius: 6.25rem;
+    transition: 0ms !important;
+  }
+
+}
+
+
+.homonym-intro {
+  @include media-breakpoint-up(md) {
+
+    max-height: 1.5rem;
+    margin-top: auto;
+  }
+}
+
+.homonym-matches {
+  @include media-breakpoint-up(md) {
+    margin-bottom: auto;
+  }
+
+}
+
+
+@media (max-width: 767px) {
+
+  .homonym-item *:not(.homonym-nr) {
+    display: flex;
+    align-items: center;
+    float: left;
+    white-space: nowrap;
   }
   .homonym-item-wrap {
     max-width: 100%;
@@ -226,7 +273,6 @@
     flex-shrink: 0;
     margin-right: .125rem;
     font-size: 1rem;
-    font-weight: 400;
     font-weight: 700;
   }
 

@@ -75,10 +75,7 @@
 }
 
 @media ( max-width : 767px) {
-	body:not(.home-page ) #language-detail-panel {
-		margin-top: 1rem;
-		width: calc(100vw - 4em);
-	}
+
 	.menu-btn {
 		padding: 1rem;
 	}

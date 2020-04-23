@@ -1,11 +1,10 @@
 .content-wrap {
   padding-top: .625rem;
-  background-color: $white;
 }
 
 .content-panel {
-  background-color: $white;
   @include media-breakpoint-up(md) {
+    background-color: $white;
     @include box-shadow(0 4px 12px -4px rgba(0, 0, 0, .25));
     @include border-radius(.6875rem);
   }
@@ -20,8 +19,8 @@
     border-top: none;
   }
   @include media-breakpoint-up(md){
-    padding:0  1.25rem 1.25rem;
-    margin:0 -1.25rem;
+    padding: 0  1.25rem 1.25rem;
+    margin: 0 -1.25rem;
   }
 
   .level-3-panel:last-of-type{
@@ -78,5 +77,13 @@
 .more-data .level-3-panel {
   @include media-breakpoint-up(md) {
     padding: 1rem 2.5rem 1rem 1rem;
+  }
+}
+
+.word-details{
+  @include media-breakpoint-down(sm){
+    background: $white;
+    @include border-radius(10px);
+    @include box-shadow(0 4px 12px -4px rgba(0, 0, 0, .25));
   }
 }

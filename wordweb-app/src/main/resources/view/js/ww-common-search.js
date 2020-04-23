@@ -4,21 +4,22 @@ $(document).ready(function () {
 
 	initialiseRecording(speechRecognitionServiceUrl);
 
-	var isWideWindow = $(window).width() >= windowWidthTreshold;
-	var isSingleHomonym = $(".homonym-item").length == 1;
-	if (isWideWindow || isSingleHomonym) {
-		var selectedHomonymItem = $(".homonym-item").filter(function () {
-			var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
-			return isHomonymSelected == "true";
-		}).filter(":first");
-		if (selectedHomonymItem.get().length == 0) {
-			selectedHomonymItem = $(".homonym-item:first");
-		}
-		selectedHomonymItem.delay(500).queue(function () {}).trigger('click');
-		selectedHomonymItem.addClass("animation-target");
+
+	var selectedHomonymItem = $(".homonym-item").filter(function () {
+	    var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
+	    return isHomonymSelected == "true";
+	}).filter(":first");
+	if (selectedHomonymItem.get().length == 0) {
+	    selectedHomonymItem = $(".homonym-item:first");
+	}
+	selectedHomonymItem.delay(500).queue(function () {}).trigger('click');
+	selectedHomonymItem.addClass("animation-target");
+
+	var isMultiHomonym = $(".homonym-item").length > 1;
+	if (isMultiHomonym) {
+		$("#homonymListToggleButton").html(selectedHomonymItem.html());
 	}
 
-	calculateAndSetStyles();
 
 	var searchWordAutocompleteMenuRenderer = function (ul, items) {
 		var self = this;
@@ -99,17 +100,6 @@ $(document).ready(function () {
 
 	$("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
 
-	$(".homonym-item").on("click", function (e) {
-		$(".header-container .back").removeClass("show-btn");
-	});
-
-	$(".back").on("click", function (e) {
-		$(".header-container .back").addClass("show-btn");
-	});
-});
-
-$(window).resize(function () {
-	calculateAndSetStyles();
 });
 
 function calculateAndSetStyles() {
@@ -403,3 +393,7 @@ function clickSearchIfInputExists() {
 		$("#search-btn").click();
 	}
 }
+
+$(document).on("click","#homonymListToggleButton",function () {
+	$(".homonym-list").toggleClass("expand");
+});
