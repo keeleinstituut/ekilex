@@ -8,6 +8,7 @@
     z-index: 999;
   }
   .header-wrap{
+    padding: 16px 0;
     @include media-breakpoint-down(sm){
       padding: 8px 0;
     }

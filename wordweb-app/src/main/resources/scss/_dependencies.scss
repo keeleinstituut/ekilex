@@ -2,32 +2,6 @@
   @include transition(0);
 }
 
-.dependencies .btn-speaker {
-  position: relative;
-  top: .1875rem;
-  color: #07f;
-  opacity: .5;
-}
-
-.dependence .icon-speaker {
-  padding-right: .5rem;
-}
-
-.dependence .icon-speaker + .example-text {
-  padding-left: 0;
-}
-
-.dependencies .btn-speaker .icon-speaker {
-  font-size: 1rem;
-}
-
-.dependencies .btn-speaker:focus,
-.dependencies .btn-speaker:focus-within,
-.dependencies .btn-speaker:active {
-  color: #07f;
-  opacity: 1;
-}
-
 .dependence .dependence-unit {
   position: relative;
   padding-bottom: .1875rem;
@@ -45,11 +19,6 @@
 .dependence-group {
   display: flex;
   flex-direction: column;
-}
-
-
-.dependence-unit:hover .btn-speaker {
-  opacity: 1;
 }
 
 .example-item{
@@ -85,9 +54,7 @@
 }
 
 .btn-speaker {
-  display: block;
-  float: left;
-  padding: .125rem;
-  color: #b4b4b4;
+  padding: 10px 5px 5px;
+  color: $gray-300;
   background: transparent;
 }

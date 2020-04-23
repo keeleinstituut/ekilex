@@ -352,12 +352,12 @@ template {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 0.5rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
 }
 
 h1, .h1 {
-  font-size: 1.857rem;
+  font-size: 1.75rem;
 }
 
 h2, .h2 {
@@ -2123,7 +2123,7 @@ select.form-control:focus::-ms-value {
 .col-form-label-sm {
   padding-top: calc(0.25rem + 1px);
   padding-bottom: calc(0.25rem + 1px);
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 
@@ -2148,7 +2148,7 @@ select.form-control:focus::-ms-value {
 .form-control-sm {
   height: calc(1.5em + 0.5rem + 2px);
   padding: 0.25rem 0.5rem;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   border-radius: 0.2rem;
 }
@@ -2245,7 +2245,7 @@ textarea.form-control {
   max-width: 100%;
   padding: 0.25rem 0.5rem;
   margin-top: .1rem;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   color: #fff;
   background-color: rgba(0, 137, 46, 0.9);
@@ -2345,7 +2345,7 @@ textarea.form-control {
   max-width: 100%;
   padding: 0.25rem 0.5rem;
   margin-top: .1rem;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   color: #fff;
   background-color: rgba(236, 1, 56, 0.9);
@@ -3151,7 +3151,7 @@ fieldset:disabled a.btn {
 
 .btn-sm, .btn-group-sm > .btn {
   padding: 0.25rem 0.5rem;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   border-radius: 0.2rem;
 }
@@ -3444,7 +3444,7 @@ input[type="button"].btn-block {
   display: block;
   padding: 0.5rem 1.5rem;
   margin-bottom: 0;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   color: #6c757d;
   white-space: nowrap;
 }
@@ -3754,7 +3754,7 @@ input[type="button"].btn-block {
 .input-group-sm > .input-group-prepend > .btn,
 .input-group-sm > .input-group-append > .btn {
   padding: 0.25rem 0.5rem;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   border-radius: 0.2rem;
 }
@@ -4001,7 +4001,7 @@ input[type="button"].btn-block {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
 }
 
 .custom-select-lg {
@@ -5106,7 +5106,7 @@ input[type="button"].btn-block {
 
 .pagination-sm .page-link {
   padding: 0.25rem 0.5rem;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 
@@ -6201,7 +6201,7 @@ a.close.disabled {
   word-spacing: normal;
   white-space: normal;
   line-break: auto;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   word-wrap: break-word;
   opacity: 0;
 }
@@ -6314,7 +6314,7 @@ a.close.disabled {
   word-spacing: normal;
   white-space: normal;
   line-break: auto;
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   word-wrap: break-word;
   background-color: #fff;
   background-clip: padding-box;
@@ -16245,7 +16245,7 @@ readers do not read off random characters that represent icons */
 
 /* stylelint-disable */
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 300;
   font-display: swap;
@@ -16253,7 +16253,7 @@ readers do not read off random characters that represent icons */
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: italic;
   font-weight: 300;
   font-display: swap;
@@ -16261,7 +16261,7 @@ readers do not read off random characters that represent icons */
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -16269,7 +16269,7 @@ readers do not read off random characters that represent icons */
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: italic;
   font-weight: 400;
   font-display: swap;
@@ -16277,7 +16277,7 @@ readers do not read off random characters that represent icons */
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -16285,7 +16285,7 @@ readers do not read off random characters that represent icons */
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: italic;
   font-weight: 700;
   font-display: swap;
@@ -16306,15 +16306,8 @@ readers do not read off random characters that represent icons */
   white-space: nowrap;
 }
 
-.homonym-header {
-  font-weight: 700;
-}
-
 .homonym-name {
-  font-weight: 900;
-  color: #001124;
-  -webkit-transition: 0ms !important;
-  transition: 0ms !important;
+  padding: 0 12px;
 }
 
 .homonym-nr {
@@ -16409,6 +16402,7 @@ readers do not read off random characters that represent icons */
 
 @media (min-width: 768px) {
   .homonym-list {
+    background: none;
     display: -webkit-box;
     display: flex;
     margin-bottom: -15px;
@@ -16416,6 +16410,10 @@ readers do not read off random characters that represent icons */
     overflow-x: scroll;
     white-space: nowrap;
   }
+}
+
+.homonym-list .homonym-list-item:first-child .homonym-item {
+  border-top-left-radius: 10px;
 }
 
 .homonym-list .homonym-list-item:last-child .homonym-item {
@@ -16438,12 +16436,17 @@ readers do not read off random characters that represent icons */
   }
 }
 
+@media (min-width: 768px) {
+  .homonym-list-item:not(.selected) .lang-code {
+    background: #fff;
+  }
+}
+
 .homonym-item {
   position: relative;
   display: block;
   padding: 1.25rem;
   padding-right: 3.75rem;
-  margin-left: -1px;
   overflow: hidden;
   border-bottom: 1px #d8d8d8 solid;
 }
@@ -16455,25 +16458,9 @@ readers do not read off random characters that represent icons */
     display: flex;
     height: 100%;
     background: #ecf0f2;
-  }
-}
-
-@media (min-width: 768px) {
-  .homonym-item.selected {
-    background: #fff;
-  }
-}
-
-@media (min-width: 768px) {
-  .homonym-item.selected .homonym-item-wrap {
-    background-color: #fff;
-  }
-}
-
-@media (min-width: 768px) {
-  .homonym-item.selected .homonym-nr {
-    font-weight: 700;
-    background-color: #fff;
+    border-right: 1px solid #ccd9e0;
+    border-bottom: 0;
+    padding: 0 0 15px;
   }
 }
 
@@ -16505,7 +16492,7 @@ readers do not read off random characters that represent icons */
     -webkit-box-direction: normal;
     flex-direction: column;
     width: 15rem !important;
-    padding: .9375rem 1.5625rem;
+    padding: 12px 16px;
     margin-bottom: 0;
     color: #001124;
     text-overflow: ellipsis;
@@ -16523,6 +16510,7 @@ readers do not read off random characters that represent icons */
 @media (min-width: 768px) {
   .homonym-item * {
     overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 }
@@ -16591,11 +16579,12 @@ readers do not read off random characters that represent icons */
 }
 
 .lang-code {
-  font-size: 16px;
-}
-
-.lang-code-sm {
-  font-size: 12px;
+  padding: 2px 5px 3px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #5d606e;
+  background: #ecf0f2;
+  border-radius: 4px;
 }
 
 /* stylelint-disable */
@@ -16639,7 +16628,7 @@ readers do not read off random characters that represent icons */
 }
 
 .definition-area .domain {
-  font-size: 0.857rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: #003f87;
   text-transform: uppercase;
@@ -16659,32 +16648,6 @@ readers do not read off random characters that represent icons */
     -webkit-transition: none;
     transition: none;
   }
-}
-
-.dependencies .btn-speaker {
-  position: relative;
-  top: .1875rem;
-  color: #07f;
-  opacity: .5;
-}
-
-.dependence .icon-speaker {
-  padding-right: .5rem;
-}
-
-.dependence .icon-speaker + .example-text {
-  padding-left: 0;
-}
-
-.dependencies .btn-speaker .icon-speaker {
-  font-size: 1rem;
-}
-
-.dependencies .btn-speaker:focus,
-.dependencies .btn-speaker:focus-within,
-.dependencies .btn-speaker:active {
-  color: #07f;
-  opacity: 1;
 }
 
 .dependence .dependence-unit {
@@ -16707,10 +16670,6 @@ readers do not read off random characters that represent icons */
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   flex-direction: column;
-}
-
-.dependence-unit:hover .btn-speaker {
-  opacity: 1;
 }
 
 .example-item {
@@ -16748,10 +16707,8 @@ readers do not read off random characters that represent icons */
 }
 
 .btn-speaker {
-  display: block;
-  float: left;
-  padding: .125rem;
-  color: #b4b4b4;
+  padding: 10px 5px 5px;
+  color: #8a98a5;
   background: transparent;
 }
 
@@ -17118,6 +17075,10 @@ body {
   z-index: 999;
 }
 
+.header-container .header-wrap {
+  padding: 16px 0;
+}
+
 @media (max-width: 767.98px) {
   .header-container .header-wrap {
     padding: 8px 0;
@@ -17350,11 +17311,6 @@ body {
   color: #7f8891;
 }
 
-.additional-meta {
-  color: #7f8891;
-  opacity: 1;
-}
-
 .fade-target {
   -webkit-animation: fade 750ms linear;
   animation: fade 750ms linear;
@@ -17455,15 +17411,6 @@ body {
   border: 2px solid #07f;
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
-}
-
-.tag {
-  padding: .125rem .3125rem .0625rem;
-  margin-right: .25rem;
-  font-size: 1rem;
-  color: rgba(0, 17, 36, 0.5);
-  border: 1px solid rgba(0, 17, 36, 0.25);
-  border-radius: .3125rem;
 }
 
 .homonym-image {
@@ -18536,5 +18483,13 @@ footer p {
     bottom: 8px;
     z-index: 1000;
   }
+}
+
+.tag {
+  padding: 0 8px;
+  margin-right: .25rem;
+  color: #5d606e;
+  border: 1px solid #8a98a5;
+  border-radius: 3px;
 }
 /*# sourceMappingURL=styles.css.map */

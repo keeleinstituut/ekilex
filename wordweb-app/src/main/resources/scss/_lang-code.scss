@@ -1,6 +1,8 @@
-.lang-code{
-  font-size: 16px;
-  &-sm{
-    font-size: 12px;
-  }
+.lang-code {
+  padding: 2px 5px 3px;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $gray-400;
+  background: $gray-100;
+  @include border-radius(4px);
 }

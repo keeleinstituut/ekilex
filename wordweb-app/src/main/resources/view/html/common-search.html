@@ -87,26 +87,26 @@
     </div>
   </th:block>
   <th:block th:fragment="word-data">
-    <div class="col-12 content-title">
-      <h3 class="mb-0">
-        <span class="additional-meta lang-code" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+    <div class="col-12 content-title d-flex align-items-center">
+      <span class="additional-meta lang-code" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+      <h1 class="mb-0 ">
         <span class="homonym-name" th:utext="${viewUtil.getWordValueMarkup(wordData.word)}">tee</span>
-        <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
-        <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableAudioFile != null}"
-                th:data-url-to-audio="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">
-          <span class="icon icon-speaker"></span>
-        </button>
-        <span id="spellingLine" style="font-size: large"
-              th:if="${wordData.firstAvailableVocalForm != null}"
-              th:text="${'['+wordData.firstAvailableVocalForm+']'}"></span>
-        <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
-          <span class="tag" th:text="${wordType.value}"></span>
-        </th:block>
-        <span class="tag" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
-        <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
-          <span class="tag" th:text="${summarisedPos.value}"></span>
-        </th:block>
-      </h3>
+      </h1>
+      <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
+      <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableAudioFile != null}"
+              th:data-url-to-audio="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">
+        <span class="icon icon-speaker"></span>
+      </button>
+      <span id="spellingLine" style="font-size: large"
+            th:if="${wordData.firstAvailableVocalForm != null}"
+            th:text="${'['+wordData.firstAvailableVocalForm+']'}"></span>
+      <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
+        <span class="tag" th:text="${wordType.value}"></span>
+      </th:block>
+      <span class="tag" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
+      <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
+        <span class="tag" th:text="${summarisedPos.value}"></span>
+      </th:block>
     </div>
   </th:block>
   <th:block th:fragment="no-lexemes-exist">

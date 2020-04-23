@@ -12,14 +12,8 @@
   white-space: nowrap;
 }
 
-.homonym-header {
-  font-weight: 700;
-}
-
-.homonym-name {
-  font-weight: 900;
-  color: #001124;
-  transition: 0ms !important;
+.homonym-name{
+  padding: 0 12px;
 }
 
 .homonym-nr {
@@ -106,13 +100,16 @@
 
   }
   @include media-breakpoint-up(md) {
+    background: none;
     display: flex;
     margin-bottom: -15px;
     overflow: hidden;
     overflow-x: scroll;
     white-space: nowrap;
   }
-
+  .homonym-list-item:first-child .homonym-item{
+    @include border-top-left-radius(10px);
+  }
   .homonym-list-item:last-child .homonym-item {
     border-bottom: 0;
   }
@@ -137,6 +134,13 @@
       }
     }
   }
+  &:not(.selected){
+    @include media-breakpoint-up(md){
+      .lang-code{
+        background: $white;
+      }
+    }
+  }
 }
 
 .homonym-item {
@@ -144,7 +148,6 @@
   display: block;
   padding: 1.25rem;
   padding-right: 3.75rem;
-  margin-left: -1px;
   overflow: hidden;
   border-bottom: 1px #d8d8d8 solid;
 
@@ -153,25 +156,11 @@
     display: flex;
     height: 100%;
     background: $gray-100;
-  }
+    border-right: 1px solid $gray-200;
+    border-bottom: 0;
+    padding: 0 0 15px;
 
-  &.selected {
-    @include media-breakpoint-up(md) {
-      background: $white;
-    }
 
-    .homonym-item-wrap {
-      @include media-breakpoint-up(md) {
-        background-color: $white;
-      }
-    }
-
-    .homonym-nr {
-      @include media-breakpoint-up(md) {
-        font-weight: $font-weight-bold;
-        background-color: $white;
-      }
-    }
   }
 
   &:hover {
@@ -199,7 +188,7 @@
       display: flex;
       flex-direction: column;
       width: 15rem !important;
-      padding: .9375rem 1.5625rem;
+      padding: 12px 16px;
       margin-bottom: 0;
       color: #001124;
       text-overflow: ellipsis;
@@ -215,8 +204,7 @@
 
   * {
     @include media-breakpoint-up(md) {
-      overflow: hidden;
-      white-space: nowrap;
+      @include text-truncate();
     }
 
   }
