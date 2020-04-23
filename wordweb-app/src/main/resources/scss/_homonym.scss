@@ -59,16 +59,29 @@
 }
 
 .homonym-list-toggle {
+  position: relative;
   width: 100%;
+  padding: 9px 42px 9px 16px;
+  margin-bottom: 24px;
   background: $white;
   border: 3px solid $gray-300;
-  margin-bottom: 24px;
-  padding: 9px 16px;
   @include border-radius(10px);
 
+  &::after{
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    font-family: "Font Awesome 5 Pro";
+    font-weight: 900;
+    color: $gray-300;
+    content: "\f0d7";
+    transform: translateY(-50%);
+  }
+
   .homonym-item-wrap {
-    width: 100%;
     display: flex;
+    align-items: center;
+    width: 100%;
   }
 }
 
@@ -81,6 +94,14 @@
     @include border-radius(10px);
     &.expand {
       display: block;
+    }
+
+    .homonym-list-item:first-child{
+      @include border-top-radius(7px);
+    }
+
+    .homonym-list-item:last-child{
+      @include border-bottom-radius(7px);
     }
 
   }
@@ -101,8 +122,11 @@
   @include media-breakpoint-down(sm) {
 
     &.selected {
-      background: $blue-300;
-      color: $white;
+      background: $blue-100;
+      .homonym-item,
+      .homonym-name{
+        color: $gray-1000;
+      }
     }
   }
 
@@ -125,9 +149,9 @@
   border-bottom: 1px #d8d8d8 solid;
 
   @include media-breakpoint-up(md) {
+    position: relative;
     display: flex;
     height: 100%;
-    position: relative;
     background: $gray-100;
   }
 
@@ -152,18 +176,6 @@
 
   &:hover {
     text-decoration: none;
-  }
-
-  &::after {
-    position: absolute;
-    top: 50%;
-    right: 1.25rem;
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-top: -.725rem;
-    font-family: "material-icons";
-    color: #7f8891;
-    content: "\e908";
   }
 
   .homonym-name-container {
@@ -260,9 +272,7 @@
   .homonym-matches,
   .homonym-intro {
     max-width: 100%;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    @include text-truncate();
   }
   .homonym-nr {
     top: -.0625rem;
@@ -273,7 +283,7 @@
     flex-shrink: 0;
     margin-right: .125rem;
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: $font-weight-bold;
   }
 
 }

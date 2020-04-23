@@ -19,30 +19,32 @@
 
   <div class="container-fluid homonym-page mt-3 mb-5">
     <div class="search-results-header px-0">
-      <div class="d-flex flex-row flex-wrap flex-md-nowrap align-items-start align-items-md-center pb-3">
+      <div class="d-flex flex-row flex-wrap align-items-center pb-3">
         <th:block th:replace="common-search :: form-match"></th:block>
-        <th:block th:replace="common-search :: lang-filter"></th:block>
-        <div class="border-left mt-3 mt-md-0 mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details col-12 col-md-auto">
-          <label class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
-          <div class="dropdown">
-            <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
-            </button>
-            <div class="dropdown-menu w-25 py-0" aria-labelledby="datasetMenuButton">
-              <div class="dropdown-menu-scroll px-2 py-1">
-              <th:block th:each="filterElem : ${datasetFilter}">
-                <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
+        <div class="d-flex align-items-center">
+          <th:block th:replace="common-search :: lang-filter"></th:block>
+          <div class="mr-auto mr-md-2 pl-2 d-flex align-items-center flex-wrap">
+            <label  class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
+            <div class="dropdown">
+              <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
+              </button>
+              <div class="dropdown-menu py-0" aria-labelledby="datasetMenuButton">
+                <div class="dropdown-menu-scroll px-2 py-1">
+                  <th:block th:each="filterElem : ${datasetFilter}">
+                    <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
                    class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
-                <th:block th:if="${filterElem.addSeparator}">
-                <div class="dropdown-divider"></div>
-                <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
-                </th:block>
-              </th:block>
+                    <th:block th:if="${filterElem.addSeparator}">
+                      <div class="dropdown-divider"></div>
+                      <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
+                    </th:block>
+                  </th:block>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <button name="feedback-btn" value="feedback" class="ml-auto btn btn-success btn-sm show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
+        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success btn-sm show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
       </div>
     </div>
     <div class="row message-wrap" th:if="${!wordsData.resultsExist}">

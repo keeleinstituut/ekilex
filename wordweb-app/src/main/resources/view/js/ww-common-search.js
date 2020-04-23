@@ -5,20 +5,10 @@ $(document).ready(function () {
 	initialiseRecording(speechRecognitionServiceUrl);
 
 
-	var selectedHomonymItem = $(".homonym-item").filter(function () {
-	    var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
-	    return isHomonymSelected == "true";
-	}).filter(":first");
-	if (selectedHomonymItem.get().length == 0) {
-	    selectedHomonymItem = $(".homonym-item:first");
-	}
+	var selectedHomonymItem = getSelectedHomonym();
 	selectedHomonymItem.delay(500).queue(function () {}).trigger('click');
 	selectedHomonymItem.addClass("animation-target");
-
-	var isMultiHomonym = $(".homonym-item").length > 1;
-	if (isMultiHomonym) {
-		$("#homonymListToggleButton").html(selectedHomonymItem.html());
-	}
+	setSelectedHomonymValueForMobile(getSelectedHomonym().html());
 
 
 	var searchWordAutocompleteMenuRenderer = function (ul, items) {
@@ -391,6 +381,23 @@ function clickSearchIfInputExists() {
 	var tempSearchWord = $("input[name='searchWord']").val();
 	if (tempSearchWord) {
 		$("#search-btn").click();
+	}
+}
+function getSelectedHomonym() {
+	var selectedHomonymItem = $(".homonym-item").filter(function () {
+		var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
+		return isHomonymSelected == "true";
+	}).filter(":first");
+	if (selectedHomonymItem.get().length == 0) {
+		selectedHomonymItem = $(".homonym-item:first");
+	}
+	return selectedHomonymItem;
+}
+function setSelectedHomonymValueForMobile(inputHTML){
+	console.log("set homonym value");
+	var isMultiHomonym = $(".homonym-item").length > 1;
+	if (isMultiHomonym) {
+		$("#homonymListToggleButton").html(inputHTML);
 	}
 }
 

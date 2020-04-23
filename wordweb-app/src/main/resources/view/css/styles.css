@@ -16334,18 +16334,33 @@ readers do not read off random characters that represent icons */
 }
 
 .homonym-list-toggle {
+  position: relative;
   width: 100%;
+  padding: 9px 42px 9px 16px;
+  margin-bottom: 24px;
   background: #fff;
   border: 3px solid #8a98a5;
-  margin-bottom: 24px;
-  padding: 9px 16px;
   border-radius: 10px;
 }
 
+.homonym-list-toggle::after {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  font-family: "Font Awesome 5 Pro";
+  font-weight: 900;
+  color: #8a98a5;
+  content: "\f0d7";
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
 .homonym-list-toggle .homonym-item-wrap {
-  width: 100%;
   display: -webkit-box;
   display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  width: 100%;
 }
 
 .homonym-list {
@@ -16360,6 +16375,14 @@ readers do not read off random characters that represent icons */
   }
   .homonym-list.expand {
     display: block;
+  }
+  .homonym-list .homonym-list-item:first-child {
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+  }
+  .homonym-list .homonym-list-item:last-child {
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
   }
 }
 
@@ -16380,8 +16403,11 @@ readers do not read off random characters that represent icons */
 
 @media (max-width: 767.98px) {
   .homonym-list-item.selected {
-    background: #3173b8;
-    color: #fff;
+    background: #a0dcf8;
+  }
+  .homonym-list-item.selected .homonym-item,
+  .homonym-list-item.selected .homonym-name {
+    color: #0e1013;
   }
 }
 
@@ -16403,10 +16429,10 @@ readers do not read off random characters that represent icons */
 
 @media (min-width: 768px) {
   .homonym-item {
+    position: relative;
     display: -webkit-box;
     display: flex;
     height: 100%;
-    position: relative;
     background: #ecf0f2;
   }
 }
@@ -16432,18 +16458,6 @@ readers do not read off random characters that represent icons */
 
 .homonym-item:hover {
   text-decoration: none;
-}
-
-.homonym-item::after {
-  position: absolute;
-  top: 50%;
-  right: 1.25rem;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-top: -.725rem;
-  font-family: "material-icons";
-  color: #7f8891;
-  content: "\e908";
 }
 
 @media (min-width: 768px) {
@@ -16538,9 +16552,9 @@ readers do not read off random characters that represent icons */
   .homonym-matches,
   .homonym-intro {
     max-width: 100%;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .homonym-nr {
     top: -.0625rem;
@@ -16551,7 +16565,7 @@ readers do not read off random characters that represent icons */
     flex-shrink: 0;
     margin-right: .125rem;
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 900;
   }
 }
 
@@ -17081,6 +17095,12 @@ body {
 
 .header-container.show-header {
   z-index: 999;
+}
+
+@media (max-width: 767.98px) {
+  .header-container .header-wrap {
+    padding: 8px 0;
+  }
 }
 
 .header-container.show-header .header-links {
@@ -18486,5 +18506,14 @@ footer p {
   position: absolute;
   clip: rect(0, 0, 0, 0);
   pointer-events: none;
+}
+
+@media (max-width: 767.98px) {
+  .feedback-btn {
+    position: fixed;
+    right: 8px;
+    bottom: 8px;
+    z-index: 1030;
+  }
 }
 /*# sourceMappingURL=styles.css.map */

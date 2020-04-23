@@ -3,8 +3,14 @@
   top: 0;
   z-index: 2;
   background: $body-bg;
+
   &.show-header {
     z-index: 999;
+  }
+  .header-wrap{
+    @include media-breakpoint-down(sm){
+      padding: 8px 0;
+    }
   }
 }
 

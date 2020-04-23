@@ -34,7 +34,7 @@
       <div class="d-flex flex-row flex-wrap flex-md-nowrap align-items-start align-items-md-center pb-3">
         <th:block th:replace="common-search :: form-match"></th:block>
         <th:block th:replace="common-search :: lang-filter"></th:block>
-        <button name="feedback-btn" value="feedback" class="ml-auto btn btn-secondary show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
+        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-secondary show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
       </div>
     </div>
     <div class="row message-wrap" th:if="${!wordsData.resultsExist}">

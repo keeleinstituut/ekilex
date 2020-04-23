@@ -28,19 +28,19 @@
     </div>
   </th:block>
   <th:block th:fragment="form-match">
-    <div class="pl-2 ml-2 border-left homonym-innerwrap show-with-details" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+    <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
       <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-      <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+      <button class="btn btn-link px-0 ml-1 " name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
     </div>
   </th:block>
   <th:block th:fragment="lang-filter">
-    <div class="mr-auto mr-md-2 pl-2 d-flex flex-column flex-md-row hide-with-details col-12 col-md-auto">
+    <div class="mr-auto mr-md-2 d-flex align-items-center flex-wrap">
       <label class="mr-2 my-0 p-0" th:text="#{label.filter.lang}">Keel</label>
       <div class="dropdown">
         <button class="btn btn-link dropdown-toggle p-0" type="button" id="destinLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span id="selected-langs" th:text="${selectedLangsStr}"></span>
         </button>
-        <div class="dropdown-menu px-3 w-25" aria-labelledby="destinLangMenuButton">
+        <div class="dropdown-menu px-3" aria-labelledby="destinLangMenuButton">
           <th:block th:each="filterElem : ${langFilter}">
             <a href="#" th:id="${'destin-lang-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
                class="dropdown-item px-2 py-1 dropdown-item-multiselect" th:classappend="${filterElem.selected ? 'active' : ''}">Keel</a>

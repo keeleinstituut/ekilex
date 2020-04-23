@@ -13,3 +13,12 @@
   clip: rect(0, 0, 0, 0);
   pointer-events: none;
 }
+
+.feedback-btn{
+  @include media-breakpoint-down(sm){
+    position: fixed;
+    right: 8px;
+    bottom: 8px;
+    z-index: $zindex-fixed;
+  }
+}

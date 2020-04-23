@@ -120,6 +120,8 @@ $(document).on("click", ".homonym-item", function() {
 			scrollLeft : $('.homonym-list-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
 		}, 200);
 	}
+	setSelectedHomonymValueForMobile($(this).html());
+	$(".homonym-list").removeClass("expand");
 });
 
 $(document).on("click", "[name='word-form-btn']", function() {
