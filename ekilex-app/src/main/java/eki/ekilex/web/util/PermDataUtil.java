@@ -3,10 +3,12 @@ package eki.ekilex.web.util;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityOperation;
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.service.LookupService;
@@ -15,7 +17,7 @@ import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 
 @Component
-public class PermDataUtil implements SystemConstant {
+public class PermDataUtil implements SystemConstant, GlobalConstant {
 
 	private final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.CRUD, AuthorityOperation.OWN);
 
@@ -133,6 +135,10 @@ public class PermDataUtil implements SystemConstant {
 			targetWordHasSuperiorLexemes = permissionService.wordDatasetExists(targetWordId, roleDatasetCode);
 		}
 		return targetWordHasSuperiorLexemes;
+	}
+
+	public boolean isMeaningOtherLexemesDeleteGranted(String wordLang) {
+		return !StringUtils.equals(LANGUAGE_CODE_EST, wordLang);
 	}
 
 	public boolean isOwnPermission(Long userId) {

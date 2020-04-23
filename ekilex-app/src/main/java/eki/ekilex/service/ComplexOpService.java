@@ -146,7 +146,7 @@ public class ComplexOpService {
 		for (Long lexemeIdToDelete : lexemeIdsToDelete) {
 			boolean isOnlyPrimaryLexemeForWord = lookupDbService.isOnlyPrimaryLexemeForWord(lexemeIdToDelete);
 			if (isOnlyPrimaryLexemeForWord) {
-				boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
+				boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeIdToDelete);
 				if (isOnlyLexemeForWord) {
 					isWordDelete = true;
 				} else {
