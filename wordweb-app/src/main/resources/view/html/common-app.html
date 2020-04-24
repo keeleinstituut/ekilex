@@ -263,34 +263,49 @@
     <footer role="contentinfo" class="footer mt-auto">
       <div class="container footer-wrapper">
         <div class="row">
-          <div class="col-12 col-sm-6 col-md-4">
-            <p>
-              <strong>Eesti Keele Instituut</strong>
-              <br>
-              Roosikrantsi 6, 10119 Tallinn
-              <br>
-              tel: 617 7500
-              <br>
-              e-post:
-              <a class="text-underline" href="mailto:eki@eki.ee">eki@eki.ee</a>
-              <br>
-              reg-kood: 70004011
-            </p>
+          <div class="col-12 col-md-4">
+            <div class="d-flex justify-content-center justify-content-md-start mb-4">
+              <img th:src="@{'/view/images/sonaveeb-light-logo-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
+            </div>
           </div>
-          <div class="col-12 col-md-4 order-2 order-md-1 col-reverse">
-            <span class="last-update">
+          <div class="col-12 col-md-4">
+            <div class="d-flex flex-column text-center text-md-left mb-4">
+              <span class="mb-1">Roosikantsi 6, 10119 Tallinn</span>
+              <span>Reg-kood: 70004011</span>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="d-flex flex-column text-center text-md-left mb-4">
+              <span class="mb-1">
+                <i class="fa fa-phone"></i>
+                <span>617 7500</span>
+              </span>
+              <span>
+                <i class="fa fa-envelope"></i>
+                <a href="mailto:eki@eki.ee">eki@eki.ee</a>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row row-muted mt-0">
+          <div class="col-12 col-md-4">
+            <div class="d-flex flex-column d-md-block text-center text-md-left mb-2">
               <span th:text="#{general.lastupdate}">Sõnaveeb 2020</span>
-              <span th:if="${appData != null}" th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}" style="color: gray"></span>
-            </span>
-            <span class="copyright">
-              &copy;&nbsp;
-              <span th:text="#{general.eki}">Eesti Keele Instituut 2020</span>
-            </span>
+              <span th:if="${appData != null}" th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}"></span>
+            </div>
           </div>
-          <div class="col-12 col-sm-6 col-md-4 order-1 order-md-2 justify-content-md-end d-flex">
-            <div class="social-list">
-              <span class="helper-text">Jaga meid:</span>
-              <a th:aria-label="#{aria.footer.facebook}" class="fb-icon icon" href="http://www.facebook.com/sharer.php?u=https://sonaveeb.ee" target="_blank" title="Share this in Facebook"></a>
+          <div class="col-12 col-md-4">
+            <div class="text-center text-md-left mb-2">
+              &copy;&nbsp;
+              <span th:text="#{general.eki}">Eesti Keele Instituut</span>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+              <a th:aria-label="#{aria.footer.facebook}" href="http://www.facebook.com/sharer.php?u=https://sonaveeb.ee" target="_blank" title="Share this in Facebook">
+                Jaga meid sotsiaalmeedias
+              </a>
+              <a class="fb-icon icon"></a>
             </div>
           </div>
         </div>
