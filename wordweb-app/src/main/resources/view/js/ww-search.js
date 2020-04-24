@@ -105,11 +105,6 @@ $(document).on("click", "a[id^='word-details-link']", function() {
 	fetchDetails(wordId, word, lang, wordSelectUrl);
 });
 
-$(document).on("click", "button[name='colloc-usages-btn']", function() {
-	$(this).closest("[id^='collocs-area']").find("[id^='colloc-usages-area']").fadeToggle();
-});
-
-
 $(document).on("click", ".homonym-item", function() {
 	$(".homonym-list-item").removeClass("selected last-selected");
 	$(".homonym-item:first").removeClass("animation-target").dequeue();

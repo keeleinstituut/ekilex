@@ -16477,6 +16477,10 @@ readers do not read off random characters that represent icons */
   }
 }
 
+.homonym-item .homonym-name-container .homonym-name {
+  padding-left: 4px;
+}
+
 @media (min-width: 768px) {
   .homonym-item .homonym-nr {
     display: inline-block;
@@ -16620,7 +16624,7 @@ readers do not read off random characters that represent icons */
 }
 
 .definition-row {
-  line-height: 1.1;
+  line-height: 1.2;
 }
 
 .definition-area {
@@ -16634,8 +16638,9 @@ readers do not read off random characters that represent icons */
   text-transform: uppercase;
 }
 
-.definition-value {
-  font-size: 1.2em;
+.definition-area,
+.matches {
+  padding-bottom: 12px;
 }
 
 .dependencies * {
@@ -16700,24 +16705,34 @@ readers do not read off random characters that represent icons */
   -webkit-box-align: center;
   align-items: center;
   float: left;
-  padding: .5rem .5rem .25rem;
+  padding: 0 .5rem;
   font-size: 1rem;
   font-style: italic;
   line-height: 1;
 }
 
 .btn-speaker {
-  padding: 10px 5px 5px;
+  padding: 10px 5px 0;
   color: #8a98a5;
   background: transparent;
 }
 
+.dependencies {
+  padding-bottom: 4px;
+}
+
 .colloc-row {
-  padding: 0 15px;
+  padding: 0 16px;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-flow: row wrap;
 }
 
 .colloc-inner-section {
-  padding: 0 10px;
+  padding: 0 16px;
+  margin-bottom: 4px;
 }
 
 .colloc-member {
@@ -16725,16 +16740,16 @@ readers do not read off random characters that represent icons */
   display: -webkit-box;
   display: flex;
   flex-wrap: nowrap;
-  padding: 0;
+  padding: 2px;
 }
 
-.colloc-col {
-  padding: 2px;
+.colloc-section {
+  padding-left: 1rem;
 }
 
 .content-title {
   z-index: 1;
-  padding: 5px 25px;
+  padding: 9px 16px;
   border-bottom: 1px solid #ccd9e0;
 }
 
@@ -16743,20 +16758,14 @@ readers do not read off random characters that represent icons */
     padding: 5px;
     overflow: auto;
   }
-  .meaning-panel .meaning,
-  .meaning-panel .meaning-meta {
-    float: left;
-  }
-  .meaning-panel .dependencies {
-    float: right;
-  }
 }
 
 .meaning-sub-heading {
-  padding: 10px;
-  margin: 0 -16px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
   text-transform: uppercase;
   background: #ecf0f2;
+  border-bottom: 1px solid #ccd9e0;
 }
 
 .recommended-usage-label {
@@ -16979,8 +16988,7 @@ body {
 
 @media (min-width: 768px) {
   .level-2-panel {
-    padding: 0  1.25rem 1.25rem;
-    margin: 0 -1.25rem;
+    margin: 0 -1rem;
   }
 }
 
@@ -17028,7 +17036,7 @@ body {
 
 @media (min-width: 768px) {
   .level-3-panel {
-    padding: 1rem 2.5rem 1rem 0;
+    padding: 1rem 2.5rem 1rem 32px;
   }
 }
 
@@ -17523,9 +17531,6 @@ body {
     margin-right: auto !important;
     margin-left: auto !important;
   }
-  .dependencies {
-    margin-top: -.25rem;
-  }
 }
 
 textarea.form-control {
@@ -17731,25 +17736,6 @@ textarea.form-control {
   border-radius: .3125rem;
 }
 
-.definition-row {
-  line-height: 1.5;
-}
-
-.definition-area {
-  padding-bottom: 12px;
-}
-
-.definition-area .domain {
-  font-size: 14px;
-  font-weight: 400;
-  color: #003f87;
-  text-transform: uppercase;
-}
-
-.definition-value {
-  font-size: 1.2em;
-}
-
 .secondary-morph {
   display: none;
 }
@@ -17863,18 +17849,6 @@ textarea.form-control {
   .relations-wrapper,
   .sentence-wrapper {
     padding-right: 2rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .more-btn {
-    right: -2.5rem;
-  }
-  .dependence-group {
-    margin-left: -.5rem;
-  }
-  .colloc-inner-section {
-    margin-left: -.5rem;
   }
 }
 

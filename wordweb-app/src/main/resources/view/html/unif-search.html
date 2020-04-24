@@ -75,7 +75,7 @@
                     <i class="fa fa-book mr-1 text-muted"></i>
                     <span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
                   </h5>
-                  <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.lexLexemes}">
+                  <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
                     <div th:replace="common-search :: lexeme-data"></div>
                   </section>
                 </th:block>
@@ -84,7 +84,7 @@
                     <i class="fa fa-book mr-1 text-muted"></i>
                     <span th:text="#{termdata.title}">Oskussõnastikes</span>
                   </h5>
-                  <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert row flex-nowrap" role="alert">
+                  <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert">
                     <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
                     <span th:text="#{warning.underconstruction.termview}">See on sõnapõhine vaade. Terminitööks vajalik mõistepõhine vaade (Terminiveeb) valmib mais</span>
                   </div>

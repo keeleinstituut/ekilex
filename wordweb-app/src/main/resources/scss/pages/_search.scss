@@ -19,8 +19,7 @@
     border-top: none;
   }
   @include media-breakpoint-up(md){
-    padding: 0  1.25rem 1.25rem;
-    margin: 0 -1.25rem;
+    margin: 0 -1rem;
   }
 
   .level-3-panel:last-of-type{
@@ -61,7 +60,7 @@
     }
   }
   @include media-breakpoint-up(md){
-    padding: 1rem 2.5rem 1rem 0;
+    padding: 1rem 2.5rem 1rem 32px;
 
   }
   @include media-breakpoint-down(md){
@@ -87,3 +86,4 @@
     @include box-shadow(0 4px 12px -4px rgba(0, 0, 0, .25));
   }
 }
+
