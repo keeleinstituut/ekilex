@@ -204,11 +204,11 @@
           <div class="modal-header">
             <h5 class="modal-title" th:text="#{feedback.title}">Tagasiside</h5>
             <a href="#" class="close" data-dismiss="modal" tabindex="0" aria-label="Close">
-              <span class="icon icon-close"></span>
+              <span class="fa fa-times"></span>
             </a>
           </div>
           <div name="dataDiv" class="modal-body">
-            <div class="modal-radio" id="feedbackMaterial">
+            <div class="modal-radio mb-3" id="feedbackMaterial" >
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="feedbackWordRadio" checked name="feedbackRadio" class="custom-control-input">
                 <label class="custom-control-label" for="feedbackWordRadio" th:text="#{label.fb.new.word}">Lisa uus sõna</label>
@@ -218,6 +218,7 @@
                 <label class="custom-control-label" for="feedbackCommentRadio" th:text="#{label.fb.comment}">Kommentaar</label>
               </div>
             </div>
+            <small>* Tärniga tähistatud väljad on kohustuslikud</small>
             <div id="feedWord" class="formarea show-section">
               <th:block th:insert="common-app :: feedback_new_word"></th:block>
             </div>
@@ -369,8 +370,9 @@
           <div class="custom-control custom-checkbox mt-2">
             <input type="checkbox" class="custom-control-input modal-check" id="modalCheck1">
             <label class="custom-control-label" for="modalCheck1">
-              <span th:text="#{label.fb.acknowledge}">Postitades uue sõna või kommentaari nõustud</span>
+              <span th:text="#{label.fb.acknowledge}">Lisades uue sõna või kommentaari nõustud</span>
               <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">kasutus- ja privaatsustingimustega</a>
+              <span>&nbsp;&ast;</span>
             </label>
           </div>
         </div>
@@ -378,8 +380,8 @@
       <div class="form-group">
         <div class="col-12 p-0 mt-2">
           <div class="text-right">
-            <a role="button" href="#" class="mr-3" data-dismiss="modal" th:text="#{button.fb.close}">Sulge</a>
-            <button role="button" type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+            <a role="button" href="#" class="btn btn-outline-primary mr-3" data-dismiss="modal" th:text="#{button.fb.cancel}">Tühistan</a>
+            <button role="button" type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Lisan</button>
           </div>
         </div>
       </div>
@@ -412,14 +414,14 @@
       </div>
       <div class="form-row">
         <div class="form-group col-12 col-md-6">
-          <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
+          <label class="col-form-label" th:text="#{label.fb.name}">Ees- ja pereonnanimi *</label>
           <input type="text" class="form-control" name="sender">
           <div class="errors">
             <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide" th:text="#{label.fb.required}">Väli on kohustuslik</div>
           </div>
         </div>
         <div class="form-group col-12 col-md-6">
-          <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
+          <label class="col-form-label" th:text="#{label.fb.email}">E-post *</label>
           <input type="email" class="form-control form-email" name="email">
           <div class="errors">
             <div role="error" aria-hidden="false" class="alert alert-danger hide" th:text="#{label.fb.required}">Väli on kohustuslik</div>
@@ -432,8 +434,9 @@
           <div class="custom-control custom-checkbox mt-2">
             <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2">
             <label class="custom-control-label" for="modalCheck2">
-              <span th:text="#{label.fb.acknowledge}">Postitades uue sõna või kommentaari nõustud</span>
+              <span th:text="#{label.fb.acknowledge}">Lisades uue sõna või kommentaari nõustud</span>
               <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">kasutus- ja privaatsustingimustega</a>
+              <span>&nbsp;&ast;</span>
             </label>
           </div>
         </div>
@@ -441,8 +444,8 @@
       <div class="form-group">
         <div class="col-12 p-0 mt-2">
           <div class="text-right">
-            <a role="button" href="#" class="mr-3" data-dismiss="modal" th:text="#{button.fb.close}">Sulge</a>
-            <button role="button" type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+            <a role="button" href="#" class="btn btn-outline-primary mr-3" data-dismiss="modal" th:text="#{button.fb.cancel}">Tühistan</a>
+            <button role="button" type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Lisan</button>
           </div>
         </div>
       </div>

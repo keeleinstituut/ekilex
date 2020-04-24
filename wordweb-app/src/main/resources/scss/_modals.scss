@@ -1,0 +1,69 @@
+/* stylelint-disable */
+@import "variables";
+
+.modal {
+  .modal-dialog {
+    max-width: 800px;
+  }
+
+  .modal-header {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    height: 80px;
+    padding: 1.5rem;
+
+    .modal-title {
+      font-size: 1.25rem;
+    }
+
+    .close {
+      padding: 0;
+      margin: 0;
+    }
+    .close .fa {
+      font-size: 32px;
+      font-weight: 900;
+      line-height: 37px;
+      padding: 0;
+    }
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+
+    small {
+      color: #5D606E;
+      font-size: 0.875rem;
+      line-height: 1rem;
+    }
+
+    .form-control {
+      background: #FFFFFF;
+      border: 1px solid #8A98A5;
+      box-sizing: border-box;
+      border-radius: 2px;
+    }
+
+    .btn {
+      padding: 10px 32px;
+      opacity: 1;
+      box-shadow: none;
+      border-radius: 20px;
+      box-sizing: border-box;
+      line-height: 20px;
+
+      &-primary {
+        background-color: $green-400;
+        border: 1px solid $green-400;
+        color: $white;
+      }
+
+      &-outline-primary {
+        background-color: transparent;
+        border: 1px solid $green-400;
+        color: $green-400;
+      }
+    }
+  }
+}

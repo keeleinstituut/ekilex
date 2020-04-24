@@ -249,14 +249,15 @@ input[type="checkbox"] {
 .custom-control-label {
   position: relative;
   margin-bottom: 0;
+  padding-left: 0.5rem;
 }
 .custom-control-label::before {
   position: absolute;
-  top: .25rem;
-  left: -1.5rem;
+  top: 0.125rem;
+  left: -1.25rem;
   display: block;
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
   pointer-events: none;
   content: "";
   -webkit-user-select: none;
@@ -267,27 +268,27 @@ input[type="checkbox"] {
 }
 .custom-control-label::after {
   position: absolute;
-  top: .25rem;
-  left: -1.5rem;
+  top: 0.125rem;
+  left: -1.25rem;
   display: block;
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
   content: "";
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: 50% 50%;
+  background-size: 65% 65%;
 }
 .custom-checkbox .custom-control-label::before {
   border-radius: .25rem;
 }
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #007bff;
+  background-color: #0053B3;
 }
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
 }
 .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {
-  background-color: #007bff;
+  background-color: #0053B3;
 }
 .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::after {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cpath stroke='%23fff' d='M0 2h4'/%3E%3C/svg%3E");
@@ -302,7 +303,7 @@ input[type="checkbox"] {
   border-radius: 50%;
 }
 .custom-radio .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #007bff;
+  background-color: #0053B3;
 }
 .custom-radio .custom-control-input:checked ~ .custom-control-label::after {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E");
@@ -396,7 +397,7 @@ input[type="checkbox"] {
 .custom-control-inline {
   display: -webkit-inline-box;
   display: inline-flex;
-  margin-right: 1rem;
+  margin-right: 2.8rem;
 }
 
 
@@ -566,8 +567,10 @@ textarea.form-control {
 }
 
 .custom-control-label::before {
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
+  background-color: #FFFFFF;
+  border: 1px solid #8A98A5;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .games-wrap {

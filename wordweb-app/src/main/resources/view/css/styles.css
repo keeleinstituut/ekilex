@@ -17531,15 +17531,16 @@ input[type="checkbox"] {
 .custom-control-label {
   position: relative;
   margin-bottom: 0;
+  padding-left: 0.5rem;
 }
 
 .custom-control-label::before {
   position: absolute;
-  top: .25rem;
-  left: -1.5rem;
+  top: 0.125rem;
+  left: -1.25rem;
   display: block;
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
   pointer-events: none;
   content: "";
   -webkit-user-select: none;
@@ -17551,15 +17552,15 @@ input[type="checkbox"] {
 
 .custom-control-label::after {
   position: absolute;
-  top: .25rem;
-  left: -1.5rem;
+  top: 0.125rem;
+  left: -1.25rem;
   display: block;
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
   content: "";
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: 50% 50%;
+  background-size: 65% 65%;
 }
 
 .custom-checkbox .custom-control-label::before {
@@ -17567,7 +17568,7 @@ input[type="checkbox"] {
 }
 
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #007bff;
+  background-color: #0053B3;
 }
 
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
@@ -17575,7 +17576,7 @@ input[type="checkbox"] {
 }
 
 .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {
-  background-color: #007bff;
+  background-color: #0053B3;
 }
 
 .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::after {
@@ -17595,7 +17596,7 @@ input[type="checkbox"] {
 }
 
 .custom-radio .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #007bff;
+  background-color: #0053B3;
 }
 
 .custom-radio .custom-control-input:checked ~ .custom-control-label::after {
@@ -17703,7 +17704,7 @@ input[type="checkbox"] {
 .custom-control-inline {
   display: -webkit-inline-box;
   display: inline-flex;
-  margin-right: 1rem;
+  margin-right: 2.8rem;
 }
 
 /* Custome Response */
@@ -17868,8 +17869,10 @@ textarea.form-control {
 }
 
 .custom-control-label::before {
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
+  background-color: #FFFFFF;
+  border: 1px solid #8A98A5;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .games-wrap {
@@ -18240,10 +18243,10 @@ textarea.form-control {
   bottom: 0;
   width: 100%;
   min-height: 132px;
-  padding: 24px 0;
+  padding: 1.5rem 0;
   background: #0E1013;
   color: #FFFFFF;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .footer a {
@@ -18263,12 +18266,12 @@ textarea.form-control {
 
 .footer .fb-icon {
   display: inline-block;
-  width: 16px;
-  height: 18px;
-  line-height: 18px;
+  width: 1rem;
+  height: 1.125rem;
+  line-height: 1.125rem;
   background: url(../images/fb-icn.svg) center center no-repeat;
   background-size: contain;
-  margin-left: 8px;
+  margin-left: 0.5rem;
 }
 
 .search-wrap {
@@ -18435,5 +18438,74 @@ textarea.form-control {
   color: #5d606e;
   border: 1px solid #8a98a5;
   border-radius: 3px;
+}
+
+/* stylelint-disable */
+.modal .modal-dialog {
+  max-width: 800px;
+}
+
+.modal .modal-header {
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  height: 80px;
+  padding: 1.5rem;
+}
+
+.modal .modal-header .modal-title {
+  font-size: 1.25rem;
+}
+
+.modal .modal-header .close {
+  padding: 0;
+  margin: 0;
+}
+
+.modal .modal-header .close .fa {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 37px;
+  padding: 0;
+}
+
+.modal .modal-body {
+  padding: 1.5rem;
+}
+
+.modal .modal-body small {
+  color: #5D606E;
+  font-size: 0.875rem;
+  line-height: 1rem;
+}
+
+.modal .modal-body .form-control {
+  background: #FFFFFF;
+  border: 1px solid #8A98A5;
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+
+.modal .modal-body .btn {
+  padding: 10px 32px;
+  opacity: 1;
+  box-shadow: none;
+  border-radius: 20px;
+  box-sizing: border-box;
+  line-height: 20px;
+}
+
+.modal .modal-body .btn-primary {
+  background-color: #00892e;
+  border: 1px solid #00892e;
+  color: #fff;
+}
+
+.modal .modal-body .btn-outline-primary {
+  background-color: transparent;
+  border: 1px solid #00892e;
+  color: #00892e;
 }
 /*# sourceMappingURL=styles.css.map */
