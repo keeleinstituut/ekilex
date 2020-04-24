@@ -22,10 +22,10 @@
       margin: 0;
     }
     .close .fa {
+      padding: 0;
       font-size: 32px;
       font-weight: 900;
       line-height: 37px;
-      padding: 0;
     }
   }
 
@@ -33,36 +33,36 @@
     padding: 1.5rem;
 
     small {
-      color: #5D606E;
-      font-size: 0.875rem;
+      font-size: .875rem;
       line-height: 1rem;
+      color: #5d606e;
     }
 
     .form-control {
-      background: #FFFFFF;
-      border: 1px solid #8A98A5;
       box-sizing: border-box;
+      background: #fff;
+      border: 1px solid #8a98a5;
       border-radius: 2px;
     }
 
     .btn {
-      padding: 10px 32px;
-      opacity: 1;
-      box-shadow: none;
-      border-radius: 20px;
       box-sizing: border-box;
+      padding: 10px 32px;
       line-height: 20px;
+      border-radius: 20px;
+      box-shadow: none;
+      opacity: 1;
 
       &-primary {
+        color: $white;
         background-color: $green-400;
         border: 1px solid $green-400;
-        color: $white;
       }
 
       &-outline-primary {
+        color: $green-400;
         background-color: transparent;
         border: 1px solid $green-400;
-        color: $green-400;
       }
     }
   }

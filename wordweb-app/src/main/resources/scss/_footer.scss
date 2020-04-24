@@ -5,9 +5,9 @@
   width: 100%;
   min-height: 132px;
   padding: 1.5rem 0;
-  background: #0E1013;
-  color: #FFFFFF;
   font-size: 1rem;
+  color: #fff;
+  background: #0e1013;
 
   a {
     color: inherit;
@@ -21,16 +21,16 @@
 
   .row-muted {
     font-size: 14px;
-    color: #CCD9E0;
+    color: #ccd9e0;
   }
 
   .fb-icon {
     display: inline-block;
     width: 1rem;
     height: 1.125rem;
+    margin-left: .5rem;
     line-height: 1.125rem;
     background: url(../images/fb-icn.svg) center center no-repeat;
     background-size: contain;
-    margin-left: 0.5rem;
   }
 }

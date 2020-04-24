@@ -1,26 +1,33 @@
-.logo{
+.logo {
   display: block;
-  background-image: url("../images/sonaveeb-logo-sm.svg");
+
   background-repeat: no-repeat;
   background-size: contain;
-  @include media-breakpoint-up(md){
-    background-image: url("../images/sonaveeb-logo-lg.svg");
 
-  }
 }
-.logo-header{
+
+.logo-header {
   width: 48px;
   height: 42px;
+  background-image: url("../images/sonaveeb-logo-sm.svg");
 
-  @include media-breakpoint-up(md){
+  @include media-breakpoint-up(md) {
     width: 186px;
     height: 47px;
+    background-image: url("../images/sonaveeb-logo-lg.svg");
+
+
   }
 }
-.logo-big{
+
+.logo-big {
+  display: block;
   width: 270px;
   height: 93px;
   margin: 0 auto;
+  background-image: url("../images/sonaveeb-logo-lg.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
 
   @include media-breakpoint-up(md) {
     width: 372px;

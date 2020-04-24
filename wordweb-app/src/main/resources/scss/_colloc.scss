@@ -10,9 +10,7 @@
   box-sizing: border-box;
   display: flex;
   flex-wrap: nowrap;
-  padding: 2px 5px;
-  background-color: $gray-100;
-  @include border-radius($border-radius-sm);
+  padding: 0;
 }
 
 .colloc-col{

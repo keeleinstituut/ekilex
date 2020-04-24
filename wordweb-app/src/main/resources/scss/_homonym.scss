@@ -100,12 +100,12 @@
 
   }
   @include media-breakpoint-up(md) {
-    background: none;
     display: flex;
     margin-bottom: -15px;
     overflow: hidden;
     overflow-x: scroll;
     white-space: nowrap;
+    background: none;
   }
   .homonym-list-item:first-child .homonym-item{
     @include border-top-left-radius(10px);
@@ -155,10 +155,10 @@
     position: relative;
     display: flex;
     height: 100%;
+    padding: 0 0 15px;
     background: $gray-100;
     border-right: 1px solid $gray-200;
     border-bottom: 0;
-    padding: 0 0 15px;
 
 
   }

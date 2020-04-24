@@ -394,7 +394,6 @@ function getSelectedHomonym() {
 	return selectedHomonymItem;
 }
 function setSelectedHomonymValueForMobile(inputHTML){
-	console.log("set homonym value");
 	var isMultiHomonym = $(".homonym-item").length > 1;
 	if (isMultiHomonym) {
 		$("#homonymListToggleButton").html(inputHTML);
