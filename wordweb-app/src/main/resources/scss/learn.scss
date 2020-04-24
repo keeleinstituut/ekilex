@@ -1,0 +1,48 @@
+/* stylelint-disable */
+.learn-container {
+    padding-top: 4.375rem;
+    text-align: left;
+}
+
+.col-num {
+    font-weight: bold;
+    color: rgb(0, 157, 181);
+    text-align: right;
+    padding-right: 1rem;
+    width: 4rem;
+}
+
+.col-bold {
+    font-weight: bold;
+    color: rgb(0, 157, 181);
+    padding-left: 1rem;
+    width: 4rem;
+}
+
+.colored-bold {
+    font-weight: bold;
+    color: rgb(0, 157, 181);
+}
+
+.highlighted {
+    font-weight: bold;
+    color: rgb(0, 157, 181);
+}
+
+.col-text {
+    width: 30%;
+}
+
+.learn-content {
+    height: calc(100vh - 5.5rem);
+    overflow-y: auto;
+    background-color: #F2F2F2;
+    height: 100%;
+}
+
+@media ( max-width : 768px) {
+    .learn-content {
+        height: unset;
+        padding-left: 2em;
+    }
+}

@@ -1,0 +1,37 @@
+/* stylelint-disable */
+eki-foreign {
+    font-style: italic;
+}
+
+.example-text eki-foreign {
+    font-style: normal;
+}
+
+eki-highlight {
+    font-weight: bold;
+}
+
+eki-stress {
+    font-weight: bold;
+}
+
+eki-sub {
+    vertical-align: sub;
+    font-size: 70%;
+}
+
+eki-sup {
+    vertical-align: super;
+    font-size: 70%;
+}
+
+eki-meta {
+    font-variant: small-caps;
+    font-stretch: expanded;
+}
+
+eki-link {
+    /*disabled until clicking has functionality*/
+    /*color: #004F87;*/
+    /*cursor: pointer;*/
+}

@@ -18197,4 +18197,91 @@ textarea.form-control {
   background-color: transparent;
   border: 1px solid #00892e;
 }
+
+/* stylelint-disable */
+eki-foreign {
+  font-style: italic;
+}
+
+.example-text eki-foreign {
+  font-style: normal;
+}
+
+eki-highlight {
+  font-weight: bold;
+}
+
+eki-stress {
+  font-weight: bold;
+}
+
+eki-sub {
+  vertical-align: sub;
+  font-size: 70%;
+}
+
+eki-sup {
+  vertical-align: super;
+  font-size: 70%;
+}
+
+eki-meta {
+  font-variant: small-caps;
+  font-stretch: expanded;
+}
+
+eki-link {
+  /*disabled until clicking has functionality*/
+  /*color: #004F87;*/
+  /*cursor: pointer;*/
+}
+
+/* stylelint-disable */
+.learn-container {
+  padding-top: 4.375rem;
+  text-align: left;
+}
+
+.col-num {
+  font-weight: bold;
+  color: #009db5;
+  text-align: right;
+  padding-right: 1rem;
+  width: 4rem;
+}
+
+.col-bold {
+  font-weight: bold;
+  color: #009db5;
+  padding-left: 1rem;
+  width: 4rem;
+}
+
+.colored-bold {
+  font-weight: bold;
+  color: #009db5;
+}
+
+.highlighted {
+  font-weight: bold;
+  color: #009db5;
+}
+
+.col-text {
+  width: 30%;
+}
+
+.learn-content {
+  height: calc(100vh - 5.5rem);
+  overflow-y: auto;
+  background-color: #F2F2F2;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .learn-content {
+    height: unset;
+    padding-left: 2em;
+  }
+}
 /*# sourceMappingURL=styles.css.map */
