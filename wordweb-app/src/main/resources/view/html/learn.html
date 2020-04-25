@@ -4,7 +4,6 @@
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
   <title>Sõnaveeb - Õpi eesti keelt</title>
   <th:block th:fragment="links">
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
     <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
 </th:block>
 </head>
@@ -14,11 +13,11 @@
   <th:block th:replace="common-app :: wcag-main"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu"></div>
-  <div class="container home-page-content">
+  <div class="container">
     <div class="row learn-container">
-      <div class="col-12 col-md-3 nav-placeholder"></div>
-      <aside class="col-12 col-md-3"  role="navigation" id="sidebar">
-        <ul class="mt-4">
+      <aside class="col-12 col-md-4 "  role="navigation" id="sidebar">
+        <div class="sticky-side-nav">
+          <ul class="mt-4 list-unstyled">
           <li><a href="#arvud">Arvud</a></li>
           <li><a href="#margid">Märgid</a></li>
           <li><a href="#aeg">Aeg</a></li>
@@ -37,8 +36,9 @@
           <li><a href="#kaaskiri" class="pl-4">Kaaskiri</a></li>
           <li><a href="#kasulikke">Kasulikke väljendeid</a></li>
         </ul>
+        </div>
       </aside>
-      <div class="col-12 col-md-9 learn-content" id="main" role="main">
+      <div class="col-12 col-md-8 learn-content" id="main" role="main">
         <div class="pb-4">
           <a name="arvud"></a>
         <h3 class="mt-4 mb-2 text-left">Arvud</h3>

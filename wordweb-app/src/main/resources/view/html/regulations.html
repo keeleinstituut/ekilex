@@ -3,7 +3,6 @@
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
 <title>Sõnaveeb - Privaatsuspoliitika</title>
 <th:block th:fragment="links">
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
   <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
 </th:block>
 </head>
@@ -11,12 +10,12 @@
   <th:block th:replace="common-app :: wcag-sidebar"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu"></div>
-  <div class="container home-page-content">
+  <div class="container">
     <div class="row learn-container">
-      <div class="col-12 col-md-3 nav-placeholder"></div>
-      <aside class="col-12 col-md-3" role="navigation" id="sidebar">
+      <aside class="col-12 col-md-4 " role="navigation" id="sidebar">
+        <div class="sticky-side-nav">
         <div th:replace="common-app :: important-links-menu"></div>
-        <ul class="mt-4">
+        <ul class="mt-4 list-unstyled">
           <li>
             <a href="#use1">Sõnaveebi kasutamine</a>
           </li>
@@ -33,8 +32,9 @@
             <a href="#use5">Küsimused ja kommentaarid</a>
           </li>
         </ul>
+        </div>
       </aside>
-      <div class="col-12 col-md-9 learn-content" id="main" role="main">
+      <div class="col-12 col-md-8 learn-content" id="main" role="main">
         <div class="pb-4">
           <h3 class="mt-4 mb-2 text-left">Kasutus- ja privaatsustingimused</h3>
           <h5 id="use1" class="colored-bold">Sõnaveebi kasutamine</h5>

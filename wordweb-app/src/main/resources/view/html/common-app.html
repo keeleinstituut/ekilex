@@ -44,9 +44,9 @@
   <!-- menu -->
   <th:block th:fragment="menu">
     <th:block th:replace="common-app :: update-msg"></th:block>
-    <div class="container-fluid header-container">
+    <div class="container-fluid header-container ">
       <div class="row header-wrap">
-        <div class="col-12">
+        <div class="col-12 d-flex align-items-center px-xl-0">
           <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header">
             <span class="sr-only">Sõnaveebi logo</span>
           </a>
@@ -242,14 +242,14 @@
   </th:block>
   <!-- About, Conditions, API, Regulations secondary IMPORTANT LINK MENU -->
   <th:block th:fragment="important-links-menu">
-    <ul class="mt-4">
-      <li>
+    <ul class="mt-4 list-unstyled">
+      <li class="mb-1">
         <a class="font-weight-bold text-uppercase" th:href="@{/about}" data-item-name="about">Portaalist</a>
       </li>
-      <li>
+      <li class="mb-1">
         <a class="font-weight-bold text-uppercase" th:href="@{/collections}" data-item-name="collections">Sõnakogud</a>
       </li>
-      <li>
+      <li class="mb-1">
         <a class="font-weight-bold text-uppercase" th:href="@{/regulations}" data-item-name="regulations">Kasutus- ja privaatsustingimused</a>
       </li>
     </ul>
