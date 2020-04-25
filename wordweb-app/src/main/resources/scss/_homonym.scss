@@ -48,7 +48,7 @@
 .homonym-panel {
   @include media-breakpoint-up(md) {
     overflow: hidden;
-    border-bottom: 1px solid $border-color;
+
   }
 }
 
@@ -111,7 +111,9 @@
     @include border-top-left-radius(10px);
   }
   .homonym-list-item:last-child .homonym-item {
-    border-bottom: 0;
+    @include media-breakpoint-down(sm){
+      border-bottom: 0;
+    }
   }
 }
 
@@ -131,6 +133,7 @@
     .homonym-item {
       @include media-breakpoint-up(md) {
         background: $white;
+        border-bottom-color: $white;
       }
     }
   }
@@ -149,7 +152,7 @@
   padding: 1.25rem;
   padding-right: 3.75rem;
   overflow: hidden;
-  border-bottom: 1px #d8d8d8 solid;
+  border-bottom: 1px solid $border-color;
 
   @include media-breakpoint-up(md) {
     position: relative;
@@ -158,9 +161,6 @@
     padding: 0 0 15px;
     background: $gray-100;
     border-right: 1px solid $gray-200;
-    border-bottom: 0;
-
-
   }
 
   &:hover {

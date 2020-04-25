@@ -16343,7 +16343,6 @@ readers do not read off random characters that represent icons */
 @media (min-width: 768px) {
   .homonym-panel {
     overflow: hidden;
-    border-bottom: 1px solid #ccd9e0;
   }
 }
 
@@ -16416,8 +16415,10 @@ readers do not read off random characters that represent icons */
   border-top-left-radius: 10px;
 }
 
-.homonym-list .homonym-list-item:last-child .homonym-item {
-  border-bottom: 0;
+@media (max-width: 767.98px) {
+  .homonym-list .homonym-list-item:last-child .homonym-item {
+    border-bottom: 0;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -16433,6 +16434,7 @@ readers do not read off random characters that represent icons */
 @media (min-width: 768px) {
   .homonym-list-item.selected .homonym-item {
     background: #fff;
+    border-bottom-color: #fff;
   }
 }
 
@@ -16448,7 +16450,7 @@ readers do not read off random characters that represent icons */
   padding: 1.25rem;
   padding-right: 3.75rem;
   overflow: hidden;
-  border-bottom: 1px #d8d8d8 solid;
+  border-bottom: 1px solid #ccd9e0;
 }
 
 @media (min-width: 768px) {
@@ -16460,7 +16462,6 @@ readers do not read off random characters that represent icons */
     padding: 0 0 15px;
     background: #ecf0f2;
     border-right: 1px solid #ccd9e0;
-    border-bottom: 0;
   }
 }
 
@@ -16620,6 +16621,7 @@ readers do not read off random characters that represent icons */
 @media (min-width: 576px) {
   .dropdown-menu .dropdown-menu-scroll {
     max-height: calc(100vh - 80px);
+    width: 300px;
   }
 }
 
