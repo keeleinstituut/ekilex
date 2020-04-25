@@ -62,7 +62,7 @@
             <div class="level-2-panel">
               <th:block th:if="${wordData.lexemesExist}">
                 <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-                  <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.lexLexemes}">
+                  <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.lexLexemes}">
                     <div th:replace="common-search :: lexeme-data"></div>
                   </section>
                 </th:block>

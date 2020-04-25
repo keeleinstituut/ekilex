@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success btn-sm show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
+        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
       </div>
     </div>
     <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
@@ -88,7 +88,7 @@
                     <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
                     <span th:text="#{warning.underconstruction.termview}">See on sõnapõhine vaade. Terminitööks vajalik mõistepõhine vaade (Terminiveeb) valmib mais</span>
                   </div>
-                  <section class="level-3-panel meaning-panel row d-block" th:each="lexeme : ${wordData.termLexemes}">
+                  <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.termLexemes}">
                     <div th:replace="common-search :: lexeme-data"></div>
                   </section>
                 </th:block>
@@ -97,8 +97,8 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data sidebar">
-            <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
             <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
+            <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: etymology"></th:block>
             <th:block th:replace="common-search-sidebar :: keelenou"></th:block>

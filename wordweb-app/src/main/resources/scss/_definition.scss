@@ -7,16 +7,11 @@
 }
 
 .definition-area .domain {
-  font-size: $font-size-sm;
-  font-weight: 400;
-  color: #003f87;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .definition-area,
-
 .matches{
   padding-bottom: 12px;
 }
-
 

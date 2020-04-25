@@ -1,37 +1,39 @@
 /* stylelint-disable */
 eki-foreign {
-    font-style: italic;
+  font-style: italic;
 }
 
 .example-text eki-foreign {
-    font-style: normal;
+  font-style: normal;
 }
 
 eki-highlight {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 eki-stress {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 eki-sub {
-    vertical-align: sub;
-    font-size: 70%;
+  font-size: 70%;
+  vertical-align: sub;
 }
 
 eki-sup {
-    vertical-align: super;
-    font-size: 70%;
+  font-size: 70%;
+  vertical-align: super;
 }
 
 eki-meta {
-    font-variant: small-caps;
-    font-stretch: expanded;
+  font-variant: small-caps;
+  font-stretch: expanded;
 }
 
 eki-link {
-    /*disabled until clicking has functionality*/
-    /*color: #004F87;*/
-    /*cursor: pointer;*/
+  /* disabled until clicking has functionality */
+
+  /* color: #004F87; */
+
+  /* cursor: pointer; */
 }

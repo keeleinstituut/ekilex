@@ -15,6 +15,9 @@
 
 .lang-btn{
   font-size: $h4-font-size;
+  @include media-breakpoint-up(md){
+    padding-right: 1rem;
+  }
 }
 
 

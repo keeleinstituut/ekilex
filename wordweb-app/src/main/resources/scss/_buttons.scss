@@ -3,6 +3,69 @@
   color: $gray-300;
   @include box-shadow(none);
 }
+.btn-primary,
+.btn-success{
+  box-shadow: none;
+}
+
+
+// Make a button look and behave like a link
+.btn-link-dark {
+  font-weight: $font-weight-normal;
+  color: $body-color;
+  text-decoration: underline;
+
+  @include hover () {
+    color: $gray-1000;
+    text-decoration: none;
+  }
+
+  &:focus,
+  &.focus {
+    text-decoration: none;
+    box-shadow: none;
+  }
+
+  &:disabled,
+  &.disabled {
+    color: $btn-link-disabled-color;
+    pointer-events: none;
+  }
+
+  // No need for an active state here
+}
+
+// Make a button look and behave like a link
+.btn-link-muted {
+  font-weight: $font-weight-bold;
+  color: $gray-350;
+  text-decoration: none;
+
+  @include hover () {
+    color: $gray-1000;
+    text-decoration: underline;
+  }
+
+  &:focus,
+  &.focus {
+    text-decoration: underline;
+    box-shadow: none;
+  }
+
+  &:disabled,
+  &.disabled {
+    color: $btn-link-disabled-color;
+    pointer-events: none;
+  }
+
+  // No need for an active state here
+}
+
+
+
+
+
+
 
 /* stylelint-disable */
 .btn-group-toggle > .btn input[type="radio"],
