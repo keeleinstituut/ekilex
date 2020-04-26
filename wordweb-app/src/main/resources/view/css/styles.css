@@ -2032,7 +2032,7 @@ pre code {
   color: #495057;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #5d606e;
+  border: 1px solid #8a98a5;
   border-radius: 0.25rem;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -2544,7 +2544,7 @@ textarea.form-control {
 }
 
 .btn.disabled, .btn:disabled {
-  opacity: 0.65;
+  opacity: 0.4;
   box-shadow: none;
 }
 
@@ -3716,7 +3716,7 @@ input[type="button"].btn-block {
   text-align: center;
   white-space: nowrap;
   background-color: #ccd9e0;
-  border: 1px solid #5d606e;
+  border: 1px solid #8a98a5;
   border-radius: 0.25rem;
 }
 
@@ -3957,7 +3957,7 @@ input[type="button"].btn-block {
   color: #495057;
   vertical-align: middle;
   background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px;
-  border: 1px solid #5d606e;
+  border: 1px solid #8a98a5;
   border-radius: 0.25rem;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
   -webkit-appearance: none;
@@ -4059,7 +4059,7 @@ input[type="button"].btn-block {
   line-height: 1.5;
   color: #495057;
   background-color: #fff;
-  border: 1px solid #5d606e;
+  border: 1px solid #8a98a5;
   border-radius: 0.25rem;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
@@ -16344,6 +16344,10 @@ readers do not read off random characters that represent icons */
   .homonym-panel {
     overflow: hidden;
   }
+  .homonym-panel + .word-details {
+    border-top: 1px solid #ccd9e0;
+    margin-top: -1px;
+  }
 }
 
 .homonym-list-toggle {
@@ -16620,8 +16624,8 @@ readers do not read off random characters that represent icons */
 
 @media (min-width: 576px) {
   .dropdown-menu .dropdown-menu-scroll {
-    max-height: calc(100vh - 80px);
     width: 300px;
+    max-height: calc(100vh - 80px);
   }
 }
 
@@ -16990,8 +16994,8 @@ body {
 
 .level-3-panel {
   position: relative;
-  border-bottom: 1px solid #ccd9e0;
   padding: 1rem;
+  border-bottom: 1px solid #ccd9e0;
 }
 
 @media (min-width: 768px) {
@@ -18009,15 +18013,6 @@ textarea.form-control {
 }
 
 /* stylelint-disable */
-.btn-group-toggle > .btn input[type="radio"],
-.btn-group-toggle > .btn input[type="checkbox"],
-.btn-group-toggle > .btn-group > .btn input[type="radio"],
-.btn-group-toggle > .btn-group > .btn input[type="checkbox"] {
-  position: absolute;
-  clip: rect(0, 0, 0, 0);
-  pointer-events: none;
-}
-
 @media (max-width: 767.98px) {
   .feedback-btn {
     position: fixed;
@@ -18030,10 +18025,10 @@ textarea.form-control {
 .tag {
   padding: 0 8px;
   margin-right: .25rem;
+  font-size: 1rem;
+  font-weight: 400;
   color: #5d606e;
   border: 1px solid #8a98a5;
-  font-weight: 400;
-  font-size: 1rem;
   border-radius: 3px;
 }
 
@@ -18078,32 +18073,10 @@ textarea.form-control {
   color: #5d606e;
 }
 
-.modal .modal-body .form-control {
-  box-sizing: border-box;
-  background: #fff;
-  border: 1px solid #8a98a5;
-  border-radius: 2px;
-}
-
 .modal .modal-body .btn {
-  box-sizing: border-box;
   padding: 10px 32px;
   line-height: 20px;
   border-radius: 20px;
-  box-shadow: none;
-  opacity: 1;
-}
-
-.modal .modal-body .btn-primary {
-  color: #fff;
-  background-color: #00892e;
-  border: 1px solid #00892e;
-}
-
-.modal .modal-body .btn-outline-primary {
-  color: #00892e;
-  background-color: transparent;
-  border: 1px solid #00892e;
 }
 
 /* stylelint-disable */
@@ -18150,10 +18123,10 @@ eki-link {
 }
 
 .learn-content {
-  background: #fff;
   margin-bottom: 32px;
-  border-radius: 10px;
   overflow: hidden;
+  background: #fff;
+  border-radius: 10px;
 }
 
 .col-num {

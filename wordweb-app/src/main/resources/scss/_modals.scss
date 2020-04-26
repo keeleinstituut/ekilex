@@ -38,32 +38,11 @@
       color: #5d606e;
     }
 
-    .form-control {
-      box-sizing: border-box;
-      background: #fff;
-      border: 1px solid #8a98a5;
-      border-radius: 2px;
-    }
 
     .btn {
-      box-sizing: border-box;
       padding: 10px 32px;
       line-height: 20px;
       border-radius: 20px;
-      box-shadow: none;
-      opacity: 1;
-
-      &-primary {
-        color: $white;
-        background-color: $green-400;
-        border: 1px solid $green-400;
-      }
-
-      &-outline-primary {
-        color: $green-400;
-        background-color: transparent;
-        border: 1px solid $green-400;
-      }
     }
   }
 }

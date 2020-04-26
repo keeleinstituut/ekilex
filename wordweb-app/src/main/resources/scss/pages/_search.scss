@@ -30,8 +30,8 @@
 
 .level-3-panel {
   position: relative;
-  border-bottom: 1px solid $gray-200;
   padding: 1rem;
+  border-bottom: 1px solid $gray-200;
 
   @include media-breakpoint-up(md){
     padding-right: 2.5rem;

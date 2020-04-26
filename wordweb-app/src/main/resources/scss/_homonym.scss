@@ -48,8 +48,12 @@
 .homonym-panel {
   @include media-breakpoint-up(md) {
     overflow: hidden;
-
+    & + .word-details{
+      border-top: 1px solid $border-color;
+      margin-top: -1px;
+    }
   }
+
 }
 
 .homonym-list-toggle {

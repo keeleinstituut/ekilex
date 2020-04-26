@@ -3,11 +3,11 @@
   text-align: left;
 }
 .learn-content{
-  background: $white;
   margin-bottom: 32px;
-  @include border-radius(10px);
   //Hide overflow because content editors might make mistakes
   overflow: hidden;
+  background: $white;
+  @include border-radius(10px);
 }
 .col-num {
   width: 4rem;

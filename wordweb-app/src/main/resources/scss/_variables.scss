@@ -60,6 +60,8 @@ $enable-shadows: true;
 
 $fa-font-path: "../fonts/fontawesome";
 
-$border-color:                $gray-200;
+$border-color: $gray-200;
 $link-color: $blue-300;
 $input-btn-font-size-sm: $font-size-md;
+$input-border-color: $gray-300;
+$btn-disabled-opacity: .4;

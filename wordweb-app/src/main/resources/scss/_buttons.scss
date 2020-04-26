@@ -61,22 +61,7 @@
   // No need for an active state here
 }
 
-
-
-
-
-
-
 /* stylelint-disable */
-.btn-group-toggle > .btn input[type="radio"],
-.btn-group-toggle > .btn input[type="checkbox"],
-.btn-group-toggle > .btn-group > .btn input[type="radio"],
-.btn-group-toggle > .btn-group > .btn input[type="checkbox"] {
-  position: absolute;
-  clip: rect(0, 0, 0, 0);
-  pointer-events: none;
-}
-
 .feedback-btn{
   @include media-breakpoint-down(sm){
     position: fixed;
