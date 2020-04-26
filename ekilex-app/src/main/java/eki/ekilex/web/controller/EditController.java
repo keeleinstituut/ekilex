@@ -379,6 +379,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		String opCode = confirmationRequest.getOpCode();
 		Long id = confirmationRequest.getId();
 		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
+		DatasetPermission userRole;
 
 		switch (opName) {
 		case "delete":
@@ -386,8 +387,11 @@ public class EditController extends AbstractPageController implements SystemCons
 			case "lexeme":
 				return complexOpService.validateLexemeDelete(id);
 			case "meaning":
-				DatasetPermission userRole = sessionBean.getUserRole();
+				userRole = sessionBean.getUserRole();
 				return complexOpService.validateMeaningDelete(id, userRole);
+			case "meaning_lexemes":
+				userRole = sessionBean.getUserRole();
+				return complexOpService.validateMeaningLexemesDelete(id, userRole);
 			}
 		}
 		throw new UnsupportedOperationException("Unsupported confirm operation: " + opName + " " + opCode);
@@ -470,6 +474,9 @@ public class EditController extends AbstractPageController implements SystemCons
 			break;
 		case "lexeme":
 			cudService.deleteLexeme(id);
+			break;
+		case "meaning_lexemes":
+			cudService.deleteMeaningLexemes(id);
 			break;
 		case "learner_comment":
 			cudService.deleteMeaningLearnerComment(id);

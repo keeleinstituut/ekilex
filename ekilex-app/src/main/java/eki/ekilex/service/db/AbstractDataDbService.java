@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
@@ -56,6 +57,20 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.from(WORD, PARADIGM, FORM)
 				.where(
 						WORD.ID.in(wordIds)
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.groupBy(WORD.ID)
+				.fetchInto(String.class);
+	}
+
+	public List<String> getLexemesWordValues(List<Long> lexemeIds) {
+		return create
+				.select(DSL.field("(array_agg(distinct form.value))[1]", String.class))
+				.from(LEXEME, WORD, PARADIGM, FORM)
+				.where(
+						LEXEME.ID.in(lexemeIds)
+								.and(WORD.ID.eq(LEXEME.WORD_ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name())))

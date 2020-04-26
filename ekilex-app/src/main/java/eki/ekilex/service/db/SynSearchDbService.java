@@ -93,7 +93,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.where(
 						l2.WORD_ID.eq(r.WORD2_ID)
 								.and(l2.DATASET_CODE.eq(datasetCode))
-								.and(l2.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(l2.MEANING_ID.eq(d.MEANING_ID))
 								.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%"))))
 				.groupBy(l2.WORD_ID)
@@ -191,7 +191,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(dsWhere))
 				.orderBy(DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2)
 				.fetchInto(WordSynLexeme.class);

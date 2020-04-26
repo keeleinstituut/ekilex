@@ -44,7 +44,7 @@ public class ComplexOpService {
 				questions.add(question);
 			} else {
 				isValid = false;
-				validationMessage += "Valitud ilmik on tähenduse ainus ilmik. Ilmikut ei saa kustutada, sest selle keelend on märgitud sünonüümiks. ";
+				validationMessage += "Valitud ilmiku kustutamisega kaasneks ka tähenduse kustutamine. Ilmikut ei saa kustutada, sest tähendusel on sünonüümiks märgitud keelend. ";
 			}
 		}
 
@@ -109,6 +109,68 @@ public class ComplexOpService {
 			question = "Palun kinnita terminite kustutamine";
 			questions.add(question);
 		}
+
+		return createConfirmationRequest(questions, validationMessage, isValid);
+	}
+
+	@Transactional
+	public ConfirmationRequest validateMeaningLexemesDelete(Long lexemeId, DatasetPermission userRole) {
+
+		List<String> questions = new ArrayList<>();
+		String question;
+		String validationMessage = "";
+		boolean isValid = true;
+
+		if (userRole == null) {
+			isValid = false;
+			validationMessage += "Ilmikute kustutamine pole ilma rollita õigustatud.";
+			return createConfirmationRequest(questions, validationMessage, isValid);
+		}
+
+		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningSameLangAndDatasetLexemeIds(lexemeId);
+		boolean areOnlyPrimaryLexemesForMeaning = lookupDbService.areOnlyPrimaryLexemesForMeaning(lexemeIdsToDelete);
+		if (areOnlyPrimaryLexemesForMeaning) {
+			boolean areOnlyLexemesForMeaning = lookupDbService.areOnlyLexemesForMeaning(lexemeIdsToDelete);
+			if (areOnlyLexemesForMeaning) {
+				question = "Ilmikute kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine";
+				questions.add(question);
+			} else {
+				isValid = false;
+				validationMessage += "Ilmikute kustutamisega kaasneks ka tähenduse kustutamine. Ilmikuid ei saa kustutada, sest tähendusel on sünonüümiks märgitud keelend. ";
+			}
+		}
+
+		boolean isWordDelete = false;
+		boolean isSecondaryLexemeConflict = false;
+
+		for (Long lexemeIdToDelete : lexemeIdsToDelete) {
+			boolean isOnlyPrimaryLexemeForWord = lookupDbService.isOnlyPrimaryLexemeForWord(lexemeIdToDelete);
+			if (isOnlyPrimaryLexemeForWord) {
+				boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeIdToDelete);
+				if (isOnlyLexemeForWord) {
+					isWordDelete = true;
+				} else {
+					isSecondaryLexemeConflict = true;
+					break;
+				}
+			}
+		}
+
+		if (isSecondaryLexemeConflict) {
+			isValid = false;
+			validationMessage += "Ilmikute kustutamisega kaasneks ka sünonüümiks märgitud keelendi(te) kustutamine. Ilmikut ei saa seetõttu kustutada. ";
+		} else if (isWordDelete) {
+			question = "Ilmikute kustutamisega kaasneb ka keelendi(te) kustutamine. Palun kinnita keelendi(te) kustutamine";
+			questions.add(question);
+		}
+
+		List<String> lexemeWordValuesToDelete = lookupDbService.getLexemesWordValues(lexemeIdsToDelete);
+		String joinedLexemeWords = StringUtils.join(lexemeWordValuesToDelete, ", ");
+		question = "Kustuvad järgnevad ilmikud: ";
+		question += joinedLexemeWords;
+		questions.add(question);
+		question = "Palun kinnita ilmikute kustutamine";
+		questions.add(question);
 
 		return createConfirmationRequest(questions, validationMessage, isValid);
 	}

@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.common.constant.LexemeType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
@@ -45,7 +45,7 @@ import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 
 @Component
-public class LifecycleLogDbService {
+public class LifecycleLogDbService implements GlobalConstant {
 
 	private static final String LOADER_USERNAME_PATTERN = "Ekilex %laadur";
 
@@ -105,7 +105,7 @@ public class LifecycleLogDbService {
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
-								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
 				.unionAll(DSL
 						.select(
@@ -134,7 +134,7 @@ public class LifecycleLogDbService {
 						.from(LEXEME, MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
 						.where(
 								LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.MEANING_ID.eq(MEANING_LIFECYCLE_LOG.MEANING_ID))
 								.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
 				.asTable("ll");

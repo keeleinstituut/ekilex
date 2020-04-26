@@ -522,7 +522,7 @@ public class CudDbService extends AbstractDataDbService {
 				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.PROCESS_STATE_CODE.ne(processStateCode)))
 				.execute();
 	}
@@ -533,7 +533,7 @@ public class CudDbService extends AbstractDataDbService {
 				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.PROCESS_STATE_CODE.ne(processStateCode)))
 				.execute();
 	}
@@ -1108,7 +1108,7 @@ public class CudDbService extends AbstractDataDbService {
 				.from(l)
 				.where(
 						l.WORD_ID.eq(w.ID)
-								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(l.DATASET_CODE.eq(DATASET_SSS)))
 				.asField();
 
@@ -1125,7 +1125,7 @@ public class CudDbService extends AbstractDataDbService {
 										.from(l)
 										.where(
 												l.WORD_ID.eq(w.ID)
-														.and(l.TYPE.eq(LexemeType.PRIMARY.name()))))
+														.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))))
 								.andExists(DSL
 										.select(f.ID)
 										.from(p, f)
