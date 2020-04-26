@@ -71,21 +71,23 @@ $(document).on("click", ".show-more", function() {
 	}
 	$(this).find("span").text(buttonText);
 
-	// content behaviour (this is shit, compliments to Trin****)
-	$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.toggleClass("expand");
+	if($(this).data("target") !== undefined){
+		console.log($(this).data("target"));
+		$($(this).data("target")).toggleClass('collapse');
+	}
+	else{
+		// TODO: Refactor all of this selector mess
+		$(this).parents(".word-relations, .dependencies, .collocations-section, .corp-panel")
+				.toggleClass("expand");
 
-	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.find(".colloc-col, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .secondary-morph, .word-options, .sentence-wrapper")
-			.toggleClass("fade-target");
+		$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .corp-panel")
+				.find(".colloc-col, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .secondary-morph, .word-options, .sentence-wrapper")
+				.toggleClass("fade-target");
 
-	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.find(".colloc-fulldata .colloc-col:lt(3), .dependencies .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
-			.removeClass("fade-target");
-});
-
-$(document).on("click", "[name='expand-usages-btn']", function() {
-	$(this).closest(".dependence-group").find(".usage-item[data-collapse='true']").toggleClass("d-none");
+		$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .corp-panel")
+				.find(".colloc-fulldata .colloc-col:lt(3), .dependencies .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
+				.removeClass("fade-target");
+	}
 });
 
 $(window).on("popstate", function(e) {

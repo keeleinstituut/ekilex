@@ -248,15 +248,10 @@
               <i th:each="government,iter : ${lexeme.governments}" th:text="${government.value + (iter.last ? '' : ', ')}"> </i>
             </div>
             <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
-              <th:block th:each="usage,usageIter : ${lexeme.usages}"
-                        th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
-
-                <div class="usage-item" th:data-collapse="${isCollapsable}" th:classappend="${isCollapsable ? 'd-none' : ''}">
-
+              <th:block th:each="usage,usageIter : ${lexeme.usages}">
+                <div class="usage-item"  >
                   <div  class="example-sentence-wrap" >
-
                     <span class="example-text" th:utext="${usage.usagePrese}"></span>
-
                     <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
                       <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
                         <span th:if="${sourceLink.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
@@ -291,15 +286,9 @@
                         <span th:each="odUsageAlternative : ${usage.odUsageAlternatives}" style="padding: .5rem .5rem .25rem" th:utext="${odUsageAlternative}"></span>
                       </div>
                     </th:block>
-
                   </div>
                 </div>
-
               </th:block>
-              <button class="show-more text-left m-2" name="expand-usages-btn" aria-expanded="false" th:data-see-more="#{button.see.more}" th:data-see-less="#{button.see.less}" th:if="${lexeme.moreUsages}">
-                <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
-                <span th:text="#{button.see.more}"></span>
-              </button>
             </div>
             <div class="mt-3" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
               <th:block th:each="imageFile : ${lexeme.imageFiles}">

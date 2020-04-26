@@ -22,12 +22,6 @@
   height: 0;
   overflow: hidden;
 }
-.morphology-full {
-  margin-right: -2.5rem !important;
-  margin-left: -2.5rem !important;
-  font-size: .75rem;
-}
-
 
 .dropdown-menu {
   border: none;
@@ -71,52 +65,6 @@
     opacity: 1;
   }
 }
-.more-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 3.75rem;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-}
-.more-btn:active,
-.more-btn:hover,
-.more-btn:focus {
-  outline: none !important;
-}
-.more-btn:active .icon::before,
-.more-btn:hover .icon::before,
-.more-btn:focus .icon::before {
-  color: white;
-  background-color: #07f;
-  opacity: .7;
-}
-.more-btn .icon::before {
-  position: relative;
-  display: inline-block;
-  padding: 0;
-  color: white;
-  background: #07f;
-  border: 2px solid #07f;
-  border-radius: 1.375rem;
-  -webkit-transform: rotate(270deg);
-  transform: rotate(270deg);
-}
-.expand .more-btn:focus .icon::before {
-  color: black;
-  background: white;
-  border-color: black;
-  outline: 0;
-  opacity: 1;
-}
-.more-btn:focus .icon::before {
-  color: white;
-  background: black;
-  border-color: black;
-  outline: 0;
-  opacity: 1;
-}
 .sidebar .more-btn {
   top: 1.5rem;
 }
@@ -127,13 +75,6 @@
 .label-md {
   color: #7f8891;
 }
-.expand .more-btn .icon::before {
-  color: #07f;
-  background: white;
-  border: 2px solid #07f;
-  transform: rotate(90deg);
-}
-
 .homonym-image {
   display: block;
   max-width: 100%;
@@ -164,14 +105,6 @@
     width: auto !important;
     max-width: 31.25rem !important;
   }
-
-  .back {
-    display: none;
-  }
-  .menu-btn {
-    right: 0;
-  }
-
 
   .animation-target {
     -webkit-animation: animation 1250ms linear both;
@@ -253,9 +186,6 @@
     margin-right: auto !important;
     margin-left: auto !important;
   }
-}
-textarea.form-control {
-  padding: .25rem 9.5rem .25rem 1.15625rem;
 }
 
 
@@ -349,18 +279,6 @@ textarea.form-control {
 .top-button .icon{
   font-size: 2rem;
 }
-.secondary-morph {
-  display: none;
-}
-.position-relative:not(.expand) .secondary-morph {
-  display: none;
-  opacity: 0;
-}
-.position-relative.expand .secondary-morph {
-  display: inline;
-  opacity: 1;
-}
-
 
 .alert-danger-ie {
   position: fixed;
@@ -368,7 +286,6 @@ textarea.form-control {
   bottom: 0;
   left: 0;
   z-index: 9999;
-  display: -webkit-box;
   display: flex;
   justify-content: center;
   padding: 8px 16px;
@@ -404,11 +321,8 @@ textarea.form-control {
   .more-btn .icon::before {
     top: .85rem;
   }
-  .morphology-panel .more-btn {
-    top: -.5rem;
-    right: -1.25rem;
-  }
-  .morphology-panel .position-relative,
+
+  .morphology-panel ,
   .relations-wrapper,
   .sentence-wrapper {
     padding-right: 2rem;
