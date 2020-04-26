@@ -1,5 +1,3 @@
-var windowWidthTreshold = 768;
-
 $(document).ready(function () {
 
 	initialiseRecording(speechRecognitionServiceUrl);
@@ -91,39 +89,6 @@ $(document).ready(function () {
 	$("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
 
 });
-
-function calculateAndSetStyles() {
-	var homonymItem = $(".homonym-item");
-	var homonymPanel = $(".homonym-panel");
-	var isWideWindow = $(window).width() >= windowWidthTreshold;
-	var isSingleHomonym = homonymItem.length === 1;
-	var isMultiHomonym = homonymItem.length > 1;
-	if (isWideWindow) {
-		$(".search-panel").removeClass("d-none");
-		$(".word-details").removeClass("d-none");
-		$(".show-with-details").removeClass("d-none");
-
-		if (isSingleHomonym) {
-			homonymPanel.addClass("d-none");
-		} else {
-			homonymPanel.removeClass("d-none");
-			if (!homonymItem.hasClass("last-selected")) {
-				$(".homonym-item:first").addClass("last-selected");
-			}
-			$(".last-selected").addClass("selected");
-		}
-	} else {
-		if (isMultiHomonym) {
-			if (!homonymPanel.hasClass("d-none")) {
-				$(".word-details").addClass("d-none");
-			}
-		}
-		if (isSingleHomonym && homonymPanel.hasClass("d-none")) {
-			$(".search-panel").addClass("d-none");
-		}
-		$(".show-with-details").addClass("d-none");
-	}
-}
 
 function playAudio(audioSource, onEndedCallback) {
 	var music = new Audio(audioSource);

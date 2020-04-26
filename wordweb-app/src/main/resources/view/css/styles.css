@@ -16345,33 +16345,33 @@ readers do not read off random characters that represent icons */
     overflow: hidden;
   }
   .homonym-panel + .word-details {
-    border-top: 1px solid #ccd9e0;
     margin-top: -1px;
+    border-top: 1px solid #ccd9e0;
   }
   .homonym-panel.overflow {
     position: relative;
   }
   .homonym-panel.overflow::before, .homonym-panel.overflow::after {
-    content: "";
-    display: block;
     position: absolute;
-    height: 100%;
-    width: 24px;
     top: 0;
     z-index: 1;
-    background: #000;
+    display: block;
+    width: 24px;
+    height: 100%;
     pointer-events: none;
+    content: "";
+    background: #000;
   }
   .homonym-panel.overflow::before {
     border-top-left-radius: 10px;
-    background: -webkit-gradient(linear, left top, right top, color-stop(-25%, #8A98A5), to(rgba(236, 240, 242, 0)));
-    background: linear-gradient(90deg, #8A98A5 -25%, rgba(236, 240, 242, 0) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(-25%, #8a98a5), to(rgba(236, 240, 242, 0)));
+    background: linear-gradient(90deg, #8a98a5 -25%, rgba(236, 240, 242, 0) 100%);
   }
   .homonym-panel.overflow::after {
     right: 0;
     border-top-right-radius: 10px;
-    background: -webkit-gradient(linear, right top, left top, color-stop(-25%, #8A98A5), to(rgba(236, 240, 242, 0)));
-    background: linear-gradient(270deg, #8A98A5 -25%, rgba(236, 240, 242, 0) 100%);
+    background: -webkit-gradient(linear, right top, left top, color-stop(-25%, #8a98a5), to(rgba(236, 240, 242, 0)));
+    background: linear-gradient(270deg, #8a98a5 -25%, rgba(236, 240, 242, 0) 100%);
   }
   .homonym-panel.overflow-right-end::after {
     display: none;
@@ -16436,13 +16436,13 @@ readers do not read off random characters that represent icons */
 
 @media (min-width: 768px) {
   .homonym-list {
-    background: none;
     display: -webkit-box;
     display: flex;
     margin-bottom: -15px;
     overflow: hidden;
     overflow-x: scroll;
     white-space: nowrap;
+    background: none;
   }
 }
 
@@ -16642,6 +16642,10 @@ readers do not read off random characters that represent icons */
 
 .text-wrap {
   white-space: normal !important;
+}
+
+.text-small {
+  font-size: 0.75rem !important;
 }
 
 .dropdown-menu {
@@ -16998,14 +17002,14 @@ body {
 }
 
 .content-panel {
-  -webkit-box-flex: 1;
-  flex: 1 1 auto;
-  min-height: 100%;
   display: -webkit-box;
   display: flex;
+  -webkit-box-flex: 1;
+  flex: 1 1 auto;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   flex-flow: column nowrap;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -17150,14 +17154,14 @@ body {
 }
 
 .homonym-page {
-  min-height: 100%;
-  -webkit-box-flex: 1;
-  flex: 1 1 auto;
   display: -webkit-box;
   display: flex;
+  -webkit-box-flex: 1;
+  flex: 1 1 auto;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   flex-flow: column;
+  min-height: 100%;
 }
 
 .homonym-page .search-results-header,
@@ -17451,8 +17455,8 @@ body {
 
 .homonym-image {
   display: block;
-  max-width: 100%;
-  max-height: 20vh;
+  width: 100%;
+  height: auto;
   margin: 0 auto;
 }
 
@@ -18136,6 +18140,10 @@ eki-link {
 
 .col-text {
   width: 30%;
+}
+
+.etymology-tree {
+  /* add styles here*/
 }
 
 @media (min-width: 768px) {
