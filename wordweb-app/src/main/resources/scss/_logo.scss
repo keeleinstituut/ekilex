@@ -10,12 +10,17 @@
   width: 48px;
   height: 42px;
   background-image: url("../images/sonaveeb-logo-sm.svg");
+  &.logo-light{
+    background-image: url("../images/sonaveeb-logo-light-sm.svg");
+  }
 
   @include media-breakpoint-up(md) {
     width: 186px;
     height: 47px;
     background-image: url("../images/sonaveeb-logo-lg.svg");
-
+    &.logo-light{
+      background-image: url("../images/sonaveeb-logo-light-lg.svg");
+    }
 
   }
 }
@@ -28,6 +33,10 @@
   background-image: url("../images/sonaveeb-logo-lg.svg");
   background-repeat: no-repeat;
   background-size: contain;
+
+  &.logo-big-light{
+    background-image: url("../images/sonaveeb-logo-light-lg.svg");
+  }
 
   @include media-breakpoint-up(md) {
     width: 372px;

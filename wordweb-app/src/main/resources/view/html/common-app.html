@@ -56,13 +56,13 @@
     </div>
     <th:block th:replace=":: feedback-form"></th:block>
   </th:block>
-  <th:block th:fragment="menu-with-back-btn">
+  <th:block th:fragment="menu-with-back-btn" th:with="pageContext=${pageContext}?:''">
     <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="container-fluid header-container">
       <div class="row header-wrap">
         <div class="col-12 d-flex align-items-center px-xl-0">
           <div class="mr-auto">
-            <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header">
+            <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header" th:classappend="${pageContext == 'simpleSearch' ? 'logo-light' : ''}">
               <span class="sr-only">Sõnaveebi logo</span>
             </a>
           </div>

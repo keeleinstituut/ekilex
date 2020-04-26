@@ -17732,11 +17732,18 @@ body {
   background-image: url("../images/sonaveeb-logo-sm.svg");
 }
 
+.logo-header.logo-light {
+  background-image: url("../images/sonaveeb-logo-light-sm.svg");
+}
+
 @media (min-width: 768px) {
   .logo-header {
     width: 186px;
     height: 47px;
     background-image: url("../images/sonaveeb-logo-lg.svg");
+  }
+  .logo-header.logo-light {
+    background-image: url("../images/sonaveeb-logo-light-lg.svg");
   }
 }
 
@@ -17748,6 +17755,10 @@ body {
   background-image: url("../images/sonaveeb-logo-lg.svg");
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+.logo-big.logo-big-light {
+  background-image: url("../images/sonaveeb-logo-light-lg.svg");
 }
 
 @media (min-width: 768px) {
