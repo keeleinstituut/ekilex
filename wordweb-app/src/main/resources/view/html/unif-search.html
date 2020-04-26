@@ -51,10 +51,10 @@
         <span th:text="#{'label.word.not.found.detail'}">Ei leidnud midagi</span>
       </div>
     </div>
-    <div role="main" class="content-panel px-3 ">
+    <main role="main" class="content-panel px-3 ">
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details"></div>
-    </div>
+    </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
       <div class="col-12 pt-2 ml-2" th:if="${!wordData.relevantDataExists}">
