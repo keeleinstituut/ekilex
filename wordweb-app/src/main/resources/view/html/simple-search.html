@@ -6,6 +6,7 @@
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-search.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-horizontal-scroll-panel.js}"></script>
 </th:block>
 </head>
 <body>
@@ -43,8 +44,8 @@
           <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>
         </div>
       </div>
-      <div class="col-12 d-md-block" th:if="${wordData.relevantDataExists}">
-        <div class="row">
+      <div class="col-12  d-md-block d-md-block d-flex flex-column" th:if="${wordData.relevantDataExists}">
+        <div class="row h-100 flex-grow-1 flex-shrink-1">
           <div class="col-md-7 col-lg-8 main-data">
             <div class="row">
               <th:block th:replace="common-search :: word-data"></th:block>

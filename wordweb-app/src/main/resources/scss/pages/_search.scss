@@ -3,10 +3,19 @@
 }
 
 .content-panel {
+  flex: 1 1 auto;
+  min-height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+
   @include media-breakpoint-up(md) {
     background-color: $white;
     @include box-shadow(0 4px 12px -4px rgba(0, 0, 0, .25));
     @include border-radius(.6875rem);
+  }
+
+  .word-details{
+    flex: 1 1 auto;
   }
 }
 
@@ -127,5 +136,17 @@
 .main-data {
   @include media-breakpoint-up(md){
     border-right: 1px $gray-200 solid;
+  }
+}
+
+.homonym-page{
+  min-height: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+
+  .search-results-header,
+  .content-panel{
+    width: 100%;
   }
 }

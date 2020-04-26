@@ -16348,6 +16348,37 @@ readers do not read off random characters that represent icons */
     border-top: 1px solid #ccd9e0;
     margin-top: -1px;
   }
+  .homonym-panel.overflow {
+    position: relative;
+  }
+  .homonym-panel.overflow::before, .homonym-panel.overflow::after {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 24px;
+    top: 0;
+    z-index: 1;
+    background: #000;
+    pointer-events: none;
+  }
+  .homonym-panel.overflow::before {
+    border-top-left-radius: 10px;
+    background: -webkit-gradient(linear, left top, right top, color-stop(-25%, #8A98A5), to(rgba(236, 240, 242, 0)));
+    background: linear-gradient(90deg, #8A98A5 -25%, rgba(236, 240, 242, 0) 100%);
+  }
+  .homonym-panel.overflow::after {
+    right: 0;
+    border-top-right-radius: 10px;
+    background: -webkit-gradient(linear, right top, left top, color-stop(-25%, #8A98A5), to(rgba(236, 240, 242, 0)));
+    background: linear-gradient(270deg, #8A98A5 -25%, rgba(236, 240, 242, 0) 100%);
+  }
+  .homonym-panel.overflow-right-end::after {
+    display: none;
+  }
+  .homonym-panel.overflow-left-end::before {
+    display: none;
+  }
 }
 
 .homonym-list-toggle {
@@ -16405,13 +16436,13 @@ readers do not read off random characters that represent icons */
 
 @media (min-width: 768px) {
   .homonym-list {
+    background: none;
     display: -webkit-box;
     display: flex;
     margin-bottom: -15px;
     overflow: hidden;
     overflow-x: scroll;
     white-space: nowrap;
-    background: none;
   }
 }
 
@@ -16966,12 +16997,28 @@ body {
   padding-top: .625rem;
 }
 
+.content-panel {
+  -webkit-box-flex: 1;
+  flex: 1 1 auto;
+  min-height: 100%;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-flow: column nowrap;
+}
+
 @media (min-width: 768px) {
   .content-panel {
     background-color: #fff;
     box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.25);
     border-radius: 0.6875rem;
   }
+}
+
+.content-panel .word-details {
+  -webkit-box-flex: 1;
+  flex: 1 1 auto;
 }
 
 .lexeme-level {
@@ -17100,6 +17147,22 @@ body {
   .main-data {
     border-right: 1px #ccd9e0 solid;
   }
+}
+
+.homonym-page {
+  min-height: 100%;
+  -webkit-box-flex: 1;
+  flex: 1 1 auto;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-flow: column;
+}
+
+.homonym-page .search-results-header,
+.homonym-page .content-panel {
+  width: 100%;
 }
 
 .header-container {
