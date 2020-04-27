@@ -293,11 +293,13 @@
                                 aria-expanded="false">Kustuta</button>
                         <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                           <a class="btn btn-secondary font-weight-bold btn-sm"
+                             href="#"
                              th:data-id="${lexeme.lexemeId}"
                              data-callback="doNewSearch"
                              data-toggle="deleteLexemeAndWordAndMeaning"
                              sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta koos tähendusega</a>
                           <a class="btn btn-secondary font-weight-bold btn-sm"
+                             href="#"
                              th:data-id="${lexeme.lexemeId}"
                              data-callback="doNewSearch"
                              data-toggle="deleteLexemeAndRusMeaningLexemes"

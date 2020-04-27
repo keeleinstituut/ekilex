@@ -19,4 +19,14 @@ where l.dataset_code = 'sss'
              where lff.lexeme_id = l.id
                and lff.freeform_id = ff.id
                and ff.type = 'USAGE'
-               and ff.complexity in ('SIMPLE', 'SIMPLE1'))
+               and ff.complexity in ('SIMPLE', 'SIMPLE1'));
+
+update freeform
+set value_prese = value_prese || '.jpg'
+where type = 'IMAGE_FILE'
+  and value_prese not like '%.%';
+
+update freeform
+set value_text = value_text || '.jpg'
+where type = 'IMAGE_FILE'
+  and value_text not like '%.%';

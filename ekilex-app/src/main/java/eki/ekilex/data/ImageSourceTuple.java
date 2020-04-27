@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import javax.persistence.Column;
-
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
@@ -9,25 +7,18 @@ public class ImageSourceTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "image_freeform_id")
 	private Long imageFreeformId;
 
-	@Column(name = "image_freeform_value_text")
 	private String imageFreeformValueText;
 
-	@Column(name = "title_freeform_value_text")
 	private String titleFreeformValueText;
 
-	@Column(name = "source_link_id")
 	private Long sourceLinkId;
 
-	@Column(name = "source_link_type")
 	private ReferenceType sourceLinkType;
 
-	@Column(name = "source_link_name")
 	private String sourceLinkName;
 
-	@Column(name = "source_link_value")
 	private String sourceLinkValue;
 
 	public Long getImageFreeformId() {

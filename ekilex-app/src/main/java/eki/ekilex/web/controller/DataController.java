@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -72,7 +73,8 @@ public class DataController implements SystemConstant, WebConstant {
 	@ResponseBody
 	public ResponseEntity<Resource> serveImage(@PathVariable String fileName) {
 
-		Resource resource = fileService.getFileAsResource(fileName);
+		String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
+		Resource resource = fileService.getFileAsResource(fileNameWithoutExtension);
 		return ResponseEntity
 				.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
