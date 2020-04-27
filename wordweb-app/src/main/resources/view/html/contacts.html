@@ -3,18 +3,16 @@
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
 <title>Sõnaveeb - Kontakt</title>
 <th:block th:fragment="links">
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
 </th:block>
 </head>
 <body>
   <th:block th:replace="common-app :: wcag-main"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu"></div>
-  <div class="container home-page-content">
+  <div class="container ">
     <div class="row learn-container">
-      <aside class="col-12 col-md-3"></aside>
-      <div id="main" role="main" class="col-12 col-md-9 learn-content">
-        <div class="pb-4">
+      <div id="main" role="main" class="col-12 col-md-8 offset-md-4 learn-content">
+        <div class="py-4">
           <h3>Kontakt</h3>
           <p>
             <strong>Eesti Keele Instituut</strong>

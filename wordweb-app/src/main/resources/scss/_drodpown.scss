@@ -6,6 +6,7 @@
     overflow: auto;
 
     @include media-breakpoint-up(sm){
+      width: 300px;
       max-height: calc(100vh - 80px);
     }
   }

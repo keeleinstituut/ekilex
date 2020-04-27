@@ -3,7 +3,6 @@
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
 <title>Sõnaveeb - Kasutustingimused</title>
 <th:block th:fragment="links">
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
   <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
 </th:block>
 </head>
@@ -12,27 +11,28 @@
   <th:block th:replace="common-app :: wcag-main"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu"></div>
-  <div class="container home-page-content">
+  <div class="container">
     <div class="row learn-container">
-      <div class="col-12 col-md-3 nav-placeholder"></div>
-      <aside class="col-12 col-md-3" role="navigation" id="sidebar">
-        <div th:replace="common-app :: important-links-menu"></div>
-        <ul class="mt-4">
-          <li>
-            <a href="#">Tähtis alapealkiri üks</a>
-          </li>
-          <li>
-            <a href="#">Ohoooo! Veel üks tähtis alapealkiri</a>
-          </li>
-          <li>
-            <a href="#">Oi-Oi! Leidub veel üks alapealkiri</a>
-          </li>
-          <li>
-            <a href="#">Viimane mitte nii tähtis sisujupp</a>
-          </li>
-        </ul>
+      <aside class="col-12 col-md-4" role="navigation" id="sidebar">
+        <div class="sticky-side-nav">
+          <div th:replace="common-app :: important-links-menu"></div>
+          <ul class="mt-4 list-unstyled">
+            <li>
+              <a href="#">Tähtis alapealkiri üks</a>
+            </li>
+            <li>
+              <a href="#">Ohoooo! Veel üks tähtis alapealkiri</a>
+            </li>
+            <li>
+              <a href="#">Oi-Oi! Leidub veel üks alapealkiri</a>
+            </li>
+            <li>
+              <a href="#">Viimane mitte nii tähtis sisujupp</a>
+            </li>
+          </ul>
+        </div>
       </aside>
-      <div id="main" role="main" class="col-12 col-md-9 learn-content">
+      <div id="main" role="main" class="col-12 col-md-8 learn-content">
         <div class="pb-4">
           <h3 class="mt-4 mb-2 text-left">Kasutustingimused</h3>
           <p>Info lisandub lähinädalate jooksul</p>

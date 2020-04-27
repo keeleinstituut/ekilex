@@ -1,62 +1,54 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-  <th:block th:fragment="od-word-recommendations">
-    <section class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
-      <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
-        <div class="col-12">
-          <h5 class="recommended-usage-label">
-            <span th:text="#{label.od.recommend}" class="label-text">ÕS soovitab:</span>
-          </h5>
-          <div th:utext="${odWordRecommendation}"></div>
-        </div>
-      </th:block>
-    </section>
-  </th:block>
   <th:block th:fragment="paradigms">
     <section class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
       <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
-        <h5 class="font-weight-bold mb-0">
+        <h5 class="font-weight-bold mb-0 d-flex align-items-center">
           <span th:text="#{label.word.forms}">Sõnavormid</span>
-          <button type="button" class="alert-icn border-0" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="bottom" th:title="#{forms.dataset.title}"></button>
+          <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="bottom" th:title="#{forms.dataset.title}"><i class="fas fa-info-circle"></i></button>
         </h5>
         <span th:text="#{label.no.data}">Andmed puuduvad</span>
       </div>
       <div class="col-12 morphology-panel" th:unless="${wordData.unknownForm}">
-        <h5 class="font-weight-bold mb-0">
+        <h5 class="font-weight-bold mb-0 d-flex align-items-center">
           <span th:text="#{label.word.forms}">Sõnavormid</span>
-          <button type="button" class="alert-icn border-0" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}"></button>
+          <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}"><i class="fas fa-info-circle"></i></button>
         </h5>
-        <div class="position-relative" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-          <div class="morphology-section d-flex">
+        <div class="morphology-paradigm" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
+          <div id="morphologyTogglePanel" class="morphology-section d-flex mb-2 collapse">
+
             <div class="d-flex flex-column w-50 mt-2" th:each="paradigmGroup1 : ${paradigm.groups}">
               <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}" class="secondary-morph"></h5>
               <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
-                <div th:each="form : ${paradigmGroup1.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                  <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
+
+                <div class="d-flex align-items-center" th:each="form : ${paradigmGroup1.forms1}" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+
+                  <div class="morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
                     th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
-                  <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}" th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
+
+                  <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}" th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
                     onclick="generateAudioAndPlay(this)">
                     <span class="icon icon-speaker"></span>
                   </button>
                 </div>
               </th:block>
               <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms2)}">
-                <div th:each="form : ${paradigmGroup1.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                  <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
+                <div class="d-flex align-items-center my-2" th:each="form : ${paradigmGroup1.forms2}" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                  <div class="morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
                     th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
-                  <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}" th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
+                  <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}" th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
                     onclick="generateAudioAndPlay(this)">
                     <span class="icon icon-speaker"></span>
                   </button>
                 </div>
               </th:block>
               <th:block th:if="${paradigmGroup1.groupsExist || paradigmGroup1.formsExist}">
-                <div class="d-block" th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
-                  <h6 class="main-title" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="secondary-morph"></h6>
+                <div class="d-block my-2" th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
+                  <h6 class="main-title font-weight-bold my-2" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="secondary-morph"></h6>
                   <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms1)}">
-                    <div th:each="form : ${paradigmGroup2.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                      <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
+                    <div class="d-flex align-items-center" th:each="form : ${paradigmGroup2.forms1}" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                      <div class="morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
                         th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
                       <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
                         th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
@@ -65,33 +57,33 @@
                     </div>
                   </th:block>
                   <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms2)}">
-                    <div th:each="form : ${paradigmGroup2.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                      <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
+                    <div class="d-flex align-items-center my-2" th:each="form : ${paradigmGroup2.forms2}" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                      <div class="morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
                         th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
-                      <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
+                      <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
                         th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
                         <span class="icon icon-speaker"></span>
                       </button>
                     </div>
                   </th:block>
                   <th:block th:if="${paradigmGroup2.groupsExist || paradigmGroup2.formsExist}">
-                    <div class="d-flex flex-column" th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
-                      <h6 th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="secondary-morph"></h6>
+                    <div class="d-flex flex-column my-2" th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
+                      <h6 class="font-weight-bold text-secondary" th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="secondary-morph"></h6>
                       <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms1)}">
-                        <div th:each="form : ${paradigmGroup3.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                          <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
+                        <div class="d-flex align-items-center" th:each="form : ${paradigmGroup3.forms1}" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                          <div class="morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
                             th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
-                          <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
+                          <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
                             th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
                             <span class="icon icon-speaker"></span>
                           </button>
                         </div>
                       </th:block>
                       <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms2)}">
-                        <div th:each="form : ${paradigmGroup3.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                          <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
+                        <div class="d-flex align-items-center" th:each="form : ${paradigmGroup3.forms2}" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                          <div class="morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
                             th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
-                          <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
+                          <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
                             th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
                             <span class="icon icon-speaker"></span>
                           </button>
@@ -103,7 +95,7 @@
               </th:block>
             </div>
           </div>
-          <button class="show-more" aria-expanded="false" th:data-see-more="#{button.see.more}" th:data-see-less="#{button.see.less}" th:if="${paradigm.expandable}">
+          <button class="show-more btn btn-link-muted btn-sm ml-n2" aria-expanded="false" data-target="#morphologyTogglePanel" th:data-see-more="#{button.see.more}" th:data-see-less="#{button.see.less}" th:if="${paradigm.expandable}">
             <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
             <span th:text="#{button.see.more}"></span>
           </button>
@@ -112,12 +104,25 @@
       </div>
     </section>
   </th:block>
+  <th:block th:fragment="od-word-recommendations">
+    <section class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
+      <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
+        <div class="col-12">
+          <h5 class="recommended-usage-label">
+            <i class="fa fa-book mr-1"></i>
+            <span th:text="#{label.od.recommend}" class="label-text">ÕS soovitab:</span>
+          </h5>
+          <p th:utext="${odWordRecommendation}"></p>
+        </div>
+      </th:block>
+    </section>
+  </th:block>
   <th:block th:fragment="word-relations">
     <section class="level-3-panel row">
       <div class="col-12 word-relations">
-        <h5 class="font-weight-bold">
+        <h5 class="font-weight-bold d-flex align-items-center">
           <span th:text="#{label.word.relations}">Sõna seosed</span>
-          <span th:aria-label="#{label.word.info}" tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}"></span>
+          <button type="button" th:aria-label="#{label.word.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}"><i class="fas fa-info-circle"></i></button>
         </h5>
         <div th:unless="${wordData.word.wordRelationsExist}">
           <span th:text="#{label.no.data}">Andmed puuduvad</span>
@@ -159,7 +164,7 @@
               </th:block>
             </div>
           </div>
-          <button class="show-more" aria-expanded="false" th:data-see-more="#{button.see.more}" th:data-see-less="#{button.see.less}" th:if="${wordData.word.moreWordRelations}">
+          <button class="show-more btn btn-link-muted btn-sm ml-n2" aria-expanded="false" th:data-see-more="#{button.see.more}" th:data-see-less="#{button.see.less}" th:if="${wordData.word.moreWordRelations}">
             <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
             <span th:text="#{button.see.more}"></span>
           </button>
@@ -170,22 +175,20 @@
   <th:block th:fragment="etymology">
     <section class="level-3-panel row">
       <div class="col">
-        <h5 class="font-weight-bold">
+        <h5 class="font-weight-bold d-flex align-items-center">
           <span th:text="#{label.word.etymology}">Päritolu</span>
-          <span th:aria-label="#{label.word.info}" tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}"></span>
+          <button type="button" th:aria-label="#{label.word.info}"  class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}"><i class="fas fa-info-circle"></i></button>
+          <span class="tag" th:if="${(wordData.word.wordEtymology != null) and (wordData.word.wordEtymology.etymWrapup != null)}"  th:utext="${wordData.word.wordEtymology.etymWrapup}"></span>
         </h5>
         <div th:if="${wordData.word.wordEtymology == null}">
           <span th:text="#{label.no.data}">Andmed puuduvad</span>
         </div>
         <div th:if="${wordData.word.wordEtymology != null}">
-          <div th:if="${wordData.word.wordEtymology.etymWrapup != null}">
-            <span th:utext="${wordData.word.wordEtymology.etymWrapup}"></span>
-          </div>
+
           <div th:if="${not #lists.isEmpty(wordData.word.wordEtymology.etymLevelsWrapup)}">
-            <ul style="margin-bottom: 0">
-              <li th:each="wordEtym : ${wordData.word.wordEtymology.etymLevelsWrapup}">
-                &lt;
-                <span th:utext="${wordEtym}"></span>
+            <ul class="list-unstyled etymology-tree">
+              <li class="d-flex align-items-start mb-2" th:each="wordEtym : ${wordData.word.wordEtymology.etymLevelsWrapup}">
+               <span class="bg-light rounded px-2 mr-1"><i class="fas fa-angle-left"></i></span><span th:utext="${wordEtym}"></span>
               </li>
             </ul>
           </div>
@@ -201,9 +204,9 @@
           <h5 class="font-weight-bold mb-0">
             <span th:text="#{sentence.same.as}"></span>
             <a th:if="${wordData.word.lang == 'est'}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|" th:href="${'https://kn.eki.ee/?Q=' + wordData.word.word}"
-              target="_blank">e-keelenõus</a>
+              target="_blank">e-keelenõus <i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
             <a th:if="${wordData.word.lang == 'rus'}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
-              th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + wordData.word.word}" target="_blank">vene-eesti sõnaraamatus</a>
+              th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + wordData.word.word}" target="_blank">vene-eesti sõnaraamatus<i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
           </h5>
         </div>
       </div>

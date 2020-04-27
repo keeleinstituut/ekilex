@@ -4,17 +4,37 @@
 //Import Bootstrap
 @import "bootstrap-import";
 
+@import "fonts/font-imports";
+//@import "../../../../node_modules/simplelightbox/src/simple-lightbox";
 
 //Import custom styles
 @import "homonym";
 @import "lang-code";
 @import "utils";
 @import "drodpown";
-@import "meaning-sub-headings";
 @import "definition";
 @import "dependencies";
 @import "colloc";
 @import "content-title";
 @import "meaning-panel";
 @import "recommended-usage-label";
+@import "general-layout";
+@import "pages/pages";
+@import "header";
+@import "header-menu";
+@import "header-btns";
+@import "custom-icons";
+@import "legacy-styles";
+@import "alert";
+@import "logo";
+@import "footer";
+@import "main-search";
+@import "buttons";
+@import "tag";
+@import "modals";
 
+@import "eki-markup";
+@import "learn";
+@import "etymology-tree";
+@import "sticky-side-nav";
+@import "morphology";

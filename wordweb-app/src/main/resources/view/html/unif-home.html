@@ -6,23 +6,20 @@
   <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
 </th:block>
 </head>
-<body class="home-page">
+<body class="home-page d-flex flex-column">
   <th:block th:replace="common-app :: update-msg"></th:block>
   <th:block th:replace="common-app :: wcag-search"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <div class="header-container">
-    <button class="btn menu-btn position-static ml-auto" th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
-      <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
-      <span class="icon icon-menu"></span>
-    </button>
-    <div th:replace="common-app :: menu-links"></div>
+  <div class="header-container d-flex">
+    <div th:replace="common-app :: lang-and-menu-btn"></div>
   </div>
+
   <div class="container-fluid home-page-content">
     <div class="row">
       <div class="col align-self-center main-content-wrapper">
         <div class="row">
           <div aria-hidden="true" class="col-12 mb-1 mb-md-2">
-            <span class="icon icon-logo logo-main"></span>
+            <span class="logo logo-big"></span>
           </div>
         </div>
         <div class="row">
@@ -35,8 +32,14 @@
             <div th:replace="common-search :: search"></div>
           </div>
         </div>
+        <div class="text-center mt-5">
+          <a th:href="@{/lite}" target="_blank" class="link simple-search-brand-link" data-item-name="search-lite">
+            <span th:text="#{menu.search.lite}">Keeleõppija sõnaveeb</span>
+            <i class="fas fa-external-link-alt ml-2" aria-hidden="true"></i>
+          </a>
+        </div>
         <div class="logo-wrapper">
-          <ul class="logo-list">
+          <ul class="logo-list list-unstyled">
             <li>
               <span class="esf-logo mini-logo"></span>
             </li>

@@ -16,7 +16,6 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
 		fetchCorpSentences(lang, word);
 		setHomonymNrVisibility();
-		calculateAndSetStyles();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
 		$('[data-toggle="popover"]').popover({
 			placement: 'top',
@@ -72,21 +71,23 @@ $(document).on("click", ".show-more", function() {
 	}
 	$(this).find("span").text(buttonText);
 
-	// content behaviour (this is shit, compliments to Trin****)
-	$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.toggleClass("expand");
+	if($(this).data("target") !== undefined){
+		console.log($(this).data("target"));
+		$($(this).data("target")).toggleClass('collapse');
+	}
+	else{
+		// TODO: Refactor all of this selector mess
+		$(this).parents(".word-relations, .dependencies, .collocations-section, .corp-panel")
+				.toggleClass("expand");
 
-	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.find(".colloc-col, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .secondary-morph, .word-options, .sentence-wrapper")
-			.toggleClass("fade-target");
+		$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .corp-panel")
+				.find(".colloc-col, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .secondary-morph, .word-options, .sentence-wrapper")
+				.toggleClass("fade-target");
 
-	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.find(".colloc-fulldata .colloc-col:lt(3), .dependencies .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
-			.removeClass("fade-target");
-});
-
-$(document).on("click", "[name='expand-usages-btn']", function() {
-	$(this).closest(".dependence-group").find(".usage-item[data-collapse='true']").toggleClass("d-none");
+		$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .corp-panel")
+				.find(".colloc-fulldata .colloc-col:lt(3), .dependencies .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
+				.removeClass("fade-target");
+	}
 });
 
 $(window).on("popstate", function(e) {
@@ -106,42 +107,18 @@ $(document).on("click", "a[id^='word-details-link']", function() {
 	fetchDetails(wordId, word, lang, wordSelectUrl);
 });
 
-$(document).on("click", "button[name='colloc-usages-btn']", function() {
-	$(this).closest("[id^='collocs-area']").find("[id^='colloc-usages-area']").fadeToggle();
-});
-
-$(document).on("click", ".back", function() {
-	if ($(".homonym-panel").hasClass("d-none")) {
-		$(".word-details").addClass("d-none d-md-block");
-		$(".show-with-details").addClass("d-none").removeClass("d-flex");
-		$(".hide-with-details").removeClass("d-none").addClass("d-flex");
-		$(".homonym-panel").removeClass("d-none d-md-block");
-		$(".search-panel").removeClass("d-none d-md-block");
-		calculateAndSetStyles();
-	}
-});
-
 $(document).on("click", ".homonym-item", function() {
-	$(".homonym-item").removeClass("selected last-selected");
+	$(".homonym-list-item").removeClass("selected last-selected");
 	$(".homonym-item:first").removeClass("animation-target").dequeue();
-	$(this).addClass("selected last-selected");
-	calculateAndSetStyles();
+	$(this).parents(".homonym-list-item").addClass("selected last-selected");
 	var homonymList = $('.homonym-list');
 	if ($(window).width() >= windowWidthTreshold) {
 		homonymList.animate({
-			scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
+			scrollLeft : $('.homonym-list-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
 		}, 200);
 	}
-	if ($(window).width() >= windowWidthTreshold) {
-		homonymList.animate({
-			scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
-		}, 200);
-	} else {
-		$(".homonym-panel").addClass("d-none");
-		$(".search-panel").addClass("d-none");
-		$(".show-with-details").removeClass("d-none").addClass("d-flex");
-		$(".hide-with-details").addClass("d-none").removeClass("d-flex");
-	}
+	setSelectedHomonymValueForMobile($(this).html());
+	$(".homonym-list").removeClass("expand");
 });
 
 $(document).on("click", "[name='word-form-btn']", function() {

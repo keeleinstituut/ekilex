@@ -3,7 +3,6 @@
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
 <title>Sõnaveeb - Portaalist</title>
 <th:block th:fragment="links">
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
   <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
 </th:block>
 </head>
@@ -12,90 +11,92 @@
   <th:block th:replace="common-app :: wcag-main"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu"></div>
-  <div class="container home-page-content">
+  <div class="container ">
     <div class="row learn-container">
-      <div class="col-12 col-md-3 nav-placeholder"></div>
-      <aside class="col-12 col-md-3" role="navigation" id="sidebar">
-        <div th:replace="common-app :: important-links-menu"></div>
-        <ul class="mt-4">
-          <li>
-            <a href="#portaalist">Portaalist</a>
-          </li>
-          <li>
-            <a href="#kuidas">Kuidas viidata</a>
-          </li>
-          <li>
-            <a href="#ees">Eesti keele info</a>
-          </li>
-          <li>
-            <a href="#ven">Vene keele info</a>
-          </li>
-          <li>
-            <a href="#det">Detailne ja lihtne vaade</a>
-          </li>
-          <li>
-            <a href="#sam">Sama kujuga sõnad</a>
-          </li>
-          <li>
-            <a href="#uue">Uued sõnad ja tähendused</a>
-          </li>
-          <li>
-            <a href="#uue">ÕSi soovitused</a>
-          </li>
-          <li>
-            <a href="#uue">Sünonüümid</a>
-          </li>
-          <li>
-            <a href="#son">Päritolu</a>
-          </li>
-          <li>
-            <a href="#haa">Hääldus</a>
-          </li>
-          <li>
-            <a href="#dik">Dikteeri!</a>
-          </li>
-          <li>
-            <a href="#sonavorm">Sõnavormid</a>
-          </li>
-          <li>
-            <a href="#sonaseos">Sõna seosed</a>
-          </li>
-          <li>
-            <a href="#uhe">Ühendid</a>
-          </li>
-          <li>
-            <a href="#tahendused">Tähendused</a>
-          </li>
-          <li>
-            <a href="#tahendussuhe">Tähendussuhted</a>
-          </li>
-          <li>
-            <a href="#naaber">Naabersõnad</a>
-          </li>
-          <li>
-            <a href="#rekts">Rektsioon ehk sõltumine</a>
-          </li>
-          <li>
-            <a href="#naite">Näitelaused</a>
-          </li>
-          <li>
-            <a href="#veeb">Veebilaused</a>
-          </li>
-          <li>
-            <a href="#eri">Eri keeleoskustasemete sõnavara</a>
-          </li>
-          <li>
-            <a href="#autor">Autoriõigused</a>
-          </li>
-          <li>
-            <a href="#ver">Uued versioonid</a>
-          </li>
-          <li>
-            <a href="#opi">Õpi eesti keelt</a>
-          </li>
-        </ul>
+      <aside class="col-12 col-md-4 " role="navigation" id="sidebar">
+        <div class="sticky-side-nav">
+          <div th:replace="common-app :: important-links-menu"></div>
+          <ul class="mt-4 list-unstyled">
+            <li>
+              <a href="#portaalist">Portaalist</a>
+            </li>
+            <li>
+              <a href="#kuidas">Kuidas viidata</a>
+            </li>
+            <li>
+              <a href="#ees">Eesti keele info</a>
+            </li>
+            <li>
+              <a href="#ven">Vene keele info</a>
+            </li>
+            <li>
+              <a href="#det">Detailne ja lihtne vaade</a>
+            </li>
+            <li>
+              <a href="#sam">Sama kujuga sõnad</a>
+            </li>
+            <li>
+              <a href="#uue">Uued sõnad ja tähendused</a>
+            </li>
+            <li>
+              <a href="#uue">ÕSi soovitused</a>
+            </li>
+            <li>
+              <a href="#uue">Sünonüümid</a>
+            </li>
+            <li>
+              <a href="#son">Päritolu</a>
+            </li>
+            <li>
+              <a href="#haa">Hääldus</a>
+            </li>
+            <li>
+              <a href="#dik">Dikteeri!</a>
+            </li>
+            <li>
+              <a href="#sonavorm">Sõnavormid</a>
+            </li>
+            <li>
+              <a href="#sonaseos">Sõna seosed</a>
+            </li>
+            <li>
+              <a href="#uhe">Ühendid</a>
+            </li>
+            <li>
+              <a href="#tahendused">Tähendused</a>
+            </li>
+            <li>
+              <a href="#tahendussuhe">Tähendussuhted</a>
+            </li>
+            <li>
+              <a href="#naaber">Naabersõnad</a>
+            </li>
+            <li>
+              <a href="#rekts">Rektsioon ehk sõltumine</a>
+            </li>
+            <li>
+              <a href="#naite">Näitelaused</a>
+            </li>
+            <li>
+              <a href="#veeb">Veebilaused</a>
+            </li>
+            <li>
+              <a href="#eri">Eri keeleoskustasemete sõnavara</a>
+            </li>
+            <li>
+              <a href="#autor">Autoriõigused</a>
+            </li>
+            <li>
+              <a href="#ver">Uued versioonid</a>
+            </li>
+            <li>
+              <a href="#opi">Õpi eesti keelt</a>
+            </li>
+          </ul>
+        </div>
+
       </aside>
-      <div id="main" role="main" class="col-12 col-md-9 learn-content">
+      <div id="main" role="main" class="col-12 col-md-8 learn-content">
         <div class="pb-4">
           <h3 class="mt-4 mb-2 text-left">Portaalist</h3>
           <p>

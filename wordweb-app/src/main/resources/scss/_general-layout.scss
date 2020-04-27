@@ -1,0 +1,9 @@
+html{
+  height: 100%;
+}
+
+body{
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 100%;
+}

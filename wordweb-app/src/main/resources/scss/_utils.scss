@@ -1,8 +1,11 @@
-/*stylelint-disable*/
+/* stylelint-disable */
 .overflow-hidden{
   overflow: hidden !important;
 }
 
 .text-wrap{
   white-space: normal !important;
+}
+.text-small{
+  font-size: $font-size-sm !important;
 }

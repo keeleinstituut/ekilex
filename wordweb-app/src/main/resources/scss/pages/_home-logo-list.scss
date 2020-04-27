@@ -1,0 +1,78 @@
+/* stylelint-disable */
+.logo-wrapper {
+  position: relative;
+}
+
+.logo-list {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  margin: 1.5rem auto 0;
+
+  @include media-breakpoint-up(md) {
+    flex-direction: row;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+  }
+}
+
+.mini-logo {
+  display: block;
+  justify-content: center;
+  margin: 1.5rem 1rem;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  @include media-breakpoint-up(md) {
+    margin: 1.5rem 2rem;
+  }
+}
+
+.htm-logo {
+  width: calc(14.75rem / 1.6);
+  height: calc(6.125rem / 1.6);
+  background-image: url(../images/htm.svg);
+  @include media-breakpoint-up(md) {
+    width: calc(14.75rem / 1.4);
+    height: calc(6.125rem / 1.4);
+  }
+}
+
+.esf-logo {
+  background-image: url(../images/esf.svg);
+}
+
+.erf-logo {
+  background-image: url(../images/erf-logo.svg);
+}
+
+.esf-logo,
+.erf-logo {
+  width: calc(22.125rem / 2);
+  height: calc(11.6875rem / 2);
+  @include media-breakpoint-up(md) {
+    width: calc(22.125rem / 2.2);
+    height: calc(11.6875rem / 2.2);
+  }
+}
+
+.eki-logo {
+  width: calc(16.875rem / 1.8);
+  height: calc(6.25rem / 1.8);
+  background-image: url(../images/eki.svg);
+
+  @include media-breakpoint-up(md) {
+    width: calc(16.875rem / 1.5);
+    height: calc(6.25rem / 1.5);
+  }
+
+}
+
+.eki-logo-wrapper {
+  width: calc(16.875rem / 1.8);
+  height: calc(6.25rem / 1.8);
+  margin: 0 auto;
+}

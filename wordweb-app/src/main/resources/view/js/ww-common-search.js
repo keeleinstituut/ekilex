@@ -1,24 +1,13 @@
-var windowWidthTreshold = 768;
-
 $(document).ready(function () {
 
 	initialiseRecording(speechRecognitionServiceUrl);
 
-	var isWideWindow = $(window).width() >= windowWidthTreshold;
-	var isSingleHomonym = $(".homonym-item").length == 1;
-	if (isWideWindow || isSingleHomonym) {
-		var selectedHomonymItem = $(".homonym-item").filter(function () {
-			var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
-			return isHomonymSelected == "true";
-		}).filter(":first");
-		if (selectedHomonymItem.get().length == 0) {
-			selectedHomonymItem = $(".homonym-item:first");
-		}
-		selectedHomonymItem.delay(500).queue(function () {}).trigger('click');
-		selectedHomonymItem.addClass("animation-target");
-	}
 
-	calculateAndSetStyles();
+	var selectedHomonymItem = getSelectedHomonym();
+	selectedHomonymItem.delay(500).queue(function () {}).trigger('click');
+	selectedHomonymItem.addClass("animation-target");
+	setSelectedHomonymValueForMobile(getSelectedHomonym().html());
+
 
 	var searchWordAutocompleteMenuRenderer = function (ul, items) {
 		var self = this;
@@ -99,51 +88,7 @@ $(document).ready(function () {
 
 	$("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
 
-	$(".homonym-item").on("click", function (e) {
-		$(".header-container .back").removeClass("show-btn");
-	});
-
-	$(".back").on("click", function (e) {
-		$(".header-container .back").addClass("show-btn");
-	});
 });
-
-$(window).resize(function () {
-	calculateAndSetStyles();
-});
-
-function calculateAndSetStyles() {
-	var homonymItem = $(".homonym-item");
-	var homonymPanel = $(".homonym-panel");
-	var isWideWindow = $(window).width() >= windowWidthTreshold;
-	var isSingleHomonym = homonymItem.length === 1;
-	var isMultiHomonym = homonymItem.length > 1;
-	if (isWideWindow) {
-		$(".search-panel").removeClass("d-none");
-		$(".word-details").removeClass("d-none");
-		$(".show-with-details").removeClass("d-none");
-
-		if (isSingleHomonym) {
-			homonymPanel.addClass("d-none");
-		} else {
-			homonymPanel.removeClass("d-none");
-			if (!homonymItem.hasClass("last-selected")) {
-				$(".homonym-item:first").addClass("last-selected");
-			}
-			$(".last-selected").addClass("selected");
-		}
-	} else {
-		if (isMultiHomonym) {
-			if (!homonymPanel.hasClass("d-none")) {
-				$(".word-details").addClass("d-none");
-			}
-		}
-		if (isSingleHomonym && homonymPanel.hasClass("d-none")) {
-			$(".search-panel").addClass("d-none");
-		}
-		$(".show-with-details").addClass("d-none");
-	}
-}
 
 function playAudio(audioSource, onEndedCallback) {
 	var music = new Audio(audioSource);
@@ -403,3 +348,23 @@ function clickSearchIfInputExists() {
 		$("#search-btn").click();
 	}
 }
+function getSelectedHomonym() {
+	var selectedHomonymItem = $(".homonym-item").filter(function () {
+		var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
+		return isHomonymSelected == "true";
+	}).filter(":first");
+	if (selectedHomonymItem.get().length == 0) {
+		selectedHomonymItem = $(".homonym-item:first");
+	}
+	return selectedHomonymItem;
+}
+function setSelectedHomonymValueForMobile(inputHTML){
+	var isMultiHomonym = $(".homonym-item").length > 1;
+	if (isMultiHomonym) {
+		$("#homonymListToggleButton").html(inputHTML);
+	}
+}
+
+$(document).on("click","#homonymListToggleButton",function () {
+	$(".homonym-list").toggleClass("expand");
+});

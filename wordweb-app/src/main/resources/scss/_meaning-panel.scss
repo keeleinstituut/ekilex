@@ -2,14 +2,15 @@
   .meaning-panel {
     padding: 5px;
     overflow: auto;
-
-    .meaning,
-    .meaning-meta {
-      float: left;
-    }
-
-    .dependencies {
-      float: right;
-    }
   }
+}
+.meaning-sub-heading {
+  padding: 10px 16px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  background: $gray-100;
+  border-bottom: 1px solid $gray-200;
+}
+.meaning-meta{
+  padding-bottom: 8px;
 }

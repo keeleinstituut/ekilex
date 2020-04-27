@@ -1,6 +1,15 @@
-.lang-code{
-  font-size: 16px;
-  &-sm{
-    font-size: 12px;
-  }
+.lang-code {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 20px;
+  padding: 2px 5px 3px;
+  overflow: visible;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  line-height: 1.4;
+  color: $gray-400;
+  text-align: center;
+  background: $gray-100;
+  @include border-radius(4px);
 }
