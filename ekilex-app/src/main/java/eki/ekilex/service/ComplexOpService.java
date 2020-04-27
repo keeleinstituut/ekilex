@@ -114,7 +114,7 @@ public class ComplexOpService {
 	}
 
 	@Transactional
-	public ConfirmationRequest validateMeaningLexemesDelete(Long lexemeId, DatasetPermission userRole) {
+	public ConfirmationRequest validateLexemeAndMeaningLexemesDelete(Long lexemeId, String meaningLexemesLang, DatasetPermission userRole) {
 
 		List<String> questions = new ArrayList<>();
 		String question;
@@ -127,7 +127,13 @@ public class ComplexOpService {
 			return createConfirmationRequest(questions, validationMessage, isValid);
 		}
 
-		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningSameLangAndDatasetLexemeIds(lexemeId);
+		String datasetCode = userRole.getDatasetCode();
+		Long meaningId = lookupDbService.getMeaningId(lexemeId);
+		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningLexemeIds(meaningId, meaningLexemesLang, datasetCode);
+		if (!lexemeIdsToDelete.contains(lexemeId)) {
+			lexemeIdsToDelete.add(lexemeId);
+		}
+
 		boolean areOnlyPrimaryLexemesForMeaning = lookupDbService.areOnlyPrimaryLexemesForMeaning(lexemeIdsToDelete);
 		if (areOnlyPrimaryLexemesForMeaning) {
 			boolean areOnlyLexemesForMeaning = lookupDbService.areOnlyLexemesForMeaning(lexemeIdsToDelete);

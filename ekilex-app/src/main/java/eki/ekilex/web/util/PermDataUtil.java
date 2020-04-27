@@ -17,7 +17,7 @@ import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 
 @Component
-public class PermDataUtil implements SystemConstant, GlobalConstant {
+public class PermDataUtil implements SystemConstant {
 
 	private final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.CRUD, AuthorityOperation.OWN);
 
@@ -135,10 +135,6 @@ public class PermDataUtil implements SystemConstant, GlobalConstant {
 			targetWordHasSuperiorLexemes = permissionService.wordDatasetExists(targetWordId, roleDatasetCode);
 		}
 		return targetWordHasSuperiorLexemes;
-	}
-
-	public boolean isMeaningOtherLexemesDeleteGranted(String wordLang) {
-		return !StringUtils.equals(LANGUAGE_CODE_EST, wordLang);
 	}
 
 	public boolean isOwnPermission(Long userId) {

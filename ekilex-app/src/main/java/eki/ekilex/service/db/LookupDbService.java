@@ -295,24 +295,17 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(String.class);
 	}
 
-	public List<Long> getMeaningSameLangAndDatasetLexemeIds(Long lexemeId) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Word w1 = WORD.as("w1");
-		Word w2 = WORD.as("w2");
+	public List<Long> getMeaningLexemeIds(Long meaningId, String lang, String datasetCode) {
 
 		return create
-				.select(l2.ID)
-				.from(l1, l2, w1, w2)
+				.select(LEXEME.ID)
+				.from(LEXEME, WORD)
 				.where(
-						l1.ID.eq(lexemeId)
-								.and(w1.ID.eq(l1.WORD_ID))
-								.and(l2.MEANING_ID.eq(l1.MEANING_ID))
-								.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(w2.ID.eq(l2.WORD_ID))
-								.and(w2.LANG.eq(w1.LANG)))
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(WORD.ID.eq(LEXEME.WORD_ID))
+								.and(WORD.LANG.eq(lang)))
 				.fetchInto(Long.class);
 	}
 
