@@ -846,8 +846,13 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void deleteMeaningLexemes(Long lexemeId) {
-		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningSameLangAndDatasetLexemeIds(lexemeId);
+	public void deleteLexemeAndMeaningLexemes(Long lexemeId, String meaningLexemesLang, String datasetCode) {
+		Long meaningId = lookupDbService.getMeaningId(lexemeId);
+		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningLexemeIds(meaningId, meaningLexemesLang, datasetCode);
+		if (!lexemeIdsToDelete.contains(lexemeId)) {
+			lexemeIdsToDelete.add(lexemeId);
+		}
+
 		for (Long lexemeIdToDelete : lexemeIdsToDelete) {
 			deleteLexeme(lexemeIdToDelete);
 		}

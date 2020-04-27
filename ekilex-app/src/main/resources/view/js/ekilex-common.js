@@ -675,9 +675,9 @@ function deleteLexemeAndWordAndMeaning() {
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
 }
 
-function deleteMeaningLexemesAndWordsAndMeaning() {
+function deleteLexemeAndRusMeaningLexemes() {
 	var opName = "delete";
-	var opCode = "meaning_lexemes";
+	var opCode = "rus_meaning_lexemes";
 	var lexemeId = $(this).attr("data-id");
 	var successCallbackName = $(this).attr("data-callback");
 	let successCallbackFunc = () => eval(successCallbackName)($(this));

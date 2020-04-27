@@ -268,7 +268,7 @@
                         </div>
                       </div>
                     </div>
-                    <div th:with="isMeaningOtherLexemesDeleteGranted=${#vars.permDataUtil.isMeaningOtherLexemesDeleteGranted(#vars.lexeme.wordLang)}">
+                    <div>
                       <a class="btn btn-sm btn-primary" title="Ühenda tähendused" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}" sec:authorize="${#vars.isLexemeCrudGranted}">Ühenda</a>
 <!--                      TODO this functionality is (temporarily) not needed. Enable this function or delete related code when decision is made what to do with this (19.02.2020) -->
 <!--                      <a class="btn btn-sm btn-primary" th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}"-->
@@ -288,31 +288,22 @@
                               title="Loo uus ilmik ja tähendus"
                               th:data-lexeme-id="${lexeme.lexemeId}"
                               sec:authorize="${#vars.isLexemeCrudGranted}">Uus tähendus</button>
-                      <th:block th:if="${isMeaningOtherLexemesDeleteGranted}">
-                        <span class="dropdown" sec:authorize="${#vars.isLexemeCrudGranted}">
-                          <button class="btn btn-warning font-weight-bold btn-sm"
-                                  type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Kustuta</button>
-                          <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="btn btn-secondary font-weight-bold btn-sm"
-                               th:data-id="${lexeme.lexemeId}"
-                               data-callback="doNewSearch"
-                               data-toggle="deleteLexemeAndWordAndMeaning"
-                               sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta koos tähendusega</a>
-                            <a class="btn btn-secondary font-weight-bold btn-sm"
-                               th:data-id="${lexeme.lexemeId}"
-                               data-callback="doNewSearch"
-                               data-toggle="deleteMeaningLexemesAndWordsAndMeaning"
-                               sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta koos vastete ja tähendusega</a>
-                          </span>
+                      <span class="dropdown" sec:authorize="${#vars.isLexemeCrudGranted}">
+                        <button class="btn btn-warning font-weight-bold btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">Kustuta</button>
+                        <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="btn btn-secondary font-weight-bold btn-sm"
+                             th:data-id="${lexeme.lexemeId}"
+                             data-callback="doNewSearch"
+                             data-toggle="deleteLexemeAndWordAndMeaning"
+                             sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta koos tähendusega</a>
+                          <a class="btn btn-secondary font-weight-bold btn-sm"
+                             th:data-id="${lexeme.lexemeId}"
+                             data-callback="doNewSearch"
+                             data-toggle="deleteLexemeAndRusMeaningLexemes"
+                             sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta koos tähenduse ja venekeelsete vastetega</a>
                         </span>
-                      </th:block>
-                      <th:block th:unless="${isMeaningOtherLexemesDeleteGranted}">
-                        <button class="btn btn-warning font-weight-bold btn-sm" type="button"
-                                th:data-id="${lexeme.lexemeId}"
-                                data-callback="doNewSearch"
-                                data-toggle="deleteLexemeAndWordAndMeaning"
-                                sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta</button>
-                      </th:block>
+                      </span>
                       <a th:href="@{'/lexemeandmeaningprocesslog:' + ${lexeme.lexemeId}}"
                          data-toggle="modal"
                          data-target="#processLogDlg"
@@ -1427,11 +1418,11 @@
           title : 'Kinnita kustutamine',
           onConfirm : deleteLexemeAndWordAndMeaning
         });
-        $('[data-toggle=deleteMeaningLexemesAndWordsAndMeaning]').confirmation({
+        $('[data-toggle=deleteLexemeAndRusMeaningLexemes]').confirmation({
           btnOkLabel : 'Jah',
           btnCancelLabel : 'Ei',
           title : 'Kinnita kustutamine',
-          onConfirm : deleteMeaningLexemesAndWordsAndMeaning
+          onConfirm : deleteLexemeAndRusMeaningLexemes
         });
   	  </script>
     </div>

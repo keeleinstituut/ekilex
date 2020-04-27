@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ContentKey;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.ReferenceType;
 import eki.common.service.TextDecorationService;
@@ -39,7 +40,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class EditController extends AbstractPageController implements SystemConstant {
+public class EditController extends AbstractPageController implements SystemConstant, GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(EditController.class);
 
@@ -389,9 +390,9 @@ public class EditController extends AbstractPageController implements SystemCons
 			case "meaning":
 				userRole = sessionBean.getUserRole();
 				return complexOpService.validateMeaningDelete(id, userRole);
-			case "meaning_lexemes":
+			case "rus_meaning_lexemes":
 				userRole = sessionBean.getUserRole();
-				return complexOpService.validateMeaningLexemesDelete(id, userRole);
+				return complexOpService.validateLexemeAndMeaningLexemesDelete(id, LANGUAGE_CODE_RUS, userRole);
 			}
 		}
 		throw new UnsupportedOperationException("Unsupported confirm operation: " + opName + " " + opCode);
@@ -475,8 +476,8 @@ public class EditController extends AbstractPageController implements SystemCons
 		case "lexeme":
 			cudService.deleteLexeme(id);
 			break;
-		case "meaning_lexemes":
-			cudService.deleteMeaningLexemes(id);
+		case "rus_meaning_lexemes":
+			cudService.deleteLexemeAndMeaningLexemes(id, LANGUAGE_CODE_RUS, datasetCode);
 			break;
 		case "learner_comment":
 			cudService.deleteMeaningLearnerComment(id);
