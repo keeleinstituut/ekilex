@@ -45,6 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
+import eki.common.exception.DataLoadingException;
 import eki.common.service.TextDecorationService;
 
 @Component
@@ -55,6 +56,8 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 	private static final String SQL_SELECT_COLLOC_MEMBERS_BY_VALUE_PATH = "sql/select_colloc_members_by_value.sql";
 
 	private static final String SQL_SELECT_COLLOC_MEMBERS_BY_ID_PATH = "sql/select_colloc_members_by_id.sql";
+
+	private static final String SQL_SELECT_COLLOC_POS_REL_GROUPS = "sql/select_colloc_pos_rel_groups.sql";
 
 	private static final String SQL_SELECT_WORD_ID_CANDIDATES_BY_VALUE_PATH = "sql/select_word_id_candidates_by_value.sql";
 
@@ -67,8 +70,12 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 	private final String articleBodyExp = "x:S";
 	private final String meaningBlockExp = "x:tp[not(@x:as='ab')]";
 	private final String collocPosGroupExp = "x:colp/x:cmg";
+	private final String collocPosAttr = "csl";
 	private final String collocRelGroupExp = "x:relg";
 	private final String collocGroupExp = "x:colg";
+	private final String collocRelGroupNameExp = "x:reln";
+	private final String collocRelGroupFreqExp = "x:rfr";
+	private final String collocRelGroupScoreExp = "x:rsc";
 
 	private final String collocConjunctAttr = "jv";
 	private final String lemmaDataAttr = "lemposvk";
@@ -83,6 +90,8 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 	private final String[] primaryCollocMemberNames = new String[] {prevWordCollocMemberName, nextWordCollocMemberName, colWordCollocMemberName};
 	private final String[] collocMemberNames = new String[] {
 			prevWordCollocMemberName, nextWordCollocMemberName, colWordCollocMemberName, "cnte", "cce", "ccj", "cnt"};
+
+	private final Float inboundPrimaryCollocMemberWeight = 1F;
 
 	protected static final String EXT_SOURCE_ID_NA = "n/a";
 	protected static final String EKI_CLASSIFIER_STAATUS = "staatus";
@@ -104,6 +113,8 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 
 	private String sqlSelectCollocMembersById;
 
+	private String sqlSelectCollocPosRelGroups;
+
 	private String sqlSelectWordIdCandidatesByValue;
 
 	private String sqlSelectWord;
@@ -122,6 +133,9 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_COLLOC_MEMBERS_BY_ID_PATH);
 		sqlSelectCollocMembersById = getContent(resourceFileInputStream);
 
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_COLLOC_POS_REL_GROUPS);
+		sqlSelectCollocPosRelGroups = getContent(resourceFileInputStream);
+
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_ID_CANDIDATES_BY_VALUE_PATH);
 		sqlSelectWordIdCandidatesByValue = getContent(resourceFileInputStream);
 
@@ -138,10 +152,60 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 		Element rootElement = dataDoc.getRootElement();
 		List<Node> articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(Collectors.toList());
-		long articleCount = articleNodes.size();
-		logger.debug("Extracted {} articles", articleCount);
+		logger.debug("Extracted {} articles", articleNodes.size());
 
 		Count invalidCollocCount = new Count();
+
+		List<IncompleteColloc> incompleteCollocs = extractIncompleteCollocs(articleNodes, invalidCollocCount);
+
+		for (IncompleteColloc incompleteColloc : incompleteCollocs) {
+
+			Long collocationId = incompleteColloc.getCollocationId();
+			String collocationValue = incompleteColloc.getCollocationValue();
+			List<String> missingCollocMemberWords = incompleteColloc.getMissingCollocMemberWords();
+
+			Object wordIdCandidatesCell;
+			Object lexemeIdCandidatesCell;
+			for (String missingCollocMemberWord : missingCollocMemberWords) {
+				List<WordIdCandidate> allWordIdCandidates = getWordIdCandidates(missingCollocMemberWord);
+				if (CollectionUtils.isEmpty(allWordIdCandidates)) {
+					wordIdCandidatesCell = CSV_EMPTY_CELL;
+					lexemeIdCandidatesCell = CSV_EMPTY_CELL;
+				} else {
+					List<Long> wordIdCandidates = allWordIdCandidates.stream().map(WordIdCandidate::getWordId).collect(Collectors.toList());
+					List<WordIdCandidate> wordIdCandidatesWithLexemes = allWordIdCandidates.stream()
+							.filter(wordIdCandidate -> CollectionUtils.isNotEmpty(wordIdCandidate.getLexemeIdCandidates()))
+							.collect(Collectors.toList());
+					if (CollectionUtils.isEmpty(wordIdCandidatesWithLexemes)) {
+						wordIdCandidatesCell = StringUtils.join(wordIdCandidates, ',');
+						lexemeIdCandidatesCell = CSV_EMPTY_CELL;
+					} else {
+						WordIdCandidate singleWordIdCandidate = wordIdCandidatesWithLexemes.get(0);
+						List<Long> lexemeIdCandidates = singleWordIdCandidate.getLexemeIdCandidates();
+						if ((wordIdCandidatesWithLexemes.size() == 1) && (lexemeIdCandidates.size() == 1)) {
+							wordIdCandidatesCell = singleWordIdCandidate.getWordId();
+							lexemeIdCandidatesCell = lexemeIdCandidates.get(0);
+						} else if (wordIdCandidatesWithLexemes.size() == 1) {
+							wordIdCandidatesCell = singleWordIdCandidate.getWordId();
+							lexemeIdCandidatesCell = StringUtils.join(lexemeIdCandidates, ',');
+						} else {
+							wordIdCandidatesCell = StringUtils.join(wordIdCandidates, ',');
+							lexemeIdCandidatesCell = CSV_EMPTY_CELL;
+						}
+					}
+				}
+				appendToReport(reportFileBufferedOutputStream, collocationId, collocationValue, missingCollocMemberWord, wordIdCandidatesCell, lexemeIdCandidatesCell);
+			}
+		}
+
+		reportFileBufferedOutputStream.flush();
+		reportFileBufferedOutputStream.close();
+
+		logger.info("Invalid colloc count: {}", invalidCollocCount.getValue());
+		logger.info("Incomplete colloc count: {}", incompleteCollocs.size());
+	}
+
+	private List<IncompleteColloc> extractIncompleteCollocs(List<Node> articleNodes, Count invalidCollocCount) throws Exception {
 
 		Element headerNode, contentNode, wordNode, wordGroupNode, wordPosNode;
 		List<Node> collocGroupNodes;
@@ -153,6 +217,7 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 
 		List<IncompleteColloc> incompleteCollocs = new ArrayList<>();
 
+		long articleCount = articleNodes.size();
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 
@@ -221,52 +286,7 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 		}
 
 		incompleteCollocs = incompleteCollocs.stream().distinct().collect(Collectors.toList());
-
-		for (IncompleteColloc incompleteColloc : incompleteCollocs) {
-
-			Long collocationId = incompleteColloc.getCollocationId();
-			String collocationValue = incompleteColloc.getCollocationValue();
-			List<String> missingCollocMemberWords = incompleteColloc.getMissingCollocMemberWords();
-
-			Object wordIdCandidatesCell;
-			Object lexemeIdCandidatesCell;
-			for (String missingCollocMemberWord : missingCollocMemberWords) {
-				List<WordIdCandidate> allWordIdCandidates = getWordIdCandidates(missingCollocMemberWord);
-				if (CollectionUtils.isEmpty(allWordIdCandidates)) {
-					wordIdCandidatesCell = CSV_EMPTY_CELL;
-					lexemeIdCandidatesCell = CSV_EMPTY_CELL;
-				} else {
-					List<Long> wordIdCandidates = allWordIdCandidates.stream().map(WordIdCandidate::getWordId).collect(Collectors.toList());
-					List<WordIdCandidate> wordIdCandidatesWithLexemes = allWordIdCandidates.stream()
-							.filter(wordIdCandidate -> CollectionUtils.isNotEmpty(wordIdCandidate.getLexemeIdCandidates()))
-							.collect(Collectors.toList());
-					if (CollectionUtils.isEmpty(wordIdCandidatesWithLexemes)) {
-						wordIdCandidatesCell = StringUtils.join(wordIdCandidates, ',');
-						lexemeIdCandidatesCell = CSV_EMPTY_CELL;
-					} else {
-						WordIdCandidate singleWordIdCandidate = wordIdCandidatesWithLexemes.get(0);
-						List<Long> lexemeIdCandidates = singleWordIdCandidate.getLexemeIdCandidates();
-						if ((wordIdCandidatesWithLexemes.size() == 1) && (lexemeIdCandidates.size() == 1)) {
-							wordIdCandidatesCell = singleWordIdCandidate.getWordId();
-							lexemeIdCandidatesCell = lexemeIdCandidates.get(0);
-						} else if (wordIdCandidatesWithLexemes.size() == 1) {
-							wordIdCandidatesCell = singleWordIdCandidate.getWordId();
-							lexemeIdCandidatesCell = StringUtils.join(lexemeIdCandidates, ',');
-						} else {
-							wordIdCandidatesCell = StringUtils.join(wordIdCandidates, ',');
-							lexemeIdCandidatesCell = CSV_EMPTY_CELL;
-						}
-					}
-				}
-				appendToReport(reportFileBufferedOutputStream, collocationId, collocationValue, missingCollocMemberWord, wordIdCandidatesCell, lexemeIdCandidatesCell);
-			}
-		}
-
-		reportFileBufferedOutputStream.flush();
-		reportFileBufferedOutputStream.close();
-
-		logger.info("Invalid colloc count: {}", invalidCollocCount.getValue());
-		logger.info("Incomplete colloc count: {}", incompleteCollocs.size());
+		return incompleteCollocs;
 	}
 
 	private List<CollocWordsRecord> getCollocWordsRecords(String collocation) throws Exception {
@@ -805,6 +825,442 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 		return results.get(0);
 	}
 
+	@Transactional(rollbackOn = Exception.class)
+	public void restoreCollocData(String dataXmlFilePath, String collocRestoreMappingFilePath) throws Exception {
+
+		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
+		Element rootElement = dataDoc.getRootElement();
+		List<Node> articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(Collectors.toList());
+		Map<String, List<RestorableWordCollocData>> sourceFileCollocDataMap = extractRestorableCollocFileData(articleNodes);
+
+		List<RestorableCollocReportRow> reportFileCollocDataRows = extractRestorableCollocReportRows(collocRestoreMappingFilePath);
+
+		Map<String, List<Long>> restoredWordLexemesMap = new HashMap<>();
+		Count resolvedCollocationCount = new Count();
+		Count existingPosGroupCount = new Count();
+		Count existingRelGroupCount = new Count();
+		Count createdPosGroupCount = new Count();
+		Count createdRelGroupCount = new Count();
+		Count createdLexCollocCount = new Count();
+		Count duplicateCollocCount = new Count();
+
+		List<String> restorableWords = new ArrayList<>(sourceFileCollocDataMap.keySet());
+		Collections.sort(restorableWords);
+
+		for (String restorableWord : restorableWords) {
+			List<RestorableWordCollocData> sourceFileCollocWordEntries = sourceFileCollocDataMap.get(restorableWord);
+			for (RestorableWordCollocData sourceFileCollocWordEntry : sourceFileCollocWordEntries) {
+				List<CollocPosGroup> posGroups = sourceFileCollocWordEntry.getPosGroups();
+				for (CollocPosGroup posGroup : posGroups) {
+					String posGroupCode = posGroup.getCode();
+					List<CollocRelGroup> relGroups = posGroup.getRelGroups();
+					for (CollocRelGroup relGroup : relGroups) {
+						String relGroupName = relGroup.getName();
+						Float frequency = relGroup.getFrequency();
+						Float score = relGroup.getScore();
+						List<LexColloc> sourceFileLexCollocs = relGroup.getLexCollocs();
+						for (LexColloc lexColloc : sourceFileLexCollocs) {
+							Long collocationId = lexColloc.getCollocationId();
+							String collocationValue = lexColloc.getCollocationValue();
+							List<RestorableCollocReportRow> reportFileCollocDataMatches = getReportFileCollocDataMatches(restorableWord, collocationId, reportFileCollocDataRows);
+							List<Long> lexemeIds = new ArrayList<>();
+							if (CollectionUtils.isEmpty(reportFileCollocDataMatches)) {
+								List<WordIdCandidate> wordIdCandidates = getWordIdCandidates(restorableWord);
+								wordIdCandidates = wordIdCandidates.stream().filter(row -> CollectionUtils.isNotEmpty(row.getLexemeIdCandidates())).collect(Collectors.toList());
+								if (CollectionUtils.isEmpty(wordIdCandidates)) {
+									logger.info("No matching candidates in report nor in db file for \"{}\" in \"{}\"", restorableWord, collocationValue);
+								} else if (wordIdCandidates.size() > 1) {
+									logger.info("No matching candidates in report file, too many words in db for \"{}\" in \"{}\"", restorableWord, collocationValue);
+								} else {
+									WordIdCandidate singleWordIdCandidate = wordIdCandidates.get(0);
+									List<Long> lexemeIdCandidates = singleWordIdCandidate.getLexemeIdCandidates();
+									if (lexemeIdCandidates.size() > 1) {
+										logger.info("No matching candidates in report file, too many lexemes in db for \"{}\" in \"{}\"", restorableWord, collocationValue);
+									} else {
+										Long dbLexemeId = lexemeIdCandidates.get(0);
+										lexemeIds.add(dbLexemeId);
+									}
+								}
+							} else {
+								List<Long> reportLexemeIds = reportFileCollocDataMatches.stream().map(RestorableCollocReportRow::getLexemeId).collect(Collectors.toList());
+								lexemeIds.addAll(reportLexemeIds);
+							}
+							if (CollectionUtils.isNotEmpty(lexemeIds)) {
+								resolvedCollocationCount.increment();
+							}
+							for (Long lexemeId : lexemeIds) {
+								Map<String, Object> existingLexColloc = getLexemeCollocation(lexemeId, collocationId);
+								if (existingLexColloc != null) {
+									duplicateCollocCount.increment();
+									continue;
+								}
+								List<CollocPosRelGroupTuple> collocPosRelGroupTuples = getCollocPosRelGroupTuples(lexemeId);
+								Map<String, Long> posGroupIdMap = collocPosRelGroupTuples.stream()
+										.map(row -> new CollocPosRelGroupTuple(null, row.getPosGroupId(), row.getPosGroupCode(), null, null))
+										.distinct()
+										.collect(Collectors.toMap(CollocPosRelGroupTuple::getPosGroupCode, CollocPosRelGroupTuple::getPosGroupId));
+								Map<String, Map<String, Long>> posRelGroupIdMap = collocPosRelGroupTuples.stream()
+										.collect(Collectors.groupingBy(CollocPosRelGroupTuple::getPosGroupCode,
+												Collectors.toMap(CollocPosRelGroupTuple::getRelGroupName, CollocPosRelGroupTuple::getRelGroupId)));
+								Long posGroupId = posGroupIdMap.get(posGroupCode);
+								if (posGroupId == null) {
+									posGroupId = createCollocPosGroup(lexemeId, posGroupCode);
+									createdPosGroupCount.increment();
+								} else {
+									existingPosGroupCount.increment();
+								}
+								Map<String, Long> relGroupIdMap = posRelGroupIdMap.get(posGroupCode);
+								Long relGroupId = null;
+								if (relGroupIdMap == null) {
+									relGroupId = createCollocRelGroup(posGroupId, relGroupName, frequency, score);
+									createdRelGroupCount.increment();
+								} else {
+									relGroupId = relGroupIdMap.get(relGroupName);
+									if (relGroupId == null) {
+										relGroupId = createCollocRelGroup(posGroupId, relGroupName, frequency, score);
+										createdRelGroupCount.increment();
+									} else {
+										existingRelGroupCount.increment();
+									}
+								}
+								createLexemeCollocation(lexemeId, relGroupId, lexColloc);
+								createdLexCollocCount.increment();
+								List<Long> mappedLexemes = restoredWordLexemesMap.get(restorableWord);
+								if (mappedLexemes == null) {
+									mappedLexemes = new ArrayList<>();
+									restoredWordLexemesMap.put(restorableWord, mappedLexemes);
+								}
+								if (!mappedLexemes.contains(lexemeId)) {
+									mappedLexemes.add(lexemeId);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		logger.info("Resolved collocations: {}", resolvedCollocationCount.getValue());
+		logger.info("Existing pos groups: {}", existingPosGroupCount.getValue());
+		logger.info("Existing rel groups: {}", existingRelGroupCount.getValue());
+		logger.info("Created pos groups: {}", createdPosGroupCount.getValue());
+		logger.info("Created rel groups: {}", createdRelGroupCount.getValue());
+		logger.info("Created lex collocs: {}", createdLexCollocCount.getValue());
+		logger.info("Duplicate colloc mappings: {}", duplicateCollocCount.getValue());
+		logger.info("Restored word count: {}", restoredWordLexemesMap.keySet().size());
+
+		List<String> restoredWords = new ArrayList<>(restoredWordLexemesMap.keySet());
+		Collections.sort(restoredWords);
+
+		for (String restoredWord : restoredWords) {
+			List<Long> restoredLexemeIds = restoredWordLexemesMap.get(restoredWord);
+			logger.debug("{} -> {}", restoredWord, restoredLexemeIds);
+		}
+
+		logger.info("Done!");
+	}
+
+	private List<RestorableCollocReportRow> extractRestorableCollocReportRows(String collocRestoreMappingFilePath) throws Exception {
+		List<RestorableCollocReportRow> restorableCollocReportRows = new ArrayList<>();
+		FileInputStream collocRestoreMappingFileInputStream = new FileInputStream(collocRestoreMappingFilePath);
+		List<String> collocRestoreMappingLines = getContentLines(collocRestoreMappingFileInputStream);
+		collocRestoreMappingLines.remove(0);//remove heading
+
+		for (String collocRestoreMappingLine : collocRestoreMappingLines) {
+			if (StringUtils.isEmpty(collocRestoreMappingLine)) {
+				continue;
+			}
+			String[] collocRestoreMappingCells = StringUtils.split(collocRestoreMappingLine, CSV_SEPARATOR);
+			if (collocRestoreMappingCells.length != 5) {
+				throw new DataLoadingException("Incorrect colloc restore mapping file row: " + collocRestoreMappingLine);
+			}
+			Long collocationId = Long.valueOf(collocRestoreMappingCells[0]);
+			String collocationValue = collocRestoreMappingCells[1].trim();
+			String word = collocRestoreMappingCells[2].trim();
+			String wordIdStr = collocRestoreMappingCells[3].trim();
+			String lexemeIdStr = collocRestoreMappingCells[4].trim();
+			if (StringUtils.equals(wordIdStr, String.valueOf(CSV_EMPTY_CELL))) {
+				continue;
+			}
+			if (StringUtils.equals(lexemeIdStr, String.valueOf(CSV_EMPTY_CELL))) {
+				continue;
+			}
+			Long wordId = Long.valueOf(wordIdStr);
+			Long lexemeId = Long.valueOf(lexemeIdStr);
+			RestorableCollocReportRow restorableCollocReportRow = new RestorableCollocReportRow(collocationValue, collocationId, word, wordId, lexemeId);
+			restorableCollocReportRows.add(restorableCollocReportRow);
+		}
+		return restorableCollocReportRows;
+	}
+
+	private List<RestorableCollocReportRow> getReportFileCollocDataMatches(String word, Long collocationId, List<RestorableCollocReportRow> allReportFileCollocDataRows) {
+		List<RestorableCollocReportRow> reportFileCollocDataMatches = allReportFileCollocDataRows.stream()
+				.filter(row -> row.getCollocationId().equals(collocationId) && StringUtils.equals(row.getWord(), word))
+				.collect(Collectors.toList());
+		return reportFileCollocDataMatches;
+	}
+
+	private Map<String, List<RestorableWordCollocData>> extractRestorableCollocFileData(List<Node> articleNodes) throws Exception {
+
+		Element headerNode, contentNode, wordNode, wordGroupNode, wordPosNode, collocRelGroupNameNode, collocRelGroupFreqNode, collocRelGroupScoreNode;
+		List<Node> meaningBlockNodes, collocPosGroupNodes, collocRelGroupNodes, collocGroupNodes;
+		String word, collocPosGroupCode, collocRelGroupName;
+		List<CollocMember> collocMembers;
+		List<CollocWordsRecord> existingCollocRecords;
+		List<String> existingCollocMemberWords;
+		List<CollocPosGroup> collocPosGroups;
+		List<CollocRelGroup> collocRelGroups;
+		List<LexColloc> lexCollocs;
+
+		Map<String, List<RestorableWordCollocData>> restorableWordCollocDataMap = new HashMap<>();
+
+		long articleCount = articleNodes.size();
+		long articleCounter = 0;
+		long progressIndicator = articleCount / Math.min(articleCount, 100);
+
+		for (Node articleNode : articleNodes) {
+
+			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+			if (contentNode == null) {
+				continue;
+			}
+
+			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
+			wordGroupNode = (Element) headerNode.selectSingleNode(wordGroupExp);
+			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
+			if (wordPosNode == null) {
+				continue;
+			}
+			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
+			word = wordNode.getTextTrim();
+			word = textDecorationService.cleanEkiEntityMarkup(word);
+
+			meaningBlockNodes = contentNode.selectNodes(meaningBlockExp);
+			collocPosGroups = new ArrayList<>();
+
+			for (Node meaningBlockNode : meaningBlockNodes) {
+
+				collocPosGroupNodes = meaningBlockNode.selectNodes(collocPosGroupExp);//x:colp/x:cmg
+
+				for (Node colPosGroupNode : collocPosGroupNodes) {
+
+					collocPosGroupCode = ((Element) colPosGroupNode).attributeValue(collocPosAttr);
+					collocRelGroupNodes = colPosGroupNode.selectNodes(collocRelGroupExp);//x:relg
+					collocRelGroups = new ArrayList<>();
+
+					for (Node collocRelGroupNode : collocRelGroupNodes) {
+
+						collocRelGroupNameNode = (Element) collocRelGroupNode.selectSingleNode(collocRelGroupNameExp);
+						collocRelGroupName = collocRelGroupNameNode.getTextTrim();
+
+						Float collocRelGroupFreq = null;
+						collocRelGroupFreqNode = (Element) collocRelGroupNode.selectSingleNode(collocRelGroupFreqExp);
+						if (collocRelGroupFreqNode != null) {
+							try {
+								collocRelGroupFreq = Float.parseFloat(collocRelGroupFreqNode.getTextTrim());
+							} catch (Exception e) {
+							}
+						}
+
+						Float collocRelGroupScore = null;
+						collocRelGroupScoreNode = (Element) collocRelGroupNode.selectSingleNode(collocRelGroupScoreExp);
+						if (collocRelGroupScoreNode != null) {
+							try {
+								collocRelGroupScore = Float.parseFloat(collocRelGroupScoreNode.getTextTrim());
+							} catch (Exception e) {
+							}
+						}
+
+						collocGroupNodes = collocRelGroupNode.selectNodes(collocGroupExp);//x:colg
+						lexCollocs = new ArrayList<>();
+						int collocGroupOrder = 0;
+
+						List<String> handledCollocValues = new ArrayList<>();
+
+						for (Node collocGroupNode : collocGroupNodes) {
+
+							collocMembers = extractCollocMembers(collocGroupNode);
+							if (CollectionUtils.isEmpty(collocMembers)) {
+								continue;
+							}
+
+							collocGroupOrder++;
+							List<List<CollocMember>> collocMembersPermutations = composeCollocMembersPermutations(collocMembers);
+
+							for (List<CollocMember> sourceCollocMembers : collocMembersPermutations) {
+
+								String collocationValue = composeCollocValue(sourceCollocMembers);
+								if (handledCollocValues.contains(collocationValue)) {
+									continue;
+								}
+								handledCollocValues.add(collocationValue);
+								existingCollocRecords = getCollocWordsRecords(collocationValue);
+
+								if (CollectionUtils.isEmpty(existingCollocRecords)) {
+									continue;
+								}
+
+								boolean completeCollocVersionExists = existingCollocRecords.stream()
+										.anyMatch(existingCollocRecord -> existingCollocRecord.getMemberWords().size() == sourceCollocMembers.size());
+
+								if (completeCollocVersionExists) {
+									continue;
+								}
+								for (CollocWordsRecord existingCollocRecord : existingCollocRecords) {
+
+									existingCollocMemberWords = existingCollocRecord.getMemberWords();
+									if (existingCollocMemberWords.size() < sourceCollocMembers.size()) {
+
+										int memberOrder = 0;
+										for (CollocMember sourceCollocMember : sourceCollocMembers) {
+
+											memberOrder++;
+											String sourceCollocMemberWord = sourceCollocMember.getWord();
+											if (StringUtils.equals(sourceCollocMemberWord, word)) {
+												if (!existingCollocMemberWords.contains(word)) {
+													Long collocationId = existingCollocRecord.getCollocationId();
+													String collocMemberForm = sourceCollocMember.getForm();
+													String collocMemberConjunct = sourceCollocMember.getConjunct();
+													LexColloc lexColloc = new LexColloc();
+													lexColloc.setCollocationId(collocationId);
+													lexColloc.setCollocationValue(collocationValue);
+													lexColloc.setMemberForm(collocMemberForm);
+													lexColloc.setConjunct(collocMemberConjunct);
+													lexColloc.setWeight(inboundPrimaryCollocMemberWeight);
+													lexColloc.setMemberOrder(memberOrder);
+													lexColloc.setGroupOrder(collocGroupOrder);
+													lexCollocs.add(lexColloc);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						if (CollectionUtils.isNotEmpty(lexCollocs)) {
+							CollocRelGroup collocRelGroup = new CollocRelGroup();
+							collocRelGroup.setName(collocRelGroupName);
+							collocRelGroup.setFrequency(collocRelGroupFreq);
+							collocRelGroup.setScore(collocRelGroupScore);
+							collocRelGroup.setLexCollocs(lexCollocs);
+							collocRelGroups.add(collocRelGroup);
+						}
+					}
+					if (CollectionUtils.isNotEmpty(collocRelGroups)) {
+						CollocPosGroup collocPosGroup = new CollocPosGroup();
+						collocPosGroup.setCode(collocPosGroupCode);
+						collocPosGroup.setRelGroups(collocRelGroups);
+						collocPosGroups.add(collocPosGroup);
+					}
+				}
+			}
+
+			if (CollectionUtils.isNotEmpty(collocPosGroups)) {
+				RestorableWordCollocData restorableWordCollocData = new RestorableWordCollocData();
+				restorableWordCollocData.setWord(word);
+				restorableWordCollocData.setPosGroups(collocPosGroups);
+				List<RestorableWordCollocData> restorableWordCollocsDatas = restorableWordCollocDataMap.get(word);
+				if (restorableWordCollocsDatas == null) {
+					restorableWordCollocsDatas = new ArrayList<>();
+					restorableWordCollocDataMap.put(word, restorableWordCollocsDatas);
+				}
+				restorableWordCollocsDatas.add(restorableWordCollocData);
+			}
+
+			// progress
+			articleCounter++;
+			if (articleCounter % progressIndicator == 0) {
+				long progressPercent = articleCounter / progressIndicator;
+				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
+			}
+		}
+
+		//collect collcation ids near word
+		for (String restorableWord : restorableWordCollocDataMap.keySet()) {
+			List<RestorableWordCollocData> restorableWordCollocDatas = restorableWordCollocDataMap.get(restorableWord);
+			for (RestorableWordCollocData restorableWordCollocData : restorableWordCollocDatas) {
+				List<CollocPosGroup> restorableWordPosGroups = restorableWordCollocData.getPosGroups();
+				List<Long> collocationIds = new ArrayList<>();
+				restorableWordPosGroups.forEach(collocPosGr -> collocPosGr.getRelGroups()
+						.forEach(collocRelGr -> collocRelGr.getLexCollocs()
+								.forEach(lexColloc -> {
+									collocationIds.add(lexColloc.getCollocationId());
+								})));
+				restorableWordCollocData.setCollocationIds(collocationIds);
+			}
+		}
+
+		return restorableWordCollocDataMap;
+	}
+
+	private List<CollocPosRelGroupTuple> getCollocPosRelGroupTuples(Long lexemeId) throws Exception {
+		
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<CollocPosRelGroupTuple> results = basicDbService.getResults(sqlSelectCollocPosRelGroups, paramMap, new CollocPosRelGroupTupleRowMapper());
+		return results;
+	}
+
+	private Long createCollocPosGroup(Long lexemeId, String posGroupCode) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("lexeme_id", lexemeId);
+		paramMap.put("pos_group_code", posGroupCode);
+		Long collocPosGroupId = basicDbService.create(LEX_COLLOC_POS_GROUP, paramMap);
+		return collocPosGroupId;
+	}
+
+	private Long createCollocRelGroup(Long collocPosGroupId, String name, Float frequency, Float score) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("pos_group_id", collocPosGroupId);
+		paramMap.put("name", name);
+		if (frequency != null) {
+			paramMap.put("frequency", frequency);
+		}
+		if (score != null) {
+			paramMap.put("score", score);
+		}
+		Long collocRelGroupId = basicDbService.create(LEX_COLLOC_REL_GROUP, paramMap);
+		return collocRelGroupId;
+	}
+
+	private Long createLexemeCollocation(Long lexemeId, Long relGroupId, LexColloc collocMemberRecord) throws Exception {
+
+		Long collocationId = collocMemberRecord.getCollocationId();
+		String memberForm = collocMemberRecord.getMemberForm();
+		String conjunct = collocMemberRecord.getConjunct();
+		Float weight = collocMemberRecord.getWeight();
+		Integer groupOrder = collocMemberRecord.getGroupOrder();
+		Integer memberOrder = collocMemberRecord.getMemberOrder();
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("lexeme_id", lexemeId);
+		paramMap.put("collocation_id", collocationId);
+		if (relGroupId != null) {
+			paramMap.put("rel_group_id", relGroupId);
+		}
+		paramMap.put("member_form", memberForm);
+		if (StringUtils.isNotBlank(conjunct)) {
+			paramMap.put("conjunct", conjunct);
+		}
+		paramMap.put("weight", weight);
+		paramMap.put("member_order", memberOrder);
+		if (groupOrder != null) {
+			paramMap.put("group_order", groupOrder);
+		}
+		Long lexCollocId = basicDbService.create(LEX_COLLOC, paramMap);
+		return lexCollocId;
+	}
+
+	private Map<String, Object> getLexemeCollocation(Long lexemeId, Long collocationId) throws Exception {
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("lexeme_id", lexemeId);
+		paramMap.put("collocation_id", collocationId);
+		Map<String, Object> result = basicDbService.select(LEX_COLLOC, paramMap);
+		return result;
+	}
+
 	private void appendToReport(OutputStream reportStream, Object... reportCells) throws Exception {
 		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
 		IOUtils.write(logRow + '\n', reportStream, StandardCharsets.UTF_8);
@@ -1101,6 +1557,285 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 
 		public void setResolvedMeaningIdCandidates(List<Long> resolvedMeaningIdCandidates) {
 			this.resolvedMeaningIdCandidates = resolvedMeaningIdCandidates;
+		}
+	}
+
+	class RestorableWordCollocData extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private String word;
+
+		private List<CollocPosGroup> posGroups;
+
+		private List<Long> collocationIds;
+
+		public String getWord() {
+			return word;
+		}
+
+		public void setWord(String word) {
+			this.word = word;
+		}
+
+		public List<CollocPosGroup> getPosGroups() {
+			return posGroups;
+		}
+
+		public void setPosGroups(List<CollocPosGroup> posGroups) {
+			this.posGroups = posGroups;
+		}
+
+		public List<Long> getCollocationIds() {
+			return collocationIds;
+		}
+
+		public void setCollocationIds(List<Long> collocationIds) {
+			this.collocationIds = collocationIds;
+		}
+	}
+
+	class CollocPosGroup extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private String code;
+
+		private List<CollocRelGroup> relGroups;
+
+		public String getCode() {
+			return code;
+		}
+
+		public void setCode(String code) {
+			this.code = code;
+		}
+
+		public List<CollocRelGroup> getRelGroups() {
+			return relGroups;
+		}
+
+		public void setRelGroups(List<CollocRelGroup> relGroups) {
+			this.relGroups = relGroups;
+		}
+	}
+
+	class CollocRelGroup extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private String name;
+
+		private Float frequency;
+
+		private Float score;
+
+		private List<LexColloc> lexCollocs;
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public Float getFrequency() {
+			return frequency;
+		}
+
+		public void setFrequency(Float frequency) {
+			this.frequency = frequency;
+		}
+
+		public Float getScore() {
+			return score;
+		}
+
+		public void setScore(Float score) {
+			this.score = score;
+		}
+
+		public List<LexColloc> getLexCollocs() {
+			return lexCollocs;
+		}
+
+		public void setLexCollocs(List<LexColloc> lexCollocs) {
+			this.lexCollocs = lexCollocs;
+		}
+	}
+
+	class LexColloc extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private Long collocationId;
+
+		private String collocationValue;
+
+		private String memberForm;
+
+		private String conjunct;
+
+		private Float weight;
+
+		private Integer memberOrder;
+
+		private Integer groupOrder;
+
+		public Long getCollocationId() {
+			return collocationId;
+		}
+
+		public void setCollocationId(Long collocationId) {
+			this.collocationId = collocationId;
+		}
+
+		public String getCollocationValue() {
+			return collocationValue;
+		}
+
+		public void setCollocationValue(String collocationValue) {
+			this.collocationValue = collocationValue;
+		}
+
+		public String getMemberForm() {
+			return memberForm;
+		}
+
+		public void setMemberForm(String memberForm) {
+			this.memberForm = memberForm;
+		}
+
+		public String getConjunct() {
+			return conjunct;
+		}
+
+		public void setConjunct(String conjunct) {
+			this.conjunct = conjunct;
+		}
+
+		public Float getWeight() {
+			return weight;
+		}
+
+		public void setWeight(Float weight) {
+			this.weight = weight;
+		}
+
+		public Integer getMemberOrder() {
+			return memberOrder;
+		}
+
+		public void setMemberOrder(Integer memberOrder) {
+			this.memberOrder = memberOrder;
+		}
+
+		public Integer getGroupOrder() {
+			return groupOrder;
+		}
+
+		public void setGroupOrder(Integer groupOrder) {
+			this.groupOrder = groupOrder;
+		}
+	}
+
+	class RestorableCollocReportRow extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private String collocationValue;
+
+		private Long collocationId;
+
+		private String word;
+
+		private Long wordId;
+
+		private Long lexemeId;
+
+		public RestorableCollocReportRow(String collocationValue, Long collocationId, String word, Long wordId, Long lexemeId) {
+			this.collocationValue = collocationValue;
+			this.collocationId = collocationId;
+			this.word = word;
+			this.wordId = wordId;
+			this.lexemeId = lexemeId;
+		}
+
+		public String getCollocationValue() {
+			return collocationValue;
+		}
+
+		public Long getCollocationId() {
+			return collocationId;
+		}
+
+		public String getWord() {
+			return word;
+		}
+
+		public Long getWordId() {
+			return wordId;
+		}
+
+		public Long getLexemeId() {
+			return lexemeId;
+		}
+	}
+
+	class CollocPosRelGroupTuple extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
+
+		private Long lexemeId;
+
+		private Long posGroupId;
+
+		private String posGroupCode;
+
+		private Long relGroupId;
+
+		private String relGroupName;
+
+		public CollocPosRelGroupTuple(Long lexemeId, Long posGroupId, String posGroupCode, Long relGroupId, String relGroupName) {
+			this.lexemeId = lexemeId;
+			this.posGroupId = posGroupId;
+			this.posGroupCode = posGroupCode;
+			this.relGroupId = relGroupId;
+			this.relGroupName = relGroupName;
+		}
+
+		public Long getLexemeId() {
+			return lexemeId;
+		}
+
+		public Long getPosGroupId() {
+			return posGroupId;
+		}
+
+		public String getPosGroupCode() {
+			return posGroupCode;
+		}
+
+		public Long getRelGroupId() {
+			return relGroupId;
+		}
+
+		public String getRelGroupName() {
+			return relGroupName;
+		}
+	}
+
+	class CollocPosRelGroupTupleRowMapper implements RowMapper<CollocPosRelGroupTuple> {
+
+		@Override
+		public CollocPosRelGroupTuple mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Long lexemeId = rs.getObject("lexeme_id", Long.class);
+			Long posGroupId = rs.getObject("pos_group_id", Long.class);
+			String posGroupCode = rs.getObject("pos_group_code", String.class);
+			Long relGroupId = rs.getObject("rel_group_id", Long.class);
+			String relGroupName = rs.getObject("rel_group_name", String.class);
+			return new CollocPosRelGroupTuple(lexemeId, posGroupId, posGroupCode, relGroupId, relGroupName);
 		}
 	}
 }
