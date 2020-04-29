@@ -16681,7 +16681,7 @@ readers do not read off random characters that represent icons */
 }
 
 .definition-area .domain {
-  text-transform: capitalize;
+  text-transform: uppercase;
 }
 
 .definition-area,
@@ -16760,29 +16760,32 @@ readers do not read off random characters that represent icons */
 }
 
 .colloc-member {
+  position: relative;
   box-sizing: border-box;
   display: -webkit-box;
   display: flex;
   flex-wrap: nowrap;
-  padding: 2px;
+  padding: 2px 5px;
 }
 
-.colloc-member .value {
-  position: relative;
-  display: inline-block;
-  padding-left: 5px;
-}
-
-.colloc-member .value::before {
+.colloc-member::after {
   position: absolute;
   top: 50%;
-  left: 0;
+  right: 0;
   display: block;
   height: 20px;
   content: "";
   border-left: 1px solid #3f3f3f;
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
+}
+
+.colloc-member .value {
+  display: inline-block;
+}
+
+.colloc-row .colloc-member:last-child::after {
+  display: none;
 }
 
 .colloc-section {
