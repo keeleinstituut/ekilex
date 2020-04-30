@@ -192,20 +192,6 @@
                        class="matching-word" th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
                       <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                     </a>
-                    <span th:if="${meaningWord.additionalDataExists}" class="rections ml-n1">
-                      <span class="mr-n1">(</span>
-                      <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
-                        th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}" class="type-three">
-                      </span>
-                      <span th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
-                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
-                        <span class="type-one" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
-                      </th:block>
-                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
-                        <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
-                      </th:block>
-                      <span class="ml-n1">)</span>
-                    </span>
                     <span th:unless="${meaningWordIter.last}" class="ml-n1">,</span>
                   </span>
                 </div>
@@ -219,19 +205,6 @@
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
                       <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                     </a>
-                    <span th:if="${meaningWord.additionalDataExists}" class="rections ml-n1">
-                      <span class="mr-n1">(</span>
-                      <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
-                            th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}" class="type-three"></span>
-                      <span th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
-                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
-                        <span class="type-one" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
-                      </th:block>
-                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
-                        <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
-                      </th:block>
-                      <span class="ml-n1">)</span>
-                    </span>
                     <span th:unless="${meaningWordIter.last}" class="ml-n1">,</span>
                   </span>
                 </span>
