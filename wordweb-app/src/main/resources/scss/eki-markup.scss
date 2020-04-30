@@ -15,11 +15,11 @@ eki-stress {
   position: relative;
 
   &::after{
-    content: "́ ";
-    right:25%;
-    top: -2px;
-    display: inline-block;
     position: absolute;
+    top: -2px;
+    right: 25%;
+    display: inline-block;
+    content: "́ ";
   }
 }
 

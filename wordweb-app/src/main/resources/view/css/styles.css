@@ -16995,6 +16995,12 @@ body.hidden-scroll {
   font-style: italic;
 }
 
+.example-text + .example-text {
+  padding-left: .5rem;
+  margin-left: .5rem;
+  border-left: 1px solid #3f3f3f;
+}
+
 .btn-speaker {
   padding: 0 5px;
   line-height: 1.2;
@@ -18365,11 +18371,11 @@ eki-stress {
 }
 
 eki-stress::after {
-  content: "́ ";
-  right: 25%;
-  top: -2px;
-  display: inline-block;
   position: absolute;
+  top: -2px;
+  right: 25%;
+  display: inline-block;
+  content: "́ ";
 }
 
 eki-sub {
