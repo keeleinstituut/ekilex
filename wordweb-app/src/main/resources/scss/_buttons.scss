@@ -70,3 +70,14 @@
     z-index: $zindex-dropdown;
   }
 }
+
+.btn-collapse {
+  &[aria-expanded="true"]{
+    .collapse-icon{
+      transform: rotate(180deg);
+    }
+  }
+  .collapse-icon{
+    transition: transform ease-in-out .32s;
+  }
+}

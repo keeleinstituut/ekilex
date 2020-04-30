@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root {
   --blue: #005aa9;
   --indigo: #6610f2;
@@ -16897,7 +16898,7 @@ body {
   height: 32px;
   margin-right: 5px;
   content: "";
-  background: url("../images/sonaveeb-light-logo.svg") no-repeat;
+  background: url("../images/sonaveeb-logo-light-sm.svg") no-repeat;
   background-size: contain;
 }
 
@@ -18009,6 +18010,18 @@ body {
   }
 }
 
+.btn-collapse[aria-expanded="true"] .collapse-icon {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.btn-collapse .collapse-icon {
+  -webkit-transition: -webkit-transform ease-in-out .32s;
+  transition: -webkit-transform ease-in-out .32s;
+  transition: transform ease-in-out .32s;
+  transition: transform ease-in-out .32s, -webkit-transform ease-in-out .32s;
+}
+
 .tag {
   padding: 0 8px;
   margin-right: .25rem;
@@ -18080,7 +18093,15 @@ eki-highlight {
 }
 
 eki-stress {
-  font-weight: bold;
+  position: relative;
+}
+
+eki-stress::after {
+  content: "́ ";
+  right: 25%;
+  top: -2px;
+  display: inline-block;
+  position: absolute;
 }
 
 eki-sub {

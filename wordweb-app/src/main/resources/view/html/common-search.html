@@ -89,7 +89,7 @@
   <th:block th:fragment="word-data">
     <div class="col-12 content-title d-flex align-items-center flex-wrap">
       <span class="additional-meta lang-code" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-      <h1 class="mb-0 ">
+      <h1 class="mb-0 font-weight-bold">
         <span class="homonym-name" th:utext="${viewUtil.getWordValueMarkup(wordData.word)}">tee</span>
       </h1>
       <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
@@ -192,6 +192,18 @@
                        class="matching-word" th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
                       <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                     </a>
+                    <span th:if="${meaningWord.additionalDataExists}" class="text-small text-uppercase">
+                      <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
+                        th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}" class="type-three">
+                      </span>
+                      <span th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
+                        <span class="type-one tag rection" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
+                      </th:block>
+                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
+                        <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                      </th:block>
+                    </span>
                     <span th:unless="${meaningWordIter.last}" class="ml-n1">,</span>
                   </span>
                 </div>
@@ -205,6 +217,11 @@
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
                       <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                     </a>
+                    <span th:if="${meaningWord.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
+                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
+                        <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                      </th:block>
+                    </span>
                     <span th:unless="${meaningWordIter.last}" class="ml-n1">,</span>
                   </span>
                 </span>
@@ -338,8 +355,8 @@
           (not #lists.isEmpty(lexeme.usages)) or
           (not #lists.isEmpty(lexeme.imageFiles))
           }">
-            <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-1 rekts-est">
-              <i th:each="government,iter : ${lexeme.governments}" th:text="${government.value + (iter.last ? '' : ', ')}"> </i>
+            <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="rekts-est">
+              <span class="tag mb-1 d-inline-block" th:each="government,iter : ${lexeme.governments}" th:text="${government.value + (iter.last ? '' : ', ')}"> </span>
             </div>
             <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
               <th:block th:each="usage,usageIter : ${lexeme.usages}">
@@ -512,7 +529,7 @@
                             </span>
                           </span>
                         </div>
-                        <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="pb-1">
+                        <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="pb-1 pl-2 pl-md-4 collapse">
                           <div class="colloc-usage-row examle-text-wrap" th:each="collocUsage : ${collocRelGr.allUsages}">
                             <span class="font-italic" th:text="${collocUsage}"></span>
                             <button th:aria-label="|#{aria.listen} - ${collocUsage}|" class="btn btn-speaker" th:data-words="${collocUsage}" onclick="generateAudioAndPlay(this)">
@@ -520,6 +537,10 @@
                             </button>
                           </div>
                         </div>
+                        <button th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="btn btn-link-muted btn-sm btn-collapse" data-toggle="collapse"  aria-expanded="false" aria-controls="collapseExample" th:attr="data-target=${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" >
+                          <i class="collapse-icon fa fa-angle-down" aria-hidden="true"></i>
+                          <span th:text="#{button.label.usages}"></span>
+                        </button>
                       </div>
                     </div>
                   </div>
