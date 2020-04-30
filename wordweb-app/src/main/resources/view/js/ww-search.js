@@ -21,6 +21,14 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
 			placement: 'top',
 			trigger: 'focus'
 		});
+		var lightbox = new SimpleLightbox(
+			'.gallery-image',
+			{
+				history: false,
+				captionPosition: 'outside',
+				navText:['<i class="fas fa-arrow-left"></i>','<i class="fas fa-arrow-right"></i>'],
+				closeText: '<i class="fas fa-times"></i>'
+			});
 	}).fail(function(data) {
 		alert(messages.search_failure);
 	})
