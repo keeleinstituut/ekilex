@@ -30,8 +30,10 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
                 closeText: '<i class="fas fa-times"></i>'
             });
         activateCollapseBtn();
+        $("#mainContentArea").removeClass("loading");
     }).fail(function (data) {
         alert(messages.search_failure);
+        $("#mainContentArea").removeClass("loading");
     })
 }
 

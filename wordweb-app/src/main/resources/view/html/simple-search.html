@@ -28,7 +28,13 @@
       </div>
     </div>
 
-    <main role="main" class="content-panel px-3 ">
+    <main id="mainContentArea" role="main" class="content-panel px-3 loading">
+      <div th:if="${wordsData.resultsExist}" class="loading-indicator">
+        <div class="spinner-border text-primary " role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <div class="message-wrap" th:if="${!wordsData.resultsExist}">

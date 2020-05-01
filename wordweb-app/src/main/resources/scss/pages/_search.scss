@@ -14,8 +14,25 @@
     @include border-radius(.6875rem);
   }
 
-  .word-details{
+  .word-details {
     flex: 1 1 auto;
+  }
+
+  > .loading-indicator {
+    display: none;
+  }
+
+  &.loading {
+    position: relative;
+
+    .loading-indicator {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: $zindex-modal;
+      transform: translate(-50%);
+    }
   }
 }
 
@@ -32,7 +49,7 @@
     border-top: none;
   }
 
-  .level-3-panel:last-of-type{
+  .level-3-panel:last-of-type {
     border-bottom: 0;
   }
 }
@@ -42,7 +59,7 @@
   padding: 1rem;
   border-bottom: 1px solid $gray-200;
 
-  @include media-breakpoint-up(md){
+  @include media-breakpoint-up(md) {
     padding-right: 2.5rem;
   }
 
@@ -60,17 +77,20 @@
       display: inline-flex;
       opacity: 1;
     }
+
     .dependence:nth-child(1),
     .dependence:nth-child(2) {
       display: inline-flex;
       opacity: 1;
     }
   }
+
   .dependence.expand {
     display: inline-flex;
     opacity: 1;
+
     .meaning,
-    .meaning-meta{
+    .meaning-meta {
       flex: 0 1 auto;
     }
   }
@@ -86,38 +106,41 @@
   }
 }
 
-.word-details{
-  @include media-breakpoint-down(sm){
+.word-details {
+  @include media-breakpoint-down(sm) {
     background: $white;
     @include border-radius(10px);
     @include box-shadow(0 4px 12px -4px rgba(0, 0, 0, .25));
   }
 }
-.matching-word{
-  &.match{
+
+.matching-word {
+  &.match {
     border-bottom: 2px dashed $border-color;
   }
 }
-.rections{
+
+.rections {
   color: $gray-400;
 }
-.sidebar .level-3-panel:last-child{
+
+.sidebar .level-3-panel:last-child {
   border-bottom: 0;
 }
-.corp-warning{
+
+.corp-warning {
   display: flex;
   font-size: $font-size-md;
   color: $gray-400;
 }
+
 .word-relations.expand .limited-group,
-.word-relations:not(.expand) .full-group
-{
+.word-relations:not(.expand) .full-group {
   display: none;
 }
 
 .word-relations.expand .full-group,
-.word-relations:not(.expand) .limited-group
-{
+.word-relations:not(.expand) .limited-group {
   display: block;
 }
 
@@ -134,19 +157,19 @@
 }
 
 .main-data {
-  @include media-breakpoint-up(md){
+  @include media-breakpoint-up(md) {
     border-right: 1px $gray-200 solid;
   }
 }
 
-.homonym-page{
+.homonym-page {
   display: flex;
   flex: 1 1 auto;
   flex-flow: column;
   min-height: 100%;
 
   .search-results-header,
-  .content-panel{
+  .content-panel {
     width: 100%;
   }
 }
