@@ -72,7 +72,7 @@
 }
 
 .btn-collapse {
-  &[aria-expanded="true"]{
+  &.show{
     .collapse-icon{
       transform: rotate(180deg);
     }

@@ -18284,7 +18284,7 @@ body {
   }
 }
 
-.btn-collapse[aria-expanded="true"] .collapse-icon {
+.btn-collapse.show .collapse-icon {
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
 }
