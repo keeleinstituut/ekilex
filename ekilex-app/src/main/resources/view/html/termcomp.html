@@ -11,7 +11,7 @@
     <hr />
     <div id="results" class="w-100">
       <div th:each="resultRow,resultRowIter : ${termSearchResult.results}" class="d-flex flex-row flex-nowrap" th:classappend="${resultRowIter.last} ? '' : 'border-bottom'">
-        <button type="button" name="detailsBtn" th:data-id="${resultRow.meaningId}" class="btn btn-block pl-3 text-left" style="text-decoration:none; color:inherit;">
+        <button type="button" name="meaning-details-btn" th:data-id="${resultRow.meaningId}" class="btn btn-block pl-3 text-left" style="text-decoration:none; color:inherit;">
           <span th:text="${resultRow.meaningId}" class="text-monospace float-right"></span>
           <th:block th:if="${resultRow.meaningWordsExist}">
             <div th:each="meaningWord : ${resultRow.meaningWords}" class="row" th:classappend="${meaningWord.matchingWord ? '' : 'other-word'}">

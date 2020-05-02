@@ -11,10 +11,10 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
 	});
 }
 
-function doPostDelete(deleteUrl, callbackFunc) {
+function doPostDelete(deleteUrl, callback) {
 	$.post(deleteUrl).done(function(data) {
 		if (data === "OK") {
-			callbackFunc();
+			callback();
 		} else {
 			openAlertDlg("Andmete eemaldamine ebaõnnestus.");
 			console.log(data);
@@ -25,19 +25,25 @@ function doPostDelete(deleteUrl, callbackFunc) {
 	});
 }
 
-function submitDialog(e, dlg, failMessage, callback = $.noop) {
+function submitDialog(e, dlg, failMessage) {
 	e.preventDefault();
 	let theForm = dlg.find('form');
 	if (!checkRequiredFields(theForm)) {
 		return;
 	}
 
-	submitForm(theForm, failMessage, callback).always(function() {
+	var successCallbackName = dlg.attr("data-callback");
+	var successCallbackFunc = undefined;
+	if (successCallbackName) {
+		successCallbackFunc = () => eval(successCallbackName);
+	}
+
+	submitForm(theForm, failMessage, successCallbackFunc).always(function() {
 		dlg.modal('hide');
 	});
 }
 
-function submitForm(theForm, failMessage, callback = $.noop) {
+function submitForm(theForm, failMessage, callback) {
 	var data = JSON.stringify(theForm.serializeJSON());
 	return $.ajax({
 		url: theForm.attr('action'),
@@ -46,8 +52,11 @@ function submitForm(theForm, failMessage, callback = $.noop) {
 		dataType: 'json',
 		contentType: 'application/json'
 	}).done(function(data) {
-		$('#refresh-details').trigger('click');
-		callback();
+		if (typeof callback === 'function') {
+			callback();
+		} else {
+			$('#refresh-details').trigger('click');
+		}
 	}).fail(function(data) {
 		console.log(data);
 		alert(failMessage);
@@ -143,8 +152,14 @@ function executeDelete(deleteUrl) {
 			deleteUrl = deleteUrl + '&value=' + encodeURIComponent(value);
 		}
 	}
-	let callbackFunc = () => $('#refresh-details').trigger('click');
-	doPostDelete(deleteUrl, callbackFunc);
+	var successCallbackName = $(this).attr("data-callback");
+	var successCallbackFunc = undefined;
+	if (successCallbackName) {
+		successCallbackFunc = () => eval(successCallbackName);
+	} else {
+		successCallbackFunc = () => $('#refresh-details').trigger('click');
+	}
+	doPostDelete(deleteUrl, successCallbackFunc);
 }
 
 function initAddMultiDataDlg(theDlg) {
@@ -540,11 +555,11 @@ function initAddSynRelationDlg(addDlg) {
 	});
 }
 
-function decorateSourceLinks() {
-	let detailsDiv = $('#details_div');
-	detailsDiv.find('a').each(function(indx, item) {
+function decorateSourceLinks(detailsDiv) {
+	detailsDiv.find('a[href]').each(function(indx, item) {
 		let theLink = $(item);
-		if (theLink.attr('href').includes('_source_link:')) {
+		let href = theLink.attr('href');
+		if (href.includes('_source_link:')) {
 			theLink.attr('data-target', '#sourceDetailsDlg');
 			theLink.attr('data-toggle', 'modal');
 			theLink.on('click', function(e) {

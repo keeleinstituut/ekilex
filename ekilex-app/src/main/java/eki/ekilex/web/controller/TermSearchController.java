@@ -139,7 +139,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 	@GetMapping(MEANING_DETAILS_URI + "/{meaningId}")
 	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
-		logger.debug("Requesting meaning {} details", meaningId);
+		logger.debug("meaning details for {}", meaningId);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();

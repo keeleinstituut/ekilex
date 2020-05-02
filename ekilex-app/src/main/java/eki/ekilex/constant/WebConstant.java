@@ -52,6 +52,8 @@ public interface WebConstant {
 
 	String WORD_DETAILS_URI = "/worddetails";
 
+	String LEXEME_DETAILS_URI = "/lexemedetails";
+
 	String PARADIGMS_URI = "/paradigms";
 
 	String MEANING_DETAILS_URI = "/meaningdetails";

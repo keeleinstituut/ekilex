@@ -64,7 +64,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Transactional
-	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile) {
+	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, boolean isFullData) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Word word = lexSearchDbService.getWord(wordId);
@@ -84,7 +84,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
-		lexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, userProfile));
+		lexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, userProfile, isFullData));
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
@@ -103,11 +103,21 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordLexeme getWordLexeme(Long lexemeId) {
+	public WordLexeme getDefaultWordLexeme(Long lexemeId) {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
 		if (lexeme != null) {
-			populateLexeme(lexeme);
+			populateLexeme(lexeme, null, null, true);
+		}
+		return lexeme;
+	}
+
+	@Transactional
+	public WordLexeme getWordLexeme(Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, boolean isFullData) {
+
+		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
+		if (lexeme != null) {
+			populateLexeme(lexeme, languagesOrder, userProfile, isFullData);
 		}
 		return lexeme;
 	}
@@ -147,14 +157,11 @@ public class LexSearchService extends AbstractWordSearchService {
 		return lexSearchDbService.getWord(wordId);
 	}
 
-	private void populateLexeme(WordLexeme lexeme) {
-		populateLexeme(lexeme, null, null);
-	}
-
-	private void populateLexeme(WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile) {
+	private void populateLexeme(WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, boolean isFullData) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name()};
-		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
+		final String[] excludeLexemeAttributeTypes = new String[] {
+				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
 		Long lexemeId = lexeme.getLexemeId();
@@ -172,63 +179,68 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
-		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
-		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
-		List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
-		List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
-		List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
-		List<FreeForm> lexemePublicNotes = commonDataDbService.getLexemePublicNotes(lexemeId);
-		List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
-		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
-		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-		List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
-		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<List<Relation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
-		List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
-		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.getPrimaryCollocationTuples(lexemeId);
-		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
-		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.getSecondaryCollocationTuples(lexemeId);
-		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
-		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
-
 		lexeme.setPos(lexemePos);
 		lexeme.setDerivs(lexemeDerivs);
 		lexeme.setRegisters(lexemeRegisters);
-		lexeme.setMeaningSemanticTypes(meaningSemanticTypes);
-		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		lexeme.setMeaningDomains(meaningDomains);
 		lexeme.setDefinitions(definitions);
-		lexeme.setMeaningFreeforms(meaningFreeforms);
-		lexeme.setMeaningLearnerComments(meaningLearnerComments);
-		lexeme.setMeaningImages(meaningImages);
-		lexeme.setLexemeFreeforms(lexemeFreeforms);
-		lexeme.setLexemePublicNotes(lexemePublicNotes);
-		lexeme.setOdLexemeRecommendations(odLexemeRecommendations);
-		lexeme.setGovernments(governments);
-		lexeme.setUsages(usages);
-		lexeme.setLexemeRelations(lexemeRelations);
-		lexeme.setMeaningRelations(meaningRelations);
-		lexeme.setGrammars(lexemeGrammars);
-		lexeme.setCollocationPosGroups(collocationPosGroups);
-		lexeme.setSecondaryCollocations(secondaryCollocations);
-		lexeme.setSourceLinks(lexemeSourceLinks);
-		lexeme.setViewMeaningRelations(viewMeaningRelations);
+		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 
-		boolean lexemeOrMeaningClassifiersExist =
-				StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
-						|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
-						|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())
-						|| CollectionUtils.isNotEmpty(lexemePos)
-						|| CollectionUtils.isNotEmpty(lexemeDerivs)
-						|| CollectionUtils.isNotEmpty(lexemeRegisters)
-						|| CollectionUtils.isNotEmpty(meaningDomains)
-						|| CollectionUtils.isNotEmpty(meaningSemanticTypes)
-						|| CollectionUtils.isNotEmpty(lexemeGrammars)
-						|| CollectionUtils.isNotEmpty(lexeme.getLexemeFrequencies());
-		lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
+		if (isFullData) {
+
+			List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
+			List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
+			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
+					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
+			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
+			List<FreeForm> lexemePublicNotes = commonDataDbService.getLexemePublicNotes(lexemeId);
+			List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
+			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
+			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
+			List<CollocationTuple> primaryCollocTuples = lexSearchDbService.getPrimaryCollocationTuples(lexemeId);
+			List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
+			List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.getSecondaryCollocationTuples(lexemeId);
+			List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
+
+			List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
+			List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
+			List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
+			List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
+			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
+			List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
+			List<List<Relation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
+
+			lexeme.setGovernments(governments);
+			lexeme.setGrammars(grammars);
+			lexeme.setUsages(usages);
+			lexeme.setLexemeFreeforms(lexemeFreeforms);
+			lexeme.setLexemePublicNotes(lexemePublicNotes);
+			lexeme.setOdLexemeRecommendations(odLexemeRecommendations);
+			lexeme.setLexemeRelations(lexemeRelations);
+			lexeme.setSourceLinks(lexemeSourceLinks);
+			lexeme.setCollocationPosGroups(collocationPosGroups);
+			lexeme.setSecondaryCollocations(secondaryCollocations);
+
+			lexeme.setMeaningFreeforms(meaningFreeforms);
+			lexeme.setMeaningLearnerComments(meaningLearnerComments);
+			lexeme.setMeaningImages(meaningImages);
+			lexeme.setMeaningSemanticTypes(meaningSemanticTypes);
+			lexeme.setMeaningRelations(meaningRelations);
+			lexeme.setViewMeaningRelations(viewMeaningRelations);
+
+			boolean lexemeOrMeaningClassifiersExist =
+					StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
+							|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
+							|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())
+							|| CollectionUtils.isNotEmpty(lexeme.getPos())
+							|| CollectionUtils.isNotEmpty(lexeme.getDerivs())
+							|| CollectionUtils.isNotEmpty(lexeme.getRegisters())
+							|| CollectionUtils.isNotEmpty(lexeme.getGrammars())
+							|| CollectionUtils.isNotEmpty(lexeme.getLexemeFrequencies())
+							|| CollectionUtils.isNotEmpty(lexeme.getMeaningDomains())
+							|| CollectionUtils.isNotEmpty(lexeme.getMeaningSemanticTypes());
+			lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
+		}
 	}
-
 }

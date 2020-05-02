@@ -70,8 +70,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
 		Long userId = userService.getAuthenticatedUser().getId();
-
-		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId);
+		WordLexeme targetLexeme = lexSearchService.getDefaultWordLexeme(targetLexemeId);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWordValue();
 		if (searchFilter == null) {
@@ -141,8 +140,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	public String join(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds) {
 
 		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds);
-
-		WordLexeme lexeme = lexSearchService.getWordLexeme(targetLexemeId);
+		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(targetLexemeId);
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String firstWordValue = lexeme.getWordValue();
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
@@ -153,7 +151,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	@GetMapping("/lexseparate/{lexemeId}")
 	public String separate(@PathVariable("lexemeId") Long lexemeId) {
 
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
 		compositionService.separateLexemeMeanings(lexemeId);
 
 		List<String> datasets = getUserPreferredDatasetCodes();

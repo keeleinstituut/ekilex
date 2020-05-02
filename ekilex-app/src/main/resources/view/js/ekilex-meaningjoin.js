@@ -5,6 +5,9 @@ function initialise() {
 	idsChk.on('change', function() {
 		joinBtn.prop('disabled', !idsChk.filter(":checked").length);
 	});
+
+	var detailsDiv = $("#meaning-details-area");
+	decorateSourceLinks(detailsDiv);
 }
 
 function joinMeanings() {

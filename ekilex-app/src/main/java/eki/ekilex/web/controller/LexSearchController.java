@@ -155,7 +155,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
 		List<String> datasets = Arrays.asList(lexeme.getDatasetCode());
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
@@ -197,17 +197,37 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
 	public String wordDetails(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
-		logger.debug("Requesting details by word {}", wordId);
+		logger.debug("word details for {}", wordId);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Long userId = userService.getAuthenticatedUser().getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile);
+		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
-		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
+		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "word_details";
+	}
+
+	@GetMapping(LEXEME_DETAILS_URI + "/{composition}/{lexemeId}/{levels}")
+	public String lexemeDetails(
+			@PathVariable("composition") String composition,
+			@PathVariable("lexemeId") Long lexemeId,
+			@PathVariable("levels") String levels,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+
+		logger.debug("lexeme {} details for {}", composition, lexemeId);
+
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		boolean isFullData = StringUtils.equals(composition, "full");
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, isFullData);
+		lexeme.setLevels(levels);
+		model.addAttribute("lexeme", lexeme);
+
+		return "lexdetail" + PAGE_FRAGMENT_ELEM + "lexeme_details_" + composition;
 	}
 
 	@PostMapping(LEX_PAGING_URI)

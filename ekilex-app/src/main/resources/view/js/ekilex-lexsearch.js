@@ -1,36 +1,15 @@
 function initialise() {
-	$(document).on("click", ":button[name='detailsBtn']", function() {
-		openWaitDlg();
-		let id = $(this).data('id');
-		let isRestoreDisplayState = this.hasAttribute('data-refresh');
-		let openLexemes = [];
-		$('.d-none[data-lexeme-title]').each(function(index, item) {
-			openLexemes.push($(item).data('toggle-name'));
-		});
-		$("[id^='word_select_wait_']").hide();
-		$("#word_select_wait_" + id).show();
-		$('#results_div .list-group-item').removeClass('active');
-		$(this).parent().addClass('active');
-		$.get(applicationUrl + 'worddetails/' + id).done(function(data) {
-			let detailsDiv = $('#details_div');
-			let scrollPos = detailsDiv.scrollTop();
-			detailsDiv.replaceWith(data);
-			initLexemeToggleButtons();
-			initClassifierAutocomplete();
-			if (isRestoreDisplayState) {
-				detailsDiv.scrollTop(scrollPos);
-				openLexemes.forEach(function(lexemeName) {
-					$('[data-toggle-name=' + lexemeName + ']').find('.btn-toggle').trigger('click');
-				})
-			}
-			$("#word_select_wait_" + id).hide();
-			closeWaitDlg();
-			$('[data-toggle="tooltip"]').tooltip();
-		}).fail(function(data) {
-			console.log(data);
-			closeWaitDlg();
-			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
-		});
+
+	$(document).on("click", ":button[name='word-details-btn']", function() {
+		let wordId = $(this).data('id');
+		loadWordDetails(wordId);
+	});
+
+	$(document).on("click", ":button[name='lexeme-details-btn']", function() {
+		let lexemeId = $(this).data('id');
+		let lexemeLevels = $(this).data('lex-levels');
+		let composition = $(this).data('composition');
+		loadLexemeDetails(lexemeId, lexemeLevels, composition);
 	});
 
 	$(document).on('click', '.order-up', function() {
@@ -119,7 +98,7 @@ function initialise() {
 			closeWaitDlg();
 			$('#results_div').html(data);
 			$('#results_div').parent().scrollTop(0);
-			$('#details_div').empty();
+			$('#word-details-area').empty();
 		}).fail(function (data) {
 			console.log(data);
 			closeWaitDlg();
@@ -128,13 +107,58 @@ function initialise() {
 
 	});
 
-	let detailButtons = $('#results').find('[name="detailsBtn"]');
+	let detailButtons = $('#results').find('[name="word-details-btn"]');
 	if (detailButtons.length === 1) {
 		detailButtons.trigger('click');
 	}
 
 	initNewWordDlg();
 	initClassifierAutocomplete();
+}
+
+function loadWordDetails(wordId) {
+	$("[id^='word_select_wait_']").hide();
+	$("#word_select_wait_" + wordId).show();
+	$('#results_div .list-group-item').removeClass('active');
+	$(this).parent().addClass('active');
+	openWaitDlg();
+	let wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
+	$.get(wordDetailsUrl).done(function(data) {
+		let detailsDiv = $('#word-details-area');
+		let scrollPos = detailsDiv.scrollTop();
+		detailsDiv.replaceWith(data);
+		decorateSourceLinks(detailsDiv);
+		initClassifierAutocomplete();
+		detailsDiv.scrollTop(scrollPos);
+		$("#word_select_wait_" + wordId).hide();
+		closeWaitDlg();
+		$('[data-toggle="tooltip"]').tooltip();
+	}).fail(function(data) {
+		console.log(data);
+		closeWaitDlg();
+		alert('Keelendi detailide päring ebaõnnestus');
+	});
+}
+
+function loadFullLexemeDetails(lexemeId, lexemeLevels) {
+	loadLexemeDetails(lexemeId, lexemeLevels, "full");
+}
+
+function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
+	openWaitDlg();
+	let lexemeDetailsUrl = applicationUrl + 'lexemedetails/' + composition + '/' + lexemeId + '/' + lexemeLevels;
+	$.get(lexemeDetailsUrl).done(function(data) {
+		let detailsDiv = $('#lexeme-details-' + lexemeId);
+		detailsDiv.html(data);
+		decorateSourceLinks(detailsDiv);
+		initClassifierAutocomplete();
+		closeWaitDlg();
+		$('[data-toggle="tooltip"]').tooltip();
+	}).fail(function(data) {
+		console.log(data);
+		closeWaitDlg();
+		alert('Lekseemi detailide päring ebaõnnestus');
+	});
 }
 
 function initLexemeLevelsDlg(editDlg) {
@@ -144,8 +168,8 @@ function initLexemeLevelsDlg(editDlg) {
 		editDlg.find('[name="action"]').val($(this).data('action'));
 		let url = editForm.attr('action') + '?' + editForm.serialize();
 		$.post(url).done(function(data) {
-			let id = $('#details_div').data('id');
-			let detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
+			let id = $('#word-details-area').data('id');
+			let detailsButton = $('[name="word-details-btn"][data-id="' + id + '"]');
 			detailsButton.trigger('click');
 			editDlg.find('button.close').trigger('click');
 		}).fail(function(data) {
@@ -161,22 +185,6 @@ function initUsageAuthorDlg(addDlg) {
 	let selectElem = addDlg.find('select');
 	selectElem.val(selectElem.find('option').first().val());
 	initRelationDialogLogic(addDlg, 'source-id');
-}
-
-function initLexemeToggleButtons() {
-	let toggleButtons = $('.btn-toggle');
-	toggleButtons.on('click', toggleLexeme);
-	if (toggleButtons.length === 2) {
-		$(toggleButtons[0]).trigger('click');
-	}
-}
-
-function toggleLexeme(e) {
-	let elementToClose = $(e.currentTarget).closest('[data-toggle-name]');
-	let targetName = $(e.currentTarget).data('toggle-target');
-	let elementToShow = $('[data-toggle-name=' + targetName + ']');
-	elementToClose.addClass('d-none');
-	elementToShow.removeClass('d-none');
 }
 
 function refreshDetails() {

@@ -99,4 +99,8 @@ public class ViewUtil implements InitializingBean {
 		return htmlBuf.toString();
 	}
 
+	public String composeFunction(String functionName, Object... args) {
+		String functionSignature = functionName + "(" + StringUtils.join(args, ',') + ")";
+		return functionSignature;
+	}
 }

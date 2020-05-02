@@ -1,27 +1,9 @@
 // add on click handlers to details buttons in search result table
 function initialise() {
-	$(document).on("click", ":button[name='detailsBtn']", function() {
-		openWaitDlg();
-		var id = $(this).data('id');
-		var isRestoreScrollPos = this.hasAttribute('data-refresh');
-		$("[id^='meaning_select_point_']").hide();
-		$("[id^='meaning_select_wait_']").hide();
-		$("#meaning_select_wait_" + id).show();
-		$.get(applicationUrl + 'meaningdetails/' + id).done(function(data) {
-			var scrollPos = $('#details_div').scrollTop();
-			$('#details_div').replaceWith(data);
-			if (isRestoreScrollPos) {
-				$('#details_div').scrollTop(scrollPos);
-			}
-			$("#meaning_select_wait_" + id).hide();
-			$("#meaning_select_point_" + id).show();
-			closeWaitDlg();
-			initClassifierAutocomplete();
-		}).fail(function(data) {
-			console.log(data);
-			closeWaitDlg();
-			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
-		});
+
+	$(document).on("click", ":button[name='meaning-details-btn']", function() {
+		var meaningId = $(this).data('id');
+		loadMeaningDetails(meaningId);
 	});
 
 	$(document).on('click', '.order-up', function() {
@@ -80,7 +62,7 @@ function initialise() {
 			closeWaitDlg();
 			$('#results_div').html(data);
 			$('#results_div').parent().scrollTop(0);
-			$('#details_div').empty();
+			$('#meaning-details-area').empty();
 		}).fail(function (data) {
 			console.log(data);
 			closeWaitDlg();
@@ -119,13 +101,37 @@ function initialise() {
 		});
 	});
 
-	var detailsButtons = $('#results').find('[name="detailsBtn"]');
+	var detailsButtons = $('#results').find('[name="meaning-details-btn"]');
 	if (detailsButtons.length === 1) {
 		detailsButtons.trigger('click');
 	}
 
 	initNewWordDlg();
 	initClassifierAutocomplete();
+}
+
+function loadMeaningDetails(meaningId) {
+	$("[id^='meaning_select_point_']").hide();
+	$("[id^='meaning_select_wait_']").hide();
+	$("#meaning_select_wait_" + meaningId).show();
+	openWaitDlg();
+	var meaningDetailsUrl = applicationUrl + 'meaningdetails/' + meaningId;
+	$.get(meaningDetailsUrl).done(function(data) {
+		var detailsDiv = $('#meaning-details-area');
+		var scrollPos = detailsDiv.scrollTop();
+		detailsDiv.replaceWith(data);
+		decorateSourceLinks(detailsDiv);
+		initClassifierAutocomplete();
+		$('#meaning-details-area').scrollTop(scrollPos);
+		$("#meaning_select_wait_" + meaningId).hide();
+		$("#meaning_select_point_" + meaningId).show();
+		closeWaitDlg();
+		$('[data-toggle="tooltip"]').tooltip();
+	}).fail(function(data) {
+		console.log(data);
+		closeWaitDlg();
+		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+	});
 }
 
 function refreshDetails() {

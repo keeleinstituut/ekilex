@@ -9,7 +9,7 @@
     <div class="overflow-auto h-100">
       <ul id="results" class="mb-0 pb-3 list-group">
         <li th:each="word : ${wordsResult.words}" class="list-group-item search-result-item border-left-0 border-right-0 rounded-0 p-0">
-          <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="detailsBtn">
+          <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="word-details-btn">
             <span class="d-flex align-items-center">
               <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
               <span th:utext="${viewUtil.getWordValueMarkup(word)}">vorm 1</span>
@@ -83,8 +83,9 @@
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn badge badge-warning"
-              th:data-id="${lexeme.lexemeId}"
               data-op-code="lexeme_value_state"
+              th:data-id="${lexeme.lexemeId}"
+              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
               data-toggle="delete-confirm"
               data-placement="right"
               sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -116,8 +117,9 @@
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
-                th:data-id="${grammar.id}"
                 data-op-code="lexeme_grammar"
+                th:data-id="${grammar.id}"
+                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -143,8 +145,9 @@
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
-                th:data-id="${lexeme.lexemeId}"
                 data-op-code="lexeme_frequency_group"
+                th:data-id="${lexeme.lexemeId}"
+                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -195,9 +198,10 @@
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
-                th:data-id="${lexeme.lexemeId}"
                 data-op-code="lexeme_pos"
+                th:data-id="${lexeme.lexemeId}"
                 th:data-value="${classif.code}"
+                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -234,9 +238,10 @@
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
-                th:data-id="${lexeme.lexemeId}"
                 data-op-code="lexeme_deriv"
+                th:data-id="${lexeme.lexemeId}"
                 th:data-value="${classif.code}"
+                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -273,9 +278,10 @@
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
-                th:data-id="${lexeme.lexemeId}"
                 data-op-code="lexeme_register"
+                th:data-id="${lexeme.lexemeId}"
                 th:data-value="${classif.code}"
+                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="${#vars.isLexemeCrudGranted}">
@@ -298,7 +304,7 @@
     </div>
     <div class="col pl-0">
       <div class="orderable" data-op-code="meaning_domain">
-        <span th:each="classif,classifIter : ${lexeme.meaningDomains}" th:data-id="${classif.id}" th:data-orderby="${classif.orderBy}" class="hidden-buttons">
+        <div th:each="classif,classifIter : ${lexeme.meaningDomains}" th:data-id="${classif.id}" th:data-orderby="${classif.orderBy}" class="hidden-buttons">
           <div class="row">
             <div class="action-column">
               <th:block th:replace="common :: ordering_buttons(${classifIter})" sec:authorize="#vars.isMeaningCrudGranted"></th:block>
@@ -315,14 +321,19 @@
                       sec:authorize="#vars.isMeaningCrudGranted">
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
               </button>
-              <button type="button" class="btn badge badge-warning" th:data-id="${lexeme.meaningId}" data-op-code="meaning_domain"
-                      th:data-value="${classif.toIdString()}" data-toggle="delete-confirm"
-                      data-placement="right" sec:authorize="#vars.isMeaningCrudGranted">
+              <button type="button" class="btn badge badge-warning" 
+                      data-op-code="meaning_domain"
+                      th:data-id="${lexeme.meaningId}"
+                      th:data-value="${classif.toIdString()}"
+                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.isMeaningCrudGranted">
                 <i class="fa fa-remove" aria-hidden="true"></i>
               </button>
             </div>
           </div>
-        </span>
+        </div>
       </div>
     </div>
   </div>
@@ -353,9 +364,10 @@
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
-                th:data-id="${lexeme.meaningId}"
                 data-op-code="meaning_semantic_type"
+                th:data-id="${lexeme.meaningId}"
                 th:data-value="${classif.code}"
+                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="${#vars.isMeaningCrudGranted}">
