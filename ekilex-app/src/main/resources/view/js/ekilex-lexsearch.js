@@ -120,7 +120,7 @@ function loadWordDetails(wordId) {
 	$("[id^='word_select_wait_']").hide();
 	$("#word_select_wait_" + wordId).show();
 	$('#results_div .list-group-item').removeClass('active');
-	$(this).parent().addClass('active');
+	$("#word-result-" + wordId).addClass('active');
 	openWaitDlg();
 	let wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
 	$.get(wordDetailsUrl).done(function(data) {
