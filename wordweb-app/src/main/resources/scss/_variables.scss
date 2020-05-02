@@ -66,3 +66,24 @@ $input-btn-font-size-sm: $font-size-md;
 $input-border-color: $gray-300;
 $btn-disabled-opacity: .4;
 $navbar-dark-color: $white;
+
+//Image gallery styles
+$sl-font-family: $font-family-sans-serif;
+$sl-navigation-color: $gray-200;
+$sl-overlay-background: $gray-1000;
+$sl-overlay-opacity: .9;
+$sl-caption-background: none;
+
+
+$sl-counter-fontsize: $font-size-md;
+$sl-caption-fontsize: $font-size-md;
+
+$sl-close-fontsize: 2rem;
+
+$sl-arrow-fontsize-small:  2rem;
+$sl-arrow-fontsize-medium: 2rem;
+$sl-arrow-fontsize-large:  2rem;
+
+$sl-img-border-small:  6px solid $white;
+$sl-img-border-medium: 12px solid $white;
+$sl-img-border-large: $sl-img-border-medium;

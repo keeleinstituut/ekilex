@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(_,~{::links})">
+<head th:replace="common-app :: common_header(_,~{::links},_)">
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
@@ -34,7 +34,7 @@
         </div>
         <div class="text-center mt-5">
           <a th:href="@{/lite}" target="_blank" class="link simple-search-brand-link" data-item-name="search-lite">
-            <span th:text="#{menu.search.lite}">Keeleõppija sõnaveeb</span>
+            <span th:text="#{menu.search.lite}">Keeleõppija Sõnaveeb</span>
             <i class="fas fa-external-link-alt ml-2" aria-hidden="true"></i>
           </a>
         </div>

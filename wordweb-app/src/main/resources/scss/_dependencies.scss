@@ -34,6 +34,12 @@
   font-style: italic;
 }
 
+.example-text + .example-text{
+  padding-left: .5rem;
+  margin-left: .5rem;
+  border-left: 1px solid $gray-900;
+}
+
 .btn-speaker {
   padding: 0 5px;
   line-height: 1.2;

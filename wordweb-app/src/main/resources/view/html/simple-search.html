@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},~{::links})">
+<head th:replace="common-app :: common_header(~{::title},~{::links}, simpleSearch)">
 <title>Otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
@@ -27,15 +27,23 @@
         <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
       </div>
     </div>
-    <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
-      <div class="col offset-1 lg-max-noneset">
-        <span th:text="#{'label.word.not.found.simple'}">Ei leidnud midagi</span>
-        <a th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}" th:text="${searchWord}"></a>
+
+    <main id="mainContentArea" role="main" class="content-panel px-3 loading">
+      <div th:if="${wordsData.resultsExist}" class="loading-indicator">
+        <div class="spinner-border text-primary " role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
       </div>
-    </div>
-    <main role="main" class="content-panel px-3 ">
+
       <th:block th:replace="common-search :: homonyms"></th:block>
-      <div class="word-details"></div>
+      <div class="word-details">
+        <div class="message-wrap" th:if="${!wordsData.resultsExist}">
+          <div class="mt-4 ml-3 d-inline-block">
+            <span th:text="#{'label.word.not.found.simple'}" class="h1">Ei leidnud midagi</span>
+            <a th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}" class="h1 text-break" th:text="${searchWord}"></a>
+          </div>
+        </div>
+      </div>
     </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">

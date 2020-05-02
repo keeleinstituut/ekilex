@@ -171,11 +171,13 @@
                       aria-expanded="false">Kustuta</button>
               <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="btn btn-secondary font-weight-bold btn-sm"
+                   href="#"
                    th:data-id="${lexeme.lexemeId}"
                    data-callback="doNewSearch"
                    data-toggle="deleteLexemeAndWordAndMeaning"
                    sec:authorize="${#vars.isLexemeCrudGranted}">Kustuta koos tähendusega</a>
                 <a class="btn btn-secondary font-weight-bold btn-sm"
+                   href="#"
                    th:data-id="${lexeme.lexemeId}"
                    data-callback="doNewSearch"
                    data-toggle="deleteLexemeAndRusMeaningLexemes"
@@ -1137,6 +1139,20 @@
         </div>
       </div>
       <script th:replace="common :: confirmations"></script>
+      <script>
+        $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
+          btnOkLabel : 'Jah',
+          btnCancelLabel : 'Ei',
+          title : 'Kinnita kustutamine',
+          onConfirm : deleteLexemeAndWordAndMeaning
+        });
+        $('[data-toggle=deleteLexemeAndRusMeaningLexemes]').confirmation({
+          btnOkLabel : 'Jah',
+          btnCancelLabel : 'Ei',
+          title : 'Kinnita kustutamine',
+          onConfirm : deleteLexemeAndRusMeaningLexemes
+        });
+      </script>
     </div>
   </th:block>
 </body>

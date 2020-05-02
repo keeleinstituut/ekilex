@@ -304,20 +304,6 @@
         </div>
       </div>
       <script th:replace="common :: confirmations"></script>
-      <script>
-        $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-          btnOkLabel : 'Jah',
-          btnCancelLabel : 'Ei',
-          title : 'Kinnita kustutamine',
-          onConfirm : deleteLexemeAndWordAndMeaning
-        });
-        $('[data-toggle=deleteLexemeAndRusMeaningLexemes]').confirmation({
-          btnOkLabel : 'Jah',
-          btnCancelLabel : 'Ei',
-          title : 'Kinnita kustutamine',
-          onConfirm : deleteLexemeAndRusMeaningLexemes
-        });
-      </script>
     </div>
   </th:block>
   <div th:replace="common :: #sourceDetailsDlg"></div>

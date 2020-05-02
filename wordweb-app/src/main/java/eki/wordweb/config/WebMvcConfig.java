@@ -43,6 +43,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/favicon.png").addResourceLocations("classpath:/view/images/favicon.png");
 		registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/view/images/favicon.ico");
 		registry.addResourceHandler("/apple-touch-icon.png").addResourceLocations("classpath:/view/images/apple-touch-icon.png");
+		registry.addResourceHandler("/favicon-32x32-light.png").addResourceLocations("classpath:/view/images/favicon-light/favicon-16x16-light.png");
+		registry.addResourceHandler("/favicon-32x32-light.png").addResourceLocations("classpath:/view/images/favicon-light/favicon-32x32-light.png");
+		registry.addResourceHandler("/favicon-light.ico").addResourceLocations("classpath:/view/images/favicon-light/favicon-light.ico");
+		registry.addResourceHandler("/apple-touch-icon-light.png").addResourceLocations("classpath:/view/images/favicon-light/apple-touch-icon-light.png");
 	}
 
 	@Bean

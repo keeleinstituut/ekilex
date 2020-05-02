@@ -12,7 +12,15 @@ eki-highlight {
 }
 
 eki-stress {
-  font-weight: bold;
+  position: relative;
+
+  &::after{
+    position: absolute;
+    top: -2px;
+    right: 25%;
+    display: inline-block;
+    content: "́ ";
+  }
 }
 
 eki-sub {

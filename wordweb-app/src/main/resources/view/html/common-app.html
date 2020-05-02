@@ -1,15 +1,18 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="common_header(title,links)">
+<head th:fragment="common_header(title,links,pageContext)">
 <title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
 <!-- Common styles and scripts -->
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="icon" type="image/png" th:href="@{/favicon.png}" />
-<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
-<link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
+<th:block th:if="${pageContext !='simpleSearch'}" >
+  <th:block th:replace=" :: favicon"></th:block>
+</th:block>
+<th:block th:if="${pageContext =='simpleSearch'}" >
+  <th:block th:replace=" :: faviconSimple"></th:block>
+</th:block>
 <th:block th:replace=" :: css"></th:block>
 <th:block th:replace=" :: js"></th:block>
 <!--/* Per-page placeholder for additional links */-->
@@ -27,6 +30,19 @@
 </script>
 </head>
 <body>
+  <!-- Default favicon -->
+  <th:block th:fragment="favicon">
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}" />
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
+  </th:block>
+  <!-- Simple search favicon -->
+  <th:block th:fragment="faviconSimple">
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon-light.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-light.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-light.png}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon-light.ico}">
+  </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
     <link rel="stylesheet" th:href="@{/view/css/jquery-ui.min.css}" />
@@ -39,6 +55,7 @@
     <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/popper.min.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/simple-lightbox.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
   </th:block>
   <!-- menu -->

@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +94,8 @@ public class DataController implements WebConstant, SystemConstant {
 	@ResponseBody
 	public ResponseEntity<Resource> serveImage(@PathVariable String fileName) {
 
-		Resource resource = fileService.getFileAsResource(fileName);
+		String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
+		Resource resource = fileService.getFileAsResource(fileNameWithoutExtension);
 		return ResponseEntity
 				.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
