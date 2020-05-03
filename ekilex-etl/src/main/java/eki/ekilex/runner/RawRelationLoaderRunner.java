@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.RelationStatus;
+import java.util.Arrays;
 
 @Component
 public class RawRelationLoaderRunner extends AbstractLoaderRunner {
@@ -101,13 +102,23 @@ public class RawRelationLoaderRunner extends AbstractLoaderRunner {
 				String rawRelationLine = lineIterator.nextLine();
 				String[] rawRelationLineCells = StringUtils.split(rawRelationLine, CSV_SEPARATOR);
 
-				Long word1Id = Long.valueOf(rawRelationLineCells[1]);
-				Long word2Id = Long.valueOf(rawRelationLineCells[3]);
-				String paramName = rawRelationLineCells[4];
-				Float paramValue = Float.valueOf(rawRelationLineCells[5]);
+				try {
+					Long word1Id = Long.valueOf(rawRelationLineCells[1]);
+					Long word2Id = Long.valueOf(rawRelationLineCells[3]);
+					String paramName = rawRelationLineCells[4];
+					Float paramValue = Float.valueOf(rawRelationLineCells[5]);
 
-				createWordRelation(word1Id, word2Id);
-				createWordRelationParam(word1Id, word2Id, paramName, paramValue);
+					createWordRelation(word1Id, word2Id);
+					createWordRelationParam(word1Id, word2Id, paramName, paramValue);
+
+				} catch (ArrayIndexOutOfBoundsException e) {
+					logger.error(e.toString());
+					logger.error("error on line: "+ rawRelationLine);
+					logger.error("array contents: "+ Arrays.toString(rawRelationLineCells));
+				} catch (Exception e) {
+					logger.error(e.toString());
+					logger.error("error on line: "+ rawRelationLine);
+				}
 
 				rawRelationsCounter++;
 				if (rawRelationsCounter % progressIndicator == 0) {
