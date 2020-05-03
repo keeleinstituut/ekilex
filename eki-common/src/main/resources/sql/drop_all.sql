@@ -153,4 +153,3 @@ drop table if exists label_type;
 drop table if exists lifecycle_log;
 drop table if exists eki_user_application;
 drop table if exists eki_user;
-drop sequence form_order_by_seq;
