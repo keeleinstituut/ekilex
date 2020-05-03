@@ -41,6 +41,7 @@ drop type if exists type_meaning_relation;
 -- ekilex associated tables and types
 drop type if exists type_term_meaning_word;
 drop type if exists type_word_rel_param;
+drop type if exists type_classifier;
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
 drop table if exists feedback_log_comment;
@@ -152,3 +153,4 @@ drop table if exists label_type;
 drop table if exists lifecycle_log;
 drop table if exists eki_user_application;
 drop table if exists eki_user;
+drop sequence form_order_by_seq;

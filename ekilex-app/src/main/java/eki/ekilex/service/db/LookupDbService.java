@@ -47,7 +47,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
-public class LookupDbService extends AbstractDataDbService {
+public class LookupDbService extends AbstractSearchDbService {
 
 	public WordStress getWordStressData(Long wordId) {
 
@@ -179,7 +179,7 @@ public class LookupDbService extends AbstractDataDbService {
 			whereFormValue = f.VALUE.lower().equal(maskedSearchFilter);
 		}
 
-		Condition whereLexemeDataset = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
+		Condition whereLexemeDataset = applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
 		Condition whereExcludeMeaningId = DSL.noCondition();
 		if (excludedMeaningId != null) {

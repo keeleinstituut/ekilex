@@ -72,7 +72,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			return null;
 		}
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction);
+		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, word.getWordValue(), classifierLabelLang, classifierLabelTypeDescrip);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
 		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull);
@@ -105,7 +105,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordLexeme getDefaultWordLexeme(Long lexemeId) {
 
-		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
+		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		if (lexeme != null) {
 			populateLexeme(lexeme, null, null, true);
 		}
@@ -115,7 +115,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordLexeme getWordLexeme(Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, boolean isFullData) {
 
-		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId);
+		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		if (lexeme != null) {
 			populateLexeme(lexeme, languagesOrder, userProfile, isFullData);
 		}
@@ -131,7 +131,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			WordsResult words = getWords(searchFilter, datasets, false, DEFAULT_OFFSET);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				for (Word word : words.getWords()) {
-					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction);
+					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
 					wordLexemes.forEach(lexeme -> {
 						Long lexemeId = lexeme.getLexemeId();
 						Long meaningId = lexeme.getMeaningId();
@@ -171,17 +171,11 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, wordLang);
-		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-		List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
 		meaningDomains = conversionUtil.removeOrderedClassifierDuplicates(meaningDomains);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
-		lexeme.setPos(lexemePos);
-		lexeme.setDerivs(lexemeDerivs);
-		lexeme.setRegisters(lexemeRegisters);
 		lexeme.setMeaningDomains(meaningDomains);
 		lexeme.setDefinitions(definitions);
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);

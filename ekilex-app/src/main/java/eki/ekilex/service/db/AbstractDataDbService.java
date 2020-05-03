@@ -1,31 +1,36 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATASET;
+import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
+import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGION;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.POS_LABEL;
+import static eki.ekilex.data.db.Tables.REGION;
+import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.db.tables.Form;
-import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 
 public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant {
 
@@ -117,51 +122,93 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return wtz;
 	}
 
-	protected Condition composeLexemeDatasetsCondition(Lexeme lexeme, SearchDatasetsRestriction searchDatasetsRestriction) {
+	protected Field<TypeClassifierRecord[]> getLexemePosField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
-		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
-		boolean noDatasetsFiltering = searchDatasetsRestriction.isNoDatasetsFiltering();
-		boolean allDatasetsPermissions = searchDatasetsRestriction.isAllDatasetsPermissions();
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.POS.name())).as("name"), POS_LABEL.CODE, POS_LABEL.VALUE).toString();
+		Field<TypeClassifierRecord[]> claggf = DSL.field(
+				"array_agg("
+						+ clrowsql
+						+ "::type_classifier "
+						+ "order by " + TableName.LEXEME_POS + ".order_by)",
+				TypeClassifierRecord[].class);
 
-		Condition dsFiltWhere;
-
-		if (noDatasetsFiltering) {
-			if (allDatasetsPermissions) {
-				//no restrictions
-				dsFiltWhere = DSL.trueCondition();
-			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-				//all visible ds, only public
-				dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
-						.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue())));
-			} else {
-				//all visible ds, selected perm
-				dsFiltWhere = DSL.or(
-						lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
-								.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue()))),
-						lexeme.DATASET_CODE.in(userPermDatasetCodes));
-			}
-		} else {
-			if (allDatasetsPermissions) {
-				//selected ds, full perm
-				dsFiltWhere = lexeme.DATASET_CODE.in(filteringDatasetCodes);
-			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
-				//selected ds, only public
-				dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
-			} else {
-				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
-				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
-					//selected ds, only public
-					dsFiltWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes));
-				} else {
-					//selected ds, some perm, some public
-					dsFiltWhere = DSL.or(
-							lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(lexeme.DATASET_CODE.in(filteringDatasetCodes)),
-							lexeme.DATASET_CODE.in(filteringPermDatasetCodes));
-				}
-			}
-		}
-		return dsFiltWhere;
+		Field<TypeClassifierRecord[]> clf = DSL
+				.select(claggf)
+				.from(LEXEME_POS, POS_LABEL)
+				.where(
+						LEXEME_POS.LEXEME_ID.eq(lexemeIdField)
+								.and(POS_LABEL.CODE.eq(LEXEME_POS.POS_CODE))
+								.and(POS_LABEL.LANG.eq(classifierLabelLang))
+								.and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.groupBy(lexemeIdField)
+				.asField();
+		return clf;
 	}
 
+	protected Field<TypeClassifierRecord[]> getLexemeDerivsField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.DERIV.name())).as("name"), DERIV_LABEL.CODE, DERIV_LABEL.VALUE).toString();
+		Field<TypeClassifierRecord[]> claggf = DSL.field(
+				"array_agg("
+						+ clrowsql
+						+ "::type_classifier "
+						+ "order by " + TableName.LEXEME_DERIV + ".order_by)",
+				TypeClassifierRecord[].class);
+
+		Field<TypeClassifierRecord[]> clf = DSL
+				.select(claggf)
+				.from(LEXEME_DERIV, DERIV_LABEL)
+				.where(
+						LEXEME_DERIV.LEXEME_ID.eq(lexemeIdField)
+								.and(DERIV_LABEL.CODE.eq(LEXEME_DERIV.DERIV_CODE))
+								.and(DERIV_LABEL.LANG.eq(classifierLabelLang))
+								.and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.groupBy(lexemeIdField)
+				.asField();
+		return clf;
+	}
+
+	protected Field<TypeClassifierRecord[]> getLexemeRegistersField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.REGISTER.name())).as("name"), REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE).toString();
+		Field<TypeClassifierRecord[]> claggf = DSL.field(
+				"array_agg("
+						+ clrowsql
+						+ "::type_classifier "
+						+ "order by " + TableName.LEXEME_REGISTER + ".order_by)",
+				TypeClassifierRecord[].class);
+
+		Field<TypeClassifierRecord[]> clf = DSL
+				.select(claggf)
+				.from(LEXEME_REGISTER, REGISTER_LABEL)
+				.where(
+						LEXEME_REGISTER.LEXEME_ID.eq(lexemeIdField)
+								.and(REGISTER_LABEL.CODE.eq(LEXEME_REGISTER.REGISTER_CODE))
+								.and(REGISTER_LABEL.LANG.eq(classifierLabelLang))
+								.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.groupBy(lexemeIdField)
+				.asField();
+		return clf;
+	}
+
+	protected Field<TypeClassifierRecord[]> getLexemeRegionsField(Field<Long> lexemeIdField) {
+		
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.REGION.name())).as("name"), REGION.CODE, REGION.CODE.as("value")).toString();
+		Field<TypeClassifierRecord[]> claggf = DSL.field(
+				"array_agg("
+						+ clrowsql
+						+ "::type_classifier "
+						+ "order by " + TableName.LEXEME_REGION + ".order_by)",
+				TypeClassifierRecord[].class);
+
+		Field<TypeClassifierRecord[]> clf = DSL
+				.select(claggf)
+				.from(LEXEME_REGION, REGION)
+				.where(
+						LEXEME_REGION.LEXEME_ID.eq(lexemeIdField)
+								.and(REGION.CODE.eq(LEXEME_REGION.REGION_CODE)))
+				.groupBy(lexemeIdField)
+				.asField();
+		return clf;
+	}
 }

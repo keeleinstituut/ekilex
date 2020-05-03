@@ -84,13 +84,15 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		boolean isSingleFilteringDataset = searchDatasetsRestriction.isSingleFilteringDataset();
 		boolean isSinglePermDataset = searchDatasetsRestriction.isSinglePermDataset();
 
+		Condition dsWhere = null;
+
 		if (noDatasetsFiltering) {
 			if (allDatasetsPermissions) {
 				//no restrictions
 			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
 				//all visible ds, only public
-				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
-						.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue()))));
+				dsWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+						.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue())));
 			} else {
 				//all visible ds, selected perm
 				Condition permDatasetCodeCond;
@@ -100,10 +102,10 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				} else {
 					permDatasetCodeCond = lexeme.DATASET_CODE.in(userPermDatasetCodes);
 				}
-				where = where.and(DSL.or(
+				dsWhere = DSL.or(
 						lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
 								.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue()))),
-						permDatasetCodeCond));
+						permDatasetCodeCond);
 			}
 		} else {
 			Condition filteringDatasetCodeCond;
@@ -115,15 +117,15 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 			}
 			if (allDatasetsPermissions) {
 				//selected ds, full perm
-				where = where.and(filteringDatasetCodeCond);
+				dsWhere = filteringDatasetCodeCond;
 			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
 				//selected ds, only public
-				where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringDatasetCodeCond));
+				dsWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringDatasetCodeCond);
 			} else {
 				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
 				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
 					//selected ds, only public
-					where = where.and(lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringDatasetCodeCond));
+					dsWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringDatasetCodeCond);
 				} else {
 					//selected ds, some perm, some public
 					boolean isSingleFilteringPermDataset = CollectionUtils.size(filteringPermDatasetCodes) == 1;
@@ -136,7 +138,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 					}
 					Collection<String> filteringNoPermDatasetCodes = CollectionUtils.subtract(filteringDatasetCodes, userPermDatasetCodes);
 					if (CollectionUtils.isEmpty(filteringNoPermDatasetCodes)) {
-						where = where.and(filteringPermDatasetCodeCond);
+						dsWhere = filteringPermDatasetCodeCond;
 					} else {
 						boolean isSingleFilteringNoPermDataset = CollectionUtils.size(filteringNoPermDatasetCodes) == 1;
 						Condition filteringNoPermDatasetCodeCond;
@@ -146,12 +148,21 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 						} else {
 							filteringNoPermDatasetCodeCond = lexeme.DATASET_CODE.in(filteringNoPermDatasetCodes);
 						}
-						where = where.and(DSL.or(
+						dsWhere = DSL.or(
 								lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringNoPermDatasetCodeCond),
-								filteringPermDatasetCodeCond));
+								filteringPermDatasetCodeCond);
 					}
 				}
 			}
+		}
+		if ((where == null) && (dsWhere == null)) {
+			where = DSL.trueCondition();
+		} else if (where == null) {
+			where = dsWhere;
+		} else if (dsWhere == null) {
+			//keep where as is
+		} else {
+			where = where.and(dsWhere);
 		}
 		return where;
 	}
@@ -675,7 +686,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 	private Condition composeWordDatasetsCondition(Word word, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Lexeme lfd = LEXEME.as("lfd");
-		Condition dsFiltWhere = composeLexemeDatasetsCondition(lfd, searchDatasetsRestriction);
+		Condition dsFiltWhere = applyDatasetRestrictions(lfd, searchDatasetsRestriction, null);
 		Condition where = DSL.exists(DSL.select(lfd.ID).from(lfd).where(lfd.WORD_ID.eq(word.ID).and(dsFiltWhere)));
 		return where;
 	}

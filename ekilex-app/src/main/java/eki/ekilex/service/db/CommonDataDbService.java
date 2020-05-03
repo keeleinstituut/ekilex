@@ -18,10 +18,7 @@ import static eki.ekilex.data.db.Tables.GENDER_LABEL;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
@@ -882,72 +879,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(NoteSourceTuple.class);
-	}
-
-	public List<Classifier> getLexemePos(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.POS),
-						POS_LABEL.CODE,
-						POS_LABEL.VALUE)
-				.from(LEXEME_POS, POS_LABEL)
-				.where(
-						LEXEME_POS.LEXEME_ID.eq(lexemeId)
-								.and(POS_LABEL.CODE.eq(LEXEME_POS.POS_CODE))
-								.and(POS_LABEL.LANG.eq(classifierLabelLang))
-								.and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(LEXEME_POS.ORDER_BY)
-				.fetchInto(Classifier.class);
-	}
-
-	public List<Classifier> getLexemeDerivs(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.DERIV),
-						DERIV_LABEL.CODE,
-						DERIV_LABEL.VALUE)
-				.from(LEXEME_DERIV, DERIV_LABEL)
-				.where(
-						LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
-								.and(DERIV_LABEL.CODE.eq(LEXEME_DERIV.DERIV_CODE))
-								.and(DERIV_LABEL.LANG.eq(classifierLabelLang))
-								.and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(LEXEME_DERIV.ORDER_BY)
-				.fetchInto(Classifier.class);
-	}
-
-	public List<Classifier> getLexemeRegisters(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.REGISTER),
-						REGISTER_LABEL.CODE,
-						REGISTER_LABEL.VALUE)
-				.from(LEXEME_REGISTER, REGISTER_LABEL)
-				.where(
-						LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
-								.and(REGISTER_LABEL.CODE.eq(LEXEME_REGISTER.REGISTER_CODE))
-								.and(REGISTER_LABEL.LANG.eq(classifierLabelLang))
-								.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(LEXEME_REGISTER.ORDER_BY)
-				.fetchInto(Classifier.class);
-	}
-
-	public List<Classifier> getLexemeRegions(Long lexemeId) {
-
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.REGION),
-						REGION.CODE,
-						REGION.CODE.as("value"))
-				.from(LEXEME_REGION, REGION)
-				.where(
-						LEXEME_REGION.LEXEME_ID.eq(lexemeId)
-								.and(REGION.CODE.eq(LEXEME_REGION.REGION_CODE)))
-				.orderBy(LEXEME_REGION.ORDER_BY)
-				.fetchInto(Classifier.class);
 	}
 
 	public List<Relation> getLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {

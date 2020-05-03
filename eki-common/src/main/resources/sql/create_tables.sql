@@ -1,5 +1,6 @@
 create type type_term_meaning_word as (word_id bigint, word_value text, word_value_prese text, homonym_nr integer, lang char(3), word_type_codes varchar(100) array, prefixoid boolean, suffixoid boolean, "foreign" boolean, matching_word boolean, dataset_codes varchar(10) array);
 create type type_word_rel_param as (name text, value numeric(5, 4));
+create type type_classifier as (name varchar(100), code varchar(100), value text);
 
 create table eki_user
 (
@@ -1123,12 +1124,11 @@ create table temp_ds_import_queue
 alter sequence temp_ds_import_queue_id_seq restart with 10000;
 
 --- indexes
-create index eki_user_profile_user_id_idx on eki_user(id);
-create index eki_user_profile_recent_dataset_permission_id_idx on dataset_permission(id);
+create index eki_user_profile_user_id_idx on eki_user_profile(user_id);
+create index eki_user_profile_recent_dataset_permission_id_idx on eki_user_profile(recent_dataset_permission_id);
 create index dataset_code_idx on dataset(code);
 create index dataset_type_idx on dataset(type);
-create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
-create index dataset_perm_user_id_idx on dataset_permission(user_id);
+create index dataset_perm_dataset_full_cmplx_idx on dataset_permission(user_id, auth_operation, auth_item, dataset_code, auth_lang);
 create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
 create index form_value_lower_prefix_idx on form (lower(value) text_pattern_ops);

@@ -26,7 +26,6 @@ import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.RelationStatus;
 import eki.common.service.util.LexemeLevelPreseUtil;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.LexemeData;
@@ -145,7 +144,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 		String headwordLang = wordDetails.getLang();
 
-		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName);
+		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName, classifierLabelLang, classifierLabelTypeDescrip);
 		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, meaningWordLangs));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
@@ -175,7 +174,6 @@ public class SynSearchService extends AbstractWordSearchService {
 			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, headwordLanguage);
 		}
 
-		List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<DefinitionRefTuple> definitionRefTuples =
 				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
@@ -184,7 +182,6 @@ public class SynSearchService extends AbstractWordSearchService {
 				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 
-		lexeme.setPos(lexemePos);
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		lexeme.setDefinitions(definitions);
 		lexeme.setUsages(usages);

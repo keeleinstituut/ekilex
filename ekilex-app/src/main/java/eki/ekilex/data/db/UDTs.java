@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.udt.TypeClassifier;
 import eki.ekilex.data.db.udt.TypeCollocMember;
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
@@ -35,6 +36,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UDTs {
+
+    /**
+     * The type <code>public.type_classifier</code>
+     */
+    public static TypeClassifier TYPE_CLASSIFIER = eki.ekilex.data.db.udt.TypeClassifier.TYPE_CLASSIFIER;
 
     /**
      * The type <code>public.type_colloc_member</code>

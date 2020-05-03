@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = -2008428158;
+    private static final long serialVersionUID = -409006115;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -162,7 +162,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.EKI_USER_PROFILE_PKEY);
+        return Arrays.<Index>asList(Indexes.EKI_USER_PROFILE_PKEY, Indexes.EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX, Indexes.EKI_USER_PROFILE_USER_ID_IDX);
     }
 
     /**

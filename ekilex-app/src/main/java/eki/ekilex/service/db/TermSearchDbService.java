@@ -73,6 +73,7 @@ import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
+import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
 
 @Component
@@ -584,7 +585,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.select(DSL.arrayAgg(wdsf.field("dataset_code", String.class)).orderBy(wdsf.field("order_by")))
 				.from(wdsf));
 
-		Condition wherelods = composeLexemeDatasetsCondition(lo, searchDatasetsRestriction);
+		Condition wherelods = applyDatasetRestrictions(lo, searchDatasetsRestriction, null);
 
 		Condition wherewo = wo.ID.eq(lo.WORD_ID);
 		if (StringUtils.isNotBlank(resultLang)) {
@@ -678,7 +679,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewo = wherewo.and(wo.LANG.eq(resultLang));
 		}
 
-		Condition wherelods = composeLexemeDatasetsCondition(lo, searchDatasetsRestriction);
+		Condition wherelods = applyDatasetRestrictions(lo, searchDatasetsRestriction, null);
 
 		return create
 				.fetchCount(DSL
@@ -829,7 +830,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	public eki.ekilex.data.Meaning getMeaning(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
+		Condition dsWhere = applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
 		return create
 				.select(
@@ -846,7 +847,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.orElse(null);
 	}
 
-	public eki.ekilex.data.Lexeme getLexeme(Long lexemeId) {
+	public eki.ekilex.data.Lexeme getLexeme(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Lexeme l = LEXEME.as("l");
 		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
@@ -869,6 +870,11 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
+		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord[]> lrgnf = getLexemeRegionsField(l.ID);
+
 		return create
 				.select(
 						l.ID.as("lexeme_id"),
@@ -882,6 +888,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
 						l.COMPLEXITY,
 						l.ORDER_BY,
+						lposf.as("pos"),
+						lderf.as("derivs"),
+						lregf.as("registers"),
+						lrgnf.as("regions"),
 						l.WORD_ID,
 						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word_value"),
 						DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("word_value_prese"),
@@ -906,7 +916,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	public String getMeaningFirstWord(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
+		Condition dsWhere = applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
 		return create
 				.select(FORM.VALUE)

@@ -33,13 +33,16 @@ import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
+import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
+import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 
 @Component
@@ -172,28 +175,36 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(SynRelation.class);
 	}
 
-	public List<WordSynLexeme> getWordPrimarySynonymLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName) {
+	public List<WordSynLexeme> getWordPrimarySynonymLexemes(
+			Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		Condition dsWhere = composeLexemeDatasetsCondition(LEXEME, searchDatasetsRestriction);
+		Lexeme l = LEXEME.as("l");
+		Dataset ds = DATASET.as("ds");
+		LayerState lst = LAYER_STATE.as("lst");
+
+		Condition dsWhere = applyDatasetRestrictions(l, searchDatasetsRestriction, null);
+
+		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		return create.select(
-				LEXEME.MEANING_ID,
-				LEXEME.WORD_ID,
-				LEXEME.ID.as("lexeme_id"),
-				LEXEME.TYPE,
-				LEXEME.DATASET_CODE,
-				LEXEME.LEVEL1,
-				LEXEME.LEVEL2,
-				LEXEME.WEIGHT,
-				LAYER_STATE.PROCESS_STATE_CODE.as("layer_process_state_code"))
-				.from(LEXEME
-						.innerJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE))
-						.leftOuterJoin(LAYER_STATE).on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID).and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
+				l.MEANING_ID,
+				l.WORD_ID,
+				l.ID.as("lexeme_id"),
+				l.TYPE,
+				l.DATASET_CODE,
+				l.LEVEL1,
+				l.LEVEL2,
+				l.WEIGHT,
+				lposf.as("pos"),
+				lst.PROCESS_STATE_CODE.as("layer_process_state_code"))
+				.from(l
+						.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE))
+						.leftOuterJoin(lst).on(lst.LEXEME_ID.eq(l.ID).and(lst.LAYER_NAME.eq(layerName.name()))))
 				.where(
-						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						l.WORD_ID.eq(wordId)
+								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(dsWhere))
-				.orderBy(DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2)
+				.orderBy(ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
 				.fetchInto(WordSynLexeme.class);
 	}
 

@@ -64,6 +64,7 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 
 @Component
 public class LexSearchDbService extends AbstractSearchDbService {
@@ -165,7 +166,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(ParadigmFormTuple.class);
 	}
 
-	public List<WordLexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public List<WordLexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Word w = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
@@ -180,7 +181,11 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
-		Condition dsWhere = composeLexemeDatasetsCondition(l, searchDatasetsRestriction);
+		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+
+		Condition dsWhere = applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
 		Field<String[]> lff = DSL
 				.select(DSL.arrayAgg(DSL.concat(
@@ -216,7 +221,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
 				lff.as("lexeme_frequencies"),
 				l.COMPLEXITY,
-				l.WEIGHT)
+				l.WEIGHT,
+				lposf.as("pos"),
+				lderf.as("derivs"),
+				lregf.as("registers"))
 				.from(f, p, w, l, m, ds)
 				.where(
 						w.ID.eq(wordId)
@@ -233,7 +241,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetchInto(WordLexeme.class);
 	}
 
-	public WordLexeme getLexeme(Long lexemeId) {
+	public WordLexeme getLexeme(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Word w = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
@@ -247,6 +255,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
+
+		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		Field<String[]> lff = DSL
 				.select(DSL.arrayAgg(DSL.concat(
@@ -282,7 +294,10 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
 				lff.as("lexeme_frequencies"),
 				l.COMPLEXITY,
-				l.WEIGHT)
+				l.WEIGHT,
+				lposf.as("pos"),
+				lderf.as("derivs"),
+				lregf.as("registers"))
 				.from(f, p, w, l, m, ds)
 				.where(
 						l.ID.eq(lexemeId)

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
 
-    private static final long serialVersionUID = 137064990;
+    private static final long serialVersionUID = -519582528;
 
     /**
      * The reference instance of <code>public.dataset_permission</code>
@@ -132,7 +132,7 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DATASET_PERM_DATASET_CODE_IDX, Indexes.DATASET_PERM_USER_ID_IDX, Indexes.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY, Indexes.DATASET_PERMISSION_PKEY, Indexes.EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX);
+        return Arrays.<Index>asList(Indexes.DATASET_PERM_DATASET_FULL_CMPLX_IDX, Indexes.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY, Indexes.DATASET_PERMISSION_PKEY);
     }
 
     /**

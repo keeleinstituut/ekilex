@@ -158,12 +158,9 @@ public class TermSearchService extends AbstractSearchService {
 
 		for (Long lexemeId : lexemeIds) {
 
-			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId);
-			List<Classifier> wordTypes = commonDataDbService.getWordTypes(lexeme.getWordId(), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Classifier> lexemePos = commonDataDbService.getLexemePos(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Classifier> lexemeDerivs = commonDataDbService.getLexemeDerivs(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Classifier> lexemeRegisters = commonDataDbService.getLexemeRegisters(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Classifier> lexemeRegions = commonDataDbService.getLexemeRegions(lexemeId);
+			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			Long wordId = lexeme.getWordId();
+			List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -179,9 +176,9 @@ public class TermSearchService extends AbstractSearchService {
 					|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
 					|| CollectionUtils.isNotEmpty(wordTypes)
-					|| CollectionUtils.isNotEmpty(lexemePos)
-					|| CollectionUtils.isNotEmpty(lexemeDerivs)
-					|| CollectionUtils.isNotEmpty(lexemeRegisters)
+					|| CollectionUtils.isNotEmpty(lexeme.getPos())
+					|| CollectionUtils.isNotEmpty(lexeme.getDerivs())
+					|| CollectionUtils.isNotEmpty(lexeme.getRegisters())
 					|| CollectionUtils.isNotEmpty(lexemeGrammars);
 
 			String dataset = lexeme.getDatasetCode();
@@ -189,10 +186,6 @@ public class TermSearchService extends AbstractSearchService {
 
 			lexeme.setDatasetCode(dataset);
 			lexeme.setWordTypes(wordTypes);
-			lexeme.setPos(lexemePos);
-			lexeme.setDerivs(lexemeDerivs);
-			lexeme.setRegisters(lexemeRegisters);
-			lexeme.setRegions(lexemeRegions);
 			lexeme.setFreeforms(lexemeFreeforms);
 			lexeme.setPublicNotes(lexemePublicNotes);
 			lexeme.setUsages(usages);
