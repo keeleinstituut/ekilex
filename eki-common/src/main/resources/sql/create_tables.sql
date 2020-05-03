@@ -1128,6 +1128,8 @@ create index eki_user_profile_user_id_idx on eki_user_profile(user_id);
 create index eki_user_profile_recent_dataset_permission_id_idx on eki_user_profile(recent_dataset_permission_id);
 create index dataset_code_idx on dataset(code);
 create index dataset_type_idx on dataset(type);
+create index dataset_perm_user_id_idx on dataset_permission(user_id);
+create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
 create index dataset_perm_dataset_full_cmplx_idx on dataset_permission(user_id, auth_operation, auth_item, dataset_code, auth_lang);
 create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
