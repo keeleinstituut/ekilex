@@ -26,11 +26,11 @@
     position: relative;
 
     .loading-indicator {
-      display: block;
       position: absolute;
       top: 50%;
       left: 50%;
       z-index: $zindex-modal;
+      display: block;
       transform: translate(-50%);
     }
   }

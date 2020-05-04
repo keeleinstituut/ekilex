@@ -33,12 +33,22 @@
 .example-text {
   font-style: italic;
 }
+.example-sentence-wrap{
+  .example-text{
+    padding-left: .5rem;
+    margin-left: .5rem;
+    border-left: 1px solid $gray-900;
 
-.example-text + .example-text{
-  padding-left: .5rem;
-  margin-left: .5rem;
-  border-left: 1px solid $gray-900;
+    &:first-child,
+    &:nth-child(2){
+      padding-left: 0;
+      margin-left: 0;
+      border-left: 0;
+    }
+  }
+
 }
+
 
 .btn-speaker {
   padding: 0 5px;

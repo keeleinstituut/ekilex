@@ -16996,10 +16996,16 @@ body.hidden-scroll {
   font-style: italic;
 }
 
-.example-text + .example-text {
+.example-sentence-wrap .example-text {
   padding-left: .5rem;
   margin-left: .5rem;
   border-left: 1px solid #3f3f3f;
+}
+
+.example-sentence-wrap .example-text:first-child, .example-sentence-wrap .example-text:nth-child(2) {
+  padding-left: 0;
+  margin-left: 0;
+  border-left: 0;
 }
 
 .btn-speaker {
@@ -17313,11 +17319,11 @@ body {
 }
 
 .content-panel.loading .loading-indicator {
-  display: block;
   position: absolute;
   top: 50%;
   left: 50%;
   z-index: 1050;
+  display: block;
   -webkit-transform: translate(-50%);
   transform: translate(-50%);
 }
