@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -92,22 +91,27 @@ public class RawRelationLoaderRunner extends AbstractLoaderRunner {
 
 		LineIterator lineIterator = FileUtils.lineIterator(rawRelationCsvFile, UTF_8);
 		try {
+			lineIterator.nextLine();//remove heading
+
 			while (lineIterator.hasNext()) {
-				if (NumberUtils.compare(rawRelationsCounter, 0L) == 0) {
-					lineIterator.nextLine();
+				String rawRelationLine = lineIterator.nextLine();
+				String[] rawRelationLineCells = StringUtils.split(rawRelationLine, CSV_SEPARATOR);
+				if (rawRelationLineCells.length != 6) {
 					rawRelationsCounter++;
 					continue;
 				}
-				String rawRelationLine = lineIterator.nextLine();
-				String[] rawRelationLineCells = StringUtils.split(rawRelationLine, CSV_SEPARATOR);
 
 				Long word1Id = Long.valueOf(rawRelationLineCells[1]);
 				Long word2Id = Long.valueOf(rawRelationLineCells[3]);
 				String paramName = rawRelationLineCells[4];
 				Float paramValue = Float.valueOf(rawRelationLineCells[5]);
 
-				createWordRelation(word1Id, word2Id);
-				createWordRelationParam(word1Id, word2Id, paramName, paramValue);
+				try {
+					createWordRelation(word1Id, word2Id);
+					createWordRelationParam(word1Id, word2Id, paramName, paramValue);
+				} catch (Exception e) {
+					logger.warn("Failed to create relation {} -> {}", word1Id, word2Id);
+				}
 
 				rawRelationsCounter++;
 				if (rawRelationsCounter % progressIndicator == 0) {
