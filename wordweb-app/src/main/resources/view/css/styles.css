@@ -16678,6 +16678,7 @@ body.hidden-scroll {
   -webkit-box-align: center;
   align-items: center;
   width: 100%;
+  overflow: hidden;
 }
 
 .homonym-list {
