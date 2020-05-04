@@ -232,13 +232,6 @@
                       <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                     </a>
                     <span th:if="${meaningWord.additionalDataExists}" class="text-small text-uppercase">
-                      <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
-                        th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}" class="type-three">
-                      </span>
-                      <span th:if="${meaningWord.mwLexValueState != null}" th:text="${meaningWord.mwLexValueState.value}"></span>
-                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexGovernments)}">
-                        <span class="type-one tag rection" th:each="government,govIter : ${meaningWord.mwLexGovernments}" th:text="${government.value + (govIter.last ? '' : ', ')}"></span>
-                      </th:block>
                       <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
                         <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                       </th:block>
