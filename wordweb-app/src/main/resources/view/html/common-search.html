@@ -209,31 +209,12 @@
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                     </a>
-                    <th:block th:if="${relation.aspect != null}">
-                      <span class="rections aspect" th:text="${'('+relation.aspect.value+')'}"></span>
-                    </th:block>
-                    <th:block th:each="valueState, vsIter : ${relation.lexValueStates}">
-                        <span class="rections ml-n1">
-                          <span th:if="${vsIter.first}" class="mr-n1">(</span>
-                          <span th:text="${valueState.value}"></span>
-                          <span th:unless="${vsIter.last}" class="ml-n1">,</span>
-                          <span th:if="${vsIter.last}" class="ml-n1">)</span>
-                        </span>
-                    </th:block>
                     <th:block th:each="register, rIter : ${relation.lexRegisters}">
                         <span class="rections register">
                           <span th:if="${rIter.first}" class="mr-n1">(</span>
                           <span th:text="${register.value}"></span>
                           <span th:unless="${rIter.last}" class="ml-n1">,</span>
                           <span th:if="${rIter.last}" class="ml-n1">)</span>
-                        </span>
-                    </th:block>
-                    <th:block th:each="government, gIter : ${relation.lexGovernmentValues}">
-                        <span class="rections government">
-                          <span th:if="${gIter.first}" class="ml-n1">(</span>
-                          <span th:text="${government}"></span>
-                          <span th:unless="${gIter.last}" class="ml-n1">,</span>
-                          <span th:if="${gIter.last}" class="ml-n1">)</span>
                         </span>
                     </th:block>
                     <span th:unless="${relationIter.last}" class="ml-n1">,</span>
