@@ -185,11 +185,11 @@
             </div>
             <div class="matches" th:if="${not #maps.isEmpty(lexeme.destinLangMatchWordsByLang)}">
               <div class="additional-meta" >
-                <div th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
+                <div class="d-flex flex-wrap" th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
                   <span class="lang-code lang-code-sm mr-2 align-self-start" th:with="langData=${viewUtil.getLangData(meaningWordEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                  <span th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
+                  <span class="text-nowrap mr-1" th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}"
-                       class="matching-word" th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
+                       class="matching-word " th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
                       <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                     </a>
                     <span th:if="${meaningWord.additionalDataExists}" class="text-small text-uppercase">
