@@ -124,7 +124,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 
 	protected Field<TypeClassifierRecord[]> getLexemePosField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.POS.name())).as("name"), POS_LABEL.CODE, POS_LABEL.VALUE).toString();
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.POS.name())), POS_LABEL.CODE, POS_LABEL.VALUE).toString();
 		Field<TypeClassifierRecord[]> claggf = DSL.field(
 				"array_agg("
 						+ clrowsql
@@ -147,7 +147,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 
 	protected Field<TypeClassifierRecord[]> getLexemeDerivsField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.DERIV.name())).as("name"), DERIV_LABEL.CODE, DERIV_LABEL.VALUE).toString();
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.DERIV.name())), DERIV_LABEL.CODE, DERIV_LABEL.VALUE).toString();
 		Field<TypeClassifierRecord[]> claggf = DSL.field(
 				"array_agg("
 						+ clrowsql
@@ -170,7 +170,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 
 	protected Field<TypeClassifierRecord[]> getLexemeRegistersField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.REGISTER.name())).as("name"), REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE).toString();
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.REGISTER.name())), REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE).toString();
 		Field<TypeClassifierRecord[]> claggf = DSL.field(
 				"array_agg("
 						+ clrowsql
@@ -193,7 +193,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 
 	protected Field<TypeClassifierRecord[]> getLexemeRegionsField(Field<Long> lexemeIdField) {
 		
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.REGION.name())).as("name"), REGION.CODE, REGION.CODE.as("value")).toString();
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.REGION.name())), REGION.CODE, REGION.CODE).toString();
 		Field<TypeClassifierRecord[]> claggf = DSL.field(
 				"array_agg("
 						+ clrowsql
