@@ -185,9 +185,9 @@
             </div>
             <div class="meaning-meta" th:if="${not #lists.isEmpty(lexeme.sourceLangMeaningWords)}">
               <div class="synonyms">
-                <span class="additional-meta">
-                  <span th:text="#{label.same.as}">sama mis</span>
-                  <span th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}">
+                <div class="additional-meta d-flex flex-wrap">
+                  <span th:text="#{label.same.as}" class="mr-2">sama mis</span>
+                  <span class="text-nowrap mr-1" th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
                       <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                     </a>
@@ -198,7 +198,7 @@
                     </span>
                     <span th:unless="${meaningWordIter.last}" class="ml-n1">,</span>
                   </span>
-                </span>
+                </div>
               </div>
             </div>
             <div class="d-flex related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
