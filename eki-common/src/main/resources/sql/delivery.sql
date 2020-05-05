@@ -45,3 +45,5 @@ analyze dataset_permission;
 create type type_classifier as (name varchar(100), code varchar(100), value text);
 
 alter sequence form_order_by_seq owned by form.order_by;
+
+-- käivitada korduvate tähendusenumbrite korrigeerija (prodsrvsortlexlevels)
