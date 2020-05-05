@@ -10,7 +10,7 @@ function initUsageMemberDlg(theDlg) {
 	});
 	theDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		let selectedGroup = theDlg.find('[name=opCode]').val();
-		let selectedEditFld = theDlg.find('[data-id=' + selectedGroup + ']').find('[name=editFld]');
+		let selectedEditFld = theDlg.find('[data-id=' + selectedGroup + ']').find('[data-name=editFld]');
 		theDlg.find('[name=value]').val(selectedEditFld.html());
 		submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')
 	});
@@ -34,7 +34,7 @@ function initUsageMemberDlg(theDlg) {
 }
 
 function initEkiEditorDlg(editDlg) {
-	let modifyFld = editDlg.find('[name=editFld]');
+	let modifyFld = editDlg.find('[data-name=editFld]');
 	modifyFld.html(editDlg.find('[name=value]').val());
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		if (modifyFld.html()) {
@@ -54,7 +54,7 @@ function initEkiEditorDlg(editDlg) {
 }
 
 function initEkiEditor(ekiEditorElem) {
-	let editorElem = ekiEditorElem.find('[name=editFld]');
+	let editorElem = ekiEditorElem.find('[data-name=editFld]');
 	let menuElement = ekiEditorElem.find('.eki-editor-menu');
 	editorElem.off('keydown').on('keydown', function(e) {
 		let isEditorCommand = e.ctrlKey === true && (e.key === 'm' || e.key === 'n');
@@ -151,7 +151,7 @@ function removeEkiTag(editorElem) {
 	editorElem.focus();
 }
 
-$(document).on("paste", "[name=editFld]", function(e) {
+$(document).on("paste", "[data-name=editFld]", function(e) {
 	e.preventDefault();
 	let text = e.originalEvent.clipboardData.getData('text/plain');
 	document.execCommand("insertHTML", false, text);

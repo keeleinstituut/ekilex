@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.MeaningWordCandidates;
@@ -63,6 +64,9 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@Autowired
 	private CudService cudService;
+
+	@Autowired
+	private TextDecorationService textDecorationService;
 
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
 	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
@@ -148,7 +152,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping("/lexseparate/{lexemeId}")
+	@GetMapping(LEX_SEPARATE_URI + "/{lexemeId}")
 	public String separate(@PathVariable("lexemeId") Long lexemeId) {
 
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
@@ -162,7 +166,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	}
 
 	@ResponseBody
-	@PostMapping("/duplicatelexeme/{lexemeId}")
+	@PostMapping(LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
 		String userName = userService.getAuthenticatedUser().getName();
@@ -187,7 +191,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	}
 
 	@ResponseBody
-	@PostMapping("/duplicateemptylexeme/{lexemeId}")
+	@PostMapping(EMPTY_LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
 		String userName = userService.getAuthenticatedUser().getName();
@@ -199,6 +203,15 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(response);
+	}
+
+	@ResponseBody
+	@PostMapping(MEANING_WORD_AND_LEX_DUPLICATE_URI + "/{lexemeId}")
+	public String duplicateMeaningWordAndLexeme(@PathVariable("lexemeId") Long lexemeId) {
+
+		String userName = userService.getAuthenticatedUser().getName();
+		compositionService.duplicateLexemeAndWord(lexemeId, userName);
+		return RESPONSE_OK_VER1;
 	}
 
 	@GetMapping(WORD_JOIN_URI)
@@ -286,13 +299,29 @@ public class LexEditController extends AbstractPageController implements SystemC
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
+	@PostMapping(UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI)
+	@ResponseBody
+	public String updateWordDataAndLexemeWeight(
+			@RequestParam("lexemeId") Long lexemeId,
+			@RequestParam("wordId") Long wordId,
+			@RequestParam("wordValuePrese") String wordValuePrese,
+			@RequestParam("morphCode") String morphCode,
+			@RequestParam("lexemeWeight") String lexemeWeight) {
+
+		wordValuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(wordValuePrese);
+		cudService.updateWordValue(wordId, wordValuePrese);
+		cudService.updateWordMorphCode(wordId, morphCode);
+		cudService.updateLexemeWeight(lexemeId, lexemeWeight);
+		return RESPONSE_OK_VER2;
+	}
+
 	@GetMapping(WORD_SELECT_URI)
 	public String meaningWordCandidates(
-			@ModelAttribute(name = "dataset") String dataset,
-			@ModelAttribute(name = "wordValue") String wordValue,
-			@ModelAttribute(name = "language") String language,
-			@ModelAttribute(name = "morphCode") String morphCode,
-			@ModelAttribute(name = "meaningId") Long meaningId,
+			@ModelAttribute("dataset") String dataset,
+			@ModelAttribute("wordValue") String wordValue,
+			@ModelAttribute("language") String language,
+			@ModelAttribute("morphCode") String morphCode,
+			@ModelAttribute("meaningId") Long meaningId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
@@ -304,9 +333,9 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@GetMapping(WORD_SELECT_URI + "/{dataset}/{wordId}/{meaningId}")
 	public String selectWord(
-			@PathVariable(name = "dataset") String dataset,
-			@PathVariable(name = "wordId") Long wordId,
-			@PathVariable(name = "meaningId") String meaningIdCode,
+			@PathVariable("dataset") String dataset,
+			@PathVariable("wordId") Long wordId,
+			@PathVariable("meaningId") String meaningIdCode,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;

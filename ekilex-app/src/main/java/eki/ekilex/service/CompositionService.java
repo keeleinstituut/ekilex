@@ -125,7 +125,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, userPermDatasetCodes);
 		meaningLexemes.forEach(meaningLexeme -> {
 			Long lexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, userName);
+			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, null, userName);
 			lexemeIdAndDuplicateLexemeIdMap.put(lexemeId, duplicateLexemeId);
 		});
 		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
@@ -150,7 +150,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, datasetCode);
 		meaningLexemes.forEach(meaningLexeme -> {
 			Long meaningLexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, userName);
+			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, userName);
 			lexemeIdAndDuplicateLexemeIdMap.put(meaningLexemeId, duplicateLexemeId);
 		});
 		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
@@ -186,6 +186,15 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		return duplicateLexemeId;
 	}
 
+	@Transactional
+	public void duplicateLexemeAndWord(Long lexemeId, String userName) {
+
+		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
+		Long wordId = lexeme.getWordId();
+		Long duplicateWordId = duplicateWordData(wordId, userName);
+		Long duplicateLexemeId = duplicateLexemeData(lexemeId, null, duplicateWordId, userName);
+	}
+
 	private Long duplicateMeaningWithLexemes(Long meaningId, String userName) {
 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
@@ -193,16 +202,16 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId);
 		meaningLexemes.forEach(meaningLexeme -> {
 			Long lexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, userName);
+			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, null, userName);
 			lexemeIdAndDuplicateLexemeIdMap.put(lexemeId, duplicateLexemeId);
 		});
 		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
 		return duplicateMeaningId;
 	}
 
-	private Long duplicateLexemeData(Long lexemeId, Long duplicateMeaningId, String userName) {
+	private Long duplicateLexemeData(Long lexemeId, Long meaningId, Long wordId, String userName) {
 
-		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, duplicateMeaningId);
+		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, meaningId, wordId);
 		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
 		compositionDbService.cloneLexemeDerivs(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeFreeforms(lexemeId, duplicateLexemeId);
@@ -224,6 +233,30 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		lifecycleLogDbService.createLog(logData);
 
 		return duplicateLexemeId;
+	}
+
+	private Long duplicateWordData(Long wordId, String userName) {
+
+		SimpleWord simpleWord = compositionDbService.getSimpleWord(wordId);
+		Long duplicateWordId = compositionDbService.cloneWord(simpleWord);
+		compositionDbService.cloneWordParadigmsAndForms(wordId, duplicateWordId);
+		compositionDbService.cloneWordTypes(wordId, duplicateWordId);
+		compositionDbService.cloneWordRelations(wordId, duplicateWordId);
+		compositionDbService.cloneWordGroupMembers(wordId, duplicateWordId);
+		compositionDbService.cloneWordFreeforms(wordId, duplicateWordId);
+		compositionDbService.cloneWordEtymology(wordId, duplicateWordId);
+		String wordDescription = simpleWord.getWordValue() + " - " + simpleWord.getLang();
+
+		LogData logData = new LogData();
+		logData.setUserName(userName);
+		logData.setEventType(LifecycleEventType.CLONE);
+		logData.setEntityName(LifecycleEntity.WORD);
+		logData.setProperty(LifecycleProperty.VALUE);
+		logData.setEntityId(duplicateWordId);
+		logData.setEntry(wordDescription);
+		lifecycleLogDbService.createLog(logData);
+
+		return duplicateWordId;
 	}
 
 	private Long duplicateMeaningData(Long meaningId, String userName) {

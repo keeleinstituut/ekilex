@@ -18,6 +18,7 @@ public enum LifecycleProperty {
 	WORD_TYPE,
 	ASPECT,
 	VOCAL_FORM,
+	MORPH_CODE,
 	LANG,
 	VALUE_STATE,
 	SOURCE_LINK,

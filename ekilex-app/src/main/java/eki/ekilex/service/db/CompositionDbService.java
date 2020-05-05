@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -31,6 +32,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
@@ -54,10 +56,12 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LexCollocationGroupTuple;
 import eki.ekilex.data.LexCollocationTuple;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.LexColloc;
@@ -77,6 +81,7 @@ import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
+import eki.ekilex.data.db.tables.records.FormRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.LexCollocRecord;
@@ -91,9 +96,18 @@ import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
+import eki.ekilex.data.db.tables.records.ParadigmRecord;
+import eki.ekilex.data.db.tables.records.WordEtymologyRecord;
+import eki.ekilex.data.db.tables.records.WordEtymologyRelationRecord;
+import eki.ekilex.data.db.tables.records.WordEtymologySourceLinkRecord;
+import eki.ekilex.data.db.tables.records.WordFreeformRecord;
+import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
+import eki.ekilex.data.db.tables.records.WordRecord;
+import eki.ekilex.data.db.tables.records.WordRelationRecord;
+import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 
 @Component
-public class CompositionDbService implements GlobalConstant {
+public class CompositionDbService extends AbstractDataDbService implements GlobalConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -558,11 +572,16 @@ public class CompositionDbService implements GlobalConstant {
 		});
 	}
 
-	public Long cloneLexeme(Long lexemeId, Long meaningId) {
+	public Long cloneLexeme(Long lexemeId, Long meaningId, Long wordId) {
 
 		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 		LexemeRecord clonedLexeme = lexeme.copy();
-		clonedLexeme.setMeaningId(meaningId);
+		if (meaningId != null) {
+			clonedLexeme.setMeaningId(meaningId);
+		}
+		if (wordId != null) {
+			clonedLexeme.setWordId(wordId);
+		}
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
 		clonedLexeme.store();
 		return clonedLexeme.getId();
@@ -961,6 +980,156 @@ public class CompositionDbService implements GlobalConstant {
 			cloneFreeform(f.getId(), clonedFreeform.getId());
 		});
 		return clonedFreeform.getId();
+	}
+
+	public Long cloneWord(SimpleWord simpleWord) {
+
+		Long wordId = simpleWord.getWordId();
+		String wordValue = simpleWord.getWordValue();
+		String lang = simpleWord.getLang();
+
+		Integer currentHomonymNumber = create
+				.select(DSL.max(WORD.HOMONYM_NR))
+				.from(WORD, PARADIGM, FORM)
+				.where(
+						WORD.LANG.eq(lang)
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(FORM.VALUE.eq(wordValue))
+								.and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID)))
+				.fetchOneInto(Integer.class);
+
+		int homonymNumber = currentHomonymNumber + 1;
+
+		WordRecord word = create.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
+		WordRecord clonedWord = word.copy();
+		clonedWord.setHomonymNr(homonymNumber);
+		clonedWord.store();
+		return clonedWord.getId();
+	}
+
+
+	public void cloneWordParadigmsAndForms(Long wordId, Long clonedWordId) {
+
+		Result<ParadigmRecord> paradigms = create.selectFrom(PARADIGM).where(PARADIGM.WORD_ID.eq(wordId)).fetch();
+		paradigms.forEach(paradigm -> {
+			ParadigmRecord clonedParadigm = paradigm.copy();
+			clonedParadigm.setWordId(clonedWordId);
+			clonedParadigm.store();
+
+			Long paradigmId = paradigm.getId();
+			Long clonedParadigmId = clonedParadigm.getId();
+
+			Result<FormRecord> forms = create.selectFrom(FORM).where(FORM.PARADIGM_ID.eq(paradigmId)).orderBy(FORM.ORDER_BY).fetch();
+			forms.stream().map(FormRecord::copy).forEach(clonedForm -> {
+				clonedForm.setParadigmId(clonedParadigmId);
+				clonedForm.changed(FORM.ORDER_BY, false);
+				clonedForm.store();
+			});
+		});
+	}
+
+	public void cloneWordTypes(Long wordId, Long clonedWordId) {
+
+		Result<WordWordTypeRecord> wordTypes = create
+				.selectFrom(WORD_WORD_TYPE)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId))
+				.orderBy(WORD_WORD_TYPE.ORDER_BY)
+				.fetch();
+		wordTypes.stream().map(WordWordTypeRecord::copy).forEach(clonedWordType -> {
+			clonedWordType.setWordId(clonedWordId);
+			clonedWordType.changed(WORD_WORD_TYPE.ORDER_BY, false);
+			clonedWordType.store();
+		});
+	}
+
+	public void cloneWordRelations(Long wordId, Long clonedWordId) {
+
+		Result<WordRelationRecord> wordRelations = create
+				.selectFrom(WORD_RELATION)
+				.where(WORD_RELATION.WORD1_ID.eq(wordId).or(WORD_RELATION.WORD2_ID.eq(wordId)))
+				.orderBy(WORD_RELATION.ORDER_BY)
+				.fetch();
+		wordRelations.stream().map(WordRelationRecord::copy).forEach(clonedRelation -> {
+			if (clonedRelation.getWord1Id().equals(wordId)) {
+				clonedRelation.setWord1Id(clonedWordId);
+			} else {
+				clonedRelation.setWord2Id(clonedWordId);
+			}
+			clonedRelation.changed(WORD_RELATION.ORDER_BY, false);
+			clonedRelation.store();
+		});
+	}
+
+	public void cloneWordFreeforms(Long wordId, Long clonedWordId) {
+
+		Result<WordFreeformRecord> wordFreeforms = create
+				.selectFrom(WORD_FREEFORM)
+				.where(WORD_FREEFORM.WORD_ID.eq(wordId))
+				.orderBy(WORD_FREEFORM.ID)
+				.fetch();
+		for (WordFreeformRecord wordFreeform : wordFreeforms) {
+			Long clonedFreeformId = cloneFreeform(wordFreeform.getFreeformId(), null);
+			WordFreeformRecord clonedWordFreeform = create.newRecord(WORD_FREEFORM);
+			clonedWordFreeform.setWordId(clonedWordId);
+			clonedWordFreeform.setFreeformId(clonedFreeformId);
+			clonedWordFreeform.store();
+		}
+	}
+
+	public void cloneWordGroupMembers(Long wordId, Long clonedWordId) {
+
+		Result<WordGroupMemberRecord> wordGroupMembers = create
+				.selectFrom(WORD_GROUP_MEMBER)
+				.where(WORD_GROUP_MEMBER.WORD_ID.eq(wordId))
+				.orderBy(WORD_GROUP_MEMBER.ORDER_BY)
+				.fetch();
+		wordGroupMembers.stream().map(WordGroupMemberRecord::copy).forEach(clonedWordGroupMember -> {
+			clonedWordGroupMember.setWordId(clonedWordId);
+			clonedWordGroupMember.changed(WORD_GROUP_MEMBER.ORDER_BY, false);
+			clonedWordGroupMember.store();
+		});
+	}
+
+	public void cloneWordEtymology(Long wordId, Long clonedWordId) {
+
+		Result<WordEtymologyRecord> etyms = create
+				.selectFrom(WORD_ETYMOLOGY)
+				.where(WORD_ETYMOLOGY.WORD_ID.eq(wordId))
+				.orderBy(WORD_ETYMOLOGY.ORDER_BY)
+				.fetch();
+
+		etyms.forEach(etym -> {
+			WordEtymologyRecord clonedEtym = etym.copy();
+			clonedEtym.setWordId(clonedWordId);
+			clonedEtym.changed(WORD_ETYMOLOGY.ORDER_BY, false);
+			clonedEtym.store();
+
+			Long etymId = etym.getId();
+			Long clonedEtymId = clonedEtym.getId();
+
+			Result<WordEtymologyRelationRecord> etymRelations = create
+					.selectFrom(WORD_ETYMOLOGY_RELATION)
+					.where(WORD_ETYMOLOGY_RELATION.WORD_ETYM_ID.eq(etymId))
+					.orderBy(WORD_ETYMOLOGY_RELATION.ORDER_BY)
+					.fetch();
+			etymRelations.stream().map(WordEtymologyRelationRecord::copy).forEach(clonedEtymRel -> {
+				clonedEtymRel.setWordEtymId(clonedEtymId);
+				clonedEtymRel.changed(WORD_ETYMOLOGY_RELATION.ORDER_BY, false);
+				clonedEtymRel.store();
+			});
+
+			Result<WordEtymologySourceLinkRecord> etymSourceLinks = create
+					.selectFrom(WORD_ETYMOLOGY_SOURCE_LINK)
+					.where(WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYM_ID.eq(etymId))
+					.orderBy(WORD_ETYMOLOGY_SOURCE_LINK.ORDER_BY)
+					.fetch();
+			etymSourceLinks.stream().map(WordEtymologySourceLinkRecord::copy).forEach(clonedEtymSourceLink -> {
+				clonedEtymSourceLink.setWordEtymId(clonedEtymId);
+				clonedEtymSourceLink.changed(WORD_ETYMOLOGY_SOURCE_LINK.ORDER_BY, false);
+				clonedEtymSourceLink.store();
+			});
+		});
 	}
 
 	public void joinWordData(Long targetWordId, Long sourceWordId) {

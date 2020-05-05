@@ -54,7 +54,7 @@ function initialise() {
 
 	$(document).on('click', '[id^=duplicateLexemeBtn_]', function() {
 		var lexemeId = $(this).data('lexeme-id');
-		let url = applicationUrl + 'duplicatelexeme/' + lexemeId;
+		let url = applicationUrl + 'lexduplicate/' + lexemeId;
 		$.post(url).done(function(data) {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {
@@ -71,7 +71,7 @@ function initialise() {
 
 	$(document).on('click', '[id^=duplicateEmptyLexemeBtn_]', function() {
 		var lexemeId = $(this).data('lexeme-id');
-		var url = applicationUrl + 'duplicateemptylexeme/' + lexemeId;
+		var url = applicationUrl + 'emptylexduplicate/' + lexemeId;
 		$.post(url).done(function(data) {
 			var response = JSON.parse(data);
 			openMessageDlg(response.message);
@@ -79,6 +79,19 @@ function initialise() {
 		}).fail(function(data) {
 			openAlertDlg("Tähenduse lisamine ebaõnnestus");
 			console.log(data);
+		});
+	});
+
+	$(document).on('click', '[id^=duplicateMeaningWordAndLexemeBtn_]', function() {
+		let lexemeId = $(this).data('lexeme-id');
+		let successCallbackName = $(this).data("callback");
+		let	successCallbackFunc = () => eval(successCallbackName);
+		let url = applicationUrl + 'meaningwordandlexduplicate/' + lexemeId;
+		$.post(url).done(function() {
+			successCallbackFunc();
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg("Vaste dubleerimine ebaõnnestus");
 		});
 	});
 
@@ -185,6 +198,44 @@ function initUsageAuthorDlg(addDlg) {
 	let selectElem = addDlg.find('select');
 	selectElem.val(selectElem.find('option').first().val());
 	initRelationDialogLogic(addDlg, 'source-id');
+}
+
+function initEditMeaningWordAndLexemeWeightDlg(dlg) {
+	let wordValueEditFld = dlg.find('[data-name=wordValueEditFld]');
+	let wordValueInput = dlg.find('[name=wordValuePrese]');
+	let ekiEditorElem = dlg.find('.eki-editor');
+	wordValueEditFld.removeClass('is-invalid');
+	wordValueEditFld.html(wordValueInput.val());
+	initEkiEditor(ekiEditorElem);
+
+	dlg.find('button[type="submit"]').off('click').on('click', function(e) {
+		e.preventDefault();
+		let form = dlg.find('form');
+		if (wordValueEditFld.html()) {
+			wordValueEditFld.removeClass('is-invalid');
+			wordValueInput.val(wordValueEditFld.html());
+
+			if (checkRequiredFields(form)) {
+				let successCallbackName = dlg.attr("data-callback");
+				let	successCallbackFunc = () => eval(successCallbackName);
+
+				$.ajax({
+					url: form.attr('action'),
+					data: form.serialize(),
+					method: 'POST',
+				}).done(function() {
+					dlg.modal('hide');
+					successCallbackFunc();
+				}).fail(function(data) {
+					dlg.modal('hide');
+					console.log(data);
+					openAlertDlg('Andmete muutmine ebaõnnestus.');
+				});
+			}
+		} else {
+			wordValueEditFld.addClass('is-invalid');
+		}
+	});
 }
 
 function refreshDetails() {

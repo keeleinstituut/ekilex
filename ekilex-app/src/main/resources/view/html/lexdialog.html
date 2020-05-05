@@ -801,7 +801,7 @@
                 </div>
               </div>
               <div class="col-md-12">
-                <div contenteditable="true" name="editFld" class="edit-area form-control required-field"></div>
+                <div contenteditable="true" data-name="editFld" class="edit-area form-control required-field"></div>
                 <div class="eki-editor-menu">
                   <select class="eki-tag-select" size="6">
                     <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
@@ -1440,7 +1440,7 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeWeightDlg_' + lexeme.lexemeId}" 
+  <div th:id="${'editLexemeWeightDlg_' + lexeme.lexemeId}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
        class="modal" role="dialog" th:fragment="edit_lexeme_weight_dlg">
     <div class="modal-dialog modal-sm" role="document">
@@ -1463,16 +1463,48 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningWordLexemeWeightDlg_' + meaningWord.lexemeId}" class="modal" role="dialog" th:fragment="edit_meaning_word_lexeme_weight_dlg">
+  <div th:id="${'editMeaningWordAndLexemeWeightDlg_' + meaningWord.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_meaning_word_and_lexeme_weight_dlg">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
+        <form th:action="@{/update_word_data_and_lexeme_weight}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${meaningWord.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_weight">
+            <input type="hidden" name="lexemeId" th:value="${meaningWord.lexemeId}">
+            <input type="hidden" name="wordId" th:value="${meaningWord.wordId}">
+            <input type="hidden" name="wordValuePrese" th:value="${meaningWord.wordValuePrese}">
+            <div class="form-group row eki-editor">
+              <div class="col-md-12 pb-3">
+                <div class="float-right">
+                  <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgendus</button>
+                  <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgendus</button>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div contenteditable="true" data-name="wordValueEditFld" class="edit-area form-control required-field"></div>
+                <div class="eki-editor-menu">
+                  <select class="eki-tag-select" size="6">
+                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
+                  </select>
+                </div>
+              </div>
+            </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="value" th:value="${meaningWord.lexemeWeight}">
+                <select required class="form-control required-field" name="morphCode">
+                  <option value="" hidden disabled selected>vali kood...</option>
+                  <option th:each="morphCode : ${wordMorphCodes}"
+                          th:value="${morphCode.code}"
+                          th:selected="${morphCode.code == meaningWord.morphCode}"
+                          th:text="${morphCode.value}">morphCode
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <label>Ilmiku kaal:</label>
+                  <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="lexemeWeight" th:value="${meaningWord.lexemeWeight}">
               </div>
             </div>
           </div>

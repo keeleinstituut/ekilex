@@ -111,6 +111,13 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
+	public void updateWordMorphCode(Long wordId, String morphCode) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.MORPH_CODE, wordId, morphCode);
+		createLifecycleLog(logData);
+		cudDbService.updateWordMorphCode(wordId, morphCode);
+	}
+
+	@Transactional
 	public void updateWordRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
 			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.WORD_RELATION, LifecycleProperty.ID, item);
