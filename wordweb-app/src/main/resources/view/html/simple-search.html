@@ -16,7 +16,6 @@
   </div>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu-with-back-btn(pageContext = 'simpleSearch')"></div>
-
   <div class="container-fluid homonym-page mt-3 mb-5">
     <div class="search-results-header px-0">
       <div class="d-flex flex-row flex-wrap align-items-center pb-3">
@@ -24,17 +23,17 @@
         <div class="d-flex align-items-center">
           <th:block th:replace="common-search :: lang-filter"></th:block>
         </div>
-        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
+        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button"
+                data-toggle="modal" data-target="#feedbackModal"
+                data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
       </div>
     </div>
-
     <main id="mainContentArea" role="main" class="content-panel px-3 loading">
       <div th:if="${wordsData.resultsExist}" class="loading-indicator">
         <div class="spinner-border text-primary " role="status">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
-
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <div class="message-wrap" th:if="${!wordsData.resultsExist}">

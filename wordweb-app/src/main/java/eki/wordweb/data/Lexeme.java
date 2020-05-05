@@ -107,6 +107,12 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private boolean emptyLexeme;
 
+	private boolean showSection1;
+
+	private boolean showSection2;
+
+	private boolean showSection3;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -487,4 +493,29 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 	public void setEmptyLexeme(boolean emptyLexeme) {
 		this.emptyLexeme = emptyLexeme;
 	}
+
+	public boolean isShowSection1() {
+		return showSection1;
+	}
+
+	public void setShowSection1(boolean showSection1) {
+		this.showSection1 = showSection1;
+	}
+
+	public boolean isShowSection2() {
+		return showSection2;
+	}
+
+	public void setShowSection2(boolean showSection2) {
+		this.showSection2 = showSection2;
+	}
+
+	public boolean isShowSection3() {
+		return showSection3;
+	}
+
+	public void setShowSection3(boolean showSection3) {
+		this.showSection3 = showSection3;
+	}
+
 }

@@ -16,7 +16,6 @@
   </div>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu-with-back-btn"></div>
-
   <div class="container-fluid homonym-page mt-3 mb-5">
     <div class="search-results-header px-0">
       <div class="d-flex flex-row flex-wrap align-items-center pb-3">
@@ -24,7 +23,7 @@
         <div class="d-flex align-items-center">
           <th:block th:replace="common-search :: lang-filter"></th:block>
           <div class="mr-auto mr-md-2 pl-2 d-flex align-items-center flex-wrap">
-            <label  class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
+            <label class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
             <div class="dropdown">
               <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
@@ -33,7 +32,7 @@
                 <div class="dropdown-menu-scroll px-2 py-1">
                   <th:block th:each="filterElem : ${datasetFilter}">
                     <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
-                   class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
+                      class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
                     <th:block th:if="${filterElem.addSeparator}">
                       <div class="dropdown-divider"></div>
                       <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
@@ -44,19 +43,20 @@
             </div>
           </div>
         </div>
-        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
+        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button"
+                data-toggle="modal" data-target="#feedbackModal"
+                data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
       </div>
     </div>
-
     <main id="mainContentArea" role="main" class="content-panel px-3 loading">
-      <div  th:if="${wordsData.resultsExist}" class="loading-indicator">
+      <div th:if="${wordsData.resultsExist}" class="loading-indicator">
         <div class="spinner-border text-primary " role="status">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
-        <span class="h1 mt-4 ml-3 d-inline-block" th:text="#{'label.word.not.found.detail'}"  th:if="${!wordsData.resultsExist}">Ei leidnud midagi</span>
+        <span class="h1 mt-4 ml-3 d-inline-block" th:text="#{'label.word.not.found.detail'}" th:if="${!wordsData.resultsExist}">Ei leidnud midagi</span>
       </div>
     </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">

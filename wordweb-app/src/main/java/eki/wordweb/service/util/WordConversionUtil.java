@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.Complexity;
+import eki.common.constant.DatasetType;
 import eki.common.data.Classifier;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
@@ -211,6 +212,21 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			if (CollectionUtils.isNotEmpty(lexeme.getPoses())) {
 				summarisedPoses.addAll(lexeme.getPoses());
 			}
+			boolean isShowSection1 = DatasetType.TERM.equals(lexeme.getDatasetType())
+					|| CollectionUtils.isNotEmpty(lexeme.getPoses())
+					|| CollectionUtils.isNotEmpty(lexeme.getGrammars());
+			boolean isShowSection2 = CollectionUtils.isNotEmpty(lexeme.getRelatedLexemes())
+					|| CollectionUtils.isNotEmpty(lexeme.getAdviceNotes())
+					|| CollectionUtils.isNotEmpty(lexeme.getLearnerComments())
+					|| CollectionUtils.isNotEmpty(lexeme.getLexemePublicNotes())
+					|| CollectionUtils.isNotEmpty(lexeme.getMeaningPublicNotes())
+					|| CollectionUtils.isNotEmpty(lexeme.getLexemeSourceLinks());
+			boolean isShowSection3 = CollectionUtils.isNotEmpty(lexeme.getGovernments())
+					|| CollectionUtils.isNotEmpty(lexeme.getUsages())
+					|| CollectionUtils.isNotEmpty(lexeme.getImageFiles());
+			lexeme.setShowSection1(isShowSection1);
+			lexeme.setShowSection2(isShowSection2);
+			lexeme.setShowSection3(isShowSection3);
 		}
 		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
 		boolean isSinglePos = CollectionUtils.size(summarisedPoses) == 1;
