@@ -306,7 +306,7 @@ function checkRequiredFields(thisForm) {
 		if (isValid && isRequiredRange) {
 			let minValue = $(this).attr('min');
 			let maxValue = $(this).attr('max');
-			if (!($.isNumeric(fldVal) && fldVal >= minValue && fldVal <= maxValue)) {
+			if (!($.isNumeric(fldVal) && parseFloat(fldVal) >= minValue && parseFloat(fldVal) <= maxValue)) {
 				markableField.addClass('is-invalid');
 				isValid = false;
 			}
@@ -649,7 +649,7 @@ function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
 }
 
 function initWordValueEditorDlg(dlg) {
-	let editFld = dlg.find('[name=editFld]');
+	let editFld = dlg.find('[data-name=editFld]');
 	let valueInput = dlg.find('[name=value]');
 	let ekiEditorElem = dlg.find('.eki-editor');
 	editFld.removeClass('is-invalid');

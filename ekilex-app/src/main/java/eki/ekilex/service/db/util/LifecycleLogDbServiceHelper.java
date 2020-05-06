@@ -157,7 +157,8 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 						WORD.LANG,
 						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value"),
 						DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("value_prese"),
-						DSL.field("array_to_string(array_agg(distinct form.vocal_form), ',')").cast(String.class).as("vocal_form"))
+						DSL.field("array_to_string(array_agg(distinct form.vocal_form), ',')").cast(String.class).as("vocal_form"),
+						DSL.field("array_to_string(array_agg(distinct form.morph_code), ',')").cast(String.class).as("morph_code"))
 				.from(WORD, PARADIGM, FORM)
 				.where(
 						WORD.ID.eq(entityId)

@@ -196,27 +196,6 @@
                 </div>
               </div>
             </div>
-            <div class="d-flex related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
-              <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
-                <span class="mr-2" th:text="${relationType.value}"></span>
-                <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
-                  <div class="relation-item mr-1">
-                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
-                      <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
-                    </a>
-                    <th:block th:each="register, rIter : ${relation.lexRegisters}">
-                      <span class="rections register">
-                        <span th:if="${rIter.first}" class="mr-n1">(</span>
-                        <span th:text="${register.value}"></span>
-                        <span th:unless="${rIter.last}" class="ml-n1">,</span>
-                        <span th:if="${rIter.last}" class="ml-n1">)</span>
-                      </span>
-                    </th:block>
-                    <span th:unless="${relationIter.last}" class="ml-n1">,</span>
-                  </div>
-                </th:block>
-              </div>
-            </div>
             <div class="matches" th:if="${not #maps.isEmpty(lexeme.destinLangMatchWordsByLang)}">
               <div class="additional-meta">
                 <div class="d-flex flex-wrap" th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
@@ -251,6 +230,27 @@
             </div>
           </div>
           <div class="additional-meta mb-2" th:if="${lexeme.showSection2}">
+            <div class="d-flex related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
+              <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
+                <span class="mr-2" th:text="${relationType.value}"></span>
+                <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
+                  <div class="relation-item mr-1">
+                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
+                      <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
+                    </a>
+                    <th:block th:each="register, rIter : ${relation.lexRegisters}">
+                      <span class="rections register">
+                        <span th:if="${rIter.first}" class="mr-n1">(</span>
+                        <span th:text="${register.value}"></span>
+                        <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                        <span th:if="${rIter.last}" class="ml-n1">)</span>
+                      </span>
+                    </th:block>
+                    <span th:unless="${relationIter.last}" class="ml-n1">,</span>
+                  </div>
+                </th:block>
+              </div>
+            </div>
             <div class="d-flex related-lexemes" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
               <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                 <span th:text="${relationType.value}"></span>

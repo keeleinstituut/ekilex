@@ -357,6 +357,16 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordMorphCode(Long wordId, String morphCode) {
+		create.update(FORM)
+				.set(FORM.MORPH_CODE, morphCode)
+				.from(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.execute();
+	}
+
 	public void updateWordGender(Long wordId, String genderCode) {
 		create.update(WORD)
 				.set(WORD.GENDER_CODE, genderCode)

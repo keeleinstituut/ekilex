@@ -960,7 +960,7 @@
                 </div>
               </div>
               <div class="col-md-12">
-                <div contenteditable="true" name="editFld" class="edit-area form-control required-field"></div>
+                <div contenteditable="true" data-name="editFld" class="edit-area form-control required-field"></div>
                 <div class="eki-editor-menu">
                   <select class="eki-tag-select" size="6">
                     <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>

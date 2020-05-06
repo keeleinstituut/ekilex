@@ -96,6 +96,14 @@ public interface WebConstant {
 
 	String VALIDATE_LEX_JOIN_URI = "/validatelexjoin";
 
+	String LEX_SEPARATE_URI = "/lexseparate";
+
+	String LEX_DUPLICATE_URI = "/lexduplicate";
+
+	String EMPTY_LEX_DUPLICATE_URI = "/emptylexduplicate";
+
+	String MEANING_WORD_AND_LEX_DUPLICATE_URI = "/meaningwordandlexduplicate";
+
 	String MEANING_JOIN_URI = "/meaningjoin";
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
@@ -161,6 +169,8 @@ public interface WebConstant {
 	String UPDATE_LEVELS_URI = "/update_levels";
 
 	String UPDATE_WORD_VALUE_URI = "/update_word_value";
+
+	String UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI = "/update_word_data_and_lexeme_weight";
 
 	String DELETE_ITEM_URI = "/delete_item";
 

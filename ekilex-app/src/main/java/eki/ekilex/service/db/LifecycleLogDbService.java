@@ -393,15 +393,15 @@ public class LifecycleLogDbService implements GlobalConstant {
 		LifecycleProperty property = logData.getProperty();
 
 		if (LifecycleProperty.VALUE.equals(property)) {
-			Long lifecycleLogId;
-			if (LifecycleEventType.DELETE == eventType) {
+			if (LifecycleEventType.UPDATE == eventType || LifecycleEventType.DELETE == eventType) {
 				Map<String, Object> entityData = helper.getWordData(create, entityId);
-				String logString = entityData.get("value").toString();
-				logData.setRecent(logString);
-				lifecycleLogId = createLifecycleLog(logData);
-			} else {
-				lifecycleLogId = createLifecycleLog(logData);
+				String recent = entityData.get("value_prese").toString();
+				boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+				if (!isRecentValueValid) {
+					return;
+				}
 			}
+			Long lifecycleLogId = createLifecycleLog(logData);
 			createWordLifecycleLog(entityId, lifecycleLogId);
 		} else if (LifecycleProperty.WORD_TYPE.equals(property)) {
 			Long wordId = create
@@ -428,6 +428,15 @@ public class LifecycleLogDbService implements GlobalConstant {
 			Map<String, Object> entityData = helper.getWordData(create, entityId);
 			String recent = (String) entityData.get("vocal_form");
 			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createWordLifecycleLog(entityId, lifecycleLogId);
+		} else if (LifecycleProperty.MORPH_CODE.equals(property)) {
+			Map<String, Object> entityData = helper.getWordData(create, entityId);
+			String recent = (String) entityData.get("morph_code");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createWordLifecycleLog(entityId, lifecycleLogId);
 		} else if (LifecycleProperty.LANG.equals(property)) {
@@ -596,8 +605,13 @@ public class LifecycleLogDbService implements GlobalConstant {
 		} else if (LifecycleProperty.WEIGHT.equals(property)) {
 			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
 			BigDecimal recentWeight = (BigDecimal) entityData.get("weight");
+			BigDecimal newWeight = new BigDecimal(logData.getEntry());
+			if (recentWeight.compareTo(newWeight) == 0) {
+				if (logData.isUpdateEvent()) {
+					return;
+				}
+			}
 			String recent = String.valueOf(recentWeight);
-
 			logData.setRecent(recent);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(entityId, lifecycleLogId);

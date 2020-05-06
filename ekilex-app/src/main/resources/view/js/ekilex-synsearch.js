@@ -604,6 +604,7 @@ function setScrollPositions(positions) {
 }
 
 function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
+	$('.tooltip').remove();
 	$('.keyboard-nav-list-item-active .list-item-value').tooltip(displayOption);
 }
 
