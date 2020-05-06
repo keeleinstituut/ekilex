@@ -18063,6 +18063,8 @@ body {
   }
   .logo-header.logo-light {
     background-image: url("../images/sonaveeb-logo-light-lg.svg");
+    width: 252px;
+    height: 37px;
   }
 }
 
