@@ -3,7 +3,6 @@ package eki.ekilex.service;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,10 +57,6 @@ import eki.ekilex.service.db.TermSearchDbService;
 @Component
 public class LookupService extends AbstractWordSearchService {
 
-	private final static String DISPLAY_FORM_STRESS_MARK = "\"";
-
-	private static final List<String> DISPLAY_FORM_IGNORE_IN_COMPARISON_SYMBOL_LIST = ListUtils.unmodifiableList(Arrays.asList("[", "]", "*"));
-
 	@Autowired
 	private LookupDbService lookupDbService;
 
@@ -90,47 +84,47 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public boolean isValidWordStressAndMarkup(Long targetWordId, Long sourceWordId) {
+	public boolean isValidWordStressAndMarkup(Long sourceWordId, Long targetWordId) {
 
-		WordStress targetWordStress = lookupDbService.getWordStressData(targetWordId);
-		String targetDisplayForm = targetWordStress.getDisplayForm();
-		String targetValuePrese = targetWordStress.getValuePrese();
+		Map<Long, WordStress> wordStressData = lookupDbService.getWordStressData(sourceWordId, targetWordId, DISPLAY_FORM_STRESS_SYMBOL);
+		WordStress sourceWordStress = wordStressData.get(sourceWordId);
+		WordStress targetWordStress = wordStressData.get(targetWordId);
 
-		WordStress sourceWordStress = lookupDbService.getWordStressData(sourceWordId);
-		String sourceDisplayForm = sourceWordStress.getDisplayForm();
-		String sourceValuePrese = sourceWordStress.getValuePrese();
-
-		boolean isDisplayFormEqual = displayFormEquals(targetDisplayForm, sourceDisplayForm);
-		if (!isDisplayFormEqual) {
-			if (targetDisplayForm != null && sourceDisplayForm != null) {
-				boolean targetContainsStress = targetDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
-				boolean sourceContainsStress = sourceDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
-				if (targetContainsStress && sourceContainsStress) {
+		if (sourceWordStress.isMorphExists() && targetWordStress.isMorphExists()) {
+			String sourceDisplayForm = sourceWordStress.getDisplayForm();
+			boolean isSourceDisplayFormStressExists = sourceWordStress.isStressExists();
+			String targetDisplayForm = targetWordStress.getDisplayForm();
+			boolean isTargetDisplayFormStressExists = targetWordStress.isStressExists();
+			boolean isDisplayFormMatch = isDisplayFormMatch(targetDisplayForm, sourceDisplayForm);
+			if (!isDisplayFormMatch) {
+				if (isSourceDisplayFormStressExists && isTargetDisplayFormStressExists) {
 					return false;
-				} else if (!targetContainsStress && !sourceContainsStress) {
+				} else if (!isSourceDisplayFormStressExists && !isTargetDisplayFormStressExists) {
 					return false;
 				}
 			}
 		}
 
-		if (StringUtils.equals(targetValuePrese, sourceValuePrese)) {
+		String sourceValuePrese = sourceWordStress.getValuePrese();
+		String targetValuePrese = targetWordStress.getValuePrese();
+		if (StringUtils.equals(sourceValuePrese, targetValuePrese)) {
 			return true;
 		}
 
-		boolean isTargetWordDecorated = textDecorationService.isDecorated(targetValuePrese);
 		boolean isSourceWordDecorated = textDecorationService.isDecorated(sourceValuePrese);
-		if (isTargetWordDecorated && isSourceWordDecorated) {
+		boolean isTargetWordDecorated = textDecorationService.isDecorated(targetValuePrese);
+		if (isSourceWordDecorated && isTargetWordDecorated) {
 			return false;
 		}
 		return true;
 	}
 
-	private boolean displayFormEquals(String targetDisplayForm, String sourceDisplayForm) {
+	private boolean isDisplayFormMatch(String targetDisplayForm, String sourceDisplayForm) {
 
 		String cleanedTargetDisplayForm = targetDisplayForm;
 		String cleanedSourceDisplayForm = sourceDisplayForm;
 
-		for (String ignoreSymbol : DISPLAY_FORM_IGNORE_IN_COMPARISON_SYMBOL_LIST) {
+		for (String ignoreSymbol : DISPLAY_FORM_IGNORE_SYMBOLS) {
 			cleanedTargetDisplayForm = StringUtils.remove(cleanedTargetDisplayForm, ignoreSymbol);
 			cleanedSourceDisplayForm = StringUtils.remove(cleanedSourceDisplayForm, ignoreSymbol);
 		}
@@ -204,7 +198,7 @@ public class LookupService extends AbstractWordSearchService {
 		if (!permissionDbService.isGrantedForWord(sourceWordId, roleDatasetCode, userPermDatasetCodes)) {
 			return false;
 		}
-		return isValidWordStressAndMarkup(targetWordId, sourceWordId);
+		return isValidWordStressAndMarkup(sourceWordId, targetWordId);
 	}
 
 	@Transactional

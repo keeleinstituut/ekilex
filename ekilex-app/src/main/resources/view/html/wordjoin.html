@@ -51,7 +51,7 @@
               <div class="d-flex align-items-center flex-wrap mb-2">
                 <input name="sourceWordIds" type="checkbox" class="mt-2"
                        th:value="${sourceWordDetails.word.wordId}"
-                       th:if="${sourceWordDetails.word.wordId != targetWordDetails.word.wordId}"
+                       th:if="${permDataUtil.isValidForJoin(sourceWordDetails.word.wordId, targetWordDetails.word.wordId)}"
                        sec:authorize="#vars.permDataUtil.isSourceWordCrudGranted(#vars.sourceWordDetails.word.wordId, #vars.targetWordDetails.word.wordId, #vars.sessionBean)"/>
                 <span th:utext="${viewUtil.getWordValueMarkup(sourceWordDetails.word)}" class="wttl ml-2"></span>
                 <span th:text="${sourceWordDetails.word.homonymNr}" th:if="${sourceWordDetails.word.homonymNr > 0}" class="ml-2"></span>

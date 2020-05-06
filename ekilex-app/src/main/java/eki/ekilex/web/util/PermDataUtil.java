@@ -104,6 +104,13 @@ public class PermDataUtil implements SystemConstant {
 		return targetMeaningHasSuperiorLexemes;
 	}
 
+	public boolean isValidForJoin(Long sourceWordId, Long targetWordId) {
+		if (sourceWordId.equals(targetWordId)) {
+			return false;
+		}
+		return lookupService.isValidWordStressAndMarkup(sourceWordId, targetWordId);
+	}
+
 	public boolean isSourceWordCrudGranted(Long sourceWordId, Long targetWordId, SessionBean sessionBean) {
 
 		Long userId = userService.getAuthenticatedUser().getId();
@@ -116,11 +123,6 @@ public class PermDataUtil implements SystemConstant {
 		}
 		String roleDatasetCode = userRole.getDatasetCode();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-
-		boolean isValidWordStressAndMarkup = lookupService.isValidWordStressAndMarkup(targetWordId, sourceWordId);
-		if (!isValidWordStressAndMarkup) {
-			return false;
-		}
 
 		boolean isSourceWordCrudGranted = permissionService.isGrantedForWord(sourceWordId, roleDatasetCode, userPermDatasetCodes);
 		if (isSourceWordCrudGranted) {
