@@ -151,7 +151,7 @@
                     <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
                     <th:block th:each="definition,definitionIter : ${definitionEntry.value}">
                       <th:block th:if="${!definition.subDataExists}">
-                        <span class="definition-value mb-2 mr-1" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
+                        <span class="definition-value mb-2 mr-1 tex-weight-medium text-dark" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
                       </th:block>
                       <th:block th:if="${definition.subDataExists}">
                         <span class="definition-value mb-2 mr-1" th:utext="${definition.valuePrese}"></span>
@@ -529,7 +529,7 @@
   <section class="level-3-panel " th:fragment="korp">
     <div class="corp-panel">
       <div class="heading-wrapper">
-        <h5 class="font-weight-bold mb-0 d-flex align-items-center">
+        <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
           <span th:text="#{label.korp.examples}">Veebilauseid</span>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
                   th:if="${corp_language == 'est'}" th:aria-label="#{corpus.title.est}" th:title="#{corpus.title.est}">
