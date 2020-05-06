@@ -18489,6 +18489,8 @@ eki-link {
     position: sticky;
     top: 80px;
     padding-bottom: 32px;
+    max-height: calc(100vh - 100px);
+    overflow-y: scroll;
   }
 }
 
