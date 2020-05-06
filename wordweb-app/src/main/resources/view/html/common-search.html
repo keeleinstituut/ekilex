@@ -239,7 +239,7 @@
                 </th:block>
               </div>
             </div>
-            <div class="d-flex related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
+            <div class="related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
               <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                 <span class="mr-2" th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
