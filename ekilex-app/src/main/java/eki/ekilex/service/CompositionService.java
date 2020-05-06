@@ -40,8 +40,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 	private static final int DEFAULT_LEXEME_LEVEL = 1;
 
-	private static final String DISPLAY_FORM_STRESS_MARK = "\"";
-
 	@Autowired
 	private CompositionDbService compositionDbService;
 
@@ -406,26 +404,27 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 	private void joinWordStressAndMarkupData(Long targetWordId, Long sourceWordId) {
 
-		WordStress targetWordStress = lookupDbService.getWordStressData(targetWordId);
-		String targetDisplayForm = targetWordStress.getDisplayForm();
-		String targetValuePrese = targetWordStress.getValuePrese();
-		Long targetFormId = targetWordStress.getFormId();
+		Map<Long, WordStress> wordStressData = lookupDbService.getWordStressData(sourceWordId, targetWordId, DISPLAY_FORM_STRESS_SYMBOL);
+		WordStress sourceWordStress = wordStressData.get(sourceWordId);
+		WordStress targetWordStress = wordStressData.get(targetWordId);
 
-		WordStress sourceWordStress = lookupDbService.getWordStressData(sourceWordId);
 		String sourceDisplayForm = sourceWordStress.getDisplayForm();
 		String sourceValuePrese = sourceWordStress.getValuePrese();
+		boolean isSourceDisplayFormStressExists = sourceWordStress.isStressExists();
+		String targetDisplayForm = targetWordStress.getDisplayForm();
+		String targetValuePrese = targetWordStress.getValuePrese();
+		boolean isTargetDisplayFormStressExists = targetWordStress.isStressExists();
+		Long targetFormId = targetWordStress.getFormId();
 
 		if (sourceDisplayForm != null) {
 			if (targetDisplayForm == null) {
 				cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
 			} else {
-				boolean targetContainsStress = targetDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
-				boolean sourceContainsStress = sourceDisplayForm.contains(DISPLAY_FORM_STRESS_MARK);
-				if (!targetContainsStress && sourceContainsStress) {
+				if (isSourceDisplayFormStressExists && !isTargetDisplayFormStressExists) {
 					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
-				} else if (targetContainsStress && !sourceContainsStress) {
+				} else if (!isSourceDisplayFormStressExists && isTargetDisplayFormStressExists) {
 					// do nothing
-				} else if (targetDisplayForm.length() < sourceDisplayForm.length()) {
+				} else if (sourceDisplayForm.length() > targetDisplayForm.length()) {
 					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
 				}
 			}

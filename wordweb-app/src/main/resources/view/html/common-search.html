@@ -230,6 +230,15 @@
             </div>
           </div>
           <div class="additional-meta mb-2" th:if="${lexeme.showSection2}">
+            <div class="d-flex related-lexemes" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
+              <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
+                <span th:text="${relationType.value}"></span>
+                <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
+                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}"
+                     th:utext="${viewUtil.getWordValueMarkup(relation) + (relationIter.last ? '' : ',')}"></a>
+                </th:block>
+              </div>
+            </div>
             <div class="d-flex related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
               <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                 <span class="mr-2" th:text="${relationType.value}"></span>
@@ -248,15 +257,6 @@
                     </th:block>
                     <span th:unless="${relationIter.last}" class="ml-n1">,</span>
                   </div>
-                </th:block>
-              </div>
-            </div>
-            <div class="d-flex related-lexemes" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
-              <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
-                <span th:text="${relationType.value}"></span>
-                <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
-                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}"
-                     th:utext="${viewUtil.getWordValueMarkup(relation) + (relationIter.last ? '' : ',')}"></a>
                 </th:block>
               </div>
             </div>

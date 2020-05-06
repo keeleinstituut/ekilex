@@ -216,6 +216,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					|| CollectionUtils.isNotEmpty(lexeme.getPoses())
 					|| CollectionUtils.isNotEmpty(lexeme.getGrammars());
 			boolean isShowSection2 = CollectionUtils.isNotEmpty(lexeme.getRelatedLexemes())
+					|| CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())
 					|| CollectionUtils.isNotEmpty(lexeme.getAdviceNotes())
 					|| CollectionUtils.isNotEmpty(lexeme.getLearnerComments())
 					|| CollectionUtils.isNotEmpty(lexeme.getLexemePublicNotes())

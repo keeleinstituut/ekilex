@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.PagingResult;
@@ -15,7 +16,7 @@ import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
-public abstract class AbstractSearchService extends AbstractService implements SystemConstant {
+public abstract class AbstractSearchService extends AbstractService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	protected ConversionUtil conversionUtil;

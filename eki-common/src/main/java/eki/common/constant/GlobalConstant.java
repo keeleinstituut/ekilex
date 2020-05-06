@@ -26,6 +26,10 @@ public interface GlobalConstant {
 
 	String[] WORD_TYPE_CODES_FOREIGN = new String[] {"z", "lz"};
 
+	char DISPLAY_FORM_STRESS_SYMBOL = '"';
+
+	String[] DISPLAY_FORM_IGNORE_SYMBOLS = new String[] {"[", "]", "*"};
+
 	String IGNORE_QUERY_LOG = "'ignore query log'";
 
 	String FORCE_QUERY_LOG = "'force query log'";

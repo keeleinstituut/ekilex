@@ -21,6 +21,7 @@ import static org.jooq.impl.DSL.field;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -49,16 +50,44 @@ import eki.ekilex.data.db.tables.Word;
 @Component
 public class LookupDbService extends AbstractSearchDbService {
 
-	public WordStress getWordStressData(Long wordId) {
+	public Map<Long, WordStress> getWordStressData(Long wordId1, Long wordId2, char displayFormStressSym) {
 
-		return create
-				.select(FORM.ID.as("form_id"), FORM.VALUE_PRESE, FORM.DISPLAY_FORM)
-				.from(FORM, PARADIGM)
-				.where(
-						PARADIGM.WORD_ID.eq(wordId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.fetchSingleInto(WordStress.class);
+		Form f = FORM.as("f");
+		Form fm = FORM.as("fm");
+		Paradigm p = PARADIGM.as("p");
+
+		String displayFormStressCrit = new StringBuilder().append('%').append(displayFormStressSym).append('%').toString();
+		Field<Boolean> dfsf = DSL.field(f.DISPLAY_FORM.like(displayFormStressCrit));
+		Field<Boolean> wmef = DSL.field(DSL.exists(DSL.select(fm.ID).from(fm).where(fm.PARADIGM_ID.eq(p.ID).and(fm.MODE.eq(FormMode.FORM.name())))));
+
+		Map<Long, List<WordStress>> wordStressFullDataMap = create
+				.select(
+						p.WORD_ID,
+						f.ID.as("form_id"),
+						f.VALUE_PRESE,
+						f.DISPLAY_FORM,
+						dfsf.as("stress_exists"),
+						wmef.as("morph_exists"))
+				.from(f, p)
+				.where(p.WORD_ID.in(wordId1, wordId2)
+						.and(f.PARADIGM_ID.eq(p.ID))
+						.and(f.MODE.eq(FormMode.WORD.name())))
+				.fetchGroups(p.WORD_ID, WordStress.class);
+
+		Map<Long, WordStress> wordStressSingleDataMap = wordStressFullDataMap.entrySet().stream()
+				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+					List<WordStress> wordStressCandidates = entry.getValue();
+					if (wordStressCandidates.size() == 1) {
+						return wordStressCandidates.get(0);
+					}
+					List<WordStress> wordStressWithMorphCandidates = wordStressCandidates.stream().filter(WordStress::isMorphExists).collect(Collectors.toList());
+					if (wordStressWithMorphCandidates.size() == 1) {
+						return wordStressWithMorphCandidates.get(0);
+					}
+					return wordStressCandidates.get(0);
+				}));
+
+		return wordStressSingleDataMap;
 	}
 
 	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
