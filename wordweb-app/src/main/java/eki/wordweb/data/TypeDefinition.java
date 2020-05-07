@@ -29,6 +29,8 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	private boolean subDataExists;
 
+	private boolean oversizeValue;
+
 	@Override
 	public Long getOwnerId() {
 		return definitionId;
@@ -116,6 +118,14 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	public void setSubDataExists(boolean subDataExists) {
 		this.subDataExists = subDataExists;
+	}
+
+	public boolean isOversizeValue() {
+		return oversizeValue;
+	}
+
+	public void setOversizeValue(boolean oversizeValue) {
+		this.oversizeValue = oversizeValue;
 	}
 
 }

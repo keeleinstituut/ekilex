@@ -2,7 +2,15 @@
 -- create extension unaccent;
 
 create type type_lang_complexity as (lang varchar(10), complexity varchar(100));
-create type type_definition as (lexeme_id bigint, meaning_id bigint, definition_id bigint, value text, value_prese text, lang char(3), complexity varchar(100), public_notes text array);
+create type type_definition as (
+				lexeme_id bigint,
+				meaning_id bigint,
+				definition_id bigint,
+				value text,
+				value_prese text,
+				lang char(3),
+				complexity varchar(100),
+				public_notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_image_file as (freeform_id bigint, image_file text, image_title text);
 create type type_source_link as (
@@ -547,8 +555,8 @@ from (select w.id as word_id,
                                 l.level2,
                                 l.order_by lex_order_by,
                                 d.id definition_id,
-                                d.value,
-                                d.value_prese,
+                                substring(d.value, 1, 200) "value",
+                                substring(d.value_prese, 1, 200) value_prese,
                                 d.lang,
                                 d.complexity,
                                 d.order_by def_order_by
@@ -654,8 +662,8 @@ from (select m.id
                           ) definitions
                    from (select d.meaning_id,
                                 d.id,
-                                d.value,
-                                d.value_prese,
+                                substring(d.value, 1, 2000) "value",
+                                substring(d.value_prese, 1, 2000) value_prese,
                                 d.lang,
                                 d.complexity,
                                 d.order_by,

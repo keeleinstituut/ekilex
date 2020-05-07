@@ -151,10 +151,17 @@
                     <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
                     <th:block th:each="definition,definitionIter : ${definitionEntry.value}">
                       <th:block th:if="${!definition.subDataExists}">
-                        <span class="definition-value mb-2 mr-1" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
+                        <th:block th:if="${definition.oversizeValue}">
+                          <span class="definition-value mb-2 mr-1" th:utext="${definition.valuePrese}"></span>
+                          <span class="example-text" th:text="#{label.definition.oversize.placeholder}" th:title="#{label.definition.oversize.title}"></span>
+                        </th:block>
+                        <th:block th:if="${!definition.oversizeValue}">
+                          <span class="definition-value mb-2 mr-1" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
+                        </th:block>
                       </th:block>
                       <th:block th:if="${definition.subDataExists}">
                         <span class="definition-value mb-2 mr-1" th:utext="${definition.valuePrese}"></span>
+                        <span class="example-text" th:if="${definition.oversizeValue}" th:text="#{label.definition.oversize.placeholder}" th:title="#{label.definition.oversize.title}"></span>
                         <th:block th:if="${not #lists.isEmpty(definition.publicNotes)}">
                           <span th:each="note : ${definition.publicNotes}">
                             <span class="additional-meta mb-2" th:utext="${note}"></span>

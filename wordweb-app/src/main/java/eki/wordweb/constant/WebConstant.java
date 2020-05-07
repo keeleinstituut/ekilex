@@ -106,4 +106,8 @@ public interface WebConstant {
 	char UI_FILTER_VALUES_SEPARATOR = ',';
 
 	int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
+
+	String GENERIC_EKI_MARKUP_PREFIX = "<eki-";
+
+	int DEFINITION_OVERSIZE_LIMIT = 1000;
 }

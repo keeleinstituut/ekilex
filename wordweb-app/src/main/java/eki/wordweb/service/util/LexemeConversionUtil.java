@@ -227,6 +227,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Lexeme lexeme, String wordLang,
 			LexemeMeaningTuple tuple, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
+		final int definitionValueOversizeLimitForMarkupBuffering = new Float(DEFINITION_OVERSIZE_LIMIT * 1.5).intValue();
+
 		List<TypeDefinition> definitions = tuple.getDefinitions();
 		List<TypeSourceLink> allDefinitionSourceLinks = tuple.getDefinitionSourceLinks();
 		List<TypeSourceLink> meaningFreeformSourceLinks = tuple.getFreeformSourceLinks();
@@ -240,8 +242,22 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Map<String, List<TypeDefinition>> definitionsByLangOrdered = composeOrderedMap(definitionsByLangUnordered, langOrderByMap);
 			lexeme.setDefinitionsByLang(definitionsByLangOrdered);
 			definitions.forEach(definition -> {
+				String definitionValue = definition.getValue();
+				String definitionValuePrese = definition.getValuePrese();
+				boolean isOversizeValue = StringUtils.length(definitionValue) > DEFINITION_OVERSIZE_LIMIT;
+				if (isOversizeValue) {
+					String definitionValuePreseCut;
+					if (StringUtils.contains(definitionValuePrese, GENERIC_EKI_MARKUP_PREFIX)) {
+						String definitionValuePreseResizedForMarkup = StringUtils.substring(definitionValuePrese, 0, definitionValueOversizeLimitForMarkupBuffering);
+						definitionValuePreseCut = StringUtils.substringBeforeLast(definitionValuePreseResizedForMarkup, GENERIC_EKI_MARKUP_PREFIX);
+					} else {
+						definitionValuePreseCut = StringUtils.substring(definitionValuePrese, 0, DEFINITION_OVERSIZE_LIMIT);
+					}
+					definition.setValuePrese(definitionValuePreseCut);
+				}
 				boolean subDataExists = CollectionUtils.isNotEmpty(definition.getPublicNotes()) || CollectionUtils.isNotEmpty(definition.getSourceLinks());
 				definition.setSubDataExists(subDataExists);
+				definition.setOversizeValue(isOversizeValue);
 			});
 		}
 
