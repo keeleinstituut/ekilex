@@ -50,7 +50,7 @@
       </div>
     </div>
   </div>
-  <div th:replace="common-app :: footer-content"></div>
+  <div th:replace="common-app :: footer-content(pageContext = 'simpleSearch')"></div>
   <div th:replace="common-app :: feedback-form"></div>
   <script th:inline="javascript">
   	var currentPage = /*[[@{/lite}]]*/"/lite";

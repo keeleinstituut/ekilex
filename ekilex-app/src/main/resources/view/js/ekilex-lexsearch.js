@@ -144,8 +144,10 @@ function loadWordDetails(wordId) {
 		initClassifierAutocomplete();
 		detailsDiv.scrollTop(scrollPos);
 		$("#word_select_wait_" + wordId).hide();
+		$('.tooltip').remove();
 		closeWaitDlg();
-		$('[data-toggle="tooltip"]').tooltip();
+
+		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
 	}).fail(function(data) {
 		console.log(data);
 		closeWaitDlg();
@@ -165,8 +167,9 @@ function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 		detailsDiv.html(data);
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
+		$('.tooltip').remove();
 		closeWaitDlg();
-		$('[data-toggle="tooltip"]').tooltip();
+		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
 	}).fail(function(data) {
 		console.log(data);
 		closeWaitDlg();

@@ -156,7 +156,7 @@
                           <span class="example-text" th:text="#{label.definition.oversize.placeholder}" th:title="#{label.definition.oversize.title}"></span>
                         </th:block>
                         <th:block th:if="${!definition.oversizeValue}">
-                          <span class="definition-value mb-2 mr-1" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
+                          <span class="definition-value mb-2 mr-1 tex-weight-medium text-dark" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
                         </th:block>
                       </th:block>
                       <th:block th:if="${definition.subDataExists}">
@@ -246,7 +246,7 @@
                 </th:block>
               </div>
             </div>
-            <div class="d-flex related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
+            <div class="related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
               <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                 <span class="mr-2" th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
@@ -536,7 +536,7 @@
   <section class="level-3-panel " th:fragment="korp">
     <div class="corp-panel">
       <div class="heading-wrapper">
-        <h5 class="font-weight-bold mb-0 d-flex align-items-center">
+        <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
           <span th:text="#{label.korp.examples}">Veebilauseid</span>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
                   th:if="${corp_language == 'est'}" th:aria-label="#{corpus.title.est}" th:title="#{corpus.title.est}">

@@ -54,9 +54,10 @@ function initialise() {
 		$.get(detailsUrl).done(function(data) {
 			let detailsDiv = $('#syn_details_div');
 			detailsDiv.replaceWith(data);
+			$('.tooltip').remove();
 			closeWaitDlg();
 			$("#syn_select_wait_" + id).hide();
-			$('[data-toggle="tooltip"]').tooltip();
+			$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
 
 			$('.syn-stats-popover').popover({
 				template:'<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header" ></h3><button type="button" class="bnt btn-sm btn-outline-light border-0  popover-close-btn"><i class="fa fa-close" aria-hidden="true"></i></button></div><div class="popover-body"></div></div>',
