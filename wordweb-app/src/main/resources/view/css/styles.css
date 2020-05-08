@@ -16672,7 +16672,7 @@ body.hidden-scroll {
   position: absolute;
   top: 50%;
   right: 16px;
-  font-family: "Font Awesome 5 Pro";
+  font-family: "Font Awesome 5 Free";
   font-weight: 900;
   color: #8a98a5;
   content: "\f0d7";
@@ -16689,6 +16689,14 @@ body.hidden-scroll {
   overflow: hidden;
 }
 
+.homonym-list-toggle:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #81afe1;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 0.2rem rgba(44, 111, 182, 0.25);
+}
+
 .homonym-list {
   background: #fff;
 }
@@ -16698,6 +16706,7 @@ body.hidden-scroll {
     display: none;
     border: 3px solid #8a98a5;
     border-radius: 10px;
+    margin-top: -24px;
   }
   .homonym-list.expand {
     display: block;
@@ -17320,6 +17329,12 @@ body {
 .content-panel .word-details {
   -webkit-box-flex: 1;
   flex: 1 1 auto;
+}
+
+@media (max-width: 991.98px) {
+  .content-panel .word-details .sidebar {
+    border-top: 1px solid #ccd9e0;
+  }
 }
 
 .content-panel > .loading-indicator {
@@ -18062,9 +18077,9 @@ body {
     background-image: url("../images/sonaveeb-logo-lg.svg");
   }
   .logo-header.logo-light {
-    background-image: url("../images/sonaveeb-logo-light-lg.svg");
     width: 252px;
     height: 37px;
+    background-image: url("../images/sonaveeb-logo-light-lg.svg");
   }
 }
 
@@ -18488,8 +18503,8 @@ eki-link {
     position: -webkit-sticky;
     position: sticky;
     top: 80px;
-    padding-bottom: 32px;
     max-height: calc(100vh - 100px);
+    padding-bottom: 32px;
     overflow-y: auto;
   }
 }

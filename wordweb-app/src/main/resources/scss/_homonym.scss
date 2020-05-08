@@ -106,7 +106,7 @@
     position: absolute;
     top: 50%;
     right: 16px;
-    font-family: "Font Awesome 5 Pro";
+    font-family: "Font Awesome 5 Free";
     font-weight: 900;
     color: $gray-300;
     content: "\f0d7";
@@ -119,6 +119,7 @@
     width: 100%;
     overflow: hidden;
   }
+  @include form-control-focus();
 }
 
 .homonym-list {
@@ -128,6 +129,7 @@
     display: none;
     border: 3px solid $gray-300;
     @include border-radius(10px);
+    margin-top: -24px;
     &.expand {
       display: block;
     }

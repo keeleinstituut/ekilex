@@ -16,6 +16,12 @@
 
   .word-details {
     flex: 1 1 auto;
+    .sidebar{
+
+      @include media-breakpoint-down(md) {
+        border-top: 1px solid $border-color;
+      }
+    }
   }
 
   > .loading-indicator {
