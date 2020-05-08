@@ -155,6 +155,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(code);
 							} else {
+								critValue = StringUtils.trim(critValue);
 								critValue = encode(critValue);
 								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(CRITERION_VALUE);
@@ -248,6 +249,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				if (StringUtils.equals(CRITERION_VALUE, searchValueType)) {
 					String searchValueStr = uriParts[uriPartIndex + 4];
 					searchValueStr = decode(searchValueStr);
+					searchValueStr = StringUtils.trim(searchValueStr);
 					if (StringUtils.equals(EMPTY_VALUE, searchValueStr)) {
 						searchValueObj = null;
 					} else {

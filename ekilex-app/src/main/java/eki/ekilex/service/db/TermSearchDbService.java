@@ -201,6 +201,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Condition wheref1 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
 						.and(f1.PARADIGM_ID.eq(p1.ID))
 						.and(p1.WORD_ID.eq(w1.ID));
+				wheref1 = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wheref1);
 				wheref1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, wheref1, true);
 				wheref1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wheref1, false);
 				wherew = wherew.andExists(DSL.select(f1.ID).from(f1, p1).where(wheref1));
@@ -210,6 +211,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 			} else if (SearchEntity.CONCEPT.equals(searchEntity)) {
 
+				wherem = applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
 				wherem = applyDomainFilters(searchCriteria, m1, wherem);
 				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_ON, searchCriteria, searchDatasetsRestriction, m1, wherem);
 				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_BY, searchCriteria, searchDatasetsRestriction, m1, wherem);

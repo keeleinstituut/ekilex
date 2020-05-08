@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -165,6 +166,38 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 			where = where.and(dsWhere);
 		}
 		return where;
+	}
+
+	protected Condition applyIdFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<Long> idField, Condition condition) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			String searchIdStr = criterion.getSearchValue().toString();
+			searchIdStr = RegExUtils.replaceAll(searchIdStr, "[^0-9.]", "");
+			if (StringUtils.isNotEmpty(searchIdStr)) {
+				Long searchId = Long.valueOf(searchIdStr);
+				condition = applyIdFilter(searchId, searchOperand, idField, condition);
+			}
+		}
+		return condition;
+	}
+
+	protected Condition applyIdFilter(Long searchId, SearchOperand searchOperand, Field<Long> searchField, Condition condition) throws Exception {
+
+		if (SearchOperand.EQUALS.equals(searchOperand)) {
+			condition = condition.and(searchField.eq(searchId));
+		} else {
+			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
+		}
+		return condition;
 	}
 
 	protected Condition applyValueFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition, boolean isOnLowerValue) throws Exception {
@@ -533,6 +566,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 						.and(f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, where1);
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
 				where1 = applyLexemeSourceRefFilter(searchCriteria, l1.ID, where1);
@@ -571,6 +605,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+					where1 = applyIdFilters(SearchKey.ID, searchCriteria, w2.ID, where1);
 					where1 = applyValueFilters(SearchKey.VALUE, positiveExistSearchCriteria, f2.VALUE, where1, true);
 					where1 = applyValueFilters(SearchKey.LANGUAGE, positiveExistSearchCriteria, w2.LANG, where1, false);
 					where1 = applyLexemeSourceRefFilter(positiveExistSearchCriteria, l2.ID, where1);
@@ -620,6 +655,9 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where = applyDomainFilters(searchCriteria, l1, m1, where1, where);
+
+				where1 = applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, where1);
+				where = where.andExists(DSL.select(m1.ID).from(l1, m1).where(where1));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
