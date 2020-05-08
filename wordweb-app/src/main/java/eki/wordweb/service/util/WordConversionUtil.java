@@ -206,13 +206,16 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 	public void composeCommon(Word word, List<Lexeme> lexemes) {
 
-		List<Classifier> summarisedPoses = new ArrayList<>();
+		List<Classifier> summarisedPoses = lexemes.stream()
+				.filter(lexeme -> CollectionUtils.isNotEmpty(lexeme.getPoses()))
+				.map(Lexeme::getPoses)
+				.flatMap(List::stream)
+				.distinct()
+				.collect(Collectors.toList());
+		boolean isSinglePos = CollectionUtils.size(summarisedPoses) == 1;
 		for (Lexeme lexeme : lexemes) {
-			if (CollectionUtils.isNotEmpty(lexeme.getPoses())) {
-				summarisedPoses.addAll(lexeme.getPoses());
-			}
 			boolean isShowSection1 = DatasetType.TERM.equals(lexeme.getDatasetType())
-					|| CollectionUtils.isNotEmpty(lexeme.getPoses())
+					|| (CollectionUtils.isNotEmpty(lexeme.getPoses()) && !isSinglePos)
 					|| CollectionUtils.isNotEmpty(lexeme.getGrammars());
 			boolean isShowSection2 = CollectionUtils.isNotEmpty(lexeme.getRelatedLexemes())
 					|| CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())
@@ -228,10 +231,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			lexeme.setShowSection2(isShowSection2);
 			lexeme.setShowSection3(isShowSection3);
 		}
-		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
-		boolean isSinglePos = CollectionUtils.size(summarisedPoses) == 1;
 		word.setSummarisedPoses(summarisedPoses);
 		word.setSinglePos(isSinglePos);
 	}
-
 }
