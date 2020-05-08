@@ -213,28 +213,10 @@ function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 
 	dlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
-		let form = dlg.find('form');
 		if (wordValueEditFld.html()) {
 			wordValueEditFld.removeClass('is-invalid');
 			wordValueInput.val(wordValueEditFld.html());
-
-			if (checkRequiredFields(form)) {
-				let successCallbackName = dlg.attr("data-callback");
-				let	successCallbackFunc = () => eval(successCallbackName);
-
-				$.ajax({
-					url: form.attr('action'),
-					data: form.serialize(),
-					method: 'POST',
-				}).done(function() {
-					dlg.modal('hide');
-					successCallbackFunc();
-				}).fail(function(data) {
-					dlg.modal('hide');
-					console.log(data);
-					openAlertDlg('Andmete muutmine ebaõnnestus.');
-				});
-			}
+			submitDialog(e, dlg, 'Andmete muutmine ebaõnnestus.');
 		} else {
 			wordValueEditFld.addClass('is-invalid');
 		}

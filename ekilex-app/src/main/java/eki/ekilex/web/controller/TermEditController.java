@@ -32,6 +32,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.WordLexemeMeaningBasicDetails;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LookupService;
@@ -165,17 +166,17 @@ public class TermEditController extends AbstractPageController {
 
 	@PostMapping(TERM_CREATE_WORD_URI)
 	public String createWord(
-			@RequestParam("wordValue") String wordValue,
-			@RequestParam("language") String language,
-			@RequestParam("morphCode") String morphCode,
-			@RequestParam("meaningId") Long meaningId,
+			WordLexemeMeaningBasicDetails wordDetails,
 			@RequestParam("backUri") String backUri,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
+		String wordValue = wordDetails.getWordValue();
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
-
+			String language = wordDetails.getLanguage();
+			String morphCode = wordDetails.getMorphCode();
+			Long meaningId = wordDetails.getMeaningId();
 			Long userId = userService.getAuthenticatedUser().getId();
 			String dataset = sessionBean.getUserRole().getDatasetCode();
 			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
@@ -197,8 +198,8 @@ public class TermEditController extends AbstractPageController {
 					attributes.addFlashAttribute("backUri", backUri);
 					return "redirect:" + MEANING_REL_SELECT_URI;
 				} else {
-					cudService.createWord(meaningId, wordValue, language, morphCode, dataset);
-				}				
+					cudService.createWord(wordDetails);
+				}
 			}
 
 			if (!userPrefDatasetCodes.contains(dataset)) {

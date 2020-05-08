@@ -21,19 +21,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordLexemeMeaningBasicDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
@@ -64,9 +65,6 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@Autowired
 	private CudService cudService;
-
-	@Autowired
-	private TextDecorationService textDecorationService;
 
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
 	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
@@ -240,28 +238,27 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@PostMapping(LEX_CREATE_WORD_URI)
 	public String createWord(
-			@RequestParam("wordValue") String wordValue,
-			@RequestParam("language") String language,
-			@RequestParam("morphCode") String morphCode,
-			@RequestParam("meaningId") Long meaningId,
+			WordLexemeMeaningBasicDetails wordDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
-		String dataset = sessionBean.getUserRole().getDatasetCode();
+		String wordValue = wordDetails.getWordValue();
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
+			String language = wordDetails.getLanguage();
+			String morphCode = wordDetails.getMorphCode();
+			String dataset = sessionBean.getUserRole().getDatasetCode();
+			List<String> allDatasets = commonDataService.getDatasetCodes();
+
+			wordDetails.setDataset(dataset);
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
-			List<String> allDatasets = commonDataService.getDatasetCodes();
+
 			WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true, DEFAULT_OFFSET);
 			if (words.getTotalCount() == 0) {
-				cudService.createWord(meaningId, wordValue, language, morphCode, dataset);
+				cudService.createWord(wordDetails);
 			} else {
-				attributes.addFlashAttribute("dataset", dataset);
-				attributes.addFlashAttribute("wordValue", wordValue);
-				attributes.addFlashAttribute("language", language);
-				attributes.addFlashAttribute("morphCode", morphCode);
-				attributes.addFlashAttribute("meaningId", meaningId);
+				attributes.addFlashAttribute("wordDetails", wordDetails);
 				return "redirect:" + WORD_SELECT_URI;
 			}
 
@@ -277,17 +274,15 @@ public class LexEditController extends AbstractPageController implements SystemC
 	}
 
 	@PostMapping(CREATE_HOMONYM_URI)
-	public String createWord(
-			@RequestParam("dataset") String dataset,
-			@RequestParam("wordValue") String wordValue,
-			@RequestParam("language") String language,
-			@RequestParam("morphCode") String morphCode,
-			@RequestParam("meaningId") Long meaningId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+		public String createWord(
+				WordLexemeMeaningBasicDetails wordDetails,
+				@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		String wordValue = wordDetails.getWordValue();
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
-			cudService.createWord(meaningId, wordValue, language, morphCode, dataset);
+			String dataset = wordDetails.getDataset();
+			cudService.createWord(wordDetails);
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				Long userId = userService.getAuthenticatedUser().getId();
@@ -301,30 +296,21 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@PostMapping(UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI)
 	@ResponseBody
-	public String updateWordDataAndLexemeWeight(
-			@RequestParam("lexemeId") Long lexemeId,
-			@RequestParam("wordId") Long wordId,
-			@RequestParam("wordValuePrese") String wordValuePrese,
-			@RequestParam("morphCode") String morphCode,
-			@RequestParam("lexemeWeight") String lexemeWeight) {
+	public String updateWordDataAndLexemeWeight(@RequestBody WordLexemeMeaningBasicDetails wordDataAndLexemeWeight) {
 
-		wordValuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(wordValuePrese);
-		cudService.updateWordValue(wordId, wordValuePrese);
-		cudService.updateWordMorphCode(wordId, morphCode);
-		cudService.updateLexemeWeight(lexemeId, lexemeWeight);
+		cudService.updateWordDataAndLexemeWeight(wordDataAndLexemeWeight);
 		return RESPONSE_OK_VER2;
 	}
 
 	@GetMapping(WORD_SELECT_URI)
 	public String meaningWordCandidates(
-			@ModelAttribute("dataset") String dataset,
-			@ModelAttribute("wordValue") String wordValue,
-			@ModelAttribute("language") String language,
-			@ModelAttribute("morphCode") String morphCode,
-			@ModelAttribute("meaningId") Long meaningId,
+			@ModelAttribute("wordDetails") WordLexemeMeaningBasicDetails wordDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
+		Long meaningId = wordDetails.getMeaningId();
+		String wordValue = wordDetails.getWordValue();
+		String language = wordDetails.getLanguage();
 		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language);
 		model.addAttribute("meaningWordCandidates", meaningWordCandidates);
 
