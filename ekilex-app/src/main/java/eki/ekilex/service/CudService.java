@@ -27,6 +27,7 @@ import eki.ekilex.data.LogData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordLexemeMeaningBasicDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CudDbService;
@@ -108,13 +109,6 @@ public class CudService extends AbstractService {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.LANG, wordId, langCode);
 		createLifecycleLog(logData);
 		cudDbService.updateWordLang(wordId, langCode);
-	}
-
-	@Transactional
-	public void updateWordMorphCode(Long wordId, String morphCode) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.MORPH_CODE, wordId, morphCode);
-		createLifecycleLog(logData);
-		cudDbService.updateWordMorphCode(wordId, morphCode);
 	}
 
 	@Transactional
@@ -418,21 +412,47 @@ public class CudService extends AbstractService {
 		cudDbService.updateLexemeWeight(lexemeId, lexemeWeight);
 	}
 
+	@Transactional
+	public void updateWordDataAndLexemeWeight(WordLexemeMeaningBasicDetails wordDataAndLexemeWeight) {
+
+		Long wordId = wordDataAndLexemeWeight.getWordId();
+		Long lexemeId = wordDataAndLexemeWeight.getLexemeId();
+		String morphCode = wordDataAndLexemeWeight.getMorphCode();
+		String lexemeWeight = wordDataAndLexemeWeight.getLexemeWeight();
+		String wordValuePrese = wordDataAndLexemeWeight.getWordValuePrese();
+		wordValuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(wordValuePrese);
+
+		updateWordValue(wordId, wordValuePrese);
+		updateLexemeWeight(lexemeId, lexemeWeight);
+		updateWordMorphCode(wordId, morphCode);
+	}
+
+	private void updateWordMorphCode(Long wordId, String morphCode) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.MORPH_CODE, wordId, morphCode);
+		createLifecycleLog(logData);
+		cudDbService.updateWordMorphCode(wordId, morphCode);
+	}
+
 	// --- CREATE ---
 
 	@Transactional
-	public void createWord(Long meaningId, String valuePrese, String language, String morphCode, String datasetCode) {
+	public void createWord(WordLexemeMeaningBasicDetails wordDetails) {
 
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = wordDetails.getWordValue();
+		String language = wordDetails.getLanguage();
+		String morphCode = wordDetails.getMorphCode();
+		String dataset = wordDetails.getDataset();
+		Long meaningId = wordDetails.getMeaningId();
+		value = textDecorationService.cleanEkiElementMarkup(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, meaningId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(value, value, valueAsWord, language, morphCode, dataset, meaningId);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 
-		LogData wordLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
+		LogData wordLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, value);
 		createLifecycleLog(wordLogData);
-		LogData lexemeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
+		LogData lexemeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, dataset);
 		createLifecycleLog(lexemeLogData);
 	}
 

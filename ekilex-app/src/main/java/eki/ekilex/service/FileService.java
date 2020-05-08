@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,7 @@ public class FileService {
 		try (Stream<Path> dirStream = Files.find(
 				Paths.get(fileRepositoryPath),
 				4,
-				(p, a) -> p.getFileName().toString().startsWith(fileName))) {
+				(path, attr) -> attr.isRegularFile() && StringUtils.equals(path.getFileName().toString(), fileName))) {
 			Optional<Path> fileToServe = dirStream.findFirst();
 			if (fileToServe.isPresent()) {
 				filePath = fileToServe.get();

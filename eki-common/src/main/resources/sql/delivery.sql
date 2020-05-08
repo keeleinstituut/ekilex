@@ -21,6 +21,11 @@ where l.dataset_code = 'sss'
                and ff.type = 'USAGE'
                and ff.complexity in ('SIMPLE', 'SIMPLE1'));
 
+-- konfifailis on määratud failikataloog (file.repository.path), kus asub termeki pildifailide alamkataloog
+-- lisada kõikidele termeki kataloogis asuvatele failidele laiend '.jpg', selleks võib kasutada järgnevaid käske:
+-- 1. cd [termeki pildifailide kataloog] - näiteks: cd /var/apps/file_storage/termeki
+-- 2. for f in *; do mv "$f" "$f.jpg"; done
+
 update freeform
 set value_prese = value_prese || '.jpg'
 where type = 'IMAGE_FILE'
@@ -45,5 +50,64 @@ analyze dataset_permission;
 create type type_classifier as (name varchar(100), code varchar(100), value text);
 
 alter sequence form_order_by_seq owned by form.order_by;
+
+-- vene ilmikute detailsuse 1. muudatus
+update lexeme l
+set complexity = 'SIMPLE'
+where l.dataset_code = 'sss'
+  and l.type = 'PRIMARY'
+  and l.complexity like 'DETAIL%'
+  and exists(select w.id
+             from word w
+             where w.id = l.word_id
+               and w.lang = 'rus')
+  and exists(select l2.id
+             from lexeme l2
+             where l2.meaning_id = l.meaning_id
+               and l2.dataset_code = 'sss'
+               and l2.type = 'PRIMARY'
+               and l2.complexity in ('SIMPLE', 'SIMPLE1')
+               and exists(select w2.id
+                          from word w2
+                          where w2.id = l2.word_id
+                            and w2.lang = 'est'));
+
+-- vene ilmikute detailsuse 2. muudatus
+update lexeme l
+set complexity = 'DETAIL'
+where l.dataset_code = 'sss'
+  and l.type = 'PRIMARY'
+  and l.complexity like 'SIMPLE%'
+  and exists(select w.id
+             from word w
+             where w.id = l.word_id
+               and w.lang = 'rus')
+  and not exists(select l2.id
+                 from lexeme l2
+                 where l2.meaning_id = l.meaning_id
+                   and l2.dataset_code = 'sss'
+                   and l2.type = 'PRIMARY'
+                   and l2.complexity in ('SIMPLE', 'SIMPLE1')
+                   and exists(select w2.id
+                              from word w2
+                              where w2.id = l2.word_id
+                                and w2.lang = 'est'));
+
+-- qq definitsioonide kustutamine
+delete
+from definition d using definition_dataset dd
+where d.complexity = 'SIMPLE2'
+  and d.lang = 'est'
+  and dd.definition_id = d.id
+  and dd.dataset_code = 'sss'
+  and exists(select d2.id
+             from definition d2,
+                  definition_dataset dd2
+             where d2.meaning_id = d.meaning_id
+               and d2.id != d.id
+               and d2.complexity != 'SIMPLE2'
+               and d2.lang = 'est'
+               and dd2.definition_id = d2.id
+               and dd2.dataset_code = 'sss');
 
 -- käivitada korduvate tähendusenumbrite korrigeerija (prodsrvsortlexlevels)
