@@ -21,11 +21,6 @@ where l.dataset_code = 'sss'
                and ff.type = 'USAGE'
                and ff.complexity in ('SIMPLE', 'SIMPLE1'));
 
--- konfifailis on määratud failikataloog (file.repository.path), kus asub termeki pildifailide alamkataloog
--- lisada kõikidele termeki kataloogis asuvatele failidele laiend '.jpg', selleks võib kasutada järgnevaid käske:
--- 1. cd [termeki pildifailide kataloog] - näiteks: cd /var/apps/file_storage/termeki
--- 2. for f in *; do mv "$f" "$f.jpg"; done
-
 update freeform
 set value_prese = value_prese || '.jpg'
 where type = 'IMAGE_FILE'
@@ -109,5 +104,3 @@ where d.complexity = 'SIMPLE2'
                and d2.lang = 'est'
                and dd2.definition_id = d2.id
                and dd2.dataset_code = 'sss');
-
--- käivitada korduvate tähendusenumbrite korrigeerija (prodsrvsortlexlevels)

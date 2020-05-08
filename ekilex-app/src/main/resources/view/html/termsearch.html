@@ -899,7 +899,7 @@
                       </td>
                       <td class="pr-3 invisible-buttons">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="meaning-details-btn">
-                          <span th:text="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                          <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-id="${relation.id}"
