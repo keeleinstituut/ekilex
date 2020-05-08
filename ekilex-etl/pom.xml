@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.17-SNAPSHOT</version>
+		<version>1.18-SNAPSHOT</version>
 	</parent>
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>ekilex-etl</artifactId>
-	<version>1.17-SNAPSHOT</version>
+	<version>1.18-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Ekilex Extract-Transform-Load</name>
