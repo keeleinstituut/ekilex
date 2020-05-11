@@ -725,7 +725,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 		Lexeme lfd = LEXEME.as("lfd");
 		Condition dsFiltWhere = applyDatasetRestrictions(lfd, searchDatasetsRestriction, null);
-		Condition where = DSL.exists(DSL.select(lfd.ID).from(lfd).where(lfd.WORD_ID.eq(word.ID).and(dsFiltWhere)));
+		Condition where = DSL.exists(DSL.select(lfd.ID).from(lfd).where(lfd.WORD_ID.eq(word.ID).and(lfd.TYPE.eq(LEXEME_TYPE_PRIMARY)).and(dsFiltWhere)));
 		return where;
 	}
 
