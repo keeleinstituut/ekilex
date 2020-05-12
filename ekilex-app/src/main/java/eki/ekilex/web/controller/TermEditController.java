@@ -177,12 +177,11 @@ public class TermEditController extends AbstractPageController {
 			String language = wordDetails.getLanguage();
 			String morphCode = wordDetails.getMorphCode();
 			Long meaningId = wordDetails.getMeaningId();
+			String dataset = wordDetails.getDataset();
 			Long userId = userService.getAuthenticatedUser().getId();
-			String dataset = sessionBean.getUserRole().getDatasetCode();
 			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
-			wordDetails.setDataset(dataset);
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
 
