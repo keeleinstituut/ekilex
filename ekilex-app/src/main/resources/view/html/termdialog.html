@@ -1040,6 +1040,7 @@
           <div class="modal-body">
             <input type="hidden" name="meaningId">
             <input type="hidden" name="backUri" th:value="${searchUri}">
+            <input type="hidden" name="dataset" th:value="${sessionBean.userRole.datasetCode}">
             <div class="form-group row">
               <div class="col-md-12">
                 <input class="form-control required-field" name="wordValue" placeholder="uus termin">

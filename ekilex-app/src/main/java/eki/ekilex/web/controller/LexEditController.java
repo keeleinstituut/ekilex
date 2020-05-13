@@ -247,10 +247,9 @@ public class LexEditController extends AbstractPageController implements SystemC
 		if (StringUtils.isNotBlank(wordValue)) {
 			String language = wordDetails.getLanguage();
 			String morphCode = wordDetails.getMorphCode();
-			String dataset = sessionBean.getUserRole().getDatasetCode();
+			String dataset = wordDetails.getDataset();
 			List<String> allDatasets = commonDataService.getDatasetCodes();
 
-			wordDetails.setDataset(dataset);
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
 
