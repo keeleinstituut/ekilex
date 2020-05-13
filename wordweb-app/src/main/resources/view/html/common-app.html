@@ -28,6 +28,13 @@
 		'fb_service_error' : /*[[#{label.fb.missing.sevice}]]*/'Tagasiside teenus ei ole seadistatud.'
 	}
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134441495-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-134441495-1');
+</script>
 </head>
 <body>
   <!-- Default favicon -->
@@ -239,8 +246,8 @@
           <div name="responseDiv" class="modal-body" hidden>
             <div class="form-row">
               <div class="form-group col-12">
-                <div class="has-error mt-2" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-                <label class="positive-feedback" name="ok_message"></label>
+                <div class="has-error mt-2" name="error_message" hidden th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+                <label class="positive-feedback" hidden name="ok_message"></label>
               </div>
             </div>
             <div class="form-group">
@@ -330,8 +337,6 @@
     <form id="newWordForm" class="needs-validation" novalidate>
       <div class="form-row">
         <div class="form-group col-12">
-          <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
-          <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andmed on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
           <input type="hidden" name="feedbackType" value="new_word">
           <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
         </div>
@@ -390,6 +395,8 @@
       <div class="form-group">
         <div class="col-12 p-0 mt-2">
           <div class="text-right">
+            <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
+            <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andmed on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
             <button type="button" class="btn btn-outline-success mr-3" data-dismiss="modal" th:text="#{button.fb.cancel}">Tühistan</button>
             <button type="button" class="btn btn-success" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}" disabled>Lisan</button>
           </div>
@@ -401,8 +408,6 @@
     <form id="commentForm" class="needs-validation" novalidate>
       <div class="form-row">
         <div class="form-group col-12">
-          <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
-          <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
           <input type="hidden" name="feedbackType" value="comment">
           <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
         </div>
@@ -451,6 +456,9 @@
       <div class="form-group">
         <div class="col-12 p-0 mt-2">
           <div class="text-right">
+            <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
+            <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andmed on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+
             <button type="button" class="btn btn-outline-success mr-3" data-dismiss="modal" th:text="#{button.fb.cancel}">Tühistan</button>
             <button type="button" class="btn btn-success" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}" disabled>Lisan</button>
           </div>
