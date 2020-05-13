@@ -84,7 +84,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
-		lexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, userProfile, isFullData));
+		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
+		lexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, userProfile, isFullDataCorrection));
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
