@@ -27,20 +27,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.WordLexemeMeaningBasicDetails;
+import eki.ekilex.data.WordLexemeMeaningDetails;
+import eki.ekilex.data.WordMeaningRelationsDetails;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -166,10 +167,12 @@ public class TermEditController extends AbstractPageController {
 
 	@PostMapping(TERM_CREATE_WORD_URI)
 	public String createWord(
-			WordLexemeMeaningBasicDetails wordDetails,
+			WordLexemeMeaningDetails wordDetails,
 			@RequestParam("backUri") String backUri,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
+
+		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		String wordValue = wordDetails.getWordValue();
 		String searchUri = "";
@@ -228,13 +231,15 @@ public class TermEditController extends AbstractPageController {
 	@PostMapping(CREATE_WORD_AND_MEANING_AND_REL_URI)
 	@ResponseBody
 	public String createWordAndMeaningAndRelations(
-			@RequestBody CreateWordAndMeaningAndRelationsData createWordAndMeaningAndRelationsData,
+			@RequestBody WordMeaningRelationsDetails wordMeaningRelationsDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws JsonProcessingException {
 
+		valueUtil.trimAndCleanAndRemoveHtml(wordMeaningRelationsDetails);
+
 		Map<String, String> response = new HashMap<>();
-		String wordValue = createWordAndMeaningAndRelationsData.getWordValue();
-		Long meaningId = createWordAndMeaningAndRelationsData.getMeaningId();
-		String backUri = createWordAndMeaningAndRelationsData.getBackUri();
+		String wordValue = wordMeaningRelationsDetails.getWordValue();
+		Long meaningId = wordMeaningRelationsDetails.getMeaningId();
+		String backUri = wordMeaningRelationsDetails.getBackUri();
 		String searchUri;
 		if (StringUtils.isNotBlank(wordValue)) {
 
@@ -244,11 +249,11 @@ public class TermEditController extends AbstractPageController {
 			String userName = user.getName();
 			List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 
-			createWordAndMeaningAndRelationsData.setDataset(dataset);
-			createWordAndMeaningAndRelationsData.setUserName(userName);
-			createWordAndMeaningAndRelationsData.setUserPermDatasetCodes(userPermDatasetCodes);
+			wordMeaningRelationsDetails.setDataset(dataset);
+			wordMeaningRelationsDetails.setUserName(userName);
+			wordMeaningRelationsDetails.setUserPermDatasetCodes(userPermDatasetCodes);
 
-			compositionService.createWordAndMeaningAndRelations(createWordAndMeaningAndRelationsData);
+			compositionService.createWordAndMeaningAndRelations(wordMeaningRelationsDetails);
 
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {

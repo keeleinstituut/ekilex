@@ -253,7 +253,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			}
 			Element metadataElement = (Element) metadataNode;
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
-			lexemeMetadata.displayForm = cleanEkiEntityMarkup(metadataElement.getTextTrim());
+			lexemeMetadata.displayForm = removeEkiEntityMarkup(metadataElement.getTextTrim());
 			lexemeMetadata.word = cleanUpWord(lexemeMetadata.displayForm);
 			lexemeMetadata.headword = headword;
 			String lexemeLevel1AttrValue = metadataElement.attributeValue(lexemeLevel1Attr);
@@ -347,7 +347,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			String mappedWordTypeCode = wordTypes.get(wordNode.attributeValue(wordTypeAttr));
 			wordData.wordTypeCodes.add(mappedWordTypeCode);
 		}
-		String wordDisplayForm = cleanEkiEntityMarkup(wordNode.getTextTrim());
+		String wordDisplayForm = removeEkiEntityMarkup(wordNode.getTextTrim());
 		String wordValue = cleanUpWord(wordDisplayForm);
 		wordData.value = wordValue;
 		wordData.language = dataLang;
@@ -411,7 +411,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		for (Node valueNode : valueNodes) {
 			if (!isRestricted(valueNode)) {
 				String value = ((Element) valueNode).getTextTrim();
-				value = cleanEkiEntityMarkup(value);
+				value = removeEkiEntityMarkup(value);
 				values.add(value);
 			}
 		}
@@ -442,7 +442,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected String cleanUpWord(String value) {
-		String cleanedWord = cleanEkiEntityMarkup(value);
+		String cleanedWord = removeEkiEntityMarkup(value);
 		cleanedWord = unifyAfixoids(cleanedWord);
 		cleanedWord = replaceChars(cleanedWord, formStrCleanupChars, "");
 		return cleanedWord;

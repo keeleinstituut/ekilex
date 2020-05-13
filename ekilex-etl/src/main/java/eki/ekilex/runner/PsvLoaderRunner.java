@@ -1444,7 +1444,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private String nodeCleanValue(Node node) {
 		String stringValue = node == null ? null : ((Element)node).getTextTrim();
-		return cleanEkiEntityMarkup(stringValue);
+		return removeEkiEntityMarkup(stringValue);
 	}
 
 	private String nodeOriginalValue(Node node) {

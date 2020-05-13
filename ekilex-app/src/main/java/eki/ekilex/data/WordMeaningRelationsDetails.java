@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class CreateWordAndMeaningAndRelationsData extends AbstractDataObject {
+public class WordMeaningRelationsDetails extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

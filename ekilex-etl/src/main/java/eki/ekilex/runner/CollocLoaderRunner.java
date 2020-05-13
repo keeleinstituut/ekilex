@@ -285,7 +285,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				wordHomonymNum = Integer.valueOf(wordHomonymNumAttr.getValue());
 			}
 			word = wordNode.getTextTrim();
-			word = cleanEkiEntityMarkup(word);
+			word = removeEkiEntityMarkup(word);
 			wordObj = wordMap.get(word).get(wordHomonymNum);
 			Long wordId = wordObj.getId();
 			String wordPosCode = wordPosNode.getTextTrim();
@@ -456,7 +456,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				wordHomonymNum = Integer.valueOf(wordHomonymNumAttr.getValue());
 			}
 			word = wordNode.getTextTrim();
-			word = cleanEkiEntityMarkup(word);
+			word = removeEkiEntityMarkup(word);
 			wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(displayMorphExp);
 			if (wordDisplayMorphNode == null) {
 				wordDisplayMorph = null;
@@ -542,7 +542,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Node> lexemeGrammarNodes = meaningBlockNode.selectNodes(lexemeGrammarExp);
 		for (Node lexemeGrammarNode : lexemeGrammarNodes) {
 			String grammar = ((Element) lexemeGrammarNode).getTextTrim();
-			grammar = cleanEkiEntityMarkup(grammar);
+			grammar = removeEkiEntityMarkup(grammar);
 			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammar, dataLang);
 		}
 	}
@@ -564,7 +564,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				if (ArrayUtils.contains(collocMemberNames, collocMemberName)) {
 
 					String form = collocMemberNode.getTextTrim();
-					form = cleanEkiEntityMarkup(form);
+					form = removeEkiEntityMarkup(form);
 					String conjunct = collocMemberNode.attributeValue(collocConjunctAttr);
 					String lemmaDataStr = collocMemberNode.attributeValue(lemmaDataAttr);
 					conjunct = StringUtils.replace(conjunct, "v", "või");
@@ -635,7 +635,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<String> collocUsages = new ArrayList<>();
 		for (Node collocUsageNode : collocUsageNodes) {
 			String collocUsage = ((Element) collocUsageNode).getTextTrim();
-			collocUsage = cleanEkiEntityMarkup(collocUsage);
+			collocUsage = removeEkiEntityMarkup(collocUsage);
 			collocUsages.add(collocUsage);
 		}
 		return collocUsages;

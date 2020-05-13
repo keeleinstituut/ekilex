@@ -30,6 +30,7 @@ import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.PermDataUtil;
+import eki.ekilex.web.util.ValueUtil;
 
 public abstract class AbstractPageController implements WebConstant {
 
@@ -47,6 +48,9 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@Autowired
 	protected PermDataUtil permDataUtil;
+
+	@Autowired
+	protected ValueUtil valueUtil;
 
 	protected SessionBean getSessionBean(Model model) {
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);

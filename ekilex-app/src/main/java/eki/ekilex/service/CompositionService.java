@@ -19,7 +19,7 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.service.TextDecorationService;
-import eki.ekilex.data.CreateWordAndMeaningAndRelationsData;
+import eki.ekilex.data.WordMeaningRelationsDetails;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.SimpleWord;
@@ -59,21 +59,21 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	private TextDecorationService textDecorationService;
 
 	@Transactional
-	public void createWordAndMeaningAndRelations(CreateWordAndMeaningAndRelationsData createWordAndMeaningAndRelationsData) {
+	public void createWordAndMeaningAndRelations(WordMeaningRelationsDetails wordMeaningRelationsDetails) {
 
-		String wordValue = createWordAndMeaningAndRelationsData.getWordValue();
-		String language = createWordAndMeaningAndRelationsData.getLanguage();
-		String morphCode = createWordAndMeaningAndRelationsData.getMorphCode();
-		Long meaningId = createWordAndMeaningAndRelationsData.getMeaningId();
-		Long relatedMeaningId = createWordAndMeaningAndRelationsData.getRelatedMeaningId();
-		String dataset = createWordAndMeaningAndRelationsData.getDataset();
-		boolean importMeaningData = createWordAndMeaningAndRelationsData.isImportMeaningData();
-		boolean createRelation = createWordAndMeaningAndRelationsData.isCreateRelation();
+		String wordValue = wordMeaningRelationsDetails.getWordValue();
+		String language = wordMeaningRelationsDetails.getLanguage();
+		String morphCode = wordMeaningRelationsDetails.getMorphCode();
+		Long meaningId = wordMeaningRelationsDetails.getMeaningId();
+		Long relatedMeaningId = wordMeaningRelationsDetails.getRelatedMeaningId();
+		String dataset = wordMeaningRelationsDetails.getDataset();
+		boolean importMeaningData = wordMeaningRelationsDetails.isImportMeaningData();
+		boolean createRelation = wordMeaningRelationsDetails.isCreateRelation();
 
 		if (meaningId == null) {
 			if (importMeaningData) {
-				String userName = createWordAndMeaningAndRelationsData.getUserName();
-				List<String> userPermDatasetCodes = createWordAndMeaningAndRelationsData.getUserPermDatasetCodes();
+				String userName = wordMeaningRelationsDetails.getUserName();
+				List<String> userPermDatasetCodes = wordMeaningRelationsDetails.getUserPermDatasetCodes();
 				Long duplicatedMeaningId = duplicateMeaningWithLexemesAndUpdateDataset(relatedMeaningId, userName, dataset, userPermDatasetCodes);
 				meaningId = duplicatedMeaningId;
 			} else {
@@ -94,8 +94,8 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 
 		if (createRelation) {
-			String relationType = createWordAndMeaningAndRelationsData.getRelationType();
-			String oppositeRelationType = createWordAndMeaningAndRelationsData.getOppositeRelationType();
+			String relationType = wordMeaningRelationsDetails.getRelationType();
+			String oppositeRelationType = wordMeaningRelationsDetails.getOppositeRelationType();
 			Long relationId = cudDbService.createMeaningRelation(meaningId, relatedMeaningId, relationType);
 			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
 			createLifecycleLog(relationLogData);

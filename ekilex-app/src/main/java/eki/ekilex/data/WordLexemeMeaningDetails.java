@@ -2,7 +2,7 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordLexemeMeaningBasicDetails extends AbstractDataObject {
+public class WordLexemeMeaningDetails extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

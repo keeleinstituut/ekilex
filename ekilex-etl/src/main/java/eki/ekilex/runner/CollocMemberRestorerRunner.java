@@ -236,7 +236,7 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 			}
 			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 			word = wordNode.getTextTrim();
-			word = textDecorationService.cleanEkiEntityMarkup(word);
+			word = textDecorationService.removeEkiEntityMarkup(word);
 
 			String fullCollocGroupExp = meaningBlockExp + "/" + collocPosGroupExp + "/" + collocRelGroupExp + "/" + collocGroupExp;
 			collocGroupNodes = contentNode.selectNodes(fullCollocGroupExp);
@@ -322,7 +322,7 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 				if (ArrayUtils.contains(collocMemberNames, collocMemberName)) {
 
 					String form = collocMemberNode.getTextTrim();
-					form = textDecorationService.cleanEkiEntityMarkup(form);
+					form = textDecorationService.removeEkiEntityMarkup(form);
 					String conjunct = collocMemberNode.attributeValue(collocConjunctAttr);
 					String lemmaDataStr = collocMemberNode.attributeValue(lemmaDataAttr);
 					conjunct = StringUtils.replace(conjunct, "v", "või");
@@ -1033,7 +1033,7 @@ public class CollocMemberRestorerRunner extends AbstractLoaderCommons {
 			}
 			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 			word = wordNode.getTextTrim();
-			word = textDecorationService.cleanEkiEntityMarkup(word);
+			word = textDecorationService.removeEkiEntityMarkup(word);
 
 			meaningBlockNodes = contentNode.selectNodes(meaningBlockExp);
 			collocPosGroups = new ArrayList<>();

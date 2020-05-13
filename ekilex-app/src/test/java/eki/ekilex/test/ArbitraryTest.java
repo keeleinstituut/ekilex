@@ -30,6 +30,7 @@ import eki.common.service.db.BasicDbService;
 import eki.ekilex.data.imp.Form;
 import eki.ekilex.data.imp.Paradigm;
 import eki.ekilex.data.imp.ParadigmWrapper;
+import eki.ekilex.web.util.ValueUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -40,12 +41,16 @@ public class ArbitraryTest implements GlobalConstant {
 	private static final String DUMMY_TABLE = "dummy_table";
 
 	@Autowired
+	private ValueUtil valueUtil;
+
+	@Autowired
 	private BasicDbService basicDbService;
 
 	@Before
 	public void beforeTest() throws Exception {
 
-		String createDummyTableSql = "create table " + DUMMY_TABLE + " ("
+		String createDummyTableSql =
+				"create table " + DUMMY_TABLE + " ("
 				+ "id bigserial primary key, "
 				+ "value_array text array null"
 				+ ");";
@@ -95,5 +100,15 @@ public class ArbitraryTest implements GlobalConstant {
 
 		assertEquals("Incorrect data count", 36, forms.size());
 
+	}
+
+	@Test
+	public void testTextCleanup() throws Exception {
+
+		String nastyUserInputText = "    aaa \rbbb   \t\n ccc двор<eki-stress>я</eki-stress>нское \n сосл<eki-stress>о</eki-stress>вие üõöä éĕćåá \t  \n  ";
+		String cleanUserInputText = valueUtil.trimAndClean(nastyUserInputText);
+		String expectedCleanResult = "aaa bbb ccc двор<eki-stress>я</eki-stress>нское сосл<eki-stress>о</eki-stress>вие üõöä éĕćåá";
+
+		assertEquals("Incoorect test result", expectedCleanResult, cleanUserInputText);
 	}
 }

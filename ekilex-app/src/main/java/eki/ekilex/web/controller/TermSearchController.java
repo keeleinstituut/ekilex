@@ -69,6 +69,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 			return "redirect:" + TERM_SEARCH_URI;
 		}
 
+		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtml(simpleSearchFilter);
 		formDataCleanup(TERM_SEARCH_PAGE, detailSearchFilter);
 
 		SessionBean sessionBean = getSessionBean(model);

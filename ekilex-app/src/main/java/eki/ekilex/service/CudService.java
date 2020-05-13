@@ -27,7 +27,7 @@ import eki.ekilex.data.LogData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordLexemeMeaningBasicDetails;
+import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CudDbService;
@@ -67,7 +67,7 @@ public class CudService extends AbstractService {
 		createLifecycleLog(logData);
 		SimpleWord simpleWord = cudDbService.getSimpleWord(wordId);
 		String lang = simpleWord.getLang();
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, lang);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
 		if (StringUtils.isNotEmpty(valueAsWord)) {
@@ -170,7 +170,7 @@ public class CudService extends AbstractService {
 	public void updateUsageValue(Long id, String valuePrese, Complexity complexity) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
 	}
 
@@ -178,7 +178,7 @@ public class CudService extends AbstractService {
 	public void updateUsageTranslationValue(Long id, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
@@ -186,7 +186,7 @@ public class CudService extends AbstractService {
 	public void updateUsageDefinitionValue(Long id, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
@@ -277,7 +277,7 @@ public class CudService extends AbstractService {
 	public void updateLexemePublicNote(Long id, String valuePrese, Complexity complexity) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PUBLIC_NOTE, id, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
 	}
 
@@ -301,7 +301,7 @@ public class CudService extends AbstractService {
 	public void updateDefinition(Long id, String valuePrese, Complexity complexity, String typeCode) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateDefinition(id, value, valuePrese, complexity, typeCode);
 	}
 
@@ -318,7 +318,7 @@ public class CudService extends AbstractService {
 	public void updateDefinitionPublicNote(Long id, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.PUBLIC_NOTE, id, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
@@ -343,7 +343,7 @@ public class CudService extends AbstractService {
 	public void updateMeaningLearnerComment(Long id, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
@@ -351,7 +351,7 @@ public class CudService extends AbstractService {
 	public void updateMeaningPublicNote(Long id, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.PUBLIC_NOTE, id, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
@@ -368,7 +368,7 @@ public class CudService extends AbstractService {
 		String recent = cudDbService.getImageTitle(imageId);
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, recent, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateImageTitle(imageId, value);
 	}
 
@@ -376,7 +376,7 @@ public class CudService extends AbstractService {
 	public void updateOdWordRecommendation(Long freeformId, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
 	}
 
@@ -384,7 +384,7 @@ public class CudService extends AbstractService {
 	public void updateOdLexemeRecommendation(Long freeformId, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
 	}
 
@@ -392,7 +392,7 @@ public class CudService extends AbstractService {
 	public void updateOdUsageDefinition(Long freeformId, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, freeformId, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
 	}
 
@@ -400,7 +400,7 @@ public class CudService extends AbstractService {
 	public void updateOdUsageAlternative(Long freeformId, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, freeformId, valuePrese);
 		createLifecycleLog(logData);
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
 	}
 
@@ -413,14 +413,13 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateWordDataAndLexemeWeight(WordLexemeMeaningBasicDetails wordDataAndLexemeWeight) {
+	public void updateWordDataAndLexemeWeight(WordLexemeMeaningDetails wordDataAndLexemeWeight) {
 
 		Long wordId = wordDataAndLexemeWeight.getWordId();
 		Long lexemeId = wordDataAndLexemeWeight.getLexemeId();
 		String morphCode = wordDataAndLexemeWeight.getMorphCode();
 		String lexemeWeight = wordDataAndLexemeWeight.getLexemeWeight();
 		String wordValuePrese = wordDataAndLexemeWeight.getWordValuePrese();
-		wordValuePrese = textDecorationService.cleanHtmlAndSkipEkiElementMarkup(wordValuePrese);
 
 		updateWordValue(wordId, wordValuePrese);
 		updateLexemeWeight(lexemeId, lexemeWeight);
@@ -436,14 +435,15 @@ public class CudService extends AbstractService {
 	// --- CREATE ---
 
 	@Transactional
-	public void createWord(WordLexemeMeaningBasicDetails wordDetails) {
+	public void createWord(WordLexemeMeaningDetails wordDetails) {
 
 		String value = wordDetails.getWordValue();
 		String language = wordDetails.getLanguage();
 		String morphCode = wordDetails.getMorphCode();
 		String dataset = wordDetails.getDataset();
 		Long meaningId = wordDetails.getMeaningId();
-		value = textDecorationService.cleanEkiElementMarkup(value);
+
+		value = textDecorationService.removeEkiElementMarkup(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(value, value, valueAsWord, language, morphCode, dataset, meaningId);
 
@@ -524,7 +524,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createUsage(Long lexemeId, String valuePrese, String languageCode, Complexity complexity) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long usageId = cudDbService.createUsage(lexemeId, value, valuePrese, languageCode, complexity);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
 		createLifecycleLog(logData);
@@ -532,7 +532,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createUsageTranslation(Long usageId, String valuePrese, String languageCode) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long usageTranslationId = cudDbService.createUsageTranslation(usageId, value, valuePrese, languageCode);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, valuePrese);
 		createLifecycleLog(logData);
@@ -540,7 +540,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createUsageDefinition(Long usageId, String valuePrese, String languageCode) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = cudDbService.createUsageDefinition(usageId, value, valuePrese, languageCode);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 		createLifecycleLog(logData);
@@ -590,7 +590,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createLexemePublicNote(Long lexemeId, String valuePrese, Complexity complexity) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long lexemeFreeformId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese, complexity);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.PUBLIC_NOTE, lexemeFreeformId, valuePrese);
 		createLifecycleLog(logData);
@@ -646,7 +646,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String languageCode) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long meaningFreeformId = cudDbService.createMeaningLearnerComment(meaningId, value, valuePrese, languageCode);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
 		createLifecycleLog(logData);
@@ -654,7 +654,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createMeaningPublicNote(Long meaningId, String valuePrese) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long meaningFreeformId = cudDbService.createMeaningPublicNote(meaningId, value, valuePrese);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.PUBLIC_NOTE, meaningFreeformId, valuePrese);
 		createLifecycleLog(logData);
@@ -670,7 +670,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createDefinition(Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
@@ -679,7 +679,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createDefinitionPublicNote(Long definitionId, String valuePrese) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long definitionFreeformId = cudDbService.createDefinitionPublicNote(definitionId, value, valuePrese);
 		LogData logData = new LogData(
 				LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.PUBLIC_NOTE, definitionFreeformId, valuePrese);
@@ -711,7 +711,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createImageTitle(Long imageId, String valuePrese) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.createImageTitle(imageId, value);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
 		createLifecycleLog(logData);
@@ -719,7 +719,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createOdWordRecommendation(Long wordId, String valuePrese) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long wordFreeformId = cudDbService.createOdWordRecommendation(wordId, value, valuePrese);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, wordFreeformId, valuePrese);
 		createLifecycleLog(logData);
@@ -727,7 +727,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createOdLexemeRecommendation(Long lexemeId, String valuePrese) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long lexemeFreeformId = cudDbService.createOdLexemeRecommendation(lexemeId, value, valuePrese);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, lexemeFreeformId, valuePrese);
 		createLifecycleLog(logData);
@@ -735,7 +735,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createOdUsageDefinition(Long usageId, String valuePrese) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long odUsageDefinitionId = cudDbService.createOdUsageDefinition(usageId, value, valuePrese);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, odUsageDefinitionId, valuePrese);
 		createLifecycleLog(logData);
@@ -743,7 +743,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createOdUsageAlternative(Long usageId, String valuePrese) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long odUsageAlternativeId = cudDbService.createOdUsageAlternative(usageId, value, valuePrese);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, odUsageAlternativeId, valuePrese);
 		createLifecycleLog(logData);
@@ -751,7 +751,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode, String weightStr) {
-		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();

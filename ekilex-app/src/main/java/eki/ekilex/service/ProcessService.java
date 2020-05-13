@@ -49,14 +49,14 @@ public class ProcessService implements GlobalConstant {
 	@Transactional
 	public void createMeaningProcessLog(Long meaningId, String userName, String commentPrese, String datasetCode) {
 
-		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
+		String comment = textDecorationService.removeEkiElementMarkup(commentPrese);
 		processDbService.createMeaningProcessLog(meaningId, userName, comment, commentPrese, datasetCode);
 	}
 
 	@Transactional
 	public void createWordProcessLog(Long wordId, String userName, String commentPrese, String datasetCode) {
 
-		String comment = textDecorationService.cleanEkiElementMarkup(commentPrese);
+		String comment = textDecorationService.removeEkiElementMarkup(commentPrese);
 		processDbService.createWordProcessLog(wordId, userName, comment, commentPrese, datasetCode);
 	}
 

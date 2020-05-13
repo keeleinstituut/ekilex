@@ -19,13 +19,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.service.SourceService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -43,6 +44,7 @@ public class SourceEditController extends AbstractPageController {
 
 		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
+		valueText = valueUtil.trimAndCleanAndRemoveHtml(valueText);
 		sourceService.updateSourceProperty(sourcePropertyId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
@@ -57,6 +59,7 @@ public class SourceEditController extends AbstractPageController {
 
 		logger.debug("Creating property for source with id: {}", sourceId);
 
+		valueText = valueUtil.trimAndCleanAndRemoveHtml(valueText);
 		sourceService.createSourceProperty(sourceId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
@@ -111,6 +114,7 @@ public class SourceEditController extends AbstractPageController {
 			for (int sourcePropertyIndex = 0; sourcePropertyIndex < sourcePropertyTypes.size(); sourcePropertyIndex++) {
 				FreeformType type = sourcePropertyTypes.get(sourcePropertyIndex);
 				String valueText = valueTexts.get(sourcePropertyIndex);
+				valueText = valueUtil.trimAndCleanAndRemoveHtml(valueText);
 				if (StringUtils.isNotBlank(valueText)) {
 					SourceProperty sourceProperty = new SourceProperty();
 					sourceProperty.setType(type);

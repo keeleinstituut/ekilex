@@ -910,7 +910,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> usageDefinitionValues = extractOriginalValues(usageGroupNode, usageDefinitionExp);
 				List<UsageTranslation> usageTranslations = extractUsageTranslations(usageGroupNode);
 				for (String usageOriginalValue : usageOriginalValues) {
-					String usageCleanValue = cleanEkiEntityMarkup(usageOriginalValue);
+					String usageCleanValue = removeEkiEntityMarkup(usageOriginalValue);
 					List<Map<String, Object>> wordInSs1 = getWordsInSs1(usageCleanValue);
 					if (isUsage(usageCleanValue, wordInSs1)) {
 						Usage usage = new Usage();
@@ -1084,12 +1084,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private String extractCleanValueSkipStress(Node node, String xpathExp) {
 		Element wordNode = (Element) node.selectSingleNode(xpathExp);
-		return wordNode == null || isRestricted(wordNode) ? null : cleanEkiEntityMarkupSkipStress(wordNode.getTextTrim());
+		return wordNode == null || isRestricted(wordNode) ? null : removeEkiEntityMarkupSkipStress(wordNode.getTextTrim());
 	}
 
 	private String extractCleanValue(Node node, String xpathExp) {
 		Element wordNode = (Element) node.selectSingleNode(xpathExp);
-		return wordNode == null || isRestricted(wordNode) ? null : cleanEkiEntityMarkup(wordNode.getTextTrim());
+		return wordNode == null || isRestricted(wordNode) ? null : removeEkiEntityMarkup(wordNode.getTextTrim());
 	}
 
 	private Float extractFloat(Node node, String xpathExp) {

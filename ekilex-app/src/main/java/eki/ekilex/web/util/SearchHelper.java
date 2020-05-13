@@ -46,10 +46,13 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 	private static final String CRITERION_CLASSIFIER = "cla";
 
 	@Autowired
-	protected UserService userService;
+	private UserService userService;
 
 	@Autowired
-	protected PermissionService permissionService;
+	private PermissionService permissionService;
+
+	@Autowired
+	private ValueUtil valueUtil;
 
 	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
 		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
@@ -249,7 +252,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				if (StringUtils.equals(CRITERION_VALUE, searchValueType)) {
 					String searchValueStr = uriParts[uriPartIndex + 4];
 					searchValueStr = decode(searchValueStr);
-					searchValueStr = StringUtils.trim(searchValueStr);
+					searchValueStr = valueUtil.trimAndCleanAndRemoveHtml(searchValueStr);
 					if (StringUtils.equals(EMPTY_VALUE, searchValueStr)) {
 						searchValueObj = null;
 					} else {

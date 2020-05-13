@@ -115,7 +115,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		allEkiMarkupDescriptors.add(textDecorationDescriptor);
 	}
 
-	public String cleanEkiElementMarkup(String originalText) {
+	public String removeEkiElementMarkup(String originalText) {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
 		}
@@ -123,7 +123,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		return cleanText;
 	}
 
-	public String cleanHtmlAndSkipEkiElementMarkup(String originalText) {
+	public String removeHtmlAndSkipEkiElementMarkup(String originalText) {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
 		}
@@ -131,15 +131,15 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		return cleanText;
 	}
 
-	public String cleanEkiEntityMarkup(String originalText) {
-		return cleanEkiEntityMarkup(originalText, false);
+	public String removeEkiEntityMarkup(String originalText) {
+		return removeEkiEntityMarkup(originalText, false);
 	}
 
-	public String cleanEkiEntityMarkupSkipStress(String originalText) {
-		return cleanEkiEntityMarkup(originalText, true);
+	public String removeEkiEntityMarkupSkipStress(String originalText) {
+		return removeEkiEntityMarkup(originalText, true);
 	}
 
-	private String cleanEkiEntityMarkup(String originalText, boolean skipStress) {
+	private String removeEkiEntityMarkup(String originalText, boolean skipStress) {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
 		}

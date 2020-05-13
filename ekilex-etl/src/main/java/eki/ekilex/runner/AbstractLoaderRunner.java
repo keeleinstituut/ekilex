@@ -174,16 +174,16 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		return word;
 	}
 
-	protected String cleanEkiElementMarkup(String originalText) {
-		return textDecorationService.cleanEkiElementMarkup(originalText);
+	protected String removeEkiElementMarkup(String originalText) {
+		return textDecorationService.removeEkiElementMarkup(originalText);
 	}
 
-	protected String cleanEkiEntityMarkup(String originalText) {
-		return textDecorationService.cleanEkiEntityMarkup(originalText);
+	protected String removeEkiEntityMarkup(String originalText) {
+		return textDecorationService.removeEkiEntityMarkup(originalText);
 	}
 
-	protected String cleanEkiEntityMarkupSkipStress(String originalText) {
-		return textDecorationService.cleanEkiEntityMarkupSkipStress(originalText);
+	protected String removeEkiEntityMarkupSkipStress(String originalText) {
+		return textDecorationService.removeEkiEntityMarkupSkipStress(originalText);
 	}
 
 	protected String convertEkiEntityMarkup(String originalText) {
@@ -571,7 +571,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		String audioFile = form.getAudioFile();
 		Long orderBy = form.getOrderBy();
 
-		String valueClean = cleanEkiEntityMarkup(value);
+		String valueClean = removeEkiEntityMarkup(value);
 		String valuePrese = convertEkiEntityMarkup(value);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -777,8 +777,8 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 	protected Long createOrSelectDefinition(Long meaningId, String value, String definitionTypeCode, String lang) throws Exception {
 
 		String dataset = getDataset();
-		String valueClean = cleanEkiEntityMarkup(value);
-		valueClean = cleanEkiElementMarkup(valueClean);
+		String valueClean = removeEkiEntityMarkup(value);
+		valueClean = removeEkiElementMarkup(valueClean);
 		Complexity complexity = getDefinitionComplexity();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -989,7 +989,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 			tableRowParamMap.put("event_on", eventOn);
 		}
 		if (StringUtils.isNotBlank(comment)) {
-			String commentClean = cleanEkiEntityMarkup(comment);
+			String commentClean = removeEkiEntityMarkup(comment);
 			String commentPrese = convertEkiEntityMarkup(comment);
 			tableRowParamMap.put("comment", commentClean);
 			tableRowParamMap.put("comment_prese", commentPrese);
@@ -1004,8 +1004,8 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 
 	protected void updateProcessLogText(Long processLogId, String comment) throws Exception {
 
-		String commentClean = cleanEkiEntityMarkup(comment);
-		commentClean = cleanEkiElementMarkup(commentClean);
+		String commentClean = removeEkiEntityMarkup(comment);
+		commentClean = removeEkiElementMarkup(commentClean);
 		String commentPrese = convertEkiEntityMarkup(comment);
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
@@ -1170,7 +1170,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		}
 		if (value != null) {
 			String valueStr = (String) value;
-			String valueClean = cleanEkiEntityMarkup(valueStr);
+			String valueClean = removeEkiEntityMarkup(valueStr);
 			String valuePrese = convertEkiEntityMarkup(valueStr);
 			tableRowParamMap.put("value_text", valueClean);
 			tableRowParamMap.put("value_prese", valuePrese);
@@ -1249,8 +1249,8 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 
 	protected void updateFreeformText(Long freeformId, String value) throws Exception {
 
-		String valueClean = cleanEkiEntityMarkup(value);
-		valueClean = cleanEkiElementMarkup(valueClean);
+		String valueClean = removeEkiEntityMarkup(value);
+		valueClean = removeEkiElementMarkup(valueClean);
 		String valuePrese = convertEkiEntityMarkup(value);
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();

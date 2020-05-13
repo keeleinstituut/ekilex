@@ -28,6 +28,7 @@ import eki.ekilex.service.ProcessService;
 import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.ValueUtil;
 
 @ConditionalOnWebApplication
 @Controller
@@ -44,6 +45,9 @@ public class ProcessController implements WebConstant {
 
 	@Autowired
 	private UserProfileService userProfileService;
+
+	@Autowired
+	private ValueUtil valueUtil;
 
 	@GetMapping("/meaningprocesslog:{meaningId}")
 	public String meaningProcessLogLink(@PathVariable("meaningId") Long meaningId, Model model) {
@@ -95,6 +99,7 @@ public class ProcessController implements WebConstant {
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 		Long meaningId = itemData.getId();
 		String commentPrese = itemData.getValue();
+		commentPrese = valueUtil.trimAndCleanAndRemoveHtml(commentPrese);
 		logger.debug("Creating process log for meaning \"{}\"", meaningId);
 		processService.createMeaningProcessLog(meaningId, userName, commentPrese, datasetCode);
 
@@ -111,6 +116,7 @@ public class ProcessController implements WebConstant {
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 		Long wordId = itemData.getId();
 		String commentPrese = itemData.getValue();
+		commentPrese = valueUtil.trimAndCleanAndRemoveHtml(commentPrese);
 		logger.debug("Creating process log for word \"{}\"", wordId);
 		processService.createWordProcessLog(wordId, userName, commentPrese, datasetCode);
 

@@ -28,13 +28,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordLexemeMeaningBasicDetails;
+import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
@@ -42,7 +44,6 @@ import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -238,9 +239,11 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@PostMapping(LEX_CREATE_WORD_URI)
 	public String createWord(
-			WordLexemeMeaningBasicDetails wordDetails,
+			WordLexemeMeaningDetails wordDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
+
+		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		String wordValue = wordDetails.getWordValue();
 		String searchUri = "";
@@ -273,9 +276,11 @@ public class LexEditController extends AbstractPageController implements SystemC
 	}
 
 	@PostMapping(CREATE_HOMONYM_URI)
-		public String createWord(
-				WordLexemeMeaningBasicDetails wordDetails,
-				@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String createWord(
+			WordLexemeMeaningDetails wordDetails,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		String wordValue = wordDetails.getWordValue();
 		String searchUri = "";
@@ -295,17 +300,21 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 	@PostMapping(UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI)
 	@ResponseBody
-	public String updateWordDataAndLexemeWeight(@RequestBody WordLexemeMeaningBasicDetails wordDataAndLexemeWeight) {
+	public String updateWordDataAndLexemeWeight(@RequestBody WordLexemeMeaningDetails wordDataAndLexemeWeight) {
 
+		valueUtil.trimAndCleanAndRemoveHtml(wordDataAndLexemeWeight);
 		cudService.updateWordDataAndLexemeWeight(wordDataAndLexemeWeight);
+
 		return RESPONSE_OK_VER2;
 	}
 
 	@GetMapping(WORD_SELECT_URI)
 	public String meaningWordCandidates(
-			@ModelAttribute("wordDetails") WordLexemeMeaningBasicDetails wordDetails,
+			@ModelAttribute("wordDetails") WordLexemeMeaningDetails wordDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
+
+		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		Long meaningId = wordDetails.getMeaningId();
 		String wordValue = wordDetails.getWordValue();

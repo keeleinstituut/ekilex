@@ -175,7 +175,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 				String etymCommentPrese = null;
 				if (etymCommentNode != null) {
 					String origText = etymCommentNode.getTextTrim();
-					etymComment = cleanEkiEntityMarkup(origText);
+					etymComment = removeEkiEntityMarkup(origText);
 					etymCommentPrese = convertEkiEntityMarkup(origText);
 				}
 
@@ -294,7 +294,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 						String etymRelCommentPrese = null;
 						if (etymRelCommentNode != null) {
 							String origText = etymRelCommentNode.getTextTrim();
-							etymRelComment = cleanEkiEntityMarkup(origText);
+							etymRelComment = removeEkiEntityMarkup(origText);
 							etymRelCommentPrese = convertEkiEntityMarkup(origText);
 						}
 						Node etymSourceGroupNode = etymRelNode.selectSingleNode(etymSourceGroupExp);

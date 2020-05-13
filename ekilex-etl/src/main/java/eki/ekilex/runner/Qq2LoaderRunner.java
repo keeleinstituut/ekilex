@@ -234,7 +234,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				// word, form...
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				word = wordNode.getTextTrim();
-				word = wordDisplayForm = cleanEkiEntityMarkup(word);
+				word = wordDisplayForm = removeEkiEntityMarkup(word);
 				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
 				word = unifyAfixoids(word);
 				wordComponents = StringUtils.split(word, FORM_COMPONENT_SEPARATOR);
@@ -337,7 +337,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						wordMatchLang = unifyLang(wordMatchLang);
 						wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
 						wordMatch = wordMatchValueNode.getTextTrim();
-						wordMatch = cleanEkiEntityMarkup(wordMatch);
+						wordMatch = removeEkiEntityMarkup(wordMatch);
 						wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormCleanupChars, "");
 
 						if (StringUtils.isBlank(wordMatch)) {
@@ -577,7 +577,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			grammarLang = ((Element) grammarNode).attributeValue("lang");
 			grammarLang = unifyLang(grammarLang);
 			grammar = ((Element) grammarNode).getTextTrim();
-			grammar = cleanEkiEntityMarkup(grammar);
+			grammar = removeEkiEntityMarkup(grammar);
 
 			grammarObjs = wordIdGrammarMap.get(wordId);
 			if (grammarObjs == null) {
@@ -646,7 +646,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				if (StringUtils.equalsIgnoreCase(usageTranslationLang, usageTranslationLangRus)) {
 					usageTranslationValueNode = (Element) usageTranslationNode.selectSingleNode(usageTranslationValueExp);
 					usageTranslationOrigValue = usageTranslationValueNode.getTextTrim();
-					usageTranslationCleanValue = cleanEkiEntityMarkup(usageTranslationOrigValue);
+					usageTranslationCleanValue = removeEkiEntityMarkup(usageTranslationOrigValue);
 					lemmatisedTokens = new ArrayList<>();
 					usageTranslationParts = StringUtils.split(usageTranslationCleanValue, ' ');
 					originalTokens = new ArrayList<>(Arrays.asList(usageTranslationParts));
