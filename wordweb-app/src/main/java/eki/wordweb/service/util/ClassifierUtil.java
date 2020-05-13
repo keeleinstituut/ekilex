@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
@@ -31,7 +33,16 @@ import eki.wordweb.service.db.CommonDataDbService;
 public class ClassifierUtil {
 
 	@Autowired
+	private MessageSource messageSource;
+
+	@Autowired
 	private CommonDataDbService commonDataDbService;
+
+	public Classifier reValue(Classifier classifier, String messageKey) {
+		String newValue = messageSource.getMessage(messageKey, new Object[0], LocaleContextHolder.getLocale());
+		Classifier copy = new Classifier(classifier.getName(), classifier.getOrigin(), classifier.getParent(), classifier.getCode(), newValue, classifier.getLang());
+		return copy;
+	}
 
 	public void applyClassifiers(Word word, String displayLang) {
 		String classifierCode;

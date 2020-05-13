@@ -4,19 +4,14 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRelationRecord;
 import eki.wordweb.data.db.udt.records.TypeWordRelationRecord;
-
-import java.util.Arrays;
-import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -39,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
 
-    private static final long serialVersionUID = 1138845172;
+    private static final long serialVersionUID = -1128616063;
 
     /**
      * The reference instance of <code>public.mview_ww_word_relation</code>
@@ -63,16 +58,6 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
      * The column <code>public.mview_ww_word_relation.related_words</code>.
      */
     public final TableField<MviewWwWordRelationRecord, TypeWordRelationRecord[]> RELATED_WORDS = createField("related_words", eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION.getDataType().getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_relation.word_group_id</code>.
-     */
-    public final TableField<MviewWwWordRelationRecord, Long> WORD_GROUP_ID = createField("word_group_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_relation.word_rel_type_code</code>.
-     */
-    public final TableField<MviewWwWordRelationRecord, String> WORD_REL_TYPE_CODE = createField("word_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_word_relation.word_group_members</code>.
@@ -118,14 +103,6 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_RELATION_WORD_ID_IDX);
     }
 
     /**

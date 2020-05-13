@@ -84,7 +84,6 @@ function activateCollapseBtn(){
     });
 }
 
-
 $(document).on("click", ".show-more", function () {
 
     // button behaviour
@@ -104,17 +103,21 @@ $(document).on("click", ".show-more", function () {
         $($(this).data("target")).toggleClass('collapse');
     } else {
         // TODO: Refactor all of this selector mess
-        $(this).parents(".word-relations, .dependencies, .collocations-section, .corp-panel")
+        $(this).parents(".dependencies, .collocations-section, .corp-panel")
             .toggleClass("expand");
 
-        $(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .corp-panel")
+        $(this).parents(".meaning-panel, .dependencies, .collocations-section, .corp-panel")
             .find(".colloc-col, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .secondary-morph, .word-options, .sentence-wrapper")
             .toggleClass("fade-target");
 
-        $(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .corp-panel")
+        $(this).parents(".meaning-panel, .dependencies, .collocations-section, .corp-panel")
             .find(".colloc-fulldata .colloc-col:lt(3), .dependencies .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
             .removeClass("fade-target");
     }
+});
+
+$(document).on("click", "button[name='expand-word-type-group-btn']", function() {
+	$(this).parent().find(".word-options[data-collapse='true']").fadeToggle("slow", "linear");
 });
 
 $(window).on("popstate", function (e) {

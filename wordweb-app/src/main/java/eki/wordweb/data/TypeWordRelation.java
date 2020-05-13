@@ -7,18 +7,20 @@ public class TypeWordRelation extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 
-	private Complexity[] lexComplexities;
+	private Long wordGroupId;
 
 	private String wordRelTypeCode;
 
 	private Classifier wordRelType;
 
-	public Complexity[] getLexComplexities() {
-		return lexComplexities;
+	private Complexity[] lexComplexities;
+
+	public Long getWordGroupId() {
+		return wordGroupId;
 	}
 
-	public void setLexComplexities(Complexity[] lexComplexities) {
-		this.lexComplexities = lexComplexities;
+	public void setWordGroupId(Long wordGroupId) {
+		this.wordGroupId = wordGroupId;
 	}
 
 	public String getWordRelTypeCode() {
@@ -35,6 +37,14 @@ public class TypeWordRelation extends WordTypeData {
 
 	public void setWordRelType(Classifier wordRelType) {
 		this.wordRelType = wordRelType;
+	}
+
+	public Complexity[] getLexComplexities() {
+		return lexComplexities;
+	}
+
+	public void setLexComplexities(Complexity[] lexComplexities) {
+		this.lexComplexities = lexComplexities;
 	}
 
 }

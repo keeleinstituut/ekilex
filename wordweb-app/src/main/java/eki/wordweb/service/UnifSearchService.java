@@ -23,7 +23,7 @@ import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
-import eki.wordweb.data.WordRelationTuple;
+import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.service.db.AbstractSearchDbService;
 import eki.wordweb.service.db.UnifSearchDbService;
 
@@ -52,8 +52,8 @@ public class UnifSearchService extends AbstractSearchService {
 		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
-		List<WordRelationTuple> wordRelationTuples = unifSearchDbService.getWordRelationTuples(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationTuples, lexComplexity, displayLang);
+		WordRelationsTuple wordRelationsTuple = unifSearchDbService.getWordRelationsTuple(wordId);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, lexComplexity, displayLang);
 		List<WordEtymTuple> wordEtymTuples = unifSearchDbService.getWordEtymologyTuples(wordId);
 		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = unifSearchDbService.getWordForms(wordId, maxDisplayLevel);

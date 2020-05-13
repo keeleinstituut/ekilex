@@ -33,7 +33,7 @@ import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
-import eki.wordweb.data.WordRelationTuple;
+import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
@@ -246,7 +246,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				.fetchInto(LexemeMeaningTuple.class);
 	}
 
-	public List<WordRelationTuple> getWordRelationTuples(Long wordId) {
+	public WordRelationsTuple getWordRelationsTuple(Long wordId) {
 
 		MviewWwWordRelation wr = MVIEW_WW_WORD_RELATION.as("wr");
 
@@ -254,12 +254,11 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				.select(
 						wr.WORD_ID,
 						wr.RELATED_WORDS,
-						wr.WORD_GROUP_ID,
-						wr.WORD_REL_TYPE_CODE,
 						wr.WORD_GROUP_MEMBERS)
 				.from(wr)
 				.where(wr.WORD_ID.eq(wordId))
-				.fetchInto(WordRelationTuple.class);
+				.fetchOptionalInto(WordRelationsTuple.class)
+				.orElse(null);
 	}
 
 	public List<WordEtymTuple> getWordEtymologyTuples(Long wordId) {

@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
 
-    private static final long serialVersionUID = 687733582;
+    private static final long serialVersionUID = -1797017661;
 
     /**
      * The reference instance of <code>public.type_word_relation</code>
@@ -43,6 +43,16 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
     public Class<TypeWordRelationRecord> getRecordType() {
         return TypeWordRelationRecord.class;
     }
+
+    /**
+     * The attribute <code>public.type_word_relation.word_group_id</code>.
+     */
+    public static final UDTField<TypeWordRelationRecord, Long> WORD_GROUP_ID = createField("word_group_id", org.jooq.impl.SQLDataType.BIGINT, TYPE_WORD_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_word_relation.word_rel_type_code</code>.
+     */
+    public static final UDTField<TypeWordRelationRecord, String> WORD_REL_TYPE_CODE = createField("word_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD_RELATION, "");
 
     /**
      * The attribute <code>public.type_word_relation.word_id</code>.
@@ -78,11 +88,6 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
      * The attribute <code>public.type_word_relation.lex_complexities</code>.
      */
     public static final UDTField<TypeWordRelationRecord, String[]> LEX_COMPLEXITIES = createField("lex_complexities", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_RELATION, "");
-
-    /**
-     * The attribute <code>public.type_word_relation.word_rel_type_code</code>.
-     */
-    public static final UDTField<TypeWordRelationRecord, String> WORD_REL_TYPE_CODE = createField("word_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD_RELATION, "");
 
     /**
      * No further instances allowed

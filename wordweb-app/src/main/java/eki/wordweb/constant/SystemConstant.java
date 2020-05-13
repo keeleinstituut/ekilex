@@ -64,4 +64,6 @@ public interface SystemConstant {
 	String WORD_SEARCH_GROUP_AS_WORD = "as_word";
 
 	String WORD_SEARCH_GROUP_FORM = "form";
+
+	String WORD_REL_TYPE_CODE_RAW = "raw";
 }

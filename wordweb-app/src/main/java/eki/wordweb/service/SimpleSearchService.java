@@ -24,7 +24,7 @@ import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
-import eki.wordweb.data.WordRelationTuple;
+import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.service.db.AbstractSearchDbService;
 import eki.wordweb.service.db.SimpleSearchDbService;
 
@@ -53,8 +53,8 @@ public class SimpleSearchService extends AbstractSearchService {
 		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
-		List<WordRelationTuple> wordRelationTuples = simpleSearchDbService.getWordRelationTuples(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationTuples, lexComplexity, displayLang);
+		WordRelationsTuple wordRelationsTuple = simpleSearchDbService.getWordRelationsTuple(wordId);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, lexComplexity, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = simpleSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);

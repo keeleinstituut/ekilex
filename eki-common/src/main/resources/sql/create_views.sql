@@ -54,14 +54,15 @@ create type type_meaning_word as (
 				aspect_code varchar(100));
 create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
 create type type_word_relation as (
+				word_group_id bigint,
+				word_rel_type_code varchar(100),
 				word_id bigint,
 				word text,
 				word_prese text,
 				homonym_nr integer,
 				lang char(3),
 				word_type_codes varchar(100) array,
-				lex_complexities varchar(100) array,
-				word_rel_type_code varchar(100));
+				lex_complexities varchar(100) array);
 create type type_lexeme_relation as (
                 lexeme_id bigint,
                 word_id bigint,
@@ -1247,20 +1248,19 @@ create view view_ww_word_relation
 as
 select w.id word_id,
        wr.related_words,
-       wg.word_group_id,
-       wg.word_rel_type_code,
        wg.word_group_members
 from word w
   left outer join (select w1.id word_id,
                           array_agg(row (
+                            null,
+                            wr.word_rel_type_code,
                             wr.related_word_id,
                             wr.related_word,
                             wr.related_word_prese,
                             wr.related_word_homonym_nr,
                             wr.related_word_lang,
                             wr.word_type_codes,
-                            wr.lex_complexities,
-                            wr.word_rel_type_code
+                            wr.lex_complexities
                           )::type_word_relation order by wr.word_rel_order_by) related_words
                    from word w1
                      inner join (select distinct r.word1_id,
@@ -1301,22 +1301,20 @@ from word w
                                                      and   ds.is_public = true
                                                      and   l.word_id = w.id)
                                        group by w.id) as w2
-                                 where r.word2_id = w2.id
-                                 and r.word_rel_type_code != 'raw') wr on wr.word1_id = w1.id
+                                 where r.word2_id = w2.id) wr on wr.word1_id = w1.id
                    group by w1.id) wr on wr.word_id = w.id
   left outer join (select wg.word_id,
-                          wg.word_group_id,
-                          wg.word_rel_type_code,
                           array_agg(row (
+                            wg.word_group_id,
+                            wg.word_rel_type_code,
                             wg.group_member_word_id,
                             wg.group_member_word,
                             wg.group_member_word_prese,
                             wg.group_member_homonym_nr,
                             wg.group_member_word_lang,
                             wg.word_type_codes,
-                            wg.lex_complexities,
-                            wg.word_rel_type_code
-                          )::type_word_relation order by wg.group_member_order_by) word_group_members
+                            wg.lex_complexities
+                          )::type_word_relation order by wg.word_group_id, wg.group_member_order_by) word_group_members
                    from (select distinct w1.id word_id,
                                 wg.id word_group_id,
                                 wg.word_rel_type_code,
@@ -1364,9 +1362,7 @@ from word w
                          and   wgm1.word_id = w1.id
                          and   wgm2.word_id = w2.id
                          and   w1.id != w2.id) wg
-                   group by wg.word_id,
-                            wg.word_group_id,
-                            wg.word_rel_type_code) wg on wg.word_id = w.id
+                   group by wg.word_id) wg on wg.word_id = w.id
 where (wr.related_words is not null or wg.word_group_members is not null)
 and   exists (select l.id
               from lexeme l,

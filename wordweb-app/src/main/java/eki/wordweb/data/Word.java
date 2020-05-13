@@ -32,8 +32,6 @@ public class Word extends WordTypeData {
 
 	private List<TypeWordRelation> relatedWords;
 
-	private List<WordRelationGroup> limitedRelatedWordTypeGroups;
-
 	private List<WordRelationGroup> relatedWordTypeGroups;
 
 	private List<WordGroup> wordGroups;
@@ -49,8 +47,6 @@ public class Word extends WordTypeData {
 	private boolean singlePos;
 
 	private boolean wordRelationsExist;
-
-	private boolean moreWordRelations;
 
 	private boolean selected;
 
@@ -150,14 +146,6 @@ public class Word extends WordTypeData {
 		this.relatedWords = relatedWords;
 	}
 
-	public List<WordRelationGroup> getLimitedRelatedWordTypeGroups() {
-		return limitedRelatedWordTypeGroups;
-	}
-
-	public void setLimitedRelatedWordTypeGroups(List<WordRelationGroup> limitedRelatedWordTypeGroups) {
-		this.limitedRelatedWordTypeGroups = limitedRelatedWordTypeGroups;
-	}
-
 	public List<WordRelationGroup> getRelatedWordTypeGroups() {
 		return relatedWordTypeGroups;
 	}
@@ -220,14 +208,6 @@ public class Word extends WordTypeData {
 
 	public void setWordRelationsExist(boolean wordRelationsExist) {
 		this.wordRelationsExist = wordRelationsExist;
-	}
-
-	public boolean isMoreWordRelations() {
-		return moreWordRelations;
-	}
-
-	public void setMoreWordRelations(boolean moreWordRelations) {
-		this.moreWordRelations = moreWordRelations;
 	}
 
 	public boolean isSelected() {

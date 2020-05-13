@@ -13,6 +13,8 @@ public class WordRelationGroup extends AbstractDataObject {
 
 	private List<TypeWordRelation> relatedWords;
 
+	private boolean seeMore;
+
 	public Classifier getWordRelType() {
 		return wordRelType;
 	}
@@ -27,6 +29,14 @@ public class WordRelationGroup extends AbstractDataObject {
 
 	public void setRelatedWords(List<TypeWordRelation> relatedWords) {
 		this.relatedWords = relatedWords;
+	}
+
+	public boolean isSeeMore() {
+		return seeMore;
+	}
+
+	public void setSeeMore(boolean seeMore) {
+		this.seeMore = seeMore;
 	}
 
 }
