@@ -15,7 +15,7 @@ public class ValueUtil {
 	@Autowired
 	private TextDecorationService textDecorationService;
 
-	public String trimAndClean(String value) {
+	private String trimAndClean(String value) {
 		if (StringUtils.isBlank(value)) {
 			return StringUtils.trim(value);
 		}
