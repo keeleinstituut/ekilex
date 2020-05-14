@@ -167,11 +167,11 @@ public class CudService extends AbstractService {
 
 	//@PreAuthorize("hasPermission(#id, 'USAGE', 'DATASET:CRUD')")
 	@Transactional
-	public void updateUsageValue(Long id, String valuePrese, Complexity complexity) {
+	public void updateUsageValue(Long id, String valuePrese, Complexity complexity, boolean isPublic) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
+		cudDbService.updateFreeform(id, value, valuePrese, complexity, isPublic);
 	}
 
 	@Transactional
@@ -298,11 +298,11 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateDefinition(Long id, String valuePrese, Complexity complexity, String typeCode) {
+	public void updateDefinition(Long id, String valuePrese, Complexity complexity, String typeCode, boolean isPublic) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		cudDbService.updateDefinition(id, value, valuePrese, complexity, typeCode);
+		cudDbService.updateDefinition(id, value, valuePrese, complexity, typeCode, isPublic);
 	}
 
 	@Transactional
@@ -523,9 +523,9 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createUsage(Long lexemeId, String valuePrese, String languageCode, Complexity complexity) {
+	public void createUsage(Long lexemeId, String valuePrese, String languageCode, Complexity complexity, boolean isPublic) {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long usageId = cudDbService.createUsage(lexemeId, value, valuePrese, languageCode, complexity);
+		Long usageId = cudDbService.createUsage(lexemeId, value, valuePrese, languageCode, complexity, isPublic);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
 		createLifecycleLog(logData);
 	}
@@ -669,9 +669,9 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createDefinition(Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode) {
+	public void createDefinition(Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic) {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity);
+		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity, isPublic);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
 		createLifecycleLog(logData);

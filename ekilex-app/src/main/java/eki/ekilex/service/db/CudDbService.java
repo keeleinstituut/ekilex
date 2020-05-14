@@ -215,12 +215,23 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateDefinition(Long id, String value, String valuePrese, Complexity complexity, String typeCode) {
+	public void updateFreeform(Long id, String value, String valuePrese, Complexity complexity, boolean isPublic) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, value)
+				.set(FREEFORM.VALUE_PRESE, valuePrese)
+				.set(FREEFORM.COMPLEXITY, complexity.name())
+				.set(FREEFORM.IS_PUBLIC, isPublic)
+				.where(FREEFORM.ID.eq(id))
+				.execute();
+	}
+
+	public void updateDefinition(Long id, String value, String valuePrese, Complexity complexity, String typeCode, boolean isPublic) {
 		create.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.set(DEFINITION.COMPLEXITY, complexity.name())
 				.set(DEFINITION.DEFINITION_TYPE_CODE, typeCode)
+				.set(DEFINITION.IS_PUBLIC, isPublic)
 				.where(DEFINITION.ID.eq(id))
 				.execute();
 	}
@@ -657,7 +668,7 @@ public class CudDbService extends AbstractDataDbService {
 		return wordGroupMember.getId();
 	}
 
-	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, Complexity complexity) {
+	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, Complexity complexity, boolean isPublic) {
 		return create
 				.insertInto(
 						DEFINITION,
@@ -666,8 +677,9 @@ public class CudDbService extends AbstractDataDbService {
 						DEFINITION.VALUE,
 						DEFINITION.VALUE_PRESE,
 						DEFINITION.DEFINITION_TYPE_CODE,
-						DEFINITION.COMPLEXITY)
-				.values(meaningId, languageCode, value, valuePrese, definitionTypeCode, complexity.name())
+						DEFINITION.COMPLEXITY,
+						DEFINITION.IS_PUBLIC)
+				.values(meaningId, languageCode, value, valuePrese, definitionTypeCode, complexity.name(), isPublic)
 				.returning(DEFINITION.ID)
 				.fetchOne()
 				.getId();
@@ -858,10 +870,10 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeId;
 	}
 
-	public Long createUsage(Long lexemeId, String value, String valuePrese, String languageCode, Complexity complexity) {
+	public Long createUsage(Long lexemeId, String value, String valuePrese, String languageCode, Complexity complexity, boolean isPublic) {
 		Long usageFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG, FREEFORM.COMPLEXITY)
-				.values(FreeformType.USAGE.name(), value, valuePrese, languageCode, complexity.name())
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG, FREEFORM.COMPLEXITY, FREEFORM.IS_PUBLIC)
+				.values(FreeformType.USAGE.name(), value, valuePrese, languageCode, complexity.name(), isPublic)
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();

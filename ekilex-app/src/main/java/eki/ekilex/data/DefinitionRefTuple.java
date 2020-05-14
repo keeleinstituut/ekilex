@@ -34,6 +34,8 @@ public class DefinitionRefTuple extends AbstractDataObject {
 
 	private String sourceLinkValue;
 
+	private boolean isDefinitionPublic;
+
 	public Long getDefinitionId() {
 		return definitionId;
 	}
@@ -130,4 +132,11 @@ public class DefinitionRefTuple extends AbstractDataObject {
 		this.sourceLinkValue = sourceLinkValue;
 	}
 
+	public boolean isDefinitionPublic() {
+		return isDefinitionPublic;
+	}
+
+	public void setDefinitionPublic(boolean definitionPublic) {
+		isDefinitionPublic = definitionPublic;
+	}
 }

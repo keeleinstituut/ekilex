@@ -4,6 +4,12 @@
 package eki.ekilex.data.db;
 
 
+import javax.annotation.Generated;
+
+import org.jooq.Index;
+import org.jooq.OrderField;
+import org.jooq.impl.Internal;
+
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -114,12 +120,6 @@ import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
 
-import javax.annotation.Generated;
-
-import org.jooq.Index;
-import org.jooq.OrderField;
-import org.jooq.impl.Internal;
-
 
 /**
  * A class modelling indexes of tables of the <code>public</code> schema.
@@ -149,7 +149,9 @@ public class Indexes {
     public static final Index DATASET_CODE_IDX = Indexes0.DATASET_CODE_IDX;
     public static final Index DATASET_PKEY = Indexes0.DATASET_PKEY;
     public static final Index DATASET_TYPE_IDX = Indexes0.DATASET_TYPE_IDX;
+    public static final Index DATASET_PERM_DATASET_CODE_IDX = Indexes0.DATASET_PERM_DATASET_CODE_IDX;
     public static final Index DATASET_PERM_DATASET_FULL_CMPLX_IDX = Indexes0.DATASET_PERM_DATASET_FULL_CMPLX_IDX;
+    public static final Index DATASET_PERM_USER_ID_IDX = Indexes0.DATASET_PERM_USER_ID_IDX;
     public static final Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Indexes0.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY;
     public static final Index DATASET_PERMISSION_PKEY = Indexes0.DATASET_PERMISSION_PKEY;
     public static final Index DEFINITION_COMPLEXITY_IDX = Indexes0.DEFINITION_COMPLEXITY_IDX;
@@ -424,7 +426,9 @@ public class Indexes {
         public static Index DATASET_CODE_IDX = Internal.createIndex("dataset_code_idx", Dataset.DATASET, new OrderField[] { Dataset.DATASET.CODE }, false);
         public static Index DATASET_PKEY = Internal.createIndex("dataset_pkey", Dataset.DATASET, new OrderField[] { Dataset.DATASET.CODE }, true);
         public static Index DATASET_TYPE_IDX = Internal.createIndex("dataset_type_idx", Dataset.DATASET, new OrderField[] { Dataset.DATASET.TYPE }, false);
+        public static Index DATASET_PERM_DATASET_CODE_IDX = Internal.createIndex("dataset_perm_dataset_code_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE }, false);
         public static Index DATASET_PERM_DATASET_FULL_CMPLX_IDX = Internal.createIndex("dataset_perm_dataset_full_cmplx_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM, DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.AUTH_LANG }, false);
+        public static Index DATASET_PERM_USER_ID_IDX = Internal.createIndex("dataset_perm_user_id_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.USER_ID }, false);
         public static Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Internal.createIndex("dataset_permission_dataset_code_user_id_auth_operation_auth_key", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM, DatasetPermission.DATASET_PERMISSION.AUTH_LANG }, true);
         public static Index DATASET_PERMISSION_PKEY = Internal.createIndex("dataset_permission_pkey", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.ID }, true);
         public static Index DEFINITION_COMPLEXITY_IDX = Internal.createIndex("definition_complexity_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.COMPLEXITY }, false);

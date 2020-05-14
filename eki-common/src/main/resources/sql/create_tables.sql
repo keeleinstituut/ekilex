@@ -497,6 +497,7 @@ create table freeform
   classif_code varchar(100) null,
   lang char(3) references language(code) null,
   complexity varchar(100) null,
+  is_public boolean default true,
   order_by bigserial
 );
 alter sequence freeform_id_seq restart with 10000;
@@ -816,6 +817,7 @@ create table definition
   value_prese text not null,
   lang char(3) references language(code) not null,
   complexity varchar(100) not null,
+  is_public boolean default true,
   order_by bigserial
 );
 alter sequence definition_id_seq restart with 10000;

@@ -199,6 +199,7 @@ public class ConversionUtil implements GlobalConstant {
 				usage.setOdAlternatives(new ArrayList<>());
 				usage.setAuthors(new ArrayList<>());
 				usage.setSourceLinks(new ArrayList<>());
+				usage.setPublic(tuple.isUsagePublic());
 				usageMap.put(usageId, usage);
 				usages.add(usage);
 			}
@@ -398,6 +399,7 @@ public class ConversionUtil implements GlobalConstant {
 				String definitionTypeCode = definitionRefTuple.getDefinitionTypeCode();
 				String definitionTypeValue = definitionRefTuple.getDefinitionTypeValue();
 				List<String> definitionDatasetCodes = definitionRefTuple.getDefinitionDatasetCodes();
+				boolean isDefinitionPublic = definitionRefTuple.isDefinitionPublic();
 				definition = new Definition();
 				definition.setId(definitionId);
 				definition.setValue(definitionValue);
@@ -408,6 +410,7 @@ public class ConversionUtil implements GlobalConstant {
 				definition.setTypeValue(definitionTypeValue);
 				definition.setDatasetCodes(definitionDatasetCodes);
 				definition.setSourceLinks(new ArrayList<>());
+				definition.setPublic(isDefinitionPublic);
 				definitionMap.put(definitionId, definition);
 				definitions.add(definition);
 			}

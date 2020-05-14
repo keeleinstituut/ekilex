@@ -252,6 +252,7 @@ from (
               and lff.lexeme_id = l.id
               and lff.freeform_id = u.id
               and u.type = 'USAGE'
+              and u.is_public = true
               and ut.parent_id = u.id
               and ut.type = 'USAGE_TRANSLATION')
          union all
@@ -271,7 +272,8 @@ from (
               and l.process_state_code = 'avalik'
               and ds.code = l.dataset_code
               and ds.is_public = true
-              and l.meaning_id = d.meaning_id)
+              and l.meaning_id = d.meaning_id
+              and d.is_public = true)
          union all
            (select
               (select array_agg(distinct f.value)
@@ -501,6 +503,7 @@ from (select w.id as word_id,
                           and lff.lexeme_id = l.id
                           and lff.freeform_id = u.id
                           and u.type = 'USAGE'
+                          and u.is_public = true
                           and ut.parent_id = u.id
                           and ut.type = 'USAGE_TRANSLATION')
                           union all
@@ -515,7 +518,8 @@ from (select w.id as word_id,
                           and l.process_state_code = 'avalik'
                           and ds.code = l.dataset_code
                           and ds.is_public = true
-                          and l.meaning_id = d.meaning_id)
+                          and l.meaning_id = d.meaning_id
+                          and d.is_public = true)
                           union all
                           (select r.word1_id word_id,
                                   w2.lang,
@@ -563,7 +567,7 @@ from (select w.id as word_id,
                                 d.order_by def_order_by
                          from lexeme l
                            inner join dataset ds on ds.code = l.dataset_code
-                           inner join definition d on d.meaning_id = l.meaning_id
+                           inner join definition d on d.meaning_id = l.meaning_id and d.is_public = true
                          where 
                          l.type = 'PRIMARY'
                          and l.process_state_code = 'avalik'
@@ -675,7 +679,8 @@ from (select m.id
                                  and   ff.id = dff.freeform_id
                                  and   ff.type = 'PUBLIC_NOTE'
                                  group by dff.definition_id) public_notes
-                         from definition d) d
+                         from definition d
+                         where d.is_public = true) d
                    group by d.meaning_id) d
                on d.meaning_id = m.id
   left outer join (select mff.meaning_id,
@@ -898,7 +903,7 @@ from lexeme l
                                 odud.od_usage_definitions,
                                 odua.od_usage_alternatives
                          from lexeme_freeform lf
-                           inner join freeform u on lf.freeform_id = u.id and u.type = 'USAGE'
+                           inner join freeform u on lf.freeform_id = u.id and u.type = 'USAGE' and u.is_public = true
                            left outer join freeform utp on utp.parent_id = u.id and utp.type = 'USAGE_TYPE'
                            left outer join (select ut.parent_id usage_id,
                                                    array_agg(ut.value_prese order by ut.order_by) usage_translations
@@ -974,6 +979,7 @@ from lexeme l
                          and   lff.lexeme_id = l.id
                          and   lff.freeform_id = u.id
                          and   u.type = 'USAGE'
+                         and   u.is_public = true
                          and   ut.parent_id = u.id
                          and   ut.type = 'USAGE_TRANSLATION')
                          union all
@@ -986,6 +992,7 @@ from lexeme l
                          where l.type = 'PRIMARY'
                          and   l.process_state_code = 'avalik'
                          and   l.meaning_id = d.meaning_id
+                         and   d.is_public = true
                          and   ds.code = l.dataset_code
                          and   ds.is_public = true)
                          union all
@@ -1034,7 +1041,8 @@ from lexeme l
                                            and   l2ds.is_public = true)
                          and   not exists (select d.id
                                            from definition d
-                                           where d.meaning_id = l1.meaning_id)
+                                           where d.meaning_id = l1.meaning_id
+                                           and   d.is_public = true)
                          and   not exists (select ff.id
                                            from lexeme_freeform lff,
                                                 freeform ff
@@ -1734,6 +1742,7 @@ from (select d.meaning_id,
       where l.type = 'PRIMARY'
       and   l.process_state_code = 'avalik'
       and   l.meaning_id = d.meaning_id
+      and   d.is_public = true
       and   dsl.definition_id = d.id
       and   dsl.source_id = s.source_id
       and   ds.code = l.dataset_code

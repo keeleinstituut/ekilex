@@ -3,9 +3,8 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.constant.Complexity;
-import eki.common.data.AbstractDataObject;
 
-public class Usage extends AbstractDataObject {
+public class Usage extends AbstractCrudEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,6 +33,8 @@ public class Usage extends AbstractDataObject {
 	private List<SourceLink> authors;
 
 	private List<SourceLink> sourceLinks;
+
+	private boolean isPublic;
 
 	public Long getId() {
 		return id;
@@ -139,4 +140,11 @@ public class Usage extends AbstractDataObject {
 		this.sourceLinks = sourceLinks;
 	}
 
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
+	}
 }

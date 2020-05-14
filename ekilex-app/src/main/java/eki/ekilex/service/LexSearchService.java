@@ -127,6 +127,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	public List<WordLexeme> getWordLexemesWithDefinitionsData(String searchFilter, List<String> datasets) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
+		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchFilter)) {
 			WordsResult words = getWords(searchFilter, datasets, false, DEFAULT_OFFSET);
@@ -140,7 +141,7 @@ public class LexSearchService extends AbstractWordSearchService {
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 						List<DefinitionRefTuple> definitionRefTuples =
-								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, userPermDatasetCodes, classifierLabelLang, classifierLabelTypeDescrip);
 						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 						lexeme.setDefinitions(definitions);
@@ -165,6 +166,10 @@ public class LexSearchService extends AbstractWordSearchService {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
+		List<String> preferredDatasets = userProfile.getPreferredDatasets();
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(preferredDatasets);
+		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
+
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
@@ -175,7 +180,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
 		meaningDomains = conversionUtil.removeOrderedClassifierDuplicates(meaningDomains);
 		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, userPermDatasetCodes, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		lexeme.setMeaningDomains(meaningDomains);
 		lexeme.setDefinitions(definitions);
@@ -186,7 +191,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 			List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, userPermDatasetCodes, classifierLabelLang, classifierLabelTypeDescrip);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<FreeForm> lexemePublicNotes = commonDataDbService.getLexemePublicNotes(lexemeId);

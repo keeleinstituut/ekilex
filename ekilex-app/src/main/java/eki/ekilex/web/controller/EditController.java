@@ -72,13 +72,13 @@ public class EditController extends AbstractPageController implements SystemCons
 		switch (itemData.getOpCode()) {
 		case "definition":
 			datasetCode = sessionBean.getUserRole().getDatasetCode();
-			cudService.createDefinition(itemData.getId(), itemValue, itemData.getLanguage(), datasetCode, itemData.getComplexity(), itemData.getItemType());
+			cudService.createDefinition(itemData.getId(), itemValue, itemData.getLanguage(), datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic());
 			break;
 		case "definition_public_note":
 			cudService.createDefinitionPublicNote(itemData.getId(), itemValue);
 			break;
 		case "usage":
-			cudService.createUsage(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity());
+			cudService.createUsage(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "usage_translation":
 			cudService.createUsageTranslation(itemData.getId(), itemValue, itemData.getLanguage());
@@ -223,7 +223,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			langSelect.setSelected(!langSelect.isSelected());
 			break;
 		case "usage":
-			cudService.updateUsageValue(itemData.getId(), itemValue, itemData.getComplexity());
+			cudService.updateUsageValue(itemData.getId(), itemValue, itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "usage_translation":
 			cudService.updateUsageTranslationValue(itemData.getId(), itemValue);
@@ -232,7 +232,7 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.updateUsageDefinitionValue(itemData.getId(), itemValue);
 			break;
 		case "definition":
-			cudService.updateDefinition(itemData.getId(), itemValue, itemData.getComplexity(), itemData.getCode());
+			cudService.updateDefinition(itemData.getId(), itemValue, itemData.getComplexity(), itemData.getCode(), itemData.isPublic());
 			break;
 		case "definition_public_note":
 			cudService.updateDefinitionPublicNote(itemData.getId(), itemValue);

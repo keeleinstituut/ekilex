@@ -25,3 +25,6 @@ begin
     end loop;
   raise notice '% words deleted', deleted_words_counter;
 end $$;
+
+alter table definition add column is_public boolean default true;
+alter table freeform add column is_public boolean default true;

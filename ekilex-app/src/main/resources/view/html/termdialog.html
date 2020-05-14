@@ -487,6 +487,10 @@
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-check ml-1">
+              <input id="addUsagePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+              <label for="addUsagePublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -506,6 +510,10 @@
             <input type="hidden" name="value" th:value="${usage.value}">
             <input type="hidden" name="complexity" th:value="${usage.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-check ml-1">
+              <input id="editUsagePublic" class="form-check-input" type="checkbox" name="public" th:checked="${usage.public}" value="true">
+              <label for="editUsagePublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -734,6 +742,10 @@
                 </select>
               </div>
             </div>
+            <div class="form-check ml-1">
+              <input id="addDefinitionPublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+              <label for="addDefinitionPublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -759,6 +771,10 @@
                   <option th:each="type : ${definitionTypes}" th:value="${type.code}" th:text="${type.value}" th:selected="${type.code == definition.typeCode}">type</option>
                 </select>
               </div>
+            </div>
+            <div class="form-check ml-1">
+              <input id="editDefinitionPublic" class="form-check-input" type="checkbox" name="public" th:checked="${definition.public}" value="true">
+              <label for="editDefinitionPublic" class="form-check-label">Avalik</label>
             </div>
           </div>
           <div class="modal-footer">
