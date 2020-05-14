@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
@@ -71,8 +72,8 @@ public class LexEditController extends AbstractPageController implements SystemC
 	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model) {
 
-		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
 		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		WordLexeme targetLexeme = lexSearchService.getDefaultWordLexeme(targetLexemeId);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWordValue();
@@ -88,8 +89,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 			wordHomonymNumber = Optional.empty();
 		}
 
-		List<WordLexeme> sourceLexemes = lookupService
-				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, wordHomonymNumber, sourceLexemeMeaningId, userId);
+		List<WordLexeme> sourceLexemes = lookupService.getWordLexemesOfJoinCandidates(searchFilter, userProfile, wordHomonymNumber, sourceLexemeMeaningId, userId);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);

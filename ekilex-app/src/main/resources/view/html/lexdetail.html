@@ -253,6 +253,7 @@
                         <span th:utext="${definition.value}"></span>
                         <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${definition.complexity}} + ')'"></span>
                         <span class="ctxt" th:each="datasetCode,iter : ${definition.datasetCodes}" th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
+                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'"></span>
                       </div>
                       <div class="action-buttons-2">
                         <button type="button" class="btn badge badge-primary"
@@ -693,6 +694,7 @@
                       <div class="d-inline-block" th:utext="${usage.value}"></div>
                       <div class="d-inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
                       <div class="d-inline-block ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'"></div>
+                      <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'"></div>
                       <div th:if="${#lists.isEmpty(usage.authors)}" class="show-on-mouseover" sec:authorize="${#vars.isUsageCrudGranted}">
                         (
                         <button type="button" class="btn badge badge-success hidden"

@@ -25,6 +25,8 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	private Complexity complexity;
 
+	private boolean isPublic;
+
 	public String getOpCode() {
 		return opCode;
 	}
@@ -95,5 +97,13 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 }

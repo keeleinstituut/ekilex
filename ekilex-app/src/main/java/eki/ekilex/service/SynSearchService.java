@@ -138,6 +138,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
+		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
 		WordSynDetails wordDetails = synSearchDbService.getWordDetails(wordId);
 		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
 		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(GlobalConstant.PROCESS_STATE_COMPLETE, lexemeData.getLayerProcessStateCode()));
@@ -145,7 +146,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		String headwordLang = wordDetails.getLang();
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName, classifierLabelLang, classifierLabelTypeDescrip);
-		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, meaningWordLangs));
+		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, meaningWordLangs, userPermDatasetCodes));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
 		List<SynRelation> relations = Collections.emptyList();
@@ -161,7 +162,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		return wordDetails;
 	}
 
-	private void populateLexeme(WordSynLexeme lexeme, String headwordLanguage, List<String> meaningWordLangs) {
+	private void populateLexeme(WordSynLexeme lexeme, String headwordLanguage, List<String> meaningWordLangs, List<String> userPermDatasetCodes) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
@@ -175,11 +176,11 @@ public class SynSearchService extends AbstractWordSearchService {
 		}
 
 		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, userPermDatasetCodes, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, userPermDatasetCodes, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);

@@ -57,6 +57,8 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	private String usageSourceName;
 
+	private boolean isUsagePublic;
+
 	public Long getUsageId() {
 		return usageId;
 	}
@@ -249,4 +251,11 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 		this.usageSourceName = usageSourceName;
 	}
 
+	public boolean isUsagePublic() {
+		return isUsagePublic;
+	}
+
+	public void setUsagePublic(boolean usagePublic) {
+		isUsagePublic = usagePublic;
+	}
 }
