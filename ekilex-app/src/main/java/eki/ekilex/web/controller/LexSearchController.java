@@ -77,7 +77,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;
 
-		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtml(simpleSearchFilter);
+		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(simpleSearchFilter);
 		formDataCleanup(LEX_SEARCH_PAGE, detailSearchFilter);
 
 		Long userId = userService.getAuthenticatedUser().getId();
@@ -143,7 +143,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("word search {}", searchFilter);
 
-		searchFilter = valueUtil.trimAndCleanAndRemoveHtml(searchFilter);
+		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		WordsResult result = lexSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
@@ -157,7 +157,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
-		searchFilter = valueUtil.trimAndCleanAndRemoveHtml(searchFilter);
+		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
 		List<String> datasets = Arrays.asList(lexeme.getDatasetCode());
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets);
@@ -171,7 +171,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("meaning search {}", searchFilter);
 
-		searchFilter = valueUtil.trimAndCleanAndRemoveHtml(searchFilter);
+		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, selectedDatasets);
 		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
@@ -192,7 +192,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("person search {}", searchFilter);
 
-		searchFilter = valueUtil.trimAndCleanAndRemoveHtml(searchFilter);
+		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 		List<Source> sources = sourceService.getSources(searchFilter, SourceType.PERSON);
 		model.addAttribute("sourcesFoundBySearch", sources);
 

@@ -28,4 +28,5 @@ public interface SystemConstant {
 
 	String CACHE_KEY_USER = "user";
 
+	int MAX_TEXT_LENGTH_LIMIT = 2000;
 }

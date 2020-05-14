@@ -70,7 +70,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;
 
-		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtml(simpleSearchFilter);
+		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(simpleSearchFilter);
 		formDataCleanup(SYN_SEARCH_PAGE, detailSearchFilter);
 
 		if (StringUtils.isBlank(searchMode)) {

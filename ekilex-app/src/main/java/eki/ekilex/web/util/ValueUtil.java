@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.service.TextDecorationService;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordMeaningRelationsDetails;
 
 @Component
-public class ValueUtil {
+public class ValueUtil implements SystemConstant {
 
 	@Autowired
 	private TextDecorationService textDecorationService;
@@ -44,27 +45,30 @@ public class ValueUtil {
 		return cleanValue;
 	}
 
-	public String trimAndCleanAndRemoveHtml(String value) {
+	public String trimAndCleanAndRemoveHtmlAndLimit(String value) {
 		value = trimAndClean(value);
 		value = textDecorationService.removeHtmlAndSkipEkiElementMarkup(value);
+		if (StringUtils.length(value) > MAX_TEXT_LENGTH_LIMIT) {
+			value = StringUtils.substring(value, 0, MAX_TEXT_LENGTH_LIMIT);
+		}
 		return value;
 	}
 
 	public void trimAndCleanAndRemoveHtml(WordLexemeMeaningDetails details) {
 
 		String wordValue = details.getWordValue();
-		wordValue = trimAndCleanAndRemoveHtml(wordValue);
+		wordValue = trimAndCleanAndRemoveHtmlAndLimit(wordValue);
 		details.setWordValue(wordValue);
 
 		String wordValuePrese = details.getWordValuePrese();
-		wordValuePrese = trimAndCleanAndRemoveHtml(wordValuePrese);
+		wordValuePrese = trimAndCleanAndRemoveHtmlAndLimit(wordValuePrese);
 		details.setWordValuePrese(wordValuePrese);
 	}
 
 	public void trimAndCleanAndRemoveHtml(WordMeaningRelationsDetails details) {
 
 		String wordValue = details.getWordValue();
-		wordValue = trimAndCleanAndRemoveHtml(wordValue);
+		wordValue = trimAndCleanAndRemoveHtmlAndLimit(wordValue);
 		details.setWordValue(wordValue);
 	}
 }

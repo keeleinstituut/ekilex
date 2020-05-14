@@ -65,7 +65,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		logger.debug("Add new item : {}", itemData);
 
 		String itemValue = itemData.getValue();
-		itemValue = valueUtil.trimAndCleanAndRemoveHtml(itemValue);
+		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
 		String sourceValue;
 		String datasetCode;
 
@@ -214,7 +214,7 @@ public class EditController extends AbstractPageController implements SystemCons
 		logger.debug("Update item : {}", itemData);
 
 		String itemValue = itemData.getValue();
-		itemValue = valueUtil.trimAndCleanAndRemoveHtml(itemValue);
+		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
 
 		switch (itemData.getOpCode()) {
 		case "term_user_lang":
@@ -547,7 +547,7 @@ public class EditController extends AbstractPageController implements SystemCons
 	@ResponseBody
 	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String value) {
 
-		value = valueUtil.trimAndCleanAndRemoveHtml(value);
+		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
 
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, value);
 

@@ -99,7 +99,7 @@ public class ProcessController implements WebConstant {
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 		Long meaningId = itemData.getId();
 		String commentPrese = itemData.getValue();
-		commentPrese = valueUtil.trimAndCleanAndRemoveHtml(commentPrese);
+		commentPrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(commentPrese);
 		logger.debug("Creating process log for meaning \"{}\"", meaningId);
 		processService.createMeaningProcessLog(meaningId, userName, commentPrese, datasetCode);
 
@@ -116,7 +116,7 @@ public class ProcessController implements WebConstant {
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 		Long wordId = itemData.getId();
 		String commentPrese = itemData.getValue();
-		commentPrese = valueUtil.trimAndCleanAndRemoveHtml(commentPrese);
+		commentPrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(commentPrese);
 		logger.debug("Creating process log for word \"{}\"", wordId);
 		processService.createWordProcessLog(wordId, userName, commentPrese, datasetCode);
 

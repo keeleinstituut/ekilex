@@ -252,7 +252,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				if (StringUtils.equals(CRITERION_VALUE, searchValueType)) {
 					String searchValueStr = uriParts[uriPartIndex + 4];
 					searchValueStr = decode(searchValueStr);
-					searchValueStr = valueUtil.trimAndCleanAndRemoveHtml(searchValueStr);
+					searchValueStr = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchValueStr);
 					if (StringUtils.equals(EMPTY_VALUE, searchValueStr)) {
 						searchValueObj = null;
 					} else {

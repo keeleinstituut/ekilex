@@ -44,7 +44,7 @@ public class SourceEditController extends AbstractPageController {
 
 		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		valueText = valueUtil.trimAndCleanAndRemoveHtml(valueText);
+		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		sourceService.updateSourceProperty(sourcePropertyId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
@@ -59,7 +59,7 @@ public class SourceEditController extends AbstractPageController {
 
 		logger.debug("Creating property for source with id: {}", sourceId);
 
-		valueText = valueUtil.trimAndCleanAndRemoveHtml(valueText);
+		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		sourceService.createSourceProperty(sourceId, type, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
@@ -114,7 +114,7 @@ public class SourceEditController extends AbstractPageController {
 			for (int sourcePropertyIndex = 0; sourcePropertyIndex < sourcePropertyTypes.size(); sourcePropertyIndex++) {
 				FreeformType type = sourcePropertyTypes.get(sourcePropertyIndex);
 				String valueText = valueTexts.get(sourcePropertyIndex);
-				valueText = valueUtil.trimAndCleanAndRemoveHtml(valueText);
+				valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 				if (StringUtils.isNotBlank(valueText)) {
 					SourceProperty sourceProperty = new SourceProperty();
 					sourceProperty.setType(type);
