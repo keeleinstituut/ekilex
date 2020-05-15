@@ -36,6 +36,7 @@ public class PagesController extends AbstractController {
 	@GetMapping(COLLECTIONS_URI)
 	public String collections(Model model) {
 		populateCommonModel(model);
+		model.addAttribute("datasets", commonDataService.getTermDatasets());
 		return COLLECTIONS_PAGE;
 	}
 

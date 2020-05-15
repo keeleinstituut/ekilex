@@ -15,6 +15,13 @@
       <aside class="col-12 col-md-4" role="navigation" id="sidebar">
         <div class="sticky-side-nav">
           <div th:replace="common-app :: important-links-menu"></div>
+          <ul class="mt-4 list-unstyled">
+            <th:block th:each="dataset : ${datasets}">
+              <li>
+                <a th:href="${'#dataset-' + dataset.code}" th:text="${dataset.name}">Alapealkiri</a>
+              </li>
+            </th:block>
+          </ul>
         </div>
       </aside>
       <div id="main" role="main" class="col-12 col-md-8 learn-content">
@@ -73,9 +80,12 @@
             <p>Andmebaas on genereeritud <a href="https://pymorphy2.readthedocs.io/en/latest/misc/citing.html#citing">pymorphy2</a> morfoanalüsaatori abil <a href="http://opencorpora.org/">Open Corpora</a> XML-sõnastiku alusel.
           </p>
           <h5 class="colored-bold">Oskussõnastikud ja terminibaasid</h5>
-          <p>
-            (info lisandub)<br>
-          </p>
+          <th:block th:each="dataset : ${datasets}">
+            <h6 class="colored-bold" th:id="${'dataset-' + dataset.code}" th:text="${dataset.name}">Terminibaas</h6>
+            <p th:text="${dataset.description}">
+              (info lisandub)<br>
+            </p>
+          </th:block>
           <h5 class="colored-bold">Sõnaveeb 2020</h5>
           <p>
             Sõnaveeb on Eesti Keele Instituudi keeleportaal, mis kuvab andmeid Eesti Keele Instituudi sõnastiku- ja 
