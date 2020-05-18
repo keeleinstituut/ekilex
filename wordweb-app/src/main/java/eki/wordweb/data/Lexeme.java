@@ -25,6 +25,10 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private DatasetType datasetType;
 
+	private String valueStateCode;
+
+	private Classifier valueState;
+
 	private Integer level1;
 
 	private Integer level2;
@@ -34,6 +38,12 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 	private Complexity complexity;
 
 	private Float weight;
+
+	private Long datasetOrderBy;
+
+	private Long lexemeOrderBy;
+
+	private Long valueStateOrderBy;
 
 	private List<String> adviceNotes;
 
@@ -162,6 +172,22 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.datasetType = datasetType;
 	}
 
+	public String getValueStateCode() {
+		return valueStateCode;
+	}
+
+	public void setValueStateCode(String valueStateCode) {
+		this.valueStateCode = valueStateCode;
+	}
+
+	public Classifier getValueState() {
+		return valueState;
+	}
+
+	public void setValueState(Classifier valueState) {
+		this.valueState = valueState;
+	}
+
 	@Override
 	public Integer getLevel1() {
 		return level1;
@@ -180,6 +206,7 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.level2 = level2;
 	}
 
+	@Override
 	public String getLevels() {
 		return levels;
 	}
@@ -204,6 +231,30 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	public void setWeight(Float weight) {
 		this.weight = weight;
+	}
+
+	public Long getDatasetOrderBy() {
+		return datasetOrderBy;
+	}
+
+	public void setDatasetOrderBy(Long datasetOrderBy) {
+		this.datasetOrderBy = datasetOrderBy;
+	}
+
+	public Long getLexemeOrderBy() {
+		return lexemeOrderBy;
+	}
+
+	public void setLexemeOrderBy(Long lexemeOrderBy) {
+		this.lexemeOrderBy = lexemeOrderBy;
+	}
+
+	public Long getValueStateOrderBy() {
+		return valueStateOrderBy;
+	}
+
+	public void setValueStateOrderBy(Long valueStateOrderBy) {
+		this.valueStateOrderBy = valueStateOrderBy;
 	}
 
 	public List<String> getAdviceNotes() {

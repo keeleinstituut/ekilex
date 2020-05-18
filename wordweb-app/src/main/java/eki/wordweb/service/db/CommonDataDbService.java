@@ -164,8 +164,10 @@ public class CommonDataDbService implements SystemConstant {
 		return create
 				.select(
 						MVIEW_WW_DATASET.CODE,
+						MVIEW_WW_DATASET.TYPE,
 						MVIEW_WW_DATASET.NAME,
-						MVIEW_WW_DATASET.DESCRIPTION)
+						MVIEW_WW_DATASET.DESCRIPTION,
+						MVIEW_WW_DATASET.IS_SUPERIOR)
 				.from(MVIEW_WW_DATASET)
 				.orderBy(MVIEW_WW_DATASET.ORDER_BY)
 				.fetchInto(Dataset.class);

@@ -22,8 +22,8 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.FormMode;
+import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
@@ -36,7 +36,6 @@ import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
-import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
@@ -89,7 +88,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				.fetchInto(Word.class);
 	}
 
-	protected List<Lexeme> getLexemes(MviewWwLexeme l, MviewWwDataset ds, MviewWwLexemeRelation lr, Condition where) {
+	protected List<Lexeme> getLexemes(MviewWwLexeme l, MviewWwLexemeRelation lr, Condition where) {
 
 		MviewWwLexemeSourceLink lsl = MVIEW_WW_LEXEME_SOURCE_LINK.as("lsl");
 		MviewWwLexemeFreeformSourceLink ffsl = MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK.as("ffsl");
@@ -100,12 +99,16 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						l.LEXEME_ID,
 						l.MEANING_ID,
 						l.DATASET_CODE,
-						ds.NAME.as("dataset_name"),
 						l.DATASET_TYPE,
+						l.DATASET_NAME,
+						l.VALUE_STATE_CODE,
 						l.LEVEL1,
 						l.LEVEL2,
 						l.COMPLEXITY,
 						l.WEIGHT,
+						l.DATASET_ORDER_BY,
+						l.LEXEME_ORDER_BY,
+						l.VALUE_STATE_ORDER_BY,
 						l.REGISTER_CODES,
 						l.POS_CODES,
 						l.DERIV_CODES,
@@ -120,16 +123,10 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						ffsl.SOURCE_LINKS.as("lexeme_freeform_source_links"),
 						lr.RELATED_LEXEMES)
 				.from(l
-						.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE))
 						.leftOuterJoin(lsl).on(lsl.LEXEME_ID.eq(l.LEXEME_ID))
 						.leftOuterJoin(ffsl).on(ffsl.LEXEME_ID.eq(l.LEXEME_ID))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
-				.orderBy(
-						l.DATASET_TYPE,
-						l.LEVEL1,
-						l.LEVEL2,
-						l.LEX_ORDER_BY)
 				.fetchInto(Lexeme.class);
 	}
 

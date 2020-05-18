@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -14,6 +15,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.DatasetType;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
@@ -89,5 +91,12 @@ public class CommonDataService implements SystemConstant {
 		supportedDatasetCodes.add(DATASET_ALL);
 		supportedDatasetCodes.addAll(datasetCodes);
 		return supportedDatasetCodes;
+	}
+
+	@Transactional
+	public List<Dataset> getTermDatasets() {
+		List<Dataset> allDatasets = commonDataDbService.getDatasets();
+		List<Dataset> termDatasets = allDatasets.stream().filter(dataset -> DatasetType.TERM.equals(dataset.getType())).collect(Collectors.toList());
+		return termDatasets;
 	}
 }

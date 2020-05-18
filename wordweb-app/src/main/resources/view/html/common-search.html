@@ -119,18 +119,18 @@
       </div>
     </div>
   </th:block>
-  <th:block th:fragment="lexeme-data">
+  <th:block th:fragment="lexeme-data" th:with="isLex = ${lexeme.datasetType.name() == 'LEX'}, isTerm = ${lexeme.datasetType.name() == 'TERM'}">
     <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-4 pl-3': ''">
       <h6 class="font-weight-bold" th:if="${lexeme.datasetName != null}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</h6>
       <div class="d-flex flex-row">
-        <th:block th:if="${lexeme.datasetType.name() == 'LEX' && wordData.multipleLexLexemesExist}">
+        <th:block th:if="${isLex && wordData.multipleLexLexemesExist}">
           <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
         </th:block>
         <div>
           <div class="meaning">
             <div class="definition-row definition-area">
               <div class="mb-3" th:if="${lexeme.showSection1}">
-                <th:block th:if="${lexeme.datasetType.name() == 'TERM'}">
+                <th:block th:if="${isTerm}">
                   <span>ID:</span>
                   <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
                 </th:block>
@@ -189,39 +189,64 @@
               <div class="synonyms">
                 <div class="additional-meta d-flex flex-wrap">
                   <span th:text="#{label.same.as}" class="mr-2">sama mis</span>
-                  <span class="text-nowrap mr-1" th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}">
-                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
-                      <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
-                    </a>
-                    <span th:if="${meaningWord.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
-                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
-                        <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
-                      </th:block>
+                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}"
+                            th:with="
+                            isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
+                            isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
+                    <span class="collapsable text-nowrap mr-1" th:data-collapse="${isCollapsable}" th:style="${isCollapsable ? 'display: none' : ''}">
+                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
+                        <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
+                      </a>
+                      <span th:if="${meaningWord.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
+                        <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
+                          <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                        </th:block>
+                      </span>
+                      <span th:unless="${meaningWordIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
                     </span>
-                    <span th:unless="${meaningWordIter.last}" class="ml-n1">,</span>
-                  </span>
+                  </th:block>
                 </div>
+                <button class="show-more btn btn-link-muted btn-sm ml-n2" aria-expanded="false" th:data-see-more="#{button.see.more}"
+                        name="expand-btn" th:data-see-less="#{button.see.less}"
+                        th:if="${#lists.size(lexeme.sourceLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
+                  <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
+                  <span th:text="#{button.see.more}"></span>
+                </button>
               </div>
             </div>
             <div class="matches" th:if="${not #maps.isEmpty(lexeme.destinLangMatchWordsByLang)}">
               <div class="additional-meta">
-                <div class="d-flex flex-wrap" th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
-                  <span class="lang-code lang-code-sm mr-2 align-self-start" 
-                        th:with="langData=${viewUtil.getLangData(meaningWordEntry.key)}" 
-                        th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                  <span class="text-nowrap mr-1" th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}">
-                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word "
-                       th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
-                      <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
-                    </a>
-                    <span th:if="${meaningWord.additionalDataExists}" class="text-small text-uppercase">
-                      <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
-                        <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
-                      </th:block>
-                    </span>
-                    <span th:unless="${meaningWordIter.last}" class="ml-n1">,</span>
-                  </span>
-                </div>
+                <th:block th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}">
+                  <div class="d-flex flex-wrap">
+                    <span class="lang-code lang-code-sm mr-2 align-self-start" 
+                          th:with="langData=${viewUtil.getLangData(meaningWordEntry.key)}" 
+                          th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                    <th:block th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}"
+                              th:with="
+                              isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
+                              isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
+                      <span class="collapsable text-nowrap mr-1" th:data-collapse="${isCollapsable}" th:style="${isCollapsable ? 'display: none' : ''}">
+                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word "
+                           th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
+                          <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
+                        </a>
+                        <span th:if="${meaningWord.additionalDataExists}" class="text-small">
+                          <span th:if="${isTerm && (meaningWord.mwLexValueState != null)}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                          <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
+                            <span class="type-two text-uppercase" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                          </th:block>
+                        </span>
+                        <span th:unless="${meaningWordIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
+                      </span>
+                    </th:block>
+                  </div>
+                  <button class="show-more btn btn-link-muted btn-sm ml-n2" aria-expanded="false" th:data-see-more="#{button.see.more}"
+                          name="expand-btn" th:data-see-less="#{button.see.less}"
+                          th:if="${#lists.size(meaningWordEntry.value) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
+                    <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
+                    <span th:text="#{button.see.more}"></span>
+                  </button>
+                </th:block>
               </div>
             </div>
             <div class="meaning-meta" th:if="${not #lists.isEmpty(lexeme.odLexemeRecommendations)}">
@@ -254,13 +279,15 @@
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                     </a>
-                    <th:block th:each="register, rIter : ${relation.lexRegisters}">
-                      <span class="rections register">
-                        <span th:if="${rIter.first}" class="mr-n1">(</span>
-                        <span th:text="${register.value}"></span>
-                        <span th:unless="${rIter.last}" class="ml-n1">,</span>
-                        <span th:if="${rIter.last}" class="ml-n1">)</span>
-                      </span>
+                    <th:block th:if="${isLex && !#lists.isEmpty(relation.lexRegisters)}">
+                      <th:block th:each="register, rIter : ${relation.lexRegisters}">
+                        <span class="rections register">
+                          <span th:if="${rIter.first}" class="mr-n1">(</span>
+                          <span th:text="${register.value}"></span>
+                          <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                          <span th:if="${rIter.last}" class="ml-n1">)</span>
+                        </span>
+                      </th:block>
                     </th:block>
                     <span th:unless="${relationIter.last}" class="ml-n1">,</span>
                   </div>
@@ -329,8 +356,9 @@
               <span class="tag mb-1 d-inline-block" th:each="government,iter : ${lexeme.governments}" th:text="${government.value}"> </span>
             </div>
             <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
-              <th:block th:each="usage,usageIter : ${lexeme.usages}">
-                <div class="usage-item">
+              <th:block th:each="usage,usageIter : ${lexeme.usages}"
+                        th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
+                <div class="collapsable usage-item" th:data-collapse="${isCollapsable}" th:style="${isCollapsable ? 'display: none' : ''}">
                   <div class="example-sentence-wrap">
                     <span class="example-text example-text-w-audio">
                       <span th:utext="${usage.usagePrese}"></span>
@@ -372,6 +400,11 @@
                   </div>
                 </div>
               </th:block>
+              <button class="show-more text-left btn btn-link-muted btn-sm ml-n2" aria-expanded="false" th:data-see-more="#{button.see.more}"
+                      name="expand-btn" th:data-see-less="#{button.see.less}" th:if="${lexeme.moreUsages}">
+                <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
+                <span th:text="#{button.see.more}"></span>
+              </button>
             </div>
             <div class="mt-3 d-flex flex-wrap row" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
               <th:block th:each="imageFile : ${lexeme.imageFiles}">

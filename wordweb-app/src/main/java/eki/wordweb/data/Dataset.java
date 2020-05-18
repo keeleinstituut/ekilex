@@ -1,5 +1,6 @@
 package eki.wordweb.data;
 
+import eki.common.constant.DatasetType;
 import eki.common.data.AbstractDataObject;
 
 public class Dataset extends AbstractDataObject {
@@ -8,9 +9,13 @@ public class Dataset extends AbstractDataObject {
 
 	private String code;
 
+	private DatasetType type;
+
 	private String name;
 
 	private String description;
+
+	private boolean isSuperior;
 
 	public String getCode() {
 		return code;
@@ -18,6 +23,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public DatasetType getType() {
+		return type;
+	}
+
+	public void setType(DatasetType type) {
+		this.type = type;
 	}
 
 	public String getName() {
@@ -34,6 +47,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public boolean isSuperior() {
+		return isSuperior;
+	}
+
+	public void setSuperior(boolean isSuperior) {
+		this.isSuperior = isSuperior;
 	}
 
 }

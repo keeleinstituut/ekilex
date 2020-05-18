@@ -41,3 +41,8 @@ update freeform
    set value_prese = trim(regexp_replace(regexp_replace(value_prese, '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g')),
    value_text = trim(regexp_replace(regexp_replace(value_text, '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
    where value_prese != trim(regexp_replace(regexp_replace(value_prese, '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'));
+
+-- väärtusolekute jrk
+   
+update value_state set order_by = 5 where code = 'väldi';
+update value_state set order_by = 4 where code = 'endine';

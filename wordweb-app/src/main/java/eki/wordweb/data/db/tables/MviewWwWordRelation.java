@@ -4,14 +4,19 @@
 package eki.wordweb.data.db.tables;
 
 
+import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRelationRecord;
 import eki.wordweb.data.db.udt.records.TypeWordRelationRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -34,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
 
-    private static final long serialVersionUID = -1128616063;
+    private static final long serialVersionUID = 1528110318;
 
     /**
      * The reference instance of <code>public.mview_ww_word_relation</code>
@@ -103,6 +108,14 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_RELATION_WORD_ID_IDX);
     }
 
     /**

@@ -78,7 +78,8 @@ public class UnifSearchService extends AbstractSearchService {
 			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 			lexemeConversionUtil.flagEmptyLexemes(lexLexemes);
-			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());			
+			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
+			lexemeConversionUtil.sortLexemes(lexLexemes, DatasetType.LEX);
 		}
 
 		// term conv
@@ -87,6 +88,7 @@ public class UnifSearchService extends AbstractSearchService {
 			lexemeConversionUtil.compose(
 					DatasetType.TERM, wordLang, termLexemes, lexemeMeaningTupleMap,
 					allRelatedWords, langOrderByMap, dataFilter, displayLang);
+			lexemeConversionUtil.sortLexemes(termLexemes, DatasetType.TERM);
 		}
 
 		// word common

@@ -70,8 +70,13 @@ public class ClassifierUtil {
 	}
 
 	public void applyClassifiers(Lexeme lexeme, String displayLang) {
+		String classifierCode;
+		Classifier classifier;
 		List<Classifier> classifiers;
 		List<String> classifierCodes;
+		classifierCode = lexeme.getValueStateCode();
+		classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
+		lexeme.setValueState(classifier);
 		classifierCodes = lexeme.getRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
 		lexeme.setRegisters(classifiers);

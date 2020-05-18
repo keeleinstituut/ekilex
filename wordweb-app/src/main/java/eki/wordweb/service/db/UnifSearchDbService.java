@@ -1,6 +1,5 @@
 package eki.wordweb.service.db;
 
-import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
@@ -27,7 +26,6 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.Routines;
-import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
@@ -135,7 +133,6 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 		List<String> datasetCodes = dataFilter.getDatasetCodes();
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
-		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
 
 		Condition where = l.WORD_ID.eq(wordId);
@@ -157,7 +154,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 			where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
 		}
 
-		return getLexemes(l, ds, lr, where);
+		return getLexemes(l, lr, where);
 	}
 
 }

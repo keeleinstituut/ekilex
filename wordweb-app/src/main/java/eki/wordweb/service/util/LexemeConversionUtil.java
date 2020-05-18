@@ -1,6 +1,8 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,26 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 	public List<Lexeme> filterLexemes(List<Lexeme> lexemes, Complexity lexComplexity) {
 		return filterSimpleOnly(lexemes, lexComplexity);
+	}
+
+	public void sortLexemes(List<Lexeme> lexemes, DatasetType datasetType) {
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
+		}
+		if (datasetType == null) {
+			return;
+		}
+		if (DatasetType.LEX.equals(datasetType)) {
+			Collections.sort(lexemes, Comparator
+					.comparing(Lexeme::getDatasetOrderBy)
+					.thenComparing(Lexeme::getLevel1)
+					.thenComparing(Lexeme::getLevel2));
+		} else if (DatasetType.TERM.equals(datasetType)) {
+			Collections.sort(lexemes, Comparator
+					.comparing(Lexeme::getDatasetOrderBy)
+					.thenComparing(Lexeme::getValueStateOrderBy, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(Lexeme::getLexemeOrderBy));
+		}
 	}
 
 	public void flagEmptyLexemes(List<Lexeme> lexemes) {

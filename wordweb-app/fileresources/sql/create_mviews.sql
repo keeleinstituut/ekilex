@@ -219,13 +219,17 @@ dblink(
 	lexeme_id bigint,
 	word_id bigint,
 	meaning_id bigint,
-	dataset_type varchar(10),
 	dataset_code varchar(10),
+	dataset_type varchar(10),
+	dataset_name text,
+	value_state_code varchar(100),
 	level1 integer,
 	level2 integer,
 	weight numeric(5,4),
 	complexity varchar(100),
-	lex_order_by bigint,
+	dataset_order_by bigint,
+	lexeme_order_by bigint,
+	value_state_order_by bigint,
 	lang_complexities type_lang_complexity array,
 	register_codes varchar(100) array,
 	pos_codes varchar(100) array,
@@ -359,8 +363,10 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_dataset') as dataset(
 	code varchar(10),
+	type varchar(10),
 	name text,
 	description text,
+	is_superior boolean,
 	order_by bigint
 );
 

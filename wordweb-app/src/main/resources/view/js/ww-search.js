@@ -116,8 +116,8 @@ $(document).on("click", ".show-more", function () {
     }
 });
 
-$(document).on("click", "button[name='expand-word-type-group-btn']", function() {
-	$(this).parent().find(".word-options[data-collapse='true']").fadeToggle("slow", "linear");
+$(document).on("click", "button[name='expand-btn']", function() {
+	$(this).parent().find(".collapsable[data-collapse='true']").fadeToggle("slow", "linear");
 });
 
 $(window).on("popstate", function (e) {

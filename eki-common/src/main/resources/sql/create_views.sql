@@ -737,13 +737,17 @@ as
 select l.id lexeme_id,
        l.word_id,
        l.meaning_id,
-       ds.type dataset_type,
        l.dataset_code,
+       ds.type dataset_type,
+       ds.name dataset_name,
+       l.value_state_code,
        l.level1,
        l.level2,
        l.weight,
        l.complexity,
-       l.order_by lex_order_by,
+       ds.order_by dataset_order_by,
+       l.order_by lexeme_order_by,
+       l_vs.order_by value_state_order_by,
        l_lc.lang_complexities,
        l_reg.register_codes,
        l_pos.pos_codes,
@@ -757,6 +761,7 @@ select l.id lexeme_id,
        odlr.od_lexeme_recommendations
 from lexeme l
   inner join dataset ds on ds.code = l.dataset_code
+  left outer join value_state l_vs on l_vs.code = l.value_state_code
   left outer join (select l_reg.lexeme_id,
                           array_agg(l_reg.register_code order by l_reg.order_by) register_codes
                    from lexeme_register l_reg
@@ -1882,8 +1887,10 @@ create view view_ww_dataset
   as
     (select
        code,
+       type,
        name,
        description,
+       is_superior,
        order_by
      from dataset
      where dataset.is_public = true

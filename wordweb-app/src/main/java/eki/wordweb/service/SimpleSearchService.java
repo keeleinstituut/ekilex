@@ -74,6 +74,7 @@ public class SimpleSearchService extends AbstractSearchService {
 			lexemes = lexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			collocConversionUtil.compose(wordId, lexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexemes);
+			lexemeConversionUtil.sortLexemes(lexemes, DatasetType.LEX);
 		}
 
 		// word common
