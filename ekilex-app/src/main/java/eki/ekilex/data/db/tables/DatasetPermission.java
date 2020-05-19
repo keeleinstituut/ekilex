@@ -4,6 +4,11 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
+import eki.ekilex.data.db.Keys;
+import eki.ekilex.data.db.Public;
+import eki.ekilex.data.db.tables.records.DatasetPermissionRecord;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,11 +26,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-
-import eki.ekilex.data.db.Indexes;
-import eki.ekilex.data.db.Keys;
-import eki.ekilex.data.db.Public;
-import eki.ekilex.data.db.tables.records.DatasetPermissionRecord;
 
 
 /**

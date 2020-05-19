@@ -4,12 +4,6 @@
 package eki.ekilex.data.db;
 
 
-import javax.annotation.Generated;
-
-import org.jooq.Index;
-import org.jooq.OrderField;
-import org.jooq.impl.Internal;
-
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -119,6 +113,12 @@ import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
+
+import javax.annotation.Generated;
+
+import org.jooq.Index;
+import org.jooq.OrderField;
+import org.jooq.impl.Internal;
 
 
 /**

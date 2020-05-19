@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 315735011;
+    private static final long serialVersionUID = -2046775873;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme</code>
@@ -70,14 +70,24 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
     public final TableField<ViewWwLexemeRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.view_ww_lexeme.dataset_code</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+
+    /**
      * The column <code>public.view_ww_lexeme.dataset_type</code>.
      */
     public final TableField<ViewWwLexemeRecord, String> DATASET_TYPE = createField("dataset_type", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
-     * The column <code>public.view_ww_lexeme.dataset_code</code>.
+     * The column <code>public.view_ww_lexeme.dataset_name</code>.
      */
-    public final TableField<ViewWwLexemeRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<ViewWwLexemeRecord, String> DATASET_NAME = createField("dataset_name", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_lexeme.value_state_code</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, String> VALUE_STATE_CODE = createField("value_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.level1</code>.
@@ -100,9 +110,19 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
     public final TableField<ViewWwLexemeRecord, String> COMPLEXITY = createField("complexity", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.view_ww_lexeme.lex_order_by</code>.
+     * The column <code>public.view_ww_lexeme.dataset_order_by</code>.
      */
-    public final TableField<ViewWwLexemeRecord, Long> LEX_ORDER_BY = createField("lex_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwLexemeRecord, Long> DATASET_ORDER_BY = createField("dataset_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_lexeme.lexeme_order_by</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, Long> LEXEME_ORDER_BY = createField("lexeme_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_lexeme.value_state_order_by</code>.
+     */
+    public final TableField<ViewWwLexemeRecord, Long> VALUE_STATE_ORDER_BY = createField("value_state_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.lang_complexities</code>.

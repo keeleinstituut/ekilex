@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeTermMeaningWord extends UDTImpl<TypeTermMeaningWordRecord> {
 
-    private static final long serialVersionUID = 1998368920;
+    private static final long serialVersionUID = -1115351259;
 
     /**
      * The reference instance of <code>public.type_term_meaning_word</code>
@@ -93,6 +93,21 @@ public class TypeTermMeaningWord extends UDTImpl<TypeTermMeaningWordRecord> {
      * The attribute <code>public.type_term_meaning_word.matching_word</code>.
      */
     public static final UDTField<TypeTermMeaningWordRecord, Boolean> MATCHING_WORD = createField("matching_word", org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_term_meaning_word.most_preferred</code>.
+     */
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> MOST_PREFERRED = createField("most_preferred", org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_term_meaning_word.least_preferred</code>.
+     */
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> LEAST_PREFERRED = createField("least_preferred", org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_term_meaning_word.is_public</code>.
+     */
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> IS_PUBLIC = createField("is_public", org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.dataset_codes</code>.

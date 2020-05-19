@@ -4,6 +4,8 @@
 package eki.ekilex.data.db.tables.records;
 
 
+import eki.ekilex.data.db.tables.Collocation;
+
 import java.math.BigDecimal;
 
 import javax.annotation.Generated;
@@ -13,8 +15,6 @@ import org.jooq.Record1;
 import org.jooq.Record7;
 import org.jooq.Row7;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import eki.ekilex.data.db.tables.Collocation;
 
 
 /**

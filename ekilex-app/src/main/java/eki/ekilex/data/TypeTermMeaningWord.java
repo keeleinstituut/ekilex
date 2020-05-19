@@ -26,6 +26,12 @@ public class TypeTermMeaningWord extends AbstractDataObject implements Decorated
 
 	private boolean matchingWord;
 
+	private boolean mostPreferred;
+
+	private boolean leastPreferred;
+
+	private boolean isPublic;
+
 	private String[] datasetCodes;
 
 	public Long getWordId() {
@@ -118,6 +124,30 @@ public class TypeTermMeaningWord extends AbstractDataObject implements Decorated
 
 	public void setMatchingWord(boolean matchingWord) {
 		this.matchingWord = matchingWord;
+	}
+
+	public boolean isMostPreferred() {
+		return mostPreferred;
+	}
+
+	public void setMostPreferred(boolean mostPreferred) {
+		this.mostPreferred = mostPreferred;
+	}
+
+	public boolean isLeastPreferred() {
+		return leastPreferred;
+	}
+
+	public void setLeastPreferred(boolean leastPreferred) {
+		this.leastPreferred = leastPreferred;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public String[] getDatasetCodes() {

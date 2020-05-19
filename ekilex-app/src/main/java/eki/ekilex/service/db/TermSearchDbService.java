@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record11;
-import org.jooq.Record16;
+import org.jooq.Record14;
+import org.jooq.Record19;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
@@ -571,7 +571,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Field<String[]> wtf = getWordTypesField(wo.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(wo.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(wo.ID);
-		Field<Boolean> wtz = getWordIsForeignField(wo.ID);
+		Field<Boolean> wtzf = getWordIsForeignField(wo.ID);
+		Field<Boolean> imwf = DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class))));
+
+		Field<Boolean> lvsmpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED));
+		Field<Boolean> lvslpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED));
+		Field<Boolean> lpspf = DSL.field(lo.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -594,7 +599,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewo = wherewo.and(wo.LANG.eq(resultLang));
 		}
 
-		Table<Record16<Long, Long, String, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], Boolean, Long, Long>> mm = DSL
+		Table<Record19<Long, Long, String, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[], Long, Long>> mm = DSL
 				.select(
 						m.field("meaning_id", Long.class),
 						pm.WORD_ID.as("order_by_word_id"),
@@ -607,9 +612,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
-						wtz.as("foreign"),
+						wtzf.as("foreign"),
+						imwf.as("matching_word"),
+						lvsmpf.as("most_preferred"),
+						lvslpf.as("least_preferred"),
+						lpspf.as("is_public"),
 						wds.as("dataset_codes"),
-						DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class)))).as("matching_word"),
 						wol.ORDER_BY.as("lang_order_by"),
 						lo.ORDER_BY.as("lex_order_by"))
 				.from(m
@@ -637,6 +645,9 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						+ "m.suffixoid,"
 						+ "m.foreign,"
 						+ "m.matching_word,"
+						+ "m.most_preferred,"
+						+ "m.least_preferred,"
+						+ "m.is_public,"
 						+ "m.dataset_codes"
 						+ ")::type_term_meaning_word "
 						+ "order by "
@@ -699,6 +710,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			SearchDatasetsRestriction searchDatasetsRestriction,
 			String resultLang, boolean fetchAll, int offset) {
 
+		Lexeme lm = LEXEME.as("lm");
 		Word wm = WORD.as("wm");
 		Paradigm pm = PARADIGM.as("pm");
 		Form fm = FORM.as("fm");
@@ -709,6 +721,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(wmid.field("word_id", Long.class));
 		Field<Boolean> wtsf = getWordIsSuffixoidField(wmid.field("word_id", Long.class));
 		Field<Boolean> wtz = getWordIsForeignField(wmid.field("word_id", Long.class));
+
+		Field<Boolean> lvsmpf = DSL.field(lm.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED));
+		Field<Boolean> lvslpf = DSL.field(lm.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED));
+		Field<Boolean> lpspf = DSL.field(lm.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -728,7 +744,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewm = wherewm.and(wm.LANG.eq(resultLang));
 		}
 
-		Table<Record11<Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[]>> wmm = DSL
+		Table<Record14<Long,Long,String,String,Integer,String,String[],Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,String[]>> wmm = DSL
 				.select(
 						wmid.field("meaning_id", Long.class),
 						wmid.field("word_id", Long.class),
@@ -740,14 +756,19 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
+						lvsmpf.as("most_preferred"),
+						lvslpf.as("least_preferred"),
+						lpspf.as("is_public"),
 						wds.as("dataset_codes"))
 				.from(wmid
+						.innerJoin(lm).on(lm.WORD_ID.eq(wmid.field("word_id", Long.class)).and(lm.MEANING_ID.eq(wmid.field("meaning_id", Long.class))))
 						.innerJoin(wm).on(wherewm)
 						.innerJoin(pm).on(pm.WORD_ID.eq(wm.ID))
 						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name()))))
 				.groupBy(
 						wmid.field("word_id"),
 						wmid.field("meaning_id"),
+						lm.ID,
 						fm.VALUE,
 						fm.VALUE_PRESE,
 						wm.HOMONYM_NR,
@@ -766,6 +787,9 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						+ "wm.suffixoid,"
 						+ "wm.foreign,"
 						+ "true,"
+						+ "wm.most_preferred,"
+						+ "wm.least_preferred,"
+						+ "wm.is_public,"
 						+ "wm.dataset_codes"
 						+ ")::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
 

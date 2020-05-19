@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.PagingResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.service.db.CommonDataDbService;
@@ -33,7 +35,9 @@ public abstract class AbstractSearchService extends AbstractService implements S
 	protected SearchDatasetsRestriction composeDatasetsRestriction(List<String> selectedDatasetCodes) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
-		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUser user = userService.getAuthenticatedUser();
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		List<Dataset> availableDatasets = permissionDbService.getUserVisibleDatasets(userId);
 		List<String> availableDatasetCodes = availableDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
 		int availableDatasetsCount = availableDatasets.size();
@@ -46,6 +50,7 @@ public abstract class AbstractSearchService extends AbstractService implements S
 			filteringDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		}
 		boolean singleFilteringDataset = filteringDatasetCodes.size() == 1;
+		searchDatasetsRestriction.setUserRole(userRole);
 		searchDatasetsRestriction.setAvailableDatasetCodes(availableDatasetCodes);
 		searchDatasetsRestriction.setFilteringDatasetCodes(filteringDatasetCodes);
 		searchDatasetsRestriction.setNoDatasetsFiltering(noDatasetsFiltering);

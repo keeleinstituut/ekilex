@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
 
-    private static final long serialVersionUID = 584789173;
+    private static final long serialVersionUID = -622232425;
 
     /**
      * The reference instance of <code>public.view_ww_dataset</code>
@@ -54,6 +54,11 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
     public final TableField<ViewWwDatasetRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
+     * The column <code>public.view_ww_dataset.type</code>.
+     */
+    public final TableField<ViewWwDatasetRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+
+    /**
      * The column <code>public.view_ww_dataset.name</code>.
      */
     public final TableField<ViewWwDatasetRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB, this, "");
@@ -62,6 +67,11 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
      * The column <code>public.view_ww_dataset.description</code>.
      */
     public final TableField<ViewWwDatasetRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_dataset.is_superior</code>.
+     */
+    public final TableField<ViewWwDatasetRecord, Boolean> IS_SUPERIOR = createField("is_superior", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.view_ww_dataset.order_by</code>.

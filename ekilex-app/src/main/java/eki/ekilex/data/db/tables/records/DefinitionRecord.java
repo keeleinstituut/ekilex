@@ -4,6 +4,8 @@
 package eki.ekilex.data.db.tables.records;
 
 
+import eki.ekilex.data.db.tables.Definition;
+
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -11,8 +13,6 @@ import org.jooq.Record1;
 import org.jooq.Record9;
 import org.jooq.Row9;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import eki.ekilex.data.db.tables.Definition;
 
 
 /**

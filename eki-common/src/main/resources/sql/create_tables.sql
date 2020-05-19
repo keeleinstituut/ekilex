@@ -1,4 +1,18 @@
-create type type_term_meaning_word as (word_id bigint, word_value text, word_value_prese text, homonym_nr integer, lang char(3), word_type_codes varchar(100) array, prefixoid boolean, suffixoid boolean, "foreign" boolean, matching_word boolean, dataset_codes varchar(10) array);
+create type type_term_meaning_word as (
+				word_id bigint,
+				word_value text,
+				word_value_prese text,
+				homonym_nr integer,
+				lang char(3),
+				word_type_codes varchar(100) array,
+				prefixoid boolean,
+				suffixoid boolean,
+				"foreign" boolean,
+				matching_word boolean,
+				most_preferred boolean,
+				least_preferred boolean,
+				is_public boolean,
+				dataset_codes varchar(10) array);
 create type type_word_rel_param as (name text, value numeric(5, 4));
 create type type_classifier as (name varchar(100), code varchar(100), value text);
 

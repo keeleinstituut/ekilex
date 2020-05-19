@@ -10,6 +10,10 @@ public interface GlobalConstant {
 
 	String PROCESS_STATE_COMPLETE = "valmis";
 
+	String VALUE_STATE_MOST_PREFERRED = "eelistermin";
+
+	String VALUE_STATE_LEAST_PREFERRED = "väldi";
+
 	String LEXEME_TYPE_PRIMARY = LexemeType.PRIMARY.name();
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();

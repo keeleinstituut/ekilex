@@ -46,3 +46,22 @@ update freeform
    
 update value_state set order_by = 5 where code = 'väldi';
 update value_state set order_by = 4 where code = 'endine';
+
+-- uus termini db tüübi struktuur
+
+drop type type_term_meaning_word;
+create type type_term_meaning_word as (
+				word_id bigint,
+				word_value text,
+				word_value_prese text,
+				homonym_nr integer,
+				lang char(3),
+				word_type_codes varchar(100) array,
+				prefixoid boolean,
+				suffixoid boolean,
+				"foreign" boolean,
+				matching_word boolean,
+				most_preferred boolean,
+				least_preferred boolean,
+				is_public boolean,
+				dataset_codes varchar(10) array);
