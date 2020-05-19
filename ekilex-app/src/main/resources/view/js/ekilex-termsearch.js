@@ -120,9 +120,10 @@ function loadMeaningDetails(meaningId) {
 		var detailsDiv = $('#meaning-details-area');
 		var scrollPos = detailsDiv.scrollTop();
 		detailsDiv.replaceWith(data);
+		detailsDiv = $('#meaning-details-area');
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
-		$('#meaning-details-area').scrollTop(scrollPos);
+		detailsDiv.scrollTop(scrollPos);
 		$("#meaning_select_wait_" + meaningId).hide();
 		$("#meaning_select_point_" + meaningId).show();
 		closeWaitDlg();
