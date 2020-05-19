@@ -42,10 +42,7 @@
     </div>
   </div>
   <th:block th:fragment="word_details" th:if="${details != null}">
-    <div th:data-id="${wordId}" id="word-details-area" class="h-100"
-         th:with="
-           isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
-           isWordReadGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:READ'')')}">
+    <div th:data-id="${wordId}" id="word-details-area" class="h-100">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="word-details-btn" data-refresh></button>
       <div class="navigate-panel card shadow h-100">
         <div class="card-body p-0 d-flex flex-column h-100">
@@ -58,7 +55,7 @@
                           title="Muuda"
                           data-toggle="modal"
                           th:data-target="${'#editWordValueDlg_' + wordId}"
-                          sec:authorize="${#vars.isWordCrudGranted}">
+                          sec:authorize="#vars.details.word.crudGrant">
                     <i class="fa fa-pencil action-icon" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -70,11 +67,11 @@
                   <input type="hidden" name="wordId" th:value="${details.word.wordId}">
                   <button type="submit" class="btn btn-secondary btn-compact"
                           title="Ühenda keelendid"
-                          sec:authorize="${#vars.isWordCrudGranted}">Ühenda
+                          sec:authorize="#vars.details.word.crudGrant">Ühenda
                   </button>
                 </form>
               </div>
-              <div sec:authorize="${#vars.isWordReadGranted}" class="ml-auto d-flex align-items-center flex-row">
+              <div sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
                 <span class="text-secondary mr-1"> Logid </span>
                 <div class="btn-group ">
                   <a th:href="@{'/wordprocesslog:' + ${wordId}}" data-toggle="modal"
@@ -89,7 +86,7 @@
                   <button type="button" class="btn btn-secondary btn-compact px-0"
                           data-toggle="modal"
                           th:data-target="${'#addWordProcessLogDlg_' + wordId}"
-                          sec:authorize="${#vars.isWordCrudGranted}">
+                          sec:authorize="#vars.details.word.crudGrant">
                     <i class="action-icon fa fa-plus px-2 d-block" aria-hidden="true" title="Lisa kommentaar" data-toggle="tooltip"></i>
                   </button>
                 </div>
@@ -159,7 +156,7 @@
                   <button type="button" class="btn badge badge-success"
                           title="Lisa ÕS soovitab" data-toggle="modal"
                           th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
-                          sec:authorize="${#vars.isWordCrudGranted}">
+                          sec:authorize="#vars.details.word.crudGrant">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                   <div th:each="odWordRecommendation, itemIter : ${details.odWordRecommendations}">
@@ -172,7 +169,7 @@
                                   title="Muuda"
                                   data-toggle="modal"
                                   th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
-                                  sec:authorize="${#vars.isWordCrudGranted}">
+                                  sec:authorize="#vars.details.word.crudGrant">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
                           <button type="button" class="btn badge badge-warning"
@@ -180,7 +177,7 @@
                                   data-op-code="od_word_recommendation"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
-                                  sec:authorize="${#vars.isWordCrudGranted}">
+                                  sec:authorize="#vars.details.word.crudGrant">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                         </div>
@@ -223,13 +220,13 @@
                   <button type="button" class="btn badge badge-success"
                           title="Lisa seos" data-toggle="modal"
                           th:data-target="${'#addWordRelationDlg_' + wordId}"
-                          sec:authorize="${#vars.isWordCrudGranted}">
+                          sec:authorize="#vars.details.word.crudGrant">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                   <table class="orderable" data-op-code="word_relation" th:if="${not #lists.isEmpty(details.wordRelations)}">
                     <tr th:each="relation, itemIter : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                       <td class="action-column">
-                        <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="${#vars.isWordCrudGranted}"></th:block>
+                        <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.details.word.crudGrant"></th:block>
                       </td>
                       <td class="invisible-buttons">
                         <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
@@ -240,7 +237,7 @@
                                 data-op-code="word_relation"
                                 data-toggle="delete-confirm"
                                 data-placement="left"
-                                sec:authorize="${#vars.isWordCrudGranted}">
+                                sec:authorize="#vars.details.word.crudGrant">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
                       </td>
@@ -261,7 +258,7 @@
                                   data-op-code="word_relation"
                                   data-toggle="delete-confirm"
                                   data-placement="left"
-                                  sec:authorize="${#vars.isWordCrudGranted}">
+                                  sec:authorize="#vars.details.word.crudGrant">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                           <span th:unless="${itemIter.last}"></span>

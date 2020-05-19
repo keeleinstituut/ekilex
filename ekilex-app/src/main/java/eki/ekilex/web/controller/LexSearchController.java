@@ -26,6 +26,7 @@ import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
@@ -153,14 +154,19 @@ public class LexSearchController extends AbstractSearchController implements Sys
 	}
 
 	@GetMapping("/lexemesearch")
-	public String searchLexeme(@RequestParam String searchFilter, @RequestParam Long lexemeId, Model model) {
+	public String searchLexeme(
+			@RequestParam String searchFilter,
+			@RequestParam Long lexemeId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
 
 		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
+		Long userId = userService.getAuthenticatedUser().getId();
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
 		List<String> datasets = Arrays.asList(lexeme.getDatasetCode());
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets, userId);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_search_result";
@@ -172,8 +178,10 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		logger.debug("meaning search {}", searchFilter);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		List<String> selectedDatasets = getUserPreferredDatasetCodes();
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, selectedDatasets);
+		Long userId = userService.getAuthenticatedUser().getId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		List<String> selectedDatasets = userProfile.getPreferredDatasets();
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, selectedDatasets, userId);
 		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();
 		for (WordLexeme lexeme : lexemes) {
@@ -204,11 +212,12 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("word details for {}", wordId);
 
-		List<String> selectedDatasets = getUserPreferredDatasetCodes();
+		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Long userId = userService.getAuthenticatedUser().getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile, false);
+		List<String> selectedDatasets = userProfile.getPreferredDatasets();
+		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile, userRole, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
@@ -224,11 +233,12 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("lexeme {} details for {}", composition, lexemeId);
 
+		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Long userId = userService.getAuthenticatedUser().getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		boolean isFullData = StringUtils.equals(composition, "full");
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, isFullData);
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, userRole, isFullData);
 		lexeme.setLevels(levels);
 		model.addAttribute("lexeme", lexeme);
 

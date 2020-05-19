@@ -29,6 +29,8 @@ import eki.ekilex.web.bean.SessionBean;
 @Component
 public class EkilexPermissionEvaluator implements PermissionEvaluator {
 
+	// This class is currently not used, but is available for possible future use (for example @PreAuthorize)
+
 	private static Logger logger = LoggerFactory.getLogger(EkilexPermissionEvaluator.class);
 
 	private static final char PERM_KEY_VALUE_SEPARATOR = ':';
@@ -95,11 +97,11 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 			} else if (StringUtils.equals(LifecycleEntity.MEANING.name(), targetType)) {
 				isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
 			} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, providedDatasetCode);
+				isPermGranted = permissionDbService.isGrantedForLexeme(entityId, providedDatasetCode);
 			} else if (StringUtils.equals(LifecycleEntity.DEFINITION.name(), targetType)) {
 				isPermGranted = permissionDbService.isGrantedForDefinition(entityId, providedDatasetCode, providedAuthLang);
 			} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, providedDatasetCode, providedAuthLang);
+				isPermGranted = permissionDbService.isGrantedForUsage(entityId, providedDatasetCode, providedAuthLang);
 			} else if (StringUtils.equals(LifecycleEntity.SOURCE.name(), targetType)) {
 				isPermGranted = permissionDbService.isGrantedForSource(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
 			}

@@ -171,14 +171,14 @@
                   title="Muuda sünonüümi ilmiku kaalu"
                   data-toggle="modal"
                   th:data-target="${'#editSynLexemeWeightDlg_' + meaningWord.lexemeId}"
-                  sec:authorize="${#vars.isLexemeCrudGranted}">
+                  sec:authorize="#vars.lexeme.crudGrant">
             <i class="fa fa-edit" aria-hidden="true"></i>
           </button>
           <button type="button" class="hover-actions btn btn-secondary btn-xs ml-2"
                   th:data-id="${meaningWord.lexemeId}"
                   data-callback="refreshDetails"
                   data-toggle="deleteLexemeAndWordAndMeaning"
-                  sec:authorize="${#vars.isLexemeCrudGranted}">
+                  sec:authorize="#vars.lexeme.crudGrant">
             <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda sünonüüm"></i>
           </button>
           <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
@@ -187,13 +187,13 @@
     </div>
   </th:block>
 
-  <div th:fragment="syn_logdata" sec:authorize="${#vars.isWordCrudGranted}" class="ml-auto d-flex align-items-center flex-row">
+  <div th:fragment="syn_logdata" sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
     <span class="text-secondary mr-1"> Logid </span>
     <div class="btn-group ">
       <a th:href="@{'/wordprocesslog:' + ${wordId}}" data-toggle="modal"
          data-target="#processLogDlg"
          class="btn btn-secondary btn-compact position-relative pr-1"
-         sec:authorize="${#vars.isWordCrudGranted}">
+         sec:authorize="#vars.details.word.readGrant">
         <span class="d-block" data-toggle="tooltip" title="Vaata kommentaare">
           Kommentaarid
           <span class="badge badge-counter" th:text="${details.wordProcessLogCount}" th:classappend="${details.wordProcessLogCount > 0}?'badge-danger':'badge-secondary'">0</span>
@@ -202,7 +202,7 @@
       <button type="button" class="btn btn-secondary btn-compact px-0"
               data-toggle="modal"
               th:data-target="${'#addWordProcessLogDlg_' + wordId}"
-              sec:authorize="${#vars.isWordCrudGranted}">
+              sec:authorize="#vars.details.word.crudGrant">
         <i class="action-icon fa fa-plus px-2 d-block" aria-hidden="true" title="Lisa kommentaar" data-toggle="tooltip"></i>
       </button>
     </div>
@@ -219,7 +219,7 @@
     <a th:href="@{'/wordlifecyclelog:' + ${wordId}}" data-toggle="modal"
        data-target="#wordLifecycleLogDlg"
        class="btn btn-secondary btn-compact ml-2"
-       sec:authorize="${#vars.isWordCrudGranted}">Tegevused</a>
+       sec:authorize="#vars.details.word.readGrant">Tegevused</a>
     <div id="wordLifecycleLogDlg" class="modal" role="dialog">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">

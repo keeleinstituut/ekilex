@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,13 +25,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
-public class SourceEditController extends AbstractPageController {
+public class SourceEditController extends AbstractSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
 
@@ -158,9 +161,15 @@ public class SourceEditController extends AbstractPageController {
 	}
 
 	@PostMapping(SOURCE_JOIN_URI)
-	public String joinSources(@RequestParam("sourceId") Long sourceId, @RequestParam("previousSearch") String previousSearch, Model model) {
+	public String joinSources(
+			@RequestParam("sourceId") Long sourceId,
+			@RequestParam("previousSearch") String previousSearch,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
 
-		Source firstSource = sourceService.getSource(sourceId);
+		resetUserRole(model);
+		DatasetPermission userRole = sessionBean.getUserRole();
+		Source firstSource = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("firstSource", firstSource);
 		model.addAttribute("previousSearch", previousSearch);
 
@@ -175,11 +184,17 @@ public class SourceEditController extends AbstractPageController {
 	}
 
 	@PostMapping(SEARCH_SOURCES_URI)
-	public String searchSources(@RequestParam("firstSourceId") Long firstSourceId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
-			@RequestParam("previousSearch") String previousSearch, Model model) {
+	public String searchSources(
+			@RequestParam("firstSourceId") Long firstSourceId,
+			@RequestParam(name = "searchFilter", required = false) String searchFilter,
+			@RequestParam("previousSearch") String previousSearch,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
 
-		Source firstSource = sourceService.getSource(firstSourceId);
-		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, firstSource);
+		resetUserRole(model);
+		DatasetPermission userRole = sessionBean.getUserRole();
+		Source firstSource = sourceService.getSource(firstSourceId, userRole);
+		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, firstSource, userRole);
 		model.addAttribute("firstSource", firstSource);
 		model.addAttribute("sources", sources);
 		model.addAttribute("searchFilter", searchFilter);

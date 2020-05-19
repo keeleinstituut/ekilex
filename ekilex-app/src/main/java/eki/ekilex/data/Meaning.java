@@ -5,9 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 
-import eki.common.data.AbstractDataObject;
-
-public class Meaning extends AbstractDataObject {
+public class Meaning extends AbstractCrudEntity {
 
 	private static final long serialVersionUID = 1L;
 

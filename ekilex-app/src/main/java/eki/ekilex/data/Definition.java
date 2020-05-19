@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.constant.Complexity;
 
-public class Definition extends AbstractCrudEntity {
+public class Definition extends AbstractPublicEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,8 +27,6 @@ public class Definition extends AbstractCrudEntity {
 	private List<Note> publicNotes;
 
 	private List<SourceLink> sourceLinks;
-
-	private boolean isPublic;
 
 	public Long getId() {
 		return id;
@@ -110,11 +108,4 @@ public class Definition extends AbstractCrudEntity {
 		this.sourceLinks = sourceLinks;
 	}
 
-	public boolean isPublic() {
-		return isPublic;
-	}
-
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
-	}
 }

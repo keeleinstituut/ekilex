@@ -2,9 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.data.AbstractDataObject;
-
-public class Word extends AbstractDataObject implements DecoratedWordType {
+public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -25,6 +23,10 @@ public class Word extends AbstractDataObject implements DecoratedWordType {
 	private String genderCode;
 
 	private String aspectCode;
+
+	private String morphCode;
+
+	private String displayMorphCode;
 
 	private String[] wordTypeCodes;
 
@@ -112,6 +114,22 @@ public class Word extends AbstractDataObject implements DecoratedWordType {
 
 	public void setAspectCode(String aspectCode) {
 		this.aspectCode = aspectCode;
+	}
+
+	public String getMorphCode() {
+		return morphCode;
+	}
+
+	public void setMorphCode(String morphCode) {
+		this.morphCode = morphCode;
+	}
+
+	public String getDisplayMorphCode() {
+		return displayMorphCode;
+	}
+
+	public void setDisplayMorphCode(String displayMorphCode) {
+		this.displayMorphCode = displayMorphCode;
 	}
 
 	@Override

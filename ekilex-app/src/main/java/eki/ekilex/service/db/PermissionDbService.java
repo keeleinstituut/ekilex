@@ -103,6 +103,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 		return create
 				.select(
 						DATASET_PERMISSION.ID,
+						DATASET_PERMISSION.USER_ID,
 						DATASET_PERMISSION.DATASET_CODE,
 						DATASET.NAME.as("dataset_name"),
 						DATASET.IS_SUPERIOR.as("is_superior_dataset"),
@@ -469,7 +470,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String datasetCode) {
+	public boolean isGrantedForLexeme(Long lexemeId, String datasetCode) {
 
 		return create
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
@@ -481,10 +482,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	/*
-	 * currently not used. remove?
-	 * isPermGranted = permissionDbService.isGrantedForDefinition(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
-	 */
 	public boolean isGrantedForDefinition(Long userId, Long definitionId, String authItem, List<String> authOps) {
 
 		return create
@@ -531,10 +528,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	/*
-	 * currently not used. remove?
-	 * isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
-	 */
 	public boolean isGrantedForUsage(Long userId, Long usageId, String authItem, List<String> authOps) {
 
 		return create
@@ -561,7 +554,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForUsage(Long userId, Long usageId, String datasetCode, String lang) {
+	public boolean isGrantedForUsage(Long usageId, String datasetCode, String lang) {
 
 		Condition langCond;
 		if (StringUtils.isBlank(lang)) {
@@ -701,11 +694,11 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 			create
 				.select(
 						DATASET_PERMISSION.ID,
+						DATASET_PERMISSION.USER_ID,
 						DATASET.NAME.as("dataset_name"),
 						DATASET.IS_SUPERIOR.as("is_superior_dataset"),
 						DATASET_PERMISSION.AUTH_LANG,
 						DATASET_PERMISSION.DATASET_CODE,
-						DATASET_PERMISSION.USER_ID,
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM)
 				.from(DATASET_PERMISSION)

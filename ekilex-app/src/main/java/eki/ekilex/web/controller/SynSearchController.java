@@ -142,13 +142,14 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		logger.debug("Requesting details by word {}", wordId);
 
 		String datasetCode = getDatasetCodeFromRole(sessionBean);
+		DatasetPermission userRole = sessionBean.getUserRole();
 		Long userId = userService.getAuthenticatedUser().getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> candidateLangCodes = userProfile.getPreferredSynCandidateLangs();
 		List<String> meaningWordLangCodes = userProfile.getPreferredSynLexMeaningWordLangs();
 		LayerName layerName = userProfile.getPreferredLayerName();
 
-		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, layerName, candidateLangCodes, meaningWordLangCodes);
+		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, layerName, userProfile, userRole);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
