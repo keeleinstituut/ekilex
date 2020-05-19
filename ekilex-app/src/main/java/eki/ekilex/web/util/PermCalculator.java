@@ -36,6 +36,12 @@ public class PermCalculator {
 	public void applyCrud(List<? extends AbstractCrudEntity> crudEntities, DatasetPermission userRole) {
 
 		if (userRole == null) {
+			for (AbstractCrudEntity crudEntity : crudEntities) {
+				crudEntity.setCrudGrant(false);
+				crudEntity.setReadGrant(false);
+				crudEntity.setSubGrant(false);
+				crudEntity.setAnyGrant(false);
+			}
 			return;
 		}
 
@@ -73,6 +79,10 @@ public class PermCalculator {
 	public void applyCrud(AbstractCrudEntity crudEntity, DatasetPermission userRole) {
 
 		if (userRole == null) {
+			crudEntity.setCrudGrant(false);
+			crudEntity.setReadGrant(false);
+			crudEntity.setSubGrant(false);
+			crudEntity.setAnyGrant(false);
 			return;
 		}
 
