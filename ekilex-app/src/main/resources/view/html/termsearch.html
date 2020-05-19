@@ -175,7 +175,7 @@
                     <div class="invisible-buttons action-buttons-anchor  mw-90">
                       <span th:utext="${definition.value}"></span>
                       <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
-                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'"></span>
+                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}"></span>
                       <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover">
                         [
                         <button type="button" class="btn badge badge-success"
@@ -807,7 +807,7 @@
                       <div style="display: list-item; position: absolute"></div>
                       <span th:utext="${usage.value}"></span>
                       <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
-                      <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'"></div>
+                      <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}"></div>
                       <span th:if="${not #lists.isEmpty(usage.authors)}">
                         (
                         <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
