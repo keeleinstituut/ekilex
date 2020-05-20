@@ -8,8 +8,6 @@ public class SearchDatasetsRestriction extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private DatasetPermission userRole;
-
 	private List<String> filteringDatasetCodes;
 
 	private List<String> userPermDatasetCodes;
@@ -23,14 +21,6 @@ public class SearchDatasetsRestriction extends AbstractDataObject {
 	private boolean singleFilteringDataset;
 
 	private boolean singlePermDataset;
-
-	public DatasetPermission getUserRole() {
-		return userRole;
-	}
-
-	public void setUserRole(DatasetPermission userRole) {
-		this.userRole = userRole;
-	}
 
 	public List<String> getFilteringDatasetCodes() {
 		return filteringDatasetCodes;

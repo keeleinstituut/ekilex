@@ -82,4 +82,12 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		return result;
 	}
 
+	public int countWords(String searchFilter, List<String> selectedDatasetCodes) {
+		if (StringUtils.isBlank(searchFilter)) {
+			return 0;
+		}
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+		int count = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
+		return count;
+	}
 }
