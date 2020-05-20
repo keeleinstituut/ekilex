@@ -52,7 +52,7 @@ public class Lexeme extends AbstractCrudEntity {
 
 	private List<FreeForm> freeforms;
 
-	private List<Note> publicNotes;
+	private List<LexemeNote> publicNotes;
 
 	private List<FreeForm> grammars;
 
@@ -238,11 +238,11 @@ public class Lexeme extends AbstractCrudEntity {
 		this.freeforms = freeforms;
 	}
 
-	public List<Note> getPublicNotes() {
+	public List<LexemeNote> getPublicNotes() {
 		return publicNotes;
 	}
 
-	public void setPublicNotes(List<Note> publicNotes) {
+	public void setPublicNotes(List<LexemeNote> publicNotes) {
 		this.publicNotes = publicNotes;
 	}
 

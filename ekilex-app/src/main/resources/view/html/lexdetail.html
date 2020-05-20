@@ -957,6 +957,7 @@
                     <div class="pr-3">
                       <span th:utext="${publicNote.valuePrese}"></span>
                       <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${publicNote.complexity}} + ')'"></span>
+                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
                     </div>
                     <div class="action-buttons-2">
                       <button type="button" class="btn badge badge-primary"

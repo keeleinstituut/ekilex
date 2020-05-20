@@ -33,6 +33,7 @@ import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
+import eki.ekilex.data.DefinitionNote;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
@@ -40,7 +41,9 @@ import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
+import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeWordTuple;
+import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.Note;
@@ -266,11 +269,11 @@ public class ConversionUtil implements GlobalConstant {
 		return usages;
 	}
 
-	public List<Note> composeNotes(List<NoteSourceTuple> noteSourceTuples) {
+	public <T extends Note> List<T> composeNotes(Class<T> type, Long parentId, List<NoteSourceTuple> noteSourceTuples) throws Exception {
 
-		List<Note> notes = new ArrayList<>();
+		List<T> notes = new ArrayList<>();
 
-		Map<Long, Note> noteMap = new HashMap<>();
+		Map<Long, T> noteMap = new HashMap<>();
 		List<SourceLink> sourceLinks;
 
 		for (NoteSourceTuple tuple : noteSourceTuples) {
@@ -278,15 +281,23 @@ public class ConversionUtil implements GlobalConstant {
 			Long noteId = tuple.getFreeformId();
 			Long sourceLinkId = tuple.getSourceLinkId();
 
-			Note note = noteMap.get(noteId);
+			T note = noteMap.get(noteId);
 			if (note == null) {
-				note = new Note();
+				note = type.newInstance();
 				sourceLinks = new ArrayList<>();
 				note.setSourceLinks(sourceLinks);
 				note.setId(noteId);
 				note.setValueText(tuple.getValueText());
 				note.setValuePrese(tuple.getValuePrese());
 				note.setComplexity(tuple.getComplexity());
+				note.setPublic(tuple.isPublic());
+				if (note instanceof LexemeNote) {
+					((LexemeNote) note).setLexemeId(parentId);
+				} else if (note instanceof MeaningNote) {
+					((MeaningNote) note).setMeaningId(parentId);
+				} else if (note instanceof DefinitionNote) {
+					((DefinitionNote) note).setDefinitionId(parentId);
+				}
 				noteMap.put(noteId, note);
 				notes.add(note);
 			} else {

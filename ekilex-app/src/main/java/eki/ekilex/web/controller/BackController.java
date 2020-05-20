@@ -42,7 +42,7 @@ public class BackController extends AbstractPageController {
 	}
 
 	@GetMapping(LEX_BACK_URI + "/{lexemeId}")
-	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId) {
+	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);

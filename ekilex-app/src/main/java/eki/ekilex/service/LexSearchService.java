@@ -23,14 +23,17 @@ import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
+import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
@@ -71,13 +74,14 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile,
-			DatasetPermission userRole, boolean isFullData) {
+			EkiUser user, boolean isFullData) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Word word = lexSearchDbService.getWord(wordId);
 		if (word == null) {
 			return null;
 		}
+		DatasetPermission userRole = user.getRecentRole();
 		permCalculator.applyCrud(word, userRole);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -93,7 +97,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
-		lexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, userProfile, userRole, isFullDataCorrection));
+		for (WordLexeme lexeme : lexemes) {
+			populateLexeme(lexeme, languagesOrder, userProfile, user, isFullDataCorrection);
+		}
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
@@ -112,21 +118,21 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordLexeme getDefaultWordLexeme(Long lexemeId) {
+	public WordLexeme getDefaultWordLexeme(Long lexemeId) throws Exception {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		if (lexeme != null) {
-			populateLexeme(lexeme, null, null, null, true);
+			populateLexeme(lexeme, null, null, new EkiUser(), true);
 		}
 		return lexeme;
 	}
 
 	@Transactional
-	public WordLexeme getWordLexeme(Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, DatasetPermission userRole, boolean isFullData) {
+	public WordLexeme getWordLexeme(Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, EkiUser user, boolean isFullData) throws Exception {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		if (lexeme != null) {
-			populateLexeme(lexeme, languagesOrder, userProfile, userRole, isFullData);
+			populateLexeme(lexeme, languagesOrder, userProfile, user, isFullData);
 		}
 		return lexeme;
 	}
@@ -167,18 +173,21 @@ public class LexSearchService extends AbstractWordSearchService {
 		return lexSearchDbService.getWord(wordId);
 	}
 
-	private void populateLexeme(WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, DatasetPermission userRole, boolean isFullData) {
+	private void populateLexeme(WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, EkiUser user, boolean isFullData)
+			throws Exception {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name()};
+		final String[] excludeMeaningAttributeTypes = new String[] {
+				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.PUBLIC_NOTE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
+		DatasetPermission userRole = user.getRecentRole();
+		Long userId = user.getId();
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
 		String wordLang = lexeme.getWordLang();
-		Long userId = userProfile == null ? null : userProfile.getUserId();
 		Meaning meaning = new Meaning();
 
 		permCalculator.applyCrud(lexeme, userRole);
@@ -207,7 +216,9 @@ public class LexSearchService extends AbstractWordSearchService {
 			permCalculator.applyCrud(usages, userRole);
 			permCalculator.filterVisibility(usages, userId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
-			List<FreeForm> lexemePublicNotes = commonDataDbService.getLexemePublicNotes(lexemeId);
+			List<NoteSourceTuple> lexemePublicNoteSourceTuples = commonDataDbService.getLexemePublicNoteSourceTuples(lexemeId);
+			List<LexemeNote> lexemePublicNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemePublicNoteSourceTuples);
+			permCalculator.filterVisibility(lexemePublicNotes, userId);
 			List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
 			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
 			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);

@@ -1,48 +1,51 @@
 package eki.ekilex.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import eki.common.data.AbstractDataObject;
 
+@JsonIgnoreProperties({"crudGrant", "readGrant", "subGrant", "anyGrant"})
 public abstract class AbstractCrudEntity extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Boolean crudGrant;
+	private boolean crudGrant;
 
-	private Boolean readGrant;
+	private boolean readGrant;
 
-	private Boolean subGrant;
+	private boolean subGrant;
 
-	private Boolean anyGrant;
+	private boolean anyGrant;
 
-	public Boolean getCrudGrant() {
+	public boolean isCrudGrant() {
 		return crudGrant;
 	}
 
-	public void setCrudGrant(Boolean crudGrant) {
+	public void setCrudGrant(boolean crudGrant) {
 		this.crudGrant = crudGrant;
 	}
 
-	public Boolean getReadGrant() {
+	public boolean isReadGrant() {
 		return readGrant;
 	}
 
-	public void setReadGrant(Boolean readGrant) {
+	public void setReadGrant(boolean readGrant) {
 		this.readGrant = readGrant;
 	}
 
-	public Boolean getSubGrant() {
+	public boolean isSubGrant() {
 		return subGrant;
 	}
 
-	public void setSubGrant(Boolean subGrant) {
+	public void setSubGrant(boolean subGrant) {
 		this.subGrant = subGrant;
 	}
 
-	public Boolean getAnyGrant() {
+	public boolean isAnyGrant() {
 		return anyGrant;
 	}
 
-	public void setAnyGrant(Boolean anyGrant) {
+	public void setAnyGrant(boolean anyGrant) {
 		this.anyGrant = anyGrant;
 	}
 }

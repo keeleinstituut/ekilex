@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Meaning;
@@ -139,17 +138,17 @@ public class TermSearchController extends AbstractSearchController {
 	}
 
 	@GetMapping(MEANING_DETAILS_URI + "/{meaningId}")
-	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model)
+			throws Exception {
 
 		logger.debug("meaning details for {}", meaningId);
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
-		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> selectedDatasets = userProfile.getPreferredDatasets();
-		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile, userRole);
+		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile, user);
 		model.addAttribute("meaning", meaning);
 		model.addAttribute("meaningId", meaningId);
 

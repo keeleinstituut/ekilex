@@ -73,7 +73,7 @@ public class EditController extends AbstractPageController {
 			cudService.createDefinition(itemData.getId(), itemValue, itemData.getLanguage(), datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic());
 			break;
 		case "definition_public_note":
-			cudService.createDefinitionPublicNote(itemData.getId(), itemValue);
+			cudService.createDefinitionPublicNote(itemData.getId(), itemValue, itemData.isPublic());
 			break;
 		case "usage":
 			cudService.createUsage(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
@@ -162,10 +162,10 @@ public class EditController extends AbstractPageController {
 			cudService.createMeaningLearnerComment(itemData.getId(), itemValue, itemData.getLanguage());
 			break;
 		case "lexeme_public_note":
-			cudService.createLexemePublicNote(itemData.getId(), itemValue, itemData.getComplexity());
+			cudService.createLexemePublicNote(itemData.getId(), itemValue, itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "meaning_public_note":
-			cudService.createMeaningPublicNote(itemData.getId(), itemValue);
+			cudService.createMeaningPublicNote(itemData.getId(), itemValue, itemData.isPublic());
 			break;
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), itemValue);
@@ -233,7 +233,7 @@ public class EditController extends AbstractPageController {
 			cudService.updateDefinition(itemData.getId(), itemValue, itemData.getComplexity(), itemData.getCode(), itemData.isPublic());
 			break;
 		case "definition_public_note":
-			cudService.updateDefinitionPublicNote(itemData.getId(), itemValue);
+			cudService.updateDefinitionPublicNote(itemData.getId(), itemValue, itemData.isPublic());
 			break;
 		case "lexeme_frequency_group":
 			cudService.updateLexemeFrequencyGroup(itemData.getId(), itemValue);
@@ -289,10 +289,10 @@ public class EditController extends AbstractPageController {
 			cudService.updateMeaningLearnerComment(itemData.getId(), itemValue);
 			break;
 		case "lexeme_public_note":
-			cudService.updateLexemePublicNote(itemData.getId(), itemValue, itemData.getComplexity());
+			cudService.updateLexemePublicNote(itemData.getId(), itemValue, itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "meaning_public_note":
-			cudService.updateMeaningPublicNote(itemData.getId(), itemValue);
+			cudService.updateMeaningPublicNote(itemData.getId(), itemValue, itemData.isPublic());
 			break;
 		case "image_title":
 			cudService.updateImageTitle(itemData.getId(), itemValue);
