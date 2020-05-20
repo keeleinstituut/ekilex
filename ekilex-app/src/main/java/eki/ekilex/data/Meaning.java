@@ -29,7 +29,7 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<Image> images;
 
-	private List<Note> publicNotes;
+	private List<MeaningNote> publicNotes;
 
 	private List<Relation> relations;
 
@@ -111,11 +111,11 @@ public class Meaning extends AbstractCrudEntity {
 		this.images = images;
 	}
 
-	public List<Note> getPublicNotes() {
+	public List<MeaningNote> getPublicNotes() {
 		return publicNotes;
 	}
 
-	public void setPublicNotes(List<Note> publicNotes) {
+	public void setPublicNotes(List<MeaningNote> publicNotes) {
 		this.publicNotes = publicNotes;
 	}
 

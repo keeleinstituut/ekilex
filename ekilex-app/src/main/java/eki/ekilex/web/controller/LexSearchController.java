@@ -25,7 +25,6 @@ import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
@@ -158,7 +157,7 @@ public class LexSearchController extends AbstractSearchController {
 			@RequestParam String searchFilter,
 			@RequestParam Long lexemeId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+			Model model) throws Exception {
 
 		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
@@ -208,17 +207,16 @@ public class LexSearchController extends AbstractSearchController {
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
-	public String wordDetails(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	public String wordDetails(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
 
 		logger.debug("word details for {}", wordId);
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
-		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> selectedDatasets = userProfile.getPreferredDatasets();
-		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile, userRole, false);
+		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile, user, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
@@ -230,17 +228,17 @@ public class LexSearchController extends AbstractSearchController {
 			@PathVariable("composition") String composition,
 			@PathVariable("lexemeId") Long lexemeId,
 			@PathVariable("levels") String levels,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) throws Exception {
 
 		logger.debug("lexeme {} details for {}", composition, lexemeId);
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
-		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		boolean isFullData = StringUtils.equals(composition, "full");
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, userRole, isFullData);
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, user, isFullData);
 		lexeme.setLevels(levels);
 		model.addAttribute("lexeme", lexeme);
 

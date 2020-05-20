@@ -16,6 +16,8 @@ public class NoteSourceTuple extends AbstractDataObject {
 
 	private Complexity complexity;
 
+	private boolean isPublic;
+
 	private Long sourceLinkId;
 
 	private ReferenceType sourceLinkType;
@@ -54,6 +56,14 @@ public class NoteSourceTuple extends AbstractDataObject {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public Long getSourceLinkId() {

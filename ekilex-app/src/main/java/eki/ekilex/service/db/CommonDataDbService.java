@@ -440,9 +440,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT.as("value_text"),
-						FREEFORM.VALUE_PRESE.as("value_prese"),
-						FREEFORM.COMPLEXITY.as("complexity"),
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.IS_PUBLIC,
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
@@ -555,9 +556,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT.as("value_text"),
-						FREEFORM.VALUE_PRESE.as("value_prese"),
-						FREEFORM.COMPLEXITY.as("complexity"),
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.IS_PUBLIC,
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
@@ -698,24 +700,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 								.and(FREEFORM.TYPE.notIn(excludedTypes)))
-				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(FreeForm.class);
-	}
-
-	public List<FreeForm> getLexemePublicNotes(Long lexemeId) {
-		return create
-				.select(
-						FREEFORM.ID,
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY,
-						FREEFORM.ORDER_BY)
-				.from(FREEFORM, LEXEME_FREEFORM)
-				.where(
-						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
-								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
@@ -866,9 +850,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT.as("value_text"),
-						FREEFORM.VALUE_PRESE.as("value_prese"),
-						FREEFORM.COMPLEXITY.as("complexity"),
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.IS_PUBLIC,
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),

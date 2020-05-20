@@ -225,6 +225,15 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateFreeform(Long id, String value, String valuePrese, boolean isPublic) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, value)
+				.set(FREEFORM.VALUE_PRESE, valuePrese)
+				.set(FREEFORM.IS_PUBLIC, isPublic)
+				.where(FREEFORM.ID.eq(id))
+				.execute();
+	}
+
 	public void updateDefinition(Long id, String value, String valuePrese, Complexity complexity, String typeCode, boolean isPublic) {
 		create.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
@@ -705,11 +714,12 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createDefinitionPublicNote(Long definitionId, String value, String valuePrese) {
+	public Long createDefinitionPublicNote(Long definitionId, String value, String valuePrese, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+		freeform.setIsPublic(isPublic);
 		freeform.store();
 
 		DefinitionFreeformRecord definitionFreeform = create.newRecord(DEFINITION_FREEFORM);
@@ -806,11 +816,12 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningDomainId;
 	}
 
-	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese) {
+	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+		freeform.setIsPublic(isPublic);
 		freeform.store();
 	
 		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
@@ -899,12 +910,13 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese, Complexity complexity) {
+	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese, Complexity complexity, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(complexity.name());
+		freeform.setIsPublic(isPublic);
 		freeform.store();
 	
 		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);

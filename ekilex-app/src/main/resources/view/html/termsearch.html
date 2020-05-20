@@ -245,6 +245,7 @@
                         <div class="small invisible-buttons action-buttons-anchor mw-90 ml-4">
                           <div style="display: list-item; position: absolute"></div>
                           <span th:utext="${publicNote.valuePrese}"></span>
+                          <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${definition.crudGrant}"></span>
                           <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
                             [
                             <button type="button" class="btn badge badge-success"
@@ -371,6 +372,7 @@
                 <div class="invisible-buttons action-buttons-anchor mw-90 ml-3">
                   <div style="display: list-item; position: absolute"></div>
                   <span th:utext="${publicNote.valuePrese}"></span>
+                  <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${meaning.crudGrant}"></span>
                   <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
                     [
                     <button type="button" class="btn badge badge-success"
@@ -934,6 +936,7 @@
                     <div class="invisible-buttons action-buttons-anchor mw-90 ml-3">
                       <div style="display: list-item; position: absolute"></div>
                       <span th:utext="${publicNote.valuePrese}"></span>
+                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
                       <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
                         [
                         <button type="button" class="btn badge badge-success"

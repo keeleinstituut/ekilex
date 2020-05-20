@@ -580,6 +580,10 @@
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-check ml-1">
+              <input id="addLexemeNotePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+              <label for="addLexemeNotePublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -599,6 +603,10 @@
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
             <input type="hidden" name="complexity" th:value="${publicNote.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-check ml-1">
+              <input id="editLexemeNotePublic" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
+              <label for="editLexemeNotePublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -637,6 +645,10 @@
             <input type="hidden" name="opCode" value="meaning_public_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-check ml-1">
+              <input id="addMeaningNotePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+              <label for="addMeaningNotePublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -655,6 +667,10 @@
             <input type="hidden" name="opCode" value="meaning_public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-check ml-1">
+              <input id="editMeaningNotePublic" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
+              <label for="editMeaningNotePublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -814,6 +830,10 @@
             <input type="hidden" name="opCode" value="definition_public_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-check ml-1">
+              <input id="addDefinitionNotePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+              <label for="addDefinitionNotePublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -832,6 +852,10 @@
             <input type="hidden" name="opCode" value="definition_public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-check ml-1">
+              <input id="editDefinitionNotePublic" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
+              <label for="editDefinitionNotePublic" class="form-check-label">Avalik</label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>

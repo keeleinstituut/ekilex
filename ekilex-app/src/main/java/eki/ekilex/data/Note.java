@@ -3,9 +3,8 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.constant.Complexity;
-import eki.common.data.AbstractDataObject;
 
-public class Note extends AbstractDataObject {
+public class Note extends AbstractPublicEntity {
 
 	private static final long serialVersionUID = 1L;
 

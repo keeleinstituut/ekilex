@@ -68,7 +68,7 @@ public class LexEditController extends AbstractPageController {
 
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
 	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
-			Model model) {
+			Model model) throws Exception {
 
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
 		Long userId = userContext.getUserId();
@@ -139,7 +139,7 @@ public class LexEditController extends AbstractPageController {
 	}
 
 	@PostMapping(LEX_JOIN_URI)
-	public String join(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds) {
+	public String join(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds) throws Exception {
 
 		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds);
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(targetLexemeId);
@@ -151,7 +151,7 @@ public class LexEditController extends AbstractPageController {
 	}
 
 	@GetMapping(LEX_SEPARATE_URI + "/{lexemeId}")
-	public String separate(@PathVariable("lexemeId") Long lexemeId) {
+	public String separate(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
 		compositionService.separateLexemeMeanings(lexemeId);

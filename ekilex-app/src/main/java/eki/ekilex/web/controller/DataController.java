@@ -24,6 +24,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Source;
@@ -105,7 +106,8 @@ public class DataController implements SystemConstant, WebConstant {
 			REST_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}/{datasets}"
 	})
 	@ResponseBody
-	public WordDetails getWordDetails(@PathVariable("wordId") String wordIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr) {
+	public WordDetails getWordDetails(@PathVariable("wordId") String wordIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr)
+			throws Exception {
 
 		if (!StringUtils.isNumeric(wordIdStr)) {
 			return null;
@@ -113,7 +115,7 @@ public class DataController implements SystemConstant, WebConstant {
 		Long wordId = Long.valueOf(wordIdStr);
 		List<String> datasets = parseDatasets(datasetsStr);
 		boolean isFullData = true;
-		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, null, null, isFullData);
+		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, null, new EkiUser(), isFullData);
 		return result;
 	}
 
@@ -147,7 +149,8 @@ public class DataController implements SystemConstant, WebConstant {
 			REST_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}/{datasets}"
 	})
 	@ResponseBody
-	public Meaning getMeaningDetails(@PathVariable("meaningId") String meaningIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr) {
+	public Meaning getMeaningDetails(@PathVariable("meaningId") String meaningIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr)
+			throws Exception {
 
 		if (!StringUtils.isNumeric(meaningIdStr)) {
 			return null;
@@ -156,7 +159,7 @@ public class DataController implements SystemConstant, WebConstant {
 		List<String> datasets = parseDatasets(datasetsStr);
 		List<Classifier> allLanguages = commonDataService.getLanguages();
 		List<ClassifierSelect> languagesOrder = convert(allLanguages);
-		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder, null, null);
+		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder, null, new EkiUser());
 		return meaning;
 	}
 
