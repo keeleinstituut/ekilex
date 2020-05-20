@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ContentKey;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.ReferenceType;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -39,7 +37,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class EditController extends AbstractPageController implements SystemConstant, GlobalConstant {
+public class EditController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EditController.class);
 
@@ -60,7 +58,7 @@ public class EditController extends AbstractPageController implements SystemCons
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
-	public String createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String createItem(@RequestBody CreateItemRequest itemData) {
 
 		logger.debug("Add new item : {}", itemData);
 
@@ -71,7 +69,7 @@ public class EditController extends AbstractPageController implements SystemCons
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			datasetCode = sessionBean.getUserRole().getDatasetCode();
+			datasetCode = getDatasetCodeFromRole();
 			cudService.createDefinition(itemData.getId(), itemValue, itemData.getLanguage(), datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic());
 			break;
 		case "definition_public_note":
@@ -173,11 +171,11 @@ public class EditController extends AbstractPageController implements SystemCons
 			cudService.createImageTitle(itemData.getId(), itemValue);
 			break;
 		case "create_raw_relation":
-			datasetCode = sessionBean.getUserRole().getDatasetCode();
+			datasetCode = getDatasetCodeFromRole();
 			cudService.createSynRelation(itemData.getId(), itemData.getId2(), itemData.getValue2(), datasetCode);
 			break;
 		case "create_syn_word":
-			datasetCode = sessionBean.getUserRole().getDatasetCode();
+			datasetCode = getDatasetCodeFromRole();
 			cudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, itemData.getLanguage(), itemData.getItemType(), itemData.getValue2());
 			break;
 		case "meaning_semantic_type":
@@ -374,7 +372,7 @@ public class EditController extends AbstractPageController implements SystemCons
 
 	@ResponseBody
 	@PostMapping(CONFIRM_OP_URI)
-	public ConfirmationRequest confirmOperation(@RequestBody ConfirmationRequest confirmationRequest, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public ConfirmationRequest confirmOperation(@RequestBody ConfirmationRequest confirmationRequest) {
 
 		String opName = confirmationRequest.getOpName();
 		String opCode = confirmationRequest.getOpCode();
@@ -382,7 +380,7 @@ public class EditController extends AbstractPageController implements SystemCons
 
 		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
 
-		DatasetPermission userRole;
+		DatasetPermission userRole = userContext.getUserRole();
 
 		switch (opName) {
 		case "delete":
@@ -390,10 +388,8 @@ public class EditController extends AbstractPageController implements SystemCons
 			case "lexeme":
 				return complexOpService.validateLexemeDelete(id);
 			case "meaning":
-				userRole = sessionBean.getUserRole();
 				return complexOpService.validateMeaningDelete(id, userRole);
 			case "rus_meaning_lexemes":
-				userRole = sessionBean.getUserRole();
 				return complexOpService.validateLexemeAndMeaningLexemesDelete(id, LANGUAGE_CODE_RUS, userRole);
 			}
 		}
@@ -405,12 +401,11 @@ public class EditController extends AbstractPageController implements SystemCons
 	public String deleteItem(
 			@RequestParam("opCode") String opCode,
 			@RequestParam("id") Long id,
-			@RequestParam(value = "value", required = false) String valueToDelete,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+			@RequestParam(value = "value", required = false) String valueToDelete) {
 
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
 
-		DatasetPermission userRole = sessionBean.getUserRole();
+		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
 			return "NOK";
 		}

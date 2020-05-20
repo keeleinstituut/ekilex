@@ -34,13 +34,12 @@ import eki.ekilex.data.editor.ClassifierEditor;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
-import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class DatasetController implements WebConstant {
+public class DatasetController extends AbstractAuthActionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DatasetController.class);
 
@@ -51,9 +50,6 @@ public class DatasetController implements WebConstant {
 	private UserService userService;
 
 	@Autowired
-	private UserContext userContext;
-
-	@Autowired
 	private PermissionService permissionService;
 
 	@Autowired
@@ -62,6 +58,21 @@ public class DatasetController implements WebConstant {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Classifier.class, new ClassifierEditor());
+	}
+
+	@ModelAttribute("languages")
+	public List<Classifier> getLanguages() {
+		return commonDataService.getLanguages();
+	}
+
+	@ModelAttribute("processStates")
+	public List<Classifier> getProcessStates() {
+		return commonDataService.getProcessStates();
+	}
+
+	@ModelAttribute("origins")
+	public List<Origin> getOrigins() {
+		return commonDataService.getDomainOrigins();
 	}
 
 	@GetMapping(DATASETS_URI)
@@ -128,21 +139,6 @@ public class DatasetController implements WebConstant {
 			return "CODE_EXISTS";
 		}
 		return RESPONSE_OK_VER1;
-	}
-
-	@ModelAttribute("languages")
-	public List<Classifier> getLanguages() {
-		return commonDataService.getLanguages();
-	}
-
-	@ModelAttribute("processStates")
-	public List<Classifier> getProcessStates() {
-		return commonDataService.getProcessStates();
-	}
-
-	@ModelAttribute("origins")
-	public List<Origin> getOrigins() {
-		return commonDataService.getDomainOrigins();
 	}
 
 	@GetMapping(REST_SERVICES_URI + ORIGIN_DOMAINS_URI + "/{originCode}")

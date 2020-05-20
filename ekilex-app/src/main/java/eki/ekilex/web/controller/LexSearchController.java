@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
@@ -41,7 +41,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexSearchController extends AbstractSearchController implements SystemConstant {
+public class LexSearchController extends AbstractSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LexSearchController.class);
 
@@ -212,9 +212,10 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("word details for {}", wordId);
 
-		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Long userId = userContext.getUserId();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> selectedDatasets = userProfile.getPreferredDatasets();
 		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile, userRole, false);
@@ -233,9 +234,10 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("lexeme {} details for {}", composition, lexemeId);
 
-		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Long userId = userContext.getUserId();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		boolean isFullData = StringUtils.equals(composition, "full");
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, userRole, isFullData);

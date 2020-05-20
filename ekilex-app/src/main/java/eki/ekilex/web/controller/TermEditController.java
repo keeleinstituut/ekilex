@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.WordLexemeMeaningDetails;
@@ -230,9 +231,7 @@ public class TermEditController extends AbstractPageController {
 
 	@PostMapping(CREATE_WORD_AND_MEANING_AND_REL_URI)
 	@ResponseBody
-	public String createWordAndMeaningAndRelations(
-			@RequestBody WordMeaningRelationsDetails wordMeaningRelationsDetails,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws JsonProcessingException {
+	public String createWordAndMeaningAndRelations(@RequestBody WordMeaningRelationsDetails wordMeaningRelationsDetails) throws Exception {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordMeaningRelationsDetails);
 
@@ -243,21 +242,22 @@ public class TermEditController extends AbstractPageController {
 		String searchUri;
 		if (StringUtils.isNotBlank(wordValue)) {
 
-			String dataset = sessionBean.getUserRole().getDatasetCode();
 			EkiUser user = userContext.getUser();
 			Long userId = user.getId();
 			String userName = user.getName();
+			DatasetPermission userRole = user.getRecentRole();
+			String datasetCode = userRole.getDatasetCode();
 			List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 
-			wordMeaningRelationsDetails.setDataset(dataset);
+			wordMeaningRelationsDetails.setDataset(datasetCode);
 			wordMeaningRelationsDetails.setUserName(userName);
 			wordMeaningRelationsDetails.setUserPermDatasetCodes(userPermDatasetCodes);
 
 			compositionService.createWordAndMeaningAndRelations(wordMeaningRelationsDetails);
 
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
-			if (!selectedDatasets.contains(dataset)) {
-				selectedDatasets.add(dataset);
+			if (!selectedDatasets.contains(datasetCode)) {
+				selectedDatasets.add(datasetCode);
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
 			if (meaningId == null) {

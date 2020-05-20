@@ -14,25 +14,27 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
+import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.service.SourceService;
-import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
+@SessionAttributes(WebConstant.SESSION_BEAN)
 public class SourceEditController extends AbstractSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
@@ -164,11 +166,11 @@ public class SourceEditController extends AbstractSearchController {
 	public String joinSources(
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("previousSearch") String previousSearch,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		resetUserRole(model);
-		DatasetPermission userRole = sessionBean.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		Source firstSource = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("firstSource", firstSource);
 		model.addAttribute("previousSearch", previousSearch);
@@ -188,11 +190,11 @@ public class SourceEditController extends AbstractSearchController {
 			@RequestParam("firstSourceId") Long firstSourceId,
 			@RequestParam(name = "searchFilter", required = false) String searchFilter,
 			@RequestParam("previousSearch") String previousSearch,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		resetUserRole(model);
-		DatasetPermission userRole = sessionBean.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		Source firstSource = sourceService.getSource(firstSourceId, userRole);
 		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, firstSource, userRole);
 		model.addAttribute("firstSource", firstSource);

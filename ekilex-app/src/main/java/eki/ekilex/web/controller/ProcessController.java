@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,28 +19,24 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.CreateItemRequest;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.ProcessLog;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.service.ProcessService;
-import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
-import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class ProcessController implements WebConstant {
+public class ProcessController extends AbstractAuthActionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProcessController.class);
 
 	@Autowired
 	private ProcessService processService;
-
-	@Autowired
-	private UserContext userContext;
 
 	@Autowired
 	private UserProfileService userProfileService;
@@ -91,12 +86,10 @@ public class ProcessController implements WebConstant {
 
 	@PostMapping(CREATE_MEANING_PROCESS_LOG_URI)
 	@ResponseBody
-	public String createMeaningProcessLog(
-			@RequestBody CreateItemRequest itemData,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String createMeaningProcessLog(@RequestBody CreateItemRequest itemData) {
 
 		String userName = userContext.getUserName();
-		String datasetCode = sessionBean.getUserRole().getDatasetCode();
+		String datasetCode = getDatasetCodeFromRole();
 		Long meaningId = itemData.getId();
 		String commentPrese = itemData.getValue();
 		commentPrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(commentPrese);
@@ -108,12 +101,10 @@ public class ProcessController implements WebConstant {
 
 	@PostMapping(CREATE_WORD_PROCESS_LOG_URI)
 	@ResponseBody
-	public String createWordProcessLog(
-			@RequestBody CreateItemRequest itemData,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String createWordProcessLog(@RequestBody CreateItemRequest itemData) {
 
 		String userName = userContext.getUserName();
-		String datasetCode = sessionBean.getUserRole().getDatasetCode();
+		String datasetCode = getDatasetCodeFromRole();
 		Long wordId = itemData.getId();
 		String commentPrese = itemData.getValue();
 		commentPrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(commentPrese);
@@ -152,16 +143,15 @@ public class ProcessController implements WebConstant {
 	@PostMapping(UPDATE_LAYER_COMPLETE_URI + "/{wordId}")
 	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
-	public String updateLayerProcessStateComplete(
-			@PathVariable Long wordId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String updateLayerProcessStateComplete(@PathVariable Long wordId) {
 
 		EkiUser user = userContext.getUser();
 		String userName = user.getName();
 		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		LayerName layerName = userProfile.getPreferredLayerName();
-		String datasetCode = sessionBean.getUserRole().getDatasetCode();
+		String datasetCode = userRole.getDatasetCode();
 
 		logger.debug("Updating {} layer process state complete for word \"{}\"", layerName, wordId);
 		processService.updateLayerProcessStateComplete(wordId, userName, datasetCode, layerName);

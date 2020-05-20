@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.SearchFilter;
@@ -37,7 +37,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class TermSearchController extends AbstractSearchController implements SystemConstant {
+public class TermSearchController extends AbstractSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermSearchController.class);
 
@@ -143,9 +143,10 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		logger.debug("meaning details for {}", meaningId);
 
-		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Long userId = userContext.getUserId();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> selectedDatasets = userProfile.getPreferredDatasets();
 		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile, userRole);

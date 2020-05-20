@@ -30,7 +30,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Word;
@@ -48,7 +47,7 @@ import eki.ekilex.web.util.SearchHelper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexEditController extends AbstractPageController implements SystemConstant {
+public class LexEditController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LexEditController.class);
 
@@ -214,14 +213,14 @@ public class LexEditController extends AbstractPageController implements SystemC
 	}
 
 	@GetMapping(WORD_JOIN_URI)
-	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model) {
 
 		Long userId = userContext.getUserId();
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId, userId);
 		Word targetWord = targetWordDetails.getWord();
-		String roleDatasetCode = sessionBean.getUserRole().getDatasetCode();
+		String roleDatasetCode = getDatasetCodeFromRole();
 
 		List<WordDetails> sourceWordDetailsList = lookupService
 				.getWordDetailsOfJoinCandidates(targetWord, roleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes, userId);

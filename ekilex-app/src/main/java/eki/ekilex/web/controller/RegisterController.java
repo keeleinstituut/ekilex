@@ -17,15 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.util.CodeGenerator;
-import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.EmailService;
-import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
-public class RegisterController implements WebConstant {
+public class RegisterController extends AbstractAuthActionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
@@ -33,9 +31,6 @@ public class RegisterController implements WebConstant {
 
 	@Value("${terms.version}")
 	private String termsVer;
-
-	@Autowired
-	private UserContext userContext;
 
 	@Autowired
 	private UserService userService;

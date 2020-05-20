@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 
 @Component
@@ -42,6 +43,10 @@ public class UserContext {
 
 	public boolean isUserAdmin() {
 		return getUser().isAdmin();
+	}
+
+	public DatasetPermission getUserRole() {
+		return getUser().getRecentRole();
 	}
 
 	public void updateUserSecurityContext(EkiUser ekiUser) {

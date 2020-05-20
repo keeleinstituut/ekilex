@@ -17,7 +17,6 @@ import eki.common.constant.LayerName;
 import eki.common.constant.SourceType;
 import eki.common.constant.TextDecoration;
 import eki.common.data.CodeValue;
-import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ComplexitySelect;
 import eki.ekilex.data.Dataset;
@@ -26,15 +25,11 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
-import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
-public abstract class AbstractPageController implements WebConstant {
-
-	@Autowired
-	protected UserContext userContext;
+public abstract class AbstractPageController extends AbstractAuthActionController {
 
 	@Autowired
 	protected UserProfileService userProfileService;

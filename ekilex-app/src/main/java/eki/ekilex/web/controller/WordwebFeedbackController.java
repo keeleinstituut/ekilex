@@ -21,20 +21,16 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Feedback;
 import eki.ekilex.data.FeedbackComment;
 import eki.ekilex.service.FeedbackService;
-import eki.ekilex.service.UserContext;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class WordwebFeedbackController implements WebConstant {
+public class WordwebFeedbackController extends AbstractAuthActionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(WordwebFeedbackController.class);
 
 	@Autowired
 	private FeedbackService feedbackService;
-
-	@Autowired
-	private UserContext userContext;
 
 	@GetMapping(WW_FEEDBACK_URI)
 	public String openPage(Model model) {

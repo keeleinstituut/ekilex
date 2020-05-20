@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserContext;
@@ -27,7 +28,8 @@ public class PermDataUtil {
 		if (sessionBean == null) {
 			return false;
 		}
-		DatasetPermission userRole = sessionBean.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return false;
 		}
@@ -37,11 +39,12 @@ public class PermDataUtil {
 
 	public boolean isSourceMeaningCrudGranted(Long sourceMeaningId, Long targetMeaningId, SessionBean sessionBean) {
 
-		Long userId = userContext.getUserId();
 		if (sessionBean == null) {
 			return false;
 		}
-		DatasetPermission userRole = sessionBean.getUserRole();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return false;
 		}
@@ -69,11 +72,12 @@ public class PermDataUtil {
 
 	public boolean isSourceWordCrudGranted(Long sourceWordId, Long targetWordId, SessionBean sessionBean) {
 
-		Long userId = userContext.getUserId();
 		if (sessionBean == null) {
 			return false;
 		}
-		DatasetPermission userRole = sessionBean.getUserRole();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return false;
 		}

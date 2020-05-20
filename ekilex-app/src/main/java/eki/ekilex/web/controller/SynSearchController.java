@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,14 +21,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.client.HttpClientErrorException;
 
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
@@ -41,7 +38,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SynSearchController extends AbstractSearchController implements SystemConstant, GlobalConstant {
+public class SynSearchController extends AbstractSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SynSearchController.class);
 
@@ -77,8 +74,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
 
-		SessionBean sessionBean = getSessionBean(model);
-		String roleDatasetCode = getDatasetCodeFromRole(sessionBean);
+		String roleDatasetCode = getDatasetCodeFromRole();
 		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
@@ -106,8 +102,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 			return SYN_SEARCH_PAGE;
 		}
 
-		SessionBean sessionBean = getSessionBean(model);
-		String roleDatasetCode = getDatasetCodeFromRole(sessionBean);
+		String roleDatasetCode = getDatasetCodeFromRole();
 		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
 
 		String searchMode = searchUriData.getSearchMode();
@@ -141,9 +136,10 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		logger.debug("Requesting details by word {}", wordId);
 
-		String datasetCode = getDatasetCodeFromRole(sessionBean);
-		DatasetPermission userRole = sessionBean.getUserRole();
-		Long userId = userContext.getUserId();
+		String datasetCode = getDatasetCodeFromRole();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> candidateLangCodes = userProfile.getPreferredSynCandidateLangs();
 		List<String> meaningWordLangCodes = userProfile.getPreferredSynLexMeaningWordLangs();
@@ -164,10 +160,9 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
 	public String changeRelationStatus(@RequestParam Long id, @RequestParam String status) {
+
 		logger.debug("Changing syn relation status id {}, new status {}", id, status);
-
 		synSearchService.changeRelationStatus(id, status);
-
 		return RESPONSE_OK_VER2;
 	}
 
@@ -175,12 +170,10 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
 	public String createSynLexeme(@PathVariable Long meaningId, @PathVariable Long wordId, @PathVariable Long lexemeId, @PathVariable Long relationId, Model model) {
+
 		logger.debug("Adding lexeme to syn candidate word Id {}, meaning Id {} , existing lexeme Id {}, relation Id {}", wordId, meaningId, lexemeId, relationId);
-		SessionBean sessionBean = getSessionBean(model);
-		String datasetCode = getDatasetCodeFromRole(sessionBean);
-
+		String datasetCode = getDatasetCodeFromRole();
 		synSearchService.createSecondarySynLexeme(meaningId, wordId, datasetCode, lexemeId, relationId);
-
 		return RESPONSE_OK_VER2;
 	}
 
@@ -191,6 +184,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 			@RequestParam(required = false) String language,
 			@RequestParam(required = false) String morphCode,
 			Model model) {
+
 		logger.debug("word search {}", searchFilter);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
@@ -223,14 +217,6 @@ public class SynSearchController extends AbstractSearchController implements Sys
 		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredMeaningWordLangs(languages, userId);
 		return RESPONSE_OK_VER1;
-	}
-
-	private String getDatasetCodeFromRole(SessionBean sessionBean) {
-		DatasetPermission role = sessionBean.getUserRole();
-		if (role == null) {
-			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
-		}
-		return role.getDatasetCode();
 	}
 
 }

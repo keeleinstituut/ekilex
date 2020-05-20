@@ -42,8 +42,8 @@ public class UserProfileUtil implements GlobalConstant {
 			 return ekiUserRoleData;
 		}
 
-		DatasetPermission userRole = sessionBean.getUserRole();
 		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		Long userId = user.getId();
 
 		boolean isAdmin = user.isAdmin();

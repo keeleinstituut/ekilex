@@ -14,6 +14,8 @@ public interface GlobalConstant {
 
 	String VALUE_STATE_LEAST_PREFERRED = "väldi";
 
+	String DEFINITION_TYPE_UNDEFINED = "määramata";
+
 	String LEXEME_TYPE_PRIMARY = LexemeType.PRIMARY.name();
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();

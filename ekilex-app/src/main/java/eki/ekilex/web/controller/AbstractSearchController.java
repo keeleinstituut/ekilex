@@ -24,23 +24,17 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
 public abstract class AbstractSearchController extends AbstractPageController {
 
-	private static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
-
 	@Autowired
 	protected CommonDataService commonDataService;
 
 	@Autowired
 	protected SearchHelper searchHelper;
-
-	@Autowired
-	protected UserContext userContext;
 
 	@Autowired
 	protected UserProfileService userProfileService;
@@ -53,8 +47,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	@ModelAttribute("datasetDomains")
 	public Map<String, List<Classifier>> getDatasetDomains(Model model) {
 
-		SessionBean sessionBean = getSessionBean(model);
-		DatasetPermission userRole = sessionBean.getUserRole();
+		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
 			return Collections.emptyMap();
 		}
@@ -64,8 +57,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	@ModelAttribute("processStates")
 	public List<Classifier> getProcessStates(Model model) {
 
-		SessionBean sessionBean = getSessionBean(model);
-		DatasetPermission userRole = sessionBean.getUserRole();
+		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
 			return Collections.emptyList();
 		}
@@ -124,7 +116,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 
 	@ModelAttribute("defaultDefinitionTypeCode")
 	public String getDefaultDefinitionTypeCode() {
-		return DEFAULT_DEFINITION_TYPE_CODE;
+		return DEFINITION_TYPE_UNDEFINED;
 	}
 
 	protected void resetUserRole(Model model) {
