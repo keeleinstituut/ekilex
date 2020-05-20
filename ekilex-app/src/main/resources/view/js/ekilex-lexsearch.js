@@ -140,7 +140,7 @@ function loadWordDetails(wordId) {
 		let detailsDiv = $('#word-details-area');
 		let scrollPos = detailsDiv.scrollTop();
 		detailsDiv.replaceWith(data);
-		detailsDiv = $('#word-details-area')
+		detailsDiv = $('#word-details-area');
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
 		detailsDiv.scrollTop(scrollPos);
@@ -166,7 +166,7 @@ function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 	$.get(lexemeDetailsUrl).done(function(data) {
 		let detailsDiv = $('#lexeme-details-' + lexemeId);
 		detailsDiv.html(data);
-		detailsDiv = $('#lexeme-details-' + lexemeId)
+		detailsDiv = $('#lexeme-details-' + lexemeId);
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
 		$('.tooltip').remove();

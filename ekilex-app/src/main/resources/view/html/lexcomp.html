@@ -51,7 +51,7 @@
               title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editLexemeComplexityDlg_' + lexeme.lexemeId}"
-              sec:authorize="${#vars.isLexemeCrudGranted}">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
     </div>
@@ -66,7 +66,7 @@
               title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editLexemeProcessStateDlg_' + lexeme.lexemeId}"
-              sec:authorize="${#vars.isLexemeCrudGranted}">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
     </div>
@@ -81,7 +81,7 @@
               title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editLexemeValueStateCodeDlg_' + lexeme.lexemeId}"
-              sec:authorize="${#vars.isLexemeCrudGranted}">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn badge badge-warning"
@@ -90,7 +90,7 @@
               th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
               data-toggle="delete-confirm"
               data-placement="right"
-              sec:authorize="${#vars.isLexemeCrudGranted}">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
     </div>
@@ -102,7 +102,7 @@
               title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addLexemeGrammarDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.isLexemeCrudGranted">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -115,7 +115,7 @@
                 title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -124,7 +124,7 @@
                 th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${grammarIter.last}">,&nbsp;</span>
@@ -143,7 +143,7 @@
                 title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemeFrequencyGroupDlg_' + lexeme.lexemeId}"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -152,7 +152,7 @@
                 th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
       </span>
@@ -168,7 +168,7 @@
               title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editLexemeWeightDlg_' + lexeme.lexemeId}"
-              sec:authorize="${#vars.isLexemeCrudGranted}">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-edit" aria-hidden="true"></i>
       </button>
     </div>
@@ -180,7 +180,7 @@
               title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addLexemePosDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.isLexemeCrudGranted">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -196,7 +196,7 @@
                 title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -206,7 +206,7 @@
                 th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
@@ -220,7 +220,7 @@
               title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addLexemeDerivDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.isLexemeCrudGranted">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -236,7 +236,7 @@
                 title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -246,7 +246,7 @@
                 th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
@@ -260,7 +260,7 @@
               title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addLexemeRegisterDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.isLexemeCrudGranted">
+              sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -276,7 +276,7 @@
                 title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -286,30 +286,30 @@
                 th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
-                sec:authorize="${#vars.isLexemeCrudGranted}">
+                sec:authorize="#vars.lexeme.crudGrant">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
       </span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaningDomains)}" th:fragment="meaning_domain">
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.domains)}" th:fragment="meaning_domain">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Valdkonnad</span>
       <button type="button" class="btn badge badge-success float-right mr-4"
               title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addMeaningDomainDlg_' + lexeme.meaningId}"
-              sec:authorize="#vars.isMeaningCrudGranted">
+              sec:authorize="#vars.lexeme.meaning.crudGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
     <div class="col pl-0">
       <div class="orderable" data-op-code="meaning_domain">
-        <div th:each="classif,classifIter : ${lexeme.meaningDomains}" th:data-id="${classif.id}" th:data-orderby="${classif.orderBy}" class="hidden-buttons">
+        <div th:each="classif,classifIter : ${lexeme.meaning.domains}" th:data-id="${classif.id}" th:data-orderby="${classif.orderBy}" class="hidden-buttons">
           <div class="row">
             <div class="action-column">
-              <th:block th:replace="common :: ordering_buttons(${classifIter})" sec:authorize="#vars.isMeaningCrudGranted"></th:block>
+              <th:block th:replace="common :: ordering_buttons(${classifIter})" sec:authorize="#vars.lexeme.meaning.crudGrant"></th:block>
             </div>
             <div class="col">
               <span th:replace="lexdialog :: edit_meaning_domain_dlg"></span>
@@ -320,7 +320,7 @@
               </th:block>
               <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal"
                       th:data-target="${'#editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
-                      sec:authorize="#vars.isMeaningCrudGranted">
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-warning" 
@@ -330,7 +330,7 @@
                       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                       data-toggle="delete-confirm"
                       data-placement="right"
-                      sec:authorize="#vars.isMeaningCrudGranted">
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
                 <i class="fa fa-remove" aria-hidden="true"></i>
               </button>
             </div>
@@ -339,19 +339,19 @@
       </div>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaningSemanticTypes)}" th:fragment="meaning_semantic_type">
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.semanticTypes)}" th:fragment="meaning_semantic_type">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Semantiline tüüp</span>
       <button type="button" class="btn badge badge-success float-right mr-4"
               title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addMeaningSemanticTypeDlg_' + lexeme.meaningId}"
-              sec:authorize="#vars.isMeaningCrudGranted">
+              sec:authorize="#vars.lexeme.meaning.crudGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
     <div class="col pl-0">
-      <span th:each="classif,classifIter : ${lexeme.meaningSemanticTypes}" class="hidden-buttons">
+      <span th:each="classif,classifIter : ${lexeme.meaning.semanticTypes}" class="hidden-buttons">
         <span th:replace="lexdialog :: edit_meaning_semantic_type_dlg"></span>
         <span th:text="${classif.code}"></span>
         <th:block th:unless="${classif.code == classif.value}">
@@ -362,7 +362,7 @@
                 title="Muuda"
                 data-toggle="modal"
                 th:data-target="${'#editMeaningSemanticTypeDlg_' + lexeme.meaningId + '_' + classifIter.index}"
-                sec:authorize="${#vars.isMeaningCrudGranted}">
+                sec:authorize="${#vars.lexeme.meaning.crudGrant}">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -372,7 +372,7 @@
                 th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
-                sec:authorize="${#vars.isMeaningCrudGranted}">
+                sec:authorize="${#vars.lexeme.meaning.crudGrant}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
@@ -384,7 +384,7 @@
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
               data-toggle="modal"
               th:data-target="${'#addWordLangDlg_' + wordId}"
-              sec:authorize="${#vars.isWordCrudGranted}">
+              sec:authorize="#vars.details.word.crudGrant">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Keel
       </button>
     </th:block>
@@ -396,7 +396,7 @@
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
                     data-toggle="modal"
                     th:data-target="${'#editWordLangDlg_' + wordId}"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
             </button>
           </div>
@@ -409,7 +409,7 @@
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
               data-toggle="modal"
               th:data-target="${'#addWordVocalFormDlg_' + wordId}"
-              sec:authorize="${#vars.isWordCrudGranted}">
+              sec:authorize="#vars.details.word.crudGrant">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Hääldus
       </button>
     </th:block>
@@ -421,7 +421,7 @@
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
                     data-toggle="modal"
                     th:data-target="${'#editWordVocalFormDlg_' + wordId}"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-pencil action-icon" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-secondary btn-sm"
@@ -429,7 +429,7 @@
                     data-op-code="word_vocal_form"
                     data-toggle="delete-confirm"
                     data-placement="right"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-remove action-icon" aria-hidden="true"></i>
             </button>
           </div>
@@ -442,7 +442,7 @@
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
               data-toggle="modal"
               th:data-target="${'#addWordGenderDlg_' + wordId}"
-              sec:authorize="${#vars.isWordCrudGranted}">
+              sec:authorize="#vars.details.word.crudGrant">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Sugu
       </button>
     </th:block>
@@ -455,7 +455,7 @@
                     title="Muuda"
                     data-toggle="modal"
                     th:data-target="${'#editWordGenderDlg_' + wordId}"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-secondary btn-sm"
@@ -463,7 +463,7 @@
                     data-op-code="word_gender"
                     data-toggle="delete-confirm"
                     data-placement="right"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-remove action-icon" aria-hidden="true"></i>
             </button>
           </div>
@@ -476,7 +476,7 @@
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
               data-toggle="modal"
               th:data-target="${'#addWordTypeDlg_' + wordId}"
-              sec:authorize="${#vars.isWordCrudGranted}">
+              sec:authorize="#vars.details.word.crudGrant">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Sõna tüüp
       </button>
     </th:block>
@@ -493,13 +493,13 @@
             <button type="button" class="btn btn-secondary btn-sm"
                     data-toggle="modal"
                     th:data-target="${'#addWordTypeDlg_' + wordId}"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-plus action-icon" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
                     data-toggle="modal"
                     th:data-target="${'#editWordTypeDlg_' + wordId + '_' + classifIter.index}"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-secondary btn-sm"
@@ -508,7 +508,7 @@
                     th:data-value="${classif.code}"
                     data-toggle="delete-confirm"
                     data-placement="right"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-remove action-icon" aria-hidden="true"></i>
             </button>
           </div>
@@ -522,7 +522,7 @@
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
               data-toggle="modal"
               th:data-target="${'#addWordAspectDlg_' + wordId}"
-              sec:authorize="${#vars.isWordCrudGranted}">
+              sec:authorize="#vars.details.word.crudGrant">
         <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Aspekt
       </button>
     </th:block>
@@ -531,7 +531,7 @@
         <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.aspectCode, wordAspects)}" data-toggle="tooltip" title="Aspekt"></span>
         <div class="hover-actions">
           <div class="btn-group">
-            <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal" th:data-target="${'#editWordAspectDlg_' + wordId}" sec:authorize="${#vars.isWordCrudGranted}">
+            <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal" th:data-target="${'#editWordAspectDlg_' + wordId}" sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-secondary btn-sm"
@@ -539,7 +539,7 @@
                     data-op-code="word_aspect"
                     data-toggle="delete-confirm"
                     data-placement="right"
-                    sec:authorize="${#vars.isWordCrudGranted}">
+                    sec:authorize="#vars.details.word.crudGrant">
               <i class="fa fa-remove action-icon" aria-hidden="true"></i>
             </button>
           </div>

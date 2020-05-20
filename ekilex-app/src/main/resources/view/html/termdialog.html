@@ -15,20 +15,20 @@
               <div class="col-md-6">
                 <select class="form-control lex-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option value="addLexemeProcessStateDlg" sec:authorize="#vars.isLexemeCrudGranted">Haldusolek</option>
-                  <option value="lexeme_value_state" sec:authorize="#vars.isLexemeCrudGranted">Väärtusolek</option>
-                  <option value="lexeme_frequency_group" sec:authorize="#vars.isLexemeCrudGranted">Sagedusrühm</option>
-                  <option value="addUsageDlg" sec:authorize="#vars.isLexemeCrudGranted">Kasutusnäide</option>
-                  <option value="lexeme_pos" sec:authorize="#vars.isLexemeCrudGranted">Sõnaliik</option>
-                  <option value="lexeme_deriv" sec:authorize="#vars.isLexemeCrudGranted">Tuletuskood</option>
-                  <option value="lexeme_register" sec:authorize="#vars.isLexemeCrudGranted">Register</option>
-                  <option value="lexeme_grammar" sec:authorize="#vars.isLexemeCrudGranted">Grammatika</option>
-                  <option value="lexeme_region" sec:authorize="#vars.isLexemeCrudGranted">Regioon</option>
-                  <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.isLexemeCrudGranted">Allikaviide</option>
-                  <option value="addLexemeRelationDlg" sec:authorize="#vars.isLexemeCrudGranted">Ilmiku seos</option>
-                  <option value="addLexemePublicNoteDlg" sec:authorize="#vars.isLexemeCrudGranted">Ilmiku märkus</option>
-                  <option value="word_gender" sec:authorize="#vars.isWordCrudGranted">Sugu</option>
-                  <option value="word_type" sec:authorize="#vars.isWordCrudGranted">Sõna tüüp</option>
+                  <option value="addLexemeProcessStateDlg" sec:authorize="#vars.lexeme.crudGrant">Haldusolek</option>
+                  <option value="lexeme_value_state" sec:authorize="#vars.lexeme.crudGrant">Väärtusolek</option>
+                  <option value="lexeme_frequency_group" sec:authorize="#vars.lexeme.crudGrant">Sagedusrühm</option>
+                  <option value="addUsageDlg" sec:authorize="#vars.lexeme.crudGrant">Kasutusnäide</option>
+                  <option value="lexeme_pos" sec:authorize="#vars.lexeme.crudGrant">Sõnaliik</option>
+                  <option value="lexeme_deriv" sec:authorize="#vars.lexeme.crudGrant">Tuletuskood</option>
+                  <option value="lexeme_register" sec:authorize="#vars.lexeme.crudGrant">Register</option>
+                  <option value="lexeme_grammar" sec:authorize="#vars.lexeme.crudGrant">Grammatika</option>
+                  <option value="lexeme_region" sec:authorize="#vars.lexeme.crudGrant">Regioon</option>
+                  <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.lexeme.crudGrant">Allikaviide</option>
+                  <option value="addLexemeRelationDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku seos</option>
+                  <option value="addLexemePublicNoteDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku märkus</option>
+                  <option value="word_gender" sec:authorize="#vars.lexeme.word.crudGrant">Sugu</option>
+                  <option value="word_type" sec:authorize="#vars.lexeme.word.crudGrant">Sõna tüüp</option>
                 </select>
               </div>
             </div>
@@ -145,12 +145,12 @@
               <div class="col-md-6">
                 <select required class="form-control meaning-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option value="meaning_domain" sec:authorize="#vars.isMeaningCrudGranted">Valdkond</option>
+                  <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
-                  <option value="addLearnerCommentDlg" sec:authorize="#vars.isMeaningCrudGranted">Õppekommentaar</option>
-                  <option value="addMeaningPublicNoteDlg" sec:authorize="#vars.isMeaningCrudGranted">Märkus</option>
-                  <option value="addMeaningRelationDlg" sec:authorize="#vars.isMeaningCrudGranted">Tähenduse seos</option>
-                  <option value="meaning_semantic_type" sec:authorize="#vars.isMeaningCrudGranted">Semantiline tüüp</option>
+                  <option value="addLearnerCommentDlg" sec:authorize="#vars.meaning.crudGrant">Õppekommentaar</option>
+                  <option value="addMeaningPublicNoteDlg" sec:authorize="#vars.meaning.crudGrant">Märkus</option>
+                  <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse seos</option>
+                  <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant">Semantiline tüüp</option>
                 </select>
               </div>
             </div>
@@ -322,7 +322,7 @@
             <input type="hidden" name="id" th:value="${lexeme.wordId}">
             <input type="hidden" name="opCode" value="word_gender">
             <select required class="form-control" name="value">
-              <option th:each="item : ${wordGenders}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.wordGenderCode}">value</option>
+              <option th:each="item : ${wordGenders}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.word.genderCode}">value</option>
             </select>
           </div>
         </form>
@@ -337,7 +337,7 @@
             <input type="hidden" name="id" th:value="${lexeme.wordId}">
             <input type="hidden" name="opCode" value="word_lang">
             <select required class="form-control" name="value">
-              <option th:each="item : ${allLanguages}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.wordLang}">value</option>
+              <option th:each="item : ${allLanguages}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.word.lang}">value</option>
             </select>
           </div>
         </form>
@@ -482,7 +482,7 @@
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
+            <input type="hidden" name="language" th:value="${lexeme.word.lang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
@@ -967,7 +967,7 @@
         <form th:action="@{/update_word_value}" method="post">
           <div class="modal-body">
             <input type="hidden" name="wordId" th:value="${lexeme.wordId}">
-            <input type="hidden" name="value" th:value="${lexeme.wordValuePrese}">
+            <input type="hidden" name="value" th:value="${lexeme.word.wordValuePrese}">
             <div class="form-group row eki-editor">
               <div class="col-md-12 pb-3">
                 <div class="float-right">

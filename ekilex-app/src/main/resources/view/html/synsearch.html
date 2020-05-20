@@ -25,16 +25,14 @@
   <div th:replace="syncomp :: syn_word_result_list"></div>
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:data-id="${wordId}" id="syn_details_div" class="h-100"
-         th:with="
-           isWordCrudGranted=${#authorization.expression('hasPermission(#vars.wordId, ''WORD'', ''DATASET:CRUD'')')},
-           isWordLexemeCrudGranted=${#vars.permDataUtil.isWordLexemeCrudGranted(#vars.wordId, #vars.sessionBean)}">
+         th:with="isWordLexemeCrudGranted=${#vars.details.word.crudGrant}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div th:replace="syndialog :: add_word_process_log_dlg"></div>
       <div class="navigate-panel card shadow h-100">
 
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
-            <h1 th:utext="${viewUtil.getWordValueMarkup(details)}" class="mr-3 mb-0">Aktiivne sõna</h1>
+            <h1 th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mr-3 mb-0">Aktiivne sõna</h1>
             <button type="button" class="btn btn-secondary btn-compact"
                     id="layerCompleteBtn"
                     th:data-word-id="${wordId}"
@@ -56,10 +54,7 @@
                    th:classappend="${lexemeIter.first} ? 'pb-2' : 'py-2'"
                    th:data-meaning-id="${lexeme.meaningId}"
                    th:data-lexeme-id="${lexeme.lexemeId}"
-                   th:data-navigate-index="${lexemeIter.index}"
-                   th:with="
-                     isLexemeCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.lexemeId, ''LEXEME'', ''DATASET:CRUD'')')},
-                     isMeaningCrudGranted=${#authorization.expression('hasPermission(#vars.lexeme.meaningId, ''MEANING'', ''DATASET:CRUD'')')}">
+                   th:data-navigate-index="${lexemeIter.index}">
                 <div th:replace="syndialog :: edit_lexeme_syn_process_state_dlg"></div>
                 <div data-lexeme-title class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() > 2} ? 'pl-4': ''">
                   <div class="d-flex align-items-start flex-wrap pt-2">
@@ -73,7 +68,7 @@
                               data-toggle="modal"
                               th:data-target="${'#editLexemeSynProcessStateDlg_' + lexeme.lexemeId}"
                               th:if="${userRoleData.processStateChangeEnabled}"
-                              sec:authorize="${#vars.isLexemeCrudGranted}">
+                              sec:authorize="#vars.lexeme.crudGrant">
                         <i class="fa fa-caret-down" aria-hidden="true"></i>
                       </button>
                     </span>
@@ -119,7 +114,7 @@
     </div>
     <div th:replace="syndialog :: #selectSynCandidateLangDlg"></div>
     <div th:replace="syndialog :: #selectSynMeaningWordLangDlg"></div>
-    <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.relations}, ${details.lang}, ${details.morphCode})"></div>
+    <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.relations}, ${details.word.lang}, ${details.word.morphCode})"></div>
     <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>

@@ -21,11 +21,13 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.SourceType;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.service.db.SourceDbService;
+import eki.ekilex.web.util.PermCalculator;
 
 @Component
 public class SourceService extends AbstractService {
@@ -35,8 +37,16 @@ public class SourceService extends AbstractService {
 	@Autowired
 	private SourceDbService sourceDbService;
 
+	@Autowired
+	private PermCalculator permCalculator;
+
 	@Transactional
 	public Source getSource(Long sourceId) {
+		return getSource(sourceId, null);
+	}
+
+	@Transactional
+	public Source getSource(Long sourceId, DatasetPermission userRole) {
 
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSource(sourceId);
 		if (CollectionUtils.isEmpty(sourcePropertyTuples)) {
@@ -44,6 +54,7 @@ public class SourceService extends AbstractService {
 			return null;
 		}
 		List<Source> sources = convert(sourcePropertyTuples);
+		permCalculator.applyCrud(sources, userRole);
 		if (sources.size() > 1) {
 			logger.error("Single source query for id {} returned several. Fix this!", sourceId);
 		}
@@ -64,23 +75,34 @@ public class SourceService extends AbstractService {
 
 	@Transactional
 	public List<Source> getSources(String searchFilter) {
-		return getSources(searchFilter, null);
+		return getSources(searchFilter, null, null);
+	}
+
+	@Transactional
+	public List<Source> getSources(String searchFilter, DatasetPermission userRole) {
+		return getSources(searchFilter, null, userRole);
 	}
 
 	@Transactional
 	public List<Source> getSources(String searchFilter, SourceType sourceType) {
+		return getSources(searchFilter, sourceType, null);
+	}
+
+	@Transactional
+	public List<Source> getSources(String searchFilter, SourceType sourceType, DatasetPermission userRole) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType);
 		List<Source> sources = convert(sourcePropertyTuples);
+		permCalculator.applyCrud(sources, userRole);
 
 		return sources;
 	}
 
 	@Transactional
-	public List<Source> getSourcesExcludingOne(String searchFilter, Source excludedSource) {
+	public List<Source> getSourcesExcludingOne(String searchFilter, Source excludedSource, DatasetPermission userRole) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
@@ -89,6 +111,7 @@ public class SourceService extends AbstractService {
 		Long excludedSourceId = excludedSource.getSourceId();
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType, excludedSourceId);
 		List<Source> sources = convert(sourcePropertyTuples);
+		permCalculator.applyCrud(sources, userRole);
 
 		return sources;
 	}

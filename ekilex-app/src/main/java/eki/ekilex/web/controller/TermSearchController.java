@@ -25,6 +25,7 @@ import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.SearchFilter;
@@ -142,11 +143,12 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		logger.debug("meaning details for {}", meaningId);
 
-		List<String> selectedDatasets = getUserPreferredDatasetCodes();
+		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Long userId = userService.getAuthenticatedUser().getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile);
+		List<String> selectedDatasets = userProfile.getPreferredDatasets();
+		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile, userRole);
 		model.addAttribute("meaning", meaning);
 		model.addAttribute("meaningId", meaningId);
 

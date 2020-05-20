@@ -2,17 +2,47 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class AbstractCrudEntity extends AbstractDataObject {
+public abstract class AbstractCrudEntity extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private boolean isCrudGranted;
+	private Boolean crudGrant;
 
-	public boolean isCrudGranted() {
-		return isCrudGranted;
+	private Boolean readGrant;
+
+	private Boolean subGrant;
+
+	private Boolean anyGrant;
+
+	public Boolean getCrudGrant() {
+		return crudGrant;
 	}
 
-	public void setCrudGranted(boolean crudGranted) {
-		isCrudGranted = crudGranted;
+	public void setCrudGrant(Boolean crudGrant) {
+		this.crudGrant = crudGrant;
+	}
+
+	public Boolean getReadGrant() {
+		return readGrant;
+	}
+
+	public void setReadGrant(Boolean readGrant) {
+		this.readGrant = readGrant;
+	}
+
+	public Boolean getSubGrant() {
+		return subGrant;
+	}
+
+	public void setSubGrant(Boolean subGrant) {
+		this.subGrant = subGrant;
+	}
+
+	public Boolean getAnyGrant() {
+		return anyGrant;
+	}
+
+	public void setAnyGrant(Boolean anyGrant) {
+		this.anyGrant = anyGrant;
 	}
 }

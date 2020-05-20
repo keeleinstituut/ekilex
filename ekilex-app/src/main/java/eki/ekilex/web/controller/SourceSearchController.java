@@ -10,17 +10,20 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Source;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
-public class SourceSearchController extends AbstractPageController {
+public class SourceSearchController extends AbstractSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceSearchController.class);
 
@@ -30,17 +33,20 @@ public class SourceSearchController extends AbstractPageController {
 	private SourceService sourceService;
 
 	@GetMapping(SOURCE_SEARCH_URI)
-	public String initSearch() {
+	public String initSearch(Model model) {
 
+		resetUserRole(model);
 		return SOURCE_SEARCH_PAGE;
 	}
 
 	@PostMapping(SOURCE_SEARCH_URI)
-	public String search(@RequestParam String searchFilter, Model model) {
+	public String search(@RequestParam String searchFilter, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
-		List<Source> sources = sourceService.getSources(searchFilter);
+		resetUserRole(model);
+		DatasetPermission userRole = sessionBean.getUserRole();
+		List<Source> sources = sourceService.getSources(searchFilter, userRole);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sources", sources);
 		model.addAttribute("sourceCount", sources.size());
@@ -62,12 +68,14 @@ public class SourceSearchController extends AbstractPageController {
 	}
 
 	@GetMapping(SOURCE_SEARCH_URI + "/{sourceId}")
-	public String searchById(@PathVariable("sourceId") Long sourceId, Model model) {
+	public String searchById(@PathVariable("sourceId") Long sourceId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Searching by id: \"{}\"", sourceId);
 
+		resetUserRole(model);
+		DatasetPermission userRole = sessionBean.getUserRole();
 		List<Source> sources = new ArrayList<>();
-		Source source = sourceService.getSource(sourceId);
+		Source source = sourceService.getSource(sourceId, userRole);
 		sources.add(source);
 
 		model.addAttribute("sources", sources);

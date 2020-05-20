@@ -31,7 +31,6 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
-import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
@@ -236,7 +235,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.getId();
 	}
 
-	public WordSynDetails getWordDetails(Long wordId) {
+	public eki.ekilex.data.Word getWordDetails(Long wordId) {
 
 		Word w = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
@@ -250,10 +249,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 		return create.select(
 				w.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("wordValue"),
-				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("wordValuePrese"),
+				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word_value"),
+				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("word_value_prese"),
 				w.LANG,
-				DSL.field("array_to_string(array_agg(distinct f.morph_code), ',', '*')", String.class).as("morphCode"),
+				DSL.field("array_to_string(array_agg(distinct f.morph_code), ',', '*')", String.class).as("morph_code"),
 				wtf.as("word_type_codes"),
 				wtpf.as("prefixoid"),
 				wtsf.as("suffixoid"),
@@ -270,7 +269,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 										//TODO what lexeme type?
 				)))
 				.groupBy(w.ID)
-				.fetchOneInto(WordSynDetails.class);
+				.fetchOneInto(eki.ekilex.data.Word.class);
 	}
 
 	public List<MeaningWord> getSynMeaningWords(Long lexemeId, List<String> meaningWordLangs, List<LexemeType> lexemeTypes) {

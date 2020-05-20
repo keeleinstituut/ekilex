@@ -4,7 +4,6 @@
 <body>
   <div class="card shadow mt-2"
        th:id="${'sourceSearchResult_' + source.sourceId}"
-       th:with="isSourceCrudGranted=${#authorization.expression('hasPermission(#vars.source.sourceId, ''SOURCE'', ''DATASET:CRUD'')')}"
        th:fragment="source_search_result">
     <div class="card-body">
       <div class="col-auto form-inline">
@@ -13,7 +12,7 @@
                   title="Lisa allikale uus atribuut"
                   data-toggle="modal"
                   th:data-target="${'#addSourcePropertyDlg_' + source.sourceId}"
-                  sec:authorize="${#vars.isSourceCrudGranted}">
+                  sec:authorize="#vars.source.crudGrant">
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
         </div>
@@ -21,14 +20,14 @@
           <form th:action="@{/source_join}" method="post">
             <input type="hidden" name="previousSearch" th:value="${searchFilter}">
             <input type="hidden" name="sourceId" th:value="${source.sourceId}">
-            <button type="submit" class="btn btn-primary btn-sm" sec:authorize="${#vars.isSourceCrudGranted}">Ühenda</button>
+            <button type="submit" class="btn btn-primary btn-sm" sec:authorize="#vars.source.crudGrant">Ühenda</button>
           </form>
         </div>
         <div class="ml-2">
           <button type="button" class="btn btn-warning font-weight-bold btn-sm"
                   th:data-source-id="${source.sourceId}"
                   data-toggle="delete-source-confirm"
-                  sec:authorize="${#vars.isSourceCrudGranted}">Eemalda allikas</button>
+                  sec:authorize="#vars.source.crudGrant">Eemalda allikas</button>
         </div>
         <a th:href="@{'/sourcelifecyclelog:' + ${source.sourceId}}"
            data-toggle="modal"
@@ -59,7 +58,7 @@
                                 title="Muuda"
                                 data-toggle="modal"
                                 th:data-target="${'#editSourceTypeDlg_' + source.sourceId}"
-                                sec:authorize="${#vars.isSourceCrudGranted}">
+                                sec:authorize="#vars.source.crudGrant">
                           <i class="fa fa-caret-down" aria-hidden="true"></i>
                         </button>
                       </div>
@@ -84,7 +83,7 @@
                   -
                   <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                   <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
-                  <div class="action-buttons-2" sec:authorize="${#vars.isSourceCrudGranted}">
+                  <div class="action-buttons-2" sec:authorize="#vars.source.crudGrant">
                     <button type="button" class="btn badge badge-primary" th:title="Muuda" data-toggle="modal" th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
                       <i class="fa fa-edit" aria-hidden="true"></i>
                     </button>
@@ -167,9 +166,7 @@
     	initialiseAddNewProperty();
     </script>
   </th:block>
-  <th:block th:fragment="source_join_details(firstSourceId,source)"
-            th:if="${source != null}"
-            th:with="isSourceCrudGranted=${#authorization.expression('hasPermission(#vars.source.sourceId, ''SOURCE'', ''DATASET:CRUD'')')}">
+  <th:block th:fragment="source_join_details(firstSourceId,source)" th:if="${source != null}">
     <div>
       <table class="w-100" th:fragment="details">
         <tr>
@@ -194,7 +191,7 @@
                           data-toggle="join-confirm"
                           data-placement="right"
                           th:if="${source.sourceId != firstSourceId}"
-                          sec:authorize="${#vars.isSourceCrudGranted}">Ühenda</button>
+                          sec:authorize="#vars.source.crudGrant">Ühenda</button>
                 </form>
               </div>
             </div>

@@ -29,7 +29,6 @@ import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
-import eki.ekilex.web.util.PermDataUtil;
 import eki.ekilex.web.util.ValueUtil;
 
 public abstract class AbstractPageController implements WebConstant {
@@ -45,9 +44,6 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@Autowired
 	protected PermissionService permissionService;
-
-	@Autowired
-	protected PermDataUtil permDataUtil;
 
 	@Autowired
 	protected ValueUtil valueUtil;

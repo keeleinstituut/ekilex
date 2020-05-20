@@ -3,10 +3,9 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.constant.LexemeType;
-import eki.common.data.AbstractDataObject;
 import eki.common.data.LexemeLevel;
 
-public class WordSynLexeme extends AbstractDataObject implements LexemeLevel {
+public class WordSynLexeme extends AbstractCrudEntity implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
 

@@ -47,6 +47,7 @@ import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SearchResultMode;
+import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -873,7 +874,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.orElse(null);
 	}
 
-	public eki.ekilex.data.Lexeme getLexeme(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public LexemeWordTuple getLexemeWordTuple(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Lexeme l = LEXEME.as("l");
 		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
@@ -924,6 +925,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						w.HOMONYM_NR,
 						w.LANG.as("word_lang"),
 						w.GENDER_CODE.as("word_gender_code"),
+						w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
@@ -937,7 +939,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(f.MODE.eq(FormMode.WORD.name())))
 				.groupBy(l.ID, w.ID)
 				.orderBy(w.ID, l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
-				.fetchSingleInto(eki.ekilex.data.Lexeme.class);
+				.fetchSingleInto(LexemeWordTuple.class);
 	}
 
 	public String getMeaningFirstWord(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {

@@ -1,13 +1,10 @@
 package eki.ekilex.web.util;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.AuthorityOperation;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionService;
@@ -15,9 +12,7 @@ import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 
 @Component
-public class PermDataUtil implements SystemConstant {
-
-	private final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.CRUD, AuthorityOperation.OWN);
+public class PermDataUtil {
 
 	@Autowired
 	private PermissionService permissionService;
@@ -38,45 +33,6 @@ public class PermDataUtil implements SystemConstant {
 		}
 		boolean isRoleSelected = userRole.getId().equals(datasetPermission.getId());
 		return isRoleSelected;
-	}
-
-	public boolean isMeaningLexemeCrudGranted(Long meaningId, SessionBean sessionBean) {
-		if (sessionBean == null) {
-			return false;
-		}
-		DatasetPermission userRole = sessionBean.getUserRole();
-		if (userRole == null) {
-			return false;
-		}
-		AuthorityOperation authOperation = userRole.getAuthOperation();
-		if (!crudAuthOps.contains(authOperation)) {
-			return false;
-		}
-		String datasetCode = userRole.getDatasetCode();
-		boolean datasetExists = permissionService.meaningDatasetExists(meaningId, datasetCode);
-		return datasetExists;
-	}
-
-	public boolean isWordLexemeCrudGranted(Long wordId, SessionBean sessionBean) {
-		if (sessionBean == null) {
-			return false;
-		}
-		DatasetPermission userRole = sessionBean.getUserRole();
-		if (userRole == null) {
-			return false;
-		}
-		AuthorityOperation authOperation = userRole.getAuthOperation();
-		if (!crudAuthOps.contains(authOperation)) {
-			return false;
-		}
-		String datasetCode = userRole.getDatasetCode();
-		boolean datasetExists = permissionService.wordDatasetExists(wordId, datasetCode);
-		return datasetExists;
-	}
-
-	public boolean isMeaningAnyLexemeCrudGranted(Long meaningId) {
-		Long userId = userService.getAuthenticatedUser().getId();
-		return permissionService.isMeaningAnyLexemeCrudGranted(meaningId, userId);
 	}
 
 	public boolean isSourceMeaningCrudGranted(Long sourceMeaningId, Long targetMeaningId, SessionBean sessionBean) {
@@ -104,7 +60,7 @@ public class PermDataUtil implements SystemConstant {
 		return targetMeaningHasSuperiorLexemes;
 	}
 
-	public boolean isValidForJoin(Long sourceWordId, Long targetWordId) {
+	public boolean isWordValidForJoin(Long sourceWordId, Long targetWordId) {
 		if (sourceWordId.equals(targetWordId)) {
 			return false;
 		}

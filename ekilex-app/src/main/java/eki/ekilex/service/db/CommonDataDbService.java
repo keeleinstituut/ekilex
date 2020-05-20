@@ -96,7 +96,7 @@ import eki.ekilex.data.db.tables.Word;
 
 //only common use data reading!
 @Component
-public class CommonDataDbService extends AbstractSearchDbService {
+public class CommonDataDbService extends AbstractDataDbService {
 
 	public Map<String, String> getDatasetNameMap() {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
@@ -503,23 +503,13 @@ public class CommonDataDbService extends AbstractSearchDbService {
 				.fetchInto(OrderedClassifier.class);
 	}
 
-	public List<DefinitionRefTuple> getMeaningDefinitionRefTuples(Long meaningId, List<String> userPermDatasetCodes, String classifierLabelLang, String classifierLabelTypeCode) {
-		return getMeaningDefinitionRefTuples(meaningId, null, userPermDatasetCodes, classifierLabelLang, classifierLabelTypeCode);
+	public List<DefinitionRefTuple> getMeaningDefinitionRefTuples(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+		return getMeaningDefinitionRefTuples(meaningId, null, classifierLabelLang, classifierLabelTypeCode);
 	}
 
-	public List<DefinitionRefTuple> getMeaningDefinitionRefTuples(Long meaningId, String datasetCode, List<String> userPermDatasetCodes, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<DefinitionRefTuple> getMeaningDefinitionRefTuples(Long meaningId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		Condition where =
-				DEFINITION.MEANING_ID.eq(meaningId)
-						.and(DSL.or(
-								DEFINITION.IS_PUBLIC.isTrue(),
-								DSL.exists(DSL
-										.select(DEFINITION_DATASET.DEFINITION_ID)
-										.from(DEFINITION_DATASET)
-										.where(
-										DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)
-												.and(DEFINITION_DATASET.DATASET_CODE.in(userPermDatasetCodes))))));
-
+		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
 		if (StringUtils.isNotBlank(datasetCode)) {
 			where = where.and(DSL
 					.exists(DSL
@@ -800,9 +790,8 @@ public class CommonDataDbService extends AbstractSearchDbService {
 				.fetchInto(Government.class);
 	}
 
-	public List<UsageTranslationDefinitionTuple> getLexemeUsageTranslationDefinitionTuples(Long lexemeId, List<String> userPermDatasetCodes, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<UsageTranslationDefinitionTuple> getLexemeUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		Lexeme l = LEXEME.as("l");
 		LexemeFreeform ulff = LEXEME_FREEFORM.as("ulff");
 		Freeform u = FREEFORM.as("u");
 		Freeform ut = FREEFORM.as("ut");
@@ -858,7 +847,6 @@ public class CommonDataDbService extends AbstractSearchDbService {
 						srcn.field("type").cast(String.class).as("usage_source_type"),
 						srcn.field("src_name").cast(String.class).as("usage_source_name"))
 				.from(
-						l,
 						ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
@@ -868,10 +856,7 @@ public class CommonDataDbService extends AbstractSearchDbService {
 								.leftOuterJoin(srcn).on(srcn.field("id").cast(Long.class).eq(srcl.SOURCE_ID))
 								.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 								.leftOuterJoin(utypelbl).on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode)))))
-				.where(
-						l.ID.eq(lexemeId)
-								.and(ulff.LEXEME_ID.eq(l.ID))
-								.and(DSL.or(u.IS_PUBLIC.isTrue(), l.DATASET_CODE.in(userPermDatasetCodes))))
+				.where(ulff.LEXEME_ID.eq(lexemeId))
 				.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, odUd.ORDER_BY, odUa.ORDER_BY, srcl.ORDER_BY)
 				.fetchInto(UsageTranslationDefinitionTuple.class);
 	}

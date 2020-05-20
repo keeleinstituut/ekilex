@@ -80,7 +80,7 @@ public class TermEditController extends AbstractPageController {
 			searchFilter = targetMeaningFirstWord;
 		}
 
-		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(targetMeaningId, languagesOrder);
+		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(targetMeaningId, languagesOrder, userId);
 		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(searchFilter, userPrefDatasetCodes, languagesOrder, targetMeaningId, userId);
 
 		model.addAttribute("searchFilter", searchFilter);
@@ -190,7 +190,7 @@ public class TermEditController extends AbstractPageController {
 
 			boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
 			if (!meaningHasWord) {
-				List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(meaningId, wordValue, languagesOrder);
+				List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(meaningId, wordValue, languagesOrder, userId);
 				if (CollectionUtils.isNotEmpty(relationCandidates)) {
 					attributes.addFlashAttribute("dataset", dataset);
 					attributes.addFlashAttribute("wordValue", wordValue);

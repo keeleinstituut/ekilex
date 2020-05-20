@@ -3,14 +3,13 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.constant.Complexity;
+import eki.common.data.AbstractDataObject;
 
-public class Lexeme extends AbstractCrudEntity {
+public class LexemeWordTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long lexemeId;
-
-	private Long wordId;
 
 	private Long meaningId;
 
@@ -19,8 +18,6 @@ public class Lexeme extends AbstractCrudEntity {
 	private Integer level1;
 
 	private Integer level2;
-
-	private String levels;
 
 	private String lexemeFrequencyGroupCode;
 
@@ -34,10 +31,6 @@ public class Lexeme extends AbstractCrudEntity {
 
 	private Long orderBy;
 
-	private Word word;
-
-	private List<Classifier> wordTypes;
-
 	private List<Classifier> pos;
 
 	private List<Classifier> derivs;
@@ -46,21 +39,27 @@ public class Lexeme extends AbstractCrudEntity {
 
 	private List<Classifier> regions;
 
-	private List<Usage> usages;
+	private Long wordId;
 
-	private List<Image> images;
+	private String wordValue;
 
-	private List<FreeForm> freeforms;
+	private String wordValuePrese;
 
-	private List<Note> publicNotes;
+	private Integer homonymNr;
 
-	private List<FreeForm> grammars;
+	private String wordLang;
 
-	private List<SourceLink> sourceLinks;
+	private String wordGenderCode;
 
-	private List<Relation> lexemeRelations;
+	private String wordDisplayMorphCode;
 
-	private boolean classifiersExist;
+	private String[] wordTypeCodes;
+
+	private boolean prefixoid;
+
+	private boolean suffixoid;
+
+	private boolean foreign;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -68,14 +67,6 @@ public class Lexeme extends AbstractCrudEntity {
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
-	}
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
 	}
 
 	public Long getMeaningId() {
@@ -108,14 +99,6 @@ public class Lexeme extends AbstractCrudEntity {
 
 	public void setLevel2(Integer level2) {
 		this.level2 = level2;
-	}
-
-	public String getLevels() {
-		return levels;
-	}
-
-	public void setLevels(String levels) {
-		this.levels = levels;
 	}
 
 	public String getLexemeFrequencyGroupCode() {
@@ -166,22 +149,6 @@ public class Lexeme extends AbstractCrudEntity {
 		this.orderBy = orderBy;
 	}
 
-	public Word getWord() {
-		return word;
-	}
-
-	public void setWord(Word word) {
-		this.word = word;
-	}
-
-	public List<Classifier> getWordTypes() {
-		return wordTypes;
-	}
-
-	public void setWordTypes(List<Classifier> wordTypes) {
-		this.wordTypes = wordTypes;
-	}
-
 	public List<Classifier> getPos() {
 		return pos;
 	}
@@ -214,68 +181,91 @@ public class Lexeme extends AbstractCrudEntity {
 		this.regions = regions;
 	}
 
-	public List<Usage> getUsages() {
-		return usages;
+	public Long getWordId() {
+		return wordId;
 	}
 
-	public void setUsages(List<Usage> usages) {
-		this.usages = usages;
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
 	}
 
-	public List<Image> getImages() {
-		return images;
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setImages(List<Image> images) {
-		this.images = images;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
-	public List<FreeForm> getFreeforms() {
-		return freeforms;
+	public String getWordValuePrese() {
+		return wordValuePrese;
 	}
 
-	public void setFreeforms(List<FreeForm> freeforms) {
-		this.freeforms = freeforms;
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
 	}
 
-	public List<Note> getPublicNotes() {
-		return publicNotes;
+	public Integer getHomonymNr() {
+		return homonymNr;
 	}
 
-	public void setPublicNotes(List<Note> publicNotes) {
-		this.publicNotes = publicNotes;
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 
-	public List<FreeForm> getGrammars() {
-		return grammars;
+	public String getWordLang() {
+		return wordLang;
 	}
 
-	public void setGrammars(List<FreeForm> grammars) {
-		this.grammars = grammars;
+	public void setWordLang(String wordLang) {
+		this.wordLang = wordLang;
 	}
 
-	public List<SourceLink> getSourceLinks() {
-		return sourceLinks;
+	public String getWordGenderCode() {
+		return wordGenderCode;
 	}
 
-	public void setSourceLinks(List<SourceLink> sourceLinks) {
-		this.sourceLinks = sourceLinks;
+	public void setWordGenderCode(String wordGenderCode) {
+		this.wordGenderCode = wordGenderCode;
 	}
 
-	public List<Relation> getLexemeRelations() {
-		return lexemeRelations;
+	public String getWordDisplayMorphCode() {
+		return wordDisplayMorphCode;
 	}
 
-	public void setLexemeRelations(List<Relation> lexemeRelations) {
-		this.lexemeRelations = lexemeRelations;
+	public void setWordDisplayMorphCode(String wordDisplayMorphCode) {
+		this.wordDisplayMorphCode = wordDisplayMorphCode;
 	}
 
-	public boolean isClassifiersExist() {
-		return classifiersExist;
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
 	}
 
-	public void setClassifiersExist(boolean classifiersExist) {
-		this.classifiersExist = classifiersExist;
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
 	}
 
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
+	}
+
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
+	}
 }
