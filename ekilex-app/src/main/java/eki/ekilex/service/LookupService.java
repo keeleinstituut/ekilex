@@ -54,7 +54,7 @@ import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TermSearchDbService;
-import eki.ekilex.web.util.PermCalculator;
+import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class LookupService extends AbstractWordSearchService {

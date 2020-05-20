@@ -83,7 +83,7 @@ public class EmailService {
 		sendTextEmail(email, PASSWORD_RECOVERY_SUBJECT, PASSWORD_RECOVERY_TEMPLATE, context);
 	}
 
-	public void sendApplicationSubmitEmail(List<String> emails, EkiUser user, List<String> datasets, String comment, boolean isAdditionalApplication) {
+	public void sendApplicationSubmitEmail(EkiUser user, List<String> emails, List<String> datasets, String comment, boolean isAdditionalApplication) {
 
 		String joinedDatasets = null;
 		if (CollectionUtils.isNotEmpty(datasets)) {

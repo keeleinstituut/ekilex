@@ -14,8 +14,8 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.EkiUserRoleData;
+import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
-import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 
 @Component
@@ -24,13 +24,13 @@ public class UserProfileUtil implements GlobalConstant {
 	private final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.CRUD, AuthorityOperation.OWN);
 
 	@Autowired
-	private UserProfileService userProfileService;
+	private UserContext userContext;
 
 	@Autowired
-	private UserService userService;
+	private UserProfileService userProfileService;
 
 	public EkiUserProfile getUserProfile() {
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		return userProfile;
 	}
@@ -43,7 +43,7 @@ public class UserProfileUtil implements GlobalConstant {
 		}
 
 		DatasetPermission userRole = sessionBean.getUserRole();
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 
 		boolean isAdmin = user.isAdmin();

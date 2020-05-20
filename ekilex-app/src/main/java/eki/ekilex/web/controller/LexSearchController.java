@@ -81,7 +81,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(simpleSearchFilter);
 		formDataCleanup(LEX_SEARCH_PAGE, detailSearchFilter);
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		if (StringUtils.isBlank(searchMode)) {
@@ -119,7 +119,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean fetchAll = false;
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		WordsResult wordsResult;
@@ -163,7 +163,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
 		List<String> datasets = Arrays.asList(lexeme.getDatasetCode());
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets, userId);
@@ -178,7 +178,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 		logger.debug("meaning search {}", searchFilter);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> selectedDatasets = userProfile.getPreferredDatasets();
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, selectedDatasets, userId);
@@ -214,7 +214,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> selectedDatasets = userProfile.getPreferredDatasets();
 		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile, userRole, false);
@@ -235,7 +235,7 @@ public class LexSearchController extends AbstractSearchController implements Sys
 
 		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		boolean isFullData = StringUtils.equals(composition, "full");
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, userRole, isFullData);

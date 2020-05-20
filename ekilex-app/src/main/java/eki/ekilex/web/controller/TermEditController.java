@@ -71,7 +71,7 @@ public class TermEditController extends AbstractPageController {
 	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
@@ -142,7 +142,7 @@ public class TermEditController extends AbstractPageController {
 	@PostMapping("/duplicatemeaning/{meaningId}")
 	public String duplicateMeaning(@PathVariable("meaningId") Long meaningId) throws JsonProcessingException {
 
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUserName();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
 			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId, userName);
@@ -181,7 +181,7 @@ public class TermEditController extends AbstractPageController {
 			String morphCode = wordDetails.getMorphCode();
 			Long meaningId = wordDetails.getMeaningId();
 			String dataset = wordDetails.getDataset();
-			Long userId = userService.getAuthenticatedUser().getId();
+			Long userId = userContext.getUserId();
 			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
@@ -244,7 +244,7 @@ public class TermEditController extends AbstractPageController {
 		if (StringUtils.isNotBlank(wordValue)) {
 
 			String dataset = sessionBean.getUserRole().getDatasetCode();
-			EkiUser user = userService.getAuthenticatedUser();
+			EkiUser user = userContext.getUser();
 			Long userId = user.getId();
 			String userName = user.getName();
 			List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
@@ -281,7 +281,7 @@ public class TermEditController extends AbstractPageController {
 	public String validateMeaningDataImport(@PathVariable("meaningId") Long meaningId) {
 
 		logger.debug("Validating meaning data import, meaning id: {}", meaningId);
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 
 		boolean isImportValid = compositionService.validateMeaningDataImport(meaningId, userPermDatasetCodes);

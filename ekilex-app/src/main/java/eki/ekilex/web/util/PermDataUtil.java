@@ -8,20 +8,20 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionService;
-import eki.ekilex.service.UserService;
+import eki.ekilex.service.UserContext;
 import eki.ekilex.web.bean.SessionBean;
 
 @Component
 public class PermDataUtil {
 
 	@Autowired
+	private UserContext userContext;
+
+	@Autowired
 	private PermissionService permissionService;
 
 	@Autowired
 	private LookupService lookupService;
-
-	@Autowired
-	private UserService userService;
 
 	public boolean isRoleSelected(SessionBean sessionBean, DatasetPermission datasetPermission) {
 		if (sessionBean == null) {
@@ -37,7 +37,7 @@ public class PermDataUtil {
 
 	public boolean isSourceMeaningCrudGranted(Long sourceMeaningId, Long targetMeaningId, SessionBean sessionBean) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		if (sessionBean == null) {
 			return false;
 		}
@@ -69,7 +69,7 @@ public class PermDataUtil {
 
 	public boolean isSourceWordCrudGranted(Long sourceWordId, Long targetWordId, SessionBean sessionBean) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		if (sessionBean == null) {
 			return false;
 		}
@@ -95,7 +95,7 @@ public class PermDataUtil {
 
 	public boolean isOwnPermission(Long userId) {
 
-		Long authenticatedUserId = userService.getAuthenticatedUser().getId();
+		Long authenticatedUserId = userContext.getUserId();
 		boolean isOwnPermission = authenticatedUserId.equals(userId);
 		return isOwnPermission;
 	}

@@ -26,15 +26,15 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
-import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
 public abstract class AbstractPageController implements WebConstant {
 
 	@Autowired
-	protected UserService userService;
+	protected UserContext userContext;
 
 	@Autowired
 	protected UserProfileService userProfileService;
@@ -59,8 +59,7 @@ public abstract class AbstractPageController implements WebConstant {
 
 	protected List<String> getUserPreferredDatasetCodes() {
 
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		return userProfile.getPreferredDatasets();
 	}
@@ -72,26 +71,21 @@ public abstract class AbstractPageController implements WebConstant {
 
 	@ModelAttribute("userVisibleDatasets")
 	public List<Dataset> getUserVisibleDatasets() {
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
+		Long userId = userContext.getUserId();
 		return permissionService.getUserVisibleDatasets(userId);
 	}
 
 	@ModelAttribute("userRoleLanguages")
-	public List<Classifier> getUserRoleLanguages(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public List<Classifier> getUserRoleLanguages() {
 
-		if (sessionBean == null) {
-			return Collections.emptyList();
-		}
-		DatasetPermission userRole = sessionBean.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return Collections.emptyList();
 		}
+		Long userId = user.getId();
 		String datasetCode = userRole.getDatasetCode();
 		String authLang = userRole.getAuthLang();
-
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
 
 		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
 		List<Classifier> datasetLanguages = commonDataService.getDatasetLanguages(datasetCode);
@@ -99,21 +93,19 @@ public abstract class AbstractPageController implements WebConstant {
 		if (StringUtils.isNotBlank(authLang)) {
 			datasetLanguages.removeIf(classifier -> !StringUtils.equals(classifier.getCode(), authLang));
 		}
-
-		return userPermLanguages.stream().filter(datasetLanguages::contains).collect(Collectors.toList());
+		List<Classifier> accessibleLanguages = userPermLanguages.stream().filter(datasetLanguages::contains).collect(Collectors.toList());
+		return accessibleLanguages;
 	}
 
 	@ModelAttribute("userOwnedDatasets")
 	public List<Dataset> getUserOwnedDatasets() {
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
+		Long userId = userContext.getUserId();
 		return permissionService.getUserOwnedDatasets(userId);
 	}
 
 	@ModelAttribute("userDatasetPermissions")
 	public List<DatasetPermission> getUserDatasetPermissions() {
-		EkiUser user = userService.getAuthenticatedUser();
-		Long userId = user.getId();
+		Long userId = userContext.getUserId();
 		return permissionService.getUserDatasetPermissions(userId);
 	}
 

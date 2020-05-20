@@ -1,4 +1,4 @@
-package eki.ekilex.web.util;
+package eki.ekilex.service.util;
 
 import java.util.Arrays;
 import java.util.List;

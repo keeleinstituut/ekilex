@@ -65,7 +65,7 @@ public class PermissionsController extends AbstractPageController {
 		if (StringUtils.isNotBlank(orderByStr)) {
 			orderBy = OrderingField.valueOf(orderByStr);
 		}
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		if (!user.isDatasetOwnershipExist() && !user.isAdmin()) {
 			return "redirect:" + HOME_URI;
 		}
@@ -189,7 +189,7 @@ public class PermissionsController extends AbstractPageController {
 	@ResponseBody
 	public String sendPermissionsEmail(@PathVariable("userEmail") String userEmail) {
 
-		EkiUser sender = userService.getAuthenticatedUser();
+		EkiUser sender = userContext.getUser();
 		permissionService.sendPermissionsEmail(userEmail, sender);
 
 		return RESPONSE_OK_VER1;

@@ -26,7 +26,7 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.service.PermissionService;
-import eki.ekilex.service.UserService;
+import eki.ekilex.service.UserContext;
 
 @Component
 public class SearchHelper implements WebConstant, GlobalConstant {
@@ -46,7 +46,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 	private static final String CRITERION_CLASSIFIER = "cla";
 
 	@Autowired
-	private UserService userService;
+	private UserContext userContext;
 
 	@Autowired
 	private PermissionService permissionService;
@@ -90,7 +90,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 
 		// datasets
 		if (CollectionUtils.isNotEmpty(selectedDatasets)) {
-			Long userId = userService.getAuthenticatedUser().getId();
+			Long userId = userContext.getUserId();
 			List<String> userVisibleDatasets = permissionService.getUserVisibleDatasetCodes(userId);
 			List<String> validDatasetSelection = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, userVisibleDatasets));
 			Collection<String> datasetComparison = CollectionUtils.disjunction(validDatasetSelection, userVisibleDatasets);
@@ -284,7 +284,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 			}
 		}
 		isValid = validateSearchFilter(simpleSearchFilter, detailSearchFilter);
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		List<String> userVisibleDatasets = permissionService.getUserVisibleDatasetCodes(userId);
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = new ArrayList<>(userVisibleDatasets);

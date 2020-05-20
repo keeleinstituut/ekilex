@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -20,28 +18,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.imp.ParadigmWrapper;
 import eki.ekilex.service.MorphologyService;
-import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class MorphologyController extends AbstractPageController {
 
-	private static final Logger logger = LoggerFactory.getLogger(MorphologyController.class);
-
-	@Autowired
-	private UserService userService;
-
 	@Autowired
 	private MorphologyService morphologyService;
 
 	@GetMapping(MORPHOLOGY_URI)
 	public String init() throws Exception {
-		EkiUser user = userService.getAuthenticatedUser();
-		if (!user.isAdmin()) {
+		boolean isUserAdmin = userContext.isUserAdmin();
+		if (!isUserAdmin) {
 			return "redirect:" + HOME_URI;
 		}
 		return MORPHOLOGY_PAGE;

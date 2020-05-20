@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,11 +18,9 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.LifecycleEntity;
 import eki.common.data.AbstractDataObject;
-import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.db.PermissionDbService;
-import eki.ekilex.web.bean.SessionBean;
 
 @Component
 public class EkilexPermissionEvaluator implements PermissionEvaluator {
@@ -37,9 +33,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 
 	@Autowired
 	private PermissionDbService permissionDbService;
-
-	@Autowired(required = false)
-	private HttpServletRequest request;
 
 	//hasPermission(#foo, 'write')
 	@Override
@@ -77,7 +70,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 			}
 		}
 
-		DatasetPermission userRole = getUserRole();
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return false;
 		}
@@ -110,19 +103,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		//logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\" granted: {}", userId, targetId, targetType, permission, isPermGranted);
 
 		return isPermGranted;
-	}
-
-	private DatasetPermission getUserRole() {
-		if (request == null) {
-			return null;
-		}
-		HttpSession session = request.getSession();
-		SessionBean sessionBean = (SessionBean) session.getAttribute(WebConstant.SESSION_BEAN);
-		if (sessionBean == null) {
-			return null;
-		}
-		DatasetPermission userRole = sessionBean.getUserRole();
-		return userRole;
 	}
 
 	private Authority parse(Object permission) {

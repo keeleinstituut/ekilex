@@ -25,8 +25,8 @@ import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.ProcessLog;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.service.ProcessService;
+import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
-import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
@@ -41,7 +41,7 @@ public class ProcessController implements WebConstant {
 	private ProcessService processService;
 
 	@Autowired
-	private UserService userService;
+	private UserContext userContext;
 
 	@Autowired
 	private UserProfileService userProfileService;
@@ -95,7 +95,7 @@ public class ProcessController implements WebConstant {
 			@RequestBody CreateItemRequest itemData,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUserName();
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 		Long meaningId = itemData.getId();
 		String commentPrese = itemData.getValue();
@@ -112,7 +112,7 @@ public class ProcessController implements WebConstant {
 			@RequestBody CreateItemRequest itemData,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUserName();
 		String datasetCode = sessionBean.getUserRole().getDatasetCode();
 		Long wordId = itemData.getId();
 		String commentPrese = itemData.getValue();
@@ -127,7 +127,7 @@ public class ProcessController implements WebConstant {
 	@ResponseBody
 	public String createLexemeProcessState(@RequestBody CreateItemRequest itemData) {
 
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUserName();
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 		logger.debug("Creating process state for lexeme \"{}\"", lexemeId);
@@ -140,7 +140,7 @@ public class ProcessController implements WebConstant {
 	@ResponseBody
 	public String updateLexemeProcessState(@RequestBody UpdateItemRequest itemData) {
 
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUserName();
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 		logger.debug("Updating process state for lexeme \"{}\"", lexemeId);
@@ -156,7 +156,7 @@ public class ProcessController implements WebConstant {
 			@PathVariable Long wordId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		String userName = user.getName();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
@@ -173,7 +173,7 @@ public class ProcessController implements WebConstant {
 	@ResponseBody
 	public String updateSynLayerProcessState(@RequestBody UpdateItemRequest itemData) {
 
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		String userName = user.getName();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);

@@ -29,13 +29,10 @@ public abstract class AbstractSearchService extends AbstractService implements S
 	@Autowired
 	private PermissionDbService permissionDbService;
 
-	@Autowired
-	protected UserService userService;
-
 	protected SearchDatasetsRestriction composeDatasetsRestriction(List<String> selectedDatasetCodes) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
 		List<Dataset> availableDatasets = permissionDbService.getUserVisibleDatasets(userId);

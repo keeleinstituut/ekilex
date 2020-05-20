@@ -2,6 +2,7 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,16 +15,20 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class UserProfileController extends AbstractPageController {
 
+	@Autowired
+	private UserService userService;
+
 	@GetMapping(USER_PROFILE_URI)
 	public String userProfile(Model model) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		List<EkiUserApplication> userApplications = userService.getUserApplications(userId);
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 
@@ -38,7 +43,7 @@ public class UserProfileController extends AbstractPageController {
 			@RequestParam(value = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(value = "applicationComment", required = false) String applicationComment) {
 
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		userService.submitAdditionalUserApplication(user, selectedDatasets, applicationComment);
 		return "redirect:" + USER_PROFILE_URI;
 	}
@@ -51,7 +56,7 @@ public class UserProfileController extends AbstractPageController {
 			@RequestParam(value = "showMeaningRelationMeaningId", required = false) boolean showMeaningRelationMeaningId,
 			@RequestParam(value = "showMeaningRelationWordDatasets", required = false) boolean showMeaningRelationWordDatasets) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		userProfile.setPreferredMeaningRelationWordLangs(meaningRelationWordLanguages);
 		userProfile.setShowLexMeaningRelationSourceLangWords(showLexMeaningRelationSourceLangWords);

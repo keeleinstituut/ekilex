@@ -50,7 +50,7 @@ import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.db.SynSearchDbService;
-import eki.ekilex.web.util.PermCalculator;
+import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class SynSearchService extends AbstractWordSearchService {

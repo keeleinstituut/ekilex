@@ -8,19 +8,19 @@ import eki.ekilex.service.db.LifecycleLogDbService;
 public abstract class AbstractService {
 
 	@Autowired
-	private UserService userService;
+	protected UserContext userContext;
 
 	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;
 
 	protected void createLifecycleLog(LogData logData) {
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUser().getName();
 		logData.setUserName(userName);
 		lifecycleLogDbService.createLog(logData);
 	}
 
 	protected void createListOrderingLifecycleLog(LogData logData) {
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUser().getName();
 		logData.setUserName(userName);
 		lifecycleLogDbService.createListOrderingLog(logData);
 	}

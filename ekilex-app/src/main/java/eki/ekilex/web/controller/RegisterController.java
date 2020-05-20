@@ -20,6 +20,7 @@ import eki.common.util.CodeGenerator;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.EmailService;
+import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
@@ -34,6 +35,9 @@ public class RegisterController implements WebConstant {
 	private String termsVer;
 
 	@Autowired
+	private UserContext userContext;
+
+	@Autowired
 	private UserService userService;
 
 	@Autowired
@@ -41,7 +45,7 @@ public class RegisterController implements WebConstant {
 
 	@GetMapping(REGISTER_PAGE_URI)
 	public String register(Model model, HttpServletRequest request) {
-		boolean isAuthenticatedUser = userService.isAuthenticatedUser();
+		boolean isAuthenticatedUser = userContext.isAuthenticatedUser();
 		if (isAuthenticatedUser) {
 			return "redirect:" + HOME_URI;
 		}

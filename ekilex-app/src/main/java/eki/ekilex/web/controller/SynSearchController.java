@@ -88,7 +88,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	@GetMapping(value = SYN_SEARCH_URI + "/**")
 	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		LayerName layerName = userProfile.getPreferredLayerName();
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYN_SEARCH_URI);
@@ -143,7 +143,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 
 		String datasetCode = getDatasetCodeFromRole(sessionBean);
 		DatasetPermission userRole = sessionBean.getUserRole();
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> candidateLangCodes = userProfile.getPreferredSynCandidateLangs();
 		List<String> meaningWordLangCodes = userProfile.getPreferredSynLexMeaningWordLangs();
@@ -211,7 +211,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	@ResponseBody
 	public String updateCandidateLangs(@RequestParam("languages") List<String> languages) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredSynCandidateLangs(languages, userId);
 		return RESPONSE_OK_VER1;
 	}
@@ -220,7 +220,7 @@ public class SynSearchController extends AbstractSearchController implements Sys
 	@ResponseBody
 	public String updateMeaningWordLangs(@RequestParam("languages") List<String> languages) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredMeaningWordLangs(languages, userId);
 		return RESPONSE_OK_VER1;
 	}

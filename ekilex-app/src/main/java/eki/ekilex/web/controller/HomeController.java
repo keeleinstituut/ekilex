@@ -49,7 +49,7 @@ public class HomeController extends AbstractPageController {
 
 	@GetMapping(INDEX_URI)
 	public String index() {
-		boolean isAuthenticatedUser = userService.isAuthenticatedUser();
+		boolean isAuthenticatedUser = userContext.isAuthenticatedUser();
 		if (isAuthenticatedUser) {
 			return "redirect:" + HOME_URI;
 		}
@@ -58,7 +58,7 @@ public class HomeController extends AbstractPageController {
 
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			Long userId = user.getId();
 			EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
@@ -79,7 +79,7 @@ public class HomeController extends AbstractPageController {
 
 	@GetMapping(APPLY_URI)
 	public String apply(Model model) {
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			return "redirect:" + HOME_URI;
 		}
@@ -93,7 +93,7 @@ public class HomeController extends AbstractPageController {
 			@RequestParam(value = "applicationComment", required = false) String applicationComment,
 			Model model) {
 
-		EkiUser user = userService.getAuthenticatedUser();
+		EkiUser user = userContext.getUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			populateStatData(model);
 			return HOME_PAGE;
@@ -156,7 +156,7 @@ public class HomeController extends AbstractPageController {
 		if (permissionId == null) {
 			sessionBean.setUserRole(null);
 		} else {
-			Long userId = userService.getAuthenticatedUser().getId();
+			Long userId = userContext.getUserId();
 			DatasetPermission datasetPermission = userProfileService.getAndSetRecentDatasetPermission(permissionId, userId);
 			userService.updateUserSecurityContext();
 			sessionBean.setUserRole(datasetPermission);
@@ -170,7 +170,7 @@ public class HomeController extends AbstractPageController {
 
 		logger.debug("User initiated layer change, layer name: {}", layerName);
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredLayerName(layerName, userId);
 		return REDIRECT_PREF + HOME_URI;
 	}

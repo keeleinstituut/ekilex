@@ -21,20 +21,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.editor.ClassifierEditor;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -48,6 +49,9 @@ public class DatasetController implements WebConstant {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private UserContext userContext;
 
 	@Autowired
 	private PermissionService permissionService;
@@ -64,11 +68,10 @@ public class DatasetController implements WebConstant {
 	public String list(Model model) {
 
 		List<Dataset> datasets = datasetService.getDatasets();
-
-		EkiUser currentUser = userService.getAuthenticatedUser();
-		List<DatasetPermission> datasetPermissions = permissionService.getUserDatasetPermissions(currentUser.getId());
-
-		List<String> ownedDataSetCodes = datasetPermissions.stream().filter(permission -> AuthorityOperation.OWN.equals(permission.getAuthOperation()))
+		Long userId = userContext.getUserId();
+		List<DatasetPermission> datasetPermissions = permissionService.getUserDatasetPermissions(userId);
+		List<String> ownedDataSetCodes = datasetPermissions.stream()
+				.filter(permission -> AuthorityOperation.OWN.equals(permission.getAuthOperation()))
 				.map(DatasetPermission::getDatasetCode).collect(Collectors.toList());
 
 		model.addAttribute("ownedDatasetCodes", ownedDataSetCodes);
@@ -85,9 +88,8 @@ public class DatasetController implements WebConstant {
 		logger.debug("Creating dataset, name : {}", datasetFormData.getName());
 		datasetService.createDataset(datasetFormData);
 
-		EkiUser currentUser = userService.getAuthenticatedUser();
-		permissionService.createDatasetPermission(currentUser.getId(), datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
-
+		Long userId = userContext.getUserId();
+		permissionService.createDatasetPermission(userId, datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
 		userService.updateUserSecurityContext();
 
 		return REDIRECT_PREF + DATASETS_URI;

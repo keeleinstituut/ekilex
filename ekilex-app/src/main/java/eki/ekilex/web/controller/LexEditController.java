@@ -72,7 +72,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 			Model model) {
 
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		WordLexeme targetLexeme = lexSearchService.getDefaultWordLexeme(targetLexemeId);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWordValue();
@@ -168,7 +168,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	@PostMapping(LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUserName();
 		List<Long> clonedLexemeIds = new ArrayList<>();
 		try {
 			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId, userName);
@@ -193,7 +193,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	@PostMapping(EMPTY_LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUserName();
 		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, userName);
 
 		Map<String, String> response = new HashMap<>();
@@ -208,7 +208,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	@PostMapping(MEANING_WORD_AND_LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateMeaningWordAndLexeme(@PathVariable("lexemeId") Long lexemeId) {
 
-		String userName = userService.getAuthenticatedUser().getName();
+		String userName = userContext.getUserName();
 		compositionService.duplicateLexemeAndWord(lexemeId, userName);
 		return RESPONSE_OK_VER1;
 	}
@@ -216,7 +216,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 	@GetMapping(WORD_JOIN_URI)
 	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId, userId);
@@ -267,7 +267,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
-				Long userId = userService.getAuthenticatedUser().getId();
+				Long userId = userContext.getUserId();
 				selectedDatasets.add(dataset);
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
@@ -290,7 +290,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 			cudService.createWord(wordDetails);
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
-				Long userId = userService.getAuthenticatedUser().getId();
+				Long userId = userContext.getUserId();
 				selectedDatasets.add(dataset);
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
@@ -317,7 +317,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		Long meaningId = wordDetails.getMeaningId();
 		String wordValue = wordDetails.getWordValue();
 		String language = wordDetails.getLanguage();
@@ -340,7 +340,7 @@ public class LexEditController extends AbstractPageController implements SystemC
 		String wordValue = word.getWordValue();
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		if (!selectedDatasets.contains(dataset)) {
-			Long userId = userService.getAuthenticatedUser().getId();
+			Long userId = userContext.getUserId();
 			selectedDatasets.add(dataset);
 			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}

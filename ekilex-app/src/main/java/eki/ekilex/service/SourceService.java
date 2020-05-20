@@ -27,7 +27,7 @@ import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.service.db.SourceDbService;
-import eki.ekilex.web.util.PermCalculator;
+import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class SourceService extends AbstractService {

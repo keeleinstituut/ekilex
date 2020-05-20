@@ -43,7 +43,7 @@ import eki.ekilex.data.Word;
 import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.db.TermSearchDbService;
-import eki.ekilex.web.util.PermCalculator;
+import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class TermSearchService extends AbstractSearchService {

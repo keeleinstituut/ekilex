@@ -1,22 +1,18 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
@@ -47,6 +43,9 @@ public class UserService implements WebConstant {
 	private String ekilexAppUrl;
 
 	@Autowired
+	private UserContext userContext;
+
+	@Autowired
 	private UserDbService userDbService;
 
 	@Autowired
@@ -64,36 +63,13 @@ public class UserService implements WebConstant {
 	@Autowired
 	private EmailService emailService;
 
-	public boolean isAuthenticatedUser() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		boolean isAuthenticated = principal instanceof EkiUser;
-		return isAuthenticated;
-	}
-
-	public EkiUser getAuthenticatedUser() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		EkiUser user;
-		if (principal instanceof EkiUser) {
-			user = (EkiUser) principal;
-		} else {
-			user = new EkiUser();
-			user.setName(principal.toString());
-		}
-		return user;
-	}
-
 	public void updateUserSecurityContext() {
 
-		String userEmail = getAuthenticatedUser().getEmail();
+		String userEmail = userContext.getUser().getEmail();
 
 		if (StringUtils.isNotBlank(userEmail)) {
 			EkiUser ekiUser = getUserByEmail(userEmail);
-
-			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ekiUser, null, authorities);
-
-			SecurityContext context = SecurityContextHolder.getContext();
-			context.setAuthentication(authenticationToken);
+			userContext.updateUserSecurityContext(ekiUser);
 		}
 	}
 
@@ -174,15 +150,25 @@ public class UserService implements WebConstant {
 		return userId;
 	}
 
-	@Transactional
 	public boolean isValidName(String name) {
-
-		name = name.trim();
-		if (name.length() < MIN_NAME_LENGTH || !name.contains(" ") || name.contains("  ")) {
+		if (StringUtils.isBlank(name)) {
 			return false;
 		}
-		name = name.replaceAll("\\s", "");
-		return !StringUtils.isAllUpperCase(name);
+		name = StringUtils.trim(name);
+		if (!StringUtils.contains(name, " ")) {
+			return false;
+		}
+		if (StringUtils.contains(name, "  ")) {
+			return false;
+		}
+		name = RegExUtils.replaceAll(name, "\\s", "");
+		if (StringUtils.length(name) < MIN_NAME_LENGTH ) {
+			return false;
+		}
+		if (StringUtils.isAllUpperCase(name)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Transactional
@@ -256,7 +242,7 @@ public class UserService implements WebConstant {
 		createUserApplication(user, datasets, comment);
 		List<String> adminEmails = userDbService.getAdminEmails();
 		boolean isAdditionalApplication = false;
-		emailService.sendApplicationSubmitEmail(adminEmails, user, datasets, comment, isAdditionalApplication);
+		emailService.sendApplicationSubmitEmail(user, adminEmails, datasets, comment, isAdditionalApplication);
 	}
 
 	@Transactional
@@ -264,7 +250,7 @@ public class UserService implements WebConstant {
 		createUserApplication(user, datasets, comment);
 		List<String> adminEmails = userDbService.getAdminEmails();
 		boolean isAdditionalApplication = true;
-		emailService.sendApplicationSubmitEmail(adminEmails, user, datasets, comment, isAdditionalApplication);
+		emailService.sendApplicationSubmitEmail(user, adminEmails, datasets, comment, isAdditionalApplication);
 	}
 
 	private void createUserApplication(EkiUser user, List<String> datasets, String comment) {

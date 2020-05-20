@@ -77,7 +77,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 		sessionBean.setTermSearchResultMode(resultMode);
 		sessionBean.setTermSearchResultLang(resultLang);
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
@@ -118,7 +118,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		boolean fetchAll = false;
 
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		TermSearchResult termSearchResult;
@@ -145,7 +145,7 @@ public class TermSearchController extends AbstractSearchController implements Sy
 
 		DatasetPermission userRole = sessionBean.getUserRole();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Long userId = userService.getAuthenticatedUser().getId();
+		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> selectedDatasets = userProfile.getPreferredDatasets();
 		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile, userRole);

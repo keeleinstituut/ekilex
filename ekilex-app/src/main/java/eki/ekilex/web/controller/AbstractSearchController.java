@@ -24,8 +24,8 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
-import eki.ekilex.service.UserService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
@@ -40,7 +40,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	protected SearchHelper searchHelper;
 
 	@Autowired
-	protected UserService userService;
+	protected UserContext userContext;
 
 	@Autowired
 	protected UserProfileService userProfileService;
@@ -131,7 +131,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 
 		SessionBean sessionBean = getSessionBean(model);
 		if (sessionBean.getUserRole() == null) {
-			EkiUser user = userService.getAuthenticatedUser();
+			EkiUser user = userContext.getUser();
 			sessionBean.setUserRole(user.getRecentRole());
 		}
 	}
