@@ -678,6 +678,7 @@ from (select m.id
                                  where dff.definition_id = d.id
                                  and   ff.id = dff.freeform_id
                                  and   ff.type = 'PUBLIC_NOTE'
+                                 and   ff.is_public = true
                                  group by dff.definition_id) public_notes
                          from definition d
                          where d.is_public = true) d
@@ -728,6 +729,7 @@ from (select m.id
                         freeform ff
                    where mf.freeform_id = ff.id
                    and   ff.type = 'PUBLIC_NOTE'
+                   and   ff.is_public = true
                    group by mf.meaning_id) m_pnt on m_pnt.meaning_id = m.id
 order by m.id;
 
@@ -787,6 +789,7 @@ from lexeme l
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'PUBLIC_NOTE'
+                   and   ff.is_public = true
                    group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
                           array_agg(row (ff.id, ff.type, ff.value_text,ff.complexity)::type_freeform order by ff.order_by) grammars
