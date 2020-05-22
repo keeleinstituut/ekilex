@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.LayerName;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -73,8 +74,9 @@ public class LexSearchService extends AbstractWordSearchService {
 	private PermCalculator permCalculator;
 
 	@Transactional
-	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile,
-			EkiUser user, boolean isFullData) throws Exception {
+	public WordDetails getWordDetails(
+			Long wordId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder,
+			EkiUser user, EkiUserProfile userProfile, boolean isFullData) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Word word = lexSearchDbService.getWord(wordId);
@@ -98,7 +100,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
 		for (WordLexeme lexeme : lexemes) {
-			populateLexeme(lexeme, languagesOrder, userProfile, user, isFullDataCorrection);
+			populateLexeme(lexeme, languagesOrder, user, userProfile, isFullDataCorrection);
 		}
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
@@ -122,7 +124,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		if (lexeme != null) {
-			populateLexeme(lexeme, null, null, new EkiUser(), true);
+			populateLexeme(lexeme, null, new EkiUser(), null, true);
 		}
 		return lexeme;
 	}
@@ -132,18 +134,18 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		if (lexeme != null) {
-			populateLexeme(lexeme, languagesOrder, userProfile, user, isFullData);
+			populateLexeme(lexeme, languagesOrder, user, userProfile, isFullData);
 		}
 		return lexeme;
 	}
 
 	@Transactional
-	public List<WordLexeme> getWordLexemesWithDefinitionsData(String searchFilter, List<String> datasets, Long userId) {
+	public List<WordLexeme> getWordLexemesWithDefinitionsData(String searchFilter, List<String> datasetCodes, Long userId, DatasetPermission userRole, LayerName layerName) {
 
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchFilter)) {
-			WordsResult words = getWords(searchFilter, datasets, false, DEFAULT_OFFSET);
+			WordsResult words = getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				for (Word word : words.getWords()) {
 					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -173,8 +175,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		return lexSearchDbService.getWord(wordId);
 	}
 
-	private void populateLexeme(WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, EkiUser user, boolean isFullData)
-			throws Exception {
+	private void populateLexeme(
+			WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUser user, EkiUserProfile userProfile, boolean isFullData) throws Exception {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {
 				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.PUBLIC_NOTE.name()};
@@ -182,8 +184,8 @@ public class LexSearchService extends AbstractWordSearchService {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
-		DatasetPermission userRole = user.getRecentRole();
 		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();

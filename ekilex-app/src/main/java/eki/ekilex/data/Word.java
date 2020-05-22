@@ -36,9 +36,13 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private boolean foreign;
 
-	private String[] datasetCodes;
+	private List<String> lexemesValueStateCodes;
+
+	private List<String> lexemesProcessStateCodes;
 
 	private List<String> layerProcessStateCodes;
+
+	private List<String> datasetCodes;
 
 	public Long getWordId() {
 		return wordId;
@@ -172,12 +176,20 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.foreign = foreign;
 	}
 
-	public String[] getDatasetCodes() {
-		return datasetCodes;
+	public List<String> getLexemesValueStateCodes() {
+		return lexemesValueStateCodes;
 	}
 
-	public void setDatasetCodes(String[] datasetCodes) {
-		this.datasetCodes = datasetCodes;
+	public void setLexemesValueStateCodes(List<String> lexemesValueStateCodes) {
+		this.lexemesValueStateCodes = lexemesValueStateCodes;
+	}
+
+	public List<String> getLexemesProcessStateCodes() {
+		return lexemesProcessStateCodes;
+	}
+
+	public void setLexemesProcessStateCodes(List<String> lexemesProcessStateCodes) {
+		this.lexemesProcessStateCodes = lexemesProcessStateCodes;
 	}
 
 	public List<String> getLayerProcessStateCodes() {
@@ -187,4 +199,13 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 	public void setLayerProcessStateCodes(List<String> layerProcessStateCodes) {
 		this.layerProcessStateCodes = layerProcessStateCodes;
 	}
+
+	public List<String> getDatasetCodes() {
+		return datasetCodes;
+	}
+
+	public void setDatasetCodes(List<String> datasetCodes) {
+		this.datasetCodes = datasetCodes;
+	}
+
 }

@@ -19,13 +19,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.CreateItemRequest;
-import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.ProcessLog;
 import eki.ekilex.data.UpdateItemRequest;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.ProcessService;
-import eki.ekilex.service.UserProfileService;
 import eki.ekilex.web.util.ValueUtil;
 
 @ConditionalOnWebApplication
@@ -37,9 +34,6 @@ public class ProcessController extends AbstractAuthActionController {
 
 	@Autowired
 	private ProcessService processService;
-
-	@Autowired
-	private UserProfileService userProfileService;
 
 	@Autowired
 	private ValueUtil valueUtil;
@@ -88,13 +82,14 @@ public class ProcessController extends AbstractAuthActionController {
 	@ResponseBody
 	public String createMeaningProcessLog(@RequestBody CreateItemRequest itemData) {
 
-		String userName = userContext.getUserName();
-		String datasetCode = getDatasetCodeFromRole();
+		UserContextData userContextData = getUserContextData();
+		String userName = userContextData.getUserName();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		Long meaningId = itemData.getId();
 		String commentPrese = itemData.getValue();
 		commentPrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(commentPrese);
 		logger.debug("Creating process log for meaning \"{}\"", meaningId);
-		processService.createMeaningProcessLog(meaningId, userName, commentPrese, datasetCode);
+		processService.createMeaningProcessLog(meaningId, userName, commentPrese, userRoleDatasetCode);
 
 		return RESPONSE_OK_VER2;
 	}
@@ -103,13 +98,14 @@ public class ProcessController extends AbstractAuthActionController {
 	@ResponseBody
 	public String createWordProcessLog(@RequestBody CreateItemRequest itemData) {
 
-		String userName = userContext.getUserName();
-		String datasetCode = getDatasetCodeFromRole();
+		UserContextData userContextData = getUserContextData();
+		String userName = userContextData.getUserName();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		Long wordId = itemData.getId();
 		String commentPrese = itemData.getValue();
 		commentPrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(commentPrese);
 		logger.debug("Creating process log for word \"{}\"", wordId);
-		processService.createWordProcessLog(wordId, userName, commentPrese, datasetCode);
+		processService.createWordProcessLog(wordId, userName, commentPrese, userRoleDatasetCode);
 
 		return RESPONSE_OK_VER2;
 	}
@@ -145,16 +141,13 @@ public class ProcessController extends AbstractAuthActionController {
 	@ResponseBody
 	public String updateLayerProcessStateComplete(@PathVariable Long wordId) {
 
-		EkiUser user = userContext.getUser();
-		String userName = user.getName();
-		Long userId = user.getId();
-		DatasetPermission userRole = user.getRecentRole();
-		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		LayerName layerName = userProfile.getPreferredLayerName();
-		String datasetCode = userRole.getDatasetCode();
+		UserContextData userContextData = getUserContextData();
+		String userName = userContextData.getUserName();
+		LayerName layerName = userContextData.getLayerName();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 
 		logger.debug("Updating {} layer process state complete for word \"{}\"", layerName, wordId);
-		processService.updateLayerProcessStateComplete(wordId, userName, datasetCode, layerName);
+		processService.updateLayerProcessStateComplete(wordId, userName, userRoleDatasetCode, layerName);
 
 		return RESPONSE_OK_VER2;
 	}
@@ -163,11 +156,10 @@ public class ProcessController extends AbstractAuthActionController {
 	@ResponseBody
 	public String updateSynLayerProcessState(@RequestBody UpdateItemRequest itemData) {
 
-		EkiUser user = userContext.getUser();
-		String userName = user.getName();
-		Long userId = user.getId();
-		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		LayerName layerName = userProfile.getPreferredLayerName();
+		UserContextData userContextData = getUserContextData();
+		String userName = userContextData.getUserName();
+		LayerName layerName = userContextData.getLayerName();
+
 		Long lexemeId = itemData.getId();
 		String processStateCode = itemData.getValue();
 

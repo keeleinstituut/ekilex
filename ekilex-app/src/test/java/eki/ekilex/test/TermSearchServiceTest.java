@@ -3,8 +3,6 @@ package eki.ekilex.test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -20,9 +18,7 @@ import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermSearchResult;
-import eki.ekilex.data.TypeTermMeaningWord;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @RunWith(SpringRunner.class)

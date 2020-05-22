@@ -25,14 +25,10 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
-import eki.ekilex.service.UserProfileService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
 public abstract class AbstractPageController extends AbstractAuthActionController {
-
-	@Autowired
-	protected UserProfileService userProfileService;
 
 	@Autowired
 	protected CommonDataService commonDataService;

@@ -19,6 +19,18 @@
               <small class="d-flex">
                 <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
               </small>
+              <span class="d-flex align-items-start">
+                <small th:if="${not #lists.isEmpty(word.lexemesValueStateCodes)}">
+                  <span th:text="${#strings.listJoin(word.lexemesValueStateCodes, ', ')}"></span>
+                </small>
+                <small th:if="${not #lists.isEmpty(word.lexemesProcessStateCodes)}">
+                  <span class="ml-1" th:if="${not #lists.isEmpty(word.lexemesValueStateCodes)}">|</span>
+                  <span th:text="${#strings.listJoin(word.lexemesProcessStateCodes, ', ')}"></span>
+                </small>
+                <span class="badge badge-pill badge-light ml-auto" th:if="${not #lists.isEmpty(word.layerProcessStateCodes)}">
+                  <span th:text="${#strings.listJoin(word.layerProcessStateCodes, ', ')}"></span>
+                </span>
+              </span>
               <span class="position-absolute search-result-status">
                 <span th:id="${'word_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
               </span>

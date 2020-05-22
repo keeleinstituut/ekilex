@@ -37,6 +37,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LayerName;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.ParadigmFormTuple;
@@ -69,15 +70,15 @@ import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 @Component
 public class LexSearchDbService extends AbstractSearchDbService {
 
-	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset)
-			throws Exception {
+	public List<eki.ekilex.data.Word> getWords(
+			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, LayerName.NONE, searchDatasetsRestriction, fetchAll, offset, create);
+		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -89,13 +90,14 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return count(w1, p, wordCondition);
 	}
 
-	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset) {
+	public List<eki.ekilex.data.Word> getWords(
+			String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
+		Condition where = createSearchCondition(word, paradigm, searchWordCrit, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, LayerName.NONE, searchDatasetsRestriction, fetchAll, offset, create);
+		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {

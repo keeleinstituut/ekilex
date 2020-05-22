@@ -32,11 +32,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
-import org.jooq.Record14;
+import org.jooq.Record16;
 import org.jooq.Record8;
 import org.jooq.SelectOrderByStep;
 import org.jooq.Table;
@@ -49,6 +48,7 @@ import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -57,6 +57,7 @@ import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
@@ -525,9 +526,9 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return m1Where;
 	}
 
-	protected Condition createSearchCondition(Word word, Paradigm paradigm, String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
+	protected Condition createSearchCondition(Word word, Paradigm paradigm, String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
+		String theFilter = searchWordCrit.replace("*", "%").replace("?", "_").toLowerCase();
 
 		Form form = FORM.as("f2");
 		Condition where1 = form.PARADIGM_ID.eq(paradigm.ID);
@@ -789,11 +790,13 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return wherew1.and(w1.ID.in(wmlSelect));
 	}
 
-	protected List<eki.ekilex.data.Word> execute(Word w1, Paradigm p1, Condition where, LayerName layerName, SearchDatasetsRestriction searchDatasetsRestriction, boolean fetchAll, int offset, DSLContext create) {
+	protected List<eki.ekilex.data.Word> execute(
+			Word w1, Paradigm p1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) {
 
-		List<String> filteringDatasetCodes = searchDatasetsRestriction.getFilteringDatasetCodes();
 		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
 
+		Lexeme l = LEXEME.as("l");
+		LayerState lls = LAYER_STATE.as("lls");
 		Form f1 = FORM.as("f1");
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
 		Field<String> wv = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
@@ -814,35 +817,60 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				.groupBy(w1.ID)
 				.asTable("w");
 
-		Field<String[]> dscf = DSL.field(DSL
-				.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE))
-				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class))
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-						.and(LEXEME.DATASET_CODE.in(availableDatasetCodes)))
-				.groupBy(w.field("word_id")));
-
-		Field<String[]> lpscf;
-		if (LayerName.NONE.equals(layerName)) {
-			lpscf = DSL.field(DSL.val(new String[0]));
-		} else {
-			lpscf = DSL.field(DSL
-					.select(DSL.arrayAggDistinct(DSL.coalesce(LAYER_STATE.PROCESS_STATE_CODE, "!")))
-					.from(LEXEME.leftOuterJoin(LAYER_STATE)
-							.on(LAYER_STATE.LEXEME_ID.eq(LEXEME.ID)
-									.and(LAYER_STATE.LAYER_NAME.eq(layerName.name()))))
-					.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class))
-							.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-							.and(LEXEME.DATASET_CODE.in(filteringDatasetCodes)))
-					.groupBy(w.field("word_id")));
-		}
-
 		Field<String[]> wtf = getWordTypesField(w.field("word_id", Long.class));
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtz = getWordIsForeignField(w.field("word_id", Long.class));
 
-		Table<Record14<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, String[], String[]>> ww = DSL
+		Field<String[]> lxvsf;
+		Field<String[]> lxpsf;
+		Field<String[]> lypsf;
+		if (userRole == null) {
+			lxvsf = DSL.field(DSL.val(new String[0]));
+			lxpsf = DSL.field(DSL.val(new String[0]));
+			lypsf = DSL.field(DSL.val(new String[0]));
+		} else {
+			String userRoleDatasetCode = userRole.getDatasetCode();
+			lxvsf = DSL.field(DSL
+					.select(DSL.arrayAggDistinct(l.VALUE_STATE_CODE))
+					.from(l)
+					.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
+							.and(l.DATASET_CODE.eq(userRoleDatasetCode))
+							.and(l.VALUE_STATE_CODE.isNotNull()))
+					.groupBy(w.field("word_id")));
+			lxpsf = DSL.field(DSL
+					.select(DSL.arrayAggDistinct(l.PROCESS_STATE_CODE))
+					.from(l)
+					.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
+							.and(l.DATASET_CODE.eq(userRoleDatasetCode))
+							.and(l.PROCESS_STATE_CODE.isNotNull()))
+					.groupBy(w.field("word_id")));
+
+			if (layerName == null) {
+				lypsf = DSL.field(DSL.val(new String[0]));
+			} else if (LayerName.NONE.equals(layerName)) {
+				lypsf = DSL.field(DSL.val(new String[0]));
+			} else {
+				lypsf = DSL.field(DSL
+						.select(DSL.arrayAggDistinct(DSL.coalesce(lls.PROCESS_STATE_CODE, "!")))
+						.from(l
+								.leftOuterJoin(lls).on(lls.LEXEME_ID.eq(l.ID).and(lls.LAYER_NAME.eq(layerName.name()))))
+						.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
+								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(l.DATASET_CODE.eq(userRoleDatasetCode)))
+						.groupBy(w.field("word_id")));
+			}
+		}
+
+		Field<String[]> dscf = DSL.field(DSL
+				.select(DSL.arrayAggDistinct(l.DATASET_CODE))
+				.from(l)
+				.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
+						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l.DATASET_CODE.in(availableDatasetCodes)))
+				.groupBy(w.field("word_id")));
+
+		Table<Record16<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, String[], String[], String[], String[]>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
 						w.field("word_value", String.class),
@@ -856,8 +884,11 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
-						dscf.as("dataset_codes"),
-						lpscf.as("layer_process_state_codes"))
+						lxvsf.as("lexemes_value_state_codes"),
+						lxpsf.as("lexemes_process_state_codes"),
+						lypsf.as("layer_process_state_codes"),
+						dscf.as("dataset_codes")
+						)
 				.from(w)
 				.orderBy(
 						w.field("word_value"),

@@ -89,7 +89,7 @@ public class DataController implements SystemConstant, WebConstant {
 
 		boolean fetchAll = true;
 		List<String> datasets = parseDatasets(datasetsStr);
-		WordsResult results = lexSearchService.getWords(word, datasets, fetchAll, DEFAULT_OFFSET);
+		WordsResult results = lexSearchService.getWords(word, datasets, null, null, fetchAll, DEFAULT_OFFSET);
 		return results;
 	}
 
@@ -115,7 +115,7 @@ public class DataController implements SystemConstant, WebConstant {
 		Long wordId = Long.valueOf(wordIdStr);
 		List<String> datasets = parseDatasets(datasetsStr);
 		boolean isFullData = true;
-		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, null, new EkiUser(), isFullData);
+		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, new EkiUser(), null, isFullData);
 		return result;
 	}
 

@@ -67,14 +67,14 @@ public class LexSearchServiceTest implements SystemConstant {
 		userPermDatasetCodes.clear();
 		userPermDatasetCodes.add("qq2");
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 6, words.size());
 
 		// perms removed
 		userPermDatasetCodes.clear();
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 4, words.size());
 
@@ -82,7 +82,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		userPermDatasetCodes.clear();
 		searchDatasetsRestriction.setAllDatasetsPermissions(true);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 6, words.size());
 	}
@@ -100,7 +100,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		filteringDatasetCodes.add("ss_");
 		List<Word> words;
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 	}
@@ -133,7 +133,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 	}
@@ -167,7 +167,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 5, words.size());
 
@@ -183,7 +183,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 9, words.size());
 
@@ -199,7 +199,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 12, words.size());
 
@@ -215,7 +215,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 
@@ -241,7 +241,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 3, words.size());
 		assertEquals("Incorrect match", "hiirhall", words.get(0).getWordValue());
@@ -277,7 +277,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		formGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -295,7 +295,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		formGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -313,7 +313,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		formGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -351,7 +351,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		definitionGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 		word = words.get(0);
@@ -390,7 +390,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		usageGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -427,7 +427,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		searchCriterion.setSearchValue(searchValue);
 		conceptIdGroup.getSearchCriteria().add(searchCriterion);
 
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, false, DEFAULT_OFFSET);
+		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);

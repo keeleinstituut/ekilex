@@ -190,7 +190,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
 		Long wordId = lexeme.getWordId();
 		Long duplicateWordId = duplicateWordData(wordId, userName);
-		Long duplicateLexemeId = duplicateLexemeData(lexemeId, null, duplicateWordId, userName);
+		duplicateLexemeData(lexemeId, null, duplicateWordId, userName);
 	}
 
 	private Long duplicateMeaningWithLexemes(Long meaningId, String userName) {

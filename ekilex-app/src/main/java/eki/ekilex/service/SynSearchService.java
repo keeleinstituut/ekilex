@@ -29,13 +29,11 @@ import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
-import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
@@ -44,9 +42,7 @@ import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
-import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CudDbService;
-import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.db.SynSearchDbService;
@@ -66,9 +62,6 @@ public class SynSearchService extends AbstractWordSearchService {
 	private SynSearchDbService synSearchDbService;
 
 	@Autowired
-	private LexSearchDbService lexSearchDbService;
-
-	@Autowired
 	private ProcessDbService processDbService;
 
 	@Autowired
@@ -84,67 +77,10 @@ public class SynSearchService extends AbstractWordSearchService {
 	private PermCalculator permCalculator;
 
 	@Transactional
-	public WordsResult getWords(String searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) {
+	public WordSynDetails getWordSynDetails(
+			Long wordId, String datasetCode, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes,
+			Long userId, DatasetPermission userRole, LayerName layerName) {
 
-		List<Word> words;
-		int wordCount;
-		if (StringUtils.isBlank(searchFilter)) {
-			words = Collections.emptyList();
-			wordCount = 0;
-		} else {
-			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			words = synSearchDbService.getWords(searchFilter, searchDatasetsRestriction, layerName, fetchAll, offset);
-			wordCount = words.size();
-			if ((!fetchAll && wordCount == MAX_RESULTS_LIMIT) || offset > DEFAULT_OFFSET) {
-				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
-			}
-		}
-		WordsResult result = new WordsResult();
-		result.setWords(words);
-		result.setTotalCount(wordCount);
-
-		boolean showPaging = wordCount > MAX_RESULTS_LIMIT;
-		result.setShowPaging(showPaging);
-		if (showPaging) {
-			setPagingData(offset, wordCount, result);
-		}
-		return result;
-	}
-
-	@Transactional
-	public WordsResult getWords(SearchFilter searchFilter, List<String> selectedDatasetCodes, LayerName layerName, boolean fetchAll, int offset) throws Exception {
-
-		List<Word> words;
-		int wordCount;
-		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
-			words = Collections.emptyList();
-			wordCount = 0;
-		} else {
-			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			words = synSearchDbService.getWords(searchFilter, searchDatasetsRestriction, layerName, fetchAll, offset);
-			wordCount = words.size();
-			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
-				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
-			}
-		}
-		WordsResult result = new WordsResult();
-		result.setWords(words);
-		result.setTotalCount(wordCount);
-
-		boolean showPaging = wordCount > MAX_RESULTS_LIMIT;
-		result.setShowPaging(showPaging);
-		if (showPaging) {
-			setPagingData(offset, wordCount, result);
-		}
-		return result;
-	}
-
-	@Transactional
-	public WordSynDetails getWordSynDetails(Long wordId, String datasetCode, LayerName layerName, EkiUserProfile userProfile, DatasetPermission userRole) {
-
-		Long userId = userProfile.getUserId();
-		List<String> candidateLangs = userProfile.getPreferredSynCandidateLangs();
-		List<String> meaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		Word word = synSearchDbService.getWordDetails(wordId);
@@ -155,12 +91,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		String headwordLang = word.getLang();
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName, classifierLabelLang, classifierLabelTypeDescrip);
-		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, meaningWordLangs, userId, userRole));
+		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, synMeaningWordLangCodes, userId, userRole));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
 		List<SynRelation> relations = Collections.emptyList();
-		if (CollectionUtils.isNotEmpty(candidateLangs)) {
-			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, candidateLangs);
+		if (CollectionUtils.isNotEmpty(synCandidateLangCodes)) {
+			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes);
 		}
 
 		WordSynDetails wordDetails = new WordSynDetails();

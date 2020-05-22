@@ -19,11 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.LayerName;
 import eki.common.constant.LifecycleEntity;
 import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -138,11 +140,11 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public MeaningWordCandidates getMeaningWordCandidates(Long sourceMeaningId, String wordValue, String language, Long userId) {
+	public MeaningWordCandidates getMeaningWordCandidates(Long sourceMeaningId, String wordValue, String language, Long userId, DatasetPermission userRole, LayerName layerName) {
 
 		boolean meaningHasWord = lookupDbService.meaningHasWord(sourceMeaningId, wordValue, language);
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
-		WordsResult words = getWords(wordValue, Collections.emptyList(), true, DEFAULT_OFFSET);
+		WordsResult words = getWords(wordValue, Collections.emptyList(), userRole, layerName, true, DEFAULT_OFFSET);
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		for (Word word : words.getWords()) {
 			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -185,7 +187,8 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordDetails> getWordDetailsOfJoinCandidates(Word targetWord, String roleDatasetCode, List<String> userPrefDatasetCodes,
+	public List<WordDetails> getWordDetailsOfJoinCandidates(
+			Word targetWord, String roleDatasetCode, List<String> userPrefDatasetCodes,
 			List<String> userPermDatasetCodes, Long userId) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
@@ -233,21 +236,20 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordLexeme> getWordLexemesOfJoinCandidates(String searchWord, List<String> userPrefDatasetCodes, Optional<Integer> wordHomonymNumber,
-			Long excludedMeaningId, Long userId) {
+	public List<WordLexeme> getWordLexemesOfJoinCandidates(
+			String searchWord, List<String> userPrefDatasetCodes, Integer wordHomonymNumber,
+			Long excludedMeaningId, Long userId, DatasetPermission userRole, LayerName layerName) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
 			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
-			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, true, DEFAULT_OFFSET);
+			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, userRole, layerName, true, DEFAULT_OFFSET);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {
-					if (wordHomonymNumber.isPresent()) {
-						if (!word.getHomonymNr().equals(wordHomonymNumber.get())) {
-							continue;
-						}
+					if ((wordHomonymNumber != null) && !word.getHomonymNr().equals(wordHomonymNumber)) {
+						continue;
 					}
 					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
 					wordLexemes.removeIf(lex -> lex.getMeaningId().equals(excludedMeaningId));

@@ -21,15 +21,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.LayerName;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Source;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
@@ -118,14 +121,18 @@ public class LexSearchController extends AbstractSearchController {
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean fetchAll = false;
 
-		Long userId = userContext.getUserId();
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, layerName, fetchAll, DEFAULT_OFFSET);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll, DEFAULT_OFFSET);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, layerName, fetchAll, DEFAULT_OFFSET);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -138,14 +145,57 @@ public class LexSearchController extends AbstractSearchController {
 		return LEX_SEARCH_PAGE;
 	}
 
+	@PostMapping(LEX_PAGING_URI)
+	public String paging(
+			@RequestParam("offset") int offset,
+			@RequestParam("searchUri") String searchUri,
+			@RequestParam("direction") String direction,
+			Model model) throws Exception {
+
+		SearchUriData searchUriData = searchHelper.parseSearchUri(LEX_SEARCH_PAGE, searchUri);
+
+		String searchMode = searchUriData.getSearchMode();
+		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
+		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
+		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		boolean fetchAll = false;
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+
+		if (StringUtils.equals("next", direction)) {
+			offset += MAX_RESULTS_LIMIT;
+		} else if (StringUtils.equals("previous", direction)) {
+			offset -= MAX_RESULTS_LIMIT;
+		}
+
+		WordsResult wordsResult;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, layerName, fetchAll, offset);
+		} else {
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, layerName, fetchAll, offset);
+		}
+
+		wordsResult.setOffset(offset);
+		model.addAttribute("wordsResult", wordsResult);
+		model.addAttribute("searchUri", searchUri);
+		return LEX_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
+	}
+
 	@GetMapping("/wordsearch")
 	public String searchWord(@RequestParam String searchFilter, Model model) {
 
 		logger.debug("word search {}", searchFilter);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		List<String> selectedDatasets = getUserPreferredDatasetCodes();
-		WordsResult result = lexSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
+
+		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
@@ -156,16 +206,22 @@ public class LexSearchController extends AbstractSearchController {
 	public String searchLexeme(
 			@RequestParam String searchFilter,
 			@RequestParam Long lexemeId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
 		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		Long userId = userContext.getUserId();
+
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
-		List<String> datasets = Arrays.asList(lexeme.getDatasetCode());
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasets, userId);
+
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+		List<String> datasetCodes = Arrays.asList(lexeme.getDatasetCode());
+
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userId, userRole, layerName);
+
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_search_result";
@@ -177,10 +233,15 @@ public class LexSearchController extends AbstractSearchController {
 		logger.debug("meaning search {}", searchFilter);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		Long userId = userContext.getUserId();
-		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		List<String> selectedDatasets = userProfile.getPreferredDatasets();
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, selectedDatasets, userId);
+
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
+
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userId, userRole, layerName);
+
 		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();
 		for (WordLexeme lexeme : lexemes) {
@@ -215,8 +276,8 @@ public class LexSearchController extends AbstractSearchController {
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		List<String> selectedDatasets = userProfile.getPreferredDatasets();
-		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets, languagesOrder, userProfile, user, false);
+		List<String> datasetCodes = getUserPreferredDatasetCodes();
+		WordDetails details = lexSearchService.getWordDetails(wordId, datasetCodes, languagesOrder, user, userProfile, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
@@ -243,40 +304,6 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("lexeme", lexeme);
 
 		return "lexdetail" + PAGE_FRAGMENT_ELEM + "lexeme_details_" + composition;
-	}
-
-	@PostMapping(LEX_PAGING_URI)
-	public String paging(
-			@RequestParam("offset") int offset,
-			@RequestParam("searchUri") String searchUri,
-			@RequestParam("direction") String direction,
-			Model model) throws Exception {
-
-		SearchUriData searchUriData = searchHelper.parseSearchUri(LEX_SEARCH_PAGE, searchUri);
-
-		String searchMode = searchUriData.getSearchMode();
-		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
-		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
-		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = false;
-
-		if (StringUtils.equals("next", direction)) {
-			offset += MAX_RESULTS_LIMIT;
-		} else if (StringUtils.equals("previous", direction)) {
-			offset -= MAX_RESULTS_LIMIT;
-		}
-
-		WordsResult wordsResult;
-		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, fetchAll, offset);
-		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, fetchAll, offset);
-		}
-
-		wordsResult.setOffset(offset);
-		model.addAttribute("wordsResult", wordsResult);
-		model.addAttribute("searchUri", searchUri);
-		return LEX_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
 	}
 
 }

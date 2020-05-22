@@ -25,6 +25,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -47,24 +48,25 @@ import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 @Component
 public class SynSearchDbService extends AbstractSearchDbService {
 
-	public List<eki.ekilex.data.Word> getWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, boolean fetchAll, int offset) {
+	public List<eki.ekilex.data.Word> getWords(
+			String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, layerName, searchDatasetsRestriction, fetchAll, offset, create);
+		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
 	}
 
-	public List<eki.ekilex.data.Word> getWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, boolean fetchAll, int offset)
-			throws Exception {
+	public List<eki.ekilex.data.Word> getWords(
+			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, layerName, searchDatasetsRestriction, fetchAll, offset, create);
+		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
 	}
 
 	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {

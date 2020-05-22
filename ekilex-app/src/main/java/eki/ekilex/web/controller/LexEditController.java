@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -30,13 +29,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.MeaningWordCandidates;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
-import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
@@ -67,11 +68,11 @@ public class LexEditController extends AbstractPageController {
 	private CudService cudService;
 
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
-	public String search(@PathVariable("targetLexemeId") Long targetLexemeId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
+	public String search(
+			@PathVariable("targetLexemeId") Long targetLexemeId,
+			@RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model) throws Exception {
 
-		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
-		Long userId = userContext.getUserId();
 		WordLexeme targetLexeme = lexSearchService.getDefaultWordLexeme(targetLexemeId);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWordValue();
@@ -79,16 +80,18 @@ public class LexEditController extends AbstractPageController {
 			searchFilter = targetLexemeWord;
 		}
 
-		Optional<Integer> wordHomonymNumber;
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
+
+		Integer wordHomonymNumber = null;
 		if (StringUtils.equals(searchFilter, targetLexemeWord)) {
-			Integer sourceHomonymNumber = targetLexeme.getWordHomonymNr();
-			wordHomonymNumber = Optional.of(sourceHomonymNumber);
-		} else {
-			wordHomonymNumber = Optional.empty();
+			wordHomonymNumber = targetLexeme.getWordHomonymNr();
 		}
 
-		List<WordLexeme> sourceLexemes = lookupService
-				.getWordLexemesOfJoinCandidates(searchFilter, userPreferredDatasetCodes, wordHomonymNumber, sourceLexemeMeaningId, userId);
+		List<WordLexeme> sourceLexemes = lookupService.getWordLexemesOfJoinCandidates(searchFilter, datasetCodes, wordHomonymNumber, sourceLexemeMeaningId, userId, userRole, layerName);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);
@@ -215,15 +218,17 @@ public class LexEditController extends AbstractPageController {
 	@GetMapping(WORD_JOIN_URI)
 	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model) {
 
-		Long userId = userContext.getUserId();
-		List<String> userPreferredDatasetCodes = getUserPreferredDatasetCodes();
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		List<String> userPreferredDatasetCodes = userContextData.getPreferredDatasetCodes();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId, userId);
 		Word targetWord = targetWordDetails.getWord();
-		String roleDatasetCode = getDatasetCodeFromRole();
 
 		List<WordDetails> sourceWordDetailsList = lookupService
-				.getWordDetailsOfJoinCandidates(targetWord, roleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes, userId);
+				.getWordDetailsOfJoinCandidates(targetWord, userRoleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes, userId);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
@@ -256,8 +261,8 @@ public class LexEditController extends AbstractPageController {
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
 
-			WordsResult words = lexSearchService.getWords(wordValue, allDatasets, true, DEFAULT_OFFSET);
-			if (words.getTotalCount() == 0) {
+			int wordCount = lexSearchService.countWords(wordValue, allDatasets);
+			if (wordCount == 0) {
 				cudService.createWord(wordDetails);
 			} else {
 				attributes.addFlashAttribute("wordDetails", wordDetails);
@@ -316,11 +321,16 @@ public class LexEditController extends AbstractPageController {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
-		Long userId = userContext.getUserId();
 		Long meaningId = wordDetails.getMeaningId();
 		String wordValue = wordDetails.getWordValue();
 		String language = wordDetails.getLanguage();
-		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language, userId);
+
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+
+		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language, userId, userRole, layerName);
 		model.addAttribute("meaningWordCandidates", meaningWordCandidates);
 
 		return WORD_SELECT_PAGE;

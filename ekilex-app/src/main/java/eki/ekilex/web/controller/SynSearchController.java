@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,19 +22,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.SynSearchService;
-import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -84,9 +84,6 @@ public class SynSearchController extends AbstractSearchController {
 	@GetMapping(value = SYN_SEARCH_URI + "/**")
 	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
-		Long userId = userContext.getUserId();
-		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		LayerName layerName = userProfile.getPreferredLayerName();
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), SYN_SEARCH_URI);
 		logger.debug(searchUri);
 
@@ -102,20 +99,25 @@ public class SynSearchController extends AbstractSearchController {
 			return SYN_SEARCH_PAGE;
 		}
 
-		String roleDatasetCode = getDatasetCodeFromRole();
-		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
-
 		String searchMode = searchUriData.getSearchMode();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-
 		boolean fetchAll = false;
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+		if (StringUtils.isEmpty(userRoleDatasetCode)) {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
+		}
+		List<String> datasetCodes = new ArrayList<>(Arrays.asList(userRoleDatasetCode));
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, roleDatasets, layerName, fetchAll, DEFAULT_OFFSET);
+			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, layerName, fetchAll, DEFAULT_OFFSET);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, roleDatasets, layerName, fetchAll, DEFAULT_OFFSET);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, layerName, fetchAll, DEFAULT_OFFSET);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -131,27 +133,26 @@ public class SynSearchController extends AbstractSearchController {
 	public String details(
 			@PathVariable("wordId") Long wordId,
 			@RequestParam(required = false) Long markedSynWordId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);
 
-		String datasetCode = getDatasetCodeFromRole();
-		EkiUser user = userContext.getUser();
-		Long userId = user.getId();
-		DatasetPermission userRole = user.getRecentRole();
-		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		List<String> candidateLangCodes = userProfile.getPreferredSynCandidateLangs();
-		List<String> meaningWordLangCodes = userProfile.getPreferredSynLexMeaningWordLangs();
-		LayerName layerName = userProfile.getPreferredLayerName();
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		DatasetPermission userRole = userContextData.getUserRole();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+		List<String> synCandidateLangCodes = userContextData.getSynCandidateLangCodes();
+		List<String> synMeaningWordLangCodes = userContextData.getSynMeaningWordLangCodes();
+		LayerName layerName = userContextData.getLayerName();
 
-		WordSynDetails details = synSearchService.getWordSynDetails(wordId, datasetCode, layerName, userProfile, userRole);
+		WordSynDetails details = synSearchService.getWordSynDetails(
+				wordId, userRoleDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, userId, userRole, layerName);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 		model.addAttribute("markedSynWordId", markedSynWordId);
-		model.addAttribute("candidateLangCodes", candidateLangCodes);
-		model.addAttribute("meaningWordLangCodes", meaningWordLangCodes);
+		model.addAttribute("candidateLangCodes", synCandidateLangCodes);
+		model.addAttribute("meaningWordLangCodes", synMeaningWordLangCodes);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
@@ -187,8 +188,12 @@ public class SynSearchController extends AbstractSearchController {
 
 		logger.debug("word search {}", searchFilter);
 
-		List<String> selectedDatasets = getUserPreferredDatasetCodes();
-		WordsResult result = synSearchService.getWords(searchFilter, selectedDatasets, false, DEFAULT_OFFSET);
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
+
+		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
