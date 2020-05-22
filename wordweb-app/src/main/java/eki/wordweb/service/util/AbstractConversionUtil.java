@@ -1,5 +1,6 @@
 package eki.wordweb.service.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +145,53 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		for (T entity : list) {
 			Long ownerId = entity.getOwnerId();
 			List<TypeSourceLink> sourceLinks = sourceLinkMap.get(ownerId);
+			convertUrlsToHrefs(sourceLinks);
 			entity.setSourceLinks(sourceLinks);
+		}
+	}
+
+	private void convertUrlsToHrefs(List<TypeSourceLink> sourceLinks) {
+
+		if (CollectionUtils.isEmpty(sourceLinks)) {
+			return;
+		}
+		final String[] urlPrefixes = new String[] {"http://", "https://"};
+		for (TypeSourceLink sourceLink : sourceLinks) {
+			List<String> originalSourceProps = sourceLink.getSourceProps();
+			List<String> convertedSourceProps = new ArrayList<>();
+			if (CollectionUtils.isEmpty(originalSourceProps)) {
+				continue;
+			}
+			for (String sourceProp : originalSourceProps) {
+				if (StringUtils.containsAny(sourceProp, urlPrefixes)) {
+					StringBuffer convertedSourcePropBuf = new StringBuffer();
+					String processingSubstr = new String(sourceProp);
+					String leftoverSubstr = null;
+					int urlStartIndex;
+					int urlEndIndex = 0;
+					while ((urlStartIndex = StringUtils.indexOfAny(processingSubstr, urlPrefixes)) != -1) {
+						String preLinkSubstr = StringUtils.substring(processingSubstr, 0, urlStartIndex);
+						processingSubstr = StringUtils.substring(processingSubstr, urlStartIndex);
+						urlEndIndex = StringUtils.indexOf(processingSubstr, ' ');
+						String url = StringUtils.substring(processingSubstr, 0, urlEndIndex);
+						convertedSourcePropBuf.append(preLinkSubstr);
+						convertedSourcePropBuf.append("<a ");
+						convertedSourcePropBuf.append("href=\"");
+						convertedSourcePropBuf.append(url);
+						convertedSourcePropBuf.append("\" target=\"_blank\">");
+						convertedSourcePropBuf.append(url);
+						convertedSourcePropBuf.append("</a>");
+						leftoverSubstr = StringUtils.substring(processingSubstr, urlEndIndex);
+						processingSubstr = StringUtils.substring(processingSubstr, urlEndIndex);
+					}
+					if (urlEndIndex != -1) {
+						convertedSourcePropBuf.append(leftoverSubstr);
+					}
+					sourceProp = convertedSourcePropBuf.toString();
+				}
+				convertedSourceProps.add(sourceProp);
+			}
+			sourceLink.setSourceProps(convertedSourceProps);
 		}
 	}
 }

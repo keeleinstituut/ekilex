@@ -170,8 +170,8 @@
                         <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
                           [
                           <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
-                            <button type="button" class="source-link btn btn-link-dark p-0" data-toggle="popover" th:title="#{label.source}"
-                              th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                            <button type="button" class="source-link btn btn-link-dark p-0" data-toggle="popover" data-html="true"
+                                    th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
                               <span th:utext="${sourceLink.name + ' - '}" th:if="${sourceLink.name != null}"></span>
                               <span th:utext="${sourceLink.value}"></span>
                             </button>
@@ -323,9 +323,9 @@
                     <span th:utext="${note.value}"></span>
                     <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                       <span th:each="sourceLink : ${note.sourceLinks}">
-                        <button type="button" class="source-link btn btn-link-dark p-0" data-toggle="popover" th:title="#{label.source}"
-                                th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
-                          <span th:text="${sourceLink.value}"></span>
+                        <button type="button" class="source-link btn btn-link-dark p-0" data-toggle="popover" data-html="true"
+                                th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                          <span th:utext="${sourceLink.value}"></span>
                         </button>
                       </span>
                     </th:block>
@@ -340,8 +340,8 @@
               <div class="col-12">
                 [
                 <th:block th:each="sourceLink,sourceLinkIter : ${lexeme.lexemeSourceLinks}">
-                  <button class="source-link btn btn-link-dark p-0" data-toggle="popover" th:title="#{label.source}"
-                          th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                  <button class="source-link btn btn-link-dark p-0" data-toggle="popover" data-html="true"
+                          th:title="#{label.source}" th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
                     <span th:utext="${sourceLink.name + ' - '}" th:if="${sourceLink.name != null}"></span>
                     <span th:utext="${sourceLink.value}"></span>
                   </button>
@@ -370,9 +370,9 @@
                     <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
                       <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
                         <span th:if="${sourceLink.translator}" th:text="#{reference.type.translator}">tõlkinud</span>
-                        <button type="button" class="source-link btn btn-link-dark p-0" data-toggle="popover" th:title="#{label.source}"
-                                th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
-                          <span th:text="${sourceLink.value}"></span>
+                        <button type="button" class="source-link btn btn-link-dark p-0" data-toggle="popover" data-html="true"
+                                th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                          <span th:utext="${sourceLink.value}"></span>
                         </button>
                       </span>
                     </th:block>
@@ -415,9 +415,9 @@
                   </a>
                   <th:block th:if="${not #lists.isEmpty(imageFile.sourceLinks)}">
                     <div th:each="sourceLink : ${imageFile.sourceLinks}">
-                      <button type="button" class="source-link btn btn-link-dark p-0" data-toggle="popover" th:title="#{label.source}"
-                              th:attr="data-content=${#strings.listJoin(sourceLink.sourceProps, ', ')}">
-                        <span th:text="${sourceLink.value}"></span>
+                      <button type="button" class="source-link btn btn-link-dark p-0" data-toggle="popover" data-html="true"
+                              th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                        <span th:utext="${sourceLink.value}"></span>
                       </button>
                     </div>
                   </th:block>
