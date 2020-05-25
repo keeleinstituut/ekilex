@@ -551,7 +551,7 @@
           </div>
           <div class="col pl-0">
             <table class="table table-striped">
-              <tr th:each="relations : ${lexeme.view.meaning.viewRelations}" class="hidden-buttons">
+              <tr th:each="relations : ${lexeme.meaning.viewRelations}" class="hidden-buttons">
                 <td class="pr-3" th:if="${userProfile.showMeaningRelationMeaningId}">
                   <span class="text-monospace" th:text="${relations.get(0).meaningId}"></span>
                 </td>
@@ -560,7 +560,7 @@
                     <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                       <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
-                      <th:block th:each="datasetCode, dsIter : ${relation.wordLexemeDatasetCodes}">
+                      <th:block th:each="datasetCode, dsIter : ${relation.datasetCodes}">
                         <span th:if="${dsIter.first}">[</span>
                         <span th:text="${datasetCode}"></span>
                         <span th:unless="${dsIter.last}">,</span>

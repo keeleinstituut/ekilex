@@ -48,6 +48,7 @@ import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -574,7 +575,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(NoteSourceTuple.class);
 	}
 
-	public List<Relation> getMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<Relation> getMeaningRelations(
+			Long meaningId, List<String> meaningWordPreferredOrderDatasetCodes, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		MeaningRelation mr = MEANING_RELATION.as("mr");
 		MeaningRelTypeLabel mrtl = MEANING_REL_TYPE_LABEL.as("mrtl");
@@ -587,14 +589,14 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Paradigm p2 = PARADIGM.as("p2");
 		Form f2 = FORM.as("f2");
 
-		Field<String> mrl = DSL.field(DSL
+		Field<String> mrtf = DSL.field(DSL
 				.select(mrtl.VALUE)
 				.from(mrtl)
 				.where(mr.MEANING_REL_TYPE_CODE.eq(mrtl.CODE))
 				.and(mrtl.LANG.eq(classifierLabelLang))
 				.and(mrtl.TYPE.eq(classifierLabelTypeCode)));
 
-		Field<String[]> lvscs = DSL.field(DSL
+		Field<String[]> lvsf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(l2.VALUE_STATE_CODE))
 				.from(l2)
 				.where(l2.MEANING_ID.eq(m2.ID)
@@ -603,7 +605,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.and(l2.VALUE_STATE_CODE.isNotNull()))
 				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
-		Field<String[]> lrcs = DSL.field(DSL
+		Field<String[]> lrf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(lr.REGISTER_CODE))
 				.from(lr, l2)
 				.where(l2.MEANING_ID.eq(m2.ID)
@@ -612,7 +614,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
-		Field<String[]> lgvs = DSL.field(DSL
+		Field<String[]> lgf = DSL.field(DSL
 				.select(DSL.arrayAgg(ff.VALUE_PRESE))
 				.from(ff, lff, l2)
 				.where(l2.MEANING_ID.eq(m2.ID)
@@ -623,12 +625,30 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.and(ff.TYPE.eq(FreeformType.GOVERNMENT.name())))
 				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
-		Field<String[]> wlds = DSL.field(DSL
+		Field<String[]> ldsf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(l2.DATASET_CODE))
 				.from(l2)
 				.where(l2.WORD_ID.eq(w2.ID)
 						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(l2.WORD_ID));
+
+		Condition orderByCond = l2.WORD_ID.eq(w2.ID)
+				.and(l2.MEANING_ID.eq(m2.ID))
+				.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY));
+
+		if (CollectionUtils.isNotEmpty(meaningWordPreferredOrderDatasetCodes)) {
+			if (meaningWordPreferredOrderDatasetCodes.size() == 1) {
+				String meaningWordPreferredOrderDatasetCode = meaningWordPreferredOrderDatasetCodes.get(0);
+				orderByCond = orderByCond.and(l2.DATASET_CODE.eq(meaningWordPreferredOrderDatasetCode));
+			} else {
+				orderByCond = orderByCond.and(l2.DATASET_CODE.in(meaningWordPreferredOrderDatasetCodes));				
+			}
+		}
+
+		Field<Long> lobf = DSL.field(DSL
+				.select(DSL.min(l2.ORDER_BY))
+				.from(l2)
+				.where(orderByCond));
 
 		Field<String[]> wtf = getWordTypesField(w2.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
@@ -639,9 +659,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.select(
 						mr.ID.as("id"),
 						m2.ID.as("meaning_id"),
-						lvscs.as("lex_value_state_codes"),
-						lrcs.as("lex_register_codes"),
-						lgvs.as("lex_government_values"),
+						lvsf.as("lexeme_value_state_codes"),
+						lrf.as("lexeme_register_codes"),
+						lgf.as("lexeme_government_values"),
+						lobf.as("lexeme_order_by"),
 						w2.ID.as("word_id"),
 						DSL.field("array_to_string(array_agg(distinct f2.value), ',', '*')").as("word_value"),
 						DSL.field("array_to_string(array_agg(distinct f2.value_prese), ',', '*')").as("word_value_prese"),
@@ -651,8 +672,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
-						wlds.as("word_lexeme_dataset_codes"),
-						mrl.as("rel_type_label")
+						ldsf.as("dataset_codes"),
+						mrtf.as("rel_type_label")
 						)
 				.from(
 						mr
@@ -663,7 +684,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name()))))
 				.where(mr.MEANING1_ID.eq(meaningId))
 				.groupBy(m2.ID, mr.ID, w2.ID)
-				.orderBy(mr.ID)
+				.orderBy(mr.ID, DSL.field("lexeme_order_by"))
 				.fetchInto(Relation.class);
 	}
 

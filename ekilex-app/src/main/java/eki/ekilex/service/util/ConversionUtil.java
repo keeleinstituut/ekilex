@@ -644,7 +644,7 @@ public class ConversionUtil implements GlobalConstant {
 		groupedRelationsList.forEach(groupedRelations -> {
 			filterMeaningRelations(prefWordLangs, allLangs, groupedRelations, showFirstWordOnly);
 			if (!showDatasets) {
-				groupedRelations.forEach(relation -> relation.setWordLexemeDatasetCodes(Collections.emptyList()));
+				groupedRelations.forEach(relation -> relation.setDatasetCodes(Collections.emptyList()));
 			}
 		});
 

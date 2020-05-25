@@ -41,7 +41,7 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private boolean foreign;
 
-	private List<String> wordLexemeDatasetCodes;
+	private List<String> datasetCodes;
 
 	private String relTypeCode;
 
@@ -191,12 +191,12 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 		this.foreign = foreign;
 	}
 
-	public List<String> getWordLexemeDatasetCodes() {
-		return wordLexemeDatasetCodes;
+	public List<String> getDatasetCodes() {
+		return datasetCodes;
 	}
 
-	public void setWordLexemeDatasetCodes(List<String> wordLexemeDatasetCodes) {
-		this.wordLexemeDatasetCodes = wordLexemeDatasetCodes;
+	public void setDatasetCodes(List<String> datasetCodes) {
+		this.datasetCodes = datasetCodes;
 	}
 
 	public String getRelTypeCode() {

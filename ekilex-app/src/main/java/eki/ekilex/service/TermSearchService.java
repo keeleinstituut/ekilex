@@ -166,7 +166,8 @@ public class TermSearchService extends AbstractSearchService {
 		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningPublicNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningPublicNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningPublicNoteSourceTuples);
 		permCalculator.filterVisibility(meaningPublicNotes, userId);
-		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
+		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<Relation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
 		Integer meaningProcessLogCount = processDbService.getLogCountForMeaning(meaningId);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForMeaning(meaningId);
