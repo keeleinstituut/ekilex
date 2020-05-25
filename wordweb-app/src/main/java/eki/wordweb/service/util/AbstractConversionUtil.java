@@ -171,7 +171,7 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 					while ((urlStartIndex = StringUtils.indexOfAny(processingSubstr, urlPrefixes)) != -1) {
 						String preLinkSubstr = StringUtils.substring(processingSubstr, 0, urlStartIndex);
 						processingSubstr = StringUtils.substring(processingSubstr, urlStartIndex);
-						urlEndIndex = StringUtils.indexOf(processingSubstr, ' ');
+						urlEndIndex = StringUtils.indexOfAny(processingSubstr, ' ', ']');
 						String url = StringUtils.substring(processingSubstr, 0, urlEndIndex);
 						processingSubstr = StringUtils.substring(processingSubstr, urlEndIndex);
 						convertedSourcePropBuf.append(preLinkSubstr);
