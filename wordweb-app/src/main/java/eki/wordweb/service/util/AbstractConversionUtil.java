@@ -166,7 +166,6 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 				if (StringUtils.containsAny(sourceProp, urlPrefixes)) {
 					StringBuffer convertedSourcePropBuf = new StringBuffer();
 					String processingSubstr = new String(sourceProp);
-					String leftoverSubstr = null;
 					int urlStartIndex;
 					int urlEndIndex = 0;
 					while ((urlStartIndex = StringUtils.indexOfAny(processingSubstr, urlPrefixes)) != -1) {
@@ -174,6 +173,7 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 						processingSubstr = StringUtils.substring(processingSubstr, urlStartIndex);
 						urlEndIndex = StringUtils.indexOf(processingSubstr, ' ');
 						String url = StringUtils.substring(processingSubstr, 0, urlEndIndex);
+						processingSubstr = StringUtils.substring(processingSubstr, urlEndIndex);
 						convertedSourcePropBuf.append(preLinkSubstr);
 						convertedSourcePropBuf.append("<a ");
 						convertedSourcePropBuf.append("href=\"");
@@ -181,11 +181,9 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 						convertedSourcePropBuf.append("\" target=\"_blank\">");
 						convertedSourcePropBuf.append(url);
 						convertedSourcePropBuf.append("</a>");
-						leftoverSubstr = StringUtils.substring(processingSubstr, urlEndIndex);
-						processingSubstr = StringUtils.substring(processingSubstr, urlEndIndex);
 					}
 					if (urlEndIndex != -1) {
-						convertedSourcePropBuf.append(leftoverSubstr);
+						convertedSourcePropBuf.append(processingSubstr);
 					}
 					sourceProp = convertedSourcePropBuf.toString();
 				}
