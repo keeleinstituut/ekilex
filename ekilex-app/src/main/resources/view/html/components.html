@@ -77,20 +77,30 @@
               <td class="p-0">
                 <div>
                   <span th:utext="${viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
-                  <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
-                    <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
-                      <span class="pt-0">
-                        <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
-                        <span th:text="${meaningWord.homonymNr}"></span>
-                        <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
-                      </span>
-                      <span th:unless="${meaningWordIter.last}">|</span>
-                    </th:block>
-                  </th:block>
+                  <small class="ml-1">
+                    <span th:text="${lexeme.datasetCode}"></span>
+                  </small>
                   <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.meaningId}"/>
+                  <div>
+                    <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
+                    <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
+                    <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
+                  </div>
+                  <div th:if="${not #lists.isEmpty(lexeme.meaningWordLangGroups)}">
+                    <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
+                      <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
+                        <span class="pt-0">
+                          <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+                          <span th:text="${meaningWord.homonymNr}"></span>
+                          <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
+                        </span>
+                        <span th:unless="${meaningWordIter.last}">|</span>
+                      </th:block>
+                    </th:block>
+                  </div>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
-                  <span th:text="${lexeme.definitions.get(0).value}"></span>
+                  <span th:utext="${lexeme.definitions.get(0).value}"></span>
                 </div>
               </td>
             </tr>
