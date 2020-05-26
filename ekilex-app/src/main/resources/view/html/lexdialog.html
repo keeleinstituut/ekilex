@@ -701,8 +701,8 @@
               </div>
             </div>
             <div class="form-check ml-1">
-              <input id="editLexemeNotePublic" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
-              <label for="editLexemeNotePublic" class="form-check-label">Avalik</label>
+              <input th:id="${'editLexemeNotePublicCheck_' + lexeme.lexemeId + '_' + publicNote.id}" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
+              <label th:for="${'editLexemeNotePublicCheck_' + lexeme.lexemeId + '_' + publicNote.id}" class="form-check-label">Avalik</label>
             </div>
           </div>
           <div class="modal-footer">
