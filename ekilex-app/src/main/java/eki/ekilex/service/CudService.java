@@ -65,14 +65,17 @@ public class CudService extends AbstractService {
 	public void updateWordValue(Long wordId, String valuePrese) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
 		createLifecycleLog(logData);
-		SimpleWord simpleWord = cudDbService.getSimpleWord(wordId);
-		String lang = simpleWord.getLang();
+		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
+		String lang = originalWord.getLang();
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, lang);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
 		if (StringUtils.isNotEmpty(valueAsWord)) {
 			cudDbService.updateAsWordValue(wordId, valueAsWord);
 		}
+		SimpleWord updatedWord = new SimpleWord(wordId, value, lang);
+		cudDbService.adjustWordHomonymNrs(originalWord);
+		cudDbService.adjustWordHomonymNrs(updatedWord);
 	}
 
 	@Transactional
@@ -206,7 +209,7 @@ public class CudService extends AbstractService {
 			return;
 		}
 
-		List<WordLexeme> lexemes = cudDbService.getWordPrimaryLexemes(lexemeId);
+		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2());
@@ -365,7 +368,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void updateImageTitle(Long imageId, String valuePrese) {
-		String recent = cudDbService.getImageTitle(imageId);
+		String recent = lookupDbService.getImageTitle(imageId);
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, recent, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
@@ -469,7 +472,7 @@ public class CudService extends AbstractService {
 		if (wordRelationGroupType.isPresent()) {
 			boolean doLogging = false;
 			String previousLogValue = null;
-			Long groupId = cudDbService.getWordRelationGroupId(relationTypeCode, wordId);
+			Long groupId = lookupDbService.getWordRelationGroupId(relationTypeCode, wordId);
 			if (groupId == null) {
 				groupId = cudDbService.createWordRelationGroup(relationTypeCode);
 				cudDbService.createWordRelationGroupMember(groupId, wordId);
@@ -477,14 +480,14 @@ public class CudService extends AbstractService {
 				doLogging = true;
 			} else {
 				if (!lookupDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
-					List<Map<String, Object>> wordRelationGroupMembers = cudDbService.getWordRelationGroupMembers(groupId);
+					List<Map<String, Object>> wordRelationGroupMembers = lookupDbService.getWordRelationGroupMembers(groupId);
 					previousLogValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 					cudDbService.createWordRelationGroupMember(groupId, targetWordId);
 					doLogging = true;
 				}
 			}
 			if (doLogging) {
-				List<Map<String, Object>> wordRelationGroupMembers = cudDbService.getWordRelationGroupMembers(groupId);
+				List<Map<String, Object>> wordRelationGroupMembers = lookupDbService.getWordRelationGroupMembers(groupId);
 				String logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 				for (Map<String, Object> member : wordRelationGroupMembers) {
 					Long memberId = (Long) member.get("id");
@@ -792,7 +795,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteWordType(Long wordId, String typeCode) {
 		if (StringUtils.isNotBlank(typeCode)) {
-			Long wordWordTypeId = cudDbService.getWordWordTypeId(wordId, typeCode);
+			Long wordWordTypeId = lookupDbService.getWordWordTypeId(wordId, typeCode);
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, typeCode, null);
 			createLifecycleLog(logData);
 			cudDbService.deleteWordWordType(wordWordTypeId);
@@ -801,13 +804,13 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteWordRelation(Long relationId) {
-		Long groupId = cudDbService.getWordRelationGroupId(relationId);
+		Long groupId = lookupDbService.getWordRelationGroupId(relationId);
 		if (groupId == null) {
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
 			createLifecycleLog(logData);
 			cudDbService.deleteWordRelation(relationId);
 		} else {
-			List<Map<String, Object>> wordRelationGroupMembers = cudDbService.getWordRelationGroupMembers(groupId);
+			List<Map<String, Object>> wordRelationGroupMembers = lookupDbService.getWordRelationGroupMembers(groupId);
 			String relationTypeCode = wordRelationGroupMembers.get(0).get("word_rel_type_code").toString();
 			String previousLogValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 			String logValue = null;
@@ -937,7 +940,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteLexemePos(Long lexemeId, String posCode) {
 		if (StringUtils.isNotBlank(posCode)) {
-			Long lexemePosId = cudDbService.getLexemePosId(lexemeId, posCode);
+			Long lexemePosId = lookupDbService.getLexemePosId(lexemeId, posCode);
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
 			createLifecycleLog(logData);
 			cudDbService.deleteLexemePos(lexemePosId);
@@ -947,7 +950,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteLexemeDeriv(Long lexemeId, String derivCode) {
 		if (StringUtils.isNotBlank(derivCode)) {
-			Long lexemeDerivId = cudDbService.getLexemeDerivId(lexemeId, derivCode);
+			Long lexemeDerivId = lookupDbService.getLexemeDerivId(lexemeId, derivCode);
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode, null);
 			createLifecycleLog(logData);
 			cudDbService.deleteLexemeDeriv(lexemeDerivId);
@@ -957,7 +960,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteLexemeRegister(Long lexemeId, String registerCode) {
 		if (StringUtils.isNotBlank(registerCode)) {
-			Long lexemeRegisterId = cudDbService.getLexemeRegisterId(lexemeId, registerCode);
+			Long lexemeRegisterId = lookupDbService.getLexemeRegisterId(lexemeId, registerCode);
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode, null);
 			createLifecycleLog(logData);
 			cudDbService.deleteLexemeRegister(lexemeRegisterId);
@@ -967,7 +970,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteLexemeRegion(Long lexemeId, String regionCode) {
 		if (StringUtils.isNotBlank(regionCode)) {
-			Long lexemeRegionId = cudDbService.getLexemeRegionId(lexemeId, regionCode);
+			Long lexemeRegionId = lookupDbService.getLexemeRegionId(lexemeId, regionCode);
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, regionCode, null);
 			createLifecycleLog(logData);
 			cudDbService.deleteLexemeRegion(lexemeRegionId);
@@ -1001,7 +1004,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteMeaningDomain(Long meaningId, Classifier domain) {
 		if (domain != null) {
-			Long meaningDomainId = cudDbService.getMeaningDomainId(meaningId, domain);
+			Long meaningDomainId = lookupDbService.getMeaningDomainId(meaningId, domain);
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
 			createLifecycleLog(logData);
 			cudDbService.deleteMeaningDomain(meaningDomainId);
@@ -1011,7 +1014,7 @@ public class CudService extends AbstractService {
 	@Transactional
 	public void deleteMeaningSemanticType(Long meaningId, String semanticTypeCode) {
 		if (StringUtils.isNotBlank(semanticTypeCode)) {
-			Long meaningSemanticTypeId = cudDbService.getMeaningSemanticTypeId(meaningId, semanticTypeCode);
+			Long meaningSemanticTypeId = lookupDbService.getMeaningSemanticTypeId(meaningId, semanticTypeCode);
 			LogData logData = new LogData(
 					LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.SEMANTIC_TYPE, meaningSemanticTypeId, semanticTypeCode, null);
 			createLifecycleLog(logData);
@@ -1056,7 +1059,7 @@ public class CudService extends AbstractService {
 
 	@Transactional
 	public void deleteImageTitle(Long imageId) {
-		String recent = cudDbService.getImageTitle(imageId);
+		String recent = lookupDbService.getImageTitle(imageId);
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, recent, null);
 		createLifecycleLog(logData);
 		cudDbService.deleteImageTitle(imageId);
@@ -1098,7 +1101,7 @@ public class CudService extends AbstractService {
 	}
 
 	private void moveCreatedRelationToFirst(Long wordId, Long relationId) {
-		List<SynRelation> existingRelations = cudDbService.getWordRelations(wordId, RAW_RELATION_TYPE);
+		List<SynRelation> existingRelations = lookupDbService.getWordRelations(wordId, RAW_RELATION_TYPE);
 		if (existingRelations.size() > 1) {
 
 			SynRelation firstRelation = existingRelations.get(0);

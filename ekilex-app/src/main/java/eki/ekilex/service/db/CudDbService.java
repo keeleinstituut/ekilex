@@ -40,7 +40,6 @@ import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +59,6 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
-import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -69,134 +67,17 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
-import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
-import eki.ekilex.data.db.tables.records.LexemePosRecord;
-import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
-import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
-import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
-import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
 import eki.ekilex.data.db.tables.records.WordFreeformRecord;
 import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.tables.records.WordGroupRecord;
 import eki.ekilex.data.db.tables.records.WordRelationRecord;
-import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 
 @Component
 public class CudDbService extends AbstractDataDbService {
-
-	public Long getWordWordTypeId(Long wordId, String typeCode) {
-		WordWordTypeRecord wordWordTypeRecord = create.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
-		return wordWordTypeRecord.getId();
-	}
-
-	public List<WordLexeme> getWordPrimaryLexemes(Long lexemeId) {
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		return create
-				.select(
-						l2.ID.as("lexeme_id"),
-						l2.LEVEL1,
-						l2.LEVEL2)
-				.from(l2, l1)
-				.where(
-						l1.ID.eq(lexemeId)
-								.and(l1.WORD_ID.eq(l2.WORD_ID))
-								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.orderBy(l2.LEVEL1, l2.LEVEL2)
-				.fetchInto(WordLexeme.class);
-	}
-
-	public Long getWordRelationGroupId(String groupType, Long wordId) {
-		Long id = create
-				.select(WORD_GROUP.ID)
-				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
-				.where(WORD_GROUP.WORD_REL_TYPE_CODE.eq(groupType).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
-				.fetchOneInto(Long.class);
-		return id;
-	}
-
-	public Long getWordRelationGroupId(Long relationId) {
-		Long id = create.select(WORD_GROUP.ID)
-				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
-				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
-				.fetchOneInto(Long.class);
-		return id;
-	}
-
-	public List<Map<String, Object>> getWordRelationGroupMembers(Long groupId) {
-		return create
-				.selectDistinct(
-						WORD_GROUP_MEMBER.ID,
-						WORD_GROUP_MEMBER.WORD_ID,
-						FORM.VALUE,
-						WORD_GROUP.WORD_REL_TYPE_CODE)
-				.from(WORD_GROUP_MEMBER)
-				.join(WORD_GROUP).on(WORD_GROUP.ID.eq(WORD_GROUP_MEMBER.WORD_GROUP_ID))
-				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(WORD_GROUP_MEMBER.WORD_ID))
-				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-				.where(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(groupId)
-						.and(FORM.MODE.eq("WORD")))
-				.fetchMaps();
-	}
-
-	public Long getLexemePosId(Long lexemeId, String posCode) {
-		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
-		return lexemePosRecord.getId();
-	}
-
-	public Long getLexemeDerivId(Long lexemeId, String derivCode) {
-		LexemeDerivRecord lexemeDerivRecord = create.fetchOne(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)));
-		return lexemeDerivRecord.getId();
-	}
-
-	public Long getLexemeRegisterId(Long lexemeId, String registerCode) {
-		LexemeRegisterRecord lexemeRegisterRecord = create.fetchOne(LEXEME_REGISTER,
-				LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)));
-		return lexemeRegisterRecord.getId();
-	}
-
-	public Long getLexemeRegionId(Long lexemeId, String regionCode) {
-		LexemeRegionRecord lexemeRegionRecord = create.fetchOne(LEXEME_REGION,
-				LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(regionCode)));
-		return lexemeRegionRecord.getId();
-	}
-
-	public Long getMeaningDomainId(Long meaningId, Classifier domain) {
-		MeaningDomainRecord meaningDomainRecord = create.fetchOne(MEANING_DOMAIN,
-				MEANING_DOMAIN.MEANING_ID.eq(meaningId)
-						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
-						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())));
-		return meaningDomainRecord.getId();
-	}
-
-	public Long getMeaningSemanticTypeId(Long meaningId, String semanticTypeCode) {
-		MeaningSemanticTypeRecord meaningSemanticTypeRecord = create
-				.fetchOne(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId).and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)));
-		return meaningSemanticTypeRecord.getId();
-	}
-
-	public String getImageTitle(Long imageId) {
-		return create
-				.select(FREEFORM.VALUE_TEXT)
-				.from(FREEFORM)
-				.where(FREEFORM.PARENT_ID.eq(imageId)
-						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
-				.fetchOneInto(String.class);
-	}
-
-	public List<SynRelation> getWordRelations(Long wordId, String relTypeCode) {
-		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
-				.from(WORD_RELATION)
-				.where(WORD_RELATION.WORD1_ID.eq(wordId))
-				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
-				.orderBy(WORD_RELATION.ORDER_BY)
-				.fetchInto(SynRelation.class);
-	}
 
 	public void updateFreeformTextValue(Long id, String value, String valuePrese) {
 		create.update(FREEFORM)
@@ -565,6 +446,73 @@ public class CudDbService extends AbstractDataDbService {
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.PROCESS_STATE_CODE.ne(processStateCode)))
 				.execute();
+	}
+
+	public void adjustWordHomonymNrs(SimpleWord word) {
+	
+		String wordValue = word.getWordValue();
+		String lang = word.getLang();
+	
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+	
+		Field<Integer> dsobf = DSL
+				.select(DSL.when(DSL.count(l.ID).gt(0), 1).otherwise(2))
+				.from(l)
+				.where(
+						l.WORD_ID.eq(w.ID)
+								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(l.DATASET_CODE.eq(DATASET_SSS)))
+				.asField();
+	
+		Table<Record3<Long, Integer, Integer>> ww = DSL
+				.select(
+						w.ID,
+						w.HOMONYM_NR,
+						dsobf.as("ds_order_by"))
+				.from(w)
+				.where(
+						w.LANG.eq(lang)
+								.andExists(DSL
+										.select(l.ID)
+										.from(l)
+										.where(
+												l.WORD_ID.eq(w.ID)
+														.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))))
+								.andExists(DSL
+										.select(f.ID)
+										.from(p, f)
+										.where(
+												p.WORD_ID.eq(w.ID)
+														.and(f.PARADIGM_ID.eq(p.ID))
+														.and(f.MODE.eq(FormMode.WORD.name()))
+														.and(f.VALUE.eq(wordValue)))))
+				.asTable("w");
+	
+		Result<Record2<Long, Integer>> homonyms = create
+				.select(
+						ww.field("id", Long.class),
+						ww.field("homonym_nr", Integer.class))
+				.from(ww)
+				.orderBy(
+						ww.field("ds_order_by"),
+						ww.field("homonym_nr"),
+						ww.field("id"))
+				.fetch();
+	
+		if (CollectionUtils.isNotEmpty(homonyms)) {
+			int homonymNrIter = 1;
+			for (Record2<Long, Integer> homonym : homonyms) {
+				Long adjWordId = homonym.get("id", Long.class);
+				Integer adjHomonymNr = homonym.get("homonym_nr", Integer.class);
+				if (adjHomonymNr != homonymNrIter) {
+					create.update(WORD).set(WORD.HOMONYM_NR, homonymNrIter).where(WORD.ID.eq(adjWordId)).execute();
+				}
+				homonymNrIter++;
+			}
+		}
 	}
 
 	public WordLexemeMeaningIdTuple createWordAndLexeme(String value, String valuePrese, String valueAsWord, String language, String morphCode, String datasetCode, Long meaningId) {
@@ -1124,73 +1072,6 @@ public class CudDbService extends AbstractDataDbService {
 				.where(WORD.ID.eq(wordId))
 				.execute();
 		adjustWordHomonymNrs(word);
-	}
-
-	private void adjustWordHomonymNrs(SimpleWord word) {
-
-		String wordValue = word.getWordValue();
-		String lang = word.getLang();
-
-		Word w = WORD.as("w");
-		Lexeme l = LEXEME.as("l");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
-
-		Field<Integer> dsobf = DSL
-				.select(DSL.when(DSL.count(l.ID).gt(0), 1).otherwise(2))
-				.from(l)
-				.where(
-						l.WORD_ID.eq(w.ID)
-								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(l.DATASET_CODE.eq(DATASET_SSS)))
-				.asField();
-
-		Table<Record3<Long, Integer, Integer>> ww = DSL
-				.select(
-						w.ID,
-						w.HOMONYM_NR,
-						dsobf.as("ds_order_by"))
-				.from(w)
-				.where(
-						w.LANG.eq(lang)
-								.andExists(DSL
-										.select(l.ID)
-										.from(l)
-										.where(
-												l.WORD_ID.eq(w.ID)
-														.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))))
-								.andExists(DSL
-										.select(f.ID)
-										.from(p, f)
-										.where(
-												p.WORD_ID.eq(w.ID)
-														.and(f.PARADIGM_ID.eq(p.ID))
-														.and(f.MODE.eq(FormMode.WORD.name()))
-														.and(f.VALUE.eq(wordValue)))))
-				.asTable("w");
-
-		Result<Record2<Long, Integer>> homonyms = create
-				.select(
-						ww.field("id", Long.class),
-						ww.field("homonym_nr", Integer.class))
-				.from(ww)
-				.orderBy(
-						ww.field("ds_order_by"),
-						ww.field("homonym_nr"),
-						ww.field("id"))
-				.fetch();
-
-		if (CollectionUtils.isNotEmpty(homonyms)) {
-			int homonymNrIter = 1;
-			for (Record2<Long, Integer> homonym : homonyms) {
-				Long adjWordId = homonym.get("id", Long.class);
-				Integer adjHomonymNr = homonym.get("homonym_nr", Integer.class);
-				if (adjHomonymNr != homonymNrIter) {
-					create.update(WORD).set(WORD.HOMONYM_NR, homonymNrIter).where(WORD.ID.eq(adjWordId)).execute();
-				}
-				homonymNrIter++;
-			}
-		}
 	}
 
 	public void deleteWordWordType(Long wordWordTypeId) {

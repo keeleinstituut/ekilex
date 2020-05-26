@@ -12,6 +12,15 @@ public class SimpleWord extends AbstractDataObject {
 
 	private String lang;
 
+	public SimpleWord() {
+	}
+
+	public SimpleWord(Long wordId, String wordValue, String lang) {
+		this.wordId = wordId;
+		this.wordValue = wordValue;
+		this.lang = lang;
+	}
+
 	public Long getWordId() {
 		return wordId;
 	}

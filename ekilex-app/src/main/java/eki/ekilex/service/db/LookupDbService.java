@@ -1,14 +1,21 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
+import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGION;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LEX_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
@@ -36,9 +43,12 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
+import eki.common.constant.FreeformType;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.Form;
@@ -46,9 +56,127 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
+import eki.ekilex.data.db.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
+import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
+import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
+import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
+import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 
+//associated data lookup for complex business functions
 @Component
 public class LookupDbService extends AbstractSearchDbService {
+
+	public Long getWordWordTypeId(Long wordId, String typeCode) {
+		WordWordTypeRecord wordWordTypeRecord = create.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
+		return wordWordTypeRecord.getId();
+	}
+
+	public List<WordLexeme> getWordPrimaryLexemes(Long lexemeId) {
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		return create
+				.select(
+						l2.ID.as("lexeme_id"),
+						l2.LEVEL1,
+						l2.LEVEL2)
+				.from(l2, l1)
+				.where(
+						l1.ID.eq(lexemeId)
+								.and(l1.WORD_ID.eq(l2.WORD_ID))
+								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.orderBy(l2.LEVEL1, l2.LEVEL2)
+				.fetchInto(WordLexeme.class);
+	}
+
+	public Long getWordRelationGroupId(String groupType, Long wordId) {
+		Long id = create
+				.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP.WORD_REL_TYPE_CODE.eq(groupType).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
+				.fetchOneInto(Long.class);
+		return id;
+	}
+
+	public Long getWordRelationGroupId(Long relationId) {
+		Long id = create.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
+				.fetchOneInto(Long.class);
+		return id;
+	}
+
+	public List<Map<String, Object>> getWordRelationGroupMembers(Long groupId) {
+		return create
+				.selectDistinct(
+						WORD_GROUP_MEMBER.ID,
+						WORD_GROUP_MEMBER.WORD_ID,
+						FORM.VALUE,
+						WORD_GROUP.WORD_REL_TYPE_CODE)
+				.from(WORD_GROUP_MEMBER)
+				.join(WORD_GROUP).on(WORD_GROUP.ID.eq(WORD_GROUP_MEMBER.WORD_GROUP_ID))
+				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(WORD_GROUP_MEMBER.WORD_ID))
+				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+				.where(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(groupId)
+						.and(FORM.MODE.eq("WORD")))
+				.fetchMaps();
+	}
+
+	public Long getLexemePosId(Long lexemeId, String posCode) {
+		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
+		return lexemePosRecord.getId();
+	}
+
+	public Long getLexemeDerivId(Long lexemeId, String derivCode) {
+		LexemeDerivRecord lexemeDerivRecord = create.fetchOne(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)));
+		return lexemeDerivRecord.getId();
+	}
+
+	public Long getLexemeRegisterId(Long lexemeId, String registerCode) {
+		LexemeRegisterRecord lexemeRegisterRecord = create.fetchOne(LEXEME_REGISTER,
+				LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)));
+		return lexemeRegisterRecord.getId();
+	}
+
+	public Long getLexemeRegionId(Long lexemeId, String regionCode) {
+		LexemeRegionRecord lexemeRegionRecord = create.fetchOne(LEXEME_REGION,
+				LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(regionCode)));
+		return lexemeRegionRecord.getId();
+	}
+
+	public Long getMeaningDomainId(Long meaningId, Classifier domain) {
+		MeaningDomainRecord meaningDomainRecord = create.fetchOne(MEANING_DOMAIN,
+				MEANING_DOMAIN.MEANING_ID.eq(meaningId)
+						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
+						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())));
+		return meaningDomainRecord.getId();
+	}
+
+	public Long getMeaningSemanticTypeId(Long meaningId, String semanticTypeCode) {
+		MeaningSemanticTypeRecord meaningSemanticTypeRecord = create
+				.fetchOne(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId).and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)));
+		return meaningSemanticTypeRecord.getId();
+	}
+
+	public String getImageTitle(Long imageId) {
+		return create
+				.select(FREEFORM.VALUE_TEXT)
+				.from(FREEFORM)
+				.where(FREEFORM.PARENT_ID.eq(imageId)
+						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
+				.fetchOneInto(String.class);
+	}
+
+	public List<SynRelation> getWordRelations(Long wordId, String relTypeCode) {
+		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
+				.from(WORD_RELATION)
+				.where(WORD_RELATION.WORD1_ID.eq(wordId))
+				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
+				.orderBy(WORD_RELATION.ORDER_BY)
+				.fetchInto(SynRelation.class);
+	}
 
 	public Map<Long, WordStress> getWordStressData(Long wordId1, Long wordId2, char displayFormStressSym) {
 
