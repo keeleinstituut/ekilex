@@ -96,7 +96,7 @@
           <h5 class="colored-bold">Oskussõnastikud ja terminibaasid</h5>
           <th:block th:each="dataset : ${termDatasets}">
             <h6 class="colored-bold" th:id="${'dataset-' + dataset.code}" th:text="${dataset.name}">Terminibaas</h6>
-            <p th:text="${dataset.description}">(info lisandub)</p>
+            <p style="white-space: pre-wrap;" th:text="${dataset.description}">(info lisandub)</p>
           </th:block>
           <h5 id="wordweb" class="colored-bold">Sõnaveeb 2020</h5>
           <p>
