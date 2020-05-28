@@ -114,23 +114,8 @@
     </div>
     <div class="col pl-0">
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
-        <span th:replace="termdialog :: edit_lexeme_grammar_dlg"></span>
-        <span th:text="${grammar.valueText}"></span>
-        <button type="button" class="btn badge badge-primary" title="Muuda"
-                data-toggle="modal"
-                th:data-target="${'#editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-edit" aria-hidden="true"></i>
-        </button>
-        <button type="button" class="btn badge badge-warning"
-                th:data-id="${grammar.id}"
-                data-op-code="lexeme_grammar"
-                data-toggle="delete-confirm"
-                data-placement="right"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-remove" aria-hidden="true"></i>
-        </button>
-        <span th:unless="${grammarIter.last}">,&nbsp;</span>
+        <span th:utext="${grammar.valuePrese}"></span>
+        <span th:unless="${grammarIter.last}" class="ml-n1">,</span>
       </span>
     </div>
   </div>

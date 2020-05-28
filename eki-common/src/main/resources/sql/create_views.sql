@@ -792,7 +792,7 @@ from lexeme l
                    and   ff.is_public = true
                    group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ff.value_text,ff.complexity)::type_freeform order by ff.order_by) grammars
+                          array_agg(row (ff.id, ff.type, ff.value_prese,ff.complexity)::type_freeform order by ff.order_by) grammars
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id

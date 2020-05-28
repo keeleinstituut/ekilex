@@ -227,10 +227,11 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateLexemeGrammar(Long id, String value, Complexity complexity) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, value);
+	public void updateLexemeGrammar(Long id, String valuePrese, Complexity complexity) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, valuePrese);
 		createLifecycleLog(logData);
-		cudDbService.updateFreeformTextValueAndComplexity(id, value, null, complexity);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
 	}
 
 	@Transactional
@@ -585,9 +586,10 @@ public class CudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createLexemeGrammar(Long lexemeId, String value, Complexity complexity) {
-		Long grammarId = cudDbService.createLexemeGrammar(lexemeId, value, complexity);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, value);
+	public void createLexemeGrammar(Long lexemeId, String valuePrese, Complexity complexity) {
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		Long grammarId = cudDbService.createLexemeGrammar(lexemeId, value, valuePrese, complexity);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, valuePrese);
 		createLifecycleLog(logData);
 	}
 

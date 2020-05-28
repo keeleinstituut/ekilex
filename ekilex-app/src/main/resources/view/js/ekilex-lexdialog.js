@@ -79,8 +79,9 @@ $(document).on("show.bs.modal", "[id^=addMeaningDomainDlg_]", function() {
 	initAddMultiDataDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addLexemeGrammarDlg_]", function() {
-	initGenericTextEditDlg($(this));
+$(document).on("show.bs.modal", "[id^=addLexemeGrammarDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
 });
 
 $(document).on("show.bs.modal", "[id^=addWordVocalFormDlg_]", function() {

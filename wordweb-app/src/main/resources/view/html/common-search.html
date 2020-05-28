@@ -138,7 +138,7 @@
                   <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                 </th:block>
                 <span class="lexeme grammars tag" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                  <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:text="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
+                  <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                 </span>
               </div>
               <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">

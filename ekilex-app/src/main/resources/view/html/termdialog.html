@@ -22,7 +22,6 @@
                   <option value="lexeme_pos" sec:authorize="#vars.lexeme.crudGrant">Sõnaliik</option>
                   <option value="lexeme_deriv" sec:authorize="#vars.lexeme.crudGrant">Tuletuskood</option>
                   <option value="lexeme_register" sec:authorize="#vars.lexeme.crudGrant">Register</option>
-                  <option value="lexeme_grammar" sec:authorize="#vars.lexeme.crudGrant">Grammatika</option>
                   <option value="lexeme_region" sec:authorize="#vars.lexeme.crudGrant">Regioon</option>
                   <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.lexeme.crudGrant">Allikaviide</option>
                   <option value="addLexemeRelationDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku seos</option>
@@ -78,12 +77,6 @@
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="region : ${allLexemeRegions}" th:value="${region.code}" th:text="${region.value}">region</option>
                 </select>
-              </div>
-            </div>
-            <div th:id="${'lexeme_grammar_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
-              <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
-              <div class="col-md-12">
-                <input type="text" class="form-control value-select required-field">
               </div>
             </div>
             <div th:id="${'word_gender_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
@@ -208,28 +201,6 @@
             <select class="form-control" name="value">
               <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.lexemeValueStateCode}">value</option>
             </select>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}" class="modal" role="dialog" th:fragment="edit_lexeme_grammar_dlg">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${grammar.id}">
-            <input type="hidden" name="opCode" value="lexeme_grammar">
-            <input type="hidden" name="complexity" th:value="${grammar.complexity}">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <textarea class="form-control" rows="2" name="value" th:text="${grammar.valueText}"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
       </div>

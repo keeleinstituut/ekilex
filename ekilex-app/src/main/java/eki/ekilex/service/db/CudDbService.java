@@ -859,6 +859,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese, Complexity complexity, boolean isPublic) {
+
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
@@ -875,27 +876,38 @@ public class CudDbService extends AbstractDataDbService {
 		return freeform.getId();
 	}
 
-	public Long createLexemeGovernment(Long lexemeId, String government, Complexity complexity) {
-		Long governmentFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.COMPLEXITY)
-				.values(FreeformType.GOVERNMENT.name(), government, government, complexity.name())
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
-		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, governmentFreeformId).execute();
-		return governmentFreeformId;
+	public Long createLexemeGovernment(Long lexemeId, String value, Complexity complexity) {
+
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.GOVERNMENT.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(value);
+		freeform.setComplexity(complexity.name());
+		freeform.store();
+	
+		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
+		lexemeFreeform.setLexemeId(lexemeId);
+		lexemeFreeform.setFreeformId(freeform.getId());
+		lexemeFreeform.store();
+	
+		return freeform.getId();
 	}
 
-	public Long createLexemeGrammar(Long lexemeId, String value, Complexity complexity) {
+	public Long createLexemeGrammar(Long lexemeId, String value, String valuePrese, Complexity complexity) {
+
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.GRAMMAR.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.setComplexity(complexity.name());
+		freeform.store();
 	
-		Long grammarFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.COMPLEXITY)
-				.values(FreeformType.GRAMMAR.name(), value, complexity.name())
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
-		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, grammarFreeformId).execute();
-		return grammarFreeformId;
+		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
+		lexemeFreeform.setLexemeId(lexemeId);
+		lexemeFreeform.setFreeformId(freeform.getId());
+		lexemeFreeform.store();
+	
+		return freeform.getId();
 	}
 
 	public Long createLexemePos(Long lexemeId, String posCode) {

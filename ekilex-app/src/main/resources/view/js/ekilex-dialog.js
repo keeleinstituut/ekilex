@@ -70,8 +70,9 @@ $(document).on("show.bs.modal", "[id^=editLexemeValueStateCodeDlg_]", function()
 	initSelectDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=editLexemeGrammarDlg_]", function() {
-	initGenericTextEditDlg($(this));
+$(document).on("show.bs.modal", "[id^=editLexemeGrammarDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
 });
 
 $(document).on("show.bs.modal", "[id^=editLexemeFrequencyGroupDlg_]", function() {

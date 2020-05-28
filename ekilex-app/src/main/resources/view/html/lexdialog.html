@@ -25,7 +25,7 @@
                   <option value="lexeme_pos" sec:authorize="#vars.lexeme.crudGrant">Sõnaliik</option>
                   <option value="lexeme_deriv" sec:authorize="#vars.lexeme.crudGrant">Tuletuskood</option>
                   <option value="lexeme_register" sec:authorize="#vars.lexeme.crudGrant">Register</option>
-                  <option value="lexeme_grammar" sec:authorize="#vars.lexeme.crudGrant">Grammatika</option>
+                  <option value="addLexemeGrammarDlg" sec:authorize="#vars.lexeme.crudGrant">Grammatika</option>
                   <option value="government" sec:authorize="#vars.lexeme.crudGrant">Rektsioon</option>
                   <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.lexeme.crudGrant">Allikaviide</option>
                   <option value="addLexemeRelationDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku seos</option>
@@ -75,17 +75,6 @@
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
-                </select>
-              </div>
-            </div>
-            <div th:id="${'lexeme_grammar_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
-              <div class="col-md-12">
-                <input type="text" class="form-control value-select required-field">
-              </div>
-              <div class="col-md-4 mt-2">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
@@ -1047,9 +1036,21 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
-            <div class="form-group row">
+            <input type="hidden" name="value">
+            <div class="form-group row eki-editor">
+              <div class="col-md-12 pb-3">
+                <div class="float-right">
+                  <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgendus</button>
+                  <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgendus</button>
+                </div>
+              </div>
               <div class="col-md-12">
-                <input type="text" class="form-control required-field" name="value">
+                <div contenteditable="true" data-name="editFld" class="edit-area form-control required-field"></div>
+                <div class="eki-editor-menu">
+                  <select class="eki-tag-select" size="6">
+                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div class="form-group row">
@@ -1079,9 +1080,21 @@
             <input type="hidden" name="id" th:value="${grammar.id}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
             <input type="hidden" name="complexity" th:value="${grammar.complexity}">
-            <div class="form-group row">
+            <input type="hidden" name="value" th:value="${grammar.valuePrese}">
+            <div class="form-group row eki-editor">
+              <div class="col-md-12 pb-3">
+                <div class="float-right">
+                  <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgendus</button>
+                  <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgendus</button>
+                </div>
+              </div>
               <div class="col-md-12">
-                <textarea class="form-control" rows="2" name="value" th:text="${grammar.valueText}"></textarea>
+                <div contenteditable="true" data-name="editFld" class="edit-area form-control required-field"></div>
+                <div class="eki-editor-menu">
+                  <select class="eki-tag-select" size="6">
+                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div class="form-group row">
