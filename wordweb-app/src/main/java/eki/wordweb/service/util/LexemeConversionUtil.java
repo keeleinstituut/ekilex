@@ -126,6 +126,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setGrammars(filter(grammars, lexComplexity));
 		lexeme.setGovernments(filterSimpleOnly(governments, lexComplexity));
 
+		convertUrlsToHrefs(lexeme.getLexemeSourceLinks());
+
 		classifierUtil.applyClassifiers(lexeme, displayLang);
 	}
 
@@ -142,6 +144,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 
 		List<TypeSourceLink> lexemeFreeformSourceLinks = lexeme.getLexemeFreeformSourceLinks();
+		convertUrlsToHrefs(lexemeFreeformSourceLinks);
 		Map<Long, List<TypeSourceLink>> lexemeFreeformSourceLinkMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(lexemeFreeformSourceLinks)) {
 			lexemeFreeformSourceLinkMap = lexemeFreeformSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));

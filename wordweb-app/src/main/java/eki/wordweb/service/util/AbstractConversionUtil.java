@@ -150,7 +150,7 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		}
 	}
 
-	private void convertUrlsToHrefs(List<TypeSourceLink> sourceLinks) {
+	protected void convertUrlsToHrefs(List<TypeSourceLink> sourceLinks) {
 
 		if (CollectionUtils.isEmpty(sourceLinks)) {
 			return;
@@ -172,7 +172,12 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 						String preLinkSubstr = StringUtils.substring(processingSubstr, 0, urlStartIndex);
 						processingSubstr = StringUtils.substring(processingSubstr, urlStartIndex);
 						urlEndIndex = StringUtils.indexOfAny(processingSubstr, ' ', ']');
-						String url = StringUtils.substring(processingSubstr, 0, urlEndIndex);
+						String url;
+						if (urlEndIndex != -1) {
+							url = StringUtils.substring(processingSubstr, 0, urlEndIndex);
+						} else {
+							url = new String(processingSubstr);
+						}
 						processingSubstr = StringUtils.substring(processingSubstr, urlEndIndex);
 						convertedSourcePropBuf.append(preLinkSubstr);
 						convertedSourcePropBuf.append("<a ");
