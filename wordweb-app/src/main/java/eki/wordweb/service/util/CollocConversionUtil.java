@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -41,6 +42,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 
 		Complexity lexComplexity = dataFilter.getLexComplexity();
 		collocTuples = filterSimpleOnly(collocTuples, lexComplexity);
+		collocTuples = filterCollocsByMostMembers(collocTuples);
 
 		Map<Long, Lexeme> lexemeMap = lexemes.stream().collect(Collectors.toMap(Lexeme::getLexemeId, lexeme -> lexeme));
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
@@ -67,10 +69,27 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			if (CollectionUtils.isEmpty(lexeme.getCollocationPosGroups())) {
 				continue;
 			}
-			List<String> existingCollocationValues = new ArrayList<>();
 			divideCollocationRelGroupsByCollocMemberForms(wordId, lexeme);
-			transformCollocationPosGroupsForDisplay(wordId, lexeme, existingCollocationValues);
+			transformCollocationPosGroupsForDisplay(wordId, lexeme);
 		}
+	}
+
+	private List<CollocationTuple> filterCollocsByMostMembers(List<CollocationTuple> collocTuples) {
+		Map<Long, Map<String, Optional<Integer>>> collocRelGroupCollocMostMemSizeMap = collocTuples.stream()
+				.collect(Collectors
+						.groupingBy(CollocationTuple::getRelGroupId, Collectors
+								.groupingBy(CollocationTuple::getCollocValue, Collectors
+										.mapping(tuple -> tuple.getCollocMembers().size(), Collectors
+												.maxBy(Integer::compare)))));
+
+		collocTuples = collocTuples.stream()
+				.filter(tuple -> {
+					Map<String, Optional<Integer>> collocRelGroupMap = collocRelGroupCollocMostMemSizeMap.get(tuple.getRelGroupId());
+					Integer collocMostMemSize = collocRelGroupMap.get(tuple.getCollocValue()).get();
+					boolean isCollocMostMemSize = collocMostMemSize == tuple.getCollocMembers().size();
+					return isCollocMostMemSize;
+				}).collect(Collectors.toList());
+		return collocTuples;
 	}
 
 	public CollocationPosGroup populateCollocPosGroup(Lexeme lexeme, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap, String displayLang) {
@@ -144,12 +163,13 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	public void transformCollocationPosGroupsForDisplay(Long wordId, Lexeme lexeme, List<String> existingCollocationValues) {
+	public void transformCollocationPosGroupsForDisplay(Long wordId, Lexeme lexeme) {
 
 		List<Collocation> collocations;
 		List<DisplayColloc> displayCollocs;
 		List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>();
 		List<CollocationPosGroup> collocationPosGroups = lexeme.getCollocationPosGroups();
+		List<String> existingCollocationValues = new ArrayList<>();
 		for (CollocationPosGroup collocationPosGroup : collocationPosGroups) {
 			List<CollocationRelGroup> collocationRelGroups = collocationPosGroup.getRelationGroups();
 			for (CollocationRelGroup collocationRelGroup : collocationRelGroups) {
@@ -158,6 +178,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 				List<String> allUsages = new ArrayList<>();
 				collocationRelGroup.setAllUsages(allUsages);
 				collocations = collocationRelGroup.getCollocations();
+				collocationRelGroup.setCollocations(collocations);
 				transformCollocationsForDisplay(wordId, collocations, displayCollocs, allUsages, existingCollocationValues);
 				if (limitedPrimaryDisplayCollocs.size() < TYPICAL_COLLECTIONS_DISPLAY_LIMIT) {
 					limitedPrimaryDisplayCollocs.addAll(displayCollocs);
