@@ -14,7 +14,11 @@ public class Note extends AbstractPublicEntity {
 
 	private String valuePrese;
 
+	private String lang;
+
 	private Complexity complexity;
+
+	private Long orderBy;
 
 	private List<SourceLink> sourceLinks;
 
@@ -42,12 +46,28 @@ public class Note extends AbstractPublicEntity {
 		this.valuePrese = valuePrese;
 	}
 
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
 	public Complexity getComplexity() {
 		return complexity;
 	}
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 
 	public List<SourceLink> getSourceLinks() {

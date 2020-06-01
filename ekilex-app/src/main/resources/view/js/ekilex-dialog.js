@@ -136,3 +136,33 @@ $(document).on("show.bs.modal", "[id^=addWordProcessLogDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
+
+$(document).on("show.bs.modal", "[id^=addMeaningPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editMeaningPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addDefinitionSourceLinkDlg_]", function() {
+	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editDefinitionPublicNoteDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteSourceLinkDlg_]", function() {
+	initAddSourceLinkDlg($(this));
+	initSourceNameAutocomplete($(this));
+});

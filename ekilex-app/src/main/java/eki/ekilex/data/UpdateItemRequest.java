@@ -24,6 +24,8 @@ public class UpdateItemRequest extends AbstractDataObject {
 
 	private String currentValue;
 
+	private String language;
+
 	private boolean selected;
 
 	private Complexity complexity;
@@ -92,6 +94,14 @@ public class UpdateItemRequest extends AbstractDataObject {
 
 	public void setCurrentValue(String currentValue) {
 		this.currentValue = currentValue;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 
 	public boolean isSelected() {

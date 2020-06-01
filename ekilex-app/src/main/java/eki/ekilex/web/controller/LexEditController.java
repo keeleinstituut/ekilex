@@ -258,8 +258,8 @@ public class LexEditController extends AbstractPageController {
 			String dataset = wordDetails.getDataset();
 			List<String> allDatasets = commonDataService.getDatasetCodes();
 
-			sessionBean.setNewWordSelectedLanguage(language);
-			sessionBean.setNewWordSelectedMorphCode(morphCode);
+			sessionBean.setRecentSelectedLanguage(language);
+			sessionBean.setRecentSelectedMorphCode(morphCode);
 
 			int wordCount = lexSearchService.countWords(wordValue, allDatasets);
 			if (wordCount == 0) {

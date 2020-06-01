@@ -3,16 +3,12 @@ package eki.ekilex.data;
 import java.sql.Timestamp;
 import java.util.List;
 
-import javax.persistence.Column;
-
 public class Meaning extends AbstractCrudEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "meaning_id")
 	private Long meaningId;
 
-	@Column(name = "lexeme_ids")
 	private List<Long> lexemeIds;
 
 	private List<DefinitionLangGroup> definitionLangGroups;

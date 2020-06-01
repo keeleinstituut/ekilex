@@ -289,8 +289,10 @@ public class ConversionUtil implements GlobalConstant {
 				note.setId(noteId);
 				note.setValueText(tuple.getValueText());
 				note.setValuePrese(tuple.getValuePrese());
+				note.setLang(tuple.getLang());
 				note.setComplexity(tuple.getComplexity());
 				note.setPublic(tuple.isPublic());
+				note.setOrderBy(tuple.getOrderBy());
 				if (note instanceof LexemeNote) {
 					((LexemeNote) note).setLexemeId(parentId);
 				} else if (note instanceof MeaningNote) {
@@ -475,9 +477,12 @@ public class ConversionUtil implements GlobalConstant {
 
 	public List<DefinitionLangGroup> composeMeaningDefinitionLangGroups(List<Definition> definitions, List<ClassifierSelect> languagesOrder) {
 
+		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
+		if (languagesOrder == null) {
+			return definitionLangGroups;
+		}
 		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
 		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
-		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
 		Map<String, DefinitionLangGroup> definitionLangGroupMap = new HashMap<>();
 
 		for (Definition definition : definitions) {
