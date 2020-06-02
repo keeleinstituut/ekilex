@@ -69,12 +69,16 @@
               </div>
             </div>
             <div class="form-check mt-1">
-              <input id="chkVisible" type="checkbox" name="visible" class="form-check-input" checked="checked" />
-              <label for="chkVisible" class="form-check-label" th:text="#{datasets.dataset.is.visible}">Nähtav</label>
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="visible" checked="checked"/>
+                <span th:text="#{datasets.dataset.is.visible}">Nähtav</span>
+              </label>
             </div>
             <div class="form-check mt-1">
-              <input id="chkPublic" type="checkbox" name="public" class="form-check-input"  />
-              <label for="chkPublic" class="form-check-label" th:text="#{datasets.dataset.is.public}">Nähtav</label>
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" />
+                <span th:text="#{datasets.dataset.is.public}">Avalik</span>
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -150,12 +154,16 @@
               </div>
             </div>
             <div class="form-check mt-1">
-              <input id="chkVisibleEdit" class="form-check-input" type="checkbox" name="visible">
-              <label for="chkVisibleEdit" class="form-check-label" th:text="#{datasets.dataset.is.visible}">Nähtav</label>
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="visible" />
+                <span th:text="#{datasets.dataset.is.visible}">Nähtav</span>
+              </label>
             </div>
             <div class="form-check mt-1">
-              <input id="chkPublicEdit" class="form-check-input" type="checkbox" name="public">
-              <label for="chkPublicEdit" class="form-check-label" th:text="#{datasets.dataset.is.public}">Nähtav</label>
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" />
+                <span th:text="#{datasets.dataset.is.public}">Avalik</span>
+              </label>
             </div>
           </div>
           <div class="modal-footer">
