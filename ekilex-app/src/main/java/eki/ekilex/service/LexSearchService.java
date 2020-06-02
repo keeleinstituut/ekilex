@@ -26,7 +26,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.DefinitionSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
@@ -34,11 +34,11 @@ import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeNote;
-import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
+import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
@@ -160,12 +160,14 @@ public class LexSearchService extends AbstractWordSearchService {
 						String datasetCode = lexeme.getDatasetCode();
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
-						List<DefinitionRefTuple> definitionRefTuples =
-								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+						List<DefinitionSourceAndPublicNoteSourceTuple> definitionSourceTuples =
+								commonDataDbService.getMeaningDefinitionSourceTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionSourceTuples, false);
 						permCalculator.filterVisibility(definitions, userId);
 						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
-						lexeme.setDefinitions(definitions);
+						Meaning meaning = new Meaning();
+						meaning.setDefinitions(definitions);
+						lexeme.setMeaning(meaning);
 					});
 					lexemeLevelPreseUtil.combineLevels(wordLexemes);
 					lexemes.addAll(wordLexemes);
@@ -202,28 +204,23 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, wordLang);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
 		meaningDomains = conversionUtil.removeOrderedClassifierDuplicates(meaningDomains);
-		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
-		permCalculator.applyCrud(definitions, userRole);
-		permCalculator.filterVisibility(definitions, userId);
-		for (Definition definition : definitions) {
-			Long definitionId = definition.getId();
-			List<NoteSourceTuple> definitionPublicNoteSourceTuples = commonDataDbService.getDefinitionPublicNoteSourceTuples(definitionId);
-			List<DefinitionNote> definitionPublicNotes = conversionUtil.composeNotes(DefinitionNote.class, definitionId, definitionPublicNoteSourceTuples);
-			permCalculator.filterVisibility(definitionPublicNotes, userId);
-			definition.setPublicNotes(definitionPublicNotes);
-		}
-		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
-		lexeme.setDefinitions(definitions);
+		List<DefinitionSourceAndPublicNoteSourceTuple> definitionSourceAndPublicNoteSourceTuples =
+				commonDataDbService.getMeaningDefinitionSourceTuples(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 
 		meaning.setMeaningId(meaningId);
 		meaning.setDomains(meaningDomains);
-		meaning.setDefinitionLangGroups(definitionLangGroups);
+
+		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionSourceAndPublicNoteSourceTuples, isFullData);
+		permCalculator.applyCrud(definitions, userRole);
+		permCalculator.filterVisibility(definitions, userId);
 
 		if (isFullData) {
 
+			for (Definition definition : definitions) {
+				List<DefinitionNote> definitionPublicNotes = definition.getPublicNotes();
+				permCalculator.filterVisibility(definitionPublicNotes, userId);
+			}
 			List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 			List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
@@ -255,6 +252,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
 			List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, classifierLabelLang, classifierLabelTypeDescrip);
 			List<List<Relation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
+			List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 
 			lexeme.setGovernments(governments);
 			lexeme.setGrammars(grammars);
@@ -275,6 +273,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			meaning.setSemanticTypes(meaningSemanticTypes);
 			meaning.setRelations(meaningRelations);
 			meaning.setViewRelations(viewMeaningRelations);
+			meaning.setDefinitionLangGroups(definitionLangGroups);
 
 			boolean lexemeOrMeaningClassifiersExist =
 					StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
@@ -290,6 +289,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
 		}
 
+		meaning.setDefinitions(definitions);
 		lexeme.setMeaning(meaning);
 	}
 }

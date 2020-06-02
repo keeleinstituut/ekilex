@@ -186,10 +186,10 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentSelectedLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -303,10 +303,10 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentSelectedLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -780,10 +780,10 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentSelectedLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -874,10 +874,10 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentSelectedLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -1920,10 +1920,10 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentSelectedLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -1932,10 +1932,10 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control required-field" name="morphCode">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentSelectedMorphCode)}">vali kood...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentMorphCode)}">vali kood...</option>
                   <option th:each="morphCode : ${wordMorphCodes}"
                           th:value="${morphCode.code}"
-                          th:selected="${morphCode.code == sessionBean.recentSelectedMorphCode}"
+                          th:selected="${morphCode.code == sessionBean.recentMorphCode}"
                           th:text="${morphCode.value}">morphCode
                   </option>
                 </select>

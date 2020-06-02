@@ -34,7 +34,7 @@ import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefinitionRefTuple;
+import eki.ekilex.data.DefinitionSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.Image;
@@ -298,8 +298,6 @@ public class ConversionUtil implements GlobalConstant {
 					((LexemeNote) note).setLexemeId(parentId);
 				} else if (note instanceof MeaningNote) {
 					((MeaningNote) note).setMeaningId(parentId);
-				} else if (note instanceof DefinitionNote) {
-					((DefinitionNote) note).setDefinitionId(parentId);
 				}
 				noteMap.put(noteId, note);
 				notes.add(note);
@@ -461,25 +459,29 @@ public class ConversionUtil implements GlobalConstant {
 		return noteLangGroups;
 	}
 
-	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples) {
+	public List<Definition> composeMeaningDefinitions(List<DefinitionSourceAndPublicNoteSourceTuple> definitionSourceAndPublicNoteSourceTuples, boolean composePublicNotes) {
 
 		List<Definition> definitions = new ArrayList<>();
 		Map<Long, Definition> definitionMap = new HashMap<>();
+		Set<Long> handledSourceLinkIds = new HashSet<>();
+		Map<Long, DefinitionNote> publicNoteMap = new HashMap<>();
 
-		for (DefinitionRefTuple definitionRefTuple : definitionRefTuples) {
+		for (DefinitionSourceAndPublicNoteSourceTuple definitionData : definitionSourceAndPublicNoteSourceTuples) {
+			Long definitionId = definitionData.getDefinitionId();
+			Long definitionSourceLinkId = definitionData.getDefinitionSourceLinkId();
+			Long publicNoteId = definitionData.getPublicNoteId();
+			Long publicNoteSourceLinkId = definitionData.getPublicNoteSourceLinkId();
 
-			Long definitionId = definitionRefTuple.getDefinitionId();
-			Long sourceLinkId = definitionRefTuple.getSourceLinkId();
 			Definition definition = definitionMap.get(definitionId);
 			if (definition == null) {
-				String definitionValue = definitionRefTuple.getDefinitionValue();
-				String definitionLang = definitionRefTuple.getDefinitionLang();
-				Complexity definitionComplexity = definitionRefTuple.getDefinitionComplexity();
-				Long definitionOrderBy = definitionRefTuple.getDefinitionOrderBy();
-				String definitionTypeCode = definitionRefTuple.getDefinitionTypeCode();
-				String definitionTypeValue = definitionRefTuple.getDefinitionTypeValue();
-				List<String> definitionDatasetCodes = definitionRefTuple.getDefinitionDatasetCodes();
-				boolean isDefinitionPublic = definitionRefTuple.isDefinitionPublic();
+				String definitionValue = definitionData.getDefinitionValue();
+				String definitionLang = definitionData.getDefinitionLang();
+				Complexity definitionComplexity = definitionData.getDefinitionComplexity();
+				Long definitionOrderBy = definitionData.getDefinitionOrderBy();
+				String definitionTypeCode = definitionData.getDefinitionTypeCode();
+				String definitionTypeValue = definitionData.getDefinitionTypeValue();
+				List<String> definitionDatasetCodes = definitionData.getDefinitionDatasetCodes();
+				boolean isDefinitionPublic = definitionData.isDefinitionPublic();
 				definition = new Definition();
 				definition.setId(definitionId);
 				definition.setValue(definitionValue);
@@ -489,24 +491,62 @@ public class ConversionUtil implements GlobalConstant {
 				definition.setTypeCode(definitionTypeCode);
 				definition.setTypeValue(definitionTypeValue);
 				definition.setDatasetCodes(definitionDatasetCodes);
+				definition.setPublicNotes(new ArrayList<>());
 				definition.setSourceLinks(new ArrayList<>());
 				definition.setPublic(isDefinitionPublic);
 				definitionMap.put(definitionId, definition);
 				definitions.add(definition);
 			}
-			if (sourceLinkId != null) {
-				ReferenceType sourceLinkType = definitionRefTuple.getSourceLinkType();
-				String sourceLinkName = definitionRefTuple.getSourceLinkName();
-				String sourceLinkValue = definitionRefTuple.getSourceLinkValue();
-				SourceLink sourceLink = new SourceLink();
-				sourceLink.setId(sourceLinkId);
-				sourceLink.setType(sourceLinkType);
-				sourceLink.setName(sourceLinkName);
-				sourceLink.setValue(sourceLinkValue);
-				definition.getSourceLinks().add(sourceLink);
+			if (definitionSourceLinkId != null && !handledSourceLinkIds.contains(definitionSourceLinkId)) {
+				ReferenceType definitionSourceLinkType = definitionData.getDefinitionSourceLinkType();
+				String definitionSourceLinkName = definitionData.getDefinitionSourceLinkName();
+				String definitionSourceLinkValue = definitionData.getDefinitionSourceLinkValue();
+				SourceLink definitionSourceLink = new SourceLink();
+				definitionSourceLink.setId(definitionSourceLinkId);
+				definitionSourceLink.setType(definitionSourceLinkType);
+				definitionSourceLink.setName(definitionSourceLinkName);
+				definitionSourceLink.setValue(definitionSourceLinkValue);
+				definition.getSourceLinks().add(definitionSourceLink);
+				handledSourceLinkIds.add(definitionSourceLinkId);
+			}
+
+			if (!composePublicNotes) {
+				continue;
+			}
+			if (publicNoteId != null) {
+				DefinitionNote publicNote = publicNoteMap.get(publicNoteId);
+				if (publicNote == null) {
+					String publicNoteValueText = definitionData.getPublicNoteValueText();
+					String publicNoteValuePrese = definitionData.getPublicNoteValuePrese();
+					String publicNoteLang = definitionData.getPublicNoteLang();
+					Complexity publicNoteComplexity = definitionData.getPublicNoteComplexity();
+					boolean isPublicNotePublic = definitionData.isPublicNotePublic();
+					Long publicNoteOrderBy = definitionData.getPublicNoteOrderBy();
+					publicNote = new DefinitionNote();
+					publicNote.setDefinitionId(definitionId);
+					publicNote.setValueText(publicNoteValueText);
+					publicNote.setValuePrese(publicNoteValuePrese);
+					publicNote.setLang(publicNoteLang);
+					publicNote.setComplexity(publicNoteComplexity);
+					publicNote.setPublic(isPublicNotePublic);
+					publicNote.setOrderBy(publicNoteOrderBy);
+					publicNote.setSourceLinks(new ArrayList<>());
+					definition.getPublicNotes().add(publicNote);
+					publicNoteMap.put(publicNoteId, publicNote);
+				}
+				if (publicNoteSourceLinkId != null) {
+					ReferenceType publicNoteSourceLinkType = definitionData.getPublicNoteSourceLinkType();
+					String publicNoteSourceLinkName = definitionData.getPublicNoteSourceLinkName();
+					String publicNoteSourceLinkValue = definitionData.getPublicNoteSourceLinkValue();
+					SourceLink publicNoteSourceLink = new SourceLink();
+					publicNoteSourceLink.setId(publicNoteSourceLinkId);
+					publicNoteSourceLink.setType(publicNoteSourceLinkType);
+					publicNoteSourceLink.setName(publicNoteSourceLinkName);
+					publicNoteSourceLink.setValue(publicNoteSourceLinkValue);
+					publicNote.getSourceLinks().add(publicNoteSourceLink);
+				}
 			}
 		}
-
 		return definitions;
 	}
 
