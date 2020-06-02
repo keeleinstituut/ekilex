@@ -66,4 +66,6 @@ public interface SystemConstant {
 	String WORD_SEARCH_GROUP_FORM = "form";
 
 	String WORD_REL_TYPE_CODE_RAW = "raw";
+
+	char TEMP_CONVERSION_PLACEHOLDER = '`';
 }

@@ -29,6 +29,18 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 	@Autowired
 	protected ClassifierUtil classifierUtil;
 
+	public void removeTempPlaceholder(List<TypeMeaningWord> meaningWords) {
+		if (CollectionUtils.isEmpty(meaningWords)) {
+			return;
+		}
+		meaningWords.forEach(meaningWord -> {
+			String word = StringUtils.remove(meaningWord.getWord(), TEMP_CONVERSION_PLACEHOLDER);
+			String wordPrese = StringUtils.remove(meaningWord.getWordPrese(), TEMP_CONVERSION_PLACEHOLDER);
+			meaningWord.setWord(word);
+			meaningWord.setWordPrese(wordPrese);
+		});
+	}
+
 	public void setWordTypeFlags(WordTypeData wordTypeData) {
 
 		boolean isPrefixoid = false;

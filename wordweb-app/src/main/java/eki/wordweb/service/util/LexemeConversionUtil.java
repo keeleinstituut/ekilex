@@ -204,6 +204,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	private void populateMeaningWords(Lexeme lexeme, String wordLang, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
 		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
+		removeTempPlaceholder(meaningWords);
 		if (CollectionUtils.isEmpty(meaningWords)) {
 			return;
 		}
@@ -243,7 +244,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			return;
 		}
 		for (TypeFreeform government : governments) {
-			String cleanValue = StringUtils.replaceChars(government.getValue(), '`', ' ');
+			String cleanValue = StringUtils.replaceChars(government.getValue(), TEMP_CONVERSION_PLACEHOLDER, ' ');
 			government.setValue(cleanValue);
 		}
 	}
