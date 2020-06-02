@@ -96,6 +96,17 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateFreeform(Long id, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, value)
+				.set(FREEFORM.VALUE_PRESE, valuePrese)
+				.set(FREEFORM.LANG, lang)
+				.set(FREEFORM.COMPLEXITY, complexity.name())
+				.set(FREEFORM.IS_PUBLIC, isPublic)
+				.where(FREEFORM.ID.eq(id))
+				.execute();
+	}
+
 	public void updateFreeform(Long id, String value, String valuePrese, Complexity complexity, boolean isPublic) {
 		create.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, value)
@@ -106,19 +117,21 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateFreeform(Long id, String value, String valuePrese, boolean isPublic) {
+	public void updateFreeform(Long id, String value, String valuePrese, String lang, boolean isPublic) {
 		create.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, value)
 				.set(FREEFORM.VALUE_PRESE, valuePrese)
+				.set(FREEFORM.LANG, lang)
 				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.where(FREEFORM.ID.eq(id))
 				.execute();
 	}
 
-	public void updateDefinition(Long id, String value, String valuePrese, Complexity complexity, String typeCode, boolean isPublic) {
+	public void updateDefinition(Long id, String value, String valuePrese, String lang, Complexity complexity, String typeCode, boolean isPublic) {
 		create.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
+				.set(DEFINITION.LANG, lang)
 				.set(DEFINITION.COMPLEXITY, complexity.name())
 				.set(DEFINITION.DEFINITION_TYPE_CODE, typeCode)
 				.set(DEFINITION.IS_PUBLIC, isPublic)
@@ -662,11 +675,12 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createDefinitionPublicNote(Long definitionId, String value, String valuePrese, boolean isPublic) {
+	public Long createDefinitionPublicNote(Long definitionId, String value, String valuePrese, String lang, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+		freeform.setLang(lang);
 		freeform.setIsPublic(isPublic);
 		freeform.store();
 
@@ -764,11 +778,12 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningDomainId;
 	}
 
-	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese, boolean isPublic) {
+	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese, String lang, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+		freeform.setLang(lang);
 		freeform.setIsPublic(isPublic);
 		freeform.store();
 	
@@ -858,12 +873,13 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese, Complexity complexity, boolean isPublic) {
+	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
 
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+		freeform.setLang(lang);
 		freeform.setComplexity(complexity.name());
 		freeform.setIsPublic(isPublic);
 		freeform.store();

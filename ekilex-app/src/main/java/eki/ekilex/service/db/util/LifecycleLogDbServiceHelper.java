@@ -434,4 +434,17 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 		return result;
 	}
 
+	public Map<String, Object> getLexemeFreeformData(DSLContext create, Long freeformId) {
+
+		Map<String, Object> result = create
+				.select(
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.ORDER_BY,
+						LEXEME_FREEFORM.LEXEME_ID)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(FREEFORM.ID.eq(freeformId)
+						.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
+				.fetchSingleMap();
+		return result;
+	}
 }

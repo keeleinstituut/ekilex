@@ -30,6 +30,19 @@ function initialise() {
 		}
 	});
 
+	$(document).on('click', '[name="lang-collapse-btn"]', function() {
+		let lang = $(this).attr("data-lang");
+		let itemData = {
+			opCode: "user_lang_selection",
+			code: lang
+		};
+		let successCallbackName = $(this).attr("data-callback");
+		let	successCallbackFunc = () => eval(successCallbackName);
+		postJson(applicationUrl + 'update_item', itemData).done(function() {
+			successCallbackFunc();
+		});
+	});
+
 	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
 		let dlg = $(this);
 		let link = $(e.relatedTarget);
