@@ -351,6 +351,9 @@ public class EditController extends AbstractPageController {
 		case "usage":
 			cudService.updateUsageOrdering(items);
 			break;
+		case "lexeme_public_note":
+			cudService.updateLexemePublicNoteOrdering(items);
+			break;
 		case "lexeme_meaning_word":
 			Long lexemeId = listData.getAdditionalInfo();
 			cudService.updateLexemeMeaningWordOrdering(items, lexemeId);

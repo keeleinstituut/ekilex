@@ -77,7 +77,7 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<FreeForm> lexemeFreeforms;
 
-	private List<LexemeNote> lexemePublicNotes;
+	private List<NoteLangGroup> lexemePublicNoteLangGroups;
 
 	private List<Relation> lexemeRelations;
 
@@ -384,12 +384,12 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.lexemeFreeforms = lexemeFreeforms;
 	}
 
-	public List<LexemeNote> getLexemePublicNotes() {
-		return lexemePublicNotes;
+	public List<NoteLangGroup> getLexemePublicNoteLangGroups() {
+		return lexemePublicNoteLangGroups;
 	}
 
-	public void setLexemePublicNotes(List<LexemeNote> lexemePublicNotes) {
-		this.lexemePublicNotes = lexemePublicNotes;
+	public void setLexemePublicNoteLangGroups(List<NoteLangGroup> lexemePublicNoteLangGroups) {
+		this.lexemePublicNoteLangGroups = lexemePublicNoteLangGroups;
 	}
 
 	public List<Relation> getLexemeRelations() {

@@ -931,6 +931,20 @@ public class LifecycleLogDbService implements GlobalConstant {
 				logData.setEntry(entry);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
+				Map<String, Object> entityData = helper.getLexemeFreeformData(create, entityId);
+				Long prevOrderBy = (Long) entityData.get("order_by");
+				if (newOrderby.equals(prevOrderBy)) {
+					return;
+				}
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				String valueText = (String) entityData.get("value_text");
+				String recent = prevOrderBy + ") " + valueText;
+				String entry = newOrderby + ") " + valueText;
+				logData.setRecent(recent);
+				logData.setEntry(entry);
+				Long lifecycleLogId = createLifecycleLog(logData);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.MEANING.equals(entity)) {
 			if (LifecycleProperty.DOMAIN.equals(property)) {

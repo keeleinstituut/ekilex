@@ -34,6 +34,7 @@ import eki.ekilex.data.Government;
 import eki.ekilex.data.Image;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeNote;
+import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
@@ -234,6 +235,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<NoteSourceTuple> lexemePublicNoteSourceTuples = commonDataDbService.getLexemePublicNoteSourceTuples(lexemeId);
 			List<LexemeNote> lexemePublicNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemePublicNoteSourceTuples);
 			permCalculator.filterVisibility(lexemePublicNotes, userId);
+			List<NoteLangGroup> lexemePublicNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemePublicNotes, languagesOrder);
 			List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
 			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
 			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
@@ -258,7 +260,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			lexeme.setGrammars(grammars);
 			lexeme.setUsages(usages);
 			lexeme.setLexemeFreeforms(lexemeFreeforms);
-			lexeme.setLexemePublicNotes(lexemePublicNotes);
+			lexeme.setLexemePublicNoteLangGroups(lexemePublicNoteLangGroups);
 			lexeme.setOdLexemeRecommendations(odLexemeRecommendations);
 			lexeme.setLexemeRelations(lexemeRelations);
 			lexeme.setSourceLinks(lexemeSourceLinks);

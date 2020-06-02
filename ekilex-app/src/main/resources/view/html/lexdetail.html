@@ -1053,7 +1053,7 @@
             </th:block>
           </div>
         </div>
-        <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemePublicNotes)}">
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemePublicNoteLangGroups)}">
           <hr/>
           <div class="col pr-0 col-w13rem">
             <span class="lbl">
@@ -1068,16 +1068,29 @@
             </span>
           </div>
           <div class="col pl-0">
-            <th:block th:each="publicNote : ${lexeme.lexemePublicNotes}">
-              <div th:replace="lexdialog :: edit_lexeme_public_note_dlg"></div>
-              <div class="row">
-                <div class="col hidden-buttons">
-                  <div class="action-buttons-anchor">
-                    <div class="pr-3">
-                      <span th:utext="${publicNote.valuePrese}"></span>
-                      <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${publicNote.complexity}} + ')'"></span>
-                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
-                    </div>
+            <th:block th:each="publicNoteLangGroup : ${lexeme.lexemePublicNoteLangGroups}">
+              <div>
+                <span th:text="${viewUtil.getLangIso2(publicNoteLangGroup.lang)}" class="mr-2"></span>
+                <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
+                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-lang="${publicNoteLangGroup.lang}"
+                        th:title="${publicNoteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  <i th:class="${publicNoteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div th:if="${publicNoteLangGroup.selected}" class="orderable" data-op-code="lexeme_public_note">
+                <div class="ml-4" style="position: relative" th:each="publicNote, itemIter: ${publicNoteLangGroup.notes}"
+                     th:data-id="${publicNote.id}"
+                     th:data-orderby="${publicNote.orderBy}">
+                  <div th:replace="lexdialog :: edit_lexeme_public_note_dlg"></div>
+                  <div style="display: list-item; position: absolute"></div>
+                  <div class="action-column">
+                    <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
+                  </div>
+                  <div class="invisible-buttons action-buttons-anchor mw-90">
+                    <span th:utext="${publicNote.valuePrese}"></span>
+                    <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${publicNote.complexity}} + ')'"></span>
+                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
                     <div class="action-buttons-2">
                       <button type="button" class="btn badge badge-primary"
                               title="Muuda"

@@ -47,6 +47,7 @@ import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.Note;
+import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OdUsageAlternative;
 import eki.ekilex.data.OdUsageDefinition;
@@ -424,6 +425,40 @@ public class ConversionUtil implements GlobalConstant {
 		});
 
 		return lexemeLangGroups;
+	}
+
+	public List<NoteLangGroup> composeNoteLangGroups(List<? extends Note> notes, List<ClassifierSelect> languagesOrder) {
+
+		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<NoteLangGroup> noteLangGroups = new ArrayList<>();
+		Map<String, NoteLangGroup> noteLangGroupMap = new HashMap<>();
+		List<Note> notesOrderBy = notes.stream().sorted(Comparator.comparing(Note::getOrderBy)).collect(Collectors.toList());
+
+		for (Note note : notesOrderBy) {
+			String lang = note.getLang();
+			NoteLangGroup noteLangGroup = noteLangGroupMap.get(lang);
+			if (noteLangGroup == null) {
+				boolean isSelected = selectedLangCodes.contains(lang);
+				noteLangGroup = new NoteLangGroup();
+				noteLangGroup.setLang(lang);
+				noteLangGroup.setSelected(isSelected);
+				noteLangGroup.setNotes(new ArrayList<>());
+				noteLangGroupMap.put(lang, noteLangGroup);
+				noteLangGroups.add(noteLangGroup);
+			}
+			noteLangGroup.getNotes().add(note);
+		}
+
+		noteLangGroups.sort((NoteLangGroup gr1, NoteLangGroup gr2) -> {
+			String lang1 = gr1.getLang();
+			String lang2 = gr2.getLang();
+			int langOrder1 = langCodeOrder.indexOf(lang1);
+			int langOrder2 = langCodeOrder.indexOf(lang2);
+			return langOrder1 - langOrder2;
+		});
+
+		return noteLangGroups;
 	}
 
 	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples) {
