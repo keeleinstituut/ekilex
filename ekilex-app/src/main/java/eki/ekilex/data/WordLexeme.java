@@ -73,8 +73,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<Usage> usages;
 
-	private List<Definition> definitions;
-
 	private List<FreeForm> lexemeFreeforms;
 
 	private List<NoteLangGroup> lexemePublicNoteLangGroups;
@@ -366,14 +364,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
-	}
-
-	public List<Definition> getDefinitions() {
-		return definitions;
-	}
-
-	public void setDefinitions(List<Definition> definitions) {
-		this.definitions = definitions;
 	}
 
 	public List<FreeForm> getLexemeFreeforms() {

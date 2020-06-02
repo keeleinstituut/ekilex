@@ -54,8 +54,8 @@
                   <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.lexemeId}"/>
                   <small th:if="${lexeme.levels != null}" th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
                 </div>
-                <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
-                  <span th:text="${lexeme.definitions.get(0).value}"></span>
+                <div th:if="${not #lists.isEmpty(lexeme.meaning.definitions)}">
+                  <span th:text="${lexeme.meaning.definitions.get(0).value}"></span>
                 </div>
               </td>
             </tr>
@@ -99,8 +99,8 @@
                     </th:block>
                   </div>
                 </div>
-                <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
-                  <span th:utext="${lexeme.definitions.get(0).value}"></span>
+                <div th:if="${not #lists.isEmpty(lexeme.meaning.definitions)}">
+                  <span th:utext="${lexeme.meaning.definitions.get(0).value}"></span>
                 </div>
               </td>
             </tr>
