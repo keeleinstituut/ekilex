@@ -33,6 +33,7 @@
                   <option value="meaning_domain" sec:authorize="#vars.lexeme.meaning.crudGrant">Valdkond</option>
                   <option value="meaning_semantic_type" sec:authorize="#vars.lexeme.meaning.crudGrant">Semantiline tüüp</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.lexeme.meaning.crudGrant">Tähenduse seos</option>
+                  <option value="addMeaningPublicNoteDlg" sec:authorize="#vars.lexeme.meaning.crudGrant">Tähenduse märkus</option>
                   <option value="addLearnerCommentDlg" sec:authorize="#vars.lexeme.meaning.crudGrant">Õppekommentaar</option>
                   <option value="addOdLexemeRecommendationDlg" sec:authorize="#vars.lexeme.crudGrant">ÕS soovitab</option>
                 </select>
@@ -185,10 +186,10 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -202,9 +203,10 @@
                 </select>
               </div>
             </div>
-            <div class="form-check ml-1">
-              <input id="addDefinitionPublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
-              <label for="addDefinitionPublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -230,6 +232,17 @@
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == definition.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
                 <select required class="form-control" name="complexity">
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity.value}"
@@ -240,9 +253,10 @@
                 </select>
               </div>
             </div>
-            <div class="form-check ml-1">
-              <input id="editDefinitionPublic" class="form-check-input" type="checkbox" name="public" th:checked="${definition.public}" value="true">
-              <label for="editDefinitionPublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${definition.public}" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -253,7 +267,124 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeSourceLinkDlg_' + lexeme.lexemeId}" 
+  <div th:id="${'addDefinitionSourceLinkDlg_' + lexeme.lexemeId + '_' + definition.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="add_definition_source_link_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:replace="components :: source_search_form"></form>
+        </div>
+        <form th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${definition.id}">
+          <input type="hidden" name="opCode" value="def_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addDefinitionPublicNoteDlg_' + lexeme.lexemeId + '_' + definition.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="add_definition_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${definition.id}">
+            <input type="hidden" name="opCode" value="definition_public_note">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editDefinitionPublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_definition_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${publicNote.id}">
+            <input type="hidden" name="opCode" value="definition_public_note">
+            <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == publicNote.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addDefinitionPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="add_definition_public_note_source_link_dlg">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:replace="components :: source_search_form"></form>
+        </div>
+        <form th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${publicNote.id}">
+          <input type="hidden" name="opCode" value="definition_ff_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addLexemeSourceLinkDlg_' + lexeme.lexemeId}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
        class="modal" role="dialog" th:fragment="add_lexeme_source_link_dlg">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
@@ -453,9 +584,10 @@
                 </select>
               </div>
             </div>
-            <div class="form-check ml-1">
-              <input id="addUsagePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
-              <label for="addUsagePublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -532,9 +664,10 @@
                 </select>
               </div>
             </div>
-            <div class="form-check ml-1">
-              <input id="editUsagePublic" class="form-check-input" type="checkbox" name="public" th:checked="${usage.public}" value="true">
-              <label for="editUsagePublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${usage.public}" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -646,15 +779,28 @@
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected>vali detailsus...</option>
                   <option th:each="complexity : ${complexities}" th:value="${complexity.value}" th:text="#{'enum.complexity.' + ${complexity.value}}" th:disabled="${complexity.disabled}">value</option>
                 </select>
               </div>
             </div>
-            <div class="form-check ml-1">
-              <input id="addLexemeNotePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
-              <label for="addLexemeNotePublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -679,6 +825,17 @@
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == publicNote.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
                 <select required class="form-control" name="complexity">
                   <option th:each="complexity : ${complexities}"
                           th:value="${complexity.value}"
@@ -689,9 +846,83 @@
                 </select>
               </div>
             </div>
-            <div class="form-check ml-1">
-              <input th:id="${'editLexemeNotePublicCheck_' + lexeme.lexemeId + '_' + publicNote.id}" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
-              <label th:for="${'editLexemeNotePublicCheck_' + lexeme.lexemeId + '_' + publicNote.id}" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningPublicNoteDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="add_meaning_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="opCode" value="meaning_public_note">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningPublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_meaning_public_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${publicNote.id}">
+            <input type="hidden" name="opCode" value="meaning_public_note">
+            <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == publicNote.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -1689,10 +1920,10 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -1701,10 +1932,10 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control required-field" name="morphCode">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentMorphCode)}">vali kood...</option>
                   <option th:each="morphCode : ${wordMorphCodes}"
                           th:value="${morphCode.code}"
-                          th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
+                          th:selected="${morphCode.code == sessionBean.recentMorphCode}"
                           th:text="${morphCode.value}">morphCode
                   </option>
                 </select>

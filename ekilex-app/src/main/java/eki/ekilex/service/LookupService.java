@@ -28,7 +28,6 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
-import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Lexeme;
@@ -163,9 +162,7 @@ public class LookupService extends AbstractWordSearchService {
 				List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 				List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 				lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
-				List<DefinitionRefTuple> definitionRefTuples =
-						commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-				List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 				permCalculator.filterVisibility(definitions, userId);
 				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
 				allDefinitionValues.addAll(lexemeDefinitionValues);
@@ -260,9 +257,7 @@ public class LookupService extends AbstractWordSearchService {
 						String datasetName = datasetNameMap.get(datasetCode);
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
-						List<DefinitionRefTuple> definitionRefTuples =
-								commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 						permCalculator.filterVisibility(definitions, userId);
 						List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 						List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
@@ -272,9 +267,11 @@ public class LookupService extends AbstractWordSearchService {
 
 						lexeme.setDatasetName(datasetName);
 						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
-						lexeme.setDefinitions(definitions);
 						lexeme.setGovernments(governments);
 						lexeme.setUsages(usages);
+						Meaning meaning = new Meaning();
+						meaning.setDefinitions(definitions);
+						lexeme.setMeaning(meaning);
 					});
 					lexemeLevelPreseUtil.combineLevels(wordLexemes);
 					lexemes.addAll(wordLexemes);
@@ -352,9 +349,7 @@ public class LookupService extends AbstractWordSearchService {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Long meaningId = meaning.getMeaningId();
 
-		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(definitions, userId);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId);
@@ -396,23 +391,23 @@ public class LookupService extends AbstractWordSearchService {
 		String datasetCode = lexeme.getDatasetCode();
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
-		List<DefinitionRefTuple> definitionRefTuples =
-				commonDataDbService.getMeaningDefinitionRefTuples(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(definitions, userId);
 
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
-		lexeme.setDefinitions(definitions);
+		Meaning meaning = new Meaning();
+		meaning.setDefinitions(definitions);
+		lexeme.setMeaning(meaning);
 	}
 
 	private String getFirstDefinitionValue(List<WordLexeme> wordLexemes) {
 
 		Optional<WordLexeme> wordLexemeWithDefinition = wordLexemes.stream()
-				.filter(lex -> CollectionUtils.isNotEmpty(lex.getDefinitions()) && Objects.nonNull(lex.getDefinitions().get(0)))
+				.filter(lex -> CollectionUtils.isNotEmpty(lex.getMeaning().getDefinitions()) && Objects.nonNull(lex.getMeaning().getDefinitions().get(0)))
 				.findFirst();
 
 		if (wordLexemeWithDefinition.isPresent()) {
-			String wordFirstDefinitionValue = wordLexemeWithDefinition.get().getDefinitions().get(0).getValue();
+			String wordFirstDefinitionValue = wordLexemeWithDefinition.get().getMeaning().getDefinitions().get(0).getValue();
 			return wordFirstDefinitionValue;
 		} else {
 			return null;

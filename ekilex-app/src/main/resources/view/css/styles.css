@@ -12886,6 +12886,10 @@ input:checked + .slider:before {
   z-index: 99;
 }
 
+.mw-80 {
+  max-width: 80%;
+}
+
 .mw-90 {
   max-width: 90%;
 }

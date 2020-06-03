@@ -101,11 +101,11 @@
         <b th:text="${lexeme.datasetName}" class="float-right"></b>
       </div>
     </div>
-    <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+    <div th:if="${not #lists.isEmpty(lexeme.meaning.definitions)}">
       <hr />
       <span class="lbl">Seletused</span>
       <table>
-        <tr th:each="definition : ${lexeme.definitions}">
+        <tr th:each="definition : ${lexeme.meaning.definitions}">
           <td th:utext="${definition.value}"></td>
         </tr>
       </table>

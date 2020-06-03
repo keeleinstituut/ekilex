@@ -29,10 +29,6 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	private Classifier mwLexValueState;
 
-	private String aspectCode;
-
-	private Classifier aspect;
-
 	private boolean additionalDataExists;
 
 	public Long getLexemeId() {
@@ -118,22 +114,6 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	public void setMwLexValueState(Classifier mwLexValueState) {
 		this.mwLexValueState = mwLexValueState;
-	}
-
-	public String getAspectCode() {
-		return aspectCode;
-	}
-
-	public void setAspectCode(String aspectCode) {
-		this.aspectCode = aspectCode;
-	}
-
-	public Classifier getAspect() {
-		return aspect;
-	}
-
-	public void setAspect(Classifier aspect) {
-		this.aspect = aspect;
 	}
 
 	public boolean isAdditionalDataExists() {

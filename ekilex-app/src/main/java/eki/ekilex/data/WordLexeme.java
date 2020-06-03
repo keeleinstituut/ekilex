@@ -73,11 +73,9 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<Usage> usages;
 
-	private List<Definition> definitions;
-
 	private List<FreeForm> lexemeFreeforms;
 
-	private List<LexemeNote> lexemePublicNotes;
+	private List<NoteLangGroup> lexemePublicNoteLangGroups;
 
 	private List<Relation> lexemeRelations;
 
@@ -368,14 +366,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.usages = usages;
 	}
 
-	public List<Definition> getDefinitions() {
-		return definitions;
-	}
-
-	public void setDefinitions(List<Definition> definitions) {
-		this.definitions = definitions;
-	}
-
 	public List<FreeForm> getLexemeFreeforms() {
 		return lexemeFreeforms;
 	}
@@ -384,12 +374,12 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.lexemeFreeforms = lexemeFreeforms;
 	}
 
-	public List<LexemeNote> getLexemePublicNotes() {
-		return lexemePublicNotes;
+	public List<NoteLangGroup> getLexemePublicNoteLangGroups() {
+		return lexemePublicNoteLangGroups;
 	}
 
-	public void setLexemePublicNotes(List<LexemeNote> lexemePublicNotes) {
-		this.lexemePublicNotes = lexemePublicNotes;
+	public void setLexemePublicNoteLangGroups(List<NoteLangGroup> lexemePublicNoteLangGroups) {
+		this.lexemePublicNoteLangGroups = lexemePublicNoteLangGroups;
 	}
 
 	public List<Relation> getLexemeRelations() {

@@ -17,9 +17,9 @@ public class SessionBean extends AbstractDataObject {
 
 	private List<ClassifierSelect> languagesOrder;
 
-	private String newWordSelectedLanguage;
+	private String recentLanguage;
 
-	private String newWordSelectedMorphCode;
+	private String recentMorphCode;
 
 	private DatasetPermission userRole;
 
@@ -47,20 +47,20 @@ public class SessionBean extends AbstractDataObject {
 		this.languagesOrder = languagesOrder;
 	}
 
-	public String getNewWordSelectedLanguage() {
-		return newWordSelectedLanguage;
+	public String getRecentLanguage() {
+		return recentLanguage;
 	}
 
-	public void setNewWordSelectedLanguage(String newWordSelectedLanguage) {
-		this.newWordSelectedLanguage = newWordSelectedLanguage;
+	public void setRecentLanguage(String recentLanguage) {
+		this.recentLanguage = recentLanguage;
 	}
 
-	public String getNewWordSelectedMorphCode() {
-		return newWordSelectedMorphCode;
+	public String getRecentMorphCode() {
+		return recentMorphCode;
 	}
 
-	public void setNewWordSelectedMorphCode(String newWordSelectedMorphCode) {
-		this.newWordSelectedMorphCode = newWordSelectedMorphCode;
+	public void setRecentMorphCode(String recentMorphCode) {
+		this.recentMorphCode = recentMorphCode;
 	}
 
 	public DatasetPermission getUserRole() {

@@ -14,9 +14,13 @@ public class NoteSourceTuple extends AbstractDataObject {
 
 	private String valuePrese;
 
+	private String lang;
+
 	private Complexity complexity;
 
 	private boolean isPublic;
+
+	private Long orderBy;
 
 	private Long sourceLinkId;
 
@@ -50,6 +54,14 @@ public class NoteSourceTuple extends AbstractDataObject {
 		this.valuePrese = valuePrese;
 	}
 
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
 	public Complexity getComplexity() {
 		return complexity;
 	}
@@ -64,6 +76,14 @@ public class NoteSourceTuple extends AbstractDataObject {
 
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 
 	public Long getSourceLinkId() {

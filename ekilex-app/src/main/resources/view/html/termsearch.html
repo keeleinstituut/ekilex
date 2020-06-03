@@ -172,7 +172,7 @@
                     <div class="action-column">
                       <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
                     </div>
-                    <div class="invisible-buttons action-buttons-anchor  mw-90">
+                    <div class="invisible-buttons action-buttons-anchor mw-90">
                       <span th:utext="${definition.value}"></span>
                       <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
                       <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}"></span>
@@ -351,7 +351,7 @@
               </th:block>
             </div>
           </div>
-          <div class="row" th:if="${not #lists.isEmpty(meaning.publicNotes)}">
+          <div class="row" th:if="${not #lists.isEmpty(meaning.publicNoteLangGroups)}">
             <hr/>
             <div class="col pr-0 col-w13rem">
               <span class="lbl">
@@ -365,67 +365,84 @@
                 </button>
               </span>
             </div>
-            <div th:if="${not #lists.isEmpty(meaning.publicNotes)}" class="col pl-0">
-              <th:block th:each="publicNote : ${meaning.publicNotes}">
-                <div th:replace="termdialog :: edit_meaning_public_note_dlg"></div>
-                <div th:replace="termdialog :: add_meaning_public_note_source_link_dlg"></div>
-                <div class="invisible-buttons action-buttons-anchor mw-90 ml-3">
-                  <div style="display: list-item; position: absolute"></div>
-                  <span th:utext="${publicNote.valuePrese}"></span>
-                  <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${meaning.crudGrant}"></span>
-                  <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
-                    [
-                    <button type="button" class="btn badge badge-success"
-                            title="Lisa allikaviide"
-                            data-toggle="modal"
-                            th:data-target="${'#addMeaningPublicNoteSourceLinkDlg_' + meaningId + '_' + publicNote.id}"
-                            sec:authorize="#vars.meaning.crudGrant">
-                      <i class="fa fa-external-link" aria-hidden="true"></i>
-                    </button>
-                    ]
-                  </span>
-                  <div class="action-buttons-2">
-                    <button type="button" class="btn badge badge-primary"
-                            th:title="Muuda"
-                            data-toggle="modal"
-                            th:data-target="${'#editMeaningPublicNoteDlg_' + meaningId + '_' + publicNote.id}"
-                            sec:authorize="#vars.meaning.crudGrant">
-                      <i class="fa fa-edit" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-id="${publicNote.id}"
-                            data-op-code="meaning_public_note"
-                            data-toggle="delete-confirm"
-                            data-placement="right"
-                            sec:authorize="#vars.meaning.crudGrant">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="hidden-buttons">
-                  <span th:each="sourceLink : ${publicNote.sourceLinks}">
-                    [
-                    <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                    <span th:if="${sourceLink.name != null}">
-                      <span th:text="${sourceLink.name}"></span>
-                    </span>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-id="${sourceLink.id}"
-                            data-op-code="meaning_ff_source_link"
-                            data-toggle="delete-confirm"
-                            data-placement="right"
-                            sec:authorize="#vars.meaning.crudGrant">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                    ]
-                  </span>
-                  <button type="button" class="btn badge badge-success"
-                          title="Lisa allikaviide"
-                          data-toggle="modal"
-                          th:data-target="${'#addMeaningPublicNoteSourceLinkDlg_' + meaningId + '_' + publicNote.id}"
-                          sec:authorize="#vars.meaning.crudGrant">
-                    <i class="fa fa-external-link" aria-hidden="true"></i>
+            <div class="col pl-0">
+              <th:block th:each="publicNoteLangGroup : ${meaning.publicNoteLangGroups}">
+                <div>
+                  <span th:text="${viewUtil.getLangIso2(publicNoteLangGroup.lang)}" class="mr-2"></span>
+                  <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
+                          th:data-lang="${publicNoteLangGroup.lang}"
+                          th:title="${publicNoteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                    <i th:class="${publicNoteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
                   </button>
+                </div>
+                <div th:if="${publicNoteLangGroup.selected}" class="orderable" data-op-code="meaning_public_note">
+                  <div class="ml-4" style="position: relative" th:each="publicNote, itemIter: ${publicNoteLangGroup.notes}"
+                       th:data-id="${publicNote.id}"
+                       th:data-orderby="${publicNote.orderBy}">
+                    <div th:replace="termdialog :: edit_meaning_public_note_dlg"></div>
+                    <div th:replace="termdialog :: add_meaning_public_note_source_link_dlg"></div>
+                    <div style="display: list-item; position: absolute"></div>
+                    <div class="action-column">
+                      <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
+                    </div>
+                    <div class="invisible-buttons action-buttons-anchor mw-90">
+                      <span th:utext="${publicNote.valuePrese}"></span>
+                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${meaning.crudGrant}"></span>
+                      <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
+                        [
+                        <button type="button" class="btn badge badge-success"
+                                title="Lisa allikaviide"
+                                data-toggle="modal"
+                                th:data-target="${'#addMeaningPublicNoteSourceLinkDlg_' + meaningId + '_' + publicNote.id}"
+                                sec:authorize="#vars.meaning.crudGrant">
+                          <i class="fa fa-external-link" aria-hidden="true"></i>
+                        </button>
+                        ]
+                      </span>
+                      <div class="action-buttons-2">
+                        <button type="button" class="btn badge badge-primary"
+                                th:title="Muuda"
+                                data-toggle="modal"
+                                th:data-target="${'#editMeaningPublicNoteDlg_' + meaningId + '_' + publicNote.id}"
+                                sec:authorize="#vars.meaning.crudGrant">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${publicNote.id}"
+                                data-op-code="meaning_public_note"
+                                data-toggle="delete-confirm"
+                                data-placement="right"
+                                sec:authorize="#vars.meaning.crudGrant">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="hidden-buttons">
+                      <span th:each="sourceLink : ${publicNote.sourceLinks}">
+                        [
+                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                        <span th:if="${sourceLink.name != null}">
+                          <span th:text="${sourceLink.name}"></span>
+                        </span>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${sourceLink.id}"
+                                data-op-code="meaning_ff_source_link"
+                                data-toggle="delete-confirm"
+                                data-placement="right"
+                                sec:authorize="#vars.meaning.crudGrant">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                        ]
+                      </span>
+                      <button type="button" class="btn badge badge-success"
+                              title="Lisa allikaviide"
+                              data-toggle="modal"
+                              th:data-target="${'#addMeaningPublicNoteSourceLinkDlg_' + meaningId + '_' + publicNote.id}"
+                              sec:authorize="#vars.meaning.crudGrant">
+                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </th:block>
             </div>
@@ -915,7 +932,7 @@
                   </table>
                 </div>
               </div>
-              <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNoteLangGroups)}">
                 <hr/>
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">
@@ -929,71 +946,91 @@
                     </button>
                   </span>
                 </div>
-                <div th:if="${not #lists.isEmpty(lexeme.publicNotes)}" class="col pl-0">
-                  <th:block th:each="publicNote : ${lexeme.publicNotes}">
-                    <div th:replace="termdialog :: edit_lexeme_public_note_dlg"></div>
-                    <div th:replace="termdialog :: add_lexeme_public_note_source_link_dlg"></div>
-                    <div class="invisible-buttons action-buttons-anchor mw-90 ml-3">
-                      <div style="display: list-item; position: absolute"></div>
-                      <span th:utext="${publicNote.valuePrese}"></span>
-                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
-                      <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
-                        [
-                        <button type="button" class="btn badge badge-success"
-                                title="Lisa allikaviide"
-                                data-toggle="modal"
-                                th:data-target="${'#addLexemePublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
-                                sec:authorize="#vars.lexeme.crudGrant">
-                          <i class="fa fa-external-link" aria-hidden="true"></i>
-                        </button>
-                        ]
-                      </span>
-                      <div class="action-buttons-2">
-                        <button type="button" class="btn badge badge-primary"
-                                title="Muuda"
-                                data-toggle="modal"
-                                th:data-target="${'#editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
-                                sec:authorize="#vars.lexeme.crudGrant">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-id="${publicNote.id}"
-                                data-op-code="lexeme_public_note"
-                                data-toggle="delete-confirm"
-                                data-placement="right"
-                                sec:authorize="#vars.lexeme.crudGrant">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="hidden-buttons">
-                      <span th:each="sourceLink : ${publicNote.sourceLinks}">
-                        [
-                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                        <span th:if="${sourceLink.name != null}">
-                          <span th:text="${sourceLink.name}"></span>
-                        </span>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-id="${sourceLink.id}"
-                                data-op-code="lexeme_ff_source_link"
-                                data-toggle="delete-confirm"
-                                data-placement="right"
-                                sec:authorize="#vars.lexeme.crudGrant">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                        ]
-                      </span>
-                      <button type="button" class="btn badge badge-success"
-                              title="Lisa allikaviide"
-                              data-toggle="modal"
-                              th:data-target="${'#addLexemePublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
-                              sec:authorize="#vars.lexeme.crudGrant">
-                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                <div class="col pl-0">
+                  <th:block th:each="publicNoteLangGroup : ${lexeme.publicNoteLangGroups}">
+                    <div>
+                      <span th:text="${viewUtil.getLangIso2(publicNoteLangGroup.lang)}" class="mr-2"></span>
+                      <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
+                              th:data-lang="${publicNoteLangGroup.lang}"
+                              th:title="${publicNoteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                        <i th:class="${publicNoteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
                       </button>
+                    </div>
+                    <div th:if="${publicNoteLangGroup.selected}" class="orderable" data-op-code="lexeme_public_note">
+                      <div class="ml-4" style="position: relative" th:each="publicNote, itemIter: ${publicNoteLangGroup.notes}"
+                           th:data-id="${publicNote.id}"
+                           th:data-orderby="${publicNote.orderBy}">
+                        <div th:replace="termdialog :: edit_lexeme_public_note_dlg"></div>
+                        <div th:replace="termdialog :: add_lexeme_public_note_source_link_dlg"></div>
+                        <div style="display: list-item; position: absolute"></div>
+                        <div class="action-column">
+                          <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
+                        </div>
+                        <div class="invisible-buttons action-buttons-anchor mw-90">
+                          <span th:utext="${publicNote.valuePrese}"></span>
+                          <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
+                          <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
+                            [
+                            <button type="button" class="btn badge badge-success"
+                                    title="Lisa allikaviide"
+                                    data-toggle="modal"
+                                    th:data-target="${'#addLexemePublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                                    sec:authorize="#vars.lexeme.crudGrant">
+                              <i class="fa fa-external-link" aria-hidden="true"></i>
+                            </button>
+                            ]
+                          </span>
+                          <div class="action-buttons-2">
+                            <button type="button" class="btn badge badge-primary"
+                                    title="Muuda"
+                                    data-toggle="modal"
+                                    th:data-target="${'#editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                                    sec:authorize="#vars.lexeme.crudGrant">
+                              <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:data-id="${publicNote.id}"
+                                    data-op-code="lexeme_public_note"
+                                    data-toggle="delete-confirm"
+                                    data-placement="right"
+                                    sec:authorize="#vars.lexeme.crudGrant">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="hidden-buttons">
+                          <span th:each="sourceLink : ${publicNote.sourceLinks}">
+                            [
+                            <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                            <span th:if="${sourceLink.name != null}">
+                              <span th:text="${sourceLink.name}"></span>
+                            </span>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:data-id="${sourceLink.id}"
+                                    data-op-code="lexeme_ff_source_link"
+                                    data-toggle="delete-confirm"
+                                    data-placement="right"
+                                    sec:authorize="#vars.lexeme.crudGrant">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                            ]
+                          </span>
+                          <button type="button" class="btn badge badge-success"
+                                  title="Lisa allikaviide"
+                                  data-toggle="modal"
+                                  th:data-target="${'#addLexemePublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                                  sec:authorize="#vars.lexeme.crudGrant">
+                            <i class="fa fa-external-link" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </th:block>
                 </div>
               </div>
+
+<!--              TODO siiamaani-->
+
               <div th:if="${not #lists.isEmpty(lexeme.freeforms)}" class="row">
                 <hr/>
                 <div class="col pr-0 col-w13rem">

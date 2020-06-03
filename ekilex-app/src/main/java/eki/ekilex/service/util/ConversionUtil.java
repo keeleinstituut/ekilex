@@ -31,10 +31,10 @@ import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.Image;
@@ -47,6 +47,7 @@ import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.Note;
+import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OdUsageAlternative;
 import eki.ekilex.data.OdUsageDefinition;
@@ -289,14 +290,14 @@ public class ConversionUtil implements GlobalConstant {
 				note.setId(noteId);
 				note.setValueText(tuple.getValueText());
 				note.setValuePrese(tuple.getValuePrese());
+				note.setLang(tuple.getLang());
 				note.setComplexity(tuple.getComplexity());
 				note.setPublic(tuple.isPublic());
+				note.setOrderBy(tuple.getOrderBy());
 				if (note instanceof LexemeNote) {
 					((LexemeNote) note).setLexemeId(parentId);
 				} else if (note instanceof MeaningNote) {
 					((MeaningNote) note).setMeaningId(parentId);
-				} else if (note instanceof DefinitionNote) {
-					((DefinitionNote) note).setDefinitionId(parentId);
 				}
 				noteMap.put(noteId, note);
 				notes.add(note);
@@ -424,60 +425,121 @@ public class ConversionUtil implements GlobalConstant {
 		return lexemeLangGroups;
 	}
 
-	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples) {
+	public List<NoteLangGroup> composeNoteLangGroups(List<? extends Note> notes, List<ClassifierSelect> languagesOrder) {
 
-		List<Definition> definitions = new ArrayList<>();
-		Map<Long, Definition> definitionMap = new HashMap<>();
+		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<NoteLangGroup> noteLangGroups = new ArrayList<>();
+		Map<String, NoteLangGroup> noteLangGroupMap = new HashMap<>();
+		List<Note> notesOrderBy = notes.stream().sorted(Comparator.comparing(Note::getOrderBy)).collect(Collectors.toList());
 
-		for (DefinitionRefTuple definitionRefTuple : definitionRefTuples) {
-
-			Long definitionId = definitionRefTuple.getDefinitionId();
-			Long sourceLinkId = definitionRefTuple.getSourceLinkId();
-			Definition definition = definitionMap.get(definitionId);
-			if (definition == null) {
-				String definitionValue = definitionRefTuple.getDefinitionValue();
-				String definitionLang = definitionRefTuple.getDefinitionLang();
-				Complexity definitionComplexity = definitionRefTuple.getDefinitionComplexity();
-				Long definitionOrderBy = definitionRefTuple.getDefinitionOrderBy();
-				String definitionTypeCode = definitionRefTuple.getDefinitionTypeCode();
-				String definitionTypeValue = definitionRefTuple.getDefinitionTypeValue();
-				List<String> definitionDatasetCodes = definitionRefTuple.getDefinitionDatasetCodes();
-				boolean isDefinitionPublic = definitionRefTuple.isDefinitionPublic();
-				definition = new Definition();
-				definition.setId(definitionId);
-				definition.setValue(definitionValue);
-				definition.setLang(definitionLang);
-				definition.setComplexity(definitionComplexity);
-				definition.setOrderBy(definitionOrderBy);
-				definition.setTypeCode(definitionTypeCode);
-				definition.setTypeValue(definitionTypeValue);
-				definition.setDatasetCodes(definitionDatasetCodes);
-				definition.setSourceLinks(new ArrayList<>());
-				definition.setPublic(isDefinitionPublic);
-				definitionMap.put(definitionId, definition);
-				definitions.add(definition);
+		for (Note note : notesOrderBy) {
+			String lang = note.getLang();
+			NoteLangGroup noteLangGroup = noteLangGroupMap.get(lang);
+			if (noteLangGroup == null) {
+				boolean isSelected = selectedLangCodes.contains(lang);
+				noteLangGroup = new NoteLangGroup();
+				noteLangGroup.setLang(lang);
+				noteLangGroup.setSelected(isSelected);
+				noteLangGroup.setNotes(new ArrayList<>());
+				noteLangGroupMap.put(lang, noteLangGroup);
+				noteLangGroups.add(noteLangGroup);
 			}
-			if (sourceLinkId != null) {
-				ReferenceType sourceLinkType = definitionRefTuple.getSourceLinkType();
-				String sourceLinkName = definitionRefTuple.getSourceLinkName();
-				String sourceLinkValue = definitionRefTuple.getSourceLinkValue();
-				SourceLink sourceLink = new SourceLink();
-				sourceLink.setId(sourceLinkId);
-				sourceLink.setType(sourceLinkType);
-				sourceLink.setName(sourceLinkName);
-				sourceLink.setValue(sourceLinkValue);
-				definition.getSourceLinks().add(sourceLink);
-			}
+			noteLangGroup.getNotes().add(note);
 		}
 
-		return definitions;
+		noteLangGroups.sort((NoteLangGroup gr1, NoteLangGroup gr2) -> {
+			String lang1 = gr1.getLang();
+			String lang2 = gr2.getLang();
+			int langOrder1 = langCodeOrder.indexOf(lang1);
+			int langOrder2 = langCodeOrder.indexOf(lang2);
+			return langOrder1 - langOrder2;
+		});
+
+		return noteLangGroups;
+	}
+
+	public void composeMeaningDefinitions(List<Definition> definitions, List<DefSourceAndPublicNoteSourceTuple> definitionsDataTuples) {
+
+		Map<Long, Definition> definitionMap = definitions.stream().collect(Collectors.toMap(Definition::getId, definition -> definition));
+		Set<Long> handledSourceLinkIds = new HashSet<>();
+		Map<Long, DefinitionNote> publicNoteMap = new HashMap<>();
+
+		for (DefSourceAndPublicNoteSourceTuple definitionData : definitionsDataTuples) {
+			Long definitionId = definitionData.getDefinitionId();
+			Long definitionSourceLinkId = definitionData.getDefinitionSourceLinkId();
+			Long publicNoteId = definitionData.getPublicNoteId();
+			Long publicNoteSourceLinkId = definitionData.getPublicNoteSourceLinkId();
+
+			Definition definition = definitionMap.get(definitionId);
+			if (definition == null) {
+				continue;
+			}
+			if (definition.getSourceLinks() == null) {
+				definition.setSourceLinks(new ArrayList<>());
+			}
+			if (definition.getPublicNotes() == null) {
+				definition.setPublicNotes(new ArrayList<>());
+			}
+
+			if (definitionSourceLinkId != null && !handledSourceLinkIds.contains(definitionSourceLinkId)) {
+				ReferenceType definitionSourceLinkType = definitionData.getDefinitionSourceLinkType();
+				String definitionSourceLinkName = definitionData.getDefinitionSourceLinkName();
+				String definitionSourceLinkValue = definitionData.getDefinitionSourceLinkValue();
+				SourceLink definitionSourceLink = new SourceLink();
+				definitionSourceLink.setId(definitionSourceLinkId);
+				definitionSourceLink.setType(definitionSourceLinkType);
+				definitionSourceLink.setName(definitionSourceLinkName);
+				definitionSourceLink.setValue(definitionSourceLinkValue);
+				definition.getSourceLinks().add(definitionSourceLink);
+				handledSourceLinkIds.add(definitionSourceLinkId);
+			}
+
+			if (publicNoteId != null) {
+				DefinitionNote publicNote = publicNoteMap.get(publicNoteId);
+				if (publicNote == null) {
+					String publicNoteValueText = definitionData.getPublicNoteValueText();
+					String publicNoteValuePrese = definitionData.getPublicNoteValuePrese();
+					String publicNoteLang = definitionData.getPublicNoteLang();
+					Complexity publicNoteComplexity = definitionData.getPublicNoteComplexity();
+					boolean isPublicNotePublic = definitionData.isPublicNotePublic();
+					Long publicNoteOrderBy = definitionData.getPublicNoteOrderBy();
+					publicNote = new DefinitionNote();
+					publicNote.setDefinitionId(definitionId);
+					publicNote.setId(publicNoteId);
+					publicNote.setValueText(publicNoteValueText);
+					publicNote.setValuePrese(publicNoteValuePrese);
+					publicNote.setLang(publicNoteLang);
+					publicNote.setComplexity(publicNoteComplexity);
+					publicNote.setPublic(isPublicNotePublic);
+					publicNote.setOrderBy(publicNoteOrderBy);
+					publicNote.setSourceLinks(new ArrayList<>());
+					definition.getPublicNotes().add(publicNote);
+					publicNoteMap.put(publicNoteId, publicNote);
+				}
+				if (publicNoteSourceLinkId != null) {
+					ReferenceType publicNoteSourceLinkType = definitionData.getPublicNoteSourceLinkType();
+					String publicNoteSourceLinkName = definitionData.getPublicNoteSourceLinkName();
+					String publicNoteSourceLinkValue = definitionData.getPublicNoteSourceLinkValue();
+					SourceLink publicNoteSourceLink = new SourceLink();
+					publicNoteSourceLink.setId(publicNoteSourceLinkId);
+					publicNoteSourceLink.setType(publicNoteSourceLinkType);
+					publicNoteSourceLink.setName(publicNoteSourceLinkName);
+					publicNoteSourceLink.setValue(publicNoteSourceLinkValue);
+					publicNote.getSourceLinks().add(publicNoteSourceLink);
+				}
+			}
+		}
 	}
 
 	public List<DefinitionLangGroup> composeMeaningDefinitionLangGroups(List<Definition> definitions, List<ClassifierSelect> languagesOrder) {
 
+		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
+		if (languagesOrder == null) {
+			return definitionLangGroups;
+		}
 		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
 		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
-		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
 		Map<String, DefinitionLangGroup> definitionLangGroupMap = new HashMap<>();
 
 		for (Definition definition : definitions) {

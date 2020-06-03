@@ -17,9 +17,9 @@ function initialise() {
 	});
 
 	$(document).on('click', '[name="lang-collapse-btn"]', function() {
-		var lang = $(this).attr("data-lang");
-		var itemData = {
-			opCode: "term_user_lang",
+		let lang = $(this).attr("data-lang");
+		let itemData = {
+			opCode: "user_lang_selection",
 			code: lang
 		};
 		postJson(applicationUrl + 'update_item', itemData).done(function(data) {

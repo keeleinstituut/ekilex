@@ -186,8 +186,8 @@ public class TermEditController extends AbstractPageController {
 			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
-			sessionBean.setNewWordSelectedLanguage(language);
-			sessionBean.setNewWordSelectedMorphCode(morphCode);
+			sessionBean.setRecentLanguage(language);
+			sessionBean.setRecentMorphCode(morphCode);
 
 			boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
 			if (!meaningHasWord) {

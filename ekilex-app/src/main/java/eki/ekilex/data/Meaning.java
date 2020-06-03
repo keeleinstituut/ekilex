@@ -3,17 +3,15 @@ package eki.ekilex.data;
 import java.sql.Timestamp;
 import java.util.List;
 
-import javax.persistence.Column;
-
 public class Meaning extends AbstractCrudEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "meaning_id")
 	private Long meaningId;
 
-	@Column(name = "lexeme_ids")
 	private List<Long> lexemeIds;
+
+	private List<Definition> definitions;
 
 	private List<DefinitionLangGroup> definitionLangGroups;
 
@@ -29,7 +27,7 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<Image> images;
 
-	private List<MeaningNote> publicNotes;
+	private List<NoteLangGroup> publicNoteLangGroups;
 
 	private List<Relation> relations;
 
@@ -53,6 +51,14 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setLexemeIds(List<Long> lexemeIds) {
 		this.lexemeIds = lexemeIds;
+	}
+
+	public List<Definition> getDefinitions() {
+		return definitions;
+	}
+
+	public void setDefinitions(List<Definition> definitions) {
+		this.definitions = definitions;
 	}
 
 	public List<DefinitionLangGroup> getDefinitionLangGroups() {
@@ -111,12 +117,12 @@ public class Meaning extends AbstractCrudEntity {
 		this.images = images;
 	}
 
-	public List<MeaningNote> getPublicNotes() {
-		return publicNotes;
+	public List<NoteLangGroup> getPublicNoteLangGroups() {
+		return publicNoteLangGroups;
 	}
 
-	public void setPublicNotes(List<MeaningNote> publicNotes) {
-		this.publicNotes = publicNotes;
+	public void setPublicNoteLangGroups(List<NoteLangGroup> publicNoteLangGroups) {
+		this.publicNoteLangGroups = publicNoteLangGroups;
 	}
 
 	public List<Relation> getRelations() {

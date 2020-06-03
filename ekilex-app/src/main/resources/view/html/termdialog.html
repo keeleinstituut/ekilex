@@ -458,9 +458,10 @@
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-check ml-1">
-              <input id="addUsagePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
-              <label for="addUsagePublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -481,9 +482,10 @@
             <input type="hidden" name="value" th:value="${usage.value}">
             <input type="hidden" name="complexity" th:value="${usage.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-check ml-1">
-              <input id="editUsagePublic" class="form-check-input" type="checkbox" name="public" th:checked="${usage.public}" value="true">
-              <label for="editUsagePublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${usage.public}" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -551,9 +553,22 @@
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-check ml-1">
-              <input id="addLexemeNotePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
-              <label for="addLexemeNotePublic" class="form-check-label">Avalik</label>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -574,9 +589,21 @@
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
             <input type="hidden" name="complexity" th:value="${publicNote.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-check ml-1">
-              <input th:id="${'editLexemeNotePublicCheck_' + lexeme.lexemeId + '_' + publicNote.id}" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
-              <label th:for="${'editLexemeNotePublicCheck_' + lexeme.lexemeId + '_' + publicNote.id}" class="form-check-label">Avalik</label>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == publicNote.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -616,9 +643,22 @@
             <input type="hidden" name="opCode" value="meaning_public_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-check ml-1">
-              <input id="addMeaningNotePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
-              <label for="addMeaningNotePublic" class="form-check-label">Avalik</label>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -638,9 +678,21 @@
             <input type="hidden" name="opCode" value="meaning_public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-check ml-1">
-              <input th:id="${'editMeaningNotePublicCheck_' + meaningId + '_' + publicNote.id}" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
-              <label th:for="${'editMeaningNotePublicCheck_' + meaningId + '_' + publicNote.id}" class="form-check-label">Avalik</label>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == publicNote.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -711,11 +763,11 @@
             </div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required class="form-control classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -729,9 +781,10 @@
                 </select>
               </div>
             </div>
-            <div class="form-check ml-1">
-              <input id="addDefinitionPublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
-              <label for="addDefinitionPublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -754,14 +807,26 @@
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == definition.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
                 <select required class="form-control value-select required-field" name="code">
                   <option th:each="type : ${definitionTypes}" th:value="${type.code}" th:text="${type.value}" th:selected="${type.code == definition.typeCode}">type</option>
                 </select>
               </div>
             </div>
-            <div class="form-check ml-1">
-              <input id="editDefinitionPublic" class="form-check-input" type="checkbox" name="public" th:checked="${definition.public}" value="true">
-              <label for="editDefinitionPublic" class="form-check-label">Avalik</label>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${definition.public}" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -801,9 +866,22 @@
             <input type="hidden" name="opCode" value="definition_public_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-check ml-1">
-              <input id="addDefinitionNotePublic" class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
-              <label for="addDefinitionNotePublic" class="form-check-label">Avalik</label>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -823,9 +901,21 @@
             <input type="hidden" name="opCode" value="definition_public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-check ml-1">
-              <input id="editDefinitionNotePublic" class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">
-              <label for="editDefinitionNotePublic" class="form-check-label">Avalik</label>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == publicNote.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+              </label>
             </div>
           </div>
           <div class="modal-footer">
@@ -1065,10 +1155,10 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -1077,10 +1167,10 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control required-field" name="morphCode">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.newWordSelectedMorphCode)}">vali kood...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentMorphCode)}">vali kood...</option>
                   <option th:each="morphCode : ${wordMorphCodes}"
                           th:value="${morphCode.code}"
-                          th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
+                          th:selected="${morphCode.code == sessionBean.recentMorphCode}"
                           th:text="${morphCode.value}">morphCode
                   </option>
                 </select>
