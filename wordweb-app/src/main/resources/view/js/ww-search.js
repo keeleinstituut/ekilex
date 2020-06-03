@@ -66,6 +66,7 @@ $(document).on("click", ".menu-btn", function () {
         $(this).attr('aria-expanded', 'true');
     }
 });
+
 function activateCollapseBtn(){
     $(".btn-collapse").on("click", function () {
         $(this).toggleClass('show');
