@@ -21,7 +21,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefinitionSourceAndPublicNoteSourceTuple;
+import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
@@ -145,11 +145,11 @@ public class TermSearchService extends AbstractSearchService {
 		}
 
 		permCalculator.applyCrud(meaning, userRole);
-		List<DefinitionSourceAndPublicNoteSourceTuple> definitionSourceAndPublicNoteSourceTuples =
-				commonDataDbService.getMeaningDefinitionSourceTuples(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionSourceAndPublicNoteSourceTuples, true);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.applyCrud(definitions, userRole);
 		permCalculator.filterVisibility(definitions, userId);
+		List<DefSourceAndPublicNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndPublicNoteSourceTuples(meaningId);
+		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 		for (Definition definition : definitions) {
 			List<DefinitionNote> definitionPublicNotes = definition.getPublicNotes();
 			permCalculator.filterVisibility(definitionPublicNotes, userId);
@@ -165,6 +165,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningPublicNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningPublicNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningPublicNoteSourceTuples);
 		permCalculator.filterVisibility(meaningPublicNotes, userId);
+		List<NoteLangGroup> meaningPublicNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningPublicNotes, languagesOrder);
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<Relation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
@@ -230,7 +231,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setLearnerComments(learnerComments);
 		meaning.setImages(images);
-		meaning.setPublicNotes(meaningPublicNotes);
+		meaning.setPublicNoteLangGroups(meaningPublicNoteLangGroups);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
 		meaning.setViewRelations(viewRelations);

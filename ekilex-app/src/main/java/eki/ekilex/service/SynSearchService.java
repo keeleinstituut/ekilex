@@ -28,7 +28,6 @@ import eki.common.constant.RelationStatus;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
-import eki.ekilex.data.DefinitionSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.MeaningWord;
@@ -123,9 +122,7 @@ public class SynSearchService extends AbstractWordSearchService {
 			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, headwordLanguage);
 		}
 
-		List<DefinitionSourceAndPublicNoteSourceTuple> definitionSourceTuples =
-				commonDataDbService.getMeaningDefinitionSourceTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionSourceTuples, false);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		permCalculator.filterVisibility(definitions, userId);
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =

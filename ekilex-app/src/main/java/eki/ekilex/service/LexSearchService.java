@@ -26,7 +26,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefinitionSourceAndPublicNoteSourceTuple;
+import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
@@ -160,9 +160,7 @@ public class LexSearchService extends AbstractWordSearchService {
 						String datasetCode = lexeme.getDatasetCode();
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
-						List<DefinitionSourceAndPublicNoteSourceTuple> definitionSourceTuples =
-								commonDataDbService.getMeaningDefinitionSourceTuples(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionSourceTuples, false);
+						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 						permCalculator.filterVisibility(definitions, userId);
 						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 						Meaning meaning = new Meaning();
@@ -204,19 +202,19 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, wordLang);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
 		meaningDomains = conversionUtil.removeOrderedClassifierDuplicates(meaningDomains);
-		List<DefinitionSourceAndPublicNoteSourceTuple> definitionSourceAndPublicNoteSourceTuples =
-				commonDataDbService.getMeaningDefinitionSourceTuples(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 
+		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		meaning.setMeaningId(meaningId);
 		meaning.setDomains(meaningDomains);
 
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionSourceAndPublicNoteSourceTuples, isFullData);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
 		permCalculator.applyCrud(definitions, userRole);
 		permCalculator.filterVisibility(definitions, userId);
 
 		if (isFullData) {
 
+			List<DefSourceAndPublicNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndPublicNoteSourceTuples(meaningId);
+			conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 			for (Definition definition : definitions) {
 				List<DefinitionNote> definitionPublicNotes = definition.getPublicNotes();
 				permCalculator.filterVisibility(definitionPublicNotes, userId);
@@ -248,6 +246,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningPublicNoteSourceTuples(meaningId);
 			List<MeaningNote> meaningPublicNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningPublicNoteSourceTuples);
 			permCalculator.filterVisibility(meaningPublicNotes, userId);
+			List<NoteLangGroup> meaningPublicNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningPublicNotes, languagesOrder);
 			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
 			List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, classifierLabelLang, classifierLabelTypeDescrip);
@@ -269,7 +268,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLearnerComments(meaningLearnerComments);
 			meaning.setImages(meaningImages);
-			meaning.setPublicNotes(meaningPublicNotes);
+			meaning.setPublicNoteLangGroups(meaningPublicNoteLangGroups);
 			meaning.setSemanticTypes(meaningSemanticTypes);
 			meaning.setRelations(meaningRelations);
 			meaning.setViewRelations(viewMeaningRelations);

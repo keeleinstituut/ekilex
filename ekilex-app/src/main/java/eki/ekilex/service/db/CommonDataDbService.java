@@ -64,7 +64,8 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
-import eki.ekilex.data.DefinitionSourceAndPublicNoteSourceTuple;
+import eki.ekilex.data.Definition;
+import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
@@ -507,11 +508,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(OrderedClassifier.class);
 	}
 
-	public List<DefinitionSourceAndPublicNoteSourceTuple> getMeaningDefinitionSourceTuples(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
-		return getMeaningDefinitionSourceTuples(meaningId, null, classifierLabelLang, classifierLabelTypeCode);
+	public List<Definition> getMeaningDefinitions(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+		return getMeaningDefinitions(meaningId, null, classifierLabelLang, classifierLabelTypeCode);
 	}
 
-	public List<DefinitionSourceAndPublicNoteSourceTuple> getMeaningDefinitionSourceTuples(Long meaningId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<Definition> getMeaningDefinitions(Long meaningId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
 		if (StringUtils.isNotBlank(datasetCode)) {
@@ -525,23 +526,39 @@ public class CommonDataDbService extends AbstractDataDbService {
 		}
 		return create
 				.select(
-						DEFINITION.ID.as("definition_id"),
-						DEFINITION.VALUE_PRESE.as("definition_value"),
-						DEFINITION.LANG.as("definition_lang"),
-						DEFINITION.COMPLEXITY.as("definition_complexity"),
-						DEFINITION.ORDER_BY.as("definition_order_by"),
-						DEFINITION.DEFINITION_TYPE_CODE.as("definition_type_code"),
-						DEFINITION_TYPE_LABEL.VALUE.as("definition_type_value"),
+						DEFINITION.ID,
+						DEFINITION.VALUE_PRESE.as("value"),
+						DEFINITION.LANG,
+						DEFINITION.COMPLEXITY,
+						DEFINITION.ORDER_BY,
+						DEFINITION.DEFINITION_TYPE_CODE.as("type_code"),
+						DEFINITION_TYPE_LABEL.VALUE.as("type_value"),
 						DSL.field(DSL
 								.select(DSL.arrayAgg(DEFINITION_DATASET.DATASET_CODE))
 								.from(DEFINITION_DATASET)
 								.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)))
-								.as("definition_dataset_codes"),
+								.as("dataset_codes"),
+						DEFINITION.IS_PUBLIC.as("is_public"))
+				.from(
+						DEFINITION
+								.leftOuterJoin(DEFINITION_TYPE_LABEL).on(
+										DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_LABEL.CODE)
+												.and(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang))
+												.and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
+				.where(where)
+				.orderBy(DEFINITION.ORDER_BY)
+				.fetchInto(Definition.class);
+	}
+
+	public List<DefSourceAndPublicNoteSourceTuple> getMeaningDefSourceAndPublicNoteSourceTuples(Long meaningId) {
+
+		return create
+				.select(
+						DEFINITION.ID.as("definition_id"),
 						DEFINITION_SOURCE_LINK.ID.as("definition_source_link_id"),
 						DEFINITION_SOURCE_LINK.TYPE.as("definition_source_link_type"),
 						DEFINITION_SOURCE_LINK.NAME.as("definition_source_link_name"),
 						DEFINITION_SOURCE_LINK.VALUE.as("definition_source_link_value"),
-						DEFINITION.IS_PUBLIC.as("is_definition_public"),
 						FREEFORM.ID.as("public_note_id"),
 						FREEFORM.VALUE_TEXT.as("public_note_value_text"),
 						FREEFORM.VALUE_PRESE.as("public_note_value_prese"),
@@ -556,18 +573,14 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(
 						DEFINITION
 								.leftOuterJoin(DEFINITION_SOURCE_LINK).on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
-								.leftOuterJoin(DEFINITION_TYPE_LABEL).on(
-										DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_LABEL.CODE)
-												.and(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang))
-												.and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 								.leftOuterJoin(DEFINITION_FREEFORM).on(DEFINITION_FREEFORM.DEFINITION_ID.eq(DEFINITION.ID))
 								.leftOuterJoin(FREEFORM).on(
 										DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
 												.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
 								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
-				.where(where)
-				.orderBy(DEFINITION.ORDER_BY, FREEFORM.ORDER_BY)
-				.fetchInto(DefinitionSourceAndPublicNoteSourceTuple.class);
+				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(DefSourceAndPublicNoteSourceTuple.class);
 	}
 
 	public List<Relation> getMeaningRelations(

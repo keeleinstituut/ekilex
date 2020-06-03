@@ -1,30 +1,14 @@
 package eki.ekilex.data;
 
-import java.util.List;
-
 import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
-public class DefinitionSourceAndPublicNoteSourceTuple extends AbstractDataObject {
+public class DefSourceAndPublicNoteSourceTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long definitionId;
-
-	private String definitionValue;
-
-	private String definitionLang;
-
-	private Complexity definitionComplexity;
-
-	private Long definitionOrderBy;
-
-	private String definitionTypeCode;
-
-	private String definitionTypeValue;
-
-	private List<String> definitionDatasetCodes;
 
 	private Long definitionSourceLinkId;
 
@@ -33,8 +17,6 @@ public class DefinitionSourceAndPublicNoteSourceTuple extends AbstractDataObject
 	private String definitionSourceLinkName;
 
 	private String definitionSourceLinkValue;
-
-	private boolean isDefinitionPublic;
 
 	private Long publicNoteId;
 
@@ -64,62 +46,6 @@ public class DefinitionSourceAndPublicNoteSourceTuple extends AbstractDataObject
 
 	public void setDefinitionId(Long definitionId) {
 		this.definitionId = definitionId;
-	}
-
-	public String getDefinitionValue() {
-		return definitionValue;
-	}
-
-	public void setDefinitionValue(String definitionValue) {
-		this.definitionValue = definitionValue;
-	}
-
-	public String getDefinitionLang() {
-		return definitionLang;
-	}
-
-	public void setDefinitionLang(String definitionLang) {
-		this.definitionLang = definitionLang;
-	}
-
-	public Complexity getDefinitionComplexity() {
-		return definitionComplexity;
-	}
-
-	public void setDefinitionComplexity(Complexity definitionComplexity) {
-		this.definitionComplexity = definitionComplexity;
-	}
-
-	public Long getDefinitionOrderBy() {
-		return definitionOrderBy;
-	}
-
-	public void setDefinitionOrderBy(Long definitionOrderBy) {
-		this.definitionOrderBy = definitionOrderBy;
-	}
-
-	public String getDefinitionTypeCode() {
-		return definitionTypeCode;
-	}
-
-	public void setDefinitionTypeCode(String definitionTypeCode) {
-		this.definitionTypeCode = definitionTypeCode;
-	}
-
-	public String getDefinitionTypeValue() {
-		return definitionTypeValue;
-	}
-
-	public void setDefinitionTypeValue(String definitionTypeValue) {
-		this.definitionTypeValue = definitionTypeValue;
-	}
-
-	public List<String> getDefinitionDatasetCodes() {
-		return definitionDatasetCodes;
-	}
-
-	public void setDefinitionDatasetCodes(List<String> definitionDatasetCodes) {
-		this.definitionDatasetCodes = definitionDatasetCodes;
 	}
 
 	public Long getDefinitionSourceLinkId() {
@@ -152,14 +78,6 @@ public class DefinitionSourceAndPublicNoteSourceTuple extends AbstractDataObject
 
 	public void setDefinitionSourceLinkValue(String definitionSourceLinkValue) {
 		this.definitionSourceLinkValue = definitionSourceLinkValue;
-	}
-
-	public boolean isDefinitionPublic() {
-		return isDefinitionPublic;
-	}
-
-	public void setDefinitionPublic(boolean definitionPublic) {
-		isDefinitionPublic = definitionPublic;
 	}
 
 	public Long getPublicNoteId() {

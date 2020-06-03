@@ -31,10 +31,10 @@ import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefinitionSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.Image;
@@ -459,14 +459,13 @@ public class ConversionUtil implements GlobalConstant {
 		return noteLangGroups;
 	}
 
-	public List<Definition> composeMeaningDefinitions(List<DefinitionSourceAndPublicNoteSourceTuple> definitionSourceAndPublicNoteSourceTuples, boolean composePublicNotes) {
+	public void composeMeaningDefinitions(List<Definition> definitions, List<DefSourceAndPublicNoteSourceTuple> definitionsDataTuples) {
 
-		List<Definition> definitions = new ArrayList<>();
-		Map<Long, Definition> definitionMap = new HashMap<>();
+		Map<Long, Definition> definitionMap = definitions.stream().collect(Collectors.toMap(Definition::getId, definition -> definition));
 		Set<Long> handledSourceLinkIds = new HashSet<>();
 		Map<Long, DefinitionNote> publicNoteMap = new HashMap<>();
 
-		for (DefinitionSourceAndPublicNoteSourceTuple definitionData : definitionSourceAndPublicNoteSourceTuples) {
+		for (DefSourceAndPublicNoteSourceTuple definitionData : definitionsDataTuples) {
 			Long definitionId = definitionData.getDefinitionId();
 			Long definitionSourceLinkId = definitionData.getDefinitionSourceLinkId();
 			Long publicNoteId = definitionData.getPublicNoteId();
@@ -474,29 +473,15 @@ public class ConversionUtil implements GlobalConstant {
 
 			Definition definition = definitionMap.get(definitionId);
 			if (definition == null) {
-				String definitionValue = definitionData.getDefinitionValue();
-				String definitionLang = definitionData.getDefinitionLang();
-				Complexity definitionComplexity = definitionData.getDefinitionComplexity();
-				Long definitionOrderBy = definitionData.getDefinitionOrderBy();
-				String definitionTypeCode = definitionData.getDefinitionTypeCode();
-				String definitionTypeValue = definitionData.getDefinitionTypeValue();
-				List<String> definitionDatasetCodes = definitionData.getDefinitionDatasetCodes();
-				boolean isDefinitionPublic = definitionData.isDefinitionPublic();
-				definition = new Definition();
-				definition.setId(definitionId);
-				definition.setValue(definitionValue);
-				definition.setLang(definitionLang);
-				definition.setComplexity(definitionComplexity);
-				definition.setOrderBy(definitionOrderBy);
-				definition.setTypeCode(definitionTypeCode);
-				definition.setTypeValue(definitionTypeValue);
-				definition.setDatasetCodes(definitionDatasetCodes);
-				definition.setPublicNotes(new ArrayList<>());
-				definition.setSourceLinks(new ArrayList<>());
-				definition.setPublic(isDefinitionPublic);
-				definitionMap.put(definitionId, definition);
-				definitions.add(definition);
+				continue;
 			}
+			if (definition.getSourceLinks() == null) {
+				definition.setSourceLinks(new ArrayList<>());
+			}
+			if (definition.getPublicNotes() == null) {
+				definition.setPublicNotes(new ArrayList<>());
+			}
+
 			if (definitionSourceLinkId != null && !handledSourceLinkIds.contains(definitionSourceLinkId)) {
 				ReferenceType definitionSourceLinkType = definitionData.getDefinitionSourceLinkType();
 				String definitionSourceLinkName = definitionData.getDefinitionSourceLinkName();
@@ -510,9 +495,6 @@ public class ConversionUtil implements GlobalConstant {
 				handledSourceLinkIds.add(definitionSourceLinkId);
 			}
 
-			if (!composePublicNotes) {
-				continue;
-			}
 			if (publicNoteId != null) {
 				DefinitionNote publicNote = publicNoteMap.get(publicNoteId);
 				if (publicNote == null) {
@@ -524,6 +506,7 @@ public class ConversionUtil implements GlobalConstant {
 					Long publicNoteOrderBy = definitionData.getPublicNoteOrderBy();
 					publicNote = new DefinitionNote();
 					publicNote.setDefinitionId(definitionId);
+					publicNote.setId(publicNoteId);
 					publicNote.setValueText(publicNoteValueText);
 					publicNote.setValuePrese(publicNoteValuePrese);
 					publicNote.setLang(publicNoteLang);
@@ -547,7 +530,6 @@ public class ConversionUtil implements GlobalConstant {
 				}
 			}
 		}
-		return definitions;
 	}
 
 	public List<DefinitionLangGroup> composeMeaningDefinitionLangGroups(List<Definition> definitions, List<ClassifierSelect> languagesOrder) {

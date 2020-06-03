@@ -84,7 +84,7 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 		return result;
 	}
 
-	public Map<String, Object> getMeaningFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
+	public Map<String, Object> getMeaningFreeformData(DSLContext create, Long freeformId, FreeformType freeformType) {
 
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		Freeform ff1 = FREEFORM.as("ff1");
@@ -92,11 +92,12 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 				.select(
 						mff.MEANING_ID,
 						ff1.VALUE_TEXT,
-						ff1.VALUE_PRESE)
+						ff1.VALUE_PRESE,
+						ff1.ORDER_BY)
 				.from(mff, ff1)
 				.where(
 						mff.FREEFORM_ID.eq(ff1.ID)
-								.and(ff1.ID.eq(entityId))
+								.and(ff1.ID.eq(freeformId))
 								.and(ff1.TYPE.eq(freeformType.name())))
 				.fetchSingleMap();
 		return result;
