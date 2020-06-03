@@ -17571,13 +17571,21 @@ body {
 }
 
 .menu-btn {
-  padding-right: 50px;
   font-size: 1.25rem;
 }
 
-.menu-btn > .icon {
-  position: absolute;
-  right: 10px;
+@media (min-width: 768px) {
+  .menu-btn {
+    padding-right: 50px;
+  }
+}
+
+@media (min-width: 768px) {
+  .menu-btn > .icon {
+    position: absolute;
+    right: 10px;
+    top: 2px;
+  }
 }
 
 .menu-btn:hover > .icon {
