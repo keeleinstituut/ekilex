@@ -536,6 +536,10 @@
                               </span>
                             </span>
                           </span>
+                          <button th:id="${'colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class=" btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2" data-toggle="collapse" aria-expanded="false"
+                                  th:aria-controls="${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:attr="data-target=${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId +', '+'#colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}">
+                            <i class="collapse-icon fa fa-ellipsis-h" aria-hidden="true"></i>
+                          </button>
                         </div>
                         <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" 
                              th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="pb-1 pl-2 pl-md-4 collapse">
@@ -545,12 +549,12 @@
                               <span class="icon icon-speaker"></span>
                             </button>
                           </div>
+                          <button th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class=" btn btn-link-muted btn-sm text-nowrap ml-n3" data-toggle="collapse" aria-expanded="true"
+                                  aria-controls="collapseExample" th:attr="data-target=${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId+', '+'#colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}">
+                            <i class="collapse-icon fa fa-angle-up" aria-hidden="true"></i>
+                            <span th:text="#{button.see.less}"></span>
+                          </button>
                         </div>
-                        <button th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="btn btn-link-muted btn-sm btn-collapse" data-toggle="collapse" aria-expanded="false"
-                          aria-controls="collapseExample" th:attr="data-target=${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}">
-                          <i class="collapse-icon fa fa-angle-down" aria-hidden="true"></i>
-                          <span th:text="#{button.label.usages}"></span>
-                        </button>
                       </div>
                     </div>
                   </div>

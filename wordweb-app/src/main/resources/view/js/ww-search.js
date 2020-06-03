@@ -71,7 +71,6 @@ function activateCollapseBtn(){
         $(this).toggleClass('show');
 
         if ($(this).data("see-less") && $(this).data("see-more")) {
-            console.log("click");
             let _txt;
             if ($(this).hasClass('show')) {
                 _txt = $(this).data("see-less");
@@ -80,6 +79,9 @@ function activateCollapseBtn(){
             }
 
             $(this).find('.btn-txt').text(_txt);
+        }
+        if($(this).data("dynamic-text")){
+            $(this).find('.btn-content').toggleClass('d-none');
         }
     });
 }

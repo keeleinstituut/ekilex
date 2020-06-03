@@ -17087,7 +17087,7 @@ body.hidden-scroll {
   display: inline-block;
 }
 
-.colloc-row .colloc-member:last-child::after {
+.colloc-row .colloc-member:last-of-type::after {
   display: none;
 }
 
@@ -18348,6 +18348,18 @@ body {
   transition: -webkit-transform ease-in-out .32s;
   transition: transform ease-in-out .32s;
   transition: transform ease-in-out .32s, -webkit-transform ease-in-out .32s;
+}
+
+.btn-ellipsis .collapse-icon {
+  margin-bottom: 2px;
+}
+
+.btn-ellipsis.collapsing {
+  text-decoration: none;
+}
+
+.btn-ellipsis.show {
+  display: none !important;
 }
 
 .tag {
