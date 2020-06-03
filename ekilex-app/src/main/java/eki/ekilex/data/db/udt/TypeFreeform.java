@@ -20,7 +20,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
 
-    private static final long serialVersionUID = -5667117;
+    private static final long serialVersionUID = -57361741;
 
     /**
      * The reference instance of <code>public.type_freeform</code>
@@ -49,6 +49,11 @@ public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
      * The attribute <code>public.type_freeform.value</code>.
      */
     public static final UDTField<TypeFreeformRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, TYPE_FREEFORM, "");
+
+    /**
+     * The attribute <code>public.type_freeform.lang</code>.
+     */
+    public static final UDTField<TypeFreeformRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.complexity</code>.

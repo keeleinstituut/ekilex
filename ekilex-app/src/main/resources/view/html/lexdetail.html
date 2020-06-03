@@ -385,7 +385,7 @@
                         <button type="button" class="btn badge badge-success"
                                 title="Lisa allikaviide"
                                 data-toggle="modal"
-                                th:data-target="${'#addDefinitionPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                                th:data-target="${'#addDefinitionPublicNoteSourceLinkDlg_' + definition.id + '_' + publicNote.id}"
                                 sec:authorize="#vars.definition.crudGrant">
                           <i class="fa fa-external-link" aria-hidden="true"></i>
                         </button>
