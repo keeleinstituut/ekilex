@@ -361,7 +361,7 @@
                 <div class="collapsable usage-item" th:data-collapse="${isCollapsable}" th:style="${isCollapsable ? 'display: none' : ''}">
                   <div class="example-sentence-wrap">
                     <span class="example-text example-text-w-audio">
-                      <span th:utext="${usage.usagePrese}"></span>
+                      <span class="example-text-value" th:utext="${usage.usagePrese}"></span>
                       <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.usage}"
                               th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                         <span class="icon icon-speaker"></span>
@@ -377,10 +377,14 @@
                       </span>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
-                      <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:utext="${usageTranslation}"></span>
+                      <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text">
+                        <span class="example-text-value" th:utext="${usageTranslation}"></span>
+                      </span>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
-                      <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" th:utext="${usageDefinition}"></span>
+                      <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" >
+                        <span class="example-text-value" th:utext="${usageDefinition}"></span>
+                      </span>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(usage.odUsageDefinitions)}">
                       <div class="example-text">

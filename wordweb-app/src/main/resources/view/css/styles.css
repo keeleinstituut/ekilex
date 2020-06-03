@@ -17017,16 +17017,20 @@ body.hidden-scroll {
   font-style: italic;
 }
 
-.example-sentence-wrap .example-text {
-  padding-left: .5rem;
-  margin-left: .5rem;
-  border-left: 1px solid #3f3f3f;
+.example-text .example-text-value {
+  white-space: nowrap;
 }
 
-.example-sentence-wrap .example-text:first-child, .example-sentence-wrap .example-text:nth-child(2) {
-  padding-left: 0;
-  margin-left: 0;
-  border-left: 0;
+.example-sentence-wrap .example-text {
+  padding-right: .5rem;
+  margin-right: .5rem;
+  border-right: 1px solid #3f3f3f;
+}
+
+.example-sentence-wrap .example-text:last-child {
+  padding-right: 0;
+  margin-right: 0;
+  border-right: 0;
 }
 
 .btn-speaker {
