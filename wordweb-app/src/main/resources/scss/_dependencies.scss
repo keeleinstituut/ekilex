@@ -33,19 +33,20 @@
 .example-text {
   font-style: italic;
   .example-text-value{
-    white-space: nowrap;
+    white-space: normal;
   }
 }
 .example-sentence-wrap{
   .example-text{
-    padding-right: .5rem;
-    margin-right: .5rem;
-    border-right: 1px solid $gray-900;
+    padding-left: .5rem;
+    margin-left: .5rem;
+    border-left: 1px solid $gray-900;
 
-    &:last-child{
-      padding-right: 0;
-      margin-right: 0;
-      border-right: 0;
+    &:first-child,
+    &:nth-child(2){
+      padding-left: 0;
+      margin-left: 0;
+      border-left: 0;
     }
   }
 

@@ -412,8 +412,8 @@
             </div>
             <div class="mt-3 d-flex flex-wrap row" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
               <th:block th:each="imageFile : ${lexeme.imageFiles}">
-                <div class="col-12 col-md-4 mb-3">
-                  <a th:href="@{'/files/images/' + ${imageFile.imageFile}}" class="gallery-image">
+                <div class="col-12 col-md-4 mb-3 d-flex flex-column">
+                  <a th:href="@{'/files/images/' + ${imageFile.imageFile}}" class="gallery-image my-auto">
                     <img class="homonym-image m-0 p-0" th:src="@{'/files/images/' + ${imageFile.imageFile}}" th:title="${imageFile.imageTitle}">
                     <span class="additional-meta text-muted text-small py-1 d-block" th:utext="${imageFile.imageTitle}"></span>
                   </a>

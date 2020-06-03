@@ -8,8 +8,8 @@
   > .icon {
     @include media-breakpoint-up(md){
       position: absolute;
-      right: 10px;
       top: 2px;
+      right: 10px;
     }
 
   }
