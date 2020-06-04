@@ -338,6 +338,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
+		updateMeaningLexemesProcessStateCodes(targetMeaningId);
 	}
 
 	//TODO lifecycle log
@@ -371,6 +372,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
+		updateMeaningLexemesProcessStateCodes(targetMeaningId);
 	}
 
 	@Transactional
@@ -399,6 +401,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		joinLexemeData(targetWordId, sourceWordId);
 		joinParadigms(targetWordId, sourceWordId);
 		cudDbService.deleteWord(sourceWord);
+		updateWordLexemesProcessStateCodes(targetWordId);
 
 		return targetWordId;
 	}
@@ -442,7 +445,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 	private void joinLexemeData(Long targetWordId, Long sourceWordId) {
 
-		boolean updateLexemesProcessStateToPublic = false;
 		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
 		for (LexemeRecord sourceWordLexeme : sourceWordLexemes) {
 			Long sourceWordLexemeId = sourceWordLexeme.getId();
@@ -459,10 +461,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 				if (isTargetWordLexemePrimaryType && isSourceWordLexemePrimaryType) {
 					compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
-					String targetLexemeProcessStateCode = lookupDbService.getLexemeProcessStateCode(targetWordLexemeId);
-					if (StringUtils.equals(PROCESS_STATE_PUBLIC, targetLexemeProcessStateCode)) {
-						updateLexemesProcessStateToPublic = true;
-					}
 				} else if (isSourceWordLexemePrimaryType) {
 					cudDbService.deleteLexeme(targetWordLexemeId);
 					connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
@@ -472,10 +470,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 			} else {
 				connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
 			}
-		}
-		if (updateLexemesProcessStateToPublic) {
-			cudDbService.updateWordLexemesProcessStateCode(targetWordId, PROCESS_STATE_PUBLIC);
-			cudDbService.updateWordLexemesProcessStateCode(sourceWordId, PROCESS_STATE_PUBLIC);
 		}
 	}
 
@@ -546,12 +540,27 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 	}
 
+	private void updateMeaningLexemesProcessStateCodes(Long targetMeaningId) {
+
+		boolean publicLexemeExists = lookupDbService.meaningPublicLexemeExists(targetMeaningId);
+		if (publicLexemeExists) {
+			cudDbService.updateMeaningLexemesProcessStateCode(targetMeaningId, PROCESS_STATE_PUBLIC);
+		}
+	}
+
+	private void updateWordLexemesProcessStateCodes(Long targetWordId) {
+
+		boolean publicLexemeExists = lookupDbService.wordPublicLexemeExists(targetWordId);
+		if (publicLexemeExists) {
+			cudDbService.updateWordLexemesProcessStateCode(targetWordId, PROCESS_STATE_PUBLIC);
+		}
+	}
+
 	private void joinMeaningsCommonWordsLexemes(Long targetMeaningId, Long sourceMeaningId) {
 
 		List<IdPair> meaningsCommonWordsLexemeIdPairs = compositionDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);
 		boolean meaningsShareCommonWord = CollectionUtils.isNotEmpty(meaningsCommonWordsLexemeIdPairs);
 		if (meaningsShareCommonWord) {
-			boolean updateLexemesProcessStateToPublic = false;
 			for (IdPair lexemeIdPair : meaningsCommonWordsLexemeIdPairs) {
 				Long targetLexemeId = lexemeIdPair.getId1();
 				Long sourceLexemeId = lexemeIdPair.getId2();
@@ -569,10 +578,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 					createLifecycleLog(logData);
 
 					compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
-					String targetLexemeProcessStateCode = lookupDbService.getLexemeProcessStateCode(targetLexemeId);
-					if (StringUtils.equals(PROCESS_STATE_PUBLIC, targetLexemeProcessStateCode)) {
-						updateLexemesProcessStateToPublic = true;
-					}
 				} else if (isSourceLexemePrimaryType) {
 					Long targetLexemeWordId = targetLexeme.getWordId();
 					String datasetCode = targetLexeme.getDatasetCode();
@@ -581,11 +586,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				} else {
 					cudDbService.deleteLexeme(sourceLexemeId);
 				}
-			}
-
-			if (updateLexemesProcessStateToPublic) {
-				cudDbService.updateMeaningLexemesProcessStateCode(targetMeaningId, PROCESS_STATE_PUBLIC);
-				cudDbService.updateMeaningLexemesProcessStateCode(sourceMeaningId, PROCESS_STATE_PUBLIC);
 			}
 		}
 	}

@@ -443,13 +443,28 @@ public class LookupDbService extends AbstractSearchDbService {
 				.fetchSingleInto(LexemeType.class);
 	}
 
-	public String getLexemeProcessStateCode(Long lexemeId) {
+	public boolean meaningPublicLexemeExists(Long meaningId) {
 
 		return create
-				.select(LEXEME.PROCESS_STATE_CODE)
+				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("public_lexeme_exists"))
 				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(String.class);
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordPublicLexemeExists(Long wordId) {
+
+		return create
+				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("public_lexeme_exists"))
+				.from(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)))
+				.fetchSingleInto(Boolean.class);
 	}
 
 	public List<Long> getMeaningLexemeIds(Long meaningId, String lang, String datasetCode) {
