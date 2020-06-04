@@ -393,11 +393,12 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, targetWordId, wordValue, wordValue);
 		createLifecycleLog(logData);
 
+		SimpleWord sourceWord = lookupDbService.getSimpleWord(sourceWordId);
 		compositionDbService.joinWordData(targetWordId, sourceWordId);
 		joinWordStressAndMarkupData(targetWordId, sourceWordId);
 		joinLexemeData(targetWordId, sourceWordId);
 		joinParadigms(targetWordId, sourceWordId);
-		cudDbService.deleteWord(sourceWordId);
+		cudDbService.deleteWord(sourceWord);
 
 		return targetWordId;
 	}

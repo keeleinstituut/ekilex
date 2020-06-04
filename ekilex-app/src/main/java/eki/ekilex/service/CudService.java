@@ -818,7 +818,8 @@ public class CudService extends AbstractService {
 	public void deleteWord(Long wordId) {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId);
 		createLifecycleLog(logData);
-		cudDbService.deleteWord(wordId);
+		SimpleWord word = lookupDbService.getSimpleWord(wordId);
+		cudDbService.deleteWord(word);
 	}
 
 	@Transactional

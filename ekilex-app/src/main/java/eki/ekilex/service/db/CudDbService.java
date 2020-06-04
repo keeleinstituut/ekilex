@@ -1076,8 +1076,8 @@ public class CudDbService extends AbstractDataDbService {
 				.into(SynRelation.class);
 	}
 
-	public void deleteWord(Long wordId) {
-		SimpleWord word = getSimpleWord(wordId);
+	public void deleteWord(SimpleWord word) {
+		Long wordId = word.getWordId();
 		create.delete(LIFECYCLE_LOG)
 				.where(LIFECYCLE_LOG.ID.in(DSL
 						.select(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
