@@ -43,7 +43,7 @@ public class CorporaServiceRus extends AbstractCorporaService {
 					.queryParam("username", userName)
 					.queryParam("api_key", apiKey)
 					.queryParam("format", "json")
-					.queryParam("viewmode", "sentence")
+					.queryParam("viewmode", "sen")
 					.queryParam("async", "0")
 					.queryParam("pagesize", "15")
 					.queryParam("q", "q" + parseSentenceToQueryString(sentence))
