@@ -112,7 +112,7 @@ public class SourceDbService implements SystemConstant {
 				.where(
 						sffc.SOURCE_ID.eq(s.ID)
 						.and(sffc.FREEFORM_ID.eq(spc.ID))
-						.and(spc.VALUE_TEXT.lower().like(searchFilter)));
+						.and(DSL.lower(spc.VALUE_TEXT).like(searchFilter)));
 
 		if (sourceType != null) {
 			existCondition = existCondition.and(s.TYPE.eq(sourceType.name()));
@@ -123,7 +123,7 @@ public class SourceDbService implements SystemConstant {
 
 		Condition sex = DSL.exists(existCondition);
 
-		Field<Boolean> is_source_property_match = DSL.field(sp.VALUE_TEXT.lower().like(searchFilter));
+		Field<Boolean> is_source_property_match = DSL.field(DSL.lower(sp.VALUE_TEXT).like(searchFilter));
 
 		return create
 				.select(
@@ -151,7 +151,7 @@ public class SourceDbService implements SystemConstant {
 				.selectDistinct(FREEFORM.VALUE_TEXT)
 				.from(FREEFORM)
 				.where(FREEFORM.TYPE.eq(FreeformType.SOURCE_NAME.name())
-						.and(FREEFORM.VALUE_TEXT.lower().like('%' + StringUtils.lowerCase(nameSearchFilter) + '%')))
+						.and(DSL.lower(FREEFORM.VALUE_TEXT).like('%' + StringUtils.lowerCase(nameSearchFilter) + '%')))
 				.orderBy(FREEFORM.VALUE_TEXT)
 				.limit(limit)
 				.fetchInto(String.class);

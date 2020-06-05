@@ -260,10 +260,11 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 	@SuppressWarnings("unchecked")
 	private Field<String> getTextTypeSearchFieldCase(Field<?> searchField, boolean isOnLowerValue) {
+		Field<String> searchFieldStr = (Field<String>) searchField;
 		if (isOnLowerValue) {
-			return searchField.lower();
+			return DSL.lower(searchFieldStr);
 		}
-		return (Field<String>) searchField;
+		return searchFieldStr;
 	}
 
 	protected Condition applyLexemeSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
@@ -534,9 +535,9 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		Condition where1 = form.PARADIGM_ID.eq(paradigm.ID);
 		where1 = where1.and(form.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 		if (StringUtils.containsAny(theFilter, '%', '_')) {
-			where1 = where1.and(form.VALUE.lower().like(theFilter));
+			where1 = where1.and(DSL.lower(form.VALUE).like(theFilter));
 		} else {
-			where1 = where1.and(form.VALUE.lower().eq(theFilter));
+			where1 = where1.and(DSL.lower(form.VALUE).eq(theFilter));
 		}
 		Condition where = composeWordDatasetsCondition(word, searchDatasetsRestriction);
 		where = where.andExists(DSL.select(form.ID).from(form).where(where1));

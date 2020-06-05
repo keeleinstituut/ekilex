@@ -331,9 +331,9 @@ public class LookupDbService extends AbstractSearchDbService {
 
 		Condition whereFormValue;
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
-			whereFormValue = f.VALUE.lower().like(maskedSearchFilter);
+			whereFormValue = DSL.lower(f.VALUE).like(maskedSearchFilter);
 		} else {
-			whereFormValue = f.VALUE.lower().equal(maskedSearchFilter);
+			whereFormValue = DSL.lower(f.VALUE).equal(maskedSearchFilter);
 		}
 
 		Condition whereLexemeDataset = applyDatasetRestrictions(l, searchDatasetsRestriction, null);
