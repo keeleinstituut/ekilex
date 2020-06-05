@@ -83,7 +83,8 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 
 		if (!importMeaningData) {
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(wordValue, wordValue, null, language, morphCode, dataset, meaningId);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
+					.createWordAndLexeme(wordValue, wordValue, null, language, morphCode, dataset, PROCESS_STATE_PUBLIC, meaningId);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 

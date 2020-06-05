@@ -528,7 +528,8 @@ public class CudDbService extends AbstractDataDbService {
 		}
 	}
 
-	public WordLexemeMeaningIdTuple createWordAndLexeme(String value, String valuePrese, String valueAsWord, String language, String morphCode, String datasetCode, Long meaningId) {
+	public WordLexemeMeaningIdTuple createWordAndLexeme(
+			String value, String valuePrese, String valueAsWord, String lang, String morphCode, String dataset, String lexemeProcessStateCode, Long meaningId) {
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 
@@ -536,7 +537,7 @@ public class CudDbService extends AbstractDataDbService {
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD, PARADIGM, FORM)
 				.where(
-						WORD.LANG.eq(language)
+						WORD.LANG.eq(lang)
 								.and(FORM.MODE.eq(FormMode.WORD.name()))
 								.and(FORM.VALUE.eq(value))
 								.and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
@@ -548,7 +549,7 @@ public class CudDbService extends AbstractDataDbService {
 			homonymNumber = currentHomonymNumber + 1;
 		}
 
-		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
+		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, lang).returning(WORD.ID).fetchOne().getId();
 
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 
@@ -570,8 +571,8 @@ public class CudDbService extends AbstractDataDbService {
 				.insertInto(
 						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-						1, 1, PROCESS_STATE_PUBLIC, COMPLEXITY_DETAIL)
+				.values(meaningId, wordId, dataset, LEXEME_TYPE_PRIMARY,
+						1, 1, lexemeProcessStateCode, COMPLEXITY_DETAIL)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
