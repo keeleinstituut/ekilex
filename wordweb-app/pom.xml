@@ -78,6 +78,7 @@
 									<inputSchema>public</inputSchema>
 								</database>
 								<generate>
+									<javaTimeTypes>false</javaTimeTypes>
 								</generate>
 								<target>
 									<packageName>eki.wordweb.data.db</packageName>

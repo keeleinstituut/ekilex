@@ -212,7 +212,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	private void populateMeaningWords(Lexeme lexeme, String wordLang, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
 		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
-		removeTempPlaceholder(meaningWords);
 		if (CollectionUtils.isEmpty(meaningWords)) {
 			return;
 		}

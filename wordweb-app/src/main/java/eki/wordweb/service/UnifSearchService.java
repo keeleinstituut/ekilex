@@ -51,7 +51,6 @@ public class UnifSearchService extends AbstractSearchService {
 		Word word = unifSearchDbService.getWord(wordId);
 		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
-		wordConversionUtil.removeTempPlaceholder(word.getMeaningWords());
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = unifSearchDbService.getWordRelationsTuple(wordId);
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, lexComplexity, displayLang);

@@ -9,7 +9,7 @@ import eki.wordweb.data.db.Keys;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.LexicalDecisionResultRecord;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexicalDecisionResult extends TableImpl<LexicalDecisionResultRecord> {
 
-    private static final long serialVersionUID = 1340532990;
+    private static final long serialVersionUID = 1796726817;
 
     /**
      * The reference instance of <code>public.lexical_decision_result</code>
@@ -83,7 +83,7 @@ public class LexicalDecisionResult extends TableImpl<LexicalDecisionResultRecord
     /**
      * The column <code>public.lexical_decision_result.created</code>.
      */
-    public final TableField<LexicalDecisionResultRecord, LocalDateTime> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<LexicalDecisionResultRecord, Timestamp> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>public.lexical_decision_result</code> table reference
@@ -183,7 +183,7 @@ public class LexicalDecisionResult extends TableImpl<LexicalDecisionResultRecord
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, String, String, Boolean, Long, LocalDateTime> fieldsRow() {
+    public Row7<Long, Long, String, String, Boolean, Long, Timestamp> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

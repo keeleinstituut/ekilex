@@ -108,6 +108,11 @@
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>3.2.0</version>
 				</plugin>
+				<plugin>
+					<groupId>org.jooq</groupId>
+					<artifactId>jooq-codegen-maven</artifactId>
+					<version>3.13.2</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

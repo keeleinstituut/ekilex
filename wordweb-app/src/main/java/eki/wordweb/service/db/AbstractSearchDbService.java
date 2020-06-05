@@ -49,11 +49,15 @@ import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
+import eki.wordweb.service.util.JooqBugCompensator;
 
 public abstract class AbstractSearchDbService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	protected DSLContext create;
+
+	@Autowired
+	protected JooqBugCompensator jooqBugCompensator;
 
 	public abstract Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, List<String> destinLangs, int maxWordCount);
 
@@ -85,7 +89,12 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				.from(wordTable)
 				.where(where)
 				.orderBy(wordTable.LEX_DATASET_EXISTS.desc(), wordTable.LANG_ORDER_BY, wordTable.HOMONYM_NR)
-				.fetchInto(Word.class);
+				.fetch(record -> {
+					Word pojo = record.into(Word.class);
+					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
+					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
+					return pojo;
+				});
 	}
 
 	protected List<Lexeme> getLexemes(MviewWwLexeme l, MviewWwLexemeRelation lr, Condition where) {
@@ -127,7 +136,16 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						.leftOuterJoin(ffsl).on(ffsl.LEXEME_ID.eq(l.LEXEME_ID))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
-				.fetchInto(Lexeme.class);
+				.fetch(record -> {
+					Lexeme pojo = record.into(Lexeme.class);
+					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
+					jooqBugCompensator.trimFreeforms(pojo.getLexemePublicNotes());
+					jooqBugCompensator.trimFreeforms(pojo.getGrammars());
+					jooqBugCompensator.trimFreeforms(pojo.getGovernments());
+					jooqBugCompensator.trimUsages(pojo.getUsages());
+					jooqBugCompensator.trimWordTypeData(pojo.getRelatedLexemes());
+					return pojo;
+				});
 	}
 
 	public Word getWord(Long wordId) {
@@ -157,7 +175,12 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						w.FORMS_EXIST)
 				.from(w.leftOuterJoin(wesl).on(wesl.WORD_ID.eq(wordId)))
 				.where(w.WORD_ID.eq(wordId))
-				.fetchOneInto(Word.class);
+				.fetchOne(record -> {
+					Word pojo = record.into(Word.class);
+					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
+					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
+					return pojo;
+				});
 	}
 
 	public Map<Long, List<Form>> getWordForms(Long wordId, Integer maxDisplayLevel) {
@@ -240,7 +263,13 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 								.leftOuterJoin(dsl).on(dsl.MEANING_ID.eq(m.MEANING_ID)))
 				.where(where)
 				.orderBy(m.MEANING_ID, l.LEXEME_ID)
-				.fetchInto(LexemeMeaningTuple.class);
+				.fetch(record -> {
+					LexemeMeaningTuple pojo = record.into(LexemeMeaningTuple.class);
+					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
+					jooqBugCompensator.trimFreeforms(pojo.getPublicNotes());
+					jooqBugCompensator.trimWordTypeData(pojo.getRelatedMeanings());
+					return pojo;
+				});
 	}
 
 	public WordRelationsTuple getWordRelationsTuple(Long wordId) {
@@ -254,7 +283,12 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						wr.WORD_GROUP_MEMBERS)
 				.from(wr)
 				.where(wr.WORD_ID.eq(wordId))
-				.fetchOptionalInto(WordRelationsTuple.class)
+				.fetchOptional(record -> {
+					WordRelationsTuple pojo = record.into(WordRelationsTuple.class);
+					jooqBugCompensator.trimWordTypeData(pojo.getRelatedWords());
+					jooqBugCompensator.trimWordTypeData(pojo.getWordGroupMembers());
+					return pojo;
+				})
 				.orElse(null);
 	}
 
@@ -308,6 +342,10 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						c.REL_GROUP_ORDER_BY,
 						c.COLLOC_GROUP_ORDER,
 						c.COLLOC_ID)
-				.fetchInto(CollocationTuple.class);
+				.fetch(record -> {
+					CollocationTuple pojo = record.into(CollocationTuple.class);
+					jooqBugCompensator.trimCollocMembers(pojo.getCollocMembers());
+					return pojo;
+				});
 	}
 }

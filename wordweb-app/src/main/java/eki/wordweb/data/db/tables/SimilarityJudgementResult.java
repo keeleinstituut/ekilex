@@ -9,7 +9,7 @@ import eki.wordweb.data.db.Keys;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.SimilarityJudgementResultRecord;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResultRecord> {
 
-    private static final long serialVersionUID = -20789897;
+    private static final long serialVersionUID = 2133246032;
 
     /**
      * The reference instance of <code>public.similarity_judgement_result</code>
@@ -108,7 +108,7 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
     /**
      * The column <code>public.similarity_judgement_result.created</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, LocalDateTime> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Timestamp> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>public.similarity_judgement_result</code> table reference
@@ -220,7 +220,7 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, String, Long, Long, Long, Long, String, String, Boolean, Boolean, Long, LocalDateTime> fieldsRow() {
+    public Row12<Long, String, Long, Long, Long, Long, String, String, Boolean, Boolean, Long, Timestamp> fieldsRow() {
         return (Row12) super.fieldsRow();
     }
 }

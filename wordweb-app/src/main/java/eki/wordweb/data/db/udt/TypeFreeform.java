@@ -4,14 +4,14 @@
 package eki.wordweb.data.db.udt;
 
 
+import eki.wordweb.data.db.Public;
+import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
+
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
-
-import eki.wordweb.data.db.Public;
-import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 
 
 /**
