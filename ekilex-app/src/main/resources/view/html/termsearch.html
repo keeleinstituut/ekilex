@@ -79,7 +79,6 @@
       <div th:replace="termdialog :: add_meaning_data_dlg"></div>
       <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
       <div th:replace="termdialog :: add_definition_dlg"></div>
-      <div th:replace="termdialog :: add_learner_comment_dlg"></div>
       <div th:replace="termdialog :: add_meaning_public_note_dlg"></div>
       <div th:replace="termdialog :: add_meaning_process_log_dlg"></div>
       <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
@@ -307,50 +306,6 @@
                             </button>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </th:block>
-            </div>
-          </div>
-          <div class="row" th:if="${not #lists.isEmpty(meaning.learnerComments)}">
-            <hr/>
-            <div class="col pr-0 col-w13rem">
-              <span class="lbl">
-                Õppekommentaarid
-                <button type="button" class="btn badge badge-success float-right mr-4"
-                        title="Lisa uus"
-                        data-toggle="modal"
-                        th:data-target="${'#addLearnerCommentDlg_' + meaningId}"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-              </span>
-            </div>
-            <div class="col pl-0">
-              <th:block th:each="learnerComment : ${meaning.learnerComments}">
-                <div th:replace="termdialog :: edit_learner_comment_dlg"></div>
-                <div class="row">
-                  <div class="col hidden-buttons">
-                    <div class="action-buttons-anchor">
-                      <span th:utext="${learnerComment.valuePrese}"></span>
-                      <div class="action-buttons-2">
-                        <button type="button" class="btn badge badge-primary"
-                                title="Muuda"
-                                data-toggle="modal"
-                                th:data-target="${'#editLearnerCommentDlg_' + meaningId + '_' + learnerComment.id}"
-                                sec:authorize="#vars.meaning.crudGrant">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-id="${learnerComment.id}"
-                                data-op-code="learner_comment"
-                                data-toggle="delete-confirm"
-                                data-placement="right"
-                                sec:authorize="#vars.meaning.crudGrant">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
                       </div>
                     </div>
                   </div>

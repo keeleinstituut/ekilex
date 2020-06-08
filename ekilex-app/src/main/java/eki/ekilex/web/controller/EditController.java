@@ -165,7 +165,7 @@ public class EditController extends AbstractPageController {
 			cudService.createLexemePublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "meaning_public_note":
-			cudService.createMeaningPublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
+			cudService.createMeaningPublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), itemValue);
@@ -292,7 +292,7 @@ public class EditController extends AbstractPageController {
 			cudService.updateLexemePublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "meaning_public_note":
-			cudService.updateMeaningPublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
+			cudService.updateMeaningPublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "image_title":
 			cudService.updateImageTitle(itemData.getId(), itemValue);
