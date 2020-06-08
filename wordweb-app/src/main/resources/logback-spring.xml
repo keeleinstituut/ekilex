@@ -10,7 +10,7 @@
 			<pattern>${FILE_LOG_PATTERN}</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_PATH}/${LOG_FILE}_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>${LOG_FILE}_%d{yyyy-MM-dd}.log</fileNamePattern>
 		</rollingPolicy>
 	</appender>
 

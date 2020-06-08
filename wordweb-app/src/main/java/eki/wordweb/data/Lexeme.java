@@ -49,7 +49,11 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private List<TypeFreeform> lexemePublicNotes;
 
+	private Map<String, List<TypeFreeform>> lexemePublicNotesByLang;
+
 	private List<TypeFreeform> meaningPublicNotes;
+
+	private Map<String, List<TypeFreeform>> meaningPublicNotesByLang;
 
 	private List<TypeFreeform> grammars;
 
@@ -273,12 +277,28 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.lexemePublicNotes = lexemePublicNotes;
 	}
 
+	public Map<String, List<TypeFreeform>> getLexemePublicNotesByLang() {
+		return lexemePublicNotesByLang;
+	}
+
+	public void setLexemePublicNotesByLang(Map<String, List<TypeFreeform>> lexemePublicNotesByLang) {
+		this.lexemePublicNotesByLang = lexemePublicNotesByLang;
+	}
+
 	public List<TypeFreeform> getMeaningPublicNotes() {
 		return meaningPublicNotes;
 	}
 
 	public void setMeaningPublicNotes(List<TypeFreeform> meaningPublicNotes) {
 		this.meaningPublicNotes = meaningPublicNotes;
+	}
+
+	public Map<String, List<TypeFreeform>> getMeaningPublicNotesByLang() {
+		return meaningPublicNotesByLang;
+	}
+
+	public void setMeaningPublicNotesByLang(Map<String, List<TypeFreeform>> meaningPublicNotesByLang) {
+		this.meaningPublicNotesByLang = meaningPublicNotesByLang;
 	}
 
 	public List<TypeFreeform> getGrammars() {

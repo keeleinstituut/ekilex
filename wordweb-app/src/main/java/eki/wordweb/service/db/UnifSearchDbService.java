@@ -115,7 +115,7 @@ public class UnifSearchDbService extends AbstractSearchDbService {
 				.select(f.WORD_ID)
 				.from(f)
 				.where(f.WORD_ID.eq(w.WORD_ID)
-						.and(f.FORM.lower().eq(searchWordLower))));
+						.and(DSL.lower(f.FORM).eq(searchWordLower))));
 
 		if (CollectionUtils.isNotEmpty(datasetCodes)) {
 			String[] datasetCodesArr = datasetCodes.toArray(new String[0]);

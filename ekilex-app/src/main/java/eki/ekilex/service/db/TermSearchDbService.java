@@ -106,9 +106,9 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 		Condition wheref = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
-			wheref = wheref.and(f1.VALUE.lower().like(maskedSearchFilter));
+			wheref = wheref.and(DSL.lower(f1.VALUE).like(maskedSearchFilter));
 		} else {
-			wheref = wheref.and(f1.VALUE.lower().equal(maskedSearchFilter));
+			wheref = wheref.and(DSL.lower(f1.VALUE).equal(maskedSearchFilter));
 		}
 
 		Table<Record1<Long>> f = DSL

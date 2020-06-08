@@ -29,13 +29,6 @@ import eki.wordweb.data.WordTypeData;
 @Component
 public class WordConversionUtil extends AbstractConversionUtil {
 
-	public void removeTempPlaceholderInMeaningWords(List<Word> words) {
-		if (CollectionUtils.isEmpty(words)) {
-			return;
-		}
-		words.forEach(word -> removeTempPlaceholder(word.getMeaningWords()));
-	}
-
 	public void composeHomonymWrapups(List<Word> words, DataFilter dataFilter) {
 
 		Complexity lexComplexity = dataFilter.getLexComplexity();

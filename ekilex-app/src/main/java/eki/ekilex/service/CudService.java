@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
@@ -36,7 +37,7 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 @Component
-public class CudService extends AbstractService {
+public class CudService extends AbstractService implements GlobalConstant {
 
 	private static final String RAW_RELATION_TYPE = "raw";
 
@@ -172,6 +173,15 @@ public class CudService extends AbstractService {
 	public void updateMeaningPublicNoteOrdering(List<ListData> items) {
 		for (ListData item : items) {
 			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.MEANING, LifecycleProperty.PUBLIC_NOTE, item);
+			createListOrderingLifecycleLog(logData);
+			cudDbService.updateFreeformOrderby(item);
+		}
+	}
+
+	@Transactional
+	public void updateDefinitionPublicNoteOrdering(List<ListData> items) {
+		for (ListData item : items) {
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.DEFINITION, LifecycleProperty.PUBLIC_NOTE, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateFreeformOrderby(item);
 		}
@@ -467,7 +477,8 @@ public class CudService extends AbstractService {
 
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(value, value, valueAsWord, language, morphCode, dataset, meaningId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
+				.createWordAndLexeme(value, value, valueAsWord, language, morphCode, dataset, PROCESS_STATE_PUBLIC, meaningId);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
@@ -776,7 +787,8 @@ public class CudService extends AbstractService {
 	public void createWordAndSynRelation(Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode, String weightStr) {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, null);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
+				.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, PROCESS_STATE_NOT_REVIEWED, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
@@ -809,7 +821,8 @@ public class CudService extends AbstractService {
 	public void deleteWord(Long wordId) {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId);
 		createLifecycleLog(logData);
-		cudDbService.deleteWord(wordId);
+		SimpleWord word = lookupDbService.getSimpleWord(wordId);
+		cudDbService.deleteWord(word);
 	}
 
 	@Transactional

@@ -1,7 +1,6 @@
 package eki.ekilex.config;
 
 import org.jooq.DSLContext;
-import org.jooq.conf.RenderNameStyle;
 import org.jooq.conf.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,6 @@ public class JooqConfig {
 		settings.setExecuteLogging(Boolean.FALSE);
 		settings.setRenderSchema(false);
 		settings.setRenderFormatted(true);
-		settings.setRenderNameStyle(RenderNameStyle.AS_IS);
 
 		configuration.set(new QueryLoggerListener());
 	}

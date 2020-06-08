@@ -75,7 +75,7 @@ create type type_usage as (
 				usage_definitions text array,
 				od_usage_definitions text array,
 				od_usage_alternatives text array);
-create type type_freeform as (freeform_id bigint, type varchar(100), value text, complexity varchar(100));
+create type type_freeform as (freeform_id bigint, type varchar(100), value text, lang char(3), complexity varchar(100));
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_meaning_word as (
 				lexeme_id bigint,

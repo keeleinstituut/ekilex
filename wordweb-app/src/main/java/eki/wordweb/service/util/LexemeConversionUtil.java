@@ -98,7 +98,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		for (Lexeme lexeme : lexemes) {
 
 			Long lexemeId = lexeme.getLexemeId();
-			populateLexeme(lexeme, lexComplexity, displayLang);
+			populateLexeme(lexeme, langOrderByMap, lexComplexity, displayLang);
 			populateUsages(lexeme, wordLang, destinLangs, lexComplexity, displayLang);
 			populateRelatedLexemes(lexeme, lexComplexity, displayLang);
 			populateMeaningWords(lexeme, wordLang, langOrderByMap, destinLangs, lexComplexity, displayLang);
@@ -109,7 +109,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	private void populateLexeme(Lexeme lexeme, Complexity lexComplexity, String displayLang) {
+	private void populateLexeme(Lexeme lexeme, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
 
 		if (DatasetType.LEX.equals(lexeme.getDatasetType())) {
 			lexeme.setDatasetName(null);
@@ -122,7 +122,15 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		List<TypeFreeform> grammars = lexeme.getGrammars();
 		List<TypeFreeform> governments = lexeme.getGovernments();
 
-		lexeme.setLexemePublicNotes(filter(publicNotes, lexComplexity));
+		List<TypeFreeform> filteredPublicNotes = filter(publicNotes, lexComplexity);
+		Map<String, List<TypeFreeform>> publicNotesByLangOrdered = null;
+		if (CollectionUtils.isNotEmpty(filteredPublicNotes)) {
+			Map<String, List<TypeFreeform>> publicNotesByLangUnordered = filteredPublicNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
+			publicNotesByLangOrdered = composeOrderedMap(publicNotesByLangUnordered, langOrderByMap);
+		}
+
+		lexeme.setLexemePublicNotes(filteredPublicNotes);
+		lexeme.setLexemePublicNotesByLang(publicNotesByLangOrdered);
 		lexeme.setGrammars(filter(grammars, lexComplexity));
 		lexeme.setGovernments(filterSimpleOnly(governments, lexComplexity));
 
@@ -204,7 +212,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	private void populateMeaningWords(Lexeme lexeme, String wordLang, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
 		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
-		removeTempPlaceholder(meaningWords);
 		if (CollectionUtils.isEmpty(meaningWords)) {
 			return;
 		}
@@ -289,7 +296,13 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		List<TypeFreeform> publicNotes = tuple.getPublicNotes();
 		applySourceLinks(publicNotes, meaningFreeformSourceLinks);
+		Map<String, List<TypeFreeform>> publicNotesByLangOrdered = null;
+		if (CollectionUtils.isNotEmpty(publicNotes)) {
+			Map<String, List<TypeFreeform>> publicNotesByLangUnordered = publicNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
+			publicNotesByLangOrdered = composeOrderedMap(publicNotesByLangUnordered, langOrderByMap);
+		}
 		lexeme.setMeaningPublicNotes(publicNotes);
+		lexeme.setMeaningPublicNotesByLang(publicNotesByLangOrdered);
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 

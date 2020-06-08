@@ -120,7 +120,7 @@ public class RawRelationLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		} finally {
-			LineIterator.closeQuietly(lineIterator);
+			lineIterator.close();
 		}
 		end();
 	}

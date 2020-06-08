@@ -310,25 +310,35 @@
                 <div th:each="note : ${lexeme.learnerComments}" th:utext="${note}"></div>
               </div>
             </div>
-            <div class="row" th:if="${(not #lists.isEmpty(lexeme.lexemePublicNotes)) or (not #lists.isEmpty(lexeme.meaningPublicNotes))}">
+            <div class="row" th:if="${(not #maps.isEmpty(lexeme.lexemePublicNotesByLang)) or (not #maps.isEmpty(lexeme.meaningPublicNotesByLang))}">
               <div class="col-6">
                 <b th:text="#{label.public.note}">Hea teada</b>
               </div>
               <div class="col-12">
-                <th:block th:if="${not #lists.isEmpty(lexeme.lexemePublicNotes)}">
-                  <div th:each="note : ${lexeme.lexemePublicNotes}" th:utext="${note.value}"></div>
+                <th:block th:if="${not #maps.isEmpty(lexeme.lexemePublicNotesByLang)}">
+                  <div th:each="publicNoteEntry : ${lexeme.lexemePublicNotesByLang}">
+                    <span class="lang-code lang-code-sm mr-2 align-self-start"
+                          th:with="langData=${viewUtil.getLangData(publicNoteEntry.key)}"
+                          th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                    <span th:each="note, noteIter : ${publicNoteEntry.value}" th:utext="${note.value + (noteIter.last ? '' : '; ')}"></span>
+                  </div>
                 </th:block>
-                <th:block th:if="${not #lists.isEmpty(lexeme.meaningPublicNotes)}">
-                  <div th:each="note : ${lexeme.meaningPublicNotes}">
-                    <span th:utext="${note.value}"></span>
-                    <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
-                      <span th:each="sourceLink : ${note.sourceLinks}">
-                        <button type="button" class="source-link btn btn-link-dark pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
-                                th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
-                          <span th:utext="${sourceLink.value}"></span>
-                        </button>
-                      </span>
-                    </th:block>
+                <th:block th:if="${not #maps.isEmpty(lexeme.meaningPublicNotesByLang)}">
+                  <div th:each="publicNoteEntry : ${lexeme.meaningPublicNotesByLang}">
+                    <span class="lang-code lang-code-sm mr-2 align-self-start"
+                          th:with="langData=${viewUtil.getLangData(publicNoteEntry.key)}"
+                          th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                    <span th:each="note, noteIter : ${publicNoteEntry.value}">
+                      <span th:utext="${note.value + (noteIter.last ? '' : '; ')}"></span>
+                      <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
+                        <span th:each="sourceLink : ${note.sourceLinks}">
+                          <button type="button" class="source-link btn btn-link-dark p-0 pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
+                                  th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                            <span th:utext="${sourceLink.value}"></span>
+                          </button>
+                        </span>
+                      </th:block>
+                    </span>
                   </div>
                 </th:block>
               </div>

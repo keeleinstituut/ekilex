@@ -124,7 +124,7 @@
   </div>
 
   <div th:fragment="definitions_data">
-    <div class="d-flex flex-row flex-wrap ml-3" th:each="definition : ${lexeme.meaning.definitions}">
+    <div class="d-flex flex-row flex-wrap ml-3" th:each="definition : ${lexeme.definitions}">
       <div style="display: list-item; position: absolute"></div>
       <span th:utext="${definition.value}"></span>
     </div>

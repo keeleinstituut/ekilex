@@ -1,3 +1,5 @@
+--NB! temp placeholder inserted on all text fields that are wrapped into some custom type since in such cases string values starting with value "null*" are interpreted by jooq as empty/null
+
 -- run this once:
 -- create extension unaccent;
 
@@ -34,7 +36,7 @@ create type type_usage as (
 				usage_definitions text array,
 				od_usage_definitions text array,
 				od_usage_alternatives text array);
-create type type_freeform as (freeform_id bigint, type varchar(100), value text, complexity varchar(100));
+create type type_freeform as (freeform_id bigint, type varchar(100), value text, lang char(3), complexity varchar(100));
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_meaning_word as (
 				lexeme_id bigint,
@@ -403,8 +405,8 @@ from (select w.id as word_id,
                             null,
                             null,
                           	mw.mw_word_id,
-                          	mw.mw_word,
-                          	mw.mw_word_prese,
+                          	' ' || mw.mw_word,
+                          	' ' || mw.mw_word_prese,
                           	mw.mw_homonym_nr,
                           	mw.mw_lang,
                           	mw.mw_word_type_codes,
@@ -427,9 +429,8 @@ from (select w.id as word_id,
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
                                 w2.id mw_word_id,
-                                --NB! temp placeholder inserted because string values starting with "null*" cause jooq to interpret the value as null
-                                '`' || f2.value mw_word,
-                                '`' || f2.value_prese mw_word_prese,
+                                ' ' || f2.value mw_word,
+                                ' ' || f2.value_prese mw_word_prese,
                                 w2.homonym_nr mw_homonym_nr,
                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
@@ -542,8 +543,8 @@ from (select w.id as word_id,
                             wd.lexeme_id,
                             wd.meaning_id,
                             wd.definition_id,
-                            wd.value,
-                            wd.value_prese,
+                            ' ' || wd.value,
+                            ' ' || wd.value_prese,
                             wd.lang,
                             wd.complexity,
                             null
@@ -657,8 +658,8 @@ from (select m.id
                             null,
                             d.meaning_id,
                             d.id,
-                            d.value,
-                            d.value_prese,
+                            ' ' || d.value,
+                            ' ' || d.value_prese,
                             d.lang,
                             d.complexity,
                             d.public_notes
@@ -725,7 +726,7 @@ from (select m.id
                    and   ff.type = 'LEARNER_COMMENT'
                    group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
   left outer join (select mf.meaning_id,
-                          array_agg(row (ff.id, ff.type, ff.value_prese, ff.complexity)::type_freeform order by ff.order_by) public_notes
+                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) public_notes
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
@@ -785,7 +786,7 @@ from lexeme l
                    and   ff.type = 'ADVICE_NOTE'
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ff.value_prese,ff.complexity)::type_freeform order by ff.order_by) public_notes
+                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) public_notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -793,14 +794,14 @@ from lexeme l
                    and   ff.is_public = true
                    group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ff.value_prese,ff.complexity)::type_freeform order by ff.order_by) grammars
+                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) grammars
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GRAMMAR'
                    group by lf.lexeme_id) gramm on gramm.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ff.value_text,ff.complexity)::type_freeform order by ff.order_by) governments
+                          array_agg(row (ff.id, ff.type, ' ' || ff.value_text, ff.lang, ff.complexity)::type_freeform order by ff.order_by) governments
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -824,8 +825,8 @@ from lexeme l
                           	mw.mw_lex_register_codes,
                           	mw.mw_lex_value_state_code,
                           	mw.mw_word_id,
-                          	mw.mw_word,
-                          	mw.mw_word_prese,
+                          	' ' || mw.mw_word,
+                          	' ' || mw.mw_word_prese,
                           	mw.mw_homonym_nr,
                           	mw.mw_lang,
                           	mw.mw_word_type_codes,
@@ -848,7 +849,7 @@ from lexeme l
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
                                 --NB! space sym replaced by temp placeholder because nested complex type array masking failure by postgres
-                                (select array_agg(row (ff.id, ff.type, replace(ff.value_text, ' ', '`'),ff.complexity)::type_freeform order by ff.order_by)
+                                (select array_agg(row (ff.id, ff.type, replace(ff.value_text, ' ', '`'), ff.lang, ff.complexity)::type_freeform order by ff.order_by)
 			                     from lexeme_freeform lf,
 			                          freeform ff
 			                     where lf.lexeme_id = l2.id
@@ -861,9 +862,8 @@ from lexeme l
                    				 group by l_reg.lexeme_id) mw_lex_register_codes,
                    				l2.value_state_code mw_lex_value_state_code,
                                 w2.id mw_word_id,
-                                --NB! temp placeholder inserted because string values starting with "null*" cause jooq to interpret the value as null
-                                '`' || f2.value mw_word,
-                                '`' || f2.value_prese mw_word_prese,
+                                ' ' || f2.value mw_word,
+                                ' ' || f2.value_prese mw_word_prese,
                                 w2.homonym_nr mw_homonym_nr,
                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
@@ -889,8 +889,8 @@ from lexeme l
   left outer join (select u.lexeme_id,
                           array_agg(row (
                             u.usage_id,
-                          	u.usage,
-                          	u.usage_prese,
+                          	' ' || u.usage,
+                          	' ' || u.usage_prese,
                           	u.usage_lang,
                           	u.complexity,
                           	u.usage_type_code,
@@ -1081,7 +1081,7 @@ select l1.id as lexeme_id,
        c.value as colloc_value,
        c.definition as colloc_definition,
        c.usages as colloc_usages,
-       array_agg(row (lw2.lexeme_id,lw2.word_id,lw2.word,lc2.member_form,lw2.homonym_nr,lw2.word_exists,lc2.conjunct,lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members,
+       array_agg(row (lw2.lexeme_id,lw2.word_id,' ' || lw2.word,' ' || lc2.member_form,lw2.homonym_nr,lw2.word_exists,lc2.conjunct,lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members,
        c.complexity
 from collocation as c
   inner join lex_colloc as lc1 on lc1.collocation_id = c.id
@@ -1273,8 +1273,8 @@ from word w
                             null,
                             wr.word_rel_type_code,
                             wr.related_word_id,
-                            wr.related_word,
-                            wr.related_word_prese,
+                            ' ' || wr.related_word,
+                            ' ' || wr.related_word_prese,
                             wr.related_word_homonym_nr,
                             wr.related_word_lang,
                             wr.word_type_codes,
@@ -1326,8 +1326,8 @@ from word w
                             wg.word_group_id,
                             wg.word_rel_type_code,
                             wg.group_member_word_id,
-                            wg.group_member_word,
-                            wg.group_member_word_prese,
+                            ' ' || wg.group_member_word,
+                            ' ' || wg.group_member_word_prese,
                             wg.group_member_homonym_nr,
                             wg.group_member_word_lang,
                             wg.word_type_codes,
@@ -1399,8 +1399,8 @@ select r.lexeme1_id lexeme_id,
        array_agg(row (
          l2.lexeme_id,
          w2.word_id,
-         w2.word,
-         w2.word_prese,
+         ' ' || w2.word,
+         ' ' || w2.word_prese,
          w2.homonym_nr,
          w2.lang,
          w2.word_type_codes,
@@ -1446,8 +1446,8 @@ select r.m1_id meaning_id,
        array_agg(row (
          r.m2_id,
          r.word_id,
-         r.word,
-         r.word_prese,
+         ' ' || r.word,
+         ' ' || r.word_prese,
          r.homonym_nr,
          r.word_lang,
          r.aspect_code,

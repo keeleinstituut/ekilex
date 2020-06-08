@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 import org.apache.catalina.connector.Connector;
+import org.apache.coyote.ajp.AbstractAjpProtocol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -58,6 +59,7 @@ public class WordwebApplication {
 			ajpConnector.setAllowTrace(false);
 			ajpConnector.setScheme("http");
 			ajpConnector.setURIEncoding(StandardCharsets.UTF_8.name());
+			((AbstractAjpProtocol<?>) ajpConnector.getProtocolHandler()).setSecretRequired(false);
 			tomcat.addAdditionalTomcatConnectors(ajpConnector);
 		}
 		return tomcat;

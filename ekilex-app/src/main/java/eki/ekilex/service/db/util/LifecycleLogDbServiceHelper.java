@@ -273,6 +273,7 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 						dff.DEFINITION_ID,
 						ff1.VALUE_TEXT,
 						ff1.VALUE_PRESE,
+						ff1.ORDER_BY,
 						DEFINITION.MEANING_ID)
 				.from(dff, ff1, DEFINITION)
 				.where(

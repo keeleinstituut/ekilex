@@ -6,14 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
+import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
@@ -42,10 +45,11 @@ public class BackController extends AbstractPageController {
 	}
 
 	@GetMapping(LEX_BACK_URI + "/{lexemeId}")
-	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId) throws Exception {
+	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		List<String> datasets = getUserPreferredDatasetCodes();
-		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
+		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId, languagesOrder);
 		String firstWordValue = lexeme.getWordValue();
 		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
 

@@ -362,7 +362,7 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addDefinitionPublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+  <div th:id="${'addDefinitionPublicNoteSourceLinkDlg_' + definition.id + '_' + publicNote.id}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_definition_public_note_source_link_dlg">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">

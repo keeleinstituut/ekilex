@@ -48,6 +48,7 @@ public class PermCalculator {
 
 		for (AbstractCrudEntity crudEntity : crudEntities) {
 			boolean isCrudGrant = false;
+			boolean isAnyGrant = false;
 
 			if (crudEntity instanceof Definition) {
 				Definition definition = (Definition) crudEntity;
@@ -61,9 +62,14 @@ public class PermCalculator {
 				Source source = (Source) crudEntity;
 				Long sourceId = source.getSourceId();
 				isCrudGrant = permissionDbService.isGrantedForSource(userId, sourceId, authItemDataset, crudAuthOps);
+			} else if (crudEntity instanceof Meaning) {
+				Meaning meaning = (Meaning) crudEntity;
+				Long meaningId = meaning.getMeaningId();
+				isAnyGrant = permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
 			}
 
 			crudEntity.setCrudGrant(isCrudGrant);
+			crudEntity.setAnyGrant(isAnyGrant);
 		}
 	}
 
@@ -104,7 +110,7 @@ public class PermCalculator {
 			isCrudGrant = permissionDbService.isGrantedForMeaning(userId, meaningId, datasetCode, authItemDataset, crudAuthOps);
 			isReadGrant = permissionDbService.isGrantedForMeaning(userId, meaningId, datasetCode, authItemDataset, readAuthOps);
 			isSubGrant = permissionDbService.meaningDatasetExists(meaningId, datasetCode);
-			isAnyGrant = permissionDbService.isMeaningAnyLexemeCrudGranted(meaningId, userId);
+			isAnyGrant = permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
 		}
 
 		crudEntity.setCrudGrant(isCrudGrant);

@@ -270,7 +270,9 @@ public class LookupService extends AbstractWordSearchService {
 						lexeme.setGovernments(governments);
 						lexeme.setUsages(usages);
 						Meaning meaning = new Meaning();
+						meaning.setMeaningId(meaningId);
 						meaning.setDefinitions(definitions);
+						permCalculator.applyCrud(meaning, userRole);
 						lexeme.setMeaning(meaning);
 					});
 					lexemeLevelPreseUtil.combineLevels(wordLexemes);
@@ -278,7 +280,7 @@ public class LookupService extends AbstractWordSearchService {
 				}
 			}
 		}
-		lexemes.sort(Comparator.comparing(lexeme -> !permissionDbService.isMeaningAnyLexemeCrudGranted(userId, lexeme.getMeaningId())));
+		lexemes.sort(Comparator.comparing(lexeme -> !lexeme.getMeaning().isAnyGrant()));
 		return lexemes;
 	}
 
@@ -293,14 +295,15 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public List<Meaning> getMeaningsOfJoinCandidates(String searchFilter, List<String> userPrefDatasetCodes, List<ClassifierSelect> languagesOrder,
-			Long excludedMeaningId, Long userId) {
+			Long excludedMeaningId, Long userId, DatasetPermission userRole) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return Collections.emptyList();
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 			List<Meaning> meanings = lookupDbService.getMeanings(searchFilter, searchDatasetsRestriction, excludedMeaningId);
-			meanings.sort(Comparator.comparing(meaning -> !permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaning.getMeaningId())));
+			permCalculator.applyCrud(meanings, userRole);
+			meanings.sort(Comparator.comparing(meaning -> !meaning.isAnyGrant()));
 			meanings.forEach(meaning -> composeMeaningSelectData(meaning, languagesOrder, userId));
 			return meanings;
 		}

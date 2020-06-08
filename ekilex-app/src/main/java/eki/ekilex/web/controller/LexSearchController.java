@@ -206,13 +206,15 @@ public class LexSearchController extends AbstractSearchController {
 	public String searchLexeme(
 			@RequestParam String searchFilter,
 			@RequestParam Long lexemeId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
 		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 
-		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId);
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId, languagesOrder);
 
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();

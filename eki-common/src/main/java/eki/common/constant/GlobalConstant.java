@@ -10,6 +10,8 @@ public interface GlobalConstant {
 
 	String PROCESS_STATE_COMPLETE = "valmis";
 
+	String PROCESS_STATE_NOT_REVIEWED = "läbi vaatamata";
+
 	String VALUE_STATE_MOST_PREFERRED = "eelistermin";
 
 	String VALUE_STATE_LEAST_PREFERRED = "väldi";

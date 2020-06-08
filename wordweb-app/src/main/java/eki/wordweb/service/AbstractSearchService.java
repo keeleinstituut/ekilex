@@ -114,7 +114,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		AbstractSearchDbService searchDbService = getSearchDbService();
 		List<Word> allWords = searchDbService.getWords(searchWord, dataFilter);
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
-		wordConversionUtil.removeTempPlaceholderInMeaningWords(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, dataFilter);
 		wordConversionUtil.selectHomonym(allWords, homonymNr);

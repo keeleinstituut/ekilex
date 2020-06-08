@@ -52,7 +52,6 @@ public class SimpleSearchService extends AbstractSearchService {
 		Word word = simpleSearchDbService.getWord(wordId);
 		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
-		wordConversionUtil.removeTempPlaceholder(word.getMeaningWords());
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = simpleSearchDbService.getWordRelationsTuple(wordId);
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, lexComplexity, displayLang);

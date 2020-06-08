@@ -35,6 +35,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordMeaningRelationsDetails;
 import eki.ekilex.service.CompositionService;
@@ -72,7 +73,9 @@ public class TermEditController extends AbstractPageController {
 	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		Long userId = userContext.getUserId();
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
@@ -82,7 +85,7 @@ public class TermEditController extends AbstractPageController {
 		}
 
 		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(targetMeaningId, languagesOrder, userId);
-		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(searchFilter, userPrefDatasetCodes, languagesOrder, targetMeaningId, userId);
+		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(searchFilter, userPrefDatasetCodes, languagesOrder, targetMeaningId, userId, userRole);
 
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("targetMeaningId", targetMeaningId);
