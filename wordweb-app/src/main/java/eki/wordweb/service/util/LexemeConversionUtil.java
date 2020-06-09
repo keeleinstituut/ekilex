@@ -132,7 +132,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setLexemePublicNotes(filteredPublicNotes);
 		lexeme.setLexemePublicNotesByLang(publicNotesByLangOrdered);
 		lexeme.setGrammars(filter(grammars, lexComplexity));
-		lexeme.setGovernments(filterSimpleOnly(governments, lexComplexity));
+		lexeme.setGovernments(filter(governments, lexComplexity));
 
 		convertUrlsToHrefs(lexeme.getLexemeSourceLinks());
 
@@ -159,7 +159,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 
 		usages = filter(usages, wordLang, destinLangs);
-		usages = filterPreferred(usages, lexComplexity);
+		usages = filter(usages, lexComplexity);
 		lexeme.setUsages(usages);
 
 		for (TypeUsage usage : usages) {
@@ -219,7 +219,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningWords = meaningWords.stream().filter(meaningWord -> !meaningWord.getWordId().equals(lexeme.getWordId())).collect(Collectors.toList());
 		}
 		meaningWords = filter(meaningWords, wordLang, destinLangs);
-		meaningWords = filterSimpleOnly(meaningWords, lexComplexity);
+		meaningWords = filter(meaningWords, lexComplexity);
 
 		for (TypeMeaningWord meaningWord : meaningWords) {
 			String meaningWordLang = meaningWord.getLang();
@@ -268,7 +268,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		if (CollectionUtils.isNotEmpty(definitions)) {
 			definitions = filter(definitions, wordLang, destinLangs);
-			definitions = filterPreferred(definitions, lexComplexity);
+			definitions = filter(definitions, lexComplexity);
 			applySourceLinks(definitions, allDefinitionSourceLinks);
 			lexeme.setDefinitions(definitions);
 			Map<String, List<TypeDefinition>> definitionsByLangUnordered = definitions.stream().collect(Collectors.groupingBy(TypeDefinition::getLang));
@@ -322,7 +322,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 		List<TypeMeaningRelation> relatedMeanings = tuple.getRelatedMeanings();
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
-			relatedMeanings = filterSimpleOnly(relatedMeanings, lexComplexity);
+			relatedMeanings = filter(relatedMeanings, lexComplexity);
 		}
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			for (TypeMeaningRelation meaningRelation : relatedMeanings) {
