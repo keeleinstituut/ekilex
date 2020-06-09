@@ -15,9 +15,11 @@ import eki.common.data.Classifier;
 import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.TypeWordEtymRelation;
 import eki.wordweb.data.Word;
+import eki.wordweb.data.WordEtymLevel;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordEtymology;
 
+//TODO remove the old stuff soon
 @Component
 public class EtymConversionUtil {
 
@@ -33,24 +35,131 @@ public class EtymConversionUtil {
 			classifierUtil.applyClassifiers(tuple, displayLang);
 		});
 
-		Long headwordId = word.getWordId();
 		List<TypeSourceLink> wordEtymSourceLinks = word.getWordEtymSourceLinks();
 
 		Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
 			wordEtymSourceLinkMap = wordEtymSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
 		}
+
+		// oldschool
+		composeWordEtymList(word, wordEtymTuples, wordEtymSourceLinkMap);
+
+		// TODO new tree solution on its way...
+		composeWordEtymTree(word, wordEtymTuples, wordEtymSourceLinkMap);
+	}
+
+	@Deprecated
+	private void composeWordEtymList(Word word, List<WordEtymTuple> wordEtymTuples, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+
 		Map<Long, List<WordEtymTuple>> etymAltsMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId));
 
+		Long headwordId = word.getWordId();
 		WordEtymTuple headwordEtymTuple = etymAltsMap.get(headwordId).get(0);
 		WordEtymology wordEtymology = composeHeadwordEtym(headwordEtymTuple, wordEtymSourceLinkMap);
 		word.setWordEtymology(wordEtymology);
 
 		List<String> etymLevelsWrapup = new ArrayList<>();
 		wordEtymology.setEtymLevelsWrapup(etymLevelsWrapup);
+		
 		composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, headwordId, etymAltsMap, wordEtymSourceLinkMap);
 	}
 
+	private void composeWordEtymTree(Word word, List<WordEtymTuple> wordEtymTuples, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+
+		Map<Long, WordEtymTuple> wordEtymTupleMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId))
+				.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().stream().distinct().collect(Collectors.toList()).get(0)));
+
+		WordEtymTuple headwordEtymTuple = wordEtymTupleMap.get(word.getWordId());
+		WordEtymLevel headwordEtymLevel = composeEtymTree(headwordEtymTuple, wordEtymTupleMap, wordEtymSourceLinkMap);
+		word.setWordEtymologyTree(headwordEtymLevel);
+	}
+
+	private WordEtymLevel composeEtymTree(WordEtymTuple tuple, Map<Long, WordEtymTuple> wordEtymTupleMap, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+
+		WordEtymLevel wordEtymLevel = composeEtymLevel(tuple, tuple.isWordEtymIsQuestionable(), false, tuple.getWordEtymComment(), wordEtymSourceLinkMap);
+
+		String levelWrapup = composeEtymLevelWrapup(tuple, wordEtymSourceLinkMap);
+		if (StringUtils.isNotBlank(levelWrapup)) {
+			wordEtymLevel.setLevelWrapup(levelWrapup);
+		}
+		composeEtymTree(wordEtymLevel, tuple.getWordEtymRelations(), wordEtymTupleMap, wordEtymSourceLinkMap);
+		return wordEtymLevel;
+	}
+
+	@Deprecated
+	private String composeEtymLevelWrapup(WordEtymTuple tuple, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+
+		StringBuilder levelWrapupBuf = new StringBuilder();
+		if (tuple.isWordEtymIsQuestionable()) {
+			levelWrapupBuf.append(" ? ");
+		}
+		if (tuple.getEtymologyType() != null) {
+			levelWrapupBuf.append("<font style='font-variant: small-caps'>");
+			levelWrapupBuf.append(tuple.getEtymologyType().getValue());
+			levelWrapupBuf.append("</font>");
+		}
+		Long wordEtymId = tuple.getWordEtymId();
+		List<TypeSourceLink> wordEtymSourceLinks = wordEtymSourceLinkMap.get(wordEtymId);
+		if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
+			if (levelWrapupBuf.length() > 0) {
+				levelWrapupBuf.append(", ");
+			}
+			//currently there is no source content
+			List<String> wordEtymSourceLinkValues = wordEtymSourceLinks.stream().map(TypeSourceLink::getValue).collect(Collectors.toList());
+			String wordEtymSourceLinkValuesWrapup = StringUtils.join(wordEtymSourceLinkValues, ", ");
+			levelWrapupBuf.append(wordEtymSourceLinkValuesWrapup);
+		}
+		String etymologyYear = tuple.getEtymologyYear();
+		if (StringUtils.isNotEmpty(etymologyYear)) {
+			if (levelWrapupBuf.length() > 0) {
+				levelWrapupBuf.append(", ");
+			}
+			levelWrapupBuf.append(etymologyYear);
+		}
+		String levelWrapup = levelWrapupBuf.toString().trim();
+		return levelWrapup;
+	}
+
+	private void composeEtymTree(
+			WordEtymLevel wordEtymLevel, List<TypeWordEtymRelation> wordEtymRelations,
+			Map<Long, WordEtymTuple> wordEtymTupleMap, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+
+		if (CollectionUtils.isEmpty(wordEtymRelations)) {
+			return;
+		}
+		wordEtymLevel.setTree(new ArrayList<>());
+
+		for (TypeWordEtymRelation relation : wordEtymRelations) {
+			WordEtymTuple relWordEtymTuple = wordEtymTupleMap.get(relation.getRelatedWordId());
+			WordEtymLevel relWordEtymLevel = composeEtymLevel(relWordEtymTuple, relation.isQuestionable(), relation.isCompound(), relation.getComment(), wordEtymSourceLinkMap);
+			wordEtymLevel.getTree().add(relWordEtymLevel);
+			composeEtymTree(relWordEtymLevel, relWordEtymTuple.getWordEtymRelations(), wordEtymTupleMap, wordEtymSourceLinkMap);
+		}
+	}
+
+	private WordEtymLevel composeEtymLevel(WordEtymTuple tuple, boolean questionable, boolean compound, String comment, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+		WordEtymLevel wordEtymLevel = new WordEtymLevel();
+		wordEtymLevel.setWordId(tuple.getWordEtymWordId());
+		wordEtymLevel.setWord(tuple.getWordEtymWord());
+		wordEtymLevel.setLang(tuple.getWordEtymWordLang());
+		wordEtymLevel.setLanguage(tuple.getWordEtymWordLanguage());
+		wordEtymLevel.setMeaningWords(tuple.getWordEtymWordMeaningWords());
+		wordEtymLevel.setEtymologyTypeCode(tuple.getEtymologyTypeCode());
+		wordEtymLevel.setEtymologyType(tuple.getEtymologyType());
+		wordEtymLevel.setEtymYear(tuple.getEtymologyYear());
+		wordEtymLevel.setQuestionable(questionable);
+		wordEtymLevel.setCompound(compound);
+		wordEtymLevel.setComment(comment);
+		List<TypeSourceLink> sourceLinks = wordEtymSourceLinkMap.get(tuple.getWordEtymId());
+		if (CollectionUtils.isNotEmpty(sourceLinks)) {
+			List<String> sourceLinkValues = sourceLinks.stream().map(TypeSourceLink::getValue).collect(Collectors.toList());
+			wordEtymLevel.setSourceLinkValues(sourceLinkValues);
+		}
+		return wordEtymLevel;
+	}
+
+	@Deprecated
 	private WordEtymology composeHeadwordEtym(WordEtymTuple headwordEtymTuple, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
 
 		WordEtymology wordEtymology = new WordEtymology();
@@ -89,6 +198,7 @@ public class EtymConversionUtil {
 		return wordEtymology;
 	}
 
+	@Deprecated
 	private void composeEtymLevelsWrapup(
 			List<String> etymLevelsWrapup,
 			Long headwordId,
@@ -104,6 +214,9 @@ public class EtymConversionUtil {
 		List<Long> etymLevelWordIds = new ArrayList<>();
 		for (WordEtymTuple wordEtymAlt : wordEtymAlts) {
 			List<TypeWordEtymRelation> wordEtymRelations = wordEtymAlt.getWordEtymRelations();
+			if (CollectionUtils.isEmpty(wordEtymRelations)) {
+				continue;
+			}
 			String etymLevelWrapup = composeEtymLevelWrapup(wordEtymRelations, etymAltsMap, wordEtymSourceLinkMap);
 			if (StringUtils.isNotBlank(etymLevelWrapup)) {
 				if (!headwordId.equals(wordId) && wordEtymAlt.isWordEtymIsQuestionable()) {
@@ -125,6 +238,7 @@ public class EtymConversionUtil {
 		}
 	}
 
+	@Deprecated
 	private String composeEtymLevelWrapup(
 			List<TypeWordEtymRelation> wordEtymRelations,
 			Map<Long, List<WordEtymTuple>> etymAltsMap,

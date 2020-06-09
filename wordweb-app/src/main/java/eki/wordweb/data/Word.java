@@ -26,7 +26,10 @@ public class Word extends WordTypeData {
 
 	private List<Classifier> summarisedPoses;
 
+	@Deprecated
 	private WordEtymology wordEtymology;
+
+	private WordEtymLevel wordEtymologyTree;
 
 	private List<TypeSourceLink> wordEtymSourceLinks;
 
@@ -128,6 +131,14 @@ public class Word extends WordTypeData {
 
 	public void setWordEtymology(WordEtymology wordEtymology) {
 		this.wordEtymology = wordEtymology;
+	}
+
+	public WordEtymLevel getWordEtymologyTree() {
+		return wordEtymologyTree;
+	}
+
+	public void setWordEtymologyTree(WordEtymLevel wordEtymologyTree) {
+		this.wordEtymologyTree = wordEtymologyTree;
 	}
 
 	public List<TypeSourceLink> getWordEtymSourceLinks() {
