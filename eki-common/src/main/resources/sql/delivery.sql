@@ -137,3 +137,8 @@ update freeform set complexity = 'DETAIL' where type = 'OD_WORD_RECOMMENDATION';
 update freeform set complexity = 'DETAIL' where type = 'BOOKMARK';
 update freeform set complexity = 'DETAIL' where type = 'PUBLIC_NOTE' and complexity = 'DEFAULT';
 update collocation set complexity = 'ANY' where complexity = 'SIMPLE';
+
+--rõhu märgenduse eemaldamine ё tähelt
+update freeform
+set value_prese = replace(value_prese, '<eki-stress>ё</eki-stress>', 'ё')
+where value_prese like '%<eki-stress>ё</eki-stress>%';
