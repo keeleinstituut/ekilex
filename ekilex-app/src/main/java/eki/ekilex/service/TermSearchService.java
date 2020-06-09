@@ -159,7 +159,6 @@ public class TermSearchService extends AbstractSearchService {
 		List<Classifier> semanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		domains = conversionUtil.removeOrderedClassifierDuplicates(domains);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
-		List<FreeForm> learnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<ImageSourceTuple> imageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
 		List<Image> images = conversionUtil.composeMeaningImages(imageSourceTuples);
 		List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningPublicNoteSourceTuples(meaningId);
@@ -229,7 +228,6 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setDomains(domains);
 		meaning.setSemanticTypes(semanticTypes);
 		meaning.setFreeforms(meaningFreeforms);
-		meaning.setLearnerComments(learnerComments);
 		meaning.setImages(images);
 		meaning.setPublicNoteLangGroups(meaningPublicNoteLangGroups);
 		meaning.setLexemeLangGroups(lexemeLangGroups);

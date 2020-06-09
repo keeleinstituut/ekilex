@@ -135,3 +135,13 @@ $(document).on("show.bs.modal", "[id^=editLexemeWeightDlg_]", function() {
 $(document).on("show.bs.modal", "[id^=editMeaningWordAndLexemeWeightDlg_]", function() {
 	initEditMeaningWordAndLexemeWeightDlg($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=addLearnerCommentDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});
+
+$(document).on("show.bs.modal", "[id^=editLearnerCommentDlg_]", function(e) {
+	initEkiEditorDlg($(this));
+	alignAndFocus(e, $(this));
+});

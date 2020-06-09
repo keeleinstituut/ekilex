@@ -99,16 +99,6 @@ $(document).on("show.bs.modal", "[id^=addMeaningRelationDlg_]", function() {
 	initMultiselectRelationDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addLearnerCommentDlg_]", function(e) {
-	initEkiEditorDlg($(this));
-	alignAndFocus(e, $(this));
-});
-
-$(document).on("show.bs.modal", "[id^=editLearnerCommentDlg_]", function(e) {
-	initEkiEditorDlg($(this));
-	alignAndFocus(e, $(this));
-});
-
 $(document).on("show.bs.modal", "[id^=addImageSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 	initSourceNameAutocomplete($(this));

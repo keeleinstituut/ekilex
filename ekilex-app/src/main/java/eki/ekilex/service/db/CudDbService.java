@@ -744,12 +744,13 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningRelation.getId();
 	}
 
-	public Long createMeaningLearnerComment(Long meaningId, String value, String valuePrese, String languageCode) {
+	public Long createMeaningLearnerComment(Long meaningId, String value, String valuePrese, String lang, Complexity complexity) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.LEARNER_COMMENT.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
-		freeform.setLang(languageCode);
+		freeform.setLang(lang);
+		freeform.setComplexity(complexity.name());
 		freeform.store();
 	
 		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
@@ -779,12 +780,13 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningDomainId;
 	}
 
-	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese, String lang, boolean isPublic) {
+	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.PUBLIC_NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
 		freeform.setLang(lang);
+		freeform.setComplexity(complexity.name());
 		freeform.setIsPublic(isPublic);
 		freeform.store();
 	
@@ -1006,12 +1008,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public Long createOdWordRecommendation(Long wordId, String value, String valuePrese) {
+	public Long createOdWordRecommendation(Long wordId, String value, String valuePrese, Complexity complexity) {
 
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.OD_WORD_RECOMMENDATION.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+		freeform.setComplexity(complexity.name());
 		freeform.store();
 
 		WordFreeformRecord wordFreeform = create.newRecord(WORD_FREEFORM);
@@ -1022,12 +1025,13 @@ public class CudDbService extends AbstractDataDbService {
 		return freeform.getId();
 	}
 
-	public Long createOdLexemeRecommendation(Long lexemeId, String value, String valuePrese) {
+	public Long createOdLexemeRecommendation(Long lexemeId, String value, String valuePrese, Complexity complexity) {
 
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.OD_LEXEME_RECOMMENDATION.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+		freeform.setComplexity(complexity.name());
 		freeform.store();
 
 		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);

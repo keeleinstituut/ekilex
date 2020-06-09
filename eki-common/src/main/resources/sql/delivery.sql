@@ -96,3 +96,49 @@ from meaning_freeform mff
 where ff.lang is null
   and ff.type = 'PUBLIC_NOTE'
   and ff.id = mff.freeform_id;
+
+-- detailsuste muudatused
+insert into definition_type (code, datasets) values ('lühivihje', '{}');
+
+update definition d
+set complexity = 'ANY'
+where d.complexity = 'SIMPLE'
+  and not exists(select d2.id
+                 from definition d2
+                 where d2.meaning_id = d.meaning_id
+                   and d2.id != d.id
+                   and d2.complexity in ('DETAIL', 'ANY'));
+
+update definition
+set complexity = 'ANY',
+    definition_type_code = 'lühivihje',
+    is_public = false
+where complexity in ('SIMPLE2', 'DETAIL2');
+
+update freeform ff
+set complexity = 'SIMPLE'
+where ff.type = 'IMAGE_FILE'
+  and exists(select l.id
+             from lexeme l,
+                  meaning_freeform mff
+             where mff.freeform_id = ff.id
+               and l.meaning_id = mff.meaning_id
+               and l.dataset_code = 'sss');
+
+update definition set complexity = 'DETAIL' where complexity = 'DEFAULT';
+update freeform set complexity = 'DETAIL' where type = 'USAGE' and complexity = 'DEFAULT';
+update freeform set complexity = 'ANY', is_public = false where type = 'USAGE' and complexity = 'DETAIL2';
+update freeform set complexity = 'ANY', is_public = false where type = 'USAGE' and complexity = 'SIMPLE2';
+update freeform set complexity = 'ANY' where type = 'GOVERNMENT';
+update freeform set complexity = 'DETAIL' where type = 'GRAMMAR';
+update freeform set complexity = 'SIMPLE' where type = 'LEARNER_COMMENT';
+update freeform set complexity = 'DETAIL' where type = 'OD_LEXEME_RECOMMENDATION';
+update freeform set complexity = 'DETAIL' where type = 'OD_WORD_RECOMMENDATION';
+update freeform set complexity = 'DETAIL' where type = 'BOOKMARK';
+update freeform set complexity = 'DETAIL' where type = 'PUBLIC_NOTE' and complexity = 'DEFAULT';
+update collocation set complexity = 'ANY' where complexity = 'SIMPLE';
+
+--rõhu märgenduse eemaldamine ё tähelt
+update freeform
+set value_prese = replace(value_prese, '<eki-stress>ё</eki-stress>', 'ё')
+where value_prese like '%<eki-stress>ё</eki-stress>%';
