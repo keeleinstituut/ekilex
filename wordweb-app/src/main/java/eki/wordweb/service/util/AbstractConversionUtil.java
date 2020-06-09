@@ -99,6 +99,9 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		if (Complexity.DEFAULT.equals(dataComplexity)) {
 			return true;
 		}
+		if (Complexity.ANY.equals(dataComplexity)) {
+			return true;
+		}
 		return StringUtils.startsWith(dataComplexity.name(), lexComplexity.name());
 	}
 
