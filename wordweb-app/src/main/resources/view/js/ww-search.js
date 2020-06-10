@@ -16,7 +16,7 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
         history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
         fetchCorpSentences(lang, word);
         setHomonymNrVisibility();
-        $('.word-details [data-toggle="tooltip"]').tooltip();
+        $('.word-details [data-toggle="tooltip"], [data-tooltip="tooltip"]').tooltip();
         $('[data-toggle="popover"]').popover({
             placement: 'top',
             trigger: 'focus'
@@ -109,6 +109,7 @@ $(document).on("click", ".show-more", function () {
         $(this).parents(".dependencies, .collocations-section, .corp-panel")
             .toggleClass("expand");
 
+        /*
         $(this).parents(".meaning-panel, .dependencies, .collocations-section, .corp-panel")
             .find(".colloc-col, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .secondary-morph, .word-options, .sentence-wrapper")
             .toggleClass("fade-target");
@@ -116,6 +117,7 @@ $(document).on("click", ".show-more", function () {
         $(this).parents(".meaning-panel, .dependencies, .collocations-section, .corp-panel")
             .find(".colloc-fulldata .colloc-col:lt(3), .dependencies .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
             .removeClass("fade-target");
+         */
     }
 });
 
