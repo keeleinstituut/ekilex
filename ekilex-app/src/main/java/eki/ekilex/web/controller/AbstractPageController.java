@@ -135,7 +135,6 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 		complexities.add(new ComplexitySelect(Complexity.DETAIL1, true));
 		complexities.add(new ComplexitySelect(Complexity.SIMPLE2, true));
 		complexities.add(new ComplexitySelect(Complexity.DETAIL2, true));
-		complexities.add(new ComplexitySelect(Complexity.DEFAULT, true));
 		return complexities;
 	}
 

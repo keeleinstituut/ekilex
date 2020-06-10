@@ -79,9 +79,6 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		if (dataComplexity == null) {
 			return true;
 		}
-		if (Complexity.DEFAULT.equals(dataComplexity)) {
-			return true;
-		}
 		if (Complexity.ANY.equals(dataComplexity)) {
 			return true;
 		}
