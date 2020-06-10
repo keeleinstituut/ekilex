@@ -18,10 +18,6 @@ function initialise() {
 
 	});
 
-	$(document).on("click", ".popover-close-btn", function() {
-		$(this).parents(".popover").popover('hide');
-	});
-
 	$(document).on("click", "#layerCompleteBtn", function() {
 		let wordId = $(this).data('word-id');
 		setLayerComplete(wordId);
@@ -60,7 +56,7 @@ function initialise() {
 			$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
 
 			$('.syn-stats-popover').popover({
-				template:'<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header" ></h3><button type="button" class="bnt btn-sm btn-outline-light border-0  popover-close-btn"><i class="fa fa-close" aria-hidden="true"></i></button></div><div class="popover-body"></div></div>',
+				template:'<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header"></h3></div><div class="popover-body"></div></div>',
 				placement:'top',
 				content: function() {
 					// Get the content from the hidden sibling.

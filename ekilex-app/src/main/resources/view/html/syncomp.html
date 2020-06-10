@@ -48,17 +48,31 @@
               <i class="fa fa-remove" aria-hidden="true"></i>
             </button>
           </div>
-          <button type="button" class="btn btn-sm px-0 syn-stats-popover" data-toggle="popover" th:data-title="${synRelation.wordValue}" data-html="true">
-            <i class="fa fa-bar-chart action-icon px-2 d-block" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Vaata statistikat"></i>
+          <button type="button" class="btn btn-sm px-0 syn-stats-popover" data-trigger="hover" data-toggle="popover" th:data-title="${synRelation.wordValue}" data-html="true">
+            <i class="fa fa-bar-chart action-icon px-2 d-block" aria-hidden="true"></i>
           </button>
           <div class="syn-stats-content d-none">
-            <ul th:if="${not #lists.isEmpty(synRelation.relationParams)}" class="list-unstyled">
-              <li th:each="relationParam : ${synRelation.relationParams}" class="d-flex flex-row flex-nowrap row">
-                <span class="col-6" th:text="${relationParam.name}">Label </span>
-                <span class="col-6" th:text="${relationParam.value}">Value </span>
-              </li>
-            </ul>
-            <p th:if="${#lists.isEmpty(synRelation.relationParams)}">Andmed puuduvad</p>
+            <div th:if="${not #lists.isEmpty(synRelation.wordLexemesPoses)}">
+              <span>Sõnaliik: </span>
+              <th:block th:each="lexemePos,lexemePosIter : ${synRelation.wordLexemesPoses}">
+                <span th:text="${lexemePos}"></span>
+                <span th:unless="${lexemePosIter.last}">, </span>
+              </th:block>
+            </div>
+            <div th:if="${synRelation.wordLexemesMaxFrequency != null}">
+              <span>Sagedus korpuses: </span>
+              <span th:text="${synRelation.wordLexemesMaxFrequency}"></span>
+            </div>
+            <div>
+              <br>
+              <ul th:if="${not #lists.isEmpty(synRelation.relationParams)}" class="list-unstyled">
+                <li th:each="relationParam : ${synRelation.relationParams}" class="d-flex flex-row flex-nowrap row">
+                  <span class="col-6" th:text="${relationParam.name}">Label </span>
+                  <span class="col-6" th:text="${relationParam.value}">Value </span>
+                </li>
+              </ul>
+              <p th:if="${#lists.isEmpty(synRelation.relationParams)}">Seosetugevuste andmed puuduvad</p>
+            </div>
           </div>
           <span th:if="${synRelation.oppositeRelationStatus != null}"
                 th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}"
