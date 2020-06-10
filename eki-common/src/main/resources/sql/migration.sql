@@ -140,3 +140,6 @@ update collocation set complexity = 'ANY' where complexity = 'SIMPLE';
 update freeform
 set value_prese = replace(value_prese, '<eki-stress>ё</eki-stress>', 'ё')
 where value_prese like '%<eki-stress>ё</eki-stress>%';
+
+update lexeme set complexity = 'DETAIL' where complexity = 'DEFAULT';
+update lexeme set complexity = 'DETAIL' where complexity = 'SIMPLE' and dataset_code = 'rmtk';
