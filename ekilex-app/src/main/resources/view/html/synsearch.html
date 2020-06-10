@@ -22,9 +22,23 @@
       </form>
     </div>
   </div>
-  <div th:replace="syncomp :: syn_word_result_list"></div>
+  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-hidden">
+    <div class="mt-4 float-left" th:if="${noResults}">
+      <div th:text="#{common.not.found}">Not found.</div>
+    </div>
+    <div class="row no-gutters py-3 flex-grow-1 h-100" th:unless="${noResults}">
+      <div class="col-3 pr-2 h-100">
+        <div id="synSearchResultsDiv" class="card shadow navigate-panel h-100 d-flex flex-column" th:if="${not #lists.isEmpty(wordsResult.words)}">
+          <div th:replace="syncomp :: search_result"></div>
+        </div>
+      </div>
+      <div class="col-9 h-100 d-flex flex-column">
+        <div id="syn-details-area"></div>
+      </div>
+    </div>
+  </div>
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${wordId}" id="syn_details_div" class="h-100"
+    <div th:data-id="${wordId}" id="syn-details-area" class="h-100"
          th:with="isWordLexemeCrudGranted=${#vars.details.word.crudGrant}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div th:replace="syndialog :: add_word_process_log_dlg"></div>

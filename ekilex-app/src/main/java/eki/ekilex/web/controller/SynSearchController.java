@@ -125,8 +125,51 @@ public class SynSearchController extends AbstractSearchController {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("noResults", noResults);
+		model.addAttribute("searchUri", searchUri);
 
 		return SYN_SEARCH_PAGE;
+	}
+
+	@PostMapping(SYN_PAGING_URI)
+	public String paging(
+			@RequestParam("offset") int offset,
+			@RequestParam("searchUri") String searchUri,
+			@RequestParam("direction") String direction,
+			Model model) throws Exception {
+
+		SearchUriData searchUriData = searchHelper.parseSearchUri(SYN_SEARCH_PAGE, searchUri);
+
+		String searchMode = searchUriData.getSearchMode();
+		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
+		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		boolean fetchAll = false;
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		LayerName layerName = userContextData.getLayerName();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+		if (StringUtils.isEmpty(userRoleDatasetCode)) {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
+		}
+		List<String> datasetCodes = new ArrayList<>(Arrays.asList(userRoleDatasetCode));
+
+		if (StringUtils.equals("next", direction)) {
+			offset += MAX_RESULTS_LIMIT;
+		} else if (StringUtils.equals("previous", direction)) {
+			offset -= MAX_RESULTS_LIMIT;
+		}
+
+		WordsResult wordsResult;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, layerName, fetchAll, offset);
+		} else {
+			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, layerName, fetchAll, offset);
+		}
+
+		wordsResult.setOffset(offset);
+		model.addAttribute("wordsResult", wordsResult);
+		model.addAttribute("searchUri", searchUri);
+		return SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
 	}
 
 	@GetMapping(SYN_WORD_DETAILS_URI + "/{wordId}")
@@ -193,6 +236,7 @@ public class SynSearchController extends AbstractSearchController {
 		LayerName layerName = userContextData.getLayerName();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
+		// TODO 200 tulemust?
 		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
@@ -203,7 +247,7 @@ public class SynSearchController extends AbstractSearchController {
 		model.addAttribute("selectedWordLanguage", language);
 		model.addAttribute("selectedWordMorphCode", morphCode);
 
-		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
+		return SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
 	}
 
 	@PostMapping(UPDATE_SYN_CANDIDATE_LANGS_URI)

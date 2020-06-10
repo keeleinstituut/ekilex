@@ -128,14 +128,19 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 	public List<ComplexitySelect> getComplexities() {
 
 		List<ComplexitySelect> complexities = new ArrayList<>();
-		complexities.add(new ComplexitySelect(Complexity.DEFAULT, false));
 		complexities.add(new ComplexitySelect(Complexity.SIMPLE, false));
 		complexities.add(new ComplexitySelect(Complexity.DETAIL, false));
+		complexities.add(new ComplexitySelect(Complexity.ANY, false));
 		complexities.add(new ComplexitySelect(Complexity.SIMPLE1, true));
 		complexities.add(new ComplexitySelect(Complexity.DETAIL1, true));
 		complexities.add(new ComplexitySelect(Complexity.SIMPLE2, true));
 		complexities.add(new ComplexitySelect(Complexity.DETAIL2, true));
 		return complexities;
+	}
+
+	@ModelAttribute("enabledComplexities")
+	public List<Complexity> getEnabledComplexities() {
+		return Arrays.asList(Complexity.SIMPLE, Complexity.DETAIL, Complexity.ANY);
 	}
 
 	@ModelAttribute("wordGenders")

@@ -230,23 +230,55 @@
               <div th:each="relationTypeGroup : ${wordData.word.relatedWordTypeGroups}" class="mb-2">
                 <div class="word-grouper-wrapper">
                   <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
-                  <th:block th:each="relation, relationIter : ${relationTypeGroup.relatedWords}"
-                            th:with="
-                            isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
-                            isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-                    <span class="collapsable word-options text-nowrap mb-1" th:data-collapse="${isCollapsable}" th:style="${isCollapsable ? 'display: none' : ''}">
-                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
-                        <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
-                      </a>
-                      <span th:unless="${relationIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
-                    </span>
+                  <th:block th:if="${relationTypeGroup.asList}">
+                    <div>
+                      <th:block th:each="relation, relationIter : ${relationTypeGroup.relatedWords}"
+                                th:with="
+                                isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
+                                isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
+                        <span class="collapsable word-options text-nowrap mb-1" th:data-collapse="${isCollapsable}" th:style="${isCollapsable ? 'display: none' : ''}">
+                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
+                            <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
+                          </a>
+                          <span th:unless="${relationIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
+                        </span>
+                      </th:block>
+                    </div>
+                    <button class="show-more btn btn-link-muted btn-sm ml-n2" aria-expanded="false" th:data-see-more="#{button.see.more}"
+                            name="expand-btn" th:data-see-less="#{button.see.less}"
+                            th:if="${#lists.size(relationTypeGroup.relatedWords) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
+                      <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
+                      <span th:text="#{button.see.more}"></span>
+                    </button>
+                  </th:block>
+                  <th:block th:if="${relationTypeGroup.asMap}">
+                    <th:block th:each="relationEntry : ${relationTypeGroup.relatedWordsByLang}">
+                      <div class="d-flex flex-wrap">
+                        <span class="lang-code lang-code-sm mr-2 align-self-start" 
+                              th:with="langData=${viewUtil.getLangData(relationEntry.key)}" 
+                              th:text="${langData.codeIso2}" th:title="${langData.label}">
+                        </span>
+                        <th:block th:each="relation, relationIter : ${relationEntry.value}"
+                                  th:with="
+                                  isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
+                                  isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
+                          <span class="collapsable word-options text-nowrap mb-1" th:data-collapse="${isCollapsable}" th:style="${isCollapsable ? 'display: none' : ''}">
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
+                              <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
+                            </a>
+                            <span th:unless="${relationIter.last}" class="ml-n1 mr-1">,</span>
+                          </span>
+                        </th:block>
+                      </div>
+                      <button class="show-more btn btn-link-muted btn-sm ml-n2" aria-expanded="false" th:data-see-more="#{button.see.more}"
+                              name="expand-btn" th:data-see-less="#{button.see.less}"
+                              th:if="${#lists.size(relationEntry.value) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
+                        <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
+                        <span th:text="#{button.see.more}"></span>
+                      </button>
+                    </th:block>
                   </th:block>
                 </div>
-                <button class="show-more btn btn-link-muted btn-sm ml-n2" aria-expanded="false" th:data-see-more="#{button.see.more}"
-                        name="expand-btn" th:data-see-less="#{button.see.less}" th:if="${relationTypeGroup.seeMore}">
-                  <i class="show-more-arrow fa fa-angle-down" aria-hidden="true"></i>
-                  <span th:text="#{button.see.more}"></span>
-                </button>
               </div>
             </div>
           </div>
@@ -254,7 +286,7 @@
       </div>
     </section>
   </th:block>
-  <th:block th:fragment="etymology">
+  <th:block th:fragment="etymology_old">
     <section class="level-3-panel row">
       <div class="col">
         <h5 class="font-weight-bold d-flex align-items-center text-dark">
@@ -282,6 +314,61 @@
         </div>
       </div>
     </section>
+  </th:block>
+  <th:block th:fragment="etymology_new">
+    <section class="level-3-panel row">
+      <div class="col">
+        <h5 class="font-weight-bold d-flex align-items-center text-dark">
+          <span th:text="#{label.word.etymology}">Päritolu</span>
+          <button type="button" th:aria-label="#{label.word.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}">
+            <i class="fas fa-info-circle"></i>
+          </button>
+          <th:block th:if="${wordData.word.wordEtymologyTree != null}">
+            <span class="tag">
+              <span th:if="${wordData.word.wordEtymologyTree.etymologyType != null}" th:text="${wordData.word.wordEtymologyTree.etymologyType.value}" style='font-variant: small-caps'></span>
+            </span>
+          </th:block>
+        </h5>
+        <div th:if="${wordData.word.wordEtymologyTree == null}">
+          <span th:text="#{label.no.data}">Andmed puuduvad</span>
+        </div>
+        <div th:if="${wordData.word.wordEtymologyTree != null}">
+          <ul class="list-unstyled etymology-tree">
+            <th:block th:with="etymLevel = ${wordData.word.wordEtymologyTree}" th:include=" :: etymology_level"></th:block>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </th:block>
+  <th:block th:fragment="etymology_level">
+    <li class="align-items-start">
+      <div>
+        <span class="lang-code lang-code-sm mr-2 align-self-start"
+              th:with="langData=${viewUtil.getLangData(etymLevel.lang)}"
+              th:text="${langData.codeIso2}" th:title="${langData.label}">
+        </span>
+        <span>
+          <span th:if="${etymLevel.compound}">+</span>
+          <span th:if="${etymLevel.questionable}">?</span>
+          <i th:utext="${etymLevel.word}"></i>
+          <span th:if="${not #lists.isEmpty(etymLevel.meaningWords)}" th:utext="${'''' + #strings.listJoin(etymLevel.meaningWords, ', ') + ''''}"></span>
+          <th:block th:if="${not #lists.isEmpty(etymLevel.sourceLinkValues)}">
+            <span>(</span>
+            <span th:text="${#strings.listJoin(etymLevel.sourceLinkValues, ', ')}" class="ml-n1"></span>
+            <span th:if="${etymLevel.etymYear != null}" th:text="${etymLevel.etymYear}"></span>
+            <span class="ml-n1">)</span>            
+          </th:block>
+          <span th:if="${etymLevel.comment != null}" th:utext="${etymLevel.comment}"></span>
+        </span>
+      </div>
+      <th:block th:if="${not #lists.isEmpty(etymLevel.tree)}">
+        <ul class="list-unstyled etymology-tree">
+          <th:block th:each="nextEtymLevel : ${etymLevel.tree}">
+            <th:block th:with="etymLevel = ${nextEtymLevel}" th:include=" :: etymology_level"></th:block>
+          </th:block>
+        </ul>
+      </th:block>
+    </li>
   </th:block>
   <th:block th:fragment="keelenou">
     <section class="level-3-panel row">

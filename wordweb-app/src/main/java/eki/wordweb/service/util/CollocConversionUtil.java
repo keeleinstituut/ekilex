@@ -41,7 +41,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		}
 
 		Complexity lexComplexity = dataFilter.getLexComplexity();
-		collocTuples = filterSimpleOnly(collocTuples, lexComplexity);
+		collocTuples = filter(collocTuples, lexComplexity);
 		collocTuples = filterCollocsByMostMembers(collocTuples);
 
 		Map<Long, Lexeme> lexemeMap = lexemes.stream().collect(Collectors.toMap(Lexeme::getLexemeId, lexeme -> lexeme));

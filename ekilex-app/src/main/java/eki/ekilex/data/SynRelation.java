@@ -41,6 +41,10 @@ public class SynRelation extends AbstractDataObject implements DecoratedWordType
 
 	private List<String> wordDefinitions;
 
+	private List<String> wordLexemesPoses;
+
+	private Float wordLexemesMaxFrequency;
+
 	public Long getId() {
 		return id;
 	}
@@ -181,4 +185,19 @@ public class SynRelation extends AbstractDataObject implements DecoratedWordType
 		this.wordDefinitions = wordDefinitions;
 	}
 
+	public List<String> getWordLexemesPoses() {
+		return wordLexemesPoses;
+	}
+
+	public void setWordLexemesPoses(List<String> wordLexemesPoses) {
+		this.wordLexemesPoses = wordLexemesPoses;
+	}
+
+	public Float getWordLexemesMaxFrequency() {
+		return wordLexemesMaxFrequency;
+	}
+
+	public void setWordLexemesMaxFrequency(Float wordLexemesMaxFrequency) {
+		this.wordLexemesMaxFrequency = wordLexemesMaxFrequency;
+	}
 }

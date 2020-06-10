@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
+import eki.common.data.OrderedMap;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.ComplexityType;
@@ -58,28 +59,27 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		}
 	}
 
+	protected <T> OrderedMap<String, List<T>> composeOrderedMap(Map<String, List<T>> langKeyUnorderedMap, Map<String, Long> langOrderByMap) {
+		return langKeyUnorderedMap.entrySet().stream()
+				.sorted((entry1, entry2) -> {
+					Long orderBy1 = langOrderByMap.get(entry1.getKey());
+					Long orderBy2 = langOrderByMap.get(entry2.getKey());
+					if (orderBy1 == null) {
+						return 0;
+					}
+					if (orderBy2 == null) {
+						return 0;
+					}
+					return orderBy1.compareTo(orderBy2);
+				})
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, OrderedMap::new));
+	}
+
 	protected <T extends ComplexityType> List<T> filterSimpleOnly(List<T> list, Complexity lexComplexity) {
 		if ((lexComplexity != null) && Complexity.SIMPLE.equals(lexComplexity)) {
 			return filter(list, lexComplexity);
 		}
 		return list;
-	}
-
-	protected <T extends ComplexityType> List<T> filterPreferred(List<T> list, Complexity lexComplexity) {
-		if (CollectionUtils.isEmpty(list)) {
-			return list;
-		} else if (Complexity.DETAIL.equals(lexComplexity)) {
-			List<Complexity> preferredComplexityHierarchy = Arrays.asList(PREFERRED_COMPLEXITY_HIERARCHY);
-			List<Complexity> providedComplexities = list.stream()
-					.map(ComplexityType::getComplexity)
-					.filter(complexity -> complexity != null)
-					.distinct()
-					.sorted((complexity1, complexity2) -> preferredComplexityHierarchy.indexOf(complexity1) - preferredComplexityHierarchy.indexOf(complexity2))
-					.collect(Collectors.toList());
-			Complexity suggestedLexComplexity = providedComplexities.get(0);
-			return filter(list, suggestedLexComplexity);
-		}
-		return filter(list, lexComplexity);
 	}
 
 	protected <T extends ComplexityType> List<T> filter(List<T> list, Complexity lexComplexity) {
@@ -96,7 +96,7 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		if (dataComplexity == null) {
 			return true;
 		}
-		if (Complexity.DEFAULT.equals(dataComplexity)) {
+		if (Complexity.ANY.equals(dataComplexity)) {
 			return true;
 		}
 		return StringUtils.startsWith(dataComplexity.name(), lexComplexity.name());

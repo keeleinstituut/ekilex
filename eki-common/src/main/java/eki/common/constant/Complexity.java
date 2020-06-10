@@ -2,11 +2,13 @@ package eki.common.constant;
 
 public enum Complexity {
 
-	DEFAULT,//term
 	SIMPLE,
 	DETAIL,
+	ANY,
 	SIMPLE1,//ps
 	DETAIL1,//ss
 	SIMPLE2,//qq
-	DETAIL2//ev
+	DETAIL2,//ev
+	@Deprecated
+	DEFAULT,//term
 }

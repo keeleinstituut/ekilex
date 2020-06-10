@@ -1127,14 +1127,13 @@ order by l1.level1,
 -- etymology - OK
 create view view_ww_word_etymology
 as
-with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, word_etym_rel_id, related_word_id, related_word_ids) as
+with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, related_word_id, related_word_ids) as
 (
   (
     select
       we.word_id,
       we.word_id word_etym_word_id,
       we.id word_etym_id,
-      wer.id word_etym_rel_id,
       wer.related_word_id,
       array[we.word_id] as related_word_ids
     from
@@ -1150,7 +1149,6 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, wo
         rec.word_id,
         we.word_id word_etym_word_id,
         we.id word_etym_id,
-        wer.id word_etym_rel_id,
         wer.related_word_id,
         (
           rec.related_word_ids || we.word_id
@@ -1178,16 +1176,7 @@ select
   we.comment_prese word_etym_comment,
   we.is_questionable word_etym_is_questionable,
   we.order_by word_etym_order_by,
-  array_agg(
-    row(
-      wer.id,
-      wer.comment_prese,
-      wer.is_questionable,
-      wer.is_compound,
-      wer.related_word_id
-    ):: type_word_etym_relation
-    order by wer.order_by
-  ) word_etym_relations
+  wer.word_etym_relations
 from
   word_etym_recursion rec
   inner join word_etymology we on we.id = rec.word_etym_id
@@ -1219,7 +1208,23 @@ from
     group by
       w.id
   ) w on w.id = rec.word_etym_word_id
-  left outer join word_etymology_relation wer on wer.id = rec.word_etym_rel_id
+  left outer join (
+    select
+      wer.word_etym_id,
+      array_agg(
+        row(
+            wer.id,
+            wer.comment_prese,
+            wer.is_questionable,
+            wer.is_compound,
+            wer.related_word_id
+        ):: type_word_etym_relation
+        order by wer.order_by
+      ) word_etym_relations
+    from
+      word_etymology_relation wer
+    group by wer.word_etym_id
+  ) wer on wer.word_etym_id = rec.word_etym_id
   left outer join (
     select
       l1.word_id,
@@ -1256,7 +1261,8 @@ group by
   we.id,
   w.id,
   w.word,
-  w.lang
+  w.lang,
+  wer.word_etym_relations
 order by
   rec.word_id,
   we.order_by;

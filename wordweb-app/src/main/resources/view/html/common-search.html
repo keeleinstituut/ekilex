@@ -246,7 +246,8 @@
                   <div class="d-flex flex-wrap">
                     <span class="lang-code lang-code-sm mr-2 align-self-start" 
                           th:with="langData=${viewUtil.getLangData(meaningWordEntry.key)}" 
-                          th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                          th:text="${langData.codeIso2}" th:title="${langData.label}">
+                    </span>
                     <th:block th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}"
                               th:with="
                               isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},

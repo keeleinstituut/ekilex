@@ -140,7 +140,6 @@
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
-                  <option value="addLearnerCommentDlg" sec:authorize="#vars.meaning.crudGrant">Õppekommentaar</option>
                   <option value="addMeaningPublicNoteDlg" sec:authorize="#vars.meaning.crudGrant">Märkus</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse seos</option>
                   <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant">Semantiline tüüp</option>
@@ -456,7 +455,7 @@
             <input type="hidden" name="language" th:value="${lexeme.word.lang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group form-check">
               <label class="form-check-label">
@@ -497,7 +496,7 @@
     </div>
   </div>
   <div th:id="${'addLexemeRelationDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_relation_dlg">
-    <div class="modal-dialog" role="document" style="max-width: 600px;">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/lexemesearch}">
@@ -551,7 +550,7 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_public_note">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -642,6 +641,7 @@
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_public_note">
             <input type="hidden" name="value">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -677,6 +677,7 @@
             <input type="hidden" name="id" th:value="${publicNote.id}">
             <input type="hidden" name="opCode" value="meaning_public_note">
             <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
+            <input type="hidden" name="complexity" th:value="${publicNote.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -754,7 +755,7 @@
             <input type="hidden" name="language" value="est">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DEFAULT}">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-8">
@@ -946,45 +947,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLearnerCommentDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_learner_comment_dlg">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${meaningId}">
-            <input type="hidden" name="language" value="est"><!-- FIXME what lang? -->
-            <input type="hidden" name="opCode" value="learner_comment">
-            <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editLearnerCommentDlg_' + meaningId + '_' + learnerComment.id}" class="modal" role="dialog" th:fragment="edit_learner_comment_dlg">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${learnerComment.id}">
-            <input type="hidden" name="opCode" value="learner_comment">
-            <input type="hidden" name="value" th:value="${learnerComment.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'addMeaningRelationDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_relation_dlg">
-    <div class="modal-dialog" role="document" style="max-width: 600px;">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/meaningsearch}">

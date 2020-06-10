@@ -1,6 +1,5 @@
 package eki.wordweb.constant;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
 
 public interface SystemConstant {
@@ -24,8 +23,6 @@ public interface SystemConstant {
 	String[] SUPPORTED_DETAIL_DESTIN_LANG_FILTERS = new String[] {DESTIN_LANG_ALL, DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS, DESTIN_LANG_OTHER};
 
 	String[] SUPPORTED_SIMPLE_DESTIN_LANG_FILTERS = new String[] {DESTIN_LANG_ALL, DESTIN_LANG_EST, DESTIN_LANG_RUS};
-
-	Complexity[] PREFERRED_COMPLEXITY_HIERARCHY = new Complexity[] {Complexity.DETAIL, Complexity.DETAIL1, Complexity.SIMPLE, Complexity.SIMPLE1, Complexity.DEFAULT, Complexity.DETAIL2, Complexity.SIMPLE2};
 
 	String DATASET_TYPE_LEX = "lex";
 

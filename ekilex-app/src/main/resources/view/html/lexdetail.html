@@ -417,6 +417,7 @@
                   <div class="action-buttons-anchor">
                     <div class="pr-3">
                       <span th:utext="${odLexemeRecommendation.valuePrese}"></span>
+                      <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odLexemeRecommendation.complexity}} + ')'"></span>
                     </div>
                     <div class="action-buttons-2">
                       <button type="button" class="btn badge badge-primary"
@@ -493,6 +494,7 @@
                 <div class="col hidden-buttons">
                   <div class="action-buttons-anchor">
                     <span th:utext="${learnerComment.valuePrese}"></span>
+                    <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${learnerComment.complexity}} + ')'"></span>
                     <div class="action-buttons-2">
                       <button type="button" class="btn badge badge-primary"
                               title="Muuda"
@@ -1152,6 +1154,7 @@
                   </div>
                   <div class="invisible-buttons action-buttons-anchor mw-90">
                     <span th:utext="${publicNote.valuePrese}"></span>
+                    <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${publicNote.complexity}} + ')'" th:if="${lexeme.meaning.crudGrant}"></span>
                     <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.meaning.crudGrant}"></span>
                     <div class="action-buttons-2">
                       <button type="button" class="btn badge badge-primary"

@@ -4,6 +4,7 @@ insert into aspect (code, datasets) values ('сов. и несов.', '{}');
 insert into definition_type (code, datasets) values ('määramata', '{}');
 insert into definition_type (code, datasets) values ('definitsioon', '{}');
 insert into definition_type (code, datasets) values ('selgitus', '{}');
+insert into definition_type (code, datasets) values ('lühivihje', '{}');
 insert into deriv (code, datasets) values ('adv', '{}');
 insert into deriv (code, datasets) values ('dem', '{}');
 insert into deriv (code, datasets) values ('komp', '{}');

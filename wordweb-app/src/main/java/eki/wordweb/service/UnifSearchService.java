@@ -42,10 +42,11 @@ public class UnifSearchService extends AbstractSearchService {
 	@Override
 	public WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang) {
 
-		// query params
+		// query params + common data
 		DataFilter dataFilter = getDataFilter(searchFilter);
 		Integer maxDisplayLevel = dataFilter.getMaxDisplayLevel();
 		Complexity lexComplexity = dataFilter.getLexComplexity();
+		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 
 		// word data
 		Word word = unifSearchDbService.getWord(wordId);
@@ -53,13 +54,12 @@ public class UnifSearchService extends AbstractSearchService {
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = unifSearchDbService.getWordRelationsTuple(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, lexComplexity, displayLang);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLang);
 		List<WordEtymTuple> wordEtymTuples = unifSearchDbService.getWordEtymologyTuples(wordId);
 		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = unifSearchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
-		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 
 		// lexeme data
 		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);

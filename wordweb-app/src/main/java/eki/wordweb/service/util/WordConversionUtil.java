@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -109,7 +110,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	public void composeWordRelations(Word word, WordRelationsTuple wordRelationsTuple, Complexity lexComplexity, String displayLang) {
+	public void composeWordRelations(Word word, WordRelationsTuple wordRelationsTuple, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
 
 		if (wordRelationsTuple == null) {
 			return;
@@ -144,12 +145,12 @@ public class WordConversionUtil extends AbstractConversionUtil {
 									.collect(Collectors.groupingBy(wordRelation -> StringUtils.equals(word.getLang(), wordRelation.getLang())));
 							List<TypeWordRelation> relatedWordsAsSyn = wordRelationSynOrMatchMap.get(Boolean.TRUE);
 							Classifier wordRelTypeSyn = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.syn");
-							appendRelatedWordTypeGroup(word, wordRelTypeSyn, relatedWordsAsSyn);
+							appendRelatedWordTypeGroup(word, wordRelTypeSyn, relatedWordsAsSyn, null);
 							List<TypeWordRelation> relatedWordsAsMatch = wordRelationSynOrMatchMap.get(Boolean.FALSE);
 							Classifier wordRelTypeMatch = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.match");
-							appendRelatedWordTypeGroup(word, wordRelTypeMatch, relatedWordsAsMatch);
+							appendRelatedWordTypeGroup(word, wordRelTypeMatch, relatedWordsAsMatch, langOrderByMap);
 						} else {
-							appendRelatedWordTypeGroup(word, wordRelType, relatedWordsOfType);
+							appendRelatedWordTypeGroup(word, wordRelType, relatedWordsOfType, null);
 						}
 					}
 				}
@@ -187,15 +188,22 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		word.setWordRelationsExist(wordRelationsExist);
 	}
 
-	private void appendRelatedWordTypeGroup(Word word, Classifier wordRelType, List<TypeWordRelation> relatedWordsOfType) {
+	private void appendRelatedWordTypeGroup(Word word, Classifier wordRelType, List<TypeWordRelation> relatedWordsOfType, Map<String, Long> langOrderByMap) {
 		if (CollectionUtils.isEmpty(relatedWordsOfType)) {
 			return;
 		}
-		boolean isSeeMore = relatedWordsOfType.size() > WORD_RELATIONS_DISPLAY_LIMIT;
 		WordRelationGroup wordRelationGroup = new WordRelationGroup();
 		wordRelationGroup.setWordRelType(wordRelType);
-		wordRelationGroup.setRelatedWords(relatedWordsOfType);
-		wordRelationGroup.setSeeMore(isSeeMore);
+
+		if (MapUtils.isNotEmpty(langOrderByMap)) {
+			Map<String, List<TypeWordRelation>> relatedWordsByLangUnordered = relatedWordsOfType.stream().collect(Collectors.groupingBy(TypeWordRelation::getLang));
+			Map<String, List<TypeWordRelation>> relatedWordsByLangOrdered = composeOrderedMap(relatedWordsByLangUnordered, langOrderByMap);
+			wordRelationGroup.setRelatedWordsByLang(relatedWordsByLangOrdered);
+			wordRelationGroup.setAsMap(true);
+		} else {
+			wordRelationGroup.setRelatedWords(relatedWordsOfType);	
+			wordRelationGroup.setAsList(true);
+		}
 		word.getRelatedWordTypeGroups().add(wordRelationGroup);
 	}
 

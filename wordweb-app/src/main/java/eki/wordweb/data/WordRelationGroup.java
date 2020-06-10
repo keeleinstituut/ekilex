@@ -1,6 +1,7 @@
 package eki.wordweb.data;
 
 import java.util.List;
+import java.util.Map;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
@@ -13,7 +14,11 @@ public class WordRelationGroup extends AbstractDataObject {
 
 	private List<TypeWordRelation> relatedWords;
 
-	private boolean seeMore;
+	private Map<String, List<TypeWordRelation>> relatedWordsByLang;
+
+	private boolean asList;
+
+	private boolean asMap;
 
 	public Classifier getWordRelType() {
 		return wordRelType;
@@ -31,12 +36,28 @@ public class WordRelationGroup extends AbstractDataObject {
 		this.relatedWords = relatedWords;
 	}
 
-	public boolean isSeeMore() {
-		return seeMore;
+	public Map<String, List<TypeWordRelation>> getRelatedWordsByLang() {
+		return relatedWordsByLang;
 	}
 
-	public void setSeeMore(boolean seeMore) {
-		this.seeMore = seeMore;
+	public void setRelatedWordsByLang(Map<String, List<TypeWordRelation>> relatedWordsByLang) {
+		this.relatedWordsByLang = relatedWordsByLang;
+	}
+
+	public boolean isAsList() {
+		return asList;
+	}
+
+	public void setAsList(boolean asList) {
+		this.asList = asList;
+	}
+
+	public boolean isAsMap() {
+		return asMap;
+	}
+
+	public void setAsMap(boolean asMap) {
+		this.asMap = asMap;
 	}
 
 }
