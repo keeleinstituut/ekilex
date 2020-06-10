@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
+import eki.common.data.OrderedMap;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.ComplexityType;
@@ -56,6 +57,22 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 				}
 			}
 		}
+	}
+
+	protected <T> OrderedMap<String, List<T>> composeOrderedMap(Map<String, List<T>> langKeyUnorderedMap, Map<String, Long> langOrderByMap) {
+		return langKeyUnorderedMap.entrySet().stream()
+				.sorted((entry1, entry2) -> {
+					Long orderBy1 = langOrderByMap.get(entry1.getKey());
+					Long orderBy2 = langOrderByMap.get(entry2.getKey());
+					if (orderBy1 == null) {
+						return 0;
+					}
+					if (orderBy2 == null) {
+						return 0;
+					}
+					return orderBy1.compareTo(orderBy2);
+				})
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, OrderedMap::new));
 	}
 
 	protected <T extends ComplexityType> List<T> filterSimpleOnly(List<T> list, Complexity lexComplexity) {
