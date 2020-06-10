@@ -42,22 +42,22 @@ function initialise() {
 		$("#syn_select_wait_" + id).show();
 		openWaitDlg();
 
-		let detailsUrl =  applicationUrl + "syn_worddetails/" + id;
+		let detailsUrl = applicationUrl + "syn_worddetails/" + id;
 		if (markedSynWordId != undefined) {
 			detailsUrl += '?markedSynWordId=' + markedSynWordId;
 		}
 
 		$.get(detailsUrl).done(function(data) {
-			let detailsDiv = $('#syn_details_div');
+			let detailsDiv = $('#syn-details-area');
 			detailsDiv.replaceWith(data);
 			$('.tooltip').remove();
 			closeWaitDlg();
 			$("#syn_select_wait_" + id).hide();
-			$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
+			$('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
 
 			$('.syn-stats-popover').popover({
-				template:'<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header"></h3></div><div class="popover-body"></div></div>',
-				placement:'top',
+				template: '<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header"></h3></div><div class="popover-body"></div></div>',
+				placement: 'top',
 				content: function() {
 					// Get the content from the hidden sibling.
 					return $(this).siblings('.syn-stats-content').html();
@@ -83,10 +83,10 @@ function initialise() {
 			$(document).find('.droppable-meaning').droppable({
 				accept: function(draggableDiv) {
 					let draggableLexemeId = draggableDiv.closest('.droppable-lexeme').attr('data-lexeme-id');
-					let droppableLexemeId =  $(this).closest('.droppable-lexeme').attr('data-lexeme-id');
+					let droppableLexemeId = $(this).closest('.droppable-lexeme').attr('data-lexeme-id');
 
 					return draggableLexemeId === droppableLexemeId;
-					}
+				}
 				,
 				greedy: true,
 				classes: {
@@ -238,6 +238,88 @@ function initialise() {
 		let dlg = $("#selectSynMeaningWordLangDlg");
 		validateAndSubmitLangSelectForm(dlg);
 	});
+
+	$(document).on('click', '[name="pagingBtn"]', function() {
+		openWaitDlg();
+		let url = applicationUrl + "syn_paging";
+		let button = $(this);
+		let direction = button.data("direction");
+		let form = button.closest('form');
+		form.find('input[name="direction"]').val(direction);
+
+		$.ajax({
+			url: url,
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function (data) {
+			closeWaitDlg();
+			$('#synSearchResultsDiv').html(data);
+			$('#synSearchResultsDiv').parent().scrollTop(0);
+			$('#syn-details-area').empty();
+		}).fail(function (data) {
+			console.log(data);
+			closeWaitDlg();
+			openAlertDlg('Lehekülje muutmine ebaõnnestus');
+		});
+
+	});
+}
+
+function initAddSynRelationDlg(addDlg) {
+	addDlg.find('.form-control').val(null);
+	addDlg.find('[data-name=dialogContent]').html(null);
+	let idElementName = 'word-id';
+
+	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+		e.preventDefault();
+		let button = $(this);
+		let content = button.html();
+		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+		let theForm = $(this).closest('form');
+		let url = theForm.attr('action') + '?' + theForm.serialize();
+		$.get(url).done(function(data) {
+			addDlg.find('[data-name=dialogContent]').replaceWith(data);
+			addDlg.find('button[data-' + idElementName + ']').off('click').on('click', function(e) {
+				e.preventDefault();
+				let button = $(e.target);
+				addDlg.find('[name=id2]').val(button.data(idElementName));
+				addDlg.find('[name=opCode]').val('create_raw_relation');
+				let weightValue = $("#weightInput").val();
+				addDlg.find('[name=value2]').val(weightValue);
+				let theForm = button.closest('form');
+				if (checkRequiredFields(theForm)) {
+					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+						addDlg.modal('hide');
+					});
+				}
+			});
+
+			addDlg.find('#addSynRelationWord').on('click', function(e) {
+				e.preventDefault();
+				let button = $(e.target);
+				addDlg.find('[name=opCode]').val('create_syn_word');
+				let weightValue = $("#weightInput").val();
+				addDlg.find('[name=value2]').val(weightValue);
+
+				let theForm = button.closest('form');
+				if (checkRequiredFields(theForm)) {
+					submitForm(theForm, 'Keelendi lisamine ebaõnnestus.').always(function() {
+						addDlg.modal('hide');
+					});
+				}
+			});
+
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg('Viga!');
+		}).always(function() {
+			button.html(content);
+		});
+	});
+
+	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+		addDlg.find('.form-control').first().focus();
+	});
 }
 
 function validateAndSubmitLangSelectForm(dlg) {
@@ -281,8 +363,8 @@ function changeLexemeMeaningOrdering(target, delta) {
 
 		let increment = delta > 0 ? -1 : 1;
 
-		for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos) ; position += increment) {
-			let nextPos = delta > 0 ? position -1 : position + 1;
+		for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos); position += increment) {
+			let nextPos = delta > 0 ? position - 1 : position + 1;
 			let nextOrderPos = $(items.get(nextPos)).attr('data-orderpos');
 			//TODO - remove debug if dragging works as expected
 			console.log($(items.get(position)).attr('data-orderpos') + ' -> ' + $(items.get(nextPos)).attr('data-orderpos'));
@@ -372,7 +454,7 @@ function findSelectedNavigateItem(activeDiv) {
 }
 
 function isValidPanelChangeKeyPress(keyCode) {
-	let synDetailsVisible = $("#syn_details_div").html() != '';
+	let synDetailsVisible = $("#syn-details-area").html() != '';
 
 	if (!synDetailsVisible) {
 		return false;
@@ -606,7 +688,7 @@ function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 }
 
 function refreshDetails() {
-	let selectedWordId = $('#syn_details_div').data('id');
+	let selectedWordId = $('#syn-details-area').data('id');
 	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
 
 	refreshButton.trigger('click');
