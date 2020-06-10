@@ -232,6 +232,10 @@ public interface WebConstant {
 
 	String SYN_SEARCH_URI = "/synsearch";
 
+	String SYN_PAGING_URI = "/syn_paging";
+
+	String SYN_COMPONENTS_PAGE = "syncomp";
+
 	String SYN_WORD_DETAILS_URI = "/syn_worddetails";
 
 	String SYN_CHANGE_RELATION_STATUS = "/syn_relation_status";

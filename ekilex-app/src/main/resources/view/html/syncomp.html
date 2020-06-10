@@ -89,50 +89,113 @@
     <p th:unless="${not #lists.isEmpty(details.relations)}" class="text-secondary font-italic p-3">Vastete kandidaadid puuduvad valitud keeltes</p>
   </div>
 
-  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-hidden" th:fragment="syn_word_result_list">
-    <div class="mt-4 float-left" th:if="${noResults}">
-      <div th:text="#{common.not.found}">Not found.</div>
+  <div class="card-body p-0 d-flex flex-column h-100" th:fragment="search_result">
+    <div class="bg-light rounded-top px-2 py-1">
+      <small th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></small>
     </div>
-    <div class="row no-gutters py-3 flex-grow-1 h-100" th:unless="${noResults}">
-      <div class="col-3 pr-2 h-100">
-        <div class="card shadow navigate-panel h-100 d-flex flex-column" th:if="${not #lists.isEmpty(wordsResult.words)}" id="synSearchResultsDiv">
-          <div class="card-body p-0 d-flex flex-column h-100">
-            <div class="bg-light rounded-top px-2 py-1">
-              <small th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></small>
-            </div>
-            <div class="overflow-auto h-100 keyboard-nav-list" data-panel-index="1">
-              <ul id="results" class="mb-0 pb-3 list-group ">
-                <li th:each="word, wordIter : ${wordsResult.words}"
-                    class="list-group-item search-result-item navigate-item border-left-0 border-right-0 rounded-0 p-0"
-                    th:data-navigate-index="${wordIter.index}"
-                    th:attrappend="data-navigate-selected=${wordIter.index == 0}?'true'"
-                    th:classappend="${wordIter.index == 0 ? 'navigate-selected active': ''}">
-                  <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="synDetailsBtn">
-                    <span class="d-flex align-items-center">
-                      <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
-                      <span th:utext="${viewUtil.getWordValueMarkup(word)}">vorm 1</span>
-                      <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
-                    </span>
-                    <span class="d-flex align-items-start">
-                      <small>
-                        <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
-                      </small>
-                      <span class="badge badge-pill badge-light ml-auto" th:if="${userRoleData.processStateChangeEnabled}">
-                        <span th:text="${#strings.listJoin(word.layerProcessStateCodes, ', ')}"></span>
-                      </span>
-                    </span>
-                    <span class="position-absolute search-result-status">
-                      <span th:id="${'syn_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
-                    </span>
-                  </button>
-                </li>
-              </ul>
-            </div>
+    <div class="overflow-auto h-100 keyboard-nav-list" data-panel-index="1">
+      <ul id="results" class="mb-0 pb-3 list-group ">
+        <li th:each="word, wordIter : ${wordsResult.words}"
+            class="list-group-item search-result-item navigate-item border-left-0 border-right-0 rounded-0 p-0"
+            th:data-navigate-index="${wordIter.index}"
+            th:attrappend="data-navigate-selected=${wordIter.index == 0}?'true'"
+            th:classappend="${wordIter.index == 0 ? 'navigate-selected active': ''}">
+          <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="synDetailsBtn">
+            <span class="d-flex align-items-center">
+              <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
+              <span th:utext="${viewUtil.getWordValueMarkup(word)}">vorm 1</span>
+              <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
+            </span>
+            <span class="d-flex align-items-start">
+              <small>
+                <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
+              </small>
+              <span class="badge badge-pill badge-light ml-auto" th:if="${userRoleData.processStateChangeEnabled}">
+                <span th:text="${#strings.listJoin(word.layerProcessStateCodes, ', ')}"></span>
+              </span>
+            </span>
+            <span class="position-absolute search-result-status">
+              <span th:id="${'syn_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+            </span>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div th:if="${wordsResult.showPaging}">
+      <div th:replace="components :: paging(${wordsResult})"></div>
+    </div>
+  </div>
+
+  <div data-name="dialogContent" th:fragment="syn_word_search_result">
+    <div class="card">
+      <div class="card-body p-2">
+        <div class="form-group row">
+          <div class="col-md-4 ml-2">
+            <label>Kandidaadi kaal</label>
+            <input id="weightInput" type="number" min="0" max="0.9" step=".1" class="form-control required-field required-range" value="0.7">
           </div>
         </div>
       </div>
-      <div class="col-9 h-100 d-flex flex-column">
-        <div id="syn_details_div"></div>
+    </div>
+    <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
+      <div class="card-body p-2">
+        <span th:text="${'Kokku leiti : ' + totalCount}"></span>
+        <div style="max-height: 50vh; overflow: auto;">
+          <table class="table table-striped mb-0">
+            <tr th:each="word : ${wordsFoundBySearch}" th:with="wordExists = ${existingIds != null && #lists.contains(existingIds, word.wordId)}">
+              <td class="p-0" style="line-height: 0.6rem;">
+                <div class="btn btn-custom pt-0">
+                  <span th:utext="${viewUtil.getWordValueMarkup(word)}" class="ttl">vorm 1</span>
+                  <span th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
+                  <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
+                </div>
+                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2" th:data-word-id="${word.wordId}"
+                        th:disabled="${wordExists}" th:title="${wordExists ? 'Keelend on juba sünonüümide hulgas' : ''}">Lisa</button>
+                <div class="ml-3 mb-2" style="margin-top: -6px;">
+                  <small>
+                    <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
+                  </small>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
+      <div th:text="#{common.not.found}" class="card-body">Not found.</div>
+    </div>
+    <div class="card">
+      <div class="card-body p-2">
+        <div class="form-group row">
+          <div class="col-md-9 ml-2">
+            <div th:text="${sessionBean.userRole.datasetName}"></div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-9 ml-2">
+            <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
+              <option value="" selected disabled>vali keel...</option>
+              <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-9 ml-2">
+            <select required class="form-control required-field" name="itemType">
+              <option value="" selected disabled>vali kood...</option>
+              <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}" th:text="${morphCode.value}" th:selected="${morphCode.code == selectedWordMorphCode}">morphCode</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-6 ml-2">
+            <input class="form-control required-field" readonly name="value" th:value="${searchedWord}"/>
+          </div>
+          <div class="col-md-3">
+            <button type="button" id="addSynRelationWord" class="btn btn-sm btn-success" data-btn-menu>Lisa uus keelend</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

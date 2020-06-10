@@ -121,8 +121,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeProcessStateDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addLexemeProcessStateDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_process_state_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -166,8 +166,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addDefinitionDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addDefinitionDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_definition_dlg">
     <div class="modal-dialog modal-lg" role="document" th:if="${userRoleData.roleSelected}">
       <div class="modal-content">
@@ -217,8 +217,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editDefinitionDlg_' + lexeme.lexemeId + '_' + definition.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editDefinitionDlg_' + lexeme.lexemeId + '_' + definition.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_definition_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -385,7 +385,7 @@
     </div>
   </div>
   <div th:id="${'addLexemeSourceLinkDlg_' + lexeme.lexemeId}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_source_link_dlg">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
@@ -406,8 +406,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLearnerCommentDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addLearnerCommentDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_learner_comment_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -427,8 +427,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLearnerCommentDlg_' + lexeme.lexemeId + '_' + learnerComment.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLearnerCommentDlg_' + lexeme.lexemeId + '_' + learnerComment.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_learner_comment_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -447,10 +447,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningRelationDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addMeaningRelationDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_meaning_relation_dlg">
-    <div class="modal-dialog" role="document" style="max-width: 600px;">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/meaningsearch}">
@@ -497,8 +497,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addGovernmentDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addGovernmentDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_government_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -528,8 +528,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editGovernmentDlg_' + lexeme.lexemeId + '_' + government.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editGovernmentDlg_' + lexeme.lexemeId + '_' + government.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_government_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -564,8 +564,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addUsageDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addUsageDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_usage_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -598,8 +598,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addUsageAuthorDlg_' + usage.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addUsageAuthorDlg_' + usage.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_usage_author_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -640,8 +640,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_usage_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -678,8 +678,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_usage_member_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -726,8 +726,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editUsageTranslationDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageTranslation.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editUsageTranslationDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageTranslation.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_usage_translation_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -746,8 +746,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageDefinition.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageDefinition.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_usage_definition_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -766,8 +766,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemePublicNoteDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addLexemePublicNoteDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_public_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -811,8 +811,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_lexeme_public_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -953,10 +953,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeRelationDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addLexemeRelationDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_relation_dlg">
-    <div class="modal-dialog" role="document" style="max-width: 600px;">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/lexemesearch}">
@@ -1004,7 +1004,7 @@
     </div>
   </div>
   <div th:id="${'addWordRelationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_relation_dlg">
-    <div class="modal-dialog" role="document" style="max-width: 600px;">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/wordsearch}">
@@ -1245,8 +1245,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeProcessStateDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLexemeProcessStateDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_process_state_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1261,8 +1261,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_value_state_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1278,8 +1278,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeGrammarDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addLexemeGrammarDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_grammar_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1321,8 +1321,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLexemeGrammarDlg_' + lexeme.lexemeId + '_' + grammar.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_lexeme_grammar_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1369,8 +1369,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeFrequencyGroupDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLexemeFrequencyGroupDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_frequency_group_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1386,8 +1386,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemePosDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addLexemePosDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_pos_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1413,8 +1413,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_pos_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1431,8 +1431,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeDerivDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addLexemeDerivDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_deriv_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1458,8 +1458,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_deriv_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1477,7 +1477,7 @@
     </div>
   </div>
   <div th:id="${'addLexemeRegisterDlg_' + lexeme.lexemeId}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_register_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1504,7 +1504,7 @@
     </div>
   </div>
   <div th:id="${'editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_register_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1521,8 +1521,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningDomainDlg_' + lexeme.meaningId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addMeaningDomainDlg_' + lexeme.meaningId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_meaning_domain_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1553,8 +1553,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editMeaningDomainDlg_' + lexeme.lexemeId + '_' + classifIter.index}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_meaning_domain_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1577,8 +1577,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningSemanticTypeDlg_' + lexeme.meaningId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addMeaningSemanticTypeDlg_' + lexeme.meaningId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_meaning_semantic_type_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1604,8 +1604,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningSemanticTypeDlg_' + lexeme.meaningId + '_' + classifIter.index}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editMeaningSemanticTypeDlg_' + lexeme.meaningId + '_' + classifIter.index}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_meaning_semantic_type_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1652,8 +1652,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addImageSourceLinkDlg_' + image.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addImageSourceLinkDlg_' + image.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_image_source_link_dlg">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
@@ -1674,8 +1674,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addImageTitleDlg_' + image.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addImageTitleDlg_' + image.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_image_title_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1694,8 +1694,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editImageTitleDlg_' + image.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editImageTitleDlg_' + image.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_image_title_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1714,8 +1714,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeComplexityDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editLexemeComplexityDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_complexity_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1737,7 +1737,7 @@
     </div>
   </div>
   <div th:id="${'editLexemeWeightDlg_' + lexeme.lexemeId}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_lexeme_weight_dlg">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
@@ -1848,8 +1848,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addOdLexemeRecommendationDlg_' + lexeme.lexemeId}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'addOdLexemeRecommendationDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_od_lexeme_recommendation_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1868,8 +1868,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editOdLexemeRecommendationDlg_' + lexeme.lexemeId + '_' + odLexemeRecommendation.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editOdLexemeRecommendationDlg_' + lexeme.lexemeId + '_' + odLexemeRecommendation.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_od_lexeme_recommendation">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1888,8 +1888,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editOdUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageDefinition.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editOdUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageDefinition.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_od_usage_definition_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1908,8 +1908,8 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editOdUsageAlternativeDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageAlternative.id}" 
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}" 
+  <div th:id="${'editOdUsageAlternativeDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageAlternative.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_od_usage_alternative_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
