@@ -29,7 +29,6 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
                 navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
                 closeText: '<i class="fas fa-times"></i>'
             });
-        activateCollapseBtn();
         $("#mainContentArea").removeClass("loading");
     }).fail(function (data) {
         alert(messages.search_failure);
@@ -49,6 +48,8 @@ function fetchCorpSentences(lang, word) {
     var corpSentencesUrl = applicationUrl + 'korp/' + lang + '/' + encodeURIComponent(word);
     $.get(corpSentencesUrl).done(function (data) {
         corpDiv.replaceWith(data);
+        //Activate collapse button after last bit of data is loaded
+        activateCollapseBtn();
     }).fail(function (data) {
     })
 }
@@ -87,6 +88,7 @@ function activateCollapseBtn(){
     });
 }
 
+
 $(document).on("click", ".show-more", function () {
 
     // button behaviour
@@ -108,16 +110,6 @@ $(document).on("click", ".show-more", function () {
         // TODO: Refactor all of this selector mess
         $(this).parents(".dependencies, .collocations-section, .corp-panel")
             .toggleClass("expand");
-
-        /*
-        $(this).parents(".meaning-panel, .dependencies, .collocations-section, .corp-panel")
-            .find(".colloc-col, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .secondary-morph, .word-options, .sentence-wrapper")
-            .toggleClass("fade-target");
-
-        $(this).parents(".meaning-panel, .dependencies, .collocations-section, .corp-panel")
-            .find(".colloc-fulldata .colloc-col:lt(3), .dependencies .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
-            .removeClass("fade-target");
-         */
     }
 });
 
@@ -140,6 +132,7 @@ $(document).on("click", "a[id^='word-details-link']", function () {
     var lang = wordWrapperForm.children("[name='word-lang']").val();
     var wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();
     fetchDetails(wordId, word, lang, wordSelectUrl);
+
 });
 
 $(document).on("click", ".homonym-item", function () {
