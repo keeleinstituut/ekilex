@@ -56,7 +56,9 @@
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
-        <span class="h1 mt-4 ml-3 d-inline-block" th:text="#{'label.word.not.found.detail'}" th:if="${!wordsData.resultsExist}">Ei leidnud midagi</span>
+        <th:block th:if="${!wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
+          <span class="h1 mt-4 ml-3 d-inline-block" th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
+        </th:block>
       </div>
     </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
