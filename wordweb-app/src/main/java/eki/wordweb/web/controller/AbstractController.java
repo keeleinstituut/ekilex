@@ -71,10 +71,12 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		}
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		String selectedLangsStr = StringUtils.join(selectedLangs, ", ");
+		boolean isLangFiltered = !StringUtils.equals(destinLangsStr, DESTIN_LANG_ALL);
 
 		model.addAttribute("langFilter", langFilter);
 		model.addAttribute("destinLangsStr", destinLangsStr);
 		model.addAttribute("selectedLangsStr", selectedLangsStr);
+		model.addAttribute("isLangFiltered", isLangFiltered);
 	}
 
 	protected boolean sessionBeanNotPresent(Model model) {
