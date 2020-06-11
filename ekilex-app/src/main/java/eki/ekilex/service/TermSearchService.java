@@ -81,11 +81,11 @@ public class TermSearchService extends AbstractSearchService {
 		}
 		int resultCount = termSearchResult.getResultCount();
 		boolean resultExist = resultCount > 0;
-		boolean showPaging = resultCount > MAX_RESULTS_LIMIT;
+		boolean showPaging = resultCount > DEFAULT_MAX_RESULTS_LIMIT;
 		termSearchResult.setResultExist(resultExist);
 		termSearchResult.setShowPaging(showPaging);
 		if (showPaging) {
-			setPagingData(offset, resultCount, termSearchResult);
+			setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
 		}
 
 		return termSearchResult;
@@ -109,11 +109,11 @@ public class TermSearchService extends AbstractSearchService {
 		}
 		int resultCount = termSearchResult.getResultCount();
 		boolean resultExist = resultCount > 0;
-		boolean showPaging = resultCount > MAX_RESULTS_LIMIT;
+		boolean showPaging = resultCount > DEFAULT_MAX_RESULTS_LIMIT;
 		termSearchResult.setResultExist(resultExist);
 		termSearchResult.setShowPaging(showPaging);
 		if (showPaging) {
-			setPagingData(offset, resultCount, termSearchResult);
+			setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
 		}
 
 		return termSearchResult;

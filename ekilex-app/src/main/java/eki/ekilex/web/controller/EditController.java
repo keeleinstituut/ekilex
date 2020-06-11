@@ -170,10 +170,6 @@ public class EditController extends AbstractPageController {
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), itemValue);
 			break;
-		case "create_raw_relation":
-			datasetCode = getDatasetCodeFromRole();
-			cudService.createSynRelation(itemData.getId(), itemData.getId2(), itemData.getValue2(), datasetCode);
-			break;
 		case "create_syn_word":
 			datasetCode = getDatasetCodeFromRole();
 			cudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, itemData.getLanguage(), itemData.getItemType(), itemData.getValue2());
@@ -564,11 +560,13 @@ public class EditController extends AbstractPageController {
 	@ResponseBody
 	public String createRelations(
 			@RequestParam("opCode") String opCode,
-			@RequestParam("relationType") String relationType,
+			@RequestParam(name = "relationType", required = false) String relationType,
 			@RequestParam(name = "oppositeRelationType", required = false) String oppositeRelationType,
-			@RequestParam("id1") Long id1,
+			@RequestParam(name = "weight", required = false) String weightStr,
+			@RequestParam("id") Long id1,
 			@RequestParam("ids") List<Long> ids) {
 
+		String datasetCode = null;
 		for (Long id2 : ids) {
 			switch (opCode) {
 			case "meaning_relation":
@@ -579,6 +577,12 @@ public class EditController extends AbstractPageController {
 				break;
 			case "word_relation":
 				cudService.createWordRelation(id1, id2, relationType, oppositeRelationType);
+				break;
+			case "raw_relation":
+				if (datasetCode == null) {
+					datasetCode = getDatasetCodeFromRole();
+				}
+				cudService.createSynRelation(id1, id2, weightStr, datasetCode);
 				break;
 			}
 		}
