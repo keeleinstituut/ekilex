@@ -550,6 +550,7 @@ from (select w.id as word_id,
                             null
                           )::type_definition 
                           order by
+                          wd.ds_order_by,
                           wd.level1,
                           wd.level2,
                           wd.lex_order_by,
@@ -566,7 +567,8 @@ from (select w.id as word_id,
                                 substring(d.value_prese, 1, 200) value_prese,
                                 d.lang,
                                 d.complexity,
-                                d.order_by def_order_by
+                                d.order_by def_order_by,
+                                ds.order_by ds_order_by
                          from lexeme l
                            inner join dataset ds on ds.code = l.dataset_code
                            inner join definition d on d.meaning_id = l.meaning_id and d.is_public = true
