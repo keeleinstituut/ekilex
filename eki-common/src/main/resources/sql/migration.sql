@@ -143,3 +143,15 @@ where value_prese like '%<eki-stress>ё</eki-stress>%';
 
 update lexeme set complexity = 'DETAIL' where complexity = 'DEFAULT';
 update lexeme set complexity = 'DETAIL' where complexity = 'SIMPLE' and dataset_code = 'rmtk';
+
+--kokkulangevate definitsioonide kustutamine
+delete
+from definition d
+where d.complexity = 'ANY'
+  and d.definition_type_code = 'lühivihje'
+  and d.is_public = false
+  and exists(select d2.id
+             from definition d2
+             where d2.value_prese = d.value_prese
+               and d2.complexity in ('DETAIL', 'DETAIL1')
+               and d2.meaning_id = d.meaning_id);

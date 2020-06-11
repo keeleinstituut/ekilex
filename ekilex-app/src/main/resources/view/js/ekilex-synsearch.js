@@ -268,7 +268,6 @@ function initialise() {
 function initAddSynRelationDlg(addDlg) {
 	addDlg.find('.form-control').val(null);
 	addDlg.find('[data-name=dialogContent]').html(null);
-	let idElementName = 'word-id';
 
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
@@ -277,19 +276,32 @@ function initAddSynRelationDlg(addDlg) {
 		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
 		let theForm = $(this).closest('form');
 		let url = theForm.attr('action') + '?' + theForm.serialize();
+
 		$.get(url).done(function(data) {
 			addDlg.find('[data-name=dialogContent]').replaceWith(data);
-			addDlg.find('button[data-' + idElementName + ']').off('click').on('click', function(e) {
+			let addRelationsBtn = addDlg.find('button[name="addRelationsBtn"]');
+
+			let idsChk = addDlg.find('input[name="ids"]');
+			idsChk.on('change', function() {
+				addRelationsBtn.prop('disabled', !idsChk.filter(":checked").length);
+			});
+
+			addRelationsBtn.off('click').on('click', function(e) {
 				e.preventDefault();
-				let button = $(e.target);
-				addDlg.find('[name=id2]').val(button.data(idElementName));
-				addDlg.find('[name=opCode]').val('create_raw_relation');
-				let weightValue = $("#weightInput").val();
-				addDlg.find('[name=value2]').val(weightValue);
-				let theForm = button.closest('form');
-				if (checkRequiredFields(theForm)) {
-					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+				let selectRelationsForm = addRelationsBtn.closest('form');
+				if (checkRequiredFields(selectRelationsForm)) {
+					let url = applicationUrl + "create_relations/"
+					$.ajax({
+						url: url,
+						data: selectRelationsForm.serialize(),
+						method: 'POST',
+					}).done(function() {
 						addDlg.modal('hide');
+						refreshDetails();
+					}).fail(function(data) {
+						addDlg.modal('hide');
+						console.log(data);
+						openAlertDlg('Kandidaatide lisamine ebaõnnestus');
 					});
 				}
 			});

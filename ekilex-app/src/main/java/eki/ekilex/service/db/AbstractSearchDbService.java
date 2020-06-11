@@ -792,7 +792,8 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 	}
 
 	protected List<eki.ekilex.data.Word> execute(
-			Word w1, Paradigm p1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) {
+			Word w1, Paradigm p1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction,
+			DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset, int maxResultsLimit) {
 
 		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
 
@@ -899,7 +900,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		if (fetchAll) {
 			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
 		} else {
-			return create.selectFrom(ww).limit(MAX_RESULTS_LIMIT).offset(offset).fetchInto(eki.ekilex.data.Word.class);
+			return create.selectFrom(ww).limit(maxResultsLimit).offset(offset).fetchInto(eki.ekilex.data.Word.class);
 		}
 	}
 

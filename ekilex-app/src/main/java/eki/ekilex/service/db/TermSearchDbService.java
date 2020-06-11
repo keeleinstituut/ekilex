@@ -655,7 +655,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						+ "m.lang_order_by,"
 						+ "m.lex_order_by)", TypeTermMeaningWordRecord[].class);
 
-		int limit = MAX_RESULTS_LIMIT;
+		int limit = DEFAULT_MAX_RESULTS_LIMIT;
 		if (fetchAll) {
 			limit = Integer.MAX_VALUE;
 		}
@@ -794,7 +794,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						+ "wm.dataset_codes"
 						+ ")::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
 
-		int limit = MAX_RESULTS_LIMIT;
+		int limit = DEFAULT_MAX_RESULTS_LIMIT;
 		if (fetchAll) {
 			limit = Integer.MAX_VALUE;
 		}

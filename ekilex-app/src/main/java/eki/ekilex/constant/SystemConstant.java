@@ -2,7 +2,7 @@ package eki.ekilex.constant;
 
 public interface SystemConstant {
 
-	int MAX_RESULTS_LIMIT = 50;
+	int DEFAULT_MAX_RESULTS_LIMIT = 50;
 
 	int DEFAULT_OFFSET = 0;
 

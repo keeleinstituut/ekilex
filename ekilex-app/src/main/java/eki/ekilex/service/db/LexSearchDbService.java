@@ -71,14 +71,15 @@ import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 public class LexSearchDbService extends AbstractSearchDbService {
 
 	public List<eki.ekilex.data.Word> getWords(
-			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) throws Exception {
+			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
+			LayerName layerName, boolean fetchAll, int offset, int maxResultsLimit) throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
+		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, layerName, fetchAll, offset, maxResultsLimit);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -91,13 +92,14 @@ public class LexSearchDbService extends AbstractSearchDbService {
 	}
 
 	public List<eki.ekilex.data.Word> getWords(
-			String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) {
+			String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
+			LayerName layerName, boolean fetchAll, int offset, int maxResultsLimit) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Condition where = createSearchCondition(word, paradigm, searchWordCrit, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
+		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, layerName, fetchAll, offset, maxResultsLimit);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {

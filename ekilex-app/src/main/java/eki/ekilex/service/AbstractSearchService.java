@@ -66,10 +66,10 @@ public abstract class AbstractSearchService extends AbstractService implements S
 		return searchDatasetsRestriction;
 	}
 
-	protected void setPagingData(int offset, int wordCount, PagingResult result) {
+	protected void setPagingData(int offset, int maxResultsLimit, int wordCount, PagingResult result) {
 
-		int currentPage = offset / MAX_RESULTS_LIMIT + 1;
-		int totalPages = (wordCount + MAX_RESULTS_LIMIT - 1) / MAX_RESULTS_LIMIT;
+		int currentPage = offset / maxResultsLimit + 1;
+		int totalPages = (wordCount + maxResultsLimit - 1) / maxResultsLimit;
 		boolean previousPageExists = currentPage > 1;
 		boolean nextPageExists = currentPage < totalPages;
 

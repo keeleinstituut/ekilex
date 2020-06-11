@@ -173,9 +173,9 @@ public class TermSearchController extends AbstractSearchController {
 		boolean fetchAll = false;
 
 		if ("next".equals(direction)) {
-			offset += MAX_RESULTS_LIMIT;
+			offset += DEFAULT_MAX_RESULTS_LIMIT;
 		} else if ("previous".equals(direction)) {
-			offset -= MAX_RESULTS_LIMIT;
+			offset -= DEFAULT_MAX_RESULTS_LIMIT;
 		}
 
 		TermSearchResult termSearchResult;
