@@ -499,7 +499,7 @@
                       <span class="example-text example-text-w-audio">
                         <span class="example-text-value" th:utext="${usage.usagePrese}"></span>
                         <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.usage}"
-                                th:onclick="${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
+                                th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                           <span class="icon icon-speaker"></span>
                         </button>
                       </span>

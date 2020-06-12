@@ -108,8 +108,7 @@ $(document).on("click", ".show-more", function () {
         $($(this).data("target")).toggleClass('collapse');
     } else {
         // TODO: Refactor all of this selector mess
-        $(this).parents(".dependencies, .collocations-section, .corp-panel")
-            .toggleClass("expand");
+        $(this).parents(".dependencies, .collocations-section, .corp-panel").toggleClass("expand");
     }
 });
 
