@@ -35,7 +35,7 @@
     display: inline-block;
   }
 }
-.colloc-row .colloc-member:last-child::after{
+.colloc-row .colloc-member:last-of-type::after{
   display: none;
 }
 

@@ -81,3 +81,18 @@
     transition: transform ease-in-out .32s;
   }
 }
+
+.btn-ellipsis{
+  .collapse-icon{
+    margin-bottom: 2px;
+  }
+
+  &.collapsing{
+    text-decoration: none;
+  }
+
+  //repurpose  collapse plugin "show" class to toggle ellipsis plugin
+  &.show{
+    display: none !important;
+  }
+}

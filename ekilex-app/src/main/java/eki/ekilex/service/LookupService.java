@@ -143,7 +143,7 @@ public class LookupService extends AbstractWordSearchService {
 
 		boolean meaningHasWord = lookupDbService.meaningHasWord(sourceMeaningId, wordValue, language);
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
-		WordsResult words = getWords(wordValue, Collections.emptyList(), userRole, layerName, true, DEFAULT_OFFSET);
+		WordsResult words = getWords(wordValue, Collections.emptyList(), userRole, layerName, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		for (Word word : words.getWords()) {
 			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -241,7 +241,7 @@ public class LookupService extends AbstractWordSearchService {
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
 			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
-			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, userRole, layerName, true, DEFAULT_OFFSET);
+			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, userRole, layerName, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {

@@ -115,9 +115,9 @@ public class SynSearchController extends AbstractSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, layerName, fetchAll, DEFAULT_OFFSET);
+			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, layerName, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, layerName, fetchAll, DEFAULT_OFFSET);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, layerName, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -154,16 +154,16 @@ public class SynSearchController extends AbstractSearchController {
 		List<String> datasetCodes = new ArrayList<>(Arrays.asList(userRoleDatasetCode));
 
 		if (StringUtils.equals("next", direction)) {
-			offset += MAX_RESULTS_LIMIT;
+			offset += DEFAULT_MAX_RESULTS_LIMIT;
 		} else if (StringUtils.equals("previous", direction)) {
-			offset -= MAX_RESULTS_LIMIT;
+			offset -= DEFAULT_MAX_RESULTS_LIMIT;
 		}
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, layerName, fetchAll, offset);
+			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, layerName, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, layerName, fetchAll, offset);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, layerName, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 
 		wordsResult.setOffset(offset);
@@ -231,13 +231,13 @@ public class SynSearchController extends AbstractSearchController {
 
 		logger.debug("word search {}", searchFilter);
 
+		final int maxResultsLimit = 250;
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		LayerName layerName = userContextData.getLayerName();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		// TODO 200 tulemust?
-		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET);
+		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET, maxResultsLimit);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());

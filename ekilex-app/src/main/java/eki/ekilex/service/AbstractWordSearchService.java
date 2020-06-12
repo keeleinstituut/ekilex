@@ -30,7 +30,8 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			SearchFilter searchFilter, List<String> datasetCodes, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) throws Exception {
+			SearchFilter searchFilter, List<String> datasetCodes, DatasetPermission userRole, LayerName layerName, boolean fetchAll,
+			int offset, int maxResultsLimit) throws Exception {
 
 		List<Word> words;
 		int wordCount;
@@ -39,9 +40,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
-			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
+			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, layerName, fetchAll, offset, maxResultsLimit);
 			wordCount = words.size();
-			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+			if (!fetchAll && wordCount == maxResultsLimit) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}
@@ -49,17 +50,17 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		result.setWords(words);
 		result.setTotalCount(wordCount);
 
-		boolean showPaging = wordCount > MAX_RESULTS_LIMIT;
+		boolean showPaging = wordCount > maxResultsLimit;
 		result.setShowPaging(showPaging);
 		if (showPaging) {
-			setPagingData(offset, wordCount, result);
+			setPagingData(offset, maxResultsLimit, wordCount, result);
 		}
 		return result;
 	}
 
 	@Transactional
 	public WordsResult getWords(
-			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) {
+			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset, int maxResultsLimit) {
 
 		List<Word> words;
 		int wordCount;
@@ -68,9 +69,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
-			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
+			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, layerName, fetchAll, offset, maxResultsLimit);
 			wordCount = words.size();
-			if ((!fetchAll && wordCount == MAX_RESULTS_LIMIT) || offset > DEFAULT_OFFSET) {
+			if ((!fetchAll && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}
@@ -78,10 +79,10 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		result.setWords(words);
 		result.setTotalCount(wordCount);
 
-		boolean showPaging = wordCount > MAX_RESULTS_LIMIT;
+		boolean showPaging = wordCount > maxResultsLimit;
 		result.setShowPaging(showPaging);
 		if (showPaging) {
-			setPagingData(offset, wordCount, result);
+			setPagingData(offset, maxResultsLimit, wordCount, result);
 		}
 		return result;
 	}

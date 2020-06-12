@@ -244,9 +244,11 @@ public class UnifSearchController extends AbstractController {
 		if (selectedDatasetCount > 1) {
 			selectedDatasetsStr = String.valueOf(selectedDatasetCount);
 		}
+		boolean isDatasetFiltered = !StringUtils.equals(datasetCodesStr, DATASET_ALL);
 
 		model.addAttribute("datasetFilter", datasetFilter);
 		model.addAttribute("datasetCodesStr", datasetCodesStr);
 		model.addAttribute("selectedDatasetsStr", selectedDatasetsStr);
+		model.addAttribute("isDatasetFiltered", isDatasetFiltered);
 	}
 }

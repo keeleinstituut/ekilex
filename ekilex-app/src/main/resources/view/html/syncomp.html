@@ -132,7 +132,7 @@
         <div class="form-group row">
           <div class="col-md-4 ml-2">
             <label>Kandidaadi kaal</label>
-            <input id="weightInput" type="number" min="0" max="0.9" step=".1" class="form-control required-field required-range" value="0.7">
+            <input name="weight" id="weightInput" type="number" min="0" max="0.9" step=".1" class="form-control required-field required-range" value="0.7">
           </div>
         </div>
       </div>
@@ -149,8 +149,10 @@
                   <span th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
                   <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
                 </div>
-                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2" th:data-word-id="${word.wordId}"
-                        th:disabled="${wordExists}" th:title="${wordExists ? 'Keelend on juba sünonüümide hulgas' : ''}">Lisa</button>
+                <input name="ids" type="checkbox" class="float-right mt-2 mr-2"
+                       th:value="${word.wordId}"
+                       th:disabled="${wordExists}"
+                       th:title="${wordExists ? 'Keelend on juba sünonüümide hulgas' : ''}"/>
                 <div class="ml-3 mb-2" style="margin-top: -6px;">
                   <small>
                     <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
@@ -160,6 +162,7 @@
             </tr>
           </table>
         </div>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled>Lisa valitud kandidaadid</button>
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">

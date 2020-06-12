@@ -130,9 +130,9 @@ public class LexSearchController extends AbstractSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, layerName, fetchAll, DEFAULT_OFFSET);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, layerName, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, layerName, fetchAll, DEFAULT_OFFSET);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, layerName, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -165,16 +165,16 @@ public class LexSearchController extends AbstractSearchController {
 		LayerName layerName = userContextData.getLayerName();
 
 		if (StringUtils.equals("next", direction)) {
-			offset += MAX_RESULTS_LIMIT;
+			offset += DEFAULT_MAX_RESULTS_LIMIT;
 		} else if (StringUtils.equals("previous", direction)) {
-			offset -= MAX_RESULTS_LIMIT;
+			offset -= DEFAULT_MAX_RESULTS_LIMIT;
 		}
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, layerName, fetchAll, offset);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, layerName, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, layerName, fetchAll, offset);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, layerName, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 
 		wordsResult.setOffset(offset);
@@ -195,7 +195,7 @@ public class LexSearchController extends AbstractSearchController {
 		LayerName layerName = userContextData.getLayerName();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET);
+		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
