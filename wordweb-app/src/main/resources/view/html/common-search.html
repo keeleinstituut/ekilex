@@ -6,7 +6,7 @@
     <div class="main-search" th:classappend="${pageContext == 'search' ? 'compact' : ''}">
       <form th:action="@{${searchUri}}" th:method="post" name="searchForm">
         <div>
-          <input type="text" id="search" role="search" class="main-search-input form-control search-phrase" 
+          <input id="search" type="text" role="search" class="main-search-input form-control search-phrase" 
                  name="searchWord"
                  th:classappend="${pageContext == 'search' ? 'compact' : ''}"
                  th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
@@ -32,7 +32,7 @@
   <th:block th:fragment="form-match">
     <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
       <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-      <button class="btn btn-link px-0 ml-1 " name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+      <button class="btn btn-link px-0 ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
     </div>
   </th:block>
   <th:block th:fragment="lang-filter">
@@ -205,16 +205,21 @@
                       <span th:unless="${meaningWordIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
                     </span>
                   </th:block>
-                  <button th:id="${'synonym-show-more-btn-' + lexeme.lexemeId}" class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
-                          type="button" data-toggle="collapse" data-tooltip="tooltip" th:attr="title=#{button.see.more}, data-target=${'#synonym-show-more-btn-' + lexeme.lexemeId +',' + '#synonym-collapse-panel-' + lexeme.lexemeId}" aria-expanded="false" th:aria-controls="${'#synonym-collapse-panel-' + lexeme.lexemeId}"
+                  <button th:id="${'synonym-show-more-btn-' + lexeme.lexemeId}"
+                          class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
+                          type="button" data-toggle="collapse" data-tooltip="tooltip"
+                          th:title="#{button.see.more}"
+                          th:data-target="${'#synonym-show-more-btn-' + lexeme.lexemeId + ',' + '#synonym-collapse-panel-' + lexeme.lexemeId}"
+                          aria-expanded="false" th:aria-controls="${'#synonym-collapse-panel-' + lexeme.lexemeId}"
                           th:if="${#lists.size(lexeme.sourceLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
                     <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                   </button>
-                  <div th:id="${'synonym-collapse-panel-' + lexeme.lexemeId}"  class="collapse w-100" th:if="${#lists.size(lexeme.sourceLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
+                  <div th:id="${'synonym-collapse-panel-' + lexeme.lexemeId}" class="collapse w-100"
+                       th:if="${#lists.size(lexeme.sourceLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
                     <th:block th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}"
                               th:with="
-                            isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
-                            isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
+                              isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
+                              isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
                       <span class="collapsable text-nowrap mr-1" th:if="${isCollapsable}">
                         <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
                           <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
@@ -229,15 +234,15 @@
                     </th:block>
                     <div>
                       <button class="btn btn-link-muted btn-sm btn-collapse ml-n2"
-                              type="button" data-toggle="collapse" th:attr="data-target=${'#synonym-show-more-btn-' + lexeme.lexemeId +',' + '#synonym-collapse-panel-' + lexeme.lexemeId}" aria-expanded="true" th:aria-controls="${'#synonym-collapse-panel-' + lexeme.lexemeId}" >
+                              type="button" data-toggle="collapse"
+                              th:data-target="${'#synonym-show-more-btn-' + lexeme.lexemeId +',' + '#synonym-collapse-panel-' + lexeme.lexemeId}"
+                              aria-expanded="true" th:aria-controls="${'#synonym-collapse-panel-' + lexeme.lexemeId}" >
                         <i class="fa fa-angle-up" aria-hidden="true"></i>
                         <span th:text="#{button.see.less}"></span>
                       </button>
                     </div>
-
                   </div>
                 </div>
-
               </div>
             </div>
             <div class="matches" th:if="${not #maps.isEmpty(lexeme.destinLangMatchWordsByLang)}">
@@ -266,16 +271,21 @@
                         <span th:unless="${meaningWordIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
                       </span>
                     </th:block>
-                    <button th:id="${'matches-show-more-btn-' + lexeme.lexemeId +'-'+ meaningWordEntry.key}" class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
-                            type="button" data-toggle="collapse" data-tooltip="tooltip"  th:attr="title=#{button.see.more}, data-target=${'#matches-show-more-btn-' + lexeme.lexemeId +'-'+ meaningWordEntry.key +', '+'#matches-show-more-panel-' + lexeme.lexemeId +'-'+ meaningWordEntry.key }" aria-expanded="false" th:aria-controls="${'#matches-show-more-panel-' + lexeme.lexemeId +'-'+ meaningWordEntry.key }"
+                    <button th:id="${'matches-show-more-btn-' + lexeme.lexemeId + '-' + meaningWordEntry.key}"
+                            class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
+                            type="button" data-toggle="collapse" data-tooltip="tooltip"
+                            th:title="#{button.see.more}"
+                            th:data-target="${'#matches-show-more-btn-' + lexeme.lexemeId + '-' + meaningWordEntry.key + ', ' + '#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}"
+                            aria-expanded="false" th:aria-controls="${'#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}"
                             th:if="${#lists.size(lexeme.sourceLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
                       <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                     </button>
-                    <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId +'-'+ meaningWordEntry.key }" class="collapse w-100" th:if="${#lists.size(meaningWordEntry.value) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
+                    <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}" class="collapse w-100"
+                         th:if="${#lists.size(meaningWordEntry.value) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
                       <th:block th:each="meaningWord,meaningWordIter : ${meaningWordEntry.value}"
                                 th:with="
-                              isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
-                              isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
+                                isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
+                                isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
                         <span class="text-nowrap mr-1" th:if="${isCollapsable}">
                           <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word "
                              th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
@@ -291,15 +301,15 @@
                         </span>
                       </th:block>
                       <div>
-                       <button class="btn btn-link-muted btn-sm ml-n2" data-toggle="collapse" th:attr="data-target=${'#matches-show-more-btn-' + lexeme.lexemeId +'-'+ meaningWordEntry.key+', '+'#matches-show-more-panel-' + lexeme.lexemeId +'-'+ meaningWordEntry.key }" th:aria-controls="${'#matches-show-more-panel-' + lexeme.lexemeId +'-'+ meaningWordEntry.key }" aria-expanded="true">
+                       <button class="btn btn-link-muted btn-sm ml-n2" data-toggle="collapse"
+                               th:data-target="${'#matches-show-more-btn-' + lexeme.lexemeId + '-' + meaningWordEntry.key + ', ' + '#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}"
+                               th:aria-controls="${'#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}" aria-expanded="true">
                           <i class="fa fa-angle-up" aria-hidden="true"></i>
                           <span th:text="#{button.see.less}"></span>
                         </button>
                       </div>
-
                     </div>
                   </div>
-
                 </th:block>
               </div>
             </div>
@@ -426,7 +436,8 @@
                   <div class="example-sentence-wrap">
                     <span class="example-text example-text-w-audio">
                       <span class="example-text-value" th:utext="${usage.usagePrese}"></span>
-                      <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.usage}"
+                      <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}"
+                              th:data-words="${usage.usage}"
                               th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                         <span class="icon icon-speaker"></span>
                       </button>
@@ -469,16 +480,17 @@
                 </div>
               </th:block>
               <button th:if="${lexeme.moreUsages}"
-                      th:id="${'lexeme-usages-show-more-btn-'+ lexeme.lexemeId}"
+                      th:id="${'lexeme-usages-show-more-btn-' + lexeme.lexemeId}"
                       class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2 align-self-start"
+                      data-tooltip="tooltip"
                       data-toggle="collapse"
                       aria-expanded="false"
-                      th:aria-controls="${'#lexeme-usages-more-panel-'+ lexeme.lexemeId}"
-                      data-tooltip="tooltip"
-                      th:attr="title=#{button.see.more}, data-target=${'#lexeme-usages-more-panel-'+ lexeme.lexemeId+','+'#lexeme-usages-show-more-btn-'+ lexeme.lexemeId}">
+                      th:aria-controls="${'#lexeme-usages-more-panel-' + lexeme.lexemeId}"
+                      th:title="#{button.see.more}"
+                      th:data-target="${'#lexeme-usages-more-panel-' + lexeme.lexemeId + ',' + '#lexeme-usages-show-more-btn-' + lexeme.lexemeId}">
                 <i class="collapse-icon fa fa-ellipsis-h" aria-hidden="true"></i>
               </button>
-              <div th:id="${'lexeme-usages-more-panel-'+ lexeme.lexemeId}" class="collapse" th:if="${lexeme.moreUsages}">
+              <div th:id="${'lexeme-usages-more-panel-' + lexeme.lexemeId}" class="collapse" th:if="${lexeme.moreUsages}">
                 <div class="d-flex flex-column">
                   <th:block th:each="usage,usageIter : ${lexeme.usages}"
                             th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
@@ -487,7 +499,7 @@
                       <span class="example-text example-text-w-audio">
                         <span class="example-text-value" th:utext="${usage.usagePrese}"></span>
                         <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.usage}"
-                                th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
+                                th:onclick="${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                           <span class="icon icon-speaker"></span>
                         </button>
                       </span>
@@ -529,12 +541,12 @@
                     </div>
                   </th:block>
                 </div>
-                <button class="show-more text-left btn btn-link-muted btn-sm ml-n2 align-self-start" aria-expanded="true" data-toggle="collapse" th:attr="data-target=${'#lexeme-usages-more-panel-'+ lexeme.lexemeId+','+'#lexeme-usages-show-more-btn-'+ lexeme.lexemeId}">
+                <button class="show-more text-left btn btn-link-muted btn-sm ml-n2 align-self-start" aria-expanded="true" data-toggle="collapse"
+                        th:data-target="${'#lexeme-usages-more-panel-' + lexeme.lexemeId + ',' + '#lexeme-usages-show-more-btn-' + lexeme.lexemeId}">
                   <i class="fa fa-angle-up" aria-hidden="true"></i>
                   <span th:text="#{button.see.less}"></span>
                 </button>
               </div>
-
             </div>
             <div class="mt-3 d-flex flex-wrap row" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
               <th:block th:each="imageFile : ${lexeme.imageFiles}">
@@ -574,10 +586,12 @@
                               <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
                                 <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
                                   <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="value"
-                                    th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                        th:text="${displayColloc.headwordMember.conjunct}">
+                                  </span>
                                   <span class="font-weight-bold" th:text="${displayColloc.headwordMember.form}"></span>
                                   <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.postConjunct}" class="value"
-                                    th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                        th:text="${displayColloc.headwordMember.conjunct}">
+                                  </span>
                                 </span>
                                 <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                   <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
@@ -593,9 +607,12 @@
                                   <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                     <span th:if="${collocMem.conjunct != null}" class="value" th:text="${collocMem.conjunct}"></span>
                                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
-                                      <i><span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span></i>
+                                      <i>
+                                        <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
+                                      </i>
                                     </a>
-                                    <i th:if="${!collocMem.wordExists}"> <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
+                                    <i th:if="${!collocMem.wordExists}">
+                                      <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
                                     </i>
                                   </span>
                                 </span>
@@ -611,8 +628,11 @@
                               </span>
                             </span>
                           </span>
-                          <button th:id="${'colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class=" btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2" data-toggle="collapse" aria-expanded="false"
-                                  th:aria-controls="${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" data-tooltip="tooltip"  th:attr="title=#{button.see.more}, data-target=${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId +', '+'#colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}">
+                          <button th:id="${'colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}"
+                                  class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2" data-toggle="collapse" aria-expanded="false"
+                                  th:aria-controls="${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" data-tooltip="tooltip"
+                                  th:title="#{button.see.more}"
+                                  th:data-target="${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId  + ', ' + '#colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}">
                             <i class="collapse-icon fa fa-ellipsis-h" aria-hidden="true"></i>
                           </button>
                         </div>
@@ -625,7 +645,8 @@
                             </button>
                           </div>
                           <button th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class=" btn btn-link-muted btn-sm text-nowrap ml-n3" data-toggle="collapse" aria-expanded="true"
-                                  th:aria-controls="${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:attr="data-target=${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId+', '+'#colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}">
+                                  th:aria-controls="${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}"
+                                  th:data-target="${'#colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId + ', ' + '#colloc-toggle-btn' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}">
                             <i class="collapse-icon fa fa-angle-up" aria-hidden="true"></i>
                             <span th:text="#{button.see.less}"></span>
                           </button>
@@ -634,7 +655,7 @@
                     </div>
                   </div>
                 </th:block>
-                <button class="btn btn-link-muted btn-sm ml-n2" data-toggle="collapse" th:attr="data-target=${'#colloc-samples-' + lexeme.lexemeId+', '+'#colloc-fulldata-' + lexeme.lexemeId }" >
+                <button class="btn btn-link-muted btn-sm ml-n2" data-toggle="collapse" th:data-target="${'#colloc-samples-' + lexeme.lexemeId + ', ' + '#colloc-fulldata-' + lexeme.lexemeId}" >
                   <i class="fa fa-angle-up" aria-hidden="true"></i>
                   <span th:text="#{button.see.less}"></span>
                 </button>
@@ -690,7 +711,9 @@
                           </span>
                         </span>
                       </span>
-                      <button class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2" data-tooltip="tooltip" data-toggle="collapse" th:attr="title=#{button.see.more}, data-target=${'#colloc-samples-' + lexeme.lexemeId+', '+'#colloc-fulldata-' + lexeme.lexemeId }" type="button"  aria-expanded="false">
+                      <button class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2" data-tooltip="tooltip" data-toggle="collapse"
+                              th:title="#{button.see.more}"
+                              th:data-target="${'#colloc-samples-' + lexeme.lexemeId + ', ' + '#colloc-fulldata-' + lexeme.lexemeId}" type="button"  aria-expanded="false">
                         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                       </button>
                     </div>
@@ -726,14 +749,14 @@
         <p class="mb-2" th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></p>
       </div>
       <button class="show-more btn btn-collapse btn-link-muted btn-sm ml-n2" aria-expanded="false"
-        th:unless="${#lists.isEmpty(sentences)}" data-dynamic-text="true" type="button">
+              th:unless="${#lists.isEmpty(sentences)}" data-dynamic-text="true" type="button">
         <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
-              <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-            </span>
+          <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+        </span>
         <span class="btn-content see-less-content d-none">
-              <i class="fa fa-angle-up" aria-hidden="true"></i>
-              <span class="btn-txt" th:text="#{button.see.less}"></span>
-            </span>
+          <i class="fa fa-angle-up" aria-hidden="true"></i>
+          <span class="btn-txt" th:text="#{button.see.less}"></span>
+        </span>
       </button>
     </div>
     <script th:inline="javascript">
