@@ -139,6 +139,7 @@ update freeform set complexity = 'DETAIL' where type = 'PUBLIC_NOTE' and complex
 update collocation set complexity = 'ANY' where complexity = 'SIMPLE';
 update lexeme set complexity = 'DETAIL' where complexity = 'DEFAULT';
 update lexeme set complexity = 'DETAIL' where complexity = 'SIMPLE' and dataset_code = 'rmtk';
+update lexeme set complexity = 'ANY' where complexity = 'SIMPLE';
 
 --rõhu märgenduse eemaldamine ё tähelt
 update freeform

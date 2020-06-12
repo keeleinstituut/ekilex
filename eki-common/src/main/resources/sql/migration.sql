@@ -143,6 +143,7 @@ where value_prese like '%<eki-stress>ё</eki-stress>%';
 
 update lexeme set complexity = 'DETAIL' where complexity = 'DEFAULT';
 update lexeme set complexity = 'DETAIL' where complexity = 'SIMPLE' and dataset_code = 'rmtk';
+update lexeme set complexity = 'ANY' where complexity = 'SIMPLE';
 
 --kokkulangevate definitsioonide kustutamine
 delete
