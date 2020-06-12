@@ -31,10 +31,6 @@ import eki.wordweb.data.TypeUsage;
 @Component
 public class LexemeConversionUtil extends AbstractConversionUtil {
 
-	public List<Lexeme> filterLexemes(List<Lexeme> lexemes, Complexity lexComplexity) {
-		return filterSimpleOnly(lexemes, lexComplexity);
-	}
-
 	public void sortLexemes(List<Lexeme> lexemes, DatasetType datasetType) {
 		if (CollectionUtils.isEmpty(lexemes)) {
 			return;
@@ -79,7 +75,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	}
 
 	public void compose(
-			DatasetType datasetType,
 			String wordLang,
 			List<Lexeme> lexemes,
 			Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap,
@@ -88,11 +83,12 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			DataFilter dataFilter,
 			String displayLang) {
 
-		List<String> destinLangs = dataFilter.getDestinLangs();
-		Complexity lexComplexity = null;
-		if (DatasetType.LEX.equals(datasetType)) {
-			lexComplexity = dataFilter.getLexComplexity();
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
 		}
+
+		List<String> destinLangs = dataFilter.getDestinLangs();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
 
 		for (Lexeme lexeme : lexemes) {
 
@@ -110,9 +106,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 	private void populateLexeme(Lexeme lexeme, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
 
-		if (DatasetType.LEX.equals(lexeme.getDatasetType())) {
-			lexeme.setDatasetName(null);
-		}
 		lexeme.setSourceLangMeaningWords(new ArrayList<>());
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setCollocationPosGroups(new ArrayList<>());
@@ -305,7 +298,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 
-		if (!Complexity.DETAIL.equals(lexComplexity)) {
+		if (Complexity.SIMPLE.equals(lexComplexity)) {
 			List<TypeImageFile> imageFiles = tuple.getImageFiles();
 			applySourceLinks(imageFiles, meaningFreeformSourceLinks);
 			lexeme.setImageFiles(imageFiles);

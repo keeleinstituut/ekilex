@@ -64,13 +64,11 @@ public class SimpleSearchService extends AbstractSearchService {
 		List<Lexeme> lexemes = simpleSearchDbService.getLexemes(wordId, dataFilter);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = simpleSearchDbService.getLexemeMeaningTuples(wordId);
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
+		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, dataFilter, displayLang);
 
 		if (CollectionUtils.isNotEmpty(lexemes)) {
 			List<CollocationTuple> collocTuples = simpleSearchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
-			lexemeConversionUtil.compose(
-					DatasetType.LEX, wordLang, lexemes, lexemeMeaningTupleMap,
-					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 			lexemes = lexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			collocConversionUtil.compose(wordId, lexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexemes);

@@ -1,6 +1,7 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -121,14 +121,13 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
 		List<String> wordRelTypeCodes = wordRelTypes.stream().map(Classifier::getCode).collect(Collectors.toList());
+		List<Complexity> combinedLexComplexity = Arrays.asList(lexComplexity, Complexity.ANY);
 
 		List<TypeWordRelation> relatedWords = wordRelationsTuple.getRelatedWords();
 		if (CollectionUtils.isNotEmpty(relatedWords)) {
-			if (CollectionUtils.isNotEmpty(relatedWords) && Complexity.SIMPLE.equals(lexComplexity)) {
-				relatedWords = relatedWords.stream()
-						.filter(relation -> ArrayUtils.contains(relation.getLexComplexities(), lexComplexity))
-						.collect(Collectors.toList());
-			}
+			relatedWords = relatedWords.stream()
+					.filter(relation -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(relation.getLexComplexities(), combinedLexComplexity)))
+					.collect(Collectors.toList());
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				word.getRelatedWords().addAll(relatedWords);
 				for (TypeWordRelation wordRelation : relatedWords) {
@@ -163,11 +162,9 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			Collections.sort(wordGroupIds);
 			for (Long wordGroupId : wordGroupIds) {
 				List<TypeWordRelation> wordGroupMembers = wordGroupMap.get(wordGroupId);
-				if (CollectionUtils.isNotEmpty(wordGroupMembers) && Complexity.SIMPLE.equals(lexComplexity)) {
-					wordGroupMembers = wordGroupMembers.stream()
-							.filter(member -> ArrayUtils.contains(member.getLexComplexities(), lexComplexity))
-							.collect(Collectors.toList());
-				}
+				wordGroupMembers = wordGroupMembers.stream()
+						.filter(member -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(member.getLexComplexities(), combinedLexComplexity)))
+						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
 					for (TypeWordRelation wordGroupMember : wordGroupMembers) {
 						classifierUtil.applyClassifiers(wordGroupMember, displayLang);

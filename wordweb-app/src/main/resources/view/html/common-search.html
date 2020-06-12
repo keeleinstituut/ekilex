@@ -121,7 +121,7 @@
   </th:block>
   <th:block th:fragment="lexeme-data" th:with="isLex = ${lexeme.datasetType.name() == 'LEX'}, isTerm = ${lexeme.datasetType.name() == 'TERM'}">
     <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-4 pl-3': ''">
-      <h6 class="font-weight-bold" th:if="${lexeme.datasetName != null}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</h6>
+      <h6 class="font-weight-bold" th:if="${isLex}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</h6>
       <div class="d-flex flex-row">
         <th:block th:if="${isLex && wordData.multipleLexLexemesExist}">
           <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>

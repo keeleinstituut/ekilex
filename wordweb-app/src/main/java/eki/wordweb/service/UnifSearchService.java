@@ -65,6 +65,8 @@ public class UnifSearchService extends AbstractSearchService {
 		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = unifSearchDbService.getLexemeMeaningTuples(wordId);
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
+		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, dataFilter, displayLang);
+
 		Map<DatasetType, List<Lexeme>> lexemeGroups = lexemes.stream().collect(Collectors.groupingBy(Lexeme::getDatasetType));
 
 		// lex conv
@@ -72,9 +74,6 @@ public class UnifSearchService extends AbstractSearchService {
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
 			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
-			lexemeConversionUtil.compose(
-					DatasetType.LEX, wordLang, lexLexemes, lexemeMeaningTupleMap,
-					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
 			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 			lexemeConversionUtil.flagEmptyLexemes(lexLexemes);
@@ -85,9 +84,6 @@ public class UnifSearchService extends AbstractSearchService {
 		// term conv
 		List<Lexeme> termLexemes = lexemeGroups.get(DatasetType.TERM);
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
-			lexemeConversionUtil.compose(
-					DatasetType.TERM, wordLang, termLexemes, lexemeMeaningTupleMap,
-					allRelatedWords, langOrderByMap, dataFilter, displayLang);
 			lexemeConversionUtil.sortLexemes(termLexemes, DatasetType.TERM);
 		}
 

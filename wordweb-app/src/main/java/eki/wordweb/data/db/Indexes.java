@@ -78,6 +78,7 @@ public class Indexes {
     public static final Index MVIEW_WW_WORD_RELATION_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_RELATION_WORD_ID_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_CRIT_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_CRIT_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX;
+    public static final Index MVIEW_WW_WORD_SEARCH_DETAIL_EXISTS_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_DETAIL_EXISTS_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_SGROUP_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_SGROUP_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_SIMPLE_EXISTS_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_SIMPLE_EXISTS_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX;
@@ -134,6 +135,7 @@ public class Indexes {
         public static Index MVIEW_WW_WORD_RELATION_WORD_ID_IDX = Internal.createIndex("mview_ww_word_relation_word_id_idx", MviewWwWordRelation.MVIEW_WW_WORD_RELATION, new OrderField[] { MviewWwWordRelation.MVIEW_WW_WORD_RELATION.WORD_ID }, false);
         public static Index MVIEW_WW_WORD_SEARCH_CRIT_IDX = Internal.createIndex("mview_ww_word_search_crit_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.CRIT }, false);
         public static Index MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX = Internal.createIndex("mview_ww_word_search_crit_prefix_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.CRIT }, false);
+        public static Index MVIEW_WW_WORD_SEARCH_DETAIL_EXISTS_IDX = Internal.createIndex("mview_ww_word_search_detail_exists_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.DETAIL_EXISTS }, false);
         public static Index MVIEW_WW_WORD_SEARCH_SGROUP_IDX = Internal.createIndex("mview_ww_word_search_sgroup_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.SGROUP }, false);
         public static Index MVIEW_WW_WORD_SEARCH_SIMPLE_EXISTS_IDX = Internal.createIndex("mview_ww_word_search_simple_exists_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.SIMPLE_EXISTS }, false);
         public static Index MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX = Internal.createIndex("mview_ww_word_search_unacrit_tri_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.UNACRIT }, false);
