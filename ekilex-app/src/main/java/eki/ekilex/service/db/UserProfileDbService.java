@@ -86,6 +86,8 @@ public class UserProfileDbService {
 		boolean showMeaningRelationFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
 		boolean showMeaningRelationMeaningId = userProfile.isShowMeaningRelationMeaningId();
 		boolean showMeaningRelationWordDatasets = userProfile.isShowMeaningRelationWordDatasets();
+		List<String> searchableTags = userProfile.getSearchableTags();
+		String activeTag = userProfile.getActiveTag();
 
 		EkiUserProfileRecord ekiUserProfile = create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOne();
 
@@ -107,6 +109,10 @@ public class UserProfileDbService {
 		ekiUserProfile.setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
 		ekiUserProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		ekiUserProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
+		if (CollectionUtils.isNotEmpty(searchableTags)) {
+			ekiUserProfile.setSearchableTags(searchableTags.toArray(new String[0]));
+		}
+		ekiUserProfile.setActiveTag(activeTag);
 
 		ekiUserProfile.store();
 	}

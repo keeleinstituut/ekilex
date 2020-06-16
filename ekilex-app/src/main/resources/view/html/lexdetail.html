@@ -54,6 +54,7 @@
            isMeaningAnyLexemeCrudGranted=${#vars.lexeme.meaning.anyGrant}">
       <div th:replace="lexdialog :: add_lexeme_process_state_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_data_dlg"></div>
+      <div th:replace="lexdialog :: add_lexeme_tag_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_pos_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_deriv_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_register_dlg"></div>
@@ -211,6 +212,7 @@
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
           <th:block th:replace="lexcomp :: data_ids"></th:block>
+          <th:block th:replace="lexcomp :: tags"></th:block>
           <th:block th:replace="lexcomp :: lexeme_complexity"></th:block>
           <th:block th:replace="lexcomp :: lexeme_process_state"></th:block>
           <th:block th:replace="lexcomp :: lexeme_value_state"></th:block>

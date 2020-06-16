@@ -587,6 +587,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void createLexemeTag(Long lexemeId, String tagName) {
+		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
+		// TODO (lifecycle, process?) log
+	}
+
+	@Transactional
 	public void createLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = cudDbService.createLexemeDeriv(lexemeId, derivCode);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
@@ -894,7 +900,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
 		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.geWordLexemeMeaningId(lexemeId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.getWordLexemeMeaningId(lexemeId);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 
@@ -980,6 +986,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
 			createLifecycleLog(logData);
 			cudDbService.deleteLexemePos(lexemePosId);
+		}
+	}
+
+	@Transactional
+	public void deleteLexemeTag(Long lexemeId, String tagName) {
+		if (StringUtils.isNotBlank(tagName)) {
+			Long lexemeTagId = lookupDbService.getLexemeTagId(lexemeId, tagName);
+			// TODO (lifecycle, process?) log
+			cudDbService.deleteLexemeTag(lexemeTagId);
 		}
 	}
 

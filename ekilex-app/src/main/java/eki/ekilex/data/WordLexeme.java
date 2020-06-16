@@ -55,6 +55,8 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<String> lexemeFrequencies;
 
+	private List<String> tags;
+
 	private Complexity complexity;
 
 	private Float weight;
@@ -292,6 +294,14 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setLexemeFrequencies(List<String> lexemeFrequencies) {
 		this.lexemeFrequencies = lexemeFrequencies;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	public Complexity getComplexity() {

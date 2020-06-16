@@ -277,7 +277,6 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.select(l.ID)
 								.from(l)
 								.where(l.WORD_ID.eq(w.ID)
-										//TODO what lexeme type?
 				)))
 				.groupBy(w.ID)
 				.fetchOneInto(eki.ekilex.data.Word.class);

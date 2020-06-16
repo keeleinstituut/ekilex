@@ -30,6 +30,8 @@ public class Lexeme extends AbstractCrudEntity {
 
 	private String lexemeProcessStateCode;
 
+	private List<String> tags;
+
 	private Complexity complexity;
 
 	private Long orderBy;
@@ -148,6 +150,14 @@ public class Lexeme extends AbstractCrudEntity {
 
 	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
 		this.lexemeProcessStateCode = lexemeProcessStateCode;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	public Complexity getComplexity() {

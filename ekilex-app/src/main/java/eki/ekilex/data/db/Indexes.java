@@ -35,6 +35,7 @@ import eki.ekilex.data.db.tables.LexemeProcessLog;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
@@ -155,6 +156,8 @@ public class Indexes {
     public static final Index LEXEME_SOURCE_LINK_NAME_IDX = Indexes0.LEXEME_SOURCE_LINK_NAME_IDX;
     public static final Index LEXEME_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.LEXEME_SOURCE_LINK_SOURCE_ID_IDX;
     public static final Index LEXEME_SOURCE_LINK_VALUE_IDX = Indexes0.LEXEME_SOURCE_LINK_VALUE_IDX;
+    public static final Index LEXEME_TAG_LEXEME_ID_IDX = Indexes0.LEXEME_TAG_LEXEME_ID_IDX;
+    public static final Index LEXEME_TAG_TAG_NAME_IDX = Indexes0.LEXEME_TAG_TAG_NAME_IDX;
     public static final Index LIFECYCLE_LOG_EVENT_BY_IDX = Indexes0.LIFECYCLE_LOG_EVENT_BY_IDX;
     public static final Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Indexes0.LIFECYCLE_LOG_EVENT_ON_ID_IDX;
     public static final Index MEANING_DOMAIN_CODE_ORIGIN_IDX = Indexes0.MEANING_DOMAIN_CODE_ORIGIN_IDX;
@@ -295,6 +298,8 @@ public class Indexes {
         public static Index LEXEME_SOURCE_LINK_NAME_IDX = Internal.createIndex("lexeme_source_link_name_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.NAME }, false);
         public static Index LEXEME_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("lexeme_source_link_source_id_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.SOURCE_ID }, false);
         public static Index LEXEME_SOURCE_LINK_VALUE_IDX = Internal.createIndex("lexeme_source_link_value_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.VALUE }, false);
+        public static Index LEXEME_TAG_LEXEME_ID_IDX = Internal.createIndex("lexeme_tag_lexeme_id_idx", LexemeTag.LEXEME_TAG, new OrderField[] { LexemeTag.LEXEME_TAG.LEXEME_ID }, false);
+        public static Index LEXEME_TAG_TAG_NAME_IDX = Internal.createIndex("lexeme_tag_tag_name_idx", LexemeTag.LEXEME_TAG, new OrderField[] { LexemeTag.LEXEME_TAG.TAG_NAME }, false);
         public static Index LIFECYCLE_LOG_EVENT_BY_IDX = Internal.createIndex("lifecycle_log_event_by_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_BY }, false);
         public static Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Internal.createIndex("lifecycle_log_event_on_id_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_ON }, false);
         public static Index MEANING_DOMAIN_CODE_ORIGIN_IDX = Internal.createIndex("meaning_domain_code_origin_idx", MeaningDomain.MEANING_DOMAIN, new OrderField[] { MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE, MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN }, false);

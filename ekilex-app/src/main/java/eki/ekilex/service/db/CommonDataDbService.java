@@ -21,6 +21,7 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -38,6 +39,7 @@ import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
+import static eki.ekilex.data.db.Tables.TAG;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -64,8 +66,8 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
-import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
+import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
@@ -107,6 +109,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 	@Cacheable(value = CACHE_KEY_DATASET)
 	public List<Dataset> getDatasets() {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_TAG)
+	public List<String> getTags() {
+		return create.select(TAG.NAME).from(TAG).orderBy(TAG.ORDER_BY).fetchInto(String.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
@@ -944,6 +951,16 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Relation.class);
 	}
 
+	public List<String> getLexemeTags(Long lexemeId) {
+
+		return create
+				.select(LEXEME_TAG.TAG_NAME)
+				.from(LEXEME_TAG)
+				.where(LEXEME_TAG.LEXEME_ID.eq(lexemeId))
+				.orderBy(LEXEME_TAG.CREATED_ON)
+				.fetchInto(String.class);
+	}
+
 	private Field<String> getClassifierNameField(ClassifierName classifierName) {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
@@ -998,7 +1015,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
-	public WordLexemeMeaningIdTuple geWordLexemeMeaningId(Long lexemeId) {
+	public WordLexemeMeaningIdTuple getWordLexemeMeaningId(Long lexemeId) {
 
 		return create
 				.select(

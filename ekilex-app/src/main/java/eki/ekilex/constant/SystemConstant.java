@@ -28,5 +28,7 @@ public interface SystemConstant {
 
 	String CACHE_KEY_USER = "user";
 
+	String CACHE_KEY_TAG = "tag";
+
 	int MAX_TEXT_LENGTH_LIMIT = 2000;
 }

@@ -668,6 +668,7 @@
             <div th:replace="termdialog :: add_usage_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_relation_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_public_note_dlg"></div>
+            <div th:replace="termdialog :: add_lexeme_tag_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_process_state_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_frequency_group_dlg"></div>
@@ -724,6 +725,7 @@
                 <hr/>
                 <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
                 <div th:replace="termcomp :: data_ids"></div>
+                <div th:replace="termcomp :: tags"></div>
                 <div th:replace="termcomp :: lexeme_complexity"></div>
                 <div th:replace="termcomp :: lexeme_process_state"></div>
                 <div th:replace="termcomp :: lexeme_value_state"></div>
@@ -990,9 +992,6 @@
                   </th:block>
                 </div>
               </div>
-
-<!--              TODO siiamaani-->
-
               <div th:if="${not #lists.isEmpty(lexeme.freeforms)}" class="row">
                 <hr/>
                 <div class="col pr-0 col-w13rem">

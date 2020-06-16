@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LEX_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
@@ -60,6 +61,7 @@ import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
+import eki.ekilex.data.db.tables.records.LexemeTagRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
 import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
@@ -127,6 +129,11 @@ public class LookupDbService extends AbstractSearchDbService {
 	public Long getLexemePosId(Long lexemeId, String posCode) {
 		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
 		return lexemePosRecord.getId();
+	}
+
+	public Long getLexemeTagId(Long lexemeId, String tagName) {
+		LexemeTagRecord lexemeTagRecord = create.fetchOne(LEXEME_TAG, LEXEME_TAG.LEXEME_ID.eq(lexemeId).and(LEXEME_TAG.TAG_NAME.eq(tagName)));
+		return lexemeTagRecord.getId();
 	}
 
 	public Long getLexemeDerivId(Long lexemeId, String derivCode) {

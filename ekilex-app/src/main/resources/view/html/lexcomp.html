@@ -43,6 +43,34 @@
       <div th:replace="components :: paging(${wordsResult})"></div>
     </div>
   </div>
+  <div class="row" th:fragment="tags">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Ilmiku sildid</span>
+      <button type="button" class="btn badge badge-success float-right mr-4"
+              title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addLexemeTagDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.lexeme.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="col pl-0">
+      <span th:each="tag,tagIter : ${lexeme.tags}" class="hidden-buttons">
+        <span th:text="${tag}"></span>
+        <button type="button" class="btn badge badge-warning"
+                data-op-code="lexeme_tag"
+                th:data-id="${lexeme.lexemeId}"
+                th:data-value="${tag}"
+                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                data-toggle="delete-confirm"
+                data-placement="right"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <span th:unless="${tagIter.last}">,</span>
+      </span>
+    </div>
+  </div>
   <div class="hidden-buttons row" th:fragment="data_ids">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Identifikaatorid</span>

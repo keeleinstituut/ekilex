@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -947,6 +948,25 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemePosId;
 	}
 
+	public Long createLexemeTag(Long lexemeId, String tagName) {
+		Long lexemeTagId = create
+				.select(LEXEME_TAG.ID)
+				.from(LEXEME_TAG)
+				.where(LEXEME_TAG.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_TAG.TAG_NAME.eq(tagName)))
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (lexemeTagId == null) {
+			lexemeTagId = create
+					.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME)
+					.values(lexemeId, tagName)
+					.returning(LEXEME_TAG.ID)
+					.fetchOne()
+					.getId();
+		}
+		return lexemeTagId;
+	}
+
 	public Long createLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = create
 				.select(LEXEME_DERIV.ID).from(LEXEME_DERIV)
@@ -1158,6 +1178,12 @@ public class CudDbService extends AbstractDataDbService {
 	public void deleteLexemePos(Long lexemePosId) {
 		create.delete(LEXEME_POS)
 				.where(LEXEME_POS.ID.eq(lexemePosId))
+				.execute();
+	}
+
+	public void deleteLexemeTag(Long lexemeTagId) {
+		create.delete(LEXEME_TAG)
+				.where(LEXEME_TAG.ID.eq(lexemeTagId))
 				.execute();
 	}
 
