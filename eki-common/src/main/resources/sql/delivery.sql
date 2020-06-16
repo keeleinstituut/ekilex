@@ -185,4 +185,4 @@ insert into lexeme_tag (lexeme_id, tag_name) select l.id, l.process_state_code f
 insert into process_state (code, datasets) values ('mitteavalik', '{}');
 update lexeme set process_state_code = 'mitteavalik' where process_state_code != 'avalik';
 alter table eki_user_profile add column searchable_tags varchar(100) array;
-alter table eki_user_profile add column active_tag varchar(100) references tag(name);
+alter table eki_user_profile add column active_tag varchar(100);

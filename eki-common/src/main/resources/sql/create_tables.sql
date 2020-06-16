@@ -494,7 +494,7 @@ create table eki_user_profile
   show_meaning_relation_meaning_id boolean default true,
   show_meaning_relation_word_datasets boolean default true,
   searchable_tags varchar(100) array,
-  active_tag varchar(100) references tag(name)
+  active_tag varchar(100)
 );
 alter sequence eki_user_profile_id_seq restart with 10000;
 
@@ -1273,8 +1273,6 @@ create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
 create index lexeme_pos_pos_code_idx on lexeme_pos(pos_code);
 create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
 create index lexeme_region_lexeme_id_idx on lexeme_region(lexeme_id);
-create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
-create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
 create index meaning_domain_meaning_id_idx on meaning_domain(meaning_id);
 create index meaning_semantic_type_meaning_id_idx on meaning_semantic_type(meaning_id);
 create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
