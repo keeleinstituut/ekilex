@@ -101,6 +101,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
 			populateMeaning(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, destinLangs, lexComplexity, displayLang);
 			populateRelatedMeanings(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, lexComplexity, displayLang);
+			setValueStateFlags(lexeme, wordLang);
 		}
 	}
 
@@ -372,6 +373,21 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningWords = meaningWords.stream().filter(meaningWord -> !relatedLexemeWordValues.contains(meaningWord.getWord())).collect(Collectors.toList());
 		}
 		lexeme.setMeaningWords(meaningWords);
+	}
+
+	private void setValueStateFlags(Lexeme lexeme, String wordLang) {
+
+		DatasetType datasetType = lexeme.getDatasetType();
+		if (DatasetType.TERM.equals(datasetType)) {
+			List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
+			String valueStateCode = lexeme.getValueStateCode();
+			if (StringUtils.equals(valueStateCode, VALUE_STATE_LEAST_PREFERRED)) {
+				TypeMeaningWord preferredTermMeaningWord = meaningWords.stream()
+						.filter(meaningWord -> StringUtils.equals(VALUE_STATE_MOST_PREFERRED, meaningWord.getMwLexValueStateCode()) && StringUtils.equals(wordLang, meaningWord.getLang()))
+						.findFirst().orElse(null);
+				lexeme.setPreferredTermMeaningWord(preferredTermMeaningWord);
+			}
+		}
 	}
 
 }

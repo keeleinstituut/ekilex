@@ -91,6 +91,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private Map<String, List<TypeDefinition>> definitionsByLang;
 
+	private TypeMeaningWord preferredTermMeaningWord;
+
 	private List<TypeMeaningWord> meaningWords;
 
 	private List<TypeMeaningWord> sourceLangMeaningWords;
@@ -443,6 +445,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	public void setDefinitionsByLang(Map<String, List<TypeDefinition>> definitionsByLang) {
 		this.definitionsByLang = definitionsByLang;
+	}
+
+	public TypeMeaningWord getPreferredTermMeaningWord() {
+		return preferredTermMeaningWord;
+	}
+
+	public void setPreferredTermMeaningWord(TypeMeaningWord preferredTermMeaningWord) {
+		this.preferredTermMeaningWord = preferredTermMeaningWord;
 	}
 
 	public List<TypeMeaningWord> getMeaningWords() {
